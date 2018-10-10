@@ -1,6 +1,15 @@
 # Compiled class file
 *.class
 
+# Project files
+.settings
+.project
+.classpath
+target
+*.iml
+.idea
+.DS_Store
+
 # Log file
 *.log
 
