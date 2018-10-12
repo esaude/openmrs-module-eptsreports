@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <module configVersion="1.2">
-	
+
 	<!-- Base Module Properties -->
 	<id>${project.parent.artifactId}</id>
 	<name>${project.parent.name}</name>
 	<version>${project.parent.version}</version>
 	<package>org.openmrs.module.eptsreports</package>
-	<author>natha</author>
+	<author>Jembi Health Systems NPC</author>
 	<description>
 			${project.parent.description}
 	</description>
 
 	<activator>org.openmrs.module.eptsreports.EPTSreportsActivator</activator>
-	
+
 	<!-- <updateURL>https://modules.openmrs.org/modules/download/@MODULE_ID@/update.rdf</updateURL> -->
 	<!-- /Base Module Properties -->
-	
+
 	<require_version>1.11.6</require_version>
-	
+
 	<!-- Extensions -->
 	<extension>
 		<point>org.openmrs.admin.list</point>
@@ -28,17 +28,17 @@
 	<aware_of_modules>
 		<aware_of_module>org.openmrs.module.legacyui</aware_of_module>
 	</aware_of_modules>
-	
-	
+
+
 	<!-- AOP
 	<advice>
 		<point>org.openmrs.api.FormService</point>
 		<class>@MODULE_PACKAGE@.advice.DuplicateFormAdvisor</class>
 	</advice>
 	 /AOP -->
-	
-	
-	<!-- Required Privileges 
+
+
+	<!-- Required Privileges
 	<privilege>
 		<name>Form Entry</name>
 		<description>Allows user to access Form Entry pages/functions</description>
@@ -46,7 +46,7 @@
 	 /Required Privileges -->
 
 
-	<!-- Required Global Properties 
+	<!-- Required Global Properties
 	<globalProperty>
 		<property>@MODULE_ID@.someProperty</property>
 		<defaultValue></defaultValue>
@@ -57,7 +57,7 @@
 		</description>
 	</globalProperty>
 	/Required Global Properties -->
-	
+
 	<!--
 	<dwr>
 		<allow>
@@ -72,20 +72,20 @@
 			import @MODULE_PACKAGE@.web.DWRFormEntryService;
 			DWRFormEntryService.enterForm(Integer patientId, Integer formId, boolean useEncounter, List<String> fields);
 			]]>
-		</signatures>	
+		</signatures>
 	</dwr>
 	-->
-	
+
 	<!-- Servlets -->
-	<!-- Accessed through the url /pageContext()/moduleServlet/<moduleId>/<servlet-name> 
+	<!-- Accessed through the url /pageContext()/moduleServlet/<moduleId>/<servlet-name>
 	<servlet>
 		<servlet-name>formDownload</servlet-name>
 		<servlet-class>@MODULE_PACKAGE@.web.FormDownloadServlet</servlet-class>
 	</servlet>
 	-->
 	<!-- /Servlets -->
-	
-	
+
+
 	<!-- Internationalization -->
 	<!-- All message codes should start with @MODULE_ID@.* -->
 	<messages>
@@ -101,6 +101,6 @@
 		<file>messages_es.properties</file>
 	</messages>
 	<!-- /Internationalization -->
-	
+
 </module>
 
