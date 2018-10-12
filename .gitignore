@@ -9,6 +9,7 @@ target
 *.iml
 .idea
 .DS_Store
+.vscode
 
 # Log file
 *.log
