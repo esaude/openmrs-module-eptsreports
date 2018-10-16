@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository("eptsreports.EPTSreportsDao")
-public class EPTSreportsDao {
+public class EptsReportsDao {
 	
 	@Autowired
 	DbSessionFactory sessionFactory;

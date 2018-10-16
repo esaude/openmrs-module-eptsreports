@@ -13,19 +13,19 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.UserService;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.eptsreports.Item;
-import org.openmrs.module.eptsreports.api.EPTSreportsService;
-import org.openmrs.module.eptsreports.api.dao.EPTSreportsDao;
+import org.openmrs.module.eptsreports.api.EptsReportsService;
+import org.openmrs.module.eptsreports.api.dao.EptsReportsDao;
 
-public class EPTSreportsServiceImpl extends BaseOpenmrsService implements EPTSreportsService {
+public class EptsReportsServiceImpl extends BaseOpenmrsService implements EptsReportsService {
 	
-	EPTSreportsDao dao;
+	EptsReportsDao dao;
 	
 	UserService userService;
 	
 	/**
 	 * Injected in moduleApplicationContext.xml
 	 */
-	public void setDao(EPTSreportsDao dao) {
+	public void setDao(EptsReportsDao dao) {
 		this.dao = dao;
 	}
 	

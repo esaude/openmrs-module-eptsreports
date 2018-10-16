@@ -25,10 +25,10 @@ import static org.junit.Assert.*;
  * standardTestDataset.xml in openmrs-api. All test methods are executed in transactions, which are
  * rolled back by the end of each test method.
  */
-public class EPTSreportsDaoTest extends BaseModuleContextSensitiveTest {
+public class EptsReportsDaoTest extends BaseModuleContextSensitiveTest {
 	
 	@Autowired
-	EPTSreportsDao dao;
+	EptsReportsDao dao;
 	
 	@Autowired
 	UserService userService;

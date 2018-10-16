@@ -12,11 +12,12 @@ package org.openmrs.module.eptsreports;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.BaseModuleActivator;
+import org.openmrs.module.eptsreports.api.impl.EptsReportsServiceImpl;
 
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
  */
-public class EPTSreportsActivator extends BaseModuleActivator {
+public class EptsReportsActivator extends BaseModuleActivator {
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	
@@ -33,5 +34,4 @@ public class EPTSreportsActivator extends BaseModuleActivator {
 	public void shutdown() {
 		log.info("Shutdown EPTS reports");
 	}
-	
 }

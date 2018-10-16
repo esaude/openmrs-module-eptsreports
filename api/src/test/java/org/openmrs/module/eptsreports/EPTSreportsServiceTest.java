@@ -17,8 +17,8 @@ import org.mockito.MockitoAnnotations;
 import org.openmrs.User;
 import org.openmrs.api.UserService;
 import org.openmrs.module.eptsreports.Item;
-import org.openmrs.module.eptsreports.api.dao.EPTSreportsDao;
-import org.openmrs.module.eptsreports.api.impl.EPTSreportsServiceImpl;
+import org.openmrs.module.eptsreports.api.dao.EptsReportsDao;
+import org.openmrs.module.eptsreports.api.impl.EptsReportsServiceImpl;
 import static org.mockito.Mockito.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -27,13 +27,13 @@ import static org.junit.Assert.*;
  * This is a unit test, which verifies logic in EPTSreportsService. It doesn't extend
  * BaseModuleContextSensitiveTest, thus it is run without the in-memory DB and Spring context.
  */
-public class EPTSreportsServiceTest {
+public class EptsReportsServiceTest {
 	
 	@InjectMocks
-	EPTSreportsServiceImpl basicModuleService;
+	EptsReportsServiceImpl basicModuleService;
 	
 	@Mock
-	EPTSreportsDao dao;
+	EptsReportsDao dao;
 	
 	@Mock
 	UserService userService;
