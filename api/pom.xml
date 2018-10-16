@@ -11,4 +11,16 @@
 	<packaging>jar</packaging>
 	<name>EPTS reports API</name>
 	<description>API project for EPTS reports</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>reporting-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>serialization.xstream-api</artifactId>
+		</dependency>
+	</dependencies>
 </project>

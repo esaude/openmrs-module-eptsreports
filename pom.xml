@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.openmrs.maven.parents</groupId>
@@ -8,51 +8,108 @@
         <version>1.1.1</version>
     </parent>
 
-	<groupId>org.openmrs.module</groupId>
-	<artifactId>eptsreports</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<name>EPTS reports</name>
-	<description>PEPFAR reports for EPTS project in Mozambique</description>
-
-	<url>https://wiki.openmrs.org/x/FQ4z</url>
-
-	<scm>
-		<connection>scm:git:git@github.com:openmrs/openmrs-module-eptsreports.git</connection>
-		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-eptsreports.git</developerConnection>
-		<url>https://github.com/openmrs/openmrs-module-eptsreports/</url>
-	</scm>
-
-	<modules>
-		<module>api</module>
-		<module>omod</module>
-	</modules>
-
-	<repositories>
-		<repository>
-			<id>openmrs-repo</id>
-			<name>OpenMRS Nexus Repository</name>
-			<url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
-		</repository>
-		<repository>
-			<id>central</id>
-			<name>Maven Repository Switchboard</name>
-			<layout>default</layout>
-			<url>http://repo1.maven.org/maven2</url>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>openmrs-repo</id>
-			<name>OpenMRS Nexus Repository</name>
-			<url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
+    <groupId>org.openmrs.module</groupId>
+    <artifactId>eptsreports</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>EPTS reports</name>
+    <description>PEPFAR reports for EPTS project in Mozambique</description>
 
     <properties>
         <openmrsPlatformVersion>1.11.6</openmrsPlatformVersion>
+        <reportingVersion>1.16.0</reportingVersion>
+        <serializationVersion>0.2.14</serializationVersion>
+        <calculationVersion>1.2</calculationVersion>
     </properties>
+
+    <url>https://wiki.openmrs.org/x/FQ4z</url>
+
+    <scm>
+        <connection>scm:git:git@github.com:openmrs/openmrs-module-eptsreports.git</connection>
+        <developerConnection>scm:git:git@github.com:openmrs/openmrs-module-eptsreports.git</developerConnection>
+        <url>https://github.com/openmrs/openmrs-module-eptsreports/</url>
+    </scm>
+
+    <modules>
+        <module>api</module>
+        <module>omod</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Start of module dependacy -->
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>reporting-api</artifactId>
+                <version>${reportingVersion}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>serialization.xstream-api</artifactId>
+                <version>${serializationVersion}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>calculation-api</artifactId>
+                <version>${calculationVersion}</version>
+                <scope>provided</scope>
+            </dependency>
+            <!--End of module dependacy -->
+
+            <!-- Begin OpenMRS core -->
+            <dependency>
+                <groupId>org.openmrs.api</groupId>
+                <artifactId>openmrs-api</artifactId>
+                <version>${openmrsPlatformVersion}</version>
+                <type>jar</type>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openmrs.api</groupId>
+                <artifactId>openmrs-api</artifactId>
+                <version>${openmrsPlatformVersion}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openmrs.test</groupId>
+                <artifactId>openmrs-test</artifactId>
+                <version>${openmrsPlatformVersion}</version>
+                <type>pom</type>
+                <scope>test</scope>
+            </dependency>
+            <!-- End OpenMRS core -->
+        </dependencies>
+    </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>openmrs-repo</id>
+            <name>OpenMRS Nexus Repository</name>
+            <url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+        </repository>
+        <repository>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <layout>default</layout>
+            <url>http://repo1.maven.org/maven2</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>openmrs-repo</id>
+            <name>OpenMRS Nexus Repository</name>
+            <url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
 </project>
