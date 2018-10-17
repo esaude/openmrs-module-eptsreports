@@ -12,7 +12,7 @@ package org.openmrs.module.eptsreports;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.BaseModuleActivator;
-import org.openmrs.module.eptsreports.api.impl.EptsReportsServiceImpl;
+import org.openmrs.module.eptsreports.reporting.ReportInitializer;
 
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
@@ -21,10 +21,39 @@ public class EptsReportsActivator extends BaseModuleActivator {
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	
+	private ReportInitializer reportsInitializer = new ReportInitializer();
+	
+	@Override
+	public void contextRefreshed() {
+		log.info("EPTS Reports Module refreshed");
+	}
+	
+	@Override
+	public void willRefreshContext() {
+		log.info("Refreshing EPTS Reports Module");
+	}
+	
+	@Override
+	public void willStart() {
+		log.info("Starting EPTS Reports Module");
+	}
+	
+	@Override
+	public void willStop() {
+		log.info("Stopping EPTS Reports Module");
+	}
+	
 	/**
 	 * @see #started()
 	 */
 	public void started() {
+		try {
+			reportsInitializer.initializeReports();
+		}
+		catch (Exception e) {
+			log.error("An error occured trying to initialize EPTS reports", e);
+		}
+		
 		log.info("Started EPTS reports");
 	}
 	

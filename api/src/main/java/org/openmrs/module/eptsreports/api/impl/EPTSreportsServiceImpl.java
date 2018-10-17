@@ -9,18 +9,16 @@
  */
 package org.openmrs.module.eptsreports.api.impl;
 
-import org.openmrs.api.APIException;
 import org.openmrs.api.UserService;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.eptsreports.Item;
 import org.openmrs.module.eptsreports.api.EptsReportsService;
 import org.openmrs.module.eptsreports.api.dao.EptsReportsDao;
 
 public class EptsReportsServiceImpl extends BaseOpenmrsService implements EptsReportsService {
 	
-	EptsReportsDao dao;
+	private EptsReportsDao dao;
 	
-	UserService userService;
+	private UserService userService;
 	
 	/**
 	 * Injected in moduleApplicationContext.xml
@@ -34,19 +32,6 @@ public class EptsReportsServiceImpl extends BaseOpenmrsService implements EptsRe
 	 */
 	public void setUserService(UserService userService) {
 		this.userService = userService;
-	}
-	
-	@Override
-	public Item getItemByUuid(String uuid) throws APIException {
-		return dao.getItemByUuid(uuid);
-	}
-	
-	@Override
-	public Item saveItem(Item item) throws APIException {
-		if (item.getOwner() == null) {
-			item.setOwner(userService.getUser(1));
-		}
-		
-		return dao.saveItem(item);
+		System.out.println(userService.getUser(1));
 	}
 }

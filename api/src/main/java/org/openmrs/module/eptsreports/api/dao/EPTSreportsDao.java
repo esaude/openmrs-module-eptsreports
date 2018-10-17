@@ -9,14 +9,12 @@
  */
 package org.openmrs.module.eptsreports.api.dao;
 
-import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
 import org.openmrs.api.db.hibernate.DbSession;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
-import org.openmrs.module.eptsreports.Item;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
-@Repository("eptsreports.EPTSreportsDao")
+@Repository("eptsreports.EptsReportsDao")
 public class EptsReportsDao {
 	
 	@Autowired
@@ -26,12 +24,8 @@ public class EptsReportsDao {
 		return sessionFactory.getCurrentSession();
 	}
 	
-	public Item getItemByUuid(String uuid) {
-		return (Item) getSession().createCriteria(Item.class).add(Restrictions.eq("uuid", uuid)).uniqueResult();
+	public String removeReport() {
+		return "1234";
 	}
 	
-	public Item saveItem(Item item) {
-		getSession().saveOrUpdate(item);
-		return item;
-	}
 }

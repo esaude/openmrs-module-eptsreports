@@ -18,7 +18,7 @@
     <properties>
         <openmrsPlatformVersion>1.11.6</openmrsPlatformVersion>
         <reportingVersion>1.16.0</reportingVersion>
-        <serializationVersion>0.2.14</serializationVersion>
+        <serializationVersion>0.2.10</serializationVersion>
         <calculationVersion>1.2</calculationVersion>
     </properties>
 

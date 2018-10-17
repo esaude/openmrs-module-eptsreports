@@ -7,16 +7,14 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.eptsreports.api;
+package org.openmrs.module.eptsreports;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.openmrs.User;
-import org.openmrs.api.UserService;
-import org.openmrs.module.eptsreports.Item;
 import org.openmrs.module.eptsreports.api.dao.EptsReportsDao;
 import org.openmrs.module.eptsreports.api.impl.EptsReportsServiceImpl;
 import static org.mockito.Mockito.*;
@@ -35,29 +33,21 @@ public class EptsReportsServiceTest {
 	@Mock
 	EptsReportsDao dao;
 	
-	@Mock
-	UserService userService;
-	
 	@Before
 	public void setupMocks() {
 		MockitoAnnotations.initMocks(this);
 	}
 	
 	@Test
-	public void saveItem_shouldSetOwnerIfNotSet() {
+	@Ignore
+	public void method_shouldDoSomething() {
 		//Given
-		Item item = new Item();
-		item.setDescription("some description");
-		
-		when(dao.saveItem(item)).thenReturn(item);
-		
-		User user = new User();
-		when(userService.getUser(1)).thenReturn(user);
 		
 		//When
-		basicModuleService.saveItem(item);
+		// basicModuleService.method();
 		
 		//Then
-		assertThat(item, hasProperty("owner", is(user)));
+		// assertThat(item, hasProperty("owner", is(user)));
+		assertEquals(true, true);
 	}
 }
