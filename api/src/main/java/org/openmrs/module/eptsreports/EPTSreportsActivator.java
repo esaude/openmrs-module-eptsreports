@@ -12,54 +12,54 @@ package org.openmrs.module.eptsreports;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.BaseModuleActivator;
-import org.openmrs.module.eptsreports.reporting.ReportInitializer;
+import org.openmrs.module.eptsreports.reporting.EptsReportInitializer;
 
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
  */
 public class EptsReportsActivator extends BaseModuleActivator {
-	
+
 	private Log log = LogFactory.getLog(this.getClass());
-	
-	private ReportInitializer reportsInitializer = new ReportInitializer();
-	
+
+	private EptsReportInitializer reportsInitializer = new EptsReportInitializer();
+
 	@Override
 	public void contextRefreshed() {
-		log.info("EPTS Reports Module refreshed");
+		log.debug("EPTS Reports Module refreshed");
 	}
-	
+
 	@Override
 	public void willRefreshContext() {
-		log.info("Refreshing EPTS Reports Module");
+		log.debug("Refreshing EPTS Reports Module");
 	}
-	
+
 	@Override
 	public void willStart() {
-		log.info("Starting EPTS Reports Module");
+		log.debug("Starting EPTS Reports Module");
 	}
-	
+
 	@Override
 	public void willStop() {
-		log.info("Stopping EPTS Reports Module");
+		log.debug("Stopping EPTS Reports Module");
 	}
-	
+
 	/**
 	 * @see #started()
 	 */
 	public void started() {
 		try {
 			reportsInitializer.initializeReports();
-			log.info("Started EPTS reports");
+			log.info("Started EPTS Reports Module");
 		}
 		catch (Exception e) {
 			log.error("An error occured trying to initialize EPTS reports", e);
 		}
 	}
-	
+
 	/**
 	 * @see #shutdown()
 	 */
 	public void shutdown() {
-		log.info("Shutdown EPTS reports");
+		log.info("Shutdown EPTS Reports Module");
 	}
 }

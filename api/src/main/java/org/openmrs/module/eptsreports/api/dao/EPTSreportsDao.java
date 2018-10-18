@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.eptsreports.api.dao;
 
-import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.hibernate.DbSession;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
@@ -22,16 +21,8 @@ public class EptsReportsDao {
 	@Autowired
 	DbSessionFactory sessionFactory;
 	
-	private AdministrationService as = Context.getAdministrationService();
-	
 	private DbSession getSession() {
 		return sessionFactory.getCurrentSession();
-	}
-	
-	public void removeReportDefinition(String uuid) {
-		// String reportId = "select id from reporting_report_design where uuid='"+uuid+"'";
-		// as.executeSQL("delete from reporting_report_design_resource where report_design_id =("
-		// 		+ reportId + ");", false);
 	}
 	
 }

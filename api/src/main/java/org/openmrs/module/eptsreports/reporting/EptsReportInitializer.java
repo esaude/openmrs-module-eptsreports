@@ -17,19 +17,17 @@ package org.openmrs.module.eptsreports.reporting;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.eptsreports.api.EptsReportsService;
-import org.openmrs.module.eptsreports.api.impl.EptsReportsServiceImpl;
 import org.openmrs.module.eptsreports.reporting.reports.EptsReportManager;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.manager.ReportManager;
 import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
 import org.openmrs.module.reporting.report.util.ReportUtil;
 
-public class ReportInitializer {
+public class EptsReportInitializer {
 	
 	private Log log = LogFactory.getLog(this.getClass());
-	
-	private EptsReportsService reportsService = new EptsReportsServiceImpl();
 	
 	/**
 	 * Initializes all EPTS reports and remove deprocated reports from database.
@@ -42,17 +40,23 @@ public class ReportInitializer {
 		for (ReportManager reportManager : Context.getRegisteredComponents(EptsReportManager.class)) {
 			if (reportManager.getClass().getAnnotation(Deprecated.class) != null) {
 				// remove depricated reports
-				log.warn("Report " + reportManager.getName() + " is deprecated.  Removing it from database.");
-				// reportsService.removeReportDefinition(reportManager);
+				removeReportDefinition(reportManager);
 			} else {
-				// setup missing reports
-				log.warn("Setting up report " + reportManager.getName() + "...");
+				// setup EPTS active reports
+				log.info("Setting up report " + reportManager.getName() + "...");
 				ReportManagerUtil.setupReport(reportManager);
 			}
 		}
 		ReportUtil.updateGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE, "-1");
-		
-		log.info("EPTS reports have been initialized.");
 	}
 	
+	private void removeReportDefinition(ReportManager reportManager) {
+		ReportDefinition rd = reportManager.constructReportDefinition();
+		ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
+		if (rd != null) {
+			Context.getService(ReportDefinitionService.class).purgeDefinition(rd);
+		}
+		
+		log.warn("Report " + reportManager.getName() + " is deprecated.  Removing it from database.");
+	}
 }

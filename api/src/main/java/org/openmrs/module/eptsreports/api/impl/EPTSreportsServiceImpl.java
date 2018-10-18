@@ -29,9 +29,4 @@ public class EptsReportsServiceImpl extends BaseOpenmrsService implements EptsRe
 		this.dao = dao;
 	}
 	
-	@Override
-	public void removeReportDefinition(String uuid) throws APIException {
-		log.warn("Removing report definition for uuid: " + uuid);
-	}
-	
 }
