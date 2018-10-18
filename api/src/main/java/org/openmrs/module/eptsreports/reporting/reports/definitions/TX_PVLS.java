@@ -11,8 +11,14 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.eptsreports.reporting.reports;
+package org.openmrs.module.eptsreports.reporting.reports.definitions;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openmrs.module.eptsreports.reporting.reports.EptsDataExportManager;
+import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.stereotype.Component;
 
@@ -47,13 +53,13 @@ public class TX_PVLS extends EptsDataExportManager {
 		return "Percentage of ART patients with a viral load result documented in the medical record and/or laboratory information systems (LIS) within the past 12 months with a suppressed viral load (<1000 copies/ml).";
 	}
 	
-	// @Override
-	// public List<Parameter> getParameters() {
-	// 	List<Parameter> parameters = new ArrayList<Parameter>();
-	// 	parameters.add(dataFactory.getEndDateParameter());
-	// 	parameters.add(dataFactory.getOptionalLocationParameter());
-	// 	return parameters;
-	// }
+	@Override
+	public List<Parameter> getParameters() {
+		List<Parameter> parameters = new ArrayList<Parameter>();
+		parameters.add(ReportingConstants.START_DATE_PARAMETER);
+		parameters.add(ReportingConstants.END_DATE_PARAMETER);
+		return parameters;
+	}
 	
 	@Override
 	public ReportDefinition constructReportDefinition() {
@@ -61,7 +67,7 @@ public class TX_PVLS extends EptsDataExportManager {
 		reportDefinition.setUuid(getUuid());
 		reportDefinition.setName(getName());
 		reportDefinition.setDescription(getDescription());
-		// reportDefinition.setParameters(getParameters());
+		reportDefinition.setParameters(getParameters());
 		
 		return reportDefinition;
 	}

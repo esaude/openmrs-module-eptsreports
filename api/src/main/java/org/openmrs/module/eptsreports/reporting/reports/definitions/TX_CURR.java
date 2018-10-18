@@ -11,8 +11,9 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.eptsreports.reporting.reports;
+package org.openmrs.module.eptsreports.reporting.reports.definitions;
 
+import org.openmrs.module.eptsreports.reporting.reports.EptsDataExportManager;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.stereotype.Component;
 
