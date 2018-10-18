@@ -25,14 +25,14 @@ import static org.junit.Assert.*;
  * rolled back by the end of each test method.
  */
 public class EptsReportsDaoTest extends BaseModuleContextSensitiveTest {
-
+	
 	@Autowired
 	EptsReportsDao dao;
-
+	
 	@Test
 	public void removeReport_UuidExistsAndShouldSucceed() {
 		dao.removeReportDefinition("1234");
-
+		
 		assertEquals(true, true);
 	}
 }
