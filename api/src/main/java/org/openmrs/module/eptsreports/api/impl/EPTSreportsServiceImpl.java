@@ -9,16 +9,18 @@
  */
 package org.openmrs.module.eptsreports.api.impl;
 
-import org.openmrs.api.UserService;
+import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.eptsreports.api.EptsReportsService;
 import org.openmrs.module.eptsreports.api.dao.EptsReportsDao;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class EptsReportsServiceImpl extends BaseOpenmrsService implements EptsReportsService {
 	
 	private EptsReportsDao dao;
 	
-	private UserService userService;
+	private Log log = LogFactory.getLog(this.getClass());
 	
 	/**
 	 * Injected in moduleApplicationContext.xml
@@ -27,11 +29,9 @@ public class EptsReportsServiceImpl extends BaseOpenmrsService implements EptsRe
 		this.dao = dao;
 	}
 	
-	/**
-	 * Injected in moduleApplicationContext.xml
-	 */
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-		System.out.println(userService.getUser(1));
+	@Override
+	public void removeReportDefinition(String uuid) throws APIException {
+		log.warn("Removing report definition for uuid: " + uuid);
 	}
+	
 }

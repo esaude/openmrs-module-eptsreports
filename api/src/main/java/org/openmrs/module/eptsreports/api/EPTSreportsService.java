@@ -10,9 +10,21 @@
 package org.openmrs.module.eptsreports.api;
 
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.api.APIException;
 
 /**
  * The main service of this module, which is exposed for other modules. See
  * moduleApplicationContext.xml on how it is wired up.
  */
-public interface EptsReportsService extends OpenmrsService {}
+public interface EptsReportsService extends OpenmrsService {
+	
+	/**
+	 * Remove Depricated EPTS Report Definition
+	 * 
+	 * @param void
+	 * @return
+	 * @throws APIException
+	 */
+	void removeReportDefinition(String uuid) throws APIException;
+	
+}

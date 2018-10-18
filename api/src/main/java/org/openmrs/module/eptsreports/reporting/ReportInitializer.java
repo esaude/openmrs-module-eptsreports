@@ -16,51 +16,43 @@ package org.openmrs.module.eptsreports.reporting;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.api.EptsReportsService;
+import org.openmrs.module.eptsreports.api.impl.EptsReportsServiceImpl;
+import org.openmrs.module.eptsreports.reporting.reports.EptsReportManager;
+import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.report.manager.ReportManager;
+import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
+import org.openmrs.module.reporting.report.util.ReportUtil;
 
 public class ReportInitializer {
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	
+	private EptsReportsService reportsService = new EptsReportsServiceImpl();
+	
 	/**
-	 * Initializes all EPTS reports. It can be called by any authenticated user. It is fetched in
-	 * read only transaction.
+	 * Initializes all EPTS reports and remove deprocated reports from database.
 	 * 
 	 * @param void
 	 * @return
 	 * @throws Exception
 	 */
 	public void initializeReports() throws Exception {
-		// remove depricated reports
-		removeDepricatedReports();
+		for (ReportManager reportManager : Context.getRegisteredComponents(EptsReportManager.class)) {
+			if (reportManager.getClass().getAnnotation(Deprecated.class) != null) {
+				// remove depricated reports
+				log.warn("Report " + reportManager.getName() + " is deprecated.  Removing it from database.");
+				// reportsService.removeReportDefinition(reportManager);
+			} else {
+				// setup missing reports
+				log.warn("Setting up report " + reportManager.getName() + "...");
+				ReportManagerUtil.setupReport(reportManager);
+			}
+		}
+		ReportUtil.updateGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE, "-1");
 		
-		// setup missing reports
-		setupReports();
+		log.info("EPTS reports have been initialized.");
 	}
 	
-	/**
-	 * Remove all depricated EPTS reports. It can be called by any authenticated user. It is fetched
-	 * in read only transaction.
-	 * 
-	 * @param void
-	 * @return
-	 * @throws APIException
-	 */
-	private void removeDepricatedReports() throws Exception {
-		// loop through list of reports marked as depricated and remove
-		// dao.removeReport("1234");
-		
-		log.info("Removed depricted EPTS reports");
-	}
-	
-	/**
-	 * Setup all EPTS reports currently missing. It can be called by any authenticated user. It is
-	 * fetched in read only transaction.
-	 * 
-	 * @param void
-	 * @return
-	 * @throws APIException
-	 */
-	private void setupReports() throws Exception {
-		log.info("Setup EPTS reports");
-	};
 }
