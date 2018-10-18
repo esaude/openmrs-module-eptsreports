@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.eptsreports.reporting;
+package org.openmrs.module.eptsreports.reporting.reports;
 
 import org.openmrs.module.eptsreports.reporting.utils.ReportUtils;
 import org.openmrs.module.reporting.common.ObjectUtil;
@@ -37,7 +37,7 @@ import org.openmrs.module.reporting.report.util.ReportUtil;
 /**
  * Base implementation of ReportManager that provides some common method implementations
  */
-public abstract class ReportManager extends BaseReportManager {
+public abstract class EptsReportManager extends BaseReportManager {
 	
 	protected void addColumn(PatientDataSetDefinition dsd, String columnName, PatientDataDefinition pdd) {
 		dsd.addColumn(columnName, pdd, Mapped.straightThroughMappings(pdd));

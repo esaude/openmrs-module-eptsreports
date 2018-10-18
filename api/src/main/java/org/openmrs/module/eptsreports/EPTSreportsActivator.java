@@ -49,12 +49,11 @@ public class EptsReportsActivator extends BaseModuleActivator {
 	public void started() {
 		try {
 			reportsInitializer.initializeReports();
+			log.info("Started EPTS reports");
 		}
 		catch (Exception e) {
 			log.error("An error occured trying to initialize EPTS reports", e);
 		}
-		
-		log.info("Started EPTS reports");
 	}
 	
 	/**

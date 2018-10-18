@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.eptsreports;
+package org.openmrs.module.eptsreports.api;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +48,5 @@ public class EptsReportsServiceTest {
 		
 		//Then
 		// assertThat(item, hasProperty("owner", is(user)));
-		assertEquals(true, true);
 	}
 }
