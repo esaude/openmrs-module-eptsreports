@@ -21,13 +21,14 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 
 /**
- * Created by Nicholas Ingosi on 6/20/17.
+ * Created by Nicholas Ingosi on 6/20/17
+ * Taken from esaude-reports module
  */
 public class EptsReportUtils {
-	
+
 	/**
 	 * Maps a parameterizable item with no parameters
-	 * 
+	 *
 	 * @param parameterizable the parameterizable item
 	 * @param <T>
 	 * @return the mapped item
@@ -38,10 +39,10 @@ public class EptsReportUtils {
 		}
 		return new Mapped<T>(parameterizable, null);
 	}
-	
+
 	/**
 	 * Maps a parameterizable item using a string list of parameters and values
-	 * 
+	 *
 	 * @param parameterizable the parameterizable item
 	 * @param mappings the string list of mappings
 	 * @param <T>
@@ -56,10 +57,10 @@ public class EptsReportUtils {
 		}
 		return new Mapped<T>(parameterizable, ParameterizableUtil.createParameterMappings(mappings));
 	}
-	
+
 	/**
 	 * Maps a parameterizable item using a string list of parameters and values
-	 * 
+	 *
 	 * @param parameterizable the parameterizable item
 	 * @param mappings the string list of mappings
 	 * @param <T>
@@ -69,7 +70,7 @@ public class EptsReportUtils {
 		if (parameterizable == null) {
 			throw new IllegalArgumentException("Parameterizable cannot be null");
 		}
-		
+
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		for (int m = 0; m < mappings.length; m += 2) {
 			String param = (String) mappings[m];
@@ -78,5 +79,5 @@ public class EptsReportUtils {
 		}
 		return new Mapped<T>(parameterizable, paramMap);
 	}
-	
+
 }
