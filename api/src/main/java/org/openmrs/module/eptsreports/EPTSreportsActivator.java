@@ -18,31 +18,31 @@ import org.openmrs.module.eptsreports.reporting.EptsReportInitializer;
  * This class contains the logic that is run every time this module is either started or shutdown
  */
 public class EptsReportsActivator extends BaseModuleActivator {
-
+	
 	private Log log = LogFactory.getLog(this.getClass());
-
+	
 	private EptsReportInitializer reportsInitializer = new EptsReportInitializer();
-
+	
 	@Override
 	public void contextRefreshed() {
 		log.debug("EPTS Reports Module refreshed");
 	}
-
+	
 	@Override
 	public void willRefreshContext() {
 		log.debug("Refreshing EPTS Reports Module");
 	}
-
+	
 	@Override
 	public void willStart() {
 		log.debug("Starting EPTS Reports Module");
 	}
-
+	
 	@Override
 	public void willStop() {
 		log.debug("Stopping EPTS Reports Module");
 	}
-
+	
 	/**
 	 * @see #started()
 	 */
@@ -55,7 +55,7 @@ public class EptsReportsActivator extends BaseModuleActivator {
 			log.error("An error occured trying to initialize EPTS reports", e);
 		}
 	}
-
+	
 	/**
 	 * @see #shutdown()
 	 */

@@ -13,21 +13,17 @@
  */
 package org.openmrs.module.eptsreports.reporting.utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
-import org.openmrs.module.reporting.report.ReportDesign;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * Created by Nicholas Ingosi on 6/20/17.
  */
-public class ReportUtils {
+public class EptsReportUtils {
 	
 	/**
 	 * Maps a parameterizable item with no parameters
@@ -81,24 +77,6 @@ public class ReportUtils {
 			paramMap.put(param, value);
 		}
 		return new Mapped<T>(parameterizable, paramMap);
-	}
-	
-	/**
-	 * @return a new ReportDesign for a standard Excel output
-	 */
-	public static ReportDesign createExcelDesign(String reportDesignUuid, ReportDefinition reportDefinition) {
-		ReportDesign design = ReportManagerUtil.createExcelDesign(reportDesignUuid, reportDefinition);
-		return design;
-	}
-	
-	/**
-	 * @return a new ReportDesign for a standard Excel output
-	 */
-	public static ReportDesign createExcelDesignWithProperties(String reportDesignUuid, ReportDefinition reportDefinition,
-	        Properties props) {
-		ReportDesign design = ReportManagerUtil.createExcelDesign(reportDesignUuid, reportDefinition);
-		design.setProperties(props);
-		return design;
 	}
 	
 }

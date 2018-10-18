@@ -14,7 +14,6 @@
 
 package org.openmrs.module.eptsreports.reporting.reports;
 
-import org.openmrs.module.eptsreports.reporting.utils.ReportUtils;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.PatientToEncounterDataDefinition;
@@ -28,11 +27,7 @@ import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
-import org.openmrs.module.reporting.report.ReportDesign;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.manager.BaseReportManager;
-import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
-import org.openmrs.module.reporting.report.util.ReportUtil;
 
 /**
  * Base implementation of ReportManager that provides some common method implementations
@@ -63,16 +58,6 @@ public abstract class EptsReportManager extends BaseReportManager {
 		dsd.addColumn(columnName, odd, ObjectUtil.toString(Mapped.straightThroughMappings(odd), "=", ","));
 	}
 	
-	protected ReportDesign createExcelTemplateDesign(String reportDesignUuid, ReportDefinition reportDefinition,
-	        String templatePath) {
-		String resourcePath = ReportUtil.getPackageAsPath(getClass()) + "/" + templatePath;
-		return ReportManagerUtil.createExcelTemplateDesign(reportDesignUuid, reportDefinition, resourcePath);
-	}
-	
-	protected ReportDesign createExcelDesign(String reportDesignUuid, ReportDefinition reportDefinition) {
-		return ReportUtils.createExcelDesign(reportDesignUuid, reportDefinition);
-	}
-	
 	public <T extends Parameterizable> Mapped<T> map(T parameterizable, String mappings) {
 		if (parameterizable == null) {
 			throw new NullPointerException("Programming error: missing parameterizable");
@@ -82,5 +67,4 @@ public abstract class EptsReportManager extends BaseReportManager {
 		}
 		return new Mapped<T>(parameterizable, ParameterizableUtil.createParameterMappings(mappings));
 	}
-	
 }
