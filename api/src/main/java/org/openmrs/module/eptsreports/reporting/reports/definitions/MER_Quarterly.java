@@ -13,56 +13,63 @@
  */
 package org.openmrs.module.eptsreports.reporting.reports.definitions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openmrs.module.eptsreports.reporting.reports.EptsDataExportManager;
+import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TX_CURR extends EptsDataExportManager {
-	
-	public TX_CURR() {
+public class MER_Quarterly extends EptsDataExportManager {
+
+	public MER_Quarterly() {
 	}
-	
+
 	@Override
 	public String getVersion() {
-		return "0.1";
+		return "2.1";
 	}
-	
+
 	@Override
 	public String getUuid() {
-		return "eb6c9c1f-62f7-49fc-a8fd-748e77b9f806";
+		return "fa20c1ac-94ea-11e3-96de-0023156365e4";
 	}
-	
+
 	@Override
 	public String getExcelDesignUuid() {
-		return "ae928860-4a4e-48d4-bbc2-50902babcfc0";
+		return "cea86583-9ca5-4ad9-94e4-e20081a57619";
 	}
-	
+
 	@Override
 	public String getName() {
-		return "TX_CURR";
+		return "MER_Quarterly";
 	}
-	
+
 	@Override
 	public String getDescription() {
-		return "Number of adults and children currently receiving antiretroviral therapy (ART).";
+		return "MER Quarterly Report";
 	}
-	
-	// @Override
-	// public List<Parameter> getParameters() {
-	// 	List<Parameter> parameters = new ArrayList<Parameter>();
-	// 	parameters.add(dataFactory.getEndDateParameter());
-	// 	parameters.add(dataFactory.getOptionalLocationParameter());
-	// 	return parameters;
-	// }
-	
+
+	@Override
+	public List<Parameter> getParameters() {
+		List<Parameter> parameters = new ArrayList<Parameter>();
+		parameters.add(ReportingConstants.START_DATE_PARAMETER);
+		parameters.add(ReportingConstants.END_DATE_PARAMETER);
+		return parameters;
+	}
+
 	@Override
 	public ReportDefinition constructReportDefinition() {
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setUuid(getUuid());
 		reportDefinition.setName(getName());
-		// reportDefinition.setDescription(getDescription());
-		
+		reportDefinition.setDescription(getDescription());
+		reportDefinition.setParameters(getParameters());
+
 		return reportDefinition;
 	}
+
 }
