@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @Controller("${rootrootArtifactid}.EptsReportsController")
 @RequestMapping(value = "module/eptsreports/eptsreports.form")
-public class EptsReportsController {
+public class EPTSreportsController {
 	
 	/** Logger for this class and subclasses */
 	protected final Log log = LogFactory.getLog(getClass());

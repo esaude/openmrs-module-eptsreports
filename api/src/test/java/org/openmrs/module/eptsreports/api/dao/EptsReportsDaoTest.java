@@ -9,13 +9,12 @@
  */
 package org.openmrs.module.eptsreports.api.dao;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Ignore;
-import org.openmrs.api.context.Context;
+import org.junit.Test;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 /**
  * It is an integration test (extends BaseModuleContextSensitiveTest), which verifies DAO methods
@@ -26,7 +25,7 @@ import static org.junit.Assert.*;
 public class EptsReportsDaoTest extends BaseModuleContextSensitiveTest {
 	
 	@Autowired
-	EptsReportsDao dao;
+	EPTSreportsDao dao;
 	
 	@Test
 	@Ignore

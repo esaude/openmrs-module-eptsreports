@@ -9,14 +9,13 @@
  */
 package org.openmrs.module.eptsreports.api.dao;
 
-import org.openmrs.api.context.Context;
 import org.openmrs.api.db.hibernate.DbSession;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository("eptsreports.EptsReportsDao")
-public class EptsReportsDao {
+public class EPTSreportsDao {
 	
 	@Autowired
 	DbSessionFactory sessionFactory;
