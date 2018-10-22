@@ -46,7 +46,6 @@ Reports Implemented
 |Report             |Indicators Used                                  |
 |-------------------|-------------------------------------------------|
 |*MER_Quarterly*    |TX_CURR, TX_NEW, TX_PVLS                         |
-|*MER_Semi_Annually*|TX_CURR, TX_NEW, TX_PVLS, TB_PREV, TX_TB, TX_ML  |
 
 ## MER Indicators
 

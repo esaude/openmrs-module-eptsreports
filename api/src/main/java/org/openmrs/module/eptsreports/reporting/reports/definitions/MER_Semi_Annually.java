@@ -24,52 +24,52 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MER_Semi_Annually extends EptsDataExportManager {
-
-  public MER_Semi_Annually() {
-  }
-
-  @Override
-  public String getVersion() {
-    return "2.1";
-  }
-
-  @Override
-  public String getUuid() {
-    return "fa20c1ac-94ea-11e3-96de-0023156365e4";
-  }
-
-  @Override
-  public String getExcelDesignUuid() {
-    return "cea86583-9ca5-4ad9-94e4-e20081a57619";
-  }
-
-  @Override
-  public String getName() {
-    return "MER_Semi_Annually";
-  }
-
-  @Override
-  public String getDescription() {
-    return "MER Semi-Annual Report";
-  }
-
-  @Override
-  public List<Parameter> getParameters() {
-    List<Parameter> parameters = new ArrayList<Parameter>();
-    parameters.add(ReportingConstants.START_DATE_PARAMETER);
-    parameters.add(ReportingConstants.END_DATE_PARAMETER);
-    return parameters;
-  }
-
-  @Override
-  public ReportDefinition constructReportDefinition() {
-    ReportDefinition reportDefinition = new ReportDefinition();
-    reportDefinition.setUuid(getUuid());
-    reportDefinition.setName(getName());
-    reportDefinition.setDescription(getDescription());
-    reportDefinition.setParameters(getParameters());
-
-    return reportDefinition;
-  }
-
+	
+	public MER_Semi_Annually() {
+	}
+	
+	@Override
+	public String getVersion() {
+		return "2.1";
+	}
+	
+	@Override
+	public String getUuid() {
+		return "fa20c1ac-94ea-11e3-96de-0023156365e4";
+	}
+	
+	@Override
+	public String getExcelDesignUuid() {
+		return "cea86583-9ca5-4ad9-94e4-e20081a57619";
+	}
+	
+	@Override
+	public String getName() {
+		return "MER_Semi_Annually";
+	}
+	
+	@Override
+	public String getDescription() {
+		return "MER Semi-Annual Report";
+	}
+	
+	@Override
+	public List<Parameter> getParameters() {
+		List<Parameter> parameters = new ArrayList<Parameter>();
+		parameters.add(ReportingConstants.START_DATE_PARAMETER);
+		parameters.add(ReportingConstants.END_DATE_PARAMETER);
+		return parameters;
+	}
+	
+	@Override
+	public ReportDefinition constructReportDefinition() {
+		ReportDefinition reportDefinition = new ReportDefinition();
+		reportDefinition.setUuid(getUuid());
+		reportDefinition.setName(getName());
+		reportDefinition.setDescription(getDescription());
+		reportDefinition.setParameters(getParameters());
+		
+		return reportDefinition;
+	}
+	
 }
