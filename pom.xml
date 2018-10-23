@@ -16,10 +16,10 @@
     <description>PEPFAR reports for EPTS project in Mozambique</description>
 
     <properties>
-        <openmrsPlatformVersion>1.11.6</openmrsPlatformVersion>
-        <reportingVersion>1.13.0</reportingVersion>
-        <serializationVersion>0.2.12</serializationVersion>
-        <calculationVersion>1.2</calculationVersion>
+        <openmrsPlatformVersion>1.11.5</openmrsPlatformVersion>
+        <reportingVersion>0.9.9</reportingVersion>
+        <serializationVersion>0.2.9</serializationVersion>
+        <calculationVersion>1.1</calculationVersion>
     </properties>
 
     <url>https://wiki.openmrs.org/x/FQ4z</url>

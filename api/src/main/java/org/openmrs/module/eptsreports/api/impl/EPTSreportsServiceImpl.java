@@ -9,12 +9,11 @@
  */
 package org.openmrs.module.eptsreports.api.impl;
 
-import org.openmrs.api.APIException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.eptsreports.api.EPTSreportsService;
 import org.openmrs.module.eptsreports.api.dao.EPTSreportsDao;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public class EPTSreportsServiceImpl extends BaseOpenmrsService implements EPTSreportsService {
 	

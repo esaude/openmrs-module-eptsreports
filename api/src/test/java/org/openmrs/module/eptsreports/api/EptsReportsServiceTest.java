@@ -19,31 +19,30 @@ import org.openmrs.module.eptsreports.api.dao.EPTSreportsDao;
 import org.openmrs.module.eptsreports.api.impl.EPTSreportsServiceImpl;
 
 /**
- * This is a unit test, which verifies logic in EPTSreportsService. It doesn't
- * extend BaseModuleContextSensitiveTest, thus it is run without the in-memory
- * DB and Spring context.
+ * This is a unit test, which verifies logic in EPTSreportsService. It doesn't extend
+ * BaseModuleContextSensitiveTest, thus it is run without the in-memory DB and Spring context.
  */
 public class EptsReportsServiceTest {
-
+	
 	@InjectMocks
 	EPTSreportsServiceImpl basicModuleService;
-
+	
 	@Mock
 	EPTSreportsDao dao;
-
+	
 	@Before
 	public void setupMocks() {
 		MockitoAnnotations.initMocks(this);
 	}
-
+	
 	@Test
 	@Ignore
 	public void method_shouldDoSomething() {
 		// Given
-
+		
 		// When
 		// basicModuleService.method();
-
+		
 		// Then
 		// assertThat(item, hasProperty("owner", is(user)));
 	}

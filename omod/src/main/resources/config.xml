@@ -12,12 +12,12 @@
 			${project.parent.description}
 	</description>
 
-	<activator>org.openmrs.module.eptsreports.EptsReportsActivator</activator>
+	<activator>org.openmrs.module.eptsreports.EPTSreportsActivator</activator>
 
 	<!-- <updateURL>https://modules.openmrs.org/modules/download/@MODULE_ID@/update.rdf</updateURL> -->
 	<!-- /Base Module Properties -->
 
-	<require_version>1.11.6</require_version>
+	<require_version>1.11.5</require_version>
 
 	<!-- Extensions -->
 	<extension>
@@ -26,15 +26,9 @@
 	</extension>
 
 	<require_modules>
-		<require_module version="${reportingVersion}">
-			org.openmrs.module.reporting
-		</require_module>
-		<require_module version="${serializationVersion}">
-			org.openmrs.module.serialization.xstream
-		</require_module>
-		<require_module version="${calculationVersion}">
-			org.openmrs.calculation
-		</require_module>
+		<require_module version="${reportingVersion}">org.openmrs.module.reporting</require_module>
+		<require_module version="${serializationVersion}">org.openmrs.module.serialization.xstream</require_module>
+		<require_module version="${calculationVersion}">org.openmrs.calculation</require_module>
 	</require_modules>
 
 	<aware_of_modules>
