@@ -11,6 +11,7 @@ package org.openmrs.module.eptsreports.web.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.eptsreports.reporting.SetupTXNEWReport;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,13 +29,13 @@ public class EPTSreportsController {
 	
 	@RequestMapping("/module/eptsreports/register_TXNEW")
 	public ModelAndView registerTXNEW() throws Exception {
-		
+		new SetupTXNEWReport().setup();
 		return new ModelAndView(new RedirectView("eptsreports.form"));
 	}
 	
 	@RequestMapping("/module/eptsreports/remove_TXNEW")
 	public ModelAndView removeTXNEW() throws Exception {
-		
+		new SetupTXNEWReport().delete();
 		return new ModelAndView(new RedirectView("eptsreports.form"));
 	}
 	

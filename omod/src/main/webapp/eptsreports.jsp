@@ -76,7 +76,7 @@
             });
         </script>
         <div id="msg"></div>
-        <h2>Register/Remove CMR Reports</h2>
+        <h2>Register/Remove EPTS Reports</h2>
 
         <br />
         <br />
