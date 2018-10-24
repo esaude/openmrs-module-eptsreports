@@ -12,19 +12,19 @@ package org.openmrs.module.eptsreports.api.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.eptsreports.api.EPTSreportsService;
-import org.openmrs.module.eptsreports.api.dao.EPTSreportsDao;
+import org.openmrs.module.eptsreports.api.EptsReportsService;
+import org.openmrs.module.eptsreports.api.dao.EptsReportsDao;
 
-public class EPTSreportsServiceImpl extends BaseOpenmrsService implements EPTSreportsService {
+public class EptsReportsServiceImpl extends BaseOpenmrsService implements EptsReportsService {
 	
-	private EPTSreportsDao dao;
+	private EptsReportsDao dao;
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	
 	/**
 	 * Injected in moduleApplicationContext.xml
 	 */
-	public void setDao(EPTSreportsDao dao) {
+	public void setDao(EptsReportsDao dao) {
 		this.dao = dao;
 	}
 	

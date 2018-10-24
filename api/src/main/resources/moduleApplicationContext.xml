@@ -27,14 +27,14 @@
 
     <!-- Wraps EptsReportsService methods in DB transactions and OpenMRS interceptors,
     which set audit info like dateCreated, changedBy, etc.-->
-    <bean id="eptsreports.EPTSreportsService"
+    <bean id="eptsreports.EptsReportsService"
             class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">
             <ref bean="transactionManager" />
         </property>
         <property name="target">
-            <bean class="org.openmrs.module.eptsreports.api.impl.EPTSreportsServiceImpl">
-                <property name="dao" ref="eptsreports.EPTSreportsDao" />
+            <bean class="org.openmrs.module.eptsreports.api.impl.EptsReportsServiceImpl">
+                <property name="dao" ref="eptsreports.EptsReportsDao" />
             </bean>
         </property>
         <property name="preInterceptors">
@@ -50,8 +50,8 @@
     <bean parent="serviceContext">
         <property name="moduleService">
             <list>
-                <value>org.openmrs.module.eptsreports.api.EPTSreportsService</value>
-                <ref bean="eptsreports.EPTSreportsService" />
+                <value>org.openmrs.module.eptsreports.api.EptsReportsService</value>
+                <ref bean="eptsreports.EptsReportsService" />
             </list>
         </property>
     </bean>

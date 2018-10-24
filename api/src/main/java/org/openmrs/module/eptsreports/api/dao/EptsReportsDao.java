@@ -14,8 +14,8 @@ import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-@Repository("eptsreports.EPTSreportsDao")
-public class EPTSreportsDao {
+@Repository("eptsreports.EptsReportsDao")
+public class EptsReportsDao {
 	
 	@Autowired
 	DbSessionFactory sessionFactory;
