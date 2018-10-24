@@ -17,7 +17,7 @@ import org.openmrs.module.eptsreports.reporting.EptsReportInitializer;
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
  */
-public class EPTSreportsActivator extends BaseModuleActivator {
+public class EptsReportsActivator extends BaseModuleActivator {
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	

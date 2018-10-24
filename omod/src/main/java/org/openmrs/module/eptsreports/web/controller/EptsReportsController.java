@@ -19,7 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
-public class EPTSreportsController {
+public class EptsReportsController {
 	
 	public Log log = LogFactory.getLog(getClass());
 	

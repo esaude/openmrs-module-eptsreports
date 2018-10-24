@@ -15,8 +15,8 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.openmrs.module.eptsreports.api.dao.EPTSreportsDao;
-import org.openmrs.module.eptsreports.api.impl.EPTSreportsServiceImpl;
+import org.openmrs.module.eptsreports.api.dao.EptsReportsDao;
+import org.openmrs.module.eptsreports.api.impl.EptsReportsServiceImpl;
 
 /**
  * This is a unit test, which verifies logic in EPTSreportsService. It doesn't extend
@@ -25,10 +25,10 @@ import org.openmrs.module.eptsreports.api.impl.EPTSreportsServiceImpl;
 public class EptsReportsServiceTest {
 	
 	@InjectMocks
-	EPTSreportsServiceImpl basicModuleService;
+	EptsReportsServiceImpl basicModuleService;
 	
 	@Mock
-	EPTSreportsDao dao;
+	EptsReportsDao dao;
 	
 	@Before
 	public void setupMocks() {

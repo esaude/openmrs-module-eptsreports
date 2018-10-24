@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class EptsReportsDaoTest extends BaseModuleContextSensitiveTest {
 	
 	@Autowired
-	EPTSreportsDao dao;
+	EptsReportsDao dao;
 	
 	@Test
 	@Ignore

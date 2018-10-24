@@ -7,15 +7,13 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.eptsreports;
+package org.openmrs.module.eptsreports.api;
 
-import org.springframework.stereotype.Component;
+import org.openmrs.api.OpenmrsService;
+import org.openmrs.api.APIException;
 
 /**
- * Contains module's config.
+ * The main service of this module, which is exposed for other modules. See
+ * moduleApplicationContext.xml on how it is wired up.
  */
-@Component("eptsreports.EptsReportsConfig")
-public class EPTSreportsConfig {
-	
-	public final static String MODULE_PRIVILEGE = "EPTS reports Privilege";
-}
+public interface EptsReportsService extends OpenmrsService {}
