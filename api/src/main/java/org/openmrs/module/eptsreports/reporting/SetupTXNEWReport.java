@@ -15,6 +15,7 @@ import java.util.Properties;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Program;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.utils.MetadataLookup;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -40,6 +41,8 @@ public class SetupTXNEWReport {
 	private EncounterType S_TARV_ADULTO_SEGUIMENTO;
 	
 	private EncounterType S_TARV_PEDIATRIA_SEGUIMENTO;
+	
+	private ProgramWorkflowState transferredFromOtherHealthFacilityWorkflwoState;
 	
 	public void setup() throws Exception {
 		
@@ -110,6 +113,13 @@ public class SetupTXNEWReport {
 		patientWithHistoricalDrugStartDateObs.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		patientWithHistoricalDrugStartDateObs.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		
+		// Looks for patients enrolled on ART program (program 2=SERVICO TARV - TRATAMENTO), transferred from other health facility (program workflow state is 29=TRANSFER FROM OTHER FACILITY) between start date and end date				
+		SqlCohortDefinition transferredFromOtherHealthFacility = new SqlCohortDefinition();
+		transferredFromOtherHealthFacility.setName("transferredFromOtherHealthFacility");
+		transferredFromOtherHealthFacility.setQuery("select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id inner join patient_state ps on pg.patient_program_id=ps.patient_program_id where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=" + ARTProgram.getProgramId() + " and ps.state=" + transferredFromOtherHealthFacilityWorkflwoState.getProgramWorkflowStateId() + " and ps.start_date=pg.date_enrolled and ps.start_date<=:onOrBefore and  ps.start_date>=:onOrAfter");
+		transferredFromOtherHealthFacility.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		transferredFromOtherHealthFacility.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		
 	}
 	
 	private void setUpProperties() {
@@ -125,6 +135,8 @@ public class SetupTXNEWReport {
 		S_TARV_FARMACIA = MetadataLookup.getEncounterType("e279133c-1d5f-11e0-b929-000c29ad1d07");
 		S_TARV_ADULTO_SEGUIMENTO = MetadataLookup.getEncounterType("e278f956-1d5f-11e0-b929-000c29ad1d07");
 		S_TARV_PEDIATRIA_SEGUIMENTO = MetadataLookup.getEncounterType("e278fce4-1d5f-11e0-b929-000c29ad1d07");
+		
+		transferredFromOtherHealthFacilityWorkflwoState = MetadataLookup.getProgramWorkflowState("efe2481f-9e75-4515-8d5a-86bfde2b5ad3", "2", "e1da7d3a-1d5f-11e0-b929-000c29ad1d07");
 		
 	}
 	
