@@ -253,6 +253,21 @@ public class SetupTXNEWReport {
 			j++;
 		}
 		
+		CompositionCohortDefinition patientEnrolledInART = new CompositionCohortDefinition();
+		patientEnrolledInART.setName("patientEnrolledInART");
+		patientEnrolledInART.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		patientEnrolledInART.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		patientEnrolledInART.getSearches().put("1", new Mapped<CohortDefinition>(inARTProgramDuringTimePeriod, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientEnrolledInART.getSearches().put("2", new Mapped<CohortDefinition>(patientWithSTARTDRUGSObs, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientEnrolledInART.getSearches().put("3", new Mapped<CohortDefinition>(patientWithHistoricalDrugStartDateObs, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientEnrolledInART.getSearches().put("4", new Mapped<CohortDefinition>(transferredFromOtherHealthFacility, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientEnrolledInART.setCompositionString("(1 or 2 or 3) and (not 4)");
+		
+		CohortIndicator patientEnrolledInHIVStartedARTIndicator = Indicators.newCohortIndicator("patientNewlyEnrolledInHIVIndicator", patientEnrolledInART, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}"));
+		
+		dsd.addColumn("1All", "TX_NEW: New on ART", new Mapped(patientEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
+		
+		
 	}
 	
 	private void setUpProperties() {
