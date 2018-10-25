@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.eptsreports.reporting.utils;
 
+import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
@@ -20,7 +21,7 @@ import org.openmrs.module.reporting.report.manager.ReportManager;
 import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
 
 /**
- * Created by Nicholas Ingosi on 6/20/17 Taken from esaude-reports module
+ * Epts Reports module utilities
  */
 public class EptsReportUtils {
 	
@@ -34,6 +35,13 @@ public class EptsReportUtils {
 		ReportDefinitionService reportService = (ReportDefinitionService) Context.getService(ReportDefinitionService.class);
 		if (findDefinition != null) {
 			reportService.purgeDefinition(findDefinition);
+			
+			// Purge Global property used to track version of report definition
+			String gpName = "reporting.reportManager." + reportManager.getUuid() + ".version";
+			GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(gpName);
+			if (gp != null) {
+				Context.getAdministrationService().purgeGlobalProperty(gp);
+			}
 		}
 	}
 	
