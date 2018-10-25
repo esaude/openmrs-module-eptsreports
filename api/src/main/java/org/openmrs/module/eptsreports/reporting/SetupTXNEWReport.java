@@ -17,8 +17,12 @@ import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.utils.Cohorts;
 import org.openmrs.module.eptsreports.reporting.utils.MetadataLookup;
+import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
@@ -120,6 +124,29 @@ public class SetupTXNEWReport {
 		transferredFromOtherHealthFacility.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		transferredFromOtherHealthFacility.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		
+		GenderCohortDefinition males = new GenderCohortDefinition();
+		males.setName("male Patients");
+		males.setMaleIncluded(true);
+		males.setFemaleIncluded(false);
+		
+		GenderCohortDefinition females = new GenderCohortDefinition();
+		females.setName("female Patients");
+		females.setMaleIncluded(false);
+		females.setFemaleIncluded(true);
+		
+		AgeCohortDefinition PatientBelow1Year = patientWithAgeBelow(1);
+		PatientBelow1Year.setName("PatientBelow1Year");
+		AgeCohortDefinition PatientBetween1And9Years = Cohorts.createXtoYAgeCohort("PatientBetween1And9Years", 1, 9);
+		AgeCohortDefinition PatientBetween10And14Years = Cohorts.createXtoYAgeCohort("PatientBetween10And14Years", 10, 14);
+		AgeCohortDefinition PatientBetween15And19Years = Cohorts.createXtoYAgeCohort("PatientBetween15And19Years", 15, 19);
+		AgeCohortDefinition PatientBetween20And24Years = Cohorts.createXtoYAgeCohort("PatientBetween20And24Years", 20, 24);
+		AgeCohortDefinition PatientBetween25And29Years = Cohorts.createXtoYAgeCohort("PatientBetween25And29Years", 25, 29);
+		AgeCohortDefinition PatientBetween30And34Years = Cohorts.createXtoYAgeCohort("PatientBetween30And34Years", 30, 34);
+		AgeCohortDefinition PatientBetween35And39Years = Cohorts.createXtoYAgeCohort("PatientBetween35And39Years", 35, 39);
+		AgeCohortDefinition PatientBetween40And49Years = Cohorts.createXtoYAgeCohort("PatientBetween40And49Years", 40, 49);
+		AgeCohortDefinition PatientBetween50YearsAndAbove = patientWithAgeAbove(50);
+		PatientBetween50YearsAndAbove.setName("PatientBetween50YearsAndAbove");
+		
 	}
 	
 	private void setUpProperties() {
@@ -138,6 +165,24 @@ public class SetupTXNEWReport {
 		
 		transferredFromOtherHealthFacilityWorkflwoState = MetadataLookup.getProgramWorkflowState("efe2481f-9e75-4515-8d5a-86bfde2b5ad3", "2", "e1da7d3a-1d5f-11e0-b929-000c29ad1d07");
 		
+	}
+	
+	private AgeCohortDefinition patientWithAgeBelow(int age) {
+		AgeCohortDefinition patientsWithAgebilow = new AgeCohortDefinition();
+		patientsWithAgebilow.setName("patientsWithAgebilow");
+		patientsWithAgebilow.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+		patientsWithAgebilow.setMaxAge(age - 1);
+		patientsWithAgebilow.setMaxAgeUnit(DurationUnit.YEARS);
+		return patientsWithAgebilow;
+	}
+	
+	private AgeCohortDefinition patientWithAgeAbove(int age) {
+		AgeCohortDefinition patientsWithAge = new AgeCohortDefinition();
+		patientsWithAge.setName("patientsWithAge");
+		patientsWithAge.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+		patientsWithAge.setMinAge(age);
+		patientsWithAge.setMinAgeUnit(DurationUnit.YEARS);
+		return patientsWithAge;
 	}
 	
 }
