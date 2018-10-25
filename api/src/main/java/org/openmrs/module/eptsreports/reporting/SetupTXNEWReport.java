@@ -17,11 +17,20 @@ import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.utils.Cohorts;
+import org.openmrs.module.eptsreports.reporting.utils.Indicators;
 import org.openmrs.module.eptsreports.reporting.utils.MetadataLookup;
+import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.service.ReportService;
@@ -120,6 +129,67 @@ public class SetupTXNEWReport {
 		transferredFromOtherHealthFacility.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		transferredFromOtherHealthFacility.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		
+		GenderCohortDefinition males = new GenderCohortDefinition();
+		males.setName("male Patients");
+		males.setMaleIncluded(true);
+		males.setFemaleIncluded(false);
+		
+		GenderCohortDefinition females = new GenderCohortDefinition();
+		females.setName("female Patients");
+		females.setMaleIncluded(false);
+		females.setFemaleIncluded(true);
+		
+		AgeCohortDefinition PatientBelow1Year = patientWithAgeBelow(1);
+		PatientBelow1Year.setName("PatientBelow1Year");
+		AgeCohortDefinition PatientBetween1And9Years = Cohorts.createXtoYAgeCohort("PatientBetween1And9Years", 1, 9);
+		AgeCohortDefinition PatientBetween10And14Years = Cohorts.createXtoYAgeCohort("PatientBetween10And14Years", 10, 14);
+		AgeCohortDefinition PatientBetween15And19Years = Cohorts.createXtoYAgeCohort("PatientBetween15And19Years", 15, 19);
+		AgeCohortDefinition PatientBetween20And24Years = Cohorts.createXtoYAgeCohort("PatientBetween20And24Years", 20, 24);
+		AgeCohortDefinition PatientBetween25And29Years = Cohorts.createXtoYAgeCohort("PatientBetween25And29Years", 25, 29);
+		AgeCohortDefinition PatientBetween30And34Years = Cohorts.createXtoYAgeCohort("PatientBetween30And34Years", 30, 34);
+		AgeCohortDefinition PatientBetween35And39Years = Cohorts.createXtoYAgeCohort("PatientBetween35And39Years", 35, 39);
+		AgeCohortDefinition PatientBetween40And49Years = Cohorts.createXtoYAgeCohort("PatientBetween40And49Years", 40, 49);
+		AgeCohortDefinition PatientBetween50YearsAndAbove = patientWithAgeAbove(50);
+		PatientBetween50YearsAndAbove.setName("PatientBetween50YearsAndAbove");
+		
+		// Male and Female <1
+		
+		CompositionCohortDefinition patientBelow1YearEnrolledInHIVStartedART = new CompositionCohortDefinition();
+		patientBelow1YearEnrolledInHIVStartedART.setName("patientBelow1YearEnrolledInHIVStartedART");
+		patientBelow1YearEnrolledInHIVStartedART.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		patientBelow1YearEnrolledInHIVStartedART.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		patientBelow1YearEnrolledInHIVStartedART.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+		patientBelow1YearEnrolledInHIVStartedART.getSearches().put("1", new Mapped<CohortDefinition>(inARTProgramDuringTimePeriod, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientBelow1YearEnrolledInHIVStartedART.getSearches().put("2", new Mapped<CohortDefinition>(patientWithSTARTDRUGSObs, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientBelow1YearEnrolledInHIVStartedART.getSearches().put("3", new Mapped<CohortDefinition>(patientWithHistoricalDrugStartDateObs, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientBelow1YearEnrolledInHIVStartedART.getSearches().put("4", new Mapped<CohortDefinition>(transferredFromOtherHealthFacility, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		
+		patientBelow1YearEnrolledInHIVStartedART.getSearches().put("5", new Mapped<CohortDefinition>(PatientBelow1Year, ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}")));
+		patientBelow1YearEnrolledInHIVStartedART.setCompositionString("((1 or 2 or 3) and (not 4)) and 5");
+		
+		CohortIndicator patientBelow1YearEnrolledInHIVStartedARTIndicator = Indicators.newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", patientBelow1YearEnrolledInHIVStartedART, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
+		
+		dsd.addColumn("1<1", "TX_NEW: New on ART: Patients below 1 year", new Mapped(patientBelow1YearEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
+		
+		// Male and Female between 1 and 9 years
+		
+		CompositionCohortDefinition patientBetween1And9YearsEnrolledInHIVStartedART = new CompositionCohortDefinition();
+		patientBetween1And9YearsEnrolledInHIVStartedART.setName("patientBetween1And9YearsEnrolledInHIVStartedART");
+		patientBetween1And9YearsEnrolledInHIVStartedART.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		patientBetween1And9YearsEnrolledInHIVStartedART.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		patientBetween1And9YearsEnrolledInHIVStartedART.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+		patientBetween1And9YearsEnrolledInHIVStartedART.getSearches().put("1", new Mapped<CohortDefinition>(inARTProgramDuringTimePeriod, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientBetween1And9YearsEnrolledInHIVStartedART.getSearches().put("2", new Mapped<CohortDefinition>(patientWithSTARTDRUGSObs, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientBetween1And9YearsEnrolledInHIVStartedART.getSearches().put("3", new Mapped<CohortDefinition>(patientWithHistoricalDrugStartDateObs, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientBetween1And9YearsEnrolledInHIVStartedART.getSearches().put("4", new Mapped<CohortDefinition>(transferredFromOtherHealthFacility, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		
+		patientBetween1And9YearsEnrolledInHIVStartedART.getSearches().put("5", new Mapped<CohortDefinition>(PatientBetween1And9Years, ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}")));
+		patientBetween1And9YearsEnrolledInHIVStartedART.setCompositionString("((1 or 2 or 3) and (not 4)) and 5");
+		
+		CohortIndicator patientBetween1And9YearsEnrolledInHIVStartedARTIndicator = Indicators.newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", patientBetween1And9YearsEnrolledInHIVStartedART, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
+		
+		dsd.addColumn("119", "TX_NEW: New on ART: Patients Between 1 and 9 years", new Mapped(patientBetween1And9YearsEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
+		
 	}
 	
 	private void setUpProperties() {
@@ -138,6 +208,24 @@ public class SetupTXNEWReport {
 		
 		transferredFromOtherHealthFacilityWorkflwoState = MetadataLookup.getProgramWorkflowState("efe2481f-9e75-4515-8d5a-86bfde2b5ad3", "2", "e1da7d3a-1d5f-11e0-b929-000c29ad1d07");
 		
+	}
+	
+	private AgeCohortDefinition patientWithAgeBelow(int age) {
+		AgeCohortDefinition patientsWithAgebilow = new AgeCohortDefinition();
+		patientsWithAgebilow.setName("patientsWithAgebilow");
+		patientsWithAgebilow.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+		patientsWithAgebilow.setMaxAge(age - 1);
+		patientsWithAgebilow.setMaxAgeUnit(DurationUnit.YEARS);
+		return patientsWithAgebilow;
+	}
+	
+	private AgeCohortDefinition patientWithAgeAbove(int age) {
+		AgeCohortDefinition patientsWithAge = new AgeCohortDefinition();
+		patientsWithAge.setName("patientsWithAge");
+		patientsWithAge.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+		patientsWithAge.setMinAge(age);
+		patientsWithAge.setMinAgeUnit(DurationUnit.YEARS);
+		return patientsWithAge;
 	}
 	
 }
