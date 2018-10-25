@@ -30,17 +30,17 @@ public class MER_Semi_Annually extends EptsDataExportManager {
 	
 	@Override
 	public String getVersion() {
-		return "2.1";
+		return "1.0-SNAPSHOT";
 	}
 	
 	@Override
 	public String getUuid() {
-		return "fa20c1ac-94ea-11e3-96de-0023156365e4";
+		return "865c164d-71a1-4421-86b3-b73c8a733170";
 	}
 	
 	@Override
 	public String getExcelDesignUuid() {
-		return "cea86583-9ca5-4ad9-94e4-e20081a57619";
+		return "60108c4b-f20c-4b67-8fbc-1cb58f644ec5";
 	}
 	
 	@Override

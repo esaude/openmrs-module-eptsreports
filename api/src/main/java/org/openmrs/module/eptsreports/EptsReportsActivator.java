@@ -40,6 +40,13 @@ public class EptsReportsActivator extends BaseModuleActivator {
 	
 	@Override
 	public void willStop() {
+		try {
+			reportsInitializer.purgeReports();
+			log.debug("EPTS Reports purged");
+		}
+		catch (Exception e) {
+			log.error("An error occured trying to purge EPTS reports", e);
+		}
 		log.debug("Stopping EPTS Reports Module");
 	}
 	
@@ -57,9 +64,9 @@ public class EptsReportsActivator extends BaseModuleActivator {
 	}
 	
 	/**
-	 * @see #shutdown()
+	 * @see #stopped()
 	 */
-	public void shutdown() {
-		log.info("Shutdown EPTS Reports Module");
+	public void stopped() {
+		log.info("Stopped EPTS Reports Module");
 	}
 }
