@@ -13,12 +13,11 @@
  */
 package org.openmrs.module.eptsreports.reporting.utils;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
+import org.openmrs.module.reporting.report.manager.ReportManager;
+import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
 
 /**
  * Created by Nicholas Ingosi on 6/20/17 Taken from esaude-reports module
@@ -26,57 +25,24 @@ import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 public class EptsReportUtils {
 	
 	/**
-	 * Maps a parameterizable item with no parameters
+	 * Purges a Report Definition from the database
 	 * 
-	 * @param parameterizable the parameterizable item
-	 * @param <T>
-	 * @return the mapped item
+	 * @param reportManager the Report Definition
 	 */
-	public static <T extends Parameterizable> Mapped<T> map(T parameterizable) {
-		if (parameterizable == null) {
-			throw new IllegalArgumentException("Parameterizable cannot be null");
+	public static void purgeReportDefinition(ReportManager reportManager) {
+		ReportDefinition rd = reportManager.constructReportDefinition();
+		if (rd != null) {
+			Context.getService(ReportDefinitionService.class).purgeDefinition(rd);
 		}
-		return new Mapped<T>(parameterizable, null);
 	}
 	
 	/**
-	 * Maps a parameterizable item using a string list of parameters and values
+	 * Setup a Report Definition in a database
 	 * 
-	 * @param parameterizable the parameterizable item
-	 * @param mappings the string list of mappings
-	 * @param <T>
-	 * @return the mapped item
+	 * @param reportManager the Report Definition
 	 */
-	public static <T extends Parameterizable> Mapped<T> map(T parameterizable, String mappings) {
-		if (parameterizable == null) {
-			throw new IllegalArgumentException("Parameterizable cannot be null");
-		}
-		if (mappings == null) {
-			mappings = ""; // probably not necessary, just to be safe
-		}
-		return new Mapped<T>(parameterizable, ParameterizableUtil.createParameterMappings(mappings));
-	}
-	
-	/**
-	 * Maps a parameterizable item using a string list of parameters and values
-	 * 
-	 * @param parameterizable the parameterizable item
-	 * @param mappings the string list of mappings
-	 * @param <T>
-	 * @return the mapped item
-	 */
-	public static <T extends Parameterizable> Mapped<T> map(T parameterizable, Object... mappings) {
-		if (parameterizable == null) {
-			throw new IllegalArgumentException("Parameterizable cannot be null");
-		}
-		
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		for (int m = 0; m < mappings.length; m += 2) {
-			String param = (String) mappings[m];
-			Object value = mappings[m + 1];
-			paramMap.put(param, value);
-		}
-		return new Mapped<T>(parameterizable, paramMap);
+	public static void setupReportDefinition(ReportManager reportManager) {
+		ReportManagerUtil.setupReport(reportManager);
 	}
 	
 }

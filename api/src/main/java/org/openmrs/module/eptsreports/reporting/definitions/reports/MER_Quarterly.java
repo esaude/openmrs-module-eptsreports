@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.eptsreports.reporting.reports.definitions;
+package org.openmrs.module.eptsreports.reporting.definitions.reports;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class MER_Quarterly extends EptsDataExportManager {
 	
 	@Override
 	public String getVersion() {
-		return "2.1";
+		return "1.0";
 	}
 	
 	@Override
