@@ -30,10 +30,29 @@ public class EptsReportUtils {
 	 * @param reportManager the Report Definition
 	 */
 	public static void purgeReportDefinition(ReportManager reportManager) {
-		ReportDefinition rd = reportManager.constructReportDefinition();
-		if (rd != null) {
-			Context.getService(ReportDefinitionService.class).purgeDefinition(rd);
+		ReportDefinition findDefinition = findReportDefinition(reportManager.getUuid());
+		ReportDefinitionService reportService = (ReportDefinitionService) Context.getService(ReportDefinitionService.class);
+		if (findDefinition != null) {
+			reportService.purgeDefinition(findDefinition);
 		}
+	}
+	
+	/**
+	 * Returns the Report Definition matching the provided uuid.
+	 * 
+	 * @param uuid Report Uuid
+	 * @throws RuntimeException a RuntimeException if the Report Definition can't be found
+	 * @return Report Definition object
+	 */
+	
+	public static ReportDefinition findReportDefinition(String uuid) {
+		ReportDefinitionService reportService = (ReportDefinitionService) Context.getService(ReportDefinitionService.class);
+		ReportDefinition reportDefinition = reportService.getDefinitionByUuid(uuid);
+		if (reportDefinition != null) {
+			return reportDefinition;
+		}
+		
+		throw new RuntimeException("Couldn't find Report Definition " + uuid);
 	}
 	
 	/**

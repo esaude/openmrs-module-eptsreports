@@ -30,7 +30,7 @@ public class MER_Semi_Annually extends EptsDataExportManager {
 	
 	@Override
 	public String getVersion() {
-		return "1.0";
+		return "1.0-SNAPSHOT";
 	}
 	
 	@Override
