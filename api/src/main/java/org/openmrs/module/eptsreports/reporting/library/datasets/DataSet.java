@@ -11,8 +11,10 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.eptsreports.reporting.definitions.indicators;
+package org.openmrs.module.eptsreports.reporting.library.dimensions;
 
-public class TX_CURR {
-	
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+
+public interface DataSet {
+	public DataSetDefinition getDefinition();
 }
