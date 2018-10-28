@@ -11,6 +11,7 @@ package org.openmrs.module.eptsreports.web.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.eptsreports.reporting.SetupTXCURRReport;
 import org.openmrs.module.eptsreports.reporting.SetupTXNEWReport;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,23 +21,35 @@ import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class EptsReportsController {
-	
+
 	public Log log = LogFactory.getLog(getClass());
-	
+
 	@RequestMapping(value = "/module/eptsreports/eptsreports", method = RequestMethod.GET)
 	public void manage() {
 	}
-	
+
 	@RequestMapping("/module/eptsreports/register_TXNEW")
 	public ModelAndView registerTXNEW() throws Exception {
 		new SetupTXNEWReport().setup();
 		return new ModelAndView(new RedirectView("eptsreports.form"));
 	}
-	
+
 	@RequestMapping("/module/eptsreports/remove_TXNEW")
 	public ModelAndView removeTXNEW() throws Exception {
 		new SetupTXNEWReport().delete();
 		return new ModelAndView(new RedirectView("eptsreports.form"));
 	}
-	
+
+	@RequestMapping("/module/eptsreports/register_TXCURR")
+	public ModelAndView registerTXCURR() throws Exception {
+		new SetupTXCURRReport().setup();
+		return new ModelAndView(new RedirectView("cmrreports.form"));
+	}
+
+	@RequestMapping("/module/eptsreports/remove_TXCURR")
+	public ModelAndView removeTXCURR() throws Exception {
+		new SetupTXCURRReport().delete();
+		return new ModelAndView(new RedirectView("cmrreports.form"));
+	}
+
 }
