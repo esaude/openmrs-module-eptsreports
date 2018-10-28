@@ -11,12 +11,12 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.eptsreports.reporting.definitions.cohorts;
+package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 
-public class CommonQueries {
+public class GenderCohorts {
 	
 	/**
 	 * Patients who are female

@@ -11,21 +11,21 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.eptsreports.reporting.definitions.reports;
+package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmrs.module.eptsreports.reporting.reports.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MER_Semi_Annually extends EptsDataExportManager {
+public class SetupMERQuarterly extends EptsDataExportManager {
 	
-	public MER_Semi_Annually() {
+	public SetupMERQuarterly() {
 	}
 	
 	@Override
@@ -35,22 +35,22 @@ public class MER_Semi_Annually extends EptsDataExportManager {
 	
 	@Override
 	public String getUuid() {
-		return "865c164d-71a1-4421-86b3-b73c8a733170";
+		return "fa20c1ac-94ea-11e3-96de-0023156365e4";
 	}
 	
 	@Override
 	public String getExcelDesignUuid() {
-		return "60108c4b-f20c-4b67-8fbc-1cb58f644ec5";
+		return "cea86583-9ca5-4ad9-94e4-e20081a57619";
 	}
 	
 	@Override
 	public String getName() {
-		return "MER_Semi_Annually";
+		return "PEPFAR_MER_Quarterly";
 	}
 	
 	@Override
 	public String getDescription() {
-		return "MER Semi-Annual Report";
+		return "MER Quarterly Report";
 	}
 	
 	@Override

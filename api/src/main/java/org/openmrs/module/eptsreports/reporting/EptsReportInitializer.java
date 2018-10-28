@@ -17,7 +17,7 @@ package org.openmrs.module.eptsreports.reporting;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.eptsreports.reporting.reports.EptsReportManager;
+import org.openmrs.module.eptsreports.reporting.reports.manager.EptsReportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.report.manager.ReportManager;

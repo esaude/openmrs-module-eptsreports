@@ -9,23 +9,16 @@
  */
 package org.openmrs.module.eptsreports.api.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.eptsreports.api.EptsReportsService;
 import org.openmrs.module.eptsreports.api.dao.EptsReportsDao;
 
 public class EptsReportsServiceImpl extends BaseOpenmrsService implements EptsReportsService {
 	
-	private EptsReportsDao dao;
-	
-	private Log log = LogFactory.getLog(this.getClass());
-	
 	/**
 	 * Injected in moduleApplicationContext.xml
 	 */
 	public void setDao(EptsReportsDao dao) {
-		this.dao = dao;
 	}
 	
 }

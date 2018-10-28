@@ -12,7 +12,7 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-package org.openmrs.module.eptsreports.reporting.reports;
+package org.openmrs.module.eptsreports.reporting.reports.manager;
 
 import java.util.ArrayList;
 import java.util.List;

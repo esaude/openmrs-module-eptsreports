@@ -11,8 +11,10 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.eptsreports.reporting.definitions.indicators;
 
-public class TX_PVLS {
-	
+package org.openmrs.module.eptsreports.reporting.library.indicators;
+
+// Library of Generic Indicators
+public class GenericIndicators {
+
 }
