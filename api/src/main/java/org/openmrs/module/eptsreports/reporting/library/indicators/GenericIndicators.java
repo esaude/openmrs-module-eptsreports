@@ -16,5 +16,5 @@ package org.openmrs.module.eptsreports.reporting.library.indicators;
 
 // Library of Generic Indicators
 public class GenericIndicators {
-
+	
 }
