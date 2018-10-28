@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.eptsreports.reporting.library.dimensions;
+package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 
