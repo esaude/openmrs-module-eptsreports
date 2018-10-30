@@ -16,6 +16,5 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 
 public interface DataSet {
-	
 	public DataSetDefinition getDefinition();
 }
