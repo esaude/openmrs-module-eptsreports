@@ -25,7 +25,6 @@ import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -103,7 +102,6 @@ public class SetupTXNEWReport {
 	private void createIndicators(CohortIndicatorDataSetDefinition dsd) {
 		
 		// Looks for patients enrolled in ART program (program 2=SERVICO TARV - TRATAMENTO) before or on end date
-		
 		
 		SqlCohortDefinition inARTProgramDuringTimePeriod = new SqlCohortDefinition();
 		inARTProgramDuringTimePeriod.setName("inARTProgramDuringTimePeriod");
@@ -268,6 +266,7 @@ public class SetupTXNEWReport {
 		CohortIndicator patientEnrolledInHIVStartedARTIndicator = Indicators.newCohortIndicator("patientNewlyEnrolledInHIVIndicator", patientEnrolledInART, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}"));
 		
 		dsd.addColumn("1All", "TX_NEW: New on ART", new Mapped(patientEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
+		
 		
 	}
 	
