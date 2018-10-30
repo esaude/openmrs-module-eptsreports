@@ -12,10 +12,7 @@ package org.openmrs.module.eptsreports.reporting;
 import java.util.Date;
 import java.util.Properties;
 
-import org.openmrs.Program;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.eptsreports.reporting.utils.MetadataLookup;
-import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
@@ -24,8 +21,6 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.service.ReportService;
 
 public class SetupTXCURRReport {
-	
-	private Program ARTProgram;
 	
 	public void setup() throws Exception {
 		
@@ -74,20 +69,10 @@ public class SetupTXCURRReport {
 	
 	private void createIndicators(CohortIndicatorDataSetDefinition dsd) {
 		
-		// Looks for patients enrolled in ART program (program 2=SERVICO TARV - TRATAMENTO) before or on end date
-		
-		SqlCohortDefinition inARTProgramDuringTimePeriod = new SqlCohortDefinition();
-		inARTProgramDuringTimePeriod.setName("inARTProgramDuringTimePeriod");
-		inARTProgramDuringTimePeriod.setQuery("select pp.patient_id from patient_program pp where pp.program_id=" + ARTProgram.getProgramId() + " and pp.voided=0   and pp.date_enrolled <= :onOrBefore and " + "(pp.date_completed >= :onOrAfter or pp.date_completed is null)");
-		inARTProgramDuringTimePeriod.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-		inARTProgramDuringTimePeriod.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-		
 	}
 	
 	private void setUpProperties() {
-		//TODO Configure the following variables as global properties
 		
-		ARTProgram = MetadataLookup.getProgram("efe2481f-9e75-4515-8d5a-86bfde2b5ad3");
 	}
 	
 }
