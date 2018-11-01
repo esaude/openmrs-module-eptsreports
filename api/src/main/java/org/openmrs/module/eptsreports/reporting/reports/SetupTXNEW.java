@@ -73,7 +73,7 @@ public class SetupTXNEW extends EptsDataExportManager {
 	
 	@Override
 	public String getName() {
-		return "TX_NEW Report (Revised)";
+		return "TX_NEW Report";
 	}
 	
 	@Override

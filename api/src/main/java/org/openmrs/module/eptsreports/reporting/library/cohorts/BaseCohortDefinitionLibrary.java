@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import org.openmrs.api.FormService;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.definition.library.BaseDefinitionLibrary;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
@@ -25,33 +24,30 @@ import org.springframework.stereotype.Component;
  */
 @Component("eptsBaseCohortDefinitionLibrary")
 public class BaseCohortDefinitionLibrary extends BaseDefinitionLibrary<CohortDefinition> {
-
-    public static final String PREFIX = "epts.cohortDefinition.";
-
+	
+	public static final String PREFIX = "epts.cohortDefinition.";
+	
 	@Autowired
 	private DataFactory df;
-
-	@Autowired
-	FormService formService;
-
-    @Override
-    public Class<? super CohortDefinition> getDefinitionType() {
-        return CohortDefinition.class;
-    }
-
-    @Override
-    public String getKeyPrefix() {
-        return PREFIX;
-    }
-
+	
+	@Override
+	public Class<? super CohortDefinition> getDefinitionType() {
+		return CohortDefinition.class;
+	}
+	
+	@Override
+	public String getKeyPrefix() {
+		return PREFIX;
+	}
+	
 	@DocumentedDefinition(value = "zeroToFourteenBeforeEndDate")
 	public CohortDefinition getAge0to14ByEnd() {
-		return df.createXtoYAgeCohort("",0, 14);
+		return df.createXtoYAgeCohort("", 0, 14);
 	}
-
+	
 	@DocumentedDefinition(value = "15OrAboveOnEndDate")
 	public CohortDefinition getAge15UpByEnd() {
 		return df.patientWithAgeAbove(15);
 	}
-
+	
 }
