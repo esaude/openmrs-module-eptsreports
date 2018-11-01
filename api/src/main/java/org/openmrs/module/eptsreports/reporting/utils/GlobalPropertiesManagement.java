@@ -24,6 +24,7 @@ import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.metadata.Metadata;
 
 public class GlobalPropertiesManagement {
 	
@@ -31,87 +32,87 @@ public class GlobalPropertiesManagement {
 	
 	public Program getProgram(String globalPropertyName) {
 		String globalProperty = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
-		return MetadataLookup.getProgram(globalProperty);
+		return Metadata.getProgram(globalProperty);
 	}
 	
 	public PatientIdentifierType getPatientIdentifier(String globalPropertyName) {
 		String globalProperty = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
-		return MetadataLookup.getPatientIdentifierType(globalProperty);
+		return Metadata.getPatientIdentifierType(globalProperty);
 	}
 	
 	public Concept getConcept(String globalPropertyName) {
 		String globalProperty = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
-		return MetadataLookup.getConcept(globalProperty);
+		return Metadata.getConcept(globalProperty);
 	}
 	
 	public List<Concept> getConceptList(String globalPropertyName) {
 		String globalProperty = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
-		return MetadataLookup.getConceptList(globalProperty);
+		return Metadata.getConceptList(globalProperty);
 	}
 	
 	public List<Concept> getConceptList(String globalPropertyName, String separator) {
 		String globalProperty = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
-		return MetadataLookup.getConceptList(globalProperty, separator);
+		return Metadata.getConceptList(globalProperty, separator);
 	}
 	
 	public List<Concept> getConceptsByConceptSet(String globalPropertyName) {
 		String globalProperty = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
-		Concept c = MetadataLookup.getConcept(globalProperty);
+		Concept c = Metadata.getConcept(globalProperty);
 		return Context.getConceptService().getConceptsByConceptSet(c);
 	}
 	
 	public Form getForm(String globalPropertyName) {
 		String globalProperty = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
-		return MetadataLookup.getForm(globalProperty);
+		return Metadata.getForm(globalProperty);
 	}
 	
 	public EncounterType getEncounterType(String globalPropertyName) {
 		String globalProperty = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
-		return MetadataLookup.getEncounterType(globalProperty);
+		return Metadata.getEncounterType(globalProperty);
 	}
 	
 	public List<EncounterType> getEncounterTypeList(String globalPropertyName, String separator) {
 		String globalProperty = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
-		return MetadataLookup.getEncounterTypeList(globalProperty, separator);
+		return Metadata.getEncounterTypeList(globalProperty, separator);
 	}
 	
 	public List<EncounterType> getEncounterTypeList(String globalPropertyName) {
 		String globalProperty = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
-		return MetadataLookup.getEncounterTypeList(globalProperty);
+		return Metadata.getEncounterTypeList(globalProperty);
 	}
 	
 	public List<Form> getFormList(String globalPropertyName) {
 		String globalProperty = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
-		return MetadataLookup.getFormList(globalProperty);
+		return Metadata.getFormList(globalProperty);
 	}
 	
 	public List<Form> getFormList(String globalPropertyName, String separator) {
 		String globalProperty = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
-		return MetadataLookup.getFormList(globalProperty, separator);
+		return Metadata.getFormList(globalProperty, separator);
 	}
 	
 	public RelationshipType getRelationshipType(String globalPropertyName) {
 		String globalProperty = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
-		return MetadataLookup.getRelationshipType(globalProperty);
+		return Metadata.getRelationshipType(globalProperty);
 	}
 	
 	public ProgramWorkflow getProgramWorkflow(String globalPropertyName, String programName) {
 		String programGp = Context.getAdministrationService().getGlobalProperty(programName);
 		String workflowGp = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
-		return MetadataLookup.getProgramWorkflow(programGp, workflowGp);
+		return Metadata.getProgramWorkflow(programGp, workflowGp);
 	}
 	
 	public ProgramWorkflowState getProgramWorkflowState(String globalPropertyName, String workflowName, String programName) {
 		String programGp = Context.getAdministrationService().getGlobalProperty(programName);
 		String workflowGp = Context.getAdministrationService().getGlobalProperty(workflowName);
 		String stateGp = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
-		return MetadataLookup.getProgramWorkflowState(programGp, workflowGp, stateGp);
+		return Metadata.getProgramWorkflowState(programGp, workflowGp, stateGp);
 		
 	}
 	
 	public List<ProgramWorkflowState> getProgramWorkflowStateList(String globalPropertyName) {
 		String programGp = Context.getAdministrationService().getGlobalProperty(globalPropertyName);
-		return MetadataLookup.getProgramWorkflowstateList(programGp);
+		return Metadata.getProgramWorkflowstateList(programGp);
 		
 	}
 	
@@ -122,7 +123,7 @@ public class GlobalPropertiesManagement {
 		for (String vial : vials) {
 			String[] v = vial.split(":");
 			try {
-				Concept drugConcept = MetadataLookup.getConcept(v[0]);
+				Concept drugConcept = Metadata.getConcept(v[0]);
 				Double size = Double.parseDouble(v[1]);
 				vialSizes.put(drugConcept, size);
 			}
