@@ -46,6 +46,10 @@ public class SetupTXNEWReport {
 	
 	private Concept historicalDrugStartDate;
 	
+	private Concept TUBERCULOSIS_TREATMENT_PLAN;
+	
+	private Concept YES;
+	
 	private EncounterType S_TARV_FARMACIA;
 	
 	private EncounterType S_TARV_ADULTO_SEGUIMENTO;
@@ -268,6 +272,18 @@ public class SetupTXNEWReport {
 		dsd.addColumn("1All", "TX_NEW: New on ART", new Mapped(patientEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
 		
 		
+		// Obtain patients notified to be on TB treatment 
+		SqlCohortDefinition notifiedToBeOnTbTreatment = new SqlCohortDefinition();
+		notifiedToBeOnTbTreatment.setName("notifiedToBeOnTbTreatment");
+		notifiedToBeOnTbTreatment.setQuery("Select p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on o.encounter_id=e.encounter_id where e.voided=0 and o.voided=0 and p.voided=0 and e.encounter_type in (" + S_TARV_ADULTO_SEGUIMENTO.getEncounterTypeId() + "," + S_TARV_PEDIATRIA_SEGUIMENTO.getEncounterTypeId() + ") and o.concept_id=" + TUBERCULOSIS_TREATMENT_PLAN.getConceptId() + " and o.value_coded=" + YES.getConceptId() + " and e.encounter_datetime<=:onOrBefore group by p.patient_id");
+		notifiedToBeOnTbTreatment.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		notifiedToBeOnTbTreatment.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		
+        CohortIndicator tuberculosePatientNewlyInitiatingARTIndicator = Indicators.newCohortIndicator("tuberculosePatientNewlyInitiatingARTIndicator", notifiedToBeOnTbTreatment, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}"));
+		
+		dsd.addColumn("TB", "TX_NEW: TB Started ART", new Mapped(tuberculosePatientNewlyInitiatingARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
+		
+		
 	}
 	
 	private void setUpProperties() {
@@ -279,6 +295,8 @@ public class SetupTXNEWReport {
 		ARVPlan = MetadataLookup.getConcept("e1d9ee10-1d5f-11e0-b929-000c29ad1d07");
 		startDrugs = MetadataLookup.getConcept("e1d9ef28-1d5f-11e0-b929-000c29ad1d07");
 		historicalDrugStartDate = MetadataLookup.getConcept("e1d8f690-1d5f-11e0-b929-000c29ad1d07");
+		TUBERCULOSIS_TREATMENT_PLAN = MetadataLookup.getConcept("e1d9fbda-1d5f-11e0-b929-000c29ad1d07");
+		YES = MetadataLookup.getConcept("e1d81b62-1d5f-11e0-b929-000c29ad1d07");
 		
 		S_TARV_FARMACIA = MetadataLookup.getEncounterType("e279133c-1d5f-11e0-b929-000c29ad1d07");
 		S_TARV_ADULTO_SEGUIMENTO = MetadataLookup.getEncounterType("e278f956-1d5f-11e0-b929-000c29ad1d07");
