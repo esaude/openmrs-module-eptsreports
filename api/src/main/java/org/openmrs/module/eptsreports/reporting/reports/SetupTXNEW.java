@@ -1,32 +1,39 @@
 /**
- * This Source Code Form is subject to the terms of the Mozilla Public License,
- * v. 2.0. If a copy of the MPL was not distributed with this file, You can
- * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
- * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
  *
- * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
- * graphic logo is a trademark of OpenMRS Inc.
- */
-package org.openmrs.module.eptsreports.reporting;
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ **/
+package org.openmrs.module.eptsreports.reporting.reports;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
-import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.Cohorts;
 import org.openmrs.module.eptsreports.reporting.utils.Indicators;
 import org.openmrs.module.eptsreports.reporting.utils.MetadataLookup;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
-import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -34,9 +41,10 @@ import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.reporting.report.service.ReportService;
+import org.springframework.stereotype.Component;
 
-public class SetupTXNEWReport {
+@Component
+public class SetupTXNEW extends EptsDataExportManager {
 	
 	private Program ARTProgram;
 	
@@ -58,52 +66,51 @@ public class SetupTXNEWReport {
 	
 	private ProgramWorkflowState transferredFromOtherHealthFacilityWorkflwoState;
 	
-	public void setup() throws Exception {
+	public SetupTXNEW() {
+	}
+	
+	@Override
+	public String getVersion() {
+		return "1.0-SNAPSHOT";
+	}
+	
+	@Override
+	public String getUuid() {
+		return "74698e1c-cda9-49cf-a58f-cc6771574ee6";
+	}
+	
+	@Override
+	public String getExcelDesignUuid() {
+		return "05b84f1b-fd23-4b37-8185-aca65be91875";
+	}
+	
+	@Override
+	public String getName() {
+		return "TX_NEW Report (Revised)";
+	}
+	
+	@Override
+	public String getDescription() {
+		return "Number of adults and children newly enrolled on antiretroviral therapy (ART).";
+	}
+	
+	@Override
+	public List<Parameter> getParameters() {
+		List<Parameter> parameters = new ArrayList<Parameter>();
+		parameters.add(ReportingConstants.START_DATE_PARAMETER);
+		parameters.add(ReportingConstants.END_DATE_PARAMETER);
+		return parameters;
+	}
+	
+	@Override
+	public ReportDefinition constructReportDefinition() {
 		
 		setUpProperties();
 		
-		ReportDefinition rd = createReportDefinition();
-		ReportDesign design = Helper.createRowPerPatientXlsOverviewReportDesign(rd, "TXNEW.xls", "TXNEW.xls_", null);
-		Properties props = new Properties();
-		props.put("repeatingSections", "sheet:1,dataset:TX_NEW Data Set");
-		props.put("sortWeight", "5000");
-		design.setProperties(props);
-		Helper.saveReportDesign(design);
-		
-	}
-	
-	public void delete() {
-		ReportService rs = Context.getService(ReportService.class);
-		for (ReportDesign rd : rs.getAllReportDesigns(false)) {
-			if ("TXNEW.xls_".equals(rd.getName())) {
-				rs.purgeReportDesign(rd);
-			}
-		}
-		Helper.purgeReportDefinition("TX_NEW Report");
-	}
-	
-	private ReportDefinition createReportDefinition() {
-		
-		ReportDefinition rd = new ReportDefinition();
-		rd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		rd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		rd.setName("TX_NEW Report");
-		
-		rd.addDataSetDefinition(createBaseDataSet(), ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}"));
-		Helper.saveReportDefinition(rd);
-		return rd;
-	}
-	
-	private CohortIndicatorDataSetDefinition createBaseDataSet() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		dsd.setName("TX_NEW Data Set");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		createIndicators(dsd);
-		return dsd;
-	}
-	
-	private void createIndicators(CohortIndicatorDataSetDefinition dsd) {
 		
 		// Looks for patients enrolled in ART program (program 2=SERVICO TARV - TRATAMENTO) before or on end date
 		
@@ -144,7 +151,7 @@ public class SetupTXNEWReport {
 		females.setMaleIncluded(false);
 		females.setFemaleIncluded(true);
 		
-		AgeCohortDefinition PatientBelow1Year = patientWithAgeBelow(1);
+		AgeCohortDefinition PatientBelow1Year = Cohorts.patientWithAgeBelow(1);
 		PatientBelow1Year.setName("PatientBelow1Year");
 		AgeCohortDefinition PatientBetween1And9Years = Cohorts.createXtoYAgeCohort("PatientBetween1And9Years", 1, 9);
 		AgeCohortDefinition PatientBetween10And14Years = Cohorts.createXtoYAgeCohort("PatientBetween10And14Years", 10, 14);
@@ -154,7 +161,7 @@ public class SetupTXNEWReport {
 		AgeCohortDefinition PatientBetween30And34Years = Cohorts.createXtoYAgeCohort("PatientBetween30And34Years", 30, 34);
 		AgeCohortDefinition PatientBetween35And39Years = Cohorts.createXtoYAgeCohort("PatientBetween35And39Years", 35, 39);
 		AgeCohortDefinition PatientBetween40And49Years = Cohorts.createXtoYAgeCohort("PatientBetween40And49Years", 40, 49);
-		AgeCohortDefinition PatientBetween50YearsAndAbove = patientWithAgeAbove(50);
+		AgeCohortDefinition PatientBetween50YearsAndAbove = Cohorts.patientWithAgeAbove(50);
 		PatientBetween50YearsAndAbove.setName("PatientBetween50YearsAndAbove");
 		
 		ArrayList<AgeCohortDefinition> agesRange = new ArrayList<AgeCohortDefinition>();
@@ -282,6 +289,15 @@ public class SetupTXNEWReport {
 		
 		dsd.addColumn("TB", "TX_NEW: TB Started ART", new Mapped(tuberculosePatientNewlyInitiatingARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
 		
+		ReportDefinition reportDefinition = new ReportDefinition();
+		reportDefinition.setUuid(getUuid());
+		reportDefinition.setName(getName());
+		reportDefinition.setDescription(getDescription());
+		reportDefinition.setParameters(getParameters());
+		
+		reportDefinition.addDataSetDefinition(dsd, ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}"));
+		
+		return reportDefinition;
 	}
 	
 	private void setUpProperties() {
@@ -304,22 +320,22 @@ public class SetupTXNEWReport {
 		
 	}
 	
-	private AgeCohortDefinition patientWithAgeBelow(int age) {
-		AgeCohortDefinition patientsWithAgebilow = new AgeCohortDefinition();
-		patientsWithAgebilow.setName("patientsWithAgebilow");
-		patientsWithAgebilow.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
-		patientsWithAgebilow.setMaxAge(age - 1);
-		patientsWithAgebilow.setMaxAgeUnit(DurationUnit.YEARS);
-		return patientsWithAgebilow;
-	}
-	
-	private AgeCohortDefinition patientWithAgeAbove(int age) {
-		AgeCohortDefinition patientsWithAge = new AgeCohortDefinition();
-		patientsWithAge.setName("patientsWithAge");
-		patientsWithAge.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
-		patientsWithAge.setMinAge(age);
-		patientsWithAge.setMinAgeUnit(DurationUnit.YEARS);
-		return patientsWithAge;
+	@Override
+	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
+		ReportDesign rd = null;
+		try {
+			rd = createRowPerPatientXlsOverviewReportDesign(reportDefinition, "TXNEW.xls", "TXNEW.xls_", null);
+			Properties props = new Properties();
+			props.put("repeatingSections", "sheet:1,dataset:TX_NEW Data Set");
+			props.put("sortWeight", "5000");
+			rd.setProperties(props);
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return Arrays.asList(rd);
 	}
 	
 }

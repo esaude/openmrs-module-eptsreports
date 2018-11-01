@@ -30,7 +30,7 @@ import org.openmrs.util.OpenmrsClassLoader;
  * Helper class for registering/purging report definitions and report designs
  */
 public class Helper { // See how to merge this with EptsDataExportManager.java and EptsReportManager.java
-	
+
 	/**
 	 * Deletes a Report Definition from the database.
 	 * 
@@ -85,7 +85,8 @@ public class Helper { // See how to merge this with EptsDataExportManager.java a
 			rds.saveDefinition(rd);
 		}
 		catch (Exception e) {
-			SerializedDefinitionService s = (SerializedDefinitionService) Context.getService(SerializedDefinitionService.class);
+			SerializedDefinitionService s = (SerializedDefinitionService) Context
+			        .getService(SerializedDefinitionService.class);
 			s.saveDefinition(rd);
 		}
 	}
@@ -100,7 +101,8 @@ public class Helper { // See how to merge this with EptsDataExportManager.java a
 	 * @return
 	 * @throws IOException
 	 */
-	public static ReportDesign createRowPerPatientXlsOverviewReportDesign(ReportDefinition rd, String resourceName, String name, Map<? extends Object, ? extends Object> properties) throws IOException {
+	public static ReportDesign createRowPerPatientXlsOverviewReportDesign(ReportDefinition rd, String resourceName,
+	        String name, Map<? extends Object, ? extends Object> properties) throws IOException {
 		
 		ReportService rs = Context.getService(ReportService.class);
 		for (ReportDesign rdd : rs.getAllReportDesigns(false)) {

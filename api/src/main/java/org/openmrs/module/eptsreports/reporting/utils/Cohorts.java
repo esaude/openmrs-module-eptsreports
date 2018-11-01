@@ -23,6 +23,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InStateCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.MappedParametersCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.data.ConvertedDataDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
@@ -44,6 +45,24 @@ public class Cohorts { // See how to merge this with CommonQueries.java
 	public static SqlCohortDefinition createPatientsNotVoided() {
 		SqlCohortDefinition patientsNotVoided = new SqlCohortDefinition("select distinct p.patient_id from patient p where p.voided=0");
 		return patientsNotVoided;
+	}
+	
+	public static AgeCohortDefinition patientWithAgeBelow(int age) {
+		AgeCohortDefinition patientsWithAgebilow = new AgeCohortDefinition();
+		patientsWithAgebilow.setName("patientsWithAgebilow");
+		patientsWithAgebilow.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+		patientsWithAgebilow.setMaxAge(age - 1);
+		patientsWithAgebilow.setMaxAgeUnit(DurationUnit.YEARS);
+		return patientsWithAgebilow;
+	}
+	
+	public static AgeCohortDefinition patientWithAgeAbove(int age) {
+		AgeCohortDefinition patientsWithAge = new AgeCohortDefinition();
+		patientsWithAge.setName("patientsWithAge");
+		patientsWithAge.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+		patientsWithAge.setMinAge(age);
+		patientsWithAge.setMinAgeUnit(DurationUnit.YEARS);
+		return patientsWithAge;
 	}
 	
 	public static AgeCohortDefinition createXtoYAgeCohort(String name, int minAge, int maxAge) {
