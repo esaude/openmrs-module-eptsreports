@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.eptsreports.reporting.utils;
+package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -37,17 +37,19 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.MappedParametersEncounterQuery;
+import org.springframework.stereotype.Component;
 
-public class Cohorts { // See how to merge this with CommonQueries.java
+@Component
+public class DataFactory {
 	
 	public Log log = LogFactory.getLog(getClass());
 	
-	public static SqlCohortDefinition createPatientsNotVoided() {
+	public SqlCohortDefinition createPatientsNotVoided() {
 		SqlCohortDefinition patientsNotVoided = new SqlCohortDefinition("select distinct p.patient_id from patient p where p.voided=0");
 		return patientsNotVoided;
 	}
 	
-	public static AgeCohortDefinition patientWithAgeBelow(int age) {
+	public AgeCohortDefinition patientWithAgeBelow(int age) {
 		AgeCohortDefinition patientsWithAgebilow = new AgeCohortDefinition();
 		patientsWithAgebilow.setName("patientsWithAgebilow");
 		patientsWithAgebilow.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
@@ -56,7 +58,7 @@ public class Cohorts { // See how to merge this with CommonQueries.java
 		return patientsWithAgebilow;
 	}
 	
-	public static AgeCohortDefinition patientWithAgeAbove(int age) {
+	public AgeCohortDefinition patientWithAgeAbove(int age) {
 		AgeCohortDefinition patientsWithAge = new AgeCohortDefinition();
 		patientsWithAge.setName("patientsWithAge");
 		patientsWithAge.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
@@ -65,7 +67,7 @@ public class Cohorts { // See how to merge this with CommonQueries.java
 		return patientsWithAge;
 	}
 	
-	public static AgeCohortDefinition createXtoYAgeCohort(String name, int minAge, int maxAge) {
+	public AgeCohortDefinition createXtoYAgeCohort(String name, int minAge, int maxAge) {
 		AgeCohortDefinition xToYCohort = new AgeCohortDefinition();
 		xToYCohort.setName(name);
 		xToYCohort.setMaxAge(new Integer(maxAge));
@@ -74,7 +76,7 @@ public class Cohorts { // See how to merge this with CommonQueries.java
 		return xToYCohort;
 	}
 	
-	public static AgeCohortDefinition createOverXAgeCohort(String name, int minAge) {
+	public AgeCohortDefinition createOverXAgeCohort(String name, int minAge) {
 		AgeCohortDefinition overXCohort = new AgeCohortDefinition();
 		overXCohort.setName(name);
 		overXCohort.setMinAge(new Integer(minAge));
@@ -84,39 +86,39 @@ public class Cohorts { // See how to merge this with CommonQueries.java
 	
 	// Convenience methods
 	
-	public static PatientDataDefinition convert(PatientDataDefinition pdd, Map<String, String> renamedParameters, DataConverter converter) {
+	public PatientDataDefinition convert(PatientDataDefinition pdd, Map<String, String> renamedParameters, DataConverter converter) {
 		ConvertedPatientDataDefinition convertedDefinition = new ConvertedPatientDataDefinition();
 		addAndConvertMappings(pdd, convertedDefinition, renamedParameters, converter);
 		return convertedDefinition;
 	}
 	
-	public static PatientDataDefinition convert(PatientDataDefinition pdd, DataConverter converter) {
+	public PatientDataDefinition convert(PatientDataDefinition pdd, DataConverter converter) {
 		return convert(pdd, null, converter);
 	}
 	
-	public static PatientDataDefinition convert(PersonDataDefinition pdd, Map<String, String> renamedParameters, DataConverter converter) {
+	public PatientDataDefinition convert(PersonDataDefinition pdd, Map<String, String> renamedParameters, DataConverter converter) {
 		return convert(new PersonToPatientDataDefinition(pdd), renamedParameters, converter);
 	}
 	
-	public static PatientDataDefinition convert(PersonDataDefinition pdd, DataConverter converter) {
+	public PatientDataDefinition convert(PersonDataDefinition pdd, DataConverter converter) {
 		return convert(pdd, null, converter);
 	}
 	
-	public static EncounterDataDefinition convert(EncounterDataDefinition pdd, Map<String, String> renamedParameters, DataConverter converter) {
+	public EncounterDataDefinition convert(EncounterDataDefinition pdd, Map<String, String> renamedParameters, DataConverter converter) {
 		ConvertedEncounterDataDefinition convertedDefinition = new ConvertedEncounterDataDefinition();
 		addAndConvertMappings(pdd, convertedDefinition, renamedParameters, converter);
 		return convertedDefinition;
 	}
 	
-	public static EncounterDataDefinition convert(EncounterDataDefinition pdd, DataConverter converter) {
+	public EncounterDataDefinition convert(EncounterDataDefinition pdd, DataConverter converter) {
 		return convert(pdd, null, converter);
 	}
 	
-	public static EncounterQuery convert(EncounterQuery query, Map<String, String> renamedParameters) {
+	public EncounterQuery convert(EncounterQuery query, Map<String, String> renamedParameters) {
 		return new MappedParametersEncounterQuery(query, renamedParameters);
 	}
 	
-	public static CohortDefinition convert(CohortDefinition cd, Map<String, String> renamedParameters) {
+	public CohortDefinition convert(CohortDefinition cd, Map<String, String> renamedParameters) {
 		return new MappedParametersCohortDefinition(cd, renamedParameters);
 	}
 	
@@ -127,7 +129,7 @@ public class Cohorts { // See how to merge this with CommonQueries.java
 		}
 	}
 	
-	public static InStateCohortDefinition patientInStateByEndDate(String name, Program p, String workflowName, Concept state) {
+	public InStateCohortDefinition patientInStateByEndDate(String name, Program p, String workflowName, Concept state) {
 		InStateCohortDefinition inState = new InStateCohortDefinition();
 		inState.addState(p.getWorkflowByName(workflowName).getState(state));
 		inState.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
@@ -136,7 +138,7 @@ public class Cohorts { // See how to merge this with CommonQueries.java
 		return inState;
 	}
 	
-	public static SqlCohortDefinition patientsWithCodedObsByStartAndEndDates(String name, Concept question, Concept value) {
+	public SqlCohortDefinition patientsWithCodedObsByStartAndEndDates(String name, Concept question, Concept value) {
 		SqlCohortDefinition codedObsCohortDefinition = new SqlCohortDefinition();
 		codedObsCohortDefinition.setName(name);
 		codedObsCohortDefinition.setQuery("select person_id from obs where concept_id=" + question.getConceptId() + " and value_coded=" + value.getConceptId() + " and voided=0 and obs_datetime >= :onOrAfter and obs_datetime <= :onOrBefore");
@@ -145,14 +147,14 @@ public class Cohorts { // See how to merge this with CommonQueries.java
 		return codedObsCohortDefinition;
 	}
 	
-	public static SqlCohortDefinition patientsWithCodedObsWithoutStartAndEndDates(String name, Concept question, Concept value) {
+	public SqlCohortDefinition patientsWithCodedObsWithoutStartAndEndDates(String name, Concept question, Concept value) {
 		SqlCohortDefinition codedObsCohortDefinition = new SqlCohortDefinition();
 		codedObsCohortDefinition.setName(name);
 		codedObsCohortDefinition.setQuery("select person_id from obs where concept_id=" + question.getConceptId() + " and value_coded=" + value.getConceptId() + " and voided=0");
 		return codedObsCohortDefinition;
 	}
 	
-	public static SqlCohortDefinition patientsWithCodedObsByStartAndEndDates(String name, List<Concept> questions, List<Concept> values) {
+	public SqlCohortDefinition patientsWithCodedObsByStartAndEndDates(String name, List<Concept> questions, List<Concept> values) {
 		SqlCohortDefinition codedObsCohortDefinition = new SqlCohortDefinition();
 		codedObsCohortDefinition.setName(name);
 		
@@ -184,7 +186,7 @@ public class Cohorts { // See how to merge this with CommonQueries.java
 		return codedObsCohortDefinition;
 	}
 	
-	public static SqlCohortDefinition patientsWithCodedObs(String name, List<Concept> questions, List<Concept> values) {
+	public SqlCohortDefinition patientsWithCodedObs(String name, List<Concept> questions, List<Concept> values) {
 		SqlCohortDefinition codedObsCohortDefinition = new SqlCohortDefinition();
 		codedObsCohortDefinition.setName(name);
 		
@@ -214,14 +216,14 @@ public class Cohorts { // See how to merge this with CommonQueries.java
 		return codedObsCohortDefinition;
 	}
 	
-	public static SqlCohortDefinition patientsWithCodedObs(String name, Concept value) {
+	public SqlCohortDefinition patientsWithCodedObs(String name, Concept value) {
 		SqlCohortDefinition codedObsCohortDefinition = new SqlCohortDefinition();
 		codedObsCohortDefinition.setName(name);
 		codedObsCohortDefinition.setQuery("select person_id from obs where value_coded=" + value.getConceptId() + " and voided=0");
 		return codedObsCohortDefinition;
 	}
 	
-	public static SqlCohortDefinition patientsWithFistCodedObsAndValueByStartAndEndDates(String name, Concept question, Concept value) {
+	public SqlCohortDefinition patientsWithFistCodedObsAndValueByStartAndEndDates(String name, Concept question, Concept value) {
 		SqlCohortDefinition codedObsCohortDefinition = new SqlCohortDefinition();
 		codedObsCohortDefinition.setName(name);
 		codedObsCohortDefinition.setQuery("select gr.person_id from (select * from (select * from obs where concept_id=" + question.getConceptId() + " and value_coded=" + value.getConceptId() + " and voided=0  order by obs_datetime) o group by o.person_id) gr " + "where gr.obs_datetime>= :onOrAfter and gr.obs_datetime<= :onOrBefore ");
@@ -231,7 +233,7 @@ public class Cohorts { // See how to merge this with CommonQueries.java
 		return codedObsCohortDefinition;
 	}
 	
-	public static SqlCohortDefinition patientsWithDateObs(String name, Concept concept) {
+	public SqlCohortDefinition patientsWithDateObs(String name, Concept concept) {
 		SqlCohortDefinition codedObsCohortDefinition = new SqlCohortDefinition();
 		codedObsCohortDefinition.setName(name);
 		codedObsCohortDefinition.setQuery("select person_id from obs where concept_id=" + concept.getConceptId() + " and voided=0 and value_datetime >= :onOrAfter and value_datetime <= :onOrBefore");

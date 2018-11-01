@@ -21,8 +21,9 @@ import java.util.List;
 import java.util.Properties;
 
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.DataFactory;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortDefinitionLibrary;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
-import org.openmrs.module.eptsreports.reporting.utils.Cohorts;
 import org.openmrs.module.eptsreports.reporting.utils.Indicators;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
@@ -42,6 +43,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SetupTXNEW extends EptsDataExportManager {
+	
+	@Autowired
+	private DataFactory df;
+	
+	@Autowired
+	private HivCohortDefinitionLibrary hivCohorts;
 	
 	@Autowired
 	private HivMetadata hivMetadata;
@@ -92,32 +99,16 @@ public class SetupTXNEW extends EptsDataExportManager {
 		
 		// Looks for patients enrolled in ART program (program 2=SERVICO TARV - TRATAMENTO) before or on end date
 		
-		SqlCohortDefinition inARTProgramDuringTimePeriod = new SqlCohortDefinition();
-		inARTProgramDuringTimePeriod.setName("inARTProgramDuringTimePeriod");
-		inARTProgramDuringTimePeriod.setQuery("select pp.patient_id from patient_program pp where pp.program_id=" + hivMetadata.getARTProgram().getProgramId() + " and pp.voided=0   and pp.date_enrolled <= :onOrBefore and " + "(pp.date_completed >= :onOrAfter or pp.date_completed is null)");
-		inARTProgramDuringTimePeriod.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-		inARTProgramDuringTimePeriod.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		SqlCohortDefinition inARTProgramDuringTimePeriod = hivCohorts.getPatientsinARTProgramDuringTimePeriod();
 		
 		// Looks for patients registered as START DRUGS (answer to question 1255 = ARV PLAN is 1256 = START DRUGS) in the first drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation for adults and children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA SEGUIMENTO) before or on end date
-		SqlCohortDefinition patientWithSTARTDRUGSObs = new SqlCohortDefinition();
-		patientWithSTARTDRUGSObs.setName("patientWithSTARTDRUGSObs");
-		patientWithSTARTDRUGSObs.setQuery("Select p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on o.encounter_id=e.encounter_id where e.voided=0 and o.voided=0 and p.voided=0 and e.encounter_type in (" + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId() + "," + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + "," + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") and o.concept_id=" + hivMetadata.getARVPlanConcept().getConceptId() + " and o.value_coded=" + hivMetadata.getstartDrugsConcept().getConceptId() + " and e.encounter_datetime<=:onOrBefore group by p.patient_id");
-		patientWithSTARTDRUGSObs.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-		patientWithSTARTDRUGSObs.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		SqlCohortDefinition patientWithSTARTDRUGSObs = hivCohorts.getPatientWithSTARTDRUGSObs();
 		
 		// Looks for with START DATE (Concept 1190=HISTORICAL DRUG START DATE) filled in drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation for adults and children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA SEGUIMENTO) where START DATE is before or equal end date		
-		SqlCohortDefinition patientWithHistoricalDrugStartDateObs = new SqlCohortDefinition();
-		patientWithHistoricalDrugStartDateObs.setName("patientWithHistoricalDrugStartDateObs");
-		patientWithHistoricalDrugStartDateObs.setQuery("Select p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on o.encounter_id=e.encounter_id where e.voided=0 and o.voided=0 and p.voided=0 and e.encounter_type in (" + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId() + "," + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + "," + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") and o.concept_id=" + hivMetadata.gethistoricalDrugStartDateConcept().getConceptId() + " and o.value_datetime is not null and o.value_datetime<=:onOrBefore group by p.patient_id");
-		patientWithHistoricalDrugStartDateObs.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-		patientWithHistoricalDrugStartDateObs.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		SqlCohortDefinition patientWithHistoricalDrugStartDateObs = hivCohorts.getPatientWithHistoricalDrugStartDateObs();
 		
 		// Looks for patients enrolled on ART program (program 2=SERVICO TARV - TRATAMENTO), transferred from other health facility (program workflow state is 29=TRANSFER FROM OTHER FACILITY) between start date and end date				
-		SqlCohortDefinition transferredFromOtherHealthFacility = new SqlCohortDefinition();
-		transferredFromOtherHealthFacility.setName("transferredFromOtherHealthFacility");
-		transferredFromOtherHealthFacility.setQuery("select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id inner join patient_state ps on pg.patient_program_id=ps.patient_program_id where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=" + hivMetadata.getARTProgram().getProgramId() + " and ps.state=" + hivMetadata.gettransferredFromOtherHealthFacilityWorkflwoState().getProgramWorkflowStateId() + " and ps.start_date=pg.date_enrolled and ps.start_date<=:onOrBefore and  ps.start_date>=:onOrAfter");
-		transferredFromOtherHealthFacility.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-		transferredFromOtherHealthFacility.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		SqlCohortDefinition transferredFromOtherHealthFacility = hivCohorts.getPatientsTransferredFromOtherHealthFacility();
 		
 		GenderCohortDefinition males = new GenderCohortDefinition();
 		males.setName("male Patients");
@@ -129,17 +120,17 @@ public class SetupTXNEW extends EptsDataExportManager {
 		females.setMaleIncluded(false);
 		females.setFemaleIncluded(true);
 		
-		AgeCohortDefinition PatientBelow1Year = Cohorts.patientWithAgeBelow(1);
+		AgeCohortDefinition PatientBelow1Year = df.patientWithAgeBelow(1);
 		PatientBelow1Year.setName("PatientBelow1Year");
-		AgeCohortDefinition PatientBetween1And9Years = Cohorts.createXtoYAgeCohort("PatientBetween1And9Years", 1, 9);
-		AgeCohortDefinition PatientBetween10And14Years = Cohorts.createXtoYAgeCohort("PatientBetween10And14Years", 10, 14);
-		AgeCohortDefinition PatientBetween15And19Years = Cohorts.createXtoYAgeCohort("PatientBetween15And19Years", 15, 19);
-		AgeCohortDefinition PatientBetween20And24Years = Cohorts.createXtoYAgeCohort("PatientBetween20And24Years", 20, 24);
-		AgeCohortDefinition PatientBetween25And29Years = Cohorts.createXtoYAgeCohort("PatientBetween25And29Years", 25, 29);
-		AgeCohortDefinition PatientBetween30And34Years = Cohorts.createXtoYAgeCohort("PatientBetween30And34Years", 30, 34);
-		AgeCohortDefinition PatientBetween35And39Years = Cohorts.createXtoYAgeCohort("PatientBetween35And39Years", 35, 39);
-		AgeCohortDefinition PatientBetween40And49Years = Cohorts.createXtoYAgeCohort("PatientBetween40And49Years", 40, 49);
-		AgeCohortDefinition PatientBetween50YearsAndAbove = Cohorts.patientWithAgeAbove(50);
+		AgeCohortDefinition PatientBetween1And9Years = df.createXtoYAgeCohort("PatientBetween1And9Years", 1, 9);
+		AgeCohortDefinition PatientBetween10And14Years = df.createXtoYAgeCohort("PatientBetween10And14Years", 10, 14);
+		AgeCohortDefinition PatientBetween15And19Years = df.createXtoYAgeCohort("PatientBetween15And19Years", 15, 19);
+		AgeCohortDefinition PatientBetween20And24Years = df.createXtoYAgeCohort("PatientBetween20And24Years", 20, 24);
+		AgeCohortDefinition PatientBetween25And29Years = df.createXtoYAgeCohort("PatientBetween25And29Years", 25, 29);
+		AgeCohortDefinition PatientBetween30And34Years = df.createXtoYAgeCohort("PatientBetween30And34Years", 30, 34);
+		AgeCohortDefinition PatientBetween35And39Years = df.createXtoYAgeCohort("PatientBetween35And39Years", 35, 39);
+		AgeCohortDefinition PatientBetween40And49Years = df.createXtoYAgeCohort("PatientBetween40And49Years", 40, 49);
+		AgeCohortDefinition PatientBetween50YearsAndAbove = df.patientWithAgeAbove(50);
 		PatientBetween50YearsAndAbove.setName("PatientBetween50YearsAndAbove");
 		
 		ArrayList<AgeCohortDefinition> agesRange = new ArrayList<AgeCohortDefinition>();
