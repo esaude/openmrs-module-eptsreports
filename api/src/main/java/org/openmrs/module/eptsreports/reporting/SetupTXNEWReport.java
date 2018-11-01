@@ -271,7 +271,6 @@ public class SetupTXNEWReport {
 		
 		dsd.addColumn("1All", "TX_NEW: New on ART", new Mapped(patientEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
 		
-		
 		// Obtain patients notified to be on TB treatment 
 		SqlCohortDefinition notifiedToBeOnTbTreatment = new SqlCohortDefinition();
 		notifiedToBeOnTbTreatment.setName("notifiedToBeOnTbTreatment");
@@ -279,10 +278,9 @@ public class SetupTXNEWReport {
 		notifiedToBeOnTbTreatment.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		notifiedToBeOnTbTreatment.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		
-        CohortIndicator tuberculosePatientNewlyInitiatingARTIndicator = Indicators.newCohortIndicator("tuberculosePatientNewlyInitiatingARTIndicator", notifiedToBeOnTbTreatment, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}"));
+		CohortIndicator tuberculosePatientNewlyInitiatingARTIndicator = Indicators.newCohortIndicator("tuberculosePatientNewlyInitiatingARTIndicator", notifiedToBeOnTbTreatment, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}"));
 		
 		dsd.addColumn("TB", "TX_NEW: TB Started ART", new Mapped(tuberculosePatientNewlyInitiatingARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
-		
 		
 	}
 	
