@@ -94,8 +94,8 @@ public class SetupTXNEW extends EptsDataExportManager {
 		
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		dsd.setName("TX_NEW Data Set");
-		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		dsd.addParameter(ReportingConstants.START_DATE_PARAMETER);
+		dsd.addParameter(ReportingConstants.END_DATE_PARAMETER);
 		
 		// Looks for patients enrolled in ART program (program 2=SERVICO TARV - TRATAMENTO) before or on end date
 		

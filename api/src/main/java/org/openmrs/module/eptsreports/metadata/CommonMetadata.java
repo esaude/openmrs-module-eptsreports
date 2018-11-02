@@ -21,30 +21,30 @@ import org.springframework.stereotype.Component;
 public class CommonMetadata extends Metadata {
 	
 	//ECOUNTER TYPES
-	public static final String S_TARV_FARMACIA = "e279133c-1d5f-11e0-b929-000c29ad1d07";
+	private String S_TARV_FARMACIA = "e279133c-1d5f-11e0-b929-000c29ad1d07";
 	
 	public EncounterType getARVPharmaciaEncounterType() {
 		return getEncounterType(S_TARV_FARMACIA);
 	}
 	
-	public static final String startDrugs = "e1d9ef28-1d5f-11e0-b929-000c29ad1d07";
+	private String START_DRUGS = "e1d9ef28-1d5f-11e0-b929-000c29ad1d07";
 	
-	public static final String historicalDrugStartDate = "e1d8f690-1d5f-11e0-b929-000c29ad1d07";
+	private String HISTORICAL_DRUG_START_DATE = "e1d8f690-1d5f-11e0-b929-000c29ad1d07";
 	
-	public static final String TUBERCULOSIS_TREATMENT_PLAN = "e1d9fbda-1d5f-11e0-b929-000c29ad1d07";
+	private String TUBERCULOSIS_TREATMENT_PLAN = "e1d9fbda-1d5f-11e0-b929-000c29ad1d07";
 	
-	public static final String YES = "e1d81b62-1d5f-11e0-b929-000c29ad1d07";
+	private String YES = "e1d81b62-1d5f-11e0-b929-000c29ad1d07";
 	
 	public Concept getYesConcept() {
 		return getConcept(YES);
 	}
 	
 	public Concept getstartDrugsConcept() {
-		return getConcept(startDrugs);
+		return getConcept(START_DRUGS);
 	}
 	
 	public Concept gethistoricalDrugStartDateConcept() {
-		return getConcept(historicalDrugStartDate);
+		return getConcept(HISTORICAL_DRUG_START_DATE);
 	}
 	
 	public Concept getTUBERCULOSIS_TREATMENT_PLANConcept() {
