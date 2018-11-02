@@ -21,7 +21,8 @@ import java.util.List;
 import java.util.Properties;
 
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.DataFactory;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortDefinitionLibrary;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.Indicators;
@@ -29,7 +30,6 @@ import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -45,7 +45,10 @@ import org.springframework.stereotype.Component;
 public class SetupTXNEW extends EptsDataExportManager {
 	
 	@Autowired
-	private DataFactory df;
+	private AgeCohortQueries ageCohortQueries;
+	
+	@Autowired
+	private GenderCohortQueries genderCohortQueries;
 	
 	@Autowired
 	private HivCohortDefinitionLibrary hivCohorts;
@@ -110,27 +113,21 @@ public class SetupTXNEW extends EptsDataExportManager {
 		// Looks for patients enrolled on ART program (program 2=SERVICO TARV - TRATAMENTO), transferred from other health facility (program workflow state is 29=TRANSFER FROM OTHER FACILITY) between start date and end date				
 		SqlCohortDefinition transferredFromOtherHealthFacility = hivCohorts.getPatientsTransferredFromOtherHealthFacility();
 		
-		GenderCohortDefinition males = new GenderCohortDefinition();
-		males.setName("male Patients");
-		males.setMaleIncluded(true);
-		males.setFemaleIncluded(false);
+		CohortDefinition males = genderCohortQueries.MaleCohort();
 		
-		GenderCohortDefinition females = new GenderCohortDefinition();
-		females.setName("female Patients");
-		females.setMaleIncluded(false);
-		females.setFemaleIncluded(true);
+		CohortDefinition females = genderCohortQueries.FemaleCohort();
 		
-		AgeCohortDefinition PatientBelow1Year = df.patientWithAgeBelow(1);
+		AgeCohortDefinition PatientBelow1Year = ageCohortQueries.patientWithAgeBelow(1);
 		PatientBelow1Year.setName("PatientBelow1Year");
-		AgeCohortDefinition PatientBetween1And9Years = df.createXtoYAgeCohort("PatientBetween1And9Years", 1, 9);
-		AgeCohortDefinition PatientBetween10And14Years = df.createXtoYAgeCohort("PatientBetween10And14Years", 10, 14);
-		AgeCohortDefinition PatientBetween15And19Years = df.createXtoYAgeCohort("PatientBetween15And19Years", 15, 19);
-		AgeCohortDefinition PatientBetween20And24Years = df.createXtoYAgeCohort("PatientBetween20And24Years", 20, 24);
-		AgeCohortDefinition PatientBetween25And29Years = df.createXtoYAgeCohort("PatientBetween25And29Years", 25, 29);
-		AgeCohortDefinition PatientBetween30And34Years = df.createXtoYAgeCohort("PatientBetween30And34Years", 30, 34);
-		AgeCohortDefinition PatientBetween35And39Years = df.createXtoYAgeCohort("PatientBetween35And39Years", 35, 39);
-		AgeCohortDefinition PatientBetween40And49Years = df.createXtoYAgeCohort("PatientBetween40And49Years", 40, 49);
-		AgeCohortDefinition PatientBetween50YearsAndAbove = df.patientWithAgeAbove(50);
+		AgeCohortDefinition PatientBetween1And9Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween1And9Years", 1, 9);
+		AgeCohortDefinition PatientBetween10And14Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween10And14Years", 10, 14);
+		AgeCohortDefinition PatientBetween15And19Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween15And19Years", 15, 19);
+		AgeCohortDefinition PatientBetween20And24Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween20And24Years", 20, 24);
+		AgeCohortDefinition PatientBetween25And29Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween25And29Years", 25, 29);
+		AgeCohortDefinition PatientBetween30And34Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween30And34Years", 30, 34);
+		AgeCohortDefinition PatientBetween35And39Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween35And39Years", 35, 39);
+		AgeCohortDefinition PatientBetween40And49Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween40And49Years", 40, 49);
+		AgeCohortDefinition PatientBetween50YearsAndAbove = ageCohortQueries.patientWithAgeAbove(50);
 		PatientBetween50YearsAndAbove.setName("PatientBetween50YearsAndAbove");
 		
 		ArrayList<AgeCohortDefinition> agesRange = new ArrayList<AgeCohortDefinition>();
