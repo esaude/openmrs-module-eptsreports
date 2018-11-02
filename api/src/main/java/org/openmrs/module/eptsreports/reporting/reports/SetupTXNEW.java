@@ -95,10 +95,10 @@ public class SetupTXNEW extends EptsDataExportManager {
 	@Override
 	public ReportDefinition constructReportDefinition() {
 		
-		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		dsd.setName("TX_NEW Data Set");
-		dsd.addParameter(ReportingConstants.START_DATE_PARAMETER);
-		dsd.addParameter(ReportingConstants.END_DATE_PARAMETER);
+		CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
+		dataSetDefinition.setName("TX_NEW Data Set");
+		dataSetDefinition.addParameter(ReportingConstants.START_DATE_PARAMETER);
+		dataSetDefinition.addParameter(ReportingConstants.END_DATE_PARAMETER);
 		
 		// Looks for patients enrolled in ART program (program 2=SERVICO TARV - TRATAMENTO) before or on end date
 		
@@ -159,7 +159,7 @@ public class SetupTXNEW extends EptsDataExportManager {
 		
 		CohortIndicator patientBelow1YearEnrolledInHIVStartedARTIndicator = Indicators.newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", patientBelow1YearEnrolledInHIVStartedART, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
 		
-		dsd.addColumn("1<1", "TX_NEW: New on ART: Patients below 1 year", new Mapped(patientBelow1YearEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
+		dataSetDefinition.addColumn("1<1", "TX_NEW: New on ART: Patients below 1 year", new Mapped(patientBelow1YearEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
 		
 		// Male and Female between 1 and 9 years
 		
@@ -178,7 +178,7 @@ public class SetupTXNEW extends EptsDataExportManager {
 		
 		CohortIndicator patientBetween1And9YearsEnrolledInHIVStartedARTIndicator = Indicators.newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", patientBetween1And9YearsEnrolledInHIVStartedART, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
 		
-		dsd.addColumn("119", "TX_NEW: New on ART: Patients Between 1 and 9 years", new Mapped(patientBetween1And9YearsEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
+		dataSetDefinition.addColumn("119", "TX_NEW: New on ART: Patients Between 1 and 9 years", new Mapped(patientBetween1And9YearsEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
 		
 		// Male
 		
@@ -200,7 +200,7 @@ public class SetupTXNEW extends EptsDataExportManager {
 			
 			CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator = Indicators.newCohortIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicator", patientInYearRangeEnrolledInARTStarted, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
 			
-			dsd.addColumn("1M" + i, "Males:TX_NEW: New on ART by age and sex: " + ageCohort.getName(), new Mapped(patientInYearRangeEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
+			dataSetDefinition.addColumn("1M" + i, "Males:TX_NEW: New on ART by age and sex: " + ageCohort.getName(), new Mapped(patientInYearRangeEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
 			
 			i++;
 		}
@@ -225,7 +225,7 @@ public class SetupTXNEW extends EptsDataExportManager {
 			
 			CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator = Indicators.newCohortIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicator", patientInYearRangeEnrolledInARTStarted, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
 			
-			dsd.addColumn("1F" + j, "Females:TX_NEW: New on ART by age and sex: " + ageCohort.getName(), new Mapped(patientInYearRangeEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
+			dataSetDefinition.addColumn("1F" + j, "Females:TX_NEW: New on ART by age and sex: " + ageCohort.getName(), new Mapped(patientInYearRangeEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
 			
 			j++;
 		}
@@ -242,7 +242,7 @@ public class SetupTXNEW extends EptsDataExportManager {
 		
 		CohortIndicator patientEnrolledInHIVStartedARTIndicator = Indicators.newCohortIndicator("patientNewlyEnrolledInHIVIndicator", patientEnrolledInART, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}"));
 		
-		dsd.addColumn("1All", "TX_NEW: New on ART", new Mapped(patientEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
+		dataSetDefinition.addColumn("1All", "TX_NEW: New on ART", new Mapped(patientEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
 		
 		// Obtain patients notified to be on TB treatment 
 		SqlCohortDefinition notifiedToBeOnTbTreatment = new SqlCohortDefinition();
@@ -253,7 +253,7 @@ public class SetupTXNEW extends EptsDataExportManager {
 		
 		CohortIndicator tuberculosePatientNewlyInitiatingARTIndicator = Indicators.newCohortIndicator("tuberculosePatientNewlyInitiatingARTIndicator", notifiedToBeOnTbTreatment, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}"));
 		
-		dsd.addColumn("TB", "TX_NEW: TB Started ART", new Mapped(tuberculosePatientNewlyInitiatingARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
+		dataSetDefinition.addColumn("TB", "TX_NEW: TB Started ART", new Mapped(tuberculosePatientNewlyInitiatingARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
 		
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setUuid(getUuid());
@@ -261,27 +261,27 @@ public class SetupTXNEW extends EptsDataExportManager {
 		reportDefinition.setDescription(getDescription());
 		reportDefinition.setParameters(getParameters());
 		
-		reportDefinition.addDataSetDefinition(dsd, ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}"));
+		reportDefinition.addDataSetDefinition(dataSetDefinition, ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}"));
 		
 		return reportDefinition;
 	}
 	
 	@Override
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
-		ReportDesign rd = null;
+		ReportDesign reportDesign = null;
 		try {
-			rd = createRowPerPatientXlsOverviewReportDesign(reportDefinition, "TXNEW.xls", "TXNEW.xls_", null);
+			reportDesign = createRowPerPatientXlsOverviewReportDesign(reportDefinition, "TXNEW.xls", "TXNEW.xls_", null);
 			Properties props = new Properties();
 			props.put("repeatingSections", "sheet:1,dataset:TX_NEW Data Set");
 			props.put("sortWeight", "5000");
-			rd.setProperties(props);
+			reportDesign.setProperties(props);
 		}
 		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		return Arrays.asList(rd);
+		return Arrays.asList(reportDesign);
 	}
 	
 }
