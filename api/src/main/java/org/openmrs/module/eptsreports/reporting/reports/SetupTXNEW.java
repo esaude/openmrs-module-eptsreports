@@ -20,10 +20,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.SqlCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.CohortIndicatorDataSets;
 import org.openmrs.module.eptsreports.reporting.library.indicators.GenericIndicators;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingConstants;
@@ -52,9 +52,6 @@ public class SetupTXNEW extends EptsDataExportManager {
 	
 	@Autowired
 	private SqlCohortQueries sqlCohortQueries;
-	
-	@Autowired
-	private HivMetadata hivMetadata;
 	
 	public SetupTXNEW() {
 	}
@@ -95,10 +92,7 @@ public class SetupTXNEW extends EptsDataExportManager {
 	@Override
 	public ReportDefinition constructReportDefinition() {
 		
-		CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
-		dataSetDefinition.setName("TX_NEW Data Set");
-		dataSetDefinition.addParameter(ReportingConstants.START_DATE_PARAMETER);
-		dataSetDefinition.addParameter(ReportingConstants.END_DATE_PARAMETER);
+		CohortIndicatorDataSetDefinition dataSetDefinition = CohortIndicatorDataSets.newCohortIndicatorDataSetDefinition("TX_NEW Data Set", getParameters());
 		
 		// Looks for patients enrolled in ART program (program 2=SERVICO TARV - TRATAMENTO) before or on end date
 		
