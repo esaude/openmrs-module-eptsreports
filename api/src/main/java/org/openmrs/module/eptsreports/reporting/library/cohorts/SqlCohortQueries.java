@@ -16,35 +16,22 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
-import org.openmrs.module.reporting.definition.library.BaseDefinitionLibrary;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Defines all of the Cohort Definition instances we want to expose for EPTS
+ * Defines all of the SQL Cohort Definition instances we want to expose for EPTS
  */
 @Component
-public class HivCohortDefinitionLibrary extends BaseDefinitionLibrary<CohortDefinition> {
-	
-	public static final String PREFIX = "epts.cohortDefinition.hiv.";
+public class SqlCohortQueries {
 	
 	@Autowired
 	private HivMetadata hivMetadata;
 	
-	@Override
-	public Class<? super CohortDefinition> getDefinitionType() {
-		return CohortDefinition.class;
-	}
-	
-	@Override
-	public String getKeyPrefix() {
-		return PREFIX;
-	}
-	
+	//Looks for patients enrolled in ART program (program 2=SERVICO TARV - TRATAMENTO) before or on end date
 	@DocumentedDefinition(value = "inARTProgramDuringTimePeriod")
 	public SqlCohortDefinition getPatientsinARTProgramDuringTimePeriod() {
 		SqlCohortDefinition inARTProgramDuringTimePeriod = new SqlCohortDefinition();

@@ -23,7 +23,7 @@ import java.util.Properties;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortDefinitionLibrary;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.SqlCohortQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.Indicators;
 import org.openmrs.module.reporting.ReportingConstants;
@@ -51,7 +51,7 @@ public class SetupTXNEW extends EptsDataExportManager {
 	private GenderCohortQueries genderCohortQueries;
 	
 	@Autowired
-	private HivCohortDefinitionLibrary hivCohorts;
+	private SqlCohortQueries sqlCohortQueries;
 	
 	@Autowired
 	private HivMetadata hivMetadata;
@@ -102,23 +102,22 @@ public class SetupTXNEW extends EptsDataExportManager {
 		
 		// Looks for patients enrolled in ART program (program 2=SERVICO TARV - TRATAMENTO) before or on end date
 		
-		SqlCohortDefinition inARTProgramDuringTimePeriod = hivCohorts.getPatientsinARTProgramDuringTimePeriod();
+		SqlCohortDefinition inARTProgramDuringTimePeriod = sqlCohortQueries.getPatientsinARTProgramDuringTimePeriod();
 		
 		// Looks for patients registered as START DRUGS (answer to question 1255 = ARV PLAN is 1256 = START DRUGS) in the first drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation for adults and children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA SEGUIMENTO) before or on end date
-		SqlCohortDefinition patientWithSTARTDRUGSObs = hivCohorts.getPatientWithSTARTDRUGSObs();
+		SqlCohortDefinition patientWithSTARTDRUGSObs = sqlCohortQueries.getPatientWithSTARTDRUGSObs();
 		
 		// Looks for with START DATE (Concept 1190=HISTORICAL DRUG START DATE) filled in drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation for adults and children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA SEGUIMENTO) where START DATE is before or equal end date		
-		SqlCohortDefinition patientWithHistoricalDrugStartDateObs = hivCohorts.getPatientWithHistoricalDrugStartDateObs();
+		SqlCohortDefinition patientWithHistoricalDrugStartDateObs = sqlCohortQueries.getPatientWithHistoricalDrugStartDateObs();
 		
 		// Looks for patients enrolled on ART program (program 2=SERVICO TARV - TRATAMENTO), transferred from other health facility (program workflow state is 29=TRANSFER FROM OTHER FACILITY) between start date and end date				
-		SqlCohortDefinition transferredFromOtherHealthFacility = hivCohorts.getPatientsTransferredFromOtherHealthFacility();
+		SqlCohortDefinition transferredFromOtherHealthFacility = sqlCohortQueries.getPatientsTransferredFromOtherHealthFacility();
 		
 		CohortDefinition males = genderCohortQueries.MaleCohort();
 		
 		CohortDefinition females = genderCohortQueries.FemaleCohort();
 		
 		AgeCohortDefinition PatientBelow1Year = ageCohortQueries.patientWithAgeBelow(1);
-		PatientBelow1Year.setName("PatientBelow1Year");
 		AgeCohortDefinition PatientBetween1And9Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween1And9Years", 1, 9);
 		AgeCohortDefinition PatientBetween10And14Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween10And14Years", 10, 14);
 		AgeCohortDefinition PatientBetween15And19Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween15And19Years", 15, 19);
