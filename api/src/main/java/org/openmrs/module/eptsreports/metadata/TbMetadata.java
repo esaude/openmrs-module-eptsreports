@@ -1,4 +1,4 @@
-/**
+/*
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -16,26 +16,14 @@ package org.openmrs.module.eptsreports.metadata;
 import org.openmrs.Concept;
 import org.springframework.stereotype.Component;
 
-@Component("commonMetadata")
-public class CommonMetadata extends Metadata {
+@Component("tbMetadata")
+public class TbMetadata extends CommonMetadata {
 	
 	// CONCEPTS
-	private String START_DRUGS = "e1d9ef28-1d5f-11e0-b929-000c29ad1d07";
+	private String TUBERCULOSIS_TREATMENT_PLAN = "e1d9fbda-1d5f-11e0-b929-000c29ad1d07";
 	
-	private String HISTORICAL_DRUG_START_DATE = "e1d8f690-1d5f-11e0-b929-000c29ad1d07";
-	
-	private String YES = "e1d81b62-1d5f-11e0-b929-000c29ad1d07";
-	
-	public Concept getYesConcept() {
-		return getConcept(YES);
-	}
-	
-	public Concept getstartDrugsConcept() {
-		return getConcept(START_DRUGS);
-	}
-	
-	public Concept gethistoricalDrugStartDateConcept() {
-		return getConcept(HISTORICAL_DRUG_START_DATE);
+	public Concept getTUBERCULOSIS_TREATMENT_PLANConcept() {
+		return getConcept(TUBERCULOSIS_TREATMENT_PLAN);
 	}
 	
 }

@@ -16,6 +16,7 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -30,6 +31,9 @@ public class SqlCohortQueries {
 	
 	@Autowired
 	private HivMetadata hivMetadata;
+	
+	@Autowired
+	private TbMetadata tbMetadata;
 	
 	//Looks for patients enrolled in ART program (program 2=SERVICO TARV - TRATAMENTO) before or on end date
 	@DocumentedDefinition(value = "inARTProgramDuringTimePeriod")
@@ -80,7 +84,7 @@ public class SqlCohortQueries {
 	public SqlCohortDefinition getPatientsNotifiedToBeOnTbTreatment() {
 		SqlCohortDefinition notifiedToBeOnTbTreatment = new SqlCohortDefinition();
 		notifiedToBeOnTbTreatment.setName("notifiedToBeOnTbTreatment");
-		notifiedToBeOnTbTreatment.setQuery("Select p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on o.encounter_id=e.encounter_id where e.voided=0 and o.voided=0 and p.voided=0 and e.encounter_type in (" + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + "," + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") and o.concept_id=" + hivMetadata.getTUBERCULOSIS_TREATMENT_PLANConcept().getConceptId() + " and o.value_coded=" + hivMetadata.getYesConcept().getConceptId() + " and e.encounter_datetime<=:onOrBefore group by p.patient_id");
+		notifiedToBeOnTbTreatment.setQuery("Select p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on o.encounter_id=e.encounter_id where e.voided=0 and o.voided=0 and p.voided=0 and e.encounter_type in (" + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + "," + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") and o.concept_id=" + tbMetadata.getTUBERCULOSIS_TREATMENT_PLANConcept().getConceptId() + " and o.value_coded=" + hivMetadata.getYesConcept().getConceptId() + " and e.encounter_datetime<=:onOrBefore group by p.patient_id");
 		notifiedToBeOnTbTreatment.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		notifiedToBeOnTbTreatment.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		return notifiedToBeOnTbTreatment;
