@@ -29,7 +29,7 @@
 		<require_module version="${reportingVersion}">org.openmrs.module.reporting</require_module>
 		<require_module version="${serializationVersion}">org.openmrs.module.serialization.xstream</require_module>
 		<require_module version="${calculationVersion}">org.openmrs.calculation</require_module>
-		<require_module version="${htmlWidgetsVersion}">org.openmrs.htmlwidgets</require_module>
+		<require_module version="${htmlWidgetsVersion}">org.openmrs.module.htmlwidgets</require_module>
 	</require_modules>
 
 	<aware_of_modules>
