@@ -63,8 +63,7 @@ public class TxNewDataset {
 		dataSetDefinition.setName("TX_NEW Data Set");
 		dataSetDefinition.addParameters(parameters);
 		
-		// Looks for patients enrolled in ART program (program 2=SERVICO TARV - TRATAMENTO) before or on end date
-		
+		// Looks for patients enrolled in ART program (program 2=SERVICO TARV - TRATAMENTO) before or on end date		
 		SqlCohortDefinition inARTProgramDuringTimePeriod = sqlCohortQueries.getPatientsinARTProgramDuringTimePeriod();
 		
 		// Looks for patients registered as START DRUGS (answer to question 1255 = ARV PLAN is 1256 = START DRUGS) in the first drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation for adults and children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA SEGUIMENTO) before or on end date
@@ -114,8 +113,7 @@ public class TxNewDataset {
 		agesRange.add(PatientBetween40And49Years);
 		agesRange.add(PatientBetween50YearsAndAbove);
 		
-		// Male and Female <1
-		
+		// Male and Female <1		
 		CompositionCohortDefinition patientBelow1YearEnrolledInHIVStartedART = compositionCohortQueries
 		        .getPatientBelow1YearEnrolledInHIVStartedART(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs,
 		            patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility, PatientBelow1Year);
@@ -129,8 +127,7 @@ public class TxNewDataset {
 		    new Mapped(patientBelow1YearEnrolledInHIVStartedARTIndicator, ParameterizableUtil
 		            .createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
 		
-		// Male and Female between 1 and 9 years
-		
+		// Male and Female between 1 and 9 years		
 		CompositionCohortDefinition patientBetween1And9YearsEnrolledInHIVStartedART = compositionCohortQueries
 		        .getPatientBelow1YearEnrolledInHIVStartedART(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs,
 		            patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility, PatientBetween1And9Years);
@@ -144,8 +141,7 @@ public class TxNewDataset {
 		    new Mapped(patientBetween1And9YearsEnrolledInHIVStartedARTIndicator, ParameterizableUtil
 		            .createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
 		
-		// Male
-		
+		// Male		
 		int i = 2;
 		for (AgeCohortDefinition ageCohort : agesRange) {
 			CompositionCohortDefinition patientInYearRangeEnrolledInARTStarted = compositionCohortQueries
@@ -165,8 +161,7 @@ public class TxNewDataset {
 			i++;
 		}
 		
-		// Female
-		
+		// Female		
 		int j = 2;
 		for (AgeCohortDefinition ageCohort : agesRange) {
 			CompositionCohortDefinition patientInYearRangeEnrolledInARTStarted = compositionCohortQueries

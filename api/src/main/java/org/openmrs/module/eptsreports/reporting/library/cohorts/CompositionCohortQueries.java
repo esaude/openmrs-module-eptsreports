@@ -29,8 +29,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CompositionCohortQueries {
 	
-	// Male and Female <1			
-	
+	// Male and Female <1	
 	@DocumentedDefinition(value = "patientBelow1YearEnrolledInHIVStartedART")
 	public CompositionCohortDefinition getPatientBelow1YearEnrolledInHIVStartedART(
 	        CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs,
