@@ -30,12 +30,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupTXNEW extends EptsDataExportManager {
+public class SetupTxNew extends EptsDataExportManager {
 	
 	@Autowired
 	private TxNewDataset txNewDataset;
 	
-	public SetupTXNEW() {
+	public SetupTxNew() {
 	}
 	
 	@Override
