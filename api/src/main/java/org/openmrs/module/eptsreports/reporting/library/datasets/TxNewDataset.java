@@ -193,16 +193,18 @@ public class TxNewDataset {
 		    transferredFromOtherHealthFacility);
 		CohortIndicator patientEnrolledInHIVStartedARTIndicator = hivIndicators
 		        .patientEnrolledInHIVStartedARTIndicator(patientEnrolledInART);
-		dataSetDefinition.addColumn("1All", "TX_NEW: New on ART", new Mapped<CohortIndicator>(patientEnrolledInHIVStartedARTIndicator,
-		        ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")),
+		dataSetDefinition.addColumn("1All", "TX_NEW: New on ART",
+		    new Mapped<CohortIndicator>(patientEnrolledInHIVStartedARTIndicator,
+		            ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")),
 		    "");
 		
 		// Obtain patients notified to be on TB treatment
 		SqlCohortDefinition notifiedToBeOnTbTreatment = sqlCohortQueries.getPatientsNotifiedToBeOnTbTreatment();
 		CohortIndicator tuberculosePatientNewlyInitiatingARTIndicator = tbIndicators
 		        .tuberculosePatientNewlyInitiatingARTIndicator(notifiedToBeOnTbTreatment);
-		dataSetDefinition.addColumn("TB", "TX_NEW: TB Started ART", new Mapped<CohortIndicator>(tuberculosePatientNewlyInitiatingARTIndicator,
-		        ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")),
+		dataSetDefinition.addColumn("TB", "TX_NEW: TB Started ART",
+		    new Mapped<CohortIndicator>(tuberculosePatientNewlyInitiatingARTIndicator,
+		            ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")),
 		    "");
 		
 		return dataSetDefinition;
