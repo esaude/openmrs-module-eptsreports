@@ -19,7 +19,7 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.stereotype.Component;
 
 @Component
-public class HivIndicators extends GenericIndicators {
+public class HivIndicators extends BaseIndicators {
 	
 	public CohortIndicator patientBelow1YearEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
 		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", cohortDefinition, ParameterizableUtil

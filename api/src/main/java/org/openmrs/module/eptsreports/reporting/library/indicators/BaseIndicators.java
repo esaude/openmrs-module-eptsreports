@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 
 // Generic Indicators Class for functions shared across all indicators
-public abstract class GenericIndicators {
+public abstract class BaseIndicators {
 	
 	protected CohortIndicator newCohortIndicator(String name, CohortDefinition cohort, Map<String, Object> map) {
 		CohortIndicator i = new CohortIndicator();
