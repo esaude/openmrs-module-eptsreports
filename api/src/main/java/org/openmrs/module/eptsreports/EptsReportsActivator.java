@@ -17,7 +17,7 @@ import org.openmrs.module.eptsreports.reporting.EptsReportInitializer;
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
  */
-public class EPTSreportsActivator extends BaseModuleActivator {
+public class EptsReportsActivator extends BaseModuleActivator {
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	
@@ -41,25 +41,27 @@ public class EPTSreportsActivator extends BaseModuleActivator {
 	@Override
 	public void willStop() {
 		log.debug("Stopping EPTS Reports Module");
+		try {
+			reportsInitializer.purgeReports();
+			log.debug("EPTS Reports purged");
+		}
+		catch (Exception e) {
+			log.error("An error occured trying to purge EPTS reports", e);
+		}
 	}
 	
 	/**
 	 * @see #started()
 	 */
 	public void started() {
-		try {
-			reportsInitializer.initializeReports();
-			log.info("Started EPTS Reports Module");
-		}
-		catch (Exception e) {
-			log.error("An error occured trying to initialize EPTS reports", e);
-		}
+		reportsInitializer.initializeReports();
+		log.info("Started EPTS Reports Module");
 	}
 	
 	/**
-	 * @see #shutdown()
+	 * @see #stopped()
 	 */
-	public void shutdown() {
-		log.info("Shutdown EPTS Reports Module");
+	public void stopped() {
+		log.info("Stopped EPTS Reports Module");
 	}
 }

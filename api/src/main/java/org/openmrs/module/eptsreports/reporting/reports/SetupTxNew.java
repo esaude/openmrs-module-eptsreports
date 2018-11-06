@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -10,47 +10,57 @@
  * under the License.
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
- */
-package org.openmrs.module.eptsreports.reporting.reports.definitions;
+ **/
+package org.openmrs.module.eptsreports.reporting.reports;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
-import org.openmrs.module.eptsreports.reporting.reports.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
+import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MER_Semi_Annually extends EptsDataExportManager {
+public class SetupTxNew extends EptsDataExportManager {
 	
-	public MER_Semi_Annually() {
+	@Autowired
+	private TxNewDataset txNewDataset;
+	
+	public SetupTxNew() {
 	}
 	
 	@Override
 	public String getVersion() {
-		return "2.1";
+		return "1.0-SNAPSHOT";
 	}
 	
 	@Override
 	public String getUuid() {
-		return "fa20c1ac-94ea-11e3-96de-0023156365e4";
+		return "74698e1c-cda9-49cf-a58f-cc6771574ee6";
 	}
 	
 	@Override
 	public String getExcelDesignUuid() {
-		return "cea86583-9ca5-4ad9-94e4-e20081a57619";
+		return "05b84f1b-fd23-4b37-8185-aca65be91875";
 	}
 	
 	@Override
 	public String getName() {
-		return "MER_Semi_Annually";
+		return "TX_NEW Report";
 	}
 	
 	@Override
 	public String getDescription() {
-		return "MER Semi-Annual Report";
+		return "Number of adults and children newly enrolled on antiretroviral therapy (ART).";
 	}
 	
 	@Override
@@ -69,7 +79,28 @@ public class MER_Semi_Annually extends EptsDataExportManager {
 		reportDefinition.setDescription(getDescription());
 		reportDefinition.setParameters(getParameters());
 		
+		reportDefinition.addDataSetDefinition(txNewDataset.constructTxNewDatset(getParameters()),
+		    ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}"));
+		
 		return reportDefinition;
+	}
+	
+	@Override
+	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
+		ReportDesign reportDesign = null;
+		try {
+			reportDesign = createRowPerPatientXlsOverviewReportDesign(reportDefinition, "TXNEW.xls", "TXNEW.xls_", null);
+			Properties props = new Properties();
+			props.put("repeatingSections", "sheet:1,dataset:TX_NEW Data Set");
+			props.put("sortWeight", "5000");
+			reportDesign.setProperties(props);
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return Arrays.asList(reportDesign);
 	}
 	
 }

@@ -11,48 +11,48 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.eptsreports.reporting.reports.definitions;
+package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmrs.module.eptsreports.reporting.reports.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MER_Quarterly extends EptsDataExportManager {
-
-	public MER_Quarterly() {
+public class SetupMERQuarterly extends EptsDataExportManager {
+	
+	public SetupMERQuarterly() {
 	}
-
+	
 	@Override
 	public String getVersion() {
-		return "2.1";
+		return "1.0-SNAPSHOT";
 	}
-
+	
 	@Override
 	public String getUuid() {
 		return "fa20c1ac-94ea-11e3-96de-0023156365e4";
 	}
-
+	
 	@Override
 	public String getExcelDesignUuid() {
 		return "cea86583-9ca5-4ad9-94e4-e20081a57619";
 	}
-
+	
 	@Override
 	public String getName() {
-		return "MER_Quarterly";
+		return "PEPFAR_MER_Quarterly";
 	}
-
+	
 	@Override
 	public String getDescription() {
 		return "MER Quarterly Report";
 	}
-
+	
 	@Override
 	public List<Parameter> getParameters() {
 		List<Parameter> parameters = new ArrayList<Parameter>();
@@ -60,7 +60,7 @@ public class MER_Quarterly extends EptsDataExportManager {
 		parameters.add(ReportingConstants.END_DATE_PARAMETER);
 		return parameters;
 	}
-
+	
 	@Override
 	public ReportDefinition constructReportDefinition() {
 		ReportDefinition reportDefinition = new ReportDefinition();
@@ -68,8 +68,8 @@ public class MER_Quarterly extends EptsDataExportManager {
 		reportDefinition.setName(getName());
 		reportDefinition.setDescription(getDescription());
 		reportDefinition.setParameters(getParameters());
-
+		
 		return reportDefinition;
 	}
-
+	
 }

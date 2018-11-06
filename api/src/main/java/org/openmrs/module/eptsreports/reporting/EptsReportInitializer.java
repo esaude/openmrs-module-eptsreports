@@ -17,12 +17,10 @@ package org.openmrs.module.eptsreports.reporting;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.eptsreports.reporting.reports.EptsReportManager;
+import org.openmrs.module.eptsreports.reporting.reports.manager.EptsReportManager;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.manager.ReportManager;
-import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
 import org.openmrs.module.reporting.report.util.ReportUtil;
 
 public class EptsReportInitializer {
@@ -31,32 +29,29 @@ public class EptsReportInitializer {
 	
 	/**
 	 * Initializes all EPTS reports and remove deprocated reports from database.
-	 * 
-	 * @param void
-	 * @return
-	 * @throws Exception
 	 */
-	public void initializeReports() throws Exception {
+	public void initializeReports() {
 		for (ReportManager reportManager : Context.getRegisteredComponents(EptsReportManager.class)) {
 			if (reportManager.getClass().getAnnotation(Deprecated.class) != null) {
 				// remove depricated reports
-				removeReportDefinition(reportManager);
+				EptsReportUtils.purgeReportDefinition(reportManager);
+				log.info("Report " + reportManager.getName() + " is deprecated.  Removing it from database.");
 			} else {
 				// setup EPTS active reports
+				EptsReportUtils.setupReportDefinition(reportManager);
 				log.info("Setting up report " + reportManager.getName() + "...");
-				ReportManagerUtil.setupReport(reportManager);
 			}
 		}
 		ReportUtil.updateGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE, "-1");
 	}
 	
-	private void removeReportDefinition(ReportManager reportManager) {
-		ReportDefinition rd = reportManager.constructReportDefinition();
-		ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
-		if (rd != null) {
-			Context.getService(ReportDefinitionService.class).purgeDefinition(rd);
+	/**
+	 * Purges all EPTS reports from database.
+	 */
+	public void purgeReports() {
+		for (ReportManager reportManager : Context.getRegisteredComponents(EptsReportManager.class)) {
+			EptsReportUtils.purgeReportDefinition(reportManager);
+			log.info("Report " + reportManager.getName() + " removed from database.");
 		}
-		
-		log.warn("Report " + reportManager.getName() + " is deprecated.  Removing it from database.");
 	}
 }

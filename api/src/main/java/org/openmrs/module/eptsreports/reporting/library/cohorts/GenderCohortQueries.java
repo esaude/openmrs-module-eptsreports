@@ -11,12 +11,14 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.eptsreports.reporting.definitions.cohorts;
+package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.springframework.stereotype.Component;
 
-public class CommonQueries {
+@Component
+public class GenderCohortQueries {
 	
 	/**
 	 * Patients who are female
@@ -27,6 +29,7 @@ public class CommonQueries {
 		GenderCohortDefinition cohort = new GenderCohortDefinition();
 		cohort.setName("FemaleCohort");
 		cohort.setFemaleIncluded(true);
+		cohort.setMaleIncluded(false);
 		return cohort;
 	}
 	
@@ -39,6 +42,7 @@ public class CommonQueries {
 		GenderCohortDefinition cohort = new GenderCohortDefinition();
 		cohort.setName("MaleCohort");
 		cohort.setMaleIncluded(true);
+		cohort.setFemaleIncluded(false);
 		return cohort;
 	}
 	

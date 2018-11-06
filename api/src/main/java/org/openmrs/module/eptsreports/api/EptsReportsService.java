@@ -10,10 +10,9 @@
 package org.openmrs.module.eptsreports.api;
 
 import org.openmrs.api.OpenmrsService;
-import org.openmrs.api.APIException;
 
 /**
  * The main service of this module, which is exposed for other modules. See
  * moduleApplicationContext.xml on how it is wired up.
  */
-public interface EPTSreportsService extends OpenmrsService {}
+public interface EptsReportsService extends OpenmrsService {}
