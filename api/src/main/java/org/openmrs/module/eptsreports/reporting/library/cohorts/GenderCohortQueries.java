@@ -29,7 +29,7 @@ public class GenderCohortQueries {
 		GenderCohortDefinition cohort = new GenderCohortDefinition();
 		cohort.setName("FemaleCohort");
 		cohort.setFemaleIncluded(true);
-		cohort.setFemaleIncluded(false);
+		cohort.setMaleIncluded(false);
 		return cohort;
 	}
 	
