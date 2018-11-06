@@ -113,18 +113,6 @@ public class Metadata {
 		return s;
 	}
 	
-	public static List<ProgramWorkflowState> getProgramWorkflowstateList(String lookup) {
-		List<ProgramWorkflowState> l = new ArrayList<ProgramWorkflowState>();
-		if (ObjectUtil.notNull(lookup)) {
-			String[] split = lookup.split(",");
-			for (String s : split) {
-				int state = Integer.parseInt(s);
-				l.add(Context.getProgramWorkflowService().getState(state));
-			}
-		}
-		return l;
-	}
-	
 	/**
 	 * @return the PatientIdentifier that matches the passed uuid, name, or primary key id
 	 */
