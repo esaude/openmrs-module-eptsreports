@@ -22,15 +22,15 @@ import org.springframework.stereotype.Component;
 @Component("hivMetadata")
 public class HivMetadata extends CommonMetadata {
 	
-	//ECOUNTER TYPES
+	// ECOUNTER TYPES
 	private String S_TARV_ADULTO_SEGUIMENTO = "e278f956-1d5f-11e0-b929-000c29ad1d07";
 	
 	private String S_TARV_PEDIATRIA_SEGUIMENTO = "e278fce4-1d5f-11e0-b929-000c29ad1d07";
 	
-	// CONCEPTS	
+	// CONCEPTS
 	private String ARVPlan = "e1d9ee10-1d5f-11e0-b929-000c29ad1d07";
 	
-	//PROGRAMS
+	// PROGRAMS
 	private String ARTProgram = "efe2481f-9e75-4515-8d5a-86bfde2b5ad3";
 	
 	public EncounterType getAdultoSeguimentoEncounterType() {
@@ -55,7 +55,7 @@ public class HivMetadata extends CommonMetadata {
 		return getProgram(ARTProgram);
 	}
 	
-	// ProgramWorkflowState	
+	// ProgramWorkflowState
 	public ProgramWorkflowState gettransferredFromOtherHealthFacilityWorkflowState() {
 		return getProgramWorkflowState("efe2481f-9e75-4515-8d5a-86bfde2b5ad3", "2", "e1da7d3a-1d5f-11e0-b929-000c29ad1d07");
 	}
