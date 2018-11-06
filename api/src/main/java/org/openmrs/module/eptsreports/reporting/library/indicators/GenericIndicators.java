@@ -25,7 +25,7 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 // Library of Generic Indicators
 public abstract class GenericIndicators {
 	
-	public static CohortIndicator newCohortIndicator(String name, CohortDefinition cohort, Map<String, Object> map) {
+	protected CohortIndicator newCohortIndicator(String name, CohortDefinition cohort, Map<String, Object> map) {
 		CohortIndicator i = new CohortIndicator();
 		i.setName(name);
 		i.setCohortDefinition(new Mapped<CohortDefinition>(cohort, map));
