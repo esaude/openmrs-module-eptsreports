@@ -19,10 +19,10 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TbIndicators {
+public class TbIndicators extends GenericIndicators {
 	
 	public CohortIndicator tuberculosePatientNewlyInitiatingARTIndicator(CohortDefinition cohortDefinition) {
-		return GenericIndicators.newCohortIndicator("tuberculosePatientNewlyInitiatingARTIndicator", cohortDefinition,
+		return newCohortIndicator("tuberculosePatientNewlyInitiatingARTIndicator", cohortDefinition,
 		    ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 }

@@ -19,29 +19,26 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.stereotype.Component;
 
 @Component
-public class HivIndicators {
+public class HivIndicators extends GenericIndicators {
 	
 	public CohortIndicator patientBelow1YearEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
-		return GenericIndicators.newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", cohortDefinition,
-		    ParameterizableUtil
-		            .createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
+		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", cohortDefinition, ParameterizableUtil
+		        .createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
 		
 	}
 	
 	public CohortIndicator patientBetween1And9YearsEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
-		return GenericIndicators.newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", cohortDefinition,
-		    ParameterizableUtil
-		            .createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
+		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", cohortDefinition, ParameterizableUtil
+		        .createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
 	}
 	
 	public CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
-		return GenericIndicators.newCohortIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicator", cohortDefinition,
-		    ParameterizableUtil
-		            .createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
+		return newCohortIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicator", cohortDefinition, ParameterizableUtil
+		        .createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
 	}
 	
 	public CohortIndicator patientEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
-		return GenericIndicators.newCohortIndicator("patientNewlyEnrolledInHIVIndicator", cohortDefinition,
+		return newCohortIndicator("patientNewlyEnrolledInHIVIndicator", cohortDefinition,
 		    ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 }
