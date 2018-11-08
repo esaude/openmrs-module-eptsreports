@@ -23,12 +23,16 @@ import org.springframework.stereotype.Component;
 public class HivMetadata extends CommonMetadata {
 	
 	// ECOUNTER TYPES
-	private String S_TARV_ADULTO_SEGUIMENTO = "e278f956-1d5f-11e0-b929-000c29ad1d07";
+	private String S_TARV_ADULTO_SEGUIMENTO = "e278f956-1d5f-11e0-b929-000c29ad1d07"; //encounterType_id=6
 	
-	private String S_TARV_PEDIATRIA_SEGUIMENTO = "e278fce4-1d5f-11e0-b929-000c29ad1d07";
+	private String S_TARV_PEDIATRIA_SEGUIMENTO = "e278fce4-1d5f-11e0-b929-000c29ad1d07"; //encounterType_id = 9
+
+	private String MISAU_LABORATORIO = "e2790f68-1d5f-11e0-b929-000c29ad1d07"; //encounterType_id = 13
 	
 	// CONCEPTS
 	private String ARVPlan = "e1d9ee10-1d5f-11e0-b929-000c29ad1d07";
+
+	private String HIV_VIRAL_LOAD = "e1d6247e-1d5f-11e0-b929-000c29ad1d07";
 	
 	// PROGRAMS
 	private String ARTProgram = "efe2481f-9e75-4515-8d5a-86bfde2b5ad3";
@@ -46,9 +50,16 @@ public class HivMetadata extends CommonMetadata {
 	public EncounterType getARVPharmaciaEncounterType() {
 		return getEncounterType(S_TARV_FARMACIA);
 	}
-	
+
+	 public EncounterType getMisauLaboratorioEncounterType() {
+		return getEncounterType(MISAU_LABORATORIO);
+	 }
 	public Concept getARVPlanConcept() {
 		return getConcept(ARVPlan);
+	}
+
+	public Concept getHivViralLoadConcept() {
+		return getConcept(HIV_VIRAL_LOAD);
 	}
 	
 	public Program getARTProgram() {
