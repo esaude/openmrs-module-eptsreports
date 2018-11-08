@@ -15,8 +15,10 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.springframework.stereotype.Component;
 
-public class GenderCohorts {
+@Component
+public class GenderCohortQueries {
 	
 	/**
 	 * Patients who are female
@@ -27,6 +29,7 @@ public class GenderCohorts {
 		GenderCohortDefinition cohort = new GenderCohortDefinition();
 		cohort.setName("FemaleCohort");
 		cohort.setFemaleIncluded(true);
+		cohort.setMaleIncluded(false);
 		return cohort;
 	}
 	
@@ -39,6 +42,7 @@ public class GenderCohorts {
 		GenderCohortDefinition cohort = new GenderCohortDefinition();
 		cohort.setName("MaleCohort");
 		cohort.setMaleIncluded(true);
+		cohort.setFemaleIncluded(false);
 		return cohort;
 	}
 	

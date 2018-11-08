@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.eptsreports.reporting.utils;
+package org.openmrs.module.eptsreports.metadata;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +27,9 @@ import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.ObjectUtil;
 
-public class MetadataLookup {
+public class Metadata {
 	
-	protected final static Log log = LogFactory.getLog(MetadataLookup.class);
+	protected final static Log log = LogFactory.getLog(Metadata.class);
 	
 	/**
 	 * @return the Program that matches the passed uuid, concept name, name, or primary key id
@@ -87,7 +87,8 @@ public class MetadataLookup {
 	 * @return the ProgramWorkflowState matching the given programLookup and workflowLookup and
 	 *         stateLookup
 	 */
-	public static ProgramWorkflowState getProgramWorkflowState(String programLookup, String workflowLookup, String stateLookup) {
+	public static ProgramWorkflowState getProgramWorkflowState(String programLookup, String workflowLookup,
+	        String stateLookup) {
 		ProgramWorkflow wf = getProgramWorkflow(programLookup, workflowLookup);
 		ProgramWorkflowState s = wf.getStateByName(stateLookup);
 		if (s == null) {
@@ -106,21 +107,10 @@ public class MetadataLookup {
 			}
 		}
 		if (s == null) {
-			throw new IllegalArgumentException("Unable to find state using " + programLookup + " - " + workflowLookup + " - " + stateLookup);
+			throw new IllegalArgumentException(
+			        "Unable to find state using " + programLookup + " - " + workflowLookup + " - " + stateLookup);
 		}
 		return s;
-	}
-	
-	public static List<ProgramWorkflowState> getProgramWorkflowstateList(String lookup) {
-		List<ProgramWorkflowState> l = new ArrayList<ProgramWorkflowState>();
-		if (ObjectUtil.notNull(lookup)) {
-			String[] split = lookup.split(",");
-			for (String s : split) {
-				int state = Integer.parseInt(s);
-				l.add(Context.getProgramWorkflowService().getState(state));
-			}
-		}
-		return l;
 	}
 	
 	/**
@@ -144,8 +134,7 @@ public class MetadataLookup {
 	}
 	
 	/**
-	 * @return the Concept that matches the passed uuid, name, source:code mapping, or primary key
-	 *         id
+	 * @return the Concept that matches the passed uuid, name, source:code mapping, or primary key id
 	 */
 	public static Concept getConcept(String lookup) {
 		Concept c = Context.getConceptService().getConceptByUuid(lookup);
@@ -175,14 +164,14 @@ public class MetadataLookup {
 	
 	/**
 	 * @return the List of Concepts that matches the passed comma-separated list of concept lookups
-	 * @see MetadataLookup#getConcept(String)
+	 * @see Metadata#getConcept(String)
 	 */
 	public static List<Concept> getConceptList(String lookup) {
 		List<Concept> l = new ArrayList<Concept>();
 		if (ObjectUtil.notNull(lookup)) {
 			String[] split = lookup.split(",");
 			for (String s : split) {
-				l.add(MetadataLookup.getConcept(s));
+				l.add(Metadata.getConcept(s));
 			}
 		}
 		return l;
@@ -190,7 +179,7 @@ public class MetadataLookup {
 	
 	/**
 	 * @return the List of Concepts that matches the passed any separated list of concept lookups
-	 * @see MetadataLookup#getConcept(String)
+	 * @see Metadata#getConcept(String)
 	 */
 	public static List<Concept> getConceptList(String lookup, String separator) {
 		List<Concept> l = new ArrayList<Concept>();
@@ -198,10 +187,10 @@ public class MetadataLookup {
 			if (ObjectUtil.notNull(separator)) {
 				String[] split = lookup.split(separator);
 				for (String s : split) {
-					l.add(MetadataLookup.getConcept(s));
+					l.add(Metadata.getConcept(s));
 				}
 			} else {
-				l.add(MetadataLookup.getConcept(lookup));
+				l.add(Metadata.getConcept(lookup));
 			}
 		}
 		return l;
@@ -229,14 +218,14 @@ public class MetadataLookup {
 	
 	/**
 	 * @return the List of Forms that matches the passed comma-separated list of Form lookups
-	 * @see MetadataLookup#getForm(String)
+	 * @see Metadata#getForm(String)
 	 */
 	public static List<Form> getFormList(String lookup) {
 		List<Form> l = new ArrayList<Form>();
 		if (ObjectUtil.notNull(lookup)) {
 			String[] split = lookup.split(",");
 			for (String s : split) {
-				l.add(MetadataLookup.getForm(s));
+				l.add(Metadata.getForm(s));
 			}
 		}
 		return l;
@@ -244,7 +233,7 @@ public class MetadataLookup {
 	
 	/**
 	 * @return the List of Forms that matches the passed any separated list of Form lookups
-	 * @see MetadataLookup#getForm(String)
+	 * @see Metadata#getForm(String)
 	 */
 	public static List<Form> getFormList(String lookup, String separator) {
 		List<Form> l = new ArrayList<Form>();
@@ -252,10 +241,10 @@ public class MetadataLookup {
 			if (ObjectUtil.notNull(separator)) {
 				String[] split = lookup.split(separator);
 				for (String s : split) {
-					l.add(MetadataLookup.getForm(s));
+					l.add(Metadata.getForm(s));
 				}
 			} else {
-				l.add(MetadataLookup.getForm(lookup));
+				l.add(Metadata.getForm(lookup));
 			}
 		}
 		return l;
@@ -285,14 +274,14 @@ public class MetadataLookup {
 	/**
 	 * @return the List of EncounterTypes that matches the passed comma-separated list of Encounter
 	 *         lookups
-	 * @see MetadataLookup#getEncounterType(String)
+	 * @see Metadata#getEncounterType(String)
 	 */
 	public static List<EncounterType> getEncounterTypeList(String lookup) {
 		List<EncounterType> l = new ArrayList<EncounterType>();
 		if (ObjectUtil.notNull(lookup)) {
 			String[] split = lookup.split(",");
 			for (String s : split) {
-				l.add(MetadataLookup.getEncounterType(s));
+				l.add(Metadata.getEncounterType(s));
 				
 			}
 		}
@@ -302,7 +291,7 @@ public class MetadataLookup {
 	/**
 	 * @return the List of EncounterTypes that matches the passed any separated list of Encounter
 	 *         lookups
-	 * @see MetadataLookup#getEncounterType(String)
+	 * @see Metadata#getEncounterType(String)
 	 */
 	public static List<EncounterType> getEncounterTypeList(String lookup, String separator) {
 		List<EncounterType> l = new ArrayList<EncounterType>();
@@ -310,10 +299,10 @@ public class MetadataLookup {
 			if (ObjectUtil.notNull(separator)) {
 				String[] split = lookup.split(separator);
 				for (String s : split) {
-					l.add(MetadataLookup.getEncounterType(s));
+					l.add(Metadata.getEncounterType(s));
 				}
 			} else {
-				l.add(MetadataLookup.getEncounterType(lookup));
+				l.add(Metadata.getEncounterType(lookup));
 			}
 		}
 		return l;

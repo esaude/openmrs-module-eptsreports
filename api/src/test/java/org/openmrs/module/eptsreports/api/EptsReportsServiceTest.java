@@ -41,9 +41,7 @@ public class EptsReportsServiceTest {
 		// Given
 		
 		// When
-		// basicModuleService.method();
 		
 		// Then
-		// assertThat(item, hasProperty("owner", is(user)));
 	}
 }

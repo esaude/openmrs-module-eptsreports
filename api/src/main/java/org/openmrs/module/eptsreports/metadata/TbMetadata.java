@@ -11,10 +11,19 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+package org.openmrs.module.eptsreports.metadata;
 
-package org.openmrs.module.eptsreports.reporting.library.indicators;
+import org.openmrs.Concept;
+import org.springframework.stereotype.Component;
 
-// Library of Generic Indicators
-public class GenericIndicators {
+@Component("tbMetadata")
+public class TbMetadata extends CommonMetadata {
+	
+	// CONCEPTS
+	private String TUBERCULOSIS_TREATMENT_PLAN = "e1d9fbda-1d5f-11e0-b929-000c29ad1d07";
+	
+	public Concept getTUBERCULOSIS_TREATMENT_PLANConcept() {
+		return getConcept(TUBERCULOSIS_TREATMENT_PLAN);
+	}
 	
 }
