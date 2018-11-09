@@ -98,27 +98,26 @@ public class TxNewDataset {
 		
 		CohortDefinition females = genderCohortQueries.FemaleCohort();
 		
-		AgeCohortDefinition PatientBelow1Year = ageCohortQueries.patientWithAgeBelow(1);
-		AgeCohortDefinition PatientBetween1And9Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween1And9Years", 1,
-		    9);
-		AgeCohortDefinition PatientBetween10And14Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween10And14Years",
-		    10, 14);
-		AgeCohortDefinition PatientBetween15And19Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween15And19Years",
-		    15, 19);
-		AgeCohortDefinition PatientBetween20And24Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween20And24Years",
-		    20, 24);
-		AgeCohortDefinition PatientBetween25And29Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween25And29Years",
-		    25, 29);
-		AgeCohortDefinition PatientBetween30And34Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween30And34Years",
-		    30, 34);
-		AgeCohortDefinition PatientBetween35And39Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween35And39Years",
-		    35, 39);
-		AgeCohortDefinition PatientBetween40And49Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween40And49Years",
-		    40, 49);
-		AgeCohortDefinition PatientBetween50YearsAndAbove = ageCohortQueries.patientWithAgeAbove(50);
+		CohortDefinition PatientBelow1Year = ageCohortQueries.patientWithAgeBelow(1);
+		CohortDefinition PatientBetween1And9Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween1And9Years", 1, 9);
+		CohortDefinition PatientBetween10And14Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween10And14Years", 10,
+		    14);
+		CohortDefinition PatientBetween15And19Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween15And19Years", 15,
+		    19);
+		CohortDefinition PatientBetween20And24Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween20And24Years", 20,
+		    24);
+		CohortDefinition PatientBetween25And29Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween25And29Years", 25,
+		    29);
+		CohortDefinition PatientBetween30And34Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween30And34Years", 30,
+		    34);
+		CohortDefinition PatientBetween35And39Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween35And39Years", 35,
+		    39);
+		CohortDefinition PatientBetween40And49Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween40And49Years", 40,
+		    49);
+		CohortDefinition PatientBetween50YearsAndAbove = ageCohortQueries.patientWithAgeAbove(50);
 		PatientBetween50YearsAndAbove.setName("PatientBetween50YearsAndAbove");
 		
-		ArrayList<AgeCohortDefinition> agesRange = new ArrayList<AgeCohortDefinition>();
+		ArrayList<CohortDefinition> agesRange = new ArrayList<CohortDefinition>();
 		// agesRange.add(PatientBelow1Year);
 		// agesRange.add(PatientBetween1And9Years);
 		agesRange.add(PatientBetween10And14Years);
@@ -154,7 +153,7 @@ public class TxNewDataset {
 		
 		// Male
 		int i = 2;
-		for (AgeCohortDefinition ageCohort : agesRange) {
+		for (CohortDefinition ageCohort : agesRange) {
 			CompositionCohortDefinition patientInYearRangeEnrolledInARTStarted = compositionCohortQueries
 			        .getPatientInYearRangeEnrolledInARTStarted(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs,
 			            patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility, PatientBetween1And9Years,
@@ -172,7 +171,7 @@ public class TxNewDataset {
 		
 		// Female
 		int j = 2;
-		for (AgeCohortDefinition ageCohort : agesRange) {
+		for (CohortDefinition ageCohort : agesRange) {
 			CompositionCohortDefinition patientInYearRangeEnrolledInARTStarted = compositionCohortQueries
 			        .getPatientInYearRangeEnrolledInARTStarted(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs,
 			            patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility, PatientBetween1And9Years,

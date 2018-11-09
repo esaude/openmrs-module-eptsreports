@@ -15,12 +15,16 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 
+import org.openmrs.Location;
+import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,6 +32,12 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CompositionCohortQueries {
+	
+	@Autowired
+	private CommonCohortQueries commonCohortQueries;
+	
+	@Autowired
+	private PregnantQueries pregnantQueries;
 	
 	// Male and Female <1
 	@DocumentedDefinition(value = "patientBelow1YearEnrolledInHIVStartedART")
@@ -142,5 +152,29 @@ public class CompositionCohortQueries {
 		patientEnrolledInART.setCompositionString("(1 or 2 or 3) and (not 4)");
 		
 		return patientEnrolledInART;
+	}
+	
+	@DocumentedDefinition(value = "pregnantWomen")
+	public CohortDefinition getPregnantWomen() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Facility", Location.class));
+		
+		// set the mappings here
+		String mappings = "startDate=${startDate},endDate=${endDate},location={location}";
+		
+		cd.addSearch("opt1", EptsReportUtils.map(
+		    commonCohortQueries.general("opt1", pregnantQueries.getPregnantOnInitialOrFollowUpConsultation()), mappings));
+		cd.addSearch("opt2",
+		    EptsReportUtils.map(
+		        commonCohortQueries.general("opt2", pregnantQueries.getWeeksPregnantOnInitialOrFollowUpConsultation()),
+		        mappings));
+		cd.addSearch("opt3",
+		    EptsReportUtils.map(commonCohortQueries.general("opt3", pregnantQueries.getEnrolledInPTVorETV()), mappings));
+		cd.addSearch("opt4", EptsReportUtils
+		        .map(commonCohortQueries.general("opt4", pregnantQueries.getPregnacyDueDateRegistered()), mappings));
+		cd.setCompositionString("opt1 OR opt2 OR opt3 OR opt4");
+		return cd;
 	}
 }

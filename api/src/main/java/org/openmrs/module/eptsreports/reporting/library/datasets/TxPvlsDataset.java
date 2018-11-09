@@ -16,7 +16,6 @@ public class TxPvlsDataset {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		dsd.setName("Tx_Pvls Dataset");
 		dsd.addParameters(getParameters());
-
 		
 		return dsd;
 		

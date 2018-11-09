@@ -26,6 +26,14 @@ public class CommonMetadata extends Metadata {
 	
 	private String YES = "e1d81b62-1d5f-11e0-b929-000c29ad1d07";
 	
+	private String PREGNANT = "e1e056a6-1d5f-11e0-b929-000c29ad1d07";
+	
+	private String GESTATION = "e1cdd58a-1d5f-11e0-b929-000c29ad1d07";
+	
+	private String NUMBER_OF_WEEKS_PREGNANT = "e1da0788-1d5f-11e0-b929-000c29ad1d07";
+	
+	private String PREGNANCY_DUE_DATE = "e1dca8ee-1d5f-11e0-b929-000c29ad1d07";
+	
 	public Concept getYesConcept() {
 		return getConcept(YES);
 	}
@@ -36,6 +44,22 @@ public class CommonMetadata extends Metadata {
 	
 	public Concept gethistoricalDrugStartDateConcept() {
 		return getConcept(HISTORICAL_DRUG_START_DATE);
+	}
+	
+	public Concept getPregnantConcept() {
+		return getConcept(PREGNANT);
+	}
+	
+	public Concept getGestationConcept() {
+		return getConcept(GESTATION);
+	}
+	
+	public Concept getNumberOfWeeksPregnant() {
+		return getConcept(NUMBER_OF_WEEKS_PREGNANT);
+	}
+	
+	public Concept getPregnancyDueDate() {
+		return getConcept(PREGNANCY_DUE_DATE);
 	}
 	
 }

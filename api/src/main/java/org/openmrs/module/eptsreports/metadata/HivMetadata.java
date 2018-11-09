@@ -23,19 +23,23 @@ import org.springframework.stereotype.Component;
 public class HivMetadata extends CommonMetadata {
 	
 	// ECOUNTER TYPES
-	private String S_TARV_ADULTO_SEGUIMENTO = "e278f956-1d5f-11e0-b929-000c29ad1d07"; //encounterType_id=6
+	private String S_TARV_ADULTO_SEGUIMENTO = "e278f956-1d5f-11e0-b929-000c29ad1d07"; // encounterType_id=6
 	
-	private String S_TARV_PEDIATRIA_SEGUIMENTO = "e278fce4-1d5f-11e0-b929-000c29ad1d07"; //encounterType_id = 9
-
-	private String MISAU_LABORATORIO = "e2790f68-1d5f-11e0-b929-000c29ad1d07"; //encounterType_id = 13
+	private String S_TARV_PEDIATRIA_SEGUIMENTO = "e278fce4-1d5f-11e0-b929-000c29ad1d07"; // encounterType_id = 9
+	
+	private String MISAU_LABORATORIO = "e2790f68-1d5f-11e0-b929-000c29ad1d07"; // encounterType_id = 13
+	
+	private String S_TARV_ADULTO_INICIAL_A = "e278f820-1d5f-11e0-b929-000c29ad1d07"; // 5
 	
 	// CONCEPTS
 	private String ARVPlan = "e1d9ee10-1d5f-11e0-b929-000c29ad1d07";
-
+	
 	private String HIV_VIRAL_LOAD = "e1d6247e-1d5f-11e0-b929-000c29ad1d07";
 	
 	// PROGRAMS
 	private String ARTProgram = "efe2481f-9e75-4515-8d5a-86bfde2b5ad3";
+	
+	private String PTV_ETV = "06057245-ca21-43ab-a02f-e861d7e54593";
 	
 	public EncounterType getAdultoSeguimentoEncounterType() {
 		return getEncounterType(S_TARV_ADULTO_SEGUIMENTO);
@@ -45,25 +49,34 @@ public class HivMetadata extends CommonMetadata {
 		return getEncounterType(S_TARV_PEDIATRIA_SEGUIMENTO);
 	}
 	
+	public EncounterType getARVAdultInitialEncounterType() {
+		return getEncounterType(S_TARV_ADULTO_INICIAL_A);
+	}
+	
 	private String S_TARV_FARMACIA = "e279133c-1d5f-11e0-b929-000c29ad1d07";
 	
 	public EncounterType getARVPharmaciaEncounterType() {
 		return getEncounterType(S_TARV_FARMACIA);
 	}
-
-	 public EncounterType getMisauLaboratorioEncounterType() {
+	
+	public EncounterType getMisauLaboratorioEncounterType() {
 		return getEncounterType(MISAU_LABORATORIO);
-	 }
+	}
+	
 	public Concept getARVPlanConcept() {
 		return getConcept(ARVPlan);
 	}
-
+	
 	public Concept getHivViralLoadConcept() {
 		return getConcept(HIV_VIRAL_LOAD);
 	}
 	
 	public Program getARTProgram() {
 		return getProgram(ARTProgram);
+	}
+	
+	public Program getPtvEtvProgram() {
+		return getProgram(PTV_ETV);
 	}
 	
 	// ProgramWorkflowState
