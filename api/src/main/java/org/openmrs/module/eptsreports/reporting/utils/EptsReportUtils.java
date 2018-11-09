@@ -15,13 +15,18 @@ package org.openmrs.module.eptsreports.reporting.utils;
 
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.ColumnParameters;
+import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.manager.ReportManager;
 import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
+
+import java.util.List;
 
 /**
  * Epts Reports module utilities
@@ -74,7 +79,14 @@ public class EptsReportUtils {
 	public static void setupReportDefinition(ReportManager reportManager) {
 		ReportManagerUtil.setupReport(reportManager);
 	}
-	
+
+	/**
+	 *
+	 * @param parameterizable
+	 * @param mappings
+	 * @param <T>
+	 * @return
+	 */
 	public static <T extends Parameterizable> Mapped<T> map(T parameterizable, String mappings) {
 		if (parameterizable == null) {
 			throw new NullPointerException("Programming error: missing parameterizable");
@@ -83,6 +95,26 @@ public class EptsReportUtils {
 			mappings = ""; // probably not necessary, just to be safe
 		}
 		return new Mapped<T>(parameterizable, ParameterizableUtil.createParameterMappings(mappings));
+	}
+
+	/**
+	 * Adds a row to a dataset based on an indicator and a list of column parameters
+	 *
+	 * @param cohortDsd the dataset
+	 * @param baseName the base columm name
+	 * @param baseLabel the base column label
+	 * @param indicator the indicator
+	 * @param columns the column parameters
+	 * @param columnNames the column names
+	 */
+	public static void addRow(CohortIndicatorDataSetDefinition cohortDsd, String baseName, String baseLabel,
+							  Mapped<CohortIndicator> indicator, List<ColumnParameters> columns, List<String> columnNames) {
+		int c = 0;
+		for (ColumnParameters column : columns) {
+			String name = baseName + "-" + (columnNames != null ? columnNames.get(c++) : column.getName());
+			String label = baseLabel + " (" + column.getLabel() + ")";
+			cohortDsd.addColumn(name, label, indicator, column.getDimensions());
+		}
 	}
 	
 }
