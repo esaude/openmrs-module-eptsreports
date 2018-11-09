@@ -13,31 +13,60 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.indicators;
 
+import org.openmrs.module.eptsreports.reporting.library.cohorts.CompositionCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.SqlCohortQueries;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class HivIndicators extends BaseIndicators {
 	
+	@Autowired
+	private SqlCohortQueries scq;
+	
 	public CohortIndicator patientBelow1YearEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
-		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", cohortDefinition, ParameterizableUtil
-		        .createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
+		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator",
+		    EptsReportUtils.map(cohortDefinition, "onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
 	}
 	
 	public CohortIndicator patientBetween1And9YearsEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
-		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", cohortDefinition, ParameterizableUtil
-		        .createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
+		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator",
+		    EptsReportUtils.map(cohortDefinition, "onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
 	}
 	
 	public CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
-		return newCohortIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicator", cohortDefinition, ParameterizableUtil
-		        .createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
+		return newCohortIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicator",
+		    EptsReportUtils.map(cohortDefinition, "onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
 	}
 	
 	public CohortIndicator patientEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
-		return newCohortIndicator("patientNewlyEnrolledInHIVIndicator", cohortDefinition,
-		    ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return newCohortIndicator("patientNewlyEnrolledInHIVIndicator",
+		    EptsReportUtils.map(cohortDefinition, "onOrAfter=${startDate},onOrBefore=${endDate}"));
+	}
+	
+	/**
+	 * The number of patients having viral load within 12 months period denominator
+	 * 
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator patientsHavingViralLoadWithin12Months() {
+		return newCohortIndicator("patientsHavingViralLoadWithin12Months", EptsReportUtils.map(
+		    scq.getPatientsViralLoadWithin12Months(), "startDate=${startDate},endDate=${endDate},location={location}"));
+	}
+	
+	/**
+	 * Number of adult and pediatric patients on ART with suppressed viral load results (<1,000
+	 * copies/ml) Numerator
+	 * 
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator patientsWithSuppressedViralLoadWithin12Months() {
+		return newCohortIndicator("patientsWithSuppressedViralLoadWithin12Months",
+		    EptsReportUtils.map(scq.getPatientsWithSuppressedViralLoadWithin12Months(),
+		        "startDate=${startDate},endDate=${endDate},location={location}"));
 	}
 }

@@ -17,6 +17,7 @@ package org.openmrs.module.eptsreports.reporting.library.indicators;
 import java.util.Date;
 import java.util.Map;
 
+import org.openmrs.Location;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -25,12 +26,12 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 // Generic Indicators Class for functions shared across all indicators
 public abstract class BaseIndicators {
 	
-	protected CohortIndicator newCohortIndicator(String name, CohortDefinition cohort, Map<String, Object> map) {
-		CohortIndicator i = new CohortIndicator();
-		i.setName(name);
-		i.setCohortDefinition(new Mapped<CohortDefinition>(cohort, map));
+	protected CohortIndicator newCohortIndicator(String name, Mapped<CohortDefinition> cohort) {
+		CohortIndicator i = new CohortIndicator(name);
+		i.setCohortDefinition(cohort);
 		i.addParameter(new Parameter("startDate", "Start date", Date.class));
 		i.addParameter(new Parameter("endDate", "End date", Date.class));
+		i.addParameter(new Parameter("location", "Facility", Location.class));
 		
 		return i;
 	}
