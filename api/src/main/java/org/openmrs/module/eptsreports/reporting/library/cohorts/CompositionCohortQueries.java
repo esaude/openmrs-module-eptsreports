@@ -177,35 +177,35 @@ public class CompositionCohortQueries {
 		cd.setCompositionString("opt1 OR opt2 OR opt3 OR opt4");
 		return cd;
 	}
-
+	
 	@DocumentedDefinition(value = "breastfeedingWomen")
 	public CohortDefinition getBreastfeedingWomen() {
-
+		
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Facility", Location.class));
-
+		
 		// set the mappings here
 		String mappings = "startDate=${startDate},endDate=${endDate},location={location}";
-
+		
 		return cd;
 	}
-
+	
 	@DocumentedDefinition(value = "pregnantAndBreastFeeding")
 	public CohortDefinition pregnantAndBreastFeedingWomen() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Facility", Location.class));
-
+		
 		// set the mappings here
 		String mappings = "startDate=${startDate},endDate=${endDate},location={location}";
-
+		
 		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomen(), mappings));
 		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomen(), mappings));
 		cd.setCompositionString("pregnant AND breastfeeding");
-
+		
 		return cd;
 	}
 }
