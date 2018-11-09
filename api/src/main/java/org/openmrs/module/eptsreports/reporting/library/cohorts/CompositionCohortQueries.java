@@ -162,7 +162,7 @@ public class CompositionCohortQueries {
 		cd.addParameter(new Parameter("location", "Facility", Location.class));
 		
 		// set the mappings here
-		String mappings = "startDate=${startDate},endDate=${endDate},location={location}";
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		
 		cd.addSearch("opt1", EptsReportUtils.map(
 		    commonCohortQueries.general("opt1", pregnantQueries.getPregnantOnInitialOrFollowUpConsultation()), mappings));
@@ -187,7 +187,7 @@ public class CompositionCohortQueries {
 		cd.addParameter(new Parameter("location", "Facility", Location.class));
 		
 		// set the mappings here
-		String mappings = "startDate=${startDate},endDate=${endDate},location={location}";
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		
 		return cd;
 	}
@@ -200,7 +200,7 @@ public class CompositionCohortQueries {
 		cd.addParameter(new Parameter("location", "Facility", Location.class));
 		
 		// set the mappings here
-		String mappings = "startDate=${startDate},endDate=${endDate},location={location}";
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		
 		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomen(), mappings));
 		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomen(), mappings));

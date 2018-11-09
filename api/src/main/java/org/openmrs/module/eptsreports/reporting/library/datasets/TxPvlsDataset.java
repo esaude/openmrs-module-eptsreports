@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
+import org.openmrs.module.eptsreports.ColumnParameters;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.CompositionCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -34,14 +36,46 @@ public class TxPvlsDataset {
 	public CohortIndicatorDataSetDefinition constructTxPvlsDatset() {
 		
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		String mappings = "startDate=${startDate},endDate=${endDate},location={location}";
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		dsd.setName("Tx_Pvls Dataset");
 		dsd.addParameters(getParameters());
 		// tie dimensions to this data definition
 		dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
 		dsd.addDimension("age", EptsReportUtils.map(age(), "effectiveDate=${endDate}"));
 		dsd.addDimension("pb", EptsReportUtils.map(breastfeedingAndPregnant(), mappings));
-		
+
+		//build the column parameters here
+		//start with pregnant and breastfeeding
+		ColumnParameters pregnantAndBreastfeeding = new ColumnParameters("pb", "PB", "gender=F|pb=pb");
+		//put this into a list of columns and add more if needed
+		List<ColumnParameters> pb = Arrays.asList(pregnantAndBreastfeeding);
+		//column parameters for children under 1
+		ColumnParameters under1M = new ColumnParameters("under1M", "<1-Male", "gender=M|age=<1");
+		ColumnParameters under1F = new ColumnParameters("under1F", "<1-Female", "gender=F|age=<1");
+		ColumnParameters under1T = new ColumnParameters("under1T", "<1-Total", "age=<1");
+		//columns parameter for children 1- 9 years
+		ColumnParameters oneTo9M = new ColumnParameters("oneTo9M", "1-9 Male", "gender=M|age=1-9");
+		ColumnParameters oneTo9F = new ColumnParameters("oneTo9F", "1-9 Female", "gender=F|age=1-9");
+		ColumnParameters oneTo9T = new ColumnParameters("oneTo9T", "1-9 Total", "age=1-9");
+		//providing children columns into a list
+		List<ColumnParameters> under1 = Arrays.asList(under1M, under1F, under1T);
+		List<ColumnParameters> oneTo9 = Arrays.asList(oneTo9M, oneTo9F, oneTo9T);
+
+		//constructing the first row of pregnant and breast feeding mothers
+		EptsReportUtils.addRow(dsd, "pbn", "PB-N", EptsReportUtils.map(hivIndicators.patientsHavingViralLoadWithin12Months(), mappings), pb, Arrays.asList("01"));
+		EptsReportUtils.addRow(dsd, "pbd", "PB-D", EptsReportUtils.map(hivIndicators.patientsWithSuppressedViralLoadWithin12Months(), mappings), pb, Arrays.asList("01"));
+		//constructing the row for children under 1 year
+		EptsReportUtils.addRow(dsd, "u1n", "UNDER1-N", EptsReportUtils.map(hivIndicators.patientsHavingViralLoadWithin12Months(), mappings), under1, Arrays.asList("01", "02", "03"));
+		EptsReportUtils.addRow(dsd, "u1d", "UNDER1-D", EptsReportUtils.map(hivIndicators.patientsWithSuppressedViralLoadWithin12Months(), mappings), under1, Arrays.asList("01", "02", "03"));
+		//constructing the rows for children aged between 1 and 9 years
+		EptsReportUtils.addRow(dsd, "oneTo9n", "1-9N", EptsReportUtils.map(hivIndicators.patientsHavingViralLoadWithin12Months(), mappings), oneTo9, Arrays.asList("01", "02", "03"));
+		EptsReportUtils.addRow(dsd, "oneTo9d", "1-9D", EptsReportUtils.map(hivIndicators.patientsWithSuppressedViralLoadWithin12Months(), mappings), oneTo9, Arrays.asList("01", "02", "03"));
+
+
+
+
+
+
 		return dsd;
 		
 	}
@@ -97,7 +131,7 @@ public class TxPvlsDataset {
 		dim.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dim.addParameter(new Parameter("endDate", "End Date", Date.class));
 		dim.addCohortDefinition("pb", EptsReportUtils.map(ccq.pregnantAndBreastFeedingWomen(),
-		    "startDate=${startDate},endDate=${endDate},location={location}"));
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		
 		return dim;
 	}

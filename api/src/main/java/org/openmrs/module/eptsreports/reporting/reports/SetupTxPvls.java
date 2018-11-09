@@ -51,7 +51,7 @@ public class SetupTxPvls extends EptsDataExportManager {
 		rd.setParameters(getParameters());
 		
 		rd.addDataSetDefinition(txPvlsDataset.constructTxPvlsDatset(),
-		    ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}"));
+		    ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}"));
 		
 		return rd;
 	}
