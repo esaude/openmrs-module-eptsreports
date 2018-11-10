@@ -79,9 +79,8 @@ public class EptsReportUtils {
 	public static void setupReportDefinition(ReportManager reportManager) {
 		ReportManagerUtil.setupReport(reportManager);
 	}
-
+	
 	/**
-	 *
 	 * @param parameterizable
 	 * @param mappings
 	 * @param <T>
@@ -96,10 +95,10 @@ public class EptsReportUtils {
 		}
 		return new Mapped<T>(parameterizable, ParameterizableUtil.createParameterMappings(mappings));
 	}
-
+	
 	/**
 	 * Adds a row to a dataset based on an indicator and a list of column parameters
-	 *
+	 * 
 	 * @param cohortDsd the dataset
 	 * @param baseName the base columm name
 	 * @param baseLabel the base column label
@@ -108,7 +107,7 @@ public class EptsReportUtils {
 	 * @param columnNames the column names
 	 */
 	public static void addRow(CohortIndicatorDataSetDefinition cohortDsd, String baseName, String baseLabel,
-							  Mapped<CohortIndicator> indicator, List<ColumnParameters> columns, List<String> columnNames) {
+	        Mapped<CohortIndicator> indicator, List<ColumnParameters> columns, List<String> columnNames) {
 		int c = 0;
 		for (ColumnParameters column : columns) {
 			String name = baseName + "-" + (columnNames != null ? columnNames.get(c++) : column.getName());
