@@ -54,8 +54,8 @@ public class HivIndicators extends BaseIndicators {
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator patientsHavingViralLoadWithin12Months() {
-		return newCohortIndicator("patientsHavingViralLoadWithin12Months", EptsReportUtils.map(
-		    scq.getPatientsViralLoadWithin12Months(), "startDate=${startDate},endDate=${endDate},location={location}"));
+		return newCohortIndicator("patientsHavingViralLoadWithin12Months",
+		    EptsReportUtils.map(scq.getPatientsViralLoadWithin12Months(), "endDate=${endDate},location={location}"));
 	}
 	
 	/**
@@ -65,8 +65,7 @@ public class HivIndicators extends BaseIndicators {
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator patientsWithSuppressedViralLoadWithin12Months() {
-		return newCohortIndicator("patientsWithSuppressedViralLoadWithin12Months",
-		    EptsReportUtils.map(scq.getPatientsWithSuppressedViralLoadWithin12Months(),
-		        "startDate=${startDate},endDate=${endDate},location={location}"));
+		return newCohortIndicator("patientsWithSuppressedViralLoadWithin12Months", EptsReportUtils
+		        .map(scq.getPatientsWithSuppressedViralLoadWithin12Months(), "endDate=${endDate},location={location}"));
 	}
 }

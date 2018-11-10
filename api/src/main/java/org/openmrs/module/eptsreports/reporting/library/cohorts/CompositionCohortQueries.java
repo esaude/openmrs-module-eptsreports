@@ -15,7 +15,9 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -37,14 +39,13 @@ public class CompositionCohortQueries {
 	private CommonCohortQueries commonCohortQueries;
 	
 	@Autowired
-	private PregnantQueries pregnantQueries;
+	private HivMetadata hivMetadata;
 	
 	// Male and Female <1
 	@DocumentedDefinition(value = "patientBelow1YearEnrolledInHIVStartedART")
-	public CompositionCohortDefinition getPatientBelow1YearEnrolledInHIVStartedART(
-	        CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs,
-	        CohortDefinition patientWithHistoricalDrugStartDateObs, CohortDefinition transferredFromOtherHealthFacility,
-	        CohortDefinition PatientBelow1Year) {
+	public CohortDefinition getPatientBelow1YearEnrolledInHIVStartedART(CohortDefinition inARTProgramDuringTimePeriod,
+	        CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs,
+	        CohortDefinition transferredFromOtherHealthFacility, CohortDefinition PatientBelow1Year) {
 		CompositionCohortDefinition patientBelow1YearEnrolledInHIVStartedART = new CompositionCohortDefinition();
 		patientBelow1YearEnrolledInHIVStartedART.setName("patientBelow1YearEnrolledInHIVStartedART");
 		patientBelow1YearEnrolledInHIVStartedART.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
@@ -72,10 +73,9 @@ public class CompositionCohortQueries {
 	
 	// Male and Female between 1 and 9 years
 	@DocumentedDefinition(value = "patientBetween1And9YearsEnrolledInHIVStartedART")
-	public CompositionCohortDefinition getPatientBetween1And9YearsEnrolledInHIVStartedART(
-	        CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs,
-	        CohortDefinition patientWithHistoricalDrugStartDateObs, CohortDefinition transferredFromOtherHealthFacility,
-	        CohortDefinition PatientBetween1And9Years) {
+	public CohortDefinition getPatientBetween1And9YearsEnrolledInHIVStartedART(CohortDefinition inARTProgramDuringTimePeriod,
+	        CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs,
+	        CohortDefinition transferredFromOtherHealthFacility, CohortDefinition PatientBetween1And9Years) {
 		
 		CompositionCohortDefinition patientBetween1And9YearsEnrolledInHIVStartedART = new CompositionCohortDefinition();
 		patientBetween1And9YearsEnrolledInHIVStartedART.setName("patientBetween1And9YearsEnrolledInHIVStartedART");
@@ -103,10 +103,10 @@ public class CompositionCohortQueries {
 	}
 	
 	@DocumentedDefinition(value = "patientInYearRangeEnrolledInARTStarted")
-	public CompositionCohortDefinition getPatientInYearRangeEnrolledInARTStarted(
-	        CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs,
-	        CohortDefinition patientWithHistoricalDrugStartDateObs, CohortDefinition transferredFromOtherHealthFacility,
-	        CohortDefinition PatientBetween1And9Years, CohortDefinition ageCohort, CohortDefinition gender) {
+	public CohortDefinition getPatientInYearRangeEnrolledInARTStarted(CohortDefinition inARTProgramDuringTimePeriod,
+	        CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs,
+	        CohortDefinition transferredFromOtherHealthFacility, CohortDefinition PatientBetween1And9Years,
+	        CohortDefinition ageCohort, CohortDefinition gender) {
 		
 		CompositionCohortDefinition patientInYearRangeEnrolledInARTStarted = new CompositionCohortDefinition();
 		patientInYearRangeEnrolledInARTStarted.setName("patientInYearRangeEnrolledInHIVStarted");
@@ -133,7 +133,7 @@ public class CompositionCohortQueries {
 	}
 	
 	@DocumentedDefinition(value = "patientEnrolledInART")
-	public CompositionCohortDefinition getPatientEnrolledInART(CohortDefinition inARTProgramDuringTimePeriod,
+	public CohortDefinition getPatientEnrolledInART(CohortDefinition inARTProgramDuringTimePeriod,
 	        CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs,
 	        CohortDefinition transferredFromOtherHealthFacility) {
 		
@@ -161,19 +161,33 @@ public class CompositionCohortQueries {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Facility", Location.class));
 		
+		int adultSegEnc = hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId();
+		int adultInEnc = hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId();
+		
+		int ptvPro = hivMetadata.getPtvEtvProgram().getProgramId();
+		
+		int pregnant = hivMetadata.getPregnantConcept().getConceptId();
+		int gestation = hivMetadata.getGestationConcept().getConceptId();
+		int numOfWeeks = hivMetadata.getNumberOfWeeksPregnant().getConceptId();
+		int dueDate = hivMetadata.getPregnancyDueDate().getConceptId();
+		
 		// set the mappings here
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		
-		cd.addSearch("opt1", EptsReportUtils.map(
-		    commonCohortQueries.general("opt1", pregnantQueries.getPregnantOnInitialOrFollowUpConsultation()), mappings));
+		cd.addSearch("opt1",
+		    EptsReportUtils.map(
+		        commonCohortQueries.general("opt1",
+		            PregnantQueries.getPregnantOnInitialOrFollowUpConsulation(pregnant, gestation, adultInEnc, adultSegEnc)),
+		        mappings));
 		cd.addSearch("opt2",
 		    EptsReportUtils.map(
-		        commonCohortQueries.general("opt2", pregnantQueries.getWeeksPregnantOnInitialOrFollowUpConsultation()),
+		        commonCohortQueries.general("opt2",
+		            PregnantQueries.getWeeksPregnantOnInitialOrFollowUpConsultations(numOfWeeks, adultInEnc, adultSegEnc)),
 		        mappings));
-		cd.addSearch("opt3",
-		    EptsReportUtils.map(commonCohortQueries.general("opt3", pregnantQueries.getEnrolledInPTVorETV()), mappings));
-		cd.addSearch("opt4", EptsReportUtils
-		        .map(commonCohortQueries.general("opt4", pregnantQueries.getPregnacyDueDateRegistered()), mappings));
+		cd.addSearch("opt3", EptsReportUtils
+		        .map(commonCohortQueries.general("opt3", PregnantQueries.getEnrolledInPtvOrEtv(ptvPro)), mappings));
+		cd.addSearch("opt4", EptsReportUtils.map(commonCohortQueries.general("opt4",
+		    PregnantQueries.getPregnancyDueDateRegistred(dueDate, adultInEnc, adultSegEnc)), mappings));
 		cd.setCompositionString("opt1 OR opt2 OR opt3 OR opt4");
 		return cd;
 	}
@@ -203,8 +217,9 @@ public class CompositionCohortQueries {
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		
 		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomen(), mappings));
-		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomen(), mappings));
-		cd.setCompositionString("pregnant AND breastfeeding");
+		// cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomen(),
+		// mappings));
+		cd.setCompositionString("pregnant");
 		
 		return cd;
 	}

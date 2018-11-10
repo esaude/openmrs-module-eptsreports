@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
+import org.openmrs.Location;
 import org.openmrs.module.eptsreports.ColumnParameters;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.CompositionCohortQueries;
@@ -8,6 +9,7 @@ import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +35,7 @@ public class TxPvlsDataset {
 	@Autowired
 	private CompositionCohortQueries ccq;
 	
-	public CohortIndicatorDataSetDefinition constructTxPvlsDatset() {
+	public DataSetDefinition constructTxPvlsDatset() {
 		
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
@@ -46,25 +48,25 @@ public class TxPvlsDataset {
 		
 		// build the column parameters here
 		// start with pregnant and breastfeeding
-		ColumnParameters pregnantAndBreastfeeding = new ColumnParameters("pb", "PB", "gender=F|pb=pb");
+		ColumnParameters pregnantAndBreastfeeding = new ColumnParameters("pb", "Pregnant and Breastfeeding", "gender=F|pb=pb");
 		// put this into a list of columns and add more if needed
 		List<ColumnParameters> pb = Arrays.asList(pregnantAndBreastfeeding);
 		// column parameters for children under 1
-		ColumnParameters under1M = new ColumnParameters("under1M", "<1-Male", "gender=M|age=<1");
-		ColumnParameters under1F = new ColumnParameters("under1F", "<1-Female", "gender=F|age=<1");
-		ColumnParameters under1T = new ColumnParameters("under1T", "<1-Total", "age=<1");
+		ColumnParameters under1M = new ColumnParameters("<1M", "<1-Male", "gender=M|age=<1");
+		ColumnParameters under1F = new ColumnParameters("<1F", "<1-Female", "gender=F|age=<1");
+		ColumnParameters under1T = new ColumnParameters("<1T", "<1-Total", "age=<1");
 		// columns parameter for children 1- 9 years
-		ColumnParameters oneTo9M = new ColumnParameters("oneTo9M", "1-9 Male", "gender=M|age=1-9");
-		ColumnParameters oneTo9F = new ColumnParameters("oneTo9F", "1-9 Female", "gender=F|age=1-9");
-		ColumnParameters oneTo9T = new ColumnParameters("oneTo9T", "1-9 Total", "age=1-9");
+		ColumnParameters oneTo9M = new ColumnParameters("1-9M", "1-9 Male", "gender=M|age=1-9");
+		ColumnParameters oneTo9F = new ColumnParameters("1-9F", "1-9 Female", "gender=F|age=1-9");
+		ColumnParameters oneTo9T = new ColumnParameters("1-9T", "1-9 Total", "age=1-9");
 		// providing children columns into a list
 		List<ColumnParameters> under1 = Arrays.asList(under1M, under1F, under1T);
 		List<ColumnParameters> oneTo9 = Arrays.asList(oneTo9M, oneTo9F, oneTo9T);
 		
 		// constructing the first row of pregnant and breast feeding mothers
-		EptsReportUtils.addRow(dsd, "pbn", "PB-N",
+		EptsReportUtils.addRow(dsd, "pbn", "Pregnant and Breastfeeding numerator",
 		    EptsReportUtils.map(hivIndicators.patientsHavingViralLoadWithin12Months(), mappings), pb, Arrays.asList("01"));
-		EptsReportUtils.addRow(dsd, "pbd", "PB-D",
+		EptsReportUtils.addRow(dsd, "pbd", "Pregnant and Breastfeeding denominator",
 		    EptsReportUtils.map(hivIndicators.patientsWithSuppressedViralLoadWithin12Months(), mappings), pb,
 		    Arrays.asList("01"));
 		// constructing the row for children under 1 year
@@ -136,6 +138,7 @@ public class TxPvlsDataset {
 		dim.setName("breastfeedingAndPregnant");
 		dim.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dim.addParameter(new Parameter("endDate", "End Date", Date.class));
+		dim.addParameter(new Parameter("location", "Location", Location.class));
 		dim.addCohortDefinition("pb", EptsReportUtils.map(ccq.pregnantAndBreastFeedingWomen(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		

@@ -138,8 +138,7 @@ public class SqlCohortQueries {
 	public CohortDefinition getPatientsViralLoadWithin12Months() {
 		SqlCohortDefinition sql = new SqlCohortDefinition();
 		sql.setName("viralLoadWithin12Months");
-		sql.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
-		sql.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+		sql.addParameter(new Parameter("endDate", "End Date", Date.class));
 		sql.addParameter(new Parameter("location", "Location", Location.class));
 		sql.setQuery("SELECT p.patient_id FROM  patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN"
 		        + " obs o ON e.encounter_id=o.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND"
@@ -147,7 +146,7 @@ public class SqlCohortQueries {
 		        + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + ","
 		        + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") AND o.concept_id="
 		        + hivMetadata.getHivViralLoadConcept().getConceptId() + " AND o.value_numeric IS NOT NULL AND"
-		        + " e.encounter_datetime BETWEEN date_add(:onOrBefore, interval -12 MONTH) AND :onOrBefore AND"
+		        + " e.encounter_datetime BETWEEN date_add(:endDate, interval -12 MONTH) AND :endDate AND"
 		        + " e.location_id=:location");
 		return sql;
 	}
@@ -162,23 +161,22 @@ public class SqlCohortQueries {
 	public CohortDefinition getPatientsWithSuppressedViralLoadWithin12Months() {
 		SqlCohortDefinition sql = new SqlCohortDefinition();
 		sql.setName("suppressedViralLoadWithin12Months");
-		sql.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
-		sql.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+		sql.addParameter(new Parameter("endDate", "End Date", Date.class));
 		sql.addParameter(new Parameter("location", "Location", Location.class));
 		sql.setQuery("SELECT ultima_carga.patient_id FROM(SELECT p.patient_id,MAX(o.obs_datetime) data_carga"
-		        + " FROM patient INNER JOIN encounter e ON p.patient_id=e.patient_id"
+		        + " FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id"
 		        + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
 		        + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type IN ("
 		        + hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId() + ","
 		        + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + ","
 		        + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") AND  o.concept_id="
 		        + hivMetadata.getHivViralLoadConcept().getConceptId() + " AND o.value_numeric IS NOT NULL AND"
-		        + " e.encounter_datetime BETWEEN date_add(:onOrBefore, interval -12 MONTH) and :onOrBefore AND"
+		        + " e.encounter_datetime BETWEEN date_add(:endDate, interval -12 MONTH) and :endDate AND"
 		        + " e.location_id=:location GROUP BY p.patient_id" + ") ultima_carga"
 		        + " INNER JOIN obs ON obs.person_id=ultima_carga.patient_id AND obs.obs_datetime="
 		        + "ultima_carga.data_carga  WHERE obs.voided=0 AND obs.concept_id="
 		        + hivMetadata.getHivViralLoadConcept().getConceptId() + " AND obs.location_id=:location AND"
-		        + "obs.value_numeric < 1000");
+		        + " obs.value_numeric < 1000");
 		return sql;
 	}
 	

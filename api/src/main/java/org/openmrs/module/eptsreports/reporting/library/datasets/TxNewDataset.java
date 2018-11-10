@@ -130,7 +130,7 @@ public class TxNewDataset {
 		agesRange.add(PatientBetween50YearsAndAbove);
 		
 		// Male and Female <1
-		CompositionCohortDefinition patientBelow1YearEnrolledInHIVStartedART = compositionCohortQueries
+		CohortDefinition patientBelow1YearEnrolledInHIVStartedART = compositionCohortQueries
 		        .getPatientBelow1YearEnrolledInHIVStartedART(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs,
 		            patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility, PatientBelow1Year);
 		CohortIndicator patientBelow1YearEnrolledInHIVStartedARTIndicator = hivIndicators
@@ -141,7 +141,7 @@ public class TxNewDataset {
 		    "");
 		
 		// Male and Female between 1 and 9 years
-		CompositionCohortDefinition patientBetween1And9YearsEnrolledInHIVStartedART = compositionCohortQueries
+		CohortDefinition patientBetween1And9YearsEnrolledInHIVStartedART = compositionCohortQueries
 		        .getPatientBelow1YearEnrolledInHIVStartedART(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs,
 		            patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility, PatientBetween1And9Years);
 		CohortIndicator patientBetween1And9YearsEnrolledInHIVStartedARTIndicator = hivIndicators
@@ -154,7 +154,7 @@ public class TxNewDataset {
 		// Male
 		int i = 2;
 		for (CohortDefinition ageCohort : agesRange) {
-			CompositionCohortDefinition patientInYearRangeEnrolledInARTStarted = compositionCohortQueries
+			CohortDefinition patientInYearRangeEnrolledInARTStarted = compositionCohortQueries
 			        .getPatientInYearRangeEnrolledInARTStarted(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs,
 			            patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility, PatientBetween1And9Years,
 			            ageCohort, males);
@@ -172,7 +172,7 @@ public class TxNewDataset {
 		// Female
 		int j = 2;
 		for (CohortDefinition ageCohort : agesRange) {
-			CompositionCohortDefinition patientInYearRangeEnrolledInARTStarted = compositionCohortQueries
+			CohortDefinition patientInYearRangeEnrolledInARTStarted = compositionCohortQueries
 			        .getPatientInYearRangeEnrolledInARTStarted(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs,
 			            patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility, PatientBetween1And9Years,
 			            ageCohort, females);
@@ -187,7 +187,7 @@ public class TxNewDataset {
 			j++;
 		}
 		
-		CompositionCohortDefinition patientEnrolledInART = compositionCohortQueries.getPatientEnrolledInART(
+		CohortDefinition patientEnrolledInART = compositionCohortQueries.getPatientEnrolledInART(
 		    inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
 		    transferredFromOtherHealthFacility);
 		CohortIndicator patientEnrolledInHIVStartedARTIndicator = hivIndicators
@@ -198,7 +198,7 @@ public class TxNewDataset {
 		    "");
 		
 		// Obtain patients notified to be on TB treatment
-		SqlCohortDefinition notifiedToBeOnTbTreatment = sqlCohortQueries.getPatientsNotifiedToBeOnTbTreatment();
+		CohortDefinition notifiedToBeOnTbTreatment = sqlCohortQueries.getPatientsNotifiedToBeOnTbTreatment();
 		CohortIndicator tuberculosePatientNewlyInitiatingARTIndicator = tbIndicators
 		        .tuberculosePatientNewlyInitiatingARTIndicator(notifiedToBeOnTbTreatment);
 		dataSetDefinition.addColumn("TB", "TX_NEW: TB Started ART",

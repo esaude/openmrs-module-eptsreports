@@ -3,6 +3,7 @@ package org.openmrs.module.eptsreports.reporting.reports;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxPvlsDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -48,10 +49,9 @@ public class SetupTxPvls extends EptsDataExportManager {
 		rd.setUuid(getUuid());
 		rd.setName(getName());
 		rd.setDescription(getDescription());
-		rd.setParameters(getParameters());
+		rd.setParameters(txPvlsDataset.getParameters());
 		
-		rd.addDataSetDefinition(txPvlsDataset.constructTxPvlsDatset(),
-		    ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}"));
+		rd.addDataSetDefinition("PV", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
 		
 		return rd;
 	}
@@ -59,14 +59,6 @@ public class SetupTxPvls extends EptsDataExportManager {
 	@Override
 	public String getVersion() {
 		return "1.0-SNAPSHOT";
-	}
-	
-	@Override
-	public List<Parameter> getParameters() {
-		List<Parameter> parameters = new ArrayList<Parameter>();
-		parameters.add(ReportingConstants.START_DATE_PARAMETER);
-		parameters.add(ReportingConstants.END_DATE_PARAMETER);
-		return parameters;
 	}
 	
 	@Override
