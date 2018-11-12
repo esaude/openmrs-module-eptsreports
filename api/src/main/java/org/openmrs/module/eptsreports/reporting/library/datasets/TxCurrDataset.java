@@ -55,6 +55,13 @@ public class TxCurrDataset {
 		// SEGUIMENTO) before or on end date
 		SqlCohortDefinition patientWithSTARTDRUGSObs = sqlCohortQueries.getPatientWithSTARTDRUGSObs();
 		
+		// Looks for with START DATE (Concept 1190=HISTORICAL DRUG START DATE) filled in
+		// drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation
+		// for adults and children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and
+		// 9=S.TARV: PEDIATRIA SEGUIMENTO) where START DATE is before or equal end date
+		SqlCohortDefinition patientWithHistoricalDrugStartDateObs = sqlCohortQueries
+		        .getPatientWithHistoricalDrugStartDateObs();
+		
 		return dataSetDefinition;
 	}
 }
