@@ -29,6 +29,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
@@ -64,7 +65,7 @@ public class TxNewDataset {
 		return parameters;
 	}
 	
-	public CohortIndicatorDataSetDefinition constructTxNewDatset(List<Parameter> parameters) {
+	public DataSetDefinition constructTxNewDatset(List<Parameter> parameters) {
 		
 		CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
 		dataSetDefinition.setName("TX_NEW Data Set");
@@ -72,26 +73,25 @@ public class TxNewDataset {
 		
 		// Looks for patients enrolled in ART program (program 2=SERVICO TARV -
 		// TRATAMENTO) before or on end date
-		SqlCohortDefinition inARTProgramDuringTimePeriod = sqlCohortQueries.getPatientsinARTProgramDuringTimePeriod();
+		CohortDefinition inARTProgramDuringTimePeriod = sqlCohortQueries.getPatientsinARTProgramDuringTimePeriod();
 		
 		// Looks for patients registered as START DRUGS (answer to question 1255 = ARV
 		// PLAN is 1256 = START DRUGS) in the first drug pickup (encounter type
 		// 18=S.TARV: FARMACIA) or follow up consultation for adults and children
 		// (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA
 		// SEGUIMENTO) before or on end date
-		SqlCohortDefinition patientWithSTARTDRUGSObs = sqlCohortQueries.getPatientWithSTARTDRUGSObs();
+		CohortDefinition patientWithSTARTDRUGSObs = sqlCohortQueries.getPatientWithSTARTDRUGSObs();
 		
 		// Looks for with START DATE (Concept 1190=HISTORICAL DRUG START DATE) filled in
 		// drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation
 		// for adults and children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and
 		// 9=S.TARV: PEDIATRIA SEGUIMENTO) where START DATE is before or equal end date
-		SqlCohortDefinition patientWithHistoricalDrugStartDateObs = sqlCohortQueries
-		        .getPatientWithHistoricalDrugStartDateObs();
+		CohortDefinition patientWithHistoricalDrugStartDateObs = sqlCohortQueries.getPatientWithHistoricalDrugStartDateObs();
 		
 		// Looks for patients enrolled on ART program (program 2=SERVICO TARV -
 		// TRATAMENTO), transferred from other health facility (program workflow state
 		// is 29=TRANSFER FROM OTHER FACILITY) between start date and end date
-		SqlCohortDefinition transferredFromOtherHealthFacility = sqlCohortQueries
+		CohortDefinition transferredFromOtherHealthFacility = sqlCohortQueries
 		        .getPatientsTransferredFromOtherHealthFacility();
 		
 		CohortDefinition males = genderCohortQueries.MaleCohort();

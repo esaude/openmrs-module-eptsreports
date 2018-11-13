@@ -81,7 +81,7 @@ public class SetupTxNew extends EptsDataExportManager {
 		
 		reportDefinition.addDataSetDefinition(txNewDataset.constructTxNewDatset(getParameters()),
 		    ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}"));
-		
+
 		return reportDefinition;
 	}
 	

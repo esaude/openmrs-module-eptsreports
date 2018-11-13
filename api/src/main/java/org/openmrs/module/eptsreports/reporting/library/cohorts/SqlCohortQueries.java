@@ -52,7 +52,7 @@ public class SqlCohortQueries {
 	// Looks for patients enrolled in ART program (program 2=SERVICO TARV -
 	// TRATAMENTO) before or on end date
 	@DocumentedDefinition(value = "inARTProgramDuringTimePeriod")
-	public SqlCohortDefinition getPatientsinARTProgramDuringTimePeriod() {
+	public CohortDefinition getPatientsinARTProgramDuringTimePeriod() {
 		SqlCohortDefinition inARTProgramDuringTimePeriod = new SqlCohortDefinition();
 		inARTProgramDuringTimePeriod.setName("inARTProgramDuringTimePeriod");
 		inARTProgramDuringTimePeriod.setQuery("select pp.patient_id from patient_program pp where pp.program_id="
@@ -69,7 +69,7 @@ public class SqlCohortQueries {
 	// (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA
 	// SEGUIMENTO) before or on end date
 	@DocumentedDefinition(value = "patientWithSTARTDRUGSObs")
-	public SqlCohortDefinition getPatientWithSTARTDRUGSObs() {
+	public CohortDefinition getPatientWithSTARTDRUGSObs() {
 		SqlCohortDefinition patientWithSTARTDRUGSObs = new SqlCohortDefinition();
 		patientWithSTARTDRUGSObs.setName("patientWithSTARTDRUGSObs");
 		patientWithSTARTDRUGSObs.setQuery(
@@ -90,7 +90,7 @@ public class SqlCohortQueries {
 	// for adults and children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and
 	// 9=S.TARV: PEDIATRIA SEGUIMENTO) where START DATE is before or equal end date
 	@DocumentedDefinition(value = "patientWithHistoricalDrugStartDateObs")
-	public SqlCohortDefinition getPatientWithHistoricalDrugStartDateObs() {
+	public CohortDefinition getPatientWithHistoricalDrugStartDateObs() {
 		SqlCohortDefinition patientWithHistoricalDrugStartDateObs = new SqlCohortDefinition();
 		patientWithHistoricalDrugStartDateObs.setName("patientWithHistoricalDrugStartDateObs");
 		patientWithHistoricalDrugStartDateObs.setQuery(
@@ -109,7 +109,7 @@ public class SqlCohortQueries {
 	// TRATAMENTO), transferred from other health facility (program workflow state
 	// is 29=TRANSFER FROM OTHER FACILITY) between start date and end date
 	@DocumentedDefinition(value = "transferredFromOtherHealthFacility")
-	public SqlCohortDefinition getPatientsTransferredFromOtherHealthFacility() {
+	public CohortDefinition getPatientsTransferredFromOtherHealthFacility() {
 		SqlCohortDefinition transferredFromOtherHealthFacility = new SqlCohortDefinition();
 		transferredFromOtherHealthFacility.setName("transferredFromOtherHealthFacility");
 		transferredFromOtherHealthFacility.setQuery(
@@ -124,7 +124,7 @@ public class SqlCohortQueries {
 	
 	// Obtain patients notified to be on TB treatment
 	@DocumentedDefinition(value = "transferredFromOtherHealthFacility")
-	public SqlCohortDefinition getPatientsNotifiedToBeOnTbTreatment() {
+	public CohortDefinition getPatientsNotifiedToBeOnTbTreatment() {
 		SqlCohortDefinition notifiedToBeOnTbTreatment = new SqlCohortDefinition();
 		notifiedToBeOnTbTreatment.setName("notifiedToBeOnTbTreatment");
 		notifiedToBeOnTbTreatment.setQuery(
