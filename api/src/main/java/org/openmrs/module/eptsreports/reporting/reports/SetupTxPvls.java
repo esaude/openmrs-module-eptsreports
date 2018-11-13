@@ -35,7 +35,7 @@ public class SetupTxPvls extends EptsDataExportManager {
 	
 	@Override
 	public String getName() {
-		return "Tx_Pvls Report";
+		return "TX PLS Report";
 	}
 	
 	@Override

@@ -34,6 +34,8 @@ public class CommonMetadata extends Metadata {
 	
 	private String PREGNANCY_DUE_DATE = "e1dca8ee-1d5f-11e0-b929-000c29ad1d07";
 	
+	private String BREASTFEEDING = "bc4fe755-fc8f-49b8-9956-baf2477e8313";
+	
 	public Concept getYesConcept() {
 		return getConcept(YES);
 	}
@@ -60,6 +62,10 @@ public class CommonMetadata extends Metadata {
 	
 	public Concept getPregnancyDueDate() {
 		return getConcept(PREGNANCY_DUE_DATE);
+	}
+	
+	public Concept getBreastfeeding() {
+		return getConcept(BREASTFEEDING);
 	}
 	
 }

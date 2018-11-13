@@ -13,17 +13,25 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
+import org.openmrs.api.PatientSetService;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
+import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -37,6 +45,9 @@ public class SqlCohortQueries {
 	
 	@Autowired
 	private TbMetadata tbMetadata;
+	
+	@Autowired
+	private CommonCohortQueries commonCohortQueries;
 	
 	// Looks for patients enrolled in ART program (program 2=SERVICO TARV -
 	// TRATAMENTO) before or on end date
@@ -178,6 +189,116 @@ public class SqlCohortQueries {
 		        + hivMetadata.getHivViralLoadConcept().getConceptId() + " AND obs.location_id=:location AND"
 		        + " obs.value_numeric < 1000");
 		return sql;
+	}
+	
+	/**
+	 * @return CohortDefinition
+	 */
+	@DocumentedDefinition(value = "registeredBreastFeeding")
+	public CohortDefinition registeredBreastFeeding() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Registered Breastfeeding");
+		cd.setDescription("Patient with breastfeeding obs collected from encounters");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addSearch("hasEncounter",
+		    EptsReportUtils.map(commonCohortQueries.hasEncounter(hivMetadata.getAdultoSeguimentoEncounterType()),
+		        "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		cd.addSearch("hasObs",
+		    EptsReportUtils.map(commonCohortQueries.hasCodedObs(hivMetadata.getBreastfeeding(), hivMetadata.getYesConcept()),
+		        "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		cd.setCompositionString("hasEncounter AND hasObs");
+		
+		return cd;
+	}
+	
+	/**
+	 *
+	 */
+	@DocumentedDefinition(value = "dil")
+	public CohortDefinition dil() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setDescription("dil");// comprise of DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addSearch("DATAPARTO", EptsReportUtils.map(patientsWithDateOfBirthUpdatedOnARTService(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.addSearch("INICIOLACTANTE", EptsReportUtils.map(aRTStartForBeingBreastfeeding(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.addSearch("LACTANTEPROGRAMA",
+		    EptsReportUtils.map(patientsWhoGaveBirthTwoYearsAgo(), "startDate=${startDate},location=${location}"));
+		
+		cd.setCompositionString("DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA");
+		return cd;
+		
+	}
+	
+	/**
+	 *
+	 */
+	@DocumentedDefinition(value = "patientsWithDateOfBirthUpdatedOnARTService")
+	public CohortDefinition patientsWithDateOfBirthUpdatedOnARTService() {
+		DateObsCohortDefinition cd = new DateObsCohortDefinition();
+		cd.setName("patientsWithDateOfBirthUpdatedOnARTService");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.setQuestion(hivMetadata.getDateOfDelivery());
+		cd.setEncounterTypeList(
+		    Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType(), hivMetadata.getARVAdultInitialEncounterType()));
+		return cd;
+	}
+	
+	/**
+	 *
+	 */
+	@DocumentedDefinition(value = "aRTStartForBeingBreastfeeding")
+	public CohortDefinition aRTStartForBeingBreastfeeding() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		
+		cd.setName("aRTStartForBeingBreastfeeding");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addSearch("hasEncounter",
+		    EptsReportUtils.map(commonCohortQueries.hasEncounter(hivMetadata.getAdultoSeguimentoEncounterType()),
+		        "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		cd.addSearch("hasObs",
+		    EptsReportUtils.map(
+		        commonCohortQueries.hasCodedObs(hivMetadata.getCriteriaForArtStart(), hivMetadata.getBreastfeeding()),
+		        "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		cd.setCompositionString("hasObs AND hasEncounter");
+		
+		return cd;
+	}
+	
+	/**
+	 *
+	 */
+	public CohortDefinition patientsWhoGaveBirthTwoYearsAgo() {
+		SqlCohortDefinition cd = new SqlCohortDefinition();
+		cd.setName("patientsWhoGaveBirthTwoYearsAgo");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.setQuery(BreastfeedingQueries.getPatientsWhoGaveBirthTwoYearsAgo());
+		
+		return cd;
+	}
+	
+	/**
+	 *
+	 */
+	public CohortDefinition pregnantsInscribedOnARTService() {
+		SqlCohortDefinition cd = new SqlCohortDefinition();
+		cd.setName("pregnantsInscribedOnARTService");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.setQuery(BreastfeedingQueries.getPregnantWhileOnArt());
+		
+		return cd;
 	}
 	
 }

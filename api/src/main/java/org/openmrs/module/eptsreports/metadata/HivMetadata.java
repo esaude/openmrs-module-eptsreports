@@ -36,6 +36,10 @@ public class HivMetadata extends CommonMetadata {
 	
 	private String HIV_VIRAL_LOAD = "e1d6247e-1d5f-11e0-b929-000c29ad1d07";
 	
+	private String DATE_OF_DELIVERY = "e1e765c2-1d5f-11e0-b929-000c29ad1d07";
+	
+	private String CRITERIA_FOR_ART_START = "607315ab-2f52-4d9f-b28a-6383b9a5f9c4";
+	
 	// PROGRAMS
 	private String ARTProgram = "efe2481f-9e75-4515-8d5a-86bfde2b5ad3";
 	
@@ -65,6 +69,14 @@ public class HivMetadata extends CommonMetadata {
 	
 	public Concept getARVPlanConcept() {
 		return getConcept(ARVPlan);
+	}
+	
+	public Concept getDateOfDelivery() {
+		return getConcept(DATE_OF_DELIVERY);
+	}
+	
+	public Concept getCriteriaForArtStart() {
+		return getConcept(CRITERIA_FOR_ART_START);
 	}
 	
 	public Concept getHivViralLoadConcept() {

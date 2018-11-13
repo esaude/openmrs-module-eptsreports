@@ -15,8 +15,6 @@ import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimensio
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.Column;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -39,7 +37,7 @@ public class TxPvlsDataset {
 	public DataSetDefinition constructTxPvlsDatset() {
 		
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		String mappings = "endDate=${endDate},location=${location}";
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		dsd.setName("Tx_Pvls Dataset");
 		dsd.addParameters(getParameters());
 		// tie dimensions to this data definition
@@ -51,7 +49,7 @@ public class TxPvlsDataset {
 		// start with pregnant and breastfeeding
 		ColumnParameters pregnantAndBreastfeeding = new ColumnParameters("pb", "Pregnant and Breastfeeding",
 		        "gender=F|pb=pb");
-
+		
 		// providing all columns into lists to be used
 		List<ColumnParameters> pb = Arrays.asList(pregnantAndBreastfeeding);
 		
@@ -89,7 +87,8 @@ public class TxPvlsDataset {
 	}
 	
 	public List<Parameter> getParameters() {
-		return Arrays.asList(ReportingConstants.END_DATE_PARAMETER, ReportingConstants.LOCATION_PARAMETER);
+		return Arrays.asList(ReportingConstants.START_DATE_PARAMETER, ReportingConstants.END_DATE_PARAMETER,
+		    ReportingConstants.LOCATION_PARAMETER);
 	}
 	
 	// build dimensions specific for this data set
@@ -132,10 +131,11 @@ public class TxPvlsDataset {
 	private CohortDefinitionDimension breastfeedingAndPregnant() {
 		CohortDefinitionDimension dim = new CohortDefinitionDimension();
 		dim.setName("breastfeedingAndPregnant");
+		dim.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dim.addParameter(new Parameter("endDate", "End Date", Date.class));
 		dim.addParameter(new Parameter("location", "Location", Location.class));
-		dim.addCohortDefinition("pb",
-		    EptsReportUtils.map(ccq.pregnantAndBreastFeedingWomen(), "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("pb", EptsReportUtils.map(ccq.pregnantAndBreastFeedingWomen(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		
 		return dim;
 	}
@@ -189,22 +189,22 @@ public class TxPvlsDataset {
 		return Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16",
 		    "17", "18", "19", "20", "21", "22", "23", "24");
 	}
-
+	
 	private List<ColumnParameters> infants() {
 		// column parameters for children under 1
 		ColumnParameters under1M = new ColumnParameters("<1M", "<1-Male", "gender=M|age=<1");
 		ColumnParameters under1F = new ColumnParameters("<1F", "<1-Female", "gender=F|age=<1");
 		ColumnParameters under1T = new ColumnParameters("<1T", "<1-Total", "age=<1");
-
+		
 		return Arrays.asList(under1M, under1F, under1T);
 	}
-
+	
 	private List<ColumnParameters> children() {
 		// columns parameter for children 1- 9 years
 		ColumnParameters oneTo9M = new ColumnParameters("1-9M", "1-9 Male", "gender=M|age=1-9");
 		ColumnParameters oneTo9F = new ColumnParameters("1-9F", "1-9 Female", "gender=F|age=1-9");
 		ColumnParameters oneTo9T = new ColumnParameters("1-9T", "1-9 Total", "age=1-9");
-
+		
 		return Arrays.asList(oneTo9M, oneTo9F, oneTo9T);
 	}
 }

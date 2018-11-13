@@ -17,6 +17,7 @@ import java.util.Date;
 
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
+import org.openmrs.api.PatientSetService;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -40,6 +41,9 @@ public class CompositionCohortQueries {
 	
 	@Autowired
 	private HivMetadata hivMetadata;
+	
+	@Autowired
+	private SqlCohortQueries sqlCohortQueries;
 	
 	// Male and Female <1
 	@DocumentedDefinition(value = "patientBelow1YearEnrolledInHIVStartedART")
@@ -193,15 +197,24 @@ public class CompositionCohortQueries {
 	}
 	
 	@DocumentedDefinition(value = "breastfeedingWomen")
+	/**
+	 * Breast feeding women
+	 * 
+	 * @return CohortDefinition
+	 */
 	public CohortDefinition getBreastfeedingWomen() {
-		
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Breastfeeding or Paurpueras");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addParameter(new Parameter("location", "Facility", Location.class));
-		
-		// set the mappings here
-		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addSearch("dil",
+		    EptsReportUtils.map(sqlCohortQueries.dil(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.addSearch("lactating", EptsReportUtils.map(sqlCohortQueries.registeredBreastFeeding(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.addSearch("preg", EptsReportUtils.map(sqlCohortQueries.pregnantsInscribedOnARTService(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.setCompositionString("(dil OR lactating) AND NOT preg");
 		
 		return cd;
 	}
@@ -211,15 +224,14 @@ public class CompositionCohortQueries {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addParameter(new Parameter("location", "Facility", Location.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
 		
 		// set the mappings here
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		
 		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomen(), mappings));
-		// cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomen(),
-		// mappings));
-		cd.setCompositionString("pregnant");
+		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomen(), mappings));
+		cd.setCompositionString("pregnant AND breastfeeding");
 		
 		return cd;
 	}
