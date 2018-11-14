@@ -56,8 +56,29 @@ public class HivMetadata extends CommonMetadata {
 	}
 	
 	// ProgramWorkflowState
+	
+	private String TRANSFERRED_OUT_TO_ANOTHER_FACILITY = "TRANSFERRED OUT TO ANOTHER FACILITY";
+	
+	private String SUSPEND_TREATMENT = "SUSPEND TREATMENT";
+	
+	private String ABANDONED = "ABANDONED";
+	
+	private String PATIENT_HAS_DIED = "PATIENT HAS DIED";
+	
 	public ProgramWorkflowState gettransferredFromOtherHealthFacilityWorkflowState() {
-		return getProgramWorkflowState("efe2481f-9e75-4515-8d5a-86bfde2b5ad3", "2", "e1da7d3a-1d5f-11e0-b929-000c29ad1d07");
+		return getProgramWorkflowState("efe2481f-9e75-4515-8d5a-86bfde2b5ad3", "2", TRANSFERRED_OUT_TO_ANOTHER_FACILITY);
+	}
+	
+	public ProgramWorkflowState getSuspendedTreatmentWorkflowState() {
+		return getProgramWorkflowState("efe2481f-9e75-4515-8d5a-86bfde2b5ad3", "2", SUSPEND_TREATMENT);
+	}
+	
+	public ProgramWorkflowState getAbandonedWorkflowState() {
+		return getProgramWorkflowState("efe2481f-9e75-4515-8d5a-86bfde2b5ad3", "2", ABANDONED);
+	}
+	
+	public ProgramWorkflowState getPatientHasDiedWorkflowState() {
+		return getProgramWorkflowState("efe2481f-9e75-4515-8d5a-86bfde2b5ad3", "2", PATIENT_HAS_DIED);
 	}
 	
 }

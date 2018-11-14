@@ -125,4 +125,21 @@ public class SqlCohortQueries {
 		return notifiedToBeOnTbTreatment;
 	}
 	
+	//Patients who left ART program before or on end date(4). Includes: dead, transferred to, stopped and abandoned (patient state 10, 7, 8 or 9)
+	@DocumentedDefinition(value = "leftARTProgramBeforeOrOnEndDate")
+	public SqlCohortDefinition getPatientsWhoLeftARTProgramBeforeOrOnEndDate() {
+		SqlCohortDefinition leftARTProgramBeforeOrOnEndDate = new SqlCohortDefinition();
+		leftARTProgramBeforeOrOnEndDate.setName("leftARTProgramBeforeOrOnEndDate");
+		leftARTProgramBeforeOrOnEndDate.setQuery(
+		    "select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id inner join patient_state ps on pg.patient_program_id=ps.patient_program_id where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id="
+		            + hivMetadata.getARTProgram().getProgramId() + " and ps.state in ("
+		            + hivMetadata.gettransferredFromOtherHealthFacilityWorkflowState() + ", "
+		            + hivMetadata.getSuspendedTreatmentWorkflowState() + "," + hivMetadata.getAbandonedWorkflowState() + ","
+		            + hivMetadata.getPatientHasDiedWorkflowState()
+		            + ") and ps.end_date is null and ps.start_date<=:endDate");
+		leftARTProgramBeforeOrOnEndDate.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		leftARTProgramBeforeOrOnEndDate.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		return leftARTProgramBeforeOrOnEndDate;
+	}
+	
 }

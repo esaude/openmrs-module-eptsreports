@@ -74,6 +74,8 @@ public class TxCurrDataset {
 		//Looks for patients who had at least one drug pick up (encounter type 18=S.TARV: FARMACIA) before end date
 		encountertQueries.createEncounterParameterizedByDate("patientsWithDrugPickUpEncounters", Arrays.asList("onOrBefore"),
 		    hivMetadata.getARVPharmaciaEncounterType());
+		
+		sqlCohortQueries.getPatientsWhoLeftARTProgramBeforeOrOnEndDate();
 		return dataSetDefinition;
 	}
 }
