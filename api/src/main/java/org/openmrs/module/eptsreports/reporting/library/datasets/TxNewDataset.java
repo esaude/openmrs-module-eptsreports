@@ -27,6 +27,7 @@ import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -72,7 +73,7 @@ public class TxNewDataset {
 		
 		// Looks for patients enrolled in ART program (program 2=SERVICO TARV -
 		// TRATAMENTO) before or on end date
-		SqlCohortDefinition inARTProgramDuringTimePeriod = sqlCohortQueries.getPatientsinARTProgramDuringTimePeriod();
+		InProgramCohortDefinition inARTProgramDuringTimePeriod = sqlCohortQueries.getPatientsinARTProgramDuringTimePeriod();
 		
 		// Looks for patients registered as START DRUGS (answer to question 1255 = ARV
 		// PLAN is 1256 = START DRUGS) in the first drug pickup (encounter type

@@ -13,10 +13,13 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Arrays;
 import java.util.Date;
 
+import org.openmrs.Program;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
+import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -38,12 +41,11 @@ public class SqlCohortQueries {
 	// Looks for patients enrolled in ART program (program 2=SERVICO TARV -
 	// TRATAMENTO) before or on end date
 	@DocumentedDefinition(value = "inARTProgramDuringTimePeriod")
-	public SqlCohortDefinition getPatientsinARTProgramDuringTimePeriod() {
-		SqlCohortDefinition inARTProgramDuringTimePeriod = new SqlCohortDefinition();
+	public InProgramCohortDefinition getPatientsinARTProgramDuringTimePeriod() {
+		InProgramCohortDefinition inARTProgramDuringTimePeriod = new InProgramCohortDefinition();
+		Program artProgram = hivMetadata.getARTProgram();
 		inARTProgramDuringTimePeriod.setName("inARTProgramDuringTimePeriod");
-		inARTProgramDuringTimePeriod.setQuery("select pp.patient_id from patient_program pp where pp.program_id="
-		        + hivMetadata.getARTProgram().getProgramId() + " and pp.voided=0   and pp.date_enrolled <= :onOrBefore and "
-		        + "(pp.date_completed >= :onOrAfter or pp.date_completed is null)");
+		inARTProgramDuringTimePeriod.setPrograms(Arrays.asList(artProgram));
 		inARTProgramDuringTimePeriod.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		inARTProgramDuringTimePeriod.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		return inARTProgramDuringTimePeriod;
