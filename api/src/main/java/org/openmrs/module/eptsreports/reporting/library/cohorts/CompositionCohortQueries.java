@@ -15,6 +15,7 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 
+import org.openmrs.Cohort;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.api.PatientSetService;
@@ -44,6 +45,9 @@ public class CompositionCohortQueries {
 	
 	@Autowired
 	private SqlCohortQueries sqlCohortQueries;
+	
+	@Autowired
+	private GenderCohortQueries genderCohortQueries;
 	
 	// Male and Female <1
 	@DocumentedDefinition(value = "patientBelow1YearEnrolledInHIVStartedART")
@@ -233,6 +237,90 @@ public class CompositionCohortQueries {
 		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomen(), mappings));
 		cd.setCompositionString("pregnant AND breastfeeding");
 		
+		return cd;
+	}
+	
+	/**
+	 * Pregnant women with viral load in the last 12 months Denominator Denominator Denominator
+	 * 
+	 * @return CohortDefinition
+	 */
+	@DocumentedDefinition(value = "pregnantWomenAndHasViralLoadInTheLast12MonthsDenominator")
+	public CohortDefinition pregnantWomenAndHasViralLoadInTheLast12MonthsDenominator() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomen(), mappings));
+		cd.addSearch("vl", EptsReportUtils.map(sqlCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
+		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
+		cd.setCompositionString("pregnant AND vl AND female");
+		return cd;
+	}
+	
+	/**
+	 * Pregnant women with viral load in the last 12 months Numerator with viral load of <1000 Numerator
+	 * Numerator
+	 * 
+	 * @return CohortDefinition
+	 */
+	@DocumentedDefinition(value = "pregnantWomenAndHasSuppressedViralLoadInTheLast12MonthsNumerator")
+	public CohortDefinition pregnantWomenAndHasSuppressedViralLoadInTheLast12MonthsNumerator() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("preg", EptsReportUtils.map(getPregnantWomen(), mappings));
+		cd.addSearch("supp",
+		    EptsReportUtils.map(sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
+		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
+		cd.setCompositionString("preg AND supp AND female");
+		return cd;
+	}
+	
+	/**
+	 * Breastfeeding women with viral load in the last 12 months Denominator Denominator
+	 * 
+	 * @return CohortDefinition
+	 */
+	@DocumentedDefinition(value = "breastfeedingWomenAndHasViralLoadInTheLast12MonthsDenominator")
+	public CohortDefinition breastfeedingWomenAndHasViralLoadInTheLast12MonthsDenominator() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		
+		// set the mappings here
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomen(), mappings));
+		cd.addSearch("vl", EptsReportUtils.map(sqlCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
+		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
+		cd.setCompositionString("breastfeeding AND vl AND female");
+		return cd;
+	}
+	
+	/**
+	 * Pregnant women with viral load in the last 12 months Numerator with viral load of <1000 Numerator
+	 * 
+	 * @return CohortDefinition
+	 */
+	@DocumentedDefinition(value = "breastfeedingWomenAndHasViralLoadSuppressionInTheLast12MonthsNumerator")
+	public CohortDefinition breastfeedingWomenAndHasViralLoadSuppressionInTheLast12MonthsNumerator() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomen(), mappings));
+		cd.addSearch("suppression",
+		    EptsReportUtils.map(sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
+		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
+		cd.setCompositionString("breastfeeding AND suppression AND female");
 		return cd;
 	}
 }

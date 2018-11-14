@@ -4,6 +4,7 @@ import org.openmrs.Location;
 import org.openmrs.module.eptsreports.ColumnParameters;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.CompositionCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.SqlCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -34,6 +35,9 @@ public class TxPvlsDataset {
 	@Autowired
 	private CompositionCohortQueries ccq;
 	
+	@Autowired
+	private SqlCohortQueries sqlCohortQueries;
+	
 	public DataSetDefinition constructTxPvlsDatset() {
 		
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
@@ -43,45 +47,49 @@ public class TxPvlsDataset {
 		// tie dimensions to this data definition
 		dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
 		dsd.addDimension("age", EptsReportUtils.map(age(), "effectiveDate=${endDate}"));
-		dsd.addDimension("pb", EptsReportUtils.map(breastfeedingAndPregnant(), mappings));
-		
-		// build the column parameters here
-		// start with pregnant and breastfeeding
-		ColumnParameters pregnantAndBreastfeeding = new ColumnParameters("pb", "Pregnant and Breastfeeding",
-		        "gender=F|pb=pb");
-		
-		// providing all columns into lists to be used
-		List<ColumnParameters> pb = Arrays.asList(pregnantAndBreastfeeding);
 		
 		// constructing the first row of pregnant and breast feeding mothers
-		EptsReportUtils.addRow(dsd, "1N", "Numerator",
-		    EptsReportUtils.map(hivIndicators.patientsHavingViralLoadWithin12Months(), mappings), pb, Arrays.asList("01"));
-		EptsReportUtils.addRow(dsd, "1D", "Denominator",
-		    EptsReportUtils.map(hivIndicators.patientsWithSuppressedViralLoadWithin12Months(), mappings), pb,
-		    Arrays.asList("01"));
-		// constructing the row for children under 1 year
-		EptsReportUtils.addRow(dsd, "2N", "Numerator",
-		    EptsReportUtils.map(hivIndicators.patientsHavingViralLoadWithin12Months(), mappings), infants(),
-		    Arrays.asList("01", "02", "03"));
-		EptsReportUtils.addRow(dsd, "2D", "Denominator",
-		    EptsReportUtils.map(hivIndicators.patientsWithSuppressedViralLoadWithin12Months(), mappings), infants(),
-		    Arrays.asList("01", "02", "03"));
-		// constructing the rows for children aged between 1 and 9 years
-		EptsReportUtils.addRow(dsd, "3N", "Numerator",
-		    EptsReportUtils.map(hivIndicators.patientsHavingViralLoadWithin12Months(), mappings), children(),
-		    Arrays.asList("01", "02", "03"));
-		EptsReportUtils.addRow(dsd, "3D", "Denominator",
-		    EptsReportUtils.map(hivIndicators.patientsWithSuppressedViralLoadWithin12Months(), mappings), children(),
-		    Arrays.asList("01", "02", "03"));
-		// Constructing the rows for adults patients disaggregated by age and gender
-		////// Numerator
-		EptsReportUtils.addRow(dsd, "4N", "Numerator",
-		    EptsReportUtils.map(hivIndicators.patientsHavingViralLoadWithin12Months(), mappings), adultsDisagregation(),
-		    adultColumns());
-		///// Denominator
-		EptsReportUtils.addRow(dsd, "4D", "Denominator",
-		    EptsReportUtils.map(hivIndicators.patientsWithSuppressedViralLoadWithin12Months(), mappings),
+		dsd.addColumn("1N", "Pregnant Women - Numerator", EptsReportUtils.map(hivIndicators.cohortIndicator("pregnant",
+		    ccq.pregnantWomenAndHasSuppressedViralLoadInTheLast12MonthsNumerator(), mappings), mappings), "");
+		
+		dsd.addColumn("1D", "Pregnant Women - Denominator", EptsReportUtils.map(hivIndicators.cohortIndicator("pregnant",
+		    ccq.pregnantWomenAndHasViralLoadInTheLast12MonthsDenominator(), mappings), mappings), "");
+		
+		dsd.addColumn("2N", "Breastfeeding - Women Numerator",
+		    EptsReportUtils.map(hivIndicators.cohortIndicator("breastfeeding",
+		        ccq.breastfeedingWomenAndHasViralLoadSuppressionInTheLast12MonthsNumerator(), mappings), mappings),
+		    "");
+		
+		dsd.addColumn("2D", "Breastfeeding - Women Denominator",
+		    EptsReportUtils.map(hivIndicators.cohortIndicator("breastfeeding",
+		        ccq.breastfeedingWomenAndHasViralLoadInTheLast12MonthsDenominator(), mappings), mappings),
+		    "");
+		
+		// constructing the rows for children
+		// EptsReportUtils.addRow(dsd, "3N", "Children Numerator",
+		// EptsReportUtils.map(hivIndicators.cohortIndicator("children",
+		// sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(),
+		// mappings), mappings),
+		// children(), Arrays.asList("01", "02", "03"));
+		// EptsReportUtils.addRow(dsd, "3D", "Children Denominator",
+		// EptsReportUtils.map(
+		// hivIndicators.cohortIndicator("children",
+		// sqlCohortQueries.getPatientsViralLoadWithin12Months(), mappings),
+		// mappings),
+		// children(), Arrays.asList("01", "02", "03"))
+		
+		// Numerator
+		EptsReportUtils.addRow(dsd, "4D", "Adults Numerator",
+		    EptsReportUtils.map(hivIndicators.cohortIndicator("adults",
+		        sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings), mappings),
 		    adultsDisagregation(), adultColumns());
+		
+		/*
+		 * ///// Denominator EptsReportUtils.addRow(dsd, "4D", "Denominator",
+		 * EptsReportUtils.map(hivIndicators.
+		 * patientsWithSuppressedViralLoadWithin12Months(), mappings),
+		 * adultsDisagregation(), adultColumns());
+		 */
 		return dsd;
 		
 	}
@@ -120,23 +128,6 @@ public class TxPvlsDataset {
 		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("40-49", 40, 49), "effectiveDate=${endDate}"));
 		dim.addCohortDefinition(">49",
 		    EptsReportUtils.map(ageCohortQueries.patientWithAgeAbove(50), "effectiveDate=${endDate}"));
-		return dim;
-	}
-	
-	/**
-	 * Pregnant and breast feeding
-	 * 
-	 * @return {@link org.openmrs.module.reporting.indicator.dimension.CohortDimension}
-	 */
-	private CohortDefinitionDimension breastfeedingAndPregnant() {
-		CohortDefinitionDimension dim = new CohortDefinitionDimension();
-		dim.setName("breastfeedingAndPregnant");
-		dim.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		dim.addParameter(new Parameter("endDate", "End Date", Date.class));
-		dim.addParameter(new Parameter("location", "Location", Location.class));
-		dim.addCohortDefinition("pb", EptsReportUtils.map(ccq.pregnantAndBreastFeedingWomen(),
-		    "startDate=${startDate},endDate=${endDate},location=${location}"));
-		
 		return dim;
 	}
 	
@@ -190,21 +181,12 @@ public class TxPvlsDataset {
 		    "17", "18", "19", "20", "21", "22", "23", "24");
 	}
 	
-	private List<ColumnParameters> infants() {
-		// column parameters for children under 1
-		ColumnParameters under1M = new ColumnParameters("<1M", "<1-Male", "gender=M|age=<1");
-		ColumnParameters under1F = new ColumnParameters("<1F", "<1-Female", "gender=F|age=<1");
-		ColumnParameters under1T = new ColumnParameters("<1T", "<1-Total", "age=<1");
-		
-		return Arrays.asList(under1M, under1F, under1T);
-	}
-	
 	private List<ColumnParameters> children() {
-		// columns parameter for children 1- 9 years
-		ColumnParameters oneTo9M = new ColumnParameters("1-9M", "1-9 Male", "gender=M|age=1-9");
-		ColumnParameters oneTo9F = new ColumnParameters("1-9F", "1-9 Female", "gender=F|age=1-9");
-		ColumnParameters oneTo9T = new ColumnParameters("1-9T", "1-9 Total", "age=1-9");
+		// columns parameter for children 0- 9 years
+		ColumnParameters under1 = new ColumnParameters("<1", "Under 1 year", "age=<1");
+		ColumnParameters oneTo4 = new ColumnParameters("1-4", "1-4 years", "age=1-4");
+		ColumnParameters fiveTo9 = new ColumnParameters("5-9", "5-9 years", "age=5-9");
 		
-		return Arrays.asList(oneTo9M, oneTo9F, oneTo9T);
+		return Arrays.asList(under1, oneTo4, fiveTo9);
 	}
 }

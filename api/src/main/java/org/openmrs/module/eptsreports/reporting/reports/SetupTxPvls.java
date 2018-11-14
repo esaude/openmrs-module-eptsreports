@@ -35,7 +35,7 @@ public class SetupTxPvls extends EptsDataExportManager {
 	
 	@Override
 	public String getName() {
-		return "TX PLS Report";
+		return "TX PVLS Report";
 	}
 	
 	@Override
@@ -51,7 +51,7 @@ public class SetupTxPvls extends EptsDataExportManager {
 		rd.setDescription(getDescription());
 		rd.setParameters(txPvlsDataset.getParameters());
 		
-		rd.addDataSetDefinition("PV", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
+		rd.addDataSetDefinition("P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
 		
 		return rd;
 	}
@@ -65,7 +65,7 @@ public class SetupTxPvls extends EptsDataExportManager {
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
 		ReportDesign reportDesign = null;
 		try {
-			reportDesign = createRowPerPatientXlsOverviewReportDesign(reportDefinition, "TxPvls.xls", "TxPvls.xls_", null);
+			reportDesign = createRowPerPatientXlsOverviewReportDesign(reportDefinition, "TxPvls.xls", "TX_PVLS", null);
 			Properties props = new Properties();
 			props.put("repeatingSections", "sheet:1,dataset:Tx_Pvls Dataset");
 			props.put("sortWeight", "5000");

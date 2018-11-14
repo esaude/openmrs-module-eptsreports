@@ -149,6 +149,7 @@ public class SqlCohortQueries {
 	public CohortDefinition getPatientsViralLoadWithin12Months() {
 		SqlCohortDefinition sql = new SqlCohortDefinition();
 		sql.setName("viralLoadWithin12Months");
+		sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		sql.addParameter(new Parameter("endDate", "End Date", Date.class));
 		sql.addParameter(new Parameter("location", "Location", Location.class));
 		sql.setQuery("SELECT p.patient_id FROM  patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN"
@@ -172,6 +173,7 @@ public class SqlCohortQueries {
 	public CohortDefinition getPatientsWithSuppressedViralLoadWithin12Months() {
 		SqlCohortDefinition sql = new SqlCohortDefinition();
 		sql.setName("suppressedViralLoadWithin12Months");
+		sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		sql.addParameter(new Parameter("endDate", "End Date", Date.class));
 		sql.addParameter(new Parameter("location", "Location", Location.class));
 		sql.setQuery("SELECT ultima_carga.patient_id FROM(SELECT p.patient_id,MAX(o.obs_datetime) data_carga"
