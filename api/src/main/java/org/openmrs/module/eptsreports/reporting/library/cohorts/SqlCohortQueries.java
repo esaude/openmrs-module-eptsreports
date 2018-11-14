@@ -142,4 +142,19 @@ public class SqlCohortQueries {
 		return leftARTProgramBeforeOrOnEndDate;
 	}
 	
+	//Looks for patients that from the date scheduled for next drug pickup (concept 5096=RETURN VISIT DATE FOR ARV DRUG) until end date have completed 60 days and have not returned
+	@DocumentedDefinition(value = "patientsWhoHaveNotReturned")
+	public SqlCohortDefinition getPatientsWhoHaveNotReturned() {
+		SqlCohortDefinition patientsWhoHaveNotReturned = new SqlCohortDefinition();
+		patientsWhoHaveNotReturned.setName("patientsWhoHaveNotReturned");
+		patientsWhoHaveNotReturned.setQuery(
+		    "select patient_id from ( Select p.patient_id,max(encounter_datetime) encounter_datetime from patient p inner join encounter e on e.patient_id=p.patient_id where p.voided=0 and e.voided=0 and e.encounter_type="
+		            + hivMetadata.getARVPharmaciaEncounterType()
+		            + " and e.encounter_datetime<=:endDate group by p.patient_id ) max_frida inner join obs o on o.person_id=max_frida.patient_id where max_frida.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id= "
+		            + hivMetadata.getReturnVisitDateForArvDrugConcept() + " and datediff(:endDate,o.value_datetime)>=60");
+		patientsWhoHaveNotReturned.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		patientsWhoHaveNotReturned.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		return patientsWhoHaveNotReturned;
+	}
+	
 }

@@ -22,6 +22,7 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.EncounterCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.SqlCohortQueries;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -72,10 +73,15 @@ public class TxCurrDataset {
 		        .getPatientWithHistoricalDrugStartDateObs();
 		
 		//Looks for patients who had at least one drug pick up (encounter type 18=S.TARV: FARMACIA) before end date
-		encountertQueries.createEncounterParameterizedByDate("patientsWithDrugPickUpEncounters", Arrays.asList("onOrBefore"),
-		    hivMetadata.getARVPharmaciaEncounterType());
+		EncounterCohortDefinition patientsWithDrugPickUpEncounters = encountertQueries.createEncounterParameterizedByDate(
+		    "patientsWithDrugPickUpEncounters", Arrays.asList("onOrBefore"), hivMetadata.getARVPharmaciaEncounterType());
 		
-		sqlCohortQueries.getPatientsWhoLeftARTProgramBeforeOrOnEndDate();
+		//Looks for patients enrolled on art program (program 2 - SERVICO TARV - TRATAMENTO) who left ART program
+		SqlCohortDefinition patientsWhoLeftARTProgramBeforeOrOnEndDate = sqlCohortQueries
+		        .getPatientsWhoLeftARTProgramBeforeOrOnEndDate();
+		
+		//Looks for patients that from the date scheduled for next drug pickup (concept 5096=RETURN VISIT DATE FOR ARV DRUG) until end date have completed 60 days and have not returned
+		SqlCohortDefinition patientsWhoHaveNotReturned = sqlCohortQueries.getPatientsWhoHaveNotReturned();
 		return dataSetDefinition;
 	}
 }

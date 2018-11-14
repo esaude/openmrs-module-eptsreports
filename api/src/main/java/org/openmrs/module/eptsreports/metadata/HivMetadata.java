@@ -30,6 +30,16 @@ public class HivMetadata extends CommonMetadata {
 	// CONCEPTS
 	private String ARVPlan = "e1d9ee10-1d5f-11e0-b929-000c29ad1d07";
 	
+	private String RETURN_VISIT_DATE_FOR_ARV_DRUG = "e1e2efd8-1d5f-11e0-b929-000c29ad1d07";
+	
+	public Concept getARVPlanConcept() {
+		return getConcept(ARVPlan);
+	}
+	
+	public Concept getReturnVisitDateForArvDrugConcept() {
+		return getConcept(RETURN_VISIT_DATE_FOR_ARV_DRUG);
+	}
+	
 	// PROGRAMS
 	private String ARTProgram = "efe2481f-9e75-4515-8d5a-86bfde2b5ad3";
 	
@@ -45,10 +55,6 @@ public class HivMetadata extends CommonMetadata {
 	
 	public EncounterType getARVPharmaciaEncounterType() {
 		return getEncounterType(S_TARV_FARMACIA);
-	}
-	
-	public Concept getARVPlanConcept() {
-		return getConcept(ARVPlan);
 	}
 	
 	public Program getARTProgram() {
