@@ -15,8 +15,11 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.EncounterCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.SqlCohortQueries;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -31,6 +34,12 @@ public class TxCurrDataset {
 	@Autowired
 	private SqlCohortQueries sqlCohortQueries;
 	
+	@Autowired
+	private EncounterCohortQueries encountertQueries;
+	
+	@Autowired
+	private HivMetadata hivMetadata;
+	
 	public List<Parameter> getParameters() {
 		List<Parameter> parameters = new ArrayList<Parameter>();
 		parameters.add(ReportingConstants.START_DATE_PARAMETER);
@@ -44,24 +53,27 @@ public class TxCurrDataset {
 		dataSetDefinition.setName("TX_CURR Data Set");
 		dataSetDefinition.addParameters(parameters);
 		
-		// Looks for patients enrolled in ART program (program 2=SERVICO TARV -
-		// TRATAMENTO) before or on end date
+		/* Looks for patients enrolled in ART program (program 2=SERVICO TARV -
+		 TRATAMENTO) before or on end date*/
 		SqlCohortDefinition inARTProgramDuringTimePeriod = sqlCohortQueries.getPatientsinARTProgramDuringTimePeriod();
 		
-		// Looks for patients registered as START DRUGS (answer to question 1255 = ARV
-		// PLAN is 1256 = START DRUGS) in the first drug pickup (encounter type
-		// 18=S.TARV: FARMACIA) or follow up consultation for adults and children
-		// (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA
-		// SEGUIMENTO) before or on end date
+		/* Looks for patients registered as START DRUGS (answer to question 1255 = ARV
+		 PLAN is 1256 = START DRUGS) in the first drug pickup (encounter type
+		 18=S.TARV: FARMACIA) or follow up consultation for adults and children
+		 (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA
+		 SEGUIMENTO) before or on end date*/
 		SqlCohortDefinition patientWithSTARTDRUGSObs = sqlCohortQueries.getPatientWithSTARTDRUGSObs();
 		
-		// Looks for with START DATE (Concept 1190=HISTORICAL DRUG START DATE) filled in
-		// drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation
-		// for adults and children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and
-		// 9=S.TARV: PEDIATRIA SEGUIMENTO) where START DATE is before or equal end date
+		/* Looks for with START DATE (Concept 1190=HISTORICAL DRUG START DATE) filled in
+		 drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation
+		 for adults and children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and
+		 9=S.TARV: PEDIATRIA SEGUIMENTO) where START DATE is before or equal end date*/
 		SqlCohortDefinition patientWithHistoricalDrugStartDateObs = sqlCohortQueries
 		        .getPatientWithHistoricalDrugStartDateObs();
 		
+		//Looks for patients who had at least one drug pick up (encounter type 18=S.TARV: FARMACIA) before end date
+		encountertQueries.createEncounterParameterizedByDate("patientsWithDrugPickUpEncounters", Arrays.asList("onOrBefore"),
+		    hivMetadata.getARVPharmaciaEncounterType());
 		return dataSetDefinition;
 	}
 }

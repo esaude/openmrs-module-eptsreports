@@ -13,9 +13,37 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.openmrs.EncounterType;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EncounterCohortQueries {
+	
+	public EncounterCohortDefinition createEncounterParameterizedByDate(String name, List<String> parameterNames,
+	                                                                    EncounterType encounterType) {
+		List<EncounterType> encounters = new ArrayList<EncounterType>();
+		encounters.add(encounterType);
+		
+		EncounterCohortDefinition encounter = createEncounterParameterizedByDate(name, parameterNames);
+		encounter.setEncounterTypeList(encounters);
+		return encounter;
+	}
+	
+	public EncounterCohortDefinition createEncounterParameterizedByDate(String name, List<String> parameterNames) {
+		EncounterCohortDefinition encounter = new EncounterCohortDefinition();
+		encounter.setName(name);
+		if (parameterNames != null) {
+			for (String p : parameterNames) {
+				encounter.addParameter(new Parameter(p, p, Date.class));
+			}
+		}
+		return encounter;
+	}
 	
 }
