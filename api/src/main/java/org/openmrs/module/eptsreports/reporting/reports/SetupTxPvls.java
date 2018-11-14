@@ -66,10 +66,10 @@ public class SetupTxPvls extends EptsDataExportManager {
 		ReportDesign reportDesign = null;
 		try {
 			reportDesign = createRowPerPatientXlsOverviewReportDesign(reportDefinition, "TxPvls.xls", "TX_PVLS", null);
-			//Properties props = new Properties();
-			//props.put("repeatingSections", "sheet:1,dataset:Tx_Pvls Dataset");
-			//props.put("sortWeight", "5000");
-			//reportDesign.setProperties(props);
+			// Properties props = new Properties();
+			// props.put("repeatingSections", "sheet:1,dataset:Tx_Pvls Dataset");
+			// props.put("sortWeight", "5000");
+			// reportDesign.setProperties(props);
 		}
 		catch (IOException e) {
 			// TODO Auto-generated catch block

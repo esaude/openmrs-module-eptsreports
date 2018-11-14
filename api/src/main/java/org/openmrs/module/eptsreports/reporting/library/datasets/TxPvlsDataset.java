@@ -48,6 +48,17 @@ public class TxPvlsDataset {
 		dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
 		dsd.addDimension("age", EptsReportUtils.map(age(), "effectiveDate=${endDate}"));
 		
+		dsd.addColumn("0N", "Total patients with suppressed Viral load - Numerator",
+		    EptsReportUtils.map(hivIndicators.cohortIndicator("suppressed",
+		        sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings), mappings),
+		    "");
+		
+		dsd.addColumn("0D", "Total patients with Viral load - Denominator",
+		    EptsReportUtils.map(
+		        hivIndicators.cohortIndicator("suppressed", sqlCohortQueries.getPatientsViralLoadWithin12Months(), mappings),
+		        mappings),
+		    "");
+		
 		// constructing the first row of pregnant and breast feeding mothers
 		dsd.addColumn("1N", "Pregnant Women - Numerator", EptsReportUtils.map(hivIndicators.cohortIndicator("pregnant",
 		    ccq.pregnantWomenAndHasSuppressedViralLoadInTheLast12MonthsNumerator(), mappings), mappings), "");
@@ -66,17 +77,16 @@ public class TxPvlsDataset {
 		    "");
 		
 		// constructing the rows for children
-		// EptsReportUtils.addRow(dsd, "3N", "Children Numerator",
-		// EptsReportUtils.map(hivIndicators.cohortIndicator("children",
-		// sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(),
-		// mappings), mappings),
-		// children(), Arrays.asList("01", "02", "03"));
-		// EptsReportUtils.addRow(dsd, "3D", "Children Denominator",
-		// EptsReportUtils.map(
-		// hivIndicators.cohortIndicator("children",
-		// sqlCohortQueries.getPatientsViralLoadWithin12Months(), mappings),
-		// mappings),
-		// children(), Arrays.asList("01", "02", "03"))
+		EptsReportUtils.addRow(dsd, "3N", "Children Numerator",
+		    EptsReportUtils.map(hivIndicators.cohortIndicator("children",
+		        sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings), mappings),
+		    children(), Arrays.asList("01", "02", "03"));
+		
+		EptsReportUtils.addRow(dsd, "3D", "Children Denominator",
+		    EptsReportUtils.map(
+		        hivIndicators.cohortIndicator("children", sqlCohortQueries.getPatientsViralLoadWithin12Months(), mappings),
+		        mappings),
+		    children(), Arrays.asList("01", "02", "03"));
 		
 		// Numerator
 		EptsReportUtils.addRow(dsd, "4N", "Adults with suppressed VL Numerator",
@@ -109,9 +119,12 @@ public class TxPvlsDataset {
 		CohortDefinitionDimension dim = new CohortDefinitionDimension();
 		dim.addParameter(new Parameter("effectiveDate", "End Date", Date.class));
 		dim.setName("age");
-		dim.addCohortDefinition("<1", EptsReportUtils.map(ageCohortQueries.patientWithAgeBelow(1), ""));
-		dim.addCohortDefinition("1-9",
-		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("1-9", 1, 9), "effectiveDate=${endDate}"));
+		dim.addCohortDefinition("<1",
+		    EptsReportUtils.map(ageCohortQueries.patientWithAgeBelow(1), "effectiveDate=${endDate}"));
+		dim.addCohortDefinition("1-4",
+		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("1-4", 1, 4), "effectiveDate=${endDate}"));
+		dim.addCohortDefinition("5-9",
+		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("5-9", 5, 9), "effectiveDate=${endDate}"));
 		dim.addCohortDefinition("10-14",
 		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("10-14", 10, 14), "effectiveDate=${endDate}"));
 		dim.addCohortDefinition("15-19",
