@@ -79,17 +79,17 @@ public class TxPvlsDataset {
 		// children(), Arrays.asList("01", "02", "03"))
 		
 		// Numerator
-		EptsReportUtils.addRow(dsd, "4D", "Adults Numerator",
+		EptsReportUtils.addRow(dsd, "4N", "Adults with suppressed VL Numerator",
 		    EptsReportUtils.map(hivIndicators.cohortIndicator("adults",
 		        sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings), mappings),
 		    adultsDisagregation(), adultColumns());
 		
-		/*
-		 * ///// Denominator EptsReportUtils.addRow(dsd, "4D", "Denominator",
-		 * EptsReportUtils.map(hivIndicators.
-		 * patientsWithSuppressedViralLoadWithin12Months(), mappings),
-		 * adultsDisagregation(), adultColumns());
-		 */
+		// Denominator
+		EptsReportUtils.addRow(dsd, "4D", "Adults with VL Denominator",
+		    EptsReportUtils.map(
+		        hivIndicators.cohortIndicator("adults", sqlCohortQueries.getPatientsViralLoadWithin12Months(), mappings),
+		        mappings),
+		    adultsDisagregation(), adultColumns());
 		return dsd;
 		
 	}
