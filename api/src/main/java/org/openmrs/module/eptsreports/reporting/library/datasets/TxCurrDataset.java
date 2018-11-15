@@ -92,6 +92,9 @@ public class TxCurrDataset {
 		// 5096=RETURN VISIT DATE FOR ARV DRUG) until end date have completed 60 days
 		// and have not returned
 		SqlCohortDefinition patientsWhoHaveNotReturned = sqlCohortQueries.getPatientsWhoHaveNotReturned();
+		
+		//Looks for patients that from the date scheduled for next follow up consultation (concept 1410=RETURN VISIT DATE) until the end date have not completed 60 days
+		SqlCohortDefinition patientsWhoHaveNotCompleted60Days = sqlCohortQueries.getPatientsWhoHaveNotCompleted60Days();
 		return dataSetDefinition;
 	}
 }

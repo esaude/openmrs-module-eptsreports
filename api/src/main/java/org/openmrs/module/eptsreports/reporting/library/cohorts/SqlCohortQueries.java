@@ -160,4 +160,19 @@ public class SqlCohortQueries {
 		return patientsWhoHaveNotReturned;
 	}
 	
+	@DocumentedDefinition(value = "patientsWhoHaveNotCompleted60Days")
+	public SqlCohortDefinition getPatientsWhoHaveNotCompleted60Days() {
+		SqlCohortDefinition patientsWhoHaveNotCompleted60Days = new SqlCohortDefinition();
+		patientsWhoHaveNotCompleted60Days.setName("patientsWhoHaveNotCompleted60Days");
+		patientsWhoHaveNotCompleted60Days.setQuery(
+		    "select patient_id from ( Select p.patient_id,max(encounter_datetime) encounter_datetime from patient p inner join encounter e on e.patient_id=p.patient_id where p.voided=0 and e.voided=0 and e.encounter_type in ("
+		            + hivMetadata.getAdultoSeguimentoEncounterType() + ", "
+		            + hivMetadata.getARVPediatriaSeguimentoEncounterType()
+		            + ") and e.encounter_datetime<=:endDate group by p.patient_id ) max_mov inner join obs o on o.person_id=max_mov.patient_id where max_mov.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id="
+		            + hivMetadata.getReturnVisitDateConcept() + " and datediff(:endDate,o.value_datetime)<60");
+		patientsWhoHaveNotCompleted60Days.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		patientsWhoHaveNotCompleted60Days.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		return patientsWhoHaveNotCompleted60Days;
+	}
+	
 }
