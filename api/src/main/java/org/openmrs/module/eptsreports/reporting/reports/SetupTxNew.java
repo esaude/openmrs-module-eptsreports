@@ -89,7 +89,8 @@ public class SetupTxNew extends EptsDataExportManager {
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
 		ReportDesign reportDesign = null;
 		try {
-			reportDesign = createRowPerPatientXlsOverviewReportDesign(reportDefinition, "TXNEW.xls", "TXNEW.xls_", null);
+			reportDesign = createRowPerPatientXlsOverviewReportDesign(reportDefinition, "TXNEW.xls", "TXNEW.xls_",
+			    getExcelDesignUuid(), null);
 			Properties props = new Properties();
 			props.put("repeatingSections", "sheet:1,dataset:TX_NEW Data Set");
 			props.put("sortWeight", "5000");

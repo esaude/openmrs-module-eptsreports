@@ -77,7 +77,7 @@ public abstract class EptsDataExportManager extends EptsReportManager {
 	 * @throws IOException
 	 */
 	public static ReportDesign createRowPerPatientXlsOverviewReportDesign(ReportDefinition rd, String resourceName,
-	        String name, Map<? extends Object, ? extends Object> properties) throws IOException {
+	        String name, String excelDesignUuid, Map<? extends Object, ? extends Object> properties) throws IOException {
 		
 		ReportService rs = Context.getService(ReportService.class);
 		for (ReportDesign rdd : rs.getAllReportDesigns(false)) {
@@ -98,6 +98,9 @@ public abstract class EptsDataExportManager extends EptsReportManager {
 		design.addResource(resource);
 		if (properties != null) {
 			design.getProperties().putAll(properties);
+		}
+		if (excelDesignUuid != null && excelDesignUuid.length() > 1) {
+			design.setUuid(excelDesignUuid);
 		}
 		resource.setReportDesign(design);
 		

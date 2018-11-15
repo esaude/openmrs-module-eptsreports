@@ -125,7 +125,8 @@ public class SqlCohortQueries {
 		return notifiedToBeOnTbTreatment;
 	}
 	
-	//Patients who left ART program before or on end date(4). Includes: dead, transferred to, stopped and abandoned (patient state 10, 7, 8 or 9)
+	// Patients who left ART program before or on end date(4). Includes: dead,
+	// transferred to, stopped and abandoned (patient state 10, 7, 8 or 9)
 	@DocumentedDefinition(value = "leftARTProgramBeforeOrOnEndDate")
 	public SqlCohortDefinition getPatientsWhoLeftARTProgramBeforeOrOnEndDate() {
 		SqlCohortDefinition leftARTProgramBeforeOrOnEndDate = new SqlCohortDefinition();
@@ -142,7 +143,9 @@ public class SqlCohortQueries {
 		return leftARTProgramBeforeOrOnEndDate;
 	}
 	
-	//Looks for patients that from the date scheduled for next drug pickup (concept 5096=RETURN VISIT DATE FOR ARV DRUG) until end date have completed 60 days and have not returned
+	// Looks for patients that from the date scheduled for next drug pickup (concept
+	// 5096=RETURN VISIT DATE FOR ARV DRUG) until end date have completed 60 days
+	// and have not returned
 	@DocumentedDefinition(value = "patientsWhoHaveNotReturned")
 	public SqlCohortDefinition getPatientsWhoHaveNotReturned() {
 		SqlCohortDefinition patientsWhoHaveNotReturned = new SqlCohortDefinition();

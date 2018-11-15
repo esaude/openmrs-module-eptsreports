@@ -83,7 +83,8 @@ public class SetupTxCurr extends EptsDataExportManager {
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
 		ReportDesign reportDesign = null;
 		try {
-			reportDesign = createRowPerPatientXlsOverviewReportDesign(reportDefinition, "TXCURR.xls", "TXCURR.xls_", null);
+			reportDesign = createRowPerPatientXlsOverviewReportDesign(reportDefinition, "TXCURR.xls", "TXCURR.xls_",
+			    getExcelDesignUuid(), null);
 			Properties props = new Properties();
 			props.put("repeatingSections", "sheet:1,dataset:TX_CURR Data Set");
 			props.put("sortWeight", "5000");

@@ -54,33 +54,43 @@ public class TxCurrDataset {
 		dataSetDefinition.setName("TX_CURR Data Set");
 		dataSetDefinition.addParameters(parameters);
 		
-		/* Looks for patients enrolled in ART program (program 2=SERVICO TARV -
-		 TRATAMENTO) before or on end date*/
+		/*
+		 * Looks for patients enrolled in ART program (program 2=SERVICO TARV -
+		 * TRATAMENTO) before or on end date
+		 */
 		SqlCohortDefinition inARTProgramDuringTimePeriod = sqlCohortQueries.getPatientsinARTProgramDuringTimePeriod();
 		
-		/* Looks for patients registered as START DRUGS (answer to question 1255 = ARV
-		 PLAN is 1256 = START DRUGS) in the first drug pickup (encounter type
-		 18=S.TARV: FARMACIA) or follow up consultation for adults and children
-		 (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA
-		 SEGUIMENTO) before or on end date*/
+		/*
+		 * Looks for patients registered as START DRUGS (answer to question 1255 = ARV
+		 * PLAN is 1256 = START DRUGS) in the first drug pickup (encounter type
+		 * 18=S.TARV: FARMACIA) or follow up consultation for adults and children
+		 * (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA
+		 * SEGUIMENTO) before or on end date
+		 */
 		SqlCohortDefinition patientWithSTARTDRUGSObs = sqlCohortQueries.getPatientWithSTARTDRUGSObs();
 		
-		/* Looks for with START DATE (Concept 1190=HISTORICAL DRUG START DATE) filled in
-		 drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation
-		 for adults and children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and
-		 9=S.TARV: PEDIATRIA SEGUIMENTO) where START DATE is before or equal end date*/
+		/*
+		 * Looks for with START DATE (Concept 1190=HISTORICAL DRUG START DATE) filled in
+		 * drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation
+		 * for adults and children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and
+		 * 9=S.TARV: PEDIATRIA SEGUIMENTO) where START DATE is before or equal end date
+		 */
 		SqlCohortDefinition patientWithHistoricalDrugStartDateObs = sqlCohortQueries
 		        .getPatientWithHistoricalDrugStartDateObs();
 		
-		//Looks for patients who had at least one drug pick up (encounter type 18=S.TARV: FARMACIA) before end date
+		// Looks for patients who had at least one drug pick up (encounter type
+		// 18=S.TARV: FARMACIA) before end date
 		EncounterCohortDefinition patientsWithDrugPickUpEncounters = encountertQueries.createEncounterParameterizedByDate(
 		    "patientsWithDrugPickUpEncounters", Arrays.asList("onOrBefore"), hivMetadata.getARVPharmaciaEncounterType());
 		
-		//Looks for patients enrolled on art program (program 2 - SERVICO TARV - TRATAMENTO) who left ART program
+		// Looks for patients enrolled on art program (program 2 - SERVICO TARV -
+		// TRATAMENTO) who left ART program
 		SqlCohortDefinition patientsWhoLeftARTProgramBeforeOrOnEndDate = sqlCohortQueries
 		        .getPatientsWhoLeftARTProgramBeforeOrOnEndDate();
 		
-		//Looks for patients that from the date scheduled for next drug pickup (concept 5096=RETURN VISIT DATE FOR ARV DRUG) until end date have completed 60 days and have not returned
+		// Looks for patients that from the date scheduled for next drug pickup (concept
+		// 5096=RETURN VISIT DATE FOR ARV DRUG) until end date have completed 60 days
+		// and have not returned
 		SqlCohortDefinition patientsWhoHaveNotReturned = sqlCohortQueries.getPatientsWhoHaveNotReturned();
 		return dataSetDefinition;
 	}
