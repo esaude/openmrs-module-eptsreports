@@ -20,6 +20,7 @@ import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.CompositionCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.PatientsWithStartDrugsObsCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.SqlCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
 import org.openmrs.module.eptsreports.reporting.library.indicators.TbIndicators;
@@ -80,7 +81,7 @@ public class TxNewDataset {
 		// 18=S.TARV: FARMACIA) or follow up consultation for adults and children
 		// (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA
 		// SEGUIMENTO) before or on end date
-		SqlCohortDefinition patientWithSTARTDRUGSObs = sqlCohortQueries.getPatientWithSTARTDRUGSObs();
+		PatientsWithStartDrugsObsCohortDefinition patientWithSTARTDRUGSObs = new PatientsWithStartDrugsObsCohortDefinition();
 		
 		// Looks for with START DATE (Concept 1190=HISTORICAL DRUG START DATE) filled in
 		// drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation
