@@ -15,7 +15,6 @@
 package org.openmrs.module.eptsreports.reporting.library.indicators;
 
 import java.util.Date;
-import java.util.Map;
 
 import org.openmrs.Location;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
