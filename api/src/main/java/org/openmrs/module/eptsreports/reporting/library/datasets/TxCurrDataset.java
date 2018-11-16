@@ -28,10 +28,14 @@ import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -146,6 +150,27 @@ public class TxCurrDataset {
 		agesRange.add(PatientBetween35And39Years);
 		agesRange.add(PatientBetween40And49Years);
 		agesRange.add(PatientBetween50YearsAndAbove);
+		
+		// Male
+		
+		int i = 2;
+		for (AgeCohortDefinition ageCohort : agesRange) {
+			CompositionCohortDefinition patientInYearRange = compositionCohortQueries.getPatientInYearRangeCurrentlyInARTStarted(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsWhoHaveNotReturned, patientsWhoHaveNotCompleted60Days, abandonedButHaveNotcompleted60Days, PatientBetween1And9Years, ageCohort, males);
+			CohortIndicator patientInYearRangeCurrenltyInHIVStartedARTIndicator = hivIndicators.patientInYearRangeEnrolledInHIVStartedARTIndicator(patientInYearRange);
+			dataSetDefinition.addColumn("C1M" + i, "Males:TX_CURR: Currently on ART by age and sex: " + ageCohort.getName(), new Mapped<CohortIndicator>(patientInYearRangeCurrenltyInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
+			
+			i++;
+		}
+		
+		// Females
+		int j = 2;
+		for (AgeCohortDefinition ageCohort : agesRange) {
+			CompositionCohortDefinition patientInYearRange = compositionCohortQueries.getPatientInYearRangeCurrentlyInARTStarted(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsWhoHaveNotReturned, patientsWhoHaveNotCompleted60Days, abandonedButHaveNotcompleted60Days, PatientBetween1And9Years, ageCohort, females);
+			CohortIndicator patientInYearRangeCurrenltyInHIVStartedARTIndicator = hivIndicators.patientInYearRangeEnrolledInHIVStartedARTIndicator(patientInYearRange);
+			
+			dataSetDefinition.addColumn("C1F" + j, "Females:TX_CURR: Currently on ART by age and sex: " + ageCohort.getName(), new Mapped<CohortIndicator>(patientInYearRangeCurrenltyInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
+			j++;
+		}
 		
 		return dataSetDefinition;
 	}

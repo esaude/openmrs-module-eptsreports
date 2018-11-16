@@ -17,6 +17,7 @@ import java.util.Date;
 
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -100,5 +101,31 @@ public class CompositionCohortQueries {
 		patientEnrolledInART.setCompositionString("(1 or 2 or 3) and (not 4)");
 		
 		return patientEnrolledInART;
+	}
+	
+	// Starting TX_CURR
+	
+	@DocumentedDefinition(value = "patientInYearRangeEnrolledInARTStarted")
+	public CompositionCohortDefinition getPatientInYearRangeCurrentlyInARTStarted(CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs, EncounterCohortDefinition patientsWithDrugPickUpEncounters, CohortDefinition patientsWhoLeftARTProgramBeforeOrOnEndDate, CohortDefinition patientsWhoHaveNotReturned, CohortDefinition patientsWhoHaveNotCompleted60Days, CohortDefinition abandonedButHaveNotcompleted60Days, CohortDefinition PatientBetween1And9Years, CohortDefinition ageCohort, CohortDefinition gender) {
+		
+		CompositionCohortDefinition patientInYearRangeEnrolledInARTStarted = new CompositionCohortDefinition();
+		patientInYearRangeEnrolledInARTStarted.setName("patientInYearRangeEnrolledInHIVStarted");
+		patientInYearRangeEnrolledInARTStarted.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		patientInYearRangeEnrolledInARTStarted.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		patientInYearRangeEnrolledInARTStarted.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+		patientInYearRangeEnrolledInARTStarted.getSearches().put("1", new Mapped<CohortDefinition>(inARTProgramDuringTimePeriod, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientInYearRangeEnrolledInARTStarted.getSearches().put("2", new Mapped<CohortDefinition>(patientWithSTARTDRUGSObs, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientInYearRangeEnrolledInARTStarted.getSearches().put("3", new Mapped<CohortDefinition>(patientWithHistoricalDrugStartDateObs, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientInYearRangeEnrolledInARTStarted.getSearches().put("4", new Mapped<CohortDefinition>(patientsWithDrugPickUpEncounters, ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore}")));
+		patientInYearRangeEnrolledInARTStarted.getSearches().put("5", new Mapped<CohortDefinition>(patientsWhoLeftARTProgramBeforeOrOnEndDate, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientInYearRangeEnrolledInARTStarted.getSearches().put("6", new Mapped<CohortDefinition>(patientsWhoHaveNotReturned, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientInYearRangeEnrolledInARTStarted.getSearches().put("7", new Mapped<CohortDefinition>(patientsWhoHaveNotCompleted60Days, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientInYearRangeEnrolledInARTStarted.getSearches().put("8", new Mapped<CohortDefinition>(abandonedButHaveNotcompleted60Days, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		
+		// TODO -Check specifications document on how to use query 6,7 and 8
+		patientInYearRangeEnrolledInARTStarted.getSearches().put("9", new Mapped<CohortDefinition>(ageCohort, ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}")));
+		patientInYearRangeEnrolledInARTStarted.getSearches().put("10", new Mapped<CohortDefinition>(gender, null));
+		patientInYearRangeEnrolledInARTStarted.setCompositionString("((1 or 2 or 3 or 4) and (not 5)) and 9 and 10");
+		return patientInYearRangeEnrolledInARTStarted;
 	}
 }
