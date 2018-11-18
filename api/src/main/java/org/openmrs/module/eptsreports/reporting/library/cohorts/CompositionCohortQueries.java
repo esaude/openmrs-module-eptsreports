@@ -128,6 +128,29 @@ public class CompositionCohortQueries {
 		return patientBellowOneYearCurrentlyInARTStarted;
 	}
 	
+	@DocumentedDefinition(value = "patientBetween1And9YearsCurrently")
+	public CompositionCohortDefinition getPatientBetween1And9YearsCurrently(CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs, EncounterCohortDefinition patientsWithDrugPickUpEncounters, CohortDefinition patientsWhoLeftARTProgramBeforeOrOnEndDate, CohortDefinition patientsWhoHaveNotReturned, CohortDefinition patientsWhoHaveNotCompleted60Days, CohortDefinition abandonedButHaveNotcompleted60Days, CohortDefinition ageCohort) {
+		
+		CompositionCohortDefinition patientBetween1And9YearsCurrently = new CompositionCohortDefinition();
+		patientBetween1And9YearsCurrently.setName("patientBetween1And9YearsCurrently");
+		patientBetween1And9YearsCurrently.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		patientBetween1And9YearsCurrently.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		patientBetween1And9YearsCurrently.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+		patientBetween1And9YearsCurrently.getSearches().put("1", new Mapped<CohortDefinition>(inARTProgramDuringTimePeriod, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientBetween1And9YearsCurrently.getSearches().put("2", new Mapped<CohortDefinition>(patientWithSTARTDRUGSObs, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientBetween1And9YearsCurrently.getSearches().put("3", new Mapped<CohortDefinition>(patientWithHistoricalDrugStartDateObs, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientBetween1And9YearsCurrently.getSearches().put("4", new Mapped<CohortDefinition>(patientsWithDrugPickUpEncounters, ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore}")));
+		patientBetween1And9YearsCurrently.getSearches().put("5", new Mapped<CohortDefinition>(patientsWhoLeftARTProgramBeforeOrOnEndDate, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientBetween1And9YearsCurrently.getSearches().put("6", new Mapped<CohortDefinition>(patientsWhoHaveNotReturned, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientBetween1And9YearsCurrently.getSearches().put("7", new Mapped<CohortDefinition>(patientsWhoHaveNotCompleted60Days, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientBetween1And9YearsCurrently.getSearches().put("8", new Mapped<CohortDefinition>(abandonedButHaveNotcompleted60Days, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		
+		// TODO -Check specifications document on how to use query 6,7 and 8
+		patientBetween1And9YearsCurrently.getSearches().put("9", new Mapped<CohortDefinition>(ageCohort, ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}")));
+		patientBetween1And9YearsCurrently.setCompositionString("((1 or 2 or 3 or 4) and (not 5)) and 9");
+		return patientBetween1And9YearsCurrently;
+	}
+	
 	@DocumentedDefinition(value = "patientInYearRangeEnrolledInARTStarted")
 	public CompositionCohortDefinition getPatientInYearRangeCurrentlyInARTStarted(CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs, EncounterCohortDefinition patientsWithDrugPickUpEncounters, CohortDefinition patientsWhoLeftARTProgramBeforeOrOnEndDate, CohortDefinition patientsWhoHaveNotReturned, CohortDefinition patientsWhoHaveNotCompleted60Days, CohortDefinition abandonedButHaveNotcompleted60Days, CohortDefinition PatientBetween1And9Years, CohortDefinition ageCohort, CohortDefinition gender) {
 		
