@@ -172,6 +172,10 @@ public class TxCurrDataset {
 			j++;
 		}
 		
+		CompositionCohortDefinition allPatientsCurrentlyInART = compositionCohortQueries.getAllPatientsCurrentlyInARTStarted(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsWhoHaveNotReturned, patientsWhoHaveNotCompleted60Days, abandonedButHaveNotcompleted60Days);
+		CohortIndicator allPatientsCurrentlyInARTARTIndicator = hivIndicators.patientEnrolledInHIVStartedARTIndicator(allPatientsCurrentlyInART);
+		dataSetDefinition.addColumn("C1All", "TX_CURR: Currently on ART", new Mapped<CohortIndicator>(allPatientsCurrentlyInARTARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
+		
 		return dataSetDefinition;
 	}
 }
