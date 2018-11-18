@@ -105,6 +105,29 @@ public class CompositionCohortQueries {
 	
 	// Starting TX_CURR
 	
+	@DocumentedDefinition(value = "patientBellowOneYearCurrentlyInARTStarted")
+	public CompositionCohortDefinition getPatientBellowOneYearCurrentlyInARTStarted(CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs, EncounterCohortDefinition patientsWithDrugPickUpEncounters, CohortDefinition patientsWhoLeftARTProgramBeforeOrOnEndDate, CohortDefinition patientsWhoHaveNotReturned, CohortDefinition patientsWhoHaveNotCompleted60Days, CohortDefinition abandonedButHaveNotcompleted60Days, CohortDefinition ageCohort) {
+		
+		CompositionCohortDefinition patientBellowOneYearCurrentlyInARTStarted = new CompositionCohortDefinition();
+		patientBellowOneYearCurrentlyInARTStarted.setName("patientBellowOneYearCurrentlyInARTStarted");
+		patientBellowOneYearCurrentlyInARTStarted.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		patientBellowOneYearCurrentlyInARTStarted.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		patientBellowOneYearCurrentlyInARTStarted.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+		patientBellowOneYearCurrentlyInARTStarted.getSearches().put("1", new Mapped<CohortDefinition>(inARTProgramDuringTimePeriod, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientBellowOneYearCurrentlyInARTStarted.getSearches().put("2", new Mapped<CohortDefinition>(patientWithSTARTDRUGSObs, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientBellowOneYearCurrentlyInARTStarted.getSearches().put("3", new Mapped<CohortDefinition>(patientWithHistoricalDrugStartDateObs, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientBellowOneYearCurrentlyInARTStarted.getSearches().put("4", new Mapped<CohortDefinition>(patientsWithDrugPickUpEncounters, ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore}")));
+		patientBellowOneYearCurrentlyInARTStarted.getSearches().put("5", new Mapped<CohortDefinition>(patientsWhoLeftARTProgramBeforeOrOnEndDate, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientBellowOneYearCurrentlyInARTStarted.getSearches().put("6", new Mapped<CohortDefinition>(patientsWhoHaveNotReturned, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientBellowOneYearCurrentlyInARTStarted.getSearches().put("7", new Mapped<CohortDefinition>(patientsWhoHaveNotCompleted60Days, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		patientBellowOneYearCurrentlyInARTStarted.getSearches().put("8", new Mapped<CohortDefinition>(abandonedButHaveNotcompleted60Days, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore}")));
+		
+		// TODO -Check specifications document on how to use query 6,7 and 8
+		patientBellowOneYearCurrentlyInARTStarted.getSearches().put("9", new Mapped<CohortDefinition>(ageCohort, ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}")));
+		patientBellowOneYearCurrentlyInARTStarted.setCompositionString("((1 or 2 or 3 or 4) and (not 5)) and 9");
+		return patientBellowOneYearCurrentlyInARTStarted;
+	}
+	
 	@DocumentedDefinition(value = "patientInYearRangeEnrolledInARTStarted")
 	public CompositionCohortDefinition getPatientInYearRangeCurrentlyInARTStarted(CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs, EncounterCohortDefinition patientsWithDrugPickUpEncounters, CohortDefinition patientsWhoLeftARTProgramBeforeOrOnEndDate, CohortDefinition patientsWhoHaveNotReturned, CohortDefinition patientsWhoHaveNotCompleted60Days, CohortDefinition abandonedButHaveNotcompleted60Days, CohortDefinition PatientBetween1And9Years, CohortDefinition ageCohort, CohortDefinition gender) {
 		

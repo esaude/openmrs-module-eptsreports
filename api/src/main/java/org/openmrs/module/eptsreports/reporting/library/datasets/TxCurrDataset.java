@@ -151,6 +151,11 @@ public class TxCurrDataset {
 		agesRange.add(PatientBetween40And49Years);
 		agesRange.add(PatientBetween50YearsAndAbove);
 		
+		// Male and Female <1
+		CompositionCohortDefinition patientBelow1YearEnrolledInHIVStartedART = compositionCohortQueries.getPatientBellowOneYearCurrentlyInARTStarted(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsWhoHaveNotReturned, patientsWhoHaveNotCompleted60Days, abandonedButHaveNotcompleted60Days, PatientBelow1Year);
+		CohortIndicator patientBelow1YearEnrolledInHIVStartedARTIndicator = hivIndicators.patientBelow1YearEnrolledInHIVStartedARTIndicator(patientBelow1YearEnrolledInHIVStartedART);
+		dataSetDefinition.addColumn("C1<1", "TX_CURR: Currently on ART: Patients below 1 year", new Mapped<CohortIndicator>(patientBelow1YearEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate}")), "");
+		
 		// Male
 		
 		int i = 2;
