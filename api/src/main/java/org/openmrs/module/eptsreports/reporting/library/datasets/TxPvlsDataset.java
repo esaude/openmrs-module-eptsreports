@@ -1,6 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import org.openmrs.Location;
 import org.openmrs.module.eptsreports.ColumnParameters;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.CompositionCohortQueries;
@@ -21,7 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class TxPvlsDataset {
+public class TxPvlsDataset extends BaseDataSet{
 	
 	@Autowired
 	private HivIndicators hivIndicators;
@@ -77,25 +76,25 @@ public class TxPvlsDataset {
 		    "");
 		
 		// constructing the rows for children
-		EptsReportUtils.addRow(dsd, "3N", "Children Numerator",
+		addRow(dsd, "3N", "Children Numerator",
 		    EptsReportUtils.map(hivIndicators.cohortIndicator("children",
 		        sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings), mappings),
 		    children(), Arrays.asList("01", "02", "03"));
 		
-		EptsReportUtils.addRow(dsd, "3D", "Children Denominator",
+		addRow(dsd, "3D", "Children Denominator",
 		    EptsReportUtils.map(
 		        hivIndicators.cohortIndicator("children", sqlCohortQueries.getPatientsViralLoadWithin12Months(), mappings),
 		        mappings),
 		    children(), Arrays.asList("01", "02", "03"));
 		
 		// Numerator
-		EptsReportUtils.addRow(dsd, "4N", "Adults with suppressed VL Numerator",
+		addRow(dsd, "4N", "Adults with suppressed VL Numerator",
 		    EptsReportUtils.map(hivIndicators.cohortIndicator("adults",
 		        sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings), mappings),
 		    adultsDisagregation(), adultColumns());
 		
 		// Denominator
-		EptsReportUtils.addRow(dsd, "4D", "Adults with VL Denominator",
+		addRow(dsd, "4D", "Adults with VL Denominator",
 		    EptsReportUtils.map(
 		        hivIndicators.cohortIndicator("adults", sqlCohortQueries.getPatientsViralLoadWithin12Months(), mappings),
 		        mappings),

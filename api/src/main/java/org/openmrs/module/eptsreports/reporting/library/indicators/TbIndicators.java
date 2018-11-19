@@ -15,7 +15,6 @@ package org.openmrs.module.eptsreports.reporting.library.indicators;
 
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.stereotype.Component;
 
