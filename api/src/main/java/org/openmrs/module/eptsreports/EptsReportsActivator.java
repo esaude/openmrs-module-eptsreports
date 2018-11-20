@@ -11,6 +11,7 @@ package org.openmrs.module.eptsreports;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.eptsreports.reporting.EptsReportInitializer;
 
@@ -54,7 +55,13 @@ public class EptsReportsActivator extends BaseModuleActivator {
 	 * @see #started()
 	 */
 	public void started() {
-		reportsInitializer.initializeReports();
+		try {
+			reportsInitializer.initializeReports();
+		}
+		catch (IllegalArgumentException e) {
+			Context.getAlertService().notifySuperUsers("eptsreports.startuperror.globalproperties", null);
+			throw e;
+		}
 		log.info("Started EPTS Reports Module");
 	}
 	

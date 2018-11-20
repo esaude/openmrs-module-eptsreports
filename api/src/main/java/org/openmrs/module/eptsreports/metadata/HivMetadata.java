@@ -17,47 +17,47 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.springframework.stereotype.Component;
 
 @Component("hivMetadata")
 public class HivMetadata extends CommonMetadata {
 	
-	// ECOUNTER TYPES
-	private String S_TARV_ADULTO_SEGUIMENTO = "e278f956-1d5f-11e0-b929-000c29ad1d07";
-	
-	private String S_TARV_PEDIATRIA_SEGUIMENTO = "e278fce4-1d5f-11e0-b929-000c29ad1d07";
-	
-	// CONCEPTS
-	private String ARVPlan = "e1d9ee10-1d5f-11e0-b929-000c29ad1d07";
-	
-	// PROGRAMS
-	private String ARTProgram = "efe2481f-9e75-4515-8d5a-86bfde2b5ad3";
-	
 	public EncounterType getAdultoSeguimentoEncounterType() {
-		return getEncounterType(S_TARV_ADULTO_SEGUIMENTO);
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_S_TARV_ADULTO_SEGUIMENTO_ENCOUNTER_TYPE_UUID);
+		return getEncounterType(uuid);
 	}
 	
 	public EncounterType getARVPediatriaSeguimentoEncounterType() {
-		return getEncounterType(S_TARV_PEDIATRIA_SEGUIMENTO);
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_S_TARV_PEDIATRIA_SEGUIMENTO_ENCOUNTER_TYPE_UUID);
+		return getEncounterType(uuid);
 	}
 	
-	private String S_TARV_FARMACIA = "e279133c-1d5f-11e0-b929-000c29ad1d07";
-	
 	public EncounterType getARVPharmaciaEncounterType() {
-		return getEncounterType(S_TARV_FARMACIA);
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_S_TARV_FARMACIA_ENCOUNTER_TYPE_UUID);
+		return getEncounterType(uuid);
 	}
 	
 	public Concept getARVPlanConcept() {
-		return getConcept(ARVPlan);
+		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ARV_PLAN_CONCEPT_UUID);
+		return getConcept(uuid);
 	}
 	
 	public Program getARTProgram() {
-		return getProgram(ARTProgram);
+		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
+		return getProgram(uuid);
 	}
 	
 	// ProgramWorkflowState
 	public ProgramWorkflowState gettransferredFromOtherHealthFacilityWorkflowState() {
-		return getProgramWorkflowState("efe2481f-9e75-4515-8d5a-86bfde2b5ad3", "2", "e1da7d3a-1d5f-11e0-b929-000c29ad1d07");
+		String artProgramUuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
+		String transferFromOtherUuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_TRANSFER_FROM_OTHER_FACILITY_CONCEPT_UUID);
+		return getProgramWorkflowState(artProgramUuid, "2", transferFromOtherUuid);
 	}
 	
 }
