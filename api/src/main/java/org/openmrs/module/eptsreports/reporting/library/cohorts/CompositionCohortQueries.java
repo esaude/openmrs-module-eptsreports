@@ -15,10 +15,7 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 
-import org.openmrs.Cohort;
-import org.openmrs.EncounterType;
 import org.openmrs.Location;
-import org.openmrs.api.PatientSetService;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -223,23 +220,6 @@ public class CompositionCohortQueries {
 		return cd;
 	}
 	
-	@DocumentedDefinition(value = "pregnantAndBreastFeeding")
-	public CohortDefinition pregnantAndBreastFeedingWomen() {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
-		
-		// set the mappings here
-		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		
-		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomen(), mappings));
-		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomen(), mappings));
-		cd.setCompositionString("pregnant AND breastfeeding");
-		
-		return cd;
-	}
-	
 	/**
 	 * Pregnant women with viral load in the last 12 months Denominator Denominator Denominator
 	 * 
@@ -256,7 +236,7 @@ public class CompositionCohortQueries {
 		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomen(), mappings));
 		cd.addSearch("vl", EptsReportUtils.map(sqlCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
 		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
-		cd.setCompositionString("pregnant AND vl AND female");
+		cd.setCompositionString("(pregnant AND vl) AND female");
 		return cd;
 	}
 	
@@ -278,7 +258,7 @@ public class CompositionCohortQueries {
 		cd.addSearch("supp",
 		    EptsReportUtils.map(sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
 		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
-		cd.setCompositionString("preg AND supp AND female");
+		cd.setCompositionString("(preg AND supp) AND female");
 		return cd;
 	}
 	
@@ -320,7 +300,7 @@ public class CompositionCohortQueries {
 		cd.addSearch("suppression",
 		    EptsReportUtils.map(sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
 		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
-		cd.setCompositionString("breastfeeding AND suppression AND female");
+		cd.setCompositionString("(breastfeeding AND suppression) AND female");
 		return cd;
 	}
 }
