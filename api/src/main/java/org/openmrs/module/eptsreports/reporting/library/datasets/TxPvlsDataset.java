@@ -6,6 +6,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.CompositionCohor
 import org.openmrs.module.eptsreports.reporting.library.cohorts.SqlCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
+import org.openmrs.module.eptsreports.reporting.library.indicators.PregnantIndicators;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -20,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class TxPvlsDataset extends BaseDataSet{
+public class TxPvlsDataset extends BaseDataSet {
 	
 	@Autowired
 	private HivIndicators hivIndicators;
@@ -32,10 +33,7 @@ public class TxPvlsDataset extends BaseDataSet{
 	private AgeCohortQueries ageCohortQueries;
 	
 	@Autowired
-	private CompositionCohortQueries ccq;
-	
-	@Autowired
-	private SqlCohortQueries sqlCohortQueries;
+	private PregnantIndicators pregnantIndicators;
 	
 	public DataSetDefinition constructTxPvlsDatset() {
 		
@@ -48,57 +46,48 @@ public class TxPvlsDataset extends BaseDataSet{
 		dsd.addDimension("age", EptsReportUtils.map(age(), "effectiveDate=${endDate}"));
 		
 		dsd.addColumn("0N", "Total patients with suppressed Viral load - Numerator",
-		    EptsReportUtils.map(hivIndicators.cohortIndicator("suppressed",
-		        sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings), mappings),
-		    "");
+		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), "");
 		
 		dsd.addColumn("0D", "Total patients with Viral load - Denominator",
-		    EptsReportUtils.map(
-		        hivIndicators.cohortIndicator("suppressed", sqlCohortQueries.getPatientsViralLoadWithin12Months(), mappings),
-		        mappings),
-		    "");
+		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), "");
 		
 		// constructing the first row of pregnant and breast feeding mothers
-		dsd.addColumn("1N", "Pregnant Women - Numerator", EptsReportUtils.map(hivIndicators.cohortIndicator("pregnant",
-		    ccq.pregnantWomenAndHasSuppressedViralLoadInTheLast12MonthsNumerator(), mappings), mappings), "");
 		
-		dsd.addColumn("1D", "Pregnant Women - Denominator", EptsReportUtils.map(hivIndicators.cohortIndicator("pregnant",
-		    ccq.pregnantWomenAndHasViralLoadInTheLast12MonthsDenominator(), mappings), mappings), "");
+		dsd.addColumn("1N", "Pregnant Women - Numerator",
+		    EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithSuppressedViralLoadIn12Months(), mappings), "");
 		
-		dsd.addColumn("2N", "Breastfeeding - Women Numerator",
-		    EptsReportUtils.map(hivIndicators.cohortIndicator("breastfeeding",
-		        ccq.breastfeedingWomenAndHasViralLoadSuppressionInTheLast12MonthsNumerator(), mappings), mappings),
-		    "");
-		
-		dsd.addColumn("2D", "Breastfeeding - Women Denominator",
-		    EptsReportUtils.map(hivIndicators.cohortIndicator("breastfeeding",
-		        ccq.breastfeedingWomenAndHasViralLoadInTheLast12MonthsDenominator(), mappings), mappings),
-		    "");
+		dsd.addColumn("1D", "Pregnant Women - Denominator",
+		    EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithViralLoadIn12Months(), mappings), "");
+		/*
+		 * dsd.addColumn("2N", "Breastfeeding - Women Numerator",
+		 * EptsReportUtils.map(pregnantIndicators.cohortIndicator("breastfeeding",
+		 * ccq.breastfeedingWomenAndHasViralLoadSuppressionInTheLast12MonthsNumerator(),
+		 * mappings), mappings), "");
+		 * 
+		 * dsd.addColumn("2D", "Breastfeeding - Women Denominator",
+		 * EptsReportUtils.map(pregnantIndicators.cohortIndicator("breastfeeding",
+		 * ccq.breastfeedingWomenAndHasViralLoadInTheLast12MonthsDenominator(),
+		 * mappings), mappings), "");
+		 */
 		
 		// constructing the rows for children
 		addRow(dsd, "3N", "Children Numerator",
-		    EptsReportUtils.map(hivIndicators.cohortIndicator("children",
-		        sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings), mappings),
-		    children(), Arrays.asList("01", "02", "03"));
+		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), children(),
+		    Arrays.asList("01", "02", "03"));
 		
 		addRow(dsd, "3D", "Children Denominator",
-		    EptsReportUtils.map(
-		        hivIndicators.cohortIndicator("children", sqlCohortQueries.getPatientsViralLoadWithin12Months(), mappings),
-		        mappings),
-		    children(), Arrays.asList("01", "02", "03"));
+		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), children(),
+		    Arrays.asList("01", "02", "03"));
 		
 		// Numerator
 		addRow(dsd, "4N", "Adults with suppressed VL Numerator",
-		    EptsReportUtils.map(hivIndicators.cohortIndicator("adults",
-		        sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings), mappings),
-		    adultsDisagregation(), adultColumns());
+		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), adultsDisagregation(),
+		    adultColumns());
 		
 		// Denominator
 		addRow(dsd, "4D", "Adults with VL Denominator",
-		    EptsReportUtils.map(
-		        hivIndicators.cohortIndicator("adults", sqlCohortQueries.getPatientsViralLoadWithin12Months(), mappings),
-		        mappings),
-		    adultsDisagregation(), adultColumns());
+		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), adultsDisagregation(),
+		    adultColumns());
 		return dsd;
 		
 	}

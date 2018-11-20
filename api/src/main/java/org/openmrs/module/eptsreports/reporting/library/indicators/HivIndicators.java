@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class HivIndicators extends BaseIndicators {
 	
 	@Autowired
-	private SqlCohortQueries scq;
+	private SqlCohortQueries sqlCohortQueries;
 	
 	public CohortIndicator patientBelow1YearEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
 		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator",
@@ -46,13 +46,26 @@ public class HivIndicators extends BaseIndicators {
 		    EptsReportUtils.map(cohortDefinition, "onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 	
+	// add viral load indicators
 	/**
-	 * Generic indicator that takes a cohortDefinition and aggregate it into numbers Probably be moved
-	 * to a common file for reuse
+	 * Find patients with VL <1000 - viral suppression
 	 * 
 	 * @return CohortIndicator
 	 */
-	public CohortIndicator cohortIndicator(String name, CohortDefinition cohort, String mappings) {
-		return newCohortIndicator(name, EptsReportUtils.map(cohort, mappings));
+	public CohortIndicator patientsWithViralLoadSuppression() {
+		return newCohortIndicator("suppressed viral load",
+		    EptsReportUtils.map(sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(),
+		        "startDate=${startDate},endDate=${endDate},location=${location}"));
+	}
+	
+	/**
+	 * Find patients with viral load between dates
+	 * 
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator patientsWithViralLoadBetweenDates() {
+		return newCohortIndicator("patients with viral load",
+		    EptsReportUtils.map(sqlCohortQueries.getPatientsViralLoadWithin12Months(),
+		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 }
