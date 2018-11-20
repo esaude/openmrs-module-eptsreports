@@ -13,13 +13,11 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.Arrays;
-import java.util.Date;
-
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -29,6 +27,9 @@ import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  * Defines all of the SQL Cohort Definition instances we want to expose for EPTS
@@ -148,14 +149,11 @@ public class SqlCohortQueries {
 		sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		sql.addParameter(new Parameter("endDate", "End Date", Date.class));
 		sql.addParameter(new Parameter("location", "Location", Location.class));
-		sql.setQuery("SELECT p.patient_id FROM  patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN"
-		        + " obs o ON e.encounter_id=o.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND"
-		        + " e.encounter_type IN (" + hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId() + ","
-		        + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + ","
-		        + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") AND o.concept_id="
-		        + hivMetadata.getHivViralLoadConcept().getConceptId() + " AND o.value_numeric IS NOT NULL AND"
-		        + " e.encounter_datetime BETWEEN date_add(:endDate, interval -12 MONTH) AND :endDate AND"
-		        + " e.location_id=:location");
+		sql.setQuery(ViralLoadQueries.getPatientsHavingViralLoadInLast12Months(
+		    hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+		    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+		    hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+		    hivMetadata.getHivViralLoadConcept().getConceptId()));
 		return sql;
 	}
 	
@@ -172,20 +170,11 @@ public class SqlCohortQueries {
 		sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		sql.addParameter(new Parameter("endDate", "End Date", Date.class));
 		sql.addParameter(new Parameter("location", "Location", Location.class));
-		sql.setQuery("SELECT ultima_carga.patient_id FROM(SELECT p.patient_id,MAX(o.obs_datetime) data_carga"
-		        + " FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id"
-		        + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
-		        + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type IN ("
-		        + hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId() + ","
-		        + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + ","
-		        + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") AND  o.concept_id="
-		        + hivMetadata.getHivViralLoadConcept().getConceptId() + " AND o.value_numeric IS NOT NULL AND"
-		        + " e.encounter_datetime BETWEEN date_add(:endDate, interval -12 MONTH) and :endDate AND"
-		        + " e.location_id=:location GROUP BY p.patient_id" + ") ultima_carga"
-		        + " INNER JOIN obs ON obs.person_id=ultima_carga.patient_id AND obs.obs_datetime="
-		        + "ultima_carga.data_carga  WHERE obs.voided=0 AND obs.concept_id="
-		        + hivMetadata.getHivViralLoadConcept().getConceptId() + " AND obs.location_id=:location AND"
-		        + " obs.value_numeric < 1000");
+		sql.setQuery(ViralLoadQueries.getPatientsWithViralLoadSuppression(
+		    hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+		    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+		    hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+		    hivMetadata.getHivViralLoadConcept().getConceptId()));
 		return sql;
 	}
 	

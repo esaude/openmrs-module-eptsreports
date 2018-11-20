@@ -1,10 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
-import org.openmrs.module.eptsreports.metadata.CommonMetadata;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 /**
  * Re usable queries that can be used for finding patients who are pregnant
  */
