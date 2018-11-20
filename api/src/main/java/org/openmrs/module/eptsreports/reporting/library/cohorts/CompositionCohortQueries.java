@@ -299,7 +299,7 @@ public class CompositionCohortQueries {
 		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomen(), mappings));
 		cd.addSearch("vl", EptsReportUtils.map(sqlCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
 		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
-		cd.setCompositionString("breastfeeding AND vl AND female");
+		cd.setCompositionString("(breastfeeding AND vl) AND female");
 		return cd;
 	}
 	

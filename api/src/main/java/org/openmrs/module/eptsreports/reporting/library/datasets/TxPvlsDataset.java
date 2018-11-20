@@ -2,9 +2,8 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import org.openmrs.module.eptsreports.ColumnParameters;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.CompositionCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.SqlCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
+import org.openmrs.module.eptsreports.reporting.library.indicators.BreastfeedingIndicator;
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
 import org.openmrs.module.eptsreports.reporting.library.indicators.PregnantIndicators;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -35,6 +34,9 @@ public class TxPvlsDataset extends BaseDataSet {
 	@Autowired
 	private PregnantIndicators pregnantIndicators;
 	
+	@Autowired
+	private BreastfeedingIndicator breastfeedingIndicator;
+	
 	public DataSetDefinition constructTxPvlsDatset() {
 		
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
@@ -58,17 +60,15 @@ public class TxPvlsDataset extends BaseDataSet {
 		
 		dsd.addColumn("1D", "Pregnant Women - Denominator",
 		    EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithViralLoadIn12Months(), mappings), "");
-		/*
-		 * dsd.addColumn("2N", "Breastfeeding - Women Numerator",
-		 * EptsReportUtils.map(pregnantIndicators.cohortIndicator("breastfeeding",
-		 * ccq.breastfeedingWomenAndHasViralLoadSuppressionInTheLast12MonthsNumerator(),
-		 * mappings), mappings), "");
-		 * 
-		 * dsd.addColumn("2D", "Breastfeeding - Women Denominator",
-		 * EptsReportUtils.map(pregnantIndicators.cohortIndicator("breastfeeding",
-		 * ccq.breastfeedingWomenAndHasViralLoadInTheLast12MonthsDenominator(),
-		 * mappings), mappings), "");
-		 */
+		
+		// constructing the rows for breastfeeding women
+		
+		dsd.addColumn("2N", "Breastfeeding - Women Numerator",
+		    EptsReportUtils.map(breastfeedingIndicator.getBreastfeedingWomenWithSuppressedViralLoadIn12Months(), mappings),
+		    "");
+		
+		dsd.addColumn("2D", "Breastfeeding - Women Denominator",
+		    EptsReportUtils.map(breastfeedingIndicator.getBreastfeedingWomenWithViralLoadIn12Months(), mappings), "");
 		
 		// constructing the rows for children
 		addRow(dsd, "3N", "Children Numerator",
