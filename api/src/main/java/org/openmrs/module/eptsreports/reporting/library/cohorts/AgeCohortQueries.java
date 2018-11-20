@@ -45,8 +45,8 @@ public class AgeCohortQueries {
 	public CohortDefinition createXtoYAgeCohort(String name, int minAge, int maxAge) {
 		AgeCohortDefinition xToYCohort = new AgeCohortDefinition();
 		xToYCohort.setName(name);
-		xToYCohort.setMaxAge(new Integer(maxAge));
-		xToYCohort.setMinAge(new Integer(minAge));
+		xToYCohort.setMaxAge(maxAge);
+		xToYCohort.setMinAge(minAge);
 		xToYCohort.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
 		return xToYCohort;
 	}
@@ -54,7 +54,7 @@ public class AgeCohortQueries {
 	public CohortDefinition createOverXAgeCohort(String name, int minAge) {
 		AgeCohortDefinition overXCohort = new AgeCohortDefinition();
 		overXCohort.setName(name);
-		overXCohort.setMinAge(new Integer(minAge));
+		overXCohort.setMinAge(minAge);
 		overXCohort.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
 		return overXCohort;
 	}
