@@ -116,7 +116,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		ColumnParameters twty5To29T = new ColumnParameters("25-29T", "25-29 years patients", "age=25-29");// 13
 		// columns for patients aged 30 to 34 years, defined by gender
 		ColumnParameters thtyTo34M = new ColumnParameters("30-34M", "30-34 years males", "gender=M|age=30-34");// 14
-		ColumnParameters thtyTo34F = new ColumnParameters("30-34F", "30-34 years female", "gender=F|age=30-44");// 15
+		ColumnParameters thtyTo34F = new ColumnParameters("30-34F", "30-34 years female", "gender=F|age=30-34");// 15
 		ColumnParameters thtyTo34T = new ColumnParameters("30-34T", "30-34 years patients", "age=30-34");// 16
 		// columns for patients aged 35 to 39 years, defined by gender
 		ColumnParameters thty5To39M = new ColumnParameters("35-39M", "35-39 years males", "gender=M|age=35-39");// 17

@@ -303,4 +303,13 @@ public class SqlCohortQueries {
 		return cd;
 	}
 	
+	/**
+	 * Get deceased persons in the database
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getDeadPersons() {
+		return commonCohortQueries.general("Dead persons", "SELECT person_id FROM person WHERE dead=1");
+	}
+	
 }

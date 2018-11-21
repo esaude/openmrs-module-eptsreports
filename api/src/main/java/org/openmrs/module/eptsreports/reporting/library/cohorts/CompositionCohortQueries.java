@@ -234,7 +234,8 @@ public class CompositionCohortQueries {
 		
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomen(), mappings));
-		cd.addSearch("vl", EptsReportUtils.map(sqlCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
+		cd.addSearch("vl",
+		    EptsReportUtils.map(getPatientsWithViralLoadResultsExcludingDeadLtfuTransferredoutStoppedArt(), mappings));
 		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
 		cd.setCompositionString("(pregnant AND vl) AND female");
 		return cd;
@@ -256,7 +257,7 @@ public class CompositionCohortQueries {
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("preg", EptsReportUtils.map(getPregnantWomen(), mappings));
 		cd.addSearch("supp",
-		    EptsReportUtils.map(sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
+		    EptsReportUtils.map(getPatientsWithViralLoadSuppressionExcludingDeadLtfuTransferredoutStoppedArt(), mappings));
 		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
 		cd.setCompositionString("(preg AND supp) AND female");
 		return cd;
@@ -277,7 +278,8 @@ public class CompositionCohortQueries {
 		// set the mappings here
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomen(), mappings));
-		cd.addSearch("vl", EptsReportUtils.map(sqlCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
+		cd.addSearch("vl",
+		    EptsReportUtils.map(getPatientsWithViralLoadResultsExcludingDeadLtfuTransferredoutStoppedArt(), mappings));
 		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
 		cd.setCompositionString("(breastfeeding AND vl) AND female");
 		return cd;
@@ -298,9 +300,42 @@ public class CompositionCohortQueries {
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomen(), mappings));
 		cd.addSearch("suppression",
-		    EptsReportUtils.map(sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
+		    EptsReportUtils.map(getPatientsWithViralLoadSuppressionExcludingDeadLtfuTransferredoutStoppedArt(), mappings));
 		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
 		cd.setCompositionString("(breastfeeding AND suppression) AND female");
+		return cd;
+	}
+	
+	/**
+	 * Patients with viral suppression of <1000 in the last 12 months excluding dead, LTFU, transferred
+	 * out, stopped ART
+	 */
+	public CohortDefinition getPatientsWithViralLoadSuppressionExcludingDeadLtfuTransferredoutStoppedArt() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("supp",
+		    EptsReportUtils.map(sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
+		cd.addSearch("dead", EptsReportUtils.map(sqlCohortQueries.getDeadPersons(), mappings));
+		cd.setCompositionString("supp AND NOT dead");
+		return cd;
+	}
+	
+	/**
+	 * Patients with viral results recorded in the last 12 months excluding dead, LTFU, transferred out,
+	 * stopped ART
+	 */
+	public CohortDefinition getPatientsWithViralLoadResultsExcludingDeadLtfuTransferredoutStoppedArt() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("results", EptsReportUtils.map(sqlCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
+		cd.addSearch("dead", EptsReportUtils.map(sqlCohortQueries.getDeadPersons(), mappings));
+		cd.setCompositionString("results AND NOT dead");
 		return cd;
 	}
 }
