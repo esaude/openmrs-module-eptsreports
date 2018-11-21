@@ -179,6 +179,8 @@ public class SqlCohortQueries {
 	}
 	
 	/**
+	 * Mothers who have registered observation as breastfeeding
+	 * 
 	 * @return CohortDefinition
 	 */
 	@DocumentedDefinition(value = "registeredBreastFeeding")
@@ -223,7 +225,9 @@ public class SqlCohortQueries {
 	}
 	
 	/**
-	 *
+	 * Patients with the date of birth updated on ART service
+	 * 
+	 * @return CohortDefinition
 	 */
 	@DocumentedDefinition(value = "patientsWithDateOfBirthUpdatedOnARTService")
 	public CohortDefinition patientsWithDateOfBirthUpdatedOnARTService() {
@@ -239,7 +243,9 @@ public class SqlCohortQueries {
 	}
 	
 	/**
-	 *
+	 * Women who are breastfeeding and have started ART
+	 * 
+	 * @return CohortDefinition
 	 */
 	@DocumentedDefinition(value = "aRTStartForBeingBreastfeeding")
 	public CohortDefinition aRTStartForBeingBreastfeeding() {
@@ -262,7 +268,9 @@ public class SqlCohortQueries {
 	}
 	
 	/**
-	 *
+	 * Women who gave birth 2 years ago
+	 * 
+	 * @return CohortDefinition
 	 */
 	public CohortDefinition patientsWhoGaveBirthTwoYearsAgo() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -275,7 +283,9 @@ public class SqlCohortQueries {
 	}
 	
 	/**
-	 *
+	 * Get pregnant women inscribed in ART service
+	 * 
+	 * @return CohortDefinition
 	 */
 	public CohortDefinition pregnantsInscribedOnARTService() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -283,7 +293,12 @@ public class SqlCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.setQuery(BreastfeedingQueries.getPregnantWhileOnArt());
+		cd.setQuery(BreastfeedingQueries.getPregnantWhileOnArt(hivMetadata.getPregnantConcept().getConceptId(),
+		    hivMetadata.getGestationConcept().getConceptId(), hivMetadata.getNumberOfWeeksPregnant().getConceptId(),
+		    hivMetadata.getPregnancyDueDate().getConceptId(),
+		    hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+		    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+		    hivMetadata.getPtvEtvProgram().getProgramId()));
 		
 		return cd;
 	}

@@ -43,7 +43,7 @@ public class HivMetadata extends CommonMetadata {
 	// PROGRAMS
 	private String ARTProgram = "efe2481f-9e75-4515-8d5a-86bfde2b5ad3";
 	
-	private String PTV_ETV = "06057245-ca21-43ab-a02f-e861d7e54593";
+	private String PTV_ETV = "06057245-ca21-43ab-a02f-e861d7e54593";// 8
 	
 	public EncounterType getAdultoSeguimentoEncounterType() {
 		return getEncounterType(S_TARV_ADULTO_SEGUIMENTO);

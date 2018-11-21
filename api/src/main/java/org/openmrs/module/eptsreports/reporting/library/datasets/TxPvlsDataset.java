@@ -24,7 +24,7 @@ public class TxPvlsDataset extends BaseDataSet {
 	
 	@Autowired
 	private EptsCommonDimension eptsCommonDimension;
-
+	
 	@Autowired
 	private PregnantIndicators pregnantIndicators;
 	
@@ -101,7 +101,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		// columns for patients aged 10 to 14 years, defined by gender
 		ColumnParameters tenTo14M = new ColumnParameters("10-14M", "10-14 years males", "gender=M|age=10-14");// 01
 		ColumnParameters tenTo14F = new ColumnParameters("10-14F", "10-14 years female", "gender=F|age=10-14");// 02
-		ColumnParameters tenTo14T = new ColumnParameters("10-14T", "10-14 years patients", "age=10-14");// 03
+		ColumnParameters tenTo14T = new ColumnParameters("10-14 Totals", "10-14 years patients", "age=10-14");// 03
 		// columns for patients aged 15 to 19 years, defined by gender
 		ColumnParameters fftnTo19M = new ColumnParameters("15-19M", "15-19 years males", "gender=M|age=15-19");// 04
 		ColumnParameters fftnTo19F = new ColumnParameters("15-19F", "15-19 years female", "gender=F|age=15-19");// 05
@@ -151,7 +151,6 @@ public class TxPvlsDataset extends BaseDataSet {
 		ColumnParameters under1 = new ColumnParameters("<1", "Under 1 year", "age=<1");
 		ColumnParameters oneTo4 = new ColumnParameters("1-4", "1-4 years", "age=1-4");
 		ColumnParameters fiveTo9 = new ColumnParameters("5-9", "5-9 years", "age=5-9");
-		
 		return Arrays.asList(under1, oneTo4, fiveTo9);
 	}
 }
