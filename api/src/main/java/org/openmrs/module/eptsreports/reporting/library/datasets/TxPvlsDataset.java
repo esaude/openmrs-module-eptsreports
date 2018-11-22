@@ -75,12 +75,14 @@ public class TxPvlsDataset extends BaseDataSet {
 		// Numerator
 		addRow(dsd, "4N", "Adults with suppressed VL Numerator",
 		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), adultsDisagregation(),
-		    adultColumns());
+		    Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16",
+		        "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27"));
 		
 		// Denominator
 		addRow(dsd, "4D", "Adults with VL Denominator",
 		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), adultsDisagregation(),
-		    adultColumns());
+		    Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16",
+		        "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27"));
 		return dsd;
 		
 	}
@@ -138,11 +140,6 @@ public class TxPvlsDataset extends BaseDataSet {
 		    twty5To29M, twty5To29F, twty5To29T, thtyTo34M, thtyTo34F, thtyTo34T, thty5To39M, thty5To39F, thty5To39T,
 		    ftyTo44M, ftyTo44F, ftyTo44T, fty5To49M, fty5To49F, fty5To49T, fftyAndAboveM, fftyAndAboveF, fftyAndAboveT);
 		
-	}
-	
-	private List<String> adultColumns() {
-		return Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16",
-		    "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27");
 	}
 	
 	private List<ColumnParameters> children() {
