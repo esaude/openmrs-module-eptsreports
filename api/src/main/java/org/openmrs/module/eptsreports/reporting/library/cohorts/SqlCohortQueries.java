@@ -17,6 +17,7 @@ import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -277,7 +278,8 @@ public class SqlCohortQueries {
 		cd.setName("patientsWhoGaveBirthTwoYearsAgo");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.setQuery(BreastfeedingQueries.getPatientsWhoGaveBirthTwoYearsAgo());
+		cd.setQuery(
+		    BreastfeedingQueries.getPatientsWhoGaveBirthTwoYearsAgo(hivMetadata.getPtvEtvProgram().getProgramId(), 27));
 		
 		return cd;
 	}
@@ -293,7 +295,7 @@ public class SqlCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.setQuery(BreastfeedingQueries.getPregnantWhileOnArt(hivMetadata.getPregnantConcept().getConceptId(),
+		cd.setQuery(PregnantQueries.getPregnantWhileOnArt(hivMetadata.getPregnantConcept().getConceptId(),
 		    hivMetadata.getGestationConcept().getConceptId(), hivMetadata.getNumberOfWeeksPregnant().getConceptId(),
 		    hivMetadata.getPregnancyDueDate().getConceptId(),
 		    hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),

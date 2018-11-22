@@ -52,4 +52,30 @@ public class PregnantQueries {
 		        + " AND pp.voided=0 AND pp.date_enrolled BETWEEN " + ":startDate AND :endDate AND pp.location_id=:location";
 	}
 	
+	/**
+	 * GRAVIDAS INSCRITAS NO SERVIÇO TARV
+	 */
+	public static String getPregnantWhileOnArt(int pregnantConcept, int gestationConcept, int weeksPregnantConcept,
+	        int eddConcept, int adultInitailEncounter, int adultSegEncounter, int etvProgram) {
+		
+		return "Select 	p.patient_id" + " from 	patient p" + " inner join encounter e on p.patient_id=e.patient_id"
+		        + " inner join obs o on e.encounter_id=o.encounter_id"
+		        + " where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=" + pregnantConcept + " and value_coded="
+		        + gestationConcept + " and e.encounter_type in (" + adultInitailEncounter + "," + adultSegEncounter
+		        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location" + " union"
+		        + " Select 	p.patient_id" + " from 	patient p inner join encounter e on p.patient_id=e.patient_id"
+		        + " inner join obs o on e.encounter_id=o.encounter_id"
+		        + " where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id=" + weeksPregnantConcept + " and"
+		        + " e.encounter_type in (" + adultInitailEncounter + "," + adultSegEncounter
+		        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location" + " union"
+		        + " Select p.patient_id" + " from patient p inner join encounter e on p.patient_id=e.patient_id"
+		        + " inner join obs o on e.encounter_id=o.encounter_id"
+		        + " where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=" + eddConcept + " and"
+		        + " e.encounter_type in (" + adultInitailEncounter + "," + adultSegEncounter
+		        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location" + " union"
+		        + " select pp.patient_id from patient_program pp" + " where pp.program_id=" + etvProgram
+		        + " and pp.voided=0 and pp.date_enrolled between :startDate and :endDate and pp.location_id=:location";
+		
+	}
+	
 }
