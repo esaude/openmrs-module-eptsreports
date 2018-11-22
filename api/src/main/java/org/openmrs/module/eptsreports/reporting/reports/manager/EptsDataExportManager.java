@@ -67,18 +67,18 @@ public abstract class EptsDataExportManager extends EptsReportManager {
 	/**
 	 * Auto generated method comment
 	 * 
-	 * @param rd the reportDesign to set
+	 * @param reportDefinition the reportDesign to set
 	 * @param resourceName
-	 * @param name
+	 * @param reportDesignName
 	 * @param properties
 	 * @return
 	 * @throws IOException
 	 */
-	public static ReportDesign createRowPerPatientXlsOverviewReportDesign(ReportDefinition rd, String resourceName, String name, String excelDesignUuid, Map<? extends Object, ? extends Object> properties) throws IOException {
+	public static ReportDesign createXlsReportDesign(ReportDefinition reportDefinition, String resourceName, String reportDesignName, String excelDesignUuid, Map<? extends Object, ? extends Object> properties) throws IOException {
 		
 		ReportService rs = Context.getService(ReportService.class);
 		for (ReportDesign rdd : rs.getAllReportDesigns(false)) {
-			if (name.equals(rdd.getName())) {
+			if (reportDesignName.equals(rdd.getName())) {
 				rs.purgeReportDesign(rdd);
 			}
 		}
@@ -89,8 +89,8 @@ public abstract class EptsDataExportManager extends EptsReportManager {
 		InputStream is = OpenmrsClassLoader.getInstance().getResourceAsStream(resourceName);
 		resource.setContents(IOUtils.toByteArray(is));
 		final ReportDesign design = new ReportDesign();
-		design.setName(name);
-		design.setReportDefinition(rd);
+		design.setName(reportDesignName);
+		design.setReportDefinition(reportDefinition);
 		design.setRendererType(ExcelTemplateRenderer.class);
 		design.addResource(resource);
 		if (properties != null) {
