@@ -140,8 +140,6 @@ public class TxCurrDataset {
 		PatientBetween50YearsAndAbove.setName("PatientBetween50YearsAndAbove");
 		
 		ArrayList<AgeCohortDefinition> agesRange = new ArrayList<AgeCohortDefinition>();
-		// agesRange.add(PatientBelow1Year);
-		// agesRange.add(PatientBetween1And9Years);
 		agesRange.add(PatientBetween10And14Years);
 		agesRange.add(PatientBetween15And19Years);
 		agesRange.add(PatientBetween20And24Years);
