@@ -16,13 +16,12 @@ public abstract class BaseDataSet {
 	 * @param baseLabel the base column label
 	 * @param indicator the indicator
 	 * @param columns the column parameters
-	 * @param columnNames the column names
 	 */
 	protected void addRow(CohortIndicatorDataSetDefinition cohortDsd, String baseName, String baseLabel,
-	        Mapped<CohortIndicator> indicator, List<ColumnParameters> columns, List<String> columnNames) {
-		int c = 0;
+	        Mapped<CohortIndicator> indicator, List<ColumnParameters> columns) {
+		
 		for (ColumnParameters column : columns) {
-			String name = baseName + "-" + columnNames.get(c++);
+			String name = baseName + "-" + column.getColumn();
 			String label = baseLabel + " (" + column.getLabel() + ")";
 			cohortDsd.addColumn(name, label, indicator, column.getDimensions());
 		}
@@ -36,6 +35,8 @@ public abstract class BaseDataSet {
 		
 		private String dimensions;
 		
+		private String column;
+		
 		/**
 		 * Default constructor
 		 * 
@@ -43,10 +44,11 @@ public abstract class BaseDataSet {
 		 * @param label the label
 		 * @param dimensions the dimension parameters
 		 */
-		public ColumnParameters(String name, String label, String dimensions) {
+		public ColumnParameters(String name, String label, String dimensions, String column) {
 			this.name = name;
 			this.label = label;
 			this.dimensions = dimensions;
+			this.column = column;
 		}
 		
 		/**
@@ -74,6 +76,15 @@ public abstract class BaseDataSet {
 		 */
 		public String getDimensions() {
 			return dimensions;
+		}
+		
+		/**
+		 * Gets the column
+		 * 
+		 * @return the column
+		 */
+		public String getColumn() {
+			return column;
 		}
 	}
 }
