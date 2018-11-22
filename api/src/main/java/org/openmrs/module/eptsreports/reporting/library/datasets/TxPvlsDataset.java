@@ -1,6 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import org.openmrs.module.eptsreports.ColumnParameters;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.BreastfeedingIndicator;
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;

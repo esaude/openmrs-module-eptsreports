@@ -1,6 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import org.openmrs.module.eptsreports.ColumnParameters;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -26,6 +25,55 @@ public abstract class BaseDataSet {
 			String name = baseName + "-" + columnNames.get(c++);
 			String label = baseLabel + " (" + column.getLabel() + ")";
 			cohortDsd.addColumn(name, label, indicator, column.getDimensions());
+		}
+	}
+	
+	class ColumnParameters {
+		
+		private String name;
+		
+		private String label;
+		
+		private String dimensions;
+		
+		/**
+		 * Default constructor
+		 * 
+		 * @param name the name
+		 * @param label the label
+		 * @param dimensions the dimension parameters
+		 */
+		public ColumnParameters(String name, String label, String dimensions) {
+			this.name = name;
+			this.label = label;
+			this.dimensions = dimensions;
+		}
+		
+		/**
+		 * Gets the name
+		 * 
+		 * @return the name
+		 */
+		public String getName() {
+			return name;
+		}
+		
+		/**
+		 * Gets the label
+		 * 
+		 * @return the label
+		 */
+		public String getLabel() {
+			return label;
+		}
+		
+		/**
+		 * Gets the dimension parameters
+		 * 
+		 * @return the dimension parameters
+		 */
+		public String getDimensions() {
+			return dimensions;
 		}
 	}
 }
