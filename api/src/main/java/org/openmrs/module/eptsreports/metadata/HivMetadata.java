@@ -43,18 +43,21 @@ public class HivMetadata extends CommonMetadata {
 	}
 	
 	public Concept getARVPlanConcept() {
-		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ARV_PLAN_CONCEPT_UUID);
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ARV_PLAN_CONCEPT_UUID);
 		return getConcept(uuid);
 	}
 	
 	public Program getARTProgram() {
-		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
 		return getProgram(uuid);
 	}
 	
 	// ProgramWorkflowState
 	public ProgramWorkflowState gettransferredFromOtherHealthFacilityWorkflowState() {
-		String artProgramUuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
+		String artProgramUuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
 		String transferFromOtherUuid = Context.getAdministrationService()
 		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_TRANSFER_FROM_OTHER_FACILITY_CONCEPT_UUID);
 		return getProgramWorkflowState(artProgramUuid, "2", transferFromOtherUuid);
