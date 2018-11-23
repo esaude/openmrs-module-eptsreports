@@ -142,10 +142,11 @@ public class SqlCohortQueries {
 	// state is 9=ABANDONED) but from the date scheduled for next drug pick up
 	// (concept 5096=RETURN VISIT DATE FOR ARV DRUG) until the end date have not
 	// completed 60 days
-	@DocumentedDefinition(value = "getAbandonedButHaveNotcompleted60Days")
+	@DocumentedDefinition(value = "abandonedButHaveNotcompleted60Days")
 	public SqlCohortDefinition getAbandonedButHaveNotcompleted60Days() {
 		SqlCohortDefinition abandonedButHaveNotcompleted60Days = new SqlCohortDefinition();
-		abandonedButHaveNotcompleted60Days.setName(
+		abandonedButHaveNotcompleted60Days.setName("abandonedButHaveNotcompleted60Days");
+		abandonedButHaveNotcompleted60Days.setQuery(
 		    "select abandono.patient_id from ( select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id inner join patient_state ps on pg.patient_program_id=ps.patient_program_id where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id= " + hivMetadata.getARTProgram().getProgramId() + " and ps.state=" + hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId() + " and ps.end_date is null and ps.start_date<=:onOrBefore )abandono inner join ( select max_frida.patient_id,max_frida.encounter_datetime,o.value_datetime from ( Select p.patient_id,max(encounter_datetime) encounter_datetime from patient p inner join encounter e on e.patient_id=p.patient_id where p.voided=0 and e.voided=0 and e.encounter_type=" + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId() + " and e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_frida inner join obs o on o.person_id=max_frida.patient_id where max_frida.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id=" + hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId() + " ) ultimo_fila on abandono.patient_id=ultimo_fila.patient_id where datediff(:onOrBefore,ultimo_fila.value_datetime)<60");
 		abandonedButHaveNotcompleted60Days.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		abandonedButHaveNotcompleted60Days.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
