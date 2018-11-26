@@ -34,6 +34,8 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.map;
+
 @Component
 public class TxNewDataset {
 	
@@ -104,9 +106,12 @@ public class TxNewDataset {
 		CohortDefinition patientBetween25And29Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween25And29Years", 25, 29);
 		CohortDefinition patientBetween30And34Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween30And34Years", 30, 34);
 		CohortDefinition patientBetween35And39Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween35And39Years", 35, 39);
-		CohortDefinition patientBetween40And49Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween40And49Years", 40, 49);
+		CohortDefinition patientsBetween40And44Years = ageCohortQueries.createXtoYAgeCohort("PatientsBetween40And44Years", 40, 44);
+		CohortDefinition patientBetween45And49Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween45And49Years", 45, 49);
 		CohortDefinition patientBetween50YearsAndAbove = ageCohortQueries.patientWithAgeAbove(50);
 		patientBetween50YearsAndAbove.setName("PatientBetween50YearsAndAbove");
+		
+		CohortDefinition patientsWithUnknownAge = sqlCohortQueries.getPatientsWithUnknownAge();
 		
 		ArrayList<CohortDefinition> agesRange = new ArrayList<CohortDefinition>();
 		agesRange.add(patientBelow1Year);
@@ -118,7 +123,8 @@ public class TxNewDataset {
 		agesRange.add(patientBetween25And29Years);
 		agesRange.add(patientBetween30And34Years);
 		agesRange.add(patientBetween35And39Years);
-		agesRange.add(patientBetween40And49Years);
+		agesRange.add(patientsBetween40And44Years);
+		agesRange.add(patientBetween45And49Years);
 		agesRange.add(patientBetween50YearsAndAbove);
 		
 		// Male
@@ -130,6 +136,10 @@ public class TxNewDataset {
 			i++;
 		}
 		
+		CohortDefinition patientInYearRangeUnknownAgeEnrolledInARTStartedM = compositionCohortQueries.getPatientInYearRangeEnrolledInARTStarted(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility, patientsWithUnknownAge, patientsWithUnknownAge, males);
+		CohortIndicator cohortIndicator = hivIndicators.patientInYearRangeEnrolledInHIVStartedARTIndicator(patientInYearRangeUnknownAgeEnrolledInARTStartedM);
+		dataSetDefinition.addColumn("UM", "Males:TX_NEW: New on ART by age and sex: " + patientsWithUnknownAge.getName(), map(cohortIndicator, "startDate=${startDate},endDate=${endDate}"), "");
+		
 		// Female
 		int j = 0;
 		for (CohortDefinition ageCohort : agesRange) {
@@ -138,6 +148,10 @@ public class TxNewDataset {
 			dataSetDefinition.addColumn("1F" + j, "Females:TX_NEW: New on ART by age and sex: " + ageCohort.getName(), new Mapped<CohortIndicator>(patientInYearRangeEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}")), "");
 			j++;
 		}
+		
+		CohortDefinition patientInYearRangeUnknownAgeEnrolledInARTStartedF = compositionCohortQueries.getPatientInYearRangeEnrolledInARTStarted(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility, patientsWithUnknownAge, patientsWithUnknownAge, females);
+		CohortIndicator indicator = hivIndicators.patientInYearRangeEnrolledInHIVStartedARTIndicator(patientInYearRangeUnknownAgeEnrolledInARTStartedF);
+		dataSetDefinition.addColumn("UF", "Females:TX_NEW: New on ART by age and sex: " + patientsWithUnknownAge.getName(), map(indicator, "startDate=${startDate},endDate=${endDate}"), "");
 		
 		CohortDefinition patientEnrolledInART = compositionCohortQueries.getPatientEnrolledInART(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility);
 		CohortIndicator patientEnrolledInHIVStartedARTIndicator = hivIndicators.patientEnrolledInHIVStartedARTIndicator(patientEnrolledInART);
