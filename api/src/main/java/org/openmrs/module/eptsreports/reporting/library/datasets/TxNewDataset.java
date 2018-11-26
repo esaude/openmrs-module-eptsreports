@@ -95,44 +95,45 @@ public class TxNewDataset {
 		
 		CohortDefinition females = genderCohortQueries.FemaleCohort();
 		
-		CohortDefinition PatientBelow1Year = ageCohortQueries.patientWithAgeBelow(1);
-		CohortDefinition PatientBetween1And9Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween1And9Years", 1, 9);
-		CohortDefinition PatientBetween10And14Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween10And14Years", 10, 14);
-		CohortDefinition PatientBetween15And19Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween15And19Years", 15, 19);
-		CohortDefinition PatientBetween20And24Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween20And24Years", 20, 24);
-		CohortDefinition PatientBetween25And29Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween25And29Years", 25, 29);
-		CohortDefinition PatientBetween30And34Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween30And34Years", 30, 34);
-		CohortDefinition PatientBetween35And39Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween35And39Years", 35, 39);
-		CohortDefinition PatientBetween40And49Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween40And49Years", 40, 49);
-		CohortDefinition PatientBetween50YearsAndAbove = ageCohortQueries.patientWithAgeAbove(50);
-		PatientBetween50YearsAndAbove.setName("PatientBetween50YearsAndAbove");
+		CohortDefinition patientBelow1Year = ageCohortQueries.patientWithAgeBelow(1);
+		CohortDefinition patientBetween1And4Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween1And4Years", 1, 4);
+		CohortDefinition patientBetween5And9Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween5And9Years", 5, 9);
+		CohortDefinition patientBetween10And14Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween10And14Years", 10, 14);
+		CohortDefinition patientBetween15And19Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween15And19Years", 15, 19);
+		CohortDefinition patientBetween20And24Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween20And24Years", 20, 24);
+		CohortDefinition patientBetween25And29Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween25And29Years", 25, 29);
+		CohortDefinition patientBetween30And34Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween30And34Years", 30, 34);
+		CohortDefinition patientBetween35And39Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween35And39Years", 35, 39);
+		CohortDefinition patientBetween40And49Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween40And49Years", 40, 49);
+		CohortDefinition patientBetween50YearsAndAbove = ageCohortQueries.patientWithAgeAbove(50);
+		patientBetween50YearsAndAbove.setName("PatientBetween50YearsAndAbove");
 		
 		ArrayList<CohortDefinition> agesRange = new ArrayList<CohortDefinition>();
-		agesRange.add(PatientBelow1Year);
-		agesRange.add(PatientBetween1And9Years);
-		agesRange.add(PatientBetween10And14Years);
-		agesRange.add(PatientBetween15And19Years);
-		agesRange.add(PatientBetween20And24Years);
-		agesRange.add(PatientBetween25And29Years);
-		agesRange.add(PatientBetween30And34Years);
-		agesRange.add(PatientBetween35And39Years);
-		agesRange.add(PatientBetween40And49Years);
-		agesRange.add(PatientBetween50YearsAndAbove);
+		agesRange.add(patientBelow1Year);
+		agesRange.add(patientBetween1And4Years);
+		agesRange.add(patientBetween5And9Years);
+		agesRange.add(patientBetween10And14Years);
+		agesRange.add(patientBetween15And19Years);
+		agesRange.add(patientBetween20And24Years);
+		agesRange.add(patientBetween25And29Years);
+		agesRange.add(patientBetween30And34Years);
+		agesRange.add(patientBetween35And39Years);
+		agesRange.add(patientBetween40And49Years);
+		agesRange.add(patientBetween50YearsAndAbove);
 		
 		// Male
 		int i = 0;
 		for (CohortDefinition ageCohort : agesRange) {
-			CohortDefinition patientInYearRangeEnrolledInARTStarted = compositionCohortQueries.getPatientInYearRangeEnrolledInARTStarted(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility, PatientBetween1And9Years, ageCohort, males);
+			CohortDefinition patientInYearRangeEnrolledInARTStarted = compositionCohortQueries.getPatientInYearRangeEnrolledInARTStarted(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility, patientBetween1And4Years, ageCohort, males);
 			CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator = hivIndicators.patientInYearRangeEnrolledInHIVStartedARTIndicator(patientInYearRangeEnrolledInARTStarted);
 			dataSetDefinition.addColumn("1M" + i, "Males:TX_NEW: New on ART by age and sex: " + ageCohort.getName(), new Mapped<CohortIndicator>(patientInYearRangeEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}")), "");
-			
 			i++;
 		}
 		
 		// Female
 		int j = 0;
 		for (CohortDefinition ageCohort : agesRange) {
-			CohortDefinition patientInYearRangeEnrolledInARTStarted = compositionCohortQueries.getPatientInYearRangeEnrolledInARTStarted(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility, PatientBetween1And9Years, ageCohort, females);
+			CohortDefinition patientInYearRangeEnrolledInARTStarted = compositionCohortQueries.getPatientInYearRangeEnrolledInARTStarted(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility, patientBetween1And4Years, ageCohort, females);
 			CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator = hivIndicators.patientInYearRangeEnrolledInHIVStartedARTIndicator(patientInYearRangeEnrolledInARTStarted);
 			dataSetDefinition.addColumn("1F" + j, "Females:TX_NEW: New on ART by age and sex: " + ageCohort.getName(), new Mapped<CohortIndicator>(patientInYearRangeEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}")), "");
 			j++;
