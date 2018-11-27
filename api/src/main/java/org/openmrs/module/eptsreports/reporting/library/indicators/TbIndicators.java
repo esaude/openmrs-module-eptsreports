@@ -23,6 +23,5 @@ public class TbIndicators extends BaseIndicators {
 	
 	public CohortIndicator tuberculosePatientNewlyInitiatingARTIndicator(CohortDefinition cohortDefinition) {
 		return newCohortIndicator("tuberculosePatientNewlyInitiatingARTIndicator", EptsReportUtils.map(cohortDefinition, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-		
 	}
 }

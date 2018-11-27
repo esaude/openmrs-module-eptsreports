@@ -138,7 +138,7 @@ public class TxNewDataset {
 		
 		CohortDefinition patientInYearRangeUnknownAgeEnrolledInARTStartedM = compositionCohortQueries.getPatientInYearRangeEnrolledInARTStarted(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility, patientsWithUnknownAge, patientsWithUnknownAge, males);
 		CohortIndicator cohortIndicator = hivIndicators.patientInYearRangeEnrolledInHIVStartedARTIndicator(patientInYearRangeUnknownAgeEnrolledInARTStartedM);
-		dataSetDefinition.addColumn("UM", "Males:TX_NEW: New on ART by age and sex: " + patientsWithUnknownAge.getName(), map(cohortIndicator, "startDate=${startDate},endDate=${endDate}"), "");
+		dataSetDefinition.addColumn("UM", "Males:TX_NEW: New on ART by age and sex: " + patientsWithUnknownAge.getName(), map(cohortIndicator, "startDate=${startDate},endDate=${endDate},location=${location}"), "");
 		
 		// Female
 		int j = 0;
@@ -151,7 +151,7 @@ public class TxNewDataset {
 		
 		CohortDefinition patientInYearRangeUnknownAgeEnrolledInARTStartedF = compositionCohortQueries.getPatientInYearRangeEnrolledInARTStarted(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility, patientsWithUnknownAge, patientsWithUnknownAge, females);
 		CohortIndicator indicator = hivIndicators.patientInYearRangeEnrolledInHIVStartedARTIndicator(patientInYearRangeUnknownAgeEnrolledInARTStartedF);
-		dataSetDefinition.addColumn("UF", "Females:TX_NEW: New on ART by age and sex: " + patientsWithUnknownAge.getName(), map(indicator, "startDate=${startDate},endDate=${endDate}"), "");
+		dataSetDefinition.addColumn("UF", "Females:TX_NEW: New on ART by age and sex: " + patientsWithUnknownAge.getName(), map(indicator, "startDate=${startDate},endDate=${endDate},location=${location}"), "");
 		
 		CohortDefinition patientEnrolledInART = compositionCohortQueries.getPatientEnrolledInART(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility);
 		CohortIndicator patientEnrolledInHIVStartedARTIndicator = hivIndicators.patientEnrolledInHIVStartedARTIndicator(patientEnrolledInART);

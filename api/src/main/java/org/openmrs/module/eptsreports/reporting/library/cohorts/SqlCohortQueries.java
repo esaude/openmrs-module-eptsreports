@@ -330,6 +330,7 @@ public class SqlCohortQueries {
 		unknownAgeCohort.setQuery("SELECT p.patient_id FROM patient p JOIN person pr ON p.patient_id = pr.person_id WHERE pr.birthdate IS NULL");
 		// Forced to add parameter here because of CompositionCohortQueries.java:118
 		unknownAgeCohort.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+		unknownAgeCohort.addParameter(new Parameter("location", "location", Location.class));
 		return unknownAgeCohort;
 	}
 	
