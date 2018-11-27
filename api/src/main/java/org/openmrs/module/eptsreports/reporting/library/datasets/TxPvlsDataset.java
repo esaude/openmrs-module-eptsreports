@@ -53,50 +53,38 @@ public class TxPvlsDataset extends BaseDataSet {
 		dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
 		dsd.addDimension("age", EptsReportUtils.map(eptsCommonDimension.age(), "effectiveDate=${endDate}"));
 		
-		dsd.addColumn("0N", "Total patients with suppressed Viral load - Numerator",
-		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), "");
+		dsd.addColumn("0N", "Total patients with suppressed Viral load - Numerator", EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), "");
 		
-		dsd.addColumn("0D", "Total patients with Viral load - Denominator",
-		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), "");
+		dsd.addColumn("0D", "Total patients with Viral load - Denominator", EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), "");
 		
 		// constructing the first row of pregnant and breast feeding mothers
 		
-		dsd.addColumn("1N", "Pregnant Women - Numerator",
-		    EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithSuppressedViralLoadIn12Months(), mappings), "");
+		dsd.addColumn("1N", "Pregnant Women - Numerator", EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithSuppressedViralLoadIn12Months(), mappings), "");
 		
-		dsd.addColumn("1D", "Pregnant Women - Denominator",
-		    EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithViralLoadIn12Months(), mappings), "");
+		dsd.addColumn("1D", "Pregnant Women - Denominator", EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithViralLoadIn12Months(), mappings), "");
 		
 		// constructing the rows for breastfeeding women
 		
-		dsd.addColumn("2N", "Breastfeeding - Women Numerator",
-		    EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithSuppressedViralLoadIn12Months(), mappings),
-		    "");
+		dsd.addColumn("2N", "Breastfeeding - Women Numerator", EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithSuppressedViralLoadIn12Months(), mappings), "");
 		
-		dsd.addColumn("2D", "Breastfeeding - Women Denominator",
-		    EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithViralLoadIn12Months(), mappings), "");
+		dsd.addColumn("2D", "Breastfeeding - Women Denominator", EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithViralLoadIn12Months(), mappings), "");
 		
 		// constructing the rows for children
-		addRow(dsd, "3N", "Children Numerator",
-		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), children());
+		addRow(dsd, "3N", "Children Numerator", EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), children());
 		
-		addRow(dsd, "3D", "Children Denominator",
-		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), children());
+		addRow(dsd, "3D", "Children Denominator", EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), children());
 		
 		// Numerator
-		addRow(dsd, "4N", "Adults with suppressed VL Numerator",
-		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), adultsDisagregation());
+		addRow(dsd, "4N", "Adults with suppressed VL Numerator", EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), adultsDisagregation());
 		
 		// Denominator
-		addRow(dsd, "4D", "Adults with VL Denominator",
-		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), adultsDisagregation());
+		addRow(dsd, "4D", "Adults with VL Denominator", EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), adultsDisagregation());
 		return dsd;
 		
 	}
 	
 	public List<Parameter> getParameters() {
-		return Arrays.asList(ReportingConstants.START_DATE_PARAMETER, ReportingConstants.END_DATE_PARAMETER,
-		    ReportingConstants.LOCATION_PARAMETER);
+		return Arrays.asList(ReportingConstants.START_DATE_PARAMETER, ReportingConstants.END_DATE_PARAMETER, ReportingConstants.LOCATION_PARAMETER);
 	}
 	
 	// build dimensions specific for this data set
@@ -143,9 +131,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		ColumnParameters fftyAndAboveF = new ColumnParameters(">=50F", ">=50 years female", "gender=F|age=>49", "26");
 		ColumnParameters fftyAndAboveT = new ColumnParameters(">=50T", ">=50 years patients", "age=>49", "27");
 		
-		return Arrays.asList(tenTo14M, tenTo14F, tenTo14T, fftnTo19M, fftnTo19F, fftnTo19T, twtyTo24M, twtyTo24F, twtyTo24T,
-		    twty5To29M, twty5To29F, twty5To29T, thtyTo34M, thtyTo34F, thtyTo34T, thty5To39M, thty5To39F, thty5To39T,
-		    ftyTo44M, ftyTo44F, ftyTo44T, fty5To49M, fty5To49F, fty5To49T, fftyAndAboveM, fftyAndAboveF, fftyAndAboveT);
+		return Arrays.asList(tenTo14M, tenTo14F, tenTo14T, fftnTo19M, fftnTo19F, fftnTo19T, twtyTo24M, twtyTo24F, twtyTo24T, twty5To29M, twty5To29F, twty5To29T, thtyTo34M, thtyTo34F, thtyTo34T, thty5To39M, thty5To39F, thty5To39T, ftyTo44M, ftyTo44F, ftyTo44T, fty5To49M, fty5To49F, fty5To49T, fftyAndAboveM, fftyAndAboveF, fftyAndAboveT);
 		
 	}
 	
