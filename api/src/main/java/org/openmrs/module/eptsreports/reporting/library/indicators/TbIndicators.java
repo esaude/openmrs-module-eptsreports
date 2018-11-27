@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 public class TbIndicators extends BaseIndicators {
 	
 	public CohortIndicator tuberculosePatientNewlyInitiatingARTIndicator(CohortDefinition cohortDefinition) {
-		return newCohortIndicator("tuberculosePatientNewlyInitiatingARTIndicator", cohortDefinition,
-		    ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return newCohortIndicator("tuberculosePatientNewlyInitiatingARTIndicator", cohortDefinition, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}"));
 	}
 }

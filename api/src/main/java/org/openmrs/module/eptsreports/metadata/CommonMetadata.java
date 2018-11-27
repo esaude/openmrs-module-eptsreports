@@ -26,6 +26,8 @@ public class CommonMetadata extends Metadata {
 	
 	private String YES = "e1d81b62-1d5f-11e0-b929-000c29ad1d07";
 	
+	private String RETURN_VISIT_DATE = "e1dae630-1d5f-11e0-b929-000c29ad1d07";
+	
 	public Concept getYesConcept() {
 		return getConcept(YES);
 	}
@@ -36,6 +38,10 @@ public class CommonMetadata extends Metadata {
 	
 	public Concept gethistoricalDrugStartDateConcept() {
 		return getConcept(HISTORICAL_DRUG_START_DATE);
+	}
+	
+	public Concept getReturnVisitDateConcept() {
+		return getConcept(RETURN_VISIT_DATE);
 	}
 	
 }
