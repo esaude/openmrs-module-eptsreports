@@ -83,7 +83,7 @@ public class EptsReportUtils {
 	 */
 	public static <T extends Parameterizable> Mapped<T> map(T parameterizable, String mappings) {
 		if (parameterizable == null) {
-			throw new NullPointerException("Programming error: missing parameterizable");
+			throw new IllegalArgumentException("Parameterizable cannot be null");
 		}
 		if (mappings == null) {
 			mappings = ""; // probably not necessary, just to be safe
