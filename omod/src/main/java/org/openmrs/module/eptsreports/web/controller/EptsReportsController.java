@@ -48,8 +48,7 @@ public class EptsReportsController {
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public String onPost(HttpSession httpSession, @ModelAttribute("anyRequestObject") Object anyRequestObject,
-	        BindingResult errors) {
+	public String onPost(HttpSession httpSession, @ModelAttribute("anyRequestObject") Object anyRequestObject, BindingResult errors) {
 		
 		if (errors.hasErrors()) {
 			// return error view

@@ -36,6 +36,8 @@ public class CommonMetadata extends Metadata {
 	
 	private String BREASTFEEDING = "bc4fe755-fc8f-49b8-9956-baf2477e8313";
 	
+	private String RETURN_VISIT_DATE = "e1dae630-1d5f-11e0-b929-000c29ad1d07";
+	
 	public Concept getYesConcept() {
 		return getConcept(YES);
 	}
@@ -66,6 +68,10 @@ public class CommonMetadata extends Metadata {
 	
 	public Concept getBreastfeeding() {
 		return getConcept(BREASTFEEDING);
+	}
+	
+	public Concept getReturnVisitDateConcept() {
+		return getConcept(RETURN_VISIT_DATE);
 	}
 	
 }

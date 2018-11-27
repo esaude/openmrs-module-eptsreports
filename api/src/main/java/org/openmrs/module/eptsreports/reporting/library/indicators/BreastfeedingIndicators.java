@@ -32,9 +32,7 @@ public class BreastfeedingIndicators extends BaseIndicators {
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getBreastfeedingWomenWithSuppressedViralLoadIn12Months() {
-		return newCohortIndicator("pregnantWomenWithViralLoadSuppression",
-		    EptsReportUtils.map(ccq.breastfeedingWomenAndHasViralLoadSuppressionInTheLast12MonthsNumerator(),
-		        "startDate=${startDate},endDate=${endDate},location=${location}"));
+		return newCohortIndicator("pregnantWomenWithViralLoadSuppression", EptsReportUtils.map(ccq.breastfeedingWomenAndHasViralLoadSuppressionInTheLast12MonthsNumerator(), "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 	
 	/**
@@ -43,8 +41,6 @@ public class BreastfeedingIndicators extends BaseIndicators {
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getBreastfeedingWomenWithViralLoadIn12Months() {
-		return newCohortIndicator("pregnantWomenWithViralLoad",
-		    EptsReportUtils.map(ccq.breastfeedingWomenAndHasViralLoadInTheLast12MonthsDenominator(),
-		        "startDate=${startDate},endDate=${endDate},location=${location}"));
+		return newCohortIndicator("pregnantWomenWithViralLoad", EptsReportUtils.map(ccq.breastfeedingWomenAndHasViralLoadInTheLast12MonthsDenominator(), "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 }
