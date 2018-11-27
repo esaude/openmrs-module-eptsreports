@@ -22,18 +22,18 @@ import org.springframework.stereotype.Component;
 public class HivIndicators extends BaseIndicators {
 	
 	public CohortIndicator patientBelow1YearEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
-		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", cohortDefinition, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
+		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", cohortDefinition, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
 	}
 	
 	public CohortIndicator patientBetween1And9YearsEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
-		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", cohortDefinition, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
+		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", cohortDefinition, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
 	}
 	
 	public CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
-		return newCohortIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicator", cohortDefinition, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},effectiveDate=${endDate}"));
+		return newCohortIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicator", cohortDefinition, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
 	}
 	
 	public CohortIndicator patientEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
-		return newCohortIndicator("patientNewlyEnrolledInHIVIndicator", cohortDefinition, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate}"));
+		return newCohortIndicator("patientNewlyEnrolledInHIVIndicator", cohortDefinition, ParameterizableUtil.createParameterMappings("onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 	}
 }
