@@ -20,7 +20,6 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Program;
-import org.openmrs.api.PatientSetService;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -85,6 +84,7 @@ public class CommonCohortQueries {
 		cd.setName("has obs between dates");
 		cd.setQuestion(question);
 		cd.setOperator(SetComparator.IN);
+		cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		if (answers.length > 0) {

@@ -17,10 +17,10 @@
 
 	<properties>
 		<openmrsPlatformVersion>1.11.5</openmrsPlatformVersion>
-		<reportingVersion>0.9.9</reportingVersion>
+		<reportingVersion>1.13.0</reportingVersion>
 		<serializationVersion>0.2.9</serializationVersion>
-		<calculationVersion>1.1</calculationVersion>
-		<htmlWidgetsVersion>1.9.0</htmlWidgetsVersion>
+		<calculationVersion>1.2</calculationVersion>
+		<htmlWidgetsVersion>2.1.1</htmlWidgetsVersion>
 	</properties>
 
 	<url>https://wiki.openmrs.org/x/FQ4z</url>
