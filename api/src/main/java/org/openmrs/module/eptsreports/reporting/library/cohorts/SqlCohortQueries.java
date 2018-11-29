@@ -324,7 +324,7 @@ public class SqlCohortQueries {
 		return abandonedButHaveNotcompleted60Days;
 	}
 	
-	public SqlCohortDefinition getPatientsWithUnknownAge() {
+	public CohortDefinition getPatientsWithUnknownAge() {
 		SqlCohortDefinition unknownAgeCohort = new SqlCohortDefinition();
 		unknownAgeCohort.setName("unknownAge");
 		unknownAgeCohort.setQuery("SELECT p.patient_id FROM patient p JOIN person pr ON p.patient_id = pr.person_id WHERE pr.birthdate IS NULL");

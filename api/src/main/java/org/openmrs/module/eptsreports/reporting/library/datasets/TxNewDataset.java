@@ -22,6 +22,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.CompositionCohor
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.SqlCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.indicators.BreastfeedingIndicators;
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
 import org.openmrs.module.eptsreports.reporting.library.indicators.TbIndicators;
 import org.openmrs.module.reporting.ReportingConstants;
@@ -60,6 +61,9 @@ public class TxNewDataset {
 
 	@Autowired
 	private HivCohortQueries hivCohortQueries;
+
+	@Autowired
+	private BreastfeedingIndicators breastFeedingIndicators;
 	
 	public List<Parameter> getParameters() {
 		List<Parameter> parameters = new ArrayList<Parameter>();
@@ -162,11 +166,9 @@ public class TxNewDataset {
 		CohortDefinition patientEnrolledInART = compositionCohortQueries.getPatientEnrolledInART(inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, transferredFromOtherHealthFacility);
 		CohortIndicator patientEnrolledInHIVStartedARTIndicator = hivIndicators.patientEnrolledInHIVStartedARTIndicator(patientEnrolledInART);
 		dataSetDefinition.addColumn("1All", "TX_NEW: New on ART", new Mapped<CohortIndicator>(patientEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}")), "");
-		
-		// Obtain patients notified to be on TB treatment
-		CohortDefinition notifiedToBeOnTbTreatment = sqlCohortQueries.getPatientsNotifiedToBeOnTbTreatment();
-		CohortIndicator tuberculosePatientNewlyInitiatingARTIndicator = tbIndicators.tuberculosePatientNewlyInitiatingARTIndicator(notifiedToBeOnTbTreatment);
-		dataSetDefinition.addColumn("TB", "TX_NEW: TB Started ART", new Mapped<CohortIndicator>(tuberculosePatientNewlyInitiatingARTIndicator, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}")), "");
+
+		CohortIndicator breastfeeding = breastFeedingIndicators.getBreastfeedingWomenWhoAreInArtTreatment();
+		dataSetDefinition.addColumn("BF", "TX_NEW: New on ART breastfeeding", new Mapped<CohortIndicator>(breastfeeding, ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}")), "");
 		
 		return dataSetDefinition;
 	}
