@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.dimensions;
 
+import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -31,6 +32,7 @@ public class EptsCommonDimension {
 	
 	@Autowired
 	private AgeCohortQueries ageCohortQueries;
+
 	
 	/**
 	 * Gender dimension
@@ -54,6 +56,7 @@ public class EptsCommonDimension {
 		CohortDefinitionDimension dim = new CohortDefinitionDimension();
 		dim.addParameter(new Parameter("effectiveDate", "End Date", Date.class));
 		dim.setName("age");
+		dim.addCohortDefinition("UK", EptsReportUtils.map(ageCohortQueries.getPatientsWithUnknownAge(), ""));
 		dim.addCohortDefinition("<1", EptsReportUtils.map(ageCohortQueries.patientWithAgeBelow(1), "effectiveDate=${endDate}"));
 		dim.addCohortDefinition("1-4", EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("1-4", 1, 4), "effectiveDate=${endDate}"));
 		dim.addCohortDefinition("5-9", EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("5-9", 5, 9), "effectiveDate=${endDate}"));
@@ -66,6 +69,18 @@ public class EptsCommonDimension {
 		dim.addCohortDefinition("40-44", EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("40-44", 40, 44), "effectiveDate=${endDate}"));
 		dim.addCohortDefinition("45-49", EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("45-49", 45, 49), "effectiveDate=${endDate}"));
 		dim.addCohortDefinition(">49", EptsReportUtils.map(ageCohortQueries.patientWithAgeAbove(50), "effectiveDate=${endDate}"));
+		return dim;
+	}
+
+	/**
+	 * Other disaggreagtions that include routine, target and Not documented
+	 * @return CohortDimension
+	 */
+	public CohortDefinitionDimension routineTargetNotDocumented() {
+		CohortDefinitionDimension dim = new CohortDefinitionDimension();
+		dim.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		dim.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		dim.addParameter(new Parameter("location", "Location", Location.class));
 		return dim;
 	}
 }
