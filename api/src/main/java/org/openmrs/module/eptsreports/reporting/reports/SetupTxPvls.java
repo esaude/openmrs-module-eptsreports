@@ -74,7 +74,7 @@ public class SetupTxPvls extends EptsDataExportManager {
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
 		ReportDesign reportDesign = null;
 		try {
-			reportDesign = createXlsReportDesign(reportDefinition, "TxPvls.xls", "TX_PVLS", getExcelDesignUuid(), null);
+			reportDesign = createXlsReportDesign(reportDefinition, "TxPvls.xls", "TXPVLS.xls_", getExcelDesignUuid(), null);
 			Properties props = new Properties();
 			props.put("repeatingSections", "sheet:1,dataset:Tx_Pvls Data Set");
 			props.put("sortWeight", "5000");
