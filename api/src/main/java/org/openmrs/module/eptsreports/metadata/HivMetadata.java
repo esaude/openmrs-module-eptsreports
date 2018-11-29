@@ -30,7 +30,7 @@ public class HivMetadata extends CommonMetadata {
 	private String MISAU_LABORATORIO = "e2790f68-1d5f-11e0-b929-000c29ad1d07"; // encounterType_id = 13
 	
 	private String S_TARV_ADULTO_INICIAL_A = "e278f820-1d5f-11e0-b929-000c29ad1d07"; // 5
-	
+
 	// CONCEPTS
 	private String ARVPlan = "e1d9ee10-1d5f-11e0-b929-000c29ad1d07";
 	
@@ -42,12 +42,18 @@ public class HivMetadata extends CommonMetadata {
 	
 	private String RETURN_VISIT_DATE_FOR_ARV_DRUG = "e1e2efd8-1d5f-11e0-b929-000c29ad1d07";
 	
+	private String RESTART = "e1de1bfc-1d5f-11e0-b929-000c29ad1d07";
+
 	public Concept getARVPlanConcept() {
 		return getConcept(ARVPlan);
 	}
 	
 	public Concept getReturnVisitDateForArvDrugConcept() {
 		return getConcept(RETURN_VISIT_DATE_FOR_ARV_DRUG);
+	}
+
+	public Concept getRestartConcept() {
+		return getConcept(RESTART);
 	}
 	
 	// PROGRAMS

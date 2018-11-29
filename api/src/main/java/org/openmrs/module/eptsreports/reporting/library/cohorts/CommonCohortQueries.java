@@ -87,6 +87,7 @@ public class CommonCohortQueries {
 		cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
 		if (answers.length > 0) {
 			cd.setValueList(Arrays.asList(answers));
 		}

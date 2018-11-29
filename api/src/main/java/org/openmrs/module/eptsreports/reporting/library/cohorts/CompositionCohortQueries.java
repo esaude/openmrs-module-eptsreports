@@ -87,7 +87,7 @@ public class CompositionCohortQueries {
 	}
 	
 	@DocumentedDefinition(value = "patientInYearRangeEnrolledInARTStarted")
-	public CompositionCohortDefinition getPatientInYearRangeEnrolledInARTStarted(CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs, CohortDefinition transferredFromOtherHealthFacility, CohortDefinition ageCohort, CohortDefinition gender) {
+	public CompositionCohortDefinition getPatientInYearRangeEnrolledInARTStarted(CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs, CohortDefinition transferredFromOtherHealthFacility, CohortDefinition restartedTreatment, CohortDefinition ageCohort, CohortDefinition gender) {
 		CompositionCohortDefinition patientInYearRangeEnrolledInARTStarted = new CompositionCohortDefinition();
 		patientInYearRangeEnrolledInARTStarted.setName("patientInYearRangeEnrolledInHIVStarted");
 		patientInYearRangeEnrolledInARTStarted.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
@@ -98,10 +98,10 @@ public class CompositionCohortQueries {
 		patientInYearRangeEnrolledInARTStarted.getSearches().put("2", new Mapped<CohortDefinition>(patientWithSTARTDRUGSObs, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
 		patientInYearRangeEnrolledInARTStarted.getSearches().put("3", new Mapped<CohortDefinition>(patientWithHistoricalDrugStartDateObs, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
 		patientInYearRangeEnrolledInARTStarted.getSearches().put("4", new Mapped<CohortDefinition>(transferredFromOtherHealthFacility, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
-		
-		patientInYearRangeEnrolledInARTStarted.getSearches().put("5", new Mapped<CohortDefinition>(ageCohort, ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}")));
-		patientInYearRangeEnrolledInARTStarted.getSearches().put("6", new Mapped<CohortDefinition>(gender, null));
-		patientInYearRangeEnrolledInARTStarted.setCompositionString("((1 or 2 or 3) and (not 4)) and 5 and 6");
+		patientInYearRangeEnrolledInARTStarted.getSearches().put("5", Mapped.map(restartedTreatment, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+		patientInYearRangeEnrolledInARTStarted.getSearches().put("6", new Mapped<CohortDefinition>(ageCohort, ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}")));
+		patientInYearRangeEnrolledInARTStarted.getSearches().put("7", new Mapped<CohortDefinition>(gender, null));
+		patientInYearRangeEnrolledInARTStarted.setCompositionString("((1 or 2 or 3) and (not (4 and 5))) and 6 and 7");
 		return patientInYearRangeEnrolledInARTStarted;
 	}
 	
