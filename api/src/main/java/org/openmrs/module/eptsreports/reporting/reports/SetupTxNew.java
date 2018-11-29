@@ -68,6 +68,7 @@ public class SetupTxNew extends EptsDataExportManager {
 		List<Parameter> parameters = new ArrayList<Parameter>();
 		parameters.add(ReportingConstants.START_DATE_PARAMETER);
 		parameters.add(ReportingConstants.END_DATE_PARAMETER);
+		parameters.add(ReportingConstants.LOCATION_PARAMETER);
 		return parameters;
 	}
 	
@@ -79,7 +80,7 @@ public class SetupTxNew extends EptsDataExportManager {
 		reportDefinition.setDescription(getDescription());
 		reportDefinition.setParameters(getParameters());
 		
-		reportDefinition.addDataSetDefinition(txNewDataset.constructTxNewDatset(getParameters()), ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate}"));
+		reportDefinition.addDataSetDefinition(txNewDataset.constructTxNewDatset(getParameters()), ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate},location=${location}"));
 		
 		return reportDefinition;
 	}

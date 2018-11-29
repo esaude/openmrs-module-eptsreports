@@ -16,6 +16,7 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AgeCohortQueries {
 	
-	public AgeCohortDefinition patientWithAgeBelow(int age) {
+	public CohortDefinition patientWithAgeBelow(int age) {
 		AgeCohortDefinition patientsWithAgebilow = new AgeCohortDefinition();
 		patientsWithAgebilow.setName("patientsWithAgebelow");
 		patientsWithAgebilow.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
@@ -32,7 +33,7 @@ public class AgeCohortQueries {
 		return patientsWithAgebilow;
 	}
 	
-	public AgeCohortDefinition patientWithAgeAbove(int age) {
+	public CohortDefinition patientWithAgeAbove(int age) {
 		AgeCohortDefinition patientsWithAge = new AgeCohortDefinition();
 		patientsWithAge.setName("patientsWithAge");
 		patientsWithAge.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
@@ -41,19 +42,19 @@ public class AgeCohortQueries {
 		return patientsWithAge;
 	}
 	
-	public AgeCohortDefinition createXtoYAgeCohort(String name, int minAge, int maxAge) {
+	public CohortDefinition createXtoYAgeCohort(String name, int minAge, int maxAge) {
 		AgeCohortDefinition xToYCohort = new AgeCohortDefinition();
 		xToYCohort.setName(name);
-		xToYCohort.setMaxAge(new Integer(maxAge));
-		xToYCohort.setMinAge(new Integer(minAge));
+		xToYCohort.setMaxAge(maxAge);
+		xToYCohort.setMinAge(minAge);
 		xToYCohort.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
 		return xToYCohort;
 	}
 	
-	public AgeCohortDefinition createOverXAgeCohort(String name, int minAge) {
+	public CohortDefinition createOverXAgeCohort(String name, int minAge) {
 		AgeCohortDefinition overXCohort = new AgeCohortDefinition();
 		overXCohort.setName(name);
-		overXCohort.setMinAge(new Integer(minAge));
+		overXCohort.setMinAge(minAge);
 		overXCohort.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
 		return overXCohort;
 	}

@@ -16,6 +16,9 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
@@ -23,6 +26,7 @@ import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -31,9 +35,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class CompositionCohortQueries {
 	
+	@Autowired
+	private CommonCohortQueries commonCohortQueries;
+	
+	@Autowired
+	private HivMetadata hivMetadata;
+	
+	@Autowired
+	private SqlCohortQueries sqlCohortQueries;
+	
+	@Autowired
+	private GenderCohortQueries genderCohortQueries;
+	
 	// Male and Female <1
 	@DocumentedDefinition(value = "patientBelow1YearEnrolledInHIVStartedART")
-	public CompositionCohortDefinition getPatientBelow1YearEnrolledInHIVStartedART(CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs, CohortDefinition transferredFromOtherHealthFacility, CohortDefinition PatientBelow1Year) {
+	public CohortDefinition getPatientBelow1YearEnrolledInHIVStartedART(CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs, CohortDefinition transferredFromOtherHealthFacility, CohortDefinition PatientBelow1Year) {
 		CompositionCohortDefinition patientBelow1YearEnrolledInHIVStartedART = new CompositionCohortDefinition();
 		patientBelow1YearEnrolledInHIVStartedART.setName("patientBelow1YearEnrolledInHIVStartedART");
 		patientBelow1YearEnrolledInHIVStartedART.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
@@ -53,8 +69,7 @@ public class CompositionCohortQueries {
 	
 	// Male and Female between 1 and 9 years
 	@DocumentedDefinition(value = "patientBetween1And9YearsEnrolledInHIVStartedART")
-	public CompositionCohortDefinition getPatientBetween1And9YearsEnrolledInHIVStartedART(CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs, CohortDefinition transferredFromOtherHealthFacility, CohortDefinition PatientBetween1And9Years) {
-		
+	public CohortDefinition getPatientBetween1And9YearsEnrolledInHIVStartedART(CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs, CohortDefinition transferredFromOtherHealthFacility, CohortDefinition PatientBetween1And9Years) {
 		CompositionCohortDefinition patientBetween1And9YearsEnrolledInHIVStartedART = new CompositionCohortDefinition();
 		patientBetween1And9YearsEnrolledInHIVStartedART.setName("patientBetween1And9YearsEnrolledInHIVStartedART");
 		patientBetween1And9YearsEnrolledInHIVStartedART.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
@@ -72,8 +87,7 @@ public class CompositionCohortQueries {
 	}
 	
 	@DocumentedDefinition(value = "patientInYearRangeEnrolledInARTStarted")
-	public CompositionCohortDefinition getPatientInYearRangeEnrolledInARTStarted(CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs, CohortDefinition transferredFromOtherHealthFacility, CohortDefinition PatientBetween1And9Years, CohortDefinition ageCohort, CohortDefinition gender) {
-		
+	public CohortDefinition getPatientInYearRangeEnrolledInARTStarted(CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs, CohortDefinition transferredFromOtherHealthFacility, CohortDefinition PatientBetween1And9Years, CohortDefinition ageCohort, CohortDefinition gender) {
 		CompositionCohortDefinition patientInYearRangeEnrolledInARTStarted = new CompositionCohortDefinition();
 		patientInYearRangeEnrolledInARTStarted.setName("patientInYearRangeEnrolledInHIVStarted");
 		patientInYearRangeEnrolledInARTStarted.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
@@ -92,8 +106,7 @@ public class CompositionCohortQueries {
 	}
 	
 	@DocumentedDefinition(value = "patientEnrolledInART")
-	public CompositionCohortDefinition getPatientEnrolledInART(CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs, CohortDefinition transferredFromOtherHealthFacility) {
-		
+	public CohortDefinition getPatientEnrolledInART(CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs, CohortDefinition transferredFromOtherHealthFacility) {
 		CompositionCohortDefinition patientEnrolledInART = new CompositionCohortDefinition();
 		patientEnrolledInART.setName("patientEnrolledInART");
 		patientEnrolledInART.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
@@ -106,6 +119,168 @@ public class CompositionCohortQueries {
 		patientEnrolledInART.setCompositionString("(1 or 2 or 3) and (not 4)");
 		
 		return patientEnrolledInART;
+	}
+	
+	@DocumentedDefinition(value = "pregnantWomen")
+	public CohortDefinition getPregnantWomen() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Facility", Location.class));
+		
+		int adultSegEnc = hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId();
+		int adultInEnc = hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId();
+		
+		int ptvPro = hivMetadata.getPtvEtvProgram().getProgramId();
+		
+		int pregnant = hivMetadata.getPregnantConcept().getConceptId();
+		int gestation = hivMetadata.getGestationConcept().getConceptId();
+		int numOfWeeks = hivMetadata.getNumberOfWeeksPregnant().getConceptId();
+		int dueDate = hivMetadata.getPregnancyDueDate().getConceptId();
+		
+		// set the mappings here
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		
+		cd.addSearch("opt1", EptsReportUtils.map(commonCohortQueries.general("opt1", PregnantQueries.getPregnantOnInitialOrFollowUpConsulation(pregnant, gestation, adultInEnc, adultSegEnc)), mappings));
+		cd.addSearch("opt2", EptsReportUtils.map(commonCohortQueries.general("opt2", PregnantQueries.getWeeksPregnantOnInitialOrFollowUpConsultations(numOfWeeks, adultInEnc, adultSegEnc)), mappings));
+		cd.addSearch("opt3", EptsReportUtils.map(commonCohortQueries.general("opt3", PregnantQueries.getEnrolledInPtvOrEtv(ptvPro)), mappings));
+		cd.addSearch("opt4", EptsReportUtils.map(commonCohortQueries.general("opt4", PregnantQueries.getPregnancyDueDateRegistred(dueDate, adultInEnc, adultSegEnc)), mappings));
+		cd.setCompositionString("opt1 OR opt2 OR opt3 OR opt4");
+		return cd;
+	}
+	
+	/**
+	 * Breast feeding women
+	 * 
+	 * @return CohortDefinition
+	 */
+	@DocumentedDefinition(value = "breastfeedingWomen")
+	public CohortDefinition getBreastfeedingWomen() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Breastfeeding or Paurpueras");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addSearch("dil", EptsReportUtils.map(sqlCohortQueries.dil(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.addSearch("lactating", EptsReportUtils.map(sqlCohortQueries.registeredBreastFeeding(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.addSearch("preg", EptsReportUtils.map(sqlCohortQueries.pregnantsInscribedOnARTService(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.setCompositionString("(dil OR lactating) AND NOT preg");
+		
+		return cd;
+	}
+	
+	/**
+	 * Pregnant women with viral load in the last 12 months Denominator Denominator Denominator
+	 * 
+	 * @return CohortDefinition
+	 */
+	@DocumentedDefinition(value = "pregnantWomenAndHasViralLoadInTheLast12MonthsDenominator")
+	public CohortDefinition pregnantWomenAndHasViralLoadInTheLast12MonthsDenominator() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomen(), mappings));
+		cd.addSearch("vl", EptsReportUtils.map(getPatientsWithViralLoadResultsExcludingDeadLtfuTransferredoutStoppedArt(), mappings));
+		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
+		cd.setCompositionString("(pregnant AND vl) AND female");
+		return cd;
+	}
+	
+	/**
+	 * Pregnant women with viral load in the last 12 months Numerator with viral load of <1000 Numerator
+	 * Numerator
+	 * 
+	 * @return CohortDefinition
+	 */
+	@DocumentedDefinition(value = "pregnantWomenAndHasSuppressedViralLoadInTheLast12MonthsNumerator")
+	public CohortDefinition pregnantWomenAndHasSuppressedViralLoadInTheLast12MonthsNumerator() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("preg", EptsReportUtils.map(getPregnantWomen(), mappings));
+		cd.addSearch("supp", EptsReportUtils.map(getPatientsWithViralLoadSuppressionExcludingDeadLtfuTransferredoutStoppedArt(), mappings));
+		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
+		cd.setCompositionString("(preg AND supp) AND female");
+		return cd;
+	}
+	
+	/**
+	 * Breastfeeding women with viral load in the last 12 months Denominator Denominator
+	 * 
+	 * @return CohortDefinition
+	 */
+	@DocumentedDefinition(value = "breastfeedingWomenAndHasViralLoadInTheLast12MonthsDenominator")
+	public CohortDefinition breastfeedingWomenAndHasViralLoadInTheLast12MonthsDenominator() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		
+		// set the mappings here
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomen(), mappings));
+		cd.addSearch("vl", EptsReportUtils.map(getPatientsWithViralLoadResultsExcludingDeadLtfuTransferredoutStoppedArt(), mappings));
+		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
+		cd.setCompositionString("(breastfeeding AND vl) AND female");
+		return cd;
+	}
+	
+	/**
+	 * Pregnant women with viral load in the last 12 months Numerator with viral load of <1000 Numerator
+	 * 
+	 * @return CohortDefinition
+	 */
+	@DocumentedDefinition(value = "breastfeedingWomenAndHasViralLoadSuppressionInTheLast12MonthsNumerator")
+	public CohortDefinition breastfeedingWomenAndHasViralLoadSuppressionInTheLast12MonthsNumerator() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomen(), mappings));
+		cd.addSearch("suppression", EptsReportUtils.map(getPatientsWithViralLoadSuppressionExcludingDeadLtfuTransferredoutStoppedArt(), mappings));
+		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
+		cd.setCompositionString("(breastfeeding AND suppression) AND female");
+		return cd;
+	}
+	
+	/**
+	 * Patients with viral suppression of <1000 in the last 12 months excluding dead, LTFU, transferred
+	 * out, stopped ART
+	 */
+	public CohortDefinition getPatientsWithViralLoadSuppressionExcludingDeadLtfuTransferredoutStoppedArt() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("supp", EptsReportUtils.map(sqlCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
+		cd.addSearch("dead", EptsReportUtils.map(sqlCohortQueries.getDeadPersons(), mappings));
+		cd.setCompositionString("supp AND NOT dead");
+		return cd;
+	}
+	
+	/**
+	 * Patients with viral results recorded in the last 12 months excluding dead, LTFU, transferred out,
+	 * stopped ART
+	 */
+	public CohortDefinition getPatientsWithViralLoadResultsExcludingDeadLtfuTransferredoutStoppedArt() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("results", EptsReportUtils.map(sqlCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
+		cd.addSearch("dead", EptsReportUtils.map(sqlCohortQueries.getDeadPersons(), mappings));
+		cd.setCompositionString("results AND NOT dead");
+		return cd;
 	}
 	
 	// Starting TX_CURR
