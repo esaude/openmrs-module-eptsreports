@@ -78,8 +78,8 @@ public class EptsCommonDimension {
 	 */
 	public CohortDefinitionDimension routineTargetNotDocumented() {
 		CohortDefinitionDimension dim = new CohortDefinitionDimension();
-		dim.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		dim.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+		dim.addParameter(new Parameter("endDate", "End Date", Date.class));
+		dim.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dim.addParameter(new Parameter("location", "Location", Location.class));
 		return dim;
 	}

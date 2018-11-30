@@ -96,8 +96,8 @@ public class TxPvlsDataset extends BaseDataSet {
 	 */
 	private List<ColumnParameters> adultsDisagregation() {
 		// columns for patients aged 10 to 14 years, defined by gender
-		////Routine
-		//////Male
+		//// Routine
+		////// Male
 		ColumnParameters tenTo14RM = new ColumnParameters("10-14RM", "Routine 10-14 years males", "rtn=r|gender=M|age=10-14", "01");
 		ColumnParameters fftnTo19RM = new ColumnParameters("15-19RM", "Routine 15-19 years males", "rtn=r|gender=M|age=15-19", "02");
 		ColumnParameters twtyTo24RM = new ColumnParameters("20-24RM", "Routine 20-24 years males", "rtn=r|gender=M|age=20-24", "03");
@@ -108,7 +108,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		ColumnParameters fty5To49RM = new ColumnParameters("45-49RM", "Routine 45-49 years males", "rtn=r|gender=M|age=45-49", "08");
 		ColumnParameters fftyAndAboveRM = new ColumnParameters(">=50RM", "Routine 50+ years males", "rtn=r|gender=M|age=>49", "09");
 		ColumnParameters unknownAgeRM = new ColumnParameters("unknownAgeRM", "Routine unknown age males", "rtn=r|gender=M|age=UK", "10");
-		//////Female
+		////// Female
 		ColumnParameters tenTo14RF = new ColumnParameters("10-14RF", "Routine 10-14 years females", "rtn=r|gender=F|age=10-14", "11");
 		ColumnParameters fftnTo19RF = new ColumnParameters("15-19RF", "Routine 15-19 years females", "rtn=r|gender=F|age=15-19", "12");
 		ColumnParameters twtyTo24RF = new ColumnParameters("20-24RF", "Routine 20-24 years females", "rtn=r|gender=F|age=20-24", "13");
@@ -119,9 +119,9 @@ public class TxPvlsDataset extends BaseDataSet {
 		ColumnParameters fty5To49RF = new ColumnParameters("45-49RF", "Routine 45-49 years females", "rtn=r|gender=F|age=45-49", "18");
 		ColumnParameters fftyAndAboveRF = new ColumnParameters(">=50RF", "Routine 50+ years females", "rtn=r|gender=F|age=>49", "19");
 		ColumnParameters unknownAgeRF = new ColumnParameters("unknownAgeRF", "Routine unknown age females", "rtn=r|gender=F|age=UK", "20");
-
-		////Not documented
-		//////Male
+		
+		//// Not documented
+		////// Male
 		ColumnParameters tenTo14NM = new ColumnParameters("10-14NM", "Not documented 10-14 years males", "rtn=n|gender=M|age=10-14", "21");
 		ColumnParameters fftnTo19NM = new ColumnParameters("15-19NM", "Not documented 15-19 years males", "rtn=n|gender=M|age=15-19", "22");
 		ColumnParameters twtyTo24NM = new ColumnParameters("20-24NM", "Not documented 20-24 years males", "rtn=n|gender=M|age=20-24", "23");
@@ -132,7 +132,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		ColumnParameters fty5To49NM = new ColumnParameters("45-49NM", "Not documented 45-49 years males", "rtn=n|gender=M|age=45-49", "28");
 		ColumnParameters fftyAndAboveNM = new ColumnParameters(">=50NM", "Not documented 50+ years males", "rtn=n|gender=M|age=>49", "29");
 		ColumnParameters unknownAgeNM = new ColumnParameters("unknownAgeNM", "Not documented unknown age males", "rtn=n|gender=M|age=UK", "30");
-		//////Female
+		////// Female
 		ColumnParameters tenTo14NF = new ColumnParameters("10-14NF", "Not documented 10-14 years females", "rtn=n|gender=F|age=10-14", "31");
 		ColumnParameters fftnTo19NF = new ColumnParameters("15-19NF", "Not documented 15-19 years females", "rtn=n|gender=F|age=15-19", "32");
 		ColumnParameters twtyTo24NF = new ColumnParameters("20-24NF", "Not documented 20-24 years females", "rtn=n|gender=F|age=20-24", "33");
@@ -144,10 +144,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		ColumnParameters fftyAndAboveNF = new ColumnParameters(">=50NF", "Not documented 50+ years females", "rtn=n|gender=F|age=>49", "39");
 		ColumnParameters unknownAgeNF = new ColumnParameters("unknownAgeNF", "Not documented unknown age females", "rtn=n|gender=F|age=UK", "40");
 		
-		return Arrays.asList(tenTo14RM, fftnTo19RM, twtyTo24RM, twty5To29RM, thtyTo34RM, thty5To39RM, ftyTo44RM, fty5To49RM, fftyAndAboveRM, unknownAgeRM, tenTo14RF,
-				fftnTo19RF, twtyTo24RF, twty5To29RF, thtyTo34RF, thty5To39RF, ftyTo44RF, fty5To49RF, fftyAndAboveRF, unknownAgeRF,  tenTo14NM, fftnTo19NM, twtyTo24NM,
-				twty5To29NM, thtyTo34NM, thty5To39NM, ftyTo44NM,fty5To49NM,fftyAndAboveNM,unknownAgeNM,tenTo14NF, fftnTo19NF, twtyTo24NF,twty5To29NF,thtyTo34NF,
-				thty5To39NF,ftyTo44NF,fty5To49NF,fftyAndAboveNF,unknownAgeNF);
+		return Arrays.asList(tenTo14RM, fftnTo19RM, twtyTo24RM, twty5To29RM, thtyTo34RM, thty5To39RM, ftyTo44RM, fty5To49RM, fftyAndAboveRM, unknownAgeRM, tenTo14RF, fftnTo19RF, twtyTo24RF, twty5To29RF, thtyTo34RF, thty5To39RF, ftyTo44RF, fty5To49RF, fftyAndAboveRF, unknownAgeRF, tenTo14NM, fftnTo19NM, twtyTo24NM, twty5To29NM, thtyTo34NM, thty5To39NM, ftyTo44NM, fty5To49NM, fftyAndAboveNM, unknownAgeNM, tenTo14NF, fftnTo19NF, twtyTo24NF, twty5To29NF, thtyTo34NF, thty5To39NF, ftyTo44NF, fty5To49NF, fftyAndAboveNF, unknownAgeNF);
 		
 	}
 	
