@@ -13,20 +13,35 @@
  */
 package org.openmrs.module.eptsreports.reporting.reports;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxPvlsDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SetupMERQuarterly extends EptsDataExportManager {
 	
-	public SetupMERQuarterly() {
-	}
+	@Autowired
+	private TxPvlsDataset txPvlsDataset;
+	
+	@Autowired
+	private TxNewDataset txNewDataset;
+	
+	@Autowired
+	private TxCurrDataset txCurrDataset;
 	
 	@Override
 	public String getVersion() {
@@ -58,6 +73,7 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 		List<Parameter> parameters = new ArrayList<Parameter>();
 		parameters.add(ReportingConstants.START_DATE_PARAMETER);
 		parameters.add(ReportingConstants.END_DATE_PARAMETER);
+		parameters.add(ReportingConstants.LOCATION_PARAMETER);
 		return parameters;
 	}
 	
@@ -68,8 +84,28 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 		reportDefinition.setName(getName());
 		reportDefinition.setDescription(getDescription());
 		reportDefinition.setParameters(getParameters());
-		
+		reportDefinition.addDataSetDefinition("N", Mapped.mapStraightThrough(txNewDataset.constructTxNewDatset(getParameters())));
+		reportDefinition.addDataSetDefinition("C", Mapped.mapStraightThrough(txCurrDataset.constructTxNewDatset(getParameters())));
+		reportDefinition.addDataSetDefinition("P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
 		return reportDefinition;
+	}
+	
+	@Override
+	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
+		ReportDesign reportDesign = null;
+		try {
+			reportDesign = createXlsReportDesign(reportDefinition, "PEPFAR_MER_2.1_REPORT.xls", "PEPFAR_MER_2.1_REPORT", getExcelDesignUuid(), null);
+			Properties props = new Properties();
+			// props.put("repeatingSections", "sheet:1,dataset:Tx_Pvls Data Set");
+			props.put("sortWeight", "5000");
+			reportDesign.setProperties(props);
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return Arrays.asList(reportDesign);
 	}
 	
 }
