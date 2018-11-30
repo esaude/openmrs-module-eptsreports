@@ -71,9 +71,9 @@ public class TxPvlsDataset extends BaseDataSet {
 		dsd.addColumn("2D", "Breastfeeding - Women Denominator", EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithViralLoadIn12Months(), mappings), "");
 		
 		// constructing the rows for children
-		addRow(dsd, "3N", "Children Numerator", EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), children());
+		addRow(dsd, "3N", "Children Numerator", EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), childrenDisagregation());
 		
-		addRow(dsd, "3D", "Children Denominator", EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), children());
+		addRow(dsd, "3D", "Children Denominator", EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), childrenDisagregation());
 		
 		// Numerator
 		addRow(dsd, "4N", "Adults with suppressed VL Numerator", EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), adultsDisagregation());
@@ -136,11 +136,14 @@ public class TxPvlsDataset extends BaseDataSet {
 		
 	}
 	
-	private List<ColumnParameters> children() {
+	private List<ColumnParameters> childrenDisagregation() {
 		// columns parameter for children 0- 9 years
-		ColumnParameters under1 = new ColumnParameters("<1", "Under 1 year", "age=<1", "01");
-		ColumnParameters oneTo4 = new ColumnParameters("1-4", "1-4 years", "age=1-4", "02");
-		ColumnParameters fiveTo9 = new ColumnParameters("5-9", "5-9 years", "age=5-9", "03");
-		return Arrays.asList(under1, oneTo4, fiveTo9);
+		ColumnParameters under1M = new ColumnParameters("<1M", "Under 1 year male", "gender=M|age=<1", "01");
+		ColumnParameters under1F = new ColumnParameters("<1F", "Under 1 year female", "gender=F|age=<1", "02");
+		ColumnParameters oneTo4M = new ColumnParameters("1-4M", "1-4 years male", "gender=M|age=1-4", "03");
+		ColumnParameters oneTo4F = new ColumnParameters("1-4F", "1-4 years female", "gender=F|age=1-4", "04");
+		ColumnParameters fiveTo9M = new ColumnParameters("5-9M", "5-9 years male", "gender=M|age=5-9", "05");
+		ColumnParameters fiveTo9F = new ColumnParameters("5-9F", "5-9 years female", "gender=F|age=5-9", "06");
+		return Arrays.asList(under1M, under1F, oneTo4M, oneTo4F, fiveTo9M, fiveTo9F);
 	}
 }
