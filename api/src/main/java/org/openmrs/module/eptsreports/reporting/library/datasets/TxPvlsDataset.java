@@ -96,43 +96,58 @@ public class TxPvlsDataset extends BaseDataSet {
 	 */
 	private List<ColumnParameters> adultsDisagregation() {
 		// columns for patients aged 10 to 14 years, defined by gender
-		ColumnParameters tenTo14M = new ColumnParameters("10-14M", "10-14 years males", "gender=M|age=10-14", "01");
-		ColumnParameters tenTo14F = new ColumnParameters("10-14F", "10-14 years female", "gender=F|age=10-14", "02");
-		ColumnParameters tenTo14T = new ColumnParameters("10-14 Totals", "10-14 years patients", "age=10-14", "03");
-		// columns for patients aged 15 to 19 years, defined by gender
-		ColumnParameters fftnTo19M = new ColumnParameters("15-19M", "15-19 years males", "gender=M|age=15-19", "04");
-		ColumnParameters fftnTo19F = new ColumnParameters("15-19F", "15-19 years female", "gender=F|age=15-19", "05");
-		ColumnParameters fftnTo19T = new ColumnParameters("15-19T", "15-19 years patients", "age=15-19", "06");
-		// columns for patients aged 20 to 24 years, defined by gender
-		ColumnParameters twtyTo24M = new ColumnParameters("20-24M", "20-24 years males", "gender=M|age=20-24", "07");
-		ColumnParameters twtyTo24F = new ColumnParameters("20-24F", "20-24 years female", "gender=F|age=20-24", "08");
-		ColumnParameters twtyTo24T = new ColumnParameters("20-24T", "20-24 years patients", "age=20-24", "09");
-		// columns for patients aged 25 to 29 years, defined by gender
-		ColumnParameters twty5To29M = new ColumnParameters("25-29M", "25-29 years males", "gender=M|age=25-29", "10");
-		ColumnParameters twty5To29F = new ColumnParameters("25-29F", "25-29 years female", "gender=F|age=25-29", "11");
-		ColumnParameters twty5To29T = new ColumnParameters("25-29T", "25-29 years patients", "age=25-29", "12");
-		// columns for patients aged 30 to 34 years, defined by gender
-		ColumnParameters thtyTo34M = new ColumnParameters("30-34M", "30-34 years males", "gender=M|age=30-34", "13");
-		ColumnParameters thtyTo34F = new ColumnParameters("30-34F", "30-34 years female", "gender=F|age=30-34", "14");
-		ColumnParameters thtyTo34T = new ColumnParameters("30-34T", "30-34 years patients", "age=30-34", "15");
-		// columns for patients aged 35 to 39 years, defined by gender
-		ColumnParameters thty5To39M = new ColumnParameters("35-39M", "35-39 years males", "gender=M|age=35-39", "16");
-		ColumnParameters thty5To39F = new ColumnParameters("35-39F", "35-39 years female", "gender=F|age=35-39", "17");
-		ColumnParameters thty5To39T = new ColumnParameters("35-39T", "35-39 years patients", "age=35-39", "18");
-		// columns for patients aged 40 to 44 years, defined by age
-		ColumnParameters ftyTo44M = new ColumnParameters("40-44M", "40-44 years males", "gender=M|age=40-44", "19");
-		ColumnParameters ftyTo44F = new ColumnParameters("40-44F", "40-44 years female", "gender=F|age=40-44", "20");
-		ColumnParameters ftyTo44T = new ColumnParameters("40-44T", "40-44 years patients", "age=40-44", "21");
-		// columns for patients aged 45 to 49 years, defined by age
-		ColumnParameters fty5To49M = new ColumnParameters("45-49M", "45-49 years males", "gender=M|age=45-49", "22");
-		ColumnParameters fty5To49F = new ColumnParameters("45-49F", "45-49 years female", "gender=F|age=45-49", "23");
-		ColumnParameters fty5To49T = new ColumnParameters("45-49T", "45-49 years patients", "age=45-49", "24");
-		// coloumn parameters for patients for 50 and above years, defined by gender
-		ColumnParameters fftyAndAboveM = new ColumnParameters(">=50M", ">=50 years males", "gender=M|age=>49", "25");
-		ColumnParameters fftyAndAboveF = new ColumnParameters(">=50F", ">=50 years female", "gender=F|age=>49", "26");
-		ColumnParameters fftyAndAboveT = new ColumnParameters(">=50T", ">=50 years patients", "age=>49", "27");
+		////Routine
+		//////Male
+		ColumnParameters tenTo14RM = new ColumnParameters("10-14RM", "Routine 10-14 years males", "rtn=r|gender=M|age=10-14", "01");
+		ColumnParameters fftnTo19RM = new ColumnParameters("15-19RM", "Routine 15-19 years males", "rtn=r|gender=M|age=15-19", "02");
+		ColumnParameters twtyTo24RM = new ColumnParameters("20-24RM", "Routine 20-24 years males", "rtn=r|gender=M|age=20-24", "03");
+		ColumnParameters twty5To29RM = new ColumnParameters("25-29RM", "Routine 25-29 years males", "rtn=r|gender=M|age=25-29", "04");
+		ColumnParameters thtyTo34RM = new ColumnParameters("30-34RM", "Routine 30-34 years males", "rtn=r|gender=M|age=30-34", "05");
+		ColumnParameters thty5To39RM = new ColumnParameters("35-39RM", "Routine 35-39 years males", "rtn=r|gender=M|age=35-39", "06");
+		ColumnParameters ftyTo44RM = new ColumnParameters("40-44RM", "Routine 40-44 years males", "rtn=r|gender=M|age=40-44", "07");
+		ColumnParameters fty5To49RM = new ColumnParameters("45-49RM", "Routine 45-49 years males", "rtn=r|gender=M|age=45-49", "08");
+		ColumnParameters fftyAndAboveRM = new ColumnParameters(">=50RM", "Routine 50+ years males", "rtn=r|gender=M|age=>49", "09");
+		ColumnParameters unknownAgeRM = new ColumnParameters("unknownAgeRM", "Routine unknown age males", "rtn=r|gender=M|age=UK", "10");
+		//////Female
+		ColumnParameters tenTo14RF = new ColumnParameters("10-14RF", "Routine 10-14 years females", "rtn=r|gender=F|age=10-14", "11");
+		ColumnParameters fftnTo19RF = new ColumnParameters("15-19RF", "Routine 15-19 years females", "rtn=r|gender=F|age=15-19", "12");
+		ColumnParameters twtyTo24RF = new ColumnParameters("20-24RF", "Routine 20-24 years females", "rtn=r|gender=F|age=20-24", "13");
+		ColumnParameters twty5To29RF = new ColumnParameters("25-29RF", "Routine 25-29 years females", "rtn=r|gender=F|age=25-29", "14");
+		ColumnParameters thtyTo34RF = new ColumnParameters("30-34RF", "Routine 30-34 years females", "rtn=r|gender=F|age=30-34", "15");
+		ColumnParameters thty5To39RF = new ColumnParameters("35-39RF", "Routine 35-39 years females", "rtn=r|gender=F|age=35-39", "16");
+		ColumnParameters ftyTo44RF = new ColumnParameters("40-44RF", "Routine 40-44 years females", "rtn=r|gender=F|age=40-44", "17");
+		ColumnParameters fty5To49RF = new ColumnParameters("45-49RF", "Routine 45-49 years females", "rtn=r|gender=F|age=45-49", "18");
+		ColumnParameters fftyAndAboveRF = new ColumnParameters(">=50RF", "Routine 50+ years females", "rtn=r|gender=F|age=>49", "19");
+		ColumnParameters unknownAgeRF = new ColumnParameters("unknownAgeRF", "Routine unknown age females", "rtn=r|gender=F|age=UK", "20");
+
+		////Not documented
+		//////Male
+		ColumnParameters tenTo14NM = new ColumnParameters("10-14NM", "Not documented 10-14 years males", "rtn=n|gender=M|age=10-14", "21");
+		ColumnParameters fftnTo19NM = new ColumnParameters("15-19NM", "Not documented 15-19 years males", "rtn=n|gender=M|age=15-19", "22");
+		ColumnParameters twtyTo24NM = new ColumnParameters("20-24NM", "Not documented 20-24 years males", "rtn=n|gender=M|age=20-24", "23");
+		ColumnParameters twty5To29NM = new ColumnParameters("25-29NM", "Not documented 25-29 years males", "rtn=n|gender=M|age=25-29", "24");
+		ColumnParameters thtyTo34NM = new ColumnParameters("30-34NM", "Not documented 30-34 years males", "rtn=n|gender=M|age=30-34", "25");
+		ColumnParameters thty5To39NM = new ColumnParameters("35-39NM", "Not documented 35-39 years males", "rtn=n|gender=M|age=35-39", "26");
+		ColumnParameters ftyTo44NM = new ColumnParameters("40-44NM", "Not documented 40-44 years males", "rtn=n|gender=M|age=40-44", "27");
+		ColumnParameters fty5To49NM = new ColumnParameters("45-49NM", "Not documented 45-49 years males", "rtn=n|gender=M|age=45-49", "28");
+		ColumnParameters fftyAndAboveNM = new ColumnParameters(">=50NM", "Not documented 50+ years males", "rtn=n|gender=M|age=>49", "29");
+		ColumnParameters unknownAgeNM = new ColumnParameters("unknownAgeNM", "Not documented unknown age males", "rtn=n|gender=M|age=UK", "30");
+		//////Female
+		ColumnParameters tenTo14NF = new ColumnParameters("10-14NF", "Not documented 10-14 years females", "rtn=n|gender=F|age=10-14", "31");
+		ColumnParameters fftnTo19NF = new ColumnParameters("15-19NF", "Not documented 15-19 years females", "rtn=n|gender=F|age=15-19", "32");
+		ColumnParameters twtyTo24NF = new ColumnParameters("20-24NF", "Not documented 20-24 years females", "rtn=n|gender=F|age=20-24", "33");
+		ColumnParameters twty5To29NF = new ColumnParameters("25-29NF", "Not documented 25-29 years females", "rtn=n|gender=F|age=25-29", "34");
+		ColumnParameters thtyTo34NF = new ColumnParameters("30-34NF", "Not documented 30-34 years females", "rtn=n|gender=F|age=30-34", "35");
+		ColumnParameters thty5To39NF = new ColumnParameters("35-39NF", "Not documented 35-39 years females", "rtn=n|gender=F|age=35-39", "36");
+		ColumnParameters ftyTo44NF = new ColumnParameters("40-44NF", "Not documented 40-44 years females", "rtn=n|gender=F|age=40-44", "37");
+		ColumnParameters fty5To49NF = new ColumnParameters("45-49NF", "Not documented 45-49 years females", "rtn=n|gender=F|age=45-49", "38");
+		ColumnParameters fftyAndAboveNF = new ColumnParameters(">=50NF", "Not documented 50+ years females", "rtn=n|gender=F|age=>49", "39");
+		ColumnParameters unknownAgeNF = new ColumnParameters("unknownAgeNF", "Not documented unknown age females", "rtn=n|gender=F|age=UK", "40");
 		
-		return Arrays.asList(tenTo14M, tenTo14F, tenTo14T, fftnTo19M, fftnTo19F, fftnTo19T, twtyTo24M, twtyTo24F, twtyTo24T, twty5To29M, twty5To29F, twty5To29T, thtyTo34M, thtyTo34F, thtyTo34T, thty5To39M, thty5To39F, thty5To39T, ftyTo44M, ftyTo44F, ftyTo44T, fty5To49M, fty5To49F, fty5To49T, fftyAndAboveM, fftyAndAboveF, fftyAndAboveT);
+		return Arrays.asList(tenTo14RM, fftnTo19RM, twtyTo24RM, twty5To29RM, thtyTo34RM, thty5To39RM, ftyTo44RM, fty5To49RM, fftyAndAboveRM, unknownAgeRM, tenTo14RF,
+				fftnTo19RF, twtyTo24RF, twty5To29RF, thtyTo34RF, thty5To39RF, ftyTo44RF, fty5To49RF, fftyAndAboveRF, unknownAgeRF,  tenTo14NM, fftnTo19NM, twtyTo24NM,
+				twty5To29NM, thtyTo34NM, thty5To39NM, ftyTo44NM,fty5To49NM,fftyAndAboveNM,unknownAgeNM,tenTo14NF, fftnTo19NF, twtyTo24NF,twty5To29NF,thtyTo34NF,
+				thty5To39NF,ftyTo44NF,fty5To49NF,fftyAndAboveNF,unknownAgeNF);
 		
 	}
 	
@@ -149,44 +164,31 @@ public class TxPvlsDataset extends BaseDataSet {
 		ColumnParameters oneTo4FR = new ColumnParameters("1-4FR", "Routine 1-4 years female", "rtn=r|gender=F|age=1-4", "05");
 		ColumnParameters fiveTo9FR = new ColumnParameters("5-9FR", "Routine 5-9 years female", "rtn=r|gender=F|age=5-9", "06");
 		
-		// Target
-		///// male
-		ColumnParameters under1MT = new ColumnParameters("<1MT", "Target Under 1 year male", "rtn=t|gender=M|age=<1", "07");
-		ColumnParameters oneTo4MT = new ColumnParameters("1-4MT", "Target 1-4 years male", "rtn=t|gender=M|age=1-4", "08");
-		ColumnParameters fiveTo9MT = new ColumnParameters("5-9MT", "Target 5-9 years male", "rtn=t|gender=M|age=5-9", "09");
-		
-		///// female
-		ColumnParameters under1FT = new ColumnParameters("<1FT", "Target Under 1 year female", "rtn=t|gender=F|age=<1", "10");
-		ColumnParameters oneTo4FT = new ColumnParameters("1-4FT", "Target 1-4 years female", "rtn=t|gender=F|age=1-4", "11");
-		ColumnParameters fiveTo9FT = new ColumnParameters("5-9FT", "Target 5-9 years female", "rtn=t|gender=F|age=5-9", "12");
-		
 		// Not documented
 		///// male
-		ColumnParameters under1MN = new ColumnParameters("<1MTN", "Not documented Under 1 year male", "rtn=n|gender=M|age=<1", "13");
-		ColumnParameters oneTo4MN = new ColumnParameters("1-4MTN", "Not documented 1-4 years male", "rtn=n|gender=M|age=1-4", "14");
-		ColumnParameters fiveTo9MN = new ColumnParameters("5-9MTN", "Not documented 5-9 years male", "rtn=n|gender=M|age=5-9", "15");
+		ColumnParameters under1MN = new ColumnParameters("<1MTN", "Not documented Under 1 year male", "rtn=n|gender=M|age=<1", "07");
+		ColumnParameters oneTo4MN = new ColumnParameters("1-4MTN", "Not documented 1-4 years male", "rtn=n|gender=M|age=1-4", "08");
+		ColumnParameters fiveTo9MN = new ColumnParameters("5-9MTN", "Not documented 5-9 years male", "rtn=n|gender=M|age=5-9", "09");
 		
 		////// female
-		ColumnParameters under1FN = new ColumnParameters("<1FTN", "Not documented Under 1 year female", "rtn=n|gender=F|age=<1", "16");
-		ColumnParameters oneTo4FN = new ColumnParameters("1-4FTN", "Not documented 1-4 years female", "rtn=n|gender=F|age=1-4", "17");
-		ColumnParameters fiveTo9FN = new ColumnParameters("5-9FTN", "Not documented 5-9 years female", "rtn=n|gender=F|age=5-9", "18");
+		ColumnParameters under1FN = new ColumnParameters("<1FTN", "Not documented Under 1 year female", "rtn=n|gender=F|age=<1", "10");
+		ColumnParameters oneTo4FN = new ColumnParameters("1-4FTN", "Not documented 1-4 years female", "rtn=n|gender=F|age=1-4", "11");
+		ColumnParameters fiveTo9FN = new ColumnParameters("5-9FTN", "Not documented 5-9 years female", "rtn=n|gender=F|age=5-9", "12");
 		
-		return Arrays.asList(under1MR, oneTo4MR, fiveTo9MR, under1FR, oneTo4FR, fiveTo9FR, under1MT, oneTo4MT, fiveTo9MT, under1FT, oneTo4FT, fiveTo9FT, under1MN, oneTo4MN, fiveTo9MN, under1FN, oneTo4FN, fiveTo9FN);
+		return Arrays.asList(under1MR, oneTo4MR, fiveTo9MR, under1FR, oneTo4FR, fiveTo9FR, under1MN, oneTo4MN, fiveTo9MN, under1FN, oneTo4FN, fiveTo9FN);
 	}
 	
 	private List<ColumnParameters> rtndDisagregationPregnant() {
-		// columns for routine, target and Not documented for pregnant women
+		// columns for routine and Not documented for pregnant women
 		ColumnParameters routineP = new ColumnParameters("routine-pregnant", "Routine Pregnant", "rtn=r", "01");
-		ColumnParameters targetP = new ColumnParameters("target-pregnant", "Target Pregnant", "rtn=t", "02");
-		ColumnParameters nDocumentedP = new ColumnParameters("not-documented-pregnant", "Not documented Pregnant", "rtn=n", "03");
-		return Arrays.asList(routineP, targetP, nDocumentedP);
+		ColumnParameters nDocumentedP = new ColumnParameters("not-documented-pregnant", "Not documented Pregnant", "rtn=n", "02");
+		return Arrays.asList(routineP, nDocumentedP);
 	}
 	
 	private List<ColumnParameters> rtndDisagregationBreastfeeding() {
-		// columns for routine, target and Not documented for breastfeeding women
+		// columns for routine and Not documented for breastfeeding women
 		ColumnParameters routineB = new ColumnParameters("routine-breastfeeding", "Routine Breastfeeding", "rtn=r", "01");
-		ColumnParameters targetB = new ColumnParameters("target-breastfeeding", "Target Breastfeeding", "rtn=t", "02");
-		ColumnParameters nDocumentedB = new ColumnParameters("not-documented-breastfeeding", "Not documented Breastfeeding", "rtn=n", "03");
-		return Arrays.asList(routineB, targetB, nDocumentedB);
+		ColumnParameters nDocumentedB = new ColumnParameters("not-documented-breastfeeding", "Not documented Breastfeeding", "rtn=n", "02");
+		return Arrays.asList(routineB, nDocumentedB);
 	}
 }
