@@ -87,8 +87,7 @@ public class Metadata {
 	 * @return the ProgramWorkflowState matching the given programLookup and workflowLookup and
 	 *         stateLookup
 	 */
-	public static ProgramWorkflowState getProgramWorkflowState(String programLookup, String workflowLookup,
-	        String stateLookup) {
+	public static ProgramWorkflowState getProgramWorkflowState(String programLookup, String workflowLookup, String stateLookup) {
 		ProgramWorkflow wf = getProgramWorkflow(programLookup, workflowLookup);
 		ProgramWorkflowState s = wf.getStateByName(stateLookup);
 		if (s == null) {
@@ -107,8 +106,7 @@ public class Metadata {
 			}
 		}
 		if (s == null) {
-			throw new IllegalArgumentException(
-			        "Unable to find state using " + programLookup + " - " + workflowLookup + " - " + stateLookup);
+			throw new IllegalArgumentException("Unable to find state using " + programLookup + " - " + workflowLookup + " - " + stateLookup);
 		}
 		return s;
 	}

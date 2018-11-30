@@ -22,8 +22,7 @@ import org.springframework.stereotype.Component;
 public class TbMetadata extends CommonMetadata {
 	
 	public Concept getTUBERCULOSIS_TREATMENT_PLANConcept() {
-		String uuid = Context.getAdministrationService()
-		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_PLAN_CONCEPT_UUID);
+		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_PLAN_CONCEPT_UUID);
 		return getConcept(uuid);
 	}
 	

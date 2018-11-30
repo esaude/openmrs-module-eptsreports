@@ -15,6 +15,9 @@ package org.openmrs.module.eptsreports.reporting.utils;
 
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.manager.ReportManager;
@@ -70,6 +73,22 @@ public class EptsReportUtils {
 	 */
 	public static void setupReportDefinition(ReportManager reportManager) {
 		ReportManagerUtil.setupReport(reportManager);
+	}
+	
+	/**
+	 * @param parameterizable
+	 * @param mappings
+	 * @param <T>
+	 * @return
+	 */
+	public static <T extends Parameterizable> Mapped<T> map(T parameterizable, String mappings) {
+		if (parameterizable == null) {
+			throw new IllegalArgumentException("Parameterizable cannot be null");
+		}
+		if (mappings == null) {
+			mappings = ""; // probably not necessary, just to be safe
+		}
+		return new Mapped<T>(parameterizable, ParameterizableUtil.createParameterMappings(mappings));
 	}
 	
 }
