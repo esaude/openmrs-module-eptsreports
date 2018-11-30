@@ -24,10 +24,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AgeCohortQueries {
-
+	
 	@Autowired
 	private CommonCohortQueries CommonCohortQueries;
-
+	
 	public CohortDefinition patientWithAgeBelow(int age) {
 		AgeCohortDefinition patientsWithAgebilow = new AgeCohortDefinition();
 		patientsWithAgebilow.setName("patientsWithAgebelow");
@@ -62,10 +62,10 @@ public class AgeCohortQueries {
 		overXCohort.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
 		return overXCohort;
 	}
-
-
+	
 	/**
 	 * Person with Unknown age, the birthdate column is null
+	 * 
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getPatientsWithUnknownAge() {

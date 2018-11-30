@@ -32,7 +32,6 @@ public class EptsCommonDimension {
 	
 	@Autowired
 	private AgeCohortQueries ageCohortQueries;
-
 	
 	/**
 	 * Gender dimension
@@ -71,9 +70,10 @@ public class EptsCommonDimension {
 		dim.addCohortDefinition(">49", EptsReportUtils.map(ageCohortQueries.patientWithAgeAbove(50), "effectiveDate=${endDate}"));
 		return dim;
 	}
-
+	
 	/**
 	 * Other disaggreagtions that include routine, target and Not documented
+	 * 
 	 * @return CohortDimension
 	 */
 	public CohortDefinitionDimension routineTargetNotDocumented() {

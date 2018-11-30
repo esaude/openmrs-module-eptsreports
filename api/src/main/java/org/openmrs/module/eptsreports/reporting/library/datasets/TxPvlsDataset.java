@@ -59,16 +59,16 @@ public class TxPvlsDataset extends BaseDataSet {
 		dsd.addColumn("0D", "Total patients with Viral load - Denominator", EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), "");
 		
 		// constructing the first row of pregnant and breast feeding mothers
-
-		addRow(dsd,"1N", "Pregnant Women - Numerator", EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithSuppressedViralLoadIn12Months(), mappings), rtndDisagregationPregnant());
-
+		
+		addRow(dsd, "1N", "Pregnant Women - Numerator", EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithSuppressedViralLoadIn12Months(), mappings), rtndDisagregationPregnant());
+		
 		addRow(dsd, "1D", "Pregnant Women - Denominator", EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithViralLoadIn12Months(), mappings), rtndDisagregationPregnant());
 		
 		// constructing the rows for breastfeeding women
-
+		
 		addRow(dsd, "2N", "Breastfeeding - Women Numerator", EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithSuppressedViralLoadIn12Months(), mappings), rtndDisagregationBreastfeeding());
-
-		addRow(dsd,"2D", "Breastfeeding - Women Denominator", EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithViralLoadIn12Months(), mappings), rtndDisagregationBreastfeeding());
+		
+		addRow(dsd, "2D", "Breastfeeding - Women Denominator", EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithViralLoadIn12Months(), mappings), rtndDisagregationBreastfeeding());
 		
 		// constructing the rows for children
 		addRow(dsd, "3N", "Children Numerator", EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), childrenDisagregation());
@@ -138,25 +138,52 @@ public class TxPvlsDataset extends BaseDataSet {
 	
 	private List<ColumnParameters> childrenDisagregation() {
 		// columns parameter for children 0- 9 years
-		ColumnParameters under1M = new ColumnParameters("<1M", "Under 1 year male", "gender=M|age=<1", "01");
-		ColumnParameters under1F = new ColumnParameters("<1F", "Under 1 year female", "gender=F|age=<1", "02");
-		ColumnParameters oneTo4M = new ColumnParameters("1-4M", "1-4 years male", "gender=M|age=1-4", "03");
-		ColumnParameters oneTo4F = new ColumnParameters("1-4F", "1-4 years female", "gender=F|age=1-4", "04");
-		ColumnParameters fiveTo9M = new ColumnParameters("5-9M", "5-9 years male", "gender=M|age=5-9", "05");
-		ColumnParameters fiveTo9F = new ColumnParameters("5-9F", "5-9 years female", "gender=F|age=5-9", "06");
-		return Arrays.asList(under1M, under1F, oneTo4M, oneTo4F, fiveTo9M, fiveTo9F);
+		// Routine
+		//////// male
+		ColumnParameters under1MR = new ColumnParameters("<1MR", "Routine Under 1 year male", "rtn=r|gender=M|age=<1", "01");
+		ColumnParameters oneTo4MR = new ColumnParameters("1-4MR", "Routine 1-4 years male", "rtn=r|gender=M|age=1-4", "02");
+		ColumnParameters fiveTo9MR = new ColumnParameters("5-9MR", "Routine 5-9 years male", "rtn=r|gender=M|age=5-9", "03");
+		
+		///// female
+		ColumnParameters under1FR = new ColumnParameters("<1FR", "Routine Under 1 year female", "rtn=r|gender=F|age=<1", "04");
+		ColumnParameters oneTo4FR = new ColumnParameters("1-4FR", "Routine 1-4 years female", "rtn=r|gender=F|age=1-4", "05");
+		ColumnParameters fiveTo9FR = new ColumnParameters("5-9FR", "Routine 5-9 years female", "rtn=r|gender=F|age=5-9", "06");
+		
+		// Target
+		///// male
+		ColumnParameters under1MT = new ColumnParameters("<1MT", "Target Under 1 year male", "rtn=t|gender=M|age=<1", "07");
+		ColumnParameters oneTo4MT = new ColumnParameters("1-4MT", "Target 1-4 years male", "rtn=t|gender=M|age=1-4", "08");
+		ColumnParameters fiveTo9MT = new ColumnParameters("5-9MT", "Target 5-9 years male", "rtn=t|gender=M|age=5-9", "09");
+		
+		///// female
+		ColumnParameters under1FT = new ColumnParameters("<1FT", "Target Under 1 year female", "rtn=t|gender=F|age=<1", "10");
+		ColumnParameters oneTo4FT = new ColumnParameters("1-4FT", "Target 1-4 years female", "rtn=t|gender=F|age=1-4", "11");
+		ColumnParameters fiveTo9FT = new ColumnParameters("5-9FT", "Target 5-9 years female", "rtn=t|gender=F|age=5-9", "12");
+		
+		// Not documented
+		///// male
+		ColumnParameters under1MN = new ColumnParameters("<1MTN", "Not documented Under 1 year male", "rtn=n|gender=M|age=<1", "13");
+		ColumnParameters oneTo4MN = new ColumnParameters("1-4MTN", "Not documented 1-4 years male", "rtn=n|gender=M|age=1-4", "14");
+		ColumnParameters fiveTo9MN = new ColumnParameters("5-9MTN", "Not documented 5-9 years male", "rtn=n|gender=M|age=5-9", "15");
+		
+		////// female
+		ColumnParameters under1FN = new ColumnParameters("<1FTN", "Not documented Under 1 year female", "rtn=n|gender=F|age=<1", "16");
+		ColumnParameters oneTo4FN = new ColumnParameters("1-4FTN", "Not documented 1-4 years female", "rtn=n|gender=F|age=1-4", "17");
+		ColumnParameters fiveTo9FN = new ColumnParameters("5-9FTN", "Not documented 5-9 years female", "rtn=n|gender=F|age=5-9", "18");
+		
+		return Arrays.asList(under1MR, oneTo4MR, fiveTo9MR, under1FR, oneTo4FR, fiveTo9FR, under1MT, oneTo4MT, fiveTo9MT, under1FT, oneTo4FT, fiveTo9FT, under1MN, oneTo4MN, fiveTo9MN, under1FN, oneTo4FN, fiveTo9FN);
 	}
-
+	
 	private List<ColumnParameters> rtndDisagregationPregnant() {
-		//columns for routine, target and Not documented for pregnant women
+		// columns for routine, target and Not documented for pregnant women
 		ColumnParameters routineP = new ColumnParameters("routine-pregnant", "Routine Pregnant", "rtn=r", "01");
 		ColumnParameters targetP = new ColumnParameters("target-pregnant", "Target Pregnant", "rtn=t", "02");
 		ColumnParameters nDocumentedP = new ColumnParameters("not-documented-pregnant", "Not documented Pregnant", "rtn=n", "03");
 		return Arrays.asList(routineP, targetP, nDocumentedP);
 	}
-
+	
 	private List<ColumnParameters> rtndDisagregationBreastfeeding() {
-		//columns for routine, target and Not documented for breastfeeding women
+		// columns for routine, target and Not documented for breastfeeding women
 		ColumnParameters routineB = new ColumnParameters("routine-breastfeeding", "Routine Breastfeeding", "rtn=r", "01");
 		ColumnParameters targetB = new ColumnParameters("target-breastfeeding", "Target Breastfeeding", "rtn=t", "02");
 		ColumnParameters nDocumentedB = new ColumnParameters("not-documented-breastfeeding", "Not documented Breastfeeding", "rtn=n", "03");
