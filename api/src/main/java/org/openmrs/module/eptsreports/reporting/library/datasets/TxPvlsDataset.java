@@ -52,23 +52,23 @@ public class TxPvlsDataset extends BaseDataSet {
 		// tie dimensions to this data definition
 		dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
 		dsd.addDimension("age", EptsReportUtils.map(eptsCommonDimension.age(), "effectiveDate=${endDate}"));
-		dsd.addDimension("rtnd", EptsReportUtils.map(eptsCommonDimension.routineTargetNotDocumented(), mappings));
+		dsd.addDimension("rtn", EptsReportUtils.map(eptsCommonDimension.routineTargetNotDocumented(), mappings));
 		
 		dsd.addColumn("0N", "Total patients with suppressed Viral load - Numerator", EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), "");
 		
 		dsd.addColumn("0D", "Total patients with Viral load - Denominator", EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), "");
 		
 		// constructing the first row of pregnant and breast feeding mothers
-		
-		dsd.addColumn("1N", "Pregnant Women - Numerator", EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithSuppressedViralLoadIn12Months(), mappings), "");
-		
-		dsd.addColumn("1D", "Pregnant Women - Denominator", EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithViralLoadIn12Months(), mappings), "");
+
+		addRow(dsd,"1N", "Pregnant Women - Numerator", EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithSuppressedViralLoadIn12Months(), mappings), rtndDisagregationPregnant());
+
+		addRow(dsd, "1D", "Pregnant Women - Denominator", EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithViralLoadIn12Months(), mappings), rtndDisagregationPregnant());
 		
 		// constructing the rows for breastfeeding women
-		
-		dsd.addColumn("2N", "Breastfeeding - Women Numerator", EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithSuppressedViralLoadIn12Months(), mappings), "");
-		
-		dsd.addColumn("2D", "Breastfeeding - Women Denominator", EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithViralLoadIn12Months(), mappings), "");
+
+		addRow(dsd, "2N", "Breastfeeding - Women Numerator", EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithSuppressedViralLoadIn12Months(), mappings), rtndDisagregationBreastfeeding());
+
+		addRow(dsd,"2D", "Breastfeeding - Women Denominator", EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithViralLoadIn12Months(), mappings), rtndDisagregationBreastfeeding());
 		
 		// constructing the rows for children
 		addRow(dsd, "3N", "Children Numerator", EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), childrenDisagregation());
@@ -145,5 +145,21 @@ public class TxPvlsDataset extends BaseDataSet {
 		ColumnParameters fiveTo9M = new ColumnParameters("5-9M", "5-9 years male", "gender=M|age=5-9", "05");
 		ColumnParameters fiveTo9F = new ColumnParameters("5-9F", "5-9 years female", "gender=F|age=5-9", "06");
 		return Arrays.asList(under1M, under1F, oneTo4M, oneTo4F, fiveTo9M, fiveTo9F);
+	}
+
+	private List<ColumnParameters> rtndDisagregationPregnant() {
+		//columns for routine, target and Not documented for pregnant women
+		ColumnParameters routineP = new ColumnParameters("routine-pregnant", "Routine Pregnant", "rtn=r", "01");
+		ColumnParameters targetP = new ColumnParameters("target-pregnant", "Target Pregnant", "rtn=t", "02");
+		ColumnParameters nDocumentedP = new ColumnParameters("not-documented-pregnant", "Not documented Pregnant", "rtn=n", "03");
+		return Arrays.asList(routineP, targetP, nDocumentedP);
+	}
+
+	private List<ColumnParameters> rtndDisagregationBreastfeeding() {
+		//columns for routine, target and Not documented for breastfeeding women
+		ColumnParameters routineB = new ColumnParameters("routine-breastfeeding", "Routine Breastfeeding", "rtn=r", "01");
+		ColumnParameters targetB = new ColumnParameters("target-breastfeeding", "Target Breastfeeding", "rtn=t", "02");
+		ColumnParameters nDocumentedB = new ColumnParameters("not-documented-breastfeeding", "Not documented Breastfeeding", "rtn=n", "03");
+		return Arrays.asList(routineB, targetB, nDocumentedB);
 	}
 }
