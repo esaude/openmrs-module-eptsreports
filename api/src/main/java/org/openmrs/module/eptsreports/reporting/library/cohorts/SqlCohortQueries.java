@@ -53,7 +53,7 @@ public class SqlCohortQueries {
 	public CohortDefinition getPatientsinARTProgramDuringTimePeriod() {
 		SqlCohortDefinition inARTProgramDuringTimePeriod = new SqlCohortDefinition();
 		inARTProgramDuringTimePeriod.setName("inARTProgramDuringTimePeriod");
-		inARTProgramDuringTimePeriod.setQuery("select pp.patient_id from patient_program pp where pp.program_id=" + hivMetadata.getARTProgram().getProgramId() + " and pp.voided=0   and pp.date_enrolled <= :onOrBefore and location_id=:location");
+		inARTProgramDuringTimePeriod.setQuery("select pg.patient_id,date_enrolled data_inicio from patient p inner join patient_program pg on p.patient_id=pg.patient_id where pg.voided=0 and p.voided=0 and program_id= " + hivMetadata.getARTProgram().getProgramId() + " and date_enrolled >= :onOrAfter and date_enrolled <= :onOrBefore and location_id=:location");
 		inARTProgramDuringTimePeriod.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		inARTProgramDuringTimePeriod.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		inARTProgramDuringTimePeriod.addParameter(new Parameter("location", "location", Location.class));
@@ -69,7 +69,7 @@ public class SqlCohortQueries {
 	public CohortDefinition getPatientWithSTARTDRUGSObs() {
 		SqlCohortDefinition patientWithSTARTDRUGSObs = new SqlCohortDefinition();
 		patientWithSTARTDRUGSObs.setName("patientWithSTARTDRUGSObs");
-		patientWithSTARTDRUGSObs.setQuery("Select p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on o.encounter_id=e.encounter_id where e.voided=0 and o.voided=0 and p.voided=0 and e.encounter_type in (" + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId() + "," + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + "," + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") and o.concept_id=" + hivMetadata.getARVPlanConcept().getConceptId() + " and o.value_coded=" + hivMetadata.getstartDrugsConcept().getConceptId() + " and e.encounter_datetime<=:onOrBefore and e.location_id=:location group by p.patient_id");
+		patientWithSTARTDRUGSObs.setQuery("select p.patient_id, min(e.encounter_datetime) data_inicio from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on o.encounter_id=e.encounter_id where e.voided=0 and o.voided=0 and p.voided=0 and e.encounter_type in (" + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId() + "," + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + "," + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") and o.concept_id=" + hivMetadata.getARVPlanConcept().getConceptId() + " and o.value_coded=" + hivMetadata.getstartDrugsConcept().getConceptId() + " and e.encounter_datetime >= :onOrAfter and e.encounter_datetime <= :onOrBefore and e.location_id=:location group by p.patient_id");
 		patientWithSTARTDRUGSObs.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		patientWithSTARTDRUGSObs.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		patientWithSTARTDRUGSObs.addParameter(new Parameter("location", "location", Location.class));
@@ -84,11 +84,24 @@ public class SqlCohortQueries {
 	public CohortDefinition getPatientWithHistoricalDrugStartDateObs() {
 		SqlCohortDefinition patientWithHistoricalDrugStartDateObs = new SqlCohortDefinition();
 		patientWithHistoricalDrugStartDateObs.setName("patientWithHistoricalDrugStartDateObs");
-		patientWithHistoricalDrugStartDateObs.setQuery("Select p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on o.encounter_id=e.encounter_id where e.voided=0 and o.voided=0 and p.voided=0 and e.encounter_type in (" + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId() + "," + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + "," + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") and o.concept_id=" + hivMetadata.gethistoricalDrugStartDateConcept().getConceptId() + " and o.value_datetime is not null and o.value_datetime<=:onOrBefore and e.location_id=:location group by p.patient_id");
+		patientWithHistoricalDrugStartDateObs.setQuery("select p.patient_id,min(value_datetime) data_inicio from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on e.encounter_id=o.encounter_id where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in (" + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId() + "," + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + "," + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") and o.concept_id=" + hivMetadata.gethistoricalDrugStartDateConcept().getConceptId() + " and o.value_datetime is not null and o.value_datetime >= :onOrAfter and o.value_datetime <= :onOrBefore and e.location_id=:location group by p.patient_id");
 		patientWithHistoricalDrugStartDateObs.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		patientWithHistoricalDrugStartDateObs.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		patientWithHistoricalDrugStartDateObs.addParameter(new Parameter("location", "location", Location.class));
 		return patientWithHistoricalDrugStartDateObs;
+	}
+	
+	// Looks for patients with first drug pickup (encounter type 18=S.TARV:
+	// FARMACIA) before or on end date
+	@DocumentedDefinition(value = "patientWithFirstDrugPickupEncounter")
+	public CohortDefinition getPatientWithFirstDrugPickupEncounter() {
+		SqlCohortDefinition patientWithFirstDrugPickupEncounter = new SqlCohortDefinition();
+		patientWithFirstDrugPickupEncounter.setName("patientWithFirstDrugPickupEncounter");
+		patientWithFirstDrugPickupEncounter.setQuery("select e.patient_id, MIN(e.encounter_datetime) AS data_inicio FROM patient p inner join encounter e on p.patient_id=e.patient_id WHERE p.voided=0 and e.encounter_type= " + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId() + "  AND e.voided=0 and e.encounter_datetime >= :onOrAfter and e.encounter_datetime <= :onOrBefore and e.location_id=:location GROUP BY p.patient_id");
+		patientWithFirstDrugPickupEncounter.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		patientWithFirstDrugPickupEncounter.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		patientWithFirstDrugPickupEncounter.addParameter(new Parameter("location", "location", Location.class));
+		return patientWithFirstDrugPickupEncounter;
 	}
 	
 	// Looks for patients enrolled on ART program (program 2=SERVICO TARV -
@@ -98,7 +111,7 @@ public class SqlCohortQueries {
 	public CohortDefinition getPatientsTransferredFromOtherHealthFacility() {
 		SqlCohortDefinition transferredFromOtherHealthFacility = new SqlCohortDefinition();
 		transferredFromOtherHealthFacility.setName("transferredFromOtherHealthFacility");
-		transferredFromOtherHealthFacility.setQuery("select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id inner join patient_state ps on pg.patient_program_id=ps.patient_program_id where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=" + hivMetadata.getARTProgram().getProgramId() + " and ps.state=" + hivMetadata.gettransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId() + " and ps.start_date=pg.date_enrolled and ps.start_date<=:onOrBefore and  ps.start_date>=:onOrAfter and location_id=:location");
+		transferredFromOtherHealthFacility.setQuery("select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id inner join patient_state ps on pg.patient_program_id=ps.patient_program_id where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=" + hivMetadata.getARTProgram().getProgramId() + " and ps.state=" + hivMetadata.gettransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId() + " and ps.start_date=pg.date_enrolled and ps.start_date >= :onOrAfter and ps.start_date <= :onOrBefore and location_id=:location");
 		transferredFromOtherHealthFacility.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		transferredFromOtherHealthFacility.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		transferredFromOtherHealthFacility.addParameter(new Parameter("location", "location", Location.class));
@@ -106,11 +119,11 @@ public class SqlCohortQueries {
 	}
 	
 	// Obtain patients notified to be on TB treatment
-	@DocumentedDefinition(value = "transferredFromOtherHealthFacility")
+	@DocumentedDefinition(value = "notifiedToBeOnTbTreatment")
 	public CohortDefinition getPatientsNotifiedToBeOnTbTreatment() {
 		SqlCohortDefinition notifiedToBeOnTbTreatment = new SqlCohortDefinition();
 		notifiedToBeOnTbTreatment.setName("notifiedToBeOnTbTreatment");
-		notifiedToBeOnTbTreatment.setQuery("select p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on o.encounter_id=e.encounter_id where e.voided=0 and o.voided=0 and p.voided=0 and e.encounter_type in (" + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + "," + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") and o.concept_id=" + tbMetadata.getTUBERCULOSIS_TREATMENT_PLANConcept().getConceptId() + " and o.value_coded=" + hivMetadata.getYesConcept().getConceptId() + " and e.encounter_datetime<=:onOrBefore and e.location_id=:location group by p.patient_id");
+		notifiedToBeOnTbTreatment.setQuery("select p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on o.encounter_id=e.encounter_id where e.voided=0 and o.voided=0 and p.voided=0 and e.encounter_type in (" + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + "," + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") and o.concept_id=" + tbMetadata.getTUBERCULOSIS_TREATMENT_PLANConcept().getConceptId() + " and o.value_coded=" + hivMetadata.getYesConcept().getConceptId() + " and e.encounter_datetime >= :onOrAfter and e.encounter_datetime <=:onOrBefore and e.location_id=:location group by p.patient_id");
 		notifiedToBeOnTbTreatment.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		notifiedToBeOnTbTreatment.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		notifiedToBeOnTbTreatment.addParameter(new Parameter("location", "location", Location.class));
