@@ -61,11 +61,11 @@ public class CompositionCohortQueries {
 		patientBelow1YearEnrolledInHIVStartedART.getSearches().put("3", new Mapped<CohortDefinition>(patientWithHistoricalDrugStartDateObs, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
 		
 		patientBelow1YearEnrolledInHIVStartedART.getSearches().put("4", new Mapped<CohortDefinition>(patientsWithDrugPickUpEncounters, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
-
+		
 		patientBelow1YearEnrolledInHIVStartedART.getSearches().put("5", new Mapped<CohortDefinition>(transferredFromOtherHealthFacility, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
 		
 		patientBelow1YearEnrolledInHIVStartedART.getSearches().put("6", new Mapped<CohortDefinition>(PatientBelow1Year, ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}")));
-		patientBelow1YearEnrolledInHIVStartedART.setCompositionString("((1 or 2 or 3 or 4) and (not 5)) and 6");
+		patientBelow1YearEnrolledInHIVStartedART.setCompositionString("((1 AND 2 AND 3 AND 4) AND (NOT 5)) AND 6");
 		
 		return patientBelow1YearEnrolledInHIVStartedART;
 	}
@@ -88,7 +88,7 @@ public class CompositionCohortQueries {
 		patientBetween1And9YearsEnrolledInHIVStartedART.getSearches().put("5", new Mapped<CohortDefinition>(transferredFromOtherHealthFacility, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
 		
 		patientBetween1And9YearsEnrolledInHIVStartedART.getSearches().put("6", new Mapped<CohortDefinition>(PatientBetween1And9Years, ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}")));
-		patientBetween1And9YearsEnrolledInHIVStartedART.setCompositionString("((1 or 2 or 3 or 4) and (not 5)) and 6");
+		patientBetween1And9YearsEnrolledInHIVStartedART.setCompositionString("((1 AND 2 AND 3 AND 4) AND (NOT 5)) AND 6");
 		return patientBetween1And9YearsEnrolledInHIVStartedART;
 	}
 	
@@ -110,7 +110,7 @@ public class CompositionCohortQueries {
 		
 		patientInYearRangeEnrolledInARTStarted.getSearches().put("6", new Mapped<CohortDefinition>(ageCohort, ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}")));
 		patientInYearRangeEnrolledInARTStarted.getSearches().put("7", new Mapped<CohortDefinition>(gender, null));
-		patientInYearRangeEnrolledInARTStarted.setCompositionString("((1 or 2 or 3 or 4) and (not 5)) and 6 and 7");
+		patientInYearRangeEnrolledInARTStarted.setCompositionString("((1 AND 2 AND 3 AND 4) AND (NOT 5)) AND 6 AND 7");
 		return patientInYearRangeEnrolledInARTStarted;
 	}
 	
@@ -128,7 +128,7 @@ public class CompositionCohortQueries {
 		patientEnrolledInART.getSearches().put("4", new Mapped<CohortDefinition>(patientsWithDrugPickUpEncounters, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
 		
 		patientEnrolledInART.getSearches().put("5", new Mapped<CohortDefinition>(transferredFromOtherHealthFacility, ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
-		patientEnrolledInART.setCompositionString("(1 or 2 or 3 or 4) and (not 5)");
+		patientEnrolledInART.setCompositionString("(1 AND 2 AND 3 AND 4) AND (NOT 5)");
 		
 		return patientEnrolledInART;
 	}
