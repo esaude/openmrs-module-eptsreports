@@ -42,6 +42,22 @@ public class HivIndicators extends BaseIndicators {
 		return newCohortIndicator("patientNewlyEnrolledInHIVIndicator", EptsReportUtils.map(cohortDefinition, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 	}
 	
+	public CohortIndicator patientBelow1YearEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(CohortDefinition cohortDefinition) {
+		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(cohortDefinition, "onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
+	}
+	
+	public CohortIndicator patientBetween1And9YearsEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(CohortDefinition cohortDefinition) {
+		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(cohortDefinition, "onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
+	}
+	
+	public CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(CohortDefinition cohortDefinition) {
+		return newCohortIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(cohortDefinition, "onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
+	}
+	
+	public CohortIndicator patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(CohortDefinition cohortDefinition) {
+		return newCohortIndicator("patientNewlyEnrolledInHIVIndicator", EptsReportUtils.map(cohortDefinition, "onOrBefore=${endDate},location=${location}"));
+	}
+	
 	// add viral load indicators
 	/**
 	 * Find patients with VL <1000 - viral suppression
