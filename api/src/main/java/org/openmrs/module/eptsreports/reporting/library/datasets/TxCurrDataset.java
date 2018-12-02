@@ -21,7 +21,6 @@ import java.util.List;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.CompositionCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.EncounterCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.InprogramCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.SqlCohortQueries;
@@ -29,7 +28,6 @@ import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -50,9 +48,6 @@ public class TxCurrDataset {
 	
 	@Autowired
 	private SqlCohortQueries sqlCohortQueries;
-	
-	@Autowired
-	private EncounterCohortQueries encounterCohortQueries;
 	
 	@Autowired
 	private CompositionCohortQueries compositionCohortQueries;
@@ -84,7 +79,7 @@ public class TxCurrDataset {
 		 * Looks for patients enrolled in ART program (program 2=SERVICO TARV -
 		 * TRATAMENTO) before or on end date
 		 */
-		CohortDefinition enrolledBeforeEndDate = sqlCohortQueries.getEnrolledInARTBeforeEndDate();
+		CohortDefinition enrolledBeforeEndDate = inprogramCohortQueries.createInProgramParameterizableByDateAndLocation("InARTProgram", hivMetadata.getARTProgram(), Arrays.asList("onOrBefore"), "location");
 		
 		/*
 		 * Looks for patients registered as START DRUGS (answer to question 1255 = ARV

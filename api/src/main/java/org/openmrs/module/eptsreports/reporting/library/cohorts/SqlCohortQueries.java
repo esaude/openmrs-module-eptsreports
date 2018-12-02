@@ -282,18 +282,6 @@ public class SqlCohortQueries {
 	
 	// Start of TX_CURR
 	
-	// Looks for patients enrolled in ART program (program 2=SERVICO TARV -
-	// TRATAMENTO) before or on end date
-	@DocumentedDefinition(value = "inARTProgramDuringTimePeriod")
-	public CohortDefinition getEnrolledInARTBeforeEndDate() {
-		SqlCohortDefinition inARTProgramDuringTimePeriod = new SqlCohortDefinition();
-		inARTProgramDuringTimePeriod.setName("inARTProgramDuringTimePeriod");
-		inARTProgramDuringTimePeriod.setQuery("select p.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id where pg.voided=0 and p.voided=0 and pg.program_id= " + hivMetadata.getARTProgram().getProgramId() + " and pg.date_enrolled <= :onOrBefore and pg.location_id=:location group by p.patient_id");
-		inARTProgramDuringTimePeriod.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-		inARTProgramDuringTimePeriod.addParameter(new Parameter("location", "location", Location.class));
-		return inARTProgramDuringTimePeriod;
-	}
-	
 	// Looks for patients registered as START DRUGS (answer to question 1255 = ARV
 	// PLAN is 1256 = START DRUGS) in the first drug pickup (encounter type
 	// 18=S.TARV: FARMACIA) or follow up consultation for adults and children
@@ -329,7 +317,7 @@ public class SqlCohortQueries {
 	public CohortDefinition getPatientWithFirstDrugPickupEncounterBeforeOrOnEndDate() {
 		SqlCohortDefinition patientWithFirstDrugPickupEncounter = new SqlCohortDefinition();
 		patientWithFirstDrugPickupEncounter.setName("patientWithFirstDrugPickupEncounter");
-		patientWithFirstDrugPickupEncounter.setQuery("select e.patient_id FROM patient p inner join encounter e on p.patient_id=e.patient_id WHERE p.voided=0 and e.encounter_type= " + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId() + "  AND e.voided=0 and e.encounter_datetime <= :onOrBefore and e.location_id=:location GROUP BY p.patient_id");
+		patientWithFirstDrugPickupEncounter.setQuery("select p.patient_id FROM patient p inner join encounter e on p.patient_id=e.patient_id WHERE p.voided=0 and e.encounter_type= " + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId() + "  AND e.voided=0 and e.encounter_datetime <= :onOrBefore and e.location_id=:location GROUP BY p.patient_id");
 		patientWithFirstDrugPickupEncounter.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		patientWithFirstDrugPickupEncounter.addParameter(new Parameter("location", "location", Location.class));
 		return patientWithFirstDrugPickupEncounter;
