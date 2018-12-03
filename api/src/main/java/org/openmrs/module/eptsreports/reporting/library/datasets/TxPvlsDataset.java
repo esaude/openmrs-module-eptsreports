@@ -13,20 +13,18 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.BreastfeedingIndicators;
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
 import org.openmrs.module.eptsreports.reporting.library.indicators.PregnantIndicators;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
-import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class TxPvlsDataset extends BaseDataSet {
@@ -82,11 +80,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		return dsd;
 		
 	}
-	
-	public List<Parameter> getParameters() {
-		return Arrays.asList(ReportingConstants.START_DATE_PARAMETER, ReportingConstants.END_DATE_PARAMETER, ReportingConstants.LOCATION_PARAMETER);
-	}
-	
+
 	// build dimensions specific for this data set
 	/**
 	 * List of {@link ColumnParameters} for disaggregation
