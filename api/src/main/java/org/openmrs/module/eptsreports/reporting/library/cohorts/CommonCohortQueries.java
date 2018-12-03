@@ -127,9 +127,8 @@ public class CommonCohortQueries {
 		programs.add(program);
 		
 		inProgram.setPrograms(programs);
-		inProgram.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		inProgram.addParameter(new Parameter("endDate", "End Date", Date.class));
-		inProgram.addParameter(new Parameter("location", "location", Location.class));
+		inProgram.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+		inProgram.addParameter(new Parameter("location", "Location", Location.class));
 		return inProgram;
 	}
 }
