@@ -126,10 +126,114 @@
     </globalProperty>
 
     <globalProperty>
-        <property>@MODULE_ID@.tuberculosisTreatmentPalnConceptUuid</property>
+        <property>@MODULE_ID@.tuberculosisTreatmentPlanConceptUuid</property>
         <defaultValue>e1d9fbda-1d5f-11e0-b929-000c29ad1d07</defaultValue>
         <description>
             UUID for the TRATAMENTO DE TUBERCULOSE concept
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>@MODULE_ID@.sTarvAdultoInitialAEncounterTypeUuid</property>
+        <defaultValue>e278f820-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the S.TARV: ADULTO INICIAL A encounter type
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>@MODULE_ID@.hivViralLoadConceptUuid</property>
+        <defaultValue>e1d6247e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the HIV CARGA VIRAL concept
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>@MODULE_ID@.dateOfDeliveryConceptUuid</property>
+        <defaultValue>e1e765c2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the DATA DO PARTO concept
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>@MODULE_ID@.criteriaForArtStartUuid</property>
+        <defaultValue>607315ab-2f52-4d9f-b28a-6383b9a5f9c4</defaultValue>
+        <description>
+            UUID for the CRITÉRIO PARA INICIO DE TRATAMENTO ARV concept
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>@MODULE_ID@.returnVisitDateForArvDrugConceptUuid</property>
+        <defaultValue>e1e2efd8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the DATA DO PROXIMO LEVANTAMENTO DE ARV concept
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>@MODULE_ID@.ptvEtvProgramUuid</property>
+        <defaultValue>06057245-ca21-43ab-a02f-e861d7e54593</defaultValue>
+        <description>
+            UUID for the PTV program
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>@MODULE_ID@.misauLaboratorioEncounterTypeUuid</property>
+        <defaultValue>e2790f68-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the MISAU: LABORATORIO program
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>@MODULE_ID@.pregnantConceptUuid</property>
+        <defaultValue>e1e056a6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the GESTANTE concept
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>@MODULE_ID@.gestationConceptUuid</property>
+        <defaultValue>e1cdd58a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the GESTACAO concept
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>@MODULE_ID@.numberOfWeeksPregnantConceptUuid</property>
+        <defaultValue>e1da0788-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the SEMANAS DE GESTAÇÃO concept
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>@MODULE_ID@.pregnancyDueDateConceptUuid</property>
+        <defaultValue>e1dca8ee-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the DATA GRAVIDEZ concept
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>@MODULE_ID@.breastfeedingConceptUuid</property>
+        <defaultValue>bc4fe755-fc8f-49b8-9956-baf2477e8313</defaultValue>
+        <description>
+            UUID for the BREASTFEEDING concept
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>@MODULE_ID@.returnVisitDateConceptConceptUuid</property>
+        <defaultValue>e1dae630-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the DATA DE PROXIMA CONSULTA concept
         </description>
     </globalProperty>
 
