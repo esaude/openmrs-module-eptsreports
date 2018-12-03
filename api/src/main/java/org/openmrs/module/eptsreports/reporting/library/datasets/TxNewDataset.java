@@ -107,9 +107,10 @@ public class TxNewDataset extends BaseDataSet {
 		agesRange.add(PatientBetween50YearsAndAbove);
 		
 		// Male and Female <1
-		CohortDefinition patientBelow1YearEnrolledInHIVStartedART = txNewCohortQueries.getTxNewCohort(inARTProgramDuringTimePeriod,
-		    patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
-		    transferredFromOtherHealthFacility, PatientBelow1Year, null);
+		CohortDefinition patientBelow1YearEnrolledInHIVStartedART = txNewCohortQueries.getTxNewCompositionCohort(
+		    "patientBelow1YearEnrolledInHIVStartedART", inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs,
+		    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility,
+		    PatientBelow1Year, null);
 		CohortIndicator patientBelow1YearEnrolledInHIVStartedARTIndicator = hivIndicators
 		        .patientBelow1YearEnrolledInHIVStartedARTIndicator(patientBelow1YearEnrolledInHIVStartedART);
 		dataSetDefinition.addColumn("1<1", "TX_NEW: New on ART: Patients below 1 year",
@@ -118,9 +119,10 @@ public class TxNewDataset extends BaseDataSet {
 		    "");
 		
 		// Male and Female between 1 and 9 years
-		CohortDefinition patientBetween1And9YearsEnrolledInHIVStartedART = txNewCohortQueries.getTxNewCohort(
-		    inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
-		    patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility, PatientBetween1And9Years, null);
+		CohortDefinition patientBetween1And9YearsEnrolledInHIVStartedART = txNewCohortQueries.getTxNewCompositionCohort(
+		    "patientBetween1And9YearEnrolledInHIVStartedART", inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs,
+		    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility,
+		    PatientBetween1And9Years, null);
 		CohortIndicator patientBetween1And9YearsEnrolledInHIVStartedARTIndicator = hivIndicators
 		        .patientBetween1And9YearsEnrolledInHIVStartedARTIndicator(patientBetween1And9YearsEnrolledInHIVStartedART);
 		dataSetDefinition.addColumn("119", "TX_NEW: New on ART: Patients Between 1 and 9 years",
@@ -131,9 +133,10 @@ public class TxNewDataset extends BaseDataSet {
 		// Male
 		int i = 2;
 		for (CohortDefinition ageCohort : agesRange) {
-			CohortDefinition patientInYearRangeEnrolledInARTStarted = txNewCohortQueries.getTxNewCohort(inARTProgramDuringTimePeriod,
-			    patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
-			    transferredFromOtherHealthFacility, ageCohort, males);
+			CohortDefinition patientInYearRangeEnrolledInARTStarted = txNewCohortQueries.getTxNewCompositionCohort(
+			    "patientEnrolledInARTStartedMales", inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs,
+			    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility, ageCohort,
+			    males);
 			CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator = hivIndicators
 			        .patientInYearRangeEnrolledInHIVStartedARTIndicator(patientInYearRangeEnrolledInARTStarted);
 			dataSetDefinition.addColumn("1M" + i, "Males:TX_NEW: New on ART by age and sex: " + ageCohort.getName(),
@@ -147,9 +150,10 @@ public class TxNewDataset extends BaseDataSet {
 		// Female
 		int j = 2;
 		for (CohortDefinition ageCohort : agesRange) {
-			CohortDefinition patientInYearRangeEnrolledInARTStarted = txNewCohortQueries.getTxNewCohort(inARTProgramDuringTimePeriod,
-			    patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
-			    transferredFromOtherHealthFacility, ageCohort, females);
+			CohortDefinition patientInYearRangeEnrolledInARTStarted = txNewCohortQueries.getTxNewCompositionCohort(
+			    "patientEnrolledInARTStartedMales", inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs,
+			    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility, ageCohort,
+			    females);
 			CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator = hivIndicators
 			        .patientInYearRangeEnrolledInHIVStartedARTIndicator(patientInYearRangeEnrolledInARTStarted);
 			dataSetDefinition.addColumn("1F" + j, "Females:TX_NEW: New on ART by age and sex: " + ageCohort.getName(),
@@ -159,9 +163,9 @@ public class TxNewDataset extends BaseDataSet {
 			j++;
 		}
 		
-		CohortDefinition patientEnrolledInART = txNewCohortQueries.getTxNewCohort(inARTProgramDuringTimePeriod,
-		    patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
-		    transferredFromOtherHealthFacility, null, null);
+		CohortDefinition patientEnrolledInART = txNewCohortQueries.getTxNewCompositionCohort("patientEnrolledInART",
+		    inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
+		    patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility, null, null);
 		CohortIndicator patientEnrolledInHIVStartedARTIndicator = hivIndicators
 		        .patientEnrolledInHIVStartedARTIndicator(patientEnrolledInART);
 		dataSetDefinition.addColumn("1All", "TX_NEW: New on ART",

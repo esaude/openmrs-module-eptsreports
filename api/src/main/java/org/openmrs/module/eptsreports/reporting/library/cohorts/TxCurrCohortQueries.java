@@ -18,9 +18,12 @@ import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -184,5 +187,69 @@ public class TxCurrCohortQueries {
 		abandonedButHaveNotcompleted60Days.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		abandonedButHaveNotcompleted60Days.addParameter(new Parameter("location", "location", Location.class));
 		return abandonedButHaveNotcompleted60Days;
+	}
+	
+	/**
+	 * Build TxCurr composition cohort definition
+	 * 
+	 * @param cohortName
+	 * @param inARTProgramAtEndDate
+	 * @param patientWithSTARTDRUGSObs
+	 * @param patientWithHistoricalDrugStartDateObs
+	 * @param patientsWithDrugPickUpEncounters
+	 * @param patientsWhoLeftARTProgramBeforeOrOnEndDate
+	 * @param patientsWhoHaveNotReturned
+	 * @param patientsWhoHaveNotCompleted60Days
+	 * @param abandonedButHaveNotcompleted60Days
+	 * @param ageCohort
+	 * @return CompositionQuery
+	 */
+	@DocumentedDefinition(value = "getTxCurrCompositionCohort")
+	public CohortDefinition getTxCurrCompositionCohort(String cohortName, CohortDefinition inARTProgramAtEndDate,
+	        CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs,
+	        CohortDefinition patientsWithDrugPickUpEncounters, CohortDefinition patientsWhoLeftARTProgramBeforeOrOnEndDate,
+	        CohortDefinition patientsWhoHaveNotReturned, CohortDefinition patientsWhoHaveNotCompleted60Days,
+	        CohortDefinition abandonedButHaveNotcompleted60Days, CohortDefinition ageCohort, CohortDefinition genderCohort) {
+		
+		CompositionCohortDefinition TxCurrComposition = new CompositionCohortDefinition();
+		TxCurrComposition.setName(cohortName);
+		TxCurrComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		TxCurrComposition.addParameter(new Parameter("location", "location", Location.class));
+		TxCurrComposition.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+		TxCurrComposition.getSearches().put("1", new Mapped<CohortDefinition>(inARTProgramAtEndDate,
+		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
+		TxCurrComposition.getSearches().put("2", new Mapped<CohortDefinition>(patientWithSTARTDRUGSObs,
+		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
+		TxCurrComposition.getSearches().put("3", new Mapped<CohortDefinition>(patientWithHistoricalDrugStartDateObs,
+		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
+		TxCurrComposition.getSearches().put("4", new Mapped<CohortDefinition>(patientsWithDrugPickUpEncounters,
+		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
+		TxCurrComposition.getSearches().put("5", new Mapped<CohortDefinition>(patientsWhoLeftARTProgramBeforeOrOnEndDate,
+		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
+		TxCurrComposition.getSearches().put("6", new Mapped<CohortDefinition>(patientsWhoHaveNotReturned,
+		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
+		TxCurrComposition.getSearches().put("7", new Mapped<CohortDefinition>(patientsWhoHaveNotCompleted60Days,
+		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
+		TxCurrComposition.getSearches().put("8", new Mapped<CohortDefinition>(abandonedButHaveNotcompleted60Days,
+		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
+		
+		// TODO -Check specifications document on how to use query 6,7 and 8
+		String compositionString = "((1 AND 2 AND 3 AND 4) AND (NOT 5) AND NOT ( 6 NOT (5 OR 7 OR 8)))";
+		
+		if (ageCohort != null) {
+			TxCurrComposition.getSearches().put("9", new Mapped<CohortDefinition>(ageCohort,
+			        ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}")));
+			
+			compositionString = compositionString + " AND 9";
+		}
+		
+		if (genderCohort != null) {
+			TxCurrComposition.getSearches().put("10", new Mapped<CohortDefinition>(genderCohort, null));
+			
+			compositionString = compositionString + " AND 10";
+		}
+		
+		TxCurrComposition.setCompositionString(compositionString);
+		return TxCurrComposition;
 	}
 }

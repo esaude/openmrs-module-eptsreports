@@ -47,7 +47,7 @@ public class TxNewCohortQueries {
 		SqlCohortDefinition inARTProgramDuringTimePeriod = new SqlCohortDefinition();
 		inARTProgramDuringTimePeriod.setName("inARTProgramDuringTimePeriod");
 		inARTProgramDuringTimePeriod
-		        .setQuery("select p.patient_id " + "from patient p inner join patient_program pg on p.patient_id=pg.patient_id "
+		        .setQuery("select p.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id "
 		                + "where pg.voided=0 and p.voided=0 and pg.program_id= " + hivMetadata.getARTProgram().getProgramId()
 		                + " and pg.date_enrolled >= :onOrAfter and pg.date_enrolled <= :onOrBefore"
 		                + " and pg.location_id=:location group by p.patient_id");
@@ -90,13 +90,15 @@ public class TxNewCohortQueries {
 	public CohortDefinition getPatientWithHistoricalDrugStartDateObs() {
 		SqlCohortDefinition patientWithHistoricalDrugStartDateObs = new SqlCohortDefinition();
 		patientWithHistoricalDrugStartDateObs.setName("patientWithHistoricalDrugStartDateObs");
-		patientWithHistoricalDrugStartDateObs.setQuery(
-		    "select p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on e.encounter_id=o.encounter_id where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
-		            + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId() + ","
-		            + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + ","
-		            + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") and o.concept_id="
-		            + hivMetadata.gethistoricalDrugStartDateConcept().getConceptId()
-		            + " and o.value_datetime is not null and o.value_datetime >= :onOrAfter and o.value_datetime <= :onOrBefore and e.location_id=:location group by p.patient_id");
+		patientWithHistoricalDrugStartDateObs.setQuery("select p.patient_id from patient p "
+		        + "inner join encounter e on p.patient_id=e.patient_id inner join obs o on e.encounter_id=o.encounter_id "
+		        + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
+		        + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId() + ","
+		        + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + ","
+		        + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") and o.concept_id="
+		        + hivMetadata.gethistoricalDrugStartDateConcept().getConceptId()
+		        + " and o.value_datetime is not null and o.value_datetime >= :onOrAfter and o.value_datetime <= :onOrBefore and e.location_id=:location "
+		        + "group by p.patient_id");
 		patientWithHistoricalDrugStartDateObs.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		patientWithHistoricalDrugStartDateObs.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		patientWithHistoricalDrugStartDateObs.addParameter(new Parameter("location", "location", Location.class));
@@ -110,9 +112,10 @@ public class TxNewCohortQueries {
 		SqlCohortDefinition patientWithFirstDrugPickupEncounter = new SqlCohortDefinition();
 		patientWithFirstDrugPickupEncounter.setName("patientWithFirstDrugPickupEncounter");
 		patientWithFirstDrugPickupEncounter.setQuery(
-		    "select e.patient_id FROM patient p inner join encounter e on p.patient_id=e.patient_id WHERE p.voided=0 and e.encounter_type= "
-		            + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()
-		            + "  AND e.voided=0 and e.encounter_datetime >= :onOrAfter and e.encounter_datetime <= :onOrBefore and e.location_id=:location GROUP BY p.patient_id");
+		    "select e.patient_id FROM patient p inner join encounter e on p.patient_id=e.patient_id "
+		            + "where p.voided=0 and e.encounter_type= " + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()
+		            + " AND e.voided=0 and e.encounter_datetime >= :onOrAfter and e.encounter_datetime <= :onOrBefore and e.location_id=:location"
+		            + " GROUP BY p.patient_id");
 		patientWithFirstDrugPickupEncounter.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		patientWithFirstDrugPickupEncounter.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		patientWithFirstDrugPickupEncounter.addParameter(new Parameter("location", "location", Location.class));
@@ -156,49 +159,58 @@ public class TxNewCohortQueries {
 	}
 	
 	/**
-	 * Build TxNew Cohort Queries
+	 * Build TxNew composition cohort definition
 	 * 
-	 * @return TxNew CompositionCohortDefinition
+	 * @param cohortName
+	 * @param inARTProgramDuringTimePeriod
+	 * @param patientWithSTARTDRUGSObs
+	 * @param patientWithHistoricalDrugStartDateObs
+	 * @param patientsWithDrugPickUpEncounters
+	 * @param transferredFromOtherHealthFacility
+	 * @param AgeCohort
+	 * @param GenderCohort
+	 * @return CompositionQuery
 	 */
-	@DocumentedDefinition(value = "TxNew")
-	public CohortDefinition getTxNewCohort(CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs,
-	        CohortDefinition patientWithHistoricalDrugStartDateObs, CohortDefinition patientsWithDrugPickUpEncounters,
-	        CohortDefinition transferredFromOtherHealthFacility, CohortDefinition AgeCohort, CohortDefinition GenderCohort) {
-		CompositionCohortDefinition TxNewForAge = new CompositionCohortDefinition();
-		TxNewForAge.setName("patientBelow1YearEnrolledInHIVStartedART");
-		TxNewForAge.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-		TxNewForAge.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-		TxNewForAge.addParameter(new Parameter("location", "location", Location.class));
-		TxNewForAge.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
-		TxNewForAge.getSearches().put("1", new Mapped<CohortDefinition>(inARTProgramDuringTimePeriod,
+	@DocumentedDefinition(value = "getTxNewCompositionCohort")
+	public CohortDefinition getTxNewCompositionCohort(String cohortName, CohortDefinition inARTProgramDuringTimePeriod,
+	        CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs,
+	        CohortDefinition patientsWithDrugPickUpEncounters, CohortDefinition transferredFromOtherHealthFacility,
+	        CohortDefinition AgeCohort, CohortDefinition GenderCohort) {
+		CompositionCohortDefinition TxNewComposition = new CompositionCohortDefinition();
+		TxNewComposition.setName(cohortName);
+		TxNewComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		TxNewComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		TxNewComposition.addParameter(new Parameter("location", "location", Location.class));
+		TxNewComposition.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+		TxNewComposition.getSearches().put("1", new Mapped<CohortDefinition>(inARTProgramDuringTimePeriod,
 		        ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
-		TxNewForAge.getSearches().put("2", new Mapped<CohortDefinition>(patientWithSTARTDRUGSObs,
+		TxNewComposition.getSearches().put("2", new Mapped<CohortDefinition>(patientWithSTARTDRUGSObs,
 		        ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
-		TxNewForAge.getSearches().put("3", new Mapped<CohortDefinition>(patientWithHistoricalDrugStartDateObs,
-		        ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
-		
-		TxNewForAge.getSearches().put("4", new Mapped<CohortDefinition>(patientsWithDrugPickUpEncounters,
+		TxNewComposition.getSearches().put("3", new Mapped<CohortDefinition>(patientWithHistoricalDrugStartDateObs,
 		        ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
 		
-		TxNewForAge.getSearches().put("5", new Mapped<CohortDefinition>(transferredFromOtherHealthFacility,
+		TxNewComposition.getSearches().put("4", new Mapped<CohortDefinition>(patientsWithDrugPickUpEncounters,
+		        ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
+		
+		TxNewComposition.getSearches().put("5", new Mapped<CohortDefinition>(transferredFromOtherHealthFacility,
 		        ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
 		
 		String compositionString = "((1 AND 2 AND 3 AND 4) AND (NOT 5))";
 		
 		if (AgeCohort != null) {
-			TxNewForAge.getSearches().put("6", new Mapped<CohortDefinition>(AgeCohort,
+			TxNewComposition.getSearches().put("6", new Mapped<CohortDefinition>(AgeCohort,
 			        ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}")));
 			
 			compositionString = compositionString + " AND 6";
 		}
 		
 		if (GenderCohort != null) {
-			TxNewForAge.getSearches().put("7", new Mapped<CohortDefinition>(GenderCohort, null));
+			TxNewComposition.getSearches().put("7", new Mapped<CohortDefinition>(GenderCohort, null));
 			
 			compositionString = compositionString + " AND 7";
 		}
 		
-		TxNewForAge.setCompositionString(compositionString);
-		return TxNewForAge;
+		TxNewComposition.setCompositionString(compositionString);
+		return TxNewComposition;
 	}
 }
