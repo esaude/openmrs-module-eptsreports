@@ -39,7 +39,7 @@ import org.springframework.stereotype.Component;
 public class CommonCohortQueries {
 	
 	/**
-	 * Patients who have an encounter between ${onOrAfter}, ${onOrBefore} and ${locationList}
+	 * Patients who have an encounter between ${onOrAfter}, ${onOrBefore} and ${location}
 	 * 
 	 * @param types the encounter types
 	 * @return the cohort definition
@@ -50,7 +50,7 @@ public class CommonCohortQueries {
 		cd.setTimeQualifier(TimeQualifier.ANY);
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("locationList", "Location", Location.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
 		if (types.length > 0) {
 			cd.setEncounterTypeList(Arrays.asList(types));
 		}
@@ -59,7 +59,7 @@ public class CommonCohortQueries {
 	
 	/**
 	 * Patients who were enrolled on the given programs between ${enrolledOnOrAfter},
-	 * ${enrolledOnOrBefore} and ${locationList}
+	 * ${enrolledOnOrBefore} and ${location}
 	 * 
 	 * @param programs the programs
 	 * @return the cohort definition
@@ -69,7 +69,7 @@ public class CommonCohortQueries {
 		cd.setName("enrolled in program between dates");
 		cd.addParameter(new Parameter("enrolledOnOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("enrolledOnOrBefore", "Before Date", Date.class));
-		cd.addParameter(new Parameter("locationList", "Location", Location.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
 		if (programs.length > 0) {
 			cd.setPrograms(Arrays.asList(programs));
 		}
@@ -77,7 +77,7 @@ public class CommonCohortQueries {
 	}
 	
 	/**
-	 * Patients who have an obs between ${onOrAfter}, ${onOrBefore} and ${locationList}
+	 * Patients who have an obs between ${onOrAfter}, ${onOrBefore} and ${location}
 	 * 
 	 * @param question the question concept
 	 * @param answers the answers to include
@@ -91,7 +91,7 @@ public class CommonCohortQueries {
 		cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("locationList", "Location", Location.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
 		if (answers.length > 0) {
 			cd.setValueList(Arrays.asList(answers));
 		}

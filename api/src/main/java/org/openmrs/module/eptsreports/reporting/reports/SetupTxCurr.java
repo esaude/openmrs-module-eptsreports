@@ -10,15 +10,12 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
-import org.openmrs.module.reporting.ReportingConstants;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
