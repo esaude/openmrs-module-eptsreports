@@ -19,9 +19,12 @@ import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -150,5 +153,52 @@ public class TxNewCohortQueries {
 		notifiedToBeOnTbTreatment.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		notifiedToBeOnTbTreatment.addParameter(new Parameter("location", "location", Location.class));
 		return notifiedToBeOnTbTreatment;
+	}
+	
+	/**
+	 * Build TxNew Cohort Queries
+	 * 
+	 * @return TxNew CompositionCohortDefinition
+	 */
+	@DocumentedDefinition(value = "TxNew")
+	public CohortDefinition getTxNewCohort(CohortDefinition inARTProgramDuringTimePeriod, CohortDefinition patientWithSTARTDRUGSObs,
+	        CohortDefinition patientWithHistoricalDrugStartDateObs, CohortDefinition patientsWithDrugPickUpEncounters,
+	        CohortDefinition transferredFromOtherHealthFacility, CohortDefinition AgeCohort, CohortDefinition GenderCohort) {
+		CompositionCohortDefinition TxNewForAge = new CompositionCohortDefinition();
+		TxNewForAge.setName("patientBelow1YearEnrolledInHIVStartedART");
+		TxNewForAge.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		TxNewForAge.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		TxNewForAge.addParameter(new Parameter("location", "location", Location.class));
+		TxNewForAge.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+		TxNewForAge.getSearches().put("1", new Mapped<CohortDefinition>(inARTProgramDuringTimePeriod,
+		        ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
+		TxNewForAge.getSearches().put("2", new Mapped<CohortDefinition>(patientWithSTARTDRUGSObs,
+		        ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
+		TxNewForAge.getSearches().put("3", new Mapped<CohortDefinition>(patientWithHistoricalDrugStartDateObs,
+		        ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
+		
+		TxNewForAge.getSearches().put("4", new Mapped<CohortDefinition>(patientsWithDrugPickUpEncounters,
+		        ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
+		
+		TxNewForAge.getSearches().put("5", new Mapped<CohortDefinition>(transferredFromOtherHealthFacility,
+		        ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
+		
+		String compositionString = "((1 AND 2 AND 3 AND 4) AND (NOT 5))";
+		
+		if (AgeCohort != null) {
+			TxNewForAge.getSearches().put("6", new Mapped<CohortDefinition>(AgeCohort,
+			        ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}")));
+			
+			compositionString = compositionString + " AND 6";
+		}
+		
+		if (GenderCohort != null) {
+			TxNewForAge.getSearches().put("7", new Mapped<CohortDefinition>(GenderCohort, null));
+			
+			compositionString = compositionString + " AND 7";
+		}
+		
+		TxNewForAge.setCompositionString(compositionString);
+		return TxNewForAge;
 	}
 }

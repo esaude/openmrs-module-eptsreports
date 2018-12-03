@@ -28,13 +28,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TxPvlsDataset extends BaseDataSet {
-
+	
 	@Autowired
 	private HivIndicators hivIndicators;
-
+	
 	@Autowired
 	private EptsCommonDimension eptsCommonDimension;
-
+	
 	@Autowired
 	private PregnantIndicators pregnantIndicators;
 	
