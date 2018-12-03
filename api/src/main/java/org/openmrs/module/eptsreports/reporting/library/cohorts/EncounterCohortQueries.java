@@ -25,7 +25,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class EncounterCohortQueries {
 	
-	public EncounterCohortDefinition createEncounterParameterizedByDate(String name, List<String> parameterNames, EncounterType encounterType) {
+	public EncounterCohortDefinition createEncounterParameterizedByDate(String name, List<String> parameterNames,
+	        EncounterType encounterType) {
 		List<EncounterType> encounters = new ArrayList<EncounterType>();
 		encounters.add(encounterType);
 		

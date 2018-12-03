@@ -30,7 +30,8 @@ public abstract class BaseDataSet {
 	 * @param indicator the indicator
 	 * @param columns the column parameters
 	 */
-	protected void addRow(CohortIndicatorDataSetDefinition cohortDsd, String baseName, String baseLabel, Mapped<CohortIndicator> indicator, List<ColumnParameters> columns) {
+	protected void addRow(CohortIndicatorDataSetDefinition cohortDsd, String baseName, String baseLabel,
+	        Mapped<CohortIndicator> indicator, List<ColumnParameters> columns) {
 		
 		for (ColumnParameters column : columns) {
 			String name = baseName + "-" + column.getColumn();

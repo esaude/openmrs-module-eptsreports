@@ -13,8 +13,10 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
@@ -24,6 +26,7 @@ import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
@@ -96,7 +99,7 @@ public class CommonCohortQueries {
 	/**
 	 * Pregnant women based on different parameters
 	 * 
-	 * @retrun CohortDefinition
+	 * @return CohortDefinition
 	 */
 	@DocumentedDefinition(value = "general")
 	public CohortDefinition general(String name, String query) {
@@ -107,5 +110,26 @@ public class CommonCohortQueries {
 		sql.addParameter(new Parameter("location", "Facility", Location.class));
 		sql.setQuery(query);
 		return sql;
+	}
+	
+	/**
+	 * Patients who were enrolled on the given programs between ${enrolledOnOrAfter} and
+	 * ${enrolledOnOrBefore}
+	 * 
+	 * @param programs the programs
+	 * @return the cohort definition
+	 */
+	public CohortDefinition createInProgram(String name, Program program) {
+		InProgramCohortDefinition inProgram = new InProgramCohortDefinition();
+		inProgram.setName(name);
+		
+		List<Program> programs = new ArrayList<Program>();
+		programs.add(program);
+		
+		inProgram.setPrograms(programs);
+		inProgram.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		inProgram.addParameter(new Parameter("endDate", "End Date", Date.class));
+		inProgram.addParameter(new Parameter("location", "location", Location.class));
+		return inProgram;
 	}
 }
