@@ -13,21 +13,18 @@
  **/
 package org.openmrs.module.eptsreports.reporting.reports;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
-import org.openmrs.module.reporting.ReportingConstants;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 
 @Component
 public class SetupTxNew extends EptsDataExportManager {
@@ -64,23 +61,14 @@ public class SetupTxNew extends EptsDataExportManager {
 	}
 	
 	@Override
-	public List<Parameter> getParameters() {
-		List<Parameter> parameters = new ArrayList<Parameter>();
-		parameters.add(ReportingConstants.START_DATE_PARAMETER);
-		parameters.add(ReportingConstants.END_DATE_PARAMETER);
-		parameters.add(ReportingConstants.LOCATION_PARAMETER);
-		return parameters;
-	}
-	
-	@Override
 	public ReportDefinition constructReportDefinition() {
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setUuid(getUuid());
 		reportDefinition.setName(getName());
 		reportDefinition.setDescription(getDescription());
-		reportDefinition.setParameters(getParameters());
+		reportDefinition.setParameters(txNewDataset.getParameters());
 		
-		reportDefinition.addDataSetDefinition(txNewDataset.constructTxNewDatset(getParameters()), ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate},location=${location}"));
+		reportDefinition.addDataSetDefinition(txNewDataset.constructTxNewDatset(), ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate},location=${location}"));
 		
 		return reportDefinition;
 	}
