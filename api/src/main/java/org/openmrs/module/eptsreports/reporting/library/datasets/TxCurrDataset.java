@@ -37,7 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class TxCurrDataset {
+public class TxCurrDataset extends BaseDataSet {
 	
 	@Autowired
 	private AgeCohortQueries ageCohortQueries;
@@ -60,11 +60,11 @@ public class TxCurrDataset {
 	@Autowired
 	private HivMetadata hivMetadata;
 	
-	public CohortIndicatorDataSetDefinition constructTxNewDatset(List<Parameter> parameters) {
+	public CohortIndicatorDataSetDefinition constructTxNewDatset() {
 		
 		CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
 		dataSetDefinition.setName("TX_CURR Data Set");
-		dataSetDefinition.addParameters(parameters);
+		dataSetDefinition.addParameters(getParameters());
 		
 		/*
 		 * Looks for patients enrolled in ART program (program 2=SERVICO TARV -

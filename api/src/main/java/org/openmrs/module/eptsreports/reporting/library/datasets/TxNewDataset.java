@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class TxNewDataset {
+public class TxNewDataset extends BaseDataSet {
 	
 	@Autowired
 	private AgeCohortQueries ageCohortQueries;
@@ -54,11 +54,11 @@ public class TxNewDataset {
 	@Autowired
 	private TbIndicators tbIndicators;
 	
-	public DataSetDefinition constructTxNewDatset(List<Parameter> parameters) {
+	public DataSetDefinition constructTxNewDatset() {
 		
 		CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
 		dataSetDefinition.setName("TX_NEW Data Set");
-		dataSetDefinition.addParameters(parameters);
+		dataSetDefinition.addParameters(getParameters());
 		
 		// Looks for patients enrolled in ART program (program 2=SERVICO TARV -
 		// TRATAMENTO) before or on end date
