@@ -14,16 +14,12 @@
 
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.CompositionCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
 import org.openmrs.module.eptsreports.reporting.library.indicators.TbIndicators;
-import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -34,8 +30,11 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
-public class TxNewDataset {
+public class TxNewDataset extends BaseDataSet {
 	
 	@Autowired
 	private AgeCohortQueries ageCohortQueries;
@@ -55,19 +54,11 @@ public class TxNewDataset {
 	@Autowired
 	private TbIndicators tbIndicators;
 	
-	public List<Parameter> getParameters() {
-		List<Parameter> parameters = new ArrayList<Parameter>();
-		parameters.add(ReportingConstants.START_DATE_PARAMETER);
-		parameters.add(ReportingConstants.END_DATE_PARAMETER);
-		parameters.add(ReportingConstants.LOCATION_PARAMETER);
-		return parameters;
-	}
-	
-	public DataSetDefinition constructTxNewDatset(List<Parameter> parameters) {
+	public DataSetDefinition constructTxNewDatset() {
 		
 		CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
 		dataSetDefinition.setName("TX_NEW Data Set");
-		dataSetDefinition.addParameters(parameters);
+		dataSetDefinition.addParameters(getParameters());
 		
 		// Looks for patients enrolled in ART program (program 2=SERVICO TARV -
 		// TRATAMENTO) before or on end date

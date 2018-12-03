@@ -21,22 +21,20 @@ import org.openmrs.module.eptsreports.reporting.library.indicators.Breastfeeding
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
 import org.openmrs.module.eptsreports.reporting.library.indicators.PregnantIndicators;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
-import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TxPvlsDataset extends BaseDataSet {
-	
+
 	@Autowired
 	private HivIndicators hivIndicators;
-	
+
 	@Autowired
 	private EptsCommonDimension eptsCommonDimension;
-	
+
 	@Autowired
 	private PregnantIndicators pregnantIndicators;
 	
@@ -91,11 +89,6 @@ public class TxPvlsDataset extends BaseDataSet {
 		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), adultsDisagregation());
 		return dsd;
 		
-	}
-	
-	public List<Parameter> getParameters() {
-		return Arrays.asList(ReportingConstants.START_DATE_PARAMETER, ReportingConstants.END_DATE_PARAMETER,
-		    ReportingConstants.LOCATION_PARAMETER);
 	}
 	
 	// build dimensions specific for this data set

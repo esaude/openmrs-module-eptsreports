@@ -60,23 +60,14 @@ public class SetupTxCurr extends EptsDataExportManager {
 	}
 	
 	@Override
-	public List<Parameter> getParameters() {
-		List<Parameter> parameters = new ArrayList<Parameter>();
-		parameters.add(ReportingConstants.START_DATE_PARAMETER);
-		parameters.add(ReportingConstants.END_DATE_PARAMETER);
-		parameters.add(ReportingConstants.LOCATION_PARAMETER);
-		return parameters;
-	}
-	
-	@Override
 	public ReportDefinition constructReportDefinition() {
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setUuid(getUuid());
 		reportDefinition.setName(getName());
 		reportDefinition.setDescription(getDescription());
-		reportDefinition.setParameters(getParameters());
+		reportDefinition.setParameters(txCurrDataset.getParameters());
 		
-		reportDefinition.addDataSetDefinition(txCurrDataset.constructTxNewDatset(getParameters()),
+		reportDefinition.addDataSetDefinition(txCurrDataset.constructTxNewDatset(),
 		    ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate},location=${location}"));
 		
 		return reportDefinition;

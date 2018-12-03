@@ -15,7 +15,6 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
@@ -24,20 +23,18 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.CompositionCohor
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
-import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TxCurrDataset {
+public class TxCurrDataset extends BaseDataSet {
 	
 	@Autowired
 	private AgeCohortQueries ageCohortQueries;
@@ -60,19 +57,11 @@ public class TxCurrDataset {
 	@Autowired
 	private HivMetadata hivMetadata;
 	
-	public List<Parameter> getParameters() {
-		List<Parameter> parameters = new ArrayList<Parameter>();
-		parameters.add(ReportingConstants.START_DATE_PARAMETER);
-		parameters.add(ReportingConstants.END_DATE_PARAMETER);
-		parameters.add(ReportingConstants.LOCATION_PARAMETER);
-		return parameters;
-	}
-	
-	public CohortIndicatorDataSetDefinition constructTxNewDatset(List<Parameter> parameters) {
+	public CohortIndicatorDataSetDefinition constructTxNewDatset() {
 		
 		CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
 		dataSetDefinition.setName("TX_CURR Data Set");
-		dataSetDefinition.addParameters(parameters);
+		dataSetDefinition.addParameters(getParameters());
 		
 		/*
 		 * Looks for patients enrolled in ART program (program 2=SERVICO TARV -
