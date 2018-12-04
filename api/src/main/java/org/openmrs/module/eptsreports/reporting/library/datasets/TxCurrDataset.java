@@ -44,9 +44,6 @@ public class TxCurrDataset extends BaseDataSet {
 	private TxCurrCohortQueries txCurrCohortQueries;
 	
 	@Autowired
-	private CompositionCohortQueries compositionCohortQueries;
-	
-	@Autowired
 	private CommonCohortQueries commonCohortQueries;
 	
 	@Autowired
