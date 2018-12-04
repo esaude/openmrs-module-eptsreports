@@ -106,7 +106,8 @@ public class Metadata {
 			}
 		}
 		if (s == null) {
-			throw new MetadataLookupException("Unable to find state using " + programLookup + " - " + workflowLookup + " - " + stateLookup);
+			throw new MetadataLookupException(
+			        "Unable to find state using " + programLookup + " - " + workflowLookup + " - " + stateLookup);
 		}
 		return s;
 	}
