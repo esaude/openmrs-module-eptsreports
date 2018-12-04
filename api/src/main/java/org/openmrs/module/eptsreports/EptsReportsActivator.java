@@ -11,7 +11,9 @@ package org.openmrs.module.eptsreports;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
+import org.openmrs.module.eptsreports.metadata.MetadataLookupException;
 import org.openmrs.module.eptsreports.reporting.EptsReportInitializer;
 
 /**
@@ -54,8 +56,18 @@ public class EptsReportsActivator extends BaseModuleActivator {
 	 * @see #started()
 	 */
 	public void started() {
-		reportsInitializer.initializeReports();
-		log.info("Started EPTS Reports Module");
+		try {
+			reportsInitializer.initializeReports();
+			log.info("Started EPTS Reports Module");
+		}
+		catch (MetadataLookupException e) {
+			Context.getAlertService().notifySuperUsers("eptsreports.startuperror.globalproperties", null);
+			throw e;
+		}
+		catch (Exception e) {
+			Context.getAlertService().notifySuperUsers("eptsreports.startuperror.general", null);
+			throw e;
+		}
 	}
 	
 	/**
