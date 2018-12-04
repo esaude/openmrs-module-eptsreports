@@ -34,9 +34,9 @@ public class HivMetadata extends CommonMetadata {
 		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_CRITERIA_FOR_ART_START_CONCEPT_UUID);
 		return getConcept(uuid);
 	}
-	
+
 	public Concept getReturnVisitDateForArvDrugConcept() {
-		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_RETURN_VISIT_DATE_FOR_ARV_DRUG_CONCEPT_UUID); // encounterType_id=6
+		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_RETURN_VISIT_DATE_FOR_ARV_DRUG_CONCEPT_UUID);
 		return getConcept(uuid);
 	}
 	
@@ -51,22 +51,21 @@ public class HivMetadata extends CommonMetadata {
 	}
 	
 	// Encounter types
+	// encounterType_id = 6
 	public EncounterType getAdultoSeguimentoEncounterType() {
-		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_S_TARV_ADULTO_SEGUIMENTO_ENCOUNTER_TYPE_UUID); // encounterType_id=6
+		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_S_TARV_ADULTO_SEGUIMENTO_ENCOUNTER_TYPE_UUID);
 		return getEncounterType(uuid);
 	}
-	
+
+	// encounterType_id  = 9
 	public EncounterType getARVPediatriaSeguimentoEncounterType() {
-		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_S_TARV_PEDIATRIA_SEGUIMENTO_ENCOUNTER_TYPE_UUID); // encounterType_id
-		                                                                                                                                                         // =
-		                                                                                                                                                         // 9
+		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_S_TARV_PEDIATRIA_SEGUIMENTO_ENCOUNTER_TYPE_UUID);
 		return getEncounterType(uuid);
 	}
-	
+
+	// encounterType_id = 5
 	public EncounterType getARVAdultInitialEncounterType() {
-		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_S_TARV_ADULTO_INITIAL_A_ENCOUNTER_TYPE_UUID); // encounterType_id
-		                                                                                                                                                     // =
-		                                                                                                                                                     // 9
+		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_S_TARV_ADULTO_INITIAL_A_ENCOUNTER_TYPE_UUID);
 		return getEncounterType(uuid);
 	}
 	
