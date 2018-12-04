@@ -49,8 +49,7 @@ public class TxNewCohortQueries {
 		inARTProgramDuringTimePeriod
 		        .setQuery("select p.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id "
 		                + "where pg.voided=0 and p.voided=0 and pg.program_id= " + hivMetadata.getARTProgram().getProgramId()
-		                + " and pg.date_enrolled >= :onOrAfter and pg.date_enrolled <= :onOrBefore"
-		                + " and pg.location_id=:location group by p.patient_id");
+		                + " and pg.date_enrolled <= :onOrBefore and and pg.location_id=:location");
 		inARTProgramDuringTimePeriod.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		inARTProgramDuringTimePeriod.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		inARTProgramDuringTimePeriod.addParameter(new Parameter("location", "location", Location.class));
@@ -66,16 +65,16 @@ public class TxNewCohortQueries {
 	public CohortDefinition getPatientWithSTARTDRUGSObs() {
 		SqlCohortDefinition patientWithSTARTDRUGSObs = new SqlCohortDefinition();
 		patientWithSTARTDRUGSObs.setName("patientWithSTARTDRUGSObs");
-		patientWithSTARTDRUGSObs.setQuery("select p.patient_id "
-		        + "from patient p inner join encounter e on p.patient_id=e.patient_id "
-		        + "inner join obs o on o.encounter_id=e.encounter_id "
-		        + "where e.voided=0 and o.voided=0 and p.voided=0 and e.encounter_type in ("
-		        + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId() + ","
-		        + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + ","
-		        + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") and o.concept_id="
-		        + hivMetadata.getARVPlanConcept().getConceptId() + " and o.value_coded="
-		        + hivMetadata.getstartDrugsConcept().getConceptId()
-		        + " and e.encounter_datetime >= :onOrAfter and e.encounter_datetime <= :onOrBefore and e.location_id=:location group by p.patient_id");
+		patientWithSTARTDRUGSObs
+		        .setQuery("select p.patient_id " + "from patient p inner join encounter e on p.patient_id=e.patient_id "
+		                + "inner join obs o on o.encounter_id=e.encounter_id "
+		                + "where e.voided=0 and o.voided=0 and p.voided=0 and e.encounter_type in ("
+		                + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId() + ","
+		                + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + ","
+		                + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ")" + " and o.concept_id="
+		                + hivMetadata.getARVPlanConcept().getConceptId() + " and o.value_coded="
+		                + hivMetadata.getstartDrugsConcept().getConceptId()
+		                + " and e.encounter_datetime <= :onOrBefore and e.location_id=:location group by p.patient_id");
 		patientWithSTARTDRUGSObs.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		patientWithSTARTDRUGSObs.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		patientWithSTARTDRUGSObs.addParameter(new Parameter("location", "location", Location.class));
@@ -96,9 +95,8 @@ public class TxNewCohortQueries {
 		        + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId() + ","
 		        + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + ","
 		        + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") and o.concept_id="
-		        + hivMetadata.gethistoricalDrugStartDateConcept().getConceptId()
-		        + " and o.value_datetime is not null and o.value_datetime >= :onOrAfter and o.value_datetime <= :onOrBefore and e.location_id=:location "
-		        + "group by p.patient_id");
+		        + hivMetadata.gethistoricalDrugStartDateConcept().getConceptId() + " and o.value_datetime is not null "
+		        + " and o.value_datetime <= :onOrBefore and e.location_id=:location group by p.patient_id");
 		patientWithHistoricalDrugStartDateObs.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		patientWithHistoricalDrugStartDateObs.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		patientWithHistoricalDrugStartDateObs.addParameter(new Parameter("location", "location", Location.class));
@@ -111,11 +109,11 @@ public class TxNewCohortQueries {
 	public CohortDefinition getPatientWithFirstDrugPickupEncounter() {
 		SqlCohortDefinition patientWithFirstDrugPickupEncounter = new SqlCohortDefinition();
 		patientWithFirstDrugPickupEncounter.setName("patientWithFirstDrugPickupEncounter");
-		patientWithFirstDrugPickupEncounter.setQuery(
-		    "select e.patient_id FROM patient p inner join encounter e on p.patient_id=e.patient_id "
-		            + "where p.voided=0 and e.encounter_type= " + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()
-		            + " AND e.voided=0 and e.encounter_datetime >= :onOrAfter and e.encounter_datetime <= :onOrBefore and e.location_id=:location"
-		            + " GROUP BY p.patient_id");
+		patientWithFirstDrugPickupEncounter
+		        .setQuery("select e.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id "
+		                + "where p.voided=0 and e.encounter_type= " + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()
+		                + " and e.voided=0 and e.encounter_datetime <= :onOrBefore and e.location_id=:location "
+		                + "group by p.patient_id");
 		patientWithFirstDrugPickupEncounter.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		patientWithFirstDrugPickupEncounter.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		patientWithFirstDrugPickupEncounter.addParameter(new Parameter("location", "location", Location.class));
@@ -129,11 +127,14 @@ public class TxNewCohortQueries {
 	public CohortDefinition getPatientsTransferredFromOtherHealthFacility() {
 		SqlCohortDefinition transferredFromOtherHealthFacility = new SqlCohortDefinition();
 		transferredFromOtherHealthFacility.setName("transferredFromOtherHealthFacility");
-		transferredFromOtherHealthFacility.setQuery(
-		    "select p.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id inner join patient_state ps on pg.patient_program_id=ps.patient_program_id where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id="
-		            + hivMetadata.getARTProgram().getProgramId() + " and ps.state="
-		            + hivMetadata.gettransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()
-		            + " and ps.start_date=pg.date_enrolled and ps.start_date >= :onOrAfter and ps.start_date <= :onOrBefore and location_id=:location group by p.patient_id");
+		transferredFromOtherHealthFacility.setQuery("select p.patient_id from patient p "
+		        + "inner join patient_program pg on p.patient_id=pg.patient_id "
+		        + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+		        + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=" + hivMetadata.getARTProgram().getProgramId()
+		        + " and ps.state=" + hivMetadata.gettransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()
+		        + " and ps.start_date=pg.date_enrolled"
+		        + " and ps.start_date >= :onOrAfter and ps.start_date <= :onOrBefore and location_id=:location "
+		        + "group by p.patient_id");
 		transferredFromOtherHealthFacility.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		transferredFromOtherHealthFacility.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		transferredFromOtherHealthFacility.addParameter(new Parameter("location", "location", Location.class));
@@ -148,7 +149,7 @@ public class TxNewCohortQueries {
 		notifiedToBeOnTbTreatment.setQuery(
 		    "select p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on o.encounter_id=e.encounter_id where e.voided=0 and o.voided=0 and p.voided=0 and e.encounter_type in ("
 		            + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + ","
-		            + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") and o.concept_id="
+		            + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ")" + " and o.concept_id="
 		            + tbMetadata.getTUBERCULOSIS_TREATMENT_PLANConcept().getConceptId() + " and o.value_coded="
 		            + hivMetadata.getYesConcept().getConceptId()
 		            + " and e.encounter_datetime >= :onOrAfter and e.encounter_datetime <=:onOrBefore and e.location_id=:location group by p.patient_id");
@@ -195,7 +196,7 @@ public class TxNewCohortQueries {
 		TxNewComposition.getSearches().put("5", new Mapped<CohortDefinition>(transferredFromOtherHealthFacility,
 		        ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
 		
-		String compositionString = "((1 AND 2 AND 3 AND 4) AND (NOT 5))";
+		String compositionString = "((1 OR 2 OR 3 OR 4) AND (NOT 5))";
 		
 		if (AgeCohort != null) {
 			TxNewComposition.getSearches().put("6", new Mapped<CohortDefinition>(AgeCohort,
