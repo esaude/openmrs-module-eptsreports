@@ -115,12 +115,46 @@ public class TxPvlsCohortQueries {
 		        + "INNER JOIN patient_state ps on pg.patient_program_id=ps.patient_program_id "
 		        + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0" + " AND ps.state="
 		        + hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId() + " AND ps.start_date=pg.date_enrolled"
-		        + " AND ps.start_date >= :onOrAfter AND ps.start_date <= :onOrBefore AND location_id=:location "
+		        + " AND ps.start_date >= :startDate AND ps.start_date <= :endDate AND location_id=:location "
 		        + "GROUP BY p.patient_id");
-		cd.addSearch("deadState", EptsReportUtils.map(deadState, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		cd.addSearch("deadState", EptsReportUtils.map(deadState, "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("deceased",
 		    EptsReportUtils.map(genericCohortQueries.general("Dead persons", "SELECT person_id FROM person WHERE dead=1"), ""));
 		cd.setCompositionString("deadState OR deceased");
+		return cd;
+	}
+	
+	/**
+	 * Get lost to follow up patients
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition lostToFollowUpPatients() {
+		SqlCohortDefinition cd = new SqlCohortDefinition();
+		cd.setName("LostToFollowUp");
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "location", Location.class));
+		cd.setQuery("SELECT patient_id FROM (SELECT e.patient_id,MAX(e.encounter_datetime) FROM encounter e) p "
+		        + "INNER JOIN obs o ON  p.patient_id=o.person_id " + "WHERE o.concept_id="
+		        + hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()
+		        + " AND datediff(:endDate,o.value_datetime)>90 AND o.location_id=:location");
+		return cd;
+	}
+	
+	/**
+	 * Get a set of patients to be excluded from the search criteria
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition totalExclusions() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End date", Date.class));
+		cd.addParameter(new Parameter("location", "location", Location.class));
+		cd.addSearch("deadPatients",
+		    EptsReportUtils.map(getDeadPersons(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.addSearch("lost", EptsReportUtils.map(lostToFollowUpPatients(), "endDate=${endDate},location=${location}"));
+		cd.setCompositionString("deadPatients OR lost");
 		return cd;
 	}
 	
@@ -355,8 +389,8 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("supp", EptsReportUtils.map(hivCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
-		cd.addSearch("dead", EptsReportUtils.map(getDeadPersons(), mappings));
-		cd.setCompositionString("supp AND NOT dead");
+		cd.addSearch("exclude", EptsReportUtils.map(totalExclusions(), mappings));
+		cd.setCompositionString("supp AND NOT exclude");
 		return cd;
 	}
 	
@@ -371,8 +405,8 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("results", EptsReportUtils.map(hivCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
-		cd.addSearch("dead", EptsReportUtils.map(getDeadPersons(), mappings));
-		cd.setCompositionString("results AND NOT dead");
+		cd.addSearch("exclude", EptsReportUtils.map(totalExclusions(), mappings));
+		cd.setCompositionString("results AND NOT exclude");
 		return cd;
 	}
 }
