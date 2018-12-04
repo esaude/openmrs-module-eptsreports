@@ -13,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
+import org.openmrs.module.eptsreports.metadata.MetadataLookupException;
 import org.openmrs.module.eptsreports.reporting.EptsReportInitializer;
 
 /**
@@ -58,7 +59,7 @@ public class EptsReportsActivator extends BaseModuleActivator {
 		try {
 			reportsInitializer.initializeReports();
 		}
-		catch (IllegalArgumentException e) {
+		catch (MetadataLookupException e) {
 			Context.getAlertService().notifySuperUsers("eptsreports.startuperror.globalproperties", null);
 			throw e;
 		}
