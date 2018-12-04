@@ -49,7 +49,7 @@ public class TxNewCohortQueries {
 		inARTProgramDuringTimePeriod
 		        .setQuery("select p.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id "
 		                + "where pg.voided=0 and p.voided=0 and pg.program_id= " + hivMetadata.getARTProgram().getProgramId()
-		                + " and pg.date_enrolled <= :onOrBefore and and pg.location_id=:location");
+		                + " and pg.date_enrolled <= :onOrBefore and pg.location_id=:location");
 		inARTProgramDuringTimePeriod.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		inARTProgramDuringTimePeriod.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		inARTProgramDuringTimePeriod.addParameter(new Parameter("location", "location", Location.class));

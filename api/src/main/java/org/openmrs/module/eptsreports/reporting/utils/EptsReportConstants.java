@@ -24,7 +24,7 @@ public final class EptsReportConstants {
 	public static final String GLOBAL_PROPERTY_RETURN_VISIT_DATE_FOR_ARV_DRUG_CONCEPT_UUID = "eptsreports.returnVisitDateForArvDrugConceptUuid";
 	
 	public static final String GLOBAL_PROPERTY_PREGNANT_CONCEPT_UUID = "eptsreports.pregnantConceptUuid";
-
+	
 	public static final String GLOBAL_PROPERTY_GESTATION_CONCEPT_UUID = "eptsreports.gestationConceptUuid";
 	
 	public static final String GLOBAL_PROPERTY_NUMBER_OF_WEEKS_PREGNANT_CONCEPT_UUID = "eptsreports.numberOfWeeksPregnantConceptUuid";
@@ -37,7 +37,7 @@ public final class EptsReportConstants {
 	
 	// Encounter types
 	public static final String GLOBAL_PROPERTY_S_TARV_ADULTO_SEGUIMENTO_ENCOUNTER_TYPE_UUID = "eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid";
-
+	
 	public static final String GLOBAL_PROPERTY_S_TARV_PEDIATRIA_SEGUIMENTO_ENCOUNTER_TYPE_UUID = "eptsreports.sTarvPediatriaSeguimentoEncounterTypeUuid";
 	
 	public static final String GLOBAL_PROPERTY_S_TARV_FARMACIA_ENCOUNTER_TYPE_UUID = "eptsreports.sTarvFarmaciaEncounterTypeUuid";
