@@ -100,7 +100,26 @@ public class TxPvlsCohortQueries {
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getDeadPersons() {
-		return genericCohortQueries.general("Dead persons", "SELECT person_id FROM person WHERE dead=1");
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Dead patients");
+
+		SqlCohortDefinition deadState = new SqlCohortDefinition();
+		deadState.setName("Dead by state");
+		deadState.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		deadState.addParameter(new Parameter("endDate", "End date", Date.class));
+		deadState.addParameter(new Parameter("location", "location", Location.class));
+		deadState.setQuery("SELECT p.patient_id FROM patient p "
+				+ "INNER JOIN patient_program pg on p.patient_id=pg.patient_id "
+				+ "INNER JOIN patient_state ps on pg.patient_program_id=ps.patient_program_id "
+				+ "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0"
+				+ " AND ps.state="+ hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()
+				+ " AND ps.start_date=pg.date_enrolled"
+				+ " AND ps.start_date >= :onOrAfter AND ps.start_date <= :onOrBefore AND location_id=:location "
+				+ "GROUP BY p.patient_id");
+		cd.addSearch("deadState", EptsReportUtils.map(deadState, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		cd.addSearch("deceased", EptsReportUtils.map(genericCohortQueries.general("Dead persons", "SELECT person_id FROM person WHERE dead=1"), ""));
+		cd.setCompositionString("deadState OR deceased");
+		return cd ;
 	}
 	
 	/**
