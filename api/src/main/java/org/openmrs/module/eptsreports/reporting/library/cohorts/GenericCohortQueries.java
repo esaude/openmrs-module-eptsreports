@@ -36,7 +36,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CommonCohortQueries {
+public class GenericCohortQueries {
 	
 	/**
 	 * Patients who have an encounter between ${onOrAfter}, ${onOrBefore} and ${location}

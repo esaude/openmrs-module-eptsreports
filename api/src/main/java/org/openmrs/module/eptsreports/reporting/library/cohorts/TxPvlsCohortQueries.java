@@ -40,7 +40,7 @@ public class TxPvlsCohortQueries {
 	private HivMetadata hivMetadata;
 	
 	@Autowired
-	private CommonCohortQueries commonCohortQueries;
+	private GenericCohortQueries genericCohortQueries;
 	
 	/**
 	 * Mothers who have registered observation as breastfeeding
@@ -56,10 +56,10 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		cd.addSearch("hasEncounter",
-		    EptsReportUtils.map(commonCohortQueries.hasEncounter(hivMetadata.getAdultoSeguimentoEncounterType()),
+		    EptsReportUtils.map(genericCohortQueries.hasEncounter(hivMetadata.getAdultoSeguimentoEncounterType()),
 		        "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 		cd.addSearch("hasObs",
-		    EptsReportUtils.map(commonCohortQueries.hasCodedObs(hivMetadata.getBreastfeeding(), hivMetadata.getYesConcept()),
+		    EptsReportUtils.map(genericCohortQueries.hasCodedObs(hivMetadata.getBreastfeeding(), hivMetadata.getYesConcept()),
 		        "onOrAfter=${startDate},onOrBefore=${endDate}"));
 		cd.setCompositionString("hasEncounter AND hasObs");
 		
@@ -94,7 +94,7 @@ public class TxPvlsCohortQueries {
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getDeadPersons() {
-		return commonCohortQueries.general("Dead persons", "SELECT person_id FROM person WHERE dead=1");
+		return genericCohortQueries.general("Dead persons", "SELECT person_id FROM person WHERE dead=1");
 	}
 	
 	/**
@@ -145,10 +145,10 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		cd.addSearch("hasEncounter",
-		    EptsReportUtils.map(commonCohortQueries.hasEncounter(hivMetadata.getAdultoSeguimentoEncounterType()),
+		    EptsReportUtils.map(genericCohortQueries.hasEncounter(hivMetadata.getAdultoSeguimentoEncounterType()),
 		        "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 		cd.addSearch("hasObs",
-		    EptsReportUtils.map(commonCohortQueries.hasCodedObs(hivMetadata.getCriteriaForArtStart(), hivMetadata.getBreastfeeding()),
+		    EptsReportUtils.map(genericCohortQueries.hasCodedObs(hivMetadata.getCriteriaForArtStart(), hivMetadata.getBreastfeeding()),
 		        "onOrAfter=${startDate},onOrBefore=${endDate}"));
 		cd.setCompositionString("hasObs AND hasEncounter");
 		

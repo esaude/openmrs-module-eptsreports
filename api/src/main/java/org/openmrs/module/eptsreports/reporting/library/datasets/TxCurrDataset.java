@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.CommonCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.CompositionCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
@@ -45,10 +45,7 @@ public class TxCurrDataset extends BaseDataSet {
 	private TxCurrCohortQueries txCurrCohortQueries;
 	
 	@Autowired
-	private CompositionCohortQueries compositionCohortQueries;
-	
-	@Autowired
-	private CommonCohortQueries commonCohortQueries;
+	private GenericCohortQueries genericCohortQueries;
 	
 	@Autowired
 	private HivIndicators hivIndicators;
@@ -66,7 +63,7 @@ public class TxCurrDataset extends BaseDataSet {
 		 * Looks for patients enrolled in ART program (program 2=SERVICO TARV -
 		 * TRATAMENTO) before or on end date
 		 */
-		CohortDefinition enrolledBeforeEndDate = commonCohortQueries.createInProgram("InARTProgram", hivMetadata.getARTProgram());
+		CohortDefinition enrolledBeforeEndDate = genericCohortQueries.createInProgram("InARTProgram", hivMetadata.getARTProgram());
 		
 		/*
 		 * Looks for patients registered as START DRUGS (answer to question 1255 = ARV
@@ -155,7 +152,8 @@ public class TxCurrDataset extends BaseDataSet {
 		CohortDefinition patientBetween1And9YearsCurrentlyInART = txCurrCohortQueries.getTxCurrCompositionCohort(
 		    "patientBetween1And9YearsCurrentlyInART", enrolledBeforeEndDate, patientWithSTARTDRUGSObs,
 		    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate,
-		    patientsWhoHaveNotReturned, patientsWhoHaveNotCompleted60Days, abandonedButHaveNotcompleted60Days, null, null);
+		    patientsWhoHaveNotReturned, patientsWhoHaveNotCompleted60Days, abandonedButHaveNotcompleted60Days,
+		    PatientBetween1And9Years, null);
 		CohortIndicator patientBetween1And9YearsCurrentlyInARTIndicator = hivIndicators
 		        .patientBetween1And9YearsEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(patientBetween1And9YearsCurrentlyInART);
 		dataSetDefinition.addColumn("C119", "TX_CURR: Currently on ART: Patients between 1 and 9 years",

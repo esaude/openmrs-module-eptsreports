@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 public class CompositionCohortQueries {
 	
 	@Autowired
-	private CommonCohortQueries commonCohortQueries;
+	private GenericCohortQueries genericCohortQueries;
 	
 	@Autowired
 	private HivMetadata hivMetadata;
@@ -70,16 +70,16 @@ public class CompositionCohortQueries {
 		
 		cd.addSearch("opt1",
 		    EptsReportUtils.map(
-		        commonCohortQueries.general("opt1",
+		        genericCohortQueries.general("opt1",
 		            PregnantQueries.getPregnantOnInitialOrFollowUpConsulation(pregnant, gestation, adultInEnc, adultSegEnc)),
 		        mappings));
-		cd.addSearch("opt2", EptsReportUtils.map(commonCohortQueries.general("opt2",
+		cd.addSearch("opt2", EptsReportUtils.map(genericCohortQueries.general("opt2",
 		    PregnantQueries.getWeeksPregnantOnInitialOrFollowUpConsultations(numOfWeeks, adultInEnc, adultSegEnc)), mappings));
 		cd.addSearch("opt3",
-		    EptsReportUtils.map(commonCohortQueries.general("opt3", PregnantQueries.getEnrolledInPtvOrEtv(ptvPro)), mappings));
+		    EptsReportUtils.map(genericCohortQueries.general("opt3", PregnantQueries.getEnrolledInPtvOrEtv(ptvPro)), mappings));
 		cd.addSearch("opt4",
 		    EptsReportUtils.map(
-		        commonCohortQueries.general("opt4", PregnantQueries.getPregnancyDueDateRegistred(dueDate, adultInEnc, adultSegEnc)),
+		        genericCohortQueries.general("opt4", PregnantQueries.getPregnancyDueDateRegistred(dueDate, adultInEnc, adultSegEnc)),
 		        mappings));
 		cd.setCompositionString("opt1 OR opt2 OR opt3 OR opt4");
 		return cd;
