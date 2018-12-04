@@ -58,12 +58,16 @@ public class EptsReportsActivator extends BaseModuleActivator {
 	public void started() {
 		try {
 			reportsInitializer.initializeReports();
+			log.info("Started EPTS Reports Module");
 		}
 		catch (MetadataLookupException e) {
 			Context.getAlertService().notifySuperUsers("eptsreports.startuperror.globalproperties", null);
 			throw e;
 		}
-		log.info("Started EPTS Reports Module");
+		catch (Exception e) {
+			Context.getAlertService().notifySuperUsers("eptsreports.startuperror.general", null);
+			throw e;
+		}
 	}
 	
 	/**
