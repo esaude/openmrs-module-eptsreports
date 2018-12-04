@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.indicators;
 
-import org.openmrs.module.eptsreports.reporting.library.cohorts.CompositionCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class HivIndicators extends BaseIndicators {
 	
 	@Autowired
-	private CompositionCohortQueries ccq;
+	private TxPvlsCohortQueries pvls;
 	
 	public CohortIndicator patientBelow1YearEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
 		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(cohortDefinition,
@@ -75,7 +75,7 @@ public class HivIndicators extends BaseIndicators {
 	 */
 	public CohortIndicator patientsWithViralLoadSuppression() {
 		return newCohortIndicator("suppressed viral load",
-		    EptsReportUtils.map(ccq.getPatientsWithViralLoadSuppressionExcludingDeadLtfuTransferredoutStoppedArt(),
+		    EptsReportUtils.map(pvls.getPatientsWithViralLoadSuppressionExcludingDeadLtfuTransferredoutStoppedArt(),
 		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 	
@@ -86,7 +86,7 @@ public class HivIndicators extends BaseIndicators {
 	 */
 	public CohortIndicator patientsWithViralLoadBetweenDates() {
 		return newCohortIndicator("patients with viral load",
-		    EptsReportUtils.map(ccq.getPatientsWithViralLoadResultsExcludingDeadLtfuTransferredoutStoppedArt(),
+		    EptsReportUtils.map(pvls.getPatientsWithViralLoadResultsExcludingDeadLtfuTransferredoutStoppedArt(),
 		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 }

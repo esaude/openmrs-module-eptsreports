@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.CommonCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.CompositionCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
