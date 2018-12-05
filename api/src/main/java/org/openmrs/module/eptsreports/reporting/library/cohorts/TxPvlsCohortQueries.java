@@ -137,7 +137,7 @@ public class TxPvlsCohortQueries {
 		cd.setQuery("SELECT patient_id FROM (SELECT e.patient_id,MAX(e.encounter_datetime) FROM encounter e) p "
 		        + "INNER JOIN obs o ON  p.patient_id=o.person_id " + "WHERE o.concept_id="
 		        + hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()
-		        + " AND datediff(:endDate,o.value_datetime)>90 AND o.location_id=:location");
+		        + " AND datediff(:endDate,o.value_datetime)>60 AND o.location_id=:location");
 		return cd;
 	}
 	
@@ -151,10 +151,23 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End date", Date.class));
 		cd.addParameter(new Parameter("location", "location", Location.class));
+		
+		SqlCohortDefinition abandoned = new SqlCohortDefinition();
+		abandoned.setName("abandoned");
+		abandoned.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		abandoned.addParameter(new Parameter("endDate", "End date", Date.class));
+		abandoned.addParameter(new Parameter("location", "location", Location.class));
+		abandoned.setQuery("SELECT p.patient_id FROM patient p " + "INNER JOIN patient_program pg on p.patient_id=pg.patient_id "
+		        + "INNER JOIN patient_state ps on pg.patient_program_id=ps.patient_program_id "
+		        + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND ps.state="
+		        + hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId() + " AND ps.start_date=pg.date_enrolled"
+		        + " AND ps.start_date >= :startDate AND ps.start_date <= :endDate AND location_id=:location"
+		        + "GROUP BY p.patient_id");
 		cd.addSearch("deadPatients",
 		    EptsReportUtils.map(getDeadPersons(), "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("lost", EptsReportUtils.map(lostToFollowUpPatients(), "endDate=${endDate},location=${location}"));
-		cd.setCompositionString("deadPatients OR lost");
+		cd.addSearch("abandon", EptsReportUtils.map(abandoned, "startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.setCompositionString("deadPatients OR lost OR abandon");
 		return cd;
 	}
 	
@@ -389,8 +402,8 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("supp", EptsReportUtils.map(hivCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
-		cd.addSearch("exclude", EptsReportUtils.map(totalExclusions(), mappings));
-		cd.setCompositionString("supp AND NOT exclude");
+		// cd.addSearch("exclude", EptsReportUtils.map(totalExclusions(), mappings));
+		cd.setCompositionString("supp");
 		return cd;
 	}
 	
@@ -405,8 +418,8 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("results", EptsReportUtils.map(hivCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
-		cd.addSearch("exclude", EptsReportUtils.map(totalExclusions(), mappings));
-		cd.setCompositionString("results AND NOT exclude");
+		// cd.addSearch("exclude", EptsReportUtils.map(totalExclusions(), mappings));
+		cd.setCompositionString("results");
 		return cd;
 	}
 }
