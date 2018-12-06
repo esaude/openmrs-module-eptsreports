@@ -60,7 +60,7 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 	
 	@Override
 	public String getName() {
-		return "PEPFAR_MER_Quarterly";
+		return "PEPFAR MER 2.3 Quarterly";
 	}
 	
 	@Override
@@ -94,7 +94,7 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
 		ReportDesign reportDesign = null;
 		try {
-			reportDesign = createXlsReportDesign(reportDefinition, "PEPFAR_MER_2.1_REPORT.xls", "PEPFAR_MER_2.1_REPORT", getExcelDesignUuid(), null);
+			reportDesign = createXlsReportDesign(reportDefinition, "PEPFAR_MER_2.1_REPORT.xls", "PEPFAR Quarterly Report", getExcelDesignUuid(), null);
 			Properties props = new Properties();
 			// props.put("repeatingSections", "sheet:1,dataset:Tx_Pvls Data Set");
 			props.put("sortWeight", "5000");
