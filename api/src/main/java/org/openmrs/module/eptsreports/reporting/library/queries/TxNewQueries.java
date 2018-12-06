@@ -51,6 +51,6 @@ public class TxNewQueries {
 		        + "group by p.patient_id" + " UNION " + "select e.patient_id, min(e.encounter_datetime) data_inicio from patient p "
 		        + "inner join encounter e on p.patient_id=e.patient_id " + "where p.voided=0 and e.encounter_type= " + parameters[1]
 		        + " and e.voided=0 and e.encounter_datetime <= :onOrBefore and e.location_id=:location "
-		        + "group by p.patient_id) temp1" + "group by patient_id) temp2 where data_inicio between :onOrAfter and :onOrBefore";
+		        + "group by p.patient_id) temp1" + " group by patient_id) temp2 where data_inicio between :onOrAfter and :onOrBefore";
 	}
 }
