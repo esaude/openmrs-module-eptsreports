@@ -18,6 +18,7 @@ import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
+import org.openmrs.module.eptsreports.reporting.library.queries.TxNewQueries;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -159,6 +160,23 @@ public class TxNewCohortQueries {
 		return notifiedToBeOnTbTreatment;
 	}
 	
+	// Obtain patients from TxNew Union Query
+	// @DocumentedDefinition(value = "tTxNewUnionNumerator")
+	public CohortDefinition getTxNewUnionNumerator() {
+		SqlCohortDefinition txNewUnionNumerator = new SqlCohortDefinition();
+		txNewUnionNumerator.setName("TxNewUnionNumerator");
+		txNewUnionNumerator.setQuery(TxNewQueries.getTxNewUnionQueries(hivMetadata.getARTProgram().getProgramId(),
+		    hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+		    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+		    hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(), hivMetadata.getARVPlanConcept().getConceptId(),
+		    hivMetadata.getstartDrugsConcept().getConceptId(), hivMetadata.gethistoricalDrugStartDateConcept().getConceptId()));
+		
+		txNewUnionNumerator.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		txNewUnionNumerator.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		txNewUnionNumerator.addParameter(new Parameter("location", "location", Location.class));
+		return txNewUnionNumerator;
+	}
+	
 	/**
 	 * Build TxNew composition cohort definition
 	 * 
@@ -183,32 +201,38 @@ public class TxNewCohortQueries {
 		TxNewComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		TxNewComposition.addParameter(new Parameter("location", "location", Location.class));
 		TxNewComposition.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
-		TxNewComposition.getSearches().put("1", new Mapped<CohortDefinition>(inARTProgramDuringTimePeriod,
+		// TxNewComposition.getSearches().put("1", new
+		// Mapped<CohortDefinition>(inARTProgramDuringTimePeriod,
+		// ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
+		// TxNewComposition.getSearches().put("2", new
+		// Mapped<CohortDefinition>(patientWithSTARTDRUGSObs,
+		// ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
+		// TxNewComposition.getSearches().put("3", new
+		// Mapped<CohortDefinition>(patientWithHistoricalDrugStartDateObs,
+		// ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
+		// TxNewComposition.getSearches().put("4", new
+		// Mapped<CohortDefinition>(patientsWithDrugPickUpEncounters,
+		// ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
+		
+		TxNewComposition.getSearches().put("1", new Mapped<CohortDefinition>(getTxNewUnionNumerator(),
 		        ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
-		TxNewComposition.getSearches().put("2", new Mapped<CohortDefinition>(patientWithSTARTDRUGSObs,
-		        ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
-		TxNewComposition.getSearches().put("3", new Mapped<CohortDefinition>(patientWithHistoricalDrugStartDateObs,
+		TxNewComposition.getSearches().put("2", new Mapped<CohortDefinition>(transferredFromOtherHealthFacility,
 		        ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
 		
-		TxNewComposition.getSearches().put("4", new Mapped<CohortDefinition>(patientsWithDrugPickUpEncounters,
-		        ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
-		
-		TxNewComposition.getSearches().put("5", new Mapped<CohortDefinition>(transferredFromOtherHealthFacility,
-		        ParameterizableUtil.createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}")));
-		
-		String compositionString = "((1 OR 2 OR 3 OR 4) AND (NOT 5))";
+		// String compositionString = "((1 OR 2 OR 3 OR 4) AND (NOT 5))";
+		String compositionString = "(1 AND (NOT 2))";
 		
 		if (AgeCohort != null) {
-			TxNewComposition.getSearches().put("6", new Mapped<CohortDefinition>(AgeCohort,
+			TxNewComposition.getSearches().put("3", new Mapped<CohortDefinition>(AgeCohort,
 			        ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}")));
 			
-			compositionString = compositionString + " AND 6";
+			compositionString = compositionString + " AND 3";
 		}
 		
 		if (GenderCohort != null) {
-			TxNewComposition.getSearches().put("7", new Mapped<CohortDefinition>(GenderCohort, null));
+			TxNewComposition.getSearches().put("4", new Mapped<CohortDefinition>(GenderCohort, null));
 			
-			compositionString = compositionString + " AND 7";
+			compositionString = compositionString + " AND 4";
 		}
 		
 		TxNewComposition.setCompositionString(compositionString);
