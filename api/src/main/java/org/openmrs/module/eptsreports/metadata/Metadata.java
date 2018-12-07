@@ -53,7 +53,7 @@ public class Metadata {
 			catch (Exception e) {}
 		}
 		if (program == null) {
-			throw new IllegalArgumentException("Unable to find program using key: " + lookup);
+			throw new MetadataLookupException("Unable to find program using key: " + lookup);
 		}
 		
 		return program;
@@ -78,7 +78,7 @@ public class Metadata {
 			}
 		}
 		if (wf == null) {
-			throw new IllegalArgumentException("Unable to find workflow using " + programLookup + " - " + workflowLookup);
+			throw new MetadataLookupException("Unable to find workflow using " + programLookup + " - " + workflowLookup);
 		}
 		return wf;
 	}
@@ -106,7 +106,8 @@ public class Metadata {
 			}
 		}
 		if (s == null) {
-			throw new IllegalArgumentException("Unable to find state using " + programLookup + " - " + workflowLookup + " - " + stateLookup);
+			throw new MetadataLookupException(
+			        "Unable to find state using " + programLookup + " - " + workflowLookup + " - " + stateLookup);
 		}
 		return s;
 	}
@@ -155,7 +156,7 @@ public class Metadata {
 			catch (Exception e) {}
 		}
 		if (c == null) {
-			throw new IllegalArgumentException("Unable to find Concept using key: " + lookup);
+			throw new MetadataLookupException("Unable to find Concept using key: " + lookup);
 		}
 		return c;
 	}
@@ -209,7 +210,7 @@ public class Metadata {
 			catch (Exception e) {}
 		}
 		if (form == null) {
-			throw new IllegalArgumentException("Unable to find Form using key: " + lookup);
+			throw new MetadataLookupException("Unable to find Form using key: " + lookup);
 		}
 		return form;
 	}
@@ -263,7 +264,7 @@ public class Metadata {
 			catch (Exception e) {}
 		}
 		if (et == null) {
-			throw new IllegalArgumentException("Unable to find EncounterType using key: " + lookup);
+			throw new MetadataLookupException("Unable to find EncounterType using key: " + lookup);
 		}
 		
 		return et;
@@ -321,7 +322,7 @@ public class Metadata {
 			catch (Exception e) {}
 		}
 		if (rt == null) {
-			throw new IllegalArgumentException("Unable to find RelationshipType using key: " + lookup);
+			throw new MetadataLookupException("Unable to find RelationshipType using key: " + lookup);
 		}
 		return rt;
 	}
@@ -341,7 +342,7 @@ public class Metadata {
 			catch (Exception e) {}
 		}
 		if (et == null) {
-			throw new IllegalArgumentException("Unable to find Location using key: " + lookup);
+			throw new MetadataLookupException("Unable to find Location using key: " + lookup);
 		}
 		
 		return et;
@@ -362,7 +363,7 @@ public class Metadata {
 			catch (Exception e) {}
 		}
 		if (et == null) {
-			throw new IllegalArgumentException("Unable to find PersonAttributeType using key: " + lookup);
+			throw new MetadataLookupException("Unable to find PersonAttributeType using key: " + lookup);
 		}
 		
 		return et;

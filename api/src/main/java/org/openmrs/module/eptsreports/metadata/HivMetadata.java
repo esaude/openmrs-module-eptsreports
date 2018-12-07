@@ -17,89 +17,89 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.springframework.stereotype.Component;
 
 @Component("hivMetadata")
 public class HivMetadata extends CommonMetadata {
 	
-	// ECOUNTER TYPES
-	private String S_TARV_ADULTO_SEGUIMENTO = "e278f956-1d5f-11e0-b929-000c29ad1d07"; // encounterType_id=6
-	
-	private String S_TARV_PEDIATRIA_SEGUIMENTO = "e278fce4-1d5f-11e0-b929-000c29ad1d07"; // encounterType_id = 9
-	
-	private String MISAU_LABORATORIO = "e2790f68-1d5f-11e0-b929-000c29ad1d07"; // encounterType_id = 13
-	
-	private String S_TARV_ADULTO_INICIAL_A = "e278f820-1d5f-11e0-b929-000c29ad1d07"; // 5
-	
-	// CONCEPTS
-	private String ARVPlan = "e1d9ee10-1d5f-11e0-b929-000c29ad1d07";
-	
-	private String HIV_VIRAL_LOAD = "e1d6247e-1d5f-11e0-b929-000c29ad1d07";
-	
-	private String DATE_OF_DELIVERY = "e1e765c2-1d5f-11e0-b929-000c29ad1d07";
-	
-	private String CRITERIA_FOR_ART_START = "607315ab-2f52-4d9f-b28a-6383b9a5f9c4";
-	
-	private String RETURN_VISIT_DATE_FOR_ARV_DRUG = "e1e2efd8-1d5f-11e0-b929-000c29ad1d07";
-	
-	public Concept getARVPlanConcept() {
-		return getConcept(ARVPlan);
-	}
-	
-	public Concept getReturnVisitDateForArvDrugConcept() {
-		return getConcept(RETURN_VISIT_DATE_FOR_ARV_DRUG);
-	}
-	
-	// PROGRAMS
-	private String ARTProgram = "efe2481f-9e75-4515-8d5a-86bfde2b5ad3";
-	
-	private String PTV_ETV = "06057245-ca21-43ab-a02f-e861d7e54593";// 8
-	
-	public EncounterType getAdultoSeguimentoEncounterType() {
-		return getEncounterType(S_TARV_ADULTO_SEGUIMENTO);
-	}
-	
-	public EncounterType getARVPediatriaSeguimentoEncounterType() {
-		return getEncounterType(S_TARV_PEDIATRIA_SEGUIMENTO);
-	}
-	
-	public EncounterType getARVAdultInitialEncounterType() {
-		return getEncounterType(S_TARV_ADULTO_INICIAL_A);
-	}
-	
-	private String S_TARV_FARMACIA = "e279133c-1d5f-11e0-b929-000c29ad1d07";
-	
-	public EncounterType getARVPharmaciaEncounterType() {
-		return getEncounterType(S_TARV_FARMACIA);
-	}
-	
-	public EncounterType getMisauLaboratorioEncounterType() {
-		return getEncounterType(MISAU_LABORATORIO);
-	}
-	
-	public Concept getDateOfDelivery() {
-		return getConcept(DATE_OF_DELIVERY);
+	// Concepts
+	public Concept getHivViralLoadConcept() {
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_HIV_VIRAL_LOAD_CONCEPT_UUID);
+		return getConcept(uuid);
 	}
 	
 	public Concept getCriteriaForArtStart() {
-		return getConcept(CRITERIA_FOR_ART_START);
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_CRITERIA_FOR_ART_START_CONCEPT_UUID);
+		return getConcept(uuid);
 	}
 	
-	public Concept getHivViralLoadConcept() {
-		return getConcept(HIV_VIRAL_LOAD);
+	public Concept getReturnVisitDateForArvDrugConcept() {
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_RETURN_VISIT_DATE_FOR_ARV_DRUG_CONCEPT_UUID);
+		return getConcept(uuid);
 	}
 	
+	public Concept getARVPlanConcept() {
+		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ARV_PLAN_CONCEPT_UUID);
+		return getConcept(uuid);
+	}
+	
+	public Concept getDateOfDelivery() {
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_DATE_OF_DELIVERY_CONCEPT_UUID);
+		return getConcept(uuid);
+	}
+	
+	// Encounter types
+	// encounterType_id = 6
+	public EncounterType getAdultoSeguimentoEncounterType() {
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_S_TARV_ADULTO_SEGUIMENTO_ENCOUNTER_TYPE_UUID);
+		return getEncounterType(uuid);
+	}
+	
+	// encounterType_id = 9
+	public EncounterType getARVPediatriaSeguimentoEncounterType() {
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_S_TARV_PEDIATRIA_SEGUIMENTO_ENCOUNTER_TYPE_UUID);
+		return getEncounterType(uuid);
+	}
+	
+	// encounterType_id = 5
+	public EncounterType getARVAdultInitialEncounterType() {
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_S_TARV_ADULTO_INITIAL_A_ENCOUNTER_TYPE_UUID);
+		return getEncounterType(uuid);
+	}
+	
+	public EncounterType getARVPharmaciaEncounterType() {
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_S_TARV_FARMACIA_ENCOUNTER_TYPE_UUID);
+		return getEncounterType(uuid);
+	}
+	
+	public EncounterType getMisauLaboratorioEncounterType() {
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_MISAU_LABORATORIO_ENCOUNTER_TYPE_UUID);
+		return getEncounterType(uuid);
+	}
+	
+	// Programs
 	public Program getARTProgram() {
-		return getProgram(ARTProgram);
+		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
+		return getProgram(uuid);
 	}
 	
 	public Program getPtvEtvProgram() {
-		return getProgram(PTV_ETV);
+		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PTV_ETV_PROGRAM_UUID);
+		return getProgram(uuid);
 	}
 	
-	// ProgramWorkflowState
-	
-	private String TRANSFERRED_OUT_TO_ANOTHER_FACILITY = "TRANSFERRED OUT TO ANOTHER FACILITY";
+	// Program Workflow States
 	
 	private String SUSPEND_TREATMENT = "SUSPEND TREATMENT";
 	
@@ -108,19 +108,29 @@ public class HivMetadata extends CommonMetadata {
 	private String PATIENT_HAS_DIED = "PATIENT HAS DIED";
 	
 	public ProgramWorkflowState gettransferredFromOtherHealthFacilityWorkflowState() {
-		return getProgramWorkflowState("efe2481f-9e75-4515-8d5a-86bfde2b5ad3", "2", TRANSFERRED_OUT_TO_ANOTHER_FACILITY);
+		String artProgramUuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
+		String transferFromOtherUuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_TRANSFER_FROM_OTHER_FACILITY_CONCEPT_UUID);
+		return getProgramWorkflowState(artProgramUuid, "2", transferFromOtherUuid);
 	}
 	
 	public ProgramWorkflowState getSuspendedTreatmentWorkflowState() {
-		return getProgramWorkflowState("efe2481f-9e75-4515-8d5a-86bfde2b5ad3", "2", SUSPEND_TREATMENT);
+		String artProgramUuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
+		return getProgramWorkflowState(artProgramUuid, "2", SUSPEND_TREATMENT);
 	}
 	
 	public ProgramWorkflowState getAbandonedWorkflowState() {
-		return getProgramWorkflowState("efe2481f-9e75-4515-8d5a-86bfde2b5ad3", "2", ABANDONED);
+		String artProgramUuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
+		return getProgramWorkflowState(artProgramUuid, "2", ABANDONED);
 	}
 	
 	public ProgramWorkflowState getPatientHasDiedWorkflowState() {
-		return getProgramWorkflowState("efe2481f-9e75-4515-8d5a-86bfde2b5ad3", "2", PATIENT_HAS_DIED);
+		String artProgramUuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
+		return getProgramWorkflowState(artProgramUuid, "2", PATIENT_HAS_DIED);
 	}
 	
 }
