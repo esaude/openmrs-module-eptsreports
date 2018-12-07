@@ -13,13 +13,16 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -262,5 +265,20 @@ public class TxCurrCohortQueries {
 		
 		TxCurrComposition.setCompositionString(compositionString);
 		return TxCurrComposition;
+	}
+	
+	@DocumentedDefinition(value = "getTxCurrConcept1255Cohort")
+	public CohortDefinition getTxCurrConcept1255Cohort() {
+		CodedObsCohortDefinition definition = new CodedObsCohortDefinition();
+		definition.setName("CONCEPT1255");
+		definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		definition.addParameter(new Parameter("location", "location", Location.class));
+		definition.addParameter(new Parameter("locationList", "locationList", Location.class));
+		definition.setQuestion(hivMetadata.getARVPlanConcept());
+		definition.setOperator(SetComparator.IN);
+		definition.setValueList(Arrays.asList(hivMetadata.getstartDrugsConcept(), hivMetadata.getTransferFromOtherFacilityConcept()));
+		definition.setEncounterTypeList(Arrays.asList(hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+		    hivMetadata.getAdultoSeguimentoEncounterType(), hivMetadata.getARVPharmaciaEncounterType()));
+		return definition;
 	}
 }
