@@ -130,7 +130,7 @@ public class GenericCohortQueries {
 		
 		inProgram.setPrograms(programs);
 		inProgram.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		inProgram.addParameter(new Parameter("location", "Location", Location.class));
+		inProgram.addParameter(new Parameter("locations", "Location", Location.class));
 		return inProgram;
 	}
 }

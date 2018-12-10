@@ -227,8 +227,9 @@ public class TxCurrCohortQueries {
 		TxCurrComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		TxCurrComposition.addParameter(new Parameter("location", "location", Location.class));
 		TxCurrComposition.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+		TxCurrComposition.addParameter(new Parameter("locations", "location", Location.class));
 		TxCurrComposition.getSearches().put("1", new Mapped<CohortDefinition>(inARTProgramAtEndDate,
-		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
+		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},locations=${location}")));
 		TxCurrComposition.getSearches().put("2", new Mapped<CohortDefinition>(patientWithSTARTDRUGSObs,
 		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
 		TxCurrComposition.getSearches().put("3", new Mapped<CohortDefinition>(patientWithHistoricalDrugStartDateObs,
@@ -245,7 +246,7 @@ public class TxCurrCohortQueries {
 		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
 		
 		// TODO -Check specifications document on how to use query 6,7 and 8
-		String compositionString = "((1 AND 2 AND 3 AND 4) AND (NOT 5) AND NOT ( 6 NOT (5 OR 7 OR 8)))";
+		String compositionString = "((1 OR 2 OR 3 OR 4) AND (NOT 5) AND NOT ( 6 NOT (5 OR 7 OR 8)))";
 		
 		if (ageCohort != null) {
 			TxCurrComposition.getSearches().put("9", new Mapped<CohortDefinition>(ageCohort,

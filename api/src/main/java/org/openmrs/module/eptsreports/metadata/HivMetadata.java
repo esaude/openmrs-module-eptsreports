@@ -107,12 +107,12 @@ public class HivMetadata extends CommonMetadata {
 	
 	private String PATIENT_HAS_DIED = "PATIENT HAS DIED";
 	
+	private String TRANSFERED_TO_ANOTHER_FACILITY = "TRANSFERRED OUT TO ANOTHER FACILITY";
+	
 	public ProgramWorkflowState gettransferredFromOtherHealthFacilityWorkflowState() {
 		String artProgramUuid = Context.getAdministrationService()
 		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
-		String transferFromOtherUuid = Context.getAdministrationService()
-		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_TRANSFER_FROM_OTHER_FACILITY_CONCEPT_UUID);
-		return getProgramWorkflowState(artProgramUuid, "2", transferFromOtherUuid);
+		return getProgramWorkflowState(artProgramUuid, "2", TRANSFERED_TO_ANOTHER_FACILITY);
 	}
 	
 	public ProgramWorkflowState getSuspendedTreatmentWorkflowState() {
