@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.indicators.BreastfeedingIndicators;
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
-import org.openmrs.module.eptsreports.reporting.library.indicators.TbIndicators;
-import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
@@ -46,7 +46,7 @@ public class TxNewDataset extends BaseDataSet {
 	private HivIndicators hivIndicators;
 	
 	@Autowired
-	private TbIndicators tbIndicators;
+	private BreastfeedingIndicators breastfeedingIndicators;
 	
 	public DataSetDefinition constructTxNewDatset() {
 		
@@ -174,11 +174,9 @@ public class TxNewDataset extends BaseDataSet {
 		    "");
 		
 		// Obtain patients notified to be on TB treatment
-		CohortDefinition notifiedToBeOnTbTreatment = txNewCohortQueries.getPatientsNotifiedToBeOnTbTreatment();
-		CohortIndicator tuberculosePatientNewlyInitiatingARTIndicator = tbIndicators
-		        .tuberculosePatientNewlyInitiatingARTIndicator(notifiedToBeOnTbTreatment);
-		dataSetDefinition.addColumn("TB", "TX_NEW: TB Started ART",
-		    new Mapped<CohortIndicator>(tuberculosePatientNewlyInitiatingARTIndicator,
+		CohortIndicator breastfeedingNewlyInitiatingARTIndicator = breastfeedingIndicators.getBreastfeedingWomenStartedART();
+		dataSetDefinition.addColumn("ANC", "TX_NEW: Pregnant Started ART",
+		    new Mapped<CohortIndicator>(breastfeedingNewlyInitiatingARTIndicator,
 		            ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}")),
 		    "");
 		

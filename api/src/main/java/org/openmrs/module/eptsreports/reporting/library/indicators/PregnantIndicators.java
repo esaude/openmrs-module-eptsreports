@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class PregnantIndicators extends BaseIndicators {
 	
 	@Autowired
-	private TxPvlsCohortQueries pvls;
+	private TxPvlsCohortQueries txPvls;
 	
 	/**
 	 * Pregnant women with viral load suppression in the last 12 months to a common file for reuse
@@ -19,7 +19,7 @@ public class PregnantIndicators extends BaseIndicators {
 	 */
 	public CohortIndicator getPregnantWomenWithSuppressedViralLoadIn12Months() {
 		return newCohortIndicator("pregnantWomenWithViralLoadSuppression",
-		    EptsReportUtils.map(pvls.pregnantWomenAndHasSuppressedViralLoadInTheLast12MonthsNumerator(),
+		    EptsReportUtils.map(txPvls.pregnantWomenAndHasSuppressedViralLoadInTheLast12MonthsNumerator(),
 		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 	
@@ -30,7 +30,7 @@ public class PregnantIndicators extends BaseIndicators {
 	 */
 	public CohortIndicator getPregnantWomenWithViralLoadIn12Months() {
 		return newCohortIndicator("pregnantWomenWithViralLoad",
-		    EptsReportUtils.map(pvls.pregnantWomenAndHasViralLoadInTheLast12MonthsDenominator(),
+		    EptsReportUtils.map(txPvls.pregnantWomenAndHasViralLoadInTheLast12MonthsDenominator(),
 		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 }

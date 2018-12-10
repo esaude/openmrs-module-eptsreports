@@ -17,8 +17,6 @@ public final class EptsReportConstants {
 	
 	public static final String GLOBAL_PROPERTY_HIV_VIRAL_LOAD_CONCEPT_UUID = "eptsreports.hivViralLoadConceptUuid";
 	
-	public static final String GLOBAL_PROPERTY_DATE_OF_DELIVERY_CONCEPT_UUID = "eptsreports.dateOfDeliveryConceptUuid";
-	
 	public static final String GLOBAL_PROPERTY_CRITERIA_FOR_ART_START_CONCEPT_UUID = "eptsreports.criteriaForArtStartUuid";
 	
 	public static final String GLOBAL_PROPERTY_RETURN_VISIT_DATE_FOR_ARV_DRUG_CONCEPT_UUID = "eptsreports.returnVisitDateForArvDrugConceptUuid";
@@ -35,6 +33,8 @@ public final class EptsReportConstants {
 	
 	public static final String GLOBAL_PROPERTY_RETURN_VISIT_DATE_CONCEPT_UUID = "eptsreports.returnVisitDateConceptConceptUuid";
 	
+	public static final String GLOBAL_PROPERTY_PRIOR_DELIVERY_DATE_CONCEPT_UUID = "eptsreports.priorDeliveryDateConceptUuid";
+	
 	// Encounter types
 	public static final String GLOBAL_PROPERTY_S_TARV_ADULTO_SEGUIMENTO_ENCOUNTER_TYPE_UUID = "eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid";
 	
@@ -50,4 +50,6 @@ public final class EptsReportConstants {
 	public static final String GLOBAL_PROPERTY_ART_PROGRAM_UUID = "eptsreports.artProgramUuid";
 	
 	public static final String GLOBAL_PTV_ETV_PROGRAM_UUID = "eptsreports.ptvEtvProgramUuid";
+	
+	public static final String GLOBAL_PROPERTY_TB_PROGRAM_UUID = "eptsreports.tbProgramUuid";
 }

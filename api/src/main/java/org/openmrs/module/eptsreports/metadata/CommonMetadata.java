@@ -45,6 +45,7 @@ public class CommonMetadata extends Metadata {
 		return getConcept(uuid);
 	}
 	
+	// concept_id=1982
 	public Concept getPregnantConcept() {
 		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_PREGNANT_CONCEPT_UUID);
 		return getConcept(uuid);
@@ -67,6 +68,7 @@ public class CommonMetadata extends Metadata {
 		return getConcept(uuid);
 	}
 	
+	// concept_id=6332
 	public Concept getBreastfeeding() {
 		String uuid = Context.getAdministrationService()
 		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_BREASTFEEDING_CONCEPT_UUID);
@@ -76,6 +78,13 @@ public class CommonMetadata extends Metadata {
 	public Concept getReturnVisitDateConcept() {
 		String uuid = Context.getAdministrationService()
 		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_RETURN_VISIT_DATE_CONCEPT_UUID);
+		return getConcept(uuid);
+	}
+	
+	// concept_id=5599
+	public Concept getPriorDeliveryDateConcept() {
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_PRIOR_DELIVERY_DATE_CONCEPT_UUID);
 		return getConcept(uuid);
 	}
 	

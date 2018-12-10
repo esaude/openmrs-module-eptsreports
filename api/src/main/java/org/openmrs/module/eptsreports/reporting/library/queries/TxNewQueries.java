@@ -37,9 +37,9 @@ public class TxNewQueries {
 		        + "(select p.patient_id, date_enrolled data_inicio from patient p "
 		        + "inner join patient_program pg on p.patient_id=pg.patient_id "
 		        + "where pg.voided=0 and p.voided=0 and pg.program_id= " + parameters[0]
-		        + " and pg.date_enrolled <= :onOrBefore and pg.location_id=:location" + " UNION "
+		        + " and pg.date_enrolled <= :onOrBefore and pg.location_id=:location UNION "
 		        + "select p.patient_id, min(e.encounter_datetime) data_inicio from patient p "
-		        + "inner join encounter e on p.patient_id=e.patient_id " + "inner join obs o on o.encounter_id=e.encounter_id "
+		        + "inner join encounter e on p.patient_id=e.patient_id inner join obs o on o.encounter_id=e.encounter_id "
 		        + "where e.voided=0 and o.voided=0 and p.voided=0 and e.encounter_type in (" + parameters[1] + "," + parameters[2]
 		        + "," + parameters[3] + ") and o.concept_id=" + parameters[4] + " and o.value_coded=" + parameters[5]
 		        + " and e.encounter_datetime <= :onOrBefore and e.location_id=:location group by p.patient_id" + " UNION "
@@ -48,9 +48,9 @@ public class TxNewQueries {
 		        + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in (" + parameters[1] + "," + parameters[2]
 		        + "," + parameters[3] + ") and o.concept_id=" + parameters[6]
 		        + " and o.value_datetime is not null and o.value_datetime <= :onOrBefore and e.location_id=:location "
-		        + "group by p.patient_id" + " UNION " + "select e.patient_id, min(e.encounter_datetime) data_inicio from patient p "
-		        + "inner join encounter e on p.patient_id=e.patient_id " + "where p.voided=0 and e.encounter_type= " + parameters[1]
+		        + "group by p.patient_id UNION select e.patient_id, min(e.encounter_datetime) data_inicio from patient p "
+		        + "inner join encounter e on p.patient_id=e.patient_id where p.voided=0 and e.encounter_type= " + parameters[1]
 		        + " and e.voided=0 and e.encounter_datetime <= :onOrBefore and e.location_id=:location "
-		        + "group by p.patient_id) temp1" + " group by patient_id) temp2 where data_inicio between :onOrAfter and :onOrBefore";
+		        + "group by p.patient_id) temp1 group by patient_id) temp2 where data_inicio between :onOrAfter and :onOrBefore";
 	}
 }
