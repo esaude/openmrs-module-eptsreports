@@ -144,12 +144,14 @@ public class TxCurrCohortQueries {
 	public SqlCohortDefinition getPatientsWhoHaveNotReturned() {
 		SqlCohortDefinition patientsWhoHaveNotReturned = new SqlCohortDefinition();
 		patientsWhoHaveNotReturned.setName("patientsWhoHaveNotReturned");
-		patientsWhoHaveNotReturned.setQuery(
-		    "select patient_id from ( Select p.patient_id,max(encounter_datetime) encounter_datetime from patient p inner join encounter e on e.patient_id=p.patient_id where p.voided=0 and e.voided=0 and e.encounter_type="
-		            + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()
-		            + " and e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_frida inner join obs o on o.person_id=max_frida.patient_id where max_frida.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id= "
-		            + hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()
-		            + " and o.location_id=:location and datediff(:onOrBefore,o.value_datetime)>=60");
+		
+		String query = "select patient_id from ( Select p.patient_id,max(encounter_datetime) encounter_datetime from patient p inner join encounter e on e.patient_id=p.patient_id where p.voided=0 and e.voided=0 and e.encounter_type=%s"
+		        + " and e.location_id=:location and e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_frida inner join obs o on o.person_id=max_frida.patient_id where max_frida.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id=%s"
+		        + " and o.location_id=:location and datediff(:onOrBefore,o.value_datetime)>=60";
+		
+		patientsWhoHaveNotReturned.setQuery(String.format(query, hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+		    hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
+		
 		patientsWhoHaveNotReturned.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		patientsWhoHaveNotReturned.addParameter(new Parameter("location", "location", Location.class));
 		return patientsWhoHaveNotReturned;
@@ -172,7 +174,7 @@ public class TxCurrCohortQueries {
 		                + "inner join obs o on o.person_id=max_mov.patient_id "
 		                + "where max_mov.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id="
 		                + hivMetadata.getReturnVisitDateConcept().getConceptId()
-		                + " and o.location_id=:location AND DATEDIFF(:onOrBefore,o.value_datetime)<60");
+		                + " and o.location_id=:location AND DATEDIFF(:onOrBefore,o.value_datetime)<=60");
 		patientsWhoHaveNotCompleted60Days.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		patientsWhoHaveNotCompleted60Days.addParameter(new Parameter("location", "location", Location.class));
 		return patientsWhoHaveNotCompleted60Days;
