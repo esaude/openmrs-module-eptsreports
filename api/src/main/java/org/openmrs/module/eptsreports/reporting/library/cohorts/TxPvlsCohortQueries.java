@@ -76,7 +76,7 @@ public class TxPvlsCohortQueries {
 	 *
 	 */
 	@DocumentedDefinition(value = "dil")
-	public CohortDefinition dil() {
+	public CohortDefinition getWomenWithDeliveryDateOnArtAndStartedArtWhileBreastfeedingAndGaveBirthTwoYearsAgo() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setDescription("dil");// comprise of DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -297,7 +297,8 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("dil", EptsReportUtils.map(dil(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.addSearch("dil", EptsReportUtils.map(getWomenWithDeliveryDateOnArtAndStartedArtWhileBreastfeedingAndGaveBirthTwoYearsAgo(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("lactating",
 		    EptsReportUtils.map(registeredBreastFeeding(), "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("preg",
