@@ -2,6 +2,9 @@ package org.openmrs.module.eptsreports.reporting.library.queries;
 
 public class BaseQueries {
 	
+	// State ids are left as hard coded for now because all reference same concept
+	// they map to concept_id=1369 - TRANSFER FROM OTHER FACILITY
+	// TODO: Query needs to be refactored
 	public static String getBaseCohortQuery(int... parameters) {
 		return "select p.patient_id" + " from patient p inner join encounter e on e.patient_id=p.patient_id"
 		        + " where e.voided=0 and p.voided=0 and e.encounter_type in (" + parameters[0] + "," + parameters[1]
