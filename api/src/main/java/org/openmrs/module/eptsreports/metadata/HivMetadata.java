@@ -48,12 +48,6 @@ public class HivMetadata extends CommonMetadata {
 		return getConcept(uuid);
 	}
 	
-	public Concept getDateOfDelivery() {
-		String uuid = Context.getAdministrationService()
-		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_DATE_OF_DELIVERY_CONCEPT_UUID);
-		return getConcept(uuid);
-	}
-	
 	// Encounter types
 	// encounterType_id = 6
 	public EncounterType getAdultoSeguimentoEncounterType() {
@@ -76,6 +70,13 @@ public class HivMetadata extends CommonMetadata {
 		return getEncounterType(uuid);
 	}
 	
+	// encounterType_id = 7
+	public EncounterType getARVPediatriaInitialEncounterType() {
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_S_TARV_PEDIATRIA_INITIAL_A_ENCOUNTER_TYPE_UUID);
+		return getEncounterType(uuid);
+	}
+	
 	public EncounterType getARVPharmaciaEncounterType() {
 		String uuid = Context.getAdministrationService()
 		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_S_TARV_FARMACIA_ENCOUNTER_TYPE_UUID);
@@ -89,6 +90,7 @@ public class HivMetadata extends CommonMetadata {
 	}
 	
 	// Programs
+	// program_id=2
 	public Program getARTProgram() {
 		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
 		return getProgram(uuid);
@@ -99,8 +101,13 @@ public class HivMetadata extends CommonMetadata {
 		return getProgram(uuid);
 	}
 	
-	// Program Workflow States
+	// program_id=1
+	public Program getHIVCareProgram() {
+		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_HIV_CARE_PROGRAM_UUID);
+		return getProgram(uuid);
+	}
 	
+	// Program Workflow States
 	private String SUSPEND_TREATMENT = "SUSPEND TREATMENT";
 	
 	private String ABANDONED = "ABANDONED";

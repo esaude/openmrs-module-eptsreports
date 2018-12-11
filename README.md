@@ -43,14 +43,14 @@ Reports Implemented
 
 ## MER Reports
 
-|Report             |Indicators Used                                  |
-|-------------------|-------------------------------------------------|
-|*MER_Quarterly*    |TX_CURR, TX_NEW, TX_PVLS                         |
+|Report                 |Indicators Used                                  |
+|-----------------------|-------------------------------------------------|
+|*MER_2.1_Quarterly*    |Tx_Curr, Tx_New, Tx_Pvls                         |
 
 ## MER Indicators
 
 |Indicators |Description
 |-----------|-----------
-|*TX_PVLS*  |Percentage of ART patients with a viral load result documented in the medical record and/or laboratory information systems (LIS) within the past 12 months with a suppressed viral load (<1000 copies/ml).
-|*TX_CURR*  |Number of adults and children currently receiving antiretroviral therapy (ART).
-|*TX_NEW*   |Number of adults and children newly enrolled on antiretroviral therapy (ART).
+|*Tx_Pvls*  |Percentage of ART patients with a viral load result documented in the medical record and/or laboratory information systems (LIS) within the past 12 months with a suppressed viral load (<1000 copies/ml).
+|*Tx_Curr*  |Number of adults and children currently receiving antiretroviral therapy (ART).
+|*Tx_New*   |Number of adults and children newly enrolled on antiretroviral therapy (ART).

@@ -22,7 +22,10 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Program;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
@@ -33,13 +36,17 @@ import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class GenericCohortQueries {
 	
+	@Autowired
+	private HivMetadata hivMetadata;
+	
 	/**
-	 * Patients who have an encounter between ${onOrAfter}, ${onOrBefore} and ${location}
+	 * Generic Encounter cohort
 	 * 
 	 * @param types the encounter types
 	 * @return the cohort definition
@@ -58,8 +65,7 @@ public class GenericCohortQueries {
 	}
 	
 	/**
-	 * Patients who were enrolled on the given programs between ${enrolledOnOrAfter},
-	 * ${enrolledOnOrBefore} and ${location}
+	 * Generic ProgramEnrollement cohort
 	 * 
 	 * @param programs the programs
 	 * @return the cohort definition
@@ -77,34 +83,47 @@ public class GenericCohortQueries {
 	}
 	
 	/**
-	 * Patients who have an obs between ${onOrAfter}, ${onOrBefore} and ${location}
+	 * Generic Coded Observation cohort
 	 * 
 	 * @param question the question concept
 	 * @param answers the answers to include
 	 * @return the cohort definition
 	 */
-	public CohortDefinition hasCodedObs(Concept question, Concept... answers) {
+	public CohortDefinition hasCodedObs(Concept question, TimeModifier timeModifier, SetComparator operator,
+	        List<EncounterType> encounterTypes, List<Concept> values) {
 		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
 		cd.setName("has obs between dates");
 		cd.setQuestion(question);
-		cd.setOperator(SetComparator.IN);
-		cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
+		cd.setOperator(operator);
+		cd.setTimeModifier(timeModifier);
+		cd.setEncounterTypeList(encounterTypes);
+		cd.setValueList(values);
+		
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		if (answers.length > 0) {
-			cd.setValueList(Arrays.asList(answers));
-		}
+		
 		return cd;
 	}
 	
 	/**
-	 * Pregnant women based on different parameters between ${startDate}, ${endDate} and ${location}
+	 * Generic Coded Observation cohort with default parameters defined
+	 * 
+	 * @param question the question concept
+	 * @param answers the answers to include
+	 * @return the cohort definition
+	 */
+	public CohortDefinition hasCodedObs(Concept question, List<Concept> values) {
+		return hasCodedObs(question, BaseObsCohortDefinition.TimeModifier.ANY, SetComparator.IN, null, values);
+	}
+	
+	/**
+	 * Generic SQL cohort
 	 * 
 	 * @return CohortDefinition
 	 */
-	@DocumentedDefinition(value = "general")
-	public CohortDefinition general(String name, String query) {
+	@DocumentedDefinition(value = "generalSql")
+	public CohortDefinition generalSql(String name, String query) {
 		SqlCohortDefinition sql = new SqlCohortDefinition();
 		sql.setName(name);
 		sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -115,10 +134,9 @@ public class GenericCohortQueries {
 	}
 	
 	/**
-	 * Patients who were enrolled on the given programs between ${enrolledOnOrAfter} and
-	 * ${enrolledOnOrBefore}
+	 * Generic InProgram Cohort
 	 * 
-	 * @param programs the programs
+	 * @param program the programs
 	 * @return the cohort definition
 	 */
 	public CohortDefinition createInProgram(String name, Program program) {
@@ -132,5 +150,17 @@ public class GenericCohortQueries {
 		inProgram.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		inProgram.addParameter(new Parameter("locations", "Location", Location.class));
 		return inProgram;
+	}
+	
+	/**
+	 * Base cohort for the pepfar report
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getBaseCohort() {
+		return generalSql("baseCohort",
+		    BaseQueries.getBaseCohortQuery(hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+		        hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(), hivMetadata.getHIVCareProgram().getProgramId(),
+		        hivMetadata.getARTProgram().getProgramId()));
 	}
 }
