@@ -33,7 +33,7 @@ public class BreastfeedingIndicators extends BaseIndicators {
 	 */
 	public CohortIndicator getBreastfeedingWomenWithSuppressedViralLoadIn12Months() {
 		return newCohortIndicator("breastfeedingWomenWithViralLoadSuppression",
-		    EptsReportUtils.map(txPvls.breastfeedingWomenAndHasViralLoadSuppressionInTheLast12MonthsNumerator(),
+		    EptsReportUtils.map(txPvls.getPatientsWithViralLoadSuppressionExcludingDeadLtfuTransferredoutStoppedArt(),
 		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 	
@@ -44,7 +44,7 @@ public class BreastfeedingIndicators extends BaseIndicators {
 	 */
 	public CohortIndicator getBreastfeedingWomenWithViralLoadIn12Months() {
 		return newCohortIndicator("breastfeedingWomenWithViralLoad",
-		    EptsReportUtils.map(txPvls.breastfeedingWomenAndHasViralLoadInTheLast12MonthsDenominator(),
+		    EptsReportUtils.map(txPvls.getPatientsWithViralLoadResultsExcludingDeadLtfuTransferredoutStoppedArt(),
 		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 }

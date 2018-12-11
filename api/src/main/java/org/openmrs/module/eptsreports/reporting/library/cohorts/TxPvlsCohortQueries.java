@@ -47,9 +47,6 @@ public class TxPvlsCohortQueries {
 	private GenericCohortQueries genericCohortQueries;
 	
 	@Autowired
-	private GenderCohortQueries genderCohortQueries;
-	
-	@Autowired
 	private HivCohortQueries hivCohortQueries;
 	
 	/**
@@ -100,84 +97,7 @@ public class TxPvlsCohortQueries {
 		return cd;
 		
 	}
-	
-	/**
-	 * Get deceased persons in the database
-	 * 
-	 * @return CohortDefinition
-	 */
-	public CohortDefinition getDeadPersons() {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Dead patients");
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		cd.addParameter(new Parameter("endDate", "End date", Date.class));
-		cd.addParameter(new Parameter("location", "location", Location.class));
-		
-		SqlCohortDefinition deadState = new SqlCohortDefinition();
-		deadState.setName("Dead by state");
-		deadState.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		deadState.addParameter(new Parameter("endDate", "End date", Date.class));
-		deadState.addParameter(new Parameter("location", "location", Location.class));
-		deadState.setQuery("SELECT p.patient_id FROM patient p " + "INNER JOIN patient_program pg on p.patient_id=pg.patient_id "
-		        + "INNER JOIN patient_state ps on pg.patient_program_id=ps.patient_program_id "
-		        + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0" + " AND ps.state="
-		        + hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId() + " AND ps.start_date=pg.date_enrolled"
-		        + " AND ps.start_date >= :startDate AND ps.start_date <= :endDate AND location_id=:location "
-		        + "GROUP BY p.patient_id");
-		cd.addSearch("deadState", EptsReportUtils.map(deadState, "startDate=${startDate},endDate=${endDate},location=${location}"));
-		cd.addSearch("deceased",
-		    EptsReportUtils.map(genericCohortQueries.generalSql("Dead persons", "SELECT person_id FROM person WHERE dead=1"), ""));
-		cd.setCompositionString("deadState OR deceased");
-		return cd;
-	}
-	
-	/**
-	 * Get lost to follow up patients
-	 * 
-	 * @return CohortDefinition
-	 */
-	public CohortDefinition lostToFollowUpPatients() {
-		SqlCohortDefinition cd = new SqlCohortDefinition();
-		cd.setName("LostToFollowUp");
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addParameter(new Parameter("location", "location", Location.class));
-		cd.setQuery("SELECT patient_id FROM (SELECT e.patient_id,MAX(e.encounter_datetime) FROM encounter e) p "
-		        + "INNER JOIN obs o ON  p.patient_id=o.person_id " + "WHERE o.concept_id="
-		        + hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()
-		        + " AND datediff(:endDate,o.value_datetime)>60 AND o.location_id=:location");
-		return cd;
-	}
-	
-	/**
-	 * Get a set of patients to be excluded from the search criteria
-	 * 
-	 * @return CohortDefinition
-	 */
-	public CohortDefinition totalExclusions() {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		cd.addParameter(new Parameter("endDate", "End date", Date.class));
-		cd.addParameter(new Parameter("location", "location", Location.class));
-		
-		SqlCohortDefinition abandoned = new SqlCohortDefinition();
-		abandoned.setName("abandoned");
-		abandoned.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		abandoned.addParameter(new Parameter("endDate", "End date", Date.class));
-		abandoned.addParameter(new Parameter("location", "location", Location.class));
-		abandoned.setQuery("SELECT p.patient_id FROM patient p " + "INNER JOIN patient_program pg on p.patient_id=pg.patient_id "
-		        + "INNER JOIN patient_state ps on pg.patient_program_id=ps.patient_program_id "
-		        + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND ps.state="
-		        + hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId() + " AND ps.start_date=pg.date_enrolled"
-		        + " AND ps.start_date >= :startDate AND ps.start_date <= :endDate AND location_id=:location"
-		        + "GROUP BY p.patient_id");
-		cd.addSearch("deadPatients",
-		    EptsReportUtils.map(getDeadPersons(), "startDate=${startDate},endDate=${endDate},location=${location}"));
-		cd.addSearch("lost", EptsReportUtils.map(lostToFollowUpPatients(), "endDate=${endDate},location=${location}"));
-		cd.addSearch("abandon", EptsReportUtils.map(abandoned, "startDate=${startDate},endDate=${endDate},location=${location}"));
-		cd.setCompositionString("deadPatients OR lost OR abandon");
-		return cd;
-	}
-	
+
 	/**
 	 * Get pregnant women inscribed in ART service
 	 * 
@@ -311,90 +231,6 @@ public class TxPvlsCohortQueries {
 		    EptsReportUtils.map(pregnantsInscribedOnARTService(), "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.setCompositionString("(dil OR lactating) AND NOT preg");
 		
-		return cd;
-	}
-	
-	/**
-	 * Pregnant women with viral load in the last 12 months Denominator Denominator Denominator
-	 * 
-	 * @return CohortDefinition
-	 */
-	@DocumentedDefinition(value = "pregnantWomenAndHasViralLoadInTheLast12MonthsDenominator")
-	public CohortDefinition pregnantWomenAndHasViralLoadInTheLast12MonthsDenominator() {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
-		
-		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomen(), mappings));
-		cd.addSearch("vl", EptsReportUtils.map(getPatientsWithViralLoadResultsExcludingDeadLtfuTransferredoutStoppedArt(), mappings));
-		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
-		cd.setCompositionString("(pregnant AND vl) AND female");
-		return cd;
-	}
-	
-	/**
-	 * Pregnant women with viral load in the last 12 months Numerator with viral load of <1000 Numerator
-	 * Numerator
-	 * 
-	 * @return CohortDefinition
-	 */
-	@DocumentedDefinition(value = "pregnantWomenAndHasSuppressedViralLoadInTheLast12MonthsNumerator")
-	public CohortDefinition pregnantWomenAndHasSuppressedViralLoadInTheLast12MonthsNumerator() {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
-		
-		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("preg", EptsReportUtils.map(getPregnantWomen(), mappings));
-		cd.addSearch("supp",
-		    EptsReportUtils.map(getPatientsWithViralLoadSuppressionExcludingDeadLtfuTransferredoutStoppedArt(), mappings));
-		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
-		cd.setCompositionString("(preg AND supp) AND female");
-		return cd;
-	}
-	
-	/**
-	 * Breastfeeding women with viral load in the last 12 months Denominator Denominator
-	 * 
-	 * @return CohortDefinition
-	 */
-	@DocumentedDefinition(value = "breastfeedingWomenAndHasViralLoadInTheLast12MonthsDenominator")
-	public CohortDefinition breastfeedingWomenAndHasViralLoadInTheLast12MonthsDenominator() {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
-		
-		// set the mappings here
-		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomen(), mappings));
-		cd.addSearch("vl", EptsReportUtils.map(getPatientsWithViralLoadResultsExcludingDeadLtfuTransferredoutStoppedArt(), mappings));
-		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
-		cd.setCompositionString("(breastfeeding AND vl) AND female");
-		return cd;
-	}
-	
-	/**
-	 * Pregnant women with viral load in the last 12 months Numerator with viral load of <1000 Numerator
-	 * 
-	 * @return CohortDefinition
-	 */
-	@DocumentedDefinition(value = "breastfeedingWomenAndHasViralLoadSuppressionInTheLast12MonthsNumerator")
-	public CohortDefinition breastfeedingWomenAndHasViralLoadSuppressionInTheLast12MonthsNumerator() {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
-		
-		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomen(), mappings));
-		cd.addSearch("suppression",
-		    EptsReportUtils.map(getPatientsWithViralLoadSuppressionExcludingDeadLtfuTransferredoutStoppedArt(), mappings));
-		cd.addSearch("female", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
-		cd.setCompositionString("(breastfeeding AND suppression) AND female");
 		return cd;
 	}
 	

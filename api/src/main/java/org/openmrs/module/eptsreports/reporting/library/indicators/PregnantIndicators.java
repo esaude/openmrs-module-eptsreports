@@ -19,7 +19,7 @@ public class PregnantIndicators extends BaseIndicators {
 	 */
 	public CohortIndicator getPregnantWomenWithSuppressedViralLoadIn12Months() {
 		return newCohortIndicator("pregnantWomenWithViralLoadSuppression",
-		    EptsReportUtils.map(txPvls.pregnantWomenAndHasSuppressedViralLoadInTheLast12MonthsNumerator(),
+		    EptsReportUtils.map(txPvls.getPatientsWithViralLoadSuppressionExcludingDeadLtfuTransferredoutStoppedArt(),
 		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 	
@@ -30,7 +30,7 @@ public class PregnantIndicators extends BaseIndicators {
 	 */
 	public CohortIndicator getPregnantWomenWithViralLoadIn12Months() {
 		return newCohortIndicator("pregnantWomenWithViralLoad",
-		    EptsReportUtils.map(txPvls.pregnantWomenAndHasViralLoadInTheLast12MonthsDenominator(),
+		    EptsReportUtils.map(txPvls.getPatientsWithViralLoadResultsExcludingDeadLtfuTransferredoutStoppedArt(),
 		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 }
