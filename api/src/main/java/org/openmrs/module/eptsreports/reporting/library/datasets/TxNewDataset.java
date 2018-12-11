@@ -19,8 +19,9 @@ import java.util.ArrayList;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.indicators.BreastfeedingIndicators;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -46,7 +47,7 @@ public class TxNewDataset extends BaseDataSet {
 	private HivIndicators hivIndicators;
 	
 	@Autowired
-	private BreastfeedingIndicators breastfeedingIndicators;
+	private EptsCommonDimension eptsCommonDimension;
 	
 	public DataSetDefinition constructTxNewDatset() {
 		
@@ -173,12 +174,14 @@ public class TxNewDataset extends BaseDataSet {
 		            ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}")),
 		    "");
 		
-		// Obtain patients notified to be on TB treatment
-		CohortIndicator breastfeedingNewlyInitiatingARTIndicator = breastfeedingIndicators.getBreastfeedingWomenStartedART();
+		// Obtain patients breastfeeding newly enrolled on ART
+		dataSetDefinition.addDimension("breastfeeding", EptsReportUtils.map(eptsCommonDimension.txNewDimension(),
+		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		
 		dataSetDefinition.addColumn("ANC", "TX_NEW: Pregnant Started ART",
-		    new Mapped<CohortIndicator>(breastfeedingNewlyInitiatingARTIndicator,
+		    new Mapped<CohortIndicator>(patientEnrolledInHIVStartedARTIndicator,
 		            ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}")),
-		    "");
+		    "txNew=breastfeeding");
 		
 		return dataSetDefinition;
 	}

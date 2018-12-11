@@ -14,7 +14,6 @@
 
 package org.openmrs.module.eptsreports.reporting.library.indicators;
 
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
@@ -26,9 +25,6 @@ public class BreastfeedingIndicators extends BaseIndicators {
 	
 	@Autowired
 	private TxPvlsCohortQueries txPvls;
-	
-	@Autowired
-	private TxNewCohortQueries txNew;
 	
 	/**
 	 * Breastfeeding women with viral load suppression in the last 12 months to a common file for reuse
@@ -50,15 +46,5 @@ public class BreastfeedingIndicators extends BaseIndicators {
 		return newCohortIndicator("breastfeedingWomenWithViralLoad",
 		    EptsReportUtils.map(txPvls.breastfeedingWomenAndHasViralLoadInTheLast12MonthsDenominator(),
 		        "startDate=${startDate},endDate=${endDate},location=${location}"));
-	}
-	
-	/**
-	 * Breastfeeding woman who started ART service
-	 * 
-	 * @return CohortIndicator
-	 */
-	public CohortIndicator getBreastfeedingWomenStartedART() {
-		return newCohortIndicator("breastfeedingWomenStartedART", EptsReportUtils.map(txNew.getTxNewBreastfeedingComposition(),
-		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 }
