@@ -44,6 +44,8 @@ public final class EptsReportConstants {
 	
 	public static final String GLOBAL_PROPERTY_S_TARV_ADULTO_INITIAL_A_ENCOUNTER_TYPE_UUID = "eptsreports.sTarvAdultoInitialAEncounterTypeUuid";
 	
+	public static final String GLOBAL_PROPERTY_S_TARV_PEDIATRIA_INITIAL_A_ENCOUNTER_TYPE_UUID = "eptsreports.sTarvPediatriaInicialAEncounterTypeUuid";
+	
 	public static final String GLOBAL_PROPERTY_MISAU_LABORATORIO_ENCOUNTER_TYPE_UUID = "eptsreports.misauLaboratorioEncounterTypeUuid";
 	
 	// Programs
@@ -52,4 +54,6 @@ public final class EptsReportConstants {
 	public static final String GLOBAL_PTV_ETV_PROGRAM_UUID = "eptsreports.ptvEtvProgramUuid";
 	
 	public static final String GLOBAL_PROPERTY_TB_PROGRAM_UUID = "eptsreports.tbProgramUuid";
+	
+	public static final String GLOBAL_PROPERTY_HIV_CARE_PROGRAM_UUID = "eptsreports.hivCareProgramUuid";
 }

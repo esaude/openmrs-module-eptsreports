@@ -22,6 +22,7 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Program;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
@@ -35,10 +36,14 @@ import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class GenericCohortQueries {
+	
+	@Autowired
+	private HivMetadata hivMetadata;
 	
 	/**
 	 * Generic Encounter cohort
@@ -153,6 +158,9 @@ public class GenericCohortQueries {
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getBaseCohort() {
-		return general("baseCohort", BaseQueries.getBaseCohortQuery());
+		return generalSql("baseCohort",
+		    BaseQueries.getBaseCohortQuery(hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+		        hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(), hivMetadata.getHIVCareProgram().getProgramId(),
+		        hivMetadata.getARTProgram().getProgramId()));
 	}
 }
