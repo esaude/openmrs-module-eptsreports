@@ -224,6 +224,7 @@ public class TxCurrCohortQueries {
 		
 		CompositionCohortDefinition TxCurrComposition = new CompositionCohortDefinition();
 		TxCurrComposition.setName(cohortName);
+		
 		TxCurrComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		TxCurrComposition.addParameter(new Parameter("location", "location", Location.class));
 		TxCurrComposition.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
@@ -245,7 +246,7 @@ public class TxCurrCohortQueries {
 		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
 		
 		// TODO -Check specifications document on how to use query 6,7 and 8
-		String compositionString = "((1 AND 2 AND 3 AND 4) AND (NOT 5) AND NOT ( 6 NOT (5 OR 7 OR 8)))";
+		String compositionString = "((1 OR 2 OR 3 OR 4) AND NOT (5 OR (6 AND NOT (5 OR 7 OR 8)))";
 		
 		if (ageCohort != null) {
 			TxCurrComposition.getSearches().put("9", new Mapped<CohortDefinition>(ageCohort,

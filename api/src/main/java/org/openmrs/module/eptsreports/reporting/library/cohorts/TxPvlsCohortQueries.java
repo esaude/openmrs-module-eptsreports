@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
@@ -38,6 +39,9 @@ public class TxPvlsCohortQueries {
 	
 	@Autowired
 	private HivMetadata hivMetadata;
+	
+	@Autowired
+	private CommonMetadata commonMetadata;
 	
 	@Autowired
 	private GenericCohortQueries genericCohortQueries;
@@ -65,7 +69,8 @@ public class TxPvlsCohortQueries {
 		    EptsReportUtils.map(genericCohortQueries.hasEncounter(hivMetadata.getAdultoSeguimentoEncounterType()),
 		        "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 		cd.addSearch("hasObs",
-		    EptsReportUtils.map(genericCohortQueries.hasCodedObs(hivMetadata.getBreastfeeding(), hivMetadata.getYesConcept()),
+		    EptsReportUtils.map(
+		        genericCohortQueries.hasCodedObs(hivMetadata.getBreastfeeding(), Arrays.asList(commonMetadata.getYesConcept())),
 		        "onOrAfter=${startDate},onOrBefore=${endDate}"));
 		cd.setCompositionString("hasEncounter AND hasObs");
 		
@@ -73,7 +78,9 @@ public class TxPvlsCohortQueries {
 	}
 	
 	/**
-	 *
+	 * DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA
+	 * 
+	 * @return CohortDefinition
 	 */
 	@DocumentedDefinition(value = "dil")
 	public CohortDefinition getWomenWithDeliveryDateOnArtAndStartedArtWhileBreastfeedingAndGaveBirthTwoYearsAgo() {
@@ -119,7 +126,7 @@ public class TxPvlsCohortQueries {
 		        + "GROUP BY p.patient_id");
 		cd.addSearch("deadState", EptsReportUtils.map(deadState, "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("deceased",
-		    EptsReportUtils.map(genericCohortQueries.general("Dead persons", "SELECT person_id FROM person WHERE dead=1"), ""));
+		    EptsReportUtils.map(genericCohortQueries.generalSql("Dead persons", "SELECT person_id FROM person WHERE dead=1"), ""));
 		cd.setCompositionString("deadState OR deceased");
 		return cd;
 	}
@@ -182,7 +189,7 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.setQuery(PregnantQueries.getPregnantWhileOnArt(hivMetadata.getPregnantConcept().getConceptId(),
+		cd.setQuery(PregnantQueries.getPregnantWhileOnArt(commonMetadata.getPregnantConcept().getConceptId(),
 		    hivMetadata.getGestationConcept().getConceptId(), hivMetadata.getNumberOfWeeksPregnant().getConceptId(),
 		    hivMetadata.getPregnancyDueDate().getConceptId(), hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
 		    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(), hivMetadata.getPtvEtvProgram().getProgramId()));
@@ -221,9 +228,9 @@ public class TxPvlsCohortQueries {
 		cd.addSearch("hasEncounter",
 		    EptsReportUtils.map(genericCohortQueries.hasEncounter(hivMetadata.getAdultoSeguimentoEncounterType()),
 		        "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-		cd.addSearch("hasObs",
-		    EptsReportUtils.map(genericCohortQueries.hasCodedObs(hivMetadata.getCriteriaForArtStart(), hivMetadata.getBreastfeeding()),
-		        "onOrAfter=${startDate},onOrBefore=${endDate}"));
+		cd.addSearch("hasObs", EptsReportUtils.map(
+		    genericCohortQueries.hasCodedObs(hivMetadata.getCriteriaForArtStart(), Arrays.asList(commonMetadata.getBreastfeeding())),
+		    "onOrAfter=${startDate},onOrBefore=${endDate}"));
 		cd.setCompositionString("hasObs AND hasEncounter");
 		
 		return cd;
@@ -241,7 +248,7 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.setQuestion(hivMetadata.getDateOfDelivery());
+		cd.setQuestion(commonMetadata.getPriorDeliveryDateConcept());
 		cd.setEncounterTypeList(
 		    Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType(), hivMetadata.getARVAdultInitialEncounterType()));
 		return cd;
@@ -260,7 +267,7 @@ public class TxPvlsCohortQueries {
 		
 		int ptvPro = hivMetadata.getPtvEtvProgram().getProgramId();
 		
-		int pregnant = hivMetadata.getPregnantConcept().getConceptId();
+		int pregnant = commonMetadata.getPregnantConcept().getConceptId();
 		int gestation = hivMetadata.getGestationConcept().getConceptId();
 		int numOfWeeks = hivMetadata.getNumberOfWeeksPregnant().getConceptId();
 		int dueDate = hivMetadata.getPregnancyDueDate().getConceptId();
@@ -270,17 +277,16 @@ public class TxPvlsCohortQueries {
 		
 		cd.addSearch("opt1",
 		    EptsReportUtils.map(
-		        genericCohortQueries.general("opt1",
+		        genericCohortQueries.generalSql("opt1",
 		            PregnantQueries.getPregnantOnInitialOrFollowUpConsulation(pregnant, gestation, adultInEnc, adultSegEnc)),
 		        mappings));
-		cd.addSearch("opt2", EptsReportUtils.map(genericCohortQueries.general("opt2",
+		cd.addSearch("opt2", EptsReportUtils.map(genericCohortQueries.generalSql("opt2",
 		    PregnantQueries.getWeeksPregnantOnInitialOrFollowUpConsultations(numOfWeeks, adultInEnc, adultSegEnc)), mappings));
 		cd.addSearch("opt3",
-		    EptsReportUtils.map(genericCohortQueries.general("opt3", PregnantQueries.getEnrolledInPtvOrEtv(ptvPro)), mappings));
-		cd.addSearch("opt4",
-		    EptsReportUtils.map(
-		        genericCohortQueries.general("opt4", PregnantQueries.getPregnancyDueDateRegistred(dueDate, adultInEnc, adultSegEnc)),
-		        mappings));
+		    EptsReportUtils.map(genericCohortQueries.generalSql("opt3", PregnantQueries.getEnrolledInPtvOrEtv(ptvPro)), mappings));
+		cd.addSearch("opt4", EptsReportUtils.map(
+		    genericCohortQueries.generalSql("opt4", PregnantQueries.getPregnancyDueDateRegistred(dueDate, adultInEnc, adultSegEnc)),
+		    mappings));
 		cd.setCompositionString("opt1 OR opt2 OR opt3 OR opt4");
 		return cd;
 	}

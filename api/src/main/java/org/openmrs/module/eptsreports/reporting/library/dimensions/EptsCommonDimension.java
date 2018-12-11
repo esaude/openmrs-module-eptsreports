@@ -13,15 +13,17 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.dimensions;
 
+import java.util.Date;
+
+import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 @Component
 public class EptsCommonDimension {
@@ -31,6 +33,9 @@ public class EptsCommonDimension {
 	
 	@Autowired
 	private AgeCohortQueries ageCohortQueries;
+	
+	@Autowired
+	private TxNewCohortQueries txNewCohortQueries;
 	
 	/**
 	 * Gender dimension
@@ -76,6 +81,21 @@ public class EptsCommonDimension {
 		dim.addCohortDefinition("45-49",
 		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("45-49", 45, 49), "effectiveDate=${endDate}"));
 		dim.addCohortDefinition(">49", EptsReportUtils.map(ageCohortQueries.patientWithAgeAbove(50), "effectiveDate=${endDate}"));
+		return dim;
+	}
+	
+	/**
+	 * @return CohortDefinitionDimension
+	 */
+	public CohortDefinitionDimension txNewDimension() {
+		CohortDefinitionDimension dim = new CohortDefinitionDimension();
+		dim.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		dim.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		dim.addParameter(new Parameter("location", "location", Location.class));
+		dim.setName("txNew");
+		
+		dim.addCohortDefinition("breastfeeding", EptsReportUtils.map(txNewCohortQueries.getTxNewBreastfeedingComposition(),
+		    "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
 		return dim;
 	}
 }

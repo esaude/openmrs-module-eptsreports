@@ -48,12 +48,6 @@ public class HivMetadata extends CommonMetadata {
 		return getConcept(uuid);
 	}
 	
-	public Concept getDateOfDelivery() {
-		String uuid = Context.getAdministrationService()
-		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_DATE_OF_DELIVERY_CONCEPT_UUID);
-		return getConcept(uuid);
-	}
-	
 	// Encounter types
 	// encounterType_id = 6
 	public EncounterType getAdultoSeguimentoEncounterType() {
