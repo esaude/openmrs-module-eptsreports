@@ -403,8 +403,8 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("supp", EptsReportUtils.map(hivCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
-		// cd.addSearch("exclude", EptsReportUtils.map(totalExclusions(), mappings));
-		cd.setCompositionString("supp");
+		cd.addSearch("baseCohort", EptsReportUtils.map(genericCohortQueries.getBaseCohort(), mappings));
+		cd.setCompositionString("supp AND baseCohort");
 		return cd;
 	}
 	
@@ -419,8 +419,8 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("results", EptsReportUtils.map(hivCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
-		// cd.addSearch("exclude", EptsReportUtils.map(totalExclusions(), mappings));
-		cd.setCompositionString("results");
+		cd.addSearch("baseCohort", EptsReportUtils.map(genericCohortQueries.getBaseCohort(), mappings));
+		cd.setCompositionString("results AND baseCohort");
 		return cd;
 	}
 }

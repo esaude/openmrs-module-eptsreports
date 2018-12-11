@@ -22,6 +22,7 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Program;
+import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -118,7 +119,7 @@ public class GenericCohortQueries {
 	 * Patients who were enrolled on the given programs between ${enrolledOnOrAfter} and
 	 * ${enrolledOnOrBefore}
 	 * 
-	 * @param programs the programs
+	 * @param program the programs
 	 * @return the cohort definition
 	 */
 	public CohortDefinition createInProgram(String name, Program program) {
@@ -132,5 +133,14 @@ public class GenericCohortQueries {
 		inProgram.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		inProgram.addParameter(new Parameter("location", "Location", Location.class));
 		return inProgram;
+	}
+	
+	/**
+	 * Base cohort for the pepfar report
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getBaseCohort() {
+		return general("baseCohort", BaseQueries.getBaseCohortQuery());
 	}
 }
