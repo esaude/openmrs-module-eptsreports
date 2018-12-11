@@ -70,12 +70,10 @@ public class TxPvlsDataset extends BaseDataSet {
 		// constructing the rows for breastfeeding women
 		
 		dsd.addColumn("2N", "Breastfeeding - Women Numerator",
-		    EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithSuppressedViralLoadIn12Months(), mappings),
-		    "q=breastfeeding|gender=F");
+		    EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithSuppressedViralLoadIn12Months(), mappings), "");
 		
 		dsd.addColumn("2D", "Breastfeeding - Women Denominator",
-		    EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithViralLoadIn12Months(), mappings),
-		    "q=breastfeeding|gender=F");
+		    EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithViralLoadIn12Months(), mappings), "");
 		
 		// constructing the rows for children
 		addRow(dsd, "3N", "Children Numerator", EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings),
