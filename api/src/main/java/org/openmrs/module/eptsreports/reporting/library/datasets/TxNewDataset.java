@@ -181,7 +181,7 @@ public class TxNewDataset extends BaseDataSet {
 		dataSetDefinition.addColumn("ANC", "TX_NEW: Pregnant Started ART",
 		    new Mapped<CohortIndicator>(patientEnrolledInHIVStartedARTIndicator,
 		            ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}")),
-		    "txNew=breastfeeding");
+		    "breastfeeding=breastfeeding");
 		
 		return dataSetDefinition;
 	}
