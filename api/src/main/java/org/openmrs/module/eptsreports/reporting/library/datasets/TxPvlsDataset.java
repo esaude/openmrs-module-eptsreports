@@ -50,6 +50,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		// tie dimensions to this data definition
 		dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
 		dsd.addDimension("age", EptsReportUtils.map(eptsCommonDimension.age(), "effectiveDate=${endDate}"));
+		dsd.addDimension("q", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
 		
 		dsd.addColumn("0N", "Total patients with suppressed Viral load - Numerator",
 		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), "");
@@ -60,10 +61,11 @@ public class TxPvlsDataset extends BaseDataSet {
 		// constructing the first row of pregnant and breast feeding mothers
 		
 		dsd.addColumn("1N", "Pregnant Women - Numerator",
-		    EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithSuppressedViralLoadIn12Months(), mappings), "");
+		    EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithSuppressedViralLoadIn12Months(), mappings),
+		    "q=pregnant|gender=F");
 		
 		dsd.addColumn("1D", "Pregnant Women - Denominator",
-		    EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithViralLoadIn12Months(), mappings), "");
+		    EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithViralLoadIn12Months(), mappings), "q=pregnant|gender=F");
 		
 		// constructing the rows for breastfeeding women
 		

@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.indicators;
 
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -25,6 +26,9 @@ public class HivIndicators extends BaseIndicators {
 	
 	@Autowired
 	private TxPvlsCohortQueries pvls;
+	
+	@Autowired
+	private TxNewCohortQueries txNew;
 	
 	public CohortIndicator patientBelow1YearEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
 		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(cohortDefinition,
@@ -74,9 +78,8 @@ public class HivIndicators extends BaseIndicators {
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator patientsWithViralLoadSuppression() {
-		return newCohortIndicator("suppressed viral load",
-		    EptsReportUtils.map(pvls.getPatientsWithViralLoadSuppressionExcludingDeadLtfuTransferredoutStoppedArt(),
-		        "startDate=${startDate},endDate=${endDate},location=${location}"));
+		return newCohortIndicator("suppressed viral load", EptsReportUtils.map(pvls.getPatientsWithViralLoadSuppression(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 	
 	/**
@@ -85,8 +88,7 @@ public class HivIndicators extends BaseIndicators {
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator patientsWithViralLoadBetweenDates() {
-		return newCohortIndicator("patients with viral load",
-		    EptsReportUtils.map(pvls.getPatientsWithViralLoadResultsExcludingDeadLtfuTransferredoutStoppedArt(),
-		        "startDate=${startDate},endDate=${endDate},location=${location}"));
+		return newCohortIndicator("patients with viral load", EptsReportUtils.map(pvls.getPatientsWithViralLoadResults(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 }

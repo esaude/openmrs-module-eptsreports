@@ -87,15 +87,17 @@ public class EptsCommonDimension {
 	/**
 	 * @return CohortDefinitionDimension
 	 */
-	public CohortDefinitionDimension txNewDimension() {
+	public CohortDefinitionDimension maternityDimension() {
 		CohortDefinitionDimension dim = new CohortDefinitionDimension();
-		dim.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-		dim.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		dim.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		dim.addParameter(new Parameter("endDate", "End Date", Date.class));
 		dim.addParameter(new Parameter("location", "location", Location.class));
-		dim.setName("txNew");
+		dim.setName("Maternity Dimension");
 		
 		dim.addCohortDefinition("breastfeeding", EptsReportUtils.map(txNewCohortQueries.getTxNewBreastfeedingComposition(),
 		    "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+		dim.addCohortDefinition("pregnant", EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		return dim;
 	}
 }
