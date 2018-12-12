@@ -169,4 +169,8 @@ public class GenericCohortQueries {
 		parameters.put("artProgramId", String.valueOf(hivMetadata.getARTProgram().getProgramId()));
 		return generalSql("baseCohort", BaseQueries.getBaseCohortQuery(parameters));
 	}
+	
+	public CohortDefinition findPatientsBetweenAgeBracketsInYears(int min, int max) {
+		return generalSql("aged between age brackets", BaseQueries.getPatientsBetweenAgeBracketsInYears(min, max));
+	}
 }
