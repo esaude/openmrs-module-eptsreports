@@ -327,7 +327,7 @@ public class TxNewCohortQueries {
 		    EptsReportUtils.map(genericCohorts.getBaseCohort(), "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
 		
 		String compositionString = "baseCohort AND (1 NOT 2)";
-				
+		
 		if (GenderCohort != null) {
 			TxNewComposition.getSearches().put("4", new Mapped<CohortDefinition>(GenderCohort, null));
 			
