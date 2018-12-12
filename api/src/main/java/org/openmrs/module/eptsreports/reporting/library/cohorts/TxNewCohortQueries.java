@@ -241,7 +241,7 @@ public class TxNewCohortQueries {
 		        genericCohorts.hasCodedObs(hivMetadata.getCriteriaForArtStart(), BaseObsCohortDefinition.TimeModifier.FIRST,
 		            SetComparator.IN, Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
 		            Arrays.asList(commonMetadata.getBreastfeeding())),
-		        "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+		        "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
 		cd.addSearch("GRAVIDAS", EptsReportUtils.map(getPatientsPregnantEnrolledOnART(),
 		    "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
 		cd.addSearch("LACTANTEPROGRAMA",
@@ -250,7 +250,7 @@ public class TxNewCohortQueries {
 		cd.addSearch("LACTANTE", EptsReportUtils.map(
 		    genericCohorts.hasCodedObs(commonMetadata.getBreastfeeding(), BaseObsCohortDefinition.TimeModifier.LAST, SetComparator.IN,
 		        Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()), Arrays.asList(commonMetadata.getYesConcept())),
-		    "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+		    "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
 		
 		String compositionString = "((DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE) NOT GRAVIDAS) AND FEMININO";
 		

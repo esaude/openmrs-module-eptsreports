@@ -59,7 +59,7 @@ public class GenericCohortQueries {
 		cd.setTimeQualifier(TimeQualifier.ANY);
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addParameter(new Parameter("locationList", "Location", Location.class));
 		if (types.length > 0) {
 			cd.setEncounterTypeList(Arrays.asList(types));
 		}
@@ -77,7 +77,7 @@ public class GenericCohortQueries {
 		cd.setName("enrolled in program between dates");
 		cd.addParameter(new Parameter("enrolledOnOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("enrolledOnOrBefore", "Before Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addParameter(new Parameter("locationList", "Location", Location.class));
 		if (programs.length > 0) {
 			cd.setPrograms(Arrays.asList(programs));
 		}
@@ -103,7 +103,7 @@ public class GenericCohortQueries {
 		
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addParameter(new Parameter("locationList", "Location", Location.class));
 		
 		return cd;
 	}
