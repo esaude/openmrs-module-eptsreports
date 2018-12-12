@@ -144,4 +144,36 @@ public class TxPvlsCohortQueries {
 		cd.setCompositionString("results AND age");
 		return cd;
 	}
+	
+	/**
+	 * Get patients with viral load suppression with age below
+	 */
+	public CohortDefinition getPatientsWithViralLoadSuppressionAgeBelow(int age) {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Patients with suppression aged below");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("supp", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
+		cd.addSearch("age", EptsReportUtils.map(genericCohortQueries.findPatientsagedBelowInYears(age), mappings));
+		cd.setCompositionString("supp AND age");
+		return cd;
+	}
+	
+	/**
+	 * Get patients with viral load results with age below
+	 */
+	public CohortDefinition getPatientsWithViralLoadResultsWithAgeBelow(int age) {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Patients with viral load results aged below");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
+		cd.addSearch("age", EptsReportUtils.map(genericCohortQueries.findPatientsagedBelowInYears(age), mappings));
+		cd.setCompositionString("results AND age");
+		return cd;
+	}
 }

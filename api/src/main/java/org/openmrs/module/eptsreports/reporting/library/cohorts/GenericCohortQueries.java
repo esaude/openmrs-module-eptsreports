@@ -25,6 +25,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.library.queries.AgeQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
@@ -170,7 +171,24 @@ public class GenericCohortQueries {
 		return generalSql("baseCohort", BaseQueries.getBaseCohortQuery(parameters));
 	}
 	
+	/**
+	 * Get patients who are aged between age bracket
+	 * 
+	 * @param min
+	 * @param max
+	 * @return
+	 */
 	public CohortDefinition findPatientsBetweenAgeBracketsInYears(int min, int max) {
-		return generalSql("aged between age brackets", BaseQueries.getPatientsBetweenAgeBracketsInYears(min, max));
+		return generalSql("aged between age brackets", AgeQueries.getPatientsBetweenAgeBracketsInYears(min, max));
+	}
+	
+	/**
+	 * Find patients who are aged below
+	 * 
+	 * @param age
+	 * @return
+	 */
+	public CohortDefinition findPatientsagedBelowInYears(int age) {
+		return generalSql("aged between age brackets", AgeQueries.getPatientsWhoAreBelowXyears(age));
 	}
 }

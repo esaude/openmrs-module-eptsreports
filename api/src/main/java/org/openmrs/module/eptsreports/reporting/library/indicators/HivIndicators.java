@@ -113,4 +113,24 @@ public class HivIndicators extends BaseIndicators {
 		    EptsReportUtils.map(pvls.getPatientsWithViralLoadSuppressionWithinAgeBracket(min, max),
 		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
+	
+	/**
+	 * Find patients with Viral load results disagregated by age below
+	 * 
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator getPatientsWithViralLoadResultsWithAgeBelow(int age) {
+		return newCohortIndicator("patients with viral load results disagreagated by age below", EptsReportUtils.map(
+		    pvls.getPatientsWithViralLoadResultsWithAgeBelow(age), "startDate=${startDate},endDate=${endDate},location=${location}"));
+	}
+	
+	/**
+	 * Find patients with Viral load results suppression disagregated by age below
+	 * 
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator getPatientsWithViralLoadSuppressionAgeBelow(int age) {
+		return newCohortIndicator("patients with viral load results disagreagated by age below", EptsReportUtils.map(
+		    pvls.getPatientsWithViralLoadSuppressionAgeBelow(age), "startDate=${startDate},endDate=${endDate},location=${location}"));
+	}
 }

@@ -74,7 +74,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		// constructing the rows for children
 		// Numerator
 		dsd.addColumn("3N-01", "Children Numerator (Under 1 year) ",
-		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), "age=<1");
+		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionAgeBelow(1), mappings), "");
 		dsd.addColumn("3N-02", "Children Numerator (1-4 years) ",
 		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionWithinAgeBracket(1, 4), mappings), "");
 		dsd.addColumn("3N-03", "Children Numerator (5 - 9 years) ",
@@ -82,7 +82,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		
 		// denominator
 		dsd.addColumn("3D-01", "Children Denominator (Under 1 year) ",
-		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), "age=<1");
+		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsWithAgeBelow(1), mappings), "");
 		dsd.addColumn("3D-02", "Children Denominator (1-4 years) ",
 		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsWithinAgeBracket(1, 4), mappings), "");
 		dsd.addColumn("3D-03", "Children Denominator (5 - 9 years) ",
