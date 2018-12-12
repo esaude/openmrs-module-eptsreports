@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.BreastfeedingIndicators;
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
@@ -126,9 +123,9 @@ public class TxPvlsDataset extends BaseDataSet {
 		dsd.addColumn("4N-23", "Adults with suppressed VL Numerator (45-49 years females)",
 		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionWithinAgeBracket(45, 49), mappings), "gender=F");
 		dsd.addColumn("4N-25", "Adults with suppressed VL Numerator (50+ years males)",
-		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), "gender=M|age=>49");
+		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionWithinAgeBracket(50, 200), mappings), "gender=M");
 		dsd.addColumn("4N-26", "Adults with suppressed VL Numerator (50+ years females)",
-		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), "gender=F|age=>49");
+		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionWithinAgeBracket(50, 200), mappings), "gender=F");
 		
 		// denominator
 		
@@ -165,9 +162,9 @@ public class TxPvlsDataset extends BaseDataSet {
 		dsd.addColumn("4D-23", "Adults with VL Denominator (45-49 years females)",
 		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsWithinAgeBracket(45, 49), mappings), "gender=F");
 		dsd.addColumn("4D-25", "Adults with VL Denominator (50+ years males)",
-		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), "gender=M|age=>49");
+		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsWithinAgeBracket(50, 200), mappings), "gender=M");
 		dsd.addColumn("4D-26", "Adults with VL Denominator (50+ years females)",
-		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), "gender=F|age=>49");
+		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsWithinAgeBracket(50, 200), mappings), "gender=F");
 		return dsd;
 		
 	}
