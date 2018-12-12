@@ -163,4 +163,8 @@ public class GenericCohortQueries {
 		        hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(), hivMetadata.getHIVCareProgram().getProgramId(),
 		        hivMetadata.getARTProgram().getProgramId()));
 	}
+	
+	public CohortDefinition findPatientsBetweenAgeBracketsInYears(int min, int max) {
+		return generalSql("aged between age brackets", BaseQueries.getPatientsBetweenAgeBracketsInYears(min, max));
+	}
 }

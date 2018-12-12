@@ -59,8 +59,7 @@ public class EptsCommonDimension {
 		CohortDefinitionDimension dim = new CohortDefinitionDimension();
 		dim.addParameter(new Parameter("effectiveDate", "End Date", Date.class));
 		dim.setName("age");
-		dim.addCohortDefinition("<1",
-		    EptsReportUtils.map(ageCohortQueries.createBelowYAgeCohort("patientWithAgeBelow1Year", 1), "effectiveDate=${endDate}"));
+		dim.addCohortDefinition("<1", EptsReportUtils.map(ageCohortQueries.createBelowYAgeCohort("", 1), "effectiveDate=${endDate}"));
 		dim.addCohortDefinition("1-4",
 		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("1-4", 1, 4), "effectiveDate=${endDate}"));
 		dim.addCohortDefinition("5-9",
@@ -81,14 +80,11 @@ public class EptsCommonDimension {
 		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("40-44", 40, 44), "effectiveDate=${endDate}"));
 		dim.addCohortDefinition("45-49",
 		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("45-49", 45, 49), "effectiveDate=${endDate}"));
-		dim.addCohortDefinition(">49",
-		    EptsReportUtils.map(ageCohortQueries.createOverXAgeCohort("patientWithAgeAbove50Years", 50), "effectiveDate=${endDate}"));
+		dim.addCohortDefinition(">49", EptsReportUtils.map(ageCohortQueries.createOverXAgeCohort("", 50), "effectiveDate=${endDate}"));
 		return dim;
 	}
 	
 	/**
-	 * Maternity Dimension
-	 * 
 	 * @return CohortDefinitionDimension
 	 */
 	public CohortDefinitionDimension maternityDimension() {
