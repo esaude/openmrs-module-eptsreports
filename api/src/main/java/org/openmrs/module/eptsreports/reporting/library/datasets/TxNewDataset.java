@@ -85,6 +85,7 @@ public class TxNewDataset extends BaseDataSet {
 		
 		CohortDefinition females = genderCohortQueries.FemaleCohort();
 		
+		// The maxAge value in these age cohorts are one year above the actual year to fit the "<" operator used in the UnionQueries
 		CohortDefinition PatientBelow1Year = ageCohortQueries.createBelowYAgeCohort("PatientBelow1Year", 1);
 		CohortDefinition PatientBetween1And9Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween1And9Years", 1, 10);
 		
