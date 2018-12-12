@@ -160,7 +160,7 @@ public class GenericCohortQueries {
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getBaseCohort() {
-		Map<String, String> parameters = new HashMap<>();
+		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("arvAdultInitialEncounterTypeId",
 		    String.valueOf(hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId()));
 		parameters.put("arvPediatriaInitialEncounterTypeId",
