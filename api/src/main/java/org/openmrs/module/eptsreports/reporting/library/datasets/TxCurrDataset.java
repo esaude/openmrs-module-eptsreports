@@ -112,7 +112,7 @@ public class TxCurrDataset extends BaseDataSet {
 		
 		CohortDefinition females = genderCohortQueries.FemaleCohort();
 		
-		CohortDefinition PatientBelow1Year = ageCohortQueries.createBelowYAgeCohort("PatientBelow1Year", 1);
+		CohortDefinition PatientBelow1Year = ageCohortQueries.createBelowYAgeCohort("PatientBelow1Year", 0);
 		CohortDefinition PatientBetween1And9Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween1And9Years", 1, 9);
 		
 		ArrayList<CohortDefinition> agesRange = new ArrayList<CohortDefinition>();

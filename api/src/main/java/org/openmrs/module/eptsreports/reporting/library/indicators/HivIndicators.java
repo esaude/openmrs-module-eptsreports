@@ -51,24 +51,24 @@ public class HivIndicators extends BaseIndicators {
 	}
 	
 	public CohortIndicator patientBelow1YearEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(CohortDefinition cohortDefinition) {
-		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator",
-		    EptsReportUtils.map(cohortDefinition, "onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
+		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(cohortDefinition,
+		    "onOrBefore=${endDate},location=${location},effectiveDate=${endDate},locations=${location}"));
 	}
 	
 	public CohortIndicator patientBetween1And9YearsEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(
 	        CohortDefinition cohortDefinition) {
-		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator",
-		    EptsReportUtils.map(cohortDefinition, "onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
+		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(cohortDefinition,
+		    "onOrBefore=${endDate},location=${location},effectiveDate=${endDate},locations=${location}"));
 	}
 	
 	public CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(CohortDefinition cohortDefinition) {
-		return newCohortIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicator",
-		    EptsReportUtils.map(cohortDefinition, "onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
+		return newCohortIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(cohortDefinition,
+		    "onOrBefore=${endDate},location=${location},effectiveDate=${endDate},locations=${location},locations=${location}"));
 	}
 	
 	public CohortIndicator patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(CohortDefinition cohortDefinition) {
 		return newCohortIndicator("patientNewlyEnrolledInHIVIndicator",
-		    EptsReportUtils.map(cohortDefinition, "onOrBefore=${endDate},location=${location}"));
+		    EptsReportUtils.map(cohortDefinition, "onOrBefore=${endDate},location=${location},locations=${location}"));
 	}
 	
 	// add viral load indicators

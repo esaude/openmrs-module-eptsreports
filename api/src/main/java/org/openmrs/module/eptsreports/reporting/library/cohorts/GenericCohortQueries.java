@@ -16,7 +16,9 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
@@ -57,7 +59,7 @@ public class GenericCohortQueries {
 		cd.setTimeQualifier(TimeQualifier.ANY);
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addParameter(new Parameter("locationList", "Location", Location.class));
 		if (types.length > 0) {
 			cd.setEncounterTypeList(Arrays.asList(types));
 		}
@@ -75,7 +77,7 @@ public class GenericCohortQueries {
 		cd.setName("enrolled in program between dates");
 		cd.addParameter(new Parameter("enrolledOnOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("enrolledOnOrBefore", "Before Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addParameter(new Parameter("locationList", "Location", Location.class));
 		if (programs.length > 0) {
 			cd.setPrograms(Arrays.asList(programs));
 		}
@@ -101,7 +103,7 @@ public class GenericCohortQueries {
 		
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addParameter(new Parameter("locationList", "Location", Location.class));
 		
 		return cd;
 	}
@@ -148,7 +150,7 @@ public class GenericCohortQueries {
 		
 		inProgram.setPrograms(programs);
 		inProgram.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		inProgram.addParameter(new Parameter("location", "Location", Location.class));
+		inProgram.addParameter(new Parameter("locations", "Location", Location.class));
 		return inProgram;
 	}
 	
@@ -158,10 +160,14 @@ public class GenericCohortQueries {
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getBaseCohort() {
-		return generalSql("baseCohort",
-		    BaseQueries.getBaseCohortQuery(hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
-		        hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(), hivMetadata.getHIVCareProgram().getProgramId(),
-		        hivMetadata.getARTProgram().getProgramId()));
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("arvAdultInitialEncounterTypeId",
+		    String.valueOf(hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId()));
+		parameters.put("arvPediatriaInitialEncounterTypeId",
+		    String.valueOf(hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId()));
+		parameters.put("hivCareProgramId", String.valueOf(hivMetadata.getHIVCareProgram().getProgramId()));
+		parameters.put("artProgramId", String.valueOf(hivMetadata.getARTProgram().getProgramId()));
+		return generalSql("baseCohort", BaseQueries.getBaseCohortQuery(parameters));
 	}
 	
 	public CohortDefinition findPatientsBetweenAgeBracketsInYears(int min, int max) {

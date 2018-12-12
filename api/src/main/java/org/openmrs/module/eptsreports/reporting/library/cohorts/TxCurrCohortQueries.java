@@ -97,25 +97,6 @@ public class TxCurrCohortQueries {
 		return patientWithHistoricalDrugStartDateObs;
 	}
 	
-	// Looks for patients enrolled on ART program (program 2=SERVICO TARV -
-	// TRATAMENTO), transferred from other health facility (program workflow state
-	// is 29=TRANSFER FROM OTHER FACILITY) between start date and end date
-	@DocumentedDefinition(value = "transferredFromOtherHealthFacility")
-	public CohortDefinition getPatientsTransferredFromOtherHealthFacilityBeforeOrOnEndDate() {
-		SqlCohortDefinition transferredFromOtherHealthFacility = new SqlCohortDefinition();
-		transferredFromOtherHealthFacility.setName("transferredFromOtherHealthFacility");
-		transferredFromOtherHealthFacility.setQuery(
-		    "select p.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id "
-		            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-		            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id="
-		            + hivMetadata.getARTProgram().getProgramId() + " and ps.state="
-		            + hivMetadata.gettransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()
-		            + " and ps.start_date=pg.date_enrolled and ps.start_date <= :onOrBefore and location_id=:location group by p.patient_id");
-		transferredFromOtherHealthFacility.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-		transferredFromOtherHealthFacility.addParameter(new Parameter("location", "location", Location.class));
-		return transferredFromOtherHealthFacility;
-	}
-	
 	// Patients who left ART program before or on end date(4). Includes: dead,
 	// transferred to, stopped and abandoned (patient state 10, 7, 8 or 9)
 	@DocumentedDefinition(value = "leftARTProgramBeforeOrOnEndDate")
@@ -127,7 +108,7 @@ public class TxCurrCohortQueries {
 		            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
 		            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id="
 		            + hivMetadata.getARTProgram().getProgramId() + " and ps.state in ("
-		            + hivMetadata.gettransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId() + ", "
+		            + hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState().getProgramWorkflowStateId() + ", "
 		            + hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId() + ","
 		            + hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId() + ","
 		            + hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()
@@ -144,12 +125,14 @@ public class TxCurrCohortQueries {
 	public SqlCohortDefinition getPatientsWhoHaveNotReturned() {
 		SqlCohortDefinition patientsWhoHaveNotReturned = new SqlCohortDefinition();
 		patientsWhoHaveNotReturned.setName("patientsWhoHaveNotReturned");
-		patientsWhoHaveNotReturned.setQuery(
-		    "select patient_id from ( Select p.patient_id,max(encounter_datetime) encounter_datetime from patient p inner join encounter e on e.patient_id=p.patient_id where p.voided=0 and e.voided=0 and e.encounter_type="
-		            + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()
-		            + " and e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_frida inner join obs o on o.person_id=max_frida.patient_id where max_frida.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id= "
-		            + hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()
-		            + " and o.location_id=:location and datediff(:onOrBefore,o.value_datetime)>=60");
+		
+		String query = "select patient_id from ( Select p.patient_id,max(encounter_datetime) encounter_datetime from patient p inner join encounter e on e.patient_id=p.patient_id where p.voided=0 and e.voided=0 and e.encounter_type=%s"
+		        + " and e.location_id=:location and e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_frida inner join obs o on o.person_id=max_frida.patient_id where max_frida.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id=%s"
+		        + " and o.location_id=:location and datediff(:onOrBefore,o.value_datetime)>=60";
+		
+		patientsWhoHaveNotReturned.setQuery(String.format(query, hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+		    hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
+		
 		patientsWhoHaveNotReturned.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		patientsWhoHaveNotReturned.addParameter(new Parameter("location", "location", Location.class));
 		return patientsWhoHaveNotReturned;
@@ -172,7 +155,7 @@ public class TxCurrCohortQueries {
 		                + "inner join obs o on o.person_id=max_mov.patient_id "
 		                + "where max_mov.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id="
 		                + hivMetadata.getReturnVisitDateConcept().getConceptId()
-		                + " and o.location_id=:location AND DATEDIFF(:onOrBefore,o.value_datetime)<60");
+		                + " and o.location_id=:location AND DATEDIFF(:onOrBefore,o.value_datetime)<=60");
 		patientsWhoHaveNotCompleted60Days.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		patientsWhoHaveNotCompleted60Days.addParameter(new Parameter("location", "location", Location.class));
 		return patientsWhoHaveNotCompleted60Days;
@@ -228,8 +211,9 @@ public class TxCurrCohortQueries {
 		TxCurrComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		TxCurrComposition.addParameter(new Parameter("location", "location", Location.class));
 		TxCurrComposition.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+		TxCurrComposition.addParameter(new Parameter("locations", "location", Location.class));
 		TxCurrComposition.getSearches().put("1", new Mapped<CohortDefinition>(inARTProgramAtEndDate,
-		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
+		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},locations=${location}")));
 		TxCurrComposition.getSearches().put("2", new Mapped<CohortDefinition>(patientWithSTARTDRUGSObs,
 		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
 		TxCurrComposition.getSearches().put("3", new Mapped<CohortDefinition>(patientWithHistoricalDrugStartDateObs,
