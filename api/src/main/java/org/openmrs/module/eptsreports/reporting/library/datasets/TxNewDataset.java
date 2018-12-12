@@ -22,6 +22,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueri
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -87,7 +88,9 @@ public class TxNewDataset extends BaseDataSet {
 		
 		// The maxAge value in these age cohorts are one year above the actual year to
 		// fit the "<" operator used in the UnionQueries
-		CohortDefinition PatientBelow1Year = ageCohortQueries.createBelowYAgeCohort("PatientBelow1Year", 1);
+		AgeCohortDefinition PatientBelow1Year = new AgeCohortDefinition();
+		PatientBelow1Year.setName("PatientBelow1Year");
+		PatientBelow1Year.setMaxAge(1);
 		CohortDefinition PatientBetween1And9Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween1And9Years", 1, 10);
 		
 		ArrayList<CohortDefinition> agesRange = new ArrayList<CohortDefinition>();

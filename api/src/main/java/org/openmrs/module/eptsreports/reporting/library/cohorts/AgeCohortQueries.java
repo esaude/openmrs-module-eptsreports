@@ -27,7 +27,7 @@ public class AgeCohortQueries {
 		AgeCohortDefinition patientsWithAgeBelow = new AgeCohortDefinition();
 		patientsWithAgeBelow.setName(name);
 		patientsWithAgeBelow.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
-		patientsWithAgeBelow.setMaxAge(maxAge);
+		patientsWithAgeBelow.setMaxAge(maxAge - 1);
 		return patientsWithAgeBelow;
 	}
 	
