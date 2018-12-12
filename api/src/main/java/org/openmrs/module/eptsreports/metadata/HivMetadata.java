@@ -24,6 +24,15 @@ import org.springframework.stereotype.Component;
 @Component("hivMetadata")
 public class HivMetadata extends CommonMetadata {
 	
+	// Program Workflow States
+	private static final String SUSPEND_TREATMENT = "SUSPEND TREATMENT";
+	
+	private static final String ABANDONED = "ABANDONED";
+	
+	private static final String PATIENT_HAS_DIED = "PATIENT HAS DIED";
+	
+	private static final String TRANSFERED_OUT_TO_ANOTHER_FACILITY = "TRANSFERRED OUT TO ANOTHER FACILITY";
+	
 	// Concepts
 	public Concept getHivViralLoadConcept() {
 		String uuid = Context.getAdministrationService()
@@ -107,12 +116,11 @@ public class HivMetadata extends CommonMetadata {
 		return getProgram(uuid);
 	}
 	
-	// Program Workflow States
-	private String SUSPEND_TREATMENT = "SUSPEND TREATMENT";
-	
-	private String ABANDONED = "ABANDONED";
-	
-	private String PATIENT_HAS_DIED = "PATIENT HAS DIED";
+	public ProgramWorkflowState getTransferredOutToAnotherHealthFacilityWorkflowState() {
+		String artProgramUuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
+		return getProgramWorkflowState(artProgramUuid, "2", TRANSFERED_OUT_TO_ANOTHER_FACILITY);
+	}
 	
 	public ProgramWorkflowState gettransferredFromOtherHealthFacilityWorkflowState() {
 		String artProgramUuid = Context.getAdministrationService()
