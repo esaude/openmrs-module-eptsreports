@@ -129,6 +129,7 @@ public class TxCurrDataset extends BaseDataSet {
 		final String columnNameTemplate = "C1%s%s";
 		final String labelTemplate = "%s:TX_CURR: Currently on ART by age and sex: %s";
 		
+		// Males
 		int i = 1;
 		for (CohortDefinition ageCohort : agesRange) {
 			String columnName = String.format(columnNameTemplate, "M", String.valueOf(i++));
