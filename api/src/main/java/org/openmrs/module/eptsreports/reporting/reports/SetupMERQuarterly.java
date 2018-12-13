@@ -69,23 +69,14 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 	}
 	
 	@Override
-	public List<Parameter> getParameters() {
-		List<Parameter> parameters = new ArrayList<Parameter>();
-		parameters.add(ReportingConstants.START_DATE_PARAMETER);
-		parameters.add(ReportingConstants.END_DATE_PARAMETER);
-		parameters.add(ReportingConstants.LOCATION_PARAMETER);
-		return parameters;
-	}
-	
-	@Override
 	public ReportDefinition constructReportDefinition() {
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setUuid(getUuid());
 		reportDefinition.setName(getName());
 		reportDefinition.setDescription(getDescription());
 		reportDefinition.setParameters(getParameters());
-		reportDefinition.addDataSetDefinition("N", Mapped.mapStraightThrough(txNewDataset.constructTxNewDatset(getParameters())));
-		reportDefinition.addDataSetDefinition("C", Mapped.mapStraightThrough(txCurrDataset.constructTxNewDatset(getParameters())));
+		reportDefinition.addDataSetDefinition("N", Mapped.mapStraightThrough(txNewDataset.constructTxNewDatset()));
+		reportDefinition.addDataSetDefinition("C", Mapped.mapStraightThrough(txCurrDataset.constructTxNewDatset()));
 		reportDefinition.addDataSetDefinition("P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
 		return reportDefinition;
 	}
@@ -96,7 +87,6 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 		try {
 			reportDesign = createXlsReportDesign(reportDefinition, "PEPFAR_MER_2.1_REPORT.xls", "PEPFAR Quarterly Report", getExcelDesignUuid(), null);
 			Properties props = new Properties();
-			// props.put("repeatingSections", "sheet:1,dataset:Tx_Pvls Data Set");
 			props.put("sortWeight", "5000");
 			reportDesign.setProperties(props);
 		}
