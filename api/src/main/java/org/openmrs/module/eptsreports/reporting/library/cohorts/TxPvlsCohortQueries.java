@@ -14,6 +14,7 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.reporting.library.queries.AgeQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -124,7 +125,7 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("supp", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
-		cd.addSearch("age", EptsReportUtils.map(genericCohortQueries.findPatientsBetweenAgeBracketsInYears(min, max), mappings));
+		cd.addSearch("age", EptsReportUtils.map(findPatientsBetweenAgeBracketsInYears(min, max), mappings));
 		cd.setCompositionString("supp AND age");
 		return cd;
 	}
@@ -140,7 +141,7 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
-		cd.addSearch("age", EptsReportUtils.map(genericCohortQueries.findPatientsBetweenAgeBracketsInYears(min, max), mappings));
+		cd.addSearch("age", EptsReportUtils.map(findPatientsBetweenAgeBracketsInYears(min, max), mappings));
 		cd.setCompositionString("results AND age");
 		return cd;
 	}
@@ -156,7 +157,7 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("supp", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
-		cd.addSearch("age", EptsReportUtils.map(genericCohortQueries.findPatientsagedBelowInYears(age), mappings));
+		cd.addSearch("age", EptsReportUtils.map(findPatientsagedBelowInYears(age), mappings));
 		cd.setCompositionString("supp AND age");
 		return cd;
 	}
@@ -172,8 +173,29 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
-		cd.addSearch("age", EptsReportUtils.map(genericCohortQueries.findPatientsagedBelowInYears(age), mappings));
+		cd.addSearch("age", EptsReportUtils.map(findPatientsagedBelowInYears(age), mappings));
 		cd.setCompositionString("results AND age");
 		return cd;
+	}
+	
+	/**
+	 * Get patients who are aged between age bracket
+	 * 
+	 * @param min
+	 * @param max
+	 * @return
+	 */
+	public CohortDefinition findPatientsBetweenAgeBracketsInYears(int min, int max) {
+		return genericCohortQueries.generalSql("aged between age brackets", AgeQueries.getPatientsBetweenAgeBracketsInYears(min, max));
+	}
+	
+	/**
+	 * Find patients who are aged below
+	 * 
+	 * @param age
+	 * @return
+	 */
+	public CohortDefinition findPatientsagedBelowInYears(int age) {
+		return genericCohortQueries.generalSql("aged between age brackets", AgeQueries.getPatientsWhoAreBelowXyears(age));
 	}
 }

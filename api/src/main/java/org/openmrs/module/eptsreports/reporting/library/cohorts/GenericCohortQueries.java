@@ -13,19 +13,11 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.library.queries.AgeQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
@@ -41,6 +33,13 @@ import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class GenericCohortQueries {
@@ -89,7 +88,7 @@ public class GenericCohortQueries {
 	 * Generic Coded Observation cohort
 	 * 
 	 * @param question the question concept
-	 * @param answers the answers to include
+	 * @param values the answers to include
 	 * @return the cohort definition
 	 */
 	public CohortDefinition hasCodedObs(Concept question, TimeModifier timeModifier, SetComparator operator,
@@ -113,7 +112,7 @@ public class GenericCohortQueries {
 	 * Generic Coded Observation cohort with default parameters defined
 	 * 
 	 * @param question the question concept
-	 * @param answers the answers to include
+	 * @param values the answers to include
 	 * @return the cohort definition
 	 */
 	public CohortDefinition hasCodedObs(Concept question, List<Concept> values) {
@@ -169,26 +168,5 @@ public class GenericCohortQueries {
 		parameters.put("hivCareProgramId", String.valueOf(hivMetadata.getHIVCareProgram().getProgramId()));
 		parameters.put("artProgramId", String.valueOf(hivMetadata.getARTProgram().getProgramId()));
 		return generalSql("baseCohort", BaseQueries.getBaseCohortQuery(parameters));
-	}
-	
-	/**
-	 * Get patients who are aged between age bracket
-	 * 
-	 * @param min
-	 * @param max
-	 * @return
-	 */
-	public CohortDefinition findPatientsBetweenAgeBracketsInYears(int min, int max) {
-		return generalSql("aged between age brackets", AgeQueries.getPatientsBetweenAgeBracketsInYears(min, max));
-	}
-	
-	/**
-	 * Find patients who are aged below
-	 * 
-	 * @param age
-	 * @return
-	 */
-	public CohortDefinition findPatientsagedBelowInYears(int age) {
-		return generalSql("aged between age brackets", AgeQueries.getPatientsWhoAreBelowXyears(age));
 	}
 }
