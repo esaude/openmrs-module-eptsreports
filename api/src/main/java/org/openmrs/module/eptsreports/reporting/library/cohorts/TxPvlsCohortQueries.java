@@ -13,8 +13,10 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Date;
+
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.queries.AgeQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -22,8 +24,6 @@ import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 /**
  * Defines all of the TxNew Cohort Definition instances we want to expose for EPTS
@@ -186,7 +186,8 @@ public class TxPvlsCohortQueries {
 	 * @return
 	 */
 	public CohortDefinition findPatientsBetweenAgeBracketsInYears(int min, int max) {
-		return genericCohortQueries.generalSql("aged between age brackets", AgeQueries.getPatientsBetweenAgeBracketsInYears(min, max));
+		return genericCohortQueries.generalSql("aged between age brackets",
+		    TxPvlsQueries.getPatientsBetweenAgeBracketsInYears(min, max));
 	}
 	
 	/**
@@ -196,6 +197,6 @@ public class TxPvlsCohortQueries {
 	 * @return
 	 */
 	public CohortDefinition findPatientsagedBelowInYears(int age) {
-		return genericCohortQueries.generalSql("aged between age brackets", AgeQueries.getPatientsWhoAreBelowXyears(age));
+		return genericCohortQueries.generalSql("aged between age brackets", TxPvlsQueries.getPatientsWhoAreBelowXyears(age));
 	}
 }

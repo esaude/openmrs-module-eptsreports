@@ -151,7 +151,7 @@ public class TxNewCohortQueries {
 		        + "inner join patient_program pg on p.patient_id=pg.patient_id "
 		        + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
 		        + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=" + hivMetadata.getARTProgram().getProgramId()
-		        + " and ps.state=" + hivMetadata.gettransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()
+		        + " and ps.state=" + hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()
 		        + " and ps.start_date=pg.date_enrolled"
 		        + " and ps.start_date between :onOrAfter and :onOrBefore and location_id=:location " + "group by p.patient_id");
 		transferredFromOtherHealthFacility.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));

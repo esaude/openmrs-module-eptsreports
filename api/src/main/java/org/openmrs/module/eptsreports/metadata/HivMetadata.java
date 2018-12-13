@@ -24,15 +24,6 @@ import org.springframework.stereotype.Component;
 @Component("hivMetadata")
 public class HivMetadata extends CommonMetadata {
 	
-	// Program Workflow States
-	private static final String SUSPEND_TREATMENT = "SUSPEND TREATMENT";
-	
-	private static final String ABANDONED = "ABANDONED";
-	
-	private static final String PATIENT_HAS_DIED = "PATIENT HAS DIED";
-	
-	private static final String TRANSFERED_OUT_TO_ANOTHER_FACILITY = "TRANSFERRED OUT TO ANOTHER FACILITY";
-	
 	// Concepts
 	public Concept getHivViralLoadConcept() {
 		String uuid = Context.getAdministrationService()
@@ -116,13 +107,14 @@ public class HivMetadata extends CommonMetadata {
 		return getProgram(uuid);
 	}
 	
+	// Program Workflow States
 	public ProgramWorkflowState getTransferredOutToAnotherHealthFacilityWorkflowState() {
 		String artProgramUuid = Context.getAdministrationService()
 		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
-		return getProgramWorkflowState(artProgramUuid, "2", TRANSFERED_OUT_TO_ANOTHER_FACILITY);
+		return getProgramWorkflowState(artProgramUuid, "2", "TRANSFERRED OUT TO ANOTHER FACILITY");
 	}
 	
-	public ProgramWorkflowState gettransferredFromOtherHealthFacilityWorkflowState() {
+	public ProgramWorkflowState getTransferredFromOtherHealthFacilityWorkflowState() {
 		String artProgramUuid = Context.getAdministrationService()
 		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
 		String transferFromOtherUuid = Context.getAdministrationService()
@@ -133,19 +125,19 @@ public class HivMetadata extends CommonMetadata {
 	public ProgramWorkflowState getSuspendedTreatmentWorkflowState() {
 		String artProgramUuid = Context.getAdministrationService()
 		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
-		return getProgramWorkflowState(artProgramUuid, "2", SUSPEND_TREATMENT);
+		return getProgramWorkflowState(artProgramUuid, "2", "SUSPEND TREATMENT");
 	}
 	
 	public ProgramWorkflowState getAbandonedWorkflowState() {
 		String artProgramUuid = Context.getAdministrationService()
 		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
-		return getProgramWorkflowState(artProgramUuid, "2", ABANDONED);
+		return getProgramWorkflowState(artProgramUuid, "2", "ABANDONED");
 	}
 	
 	public ProgramWorkflowState getPatientHasDiedWorkflowState() {
 		String artProgramUuid = Context.getAdministrationService()
 		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
-		return getProgramWorkflowState(artProgramUuid, "2", PATIENT_HAS_DIED);
+		return getProgramWorkflowState(artProgramUuid, "2", "PATIENT HAS DIED");
 	}
 	
 }
