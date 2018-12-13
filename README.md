@@ -54,3 +54,19 @@ Reports Implemented
 |*Tx_Pvls*  |Percentage of ART patients with a viral load result documented in the medical record and/or laboratory information systems (LIS) within the past 12 months with a suppressed viral load (<1000 copies/ml).
 |*Tx_Curr*  |Number of adults and children currently receiving antiretroviral therapy (ART).
 |*Tx_New*   |Number of adults and children newly enrolled on antiretroviral therapy (ART).
+
+How to perform a release
+-------------------------
+
+For more information on how to perform a release refer to this [link](https://wiki.openmrs.org/display/docs/Maven+Release+Process)
+
+In summary execute the following:
+
+```
+mvn release:prepare release:perform
+```
+
+If there is a problem, you can rollback using:
+```
+mvn release:rollback
+```
