@@ -1,4 +1,4 @@
-/**
+/*
  * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -14,64 +14,78 @@
 package org.openmrs.module.eptsreports.metadata;
 
 import org.openmrs.Concept;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.springframework.stereotype.Component;
 
 @Component("commonMetadata")
 public class CommonMetadata extends Metadata {
 	
 	// CONCEPTS
-	private String START_DRUGS = "e1d9ef28-1d5f-11e0-b929-000c29ad1d07";
-	
-	private String HISTORICAL_DRUG_START_DATE = "e1d8f690-1d5f-11e0-b929-000c29ad1d07";
-	
-	private String YES = "e1d81b62-1d5f-11e0-b929-000c29ad1d07";
-	
-	private String PREGNANT = "e1e056a6-1d5f-11e0-b929-000c29ad1d07";
-	
-	private String GESTATION = "e1cdd58a-1d5f-11e0-b929-000c29ad1d07";
-	
-	private String NUMBER_OF_WEEKS_PREGNANT = "e1da0788-1d5f-11e0-b929-000c29ad1d07";
-	
-	private String PREGNANCY_DUE_DATE = "e1dca8ee-1d5f-11e0-b929-000c29ad1d07";
-	
-	private String BREASTFEEDING = "bc4fe755-fc8f-49b8-9956-baf2477e8313";
-	
-	private String RETURN_VISIT_DATE = "e1dae630-1d5f-11e0-b929-000c29ad1d07";
-	
 	public Concept getYesConcept() {
-		return getConcept(YES);
+		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_YES_CONCEPT_UUID);
+		return getConcept(uuid);
 	}
 	
 	public Concept getstartDrugsConcept() {
-		return getConcept(START_DRUGS);
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_START_DRUGS_CONCEPT_UUID);
+		return getConcept(uuid);
+	}
+	
+	public Concept getTransferFromOtherFacilityConcept() {
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_TRANSFER_FROM_OTHER_FACILITY_CONCEPT_UUID);
+		return getConcept(uuid);
 	}
 	
 	public Concept gethistoricalDrugStartDateConcept() {
-		return getConcept(HISTORICAL_DRUG_START_DATE);
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_HISTORICAL_START_DATE_CONCEPT_UUID);
+		return getConcept(uuid);
 	}
 	
+	// concept_id=1982
 	public Concept getPregnantConcept() {
-		return getConcept(PREGNANT);
+		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_PREGNANT_CONCEPT_UUID);
+		return getConcept(uuid);
 	}
 	
 	public Concept getGestationConcept() {
-		return getConcept(GESTATION);
+		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_GESTATION_CONCEPT_UUID);
+		return getConcept(uuid);
 	}
 	
 	public Concept getNumberOfWeeksPregnant() {
-		return getConcept(NUMBER_OF_WEEKS_PREGNANT);
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_NUMBER_OF_WEEKS_PREGNANT_CONCEPT_UUID);
+		return getConcept(uuid);
 	}
 	
 	public Concept getPregnancyDueDate() {
-		return getConcept(PREGNANCY_DUE_DATE);
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_PREGNANCY_DUE_DATE_CONCEPT_UUID);
+		return getConcept(uuid);
 	}
 	
+	// concept_id=6332
 	public Concept getBreastfeeding() {
-		return getConcept(BREASTFEEDING);
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_BREASTFEEDING_CONCEPT_UUID);
+		return getConcept(uuid);
 	}
 	
 	public Concept getReturnVisitDateConcept() {
-		return getConcept(RETURN_VISIT_DATE);
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_RETURN_VISIT_DATE_CONCEPT_UUID);
+		return getConcept(uuid);
+	}
+	
+	// concept_id=5599
+	public Concept getPriorDeliveryDateConcept() {
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_PRIOR_DELIVERY_DATE_CONCEPT_UUID);
+		return getConcept(uuid);
 	}
 	
 }

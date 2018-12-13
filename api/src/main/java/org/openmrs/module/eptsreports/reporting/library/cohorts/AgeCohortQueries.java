@@ -17,7 +17,6 @@ import java.util.Date;
 
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,24 +25,14 @@ import org.springframework.stereotype.Component;
 public class AgeCohortQueries {
 	
 	@Autowired
-	private CommonCohortQueries CommonCohortQueries;
+	private GenericCohortQueries genericCohortQueries;
 	
-	public CohortDefinition patientWithAgeBelow(int age) {
-		AgeCohortDefinition patientsWithAgebilow = new AgeCohortDefinition();
-		patientsWithAgebilow.setName("patientsWithAgebelow");
-		patientsWithAgebilow.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
-		patientsWithAgebilow.setMaxAge(age - 1);
-		patientsWithAgebilow.setMaxAgeUnit(DurationUnit.YEARS);
-		return patientsWithAgebilow;
-	}
-	
-	public CohortDefinition patientWithAgeAbove(int age) {
-		AgeCohortDefinition patientsWithAge = new AgeCohortDefinition();
-		patientsWithAge.setName("patientsWithAge");
-		patientsWithAge.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
-		patientsWithAge.setMinAge(age);
-		patientsWithAge.setMinAgeUnit(DurationUnit.YEARS);
-		return patientsWithAge;
+	public CohortDefinition createBelowYAgeCohort(String name, int maxAge) {
+		AgeCohortDefinition patientsWithAgeBelow = new AgeCohortDefinition();
+		patientsWithAgeBelow.setName(name);
+		patientsWithAgeBelow.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
+		patientsWithAgeBelow.setMaxAge(maxAge - 1);
+		return patientsWithAgeBelow;
 	}
 	
 	public CohortDefinition createXtoYAgeCohort(String name, int minAge, int maxAge) {
@@ -69,7 +58,8 @@ public class AgeCohortQueries {
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getPatientsWithUnknownAge() {
-		return CommonCohortQueries.general("unknownAge", "SELECT p.patient_id FROM patient p JOIN person pr ON p.patient_id = pr.person_id WHERE pr.birthdate IS NULL");
+		return genericCohortQueries.generalSql("unknownAge",
+		    "SELECT p.patient_id FROM patient p JOIN person pr ON p.patient_id = pr.person_id WHERE pr.birthdate IS NULL");
 	}
 	
 }
