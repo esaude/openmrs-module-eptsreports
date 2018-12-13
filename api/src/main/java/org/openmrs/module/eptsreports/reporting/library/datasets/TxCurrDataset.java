@@ -100,13 +100,13 @@ public class TxCurrDataset extends BaseDataSet {
 		// Looks for patients that from the date scheduled for next follow up
 		// consultation (concept 1410=RETURN VISIT DATE) until the end date have not
 		// completed 60 days
-		SqlCohortDefinition patientsWhoHaveNotCompleted60Days = txCurrCohortQueries.getPatientsWhoHaveNotCompleted60Days();
+		SqlCohortDefinition patientsWhoHaveNotCompleted60Days = txCurrCohortQueries.patientsWhoHaveNotCompletedFollowup();
 		
 		// Looks for patients that were registered as abandonment (program workflow
 		// state is 9=ABANDONED) but from the date scheduled for next drug pick up
 		// (concept 5096=RETURN VISIT DATE FOR ARV DRUG) until the end date have not
 		// completed 60 days
-		SqlCohortDefinition abandonedButHaveNotcompleted60Days = txCurrCohortQueries.getAbandonedButHaveNotcompleted60Days();
+		SqlCohortDefinition abandonedButHaveNotcompleted60Days = txCurrCohortQueries.getAbandonedButStilInGracePeriod();
 		
 		CohortDefinition males = genderCohortQueries.MaleCohort();
 		
