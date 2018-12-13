@@ -28,15 +28,24 @@ public class CommonMetadata extends Metadata {
 	}
 	
 	public Concept getstartDrugsConcept() {
-		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_START_DRUGS_CONCEPT_UUID);
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_START_DRUGS_CONCEPT_UUID);
+		return getConcept(uuid);
+	}
+	
+	public Concept getTransferFromOtherFacilityConcept() {
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_TRANSFER_FROM_OTHER_FACILITY_CONCEPT_UUID);
 		return getConcept(uuid);
 	}
 	
 	public Concept gethistoricalDrugStartDateConcept() {
-		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_HISTORICAL_START_DATE_CONCEPT_UUID);
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_HISTORICAL_START_DATE_CONCEPT_UUID);
 		return getConcept(uuid);
 	}
 	
+	// concept_id=1982
 	public Concept getPregnantConcept() {
 		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_PREGNANT_CONCEPT_UUID);
 		return getConcept(uuid);
@@ -48,22 +57,34 @@ public class CommonMetadata extends Metadata {
 	}
 	
 	public Concept getNumberOfWeeksPregnant() {
-		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_NUMBER_OF_WEEKS_PREGNANT_CONCEPT_UUID);
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_NUMBER_OF_WEEKS_PREGNANT_CONCEPT_UUID);
 		return getConcept(uuid);
 	}
 	
 	public Concept getPregnancyDueDate() {
-		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_PREGNANCY_DUE_DATE_CONCEPT_UUID);
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_PREGNANCY_DUE_DATE_CONCEPT_UUID);
 		return getConcept(uuid);
 	}
 	
+	// concept_id=6332
 	public Concept getBreastfeeding() {
-		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_BREASTFEEDING_CONCEPT_UUID);
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_BREASTFEEDING_CONCEPT_UUID);
 		return getConcept(uuid);
 	}
 	
 	public Concept getReturnVisitDateConcept() {
-		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_RETURN_VISIT_DATE_CONCEPT_UUID);
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_RETURN_VISIT_DATE_CONCEPT_UUID);
+		return getConcept(uuid);
+	}
+	
+	// concept_id=5599
+	public Concept getPriorDeliveryDateConcept() {
+		String uuid = Context.getAdministrationService()
+		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_PRIOR_DELIVERY_DATE_CONCEPT_UUID);
 		return getConcept(uuid);
 	}
 	

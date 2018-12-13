@@ -134,10 +134,26 @@
     </globalProperty>
 
     <globalProperty>
+        <property>@MODULE_ID@.tbProgramUuid</property>
+        <defaultValue>142d23c4-c29f-4799-8047-eb3af911fd21</defaultValue>
+        <description>
+            UUID for the Programa de Combate a Tuberculose
+        </description>
+    </globalProperty>
+
+    <globalProperty>
         <property>@MODULE_ID@.sTarvAdultoInitialAEncounterTypeUuid</property>
         <defaultValue>e278f820-1d5f-11e0-b929-000c29ad1d07</defaultValue>
         <description>
             UUID for the S.TARV: ADULTO INICIAL A encounter type
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>@MODULE_ID@.sTarvPediatriaInicialAEncounterTypeUuid</property>
+        <defaultValue>e278fa8c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the S.TARV: PEDIATRIA INICIAL A encounter type
         </description>
     </globalProperty>
 
@@ -150,10 +166,10 @@
     </globalProperty>
 
     <globalProperty>
-        <property>@MODULE_ID@.dateOfDeliveryConceptUuid</property>
+        <property>@MODULE_ID@.priorDeliveryDateConceptUuid</property>
         <defaultValue>e1e765c2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
         <description>
-            UUID for the DATA DO PARTO concept
+            UUID for the Prior Delivery Date concept
         </description>
     </globalProperty>
 
@@ -234,6 +250,14 @@
         <defaultValue>e1dae630-1d5f-11e0-b929-000c29ad1d07</defaultValue>
         <description>
             UUID for the DATA DE PROXIMA CONSULTA concept
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>@MODULE_ID@.hivCareProgramUuid</property>
+        <defaultValue>7b2e4a0a-d4eb-4df7-be30-78ca4b28ca99</defaultValue>
+        <description>
+            UUID for the Programa de seguimento e cuidado aos pacientes HIV+ program
         </description>
     </globalProperty>
 

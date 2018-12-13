@@ -14,7 +14,7 @@
 
 package org.openmrs.module.eptsreports.reporting.library.indicators;
 
-import org.openmrs.module.eptsreports.reporting.library.cohorts.CompositionCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class BreastfeedingIndicators extends BaseIndicators {
 	
 	@Autowired
-	private CompositionCohortQueries ccq;
+	private TxPvlsCohortQueries txPvls;
 	
 	/**
 	 * Breastfeeding women with viral load suppression in the last 12 months to a common file for reuse
@@ -32,7 +32,8 @@ public class BreastfeedingIndicators extends BaseIndicators {
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getBreastfeedingWomenWithSuppressedViralLoadIn12Months() {
-		return newCohortIndicator("pregnantWomenWithViralLoadSuppression", EptsReportUtils.map(ccq.breastfeedingWomenAndHasViralLoadSuppressionInTheLast12MonthsNumerator(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+		return newCohortIndicator("breastfeedingWomenWithViralLoadSuppression", EptsReportUtils.map(
+		    txPvls.getBreastfeedingWomenWhoHaveViralSuppression(), "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 	
 	/**
@@ -41,6 +42,7 @@ public class BreastfeedingIndicators extends BaseIndicators {
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getBreastfeedingWomenWithViralLoadIn12Months() {
-		return newCohortIndicator("pregnantWomenWithViralLoad", EptsReportUtils.map(ccq.breastfeedingWomenAndHasViralLoadInTheLast12MonthsDenominator(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+		return newCohortIndicator("breastfeedingWomenWithViralLoad", EptsReportUtils.map(
+		    txPvls.getBreastfeedingWomenWhoHaveViralLoadResults(), "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 }

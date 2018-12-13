@@ -10,15 +10,13 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
-import org.openmrs.module.reporting.ReportingConstants;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -30,6 +28,9 @@ public class SetupTxCurr extends EptsDataExportManager {
 	
 	@Autowired
 	private TxCurrDataset txCurrDataset;
+	
+	@Autowired
+	private GenericCohortQueries genericCohortQueries;
 	
 	public SetupTxCurr() {
 	}
@@ -60,23 +61,18 @@ public class SetupTxCurr extends EptsDataExportManager {
 	}
 	
 	@Override
-	public List<Parameter> getParameters() {
-		List<Parameter> parameters = new ArrayList<Parameter>();
-		parameters.add(ReportingConstants.START_DATE_PARAMETER);
-		parameters.add(ReportingConstants.END_DATE_PARAMETER);
-		parameters.add(ReportingConstants.LOCATION_PARAMETER);
-		return parameters;
-	}
-	
-	@Override
 	public ReportDefinition constructReportDefinition() {
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setUuid(getUuid());
 		reportDefinition.setName(getName());
 		reportDefinition.setDescription(getDescription());
-		reportDefinition.setParameters(getParameters());
+		reportDefinition.setParameters(txCurrDataset.getParameters());
 		
-		reportDefinition.addDataSetDefinition(txCurrDataset.constructTxNewDatset(getParameters()), ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate},location=${location}"));
+		reportDefinition.addDataSetDefinition(txCurrDataset.constructTxNewDatset(),
+		    ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate},location=${location}"));
+		
+		reportDefinition.setBaseCohortDefinition(genericCohortQueries.getBaseCohort(),
+		    ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
 		
 		return reportDefinition;
 	}
