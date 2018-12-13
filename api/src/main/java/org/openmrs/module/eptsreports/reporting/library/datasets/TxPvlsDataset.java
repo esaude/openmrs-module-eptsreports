@@ -61,28 +61,36 @@ public class TxPvlsDataset extends BaseDataSet {
 		
 		// constructing the first row of pregnant and breast feeding mothers
 		
-		dsd.addColumn("1N", "Pregnant Women - Numerator",
-		    EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithSuppressedViralLoadIn12Months(), mappings), "q=pregnant");
+		addRow(dsd, "1N", "Pregnant Women - Numerator",
+		    EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithSuppressedViralLoadIn12Months(), mappings), pregnant());
 		
-		dsd.addColumn("1D", "Pregnant Women - Denominator",
-		    EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithViralLoadIn12Months(), mappings), "q=pregnant");
+		addRow(dsd,"1D", "Pregnant Women - Denominator",
+		    EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithViralLoadIn12Months(), mappings), pregnant());
 		
 		// constructing the rows for breastfeeding women
 		
-		dsd.addColumn("2N", "Breastfeeding - Women Numerator",
-		    EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithSuppressedViralLoadIn12Months(), mappings), "");
-		
-		dsd.addColumn("2D", "Breastfeeding - Women Denominator",
-		    EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithViralLoadIn12Months(), mappings), "");
+		addRow(dsd, "2N", "Breastfeeding - Women Numerator",
+		    EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithSuppressedViralLoadIn12Months(), mappings), breastfeeding());
+
+		addRow(dsd,"2D", "Breastfeeding - Women Denominator",
+		    EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithViralLoadIn12Months(), mappings), breastfeeding());
 		
 		// constructing the rows for children
 		// Numerator
-		dsd.addColumn("3N-01", "Children Numerator (Under 1 year) ",
-		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionAgeBelow(1), mappings), "");
-		dsd.addColumn("3N-02", "Children Numerator (1-4 years) ",
-		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionWithinAgeBracket(1, 4), mappings), "");
-		dsd.addColumn("3N-03", "Children Numerator (5 - 9 years) ",
-		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionWithinAgeBracket(5, 9), mappings), "");
+		dsd.addColumn("3N-01M", "Children Numerator (Under 1 year - male) ",
+		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionAgeBelow(1), mappings), "gender=M");
+		dsd.addColumn("3N-01F", "Children Numerator (Under 1 year - female) ",
+				EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionAgeBelow(1), mappings), "gender=F");
+
+		dsd.addColumn("3N-02M", "Children Numerator (1-4 years - male) ",
+		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionWithinAgeBracket(1, 4), mappings), "gender=M");
+		dsd.addColumn("3N-02F", "Children Numerator (1-4 years - female) ",
+				EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionWithinAgeBracket(1, 4), mappings), "gender=F");
+
+		dsd.addColumn("3N-03M", "Children Numerator (5 - 9 years - male) ",
+		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionWithinAgeBracket(5, 9), mappings), "gender=M");
+		dsd.addColumn("3N-03F", "Children Numerator (5 - 9 years - female) ",
+				EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionWithinAgeBracket(5, 9), mappings), "gender=F");
 		
 		// denominator
 		dsd.addColumn("3D-01", "Children Denominator (Under 1 year) ",
@@ -178,18 +186,18 @@ public class TxPvlsDataset extends BaseDataSet {
 		    ReportingConstants.LOCATION_PARAMETER);
 	}
 	
-	private List<ColumnParameters> rtndDisagregationPregnant() {
+	private List<ColumnParameters> breastfeeding() {
 		// columns for routine and Not documented for pregnant women
-		ColumnParameters routineP = new ColumnParameters("routine-pregnant", "Routine Pregnant", "rtn=r", "01");
-		ColumnParameters nDocumentedP = new ColumnParameters("not-documented-pregnant", "Not documented Pregnant", "rtn=n", "02");
-		return Arrays.asList(routineP, nDocumentedP);
+		ColumnParameters routine = new ColumnParameters("routine-Breastfeeding", "Routine Breastfeeding", "rtn=r", "01");
+		ColumnParameters notDocumented = new ColumnParameters("not-documented-breastfeeding", "Not documented Breastfeeding", "rtn=n", "02");
+		return Arrays.asList(routine, notDocumented);
 	}
 	
-	private List<ColumnParameters> rtndDisagregationBreastfeeding() {
+	private List<ColumnParameters> pregnant() {
 		// columns for routine and Not documented for breastfeeding women
-		ColumnParameters routineB = new ColumnParameters("routine-breastfeeding", "Routine Breastfeeding", "rtn=r", "01");
-		ColumnParameters nDocumentedB = new ColumnParameters("not-documented-breastfeeding", "Not documented Breastfeeding", "rtn=n",
+		ColumnParameters routinePregnant = new ColumnParameters("routine-pregnant", "Routine Pregnant", "rtn=r|q=pregnant", "01");
+		ColumnParameters nDocumentedPregnant = new ColumnParameters("not-documented-pregnant", "Not documented Pregnant", "rtn=n|q=pregnant",
 		        "02");
-		return Arrays.asList(routineB, nDocumentedB);
+		return Arrays.asList(routinePregnant, nDocumentedPregnant);
 	}
 }
