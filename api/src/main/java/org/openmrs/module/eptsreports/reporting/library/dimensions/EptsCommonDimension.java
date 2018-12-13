@@ -13,15 +13,17 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.dimensions;
 
+import java.util.Date;
+
+import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 @Component
 public class EptsCommonDimension {
@@ -31,6 +33,9 @@ public class EptsCommonDimension {
 	
 	@Autowired
 	private AgeCohortQueries ageCohortQueries;
+	
+	@Autowired
+	private TxNewCohortQueries txNewCohortQueries;
 	
 	/**
 	 * Gender dimension
@@ -54,7 +59,7 @@ public class EptsCommonDimension {
 		CohortDefinitionDimension dim = new CohortDefinitionDimension();
 		dim.addParameter(new Parameter("effectiveDate", "End Date", Date.class));
 		dim.setName("age");
-		dim.addCohortDefinition("<1", EptsReportUtils.map(ageCohortQueries.patientWithAgeBelow(1), "effectiveDate=${endDate}"));
+		dim.addCohortDefinition("<1", EptsReportUtils.map(ageCohortQueries.createBelowYAgeCohort("", 1), "effectiveDate=${endDate}"));
 		dim.addCohortDefinition("1-4",
 		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("1-4", 1, 4), "effectiveDate=${endDate}"));
 		dim.addCohortDefinition("5-9",
@@ -75,7 +80,24 @@ public class EptsCommonDimension {
 		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("40-44", 40, 44), "effectiveDate=${endDate}"));
 		dim.addCohortDefinition("45-49",
 		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("45-49", 45, 49), "effectiveDate=${endDate}"));
-		dim.addCohortDefinition(">49", EptsReportUtils.map(ageCohortQueries.patientWithAgeAbove(50), "effectiveDate=${endDate}"));
+		dim.addCohortDefinition(">49", EptsReportUtils.map(ageCohortQueries.createOverXAgeCohort("", 50), "effectiveDate=${endDate}"));
+		return dim;
+	}
+	
+	/**
+	 * @return CohortDefinitionDimension
+	 */
+	public CohortDefinitionDimension maternityDimension() {
+		CohortDefinitionDimension dim = new CohortDefinitionDimension();
+		dim.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		dim.addParameter(new Parameter("endDate", "End Date", Date.class));
+		dim.addParameter(new Parameter("location", "location", Location.class));
+		dim.setName("Maternity Dimension");
+		
+		dim.addCohortDefinition("breastfeeding", EptsReportUtils.map(txNewCohortQueries.getTxNewBreastfeedingComposition(),
+		    "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+		dim.addCohortDefinition("pregnant", EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		return dim;
 	}
 }

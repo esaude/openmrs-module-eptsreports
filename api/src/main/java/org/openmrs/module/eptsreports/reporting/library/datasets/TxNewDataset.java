@@ -19,10 +19,12 @@ import java.util.ArrayList;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
-import org.openmrs.module.eptsreports.reporting.library.indicators.TbIndicators;
-import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
@@ -46,7 +48,7 @@ public class TxNewDataset extends BaseDataSet {
 	private HivIndicators hivIndicators;
 	
 	@Autowired
-	private TbIndicators tbIndicators;
+	private EptsCommonDimension eptsCommonDimension;
 	
 	public DataSetDefinition constructTxNewDatset() {
 		
@@ -84,27 +86,24 @@ public class TxNewDataset extends BaseDataSet {
 		
 		CohortDefinition females = genderCohortQueries.FemaleCohort();
 		
-		CohortDefinition PatientBelow1Year = ageCohortQueries.patientWithAgeBelow(1);
-		CohortDefinition PatientBetween1And9Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween1And9Years", 1, 9);
-		CohortDefinition PatientBetween10And14Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween10And14Years", 10, 14);
-		CohortDefinition PatientBetween15And19Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween15And19Years", 15, 19);
-		CohortDefinition PatientBetween20And24Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween20And24Years", 20, 24);
-		CohortDefinition PatientBetween25And29Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween25And29Years", 25, 29);
-		CohortDefinition PatientBetween30And34Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween30And34Years", 30, 34);
-		CohortDefinition PatientBetween35And39Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween35And39Years", 35, 39);
-		CohortDefinition PatientBetween40And49Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween40And49Years", 40, 49);
-		CohortDefinition PatientBetween50YearsAndAbove = ageCohortQueries.patientWithAgeAbove(50);
-		PatientBetween50YearsAndAbove.setName("PatientBetween50YearsAndAbove");
+		// The maxAge value in these age cohorts are one year above the actual year to
+		// fit the "<" operator used in the UnionQueries
+		AgeCohortDefinition PatientBelow1Year = new AgeCohortDefinition();
+		PatientBelow1Year.setName("PatientBelow1Year");
+		PatientBelow1Year.setMaxAge(1);
+		CohortDefinition PatientBetween1And9Years = ageCohortQueries.createXtoYAgeCohort("PatientBetween1And9Years", 1, 10);
 		
 		ArrayList<CohortDefinition> agesRange = new ArrayList<CohortDefinition>();
-		agesRange.add(PatientBetween10And14Years);
-		agesRange.add(PatientBetween15And19Years);
-		agesRange.add(PatientBetween20And24Years);
-		agesRange.add(PatientBetween25And29Years);
-		agesRange.add(PatientBetween30And34Years);
-		agesRange.add(PatientBetween35And39Years);
-		agesRange.add(PatientBetween40And49Years);
-		agesRange.add(PatientBetween50YearsAndAbove);
+		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween10And14Years", 10, 15));
+		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween15And19Years", 15, 20));
+		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween20And24Years", 20, 25));
+		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween25And29Years", 25, 30));
+		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween30And34Years", 30, 35));
+		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween35And39Years", 35, 40));
+		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween40And49Years", 40, 50));
+		agesRange.add(ageCohortQueries.createOverXAgeCohort("PatientBetween50YearsAndAbove", 50));
+		
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		
 		// Male and Female <1
 		CohortDefinition patientBelow1YearEnrolledInHIVStartedART = txNewCohortQueries.getTxNewCompositionCohort(
@@ -113,9 +112,8 @@ public class TxNewDataset extends BaseDataSet {
 		    PatientBelow1Year, null);
 		CohortIndicator patientBelow1YearEnrolledInHIVStartedARTIndicator = hivIndicators
 		        .patientBelow1YearEnrolledInHIVStartedARTIndicator(patientBelow1YearEnrolledInHIVStartedART);
-		dataSetDefinition.addColumn("1<1", "TX_NEW: New on ART: Patients below 1 year",
-		    new Mapped<CohortIndicator>(patientBelow1YearEnrolledInHIVStartedARTIndicator,
-		            ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}")),
+		dataSetDefinition.addColumn("1<1", "TX_NEW: New on ART: Patients below 1 year", new Mapped<CohortIndicator>(
+		        patientBelow1YearEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings(mappings)),
 		    "");
 		
 		// Male and Female between 1 and 9 years
@@ -125,9 +123,8 @@ public class TxNewDataset extends BaseDataSet {
 		    PatientBetween1And9Years, null);
 		CohortIndicator patientBetween1And9YearsEnrolledInHIVStartedARTIndicator = hivIndicators
 		        .patientBetween1And9YearsEnrolledInHIVStartedARTIndicator(patientBetween1And9YearsEnrolledInHIVStartedART);
-		dataSetDefinition.addColumn("119", "TX_NEW: New on ART: Patients Between 1 and 9 years",
-		    new Mapped<CohortIndicator>(patientBetween1And9YearsEnrolledInHIVStartedARTIndicator,
-		            ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}")),
+		dataSetDefinition.addColumn("119", "TX_NEW: New on ART: Patients Between 1 and 9 years", new Mapped<CohortIndicator>(
+		        patientBetween1And9YearsEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings(mappings)),
 		    "");
 		
 		// Male
@@ -141,7 +138,7 @@ public class TxNewDataset extends BaseDataSet {
 			        .patientInYearRangeEnrolledInHIVStartedARTIndicator(patientInYearRangeEnrolledInARTStarted);
 			dataSetDefinition.addColumn("1M" + i, "Males:TX_NEW: New on ART by age and sex: " + ageCohort.getName(),
 			    new Mapped<CohortIndicator>(patientInYearRangeEnrolledInHIVStartedARTIndicator,
-			            ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}")),
+			            ParameterizableUtil.createParameterMappings(mappings)),
 			    "");
 			
 			i++;
@@ -158,7 +155,7 @@ public class TxNewDataset extends BaseDataSet {
 			        .patientInYearRangeEnrolledInHIVStartedARTIndicator(patientInYearRangeEnrolledInARTStarted);
 			dataSetDefinition.addColumn("1F" + j, "Females:TX_NEW: New on ART by age and sex: " + ageCohort.getName(),
 			    new Mapped<CohortIndicator>(patientInYearRangeEnrolledInHIVStartedARTIndicator,
-			            ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}")),
+			            ParameterizableUtil.createParameterMappings(mappings)),
 			    "");
 			j++;
 		}
@@ -168,19 +165,17 @@ public class TxNewDataset extends BaseDataSet {
 		    patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility, null, null);
 		CohortIndicator patientEnrolledInHIVStartedARTIndicator = hivIndicators
 		        .patientEnrolledInHIVStartedARTIndicator(patientEnrolledInART);
-		dataSetDefinition.addColumn("1All", "TX_NEW: New on ART",
-		    new Mapped<CohortIndicator>(patientEnrolledInHIVStartedARTIndicator,
-		            ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}")),
+		dataSetDefinition.addColumn("1All", "TX_NEW: New on ART", new Mapped<CohortIndicator>(patientEnrolledInHIVStartedARTIndicator,
+		        ParameterizableUtil.createParameterMappings(mappings)),
 		    "");
 		
-		// Obtain patients notified to be on TB treatment
-		CohortDefinition notifiedToBeOnTbTreatment = txNewCohortQueries.getPatientsNotifiedToBeOnTbTreatment();
-		CohortIndicator tuberculosePatientNewlyInitiatingARTIndicator = tbIndicators
-		        .tuberculosePatientNewlyInitiatingARTIndicator(notifiedToBeOnTbTreatment);
-		dataSetDefinition.addColumn("TB", "TX_NEW: TB Started ART",
-		    new Mapped<CohortIndicator>(tuberculosePatientNewlyInitiatingARTIndicator,
-		            ParameterizableUtil.createParameterMappings("startDate=${startDate},endDate=${endDate},location=${location}")),
-		    "");
+		// Obtain patients breastfeeding newly enrolled on ART
+		dataSetDefinition.addDimension("maternity", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
+		
+		dataSetDefinition.addColumn("ANC", "TX_NEW: Pregnant Started ART",
+		    new Mapped<CohortIndicator>(patientEnrolledInHIVStartedARTIndicator,
+		            ParameterizableUtil.createParameterMappings(mappings)),
+		    "maternity=breastfeeding");
 		
 		return dataSetDefinition;
 	}

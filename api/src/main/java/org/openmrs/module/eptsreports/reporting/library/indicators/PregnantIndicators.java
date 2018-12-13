@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class PregnantIndicators extends BaseIndicators {
 	
 	@Autowired
-	private TxPvlsCohortQueries pvls;
+	private TxPvlsCohortQueries txPvls;
 	
 	/**
 	 * Pregnant women with viral load suppression in the last 12 months to a common file for reuse
@@ -18,9 +18,8 @@ public class PregnantIndicators extends BaseIndicators {
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getPregnantWomenWithSuppressedViralLoadIn12Months() {
-		return newCohortIndicator("pregnantWomenWithViralLoadSuppression",
-		    EptsReportUtils.map(pvls.pregnantWomenAndHasSuppressedViralLoadInTheLast12MonthsNumerator(),
-		        "startDate=${startDate},endDate=${endDate},location=${location}"));
+		return newCohortIndicator("pregnantWomenWithViralLoadSuppression", EptsReportUtils
+		        .map(txPvls.getPatientsWithViralLoadSuppression(), "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 	
 	/**
@@ -29,8 +28,7 @@ public class PregnantIndicators extends BaseIndicators {
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getPregnantWomenWithViralLoadIn12Months() {
-		return newCohortIndicator("pregnantWomenWithViralLoad",
-		    EptsReportUtils.map(pvls.pregnantWomenAndHasViralLoadInTheLast12MonthsDenominator(),
-		        "startDate=${startDate},endDate=${endDate},location=${location}"));
+		return newCohortIndicator("pregnantWomenWithViralLoad", EptsReportUtils.map(txPvls.getPatientsWithViralLoadResults(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 }

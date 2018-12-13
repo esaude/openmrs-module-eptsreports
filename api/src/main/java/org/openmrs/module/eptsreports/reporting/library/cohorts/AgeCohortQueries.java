@@ -17,29 +17,18 @@ import java.util.Date;
 
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AgeCohortQueries {
 	
-	public CohortDefinition patientWithAgeBelow(int age) {
-		AgeCohortDefinition patientsWithAgebilow = new AgeCohortDefinition();
-		patientsWithAgebilow.setName("patientsWithAgebelow");
-		patientsWithAgebilow.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
-		patientsWithAgebilow.setMaxAge(age - 1);
-		patientsWithAgebilow.setMaxAgeUnit(DurationUnit.YEARS);
-		return patientsWithAgebilow;
-	}
-	
-	public CohortDefinition patientWithAgeAbove(int age) {
-		AgeCohortDefinition patientsWithAge = new AgeCohortDefinition();
-		patientsWithAge.setName("patientsWithAge");
-		patientsWithAge.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
-		patientsWithAge.setMinAge(age);
-		patientsWithAge.setMinAgeUnit(DurationUnit.YEARS);
-		return patientsWithAge;
+	public CohortDefinition createBelowYAgeCohort(String name, int maxAge) {
+		AgeCohortDefinition patientsWithAgeBelow = new AgeCohortDefinition();
+		patientsWithAgeBelow.setName(name);
+		patientsWithAgeBelow.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
+		patientsWithAgeBelow.setMaxAge(maxAge - 1);
+		return patientsWithAgeBelow;
 	}
 	
 	public CohortDefinition createXtoYAgeCohort(String name, int minAge, int maxAge) {
