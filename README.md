@@ -63,7 +63,7 @@ For more information on how to perform a release refer to this [link](https://wi
 In summary execute the following:
 
 ```
-mvn release:prepare release:perform
+mvn release:prepare
 ```
 
 If there is a problem, you can rollback using:
