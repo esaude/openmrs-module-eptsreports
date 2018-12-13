@@ -46,7 +46,6 @@ public class TxPvlsDataset extends BaseDataSet {
 		dsd.addParameters(getParameters());
 		// tie dimensions to this data definition
 		dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
-		dsd.addDimension("age", EptsReportUtils.map(eptsCommonDimension.age(), "effectiveDate=${endDate}"));
 		dsd.addDimension("q", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
 		
 		dsd.addColumn("0N", "Total patients with suppressed Viral load - Numerator",
