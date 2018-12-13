@@ -159,15 +159,24 @@ public class TxCurrDataset extends BaseDataSet {
 			    "");
 		}
 		
-		CohortDefinition allPatientsCurrentlyInART = txCurrCohortQueries.getTxCurrCompositionCohort("allPatientsCurrentlyInART",
-		    enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
+		// Unknown
+		CohortDefinition unknown = txCurrCohortQueries.getTxCurrCompositionCohort("allPatientsCurrentlyInART", enrolledBeforeEndDate,
+		    patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
+		    patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsWhoHaveNotReturned, patientsWhoHaveNotCompleted60Days,
+		    abandonedButHaveNotcompleted60Days, genericCohortQueries.getUnknownAgeCohort(), null);
+		CohortIndicator unknownIndicator = hivIndicators.patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(unknown);
+		dataSetDefinition.addColumn("C1UNK", "TX_CURR: Unknown Age", new Mapped<CohortIndicator>(unknownIndicator,
+		        ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}")),
+		    "");
+		
+		// Total
+		CohortDefinition all = txCurrCohortQueries.getTxCurrCompositionCohort("allPatientsCurrentlyInART", enrolledBeforeEndDate,
+		    patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
 		    patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsWhoHaveNotReturned, patientsWhoHaveNotCompleted60Days,
 		    abandonedButHaveNotcompleted60Days, null, null);
-		CohortIndicator allPatientsCurrentlyInARTARTIndicator = hivIndicators
-		        .patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(allPatientsCurrentlyInART);
-		dataSetDefinition.addColumn("C1All", "TX_CURR: Currently on ART",
-		    new Mapped<CohortIndicator>(allPatientsCurrentlyInARTARTIndicator,
-		            ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}")),
+		CohortIndicator allIndicator = hivIndicators.patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(all);
+		dataSetDefinition.addColumn("C1All", "TX_CURR: Currently on ART", new Mapped<CohortIndicator>(allIndicator,
+		        ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}")),
 		    "");
 		
 		return dataSetDefinition;
