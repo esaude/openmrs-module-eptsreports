@@ -85,7 +85,8 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
 		ReportDesign reportDesign = null;
 		try {
-			reportDesign = createXlsReportDesign(reportDefinition, "PEPFAR_MER_2.1_REPORT.xls", "PEPFAR Quarterly Report", getExcelDesignUuid(), null);
+			reportDesign = createXlsReportDesign(reportDefinition, "PEPFAR_MER_2.1_REPORT.xls", "PEPFAR Quarterly Report",
+			    getExcelDesignUuid(), null);
 			Properties props = new Properties();
 			props.put("sortWeight", "5000");
 			reportDesign.setProperties(props);
@@ -96,6 +97,15 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 		}
 		
 		return Arrays.asList(reportDesign);
+	}
+	
+	@Override
+	public List<Parameter> getParameters() {
+		List<Parameter> parameters = new ArrayList<Parameter>();
+		parameters.add(ReportingConstants.START_DATE_PARAMETER);
+		parameters.add(ReportingConstants.END_DATE_PARAMETER);
+		parameters.add(ReportingConstants.LOCATION_PARAMETER);
+		return parameters;
 	}
 	
 }
