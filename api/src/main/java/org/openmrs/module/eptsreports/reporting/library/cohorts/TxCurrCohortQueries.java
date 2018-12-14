@@ -280,8 +280,7 @@ public class TxCurrCohortQueries {
 		TxCurrComposition.getSearches().put("12", new Mapped<CohortDefinition>(patientsWithoutNextConsultationDate,
 		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
 		
-		String compositionString = "((1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND NOT (5 OR 7 OR 8))) AND (NOT (11 OR 12)))";
-		// String compositionString = "((1 OR 2 OR 3 OR 4) AND NOT (11 OR 12))";
+		String compositionString = "((1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND NOT (5 OR 7 OR 8))) AND (NOT (11 AND 12)))";
 		
 		if (ageCohort != null) {
 			TxCurrComposition.getSearches().put("9", new Mapped<CohortDefinition>(ageCohort,
