@@ -102,7 +102,8 @@ public class TxNewDataset extends BaseDataSet {
 		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween25And29Years", 25, 30));
 		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween30And34Years", 30, 35));
 		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween35And39Years", 35, 40));
-		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween40And49Years", 40, 50));
+		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween40And49Years", 40, 45));
+		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween40And49Years", 45, 50));
 		agesRange.add(ageCohortQueries.createOverXAgeCohort("PatientBetween50YearsAndAbove", 50));
 		
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
@@ -151,12 +152,16 @@ public class TxNewDataset extends BaseDataSet {
 		
 		// Obtain patients breastfeeding newly enrolled on ART
 		dataSetDefinition.addDimension("maternity", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
+		dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
+		dataSetDefinition.addDimension("age", EptsReportUtils.map(eptsCommonDimension.age(), "effectiveDate=${endDate}"));
 		
 		dataSetDefinition.addColumn("ANC", "TX_NEW: Pregnant Started ART",
-		    new Mapped<CohortIndicator>(patientEnrolledInHIVStartedARTIndicator,
-		            ParameterizableUtil.createParameterMappings(mappings)),
-		    "maternity=breastfeeding");
-		
+		    EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings), "maternity=breastfeeding");
+		dataSetDefinition.addColumn("UM", "Males:TX_NEW: New on ART by age and sex: Unknown Age",
+		    EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings), "gender=M|age=unknown");
+		dataSetDefinition.addColumn("UF", "Females:TX_NEW: New on ART by age and sex: Unknown Age",
+		    EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings), "gender=F|age=unknown");
+
 		return dataSetDefinition;
 	}
 }
