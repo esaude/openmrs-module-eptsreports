@@ -100,16 +100,16 @@ public class TxNewDataset extends BaseDataSet {
 
 		ArrayList<CohortDefinition> agesRange = new ArrayList<CohortDefinition>();
 		agesRange.add(patientBelow1Year);
-		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween1And9Years", 1, 5));
-		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween1And9Years", 5, 10));
+		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween1And4Years", 1, 5));
+		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween5And9Years", 5, 10));
 		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween10And14Years", 10, 15));
 		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween15And19Years", 15, 20));
 		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween20And24Years", 20, 25));
 		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween25And29Years", 25, 30));
 		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween30And34Years", 30, 35));
 		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween35And39Years", 35, 40));
-		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween40And49Years", 40, 45));
-		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween40And49Years", 45, 50));
+		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween40And44Years", 40, 45));
+		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween45And49Years", 45, 50));
 		agesRange.add(ageCohortQueries.createOverXAgeCohort("PatientBetween50YearsAndAbove", 50));
 		
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
