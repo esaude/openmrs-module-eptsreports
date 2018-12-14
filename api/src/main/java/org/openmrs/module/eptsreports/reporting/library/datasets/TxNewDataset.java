@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
@@ -50,7 +51,10 @@ public class TxNewDataset extends BaseDataSet {
 	@Autowired
 	private EptsCommonDimension eptsCommonDimension;
 	
-	public DataSetDefinition constructTxNewDatset() {
+	@Autowired
+	private HivCohortQueries hivCohortQueries;
+
+	public DataSetDefinition constructTxNewDataset() {
 		
 		CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
 		dataSetDefinition.setName("TX_NEW Data Set");
@@ -82,6 +86,8 @@ public class TxNewDataset extends BaseDataSet {
 		// is 29=TRANSFER FROM OTHER FACILITY) between start date and end date
 		CohortDefinition transferredFromOtherHealthFacility = txNewCohortQueries.getPatientsTransferredFromOtherHealthFacility();
 		
+		CohortDefinition patientsWhoRestartedTreatment = hivCohortQueries.getPatientsWhoRestartedTreatment();
+
 		CohortDefinition males = genderCohortQueries.MaleCohort();
 		
 		CohortDefinition females = genderCohortQueries.FemaleCohort();
@@ -113,8 +119,8 @@ public class TxNewDataset extends BaseDataSet {
 		for (CohortDefinition ageCohort : agesRange) {
 			CohortDefinition patientInYearRangeEnrolledInARTStarted = txNewCohortQueries.getTxNewCompositionCohort(
 			    "patientEnrolledInARTStartedMales", inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs,
-			    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility, ageCohort,
-			    males);
+			    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility,
+			    patientsWhoRestartedTreatment, ageCohort, males);
 			CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator = hivIndicators
 			        .patientInYearRangeEnrolledInHIVStartedARTIndicator(patientInYearRangeEnrolledInARTStarted);
 			dataSetDefinition.addColumn("1M" + i, "Males:TX_NEW: New on ART by age and sex: " + ageCohort.getName(),
@@ -130,8 +136,8 @@ public class TxNewDataset extends BaseDataSet {
 		for (CohortDefinition ageCohort : agesRange) {
 			CohortDefinition patientInYearRangeEnrolledInARTStarted = txNewCohortQueries.getTxNewCompositionCohort(
 			    "patientEnrolledInARTStartedMales", inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs,
-			    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility, ageCohort,
-			    females);
+			    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility,
+			    patientsWhoRestartedTreatment, ageCohort, females);
 			CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator = hivIndicators
 			        .patientInYearRangeEnrolledInHIVStartedARTIndicator(patientInYearRangeEnrolledInARTStarted);
 			dataSetDefinition.addColumn("1F" + j, "Females:TX_NEW: New on ART by age and sex: " + ageCohort.getName(),
@@ -143,7 +149,7 @@ public class TxNewDataset extends BaseDataSet {
 		
 		CohortDefinition patientEnrolledInART = txNewCohortQueries.getTxNewCompositionCohort("patientEnrolledInART",
 		    inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
-		    patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility, null, null);
+		    patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility, patientsWhoRestartedTreatment, null, null);
 		CohortIndicator patientEnrolledInHIVStartedARTIndicator = hivIndicators
 		        .patientEnrolledInHIVStartedARTIndicator(patientEnrolledInART);
 		dataSetDefinition.addColumn("1All", "TX_NEW: New on ART", new Mapped<CohortIndicator>(patientEnrolledInHIVStartedARTIndicator,
