@@ -31,7 +31,7 @@ public class EptsCommonDimension {
 	
 	@Autowired
 	private GenderCohortQueries genderCohortQueries;
-	
+
 	@Autowired
 	private AgeCohortQueries ageCohortQueries;
 	
@@ -59,33 +59,34 @@ public class EptsCommonDimension {
 	 * 
 	 * @return {@link org.openmrs.module.reporting.indicator.dimension.CohortDimension}
 	 */
-	public CohortDefinitionDimension age() {
+	public CohortDefinitionDimension pvlsAges() {
 		CohortDefinitionDimension dim = new CohortDefinitionDimension();
 		dim.addParameter(new Parameter("effectiveDate", "End Date", Date.class));
-		dim.setName("age");
-		
-		dim.addCohortDefinition("<1", EptsReportUtils.map(ageCohortQueries.createBelowYAgeCohort("", 1), "effectiveDate=${endDate}"));
+		dim.setName("pvls ages");
+
+		dim.addCohortDefinition("UK", EptsReportUtils.map(ageCohortQueries.getPatientsWithUnknownAge(), ""));
+		dim.addCohortDefinition("<1", EptsReportUtils.map(txPvlsCohortQueries.findPatientsagedBelowInYears(1), "endDate=${effectiveDate}"));
 		dim.addCohortDefinition("1-4",
-		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("1-4", 1, 4), "effectiveDate=${endDate}"));
+		    EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(1, 4), "endDate=${effectiveDate}"));
 		dim.addCohortDefinition("5-9",
-		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("5-9", 5, 9), "effectiveDate=${endDate}"));
+		    EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(5, 9), "endDate=${effectiveDate}"));
 		dim.addCohortDefinition("10-14",
-		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("10-14", 10, 14), "effectiveDate=${endDate}"));
+		    EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(10, 14), "endDate=${effectiveDate}"));
 		dim.addCohortDefinition("15-19",
-		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("15-19", 15, 19), "effectiveDate=${endDate}"));
+		    EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(15, 19), "endDate=${effectiveDate}"));
 		dim.addCohortDefinition("20-24",
-		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("20-24", 20, 24), "effectiveDate=${endDate}"));
+		    EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(20, 24), "endDate=${effectiveDate}"));
 		dim.addCohortDefinition("25-29",
-		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("25-29", 25, 29), "effectiveDate=${endDate}"));
+		    EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(25, 29), "endDate=${effectiveDate}"));
 		dim.addCohortDefinition("30-34",
-		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("30-34", 30, 34), "effectiveDate=${endDate}"));
+		    EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(30, 34), "endDate=${effectiveDate}"));
 		dim.addCohortDefinition("35-39",
-		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("35-39", 35, 39), "effectiveDate=${endDate}"));
+		    EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(35, 39), "endDate=${effectiveDate}"));
 		dim.addCohortDefinition("40-44",
-		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("40-44", 40, 44), "effectiveDate=${endDate}"));
+		    EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(40, 44), "endDate=${effectiveDate}"));
 		dim.addCohortDefinition("45-49",
-		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("45-49", 45, 49), "effectiveDate=${endDate}"));
-		dim.addCohortDefinition(">49", EptsReportUtils.map(ageCohortQueries.createOverXAgeCohort("", 50), "effectiveDate=${endDate}"));
+		    EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(45, 49), "endDate=${effectiveDate}"));
+		dim.addCohortDefinition("50+", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(50, 200), "endDate=${effectiveDate}"));
 		return dim;
 	}
 	
@@ -103,24 +104,6 @@ public class EptsCommonDimension {
 		    "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
 		dim.addCohortDefinition("pregnant", EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
-		return dim;
-	}
-	
-	/**
-	 * Other disaggreagtions that include routine, target and Not documented
-	 * 
-	 * @return CohortDimension
-	 */
-	public CohortDefinitionDimension routineAndtNotDocumentedDimension() {
-		CohortDefinitionDimension dim = new CohortDefinitionDimension();
-		dim.addParameter(new Parameter("endDate", "End Date", Date.class));
-		dim.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		dim.addParameter(new Parameter("location", "Location", Location.class));
-		/*
-		 * dim.addCohortDefinition("routine",
-		 * EptsReportUtils.map(txPvlsCohortQueries.getRoutinePatients(),
-		 * "startDate=${startDate},endDate=${endDate},location=${location}"));
-		 */
 		return dim;
 	}
 }

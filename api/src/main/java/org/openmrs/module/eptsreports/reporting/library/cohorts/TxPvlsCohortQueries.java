@@ -16,6 +16,8 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAfterArtCalculation;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -205,9 +207,11 @@ public class TxPvlsCohortQueries {
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getRoutineForAdultsAndChildrenPatients() {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Routine for adults and children");
+	public CohortDefinition getRoutineForAdultsAndChildrenPatients(int monthsOnArt) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria1", new PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAfterArtCalculation());
+		cd.setName("a");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addCalculationParameter("monthsOnArt", monthsOnArt);
 		return cd;
 		
 	}
@@ -217,10 +221,43 @@ public class TxPvlsCohortQueries {
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getRoutineForBreastfeedingAndPregnantWomen() {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Routine for breastfeeding and pregnant women");
+	public CohortDefinition getRoutineForBreastfeedingAndPregnantWomen(int monthsOnArt) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria1", new PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAfterArtCalculation());
 		return cd;
 		
+	}
+
+	/**
+	 * Get patients having viral load suppression and routine for adults and children
+	 * @retrun CohortDefinition
+	 */
+	public CohortDefinition getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Suppression and on routine adult and children");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("supp", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
+		cd.addSearch("routine", EptsReportUtils.map(getRoutineForAdultsAndChildrenPatients(6), "onDate=${endDate}"));
+		cd.setCompositionString("supp AND routine");
+		return cd;
+	}
+
+	/**
+	 * Get patients having viral load suppression and not documented for adults and children
+	 * @retrun CohortDefinition
+	 */
+	public CohortDefinition getPatientWithViralSuppressionAndNotDocumentedForAdultsAndChildren() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("suppression and not documented adults and children");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("supp", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
+		cd.addSearch("routine", EptsReportUtils.map(getRoutineForAdultsAndChildrenPatients(6), "onDate=${endDate}"));
+		cd.setCompositionString("supp AND NOT routine");
+		return cd;
 	}
 }
