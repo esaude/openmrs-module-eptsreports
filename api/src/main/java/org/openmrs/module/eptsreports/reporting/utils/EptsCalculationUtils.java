@@ -12,6 +12,7 @@ import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.ObsResult;
+import org.openmrs.calculation.result.ResultUtil;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -25,7 +26,9 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class EptsCalculationUtils {
 	
@@ -179,5 +182,23 @@ public class EptsCalculationUtils {
 	 */
 	public static Encounter encounterResultForPatient(CalculationResultMap results, Integer patientId) {
 		return resultForPatient(results, patientId);
+	}
+	/**
+	 * Extracts patients from calculation result map with matching results
+	 * @param results calculation result map
+	 * @param requiredResult the required result value
+	 * @return the extracted patient ids
+	 */
+	public static Set<Integer> patientsThatPass(CalculationResultMap results, Object requiredResult) {
+		Set<Integer> ret = new HashSet<Integer>();
+		for (Map.Entry<Integer, CalculationResult> e : results.entrySet()) {
+			CalculationResult result = e.getValue();
+
+			// If there is no required result, just check trueness of result, otherwise check result matches required result
+			if ((requiredResult == null && ResultUtil.isTrue(result)) || (result != null && result.getValue().equals(requiredResult))) {
+				ret.add(e.getKey());
+			}
+		}
+		return ret;
 	}
 }
