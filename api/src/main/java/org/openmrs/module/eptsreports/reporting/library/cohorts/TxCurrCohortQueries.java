@@ -194,7 +194,7 @@ public class TxCurrCohortQueries {
 		SqlCohortDefinition definition = new SqlCohortDefinition();
 		definition.setName("patientsWithoutNextPickupDate");
 		String query = "select patient_id from ( "
-		        + "select p.patient_id, max(encounter_datetime) encounter_datetime, encounter_type, location_id from patient p join encounter e on e.patient_id=p.patient_id  "
+		        + "select p.patient_id, max(encounter_datetime) encounter_datetime from patient p join encounter e on e.patient_id=p.patient_id  "
 		        + "where p.voided=0 and e.voided=0 and e.encounter_type=%s and e.location_id=:location and e.encounter_datetime<=:onOrBefore group by p.patient_id) most_recent_encounter_datetimes "
 		        + "left join obs on obs.person_id = most_recent_encounter_datetimes.patient_id and obs.obs_datetime = most_recent_encounter_datetimes.encounter_datetime and obs.concept_id=%s and obs.voided = false "
 		        + "where obs.obs_id is null ";
@@ -215,7 +215,7 @@ public class TxCurrCohortQueries {
 		SqlCohortDefinition definition = new SqlCohortDefinition();
 		definition.setName("patientsWithoutNextConsultationDate");
 		String query = "select patient_id from ( "
-		        + "select p.patient_id, max(encounter_datetime) encounter_datetime, encounter_type, location_id from patient p inner join encounter e on e.patient_id=p.patient_id "
+		        + "select p.patient_id, max(encounter_datetime) encounter_datetime from patient p inner join encounter e on e.patient_id=p.patient_id "
 		        + "where p.voided=0 and e.voided=0 and e.encounter_type in (%s) and e.location_id=:location and e.encounter_datetime<=:onOrBefore group by p.patient_id) most_recent_encounter_datetimes "
 		        + "left join obs on obs.person_id = most_recent_encounter_datetimes.patient_id and obs.obs_datetime = most_recent_encounter_datetimes.encounter_datetime and obs.concept_id=%s and obs.voided = false "
 		        + "where obs.obs_id is null ";
