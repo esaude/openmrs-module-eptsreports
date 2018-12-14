@@ -199,4 +199,28 @@ public class TxPvlsCohortQueries {
 	public CohortDefinition findPatientsagedBelowInYears(int age) {
 		return genericCohortQueries.generalSql("aged between age brackets", TxPvlsQueries.getPatientsWhoAreBelowXyears(age));
 	}
+	
+	/**
+	 * Get adults and children patients who are on routine
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getRoutineForAdultsAndChildrenPatients() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Routine for adults and children");
+		return cd;
+		
+	}
+	
+	/**
+	 * Get breastfeeding/pregnant women who are re routine
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getRoutineForBreastfeedingAndPregnantWomen() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Routine for breastfeeding and pregnant women");
+		return cd;
+		
+	}
 }

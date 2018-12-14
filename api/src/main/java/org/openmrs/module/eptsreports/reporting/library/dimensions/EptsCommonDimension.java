@@ -17,6 +17,7 @@ import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
@@ -36,6 +37,9 @@ public class EptsCommonDimension {
 	
 	@Autowired
 	private TxNewCohortQueries txNewCohortQueries;
+	
+	@Autowired
+	private TxPvlsCohortQueries txPvlsCohortQueries;
 	
 	/**
 	 * Gender dimension
@@ -107,11 +111,16 @@ public class EptsCommonDimension {
 	 * 
 	 * @return CohortDimension
 	 */
-	public CohortDefinitionDimension routineTargetNotDocumented() {
+	public CohortDefinitionDimension routineAndtNotDocumentedDimension() {
 		CohortDefinitionDimension dim = new CohortDefinitionDimension();
 		dim.addParameter(new Parameter("endDate", "End Date", Date.class));
 		dim.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dim.addParameter(new Parameter("location", "Location", Location.class));
+		/*
+		 * dim.addCohortDefinition("routine",
+		 * EptsReportUtils.map(txPvlsCohortQueries.getRoutinePatients(),
+		 * "startDate=${startDate},endDate=${endDate},location=${location}"));
+		 */
 		return dim;
 	}
 }
