@@ -128,4 +128,5 @@ public class EptsCalculations {
 		def.setOnOrBefore(context.getNow());
 		return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
 	}
+
 }
