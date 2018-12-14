@@ -94,7 +94,8 @@ public class TxNewDataset extends BaseDataSet {
 
 		ArrayList<CohortDefinition> agesRange = new ArrayList<CohortDefinition>();
 		agesRange.add(patientBelow1Year);
-		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween1And9Years", 1, 10));
+		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween1And9Years", 1, 5));
+		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween1And9Years", 5, 10));
 		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween10And14Years", 10, 15));
 		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween15And19Years", 15, 20));
 		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween20And24Years", 20, 25));
