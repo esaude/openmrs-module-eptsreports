@@ -119,7 +119,7 @@ public class TxCurrCohortQueries {
 	}
 	
 	// Looks for patients that from the date scheduled for next drug pickup (concept
-	// 5096=RETURN VISIT DATE FOR ARV DRUG) until end date have completed 60 days
+	// 5096=RETURN VISIT DATE FOR ARV DRUG) until end date have completed 28 days
 	// and have not returned
 	@DocumentedDefinition(value = "patientsWhoHaveNotReturned")
 	public SqlCohortDefinition getPatientsWhoHaveNotReturned() {
@@ -128,7 +128,7 @@ public class TxCurrCohortQueries {
 		
 		String query = "select patient_id from ( Select p.patient_id,max(encounter_datetime) encounter_datetime from patient p inner join encounter e on e.patient_id=p.patient_id where p.voided=0 and e.voided=0 and e.encounter_type=%s"
 		        + " and e.location_id=:location and e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_frida inner join obs o on o.person_id=max_frida.patient_id where max_frida.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id=%s"
-		        + " and o.location_id=:location and datediff(:onOrBefore,o.value_datetime)>=60";
+		        + " and o.location_id=:location and datediff(:onOrBefore,o.value_datetime)>=28";
 		
 		patientsWhoHaveNotReturned.setQuery(String.format(query, hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
 		    hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
@@ -140,36 +140,35 @@ public class TxCurrCohortQueries {
 	
 	// Looks for patients that from the date scheduled for next follow up
 	// consultation (concept 1410=RETURN VISIT DATE) until the end date have not
-	// completed 60 days
-	@DocumentedDefinition(value = "patientsWhoHaveNotCompleted60Days")
-	public SqlCohortDefinition getPatientsWhoHaveNotCompleted60Days() {
-		SqlCohortDefinition patientsWhoHaveNotCompleted60Days = new SqlCohortDefinition();
-		patientsWhoHaveNotCompleted60Days.setName("patientsWhoHaveNotCompleted60Days");
-		patientsWhoHaveNotCompleted60Days
-		        .setQuery("select patient_id from " + "( Select p.patient_id,max(encounter_datetime) encounter_datetime "
-		                + "from patient p inner join encounter e on e.patient_id=p.patient_id "
-		                + "where p.voided=0 and e.voided=0 and e.encounter_type in ("
-		                + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + ", "
-		                + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") "
-		                + "and e.location_id=:location and e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_mov "
-		                + "inner join obs o on o.person_id=max_mov.patient_id "
-		                + "where max_mov.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id="
-		                + hivMetadata.getReturnVisitDateConcept().getConceptId()
-		                + " and o.location_id=:location AND DATEDIFF(:onOrBefore,o.value_datetime)<=60");
-		patientsWhoHaveNotCompleted60Days.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-		patientsWhoHaveNotCompleted60Days.addParameter(new Parameter("location", "location", Location.class));
-		return patientsWhoHaveNotCompleted60Days;
+	// completed 28 days
+	@DocumentedDefinition(value = "patientsWhoHaveNotCompletedFollowup")
+	public SqlCohortDefinition patientsWhoHaveNotCompletedFollowup() {
+		SqlCohortDefinition definition = new SqlCohortDefinition();
+		definition.setName("patientsWhoHaveNotCompletedFollowup");
+		definition.setQuery("select patient_id from " + "( Select p.patient_id,max(encounter_datetime) encounter_datetime "
+		        + "from patient p inner join encounter e on e.patient_id=p.patient_id "
+		        + "where p.voided=0 and e.voided=0 and e.encounter_type in ("
+		        + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + ", "
+		        + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") "
+		        + "and e.location_id=:location and e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_mov "
+		        + "inner join obs o on o.person_id=max_mov.patient_id "
+		        + "where max_mov.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id="
+		        + hivMetadata.getReturnVisitDateConcept().getConceptId()
+		        + " and o.location_id=:location AND DATEDIFF(:onOrBefore,o.value_datetime)<=28");
+		definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		definition.addParameter(new Parameter("location", "location", Location.class));
+		return definition;
 	}
 	
 	// Looks for patients that were registered as abandonment (program workflow
 	// state is 9=ABANDONED) but from the date scheduled for next drug pick up
 	// (concept 5096=RETURN VISIT DATE FOR ARV DRUG) until the end date have not
-	// completed 60 days
-	@DocumentedDefinition(value = "abandonedButHaveNotcompleted60Days")
-	public SqlCohortDefinition getAbandonedButHaveNotcompleted60Days() {
-		SqlCohortDefinition abandonedButHaveNotcompleted60Days = new SqlCohortDefinition();
-		abandonedButHaveNotcompleted60Days.setName("abandonedButHaveNotcompleted60Days");
-		abandonedButHaveNotcompleted60Days.setQuery(
+	// completed 28 days
+	@DocumentedDefinition(value = "abandonedButStilInGracePeriod")
+	public SqlCohortDefinition getAbandonedButStilInGracePeriod() {
+		SqlCohortDefinition definition = new SqlCohortDefinition();
+		definition.setName("abandonedButStilInGracePeriod");
+		definition.setQuery(
 		    "select abandono.patient_id from ( select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id inner join patient_state ps on pg.patient_program_id=ps.patient_program_id where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id= "
 		            + hivMetadata.getARTProgram().getProgramId() + " and ps.state="
 		            + hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId()
@@ -177,10 +176,10 @@ public class TxCurrCohortQueries {
 		            + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()
 		            + " and e.location_id=:location and e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_frida inner join obs o on o.person_id=max_frida.patient_id where max_frida.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id="
 		            + hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()
-		            + " and o.location_id=:location ) ultimo_fila on abandono.patient_id=ultimo_fila.patient_id where datediff(:onOrBefore,ultimo_fila.value_datetime)<60");
-		abandonedButHaveNotcompleted60Days.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-		abandonedButHaveNotcompleted60Days.addParameter(new Parameter("location", "location", Location.class));
-		return abandonedButHaveNotcompleted60Days;
+		            + " and o.location_id=:location ) ultimo_fila on abandono.patient_id=ultimo_fila.patient_id where datediff(:onOrBefore,ultimo_fila.value_datetime)<28");
+		definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		definition.addParameter(new Parameter("location", "location", Location.class));
+		return definition;
 	}
 	
 	/**
