@@ -1,6 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
 import org.openmrs.Obs;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
@@ -37,12 +38,11 @@ public class PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAft
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
 	        PatientCalculationContext context) {
 		CalculationResultMap map = new CalculationResultMap();
-		Date startDate = addMoths(12, context.getNow());
-		Date endDate = context.getNow();
 		
 		// get the ART initiation date
 		CalculationResultMap arvsInitiationDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
 		CalculationResultMap patientHavingVL = EptsCalculations.allObs(hivMetadata.getHivViralLoadConcept(), cohort, context);
+		CalculationResultMap changingRegimenLines = EptsCalculations.lastObs(hivMetadata.getChangeToArtSecondLine(), cohort, context);
 		
 		for (Integer pId : cohort) {
 			boolean isOnRoutine = false;
@@ -94,7 +94,19 @@ public class PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAft
 				}
 
 				//find out criteria 3
-				
+				if(viralLoadForPatientTakenWithin12Months.size() > 0){
+					//get when a patient switch between lines from first to second
+					//Date when started on second line will be considered the changing date
+					Obs obs = EptsCalculationUtils.obsResultForPatient(changingRegimenLines, pId);
+					//loop through the viral load list and find one that is after the second line option
+					for(Obs obs1: viralLoadForPatientTakenWithin12Months){
+						if(obs != null && obs1.getObsDatetime().after(obs.getObsDatetime())){
+							isOnRoutine = true;
+						}
+					}
+
+				}
+
 
 			}
 			
