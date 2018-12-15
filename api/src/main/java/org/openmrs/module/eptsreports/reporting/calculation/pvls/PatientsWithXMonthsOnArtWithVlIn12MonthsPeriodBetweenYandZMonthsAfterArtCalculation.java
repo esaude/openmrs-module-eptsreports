@@ -1,7 +1,9 @@
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
+import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
@@ -10,9 +12,11 @@ import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public class PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAfterArtCalculation extends AbstractPatientCalculation {
@@ -43,14 +47,41 @@ public class PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAft
 		for (Integer pId : cohort) {
 			boolean isOnRoutine = false;
 			Date artInitiationDate = null;
+			List<Obs> viralLoadForPatientTakenWithin12Months = new ArrayList<>();
 			SimpleResult artStartDateResult = (SimpleResult) arvsInitiationDateMap.get(pId);
+			// get all the VL results for each patient in the last 12 months
+			ListResult vlObssResult = (ListResult) patientHavingVL.get(pId);
 			
 			if (artStartDateResult != null) {
 				artInitiationDate = (Date) artStartDateResult.getValue();
 			}
 			// check that this patient should be on ART for more than six months
-			if (artInitiationDate != null && EptsCalculationUtils.monthsSince(artInitiationDate, context) > 6) {
-				isOnRoutine = true;
+			if (artInitiationDate != null) {
+				if (vlObssResult != null && !vlObssResult.isEmpty()) {
+					List<Obs> viralLoad = EptsCalculationUtils.extractResultValues(vlObssResult);
+					// go through the list and only find those viral load that follow within 12
+					// months
+					if (viralLoad.size() > 0) {
+						for (Obs obs : viralLoad) {
+							if (EptsCalculationUtils.monthsSince(artInitiationDate, context) <= 12) {
+								viralLoadForPatientTakenWithin12Months.add(obs);
+							}
+						}
+					}
+				}
+				// find out for criteria 1
+				if (EptsCalculationUtils.monthsSince(artInitiationDate, context) > 6
+				        && viralLoadForPatientTakenWithin12Months.size() == 1) {
+					// the patients should be 6 to 9 months after ART initiation
+					Date sixMonthsAfterArt = addMoths(6, artInitiationDate);
+					Date nineMonthsAfterArt = addMoths(9, artInitiationDate);
+					// get the obs date for this VL and compare that with the provided dates
+					Obs vlObs = viralLoadForPatientTakenWithin12Months.get(0);
+					if (vlObs != null && vlObs.getObsDatetime().after(sixMonthsAfterArt)
+					        && vlObs.getObsDatetime().before(nineMonthsAfterArt)) {
+						isOnRoutine = true;
+					}
+				}
 			}
 			
 			map.put(pId, new BooleanResult(isOnRoutine, this));

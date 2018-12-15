@@ -28,9 +28,11 @@ import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -232,4 +234,22 @@ public class EptsCalculationUtils {
 		DateTime d2 = new DateTime(calculationContext.getNow().getTime());
 		return Months.monthsBetween(d1, d2).getMonths();
 	}
+	
+	/**
+	 * Extracts actual values from a list result. Always returns a list even if result is null.
+	 * 
+	 * @param result the list result
+	 * @param <T> the type of each value
+	 * @return the list of values
+	 */
+	public static <T> List<T> extractResultValues(ListResult result) {
+		List<T> values = new ArrayList<T>();
+		if (result != null) {
+			for (SimpleResult resultItem : (List<SimpleResult>) result.getValue()) {
+				values.add((T) resultItem.getValue());
+			}
+		}
+		return values;
+	}
+	
 }
