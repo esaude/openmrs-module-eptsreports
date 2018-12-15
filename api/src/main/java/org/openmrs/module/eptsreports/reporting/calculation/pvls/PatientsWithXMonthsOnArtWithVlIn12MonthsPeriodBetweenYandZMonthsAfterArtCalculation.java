@@ -82,6 +82,20 @@ public class PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAft
 						isOnRoutine = true;
 					}
 				}
+				//find out criteria 2
+				if(viralLoadForPatientTakenWithin12Months.size() > 1) {
+					Date twelveMonthsAfterArt = addMoths(12, artInitiationDate);
+					Date fifteenMonthsAfterArt = addMoths(15, artInitiationDate);
+					//pick the previous obs for this case
+					Obs obs = viralLoadForPatientTakenWithin12Months.get(1);
+					if(obs != null && obs.getValueNumeric() < 1000 && obs.getObsDatetime().after(twelveMonthsAfterArt) && obs.getObsDatetime().before(fifteenMonthsAfterArt)) {
+						isOnRoutine = true;
+					}
+				}
+
+				//find out criteria 3
+				
+
 			}
 			
 			map.put(pId, new BooleanResult(isOnRoutine, this));
