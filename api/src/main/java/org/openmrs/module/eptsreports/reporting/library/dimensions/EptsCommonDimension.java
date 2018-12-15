@@ -65,7 +65,8 @@ public class EptsCommonDimension {
 		dim.addParameter(new Parameter("location", "Location", Location.class));
 		dim.setName("pvls ages");
 		
-		dim.addCohortDefinition("UK", EptsReportUtils.map(ageCohortQueries.getPatientsWithUnknownAge(), "endDate=${endDate}"));
+		dim.addCohortDefinition("UK",
+		    EptsReportUtils.map(ageCohortQueries.getPatientsWithUnknownAge(), "endDate=${endDate},location=${location}"));
 		dim.addCohortDefinition("<1",
 		    EptsReportUtils.map(txPvlsCohortQueries.findPatientsagedBelowInYears(1), "endDate=${endDate},location=${location}"));
 		dim.addCohortDefinition("1-4", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(1, 4),

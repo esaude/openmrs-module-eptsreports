@@ -152,7 +152,29 @@ public class HivIndicators extends BaseIndicators {
 	 */
 	public CohortIndicator getPatientsWithViralLoadSuppressionNotDocumentedForAdultsAndChildren() {
 		return newCohortIndicator("viral load suppression on routine adults and children",
-		    EptsReportUtils.map(pvls.getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren(),
+		    EptsReportUtils.map(pvls.getPatientWithViralSuppressionAndNotDocumentedForAdultsAndChildren(),
+		        "startDate=${startDate},endDate=${endDate},location=${location}"));
+	}
+	
+	/**
+	 * Find patients with viral load results and on routine
+	 * 
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator getPatientsWithViralLoadResultsAndOnRoutineForAdultsAndChildren() {
+		return newCohortIndicator("viral load results on routine adults and children",
+		    EptsReportUtils.map(pvls.getPatientsWithViralLoadREsultsAndOnRoutineForChidrenAndAdults(),
+		        "startDate=${startDate},endDate=${endDate},location=${location}"));
+	}
+	
+	/**
+	 * Find patients with viral load results and on routine
+	 * 
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator getPatientsWithViralLoadResultsAndNotDocumentedForAdultsAndChildren() {
+		return newCohortIndicator("viral load results on routine adults and children",
+		    EptsReportUtils.map(pvls.getPatientsWithViralLoadREsultsAndNotDocumenetdForChidrenAndAdults(),
 		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 }

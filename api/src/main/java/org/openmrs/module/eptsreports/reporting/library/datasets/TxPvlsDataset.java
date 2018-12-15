@@ -52,7 +52,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		// tie dimensions to this data definition
 		dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
 		dsd.addDimension("query", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
-		dsd.addDimension("age", EptsReportUtils.map(eptsCommonDimension.pvlsAges(), "endDate=${endDate}"));
+		dsd.addDimension("age", EptsReportUtils.map(eptsCommonDimension.pvlsAges(), "endDate=${endDate},location=${location}"));
 		
 		// Totals for both numerator and denomonator
 		dsd.addColumn("0N", "Total patients with suppressed Viral load - Numerator",
@@ -95,169 +95,34 @@ public class TxPvlsDataset extends BaseDataSet {
 		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionNotDocumentedForAdultsAndChildren(), mappings),
 		    childrenColumns());
 		
-		/*
-		 * // denominator dsd.addColumn("3D-01", "Children Denominator (Under 1 year) ",
-		 * EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsWithAgeBelow
-		 * (1), mappings), ""); dsd.addColumn("3D-02",
-		 * "Children Denominator (1-4 years) ", EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(1, 4), mappings), "");
-		 * dsd.addColumn("3D-03", "Children Denominator (5 - 9 years) ",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(5, 9), mappings), "");
-		 */
+		// constructing the rows for adults
+		///// Numerator routine
+		addRow(dsd, "4NR", "Adults numerator routine",
+		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionOnRoutineForAdultsAndChildren(), mappings),
+		    getColumnsForAdults());
+		//// Numerator NOT documented
+		addRow(dsd, "4NND", "Adults numerator NOT documented",
+		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionNotDocumentedForAdultsAndChildren(), mappings),
+		    getColumnsForAdults());
 		
-		// constructing for adults
-		// Numerator
-		/*
-		 * dsd.addColumn("4N-01",
-		 * "Adults with suppressed VL Numerator (10-14 years males)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadSuppressionWithinAgeBracket(10, 14), mappings),
-		 * "gender=M"); dsd.addColumn("4N-02",
-		 * "Adults with suppressed VL Numerator (10-14 years females)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadSuppressionWithinAgeBracket(10, 14), mappings),
-		 * "gender=F"); dsd.addColumn("4N-04",
-		 * "Adults with suppressed VL Numerator (15-19 years males)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadSuppressionWithinAgeBracket(15, 19), mappings),
-		 * "gender=M"); dsd.addColumn("4N-05",
-		 * "Adults with suppressed VL Numerator (15-19 years females)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadSuppressionWithinAgeBracket(15, 19), mappings),
-		 * "gender=F"); dsd.addColumn("4N-07",
-		 * "Adults with suppressed VL Numerator (20-24 years males)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadSuppressionWithinAgeBracket(20, 24), mappings),
-		 * "gender=M"); dsd.addColumn("4N-08",
-		 * "Adults with suppressed VL Numerator (20-24 years females)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadSuppressionWithinAgeBracket(20, 24), mappings),
-		 * "gender=F"); dsd.addColumn("4N-10",
-		 * "Adults with suppressed VL Numerator (25-29 years males)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadSuppressionWithinAgeBracket(25, 29), mappings),
-		 * "gender=M"); dsd.addColumn("4N-11",
-		 * "Adults with suppressed VL Numerator (25-29 years females)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadSuppressionWithinAgeBracket(25, 29), mappings),
-		 * "gender=F"); dsd.addColumn("4N-13",
-		 * "Adults with suppressed VL Numerator (30-34 years males)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadSuppressionWithinAgeBracket(30, 34), mappings),
-		 * "gender=M"); dsd.addColumn("4N-14",
-		 * "Adults with suppressed VL Numerator (30-34 years females)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadSuppressionWithinAgeBracket(30, 34), mappings),
-		 * "gender=F"); dsd.addColumn("4N-16",
-		 * "Adults with suppressed VL Numerator (35-39 years males)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadSuppressionWithinAgeBracket(35, 39), mappings),
-		 * "gender=M"); dsd.addColumn("4N-17",
-		 * "Adults with suppressed VL Numerator (35-39 years females)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadSuppressionWithinAgeBracket(35, 39), mappings),
-		 * "gender=F"); dsd.addColumn("4N-19",
-		 * "Adults with suppressed VL Numerator (40-44 years males)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadSuppressionWithinAgeBracket(40, 44), mappings),
-		 * "gender=M"); dsd.addColumn("4N-20",
-		 * "Adults with suppressed VL Numerator (40-44 years females)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadSuppressionWithinAgeBracket(40, 44), mappings),
-		 * "gender=F"); dsd.addColumn("4N-22",
-		 * "Adults with suppressed VL Numerator (45-49 years males)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadSuppressionWithinAgeBracket(45, 49), mappings),
-		 * "gender=M"); dsd.addColumn("4N-23",
-		 * "Adults with suppressed VL Numerator (45-49 years females)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadSuppressionWithinAgeBracket(45, 49), mappings),
-		 * "gender=F"); dsd.addColumn("4N-25",
-		 * "Adults with suppressed VL Numerator (50+ years males)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadSuppressionWithinAgeBracket(50, 200), mappings),
-		 * "gender=M"); dsd.addColumn("4N-26",
-		 * "Adults with suppressed VL Numerator (50+ years females)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadSuppressionWithinAgeBracket(50, 200), mappings),
-		 * "gender=F");
-		 * 
-		 * // denominator
-		 * 
-		 * dsd.addColumn("4D-01", "Adults with VL Denominator (10-14 years males)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(10, 14), mappings),
-		 * "gender=M"); dsd.addColumn("4D-02",
-		 * "Adults with VL Denominator (10-14 years females)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(10, 14), mappings),
-		 * "gender=F"); dsd.addColumn("4D-04",
-		 * "Adults with VL Denominator (15-19 years males)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(15, 19), mappings),
-		 * "gender=M"); dsd.addColumn("4D-05",
-		 * "Adults with VL Denominator (15-19 years females)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(15, 19), mappings),
-		 * "gender=F"); dsd.addColumn("4D-07",
-		 * "Adults with VL Denominator (20-24 years males)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(20, 24), mappings),
-		 * "gender=M"); dsd.addColumn("4D-08",
-		 * "Adults with VL Denominator (20-24 years females)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(20, 24), mappings),
-		 * "gender=F"); dsd.addColumn("4D-10",
-		 * "Adults with VL Denominator (25-29 years males)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(25, 29), mappings),
-		 * "gender=M"); dsd.addColumn("4D-11",
-		 * "Adults with VL Denominator (25-29 years females)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(25, 29), mappings),
-		 * "gender=F"); dsd.addColumn("4D-13",
-		 * "Adults with VL Denominator (30-34 years males)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(30, 34), mappings),
-		 * "gender=M"); dsd.addColumn("4D-14",
-		 * "Adults with VL Denominator (30-34 years females)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(30, 34), mappings),
-		 * "gender=F"); dsd.addColumn("4D-16",
-		 * "Adults with VL Denominator (35-39 years males)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(35, 39), mappings),
-		 * "gender=M"); dsd.addColumn("4D-17",
-		 * "Adults with VL Denominator (35-39 years females)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(35, 39), mappings),
-		 * "gender=F"); dsd.addColumn("4D-19",
-		 * "Adults with VL Denominator (40-44 years males)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(40, 44), mappings),
-		 * "gender=M"); dsd.addColumn("4D-20",
-		 * "Adults with VL Denominator (40-44 years females)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(40, 44), mappings),
-		 * "gender=F"); dsd.addColumn("4D-22",
-		 * "Adults with VL Denominator (45-49 years males)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(45, 49), mappings),
-		 * "gender=M"); dsd.addColumn("4D-23",
-		 * "Adults with VL Denominator (45-49 years females)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(45, 49), mappings),
-		 * "gender=F"); dsd.addColumn("4D-25",
-		 * "Adults with VL Denominator (50+ years males)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(50, 200), mappings),
-		 * "gender=M"); dsd.addColumn("4D-26",
-		 * "Adults with VL Denominator (50+ years females)",
-		 * EptsReportUtils.map(hivIndicators.
-		 * getPatientsWithViralLoadResultsWithinAgeBracket(50, 200), mappings),
-		 * "gender=F");
-		 */
+		// denominators follow here for routine and NOT documented
+		///// Denominator routine for children
+		addRow(dsd, "3DR", "Children denominator routine",
+		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsAndOnRoutineForAdultsAndChildren(), mappings),
+		    childrenColumns());
+		///// Denominator NOT documented
+		addRow(dsd, "3DND", "Children denominator NOT documented",
+		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsAndNotDocumentedForAdultsAndChildren(), mappings),
+		    childrenColumns());
+		///// Denominator routine for adults
+		addRow(dsd, "4DR", "Adults denominator routine",
+		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsAndOnRoutineForAdultsAndChildren(), mappings),
+		    getColumnsForAdults());
+		//// denominator NOT documented
+		addRow(dsd, "4DND", "Adults denominator NOT documented",
+		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsAndNotDocumentedForAdultsAndChildren(), mappings),
+		    getColumnsForAdults());
+		
 		return dsd;
 		
 	}
@@ -265,22 +130,6 @@ public class TxPvlsDataset extends BaseDataSet {
 	public List<Parameter> getParameters() {
 		return Arrays.asList(ReportingConstants.START_DATE_PARAMETER, ReportingConstants.END_DATE_PARAMETER,
 		    ReportingConstants.LOCATION_PARAMETER);
-	}
-	
-	private List<ColumnParameters> breastfeeding() {
-		// columns for routine and Not documented for pregnant women
-		ColumnParameters routine = new ColumnParameters("routine-Breastfeeding", "Routine Breastfeeding", "rnd=rtn", "01");
-		ColumnParameters notDocumented = new ColumnParameters("not-documented-breastfeeding", "Not documented Breastfeeding", "rnd=nd",
-		        "02");
-		return Arrays.asList(routine, notDocumented);
-	}
-	
-	private List<ColumnParameters> pregnantAndBreastfeeding() {
-		// columns for routine and Not documented for breastfeeding women
-		ColumnParameters routinePregnant = new ColumnParameters("routine-pregnant", "Routine Pregnant", "rnd=rtn|q=pregnant", "01");
-		ColumnParameters nDocumentedPregnant = new ColumnParameters("not-documented-pregnant", "Not documented Pregnant",
-		        "rnd=nd|q=pregnant", "02");
-		return Arrays.asList(routinePregnant, nDocumentedPregnant);
 	}
 	
 	private List<ColumnParameters> childrenColumns() {
@@ -291,5 +140,34 @@ public class TxPvlsDataset extends BaseDataSet {
 		ColumnParameters oneTo4F = new ColumnParameters("oneTo4F", "1 - 4 years female", "gender=F|age=1-4", "05");
 		ColumnParameters fiveTo9F = new ColumnParameters("fiveTo9F", "5 - 9 years female", "gender=F|age=5-9", "06");
 		return Arrays.asList(under1M, oneTo4M, fiveTo9M, under1F, oneTo4F, fiveTo9F);
+	}
+	
+	private List<ColumnParameters> getColumnsForAdults() {
+		ColumnParameters unknownM = new ColumnParameters("unknownM", "Unknown age male", "gender=M|age=UK", "01");
+		ColumnParameters tenTo14M = new ColumnParameters("tenTo14M", "10 - 14 male", "gender=M|age=10-14", "02");
+		ColumnParameters fifteenTo19M = new ColumnParameters("fifteenTo19M", "15 - 19 male", "gender=M|age=15-19", "03");
+		ColumnParameters twentyTo24M = new ColumnParameters("twentyTo24M", "20 - 24 male", "gender=M|age=20-24", "04");
+		ColumnParameters twenty5To29M = new ColumnParameters("twenty4To29M", "25 - 29 male", "gender=M|age=25-29", "05");
+		ColumnParameters thirtyTo34M = new ColumnParameters("thirtyTo34M", "30 - 34 male", "gender=M|age=30-34", "06");
+		ColumnParameters thirty5To39M = new ColumnParameters("thirty5To39M", "35 - 39 male", "gender=M|age=35-39", "07");
+		ColumnParameters foutyTo44M = new ColumnParameters("foutyTo44M", "40 - 44 male", "gender=M|age=40-44", "08");
+		ColumnParameters fouty5To49M = new ColumnParameters("fouty5To49M", "45 - 49 male", "gender=M|age=45-49", "09");
+		ColumnParameters above50M = new ColumnParameters("above50M", "50+ male", "gender=M|age=50+", "10");
+		
+		ColumnParameters unknownF = new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=UK", "01");
+		ColumnParameters tenTo14F = new ColumnParameters("tenTo14F", "10 - 14 female", "gender=F|age=10-14", "02");
+		ColumnParameters fifteenTo19F = new ColumnParameters("fifteenTo19F", "15 - 19 female", "gender=F|age=15-19", "03");
+		ColumnParameters twentyTo24F = new ColumnParameters("twentyTo24F", "20 - 24 female", "gender=F|age=20-24", "04");
+		ColumnParameters twenty5To29F = new ColumnParameters("twenty4To29F", "25 - 29 female", "gender=F|age=25-29", "05");
+		ColumnParameters thirtyTo34F = new ColumnParameters("thirtyTo34F", "30 - 34 female", "gender=F|age=30-34", "06");
+		ColumnParameters thirty5To39F = new ColumnParameters("thirty5To39F", "35 - 39 female", "gender=F|age=35-39", "07");
+		ColumnParameters foutyTo44F = new ColumnParameters("foutyTo44F", "40 - 44 female", "gender=F|age=40-44", "08");
+		ColumnParameters fouty5To49F = new ColumnParameters("fouty5To49F", "45 - 49 female", "gender=F|age=45-49", "09");
+		ColumnParameters above50F = new ColumnParameters("above50F", "50+ female", "gender=F|age=50+", "10");
+		
+		return Arrays.asList(unknownM, tenTo14M, fifteenTo19M, twentyTo24M, twenty5To29M, thirtyTo34M, thirty5To39M, foutyTo44M,
+		    fouty5To49M, above50M, unknownF, tenTo14F, fifteenTo19F, twentyTo24F, twenty5To29F, thirtyTo34F, thirty5To39F, foutyTo44F,
+		    fouty5To49F, above50F);
+		
 	}
 }

@@ -264,4 +264,40 @@ public class TxPvlsCohortQueries {
 		cd.setCompositionString("supp AND NOT routine");
 		return cd;
 	}
+	
+	/**
+	 * Get patients with viral load results and on routine
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getPatientsWithViralLoadREsultsAndOnRoutineForChidrenAndAdults() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Viral load results with routine for children and adults");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
+		cd.addSearch("routine", EptsReportUtils.map(getRoutineForAdultsAndChildrenPatients(6), "onDate=${endDate}"));
+		cd.setCompositionString("results AND routine");
+		return cd;
+	}
+	
+	/**
+	 * Get patients with viral load results and NOT documented
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getPatientsWithViralLoadREsultsAndNotDocumenetdForChidrenAndAdults() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Viral load results with no documentation for children and adults");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
+		cd.addSearch("routine", EptsReportUtils.map(getRoutineForAdultsAndChildrenPatients(6), "onDate=${endDate}"));
+		cd.setCompositionString("results AND NOT routine");
+		return cd;
+	}
 }

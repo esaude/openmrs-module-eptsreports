@@ -82,32 +82,33 @@ public class PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAft
 						isOnRoutine = true;
 					}
 				}
-				//find out criteria 2
-				if(viralLoadForPatientTakenWithin12Months.size() > 1) {
+				// find out criteria 2
+				if (viralLoadForPatientTakenWithin12Months.size() > 1) {
 					Date twelveMonthsAfterArt = addMoths(12, artInitiationDate);
 					Date fifteenMonthsAfterArt = addMoths(15, artInitiationDate);
-					//pick the previous obs for this case
+					// pick the previous obs for this case
 					Obs obs = viralLoadForPatientTakenWithin12Months.get(1);
-					if(obs != null && obs.getValueNumeric() < 1000 && obs.getObsDatetime().after(twelveMonthsAfterArt) && obs.getObsDatetime().before(fifteenMonthsAfterArt)) {
+					if (obs != null && obs.getValueNumeric() < 1000 && obs.getObsDatetime().after(twelveMonthsAfterArt)
+					        && obs.getObsDatetime().before(fifteenMonthsAfterArt)) {
 						isOnRoutine = true;
 					}
 				}
-
-				//find out criteria 3
-				if(viralLoadForPatientTakenWithin12Months.size() > 0){
-					//get when a patient switch between lines from first to second
-					//Date when started on second line will be considered the changing date
+				
+				// find out criteria 3
+				if (viralLoadForPatientTakenWithin12Months.size() > 0) {
+					// get when a patient switch between lines from first to second
+					// Date when started on second line will be considered the changing date
 					Obs obs = EptsCalculationUtils.obsResultForPatient(changingRegimenLines, pId);
-					//loop through the viral load list and find one that is after the second line option
-					for(Obs obs1: viralLoadForPatientTakenWithin12Months){
-						if(obs != null && obs1.getObsDatetime().after(obs.getObsDatetime())){
+					// loop through the viral load list and find one that is after the second line
+					// option
+					for (Obs obs1 : viralLoadForPatientTakenWithin12Months) {
+						if (obs != null && obs1.getObsDatetime().after(obs.getObsDatetime())) {
 							isOnRoutine = true;
 						}
 					}
-
+					
 				}
-
-
+				
 			}
 			
 			map.put(pId, new BooleanResult(isOnRoutine, this));
