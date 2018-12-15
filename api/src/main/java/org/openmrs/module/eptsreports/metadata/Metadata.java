@@ -87,8 +87,7 @@ public class Metadata {
 	 * @return the ProgramWorkflowState matching the given programLookup and workflowLookup and
 	 *         stateLookup
 	 */
-	public static ProgramWorkflowState getProgramWorkflowState(String programLookup, String workflowLookup,
-	        String stateLookup) {
+	public static ProgramWorkflowState getProgramWorkflowState(String programLookup, String workflowLookup, String stateLookup) {
 		ProgramWorkflow wf = getProgramWorkflow(programLookup, workflowLookup);
 		ProgramWorkflowState s = wf.getStateByName(stateLookup);
 		if (s == null) {
@@ -107,8 +106,8 @@ public class Metadata {
 			}
 		}
 		if (s == null) {
-			throw new MetadataLookupException("Unable to find state using " + programLookup + " - " + workflowLookup + " - "
-			        + stateLookup);
+			throw new MetadataLookupException(
+			        "Unable to find state using " + programLookup + " - " + workflowLookup + " - " + stateLookup);
 		}
 		return s;
 	}
@@ -134,8 +133,7 @@ public class Metadata {
 	}
 	
 	/**
-	 * @return the Concept that matches the passed uuid, name, source:code mapping, or primary key
-	 *         id
+	 * @return the Concept that matches the passed uuid, name, source:code mapping, or primary key id
 	 */
 	public static Concept getConcept(String lookup) {
 		Concept c = Context.getConceptService().getConceptByUuid(lookup);

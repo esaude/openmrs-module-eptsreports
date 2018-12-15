@@ -50,8 +50,7 @@ public abstract class EptsDataExportManager extends EptsReportManager {
 		return l;
 	}
 	
-	protected ReportDesign createExcelTemplateDesign(String reportDesignUuid, ReportDefinition reportDefinition,
-	        String templatePath) {
+	protected ReportDesign createExcelTemplateDesign(String reportDesignUuid, ReportDefinition reportDefinition, String templatePath) {
 		String resourcePath = ReportUtil.getPackageAsPath(getClass()) + "/" + templatePath;
 		return ReportManagerUtil.createExcelTemplateDesign(reportDesignUuid, reportDefinition, resourcePath);
 	}
@@ -59,8 +58,7 @@ public abstract class EptsDataExportManager extends EptsReportManager {
 	/**
 	 * @return a new ReportDesign for a standard Excel output
 	 */
-	public ReportDesign createExcelDesignWithProperties(String reportDesignUuid, ReportDefinition reportDefinition,
-	        Properties props) {
+	public ReportDesign createExcelDesignWithProperties(String reportDesignUuid, ReportDefinition reportDefinition, Properties props) {
 		ReportDesign design = ReportManagerUtil.createExcelDesign(reportDesignUuid, reportDefinition);
 		design.setProperties(props);
 		return design;
@@ -76,9 +74,8 @@ public abstract class EptsDataExportManager extends EptsReportManager {
 	 * @return
 	 * @throws IOException
 	 */
-	public static ReportDesign createXlsReportDesign(ReportDefinition reportDefinition, String resourceName,
-	        String reportDesignName, String excelDesignUuid, Map<? extends Object, ? extends Object> properties)
-	        throws IOException {
+	public static ReportDesign createXlsReportDesign(ReportDefinition reportDefinition, String resourceName, String reportDesignName,
+	        String excelDesignUuid, Map<? extends Object, ? extends Object> properties) throws IOException {
 		
 		ReportService rs = Context.getService(ReportService.class);
 		for (ReportDesign rdd : rs.getAllReportDesigns(false)) {

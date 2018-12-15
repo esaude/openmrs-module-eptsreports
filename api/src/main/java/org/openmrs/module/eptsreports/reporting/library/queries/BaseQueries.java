@@ -37,8 +37,8 @@ public class BaseQueries {
 		        + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s and ps.state=29 and ps.start_date<=:endDate and location_id=:location) t "
 		        + "join person pr on pr.person_id = t.patient_id where pr.birthdate is not null ";
 		String encounterTypes = StringUtils.join(
-		    Arrays.asList(parameters.get("arvAdultInitialEncounterTypeId"),
-		        parameters.get("arvPediatriaInitialEncounterTypeId")), ',');
+		    Arrays.asList(parameters.get("arvAdultInitialEncounterTypeId"), parameters.get("arvPediatriaInitialEncounterTypeId")),
+		    ',');
 		return String.format(query, encounterTypes, parameters.get("hivCareProgramId"), parameters.get("hivCareProgramId"),
 		    parameters.get("artProgramId"));
 	}

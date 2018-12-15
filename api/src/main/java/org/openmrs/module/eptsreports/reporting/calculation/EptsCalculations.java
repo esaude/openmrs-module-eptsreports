@@ -60,10 +60,9 @@ public class EptsCalculations {
 	 * @return the obss in a calculation result map
 	 */
 	public static CalculationResultMap allObs(Concept concept, Collection<Integer> cohort, PatientCalculationContext context) {
-		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("all obs", TimeQualifier.ANY, concept,
-		        context.getNow(), null);
-		return EptsCalculationUtils.ensureEmptyListResults(
-		    EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context), cohort);
+		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("all obs", TimeQualifier.ANY, concept, context.getNow(), null);
+		return EptsCalculationUtils
+		        .ensureEmptyListResults(EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context), cohort);
 	}
 	
 	/**
@@ -74,10 +73,9 @@ public class EptsCalculations {
 	 * @param context the calculation context
 	 * @return the obss in a calculation result map
 	 */
-	public static CalculationResultMap firstObs(Concept concept, Collection<Integer> cohort,
-	        PatientCalculationContext context) {
-		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("first obs", TimeQualifier.FIRST, concept,
-		        context.getNow(), null);
+	public static CalculationResultMap firstObs(Concept concept, Collection<Integer> cohort, PatientCalculationContext context) {
+		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("first obs", TimeQualifier.FIRST, concept, context.getNow(),
+		        null);
 		return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
 	}
 	
@@ -90,8 +88,8 @@ public class EptsCalculations {
 	 * @return the obss in a calculation result map
 	 */
 	public static CalculationResultMap lastObs(Concept concept, Collection<Integer> cohort, PatientCalculationContext context) {
-		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("last obs", TimeQualifier.LAST, concept,
-		        context.getNow(), null);
+		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("last obs", TimeQualifier.LAST, concept, context.getNow(),
+		        null);
 		return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
 	}
 	
@@ -110,8 +108,8 @@ public class EptsCalculations {
 		def.setWhichEnrollment(TimeQualifier.FIRST);
 		def.setProgram(program);
 		def.setEnrolledOnOrBefore(context.getNow());
-		CalculationResultMap results = EptsCalculationUtils.evaluateWithReporting(def, cohort,
-		    new HashMap<String, Object>(), null, context);
+		CalculationResultMap results = EptsCalculationUtils.evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null,
+		    context);
 		return EptsCalculationUtils.ensureEmptyListResults(results, cohort);
 	}
 	
@@ -169,8 +167,7 @@ public class EptsCalculations {
 	}
 	
 	/**
-	 * Utility class of filters which take a cohort and return another cohort /** Patients who are
-	 * alive
+	 * Utility class of filters which take a cohort and return another cohort /** Patients who are alive
 	 * 
 	 * @param cohort the patient ids
 	 * @param context the calculation context

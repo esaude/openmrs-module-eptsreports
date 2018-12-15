@@ -30,8 +30,7 @@ public class InHivProgramEnrollmentCalculation extends AbstractPatientCalculatio
 	 *      java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
 	 */
 	@Override
-	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params,
-	        PatientCalculationContext context) {
+	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		
 		CalculationResultMap map = new CalculationResultMap();
 		ProgramWorkflowService service = Context.getProgramWorkflowService();
