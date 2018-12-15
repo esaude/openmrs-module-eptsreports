@@ -39,8 +39,8 @@ import java.util.Set;
 public class EptsCalculationUtils {
 	
 	/**
-	 * Ensures all patients exist in a result map. If map is missing entries for any of patientIds, they
-	 * are added with an empty list result
+	 * Ensures all patients exist in a result map. If map is missing entries for any of patientIds,
+	 * they are added with an empty list result
 	 * 
 	 * @param results the calculation result map
 	 * @param cohort the patient ids
@@ -71,12 +71,12 @@ public class EptsCalculationUtils {
 			Map<Integer, Object> data;
 			
 			if (dataDefinition instanceof PersonDataDefinition) {
-				EvaluatedPersonData result = Context.getService(PersonDataService.class)
-				        .evaluate((PersonDataDefinition) dataDefinition, reportingContext);
+				EvaluatedPersonData result = Context.getService(PersonDataService.class).evaluate(
+				    (PersonDataDefinition) dataDefinition, reportingContext);
 				data = result.getData();
 			} else if (dataDefinition instanceof PatientDataDefinition) {
-				EvaluatedPatientData result = Context.getService(PatientDataService.class)
-				        .evaluate((PatientDataDefinition) dataDefinition, reportingContext);
+				EvaluatedPatientData result = Context.getService(PatientDataService.class).evaluate(
+				    (PatientDataDefinition) dataDefinition, reportingContext);
 				data = result.getData();
 			} else {
 				throw new RuntimeException("Unknown DataDefinition type: " + dataDefinition.getClass());
@@ -97,15 +97,16 @@ public class EptsCalculationUtils {
 	
 	/**
 	 * Returns the reporting {@link EvaluationContext} stored in calculationContext, creating and
-	 * storing a new one if necessary. (Note: for now we never store this, and always return a new one)
+	 * storing a new one if necessary. (Note: for now we never store this, and always return a new
+	 * one)
 	 * 
 	 * @param calculationContext the calculation context
 	 * @param cohort the patient ids
 	 * @param parameterValues the parameters for the reporting context
 	 * @return the reporting evaluation context
 	 */
-	protected static EvaluationContext ensureReportingContext(PatientCalculationContext calculationContext, Collection<Integer> cohort,
-	        Map<String, Object> parameterValues) {
+	protected static EvaluationContext ensureReportingContext(PatientCalculationContext calculationContext,
+	        Collection<Integer> cohort, Map<String, Object> parameterValues) {
 		EvaluationContext ret = new EvaluationContext();
 		ret.setEvaluationDate(calculationContext.getNow());
 		ret.setBaseCohort(new Cohort(cohort));

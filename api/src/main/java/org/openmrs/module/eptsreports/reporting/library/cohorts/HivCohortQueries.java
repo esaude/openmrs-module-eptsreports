@@ -36,7 +36,8 @@ public class HivCohortQueries {
 	
 	/**
 	 * Adult and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml)
-	 * documented in the medical records and /or supporting laboratory results within the past 12 months
+	 * documented in the medical records and /or supporting laboratory results within the past 12
+	 * months
 	 * 
 	 * @return CohortDefinition
 	 */
@@ -47,11 +48,10 @@ public class HivCohortQueries {
 		sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		sql.addParameter(new Parameter("endDate", "End Date", Date.class));
 		sql.addParameter(new Parameter("location", "Location", Location.class));
-		sql.setQuery(
-		    ViralLoadQueries.getPatientsWithViralLoadSuppression(hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
-		        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-		        hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-		        hivMetadata.getHivViralLoadConcept().getConceptId()));
+		sql.setQuery(ViralLoadQueries.getPatientsWithViralLoadSuppression(hivMetadata.getMisauLaboratorioEncounterType()
+		        .getEncounterTypeId(), hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(), hivMetadata
+		        .getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(), hivMetadata.getHivViralLoadConcept()
+		        .getConceptId()));
 		return sql;
 	}
 	
@@ -68,10 +68,9 @@ public class HivCohortQueries {
 		sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		sql.addParameter(new Parameter("endDate", "End Date", Date.class));
 		sql.addParameter(new Parameter("location", "Location", Location.class));
-		sql.setQuery(ViralLoadQueries.getPatientsHavingViralLoadInLast12Months(
-		    hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
-		    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-		    hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+		sql.setQuery(ViralLoadQueries.getPatientsHavingViralLoadInLast12Months(hivMetadata
+		        .getMisauLaboratorioEncounterType().getEncounterTypeId(), hivMetadata.getAdultoSeguimentoEncounterType()
+		        .getEncounterTypeId(), hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
 		    hivMetadata.getHivViralLoadConcept().getConceptId()));
 		return sql;
 	}

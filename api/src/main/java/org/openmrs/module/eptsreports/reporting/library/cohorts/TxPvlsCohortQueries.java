@@ -16,6 +16,8 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.InHivProgramEnrollmentCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.InitialArtStartDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAfterArtCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsQueries;
@@ -77,16 +79,16 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		cd.addSearch("breastfeeding", EptsReportUtils.map(txNewCohortQueries.getTxNewBreastfeedingComposition(),
 		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-		cd.addSearch("results",
-		    EptsReportUtils.map(getPatientsWithViralLoadResults(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.setCompositionString("breastfeeding AND results");
 		
 		return cd;
 	}
 	
 	/**
-	 * Patients with viral suppression of <1000 in the last 12 months excluding dead, LTFU, transferred
-	 * out, stopped ART
+	 * Patients with viral suppression of <1000 in the last 12 months excluding dead, LTFU,
+	 * transferred out, stopped ART
 	 */
 	public CohortDefinition getPatientsWithViralLoadSuppression() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -94,15 +96,16 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("supp", EptsReportUtils.map(hivCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
+		cd.addSearch("supp",
+		    EptsReportUtils.map(hivCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
 		cd.addSearch("baseCohort", EptsReportUtils.map(genericCohortQueries.getBaseCohort(), mappings));
 		cd.setCompositionString("supp AND baseCohort");
 		return cd;
 	}
 	
 	/**
-	 * Patients with viral results recorded in the last 12 months excluding dead, LTFU, transferred out,
-	 * stopped ART
+	 * Patients with viral results recorded in the last 12 months excluding dead, LTFU, transferred
+	 * out, stopped ART
 	 */
 	public CohortDefinition getPatientsWithViralLoadResults() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -208,8 +211,7 @@ public class TxPvlsCohortQueries {
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getRoutineForAdultsAndChildrenPatients(int monthsOnArt) {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria1",
-		        new PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAfterArtCalculation());
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria1", new InitialArtStartDateCalculation());
 		cd.setName("a");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addCalculationParameter("monthsOnArt", monthsOnArt);

@@ -62,7 +62,8 @@ public class TxCurrDataset extends BaseDataSet {
 		 * Looks for patients enrolled in ART program (program 2=SERVICO TARV -
 		 * TRATAMENTO) before or on end date
 		 */
-		CohortDefinition enrolledBeforeEndDate = genericCohortQueries.createInProgram("InARTProgram", hivMetadata.getARTProgram());
+		CohortDefinition enrolledBeforeEndDate = genericCohortQueries.createInProgram("InARTProgram",
+		    hivMetadata.getARTProgram());
 		
 		/*
 		 * Looks for patients registered as START DRUGS (answer to question 1255 = ARV
@@ -128,42 +129,46 @@ public class TxCurrDataset extends BaseDataSet {
 		// Male and Female <1
 		CohortDefinition patientBellowOneYearCurrentlyInART = txCurrCohortQueries.getTxCurrCompositionCohort(
 		    "patientBellowOneYearCurrentlyInART", enrolledBeforeEndDate, patientWithSTARTDRUGSObs,
-		    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate,
-		    patientsWhoHaveNotReturned, patientsWhoHaveNotCompleted60Days, abandonedButHaveNotcompleted60Days, PatientBelow1Year,
-		    null);
+		    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
+		    patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsWhoHaveNotReturned, patientsWhoHaveNotCompleted60Days,
+		    abandonedButHaveNotcompleted60Days, PatientBelow1Year, null);
 		CohortIndicator patientBelow1YearCurrentlyInARTIndicator = hivIndicators
 		        .patientBelow1YearEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(patientBellowOneYearCurrentlyInART);
-		dataSetDefinition.addColumn("C1<1", "TX_CURR: Currently on ART: Patients below 1 year",
-		    new Mapped<CohortIndicator>(patientBelow1YearCurrentlyInARTIndicator,
-		            ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}")),
-		    "");
+		dataSetDefinition.addColumn(
+		    "C1<1",
+		    "TX_CURR: Currently on ART: Patients below 1 year",
+		    new Mapped<CohortIndicator>(patientBelow1YearCurrentlyInARTIndicator, ParameterizableUtil
+		            .createParameterMappings("endDate=${endDate},location=${location}")), "");
 		
 		// Male and Female between 1 and 9 years
 		CohortDefinition patientBetween1And9YearsCurrentlyInART = txCurrCohortQueries.getTxCurrCompositionCohort(
 		    "patientBetween1And9YearsCurrentlyInART", enrolledBeforeEndDate, patientWithSTARTDRUGSObs,
-		    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate,
-		    patientsWhoHaveNotReturned, patientsWhoHaveNotCompleted60Days, abandonedButHaveNotcompleted60Days,
-		    PatientBetween1And9Years, null);
+		    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
+		    patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsWhoHaveNotReturned, patientsWhoHaveNotCompleted60Days,
+		    abandonedButHaveNotcompleted60Days, PatientBetween1And9Years, null);
 		CohortIndicator patientBetween1And9YearsCurrentlyInARTIndicator = hivIndicators
 		        .patientBetween1And9YearsEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(patientBetween1And9YearsCurrentlyInART);
-		dataSetDefinition.addColumn("C119", "TX_CURR: Currently on ART: Patients between 1 and 9 years",
-		    new Mapped<CohortIndicator>(patientBetween1And9YearsCurrentlyInARTIndicator,
-		            ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}")),
-		    "");
+		dataSetDefinition.addColumn(
+		    "C119",
+		    "TX_CURR: Currently on ART: Patients between 1 and 9 years",
+		    new Mapped<CohortIndicator>(patientBetween1And9YearsCurrentlyInARTIndicator, ParameterizableUtil
+		            .createParameterMappings("endDate=${endDate},location=${location}")), "");
 		
 		// Male
 		int i = 2;
 		for (CohortDefinition ageCohort : agesRange) {
-			CohortDefinition patientInYearRange = txCurrCohortQueries.getTxCurrCompositionCohort("patientEnrolledInARTStartedMales",
-			    enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
-			    patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsWhoHaveNotReturned,
-			    patientsWhoHaveNotCompleted60Days, abandonedButHaveNotcompleted60Days, ageCohort, males);
+			CohortDefinition patientInYearRange = txCurrCohortQueries.getTxCurrCompositionCohort(
+			    "patientEnrolledInARTStartedMales", enrolledBeforeEndDate, patientWithSTARTDRUGSObs,
+			    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
+			    patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsWhoHaveNotReturned, patientsWhoHaveNotCompleted60Days,
+			    abandonedButHaveNotcompleted60Days, ageCohort, males);
 			CohortIndicator patientInYearRangeCurrenltyInHIVStartedARTIndicator = hivIndicators
 			        .patientInYearRangeEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(patientInYearRange);
-			dataSetDefinition.addColumn("C1M" + i, "Males:TX_CURR: Currently on ART by age and sex: " + ageCohort.getName(),
-			    new Mapped<CohortIndicator>(patientInYearRangeCurrenltyInHIVStartedARTIndicator,
-			            ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}")),
-			    "");
+			dataSetDefinition.addColumn(
+			    "C1M" + i,
+			    "Males:TX_CURR: Currently on ART by age and sex: " + ageCohort.getName(),
+			    new Mapped<CohortIndicator>(patientInYearRangeCurrenltyInHIVStartedARTIndicator, ParameterizableUtil
+			            .createParameterMappings("endDate=${endDate},location=${location}")), "");
 			
 			i++;
 		}
@@ -171,30 +176,34 @@ public class TxCurrDataset extends BaseDataSet {
 		// Females
 		int j = 2;
 		for (CohortDefinition ageCohort : agesRange) {
-			CohortDefinition patientInYearRange = txCurrCohortQueries.getTxCurrCompositionCohort("patientEnrolledInARTStartedFemales",
-			    enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
-			    patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsWhoHaveNotReturned,
-			    patientsWhoHaveNotCompleted60Days, abandonedButHaveNotcompleted60Days, ageCohort, females);
+			CohortDefinition patientInYearRange = txCurrCohortQueries.getTxCurrCompositionCohort(
+			    "patientEnrolledInARTStartedFemales", enrolledBeforeEndDate, patientWithSTARTDRUGSObs,
+			    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
+			    patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsWhoHaveNotReturned, patientsWhoHaveNotCompleted60Days,
+			    abandonedButHaveNotcompleted60Days, ageCohort, females);
 			CohortIndicator patientInYearRangeCurrenltyInHIVStartedARTIndicator = hivIndicators
 			        .patientInYearRangeEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(patientInYearRange);
 			
-			dataSetDefinition.addColumn("C1F" + j, "Females:TX_CURR: Currently on ART by age and sex: " + ageCohort.getName(),
-			    new Mapped<CohortIndicator>(patientInYearRangeCurrenltyInHIVStartedARTIndicator,
-			            ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}")),
-			    "");
+			dataSetDefinition.addColumn(
+			    "C1F" + j,
+			    "Females:TX_CURR: Currently on ART by age and sex: " + ageCohort.getName(),
+			    new Mapped<CohortIndicator>(patientInYearRangeCurrenltyInHIVStartedARTIndicator, ParameterizableUtil
+			            .createParameterMappings("endDate=${endDate},location=${location}")), "");
 			j++;
 		}
 		
-		CohortDefinition allPatientsCurrentlyInART = txCurrCohortQueries.getTxCurrCompositionCohort("allPatientsCurrentlyInART",
-		    enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
+		CohortDefinition allPatientsCurrentlyInART = txCurrCohortQueries.getTxCurrCompositionCohort(
+		    "allPatientsCurrentlyInART", enrolledBeforeEndDate, patientWithSTARTDRUGSObs,
+		    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
 		    patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsWhoHaveNotReturned, patientsWhoHaveNotCompleted60Days,
 		    abandonedButHaveNotcompleted60Days, null, null);
 		CohortIndicator allPatientsCurrentlyInARTARTIndicator = hivIndicators
 		        .patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(allPatientsCurrentlyInART);
-		dataSetDefinition.addColumn("C1All", "TX_CURR: Currently on ART",
-		    new Mapped<CohortIndicator>(allPatientsCurrentlyInARTARTIndicator,
-		            ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}")),
-		    "");
+		dataSetDefinition.addColumn(
+		    "C1All",
+		    "TX_CURR: Currently on ART",
+		    new Mapped<CohortIndicator>(allPatientsCurrentlyInARTARTIndicator, ParameterizableUtil
+		            .createParameterMappings("endDate=${endDate},location=${location}")), "");
 		
 		return dataSetDefinition;
 	}

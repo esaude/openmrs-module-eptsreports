@@ -67,30 +67,30 @@ public class EptsCommonDimension {
 		
 		dim.addCohortDefinition("UK",
 		    EptsReportUtils.map(ageCohortQueries.getPatientsWithUnknownAge(), "endDate=${endDate},location=${location}"));
-		dim.addCohortDefinition("<1",
-		    EptsReportUtils.map(txPvlsCohortQueries.findPatientsagedBelowInYears(1), "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("<1", EptsReportUtils.map(txPvlsCohortQueries.findPatientsagedBelowInYears(1),
+		    "endDate=${endDate},location=${location}"));
 		dim.addCohortDefinition("1-4", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(1, 4),
 		    "endDate=${endDate},location=${location}"));
 		dim.addCohortDefinition("5-9", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(5, 9),
 		    "endDate=${endDate},location=${location}"));
-		dim.addCohortDefinition("10-14", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(10, 14),
-		    "endDate=${endDate},location=${location}"));
-		dim.addCohortDefinition("15-19", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(15, 19),
-		    "endDate=${endDate},location=${location}"));
-		dim.addCohortDefinition("20-24", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(20, 24),
-		    "endDate=${endDate},location=${location}"));
-		dim.addCohortDefinition("25-29", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(25, 29),
-		    "endDate=${endDate},location=${location}"));
-		dim.addCohortDefinition("30-34", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(30, 34),
-		    "endDate=${endDate},location=${location}"));
-		dim.addCohortDefinition("35-39", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(35, 39),
-		    "endDate=${endDate},location=${location}"));
-		dim.addCohortDefinition("40-44", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(40, 44),
-		    "endDate=${endDate},location=${location}"));
-		dim.addCohortDefinition("45-49", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(45, 49),
-		    "endDate=${endDate},location=${location}"));
-		dim.addCohortDefinition("50+", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(50, 200),
-		    "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("10-14", EptsReportUtils.map(
+		    txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(10, 14), "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("15-19", EptsReportUtils.map(
+		    txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(15, 19), "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("20-24", EptsReportUtils.map(
+		    txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(20, 24), "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("25-29", EptsReportUtils.map(
+		    txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(25, 29), "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("30-34", EptsReportUtils.map(
+		    txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(30, 34), "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("35-39", EptsReportUtils.map(
+		    txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(35, 39), "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("40-44", EptsReportUtils.map(
+		    txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(40, 44), "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("45-49", EptsReportUtils.map(
+		    txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(45, 49), "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("50+", EptsReportUtils.map(
+		    txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(50, 200), "endDate=${endDate},location=${location}"));
 		return dim;
 	}
 	
