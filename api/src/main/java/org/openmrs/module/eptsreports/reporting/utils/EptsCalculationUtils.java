@@ -1,11 +1,14 @@
 package org.openmrs.module.eptsreports.reporting.utils;
 
+import org.joda.time.DateTime;
+import org.joda.time.Months;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.calculation.CalculationContext;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResult;
@@ -26,6 +29,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -183,8 +187,10 @@ public class EptsCalculationUtils {
 	public static Encounter encounterResultForPatient(CalculationResultMap results, Integer patientId) {
 		return resultForPatient(results, patientId);
 	}
+	
 	/**
 	 * Extracts patients from calculation result map with matching results
+	 * 
 	 * @param results calculation result map
 	 * @param requiredResult the required result value
 	 * @return the extracted patient ids
@@ -193,12 +199,37 @@ public class EptsCalculationUtils {
 		Set<Integer> ret = new HashSet<Integer>();
 		for (Map.Entry<Integer, CalculationResult> e : results.entrySet()) {
 			CalculationResult result = e.getValue();
-
-			// If there is no required result, just check trueness of result, otherwise check result matches required result
-			if ((requiredResult == null && ResultUtil.isTrue(result)) || (result != null && result.getValue().equals(requiredResult))) {
+			
+			// If there is no required result, just check trueness of result, otherwise
+			// check result matches required result
+			if ((requiredResult == null && ResultUtil.isTrue(result))
+			        || (result != null && result.getValue().equals(requiredResult))) {
 				ret.add(e.getKey());
 			}
 		}
 		return ret;
+	}
+	
+	/**
+	 * Extracts patients from calculation result map with non-false/empty results
+	 * 
+	 * @param results calculation result map
+	 * @return the extracted patient ids
+	 */
+	public static Set<Integer> patientsThatPass(CalculationResultMap results) {
+		return patientsThatPass(results, null);
+	}
+	
+	/**
+	 * Calculates the days since the given date
+	 * 
+	 * @param date the date
+	 * @param calculationContext the calculation context
+	 * @return the number of days
+	 */
+	public static int monthsSince(Date date, CalculationContext calculationContext) {
+		DateTime d1 = new DateTime(date.getTime());
+		DateTime d2 = new DateTime(calculationContext.getNow().getTime());
+		return Months.monthsBetween(d1, d2).getMonths();
 	}
 }

@@ -4,7 +4,6 @@ import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.calculation.patient.PatientCalculationContext;
-import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -41,7 +40,8 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 		
 		// Get calculation map date for the first program enrollment
 		CalculationResultMap map = new CalculationResultMap();
-		CalculationResultMap programMap = EptsCalculations.firstProgramEnrollment(hivMetadata.getARTProgram(), cohort, context);
+		CalculationResultMap inHivProgram = calculate(new InHivProgramEnrollmentCalculation(), cohort, context);
+		
 		CalculationResultMap startDrugMap = EptsCalculations.firstObs(hivMetadata.getARVPlanConcept(), cohort, context);
 		CalculationResultMap historicalMap = EptsCalculations.firstObs(hivMetadata.gethistoricalDrugStartDateConcept(), cohort,
 		    context);
@@ -54,12 +54,9 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 			Date historicalDate = null;
 			Date pharmacyDate = null;
 			
-			CalculationResult programResults = EptsCalculationUtils.resultForPatient(programMap, pId);
-			if (programResults != null) {
-				PatientProgram patientProgram = (PatientProgram) programResults.getValue();
-				if (patientProgram != null) {
-					dateEnrolledIntoProgram = patientProgram.getDateEnrolled();
-				}
+			SimpleResult result = (SimpleResult) inHivProgram.get(pId);
+			if (result != null) {
+				dateEnrolledIntoProgram = ((PatientProgram) result.getValue()).getDateEnrolled();
 			}
 			
 			Obs startDateObsResults = EptsCalculationUtils.obsResultForPatient(startDrugMap, pId);
@@ -71,6 +68,7 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 					dateStartedDrugs = startDateObsResults.getObsDatetime();
 				}
 			}
+			
 			Obs historicalDateValue = EptsCalculationUtils.obsResultForPatient(historicalMap, pId);
 			if (historicalDateValue != null && historicalDateValue.getValueDatetime() != null) {
 				if (historicalDateValue.getEncounter().getEncounterType().equals(hivMetadata.getARVPharmaciaEncounterType())
@@ -80,6 +78,7 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 					historicalDate = historicalDateValue.getObsDatetime();
 				}
 			}
+			
 			Encounter pharmacyEncounter = EptsCalculationUtils.encounterResultForPatient(pharmacyEncounterMap, pId);
 			if (pharmacyEncounter != null) {
 				pharmacyDate = pharmacyEncounter.getEncounterDatetime();

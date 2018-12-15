@@ -208,7 +208,8 @@ public class TxPvlsCohortQueries {
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getRoutineForAdultsAndChildrenPatients(int monthsOnArt) {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria1", new PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAfterArtCalculation());
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria1",
+		        new PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAfterArtCalculation());
 		cd.setName("a");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addCalculationParameter("monthsOnArt", monthsOnArt);
@@ -222,13 +223,15 @@ public class TxPvlsCohortQueries {
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getRoutineForBreastfeedingAndPregnantWomen(int monthsOnArt) {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria1", new PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAfterArtCalculation());
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria1",
+		        new PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAfterArtCalculation());
 		return cd;
 		
 	}
-
+	
 	/**
 	 * Get patients having viral load suppression and routine for adults and children
+	 * 
 	 * @retrun CohortDefinition
 	 */
 	public CohortDefinition getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren() {
@@ -243,9 +246,10 @@ public class TxPvlsCohortQueries {
 		cd.setCompositionString("supp AND routine");
 		return cd;
 	}
-
+	
 	/**
 	 * Get patients having viral load suppression and not documented for adults and children
+	 * 
 	 * @retrun CohortDefinition
 	 */
 	public CohortDefinition getPatientWithViralSuppressionAndNotDocumentedForAdultsAndChildren() {

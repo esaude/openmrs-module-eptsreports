@@ -133,20 +133,26 @@ public class HivIndicators extends BaseIndicators {
 		return newCohortIndicator("patients with viral load results disagreagated by age below", EptsReportUtils.map(
 		    pvls.getPatientsWithViralLoadSuppressionAgeBelow(age), "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
-
+	
 	/**
 	 * Find patients with viral load suppression and on routine
+	 * 
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getPatientsWithViralLoadSuppressionOnRoutineForAdultsAndChildren() {
-		return newCohortIndicator("viral load suppression on routine adults and children", EptsReportUtils.map(pvls.getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+		return newCohortIndicator("viral load suppression on routine adults and children",
+		    EptsReportUtils.map(pvls.getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren(),
+		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
-
+	
 	/**
 	 * Find patients with viral load suppression and NOT documented
+	 * 
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getPatientsWithViralLoadSuppressionNotDocumentedForAdultsAndChildren() {
-		return newCohortIndicator("viral load suppression on routine adults and children", EptsReportUtils.map(pvls.getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+		return newCohortIndicator("viral load suppression on routine adults and children",
+		    EptsReportUtils.map(pvls.getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren(),
+		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 }
