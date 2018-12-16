@@ -68,51 +68,52 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 				dateEnrolledIntoProgram = (Date) result.getValue();
 				enrollmentDates.add(dateEnrolledIntoProgram);
 			}
-			System.out.println("The enrollment date is :::" + dateEnrolledIntoProgram);
-			Obs startDateObsResults = EptsCalculationUtils.obsResultForPatient(startDrugMap, pId);
-			if (startDateObsResults != null && startDateObsResults.getValueCoded().equals(startDrugs)) {
-				if (startDateObsResults.getEncounter().getEncounterType().equals(encounterTypePharmacy)
-				        || startDateObsResults.getEncounter().getEncounterType().equals(adultoSeguimento)
-				        || startDateObsResults.getEncounter().getEncounterType().equals(arvPaed)) {
-					dateStartedDrugs = startDateObsResults.getObsDatetime();
-					enrollmentDates.add(dateStartedDrugs);
-				}
-			}
-			
-			Obs historicalDateValue = EptsCalculationUtils.obsResultForPatient(historicalMap, pId);
-			if (historicalDateValue != null && historicalDateValue.getEncounter() != null
-			        && historicalDateValue.getEncounter().getEncounterType() != null
-			        && historicalDateValue.getValueDatetime() != null) {
-				
-				if (historicalDateValue.getEncounter().getEncounterType().equals(encounterTypePharmacy)
-				        || historicalDateValue.getEncounter().getEncounterType().equals(adultoSeguimento)
-				        || historicalDateValue.getEncounter().getEncounterType().equals(arvPaed)) {
-					historicalDate = historicalDateValue.getValueDatetime();
-					enrollmentDates.add(historicalDate);
-				}
-				
-				Encounter pharmacyEncounter = EptsCalculationUtils.encounterResultForPatient(pharmacyEncounterMap, pId);
-				if (pharmacyEncounter != null) {
-					pharmacyDate = pharmacyEncounter.getEncounterDatetime();
-					enrollmentDates.add(pharmacyDate);
-				}
-				
-				if (enrollmentDates.size() > 0) {
-					if (enrollmentDates.size() == 1) {
-						requiredDate = enrollmentDates.get(0);
-					} else if (enrollmentDates.size() == 2) {
-						requiredDate = EptsCalculationUtils.earliest(enrollmentDates.get(0), enrollmentDates.get(1));
-					} else if (enrollmentDates.size() == 3) {
-						Date tempDate = EptsCalculationUtils.earliest(enrollmentDates.get(0), enrollmentDates.get(1));
-						requiredDate = EptsCalculationUtils.earliest(enrollmentDates.get(2), tempDate);
-					} else if (enrollmentDates.size() == 4) {
-						Date tempDate1 = EptsCalculationUtils.earliest(enrollmentDates.get(0), enrollmentDates.get(1));
-						Date tempDate2 = EptsCalculationUtils.earliest(enrollmentDates.get(2), enrollmentDates.get(3));
-						requiredDate = EptsCalculationUtils.earliest(tempDate1, tempDate2);
+			if (dateEnrolledIntoProgram != null) {
+				Obs startDateObsResults = EptsCalculationUtils.obsResultForPatient(startDrugMap, pId);
+				if (startDateObsResults != null && startDateObsResults.getValueCoded().equals(startDrugs)) {
+					if (startDateObsResults.getEncounter().getEncounterType().equals(encounterTypePharmacy)
+					        || startDateObsResults.getEncounter().getEncounterType().equals(adultoSeguimento)
+					        || startDateObsResults.getEncounter().getEncounterType().equals(arvPaed)) {
+						dateStartedDrugs = startDateObsResults.getObsDatetime();
+						enrollmentDates.add(dateStartedDrugs);
 					}
 				}
 				
-				map.put(pId, new SimpleResult(requiredDate, this));
+				Obs historicalDateValue = EptsCalculationUtils.obsResultForPatient(historicalMap, pId);
+				if (historicalDateValue != null && historicalDateValue.getEncounter() != null
+				        && historicalDateValue.getEncounter().getEncounterType() != null
+				        && historicalDateValue.getValueDatetime() != null) {
+					
+					if (historicalDateValue.getEncounter().getEncounterType().equals(encounterTypePharmacy)
+					        || historicalDateValue.getEncounter().getEncounterType().equals(adultoSeguimento)
+					        || historicalDateValue.getEncounter().getEncounterType().equals(arvPaed)) {
+						historicalDate = historicalDateValue.getValueDatetime();
+						enrollmentDates.add(historicalDate);
+					}
+					
+					Encounter pharmacyEncounter = EptsCalculationUtils.encounterResultForPatient(pharmacyEncounterMap, pId);
+					if (pharmacyEncounter != null) {
+						pharmacyDate = pharmacyEncounter.getEncounterDatetime();
+						enrollmentDates.add(pharmacyDate);
+					}
+					
+					if (enrollmentDates.size() > 0) {
+						if (enrollmentDates.size() == 1) {
+							requiredDate = enrollmentDates.get(0);
+						} else if (enrollmentDates.size() == 2) {
+							requiredDate = EptsCalculationUtils.earliest(enrollmentDates.get(0), enrollmentDates.get(1));
+						} else if (enrollmentDates.size() == 3) {
+							Date tempDate = EptsCalculationUtils.earliest(enrollmentDates.get(0), enrollmentDates.get(1));
+							requiredDate = EptsCalculationUtils.earliest(enrollmentDates.get(2), tempDate);
+						} else if (enrollmentDates.size() == 4) {
+							Date tempDate1 = EptsCalculationUtils.earliest(enrollmentDates.get(0), enrollmentDates.get(1));
+							Date tempDate2 = EptsCalculationUtils.earliest(enrollmentDates.get(2), enrollmentDates.get(3));
+							requiredDate = EptsCalculationUtils.earliest(tempDate1, tempDate2);
+						}
+					}
+					
+					map.put(pId, new SimpleResult(requiredDate, this));
+				}
 			}
 			
 		}
