@@ -12,6 +12,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,7 +56,7 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 		CalculationResultMap pharmacyEncounterMap = EptsCalculations.firstEncounter(encounterTypePharmacy, cohort, context);
 		
 		for (Integer pId : cohort) {
-			Date dateEnrolledIntoProgram;
+			Date dateEnrolledIntoProgram = null;
 			Date dateStartedDrugs;
 			Date historicalDate;
 			Date pharmacyDate;
@@ -67,7 +68,7 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 				dateEnrolledIntoProgram = (Date) result.getValue();
 				enrollmentDates.add(dateEnrolledIntoProgram);
 			}
-			
+			System.out.println("The enrollment date is :::" + dateEnrolledIntoProgram);
 			Obs startDateObsResults = EptsCalculationUtils.obsResultForPatient(startDrugMap, pId);
 			if (startDateObsResults != null && startDateObsResults.getValueCoded().equals(startDrugs)) {
 				if (startDateObsResults.getEncounter().getEncounterType().equals(encounterTypePharmacy)
@@ -97,7 +98,18 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 				}
 				
 				if (enrollmentDates.size() > 0) {
-					requiredDate = enrollmentDates.get(0);
+					if (enrollmentDates.size() == 1) {
+						requiredDate = enrollmentDates.get(0);
+					} else if (enrollmentDates.size() == 2) {
+						requiredDate = EptsCalculationUtils.earliest(enrollmentDates.get(0), enrollmentDates.get(1));
+					} else if (enrollmentDates.size() == 3) {
+						Date tempDate = EptsCalculationUtils.earliest(enrollmentDates.get(0), enrollmentDates.get(1));
+						requiredDate = EptsCalculationUtils.earliest(enrollmentDates.get(2), tempDate);
+					} else if (enrollmentDates.size() == 4) {
+						Date tempDate1 = EptsCalculationUtils.earliest(enrollmentDates.get(0), enrollmentDates.get(1));
+						Date tempDate2 = EptsCalculationUtils.earliest(enrollmentDates.get(2), enrollmentDates.get(3));
+						requiredDate = EptsCalculationUtils.earliest(tempDate1, tempDate2);
+					}
 				}
 				
 				map.put(pId, new SimpleResult(requiredDate, this));

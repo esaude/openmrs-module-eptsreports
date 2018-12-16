@@ -27,6 +27,7 @@ import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.util.OpenmrsUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -250,6 +251,20 @@ public class EptsCalculationUtils {
 			}
 		}
 		return values;
+	}
+	
+	/**
+	 * Calculates the earliest date of two given dates, ignoring null values
+	 * 
+	 * @param d1 the first date
+	 * @param d2 the second date
+	 * @return the earliest date value
+	 * @should return null if both dates are null
+	 * @should return non-null date if one date is null
+	 * @should return earliest date of two non-null dates
+	 */
+	public static Date earliest(Date d1, Date d2) {
+		return OpenmrsUtil.compareWithNullAsLatest(d1, d2) >= 0 ? d2 : d1;
 	}
 	
 }
