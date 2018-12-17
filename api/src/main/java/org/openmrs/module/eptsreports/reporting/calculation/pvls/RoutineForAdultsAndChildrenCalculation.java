@@ -133,13 +133,15 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 						});
 						
 						Obs previousObs = viralLoadForPatientTakenWithin12Months
-						        .get(viralLoadForPatientTakenWithin12Months.size() - 1);
-						Obs currentObs = viralLoadForPatientTakenWithin12Months.get(viralLoadForPatientTakenWithin12Months.size());
-						if (currentObs != null && previousObs != null && previousObs.getValueNumeric() < 1000
+						        .get(viralLoadForPatientTakenWithin12Months.size() - 2);
+						Obs currentObs = viralLoadForPatientTakenWithin12Months.get(viralLoadForPatientTakenWithin12Months.size() - 1);
+						if (currentObs != null && previousObs != null && previousObs.getValueNumeric() != null
+						        && previousObs.getObsDatetime() != null && previousObs.getValueNumeric() < 1000
+						        && currentObs.getObsDatetime() != null
 						        && previousObs.getObsDatetime().before(currentObs.getObsDatetime())) {
 							if (EptsCalculationUtils
-							        .monthsSince(previousObs.getValueDate(), currentObs.getObsDatetime()) >= artLowerLimit2
-							        && EptsCalculationUtils.monthsSince(previousObs.getValueDate(),
+							        .monthsSince(previousObs.getObsDatetime(), currentObs.getObsDatetime()) >= artLowerLimit2
+							        && EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(),
 							            currentObs.getObsDatetime()) <= artUpperLimit2) {
 								isOnRoutine = true;
 							}
