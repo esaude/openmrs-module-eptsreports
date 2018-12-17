@@ -37,7 +37,7 @@ public class TxCurrCohortQueries {
 	
 	private static final int OLD_SPEC_ABANDONMENT_DAYS = 60;
 	
-	private static final int CURRENT_SPEC_ABANDONMENT_DAYS = 28;
+	private static final int CURRENT_SPEC_ABANDONMENT_DAYS = 29;
 	
 	@Autowired
 	private HivMetadata hivMetadata;
@@ -158,7 +158,7 @@ public class TxCurrCohortQueries {
 		        + "inner join obs o on o.person_id=max_mov.patient_id "
 		        + "where max_mov.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id="
 		        + hivMetadata.getReturnVisitDateConcept().getConceptId()
-		        + " and o.location_id=:location AND DATEDIFF(:onOrBefore,o.value_datetime)<=:abandonmentDays");
+		        + " and o.location_id=:location AND DATEDIFF(:onOrBefore,o.value_datetime)<:abandonmentDays");
 		definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		definition.addParameter(new Parameter("location", "location", Location.class));
 		definition.addParameter(new Parameter("abandonmentDays", "abandonmentDays", Integer.class));
