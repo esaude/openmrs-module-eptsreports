@@ -308,7 +308,7 @@ public class TxPvlsCohortQueries {
 	}
 	
 	// breastfeeding and pregnant women
-	//breast feeding Numerator.
+	// breast feeding Numerator.
 	/**
 	 * Get breastfeding women on routine Numerator
 	 * 
@@ -382,9 +382,10 @@ public class TxPvlsCohortQueries {
 		cd.setCompositionString("results AND pregnant");
 		return cd;
 	}
-
+	
 	/**
-	 * Get pregnant, has viral load, and on routine Numerator
+	 * Get pregnant, has viral load suppression, and on routine Numerator
+	 * 
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getPregnantAndOnRoutineNumerator() {
@@ -394,14 +395,15 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenWithViralLoadSuppressionNumerator(),
-				"onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 		cd.addSearch("routine", EptsReportUtils.map(getPregnantAndBreastfeedingWomenOnRoutine(), "endDate=${endDate}"));
 		cd.setCompositionString("pregnant AND routine");
 		return cd;
 	}
-
+	
 	/**
 	 * Get pregnant, has viral load, and NOT documented Numerator
+	 * 
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getPregnantAndNotDocumentedNumerator() {
@@ -411,12 +413,84 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenWithViralLoadSuppressionNumerator(),
-				"onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 		cd.addSearch("routine", EptsReportUtils.map(getPregnantAndBreastfeedingWomenOnRoutine(), "endDate=${endDate}"));
 		cd.setCompositionString("pregnant AND NOT routine");
 		return cd;
 	}
-
-	//Pregnant and breastfeeding denominator
 	
+	// Pregnant and breastfeeding denominator
+	// Breastfeeding
+	/**
+	 * Patients who have viral load results, breastfeeding and on routine denominator
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getBreastfeedingWomenOnRoutineWithViralLoadResultsDenominator() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Breastfeeding women on routine and have Viral load results");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addSearch("vlandBreastfeeding", EptsReportUtils.map(getBreastfeedingWomenWhoHaveViralLoadResults(),
+		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		cd.addSearch("routine", EptsReportUtils.map(getPregnantAndBreastfeedingWomenOnRoutine(), "endDate=${endDate}"));
+		cd.setCompositionString("vlandBreastfeeding AND routine");
+		return cd;
+	}
+	
+	/**
+	 * Patients who have virial load results and NOT documented and are breastfeeding denominator
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getBreastfeedingWomenAndNotDocumentedWithViralLoadResultsDenominator() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Breastfeeding women NOT documented and have Viral load results");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addSearch("vlandBreastfeeding", EptsReportUtils.map(getBreastfeedingWomenWhoHaveViralLoadResults(),
+		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		cd.addSearch("routine", EptsReportUtils.map(getPregnantAndBreastfeedingWomenOnRoutine(), "endDate=${endDate}"));
+		cd.setCompositionString("vlandBreastfeeding AND NOT routine");
+		return cd;
+	}
+	
+	// Pregnant
+	/**
+	 * Patients who are pregnant, have viral load results and on routine denominator
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getPregnantWomenAndOnRoutineWithViralLoadResultsDenominator() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Get pregnant women with viral load results Not documented");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenWithViralLoadResultsDenominator(), mappings));
+		cd.addSearch("routine", EptsReportUtils.map(getPregnantAndBreastfeedingWomenOnRoutine(), "endDate=${endDate}"));
+		cd.setCompositionString("pregnant AND routine");
+		return cd;
+	}
+	
+	/**
+	 * Patients who are pregnant, have viral load and NOT Documented
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getPregnantWomenAndNotDocumentedWithViralLoadResultsDenominator() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Get pregnant women with viral load results Not documented");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenWithViralLoadResultsDenominator(), mappings));
+		cd.addSearch("routine", EptsReportUtils.map(getPregnantAndBreastfeedingWomenOnRoutine(), "endDate=${endDate}"));
+		cd.setCompositionString("pregnant AND NOT routine");
+		return cd;
+	}
 }
