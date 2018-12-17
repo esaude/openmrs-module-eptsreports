@@ -207,8 +207,8 @@ public class TxPvlsCohortQueries {
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getpatientsOnRoutineAdultsAndChildren(int monthsOnArt, int artLowerLimit1, int artUpperLimit1, int artLowerLimit2,
-	        int artUpperLimit2) {
+	public CohortDefinition getpatientsOnRoutineAdultsAndChildren(int monthsOnArt, int artLowerLimit1, int artUpperLimit1,
+	        int artLowerLimit2, int artUpperLimit2) {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria1", new RoutineForAdultsAndChildrenCalculation());
 		cd.setName("Routine for adults and children");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));

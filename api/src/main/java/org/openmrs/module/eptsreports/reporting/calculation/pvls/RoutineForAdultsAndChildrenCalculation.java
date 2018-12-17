@@ -2,19 +2,19 @@ package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -29,9 +29,6 @@ import java.util.Set;
 
 @Component
 public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalculation {
-	
-	@Autowired
-	private HivMetadata hivMetadata;
 	
 	/**
 	 * Patients on ART for the last X months with one VL result registered in the 12 month period
@@ -58,8 +55,12 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 		
 		CalculationResultMap map = new CalculationResultMap();
 		ConceptService conceptService = Context.getConceptService();
+		EncounterService encounterService = Context.getEncounterService();
+		
 		Concept viralLoad = conceptService.getConceptByUuid("e1d6247e-1d5f-11e0-b929-000c29ad1d07");
 		Concept secondLine = conceptService.getConceptByUuid("7f367983-9911-4f8c-bbfc-a85678801f64");
+		EncounterType encounterType6 = encounterService.getEncounterTypeByUuid("e278f956-1d5f-11e0-b929-000c29ad1d07");
+		EncounterType encounterType9 = encounterService.getEncounterTypeByUuid("e278fce4-1d5f-11e0-b929-000c29ad1d07");
 		
 		// get the ART initiation date
 		CalculationResultMap arvsInitiationDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
@@ -68,10 +69,8 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 		CalculationResultMap lastVl = EptsCalculations.lastObs(viralLoad, cohort, context);
 		
 		// get first encounter for the option c
-		CalculationResultMap encounter6 = EptsCalculations.firstEncounter(hivMetadata.getAdultoSeguimentoEncounterType(), cohort,
-		    context);
-		CalculationResultMap encounter9 = EptsCalculations.firstEncounter(hivMetadata.getARVPediatriaSeguimentoEncounterType(), cohort,
-		    context);
+		CalculationResultMap encounter6 = EptsCalculations.firstEncounter(encounterType6, cohort, context);
+		CalculationResultMap encounter9 = EptsCalculations.firstEncounter(encounterType9, cohort, context);
 		
 		Set<Integer> alivePatients = EptsCalculationUtils.patientsThatPass(EptsCalculations.alive(cohort, context));
 		
@@ -156,18 +155,23 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 						Encounter encounter2 = EptsCalculationUtils.encounterResultForPatient(encounter9, pId);
 						// loop through the viral load list and find one that is after the second line
 						// option
-						if (encounter1 != null || encounter2 != null) {
-							Date encounterDateAdulto = encounter1.getEncounterDatetime();
-							Date encounterDatePed = encounter2.getEncounterDatetime();
-							Date latestVlDate = lastVlObs.getObsDatetime();
-							if (obs != null && (encounterDateAdulto.before(latestVlDate) || encounterDatePed.before(latestVlDate))) {
+						Date finalDate = null;
+						if (encounter1 != null) {
+							finalDate = encounter1.getEncounterDatetime();
+						}
+						if (finalDate == null && encounter2 != null) {
+							finalDate = encounter2.getEncounterDatetime();
+						}
+						Date latestVlDate = lastVlObs.getObsDatetime();
+						
+						if (obs != null && finalDate != null && latestVlDate != null) {
+							if (finalDate.before(latestVlDate)) {
 								isOnRoutine = true;
 							}
 						}
-						
 					}
+					
 				}
-				
 			}
 			map.put(pId, new BooleanResult(isOnRoutine, this));
 		}
