@@ -24,8 +24,8 @@ public class BaseQueries {
 	// they map to concept_id=1369 - TRANSFER FROM OTHER FACILITY
 	// TODO: Query needs to be refactored
 	public static String getBaseCohortQuery(Map<String, String> parameters) {
-		String query = "select p.patient_id from patient p join encounter e on e.patient_id=p.patient_id join person pr on pr.person_id = p.patient_id "
-		        + "where e.voided=0 and p.voided=0 and e.encounter_type in (%s) and e.encounter_datetime<=:endDate and e.location_id = :location and pr.birthdate is not null "
+		String query = "select p.patient_id from patient p join encounter e on e.patient_id=p.patient_id "
+		        + "where e.voided=0 and p.voided=0 and e.encounter_type in (%s) and e.encounter_datetime<=:endDate and e.location_id = :location "
 		        + "union "
 		        + "select pg.patient_id from patient p join patient_program pg on p.patient_id=pg.patient_id where pg.voided=0 and p.voided=0 and program_id=%s and date_enrolled<=:endDate and location_id=:location "
 		        + "union "

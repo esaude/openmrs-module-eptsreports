@@ -13,8 +13,10 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Arrays;
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -183,6 +185,49 @@ public class TxCurrCohortQueries {
 	}
 	
 	/**
+	 * Patients that don't have next pickup date set on their most recent encounter
+	 * 
+	 * @return
+	 */
+	@DocumentedDefinition(value = "patientsWithoutNextPickupDate")
+	public SqlCohortDefinition getPatientsWithoutNextPickupDate() {
+		SqlCohortDefinition definition = new SqlCohortDefinition();
+		definition.setName("patientsWithoutNextPickupDate");
+		String query = "select patient_id from ( "
+		        + "select p.patient_id, max(encounter_datetime) encounter_datetime from patient p join encounter e on e.patient_id=p.patient_id  "
+		        + "where p.voided=0 and e.voided=0 and e.encounter_type=%s and e.location_id=:location and e.encounter_datetime<=:onOrBefore group by p.patient_id) most_recent_encounter_datetimes "
+		        + "left join obs on obs.person_id = most_recent_encounter_datetimes.patient_id and obs.obs_datetime = most_recent_encounter_datetimes.encounter_datetime and obs.concept_id=%s and obs.voided = false "
+		        + "where obs.obs_id is null ";
+		definition.setQuery(String.format(query, hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+		    hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
+		definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		definition.addParameter(new Parameter("location", "location", Location.class));
+		return definition;
+	}
+	
+	/**
+	 * Patients that don't have next consultation date set on their most recent encounter
+	 * 
+	 * @return
+	 */
+	@DocumentedDefinition(value = "patientsWithoutNextConsultationDate")
+	public SqlCohortDefinition getPatientsWithoutNextConsultationDate() {
+		SqlCohortDefinition definition = new SqlCohortDefinition();
+		definition.setName("patientsWithoutNextConsultationDate");
+		String query = "select patient_id from ( "
+		        + "select p.patient_id, max(encounter_datetime) encounter_datetime from patient p inner join encounter e on e.patient_id=p.patient_id "
+		        + "where p.voided=0 and e.voided=0 and e.encounter_type in (%s) and e.location_id=:location and e.encounter_datetime<=:onOrBefore group by p.patient_id) most_recent_encounter_datetimes "
+		        + "left join obs on obs.person_id = most_recent_encounter_datetimes.patient_id and obs.obs_datetime = most_recent_encounter_datetimes.encounter_datetime and obs.concept_id=%s and obs.voided = false "
+		        + "where obs.obs_id is null ";
+		String encounterTypes = StringUtils.join(Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+		    hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()), ',');
+		definition.setQuery(String.format(query, encounterTypes, hivMetadata.getReturnVisitDateConcept().getConceptId()));
+		definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		definition.addParameter(new Parameter("location", "location", Location.class));
+		return definition;
+	}
+	
+	/**
 	 * Build TxCurr composition cohort definition
 	 * 
 	 * @param cohortName
@@ -195,6 +240,8 @@ public class TxCurrCohortQueries {
 	 * @param patientsWhoHaveNotCompleted60Days
 	 * @param abandonedButHaveNotcompleted60Days
 	 * @param ageCohort
+	 * @param patientsWithoutNextPickupDate
+	 * @param patientsWithoutNextConsultationDate
 	 * @return CompositionQuery
 	 */
 	@DocumentedDefinition(value = "getTxCurrCompositionCohort")
@@ -202,7 +249,8 @@ public class TxCurrCohortQueries {
 	        CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs,
 	        CohortDefinition patientsWithDrugPickUpEncounters, CohortDefinition patientsWhoLeftARTProgramBeforeOrOnEndDate,
 	        CohortDefinition patientsWhoHaveNotReturned, CohortDefinition patientsWhoHaveNotCompleted60Days,
-	        CohortDefinition abandonedButHaveNotcompleted60Days, CohortDefinition ageCohort, CohortDefinition genderCohort) {
+	        CohortDefinition abandonedButHaveNotcompleted60Days, CohortDefinition ageCohort, CohortDefinition genderCohort,
+	        CohortDefinition patientsWithoutNextPickupDate, CohortDefinition patientsWithoutNextConsultationDate) {
 		
 		CompositionCohortDefinition TxCurrComposition = new CompositionCohortDefinition();
 		TxCurrComposition.setName(cohortName);
@@ -227,20 +275,20 @@ public class TxCurrCohortQueries {
 		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
 		TxCurrComposition.getSearches().put("8", new Mapped<CohortDefinition>(abandonedButHaveNotcompleted60Days,
 		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
+		TxCurrComposition.getSearches().put("11", new Mapped<CohortDefinition>(patientsWithoutNextPickupDate,
+		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
+		TxCurrComposition.getSearches().put("12", new Mapped<CohortDefinition>(patientsWithoutNextConsultationDate,
+		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
 		
-		// TODO -Check specifications document on how to use query 6,7 and 8
-		String compositionString = "((1 OR 2 OR 3 OR 4) AND NOT (5 OR (6 AND NOT (5 OR 7 OR 8)))";
+		String compositionString = "((1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND NOT (5 OR 7 OR 8))) AND (NOT (11 AND 12)))";
 		
 		if (ageCohort != null) {
 			TxCurrComposition.getSearches().put("9", new Mapped<CohortDefinition>(ageCohort,
 			        ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}")));
-			
 			compositionString = compositionString + " AND 9";
 		}
-		
 		if (genderCohort != null) {
 			TxCurrComposition.getSearches().put("10", new Mapped<CohortDefinition>(genderCohort, null));
-			
 			compositionString = compositionString + " AND 10";
 		}
 		

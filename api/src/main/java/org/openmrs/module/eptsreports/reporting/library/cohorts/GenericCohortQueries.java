@@ -170,6 +170,11 @@ public class GenericCohortQueries {
 		return generalSql("baseCohort", BaseQueries.getBaseCohortQuery(parameters));
 	}
 	
+	/**
+	 * Finds patients that do not have birthdate defined
+	 * 
+	 * @return
+	 */
 	public CohortDefinition getUnknownAgeCohort() {
 		SqlCohortDefinition definition = new SqlCohortDefinition();
 		definition.setName("unknownAgeCohort");
