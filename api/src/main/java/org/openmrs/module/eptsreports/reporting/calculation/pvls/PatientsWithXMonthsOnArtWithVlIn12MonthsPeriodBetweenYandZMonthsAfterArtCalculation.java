@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAfterArtCalculation extends AbstractPatientCalculation {
 	
@@ -56,15 +57,18 @@ public class PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAft
 		CalculationResultMap arvsInitiationDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
 		CalculationResultMap patientHavingVL = EptsCalculations.allObs(viralLoad, cohort, context);
 		CalculationResultMap changingRegimenLines = EptsCalculations.lastObs(secondLine, cohort, context);
+
+		Set<Integer> alivePatients = EptsCalculationUtils.patientsThatPass(EptsCalculations.alive(cohort, context));
 		
 		for (Integer pId : cohort) {
 			boolean isOnRoutine = false;
 			Date artInitiationDate = null;
 			List<Obs> viralLoadForPatientTakenWithin12Months = new ArrayList<>();
+			if(alivePatients.contains(pId)) {
 			SimpleResult artStartDateResult = (SimpleResult) arvsInitiationDateMap.get(pId);
 			// get all the VL results for each patient in the last 12 months
 			ListResult vlObssResult = (ListResult) patientHavingVL.get(pId);
-			
+
 			if (artStartDateResult != null) {
 				artInitiationDate = (Date) artStartDateResult.getValue();
 			}
@@ -84,15 +88,15 @@ public class PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAft
 				}
 				// find out for criteria 1
 				if (artupperLimit1 != null && artlowerLimit1 != null && monthsOnArt != null
-				        && EptsCalculationUtils.monthsSince(artInitiationDate, context) > monthsOnArt
-				        && viralLoadForPatientTakenWithin12Months.size() == 1) {
+						&& EptsCalculationUtils.monthsSince(artInitiationDate, context) > monthsOnArt
+						&& viralLoadForPatientTakenWithin12Months.size() == 1) {
 					// the patients should be 6 to 9 months after ART initiation
 					Date sixMonthsAfterArt = addMoths(artlowerLimit1, artInitiationDate);
 					Date nineMonthsAfterArt = addMoths(artupperLimit1, artInitiationDate);
 					// get the obs date for this VL and compare that with the provided dates
 					Obs vlObs = viralLoadForPatientTakenWithin12Months.get(0);
 					if (vlObs != null && vlObs.getObsDatetime().after(sixMonthsAfterArt)
-					        && vlObs.getObsDatetime().before(nineMonthsAfterArt)) {
+							&& vlObs.getObsDatetime().before(nineMonthsAfterArt)) {
 						isOnRoutine = true;
 					}
 				}
@@ -103,11 +107,11 @@ public class PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAft
 					// pick the previous obs for this case
 					Obs obs = viralLoadForPatientTakenWithin12Months.get(1);
 					if (obs != null && obs.getValueNumeric() < 1000 && obs.getObsDatetime().after(twelveMonthsAfterArt)
-					        && obs.getObsDatetime().before(fifteenMonthsAfterArt)) {
+							&& obs.getObsDatetime().before(fifteenMonthsAfterArt)) {
 						isOnRoutine = true;
 					}
 				}
-				
+
 				// find out criteria 3
 				if (viralLoadForPatientTakenWithin12Months.size() > 0) {
 					// get when a patient switch between lines from first to second
@@ -120,10 +124,11 @@ public class PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAft
 							isOnRoutine = true;
 						}
 					}
-					
+
 				}
-				
+
 			}
+		}
 			
 			map.put(pId, new BooleanResult(isOnRoutine, this));
 		}
