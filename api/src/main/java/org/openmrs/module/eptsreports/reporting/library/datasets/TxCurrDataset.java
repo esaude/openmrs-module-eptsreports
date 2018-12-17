@@ -52,7 +52,7 @@ public class TxCurrDataset extends BaseDataSet {
 	@Autowired
 	private HivMetadata hivMetadata;
 	
-	public CohortIndicatorDataSetDefinition constructTxNewDatset() {
+	public CohortIndicatorDataSetDefinition constructTxCurrDataset() {
 		
 		CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
 		dataSetDefinition.setName("TX_CURR Data Set");
