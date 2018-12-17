@@ -17,6 +17,7 @@ import java.util.Date;
 
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineForAdultsAndChildrenCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineForBreastfeedingAndPregnantWomenCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -102,7 +103,7 @@ public class TxPvlsCohortQueries {
 	
 	/**
 	 * Patients with viral results recorded in the last 12 months excluding dead, LTFU, transferred out,
-	 * stopped ART
+	 * stopped ARTtxNewCohortQueries
 	 */
 	public CohortDefinition getPatientsWithViralLoadResults() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -174,7 +175,7 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
+		cd.addSearch("results", EptsReportUtils.map(hivCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
 		cd.addSearch("age", EptsReportUtils.map(findPatientsagedBelowInYears(age), mappings));
 		cd.setCompositionString("results AND age");
 		return cd;
@@ -219,6 +220,19 @@ public class TxPvlsCohortQueries {
 		cd.addCalculationParameter("artUpperLimit2", artUpperLimit2);
 		return cd;
 		
+	}
+	
+	/**
+	 * Get breastfeeding and pregnant women on routine
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getPregnantAndBreastfeedingWomenOnRoutine() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria2",
+		        new RoutineForBreastfeedingAndPregnantWomenCalculation());
+		cd.setName("Routine forbreastfeeding and pregnant");
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
 	}
 	
 	/**
@@ -290,6 +304,81 @@ public class TxPvlsCohortQueries {
 		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
 		cd.addSearch("routine", EptsReportUtils.map(getpatientsOnRoutineAdultsAndChildren(6, 6, 9, 12, 15), "onDate=${endDate}"));
 		cd.setCompositionString("results AND NOT routine");
+		return cd;
+	}
+	
+	// breastfeeding and pregnant women
+	/**
+	 * Get breastfeding women on routine Numerator
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getBreastFeedingWomenOnRoutineNumerator() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Breastfeeding with viral results and on routine");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addSearch("breastfeedingVl", EptsReportUtils.map(getBreastfeedingWomenWhoHaveViralSuppression(),
+		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		cd.addSearch("routine", EptsReportUtils.map(getPregnantAndBreastfeedingWomenOnRoutine(), "endDate=${endDate}"));
+		cd.setCompositionString("breastfeedingVl AND routine");
+		
+		return cd;
+	}
+	
+	/**
+	 * Get breastfeeding women NOT documented Numerator
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getBreastFeedingWomenNotNumerator() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Breastfeeding with viral results and NOT documented");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addSearch("breastfeedingVl", EptsReportUtils.map(getBreastfeedingWomenWhoHaveViralSuppression(),
+		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		cd.addSearch("routine", EptsReportUtils.map(getPregnantAndBreastfeedingWomenOnRoutine(), "endDate=${endDate}"));
+		cd.setCompositionString("breastfeedingVl AND NOT routine");
+		
+		return cd;
+	}
+	
+	/**
+	 * Get pregnant women Numerator
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getPregnantWomenWithViralLoadSuppressionNumerator() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Get pregnant women with viral load suppression");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("suppression", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
+		cd.addSearch("pregnant", EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(), mappings));
+		cd.setCompositionString("suppression AND pregnant");
+		return cd;
+	}
+	
+	/**
+	 * Get pregnant women Denominator
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getPregnantWomenWithViralLoadResultsDenominator() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Get pregnant women with viral load results denominator");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
+		cd.addSearch("pregnant", EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(), mappings));
+		cd.setCompositionString("results AND pregnant");
 		return cd;
 	}
 }

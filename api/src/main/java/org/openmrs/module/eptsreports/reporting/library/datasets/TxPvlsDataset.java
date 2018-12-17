@@ -66,7 +66,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		    EptsReportUtils.map(hivIndicators.getPatientsWhoAreOnRoutineAdultsAndChildren(), "endDate=${endDate}"), "");
 		
 		dsd.addColumn("Routine", "Breastfeeding and Pregnant women",
-		    EptsReportUtils.map(hivIndicators.getBreastfeedinAndPregnantWomenOnRoutine(), "endDate=${endDate}"), "");
+		    EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingAndPregnantOnRoutine(), "endDate=${endDate}"), "");
 		
 		// constructing the first row of pregnant and breast feeding mothers
 		
