@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -10,7 +9,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>eptsreports</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>EPTS reports</name>
 	<description>PEPFAR reports for EPTS project in Mozambique</description>
@@ -26,10 +25,11 @@
 	<url>https://wiki.openmrs.org/x/FQ4z</url>
 
 	<scm>
-		<connection>scm:git:git@github.com:openmrs/openmrs-module-eptsreports.git</connection>
-		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-eptsreports.git</developerConnection>
-		<url>https://github.com/openmrs/openmrs-module-eptsreports/</url>
-	</scm>
+		<connection>scm:git:https://github.com/esaude/openmrs-module-eptsreports</connection>
+		<developerConnection>scm:git:https://github.com/esaude/openmrs-module-eptsreports</developerConnection>
+		<url>https://github.com/esaude/openmrs-module-eptsreports/</url>
+	  <tag>HEAD</tag>
+  </scm>
 
 	<modules>
 		<module>api</module>
