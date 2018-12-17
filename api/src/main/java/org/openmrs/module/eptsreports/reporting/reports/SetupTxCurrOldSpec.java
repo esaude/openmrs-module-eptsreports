@@ -68,7 +68,7 @@ public class SetupTxCurrOldSpec extends EptsDataExportManager {
 		reportDefinition.setDescription(getDescription());
 		reportDefinition.setParameters(txCurrDataset.getParameters());
 		
-		reportDefinition.addDataSetDefinition(txCurrDataset.constructTxNewDatset(false),
+		reportDefinition.addDataSetDefinition(txCurrDataset.constructTxCurrDataset(false),
 		    ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate},location=${location}"));
 		
 		reportDefinition.setBaseCohortDefinition(genericCohortQueries.getBaseCohort(),
