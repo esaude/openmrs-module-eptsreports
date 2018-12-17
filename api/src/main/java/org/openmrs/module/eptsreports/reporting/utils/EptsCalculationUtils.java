@@ -226,13 +226,13 @@ public class EptsCalculationUtils {
 	/**
 	 * Calculates the days since the given date
 	 * 
-	 * @param date the date
-	 * @param calculationContext the calculation context
+	 * @param date1 the date
+	 * @param date2 the date2
 	 * @return the number of days
 	 */
-	public static int monthsSince(Date date, CalculationContext calculationContext) {
-		DateTime d1 = new DateTime(date.getTime());
-		DateTime d2 = new DateTime(calculationContext.getNow().getTime());
+	public static int monthsSince(Date date1, Date date2) {
+		DateTime d1 = new DateTime(date1.getTime());
+		DateTime d2 = new DateTime(date2.getTime());
 		return Months.monthsBetween(d1, d2).getMonths();
 	}
 	

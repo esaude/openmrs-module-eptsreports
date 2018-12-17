@@ -60,9 +60,13 @@ public class TxPvlsDataset extends BaseDataSet {
 		
 		dsd.addColumn("0D", "Total patients with Viral load - Denominator",
 		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), "");
-
-		//add patients on routine for adults and children
-		dsd.addColumn("Routine", "Adults and Children", EptsReportUtils.map(hivIndicators.getPatientsWhoAreOnRoutineAdultsAndChildren(), mappings), "");
+		
+		// add patients on routine for adults and children
+		dsd.addColumn("Routine", "Adults and Children",
+		    EptsReportUtils.map(hivIndicators.getPatientsWhoAreOnRoutineAdultsAndChildren(), mappings), "");
+		
+		dsd.addColumn("Routine", "Breastfeeding and Pregnant women",
+		    EptsReportUtils.map(hivIndicators.getBreastfeedinAndPregnantWomenOnRoutine(), mappings), "");
 		
 		// constructing the first row of pregnant and breast feeding mothers
 		
@@ -156,7 +160,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		ColumnParameters foutyTo44M = new ColumnParameters("foutyTo44M", "40 - 44 male", "gender=M|age=40-44", "08");
 		ColumnParameters fouty5To49M = new ColumnParameters("fouty5To49M", "45 - 49 male", "gender=M|age=45-49", "09");
 		ColumnParameters above50M = new ColumnParameters("above50M", "50+ male", "gender=M|age=50+", "10");
-
+		
 		ColumnParameters unknownF = new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=UK", "11");
 		ColumnParameters tenTo14F = new ColumnParameters("tenTo14F", "10 - 14 female", "gender=F|age=10-14", "12");
 		ColumnParameters fifteenTo19F = new ColumnParameters("fifteenTo19F", "15 - 19 female", "gender=F|age=15-19", "13");

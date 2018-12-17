@@ -1,6 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -8,10 +9,13 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,8 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAfterArtCalculation extends AbstractPatientCalculation {
-	
+@Component
+public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalculation {
+	@Autowired
+	private HivMetadata hivMetadata;
 	/**
 	 * Patients on ART for the last X months with one VL result registered in the 12 month period
 	 * Between Y to Z months after ART initiation
@@ -58,6 +64,10 @@ public class PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAft
 		CalculationResultMap patientHavingVL = EptsCalculations.allObs(viralLoad, cohort, context);
 		CalculationResultMap changingRegimenLines = EptsCalculations.lastObs(secondLine, cohort, context);
 		CalculationResultMap lastVl = EptsCalculations.lastObs(viralLoad, cohort, context);
+
+		//get first encounter for the option c
+		CalculationResultMap encounter6 = EptsCalculations.firstEncounter(hivMetadata.getAdultoSeguimentoEncounterType(), cohort, context);
+		CalculationResultMap encounter9 = EptsCalculations.firstEncounter(hivMetadata.getARVPediatriaSeguimentoEncounterType(), cohort, context);
 		
 		Set<Integer> alivePatients = EptsCalculationUtils.patientsThatPass(EptsCalculations.alive(cohort, context));
 		
@@ -87,7 +97,7 @@ public class PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAft
 							if (viralLoadList.size() > 0) {
 								for (Obs obs : viralLoadList) {
 									Date vlLowerDateLimitFromObsList = addMoths(context.getNow(), -12);
-									if (EptsCalculationUtils.monthsSince(vlLowerDateLimitFromObsList, context) <= 12) {
+									if (EptsCalculationUtils.monthsSince(vlLowerDateLimitFromObsList, context.getNow()) <= 12) {
 										viralLoadForPatientTakenWithin12Months.add(obs);
 									}
 								}
@@ -95,62 +105,66 @@ public class PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAft
 						}
 						// find out for criteria 1
 						if (artupperLimit1 != null && artlowerLimit1 != null && monthsOnArt != null
-						        && EptsCalculationUtils.monthsSince(artInitiationDate, context) > monthsOnArt
+						        && EptsCalculationUtils.monthsSince(artInitiationDate, context.getNow()) > monthsOnArt
 						        && viralLoadForPatientTakenWithin12Months.size() == 1) {
 							// the patients should be 6 to 9 months after ART initiation
-							Date sixMonthsAfterArt = addMoths(artInitiationDate, artlowerLimit1);
-							Date nineMonthsAfterArt = addMoths(artInitiationDate, artupperLimit1);
 							// get the obs date for this VL and compare that with the provided dates
 							Obs vlObs = viralLoadForPatientTakenWithin12Months.get(0);
-							if (vlObs != null && vlObs.getObsDatetime().after(sixMonthsAfterArt)
-							        && vlObs.getObsDatetime().before(nineMonthsAfterArt)) {
+							if (vlObs != null && vlObs.getObsDatetime() != null) {
+								Date vlDate = vlObs.getObsDatetime();
+								if (EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) > artlowerLimit1
+								        && EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) > artupperLimit1) {
+									isOnRoutine = true;
+								}
+							}
+						}
+					}
+					// find out criteria 2
+					if (artUpperLimit2 != null && artLowerLimit2 != null && viralLoadForPatientTakenWithin12Months.size() > 1) {
+						
+						Collections.sort(viralLoadForPatientTakenWithin12Months, new Comparator<Obs>() {
+							
+							public int compare(Obs obs1, Obs obs2) {
+								return obs1.getObsId().compareTo(obs2.getObsId());
+							}
+						});
+						
+						Obs previousObs = viralLoadForPatientTakenWithin12Months
+						        .get(viralLoadForPatientTakenWithin12Months.size() - 1);
+						Obs currentObs = viralLoadForPatientTakenWithin12Months.get(viralLoadForPatientTakenWithin12Months.size());
+						if (currentObs != null && previousObs != null && previousObs.getValueNumeric() < 1000
+						        && previousObs.getObsDatetime().before(currentObs.getObsDatetime())) {
+							if (EptsCalculationUtils
+							        .monthsSince(previousObs.getValueDate(), currentObs.getObsDatetime()) >= artLowerLimit2
+							        && EptsCalculationUtils.monthsSince(previousObs.getValueDate(),
+							            currentObs.getObsDatetime()) <= artUpperLimit2) {
 								isOnRoutine = true;
 							}
 						}
-						// find out criteria 2
-						if (artUpperLimit2 != null && artLowerLimit2 != null && viralLoadForPatientTakenWithin12Months.size() > 1) {
-							Date twelveMonthsAfterArt = addMoths(artInitiationDate, artLowerLimit2);
-							Date fifteenMonthsAfterArt = addMoths(artInitiationDate, artUpperLimit2);
-							// pick the previous obs for this case
-							
-							Collections.sort(viralLoadForPatientTakenWithin12Months, new Comparator<Obs>() {
-								
-								public int compare(Obs obs1, Obs obs2) {
-									return obs1.getObsId().compareTo(obs2.getObsId());
-								}
-							});
-							
-							Obs previousObs = viralLoadForPatientTakenWithin12Months
-							        .get(viralLoadForPatientTakenWithin12Months.size() - 1);
-							if (previousObs != null && previousObs.getValueNumeric() < 1000
-							        && previousObs.getObsDatetime().after(twelveMonthsAfterArt)
-							        && previousObs.getObsDatetime().before(fifteenMonthsAfterArt)) {
+					}
+					
+					// find out criteria 3
+					if (viralLoadForPatientTakenWithin12Months.size() > 0) {
+						// get when a patient switch between lines from first to second
+						// Date when started on second line will be considered the changing date
+						Obs obs = EptsCalculationUtils.obsResultForPatient(changingRegimenLines, pId);
+						Encounter encounter1 = EptsCalculationUtils.encounterResultForPatient(encounter6, pId);
+						Encounter encounter2 = EptsCalculationUtils.encounterResultForPatient(encounter9, pId);
+						// loop through the viral load list and find one that is after the second line
+						// option
+						if(encounter1 != null || encounter2 != null) {
+							Date encounterDateAdulto = encounter1.getEncounterDatetime();
+							Date encounterDatePed = encounter2.getEncounterDatetime();
+							Date latestVlDate = lastVlObs.getObsDatetime();
+							if (obs != null && (encounterDateAdulto.before(latestVlDate) || encounterDatePed.before(latestVlDate))) {
 								isOnRoutine = true;
 							}
 						}
 						
-						// find out criteria 3
-						if (viralLoadForPatientTakenWithin12Months.size() > 0) {
-							// get when a patient switch between lines from first to second
-							// Date when started on second line will be considered the changing date
-							Obs obs = EptsCalculationUtils.obsResultForPatient(changingRegimenLines, pId);
-							// loop through the viral load list and find one that is after the second line
-							// option
-							if (obs != null) {
-								for (Obs obs1 : viralLoadForPatientTakenWithin12Months) {
-									if (obs1.getObsDatetime().after(obs.getObsDatetime())) {
-										isOnRoutine = true;
-										break;
-									}
-								}
-							}
-							
-						}
 					}
-					
 				}
+				
 			}
-			
 			map.put(pId, new BooleanResult(isOnRoutine, this));
 		}
 		

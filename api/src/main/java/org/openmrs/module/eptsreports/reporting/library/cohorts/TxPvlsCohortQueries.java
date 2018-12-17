@@ -16,9 +16,7 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.calculation.pvls.InHivProgramEnrollmentCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.pvls.InitialArtStartDateCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.pvls.PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAfterArtCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineForAdultsAndChildrenCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -209,10 +207,10 @@ public class TxPvlsCohortQueries {
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getRoutineForAdultsAndChildrenPatients(int monthsOnArt, int artLowerLimit1, int artUpperLimit1,
-	        int artLowerLimit2, int artUpperLimit2) {
+	public CohortDefinition getpatientsOnRoutine(int monthsOnArt, int artLowerLimit1, int artUpperLimit1, int artLowerLimit2,
+	        int artUpperLimit2) {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria1",
-		        new PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAfterArtCalculation());
+		        new RoutineForAdultsAndChildrenCalculation());
 		cd.setName("Routine for adults and children");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addCalculationParameter("monthsOnArt", monthsOnArt);
@@ -237,7 +235,7 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("supp", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
-		cd.addSearch("routine", EptsReportUtils.map(getRoutineForAdultsAndChildrenPatients(6, 6, 9, 12, 15), "onDate=${endDate}"));
+		cd.addSearch("routine", EptsReportUtils.map(getpatientsOnRoutine(6, 6, 9, 12, 15), "onDate=${endDate}"));
 		cd.setCompositionString("supp AND routine");
 		return cd;
 	}
@@ -255,7 +253,7 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("supp", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
-		cd.addSearch("routine", EptsReportUtils.map(getRoutineForAdultsAndChildrenPatients(6, 6, 9, 12, 15), "onDate=${endDate}"));
+		cd.addSearch("routine", EptsReportUtils.map(getpatientsOnRoutine(6, 6, 9, 12, 15), "onDate=${endDate}"));
 		cd.setCompositionString("supp AND NOT routine");
 		return cd;
 	}
@@ -273,7 +271,7 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
-		cd.addSearch("routine", EptsReportUtils.map(getRoutineForAdultsAndChildrenPatients(6, 6, 9, 12, 15), "onDate=${endDate}"));
+		cd.addSearch("routine", EptsReportUtils.map(getpatientsOnRoutine(6, 6, 9, 12, 15), "onDate=${endDate}"));
 		cd.setCompositionString("results AND routine");
 		return cd;
 	}
@@ -291,7 +289,7 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
-		cd.addSearch("routine", EptsReportUtils.map(getRoutineForAdultsAndChildrenPatients(6, 6, 9, 12, 15), "onDate=${endDate}"));
+		cd.addSearch("routine", EptsReportUtils.map(getpatientsOnRoutine(6, 6, 9, 12, 15), "onDate=${endDate}"));
 		cd.setCompositionString("results AND NOT routine");
 		return cd;
 	}
