@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupTxCurr extends EptsDataExportManager {
+public class SetupTxCurrOldSpec extends EptsDataExportManager {
 	
 	@Autowired
 	private TxCurrDataset txCurrDataset;
@@ -32,7 +32,7 @@ public class SetupTxCurr extends EptsDataExportManager {
 	@Autowired
 	private GenericCohortQueries genericCohortQueries;
 	
-	public SetupTxCurr() {
+	public SetupTxCurrOldSpec() {
 	}
 	
 	@Override
@@ -42,22 +42,22 @@ public class SetupTxCurr extends EptsDataExportManager {
 	
 	@Override
 	public String getUuid() {
-		return "0c35dabb-a0da-429b-92f8-fcf8e0977be2";
+		return "381077e6-ceb8-4288-863e-818499515a30";
 	}
 	
 	@Override
 	public String getExcelDesignUuid() {
-		return "38e7ccad-c199-45b8-91a0-c6a694c52b60";
+		return "8a75c3be-995a-4448-a259-4d57d991b614";
 	}
 	
 	@Override
 	public String getName() {
-		return "TX_CURR Report";
+		return "TX_CURR Report Old Spec";
 	}
 	
 	@Override
 	public String getDescription() {
-		return "Number of adults and children currently receiving antiretroviral therapy (ART).";
+		return "Number of adults and children currently receiving antiretroviral therapy (ART) (Old Spec).";
 	}
 	
 	@Override
@@ -68,7 +68,7 @@ public class SetupTxCurr extends EptsDataExportManager {
 		reportDefinition.setDescription(getDescription());
 		reportDefinition.setParameters(txCurrDataset.getParameters());
 		
-		reportDefinition.addDataSetDefinition(txCurrDataset.constructTxCurrDataset(true),
+		reportDefinition.addDataSetDefinition(txCurrDataset.constructTxNewDatset(false),
 		    ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate},location=${location}"));
 		
 		reportDefinition.setBaseCohortDefinition(genericCohortQueries.getBaseCohort(),
@@ -81,7 +81,7 @@ public class SetupTxCurr extends EptsDataExportManager {
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
 		ReportDesign reportDesign = null;
 		try {
-			reportDesign = createXlsReportDesign(reportDefinition, "TXCURR.xls", "TXCURR.xls_", getExcelDesignUuid(), null);
+			reportDesign = createXlsReportDesign(reportDefinition, "TXCURR.xls", "TXCURR_OLD_SPEC.xls_", getExcelDesignUuid(), null);
 			Properties props = new Properties();
 			props.put("repeatingSections", "sheet:1,dataset:TX_CURR Data Set");
 			props.put("sortWeight", "5000");
