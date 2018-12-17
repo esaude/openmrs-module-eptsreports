@@ -29,8 +29,10 @@ import java.util.Set;
 
 @Component
 public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalculation {
+	
 	@Autowired
 	private HivMetadata hivMetadata;
+	
 	/**
 	 * Patients on ART for the last X months with one VL result registered in the 12 month period
 	 * Between Y to Z months after ART initiation
@@ -64,10 +66,12 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 		CalculationResultMap patientHavingVL = EptsCalculations.allObs(viralLoad, cohort, context);
 		CalculationResultMap changingRegimenLines = EptsCalculations.lastObs(secondLine, cohort, context);
 		CalculationResultMap lastVl = EptsCalculations.lastObs(viralLoad, cohort, context);
-
-		//get first encounter for the option c
-		CalculationResultMap encounter6 = EptsCalculations.firstEncounter(hivMetadata.getAdultoSeguimentoEncounterType(), cohort, context);
-		CalculationResultMap encounter9 = EptsCalculations.firstEncounter(hivMetadata.getARVPediatriaSeguimentoEncounterType(), cohort, context);
+		
+		// get first encounter for the option c
+		CalculationResultMap encounter6 = EptsCalculations.firstEncounter(hivMetadata.getAdultoSeguimentoEncounterType(), cohort,
+		    context);
+		CalculationResultMap encounter9 = EptsCalculations.firstEncounter(hivMetadata.getARVPediatriaSeguimentoEncounterType(), cohort,
+		    context);
 		
 		Set<Integer> alivePatients = EptsCalculationUtils.patientsThatPass(EptsCalculations.alive(cohort, context));
 		
@@ -152,7 +156,7 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 						Encounter encounter2 = EptsCalculationUtils.encounterResultForPatient(encounter9, pId);
 						// loop through the viral load list and find one that is after the second line
 						// option
-						if(encounter1 != null || encounter2 != null) {
+						if (encounter1 != null || encounter2 != null) {
 							Date encounterDateAdulto = encounter1.getEncounterDatetime();
 							Date encounterDatePed = encounter2.getEncounterDatetime();
 							Date latestVlDate = lastVlObs.getObsDatetime();

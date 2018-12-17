@@ -185,7 +185,7 @@ public class HivIndicators extends BaseIndicators {
 	 */
 	public CohortIndicator getPatientsWhoAreOnRoutineAdultsAndChildren() {
 		return newCohortIndicator("Routine for  adults and children",
-		    EptsReportUtils.map(pvls.getpatientsOnRoutine(6, 6, 9, 12, 15), "endDate=${endDate}"));
+		    EptsReportUtils.map(pvls.getpatientsOnRoutineAdultsAndChildren(6, 6, 9, 12, 15), "onDate=${endDate}"));
 	}
 	
 	/**
@@ -195,7 +195,7 @@ public class HivIndicators extends BaseIndicators {
 	 */
 	public CohortIndicator getBreastfeedinAndPregnantWomenOnRoutine() {
 		return newCohortIndicator("Routine for  breastfeeding and pregnant",
-		    EptsReportUtils.map(pvls.getpatientsOnRoutine(3, 3, 6, 12, 15), "endDate=${endDate}"));
+		    EptsReportUtils.map(pvls.getpatientsOnRoutineAdultsAndChildren(3, 3, 6, 12, 15), "onDate=${endDate}"));
 	}
 	
 }
