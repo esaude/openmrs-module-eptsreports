@@ -80,6 +80,11 @@ public class HivCohortQueries {
 		return sql;
 	}
 
+	/**
+	 * Adult and pediatric patients on ART who have re-initiated the treatment.
+	 *
+	 * @return CohortDefinition
+	 */
 	@DocumentedDefinition(value = "restartedTreatment")
 	public CohortDefinition getPatientsWhoRestartedTreatment() {
 		return genericCohortQueires.hasCodedObs(hivMetadata.getARVPlanConcept(),
