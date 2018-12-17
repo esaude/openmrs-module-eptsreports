@@ -54,15 +54,15 @@ public class TxPvlsDataset extends BaseDataSet {
 		dsd.addDimension("query", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
 		dsd.addDimension("age", EptsReportUtils.map(eptsCommonDimension.pvlsAges(), "endDate=${endDate},location=${location}"));
 		
-		dsd.addColumn("Routine", "Routine Patients",
-		    EptsReportUtils.map(hivIndicators.getThosePatientsOnRoutine(6, 6, 9, 12, 15), "endDate=${endDate}"), "");
-		
 		// Totals for both numerator and denomonator
 		dsd.addColumn("0N", "Total patients with suppressed Viral load - Numerator",
 		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), "");
 		
 		dsd.addColumn("0D", "Total patients with Viral load - Denominator",
 		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), "");
+
+		//add patients on routine for adults and children
+		dsd.addColumn("Routine", "Adults and Children", EptsReportUtils.map(hivIndicators.getPatientsWhoAreOnRoutineAdultsAndChildren(), mappings), "");
 		
 		// constructing the first row of pregnant and breast feeding mothers
 		
@@ -156,17 +156,17 @@ public class TxPvlsDataset extends BaseDataSet {
 		ColumnParameters foutyTo44M = new ColumnParameters("foutyTo44M", "40 - 44 male", "gender=M|age=40-44", "08");
 		ColumnParameters fouty5To49M = new ColumnParameters("fouty5To49M", "45 - 49 male", "gender=M|age=45-49", "09");
 		ColumnParameters above50M = new ColumnParameters("above50M", "50+ male", "gender=M|age=50+", "10");
-		
-		ColumnParameters unknownF = new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=UK", "01");
-		ColumnParameters tenTo14F = new ColumnParameters("tenTo14F", "10 - 14 female", "gender=F|age=10-14", "02");
-		ColumnParameters fifteenTo19F = new ColumnParameters("fifteenTo19F", "15 - 19 female", "gender=F|age=15-19", "03");
-		ColumnParameters twentyTo24F = new ColumnParameters("twentyTo24F", "20 - 24 female", "gender=F|age=20-24", "04");
-		ColumnParameters twenty5To29F = new ColumnParameters("twenty4To29F", "25 - 29 female", "gender=F|age=25-29", "05");
-		ColumnParameters thirtyTo34F = new ColumnParameters("thirtyTo34F", "30 - 34 female", "gender=F|age=30-34", "06");
-		ColumnParameters thirty5To39F = new ColumnParameters("thirty5To39F", "35 - 39 female", "gender=F|age=35-39", "07");
-		ColumnParameters foutyTo44F = new ColumnParameters("foutyTo44F", "40 - 44 female", "gender=F|age=40-44", "08");
-		ColumnParameters fouty5To49F = new ColumnParameters("fouty5To49F", "45 - 49 female", "gender=F|age=45-49", "09");
-		ColumnParameters above50F = new ColumnParameters("above50F", "50+ female", "gender=F|age=50+", "10");
+
+		ColumnParameters unknownF = new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=UK", "11");
+		ColumnParameters tenTo14F = new ColumnParameters("tenTo14F", "10 - 14 female", "gender=F|age=10-14", "12");
+		ColumnParameters fifteenTo19F = new ColumnParameters("fifteenTo19F", "15 - 19 female", "gender=F|age=15-19", "13");
+		ColumnParameters twentyTo24F = new ColumnParameters("twentyTo24F", "20 - 24 female", "gender=F|age=20-24", "14");
+		ColumnParameters twenty5To29F = new ColumnParameters("twenty4To29F", "25 - 29 female", "gender=F|age=25-29", "15");
+		ColumnParameters thirtyTo34F = new ColumnParameters("thirtyTo34F", "30 - 34 female", "gender=F|age=30-34", "16");
+		ColumnParameters thirty5To39F = new ColumnParameters("thirty5To39F", "35 - 39 female", "gender=F|age=35-39", "17");
+		ColumnParameters foutyTo44F = new ColumnParameters("foutyTo44F", "40 - 44 female", "gender=F|age=40-44", "18");
+		ColumnParameters fouty5To49F = new ColumnParameters("fouty5To49F", "45 - 49 female", "gender=F|age=45-49", "19");
+		ColumnParameters above50F = new ColumnParameters("above50F", "50+ female", "gender=F|age=50+", "20");
 		
 		return Arrays.asList(unknownM, tenTo14M, fifteenTo19M, twentyTo24M, twenty5To29M, thirtyTo34M, thirty5To39M, foutyTo44M,
 		    fouty5To49M, above50M, unknownF, tenTo14F, fifteenTo19F, twentyTo24F, twenty5To29F, thirtyTo34F, thirty5To39F, foutyTo44F,

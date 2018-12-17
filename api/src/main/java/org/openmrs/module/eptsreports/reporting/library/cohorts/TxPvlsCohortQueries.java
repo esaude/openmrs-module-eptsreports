@@ -225,19 +225,7 @@ public class TxPvlsCohortQueries {
 	}
 	
 	/**
-	 * Get breastfeeding/pregnant women who are re routine
-	 * 
-	 * @return CohortDefinition
-	 */
-	public CohortDefinition getRoutineForBreastfeedingAndPregnantWomen(int monthsOnArt) {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria1",
-		        new PatientsWithXMonthsOnArtWithVlIn12MonthsPeriodBetweenYandZMonthsAfterArtCalculation());
-		return cd;
-		
-	}
-	
-	/**
-	 * Get patients having viral load suppression and routine for adults and children
+	 * Get patients having viral load suppression and routine for adults and children - Numerator
 	 * 
 	 * @retrun CohortDefinition
 	 */
@@ -255,7 +243,7 @@ public class TxPvlsCohortQueries {
 	}
 	
 	/**
-	 * Get patients having viral load suppression and not documented for adults and children
+	 * Get patients having viral load suppression and not documented for adults and children - Numerator
 	 * 
 	 * @retrun CohortDefinition
 	 */
@@ -273,13 +261,13 @@ public class TxPvlsCohortQueries {
 	}
 	
 	/**
-	 * Get patients with viral load results and on routine
+	 * Get patients with viral load results and on routine - Denominator
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getPatientsWithViralLoadREsultsAndOnRoutineForChidrenAndAdults() {
+	public CohortDefinition getPatientsWithViralLoadREsultsAndOnRoutineForChildrenAndAdults() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Viral load results with routine for children and adults");
+		cd.setName("Viral load results with routine for children and adults denominator");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -295,9 +283,9 @@ public class TxPvlsCohortQueries {
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getPatientsWithViralLoadREsultsAndNotDocumenetdForChidrenAndAdults() {
+	public CohortDefinition getPatientsWithViralLoadREsultsAndNotDocumenetdForChildrenAndAdults() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Viral load results with no documentation for children and adults");
+		cd.setName("Viral load results with not documentation for children and adults denominator");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));

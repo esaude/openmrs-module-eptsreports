@@ -135,7 +135,7 @@ public class HivIndicators extends BaseIndicators {
 	}
 	
 	/**
-	 * Find patients with viral load suppression and on routine
+	 * Find patients with viral load suppression and on routine Numerator
 	 * 
 	 * @return CohortIndicator
 	 */
@@ -146,7 +146,7 @@ public class HivIndicators extends BaseIndicators {
 	}
 	
 	/**
-	 * Find patients with viral load suppression and NOT documented
+	 * Find patients with viral load suppression and NOT documented Numerator
 	 * 
 	 * @return CohortIndicator
 	 */
@@ -157,29 +157,36 @@ public class HivIndicators extends BaseIndicators {
 	}
 	
 	/**
-	 * Find patients with viral load results and on routine
+	 * Find patients with viral load results and on routine Denominator
 	 * 
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getPatientsWithViralLoadResultsAndOnRoutineForAdultsAndChildren() {
 		return newCohortIndicator("viral load results on routine adults and children",
-		    EptsReportUtils.map(pvls.getPatientsWithViralLoadREsultsAndOnRoutineForChidrenAndAdults(),
+		    EptsReportUtils.map(pvls.getPatientsWithViralLoadREsultsAndOnRoutineForChildrenAndAdults(),
 		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 	
 	/**
-	 * Find patients with viral load results and on routine
+	 * Find patients with viral load results and on routine Denominator
 	 * 
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getPatientsWithViralLoadResultsAndNotDocumentedForAdultsAndChildren() {
 		return newCohortIndicator("viral load results on routine adults and children",
-		    EptsReportUtils.map(pvls.getPatientsWithViralLoadREsultsAndNotDocumenetdForChidrenAndAdults(),
+		    EptsReportUtils.map(pvls.getPatientsWithViralLoadREsultsAndNotDocumenetdForChildrenAndAdults(),
 		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
-	
-	public CohortIndicator getThosePatientsOnRoutine(int a, int b, int c, int d, int e) {
-		return newCohortIndicator("Patients on routine",
-		    EptsReportUtils.map(pvls.getRoutineForAdultsAndChildrenPatients(a, b, c, d, e), "onDate=${endDate}"));
+
+	/**
+	 * Find patients on routine for Adults and children
+	 *
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator getPatientsWhoAreOnRoutineAdultsAndChildren() {
+		return newCohortIndicator("Routine for  adults and children",
+				EptsReportUtils.map(pvls.getRoutineForAdultsAndChildrenPatients(6,6,9,12, 15),
+						"endDate=${endDate}"));
 	}
+
 }
