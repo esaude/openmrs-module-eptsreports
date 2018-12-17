@@ -62,22 +62,35 @@ public class TxPvlsDataset extends BaseDataSet {
 		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), "");
 		// add patients on routine for adults and children
 		dsd.addColumn("Routine", "Adults and Children",
-				EptsReportUtils.map(hivIndicators.getPatientsWhoAreOnRoutineAdultsAndChildren(), "endDate=${endDate}"), "");
-
+		    EptsReportUtils.map(hivIndicators.getPatientsWhoAreOnRoutineAdultsAndChildren(), "endDate=${endDate}"), "");
+		
 		dsd.addColumn("Routine", "Breastfeeding and Pregnant women",
-				EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingAndPregnantOnRoutine(), "endDate=${endDate}"), "");
-		//add breastfeeding and pregnant Numerator
-		dsd.addColumn("B01", "Breast feeding and on routine Numerator", EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithSuppressedViralLoadIn12MonthsOnRoutineNumerator(), mappings), "");
-		dsd.addColumn("B02", "Breast feeding and NOT documented Numerator", EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithSuppressedViralLoadIn12MonthsNotDocumentedNumerator(), mappings), "");
-		dsd.addColumn("B03", "Pregnant and on routine Numerator", EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithSuppressedViralLoadIn12MonthsAndOnRoutineNumerator(), mappings), "");
-		dsd.addColumn("B04", "Pregnant and NOT documented Numerator", EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithSuppressedViralLoadIn12MonthsNotDocumentedNumerator(), mappings), "");
-
-		//add breastfeeding and pregnant Denominator
-		dsd.addColumn("B05", "Breast feeding and on routine Denominator", EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithViralLoadIn12MonthsAndOnRoutineDenominator(), mappings), "");
-		dsd.addColumn("B06", "Breast feeding and NOT documented Denominator", EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingWomenWithViralLoadIn12MonthsAndNotDocumentedDenominator(), mappings), "");
-		dsd.addColumn("B07", "Pregnant and on routine Denominator", EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithViralLoadIn12MonthsAndOnRoutineDenominator(), mappings), "");
-		dsd.addColumn("B08", "Pregnant and NOT documented Denominator", EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithViralLoadIn12MonthsAndNotDocumentedDenominator(), mappings), "");
-
+		    EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingAndPregnantOnRoutine(), "endDate=${endDate}"), "");
+		// add breastfeeding and pregnant Numerator
+		dsd.addColumn("B01", "Breast feeding and on routine Numerator", EptsReportUtils.map(
+		    breastfeedingIndicators.getBreastfeedingWomenWithSuppressedViralLoadIn12MonthsOnRoutineNumerator(), mappings), "");
+		dsd.addColumn("B02", "Breast feeding and NOT documented Numerator", EptsReportUtils.map(
+		    breastfeedingIndicators.getBreastfeedingWomenWithSuppressedViralLoadIn12MonthsNotDocumentedNumerator(), mappings), "");
+		dsd.addColumn("B03", "Pregnant and on routine Numerator",
+		    EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithSuppressedViralLoadIn12MonthsAndOnRoutineNumerator(), mappings),
+		    "");
+		dsd.addColumn("B04", "Pregnant and NOT documented Numerator", EptsReportUtils
+		        .map(pregnantIndicators.getPregnantWomenWithSuppressedViralLoadIn12MonthsNotDocumentedNumerator(), mappings),
+		    "");
+		
+		// add breastfeeding and pregnant Denominator
+		dsd.addColumn("B05", "Breast feeding and on routine Denominator", EptsReportUtils
+		        .map(breastfeedingIndicators.getBreastfeedingWomenWithViralLoadIn12MonthsAndOnRoutineDenominator(), mappings),
+		    "");
+		dsd.addColumn("B06", "Breast feeding and NOT documented Denominator", EptsReportUtils
+		        .map(breastfeedingIndicators.getBreastfeedingWomenWithViralLoadIn12MonthsAndNotDocumentedDenominator(), mappings),
+		    "");
+		dsd.addColumn("B07", "Pregnant and on routine Denominator",
+		    EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithViralLoadIn12MonthsAndOnRoutineDenominator(), mappings), "");
+		dsd.addColumn("B08", "Pregnant and NOT documented Denominator",
+		    EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithViralLoadIn12MonthsAndNotDocumentedDenominator(), mappings),
+		    "");
+		
 		// constructing the rows for children
 		///// Numerator routine
 		addRow(dsd, "3NR", "Children numerator routine",
