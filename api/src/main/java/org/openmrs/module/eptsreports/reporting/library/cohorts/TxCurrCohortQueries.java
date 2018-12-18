@@ -33,10 +33,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class TxCurrCohortQueries {
 	
-	private static final String NEXT_APPOINTMENT_QUERY = "select obs.person_id from ( "
-	        + "select obs.person_id, max(obs.obs_datetime) obs_datetime from obs "
-	        + "where obs.voided = false and obs.concept_id = %s and obs.obs_datetime <= :onOrBefore and obs.location_id = :location group by obs.person_id) most_most_recent_obs "
-	        + "join obs on obs.person_id = most_most_recent_obs.person_id and obs.obs_datetime = most_most_recent_obs.obs_datetime and obs.concept_id = %s and obs.location_id = :location and obs.voided = false ";
+	private static final String HAS_NEXT_APPOINTMENT_QUERY = "select distinct obs.person_id from obs "
+	        + "where obs.obs_datetime <= :onOrBefore and obs.location_id = :location and obs.concept_id = %s and obs.voided = false ";
 	
 	private static final int OLD_SPEC_ABANDONMENT_DAYS = 60;
 	
@@ -200,8 +198,8 @@ public class TxCurrCohortQueries {
 	public SqlCohortDefinition getPatientsWithNextPickupDate() {
 		SqlCohortDefinition definition = new SqlCohortDefinition();
 		definition.setName("patientsWithNextPickupDate");
-		definition.setQuery(String.format(NEXT_APPOINTMENT_QUERY, hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
-		    hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
+		definition
+		        .setQuery(String.format(HAS_NEXT_APPOINTMENT_QUERY, hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
 		definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		definition.addParameter(new Parameter("location", "location", Location.class));
 		return definition;
@@ -216,8 +214,7 @@ public class TxCurrCohortQueries {
 	public SqlCohortDefinition getPatientsWithNextConsultationDate() {
 		SqlCohortDefinition definition = new SqlCohortDefinition();
 		definition.setName("patientsWithNextConsultationDate");
-		definition.setQuery(String.format(NEXT_APPOINTMENT_QUERY, hivMetadata.getReturnVisitDateConcept().getConceptId(),
-		    hivMetadata.getReturnVisitDateConcept().getConceptId()));
+		definition.setQuery(String.format(HAS_NEXT_APPOINTMENT_QUERY, hivMetadata.getReturnVisitDateConcept().getConceptId()));
 		definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		definition.addParameter(new Parameter("location", "location", Location.class));
 		return definition;
