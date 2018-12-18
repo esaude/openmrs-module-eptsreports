@@ -13,8 +13,10 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Arrays;
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -34,7 +36,9 @@ import org.springframework.stereotype.Component;
 public class TxCurrCohortQueries {
 	
 	private static final String HAS_NEXT_APPOINTMENT_QUERY = "select distinct obs.person_id from obs "
-	        + "where obs.obs_datetime <= :onOrBefore and obs.location_id = :location and obs.concept_id = %s and obs.voided = false ";
+	        + "where obs.obs_datetime <= :onOrBefore and obs.location_id = :location and obs.concept_id = %s and obs.voided = false "
+	        + "and obs.obs_datetime = (select max(encounter.encounter_datetime) from encounter "
+	        + "where encounter.encounter_type in (%s) and encounter.patient_id = obs.person_id and encounter.location_id = obs.location_id and encounter.voided = false and encounter.encounter_datetime <= :onOrBefore) ";
 	
 	private static final int OLD_SPEC_ABANDONMENT_DAYS = 60;
 	
@@ -198,8 +202,9 @@ public class TxCurrCohortQueries {
 	public SqlCohortDefinition getPatientsWithNextPickupDate() {
 		SqlCohortDefinition definition = new SqlCohortDefinition();
 		definition.setName("patientsWithNextPickupDate");
-		definition
-		        .setQuery(String.format(HAS_NEXT_APPOINTMENT_QUERY, hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
+		String encounterTypes = StringUtils.join(Arrays.asList(hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()), ',');
+		definition.setQuery(String.format(HAS_NEXT_APPOINTMENT_QUERY, hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+		    encounterTypes));
 		definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		definition.addParameter(new Parameter("location", "location", Location.class));
 		return definition;
@@ -214,7 +219,10 @@ public class TxCurrCohortQueries {
 	public SqlCohortDefinition getPatientsWithNextConsultationDate() {
 		SqlCohortDefinition definition = new SqlCohortDefinition();
 		definition.setName("patientsWithNextConsultationDate");
-		definition.setQuery(String.format(HAS_NEXT_APPOINTMENT_QUERY, hivMetadata.getReturnVisitDateConcept().getConceptId()));
+		String encounterTypes = StringUtils.join(Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+		    hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()), ',');
+		definition.setQuery(
+		    String.format(HAS_NEXT_APPOINTMENT_QUERY, hivMetadata.getReturnVisitDateConcept().getConceptId(), encounterTypes));
 		definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		definition.addParameter(new Parameter("location", "location", Location.class));
 		return definition;
