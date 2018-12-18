@@ -43,17 +43,6 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		
-		Integer monthsOnArt = (params != null && params.containsKey("monthsOnArt")) ? (Integer) params.get("monthsOnArt") : null;
-		Integer artlowerLimit1 = (params != null && params.containsKey("artLowerLimit1")) ? (Integer) params.get("artLowerLimit1")
-		        : null;
-		Integer artupperLimit1 = (params != null && params.containsKey("artUpperLimit2")) ? (Integer) params.get("artUpperLimit2")
-		        : null;
-		
-		Integer artLowerLimit2 = (params != null && params.containsKey("artLowerLimit2")) ? (Integer) params.get("artLowerLimit2")
-		        : null;
-		Integer artUpperLimit2 = (params != null && params.containsKey("artUpperLimit2")) ? (Integer) params.get("artUpperLimit2")
-		        : null;
-		
 		CalculationResultMap map = new CalculationResultMap();
 		ConceptService conceptService = Context.getConceptService();
 		EncounterService encounterService = Context.getEncounterService();
@@ -95,13 +84,11 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 					if (lastVlObs.getObsDatetime().after(latestVlLowerDateLimit)
 					        && lastVlObs.getObsDatetime().before(context.getNow())) {
 						if (vlObsResult != null && !vlObsResult.isEmpty()) {
-							List<Obs> viralLoadList = EptsCalculationUtils.extractResultValues(vlObsResult);
-							// go through the list and only find those viral load that follow within 12
-							// months
-							if (viralLoadList.size() > 0) {
-								for (Obs obs : viralLoadList) {
-									Date vlLowerDateLimitFromObsList = addMoths(context.getNow(), -12);
-									if (obs != null && obs.getObsDatetime().after(vlLowerDateLimitFromObsList)
+							List<Obs> vLoadList = EptsCalculationUtils.extractResultValues(vlObsResult);
+							if (vLoadList.size() > 0) {
+								for (Obs obs : vLoadList) {
+									Date vlLowerDateLimitFromObs = addMoths(context.getNow(), -12);
+									if (obs != null && obs.getObsDatetime().after(vlLowerDateLimitFromObs)
 									        && obs.getObsDatetime().before(context.getNow())) {
 										viralLoadForPatientTakenWithin12Months.add(obs);
 									}
@@ -110,23 +97,22 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 						}
 					}
 					// find out for criteria 1
-					if (artupperLimit1 != null && artlowerLimit1 != null && monthsOnArt != null
-					        && EptsCalculationUtils.monthsSince(artInitiationDate, context.getNow()) > monthsOnArt
+					if (EptsCalculationUtils.monthsSince(artInitiationDate, context.getNow()) > 6
 					        && viralLoadForPatientTakenWithin12Months.size() == 1) {
 						// the patients should be 6 to 9 months after ART initiation
 						// get the obs date for this VL and compare that with the provided dates
 						Obs vlObs = viralLoadForPatientTakenWithin12Months.get(0);
 						if (vlObs != null && vlObs.getObsDatetime() != null) {
 							Date vlDate = vlObs.getObsDatetime();
-							if (EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) > artlowerLimit1
-							        && EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) <= artupperLimit1) {
+							if (EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) > 6
+							        && EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) <= 9) {
 								isOnRoutine = true;
 							}
 						}
 					}
 					
 					// find out criteria 2
-					if (artUpperLimit2 != null && artLowerLimit2 != null && viralLoadForPatientTakenWithin12Months.size() > 1) {
+					if (viralLoadForPatientTakenWithin12Months.size() > 1) {
 						
 						Collections.sort(viralLoadForPatientTakenWithin12Months, new Comparator<Obs>() {
 							
@@ -142,10 +128,9 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 						        && previousObs.getObsDatetime() != null && previousObs.getValueNumeric() < 1000
 						        && currentObs.getObsDatetime() != null
 						        && previousObs.getObsDatetime().before(currentObs.getObsDatetime())) {
-							if (EptsCalculationUtils
-							        .monthsSince(previousObs.getObsDatetime(), currentObs.getObsDatetime()) >= artLowerLimit2
+							if (EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(), currentObs.getObsDatetime()) >= 12
 							        && EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(),
-							            currentObs.getObsDatetime()) <= artUpperLimit2) {
+							            currentObs.getObsDatetime()) <= 15) {
 								isOnRoutine = true;
 							}
 						}

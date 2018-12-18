@@ -72,8 +72,6 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 					        && lastVlObs.getObsDatetime().before(context.getNow())) {
 						if (vlObsResult != null && !vlObsResult.isEmpty()) {
 							List<Obs> viralLoadList = EptsCalculationUtils.extractResultValues(vlObsResult);
-							// go through the list and only find those viral load that follow within 12
-							// months
 							if (viralLoadList.size() > 0) {
 								for (Obs obs : viralLoadList) {
 									Date vlLowerDateLimitFromObsList = addMoths(context.getNow(), -12);
@@ -123,13 +121,9 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 					
 					// find out criteria 3
 					if (viralLoadForPatientTakenWithin12Months.size() > 0) {
-						// get when a patient switch between lines from first to second
-						// Date when started on second line will be considered the changing date
 						Obs obs = EptsCalculationUtils.obsResultForPatient(changingRegimenLines, pId);
 						Encounter encounter1 = EptsCalculationUtils.encounterResultForPatient(encounter6, pId);
 						Encounter encounter2 = EptsCalculationUtils.encounterResultForPatient(encounter9, pId);
-						// loop through the viral load list and find one that is after the second line
-						// option
 						Date finalDate = null;
 						if (encounter1 != null) {
 							finalDate = encounter1.getEncounterDatetime();

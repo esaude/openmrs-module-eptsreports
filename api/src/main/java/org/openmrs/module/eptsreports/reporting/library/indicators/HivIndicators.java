@@ -93,48 +93,6 @@ public class HivIndicators extends BaseIndicators {
 	}
 	
 	/**
-	 * Find patients with Viral load results disagregated by age
-	 * 
-	 * @return CohortIndicator
-	 */
-	public CohortIndicator getPatientsWithViralLoadResultsWithinAgeBracket(int min, int max) {
-		return newCohortIndicator("patients with viral load results disagreagated by age",
-		    EptsReportUtils.map(pvls.getPatientsWithViralLoadResultsWithinAgeBracket(min, max),
-		        "startDate=${startDate},endDate=${endDate},location=${location}"));
-	}
-	
-	/**
-	 * Find patients with Viral load results disagregated by age
-	 * 
-	 * @return CohortIndicator
-	 */
-	public CohortIndicator getPatientsWithViralLoadSuppressionWithinAgeBracket(int min, int max) {
-		return newCohortIndicator("patients with viral load results disagreagated by age",
-		    EptsReportUtils.map(pvls.getPatientsWithViralLoadSuppressionWithinAgeBracket(min, max),
-		        "startDate=${startDate},endDate=${endDate},location=${location}"));
-	}
-	
-	/**
-	 * Find patients with Viral load results disagregated by age below
-	 * 
-	 * @return CohortIndicator
-	 */
-	public CohortIndicator getPatientsWithViralLoadResultsWithAgeBelow(int age) {
-		return newCohortIndicator("patients with viral load results disagreagated by age below", EptsReportUtils.map(
-		    pvls.getPatientsWithViralLoadResultsWithAgeBelow(age), "startDate=${startDate},endDate=${endDate},location=${location}"));
-	}
-	
-	/**
-	 * Find patients with Viral load results suppression disagregated by age below
-	 * 
-	 * @return CohortIndicator
-	 */
-	public CohortIndicator getPatientsWithViralLoadSuppressionAgeBelow(int age) {
-		return newCohortIndicator("patients with viral load results disagreagated by age below", EptsReportUtils.map(
-		    pvls.getPatientsWithViralLoadSuppressionAgeBelow(age), "startDate=${startDate},endDate=${endDate},location=${location}"));
-	}
-	
-	/**
 	 * Find patients with viral load suppression and on routine Numerator
 	 * 
 	 * @return CohortIndicator
@@ -185,17 +143,7 @@ public class HivIndicators extends BaseIndicators {
 	 */
 	public CohortIndicator getPatientsWhoAreOnRoutineAdultsAndChildren() {
 		return newCohortIndicator("Routine for  adults and children",
-		    EptsReportUtils.map(pvls.getpatientsOnRoutineAdultsAndChildren(6, 6, 9, 12, 15), "onDate=${endDate}"));
-	}
-	
-	/**
-	 * Find patients on routine for Adults and children
-	 * 
-	 * @return CohortIndicator
-	 */
-	public CohortIndicator getBreastfeedinAndPregnantWomenOnRoutine() {
-		return newCohortIndicator("Routine for  breastfeeding and pregnant",
-		    EptsReportUtils.map(pvls.getpatientsOnRoutineAdultsAndChildren(3, 3, 6, 12, 15), "onDate=${endDate}"));
+		    EptsReportUtils.map(pvls.getpatientsOnRoutineAdultsAndChildren(), "onDate=${endDate}"));
 	}
 	
 }

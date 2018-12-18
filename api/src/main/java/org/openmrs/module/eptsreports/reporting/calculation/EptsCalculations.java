@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Set;
 
 /**
  * Utility class of common base calculations
@@ -133,48 +132,6 @@ public class EptsCalculations {
 		def.setWhich(TimeQualifier.FIRST);
 		def.setOnOrBefore(context.getNow());
 		return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
-	}
-	
-	/**
-	 * Evaluates the last program enrollment on the specified program
-	 * 
-	 * @param program the program
-	 * @param cohort the patient ids
-	 * @param context the calculation context
-	 * @return the enrollments in a calculation result map
-	 */
-	public static CalculationResultMap activeEnrollmentOn(Program program, Date onDate, Collection<Integer> cohort,
-	        PatientCalculationContext context) {
-		ProgramEnrollmentsForPatientDataDefinition def = new ProgramEnrollmentsForPatientDataDefinition();
-		def.setName("active enrollment in " + program.getName() + " on " + dateFormatter.format(onDate));
-		def.setWhichEnrollment(TimeQualifier.LAST);
-		def.setProgram(program);
-		def.setActiveOnDate(onDate);
-		return EptsCalculationUtils.evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, context);
-	}
-	
-	/**
-	 * Evaluates the active program enrollment of the specified program
-	 * 
-	 * @param program the program
-	 * @param cohort the patient ids
-	 * @param context the calculation context
-	 * @return the enrollments in a calculation result map
-	 */
-	public static CalculationResultMap activeEnrollment(Program program, Collection<Integer> cohort,
-	        PatientCalculationContext context) {
-		return activeEnrollmentOn(program, context.getNow(), cohort, context);
-	}
-	
-	/**
-	 * Utility class of filters which take a cohort and return another cohort /** Patients who are alive
-	 * 
-	 * @param cohort the patient ids
-	 * @param context the calculation context
-	 * @return the filtered cohort
-	 */
-	public static Set<Integer> living(Collection<Integer> cohort, PatientCalculationContext context) {
-		return EptsCalculationUtils.patientsThatPass(alive(cohort, context));
 	}
 	
 }

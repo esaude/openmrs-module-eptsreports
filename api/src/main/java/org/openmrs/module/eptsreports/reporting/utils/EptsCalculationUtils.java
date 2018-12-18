@@ -159,18 +159,6 @@ public class EptsCalculationUtils {
 	}
 	
 	/**
-	 * Convenience method to fetch a patient result as a coded obs value
-	 * 
-	 * @param results the calculation result map
-	 * @param patientId the patient id
-	 * @return the coded obs value
-	 */
-	public static Concept codedObsResultForPatient(CalculationResultMap results, Integer patientId) {
-		Obs o = obsResultForPatient(results, patientId);
-		return o == null ? null : o.getValueCoded();
-	}
-	
-	/**
 	 * Convenience method to fetch a patient result as an obs
 	 * 
 	 * @param results the calculation result map
