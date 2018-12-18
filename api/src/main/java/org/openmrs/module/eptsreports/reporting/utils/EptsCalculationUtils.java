@@ -30,6 +30,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -265,6 +266,13 @@ public class EptsCalculationUtils {
 	 */
 	public static Date earliest(Date d1, Date d2) {
 		return OpenmrsUtil.compareWithNullAsLatest(d1, d2) >= 0 ? d2 : d1;
+	}
+	
+	public static Date addMoths(Date endDate, int months) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(endDate);
+		c.add(Calendar.MONTH, months);
+		return c.getTime();
 	}
 	
 }

@@ -18,7 +18,6 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,6 +25,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils.addMoths;
 
 @Component
 public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalculation {
@@ -100,28 +101,30 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 							if (viralLoadList.size() > 0) {
 								for (Obs obs : viralLoadList) {
 									Date vlLowerDateLimitFromObsList = addMoths(context.getNow(), -12);
-									if (EptsCalculationUtils.monthsSince(vlLowerDateLimitFromObsList, context.getNow()) <= 12) {
+									if (obs != null && obs.getObsDatetime().after(vlLowerDateLimitFromObsList)
+									        && obs.getObsDatetime().before(context.getNow())) {
 										viralLoadForPatientTakenWithin12Months.add(obs);
 									}
 								}
 							}
 						}
-						// find out for criteria 1
-						if (artupperLimit1 != null && artlowerLimit1 != null && monthsOnArt != null
-						        && EptsCalculationUtils.monthsSince(artInitiationDate, context.getNow()) > monthsOnArt
-						        && viralLoadForPatientTakenWithin12Months.size() == 1) {
-							// the patients should be 6 to 9 months after ART initiation
-							// get the obs date for this VL and compare that with the provided dates
-							Obs vlObs = viralLoadForPatientTakenWithin12Months.get(0);
-							if (vlObs != null && vlObs.getObsDatetime() != null) {
-								Date vlDate = vlObs.getObsDatetime();
-								if (EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) > artlowerLimit1
-								        && EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) > artupperLimit1) {
-									isOnRoutine = true;
-								}
+					}
+					// find out for criteria 1
+					if (artupperLimit1 != null && artlowerLimit1 != null && monthsOnArt != null
+					        && EptsCalculationUtils.monthsSince(artInitiationDate, context.getNow()) > monthsOnArt
+					        && viralLoadForPatientTakenWithin12Months.size() == 1) {
+						// the patients should be 6 to 9 months after ART initiation
+						// get the obs date for this VL and compare that with the provided dates
+						Obs vlObs = viralLoadForPatientTakenWithin12Months.get(0);
+						if (vlObs != null && vlObs.getObsDatetime() != null) {
+							Date vlDate = vlObs.getObsDatetime();
+							if (EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) > artlowerLimit1
+							        && EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) <= artupperLimit1) {
+								isOnRoutine = true;
 							}
 						}
 					}
+					
 					// find out criteria 2
 					if (artUpperLimit2 != null && artLowerLimit2 != null && viralLoadForPatientTakenWithin12Months.size() > 1) {
 						
@@ -179,12 +182,5 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 		}
 		
 		return map;
-	}
-	
-	private Date addMoths(Date endDate, int months) {
-		Calendar c = Calendar.getInstance();
-		c.setTime(endDate);
-		c.add(Calendar.MONTH, months);
-		return c.getTime();
 	}
 }

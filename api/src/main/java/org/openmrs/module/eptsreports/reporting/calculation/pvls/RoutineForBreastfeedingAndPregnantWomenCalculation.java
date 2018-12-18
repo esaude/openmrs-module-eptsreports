@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils.addMoths;
+
 public class RoutineForBreastfeedingAndPregnantWomenCalculation extends AbstractPatientCalculation {
 	
 	@Override
@@ -62,6 +64,7 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 					artInitiationDate = (Date) artStartDateResult.getValue();
 				}
 				if (artInitiationDate != null && lastVlObs != null && lastVlObs.getObsDatetime() != null) {
+					Date latestVlLowerDateLimit = addMoths(context.getNow(), -12);
 					isOnRoutine = true;
 				}
 			}

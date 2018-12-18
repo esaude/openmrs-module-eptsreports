@@ -61,10 +61,10 @@ public class TxPvlsDataset extends BaseDataSet {
 		dsd.addColumn("0D", "Total patients with Viral load - Denominator",
 		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), "");
 		// add patients on routine for adults and children
-		dsd.addColumn("Routine", "Adults and Children",
+		dsd.addColumn("Routine-AC", "Adults and Children",
 		    EptsReportUtils.map(hivIndicators.getPatientsWhoAreOnRoutineAdultsAndChildren(), "endDate=${endDate}"), "");
 		
-		dsd.addColumn("Routine", "Breastfeeding and Pregnant women",
+		dsd.addColumn("Routine-BP", "Breastfeeding and Pregnant women",
 		    EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingAndPregnantOnRoutine(), "endDate=${endDate}"), "");
 		// add breastfeeding and pregnant Numerator
 		dsd.addColumn("B01", "Breast feeding and on routine Numerator", EptsReportUtils.map(
