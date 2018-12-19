@@ -24,7 +24,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils.addMoths;
 
@@ -150,18 +149,17 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 					
 					if (obs != null && latestVlDate != null && finalDate != null) {
 						if (obs.getObsDatetime().before(latestVlDate)) {
+							isOnRoutine = true;
 							// check that there is no other VL registered between first encounter_date and
 							// vl_regisitered_date
 							// get list of all vls for this patient
 							List<Obs> allVlsforPatient = EptsCalculationUtils.extractResultValues(vlObsResult);
-							
-							isOnRoutine = true;
 							// loop through the vls and exclude the patient if they have an obs falling
 							// between the 2 dates
 							for (Obs obs1 : allVlsforPatient) {
 								if (obs1.getObsDatetime() != null && obs1.getObsDatetime().after(finalDate)
 								        && obs1.getObsDatetime().before(latestVlDate)) {
-									
+									isOnRoutine = false;
 								}
 							}
 						}

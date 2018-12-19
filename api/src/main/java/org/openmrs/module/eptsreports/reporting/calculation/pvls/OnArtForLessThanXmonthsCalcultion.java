@@ -38,7 +38,7 @@ public class OnArtForLessThanXmonthsCalcultion extends AbstractPatientCalculatio
 			if (artStartDateResult != null && lastVlObs != null) {
 				Date artStartDate = (Date) artStartDateResult.getValue();
 				Date lastVlDate = lastVlObs.getObsDatetime();
-				if (EptsCalculationUtils.monthsSince(artStartDate, lastVlDate) < 3) {
+				if (artStartDate != null && lastVlDate != null && EptsCalculationUtils.monthsSince(artStartDate, lastVlDate) < 3) {
 					toExcludeFromList = true;
 				}
 			}
