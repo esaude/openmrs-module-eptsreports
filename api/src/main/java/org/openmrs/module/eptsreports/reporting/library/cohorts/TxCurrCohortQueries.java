@@ -13,8 +13,10 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Arrays;
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -32,6 +34,15 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class TxCurrCohortQueries {
+	
+	private static final String HAS_NEXT_APPOINTMENT_QUERY = "select distinct obs.person_id from obs "
+	        + "where obs.obs_datetime <= :onOrBefore and obs.location_id = :location and obs.concept_id = %s and obs.voided = false "
+	        + "and obs.obs_datetime = (select max(encounter.encounter_datetime) from encounter "
+	        + "where encounter.encounter_type in (%s) and encounter.patient_id = obs.person_id and encounter.location_id = obs.location_id and encounter.voided = false and encounter.encounter_datetime <= :onOrBefore) ";
+	
+	private static final int OLD_SPEC_ABANDONMENT_DAYS = 60;
+	
+	private static final int CURRENT_SPEC_ABANDONMENT_DAYS = 29;
 	
 	@Autowired
 	private HivMetadata hivMetadata;
@@ -119,57 +130,55 @@ public class TxCurrCohortQueries {
 	}
 	
 	// Looks for patients that from the date scheduled for next drug pickup (concept
-	// 5096=RETURN VISIT DATE FOR ARV DRUG) until end date have completed 60 days
+	// 5096=RETURN VISIT DATE FOR ARV DRUG) until end date have completed 28 days
 	// and have not returned
-	@DocumentedDefinition(value = "patientsWhoHaveNotReturned")
-	public SqlCohortDefinition getPatientsWhoHaveNotReturned() {
-		SqlCohortDefinition patientsWhoHaveNotReturned = new SqlCohortDefinition();
-		patientsWhoHaveNotReturned.setName("patientsWhoHaveNotReturned");
-		
+	@DocumentedDefinition(value = "patientsThatMissedNexPickup")
+	public SqlCohortDefinition getPatientsThatMissedNexPickup() {
+		SqlCohortDefinition definition = new SqlCohortDefinition();
+		definition.setName("patientsThatMissedNexPickup");
 		String query = "select patient_id from ( Select p.patient_id,max(encounter_datetime) encounter_datetime from patient p inner join encounter e on e.patient_id=p.patient_id where p.voided=0 and e.voided=0 and e.encounter_type=%s"
 		        + " and e.location_id=:location and e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_frida inner join obs o on o.person_id=max_frida.patient_id where max_frida.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id=%s"
-		        + " and o.location_id=:location and datediff(:onOrBefore,o.value_datetime)>=60";
-		
-		patientsWhoHaveNotReturned.setQuery(String.format(query, hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+		        + " and o.location_id=:location and datediff(:onOrBefore,o.value_datetime)>=:abandonmentDays";
+		definition.setQuery(String.format(query, hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
 		    hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
-		
-		patientsWhoHaveNotReturned.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-		patientsWhoHaveNotReturned.addParameter(new Parameter("location", "location", Location.class));
-		return patientsWhoHaveNotReturned;
+		definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		definition.addParameter(new Parameter("location", "location", Location.class));
+		definition.addParameter(new Parameter("abandonmentDays", "abandonmentDays", Integer.class));
+		return definition;
 	}
 	
 	// Looks for patients that from the date scheduled for next follow up
 	// consultation (concept 1410=RETURN VISIT DATE) until the end date have not
-	// completed 60 days
-	@DocumentedDefinition(value = "patientsWhoHaveNotCompleted60Days")
-	public SqlCohortDefinition getPatientsWhoHaveNotCompleted60Days() {
-		SqlCohortDefinition patientsWhoHaveNotCompleted60Days = new SqlCohortDefinition();
-		patientsWhoHaveNotCompleted60Days.setName("patientsWhoHaveNotCompleted60Days");
-		patientsWhoHaveNotCompleted60Days
-		        .setQuery("select patient_id from " + "( Select p.patient_id,max(encounter_datetime) encounter_datetime "
-		                + "from patient p inner join encounter e on e.patient_id=p.patient_id "
-		                + "where p.voided=0 and e.voided=0 and e.encounter_type in ("
-		                + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + ", "
-		                + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") "
-		                + "and e.location_id=:location and e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_mov "
-		                + "inner join obs o on o.person_id=max_mov.patient_id "
-		                + "where max_mov.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id="
-		                + hivMetadata.getReturnVisitDateConcept().getConceptId()
-		                + " and o.location_id=:location AND DATEDIFF(:onOrBefore,o.value_datetime)<=60");
-		patientsWhoHaveNotCompleted60Days.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-		patientsWhoHaveNotCompleted60Days.addParameter(new Parameter("location", "location", Location.class));
-		return patientsWhoHaveNotCompleted60Days;
+	// completed 28 days
+	@DocumentedDefinition(value = "patientsThatDidNotMissNextConsultation")
+	public SqlCohortDefinition getPatientsThatDidNotMissNextConsultation() {
+		SqlCohortDefinition definition = new SqlCohortDefinition();
+		definition.setName("patientsThatDidNotMissNextConsultation");
+		definition.setQuery("select patient_id from " + "( Select p.patient_id,max(encounter_datetime) encounter_datetime "
+		        + "from patient p inner join encounter e on e.patient_id=p.patient_id "
+		        + "where p.voided=0 and e.voided=0 and e.encounter_type in ("
+		        + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + ", "
+		        + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") "
+		        + "and e.location_id=:location and e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_mov "
+		        + "inner join obs o on o.person_id=max_mov.patient_id "
+		        + "where max_mov.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id="
+		        + hivMetadata.getReturnVisitDateConcept().getConceptId()
+		        + " and o.location_id=:location AND DATEDIFF(:onOrBefore,o.value_datetime)<:abandonmentDays");
+		definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		definition.addParameter(new Parameter("location", "location", Location.class));
+		definition.addParameter(new Parameter("abandonmentDays", "abandonmentDays", Integer.class));
+		return definition;
 	}
 	
 	// Looks for patients that were registered as abandonment (program workflow
 	// state is 9=ABANDONED) but from the date scheduled for next drug pick up
 	// (concept 5096=RETURN VISIT DATE FOR ARV DRUG) until the end date have not
-	// completed 60 days
-	@DocumentedDefinition(value = "abandonedButHaveNotcompleted60Days")
-	public SqlCohortDefinition getAbandonedButHaveNotcompleted60Days() {
-		SqlCohortDefinition abandonedButHaveNotcompleted60Days = new SqlCohortDefinition();
-		abandonedButHaveNotcompleted60Days.setName("abandonedButHaveNotcompleted60Days");
-		abandonedButHaveNotcompleted60Days.setQuery(
+	// completed 28 days
+	@DocumentedDefinition(value = "patientsReportedAsAbandonmentButStillInPeriod")
+	public SqlCohortDefinition getPatientsReportedAsAbandonmentButStillInPeriod() {
+		SqlCohortDefinition definition = new SqlCohortDefinition();
+		definition.setName("patientsReportedAsAbandonmentButStillInPeriod");
+		definition.setQuery(
 		    "select abandono.patient_id from ( select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id inner join patient_state ps on pg.patient_program_id=ps.patient_program_id where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id= "
 		            + hivMetadata.getARTProgram().getProgramId() + " and ps.state="
 		            + hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId()
@@ -177,10 +186,46 @@ public class TxCurrCohortQueries {
 		            + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()
 		            + " and e.location_id=:location and e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_frida inner join obs o on o.person_id=max_frida.patient_id where max_frida.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id="
 		            + hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()
-		            + " and o.location_id=:location ) ultimo_fila on abandono.patient_id=ultimo_fila.patient_id where datediff(:onOrBefore,ultimo_fila.value_datetime)<60");
-		abandonedButHaveNotcompleted60Days.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-		abandonedButHaveNotcompleted60Days.addParameter(new Parameter("location", "location", Location.class));
-		return abandonedButHaveNotcompleted60Days;
+		            + " and o.location_id=:location ) ultimo_fila on abandono.patient_id=ultimo_fila.patient_id where datediff(:onOrBefore,ultimo_fila.value_datetime)<:abandonmentDays");
+		definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		definition.addParameter(new Parameter("location", "location", Location.class));
+		definition.addParameter(new Parameter("abandonmentDays", "abandonmentDays", Integer.class));
+		return definition;
+	}
+	
+	/**
+	 * Patients that have next pickup date set on their most recent encounter
+	 * 
+	 * @return
+	 */
+	@DocumentedDefinition(value = "patientsWithNextPickupDate")
+	public SqlCohortDefinition getPatientsWithNextPickupDate() {
+		SqlCohortDefinition definition = new SqlCohortDefinition();
+		definition.setName("patientsWithNextPickupDate");
+		String encounterTypes = StringUtils.join(Arrays.asList(hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()), ',');
+		definition.setQuery(String.format(HAS_NEXT_APPOINTMENT_QUERY, hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+		    encounterTypes));
+		definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		definition.addParameter(new Parameter("location", "location", Location.class));
+		return definition;
+	}
+	
+	/**
+	 * Patients that have next consultation date set on their most recent encounter
+	 * 
+	 * @return
+	 */
+	@DocumentedDefinition(value = "patientsWithNextConsultationDate")
+	public SqlCohortDefinition getPatientsWithNextConsultationDate() {
+		SqlCohortDefinition definition = new SqlCohortDefinition();
+		definition.setName("patientsWithNextConsultationDate");
+		String encounterTypes = StringUtils.join(Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+		    hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()), ',');
+		definition.setQuery(
+		    String.format(HAS_NEXT_APPOINTMENT_QUERY, hivMetadata.getReturnVisitDateConcept().getConceptId(), encounterTypes));
+		definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		definition.addParameter(new Parameter("location", "location", Location.class));
+		return definition;
 	}
 	
 	/**
@@ -192,19 +237,24 @@ public class TxCurrCohortQueries {
 	 * @param patientWithHistoricalDrugStartDateObs
 	 * @param patientsWithDrugPickUpEncounters
 	 * @param patientsWhoLeftARTProgramBeforeOrOnEndDate
-	 * @param patientsWhoHaveNotReturned
-	 * @param patientsWhoHaveNotCompleted60Days
-	 * @param abandonedButHaveNotcompleted60Days
+	 * @param patientsThatMissedNexPickup
+	 * @param patientsThatDidNotMissNextConsultation
+	 * @param patientsReportedAsAbandonmentButStillInPeriod
 	 * @param ageCohort
+	 * @param patientsWithNextPickupDate
+	 * @param patientsWithNextConsultationDate
+	 * @param currentSpec
 	 * @return CompositionQuery
 	 */
 	@DocumentedDefinition(value = "getTxCurrCompositionCohort")
 	public CohortDefinition getTxCurrCompositionCohort(String cohortName, CohortDefinition inARTProgramAtEndDate,
 	        CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs,
 	        CohortDefinition patientsWithDrugPickUpEncounters, CohortDefinition patientsWhoLeftARTProgramBeforeOrOnEndDate,
-	        CohortDefinition patientsWhoHaveNotReturned, CohortDefinition patientsWhoHaveNotCompleted60Days,
-	        CohortDefinition abandonedButHaveNotcompleted60Days, CohortDefinition ageCohort, CohortDefinition genderCohort) {
+	        CohortDefinition patientsThatMissedNexPickup, CohortDefinition patientsThatDidNotMissNextConsultation,
+	        CohortDefinition patientsReportedAsAbandonmentButStillInPeriod, CohortDefinition ageCohort, CohortDefinition genderCohort,
+	        CohortDefinition patientsWithNextPickupDate, CohortDefinition patientsWithNextConsultationDate, boolean currentSpec) {
 		
+		final int abandonmentDays = currentSpec ? CURRENT_SPEC_ABANDONMENT_DAYS : OLD_SPEC_ABANDONMENT_DAYS;
 		CompositionCohortDefinition TxCurrComposition = new CompositionCohortDefinition();
 		TxCurrComposition.setName(cohortName);
 		
@@ -222,26 +272,34 @@ public class TxCurrCohortQueries {
 		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
 		TxCurrComposition.getSearches().put("5", new Mapped<CohortDefinition>(patientsWhoLeftARTProgramBeforeOrOnEndDate,
 		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
-		TxCurrComposition.getSearches().put("6", new Mapped<CohortDefinition>(patientsWhoHaveNotReturned,
+		TxCurrComposition.getSearches().put("6",
+		    new Mapped<CohortDefinition>(patientsThatMissedNexPickup, ParameterizableUtil.createParameterMappings(
+		        String.format("onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s", abandonmentDays))));
+		TxCurrComposition.getSearches().put("7",
+		    new Mapped<CohortDefinition>(patientsThatDidNotMissNextConsultation, ParameterizableUtil.createParameterMappings(
+		        String.format("onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s", abandonmentDays))));
+		TxCurrComposition.getSearches().put("8",
+		    new Mapped<CohortDefinition>(patientsReportedAsAbandonmentButStillInPeriod, ParameterizableUtil.createParameterMappings(
+		        String.format("onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s", abandonmentDays))));
+		TxCurrComposition.getSearches().put("11", new Mapped<CohortDefinition>(patientsWithNextPickupDate,
 		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
-		TxCurrComposition.getSearches().put("7", new Mapped<CohortDefinition>(patientsWhoHaveNotCompleted60Days,
-		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
-		TxCurrComposition.getSearches().put("8", new Mapped<CohortDefinition>(abandonedButHaveNotcompleted60Days,
+		TxCurrComposition.getSearches().put("12", new Mapped<CohortDefinition>(patientsWithNextConsultationDate,
 		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
 		
-		// TODO -Check specifications document on how to use query 6,7 and 8
-		String compositionString = "((1 OR 2 OR 3 OR 4) AND NOT (5 OR (6 AND NOT (5 OR 7 OR 8)))";
+		String compositionString;
+		if (currentSpec) {
+			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR ((6 OR (NOT 11)) AND (NOT (7 OR 8))))) AND (11 OR 12)";
+		} else {
+			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND (NOT (7 OR 8)))))";
+		}
 		
 		if (ageCohort != null) {
 			TxCurrComposition.getSearches().put("9", new Mapped<CohortDefinition>(ageCohort,
 			        ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}")));
-			
 			compositionString = compositionString + " AND 9";
 		}
-		
 		if (genderCohort != null) {
 			TxCurrComposition.getSearches().put("10", new Mapped<CohortDefinition>(genderCohort, null));
-			
 			compositionString = compositionString + " AND 10";
 		}
 		

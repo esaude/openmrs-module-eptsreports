@@ -50,7 +50,7 @@ public class TxNewDataset extends BaseDataSet {
 	@Autowired
 	private EptsCommonDimension eptsCommonDimension;
 	
-	public DataSetDefinition constructTxNewDatset() {
+	public DataSetDefinition constructTxNewDataset() {
 		
 		CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
 		dataSetDefinition.setName("TX_NEW Data Set");
