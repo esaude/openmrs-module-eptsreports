@@ -16,6 +16,7 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForLessThanXmonthsCalcultion;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineForAdultsAndChildrenCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineForBreastfeedingAndPregnantWomenCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
@@ -42,6 +43,19 @@ public class TxPvlsCohortQueries {
 	
 	@Autowired
 	private TxNewCohortQueries txNewCohortQueries;
+	
+	/**
+	 * Patients who have NOT been on ART for 3 months based on the ART initiation date and date of last
+	 * viral load registered
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getPatientsWhoAreLessThan3MonthsOnArt() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("On ART for less than 3 months",
+		        new OnArtForLessThanXmonthsCalcultion());
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		return cd;
+	}
 	
 	/**
 	 * Breast feeding women with viral load suppression
@@ -97,7 +111,8 @@ public class TxPvlsCohortQueries {
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("supp", EptsReportUtils.map(hivCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
 		cd.addSearch("baseCohort", EptsReportUtils.map(genericCohortQueries.getBaseCohort(), mappings));
-		cd.setCompositionString("supp AND baseCohort");
+		cd.addSearch("less3MonthsOnART", EptsReportUtils.map(getPatientsWhoAreLessThan3MonthsOnArt(), "onDate=${endDate}"));
+		cd.setCompositionString("(supp AND baseCohort) AND NOT less3MonthsOnART");
 		return cd;
 	}
 	
@@ -113,71 +128,8 @@ public class TxPvlsCohortQueries {
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("results", EptsReportUtils.map(hivCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
 		cd.addSearch("baseCohort", EptsReportUtils.map(genericCohortQueries.getBaseCohort(), mappings));
-		cd.setCompositionString("results AND baseCohort");
-		return cd;
-	}
-	
-	/**
-	 * Get patients with viral load suppression with age bracket
-	 */
-	public CohortDefinition getPatientsWithViralLoadSuppressionWithinAgeBracket(int min, int max) {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Patients with suppression within age");
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
-		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("supp", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
-		cd.addSearch("age", EptsReportUtils.map(findPatientsBetweenAgeBracketsInYears(min, max), mappings));
-		cd.setCompositionString("supp AND age");
-		return cd;
-	}
-	
-	/**
-	 * Get patients with viral load results with age bracket
-	 */
-	public CohortDefinition getPatientsWithViralLoadResultsWithinAgeBracket(int min, int max) {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Patients with viral load results within age");
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
-		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
-		cd.addSearch("age", EptsReportUtils.map(findPatientsBetweenAgeBracketsInYears(min, max), mappings));
-		cd.setCompositionString("results AND age");
-		return cd;
-	}
-	
-	/**
-	 * Get patients with viral load suppression with age below
-	 */
-	public CohortDefinition getPatientsWithViralLoadSuppressionAgeBelow(int age) {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Patients with suppression aged below");
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
-		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("supp", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
-		cd.addSearch("age", EptsReportUtils.map(findPatientsagedBelowInYears(age), mappings));
-		cd.setCompositionString("supp AND age");
-		return cd;
-	}
-	
-	/**
-	 * Get patients with viral load results with age below
-	 */
-	public CohortDefinition getPatientsWithViralLoadResultsWithAgeBelow(int age) {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Patients with viral load results aged below");
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
-		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("results", EptsReportUtils.map(hivCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
-		cd.addSearch("age", EptsReportUtils.map(findPatientsagedBelowInYears(age), mappings));
-		cd.setCompositionString("results AND age");
+		cd.addSearch("less3MonthsOnART", EptsReportUtils.map(getPatientsWhoAreLessThan3MonthsOnArt(), "onDate=${endDate}"));
+		cd.setCompositionString("(results AND baseCohort) AND NOT less3MonthsOnART");
 		return cd;
 	}
 	
