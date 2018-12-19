@@ -26,14 +26,16 @@ public class OnArtForLessThanXmonthsCalcultion extends AbstractPatientCalculatio
 		// get data inicio TARV
 		CalculationResultMap arvsInitiationDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
 		CalculationResultMap lastVl = EptsCalculations.lastObs(viralLoadConceptuuid, cohort, context);
-		Set<Integer> alivePatients = EptsCalculationUtils.patientsThatPass(EptsCalculations.alive(cohort, context));
+		// Set<Integer> alivePatients =
+		// EptsCalculationUtils.patientsThatPass(EptsCalculations.alive(cohort,
+		// context));
 		
 		for (Integer ptId : cohort) {
 			boolean toExcludeFromList = false;
 			SimpleResult artStartDateResult = (SimpleResult) arvsInitiationDateMap.get(ptId);
 			Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVl, ptId);
 			// only include a live patients
-			if (alivePatients.contains(ptId) && artStartDateResult != null && lastVlObs != null) {
+			if (artStartDateResult != null && lastVlObs != null) {
 				Date artStartDate = (Date) artStartDateResult.getValue();
 				Date lastVlDate = lastVlObs.getObsDatetime();
 				if (EptsCalculationUtils.monthsSince(artStartDate, lastVlDate) < 3) {

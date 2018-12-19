@@ -66,6 +66,8 @@ public class TxPvlsDataset extends BaseDataSet {
 		
 		dsd.addColumn("Routine-BP", "Breastfeeding and Pregnant women",
 		    EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingAndPregnantOnRoutine(), "endDate=${endDate}"), "");
+		dsd.addColumn("To exclude", "The number to exclude",
+		    EptsReportUtils.map(hivIndicators.getPatientsToExcludeFromMainCohort(), ""), "");
 		// add breastfeeding and pregnant Numerator
 		dsd.addColumn("B01", "Breast feeding and on routine Numerator", EptsReportUtils.map(
 		    breastfeedingIndicators.getBreastfeedingWomenWithSuppressedViralLoadIn12MonthsOnRoutineNumerator(), mappings), "");

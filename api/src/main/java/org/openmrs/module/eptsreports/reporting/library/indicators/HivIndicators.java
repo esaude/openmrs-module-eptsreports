@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.indicators;
 
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -26,9 +25,6 @@ public class HivIndicators extends BaseIndicators {
 	
 	@Autowired
 	private TxPvlsCohortQueries pvls;
-	
-	@Autowired
-	private TxNewCohortQueries txNew;
 	
 	public CohortIndicator patientBelow1YearEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
 		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(cohortDefinition,
@@ -144,6 +140,16 @@ public class HivIndicators extends BaseIndicators {
 	public CohortIndicator getPatientsWhoAreOnRoutineAdultsAndChildren() {
 		return newCohortIndicator("Routine for  adults and children",
 		    EptsReportUtils.map(pvls.getpatientsOnRoutineAdultsAndChildren(), "onDate=${endDate}"));
+	}
+	
+	/**
+	 * Find patients to exclude from the main composition
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortIndicator getPatientsToExcludeFromMainCohort() {
+		return newCohortIndicator("To exclude from list",
+		    EptsReportUtils.map(pvls.getPatientsWhoAreLessThan3MonthsOnArt(), "onDate=${endDate}"));
 	}
 	
 }
