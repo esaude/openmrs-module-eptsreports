@@ -1,31 +1,37 @@
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
+
 import org.openmrs.Concept;
 import org.openmrs.Obs;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
-
+@Component
 public class OnArtForLessThanXmonthsCalcultion extends AbstractPatientCalculation {
+	
+	@Autowired
+	private HivMetadata hivMetadata;
 	
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		
 		CalculationResultMap map = new CalculationResultMap();
-		Concept viralLoadConceptuuid = Context.getConceptService().getConceptByUuid("e1d6247e-1d5f-11e0-b929-000c29ad1d07");
+		Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
+		
 		// get data inicio TARV
 		CalculationResultMap arvsInitiationDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
-		CalculationResultMap lastVl = EptsCalculations.lastObs(viralLoadConceptuuid, cohort, context);
+		CalculationResultMap lastVl = EptsCalculations.lastObs(viralLoadConcept, cohort, context);
 		// Set<Integer> alivePatients =
 		// EptsCalculationUtils.patientsThatPass(EptsCalculations.alive(cohort,
 		// context));
@@ -35,10 +41,10 @@ public class OnArtForLessThanXmonthsCalcultion extends AbstractPatientCalculatio
 			SimpleResult artStartDateResult = (SimpleResult) arvsInitiationDateMap.get(ptId);
 			Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVl, ptId);
 			// only include a live patients
-			if (artStartDateResult != null && lastVlObs != null) {
+			if (checkNotNull(artStartDateResult, lastVlObs)) {
 				Date artStartDate = (Date) artStartDateResult.getValue();
 				Date lastVlDate = lastVlObs.getObsDatetime();
-				if (artStartDate != null && lastVlDate != null && EptsCalculationUtils.monthsSince(artStartDate, lastVlDate) < 3) {
+				if (checkNotNull(artStartDate, lastVlDate) && EptsCalculationUtils.monthsSince(artStartDate, lastVlDate) < 3) {
 					toExcludeFromList = true;
 				}
 			}
@@ -48,4 +54,11 @@ public class OnArtForLessThanXmonthsCalcultion extends AbstractPatientCalculatio
 		return map;
 	}
 	
+	private boolean checkNotNull(Object... objects) {
+		for (Object object : objects) {
+			if (object == null)
+				return false;
+		}
+		return true;
+	}
 }
