@@ -62,106 +62,111 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 		CalculationResultMap encounter6 = EptsCalculations.firstEncounter(encounterType6, cohort, context);
 		CalculationResultMap encounter9 = EptsCalculations.firstEncounter(encounterType9, cohort, context);
 		
-		Set<Integer> alivePatients = EptsCalculationUtils.patientsThatPass(EptsCalculations.alive(cohort, context));
-		
 		for (Integer pId : cohort) {
 			boolean isOnRoutine = false;
 			Date artInitiationDate = null;
 			List<Obs> viralLoadForPatientTakenWithin12Months = new ArrayList<Obs>();
-			if (alivePatients.contains(pId)) {
-				SimpleResult artStartDateResult = (SimpleResult) arvsInitiationDateMap.get(pId);
-				// get all the VL results for each patient in the last 12 months
-				ListResult vlObsResult = (ListResult) patientHavingVL.get(pId);
-				Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVl, pId);
-				
-				if (artStartDateResult != null) {
-					artInitiationDate = (Date) artStartDateResult.getValue();
-				}
-				// check that this patient should be on ART for more than six months
-				
-				if (artInitiationDate != null && lastVlObs != null && lastVlObs.getObsDatetime() != null) {
-					Date latestVlLowerDateLimit = addMoths(context.getNow(), -12);
-					if (lastVlObs.getObsDatetime().after(latestVlLowerDateLimit)
-					        && lastVlObs.getObsDatetime().before(context.getNow())) {
-						if (vlObsResult != null && !vlObsResult.isEmpty()) {
-							List<Obs> vLoadList = EptsCalculationUtils.extractResultValues(vlObsResult);
-							if (vLoadList.size() > 0) {
-								for (Obs obs : vLoadList) {
-									Date vlLowerDateLimitFromObs = addMoths(context.getNow(), -12);
-									if (obs != null && obs.getObsDatetime().after(vlLowerDateLimitFromObs)
-									        && obs.getObsDatetime().before(context.getNow())) {
-										viralLoadForPatientTakenWithin12Months.add(obs);
-									}
+			
+			SimpleResult artStartDateResult = (SimpleResult) arvsInitiationDateMap.get(pId);
+			// get all the VL results for each patient in the last 12 months
+			ListResult vlObsResult = (ListResult) patientHavingVL.get(pId);
+			Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVl, pId);
+			
+			if (artStartDateResult != null) {
+				artInitiationDate = (Date) artStartDateResult.getValue();
+			}
+			// check that this patient should be on ART for more than six months
+			
+			if (artInitiationDate != null && lastVlObs != null && lastVlObs.getObsDatetime() != null) {
+				Date latestVlLowerDateLimit = addMoths(context.getNow(), -12);
+				if (lastVlObs.getObsDatetime().after(latestVlLowerDateLimit) && lastVlObs.getObsDatetime().before(context.getNow())) {
+					if (vlObsResult != null && !vlObsResult.isEmpty()) {
+						List<Obs> vLoadList = EptsCalculationUtils.extractResultValues(vlObsResult);
+						if (vLoadList.size() > 0) {
+							for (Obs obs : vLoadList) {
+								Date vlLowerDateLimitFromObs = addMoths(context.getNow(), -12);
+								if (obs != null && obs.getObsDatetime().after(vlLowerDateLimitFromObs)
+								        && obs.getObsDatetime().before(context.getNow())) {
+									viralLoadForPatientTakenWithin12Months.add(obs);
 								}
 							}
 						}
 					}
-					// find out for criteria 1
-					if (EptsCalculationUtils.monthsSince(artInitiationDate, context.getNow()) > 6
-					        && viralLoadForPatientTakenWithin12Months.size() == 1) {
-						// the patients should be 6 to 9 months after ART initiation
-						// get the obs date for this VL and compare that with the provided dates
-						Obs vlObs = viralLoadForPatientTakenWithin12Months.get(0);
-						if (vlObs != null && vlObs.getObsDatetime() != null) {
-							Date vlDate = vlObs.getObsDatetime();
-							if (EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) > 6
-							        && EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) <= 9) {
-								isOnRoutine = true;
-							}
-						}
-					}
-					
-					// find out criteria 2
-					if (viralLoadForPatientTakenWithin12Months.size() > 1) {
-						
-						Collections.sort(viralLoadForPatientTakenWithin12Months, new Comparator<Obs>() {
-							
-							public int compare(Obs obs1, Obs obs2) {
-								return obs1.getObsId().compareTo(obs2.getObsId());
-							}
-						});
-						
-						Obs previousObs = viralLoadForPatientTakenWithin12Months
-						        .get(viralLoadForPatientTakenWithin12Months.size() - 2);
-						Obs currentObs = viralLoadForPatientTakenWithin12Months.get(viralLoadForPatientTakenWithin12Months.size() - 1);
-						if (currentObs != null && previousObs != null && previousObs.getValueNumeric() != null
-						        && previousObs.getObsDatetime() != null && previousObs.getValueNumeric() < 1000
-						        && currentObs.getObsDatetime() != null
-						        && previousObs.getObsDatetime().before(currentObs.getObsDatetime())) {
-							if (EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(), currentObs.getObsDatetime()) >= 12
-							        && EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(),
-							            currentObs.getObsDatetime()) <= 15) {
-								isOnRoutine = true;
-							}
-						}
-					}
-					
-					// find out criteria 3
-					if (viralLoadForPatientTakenWithin12Months.size() > 0) {
-						// get when a patient switch between lines from first to second
-						// Date when started on second line will be considered the changing date
-						Obs obs = EptsCalculationUtils.obsResultForPatient(changingRegimenLines, pId);
-						Encounter encounter1 = EptsCalculationUtils.encounterResultForPatient(encounter6, pId);
-						Encounter encounter2 = EptsCalculationUtils.encounterResultForPatient(encounter9, pId);
-						// loop through the viral load list and find one that is after the second line
-						// option
-						Date finalDate = null;
-						if (encounter1 != null) {
-							finalDate = encounter1.getEncounterDatetime();
-						}
-						if (finalDate == null && encounter2 != null) {
-							finalDate = encounter2.getEncounterDatetime();
-						}
-						Date latestVlDate = lastVlObs.getObsDatetime();
-						
-						if (obs != null && finalDate != null && latestVlDate != null) {
-							if (finalDate.before(latestVlDate)) {
-								isOnRoutine = true;
-							}
-						}
-					}
-					
 				}
+				// find out for criteria 1 a
+				if (viralLoadForPatientTakenWithin12Months.size() == 1) {
+					// the patients should be 6 to 9 months after ART initiation
+					// get the obs date for this VL and compare that with the provided dates
+					Obs vlObs = viralLoadForPatientTakenWithin12Months.get(0);
+					if (vlObs != null && vlObs.getObsDatetime() != null) {
+						Date vlDate = vlObs.getObsDatetime();
+						if (EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) > 6
+						        && EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) <= 9) {
+							isOnRoutine = true;
+						}
+					}
+				}
+				
+				// find out criteria 2
+				if (viralLoadForPatientTakenWithin12Months.size() > 1) {
+					
+					Collections.sort(viralLoadForPatientTakenWithin12Months, new Comparator<Obs>() {
+						
+						public int compare(Obs obs1, Obs obs2) {
+							return obs1.getObsId().compareTo(obs2.getObsId());
+						}
+					});
+					
+					Obs previousObs = viralLoadForPatientTakenWithin12Months.get(viralLoadForPatientTakenWithin12Months.size() - 2);
+					Obs currentObs = viralLoadForPatientTakenWithin12Months.get(viralLoadForPatientTakenWithin12Months.size() - 1);
+					if (currentObs != null && previousObs != null && previousObs.getValueNumeric() != null
+					        && previousObs.getObsDatetime() != null && previousObs.getValueNumeric() < 1000
+					        && currentObs.getObsDatetime() != null
+					        && previousObs.getObsDatetime().before(currentObs.getObsDatetime())) {
+						if (EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(), currentObs.getObsDatetime()) >= 12
+						        && EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(), currentObs.getObsDatetime()) <= 15) {
+							isOnRoutine = true;
+						}
+					}
+				}
+				
+				// find out criteria 3
+				if (viralLoadForPatientTakenWithin12Months.size() > 0) {
+					// get when a patient switch between lines from first to second
+					// Date when started on second line will be considered the changing date
+					Obs obs = EptsCalculationUtils.obsResultForPatient(changingRegimenLines, pId);
+					Encounter encounter1 = EptsCalculationUtils.encounterResultForPatient(encounter6, pId);
+					Encounter encounter2 = EptsCalculationUtils.encounterResultForPatient(encounter9, pId);
+					// loop through the viral load list and find one that is after the second line
+					// option
+					Date finalDate = null;
+					if (encounter1 != null) {
+						finalDate = encounter1.getEncounterDatetime();
+					}
+					if (finalDate == null && encounter2 != null) {
+						finalDate = encounter2.getEncounterDatetime();
+					}
+					Date latestVlDate = lastVlObs.getObsDatetime();
+					
+					if (obs != null && latestVlDate != null && finalDate != null) {
+						if (obs.getObsDatetime().before(latestVlDate)) {
+							isOnRoutine = true;
+							// check that there is no other VL registered between first encounter_date and
+							// vl_regisitered_date
+							// get list of all vls for this patient
+							List<Obs> allVlsforPatient = EptsCalculationUtils.extractResultValues(vlObsResult);
+							// loop through the vls and exclude the patient if they have an obs falling
+							// between the 2 dates
+							for (Obs obs1 : allVlsforPatient) {
+								if (obs1.getObsDatetime() != null && obs1.getObsDatetime().after(finalDate)
+								        && obs1.getObsDatetime().before(latestVlDate)) {
+									isOnRoutine = false;
+								}
+							}
+						}
+					}
+				}
+				
 			}
 			map.put(pId, new BooleanResult(isOnRoutine, this));
 		}
