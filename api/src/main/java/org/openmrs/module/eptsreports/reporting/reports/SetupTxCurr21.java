@@ -31,7 +31,7 @@ public class SetupTxCurr21 extends EptsDataExportManager {
 	
 	@Autowired
 	private GenericCohortQueries genericCohortQueries;
-		
+	
 	@Override
 	public String getVersion() {
 		return "1.0-SNAPSHOT";
