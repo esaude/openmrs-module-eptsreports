@@ -15,6 +15,7 @@ import java.util.Date;
 
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForLessThanXmonthsCalcultion;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineForAdultsAndChildrenCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineForBreastfeedingAndPregnantWomenCalculation;
@@ -23,6 +24,7 @@ import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,9 @@ public class TxPvlsCohortQueries {
 	
 	@Autowired
 	private TxNewCohortQueries txNewCohortQueries;
+	
+	@Autowired
+	private HivMetadata hivMetadata;
 	
 	/**
 	 * Patients who have NOT been on ART for 3 months based on the ART initiation date and date of last
@@ -110,8 +115,8 @@ public class TxPvlsCohortQueries {
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("supp", EptsReportUtils.map(hivCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
 		cd.addSearch("baseCohort", EptsReportUtils.map(genericCohortQueries.getBaseCohort(), mappings));
-		cd.addSearch("less3MonthsOnART", EptsReportUtils.map(getPatientsWhoAreLessThan3MonthsOnArt(), "onDate=${endDate}"));
-		cd.setCompositionString("(supp AND baseCohort) AND NOT less3MonthsOnART");
+		cd.addSearch("onArtLongEnough", EptsReportUtils.map(getPatientsOnArtLongEnough(), mappings));
+		cd.setCompositionString("supp AND baseCohort AND onArtLongEnough");
 		return cd;
 	}
 	
@@ -127,8 +132,8 @@ public class TxPvlsCohortQueries {
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("results", EptsReportUtils.map(hivCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
 		cd.addSearch("baseCohort", EptsReportUtils.map(genericCohortQueries.getBaseCohort(), mappings));
-		cd.addSearch("less3MonthsOnART", EptsReportUtils.map(getPatientsWhoAreLessThan3MonthsOnArt(), "onDate=${endDate}"));
-		cd.setCompositionString("(results AND baseCohort) AND NOT less3MonthsOnART");
+		cd.addSearch("onArtLongEnough", EptsReportUtils.map(getPatientsOnArtLongEnough(), mappings));
+		cd.setCompositionString("results AND baseCohort AND onArtLongEnough");
 		return cd;
 	}
 	
@@ -438,4 +443,38 @@ public class TxPvlsCohortQueries {
 		cd.setCompositionString("pregnant AND NOT routine");
 		return cd;
 	}
+	
+	/**
+	 * Patients doing ART for at least 3 months compared to the VL date
+	 * 
+	 * @return
+	 */
+	public CohortDefinition getPatientsOnArtLongEnough() {
+		SqlCohortDefinition sql = new SqlCohortDefinition();
+		sql.setName("patientsOnArtLongEnough");
+		sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		sql.addParameter(new Parameter("endDate", "End Date", Date.class));
+		sql.addParameter(new Parameter("location", "Location", Location.class));
+		String query = "select patient_start_date.patient_id from ( "
+		        + "select all_start_dates.patient_id, min(all_start_dates.start_date) start_date from ( "
+		        + "select person_id patient_id, min(date(obs.obs_datetime)) start_date from obs where obs.location_id = :location and obs.concept_id = %s and obs.value_coded = %s and obs.voided = false group by patient_id "
+		        + "union "
+		        + "select person_id patient_id, min(date(obs.obs_datetime)) start_date from obs where obs.location_id = :location and obs.concept_id = %s and obs.voided = false group by patient_id "
+		        + "union "
+		        + "select patient_id, date(min(patient_program.date_enrolled)) start_date from patient_program where patient_program.location_id = :location and patient_program.program_id = %s and patient_program.voided = false group by patient_id "
+		        + "union "
+		        + "select patient_id, min(date(encounter.encounter_datetime)) start_date from encounter where encounter.encounter_type = %s and encounter.voided = false and encounter.location_id = :location group by patient_id "
+		        + "union "
+		        + "select person_id patient_id, date(min(obs.obs_datetime)) start_date from obs where obs.location_id = :location and obs.concept_id = %s and obs.value_coded = %s and obs.voided = false group by patient_id "
+		        + ") all_start_dates group by all_start_dates.patient_id) patient_start_date join (select encounter.patient_id, max(date(encounter.encounter_datetime)) result_date from encounter join obs on obs.encounter_id = encounter.encounter_id "
+		        + "where encounter.encounter_type = %s and encounter.voided = false and encounter.location_id = :location and encounter.encounter_datetime between date_add(:endDate, interval -1 year) and :endDate and obs.value_numeric is not null and obs.concept_id = %s and obs.voided = false "
+		        + "group by patient_id) patient_vl on patient_vl.patient_id = patient_start_date.patient_id where date_add(patient_start_date.start_date, interval 3 month) <= patient_vl.result_date ";
+		sql.setQuery(String.format(query, hivMetadata.getARVPlanConcept().getConceptId(),
+		    hivMetadata.getstartDrugsConcept().getConceptId(), hivMetadata.gethistoricalDrugStartDateConcept().getConceptId(),
+		    hivMetadata.getARTProgram().getProgramId(), hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+		    hivMetadata.getARVPlanConcept().getConceptId(), hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+		    hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(), hivMetadata.getHivViralLoadConcept().getConceptId()));
+		return sql;
+	}
+	
 }
