@@ -48,9 +48,16 @@ public class HivMetadata extends CommonMetadata {
 		return getConcept(uuid);
 	}
 	
+	// concept_id=21148
 	public Concept getChangeToArtSecondLine() {
 		String uuid = Context.getAdministrationService()
 		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_CHANGE_TO_ART_SECOND_LINE_CONCEPT_UUID);
+		return getConcept(uuid);
+	}
+	
+	// concept_id=1088
+	public Concept getRegimeConcept() {
+		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_REGIME_CONCEPT_UUID);
 		return getConcept(uuid);
 	}
 	

@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
-import static org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils.addMoths;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,13 +25,11 @@ import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
-import org.openmrs.api.ConceptService;
-import org.openmrs.api.EncounterService;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
@@ -41,31 +37,35 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 
 public class RoutineForBreastfeedingAndPregnantWomenCalculation extends AbstractPatientCalculation {
 	
+	/**
+	 * Patients on ART for the last X months with one VL result registered in the 12 month period
+	 * Between Y to Z months after ART initiation who are breastfeeding or pregnant
+	 * 
+	 * @param cohort
+	 * @param params
+	 * @param context
+	 * @return CalculationResultMap
+	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		CalculationResultMap ret = new CalculationResultMap();
 		
-		ConceptService conceptService = Context.getConceptService();
-		EncounterService encounterService = Context.getEncounterService();
+		HivMetadata hivMetadata = new HivMetadata();
+		Concept viralLoad = hivMetadata.getHivViralLoadConcept();
+		Concept regime = hivMetadata.getRegimeConcept();
 		
-		Concept viralLoad = conceptService.getConceptByUuid("e1d6247e-1d5f-11e0-b929-000c29ad1d07");
-		Concept secondLine = conceptService.getConceptByUuid("7f367983-9911-4f8c-bbfc-a85678801f64");
-		EncounterType encounterType6 = encounterService.getEncounterTypeByUuid("e278f956-1d5f-11e0-b929-000c29ad1d07");
-		EncounterType encounterType9 = encounterService.getEncounterTypeByUuid("e278fce4-1d5f-11e0-b929-000c29ad1d07");
+		EncounterType arvAdultoEncounterType = hivMetadata.getAdultoSeguimentoEncounterType(); // encounter 6
+		EncounterType arvPediatriaEncounterType = hivMetadata.getARVPediatriaSeguimentoEncounterType(); // encounter 9
 		
 		// get the ART initiation date
 		CalculationResultMap arvsInitiationDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
 		CalculationResultMap patientHavingVL = EptsCalculations.allObs(viralLoad, cohort, context);
-		CalculationResultMap changingRegimenLines = EptsCalculations.lastObs(secondLine, cohort, context);
+		CalculationResultMap changingRegimenLines = EptsCalculations.lastObs(regime, cohort, context);
 		CalculationResultMap lastVl = EptsCalculations.lastObs(viralLoad, cohort, context);
 		
 		// get first encounter for the option c
-		CalculationResultMap encounter6 = EptsCalculations.firstEncounter(encounterType6, cohort, context);
-		CalculationResultMap encounter9 = EptsCalculations.firstEncounter(encounterType9, cohort, context);
-		
-		// Set<Integer> alivePatients =
-		// EptsCalculationUtils.patientsThatPass(EptsCalculations.alive(cohort,
-		// context));
+		CalculationResultMap firstAdultoEncounter = EptsCalculations.firstEncounter(arvAdultoEncounterType, cohort, context);
+		CalculationResultMap firstPediatriaEncounter = EptsCalculations.firstEncounter(arvPediatriaEncounterType, cohort, context);
 		
 		for (Integer pId : cohort) {
 			boolean isOnRoutine = false;
@@ -80,14 +80,15 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 				artInitiationDate = (Date) artStartDateResult.getValue();
 			}
 			if (artInitiationDate != null && lastVlObs != null && lastVlObs.getObsDatetime() != null) {
-				Date latestVlLowerDateLimit = addMoths(context.getNow(), -12);
+				Date latestVlLowerDateLimit = EptsCalculationUtils.addMonths(context.getNow(), -12);
 				if (lastVlObs.getObsDatetime().after(latestVlLowerDateLimit) && lastVlObs.getObsDatetime().before(context.getNow())) {
+					
 					if (vlObsResult != null && !vlObsResult.isEmpty()) {
 						List<Obs> viralLoadList = EptsCalculationUtils.extractResultValues(vlObsResult);
+						
 						if (viralLoadList.size() > 0) {
 							for (Obs obs : viralLoadList) {
-								Date vlLowerDateLimitFromObsList = addMoths(context.getNow(), -12);
-								if (obs != null && obs.getObsDatetime().after(vlLowerDateLimitFromObsList)
+								if (obs != null && obs.getObsDatetime().after(latestVlLowerDateLimit)
 								        && obs.getObsDatetime().before(context.getNow())) {
 									viralLoadForPatientTakenWithin12Months.add(obs);
 								}
@@ -95,6 +96,7 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 						}
 					}
 				}
+				
 				// find out for criteria 1
 				if (viralLoadForPatientTakenWithin12Months.size() == 1) {
 					// the patients should be 6 to 9 months after ART initiation
@@ -132,14 +134,14 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 				// find out criteria 3
 				if (viralLoadForPatientTakenWithin12Months.size() > 0) {
 					Obs obs = EptsCalculationUtils.obsResultForPatient(changingRegimenLines, pId);
-					Encounter encounter1 = EptsCalculationUtils.encounterResultForPatient(encounter6, pId);
-					Encounter encounter2 = EptsCalculationUtils.encounterResultForPatient(encounter9, pId);
+					Encounter adultoEncounter = EptsCalculationUtils.encounterResultForPatient(firstAdultoEncounter, pId);
+					Encounter pediatriaEncounter = EptsCalculationUtils.encounterResultForPatient(firstPediatriaEncounter, pId);
 					Date finalDate = null;
-					if (encounter1 != null) {
-						finalDate = encounter1.getEncounterDatetime();
+					if (adultoEncounter != null) {
+						finalDate = adultoEncounter.getEncounterDatetime();
 					}
-					if (finalDate == null && encounter2 != null) {
-						finalDate = encounter2.getEncounterDatetime();
+					if (finalDate == null && pediatriaEncounter != null) {
+						finalDate = pediatriaEncounter.getEncounterDatetime();
 					}
 					Date latestVlDate = lastVlObs.getObsDatetime();
 					

@@ -37,6 +37,8 @@ public final class EptsReportConstants {
 	
 	public static final String GLOBAL_PROPERTY_CHANGE_TO_ART_SECOND_LINE_CONCEPT_UUID = "eptsreports.artSecondLineSwitchUuid";
 	
+	public static final String GLOBAL_PROPERTY_REGIME_CONCEPT_UUID = "eptsreports.regimeUuid";
+	
 	// Encounter types
 	public static final String GLOBAL_PROPERTY_S_TARV_ADULTO_SEGUIMENTO_ENCOUNTER_TYPE_UUID = "eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid";
 	

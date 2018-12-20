@@ -267,7 +267,7 @@ public class EptsCalculationUtils {
 		return OpenmrsUtil.compareWithNullAsLatest(d1, d2) >= 0 ? d2 : d1;
 	}
 	
-	public static Date addMoths(Date endDate, int months) {
+	public static Date addMonths(Date endDate, int months) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(endDate);
 		c.add(Calendar.MONTH, months);
