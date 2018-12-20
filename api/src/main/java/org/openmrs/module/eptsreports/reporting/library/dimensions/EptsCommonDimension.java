@@ -18,6 +18,7 @@ import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -36,7 +37,10 @@ public class EptsCommonDimension {
 	
 	@Autowired
 	private TxNewCohortQueries txNewCohortQueries;
-	
+
+	@Autowired
+	private GenericCohortQueries genericCohortQueries;
+
 	/**
 	 * Gender dimension
 	 * 
@@ -81,6 +85,7 @@ public class EptsCommonDimension {
 		dim.addCohortDefinition("45-49",
 		    EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("45-49", 45, 49), "effectiveDate=${endDate}"));
 		dim.addCohortDefinition(">49", EptsReportUtils.map(ageCohortQueries.createOverXAgeCohort("", 50), "effectiveDate=${endDate}"));
+		dim.addCohortDefinition("unknown", EptsReportUtils.map(genericCohortQueries.getUnknownAgeCohort(), ""));
 		return dim;
 	}
 	
