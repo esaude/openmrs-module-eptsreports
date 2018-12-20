@@ -37,10 +37,10 @@ public class EptsCommonDimension {
 	
 	@Autowired
 	private TxNewCohortQueries txNewCohortQueries;
-
+	
 	@Autowired
 	private GenericCohortQueries genericCohortQueries;
-
+	
 	/**
 	 * Gender dimension
 	 * 

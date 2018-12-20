@@ -53,7 +53,7 @@ public class TxNewDataset extends BaseDataSet {
 	
 	@Autowired
 	private HivCohortQueries hivCohortQueries;
-
+	
 	public DataSetDefinition constructTxNewDataset() {
 		
 		CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
@@ -87,7 +87,7 @@ public class TxNewDataset extends BaseDataSet {
 		CohortDefinition transferredFromOtherHealthFacility = txNewCohortQueries.getPatientsTransferredFromOtherHealthFacility();
 		
 		CohortDefinition patientsWhoRestartedTreatment = hivCohortQueries.getPatientsWhoRestartedTreatment();
-
+		
 		CohortDefinition males = genderCohortQueries.MaleCohort();
 		
 		CohortDefinition females = genderCohortQueries.FemaleCohort();
@@ -97,7 +97,7 @@ public class TxNewDataset extends BaseDataSet {
 		AgeCohortDefinition patientBelow1Year = new AgeCohortDefinition();
 		patientBelow1Year.setName("patientBelow1Year");
 		patientBelow1Year.setMaxAge(1);
-
+		
 		ArrayList<CohortDefinition> agesRange = new ArrayList<CohortDefinition>();
 		agesRange.add(patientBelow1Year);
 		agesRange.add(ageCohortQueries.createXtoYAgeCohort("PatientBetween1And4Years", 1, 5));
@@ -167,7 +167,7 @@ public class TxNewDataset extends BaseDataSet {
 		    EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings), "gender=M|age=unknown");
 		dataSetDefinition.addColumn("UF", "Females:TX_NEW: New on ART by age and sex: Unknown Age",
 		    EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings), "gender=F|age=unknown");
-
+		
 		return dataSetDefinition;
 	}
 }
