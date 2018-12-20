@@ -1,5 +1,8 @@
 package org.openmrs.module.eptsreports.reporting.calculation;
 
+import java.util.Collection;
+import java.util.Map;
+
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.BaseCalculation;
 import org.openmrs.calculation.patient.PatientCalculation;
@@ -8,9 +11,6 @@ import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ResultUtil;
-
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * Abstract base class for patient calculations

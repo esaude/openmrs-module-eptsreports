@@ -1,5 +1,8 @@
 package org.openmrs.module.eptsreports.reporting.cohort.evaluator;
 
+import java.util.Date;
+import java.util.Set;
+
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -13,9 +16,6 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-
-import java.util.Date;
-import java.util.Set;
 
 /**
  * Evaluator for calculation based cohorts

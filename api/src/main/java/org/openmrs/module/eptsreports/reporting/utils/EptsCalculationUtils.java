@@ -1,14 +1,21 @@
 package org.openmrs.module.eptsreports.reporting.utils;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.joda.time.DateTime;
 import org.joda.time.Months;
 import org.openmrs.Cohort;
-import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.calculation.CalculationContext;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResult;
@@ -28,15 +35,6 @@ import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.util.OpenmrsUtil;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class EptsCalculationUtils {
 	

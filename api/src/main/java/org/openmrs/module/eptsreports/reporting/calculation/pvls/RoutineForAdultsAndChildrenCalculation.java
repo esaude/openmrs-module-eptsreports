@@ -1,5 +1,16 @@
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
+import static org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils.addMoths;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
@@ -16,17 +27,6 @@ import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils.addMoths;
 
 @Component
 public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalculation {

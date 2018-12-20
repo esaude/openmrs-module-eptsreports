@@ -1,5 +1,10 @@
 package org.openmrs.module.eptsreports.reporting.calculation;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.HashMap;
+
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Program;
@@ -14,18 +19,10 @@ import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefin
 import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefinition;
 import org.openmrs.util.OpenmrsUtil;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-
 /**
  * Utility class of common base calculations
  */
 public class EptsCalculations {
-	
-	private static final DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 	
 	/**
 	 * Evaluates alive-ness of each patient

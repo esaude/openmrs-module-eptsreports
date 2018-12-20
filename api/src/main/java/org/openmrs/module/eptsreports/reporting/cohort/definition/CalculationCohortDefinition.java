@@ -13,13 +13,13 @@
  */
 package org.openmrs.module.eptsreports.reporting.cohort.definition;
 
-import org.openmrs.calculation.patient.PatientCalculation;
-import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
-import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.openmrs.calculation.patient.PatientCalculation;
+import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
  * Cohort definition based on a calculation

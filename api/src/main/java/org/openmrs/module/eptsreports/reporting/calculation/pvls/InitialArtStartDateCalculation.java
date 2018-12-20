@@ -1,5 +1,12 @@
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
@@ -12,13 +19,6 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Calculates the date on which a patient first started ART
@@ -62,7 +62,7 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 			Date historicalDate;
 			Date pharmacyDate;
 			Date requiredDate = null;
-			List<Date> enrollmentDates = new ArrayList<>();
+			List<Date> enrollmentDates = new ArrayList<Date>();
 			if (alivePatients.contains(pId)) {
 				SimpleResult result = (SimpleResult) inProgramMap.get(pId);
 				if (result != null) {

@@ -1,24 +1,19 @@
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
+
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Calculates whether patients are (alive and) in the HIV program
