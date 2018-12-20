@@ -42,7 +42,7 @@ public class TxCurrCohortQueries {
 	
 	private static final int OLD_SPEC_ABANDONMENT_DAYS = 60;
 	
-	private static final int CURRENT_SPEC_ABANDONMENT_DAYS = 29;
+	private static final int CURRENT_SPEC_ABANDONMENT_DAYS = 31;
 	
 	@Autowired
 	private HivMetadata hivMetadata;
