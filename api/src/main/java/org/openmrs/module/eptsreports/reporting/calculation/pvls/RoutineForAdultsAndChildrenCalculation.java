@@ -60,7 +60,7 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 		EncounterService encounterService = Context.getEncounterService();
 		
 		Concept viralLoad = conceptService.getConceptByUuid("e1d6247e-1d5f-11e0-b929-000c29ad1d07");
-		Concept secondLine = conceptService.getConceptByUuid("7f367983-9911-4f8c-bbfc-a85678801f64");
+		Concept secondLine = conceptService.getConceptByUuid("fdff0637-b36f-4dce-90c7-fe9f1ec586f0");
 		EncounterType encounterType6 = encounterService.getEncounterTypeByUuid("e278f956-1d5f-11e0-b929-000c29ad1d07");
 		EncounterType encounterType9 = encounterService.getEncounterTypeByUuid("e278fce4-1d5f-11e0-b929-000c29ad1d07");
 		
@@ -78,7 +78,6 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 			boolean isOnRoutine = false;
 			Date artInitiationDate = null;
 			List<Obs> viralLoadForPatientTakenWithin12Months = new ArrayList<Obs>();
-			
 			SimpleResult artStartDateResult = (SimpleResult) arvsInitiationDateMap.get(pId);
 			// get all the VL results for each patient in the last 12 months
 			ListResult vlObsResult = (ListResult) patientHavingVL.get(pId);
@@ -92,12 +91,13 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 			if (artInitiationDate != null && lastVlObs != null && lastVlObs.getObsDatetime() != null) {
 				Date latestVlLowerDateLimit = addMoths(context.getNow(), -12);
 				if (lastVlObs.getObsDatetime().after(latestVlLowerDateLimit) && lastVlObs.getObsDatetime().before(context.getNow())) {
+					
 					if (vlObsResult != null && !vlObsResult.isEmpty()) {
 						List<Obs> vLoadList = EptsCalculationUtils.extractResultValues(vlObsResult);
+						
 						if (vLoadList.size() > 0) {
 							for (Obs obs : vLoadList) {
-								Date vlLowerDateLimitFromObs = addMoths(context.getNow(), -12);
-								if (obs != null && obs.getObsDatetime().after(vlLowerDateLimitFromObs)
+								if (obs != null && obs.getObsDatetime().after(latestVlLowerDateLimit)
 								        && obs.getObsDatetime().before(context.getNow())) {
 									viralLoadForPatientTakenWithin12Months.add(obs);
 								}
@@ -106,14 +106,15 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 					}
 				}
 				// find out for criteria 1 a
+				
 				if (viralLoadForPatientTakenWithin12Months.size() == 1) {
 					// the patients should be 6 to 9 months after ART initiation
 					// get the obs date for this VL and compare that with the provided dates
 					Obs vlObs = viralLoadForPatientTakenWithin12Months.get(0);
 					if (vlObs != null && vlObs.getObsDatetime() != null) {
 						Date vlDate = vlObs.getObsDatetime();
-						if (EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) > 6
-						        && EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) <= 9) {
+						if (EptsCalculationUtils.monthsSince(artInitiationDate, vlDate) > 6
+						        && EptsCalculationUtils.monthsSince(artInitiationDate, vlDate) <= 9) {
 							isOnRoutine = true;
 						}
 					}
@@ -128,7 +129,6 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 							return obs1.getObsId().compareTo(obs2.getObsId());
 						}
 					});
-					
 					Obs previousObs = viralLoadForPatientTakenWithin12Months.get(viralLoadForPatientTakenWithin12Months.size() - 2);
 					Obs currentObs = viralLoadForPatientTakenWithin12Months.get(viralLoadForPatientTakenWithin12Months.size() - 1);
 					if (currentObs != null && previousObs != null && previousObs.getValueNumeric() != null
@@ -143,7 +143,7 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 				}
 				
 				// find out criteria 3
-				if (viralLoadForPatientTakenWithin12Months.size() > 0) {
+				if (!isOnRoutine && viralLoadForPatientTakenWithin12Months.size() > 0) {
 					// get when a patient switch between lines from first to second
 					// Date when started on second line will be considered the changing date
 					Obs obs = EptsCalculationUtils.obsResultForPatient(changingRegimenLines, pId);
@@ -159,20 +159,20 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 						finalDate = encounter2.getEncounterDatetime();
 					}
 					Date latestVlDate = lastVlObs.getObsDatetime();
-					
 					if (obs != null && latestVlDate != null && finalDate != null) {
 						if (obs.getObsDatetime().before(latestVlDate)) {
 							isOnRoutine = true;
 							// check that there is no other VL registered between first encounter_date and
-							// vl_regisitered_date
+							// vl_registered_date
 							// get list of all vls for this patient
-							List<Obs> allVlsforPatient = EptsCalculationUtils.extractResultValues(vlObsResult);
+							List<Obs> allVlsForPatient = EptsCalculationUtils.extractResultValues(vlObsResult);
 							// loop through the vls and exclude the patient if they have an obs falling
 							// between the 2 dates
-							for (Obs obs1 : allVlsforPatient) {
+							for (Obs obs1 : allVlsForPatient) {
 								if (obs1.getObsDatetime() != null && obs1.getObsDatetime().after(finalDate)
 								        && obs1.getObsDatetime().before(latestVlDate)) {
 									isOnRoutine = false;
+									break;
 								}
 							}
 						}

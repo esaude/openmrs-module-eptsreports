@@ -233,7 +233,7 @@ public class EptsCalculationUtils {
 	public static int monthsSince(Date date1, Date date2) {
 		DateTime d1 = new DateTime(date1.getTime());
 		DateTime d2 = new DateTime(date2.getTime());
-		return Months.monthsBetween(d1, d2).getMonths();
+		return Math.abs(Months.monthsBetween(d1, d2).getMonths());
 	}
 	
 	/**
