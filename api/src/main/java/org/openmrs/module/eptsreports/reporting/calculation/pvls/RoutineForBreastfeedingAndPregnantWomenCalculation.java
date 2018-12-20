@@ -25,6 +25,7 @@ import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
@@ -34,8 +35,14 @@ import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalcu
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class RoutineForBreastfeedingAndPregnantWomenCalculation extends AbstractPatientCalculation {
+	
+	@Autowired
+	private HivMetadata hivMetadata;
 	
 	/**
 	 * Patients on ART for the last X months with one VL result registered in the 12 month period
@@ -58,7 +65,8 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 		EncounterType arvPediatriaEncounterType = hivMetadata.getARVPediatriaSeguimentoEncounterType(); // encounter 9
 		
 		// get the ART initiation date
-		CalculationResultMap arvsInitiationDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
+		CalculationResultMap arvsInitiationDateMap = calculate(
+		    Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0), cohort, context);
 		CalculationResultMap patientHavingVL = EptsCalculations.allObs(viralLoad, cohort, context);
 		CalculationResultMap changingRegimenLines = EptsCalculations.lastObs(regime, cohort, context);
 		CalculationResultMap lastVl = EptsCalculations.lastObs(viralLoad, cohort, context);

@@ -197,7 +197,8 @@ public class TxPvlsCohortQueries {
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getpatientsOnRoutineAdultsAndChildren() {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria1", new RoutineForAdultsAndChildrenCalculation());
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria1",
+		        Context.getRegisteredComponents(RoutineForAdultsAndChildrenCalculation.class).get(0));
 		cd.setName("Routine for adults and children");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;
@@ -211,7 +212,7 @@ public class TxPvlsCohortQueries {
 	 */
 	public CohortDefinition getPregnantAndBreastfeedingWomenOnRoutine() {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria2",
-		        new RoutineForBreastfeedingAndPregnantWomenCalculation());
+		        Context.getRegisteredComponents(RoutineForBreastfeedingAndPregnantWomenCalculation.class).get(0));
 		cd.setName("Routine for breastfeeding and pregnant");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		return cd;

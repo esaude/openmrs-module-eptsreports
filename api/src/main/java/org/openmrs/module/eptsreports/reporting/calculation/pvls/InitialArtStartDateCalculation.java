@@ -23,21 +23,31 @@ import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
-import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.eptsreports.metadata.CommonMetadata;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Calculates the date on which a patient first started ART
  * 
  * @return a CulculationResultMap
  */
+@Component
 public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
+	
+	@Autowired
+	private HivMetadata hivMetadata;
+	
+	@Autowired
+	private CommonMetadata commonMetadata;
 	
 	/**
 	 * @should return null for patients who have not started ART
@@ -51,18 +61,17 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 		
 		// Get calculation map date for the first program enrollment
 		CalculationResultMap map = new CalculationResultMap();
-		// only get patients who are alive
-		ConceptService conceptService = Context.getConceptService();
-		Concept arvPlan = conceptService.getConceptByUuid("e1d9ee10-1d5f-11e0-b929-000c29ad1d07");
-		Concept drugStartDate = conceptService.getConceptByUuid("e1d8f690-1d5f-11e0-b929-000c29ad1d07");
-		Concept startDrugs = conceptService.getConceptByUuid("e1d9ef28-1d5f-11e0-b929-000c29ad1d07");
 		
-		EncounterType encounterTypePharmacy = Context.getEncounterService()
-		        .getEncounterTypeByUuid("e279133c-1d5f-11e0-b929-000c29ad1d07");
-		EncounterType adultoSeguimento = Context.getEncounterService().getEncounterTypeByUuid("e278f956-1d5f-11e0-b929-000c29ad1d07");
-		EncounterType arvPaed = Context.getEncounterService().getEncounterTypeByUuid("e278fce4-1d5f-11e0-b929-000c29ad1d07");
+		Concept arvPlan = hivMetadata.getARVPlanConcept();
+		Concept drugStartDate = commonMetadata.gethistoricalDrugStartDateConcept();
+		Concept startDrugs = commonMetadata.getstartDrugsConcept();
 		
-		CalculationResultMap inProgramMap = calculate(new InHivProgramEnrollmentCalculation(), cohort, context);
+		EncounterType encounterTypePharmacy = hivMetadata.getARVPharmaciaEncounterType();
+		EncounterType adultoSeguimento = hivMetadata.getAdultoSeguimentoEncounterType();
+		EncounterType arvPaed = hivMetadata.getARVPediatriaSeguimentoEncounterType();
+		
+		CalculationResultMap inProgramMap = calculate(Context.getRegisteredComponents(InHivProgramEnrollmentCalculation.class).get(0),
+		    cohort, context);
 		CalculationResultMap startDrugMap = EptsCalculations.firstObs(arvPlan, cohort, context);
 		CalculationResultMap historicalMap = EptsCalculations.firstObs(drugStartDate, cohort, context);
 		CalculationResultMap pharmacyEncounterMap = EptsCalculations.firstEncounter(encounterTypePharmacy, cohort, context);

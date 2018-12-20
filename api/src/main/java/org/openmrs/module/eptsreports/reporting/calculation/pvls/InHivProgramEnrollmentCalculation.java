@@ -24,14 +24,21 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Calculates whether patients are (alive and) in the HIV program
  */
+@Component
 public class InHivProgramEnrollmentCalculation extends AbstractPatientCalculation {
+	
+	@Autowired
+	private HivMetadata hivMetadata;
 	
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,
@@ -41,8 +48,7 @@ public class InHivProgramEnrollmentCalculation extends AbstractPatientCalculatio
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		
 		CalculationResultMap map = new CalculationResultMap();
-		ProgramWorkflowService service = Context.getProgramWorkflowService();
-		Program hivProgram = service.getProgramByUuid("efe2481f-9e75-4515-8d5a-86bfde2b5ad3");
+		Program hivProgram = hivMetadata.getARTProgram();
 		
 		CalculationResultMap programMap = EptsCalculations.firstProgramEnrollment(hivProgram, cohort, context);
 		
@@ -57,5 +63,4 @@ public class InHivProgramEnrollmentCalculation extends AbstractPatientCalculatio
 		}
 		return map;
 	}
-	
 }

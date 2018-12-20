@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.openmrs.Concept;
 import org.openmrs.Obs;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
@@ -43,11 +44,9 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
 		Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
 		
 		// get data inicio TARV
-		CalculationResultMap arvsInitiationDateMap = calculate(new InitialArtStartDateCalculation(), cohort, context);
+		CalculationResultMap arvsInitiationDateMap = calculate(
+		    Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0), cohort, context);
 		CalculationResultMap lastVl = EptsCalculations.lastObs(viralLoadConcept, cohort, context);
-		// Set<Integer> alivePatients =
-		// EptsCalculationUtils.patientsThatPass(EptsCalculations.alive(cohort,
-		// context));
 		
 		for (Integer ptId : cohort) {
 			boolean isOnArtForMoreThan3Months = false;
