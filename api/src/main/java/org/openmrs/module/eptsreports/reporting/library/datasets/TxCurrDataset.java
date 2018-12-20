@@ -114,14 +114,26 @@ public class TxCurrDataset extends BaseDataSet {
 			    "");
 		}
 		
-		// Unknown
-		CohortDefinition unknown = txCurrCohortQueries.getTxCurrCompositionCohort("allPatientsCurrentlyInART", enrolledBeforeEndDate,
-		    patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
+		// Unknown males
+		CohortDefinition unknownMales = txCurrCohortQueries.getTxCurrCompositionCohort("allPatientsCurrentlyInART",
+		    enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
 		    patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup, patientsThatDidNotMissNextConsultation,
-		    patientsReportedAsAbandonmentButStillInPeriod, genericCohortQueries.getUnknownAgeCohort(), null,
+		    patientsReportedAsAbandonmentButStillInPeriod, genericCohortQueries.getUnknownAgeCohort(), males,
 		    patientsWithNextPickupDate, patientsWithNextConsultationDate, currentSpec);
-		CohortIndicator unknownIndicator = hivIndicators.patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(unknown);
-		dataSetDefinition.addColumn("C1UNK", "TX_CURR: Unknown Age", new Mapped<CohortIndicator>(unknownIndicator,
+		CohortIndicator unknownMalesIndicator = hivIndicators.patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(unknownMales);
+		dataSetDefinition.addColumn("C1UNKM", "TX_CURR: Unknown Age", new Mapped<CohortIndicator>(unknownMalesIndicator,
+		        ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}")),
+		    "");
+
+		// Unknown females
+		CohortDefinition unknownFemales = txCurrCohortQueries.getTxCurrCompositionCohort("allPatientsCurrentlyInART",
+		    enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
+		    patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup, patientsThatDidNotMissNextConsultation,
+		    patientsReportedAsAbandonmentButStillInPeriod, genericCohortQueries.getUnknownAgeCohort(), females,
+		    patientsWithNextPickupDate, patientsWithNextConsultationDate, currentSpec);
+		CohortIndicator unknownFemalesIndicator = hivIndicators
+		        .patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(unknownFemales);
+		dataSetDefinition.addColumn("C1UNKF", "TX_CURR: Unknown Age", new Mapped<CohortIndicator>(unknownFemalesIndicator,
 		        ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}")),
 		    "");
 		
