@@ -58,6 +58,7 @@ public class TxPvlsCohortQueries {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition("On ART for more than 3 months",
 		        Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0));
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
 		return cd;
 	}
 	

@@ -20,10 +20,13 @@ import java.util.Map;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
  * Cohort definition based on a calculation
  */
+@Caching(strategy = ConfigurationPropertyCachingStrategy.class)
 public class CalculationCohortDefinition extends BaseCohortDefinition {
 	
 	@ConfigurationProperty(required = true, group = "calculation")
