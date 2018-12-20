@@ -31,7 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OnArtForLessThanXmonthsCalcultion extends AbstractPatientCalculation {
+public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculation {
 	
 	@Autowired
 	private HivMetadata hivMetadata;
@@ -50,18 +50,18 @@ public class OnArtForLessThanXmonthsCalcultion extends AbstractPatientCalculatio
 		// context));
 		
 		for (Integer ptId : cohort) {
-			boolean toExcludeFromList = false;
+			boolean isOnArtForMoreThan3Months = false;
 			SimpleResult artStartDateResult = (SimpleResult) arvsInitiationDateMap.get(ptId);
 			Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVl, ptId);
 			// only include a live patients
 			if (checkNotNull(artStartDateResult, lastVlObs)) {
 				Date artStartDate = (Date) artStartDateResult.getValue();
 				Date lastVlDate = lastVlObs.getObsDatetime();
-				if (checkNotNull(artStartDate, lastVlDate) && EptsCalculationUtils.monthsSince(artStartDate, lastVlDate) < 3) {
-					toExcludeFromList = true;
+				if (checkNotNull(artStartDate, lastVlDate) && EptsCalculationUtils.monthsSince(artStartDate, lastVlDate) > 3) {
+					isOnArtForMoreThan3Months = true;
 				}
 			}
-			map.put(ptId, new BooleanResult(toExcludeFromList, this));
+			map.put(ptId, new BooleanResult(isOnArtForMoreThan3Months, this));
 		}
 		
 		return map;

@@ -147,9 +147,9 @@ public class HivIndicators extends BaseIndicators {
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortIndicator getPatientsToExcludeFromMainCohort() {
-		return newCohortIndicator("To exclude from list",
-		    EptsReportUtils.map(pvls.getPatientsWhoAreLessThan3MonthsOnArt(), "onDate=${endDate}"));
+	public CohortIndicator getPatientsOnArtForMoreThan3MonthsAndMatchLocation() {
+		return newCohortIndicator("Patients on ART for more than 3 months and match location",
+		    EptsReportUtils.map(pvls.getPatientsWhoAreLessThan3MonthsOnArt(), "endDate=${endDate},location=${location}"));
 	}
 	
 }
