@@ -27,7 +27,6 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 /**
  * Cohort definition based on a calculation
  */
-@Caching(strategy = ConfigurationPropertyCachingStrategy.class)
 public class CalculationCohortDefinition extends BaseCohortDefinition {
 	
 	@ConfigurationProperty(required = true, group = "calculation")

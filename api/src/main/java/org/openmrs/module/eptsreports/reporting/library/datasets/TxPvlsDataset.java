@@ -64,11 +64,13 @@ public class TxPvlsDataset extends BaseDataSet {
 		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), "");
 		
 		// add patients on routine for adults and children
-		dsd.addColumn("Routine-AC", "Adults and Children",
-		    EptsReportUtils.map(hivIndicators.getPatientsWhoAreOnRoutineAdultsAndChildren(), "endDate=${endDate}"), "");
+		dsd.addColumn("Routine-AC", "Adults and Children", EptsReportUtils
+		        .map(hivIndicators.getPatientsWhoAreOnRoutineAdultsAndChildren(), "endDate=${endDate},location=${location}"),
+		    "");
 		
-		dsd.addColumn("Routine-BP", "Breastfeeding and Pregnant women",
-		    EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingAndPregnantOnRoutine(), "endDate=${endDate}"), "");
+		dsd.addColumn("Routine-BP", "Breastfeeding and Pregnant women", EptsReportUtils
+		        .map(breastfeedingIndicators.getBreastfeedingAndPregnantOnRoutine(), "endDate=${endDate},location=${location}"),
+		    "");
 		
 		dsd.addColumn("Qualified Patients", "Patients that are on ART for more than 3 months and match location", EptsReportUtils.map(
 		    hivIndicators.getPatientsOnArtForMoreThan3MonthsAndMatchLocation(), "endDate=${endDate},location=${location}"), "");
@@ -122,8 +124,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		    childrenColumns()); ///// Denominator NOT documented
 		addRow(dsd, "3DND", "Children denominator NOT documented",
 		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsAndNotDocumentedForAdultsAndChildren(), mappings),
-		    childrenColumns());
-		///// Denominator routine for adults
+		    childrenColumns()); ///// Denominator routine for adults
 		addRow(dsd, "4DR", "Adults denominator routine",
 		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsAndOnRoutineForAdultsAndChildren(), mappings),
 		    getColumnsForAdults()); //// denominator NOT documented
