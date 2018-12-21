@@ -32,7 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Calculates whether patients are (alive and) in the HIV program
+ * Calculates whether patients are in the HIV program
  */
 @Component
 public class InHivProgramEnrollmentCalculation extends AbstractPatientCalculation {

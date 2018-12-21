@@ -54,40 +54,11 @@ public class TxPvlsCohortQueries {
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getPatientsWhoAreLessThan3MonthsOnArt() {
+	public CohortDefinition getPatientsWhoAreMoreThan3MonthsOnArt() {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition("On ART for more than 3 months",
 		        Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0));
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		return cd;
-	}
-	
-	/**
-	 * Patients observervations that match a given location
-	 * 
-	 * @return Cohort definition
-	 */
-	public CohortDefinition getPatientsThatMatchLocationOnObs() {
-		SqlCohortDefinition cd = new SqlCohortDefinition();
-		cd.setName("Obs that match location");
-		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.setQuery("SELECT person_id FROM obs WHERE location_id=:location");
-		return cd;
-	}
-	
-	/**
-	 * Patients who are on ART for more than 3 months and match location
-	 * 
-	 * @return CohortDefinition
-	 */
-	public CohortDefinition getPatientsOnArtForMoreThan3MonthsAndMatchLocation() {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("More than 3 months and match location");
-		cd.addParameter(new Parameter("endDate", "End date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("onArtOver3Months", EptsReportUtils.map(getPatientsWhoAreLessThan3MonthsOnArt(), "onDate=${endDate}"));
-		cd.addSearch("location", EptsReportUtils.map(getPatientsThatMatchLocationOnObs(), "location=${location}"));
-		cd.setCompositionString("onArtOver3Months AND location");
 		return cd;
 	}
 	
@@ -146,7 +117,7 @@ public class TxPvlsCohortQueries {
 		cd.addSearch("supp", EptsReportUtils.map(hivCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
 		cd.addSearch("baseCohort", EptsReportUtils.map(genericCohortQueries.getBaseCohort(), mappings));
 		cd.addSearch("onArtLongEnough",
-		    EptsReportUtils.map(getPatientsOnArtForMoreThan3MonthsAndMatchLocation(), "endDate=${endDate},location=${location}"));
+		    EptsReportUtils.map(getPatientsWhoAreMoreThan3MonthsOnArt(), "onDate=${endDate},location=${location}"));
 		cd.setCompositionString("supp AND baseCohort AND onArtLongEnough");
 		return cd;
 	}
@@ -164,7 +135,7 @@ public class TxPvlsCohortQueries {
 		cd.addSearch("results", EptsReportUtils.map(hivCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
 		cd.addSearch("baseCohort", EptsReportUtils.map(genericCohortQueries.getBaseCohort(), mappings));
 		cd.addSearch("onArtLongEnough",
-		    EptsReportUtils.map(getPatientsOnArtForMoreThan3MonthsAndMatchLocation(), "endDate=${endDate},location=${location}"));
+		    EptsReportUtils.map(getPatientsWhoAreMoreThan3MonthsOnArt(), "onDate=${endDate},location=${location}"));
 		cd.setCompositionString("results AND baseCohort AND onArtLongEnough");
 		return cd;
 	}

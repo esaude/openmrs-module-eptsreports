@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openmrs.Location;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -40,6 +41,9 @@ public class CalculationCohortDefinition extends BaseCohortDefinition {
 	
 	@ConfigurationProperty(group = "calculation")
 	private Map<String, Object> calculationParameters;
+	
+	@ConfigurationProperty(group = "calculation")
+	private Location location;
 	
 	/**
 	 * Default constructor
@@ -148,4 +152,13 @@ public class CalculationCohortDefinition extends BaseCohortDefinition {
 		
 		calculationParameters.put(name, value);
 	}
+	
+	public Location getLocation() {
+		return location;
+	}
+	
+	public void setLocation(Location location) {
+		this.location = location;
+	}
+	
 }

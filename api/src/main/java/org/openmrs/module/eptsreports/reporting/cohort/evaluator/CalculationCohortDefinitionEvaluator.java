@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.Set;
 
 import org.openmrs.Cohort;
+import org.openmrs.Location;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -71,10 +72,12 @@ public class CalculationCohortDefinitionEvaluator implements CohortDefinitionEva
 				}
 			}
 		}
+		Location location = cd.getLocation();
 		
 		PatientCalculationService pcs = Context.getService(PatientCalculationService.class);
 		PatientCalculationContext calcContext = pcs.createCalculationContext();
 		calcContext.setNow(onDate);
+		calcContext.addToCache("location", location);
 		
 		Cohort cohort = context.getBaseCohort();
 		if (cohort == null) {

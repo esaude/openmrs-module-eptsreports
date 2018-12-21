@@ -149,7 +149,7 @@ public class HivIndicators extends BaseIndicators {
 	 */
 	public CohortIndicator getPatientsOnArtForMoreThan3MonthsAndMatchLocation() {
 		return newCohortIndicator("Patients on ART for more than 3 months and match location",
-		    EptsReportUtils.map(pvls.getPatientsWhoAreLessThan3MonthsOnArt(), "endDate=${endDate},location=${location}"));
+		    EptsReportUtils.map(pvls.getPatientsWhoAreMoreThan3MonthsOnArt(), "onDate=${endDate},location=${location}"));
 	}
 	
 }
