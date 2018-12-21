@@ -69,8 +69,9 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 		
 		// get the ART initiation date
 		CalculationResultMap changingRegimenLines = EptsCalculations.firstObs(regime, cohort, context);
-		CalculationResultMap firstAdultoEncounter = EptsCalculations.firstEncounter(arvAdultoEncounterType, cohort, context);
-		CalculationResultMap firstPediatriaEncounter = EptsCalculations.firstEncounter(arvPediatriaEncounterType, cohort, context);
+		CalculationResultMap firstAdultoEncounter = EptsCalculations.firstEncounter(arvAdultoEncounterType, cohort, location, context);
+		CalculationResultMap firstPediatriaEncounter = EptsCalculations.firstEncounter(arvPediatriaEncounterType, cohort, location,
+		    context);
 		
 		CalculationResultMap arvsInitiationDateMap = calculate(
 		    Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0), cohort, context);
@@ -137,6 +138,7 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 						// Sort list of VL obs
 						Collections.sort(viralLoadForPatientTakenWithin12Months, new Comparator<Obs>() {
 							
+							@Override
 							public int compare(Obs obs1, Obs obs2) {
 								return obs1.getObsId().compareTo(obs2.getObsId());
 							}

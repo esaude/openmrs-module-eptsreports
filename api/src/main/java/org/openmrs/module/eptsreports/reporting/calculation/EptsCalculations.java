@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.eptsreports.reporting.calculation;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -158,7 +159,7 @@ public class EptsCalculations {
 	 * @param context the calculation context
 	 * @return the encounters in a calculation result map
 	 */
-	public static CalculationResultMap firstEncounter(EncounterType encounterType, Collection<Integer> cohort,
+	public static CalculationResultMap firstEncounter(EncounterType encounterType, Collection<Integer> cohort, Location location,
 	        PatientCalculationContext context) {
 		EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition();
 		if (encounterType != null) {
@@ -169,6 +170,7 @@ public class EptsCalculations {
 		}
 		def.setWhich(TimeQualifier.FIRST);
 		def.setOnOrBefore(context.getNow());
+		def.setLocationList(Arrays.asList(location));
 		return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
 	}
 	

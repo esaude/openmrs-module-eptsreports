@@ -68,8 +68,9 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 		
 		CalculationResultMap patientHavingVL = EptsCalculations.allObs(viralLoad, cohort, context);
 		CalculationResultMap changingRegimenLines = EptsCalculations.firstObs(regime, cohort, context);
-		CalculationResultMap firstAdultoEncounter = EptsCalculations.firstEncounter(arvAdultoEncounterType, cohort, context);
-		CalculationResultMap firstPediatriaEncounter = EptsCalculations.firstEncounter(arvPediatriaEncounterType, cohort, context);
+		CalculationResultMap firstAdultoEncounter = EptsCalculations.firstEncounter(arvAdultoEncounterType, cohort, location, context);
+		CalculationResultMap firstPediatriaEncounter = EptsCalculations.firstEncounter(arvPediatriaEncounterType, cohort, location,
+		    context);
 		// get the ART initiation date
 		CalculationResultMap arvsInitiationDateMap = calculate(
 		    Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0), cohort, context);
@@ -132,6 +133,7 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 						
 						Collections.sort(viralLoadForPatientTakenWithin12Months, new Comparator<Obs>() {
 							
+							@Override
 							public int compare(Obs obs1, Obs obs2) {
 								return obs1.getObsId().compareTo(obs2.getObsId());
 							}
