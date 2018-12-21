@@ -13,11 +13,14 @@
  */
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
@@ -44,28 +47,42 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
 		CalculationResultMap map = new CalculationResultMap();
 		Location location = (Location) context.getFromCache("location");
 		Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
+		EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
 		
 		// get data inicio TARV
 		CalculationResultMap arvsInitiationDateMap = calculate(
 		    Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0), cohort, context);
-		CalculationResultMap lastVl = EptsCalculations.lastObs(viralLoadConcept, cohort, context);
+		Date oneYearBefore = EptsCalculationUtils.addMonths(context.getNow(), -12);
+		CalculationResultMap lastVl = EptsCalculations.lastObs(Arrays.asList(labEncounterType), viralLoadConcept, location,
+		    oneYearBefore, context.getNow(), cohort, context);
 		
 		for (Integer ptId : cohort) {
 			boolean isOnArtForMoreThan3Months = false;
 			SimpleResult artStartDateResult = (SimpleResult) arvsInitiationDateMap.get(ptId);
 			Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVl, ptId);
-			// only include a live patients
-			if (checkNotNull(artStartDateResult, lastVlObs, location) && lastVlObs.getLocation().equals(location)) {
+			if (checkNotNull(artStartDateResult, lastVlObs)) {
 				Date artStartDate = (Date) artStartDateResult.getValue();
 				Date lastVlDate = lastVlObs.getObsDatetime();
-				if (checkNotNull(artStartDate, lastVlDate) && EptsCalculationUtils.monthsSince(artStartDate, lastVlDate) > 3) {
+				if (checkNotNull(artStartDate) && isAtLeastThreeMonthsLater(artStartDate, lastVlDate)) {
 					isOnArtForMoreThan3Months = true;
 				}
 			}
 			map.put(ptId, new BooleanResult(isOnArtForMoreThan3Months, this));
 		}
-		
 		return map;
+	}
+	
+	private boolean isAtLeastThreeMonthsLater(Date artStartDate, Date lastVlDate) {
+		Date threeMonthsLater = getThreeMonthsLater(artStartDate);
+		boolean isThreeMonthsLater = lastVlDate.compareTo(threeMonthsLater) >= 0;
+		return isThreeMonthsLater;
+	}
+	
+	private Date getThreeMonthsLater(Date artStartDate) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(artStartDate);
+		calendar.add(Calendar.MONTH, 3);
+		return calendar.getTime();
 	}
 	
 	private boolean checkNotNull(Object... objects) {
@@ -75,4 +92,5 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
 		}
 		return true;
 	}
+	
 }

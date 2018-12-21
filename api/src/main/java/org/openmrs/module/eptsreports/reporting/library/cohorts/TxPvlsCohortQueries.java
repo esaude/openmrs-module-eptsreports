@@ -55,7 +55,7 @@ public class TxPvlsCohortQueries {
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getPatientsWhoAreMoreThan3MonthsOnArt() {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition("On ART for more than 3 months",
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("On ART for at least 3 months",
 		        Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0));
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));

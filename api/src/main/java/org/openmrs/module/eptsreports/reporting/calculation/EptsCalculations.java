@@ -15,6 +15,7 @@ package org.openmrs.module.eptsreports.reporting.calculation;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -192,6 +193,18 @@ public class EptsCalculations {
 		        "First Patient Program");
 		definition.setProgram(program);
 		definition.setLocation(location);
+		return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
+	}
+	
+	public static CalculationResultMap lastObs(List<EncounterType> encounterTypes, Concept concept, Location location, Date startDate,
+	        Date endDate, Collection<Integer> cohort, PatientCalculationContext context) {
+		ObsForPersonDataDefinition definition = new ObsForPersonDataDefinition("Last VL");
+		definition.setEncounterTypeList(encounterTypes);
+		definition.setQuestion(concept);
+		definition.setLocationList(Arrays.asList(location));
+		definition.setOnOrAfter(startDate);
+		definition.setOnOrBefore(endDate);
+		definition.setWhich(TimeQualifier.LAST);
 		return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
 	}
 	
