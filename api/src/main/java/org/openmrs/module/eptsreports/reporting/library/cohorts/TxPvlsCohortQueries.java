@@ -470,14 +470,13 @@ public class TxPvlsCohortQueries {
 	public CohortDefinition getPatientsOnArtLongEnough() {
 		SqlCohortDefinition sql = new SqlCohortDefinition();
 		sql.setName("patientsOnArtLongEnough");
-		sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		sql.addParameter(new Parameter("endDate", "End Date", Date.class));
+		sql.addParameter(new Parameter("onDate", "onDate", Date.class));
 		sql.addParameter(new Parameter("location", "Location", Location.class));
 		String query = "select patient_start_date.patient_id from ( "
 		        + "select all_start_dates.patient_id, min(all_start_dates.start_date) start_date from ( "
 		        + "select person_id patient_id, min(date(obs.obs_datetime)) start_date from obs where obs.location_id = :location and obs.concept_id = %s and obs.value_coded = %s and obs.voided = false group by patient_id "
 		        + "union "
-		        + "select person_id patient_id, min(date(obs.obs_datetime)) start_date from obs where obs.location_id = :location and obs.concept_id = %s and obs.voided = false group by patient_id "
+		        + "select person_id patient_id, min(date(obs.value_datetime)) start_date from obs where obs.location_id = :location and obs.concept_id = %s and obs.voided = false group by patient_id "
 		        + "union "
 		        + "select patient_id, date(min(patient_program.date_enrolled)) start_date from patient_program where patient_program.location_id = :location and patient_program.program_id = %s and patient_program.voided = false group by patient_id "
 		        + "union "
@@ -485,7 +484,7 @@ public class TxPvlsCohortQueries {
 		        + "union "
 		        + "select person_id patient_id, date(min(obs.obs_datetime)) start_date from obs where obs.location_id = :location and obs.concept_id = %s and obs.value_coded = %s and obs.voided = false group by patient_id "
 		        + ") all_start_dates group by all_start_dates.patient_id) patient_start_date join (select encounter.patient_id, max(date(encounter.encounter_datetime)) result_date from encounter join obs on obs.encounter_id = encounter.encounter_id "
-		        + "where encounter.encounter_type = %s and encounter.voided = false and encounter.location_id = :location and encounter.encounter_datetime between date_add(:endDate, interval -1 year) and :endDate and obs.value_numeric is not null and obs.concept_id = %s and obs.voided = false "
+		        + "where encounter.encounter_type = %s and encounter.voided = false and encounter.location_id = :location and encounter.encounter_datetime between date_add(:onDate, interval -1 year) and :onDate and obs.value_numeric is not null and obs.concept_id = %s and obs.voided = false "
 		        + "group by patient_id) patient_vl on patient_vl.patient_id = patient_start_date.patient_id where date_add(patient_start_date.start_date, interval 3 month) <= patient_vl.result_date ";
 		sql.setQuery(String.format(query, hivMetadata.getARVPlanConcept().getConceptId(),
 		    hivMetadata.getstartDrugsConcept().getConceptId(), hivMetadata.gethistoricalDrugStartDateConcept().getConceptId(),
