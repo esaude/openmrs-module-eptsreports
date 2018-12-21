@@ -59,7 +59,8 @@ public class InHivProgramEnrollmentCalculation extends AbstractPatientCalculatio
 				patientProgram = EptsCalculationUtils.resultForPatient(programMap, pId);
 			}
 			
-			if (patientProgram != null && patientProgram.getDateEnrolled() != null && location != null && patientProgram.getLocation().equals(location)) {
+			if (patientProgram != null && patientProgram.getDateEnrolled() != null && location != null
+			        && location.equals(patientProgram.getLocation())) {
 				enrollmentDate = patientProgram.getDateEnrolled();
 			}
 			map.put(pId, new SimpleResult(enrollmentDate, this));
