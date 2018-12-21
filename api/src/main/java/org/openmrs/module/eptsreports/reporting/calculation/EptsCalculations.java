@@ -31,9 +31,8 @@ import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefini
 import org.openmrs.util.OpenmrsUtil;
 
 /**
- * Utility class of common base calculations
- * 
- * TODO: refactor needs to be merged with EptsCalculationUtils
+ * Utility class of common base calculations TODO: refactor needs to be merged with
+ * EptsCalculationUtils
  */
 public class EptsCalculations {
 	
@@ -61,8 +60,8 @@ public class EptsCalculations {
 	}
 	
 	/**
-	 * Evaluates all obs of a given type of each patient
-	 * TODO: refactor this to filter on patient id while fetching obs
+	 * Evaluates all obs of a given type of each patient TODO: refactor this to filter on patient id
+	 * while fetching obs
 	 * 
 	 * @param concept the obs' concept
 	 * @param cohort the patient ids
