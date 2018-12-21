@@ -25,6 +25,7 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.definition.JembiObsDefinition;
+import org.openmrs.module.eptsreports.reporting.definition.JembiProgramEnrollmentForPatientDefinition;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.common.VitalStatus;
@@ -91,9 +92,10 @@ public class EptsCalculations {
 		        null);
 		return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
 	}
-
+	
 	/**
 	 * Evaluate for obs based on the time modifier
+	 * 
 	 * @param concept
 	 * @param cohort
 	 * @param locationList
@@ -102,16 +104,17 @@ public class EptsCalculations {
 	 * @param context
 	 * @return
 	 */
-	public static CalculationResultMap getObs(Concept concept, Collection<Integer> cohort, List<Location> locationList, List<Concept> valueCodedList, TimeQualifier timeQualifier, PatientCalculationContext context) {
+	public static CalculationResultMap getObs(Concept concept, Collection<Integer> cohort, List<Location> locationList,
+	        List<Concept> valueCodedList, TimeQualifier timeQualifier, PatientCalculationContext context) {
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition();
-		def.setName(timeQualifier.name()+"obs");
+		def.setName(timeQualifier.name() + "obs");
 		def.setWhich(timeQualifier);
 		def.setQuestion(concept);
 		def.setOnOrBefore(context.getNow());
-		if(locationList.size() > 0){
+		if (locationList.size() > 0) {
 			def.setLocationList(locationList);
 		}
-		if(valueCodedList.size() > 0){
+		if (valueCodedList.size() > 0) {
 			def.setValueCodedList(valueCodedList);
 		}
 		return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
@@ -169,7 +172,6 @@ public class EptsCalculations {
 			def.setName("first encounter of any type");
 		}
 		def.setWhich(TimeQualifier.FIRST);
-		def.setOnOrBefore(context.getNow());
 		def.setLocationList(Arrays.asList(location));
 		return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
 	}
@@ -181,6 +183,15 @@ public class EptsCalculations {
 		definition.setAnswer(answer);
 		definition.setLocation(location);
 		definition.setSortByDatetime(sortByDatetime);
+		return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
+	}
+	
+	public static CalculationResultMap firstPatientProgram(Program program, Location location, Collection<Integer> cohort,
+	        PatientCalculationContext context) {
+		JembiProgramEnrollmentForPatientDefinition definition = new JembiProgramEnrollmentForPatientDefinition(
+		        "First Patient Program");
+		definition.setProgram(program);
+		definition.setLocation(location);
 		return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
 	}
 	
