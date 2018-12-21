@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
+import org.openmrs.Location;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -46,6 +47,7 @@ public class InHivProgramEnrollmentCalculation extends AbstractPatientCalculatio
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		
 		CalculationResultMap map = new CalculationResultMap();
+		Location location = (Location) context.getFromCache("location");
 		Program hivProgram = hivMetadata.getARTProgram();
 		
 		CalculationResultMap programMap = EptsCalculations.firstProgramEnrollment(hivProgram, cohort, context);
@@ -57,7 +59,7 @@ public class InHivProgramEnrollmentCalculation extends AbstractPatientCalculatio
 				patientProgram = EptsCalculationUtils.resultForPatient(programMap, pId);
 			}
 			
-			if (patientProgram != null && patientProgram.getDateEnrolled() != null) {
+			if (patientProgram != null && patientProgram.getDateEnrolled() != null && location != null && patientProgram.getLocation().equals(location)) {
 				enrollmentDate = patientProgram.getDateEnrolled();
 			}
 			map.put(pId, new SimpleResult(enrollmentDate, this));
