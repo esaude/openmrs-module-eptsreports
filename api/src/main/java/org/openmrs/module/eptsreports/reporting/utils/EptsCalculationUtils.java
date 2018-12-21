@@ -171,6 +171,7 @@ public class EptsCalculationUtils {
 	
 	/**
 	 * Convenience method to fetch a patient result as an obs
+	 * TODO: refactor this since it is providing any extra functionality to resultForPatient
 	 * 
 	 * @param results the calculation result map
 	 * @param patientId the patient id

@@ -14,7 +14,6 @@
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -161,11 +160,9 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 					if (finalDate == null && pediatriaEncounter != null) {
 						finalDate = pediatriaEncounter.getEncounterDatetime();
 					}
-					List<Integer> codedObsValues = Arrays.asList(6108, 1311, 1312, 1313, 1314, 1315, 6109, 6325, 6326, 6327, 6328);
-					
 					Date latestVlDate = lastVlObs.getObsDatetime();
 					if (obs != null && latestVlDate != null && finalDate != null) {
-						if (obs.getObsDatetime().before(latestVlDate) && codedObsValues.contains(obs.getValueCoded().getConceptId())) {
+						if (obs.getObsDatetime().before(latestVlDate)) {
 							isOnRoutine = true;
 							// check that there is no other VL registered between first encounter_date and
 							// vl_registered_date
