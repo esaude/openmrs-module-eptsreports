@@ -58,13 +58,16 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		CalculationResultMap ret = new CalculationResultMap();
 		
-		HivMetadata hivMetadata = new HivMetadata();
 		Concept viralLoad = hivMetadata.getHivViralLoadConcept();
 		Concept regime = hivMetadata.getRegimeConcept();
 		
 		EncounterType arvAdultoEncounterType = hivMetadata.getAdultoSeguimentoEncounterType(); // encounter 6
 		EncounterType arvPediatriaEncounterType = hivMetadata.getARVPediatriaSeguimentoEncounterType(); // encounter 9
 		
+		CalculationResultMap patientHavingVL = EptsCalculations.allObs(viralLoad, cohort, context);
+		CalculationResultMap changingRegimenLines = EptsCalculations.firstObs(regime, cohort, context);
+		CalculationResultMap firstAdultoEncounter = EptsCalculations.firstEncounter(arvAdultoEncounterType, cohort, context);
+		CalculationResultMap firstPediatriaEncounter = EptsCalculations.firstEncounter(arvPediatriaEncounterType, cohort, context);
 		// get the ART initiation date
 		CalculationResultMap arvsInitiationDateMap = calculate(
 		    Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0), cohort, context);
@@ -86,7 +89,6 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 					
 					// get all the VL results for each patient in the last 12 months only if the
 					// last VL Obs is within the 12month window
-					CalculationResultMap patientHavingVL = EptsCalculations.allObs(viralLoad, cohort, context);
 					ListResult vlObsResult = (ListResult) patientHavingVL.get(pId);
 					
 					List<Obs> viralLoadForPatientTakenWithin12Months = new ArrayList<Obs>();
@@ -108,15 +110,17 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 					}
 					
 					// find out for criteria 1
-					if (viralLoadForPatientTakenWithin12Months.size() == 1) {
+					if (viralLoadForPatientTakenWithin12Months.size() >= 1) {
 						// the patients should be 6 to 9 months after ART initiation
 						// get the obs date for this VL and compare that with the provided dates
-						Obs vlObs = viralLoadForPatientTakenWithin12Months.get(0);
-						if (vlObs != null && vlObs.getObsDatetime() != null) {
-							Date vlDate = vlObs.getObsDatetime();
-							if (EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) > 3
-							        && EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) <= 6) {
-								isOnRoutine = true;
+						for (Obs vlObs : viralLoadForPatientTakenWithin12Months) {
+							if (vlObs != null && vlObs.getObsDatetime() != null) {
+								Date vlDate = vlObs.getObsDatetime();
+								if (EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) > 3
+								        && EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) <= 6) {
+									isOnRoutine = true;
+									break;
+								}
 							}
 						}
 					}
@@ -134,12 +138,6 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 						
 						Obs previousObs = viralLoadForPatientTakenWithin12Months
 						        .get(viralLoadForPatientTakenWithin12Months.size() - 2);
-						for (Obs vlObs : vLoadList) {
-							if (vlObs.getObsDatetime().before(currentObs.getObsDatetime())
-							        && vlObs.getObsDatetime().after(previousObs.getObsDatetime())) {
-								previousObs = vlObs;
-							}
-						}
 						
 						if (currentObs != null && previousObs != null && previousObs.getValueNumeric() != null
 						        && previousObs.getObsDatetime() != null && previousObs.getValueNumeric() < 1000
@@ -151,12 +149,6 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 					
 					// find out criteria 3
 					if (viralLoadForPatientTakenWithin12Months.size() > 0) {
-						CalculationResultMap changingRegimenLines = EptsCalculations.lastObs(regime, cohort, context);
-						CalculationResultMap firstAdultoEncounter = EptsCalculations.firstEncounter(arvAdultoEncounterType, cohort,
-						    context);
-						CalculationResultMap firstPediatriaEncounter = EptsCalculations.firstEncounter(arvPediatriaEncounterType,
-						    cohort, context);
-						
 						Obs obs = EptsCalculationUtils.obsResultForPatient(changingRegimenLines, pId);
 						Encounter adultoEncounter = EptsCalculationUtils.encounterResultForPatient(firstAdultoEncounter, pId);
 						Encounter pediatriaEncounter = EptsCalculationUtils.encounterResultForPatient(firstPediatriaEncounter, pId);
