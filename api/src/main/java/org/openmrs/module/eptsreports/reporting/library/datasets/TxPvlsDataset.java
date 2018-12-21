@@ -130,7 +130,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		addRow(dsd, "4DND", "Adults denominator NOT documented",
 		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsAndNotDocumentedForAdultsAndChildren(), mappings),
 		    getColumnsForAdults());
-
+		
 		return dsd;
 		
 	}
