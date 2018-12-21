@@ -15,6 +15,7 @@ package org.openmrs.module.eptsreports.reporting.calculation;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
@@ -87,6 +88,31 @@ public class EptsCalculations {
 	public static CalculationResultMap firstObs(Concept concept, Collection<Integer> cohort, PatientCalculationContext context) {
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition("first obs", TimeQualifier.FIRST, concept, context.getNow(),
 		        null);
+		return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
+	}
+
+	/**
+	 * Evaluate for obs based on the time modifier
+	 * @param concept
+	 * @param cohort
+	 * @param locationList
+	 * @param valueCodedList
+	 * @param timeQualifier
+	 * @param context
+	 * @return
+	 */
+	public static CalculationResultMap getObs(Concept concept, Collection<Integer> cohort, List<Location> locationList, List<Concept> valueCodedList, TimeQualifier timeQualifier, PatientCalculationContext context) {
+		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition();
+		def.setName(timeQualifier.name()+"obs");
+		def.setWhich(timeQualifier);
+		def.setQuestion(concept);
+		def.setOnOrBefore(context.getNow());
+		if(locationList.size() > 0){
+			def.setLocationList(locationList);
+		}
+		if(valueCodedList.size() > 0){
+			def.setValueCodedList(valueCodedList);
+		}
 		return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
 	}
 	
