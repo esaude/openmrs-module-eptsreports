@@ -55,10 +55,10 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
 			SimpleResult artStartDateResult = (SimpleResult) arvsInitiationDateMap.get(ptId);
 			Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVl, ptId);
 			// only include a live patients
-			if (checkNotNull(artStartDateResult, lastVlObs, location) && lastVlObs.getLocation().equals(location)) {
+			if (isNotNull(artStartDateResult, lastVlObs, location) && lastVlObs.getLocation().equals(location)) {
 				Date artStartDate = (Date) artStartDateResult.getValue();
 				Date lastVlDate = lastVlObs.getObsDatetime();
-				if (checkNotNull(artStartDate, lastVlDate) && EptsCalculationUtils.monthsSince(artStartDate, lastVlDate) > 3) {
+				if (isNotNull(artStartDate, lastVlDate) && EptsCalculationUtils.monthsSince(artStartDate, lastVlDate) > 3) {
 					isOnArtForMoreThan3Months = true;
 				}
 			}
@@ -68,11 +68,4 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
 		return map;
 	}
 	
-	private boolean checkNotNull(Object... objects) {
-		for (Object object : objects) {
-			if (object == null)
-				return false;
-		}
-		return true;
-	}
 }
