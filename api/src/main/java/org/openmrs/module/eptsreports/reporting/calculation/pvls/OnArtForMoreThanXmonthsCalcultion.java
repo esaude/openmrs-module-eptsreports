@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.openmrs.Concept;
+import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -41,6 +42,7 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		
 		CalculationResultMap map = new CalculationResultMap();
+		Location location = (Location) context.getFromCache("location");
 		Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
 		
 		// get data inicio TARV
@@ -53,7 +55,7 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
 			SimpleResult artStartDateResult = (SimpleResult) arvsInitiationDateMap.get(ptId);
 			Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVl, ptId);
 			// only include a live patients
-			if (checkNotNull(artStartDateResult, lastVlObs)) {
+			if (checkNotNull(artStartDateResult, lastVlObs, location) && lastVlObs.getLocation().equals(location)) {
 				Date artStartDate = (Date) artStartDateResult.getValue();
 				Date lastVlDate = lastVlObs.getObsDatetime();
 				if (checkNotNull(artStartDate, lastVlDate) && EptsCalculationUtils.monthsSince(artStartDate, lastVlDate) > 3) {
