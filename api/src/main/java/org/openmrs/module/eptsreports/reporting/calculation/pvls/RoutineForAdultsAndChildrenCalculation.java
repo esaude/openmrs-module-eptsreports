@@ -70,6 +70,7 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 		CalculationResultMap arvsInitiationDateMap = calculate(
 		    Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0), cohort, context);
 		CalculationResultMap lastVl = EptsCalculations.lastObs(viralLoad, cohort, context);
+		CalculationResultMap patientHavingVL = EptsCalculations.allObs(viralLoad, cohort, context);
 		
 		for (Integer pId : cohort) {
 			boolean isOnRoutine = false;
@@ -88,8 +89,7 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 				if (lastVlObs.getObsDatetime().after(latestVlLowerDateLimit) && lastVlObs.getObsDatetime().before(context.getNow())) {
 					
 					// get all the VL results for each patient in the last 12 months only if the
-					// last VL Obs is within the 12month window
-					CalculationResultMap patientHavingVL = EptsCalculations.allObs(viralLoad, cohort, context);
+					// last VL Obs is within the 12month window					
 					ListResult vlObsResult = (ListResult) patientHavingVL.get(pId);
 					
 					List<Obs> viralLoadForPatientTakenWithin12Months = new ArrayList<Obs>();
@@ -139,12 +139,6 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 						// find previous obs from entire list not just the obs in the 12month window
 						Obs previousObs = viralLoadForPatientTakenWithin12Months
 						        .get(viralLoadForPatientTakenWithin12Months.size() - 2);
-						for (Obs vlObs : vLoadList) {
-							if (vlObs.getObsDatetime().before(currentObs.getObsDatetime())
-							        && vlObs.getObsDatetime().after(previousObs.getObsDatetime())) {
-								previousObs = vlObs;
-							}
-						}
 						
 						if (currentObs != null && previousObs != null && previousObs.getValueNumeric() != null
 						        && previousObs.getObsDatetime() != null && previousObs.getValueNumeric() < 1000
