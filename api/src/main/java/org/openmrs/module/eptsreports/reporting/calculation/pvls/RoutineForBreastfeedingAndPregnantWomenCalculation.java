@@ -66,7 +66,7 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 		EncounterType arvPediatriaEncounterType = hivMetadata.getARVPediatriaSeguimentoEncounterType(); // encounter 9
 		
 		CalculationResultMap patientHavingVL = EptsCalculations.allObs(viralLoad, cohort, context);
-		CalculationResultMap changingRegimenLines = EptsCalculations.lastObs(regime, cohort, context);
+		CalculationResultMap changingRegimenLines = EptsCalculations.firstObs(regime, cohort, context);
 		CalculationResultMap firstAdultoEncounter = EptsCalculations.firstEncounter(arvAdultoEncounterType, cohort, context);
 		CalculationResultMap firstPediatriaEncounter = EptsCalculations.firstEncounter(arvPediatriaEncounterType, cohort, context);
 		// get the ART initiation date
