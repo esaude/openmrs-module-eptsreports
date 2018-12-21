@@ -25,6 +25,7 @@ import java.util.Map;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
+import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -57,7 +58,7 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		CalculationResultMap ret = new CalculationResultMap();
-		
+		Location location = (Location) context.getFromCache("location");
 		HivMetadata hivMetadata = new HivMetadata();
 		Concept viralLoad = hivMetadata.getHivViralLoadConcept();
 		Concept regime = hivMetadata.getRegimeConcept();

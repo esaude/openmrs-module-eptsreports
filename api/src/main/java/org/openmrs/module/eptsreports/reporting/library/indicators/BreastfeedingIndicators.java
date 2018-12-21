@@ -79,6 +79,6 @@ public class BreastfeedingIndicators extends BaseIndicators {
 	 */
 	public CohortIndicator getBreastfeedingAndPregnantOnRoutine() {
 		return newCohortIndicator("breastfeedingWomenWithViralLoad",
-		    EptsReportUtils.map(txPvls.getPregnantAndBreastfeedingWomenOnRoutine(), "onDate=${endDate}"));
+		    EptsReportUtils.map(txPvls.getPregnantAndBreastfeedingWomenOnRoutine(), "onDate=${endDate},location=${location}"));
 	}
 }

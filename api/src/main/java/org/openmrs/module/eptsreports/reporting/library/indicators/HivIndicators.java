@@ -139,7 +139,7 @@ public class HivIndicators extends BaseIndicators {
 	 */
 	public CohortIndicator getPatientsWhoAreOnRoutineAdultsAndChildren() {
 		return newCohortIndicator("Routine for  adults and children",
-		    EptsReportUtils.map(pvls.getpatientsOnRoutineAdultsAndChildren(), "onDate=${endDate}"));
+		    EptsReportUtils.map(pvls.getpatientsOnRoutineAdultsAndChildren(), "onDate=${endDate},location=${location}"));
 	}
 	
 	/**

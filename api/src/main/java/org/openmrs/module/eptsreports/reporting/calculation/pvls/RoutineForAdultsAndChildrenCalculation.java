@@ -25,6 +25,7 @@ import java.util.Map;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
+import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -59,7 +60,7 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		
 		CalculationResultMap map = new CalculationResultMap();
-		
+		Location location = (Location) context.getFromCache("location");
 		Concept viralLoad = hivMetadata.getHivViralLoadConcept();
 		Concept regime = hivMetadata.getRegimeConcept();
 		
@@ -88,7 +89,6 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 			// check that this patient should be on ART for more than six months
 			if (artInitiationDate != null && lastVlObs != null && lastVlObs.getObsDatetime() != null) {
 				Date latestVlLowerDateLimit = EptsCalculationUtils.addMonths(context.getNow(), -12);
-				
 				// we do not consider if the patient's last VL obs is not within window
 				if (lastVlObs.getObsDatetime().after(latestVlLowerDateLimit) && lastVlObs.getObsDatetime().before(context.getNow())) {
 					
@@ -118,6 +118,7 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 					if (viralLoadForPatientTakenWithin12Months.size() >= 1) {
 						// the patients should be 6 to 9 months after ART initiation
 						// get the obs date for this VL and compare that with the provided dates
+						
 						for (Obs vlObs : viralLoadForPatientTakenWithin12Months) {
 							if (vlObs != null && vlObs.getObsDatetime() != null) {
 								Date vlDate = vlObs.getObsDatetime();
@@ -150,6 +151,7 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 						        && previousObs.getObsDatetime() != null && previousObs.getValueNumeric() < 1000
 						        && currentObs.getObsDatetime() != null
 						        && previousObs.getObsDatetime().before(currentObs.getObsDatetime())) {
+							
 							if (EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(), currentObs.getObsDatetime()) >= 12
 							        && EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(),
 							            currentObs.getObsDatetime()) <= 15) {
