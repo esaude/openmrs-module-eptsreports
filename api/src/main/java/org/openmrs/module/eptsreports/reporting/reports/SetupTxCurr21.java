@@ -24,16 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupTxCurr60 extends EptsDataExportManager {
+public class SetupTxCurr21 extends EptsDataExportManager {
 	
 	@Autowired
 	private TxCurrDataset txCurrDataset;
 	
 	@Autowired
 	private GenericCohortQueries genericCohortQueries;
-	
-	public SetupTxCurr60() {
-	}
 	
 	@Override
 	public String getVersion() {
@@ -52,7 +49,7 @@ public class SetupTxCurr60 extends EptsDataExportManager {
 	
 	@Override
 	public String getName() {
-		return "TX_CURR Report 60";
+		return "TX_CURR Report 2.1";
 	}
 	
 	@Override
@@ -81,7 +78,7 @@ public class SetupTxCurr60 extends EptsDataExportManager {
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
 		ReportDesign reportDesign = null;
 		try {
-			reportDesign = createXlsReportDesign(reportDefinition, "TXCURR.xls", "TXCURR_60.xls_", getExcelDesignUuid(), null);
+			reportDesign = createXlsReportDesign(reportDefinition, "TXCURR.xls", "TXCURR_2.1.xls_", getExcelDesignUuid(), null);
 			Properties props = new Properties();
 			props.put("repeatingSections", "sheet:1,dataset:TX_CURR Data Set");
 			props.put("sortWeight", "5000");
