@@ -77,7 +77,7 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 		    cohort, context);
 		CalculationResultMap startDrugMap = EptsCalculations.firstObs(arvPlan, startDrugsConcept, location, true, cohort, context);
 		CalculationResultMap historicalMap = EptsCalculations.firstObs(hostoricalStartConcept, null, location, false, cohort, context);
-		CalculationResultMap pharmacyEncounterMap = EptsCalculations.firstEncounter(encounterTypePharmacy, cohort, context);
+		CalculationResultMap pharmacyEncounterMap = EptsCalculations.firstEncounter(encounterTypePharmacy, cohort, location, context);
 		
 		for (Integer pId : cohort) {
 			Date dateEnrolledIntoProgram = null;
