@@ -46,7 +46,7 @@ Reports Implemented
 |Report                 |Indicators Used                                  |
 |-----------------------|-------------------------------------------------|
 |*PEPFAR MER 2.3 Quarterly*    |Tx_Curr, Tx_New, Tx_Pvls                         |
-|*TX_CURR Report 2.1*   |Tx_Curr                                          |
+|*TX_CURR Report 2.1*   |Tx_Curr2.1                                          |
 
 ## MER Indicators
 
