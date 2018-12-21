@@ -45,14 +45,16 @@ Reports Implemented
 
 |Report                 |Indicators Used                                  |
 |-----------------------|-------------------------------------------------|
-|*MER_2.1_Quarterly*    |Tx_Curr, Tx_New, Tx_Pvls                         |
+|*PEPFAR MER 2.3 Quarterly*    |Tx_Curr, Tx_New, Tx_Pvls                         |
+|*TX_CURR Report 2.1*   |Tx_Curr                                          |
 
 ## MER Indicators
 
 |Indicators |Description
 |-----------|-----------
 |*Tx_Pvls*  |Percentage of ART patients with a viral load result documented in the medical record and/or laboratory information systems (LIS) within the past 12 months with a suppressed viral load (<1000 copies/ml).
-|*Tx_Curr*  |Number of adults and children currently receiving antiretroviral therapy (ART).
+|*Tx_Curr*  |Number of adults and children currently receiving antiretroviral therapy (ART). New spec using 30 day period
+|*Tx_Curr2.1*  |Number of adults and children currently receiving antiretroviral therapy (ART). Using old spec using 60 day period
 |*Tx_New*   |Number of adults and children newly enrolled on antiretroviral therapy (ART).
 
 How to perform a release

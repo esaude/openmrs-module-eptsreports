@@ -37,7 +37,7 @@ public class HivCohortQueries {
 	
 	@Autowired
 	private GenericCohortQueries genericCohortQueires;
-
+	
 	/**
 	 * Adult and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml)
 	 * documented in the medical records and /or supporting laboratory results within the past 12 months
@@ -79,10 +79,10 @@ public class HivCohortQueries {
 		    hivMetadata.getHivViralLoadConcept().getConceptId()));
 		return sql;
 	}
-
+	
 	/**
 	 * Adult and pediatric patients on ART who have re-initiated the treatment.
-	 *
+	 * 
 	 * @return CohortDefinition
 	 */
 	@DocumentedDefinition(value = "restartedTreatment")

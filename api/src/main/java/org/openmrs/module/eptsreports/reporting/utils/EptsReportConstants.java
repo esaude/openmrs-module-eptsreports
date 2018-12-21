@@ -36,7 +36,7 @@ public final class EptsReportConstants {
 	public static final String GLOBAL_PROPERTY_PRIOR_DELIVERY_DATE_CONCEPT_UUID = "eptsreports.priorDeliveryDateConceptUuid";
 	
 	public static final String GLOBAL_PROPERTY_RESTART_CONCEPT_UUID = "eptsreports.restartConceptUuid";
-
+	
 	// Encounter types
 	public static final String GLOBAL_PROPERTY_S_TARV_ADULTO_SEGUIMENTO_ENCOUNTER_TYPE_UUID = "eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid";
 	
