@@ -18,9 +18,11 @@ import java.util.HashMap;
 
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
+import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.eptsreports.reporting.definition.JembiObsDefinition;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.common.VitalStatus;
@@ -142,6 +144,16 @@ public class EptsCalculations {
 		def.setWhich(TimeQualifier.FIRST);
 		def.setOnOrBefore(context.getNow());
 		return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
+	}
+	
+	public static CalculationResultMap firstObs(Concept question, Concept answer, Location location, boolean sortByDatetime,
+	        Collection<Integer> cohort, PatientCalculationContext context) {
+		JembiObsDefinition definition = new JembiObsDefinition("JembiObsDefinition");
+		definition.setQuestion(question);
+		definition.setAnswer(answer);
+		definition.setLocation(location);
+		definition.setSortByDatetime(sortByDatetime);
+		return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
 	}
 	
 }

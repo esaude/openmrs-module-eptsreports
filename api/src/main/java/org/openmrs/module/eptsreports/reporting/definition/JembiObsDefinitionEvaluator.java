@@ -2,7 +2,7 @@ package org.openmrs.module.eptsreports.reporting.definition;
 
 import java.util.List;
 
-import org.openmrs.PatientProgram;
+import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.ListMap;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
@@ -14,15 +14,15 @@ import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Handler(supports = JembiProgramEnrollmentForPatientDefinition.class, order = 50)
-public class JembiProgramEnrollmentForPatientEvaluator implements PatientDataEvaluator {
+@Handler(supports = JembiObsDefinition.class, order = 50)
+public class JembiObsDefinitionEvaluator implements PatientDataEvaluator {
 	
 	@Autowired
 	private EvaluationService evaluationService;
 	
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException {
-		JembiProgramEnrollmentForPatientDefinition def = (JembiProgramEnrollmentForPatientDefinition) definition;
+		JembiObsDefinition def = (JembiObsDefinition) definition;
 		EvaluatedPatientData c = new EvaluatedPatientData(def, context);
 		
 		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
@@ -30,24 +30,31 @@ public class JembiProgramEnrollmentForPatientEvaluator implements PatientDataEva
 		}
 		
 		HqlQueryBuilder q = new HqlQueryBuilder();
-		q.select("patientProgram.patient.patientId", "patientProgram");
-		q.from(PatientProgram.class, "patientProgram");
-		q.wherePatientIn("patientProgram.patient.patientId", context);
-		q.whereEqual("patientProgram.program", def.getProgram());
-		q.whereEqual("patientProgram.location", def.getLocation());
-		q.whereEqual("patientProgram.voided", false);
-		q.orderAsc("patientProgram.dateEnrolled");
+		q.select("obs.person.personId", "obs");
+		q.from(Obs.class, "obs");
+		q.wherePatientIn("obs.person.personId", context);
+		q.whereEqual("obs.concept", def.getQuestion());
+		if (def.getAnswer() != null) {
+			q.whereEqual("obs.valueCoded", def.getAnswer());
+		}
+		q.whereEqual("obs.location", def.getLocation());
+		q.whereEqual("obs.voided", false);
+		if (def.isSortByDatetime()) {
+			q.orderAsc("obs.obsDatetime");
+		} else {
+			q.orderAsc("obs.valueDatetime");
+		}
 		
 		List<Object[]> queryResult = evaluationService.evaluateToList(q, context);
 		
-		ListMap<Integer, PatientProgram> enrollmentsForPatients = new ListMap<Integer, PatientProgram>();
+		ListMap<Integer, Obs> patientToObs = new ListMap<Integer, Obs>();
 		for (Object[] row : queryResult) {
-			enrollmentsForPatients.putInList((Integer) row[0], (PatientProgram) row[1]);
+			patientToObs.putInList((Integer) row[0], (Obs) row[1]);
 		}
 		
-		for (Integer pId : enrollmentsForPatients.keySet()) {
-			List<PatientProgram> l = enrollmentsForPatients.get(pId);
-			c.addData(pId, l.get(0));
+		for (Integer pId : patientToObs.keySet()) {
+			List<Obs> observations = patientToObs.get(pId);
+			c.addData(pId, observations.get(0));
 		}
 		
 		return c;
