@@ -124,7 +124,7 @@ public class TxCurrDataset extends BaseDataSet {
 		dataSetDefinition.addColumn("C1UNKM", "TX_CURR: Unknown Age", new Mapped<CohortIndicator>(unknownMalesIndicator,
 		        ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}")),
 		    "");
-
+		
 		// Unknown females
 		CohortDefinition unknownFemales = txCurrCohortQueries.getTxCurrCompositionCohort("allPatientsCurrentlyInART",
 		    enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
