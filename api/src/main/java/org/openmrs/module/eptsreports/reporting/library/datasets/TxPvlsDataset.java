@@ -50,11 +50,13 @@ public class TxPvlsDataset extends BaseDataSet {
 		dsd.setName("Tx_Pvls Data Set");
 		dsd.addParameters(getParameters());
 		// tie dimensions to this data definition
+		
 		dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
 		dsd.addDimension("query", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
 		dsd.addDimension("age", EptsReportUtils.map(eptsCommonDimension.pvlsAges(), "endDate=${endDate},location=${location}"));
 		
 		// Totals for both numerator and denomonator
+		
 		dsd.addColumn("0N", "Total patients with suppressed Viral load - Numerator",
 		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), "");
 		
@@ -72,6 +74,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		    hivIndicators.getPatientsOnArtForMoreThan3MonthsAndMatchLocation(), "endDate=${endDate},location=${location}"), "");
 		
 		// add breastfeeding and pregnant Numerator
+		
 		dsd.addColumn("B01", "Breast feeding and on routine Numerator", EptsReportUtils.map(
 		    breastfeedingIndicators.getBreastfeedingWomenWithSuppressedViralLoadIn12MonthsOnRoutineNumerator(), mappings), "");
 		dsd.addColumn("B02", "Breast feeding and NOT documented Numerator", EptsReportUtils.map(
@@ -96,12 +99,10 @@ public class TxPvlsDataset extends BaseDataSet {
 		    EptsReportUtils.map(pregnantIndicators.getPregnantWomenWithViralLoadIn12MonthsAndNotDocumentedDenominator(), mappings),
 		    "");
 		
-		// constructing the rows for children
-		// /// Numerator routine
+		// constructing the rows for children // /// Numerator routine
 		addRow(dsd, "3NR", "Children numerator routine",
 		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionOnRoutineForAdultsAndChildren(), mappings),
-		    childrenColumns());
-		////// Numerator NOT documented
+		    childrenColumns()); ////// Numerator NOT documented
 		addRow(dsd, "3NND", "Children numerator NOT documented",
 		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionNotDocumentedForAdultsAndChildren(), mappings),
 		    childrenColumns());
@@ -109,27 +110,23 @@ public class TxPvlsDataset extends BaseDataSet {
 		// constructing the rows for adults ///// Numerator routine
 		addRow(dsd, "4NR", "Adults numerator routine",
 		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionOnRoutineForAdultsAndChildren(), mappings),
-		    getColumnsForAdults());
-		//// Numerator NOT documented
+		    getColumnsForAdults()); //// Numerator NOT documented
 		addRow(dsd, "4NND", "Adults numerator NOT documented",
 		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionNotDocumentedForAdultsAndChildren(), mappings),
 		    getColumnsForAdults());
 		
-		// denominators follow here for routine and NOT documented
-		// /// Denominator
+		// denominators follow here for routine and NOT documented // /// Denominator
 		// routine for children
 		addRow(dsd, "3DR", "Children denominator routine",
 		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsAndOnRoutineForAdultsAndChildren(), mappings),
-		    childrenColumns());
-		///// Denominator NOT documented
+		    childrenColumns()); ///// Denominator NOT documented
 		addRow(dsd, "3DND", "Children denominator NOT documented",
 		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsAndNotDocumentedForAdultsAndChildren(), mappings),
 		    childrenColumns());
 		///// Denominator routine for adults
 		addRow(dsd, "4DR", "Adults denominator routine",
 		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsAndOnRoutineForAdultsAndChildren(), mappings),
-		    getColumnsForAdults());
-		//// denominator NOT documented
+		    getColumnsForAdults()); //// denominator NOT documented
 		addRow(dsd, "4DND", "Adults denominator NOT documented",
 		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsAndNotDocumentedForAdultsAndChildren(), mappings),
 		    getColumnsForAdults());

@@ -13,14 +13,8 @@
  */
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
-import org.openmrs.api.ProgramWorkflowService;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
@@ -30,6 +24,10 @@ import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * Calculates whether patients are in the HIV program
@@ -54,9 +52,12 @@ public class InHivProgramEnrollmentCalculation extends AbstractPatientCalculatio
 		
 		for (Integer pId : cohort) {
 			Date enrollmentDate = null;
-			PatientProgram patientProgram = EptsCalculationUtils.resultForPatient(programMap, pId);
+			PatientProgram patientProgram = null;
+			if (programMap != null) {
+				patientProgram = EptsCalculationUtils.resultForPatient(programMap, pId);
+			}
 			
-			if (patientProgram != null) {
+			if (patientProgram != null && patientProgram.getDateEnrolled() != null) {
 				enrollmentDate = patientProgram.getDateEnrolled();
 			}
 			map.put(pId, new SimpleResult(enrollmentDate, this));

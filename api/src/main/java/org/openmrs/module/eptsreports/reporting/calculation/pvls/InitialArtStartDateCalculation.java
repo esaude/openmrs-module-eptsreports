@@ -22,6 +22,7 @@ import java.util.Map;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
+import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -61,6 +62,7 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 		
 		// Get calculation map date for the first program enrollment
 		CalculationResultMap map = new CalculationResultMap();
+		Location location = (Location) context.getFromCache("location");
 		
 		Concept arvPlan = hivMetadata.getARVPlanConcept();
 		Concept drugStartDate = commonMetadata.gethistoricalDrugStartDateConcept();
@@ -89,7 +91,8 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 				enrollmentDates.add(dateEnrolledIntoProgram);
 			}
 			Obs startDateObsResults = EptsCalculationUtils.obsResultForPatient(startDrugMap, pId);
-			if (startDateObsResults != null && startDateObsResults.getValueCoded().equals(startDrugs)) {
+			if (location != null && startDateObsResults != null && startDateObsResults.getValueCoded().equals(startDrugs)
+			        && startDateObsResults.getLocation().equals(location)) {
 				if (startDateObsResults.getEncounter().getEncounterType().equals(encounterTypePharmacy)
 				        || startDateObsResults.getEncounter().getEncounterType().equals(adultoSeguimento)
 				        || startDateObsResults.getEncounter().getEncounterType().equals(arvPaed)) {
@@ -99,9 +102,9 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 			}
 			
 			Obs historicalDateValue = EptsCalculationUtils.obsResultForPatient(historicalMap, pId);
-			if (historicalDateValue != null && historicalDateValue.getEncounter() != null
-			        && historicalDateValue.getEncounter().getEncounterType() != null
-			        && historicalDateValue.getValueDatetime() != null) {
+			if (location != null && historicalDateValue != null && historicalDateValue.getEncounter() != null
+			        && historicalDateValue.getEncounter().getEncounterType() != null && historicalDateValue.getValueDatetime() != null
+			        && historicalDateValue.getLocation().equals(location)) {
 				
 				if (historicalDateValue.getEncounter().getEncounterType().equals(encounterTypePharmacy)
 				        || historicalDateValue.getEncounter().getEncounterType().equals(adultoSeguimento)
@@ -112,7 +115,7 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 			}
 			
 			Encounter pharmacyEncounter = EptsCalculationUtils.encounterResultForPatient(pharmacyEncounterMap, pId);
-			if (pharmacyEncounter != null) {
+			if (pharmacyEncounter != null && location != null && pharmacyEncounter.getLocation().equals(location)) {
 				pharmacyDate = pharmacyEncounter.getEncounterDatetime();
 				enrollmentDates.add(pharmacyDate);
 			}
