@@ -58,7 +58,6 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		CalculationResultMap ret = new CalculationResultMap();
 		
-		HivMetadata hivMetadata = new HivMetadata();
 		Concept viralLoad = hivMetadata.getHivViralLoadConcept();
 		Concept regime = hivMetadata.getRegimeConcept();
 		
