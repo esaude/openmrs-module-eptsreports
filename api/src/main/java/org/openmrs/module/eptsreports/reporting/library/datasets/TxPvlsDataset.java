@@ -63,20 +63,23 @@ public class TxPvlsDataset extends BaseDataSet {
 		dsd.addColumn("0D", "Total patients with Viral load - Denominator",
 		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), "");
 		
-		// add patients on routine for adults and children
-		dsd.addColumn("Routine-AC", "Adults and Children", EptsReportUtils
-		        .map(hivIndicators.getPatientsWhoAreOnRoutineAdultsAndChildren(), "endDate=${endDate},location=${location}"),
-		    "");
-		
-		dsd.addColumn("Routine-BP", "Breastfeeding and Pregnant women", EptsReportUtils
-		        .map(breastfeedingIndicators.getBreastfeedingAndPregnantOnRoutine(), "endDate=${endDate},location=${location}"),
-		    "");
-		
-		dsd.addColumn("Qualified Patients", "Patients that are on ART for more than 3 months and match location", EptsReportUtils.map(
-		    hivIndicators.getPatientsOnArtForMoreThan3MonthsAndMatchLocation(), "endDate=${endDate},location=${location}"), "");
-		
+		// Columns useful for debugging totals
+		// dsd.addColumn("Routine-AC", "Adults and Children", EptsReportUtils
+		// .map(hivIndicators.getPatientsWhoAreOnRoutineAdultsAndChildren(),
+		// "endDate=${endDate},location=${location}"),
+		// "");
+		// dsd.addColumn("Routine-BP", "Breastfeeding and Pregnant women",
+		// EptsReportUtils
+		// .map(breastfeedingIndicators.getBreastfeedingAndPregnantOnRoutine(),
+		// "endDate=${endDate},location=${location}"),
+		// "");
+		// dsd.addColumn("Qualified Patients", "Patients that are on ART for more than 3
+		// months and match location", EptsReportUtils.map(
+		// hivIndicators.getPatientsOnArtForMoreThan3MonthsAndMatchLocation(),
+		// "endDate=${endDate},location=${location}"), "");
 		// add breastfeeding and pregnant Numerator
 		
+		// add patients on routine for adults and children
 		dsd.addColumn("B01", "Breast feeding and on routine Numerator", EptsReportUtils.map(
 		    breastfeedingIndicators.getBreastfeedingWomenWithSuppressedViralLoadIn12MonthsOnRoutineNumerator(), mappings), "");
 		dsd.addColumn("B02", "Breast feeding and NOT documented Numerator", EptsReportUtils.map(

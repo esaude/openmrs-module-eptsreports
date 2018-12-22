@@ -105,13 +105,16 @@ public class EptsCalculations {
 	 * @return
 	 */
 	public static CalculationResultMap getObs(Concept concept, Collection<Integer> cohort, List<Location> locationList,
-	        TimeQualifier timeQualifier, Date startDate, PatientCalculationContext context) {
+	        List<Concept> valueCodedList, TimeQualifier timeQualifier, Date startDate, PatientCalculationContext context) {
 		ObsForPersonDataDefinition def = new ObsForPersonDataDefinition();
 		def.setName(timeQualifier.name() + "obs");
 		def.setWhich(timeQualifier);
 		def.setQuestion(concept);
 		if (startDate != null) {
 			def.setOnOrAfter(startDate);
+		}
+		if (valueCodedList != null && valueCodedList.size() > 0) {
+			def.setValueCodedList(valueCodedList);
 		}
 		def.setOnOrBefore(context.getNow());
 		if (locationList.size() > 0) {

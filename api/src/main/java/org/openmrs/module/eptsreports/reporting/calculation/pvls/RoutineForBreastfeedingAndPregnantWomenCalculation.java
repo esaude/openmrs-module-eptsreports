@@ -64,26 +64,33 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 		Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
 		Concept regimeConcept = hivMetadata.getRegimeConcept();
 		Date latestVlLowerDateLimit = EptsCalculationUtils.addMonths(context.getNow(), -12);
-		
-		EncounterType arvAdultoEncounterType = hivMetadata.getAdultoSeguimentoEncounterType(); // encounter 6
-		EncounterType arvPediatriaEncounterType = hivMetadata.getARVPediatriaSeguimentoEncounterType(); // encounter 9
 		EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
 		
 		// lookups
-		CalculationResultMap patientHavingVL = EptsCalculations.getObs(viralLoadConcept, cohort, Arrays.asList(location),
+		CalculationResultMap patientHavingVL = EptsCalculations.getObs(viralLoadConcept, cohort, Arrays.asList(location), null,
 		    TimeQualifier.ANY, latestVlLowerDateLimit, context);
-		CalculationResultMap firstAdultoEncounter = EptsCalculations.firstEncounter(arvAdultoEncounterType, cohort, location, context);
-		CalculationResultMap firstPediatriaEncounter = EptsCalculations.firstEncounter(arvPediatriaEncounterType, cohort, location,
-		    context);
+		
+		List<Concept> codedObsValues = new ArrayList<Concept>();
+		codedObsValues.add(new Concept(6108));
+		codedObsValues.add(new Concept(1311));
+		codedObsValues.add(new Concept(1312));
+		codedObsValues.add(new Concept(1313));
+		codedObsValues.add(new Concept(1314));
+		codedObsValues.add(new Concept(1315));
+		codedObsValues.add(new Concept(6109));
+		codedObsValues.add(new Concept(6325));
+		codedObsValues.add(new Concept(6326));
+		codedObsValues.add(new Concept(6327));
+		codedObsValues.add(new Concept(6328));
+		
+		CalculationResultMap changingRegimenLines = EptsCalculations.getObs(regimeConcept, cohort, Arrays.asList(location),
+		    codedObsValues, TimeQualifier.FIRST, null, context);
 		
 		// get the ART initiation date
 		CalculationResultMap arvsInitiationDateMap = calculate(
 		    Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0), cohort, context);
 		CalculationResultMap lastVl = EptsCalculations.lastObs(Arrays.asList(labEncounterType), viralLoadConcept, location,
 		    latestVlLowerDateLimit, context.getNow(), cohort, context);
-		
-		CalculationResultMap changingRegimenLines = EptsCalculations.getObs(regimeConcept, cohort, Arrays.asList(location),
-		    TimeQualifier.FIRST, null, context);
 		
 		for (Integer pId : cohort) {
 			boolean isOnRoutine = false;
@@ -163,33 +170,21 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 					if (viralLoadForPatientTakenWithin12Months.size() > 0) {
 						// get when a patient switch between lines from first to second
 						// Date when started on second line will be considered the changing date
-						
 						Obs obs = EptsCalculationUtils.obsResultForPatient(changingRegimenLines, pId);
 						
-						Encounter adultoEncounter = EptsCalculationUtils.encounterResultForPatient(firstAdultoEncounter, pId);
-						Encounter pediatriaEncounter = EptsCalculationUtils.encounterResultForPatient(firstPediatriaEncounter, pId);
-						// loop through the viral load list and find one that is after the second line
-						// option
-						Date finalDate = null;
-						if (adultoEncounter != null) {
-							finalDate = adultoEncounter.getEncounterDatetime();
-						}
-						if (finalDate == null && pediatriaEncounter != null) {
-							finalDate = pediatriaEncounter.getEncounterDatetime();
-						}
-						List<Integer> codedObsValues = Arrays.asList(6108, 1311, 1312, 1313, 1314, 1315, 6109, 6325, 6326, 6327, 6328);
-						
 						Date latestVlDate = lastVlObs.getObsDatetime();
-						if (obs != null && finalDate != null && latestVlDate != null) {
-							if (obs.getObsDatetime().before(latestVlDate)
-							        && codedObsValues.contains(obs.getValueCoded().getConceptId())) {
+						if (obs != null && latestVlDate != null) {
+							Date startRegimeDate = obs.getObsDatetime();
+							
+							if (startRegimeDate != null && startRegimeDate.before(latestVlDate)) {
 								isOnRoutine = true;
 								////////////////////////
-								List<Obs> allVlsforPatient = EptsCalculationUtils.extractResultValues(vlObsResult);
 								// loop through the vls and exclude the patient if they have an obs falling
 								// between the 2 dates
-								for (Obs obs1 : allVlsforPatient) {
-									if (obs1.getObsDatetime() != null && obs1.getObsDatetime().after(finalDate)
+								for (Obs obs1 : vLoadList) {
+									if (obs1.getObsDatetime() != null
+									        && (obs1.getObsDatetime().after(startRegimeDate)
+									                || obs1.getObsDatetime().equals(startRegimeDate))
 									        && obs1.getObsDatetime().before(latestVlDate)) {
 										isOnRoutine = false;
 									}
