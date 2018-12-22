@@ -260,6 +260,20 @@
             UUID for the Programa de seguimento e cuidado aos pacientes HIV+ program
         </description>
     </globalProperty>
+    <globalProperty>
+        <property>@MODULE_ID@.artSecondLineSwitchUuid</property>
+        <defaultValue>7f367983-9911-4f8c-bbfc-a85678801f64</defaultValue>
+        <description>
+            UUID for the SECOND LINE concept
+        </description>
+    </globalProperty>
+    <globalProperty>
+        <property>@MODULE_ID@.regimeUuid</property>
+        <defaultValue>e1d83e4e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the REGIME concept
+        </description>
+    </globalProperty>
 
     <globalProperty>
         <property>@MODULE_ID@.restartConceptUuid</property>

@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.indicators;
 
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -26,9 +25,6 @@ public class HivIndicators extends BaseIndicators {
 	
 	@Autowired
 	private TxPvlsCohortQueries pvls;
-	
-	@Autowired
-	private TxNewCohortQueries txNew;
 	
 	public CohortIndicator patientBelow1YearEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
 		return newCohortIndicator("patientBelow1YearEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(cohortDefinition,
@@ -93,44 +89,67 @@ public class HivIndicators extends BaseIndicators {
 	}
 	
 	/**
-	 * Find patients with Viral load results disagregated by age
+	 * Find patients with viral load suppression and on routine Numerator
 	 * 
 	 * @return CohortIndicator
 	 */
-	public CohortIndicator getPatientsWithViralLoadResultsWithinAgeBracket(int min, int max) {
-		return newCohortIndicator("patients with viral load results disagreagated by age",
-		    EptsReportUtils.map(pvls.getPatientsWithViralLoadResultsWithinAgeBracket(min, max),
+	public CohortIndicator getPatientsWithViralLoadSuppressionOnRoutineForAdultsAndChildren() {
+		return newCohortIndicator("viral load suppression on routine adults and children",
+		    EptsReportUtils.map(pvls.getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren(),
 		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 	
 	/**
-	 * Find patients with Viral load results disagregated by age
+	 * Find patients with viral load suppression and NOT documented Numerator
 	 * 
 	 * @return CohortIndicator
 	 */
-	public CohortIndicator getPatientsWithViralLoadSuppressionWithinAgeBracket(int min, int max) {
-		return newCohortIndicator("patients with viral load results disagreagated by age",
-		    EptsReportUtils.map(pvls.getPatientsWithViralLoadSuppressionWithinAgeBracket(min, max),
+	public CohortIndicator getPatientsWithViralLoadSuppressionNotDocumentedForAdultsAndChildren() {
+		return newCohortIndicator("viral load suppression on routine adults and children",
+		    EptsReportUtils.map(pvls.getPatientWithViralSuppressionAndNotDocumentedForAdultsAndChildren(),
 		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 	
 	/**
-	 * Find patients with Viral load results disagregated by age below
+	 * Find patients with viral load results and on routine Denominator
 	 * 
 	 * @return CohortIndicator
 	 */
-	public CohortIndicator getPatientsWithViralLoadResultsWithAgeBelow(int age) {
-		return newCohortIndicator("patients with viral load results disagreagated by age below", EptsReportUtils.map(
-		    pvls.getPatientsWithViralLoadResultsWithAgeBelow(age), "startDate=${startDate},endDate=${endDate},location=${location}"));
+	public CohortIndicator getPatientsWithViralLoadResultsAndOnRoutineForAdultsAndChildren() {
+		return newCohortIndicator("viral load results on routine adults and children",
+		    EptsReportUtils.map(pvls.getPatientsWithViralLoadREsultsAndOnRoutineForChildrenAndAdults(),
+		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 	
 	/**
-	 * Find patients with Viral load results suppression disagregated by age below
+	 * Find patients with viral load results and on routine Denominator
 	 * 
 	 * @return CohortIndicator
 	 */
-	public CohortIndicator getPatientsWithViralLoadSuppressionAgeBelow(int age) {
-		return newCohortIndicator("patients with viral load results disagreagated by age below", EptsReportUtils.map(
-		    pvls.getPatientsWithViralLoadSuppressionAgeBelow(age), "startDate=${startDate},endDate=${endDate},location=${location}"));
+	public CohortIndicator getPatientsWithViralLoadResultsAndNotDocumentedForAdultsAndChildren() {
+		return newCohortIndicator("viral load results on routine adults and children",
+		    EptsReportUtils.map(pvls.getPatientsWithViralLoadREsultsAndNotDocumenetdForChildrenAndAdults(),
+		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
+	
+	/**
+	 * Find patients on routine for Adults and children
+	 * 
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator getPatientsWhoAreOnRoutineAdultsAndChildren() {
+		return newCohortIndicator("Routine for  adults and children",
+		    EptsReportUtils.map(pvls.getpatientsOnRoutineAdultsAndChildren(), "onDate=${endDate},location=${location}"));
+	}
+	
+	/**
+	 * Find patients to exclude from the main composition
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortIndicator getPatientsOnArtForMoreThan3MonthsAndMatchLocation() {
+		return newCohortIndicator("Patients on ART for more than 3 months and match location",
+		    EptsReportUtils.map(pvls.getPatientsWhoAreMoreThan3MonthsOnArt(), "onDate=${endDate},location=${location}"));
+	}
+	
 }

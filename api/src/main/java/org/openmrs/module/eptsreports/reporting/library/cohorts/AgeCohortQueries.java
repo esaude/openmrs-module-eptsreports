@@ -18,10 +18,14 @@ import java.util.Date;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AgeCohortQueries {
+	
+	@Autowired
+	private GenericCohortQueries genericCohortQueries;
 	
 	public CohortDefinition createBelowYAgeCohort(String name, int maxAge) {
 		AgeCohortDefinition patientsWithAgeBelow = new AgeCohortDefinition();
@@ -46,6 +50,16 @@ public class AgeCohortQueries {
 		overXCohort.setMinAge(minAge);
 		overXCohort.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
 		return overXCohort;
+	}
+	
+	/**
+	 * Person with Unknown age, the birthdate column is null
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getPatientsWithUnknownAge() {
+		return genericCohortQueries.generalSql("unknownAge",
+		    "SELECT p.patient_id FROM patient p JOIN person pr ON p.patient_id = pr.person_id WHERE pr.birthdate IS NULL");
 	}
 	
 }

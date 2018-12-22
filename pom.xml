@@ -29,7 +29,7 @@
 		<developerConnection>scm:git:https://github.com/esaude/openmrs-module-eptsreports</developerConnection>
 		<url>https://github.com/esaude/openmrs-module-eptsreports/</url>
 	  <tag>HEAD</tag>
-  </scm>
+  	</scm>
 
 	<modules>
 		<module>api</module>
