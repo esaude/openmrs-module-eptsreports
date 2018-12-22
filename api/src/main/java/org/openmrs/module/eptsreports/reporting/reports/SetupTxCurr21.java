@@ -85,7 +85,7 @@ public class SetupTxCurr21 extends EptsDataExportManager {
 			reportDesign.setProperties(props);
 		}
 		catch (IOException e) {
-			throw new RuntimeException(e );
+			throw new RuntimeException(e);
 		}
 		
 		return Arrays.asList(reportDesign);
