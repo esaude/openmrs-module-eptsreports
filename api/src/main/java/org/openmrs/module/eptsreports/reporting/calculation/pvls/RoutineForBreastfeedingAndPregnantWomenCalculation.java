@@ -37,6 +37,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalcu
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -57,41 +58,40 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 	 */
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
+		
 		CalculationResultMap ret = new CalculationResultMap();
 		Location location = (Location) context.getFromCache("location");
-		
-		Concept viralLoad = hivMetadata.getHivViralLoadConcept();
-		Concept regime = hivMetadata.getRegimeConcept();
+		Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
+		Concept regimeConcept = hivMetadata.getRegimeConcept();
+		Date latestVlLowerDateLimit = EptsCalculationUtils.addMonths(context.getNow(), -12);
 		
 		EncounterType arvAdultoEncounterType = hivMetadata.getAdultoSeguimentoEncounterType(); // encounter 6
 		EncounterType arvPediatriaEncounterType = hivMetadata.getARVPediatriaSeguimentoEncounterType(); // encounter 9
+		EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
 		
-		CalculationResultMap patientHavingVL = EptsCalculations.allObs(viralLoad, cohort, context);
-		CalculationResultMap changingRegimenLines = EptsCalculations.firstObs(regime, cohort, context);
-		CalculationResultMap firstAdultoEncounter = EptsCalculations.firstEncounter(arvAdultoEncounterType, cohort, location, context);
-		CalculationResultMap firstPediatriaEncounter = EptsCalculations.firstEncounter(arvPediatriaEncounterType, cohort, location,
-		    context);
 		// get the ART initiation date
 		CalculationResultMap arvsInitiationDateMap = calculate(
 		    Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0), cohort, context);
-		CalculationResultMap lastVl = EptsCalculations.lastObs(viralLoad, cohort, context);
+		CalculationResultMap lastVl = EptsCalculations.lastObs(Arrays.asList(labEncounterType), viralLoadConcept, location,
+		    latestVlLowerDateLimit, context.getNow(), cohort, context);
 		
 		for (Integer pId : cohort) {
 			boolean isOnRoutine = false;
 			Date artInitiationDate = null;
 			SimpleResult artStartDateResult = (SimpleResult) arvsInitiationDateMap.get(pId);
-			
 			Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVl, pId);
 			
 			if (artStartDateResult != null) {
 				artInitiationDate = (Date) artStartDateResult.getValue();
 			}
 			if (artInitiationDate != null && lastVlObs != null && lastVlObs.getObsDatetime() != null) {
-				Date latestVlLowerDateLimit = EptsCalculationUtils.addMonths(context.getNow(), -12);
+				
 				if (lastVlObs.getObsDatetime().after(latestVlLowerDateLimit) && lastVlObs.getObsDatetime().before(context.getNow())) {
 					
 					// get all the VL results for each patient in the last 12 months only if the
 					// last VL Obs is within the 12month window
+					CalculationResultMap patientHavingVL = EptsCalculations.getObs(viralLoadConcept, Arrays.asList(pId),
+					    Arrays.asList(location), TimeQualifier.ANY, latestVlLowerDateLimit, context);
 					ListResult vlObsResult = (ListResult) patientHavingVL.get(pId);
 					
 					List<Obs> viralLoadForPatientTakenWithin12Months = new ArrayList<Obs>();
@@ -153,7 +153,17 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 					
 					// find out criteria 3
 					if (viralLoadForPatientTakenWithin12Months.size() > 0) {
+						// get when a patient switch between lines from first to second
+						// Date when started on second line will be considered the changing date
+						CalculationResultMap changingRegimenLines = EptsCalculations.getObs(regimeConcept, Arrays.asList(pId),
+						    Arrays.asList(location), TimeQualifier.FIRST, null, context);
+						
 						Obs obs = EptsCalculationUtils.obsResultForPatient(changingRegimenLines, pId);
+						
+						CalculationResultMap firstAdultoEncounter = EptsCalculations.firstEncounter(arvAdultoEncounterType,
+						    Arrays.asList(pId), location, context);
+						CalculationResultMap firstPediatriaEncounter = EptsCalculations.firstEncounter(arvPediatriaEncounterType,
+						    Arrays.asList(pId), location, context);
 						Encounter adultoEncounter = EptsCalculationUtils.encounterResultForPatient(firstAdultoEncounter, pId);
 						Encounter pediatriaEncounter = EptsCalculationUtils.encounterResultForPatient(firstPediatriaEncounter, pId);
 						// loop through the viral load list and find one that is after the second line

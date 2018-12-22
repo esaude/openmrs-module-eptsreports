@@ -1,4 +1,4 @@
-package org.openmrs.module.eptsreports.reporting.definition;
+package org.openmrs.module.eptsreports.reporting.cohort.definition;
 
 import org.openmrs.Concept;
 import org.openmrs.Location;

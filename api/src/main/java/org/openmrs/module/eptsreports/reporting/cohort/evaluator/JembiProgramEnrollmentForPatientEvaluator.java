@@ -1,9 +1,10 @@
-package org.openmrs.module.eptsreports.reporting.definition;
+package org.openmrs.module.eptsreports.reporting.cohort.evaluator;
 
 import java.util.List;
 
 import org.openmrs.PatientProgram;
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiProgramEnrollmentForPatientDefinition;
 import org.openmrs.module.reporting.common.ListMap;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
