@@ -1,16 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
- **/
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.io.IOException;
@@ -18,7 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -27,13 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupTxNew extends EptsDataExportManager {
+public class SetupTxCurr21 extends EptsDataExportManager {
 	
 	@Autowired
-	private TxNewDataset txNewDataset;
+	private TxCurrDataset txCurrDataset;
 	
-	public SetupTxNew() {
-	}
+	@Autowired
+	private GenericCohortQueries genericCohortQueries;
 	
 	@Override
 	public String getVersion() {
@@ -42,22 +39,22 @@ public class SetupTxNew extends EptsDataExportManager {
 	
 	@Override
 	public String getUuid() {
-		return "74698e1c-cda9-49cf-a58f-cc6771574ee6";
+		return "381077e6-ceb8-4288-863e-818499515a30";
 	}
 	
 	@Override
 	public String getExcelDesignUuid() {
-		return "05b84f1b-fd23-4b37-8185-aca65be91875";
+		return "8a75c3be-995a-4448-a259-4d57d991b614";
 	}
 	
 	@Override
 	public String getName() {
-		return "TX_NEW Report";
+		return "TX_CURR Report 2.1";
 	}
 	
 	@Override
 	public String getDescription() {
-		return "Number of adults and children newly enrolled on antiretroviral therapy (ART).";
+		return "Number of adults and children currently receiving antiretroviral therapy (ART) (Old Spec).";
 	}
 	
 	@Override
@@ -66,10 +63,13 @@ public class SetupTxNew extends EptsDataExportManager {
 		reportDefinition.setUuid(getUuid());
 		reportDefinition.setName(getName());
 		reportDefinition.setDescription(getDescription());
-		reportDefinition.setParameters(txNewDataset.getParameters());
+		reportDefinition.setParameters(txCurrDataset.getParameters());
 		
-		reportDefinition.addDataSetDefinition(txNewDataset.constructTxNewDataset(),
+		reportDefinition.addDataSetDefinition(txCurrDataset.constructTxCurrDataset(false),
 		    ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate},location=${location}"));
+		
+		reportDefinition.setBaseCohortDefinition(genericCohortQueries.getBaseCohort(),
+		    ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
 		
 		return reportDefinition;
 	}
@@ -78,15 +78,14 @@ public class SetupTxNew extends EptsDataExportManager {
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
 		ReportDesign reportDesign = null;
 		try {
-			reportDesign = createXlsReportDesign(reportDefinition, "TXNEW.xls", "TXNEW.xls_", getExcelDesignUuid(), null);
+			reportDesign = createXlsReportDesign(reportDefinition, "TXCURR.xls", "TXCURR_2.1.xls_", getExcelDesignUuid(), null);
 			Properties props = new Properties();
-			props.put("repeatingSections", "sheet:1,dataset:TX_NEW Data Set");
+			props.put("repeatingSections", "sheet:1,dataset:TX_CURR Data Set");
 			props.put("sortWeight", "5000");
 			reportDesign.setProperties(props);
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		
 		return Arrays.asList(reportDesign);

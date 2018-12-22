@@ -61,6 +61,11 @@ public class HivMetadata extends CommonMetadata {
 		return getConcept(uuid);
 	}
 	
+	public Concept getRestartConcept() {
+		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_RESTART_CONCEPT_UUID);
+		return getConcept(uuid);
+	}
+	
 	// Encounter types
 	// encounterType_id = 6
 	public EncounterType getAdultoSeguimentoEncounterType() {

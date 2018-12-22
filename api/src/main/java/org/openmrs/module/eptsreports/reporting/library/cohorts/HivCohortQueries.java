@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Collections;
 import java.util.Date;
 
 import org.openmrs.Location;
@@ -33,6 +34,9 @@ public class HivCohortQueries {
 	
 	@Autowired
 	private HivMetadata hivMetadata;
+	
+	@Autowired
+	private GenericCohortQueries genericCohortQueires;
 	
 	/**
 	 * Adult and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml)
@@ -68,5 +72,16 @@ public class HivCohortQueries {
 		sql.setQuery(ViralLoadQueries.getPatientsHavingViralLoadInLast12Months(
 		    hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(), hivMetadata.getHivViralLoadConcept().getConceptId()));
 		return sql;
+	}
+	
+	/**
+	 * Adult and pediatric patients on ART who have re-initiated the treatment.
+	 * 
+	 * @return CohortDefinition
+	 */
+	@DocumentedDefinition(value = "restartedTreatment")
+	public CohortDefinition getPatientsWhoRestartedTreatment() {
+		return genericCohortQueires.hasCodedObs(hivMetadata.getARVPlanConcept(),
+		    Collections.singletonList(hivMetadata.getRestartConcept()));
 	}
 }

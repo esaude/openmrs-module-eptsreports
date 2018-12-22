@@ -68,7 +68,7 @@ public class SetupTxCurr extends EptsDataExportManager {
 		reportDefinition.setDescription(getDescription());
 		reportDefinition.setParameters(txCurrDataset.getParameters());
 		
-		reportDefinition.addDataSetDefinition(txCurrDataset.constructTxNewDatset(),
+		reportDefinition.addDataSetDefinition(txCurrDataset.constructTxCurrDataset(true),
 		    ParameterizableUtil.createParameterMappings("endDate=${endDate},startDate=${startDate},location=${location}"));
 		
 		reportDefinition.setBaseCohortDefinition(genericCohortQueries.getBaseCohort(),
@@ -88,8 +88,7 @@ public class SetupTxCurr extends EptsDataExportManager {
 			reportDesign.setProperties(props);
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		
 		return Arrays.asList(reportDesign);
