@@ -110,14 +110,14 @@ public class EptsCalculations {
 		def.setName(timeQualifier.name() + "obs");
 		def.setWhich(timeQualifier);
 		def.setQuestion(concept);
-		if(startDate != null){
+		if (startDate != null) {
 			def.setOnOrAfter(startDate);
 		}
 		def.setOnOrBefore(context.getNow());
 		if (locationList.size() > 0) {
 			def.setLocationList(locationList);
 		}
-
+		
 		return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
 	}
 	

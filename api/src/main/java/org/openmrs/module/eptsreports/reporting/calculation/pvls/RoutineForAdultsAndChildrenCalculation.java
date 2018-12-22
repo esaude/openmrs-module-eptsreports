@@ -70,6 +70,13 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 		EncounterType arvPediatriaEncounterType = hivMetadata.getARVPediatriaSeguimentoEncounterType(); // encounter 9
 		EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
 		
+		// lookups
+		CalculationResultMap patientHavingVL = EptsCalculations.getObs(viralLoadConcept, cohort, Arrays.asList(location),
+		    TimeQualifier.ANY, latestVlLowerDateLimit, context);
+		CalculationResultMap firstAdultoEncounter = EptsCalculations.firstEncounter(arvAdultoEncounterType, cohort, location, context);
+		CalculationResultMap firstPediatriaEncounter = EptsCalculations.firstEncounter(arvPediatriaEncounterType, cohort, location,
+		    context);
+		
 		// get the ART initiation date
 		CalculationResultMap arvsInitiationDateMap = calculate(
 		    Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0), cohort, context);
@@ -93,8 +100,7 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 					
 					// get all the VL results for each patient in the last 12 months only if the
 					// last VL Obs is within the 12month window
-					CalculationResultMap patientHavingVL = EptsCalculations.getObs(viralLoadConcept, Arrays.asList(pId),
-					    Arrays.asList(location), TimeQualifier.ANY, latestVlLowerDateLimit, context);
+					
 					ListResult vlObsResult = (ListResult) patientHavingVL.get(pId);
 					
 					List<Obs> viralLoadForPatientTakenWithin12Months = new ArrayList<Obs>();
@@ -170,11 +176,6 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 						    Arrays.asList(location), TimeQualifier.FIRST, null, context);
 						
 						Obs obs = EptsCalculationUtils.obsResultForPatient(changingRegimenLines, pId);
-						
-						CalculationResultMap firstAdultoEncounter = EptsCalculations.firstEncounter(arvAdultoEncounterType,
-						    Arrays.asList(pId), location, context);
-						CalculationResultMap firstPediatriaEncounter = EptsCalculations.firstEncounter(arvPediatriaEncounterType,
-						    Arrays.asList(pId), location, context);
 						
 						Encounter adultoEncounter = EptsCalculationUtils.encounterResultForPatient(firstAdultoEncounter, pId);
 						Encounter pediatriaEncounter = EptsCalculationUtils.encounterResultForPatient(firstPediatriaEncounter, pId);
