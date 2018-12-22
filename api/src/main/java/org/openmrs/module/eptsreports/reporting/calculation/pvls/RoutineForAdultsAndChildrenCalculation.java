@@ -83,6 +83,9 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 		CalculationResultMap lastVl = EptsCalculations.lastObs(Arrays.asList(labEncounterType), viralLoadConcept, location,
 		    latestVlLowerDateLimit, context.getNow(), cohort, context);
 		
+		CalculationResultMap changingRegimenLines = EptsCalculations.getObs(regimeConcept, cohort, Arrays.asList(location),
+		    TimeQualifier.FIRST, null, context);
+		
 		for (Integer pId : cohort) {
 			boolean isOnRoutine = false;
 			Date artInitiationDate = null;
@@ -172,8 +175,6 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 					if (!isOnRoutine && viralLoadForPatientTakenWithin12Months.size() > 0) {
 						// get when a patient switch between lines from first to second
 						// Date when started on second line will be considered the changing date
-						CalculationResultMap changingRegimenLines = EptsCalculations.getObs(regimeConcept, Arrays.asList(pId),
-						    Arrays.asList(location), TimeQualifier.FIRST, null, context);
 						
 						Obs obs = EptsCalculationUtils.obsResultForPatient(changingRegimenLines, pId);
 						
