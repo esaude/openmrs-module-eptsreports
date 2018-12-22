@@ -198,7 +198,8 @@ public class EptsCalculations {
 	
 	public static CalculationResultMap lastObs(List<EncounterType> encounterTypes, Concept concept, Location location, Date startDate,
 	        Date endDate, Collection<Integer> cohort, PatientCalculationContext context) {
-		ObsForPersonDataDefinition definition = new ObsForPersonDataDefinition("Last VL");
+		ObsForPersonDataDefinition definition = new ObsForPersonDataDefinition();
+		definition.setName("last obs");
 		definition.setEncounterTypeList(encounterTypes);
 		definition.setQuestion(concept);
 		definition.setLocationList(Arrays.asList(location));

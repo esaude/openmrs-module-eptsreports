@@ -73,16 +73,8 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
 	}
 	
 	private boolean isAtLeastThreeMonthsLater(Date artStartDate, Date lastVlDate) {
-		Date threeMonthsLater = getThreeMonthsLater(artStartDate);
-		boolean isThreeMonthsLater = lastVlDate.compareTo(threeMonthsLater) >= 0;
-		return isThreeMonthsLater;
-	}
-	
-	private Date getThreeMonthsLater(Date artStartDate) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(artStartDate);
-		calendar.add(Calendar.MONTH, 3);
-		return calendar.getTime();
+		Date threeMonthsLater = EptsCalculationUtils.addMonths(artStartDate, 3);
+		return lastVlDate.compareTo(threeMonthsLater) >= 0;
 	}
 	
 	private boolean checkNotNull(Object... objects) {
