@@ -92,8 +92,7 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 			reportDesign.setProperties(props);
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		
 		return Arrays.asList(reportDesign);

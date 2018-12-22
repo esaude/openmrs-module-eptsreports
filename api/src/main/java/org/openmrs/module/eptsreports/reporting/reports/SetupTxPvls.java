@@ -26,6 +26,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+@Deprecated
 @Component
 public class SetupTxPvls extends EptsDataExportManager {
 	
@@ -81,8 +82,7 @@ public class SetupTxPvls extends EptsDataExportManager {
 			reportDesign.setProperties(props);
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		
 		return Arrays.asList(reportDesign);

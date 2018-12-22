@@ -23,6 +23,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+@Deprecated
 @Component
 public class SetupTxCurr21 extends EptsDataExportManager {
 	
@@ -85,7 +86,7 @@ public class SetupTxCurr21 extends EptsDataExportManager {
 			reportDesign.setProperties(props);
 		}
 		catch (IOException e) {
-			throw new RuntimeException(e );
+			throw new RuntimeException(e);
 		}
 		
 		return Arrays.asList(reportDesign);
