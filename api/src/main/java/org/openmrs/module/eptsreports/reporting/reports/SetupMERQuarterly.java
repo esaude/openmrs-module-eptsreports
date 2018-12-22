@@ -85,7 +85,7 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
 		ReportDesign reportDesign = null;
 		try {
-			reportDesign = createXlsReportDesign(reportDefinition, "PEPFAR_MER_2.1_REPORT.xls", "PEPFAR Quarterly Report",
+			reportDesign = createXlsReportDesign(reportDefinition, "PEPFAR_MER_2.3_REPORT.xls", "PEPFAR Quarterly Report",
 			    getExcelDesignUuid(), null);
 			Properties props = new Properties();
 			props.put("sortWeight", "5000");
