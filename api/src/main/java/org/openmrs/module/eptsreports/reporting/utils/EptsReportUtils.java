@@ -58,12 +58,7 @@ public class EptsReportUtils {
 	
 	public static ReportDefinition findReportDefinition(String uuid) {
 		ReportDefinitionService reportService = (ReportDefinitionService) Context.getService(ReportDefinitionService.class);
-		ReportDefinition reportDefinition = reportService.getDefinitionByUuid(uuid);
-		if (reportDefinition != null) {
-			return reportDefinition;
-		}
-		
-		throw new RuntimeException("Couldn't find Report Definition " + uuid);
+		return reportService.getDefinitionByUuid(uuid);
 	}
 	
 	/**
