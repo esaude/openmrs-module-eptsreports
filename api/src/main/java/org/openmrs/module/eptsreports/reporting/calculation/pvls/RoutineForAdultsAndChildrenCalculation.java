@@ -184,12 +184,11 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 						// Date when started on second line will be considered the changing date
 						Obs obs = EptsCalculationUtils.obsResultForPatient(changingRegimenLines, pId);
 						
-						// loop through the viral load list and find one that is after the second line
-						// option
-						Date startRegimeDate = obs.getObsDatetime();
 						Date latestVlDate = lastVlObs.getObsDatetime();
-						if (obs != null && latestVlDate != null && startRegimeDate != null) {
-							if (startRegimeDate.before(latestVlDate)) {
+						if (obs != null && latestVlDate != null) {
+							Date startRegimeDate = obs.getObsDatetime();
+							
+							if (startRegimeDate != null && startRegimeDate.before(latestVlDate)) {
 								isOnRoutine = true;
 								// check that there is no other VL registered between first encounter_date and
 								// vl_registered_date
