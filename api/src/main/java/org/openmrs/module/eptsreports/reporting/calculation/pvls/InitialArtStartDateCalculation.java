@@ -100,8 +100,8 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 			if (transferInObs != null) {
 				enrollmentDates.add(transferInObs.getObsDatetime());
 			}
+			enrollmentDates.removeAll(Collections.singleton(null));
 			if (enrollmentDates.size() > 0) {
-				enrollmentDates.removeAll(Collections.singleton(null));
 				Collections.sort(enrollmentDates);
 				requiredDate = enrollmentDates.get(0);
 			}
