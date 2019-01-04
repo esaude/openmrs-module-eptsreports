@@ -35,8 +35,8 @@ public class BaseQueries {
 		        + "select pg.patient_id from patient p join patient_program pg on p.patient_id=pg.patient_id join patient_state ps on pg.patient_program_id=ps.patient_program_id "
 		        + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s and ps.state=29 and ps.start_date<=:endDate and location_id=:location ";
 		String encounterTypes = StringUtils.join(
-		    Arrays.asList(parameters.get("arvAdultInitialEncounterTypeId"), parameters.get("arvPediatriaInitialEncounterTypeId")),
-		    ',');
+		    Arrays.asList(parameters.get("arvAdultInitialEncounterTypeId"),
+		        parameters.get("arvPediatriaInitialEncounterTypeId")), ',');
 		return String.format(query, encounterTypes, parameters.get("hivCareProgramId"), parameters.get("hivCareProgramId"),
 		    parameters.get("artProgramId"));
 	}

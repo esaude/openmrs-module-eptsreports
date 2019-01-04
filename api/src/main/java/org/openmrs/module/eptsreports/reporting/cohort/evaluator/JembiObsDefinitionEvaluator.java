@@ -22,7 +22,8 @@ public class JembiObsDefinitionEvaluator implements PatientDataEvaluator {
 	private EvaluationService evaluationService;
 	
 	@Override
-	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException {
+	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
+	        throws EvaluationException {
 		JembiObsDefinition def = (JembiObsDefinition) definition;
 		EvaluatedPatientData c = new EvaluatedPatientData(def, context);
 		
