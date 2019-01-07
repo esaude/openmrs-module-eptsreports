@@ -38,12 +38,12 @@ public class HivIndicators extends BaseIndicators {
 	
 	public CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(CohortDefinition cohortDefinition) {
 		return newCohortIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(cohortDefinition,
-		    "onOrBefore=${endDate},location=${location},effectiveDate=${endDate},locations=${location},locations=${location}"));
+		    "onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
 	}
 	
 	public CohortIndicator patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(CohortDefinition cohortDefinition) {
 		return newCohortIndicator("patientNewlyEnrolledInHIVIndicator",
-		    EptsReportUtils.map(cohortDefinition, "onOrBefore=${endDate},location=${location},locations=${location}"));
+		    EptsReportUtils.map(cohortDefinition, "onOrBefore=${endDate},location=${location}"));
 	}
 	
 	// add viral load indicators
