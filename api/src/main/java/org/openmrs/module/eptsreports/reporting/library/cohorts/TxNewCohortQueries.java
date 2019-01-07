@@ -319,19 +319,18 @@ public class TxNewCohortQueries {
 		TxNewComposition.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
 		String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}";
 		
-		TxNewComposition.getSearches().put("1",
-		    new Mapped<CohortDefinition>(getTxNewUnionNumerator(AgeCohort), ParameterizableUtil.createParameterMappings(mappings)));
-		TxNewComposition.getSearches().put("2",
-		    new Mapped<CohortDefinition>(transferredFromOtherHealthFacility, ParameterizableUtil.createParameterMappings(mappings)));
-		TxNewComposition.getSearches().put("restartedTreatment", new Mapped<CohortDefinition>(restartedTreatment, ParameterizableUtil
-		        .createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}")));
+		TxNewComposition.addSearch("1",
+		    EptsReportUtils.map(getTxNewUnionNumerator(AgeCohort), mappings));
+		TxNewComposition.addSearch("2",
+				EptsReportUtils.map(transferredFromOtherHealthFacility, mappings));
+		TxNewComposition.addSearch("restartedTreatment", EptsReportUtils.map(restartedTreatment, "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
 		TxNewComposition.addSearch("baseCohort",
 		    EptsReportUtils.map(genericCohorts.getBaseCohort(), "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
 		
 		String compositionString = "baseCohort AND (1 NOT (2 OR restartedTreatment))";
 		
 		if (GenderCohort != null) {
-			TxNewComposition.getSearches().put("4", new Mapped<CohortDefinition>(GenderCohort, null));
+			TxNewComposition.addSearch("4", EptsReportUtils.map(GenderCohort, null));
 			
 			compositionString = compositionString + " AND 4";
 		}
