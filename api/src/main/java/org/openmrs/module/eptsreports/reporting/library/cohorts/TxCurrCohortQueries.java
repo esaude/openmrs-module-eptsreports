@@ -19,6 +19,7 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -262,29 +263,16 @@ public class TxCurrCohortQueries {
 		TxCurrComposition.addParameter(new Parameter("location", "location", Location.class));
 		TxCurrComposition.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
 		TxCurrComposition.addParameter(new Parameter("locations", "location", Location.class));
-		TxCurrComposition.getSearches().put("1", new Mapped<CohortDefinition>(inARTProgramAtEndDate,
-		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},locations=${location}")));
-		TxCurrComposition.getSearches().put("2", new Mapped<CohortDefinition>(patientWithSTARTDRUGSObs,
-		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
-		TxCurrComposition.getSearches().put("3", new Mapped<CohortDefinition>(patientWithHistoricalDrugStartDateObs,
-		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
-		TxCurrComposition.getSearches().put("4", new Mapped<CohortDefinition>(patientsWithDrugPickUpEncounters,
-		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
-		TxCurrComposition.getSearches().put("5", new Mapped<CohortDefinition>(patientsWhoLeftARTProgramBeforeOrOnEndDate,
-		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
-		TxCurrComposition.getSearches().put("6",
-		    new Mapped<CohortDefinition>(patientsThatMissedNexPickup, ParameterizableUtil.createParameterMappings(
-		        String.format("onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s", abandonmentDays))));
-		TxCurrComposition.getSearches().put("7",
-		    new Mapped<CohortDefinition>(patientsThatDidNotMissNextConsultation, ParameterizableUtil.createParameterMappings(
-		        String.format("onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s", abandonmentDays))));
-		TxCurrComposition.getSearches().put("8",
-		    new Mapped<CohortDefinition>(patientsReportedAsAbandonmentButStillInPeriod, ParameterizableUtil.createParameterMappings(
-		        String.format("onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s", abandonmentDays))));
-		TxCurrComposition.getSearches().put("11", new Mapped<CohortDefinition>(patientsWithNextPickupDate,
-		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
-		TxCurrComposition.getSearches().put("12", new Mapped<CohortDefinition>(patientsWithNextConsultationDate,
-		        ParameterizableUtil.createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
+		TxCurrComposition.addSearch("1", EptsReportUtils.map(inARTProgramAtEndDate,"onOrBefore=${onOrBefore},locations=${location}"));
+		TxCurrComposition.addSearch("2", EptsReportUtils.map(patientWithSTARTDRUGSObs,"onOrBefore=${onOrBefore},location=${location}"));
+		TxCurrComposition.addSearch("3", EptsReportUtils.map(patientWithHistoricalDrugStartDateObs,"onOrBefore=${onOrBefore},location=${location}"));
+		TxCurrComposition.addSearch("4", EptsReportUtils.map(patientsWithDrugPickUpEncounters,"onOrBefore=${onOrBefore},location=${location}"));
+		TxCurrComposition.addSearch("5", EptsReportUtils.map(patientsWhoLeftARTProgramBeforeOrOnEndDate,"onOrBefore=${onOrBefore},location=${location}"));
+		TxCurrComposition.addSearch("6", EptsReportUtils.map(patientsThatMissedNexPickup,  String.format("onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s", abandonmentDays)));
+		TxCurrComposition.addSearch("7", EptsReportUtils.map(patientsThatDidNotMissNextConsultation, String.format("onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s", abandonmentDays)));
+		TxCurrComposition.addSearch("8", EptsReportUtils.map(patientsReportedAsAbandonmentButStillInPeriod, String.format("onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s", abandonmentDays)));
+		TxCurrComposition.addSearch("11", EptsReportUtils.map(patientsWithNextPickupDate,"onOrBefore=${onOrBefore},location=${location}"));
+		TxCurrComposition.addSearch("12", EptsReportUtils.map(patientsWithNextConsultationDate, "onOrBefore=${onOrBefore},location=${location}"));
 		
 		String compositionString;
 		if (currentSpec) {
@@ -294,12 +282,11 @@ public class TxCurrCohortQueries {
 		}
 		
 		if (ageCohort != null) {
-			TxCurrComposition.getSearches().put("9", new Mapped<CohortDefinition>(ageCohort,
-			        ParameterizableUtil.createParameterMappings("effectiveDate=${effectiveDate}")));
+			TxCurrComposition.addSearch("9", EptsReportUtils.map(ageCohort,"effectiveDate=${effectiveDate}"));
 			compositionString = compositionString + " AND 9";
 		}
 		if (genderCohort != null) {
-			TxCurrComposition.getSearches().put("10", new Mapped<CohortDefinition>(genderCohort, null));
+			TxCurrComposition.addSearch("10", EptsReportUtils.map(genderCohort, null));
 			compositionString = compositionString + " AND 10";
 		}
 		
