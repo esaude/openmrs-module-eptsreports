@@ -124,9 +124,7 @@ public class TxNewDataset extends BaseDataSet {
 			CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator = hivIndicators
 			        .patientInYearRangeEnrolledInHIVStartedARTIndicator(patientInYearRangeEnrolledInARTStarted);
 			dataSetDefinition.addColumn("1M" + i, "Males:TX_NEW: New on ART by age and sex: " + ageCohort.getName(),
-			    new Mapped<CohortIndicator>(patientInYearRangeEnrolledInHIVStartedARTIndicator,
-			            ParameterizableUtil.createParameterMappings(mappings)),
-			    "");
+			    EptsReportUtils.map(patientInYearRangeEnrolledInHIVStartedARTIndicator, mappings),"");
 			
 			i++;
 		}
@@ -141,9 +139,7 @@ public class TxNewDataset extends BaseDataSet {
 			CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator = hivIndicators
 			        .patientInYearRangeEnrolledInHIVStartedARTIndicator(patientInYearRangeEnrolledInARTStarted);
 			dataSetDefinition.addColumn("1F" + j, "Females:TX_NEW: New on ART by age and sex: " + ageCohort.getName(),
-			    new Mapped<CohortIndicator>(patientInYearRangeEnrolledInHIVStartedARTIndicator,
-			            ParameterizableUtil.createParameterMappings(mappings)),
-			    "");
+			    EptsReportUtils.map(patientInYearRangeEnrolledInHIVStartedARTIndicator,mappings), "");
 			j++;
 		}
 		
@@ -152,9 +148,7 @@ public class TxNewDataset extends BaseDataSet {
 		    patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility, patientsWhoRestartedTreatment, null, null);
 		CohortIndicator patientEnrolledInHIVStartedARTIndicator = hivIndicators
 		        .patientEnrolledInHIVStartedARTIndicator(patientEnrolledInART);
-		dataSetDefinition.addColumn("1All", "TX_NEW: New on ART", new Mapped<CohortIndicator>(patientEnrolledInHIVStartedARTIndicator,
-		        ParameterizableUtil.createParameterMappings(mappings)),
-		    "");
+		dataSetDefinition.addColumn("1All", "TX_NEW: New on ART", EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings), "");
 		
 		// Obtain patients breastfeeding newly enrolled on ART
 		dataSetDefinition.addDimension("maternity", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
