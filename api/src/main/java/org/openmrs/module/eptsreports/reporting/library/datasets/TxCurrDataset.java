@@ -71,8 +71,8 @@ public class TxCurrDataset extends BaseDataSet {
 		CohortDefinition patientsThatDidNotMissNextConsultation = txCurrCohortQueries
 		        .getPatientsThatDidNotMissNextConsultation();
 		CohortDefinition patientsReportedAsAbandonmentButStillInPeriod = txCurrCohortQueries
-
-		        .getPatientsReportedAsAbandonmentButStillInPeriod();
+		
+		.getPatientsReportedAsAbandonmentButStillInPeriod();
 		CohortDefinition patientsWithNextPickupDate = txCurrCohortQueries.getPatientsWithNextPickupDate();
 		CohortDefinition patientsWithNextConsultationDate = txCurrCohortQueries.getPatientsWithNextConsultationDate();
 		
