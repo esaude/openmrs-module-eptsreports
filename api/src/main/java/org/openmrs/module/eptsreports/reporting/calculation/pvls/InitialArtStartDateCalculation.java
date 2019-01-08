@@ -70,11 +70,16 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 		Concept hostoricalStartConcept = commonMetadata.gethistoricalDrugStartDateConcept();
 		EncounterType encounterTypePharmacy = hivMetadata.getARVPharmaciaEncounterType();
 		
-		CalculationResultMap inProgramMap = EptsCalculations.firstPatientProgram(treatmentProgram, location, cohort, context);
-		CalculationResultMap startDrugMap = EptsCalculations.firstObs(arvPlan, startDrugsConcept, location, true, cohort, context);
-		CalculationResultMap historicalMap = EptsCalculations.firstObs(hostoricalStartConcept, null, location, false, cohort, context);
-		CalculationResultMap pharmacyEncounterMap = EptsCalculations.firstEncounter(encounterTypePharmacy, cohort, location, context);
-		CalculationResultMap transferInMap = EptsCalculations.firstObs(arvPlan, transferInConcept, location, true, cohort, context);
+		CalculationResultMap inProgramMap = EptsCalculations
+		        .firstPatientProgram(treatmentProgram, location, cohort, context);
+		CalculationResultMap startDrugMap = EptsCalculations.firstObs(arvPlan, startDrugsConcept, location, true, cohort,
+		    context);
+		CalculationResultMap historicalMap = EptsCalculations.firstObs(hostoricalStartConcept, null, location, false,
+		    cohort, context);
+		CalculationResultMap pharmacyEncounterMap = EptsCalculations.firstEncounter(encounterTypePharmacy, cohort, location,
+		    context);
+		CalculationResultMap transferInMap = EptsCalculations.firstObs(arvPlan, transferInConcept, location, true, cohort,
+		    context);
 		
 		for (Integer pId : cohort) {
 			Date requiredDate = null;

@@ -22,7 +22,6 @@ import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDim
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
@@ -72,6 +71,7 @@ public class TxCurrDataset extends BaseDataSet {
 		CohortDefinition patientsThatDidNotMissNextConsultation = txCurrCohortQueries
 		        .getPatientsThatDidNotMissNextConsultation();
 		CohortDefinition patientsReportedAsAbandonmentButStillInPeriod = txCurrCohortQueries
+
 		        .getPatientsReportedAsAbandonmentButStillInPeriod();
 		CohortDefinition patientsWithNextPickupDate = txCurrCohortQueries.getPatientsWithNextPickupDate();
 		CohortDefinition patientsWithNextConsultationDate = txCurrCohortQueries.getPatientsWithNextConsultationDate();
