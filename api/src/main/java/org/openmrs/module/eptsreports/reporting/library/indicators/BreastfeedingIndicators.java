@@ -27,25 +27,27 @@ public class BreastfeedingIndicators extends BaseIndicators {
 	private TxPvlsCohortQueries txPvls;
 	
 	/**
-	 * Breastfeeding women with viral load suppression in the last 12 months to a common file for reuse
-	 * and are on routine - numerator
+	 * Breastfeeding women with viral load suppression in the last 12 months to a common file for
+	 * reuse and are on routine - numerator
 	 * 
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getBreastfeedingWomenWithSuppressedViralLoadIn12MonthsOnRoutineNumerator() {
 		return newCohortIndicator("breastfeedingWomenWithViralLoadSuppression routine numerator", EptsReportUtils.map(
-		    txPvls.getBreastFeedingWomenOnRoutineNumerator(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+		    txPvls.getBreastFeedingWomenOnRoutineNumerator(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 	
 	/**
-	 * Breastfeeding women with viral load suppression in the last 12 months to a common file for reuse
-	 * and are NOT documented - numerator
+	 * Breastfeeding women with viral load suppression in the last 12 months to a common file for
+	 * reuse and are NOT documented - numerator
 	 * 
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getBreastfeedingWomenWithSuppressedViralLoadIn12MonthsNotDocumentedNumerator() {
-		return newCohortIndicator("breastfeedingWomenWithViralLoadSuppression not documented numerator", EptsReportUtils.map(
-		    txPvls.getBreastFeedingWomenNotDocumentedNumerator(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+		return newCohortIndicator("breastfeedingWomenWithViralLoadSuppression not documented numerator",
+		    EptsReportUtils.map(txPvls.getBreastFeedingWomenNotDocumentedNumerator(),
+		        "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 	
 	/**
@@ -55,21 +57,21 @@ public class BreastfeedingIndicators extends BaseIndicators {
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getBreastfeedingWomenWithViralLoadIn12MonthsAndOnRoutineDenominator() {
-		return newCohortIndicator("breastfeedingWomenWithViralLoad-routine denominator",
-		    EptsReportUtils.map(txPvls.getBreastfeedingWomenOnRoutineWithViralLoadResultsDenominator(),
-		        "startDate=${startDate},endDate=${endDate},location=${location}"));
+		return newCohortIndicator("breastfeedingWomenWithViralLoad-routine denominator", EptsReportUtils.map(
+		    txPvls.getBreastfeedingWomenOnRoutineWithViralLoadResultsDenominator(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 	
 	/**
-	 * Breastfeeding women with viral load in the last 12 months to a common file for reuse and on Not
-	 * documented - Denominator
+	 * Breastfeeding women with viral load in the last 12 months to a common file for reuse and on
+	 * Not documented - Denominator
 	 * 
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getBreastfeedingWomenWithViralLoadIn12MonthsAndNotDocumentedDenominator() {
-		return newCohortIndicator("breastfeedingWomenWithViralLoad-not documented denominator",
-		    EptsReportUtils.map(txPvls.getBreastfeedingWomenAndNotDocumentedWithViralLoadResultsDenominator(),
-		        "startDate=${startDate},endDate=${endDate},location=${location}"));
+		return newCohortIndicator("breastfeedingWomenWithViralLoad-not documented denominator", EptsReportUtils.map(
+		    txPvls.getBreastfeedingWomenAndNotDocumentedWithViralLoadResultsDenominator(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
 	
 	/**
@@ -78,7 +80,7 @@ public class BreastfeedingIndicators extends BaseIndicators {
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getBreastfeedingAndPregnantOnRoutine() {
-		return newCohortIndicator("breastfeedingWomenWithViralLoad",
-		    EptsReportUtils.map(txPvls.getPregnantAndBreastfeedingWomenOnRoutine(), "onDate=${endDate},location=${location}"));
+		return newCohortIndicator("breastfeedingWomenWithViralLoad", EptsReportUtils.map(
+		    txPvls.getPregnantAndBreastfeedingWomenOnRoutine(), "onDate=${endDate},location=${location}"));
 	}
 }

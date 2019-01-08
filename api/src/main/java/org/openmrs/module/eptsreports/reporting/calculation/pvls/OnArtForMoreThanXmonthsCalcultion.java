@@ -42,7 +42,8 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
 	private HivMetadata hivMetadata;
 	
 	@Override
-	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
+	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params,
+	        PatientCalculationContext context) {
 		
 		CalculationResultMap map = new CalculationResultMap();
 		Location location = (Location) context.getFromCache("location");
