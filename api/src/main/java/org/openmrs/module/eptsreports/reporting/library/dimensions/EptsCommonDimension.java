@@ -136,6 +136,29 @@ public class EptsCommonDimension {
 	}
 	
 	/**
+	 * @return Age ranges for TX_NEW (<1, 5-9, 10-14, 15-19, 20-24, 25-29, 30-34, 35-39, 40-44,
+	 *         45-49, >=50). The ages are calculated using ART start date as effective date.
+	 */
+	public CohortDefinitionDimension txNewAges() {
+		CohortDefinitionDimension dim = new CohortDefinitionDimension();
+		dim.setName("age");
+		dim.addCohortDefinition("<1", EptsReportUtils.map(ageCohortQueries.createBelowXAgeOnArtStartDateCohort(1), ""));
+		dim.addCohortDefinition("1-4", EptsReportUtils.map(ageCohortQueries.createXtoYAgeOnArtStartDateCohort(1, 4), ""));
+		dim.addCohortDefinition("5-9", EptsReportUtils.map(ageCohortQueries.createXtoYAgeOnArtStartDateCohort(5, 9), ""));
+		dim.addCohortDefinition("10-14", EptsReportUtils.map(ageCohortQueries.createXtoYAgeOnArtStartDateCohort(10, 14), ""));
+		dim.addCohortDefinition("15-19", EptsReportUtils.map(ageCohortQueries.createXtoYAgeOnArtStartDateCohort(15, 19), ""));
+		dim.addCohortDefinition("20-24", EptsReportUtils.map(ageCohortQueries.createXtoYAgeOnArtStartDateCohort(20, 24), ""));
+		dim.addCohortDefinition("25-29", EptsReportUtils.map(ageCohortQueries.createXtoYAgeOnArtStartDateCohort(25, 29), ""));
+		dim.addCohortDefinition("30-34", EptsReportUtils.map(ageCohortQueries.createXtoYAgeOnArtStartDateCohort(30, 34), ""));
+		dim.addCohortDefinition("35-39", EptsReportUtils.map(ageCohortQueries.createXtoYAgeOnArtStartDateCohort(35, 39), ""));
+		dim.addCohortDefinition("40-44", EptsReportUtils.map(ageCohortQueries.createXtoYAgeOnArtStartDateCohort(40, 44), ""));
+		dim.addCohortDefinition("45-49", EptsReportUtils.map(ageCohortQueries.createXtoYAgeOnArtStartDateCohort(45, 49), ""));
+		dim.addCohortDefinition("50+", EptsReportUtils.map(ageCohortQueries.createOverXAgeOnArtStartDateCohort(50), ""));
+		dim.addCohortDefinition("unknown", EptsReportUtils.map(genericCohortQueries.getUnknownAgeCohort(), ""));
+		return dim;
+	}
+	
+	/**
 	 * @return CohortDefinitionDimension
 	 */
 	public CohortDefinitionDimension maternityDimension() {

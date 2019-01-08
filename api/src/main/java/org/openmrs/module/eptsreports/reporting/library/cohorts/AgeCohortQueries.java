@@ -13,13 +13,18 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.Date;
-
+import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.calculation.txnew.StartedArtAtXtoYAgeCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.txnew.StartedArtBellowXAgeCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.txnew.StartedArtOverXAgeCalculation;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 @Component
 public class AgeCohortQueries {
@@ -53,13 +58,47 @@ public class AgeCohortQueries {
 	}
 	
 	/**
-	 * Person with Unknown age, the birthdate column is null
-	 * 
-	 * @return CohortDefinition
+	 * @return Person with Unknown age, the birthdate column is null
 	 */
 	public CohortDefinition getPatientsWithUnknownAge() {
 		return genericCohortQueries.generalSql("unknownAge",
 		    "SELECT p.patient_id FROM patient p JOIN person pr ON p.patient_id = pr.person_id WHERE pr.birthdate IS NULL");
+	}
+	
+	/**
+	 * @param minAge Minimum age
+	 * @param maxAge Maximum age
+	 * @return Patients with age between {@code minAge} and {@code maxAge} on ART start date.
+	 */
+	public CohortDefinition createXtoYAgeOnArtStartDateCohort(int minAge, int maxAge) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("patients with age between " + minAge + " and "
+		        + maxAge + " on ART start date", Context.getRegisteredComponents(StartedArtAtXtoYAgeCalculation.class)
+		        .get(0));
+		cd.addCalculationParameter("minAge", minAge);
+		cd.addCalculationParameter("maxAge", maxAge);
+		return cd;
+	}
+	
+	/**
+	 * @param maxAge Maximum age
+	 * @return Patients with age bellow {@code maxAge} on ART start date.
+	 */
+	public CohortDefinition createBelowXAgeOnArtStartDateCohort(int maxAge) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("patients with age bellow " + maxAge
+		        + " on ART start date", Context.getRegisteredComponents(StartedArtBellowXAgeCalculation.class).get(0));
+		cd.addCalculationParameter("maxAge", maxAge);
+		return cd;
+	}
+	
+	/**
+	 * @param minAge Minimum age
+	 * @return Patients with age equal or above {@code minAge} on ART start date.
+	 */
+	public CohortDefinition createOverXAgeOnArtStartDateCohort(int minAge) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("patients with age over " + minAge
+		        + " on ART start date", Context.getRegisteredComponents(StartedArtOverXAgeCalculation.class).get(0));
+		cd.addCalculationParameter("minAge", minAge);
+		return cd;
 	}
 	
 }

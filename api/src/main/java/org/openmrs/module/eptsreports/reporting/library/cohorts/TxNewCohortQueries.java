@@ -28,7 +28,6 @@ import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQue
 import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxNewQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
-import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -59,6 +58,9 @@ public class TxNewCohortQueries {
 	
 	@Autowired
 	private GenderCohortQueries genderCohorts;
+	
+	@Autowired
+	private HivCohortQueries hivCohortQueries;
 	
 	// Looks for patients enrolled in ART program (program 2=SERVICO TARV -
 	// TRATAMENTO) before or on end date
@@ -265,13 +267,12 @@ public class TxNewCohortQueries {
 	}
 	
 	/**
-	 * Obtain patients from TxNew Union Query TODO: passing the start & end age like this is not
-	 * ideal - needs to be refactored to use preferred approach using age cohort
+	 * Obtain patients from TxNew Union Query.
 	 * 
 	 * @return CohortDefinition
 	 */
 	@DocumentedDefinition(value = "txNewUnionNumerator")
-	public CohortDefinition getTxNewUnionNumerator(CohortDefinition AgeCohort) {
+	public CohortDefinition getTxNewUnionNumerator() {
 		
 		Map<String, Integer> queryParameters = new HashMap<String, Integer>();
 		
@@ -284,11 +285,6 @@ public class TxNewCohortQueries {
 		queryParameters.put("arvPlanConcept", hivMetadata.getARVPlanConcept().getConceptId());
 		queryParameters.put("startDrugsConcept", hivMetadata.getstartDrugsConcept().getConceptId());
 		queryParameters.put("historicalDrugsConcept", hivMetadata.gethistoricalDrugStartDateConcept().getConceptId());
-		
-		if (AgeCohort != null && AgeCohort instanceof AgeCohortDefinition) {
-			queryParameters.put("minAge", ((AgeCohortDefinition) AgeCohort).getMinAge());
-			queryParameters.put("maxAge", ((AgeCohortDefinition) AgeCohort).getMaxAge());
-		}
 		
 		SqlCohortDefinition txNewUnionNumerator = new SqlCohortDefinition();
 		txNewUnionNumerator.setName("TxNewUnionNumerator");
@@ -304,50 +300,30 @@ public class TxNewCohortQueries {
 	 * Build TxNew composition cohort definition
 	 * 
 	 * @param cohortName
-	 * @param inARTProgramDuringTimePeriod
-	 * @param patientWithSTARTDRUGSObs
-	 * @param patientWithHistoricalDrugStartDateObs
-	 * @param patientsWithDrugPickUpEncounters
-	 * @param transferredFromOtherHealthFacility
-	 * @param AgeCohort
-	 * @param GenderCohort
 	 * @return CompositionQuery
 	 */
 	@DocumentedDefinition(value = "getTxNewCompositionCohort")
-	public CohortDefinition getTxNewCompositionCohort(String cohortName, CohortDefinition inARTProgramDuringTimePeriod,
-	        CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs,
-	        CohortDefinition patientsWithDrugPickUpEncounters, CohortDefinition transferredFromOtherHealthFacility,
-	        CohortDefinition restartedTreatment, CohortDefinition AgeCohort, CohortDefinition GenderCohort) {
-		CompositionCohortDefinition TxNewComposition = new CompositionCohortDefinition();
-		TxNewComposition.setName(cohortName);
-		TxNewComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-		TxNewComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-		TxNewComposition.addParameter(new Parameter("location", "location", Location.class));
-		TxNewComposition.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+	public CohortDefinition getTxNewCompositionCohort(String cohortName) {
+		CompositionCohortDefinition txNewComposition = new CompositionCohortDefinition();
+		txNewComposition.setName(cohortName);
+		txNewComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		txNewComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		txNewComposition.addParameter(new Parameter("location", "location", Location.class));
+		txNewComposition.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
 		String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}";
 		
-		TxNewComposition.getSearches().put(
-		    "inART",
-		    new Mapped<CohortDefinition>(getTxNewUnionNumerator(AgeCohort), ParameterizableUtil
-		            .createParameterMappings(mappings)));
-		TxNewComposition.getSearches().put(
+		txNewComposition.getSearches().put("inART",
+		    new Mapped<CohortDefinition>(getTxNewUnionNumerator(), ParameterizableUtil.createParameterMappings(mappings)));
+		txNewComposition.getSearches().put(
 		    "transferredIn",
-		    new Mapped<CohortDefinition>(transferredFromOtherHealthFacility, ParameterizableUtil
+		    new Mapped<CohortDefinition>(getPatientsTransferredFromOtherHealthFacility(), ParameterizableUtil
 		            .createParameterMappings(mappings)));
-		TxNewComposition.getSearches().put(
+		txNewComposition.getSearches().put(
 		    "restartedTreatment",
-		    new Mapped<CohortDefinition>(restartedTreatment, ParameterizableUtil
+		    new Mapped<CohortDefinition>(hivCohortQueries.getPatientsWhoRestartedTreatment(), ParameterizableUtil
 		            .createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}")));
-
-		String compositionString = "inART NOT (transferredIn OR restartedTreatment)";
 		
-		if (GenderCohort != null) {
-			TxNewComposition.getSearches().put("4", new Mapped<CohortDefinition>(GenderCohort, null));
-			
-			compositionString = compositionString + " AND 4";
-		}
-		
-		TxNewComposition.setCompositionString(compositionString);
-		return TxNewComposition;
+		txNewComposition.setCompositionString("inART NOT (transferredIn OR restartedTreatment)");
+		return txNewComposition;
 	}
 }

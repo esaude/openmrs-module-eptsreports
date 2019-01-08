@@ -35,21 +35,6 @@ public class TxNewQueries {
 	 * @return TxNew Union Query
 	 */
 	public static String getTxNewUnionQueries(Map<String, Integer> parameters) {
-		
-		// default to "1" so that the SQL queries will still execute when no age
-		// parameters are provided
-		String minAgeCondition = "1";
-		String maxAgeCondition = "1";
-		
-		if (parameters.get("minAge") != null) {
-			minAgeCondition = "timestampdiff(year,birthdate,data_inicio)>=" + parameters.get("minAge");
-		}
-		
-		if (parameters.get("maxAge") != null) {
-			maxAgeCondition = "timestampdiff(year,birthdate,data_inicio)<" + parameters.get("maxAge");
-		}
-		String ageClause = "(" + minAgeCondition + " and " + maxAgeCondition + ")";
-		
 		String finalQuery = "select patient_id from (select patient_id, min(data_inicio) data_inicio from "
 		        + "(select p.patient_id, date_enrolled data_inicio from patient p "
 		        + "inner join patient_program pg on p.patient_id=pg.patient_id "
@@ -86,7 +71,7 @@ public class TxNewQueries {
 		        + parameters.get("arvPharmaciaEncounter")
 		        + " and e.voided=0 and e.encounter_datetime <= :onOrBefore and e.location_id=:location "
 		        + "group by p.patient_id) temp1 group by patient_id) temp2 inner join person pe on temp2.patient_id=pe.person_id "
-		        + "where (data_inicio between :onOrAfter and :onOrBefore) and " + ageClause;
+		        + "where (data_inicio between :onOrAfter and :onOrBefore)";
 		
 		return finalQuery;
 	}
