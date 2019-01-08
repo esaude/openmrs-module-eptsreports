@@ -27,8 +27,6 @@ import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -75,7 +73,8 @@ public class TxNewDataset extends BaseDataSet {
 		// drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation
 		// for adults and children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and
 		// 9=S.TARV: PEDIATRIA SEGUIMENTO) where START DATE is before or equal end date
-		CohortDefinition patientWithHistoricalDrugStartDateObs = txNewCohortQueries.getPatientWithHistoricalDrugStartDateObs();
+		CohortDefinition patientWithHistoricalDrugStartDateObs = txNewCohortQueries
+		        .getPatientWithHistoricalDrugStartDateObs();
 		
 		// Looks for patients who had at least one drug pick up (encounter type
 		// 18=S.TARV: FARMACIA) before end date
@@ -84,7 +83,8 @@ public class TxNewDataset extends BaseDataSet {
 		// Looks for patients enrolled on ART program (program 2=SERVICO TARV -
 		// TRATAMENTO), transferred from other health facility (program workflow state
 		// is 29=TRANSFER FROM OTHER FACILITY) between start date and end date
-		CohortDefinition transferredFromOtherHealthFacility = txNewCohortQueries.getPatientsTransferredFromOtherHealthFacility();
+		CohortDefinition transferredFromOtherHealthFacility = txNewCohortQueries
+		        .getPatientsTransferredFromOtherHealthFacility();
 		
 		CohortDefinition patientsWhoRestartedTreatment = hivCohortQueries.getPatientsWhoRestartedTreatment();
 		

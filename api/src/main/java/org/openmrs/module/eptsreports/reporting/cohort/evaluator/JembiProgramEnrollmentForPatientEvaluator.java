@@ -22,7 +22,8 @@ public class JembiProgramEnrollmentForPatientEvaluator implements PatientDataEva
 	private EvaluationService evaluationService;
 	
 	@Override
-	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException {
+	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
+	        throws EvaluationException {
 		JembiProgramEnrollmentForPatientDefinition def = (JembiProgramEnrollmentForPatientDefinition) definition;
 		EvaluatedPatientData c = new EvaluatedPatientData(def, context);
 		

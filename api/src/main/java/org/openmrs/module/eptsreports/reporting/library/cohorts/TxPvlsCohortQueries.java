@@ -49,14 +49,14 @@ public class TxPvlsCohortQueries {
 	private HivMetadata hivMetadata;
 	
 	/**
-	 * Patients who have NOT been on ART for 3 months based on the ART initiation date and date of last
-	 * viral load registered
+	 * Patients who have NOT been on ART for 3 months based on the ART initiation date and date of
+	 * last viral load registered
 	 * 
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getPatientsWhoAreMoreThan3MonthsOnArt() {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition("On ART for at least 3 months",
-		        Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0));
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("On ART for at least 3 months", Context
+		        .getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0));
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		return cd;
@@ -97,16 +97,16 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		cd.addSearch("breastfeeding", EptsReportUtils.map(txNewCohortQueries.getTxNewBreastfeedingComposition(),
 		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-		cd.addSearch("results",
-		    EptsReportUtils.map(getPatientsWithViralLoadResults(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.setCompositionString("breastfeeding AND results");
 		
 		return cd;
 	}
 	
 	/**
-	 * Patients with viral suppression of <1000 in the last 12 months excluding dead, LTFU, transferred
-	 * out, stopped ART
+	 * Patients with viral suppression of <1000 in the last 12 months excluding dead, LTFU,
+	 * transferred out, stopped ART
 	 */
 	public CohortDefinition getPatientsWithViralLoadSuppression() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -114,7 +114,8 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("supp", EptsReportUtils.map(hivCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
+		cd.addSearch("supp",
+		    EptsReportUtils.map(hivCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
 		cd.addSearch("baseCohort", EptsReportUtils.map(genericCohortQueries.getBaseCohort(), mappings));
 		cd.addSearch("onArtLongEnough",
 		    EptsReportUtils.map(getPatientsWhoAreMoreThan3MonthsOnArt(), "onDate=${endDate},location=${location}"));
@@ -123,8 +124,8 @@ public class TxPvlsCohortQueries {
 	}
 	
 	/**
-	 * Patients with viral results recorded in the last 12 months excluding dead, LTFU, transferred out,
-	 * stopped ARTtxNewCohortQueries
+	 * Patients with viral results recorded in the last 12 months excluding dead, LTFU, transferred
+	 * out, stopped ARTtxNewCohortQueries
 	 */
 	public CohortDefinition getPatientsWithViralLoadResults() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -168,8 +169,8 @@ public class TxPvlsCohortQueries {
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getpatientsOnRoutineAdultsAndChildren() {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria1",
-		        Context.getRegisteredComponents(RoutineForAdultsAndChildrenCalculation.class).get(0));
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria1", Context.getRegisteredComponents(
+		    RoutineForAdultsAndChildrenCalculation.class).get(0));
 		cd.setName("Routine for adults and children");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -183,8 +184,8 @@ public class TxPvlsCohortQueries {
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getPregnantAndBreastfeedingWomenOnRoutine() {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria2",
-		        Context.getRegisteredComponents(RoutineForBreastfeedingAndPregnantWomenCalculation.class).get(0));
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria2", Context.getRegisteredComponents(
+		    RoutineForBreastfeedingAndPregnantWomenCalculation.class).get(0));
 		cd.setName("Routine for breastfeeding and pregnant");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -211,7 +212,8 @@ public class TxPvlsCohortQueries {
 	}
 	
 	/**
-	 * Get patients having viral load suppression and not documented for adults and children - Numerator
+	 * Get patients having viral load suppression and not documented for adults and children -
+	 * Numerator
 	 * 
 	 * @retrun CohortDefinition
 	 */
@@ -486,11 +488,12 @@ public class TxPvlsCohortQueries {
 		        + ") all_start_dates group by all_start_dates.patient_id) patient_start_date join (select encounter.patient_id, max(date(encounter.encounter_datetime)) result_date from encounter join obs on obs.encounter_id = encounter.encounter_id "
 		        + "where encounter.encounter_type = %s and encounter.voided = false and encounter.location_id = :location and encounter.encounter_datetime between date_add(:onDate, interval -1 year) and :onDate and obs.value_numeric is not null and obs.concept_id = %s and obs.voided = false "
 		        + "group by patient_id) patient_vl on patient_vl.patient_id = patient_start_date.patient_id where date_add(patient_start_date.start_date, interval 3 month) <= patient_vl.result_date ";
-		sql.setQuery(String.format(query, hivMetadata.getARVPlanConcept().getConceptId(),
-		    hivMetadata.getstartDrugsConcept().getConceptId(), hivMetadata.gethistoricalDrugStartDateConcept().getConceptId(),
-		    hivMetadata.getARTProgram().getProgramId(), hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-		    hivMetadata.getARVPlanConcept().getConceptId(), hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
-		    hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(), hivMetadata.getHivViralLoadConcept().getConceptId()));
+		sql.setQuery(String.format(query, hivMetadata.getARVPlanConcept().getConceptId(), hivMetadata.getstartDrugsConcept()
+		        .getConceptId(), hivMetadata.gethistoricalDrugStartDateConcept().getConceptId(), hivMetadata.getARTProgram()
+		        .getProgramId(), hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(), hivMetadata
+		        .getARVPlanConcept().getConceptId(), hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+		    hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(), hivMetadata.getHivViralLoadConcept()
+		            .getConceptId()));
 		return sql;
 	}
 	

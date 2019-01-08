@@ -43,6 +43,7 @@ public class ViralLoadQueries {
 		        + " obs o ON e.encounter_id=o.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND"
 		        + " e.encounter_type IN (" + labEncounter + ") AND o.concept_id=" + vlConceptQuestion
 		        + " AND o.value_numeric IS NOT NULL AND"
-		        + " e.encounter_datetime BETWEEN date_add(:endDate, interval -12 MONTH) AND :endDate AND" + " e.location_id=:location";
+		        + " e.encounter_datetime BETWEEN date_add(:endDate, interval -12 MONTH) AND :endDate AND"
+		        + " e.location_id=:location";
 	}
 }
