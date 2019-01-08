@@ -14,7 +14,6 @@
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;

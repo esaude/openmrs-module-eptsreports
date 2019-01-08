@@ -14,6 +14,8 @@
 
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
+import java.util.ArrayList;
+
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
@@ -27,7 +29,6 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 
 @Component
 public class TxCurrDataset extends BaseDataSet {

@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.openmrs.Concept;
-import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Obs;
