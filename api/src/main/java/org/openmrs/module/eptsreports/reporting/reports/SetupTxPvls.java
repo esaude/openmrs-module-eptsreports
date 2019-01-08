@@ -28,7 +28,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-//@Deprecated
+@Deprecated
 @Component
 public class SetupTxPvls extends EptsDataExportManager {
 	
