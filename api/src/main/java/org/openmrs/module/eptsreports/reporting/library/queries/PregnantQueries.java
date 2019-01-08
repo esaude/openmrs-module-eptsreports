@@ -19,15 +19,16 @@ package org.openmrs.module.eptsreports.reporting.library.queries;
 public class PregnantQueries {
 	
 	/**
-	 * Looks for patients indicated PREGNANT in the initial or follow-up consultation between start date
-	 * and end date
+	 * Looks for patients indicated PREGNANT in the initial or follow-up consultation between start
+	 * date and end date
 	 */
-	public static String getPregnantOnInitialOrFollowUpConsulation(int pregnant, int gestation, int adultInEnc, int adultSegEnc) {
+	public static String getPregnantOnInitialOrFollowUpConsulation(int pregnant, int gestation, int adultInEnc,
+	        int adultSegEnc) {
 		
 		return "SELECT p.patient_id" + " FROM patient p" + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
 		        + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
-		        + " WHERE p.voided=0 and e.voided=0 and o.voided=0 and concept_id=" + pregnant + " AND value_coded=" + gestation
-		        + " AND e.encounter_type IN (" + adultInEnc + "," + adultSegEnc + ")"
+		        + " WHERE p.voided=0 and e.voided=0 and o.voided=0 and concept_id=" + pregnant + " AND value_coded="
+		        + gestation + " AND e.encounter_type IN (" + adultInEnc + "," + adultSegEnc + ")"
 		        + " AND e.encounter_datetime BETWEEN :startDate AND :endDate AND e.location_id=:location";
 		
 	}
@@ -39,14 +40,14 @@ public class PregnantQueries {
 	public static String getWeeksPregnantOnInitialOrFollowUpConsultations(int numOfWeeks, int adultInEnc, int adultSegEnc) {
 		return "SELECT p.patient_id" + " FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id"
 		        + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
-		        + " WHERE p.voided=0 and e.voided=0 and o.voided=0 and concept_id=" + numOfWeeks + " AND e.encounter_type IN ("
-		        + adultInEnc + "," + adultSegEnc + ")" + " AND e.encounter_datetime BETWEEN :startDate AND :endDate AND"
-		        + " e.location_id=:location";
+		        + " WHERE p.voided=0 and e.voided=0 and o.voided=0 and concept_id=" + numOfWeeks
+		        + " AND e.encounter_type IN (" + adultInEnc + "," + adultSegEnc + ")"
+		        + " AND e.encounter_datetime BETWEEN :startDate AND :endDate AND" + " e.location_id=:location";
 	}
 	
 	/**
-	 * Looks for patients with PREGNANCY DUE DATE registered in the initial or follow-up consultation
-	 * between start date and end date
+	 * Looks for patients with PREGNANCY DUE DATE registered in the initial or follow-up
+	 * consultation between start date and end date
 	 */
 	public static String getPregnancyDueDateRegistred(int dueDate, int adultInEnc, int adultSegEnc) {
 		return "SELECT p.patient_id FROM patient p INNER JOIN encounter"
@@ -67,25 +68,48 @@ public class PregnantQueries {
 	/**
 	 * GRAVIDAS INSCRITAS NO SERVIÇO TARV
 	 */
-	public static String getPregnantWhileOnArt(int pregnantConcept, int gestationConcept, int weeksPregnantConcept, int eddConcept,
-	        int adultInitailEncounter, int adultSegEncounter, int etvProgram) {
+	public static String getPregnantWhileOnArt(int pregnantConcept, int gestationConcept, int weeksPregnantConcept,
+	        int eddConcept, int adultInitailEncounter, int adultSegEncounter, int etvProgram) {
 		
 		return "Select 	p.patient_id" + " from 	patient p" + " inner join encounter e on p.patient_id=e.patient_id"
 		        + " inner join obs o on e.encounter_id=o.encounter_id"
-		        + " where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=" + pregnantConcept + " and value_coded="
-		        + gestationConcept + " and e.encounter_type in (" + adultInitailEncounter + "," + adultSegEncounter
-		        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location" + " union"
-		        + " Select 	p.patient_id" + " from 	patient p inner join encounter e on p.patient_id=e.patient_id"
+		        + " where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
+		        + pregnantConcept
+		        + " and value_coded="
+		        + gestationConcept
+		        + " and e.encounter_type in ("
+		        + adultInitailEncounter
+		        + ","
+		        + adultSegEncounter
+		        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location"
+		        + " union"
+		        + " Select 	p.patient_id"
+		        + " from 	patient p inner join encounter e on p.patient_id=e.patient_id"
 		        + " inner join obs o on e.encounter_id=o.encounter_id"
-		        + " where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id=" + weeksPregnantConcept + " and"
-		        + " e.encounter_type in (" + adultInitailEncounter + "," + adultSegEncounter
-		        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location" + " union"
-		        + " Select p.patient_id" + " from patient p inner join encounter e on p.patient_id=e.patient_id"
+		        + " where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
+		        + weeksPregnantConcept
+		        + " and"
+		        + " e.encounter_type in ("
+		        + adultInitailEncounter
+		        + ","
+		        + adultSegEncounter
+		        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location"
+		        + " union"
+		        + " Select p.patient_id"
+		        + " from patient p inner join encounter e on p.patient_id=e.patient_id"
 		        + " inner join obs o on e.encounter_id=o.encounter_id"
-		        + " where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=" + eddConcept + " and" + " e.encounter_type in ("
-		        + adultInitailEncounter + "," + adultSegEncounter
-		        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location" + " union"
-		        + " select pp.patient_id from patient_program pp" + " where pp.program_id=" + etvProgram
+		        + " where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
+		        + eddConcept
+		        + " and"
+		        + " e.encounter_type in ("
+		        + adultInitailEncounter
+		        + ","
+		        + adultSegEncounter
+		        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location"
+		        + " union"
+		        + " select pp.patient_id from patient_program pp"
+		        + " where pp.program_id="
+		        + etvProgram
 		        + " and pp.voided=0 and pp.date_enrolled between :startDate and :endDate and pp.location_id=:location";
 		
 	}

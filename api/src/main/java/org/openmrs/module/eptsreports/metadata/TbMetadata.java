@@ -24,14 +24,15 @@ public class TbMetadata extends CommonMetadata {
 	
 	// Concepts
 	public Concept getTUBERCULOSIS_TREATMENT_PLANConcept() {
-		String uuid = Context.getAdministrationService()
-		        .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_PLAN_CONCEPT_UUID);
+		String uuid = Context.getAdministrationService().getGlobalProperty(
+		    EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_PLAN_CONCEPT_UUID);
 		return getConcept(uuid);
 	}
 	
 	// Programs
 	public Program getTBProgram() {
-		String uuid = Context.getAdministrationService().getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_TB_PROGRAM_UUID);
+		String uuid = Context.getAdministrationService().getGlobalProperty(
+		    EptsReportConstants.GLOBAL_PROPERTY_TB_PROGRAM_UUID);
 		return getProgram(uuid);
 	}
 	

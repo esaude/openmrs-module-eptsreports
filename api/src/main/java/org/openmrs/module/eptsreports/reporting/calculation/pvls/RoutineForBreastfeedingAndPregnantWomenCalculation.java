@@ -57,7 +57,8 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 	 * @return CalculationResultMap
 	 */
 	@Override
-	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
+	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params,
+	        PatientCalculationContext context) {
 		
 		CalculationResultMap ret = new CalculationResultMap();
 		Location location = (Location) context.getFromCache("location");
@@ -67,8 +68,8 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 		EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
 		
 		// lookups
-		CalculationResultMap patientHavingVL = EptsCalculations.getObs(viralLoadConcept, cohort, Arrays.asList(location), null,
-		    TimeQualifier.ANY, latestVlLowerDateLimit, context);
+		CalculationResultMap patientHavingVL = EptsCalculations.getObs(viralLoadConcept, cohort, Arrays.asList(location),
+		    null, TimeQualifier.ANY, latestVlLowerDateLimit, context);
 		
 		List<Concept> codedObsValues = new ArrayList<Concept>();
 		codedObsValues.add(new Concept(6108));
@@ -103,7 +104,8 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 			}
 			if (artInitiationDate != null && lastVlObs != null && lastVlObs.getObsDatetime() != null) {
 				
-				if (lastVlObs.getObsDatetime().after(latestVlLowerDateLimit) && lastVlObs.getObsDatetime().before(context.getNow())) {
+				if (lastVlObs.getObsDatetime().after(latestVlLowerDateLimit)
+				        && lastVlObs.getObsDatetime().before(context.getNow())) {
 					
 					// get all the VL results for each patient in the last 12 months only if the
 					// last VL Obs is within the 12month window
@@ -153,10 +155,11 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 								return obs1.getObsId().compareTo(obs2.getObsId());
 							}
 						});
-						Obs currentObs = viralLoadForPatientTakenWithin12Months.get(viralLoadForPatientTakenWithin12Months.size() - 1);
+						Obs currentObs = viralLoadForPatientTakenWithin12Months.get(viralLoadForPatientTakenWithin12Months
+						        .size() - 1);
 						
-						Obs previousObs = viralLoadForPatientTakenWithin12Months
-						        .get(viralLoadForPatientTakenWithin12Months.size() - 2);
+						Obs previousObs = viralLoadForPatientTakenWithin12Months.get(viralLoadForPatientTakenWithin12Months
+						        .size() - 2);
 						
 						if (currentObs != null && previousObs != null && previousObs.getValueNumeric() != null
 						        && previousObs.getObsDatetime() != null && previousObs.getValueNumeric() < 1000
@@ -183,9 +186,8 @@ public class RoutineForBreastfeedingAndPregnantWomenCalculation extends Abstract
 								// between the 2 dates
 								for (Obs obs1 : vLoadList) {
 									if (obs1.getObsDatetime() != null
-									        && (obs1.getObsDatetime().after(startRegimeDate)
-									                || obs1.getObsDatetime().equals(startRegimeDate))
-									        && obs1.getObsDatetime().before(latestVlDate)) {
+									        && (obs1.getObsDatetime().after(startRegimeDate) || obs1.getObsDatetime()
+									                .equals(startRegimeDate)) && obs1.getObsDatetime().before(latestVlDate)) {
 										isOnRoutine = false;
 									}
 								}
