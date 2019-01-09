@@ -1,13 +1,15 @@
 /*
- * The contents of this file are subject to the OpenMRS Public License Version
- * 1.0 (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at http://license.openmrs.org
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
  *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
- * the specific language governing rights and limitations under the License.
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
  *
- * Copyright (C) OpenMRS, LLC. All Rights Reserved.
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
@@ -52,7 +54,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
 		dsd.addDimension("query", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
 		dsd.addDimension("age",
-		    EptsReportUtils.map(eptsCommonDimension.getAgesDimension(), "endDate=${endDate},location=${location}"));
+		    EptsReportUtils.map(eptsCommonDimension.pvlsAges(), "endDate=${endDate},location=${location}"));
 		
 		// Totals for both numerator and denomonator
 		
@@ -72,8 +74,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		// .map(breastfeedingIndicators.getBreastfeedingAndPregnantOnRoutine(),
 		// "endDate=${endDate},location=${location}"),
 		// "");
-		// dsd.addColumn("Qualified Patients", "Patients that are on ART for
-		// more than 3
+		// dsd.addColumn("Qualified Patients", "Patients that are on ART for more than 3
 		// months and match location", EptsReportUtils.map(
 		// hivIndicators.getPatientsOnArtForMoreThan3MonthsAndMatchLocation(),
 		// "endDate=${endDate},location=${location}"), "");
@@ -125,8 +126,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		    hivIndicators.getPatientsWithViralLoadSuppressionNotDocumentedForAdultsAndChildren(), mappings),
 		    getColumnsForAdults());
 		
-		// denominators follow here for routine and NOT documented // ///
-		// Denominator
+		// denominators follow here for routine and NOT documented // /// Denominator
 		// routine for children
 		addRow(dsd, "3DR", "Children denominator routine",
 		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsAndOnRoutineForAdultsAndChildren(), mappings),

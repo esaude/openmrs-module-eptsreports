@@ -55,8 +55,7 @@ public class TxCurrDataset extends BaseDataSet {
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		
 		dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
-		dataSetDefinition.addDimension("age",
-		    EptsReportUtils.map(eptsCommonDimension.getAgesDimension(), "endDate=${endDate},location=${location}"));
+		dataSetDefinition.addDimension("age", EptsReportUtils.map(eptsCommonDimension.age(), "effectiveDate=${endDate}"));
 		
 		CohortDefinition enrolledBeforeEndDate = genericCohortQueries.createInProgram("InARTProgram",
 		    hivMetadata.getARTProgram());
@@ -112,7 +111,7 @@ public class TxCurrDataset extends BaseDataSet {
 	}
 	
 	private List<ColumnParameters> getColumnsForAdults() {
-		ColumnParameters unknownM = new ColumnParameters("unknownM", "Unknown age male", "gender=M|age=UK", "UNKM");
+		ColumnParameters unknownM = new ColumnParameters("unknownM", "Unknown age male", "gender=M|age=unknown", "UNKM");
 		ColumnParameters tenTo14M = new ColumnParameters("tenTo14M", "10 - 14 male", "gender=M|age=10-14", "M4");
 		ColumnParameters fifteenTo19M = new ColumnParameters("fifteenTo19M", "15 - 19 male", "gender=M|age=15-19", "M5");
 		ColumnParameters twentyTo24M = new ColumnParameters("twentyTo24M", "20 - 24 male", "gender=M|age=20-24", "M6");
@@ -121,9 +120,9 @@ public class TxCurrDataset extends BaseDataSet {
 		ColumnParameters thirty5To39M = new ColumnParameters("thirty5To39M", "35 - 39 male", "gender=M|age=35-39", "M9");
 		ColumnParameters foutyTo44M = new ColumnParameters("foutyTo44M", "40 - 44 male", "gender=M|age=40-44", "M10");
 		ColumnParameters fouty5To49M = new ColumnParameters("fouty5To49M", "45 - 49 male", "gender=M|age=45-49", "M11");
-		ColumnParameters above50M = new ColumnParameters("above50M", "50+ male", "gender=M|age=50+", "M12");
+		ColumnParameters above50M = new ColumnParameters("above50M", "50+ male", "gender=M|age=>49", "M12");
 		
-		ColumnParameters unknownF = new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=UK", "UNKF");
+		ColumnParameters unknownF = new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=unknown", "UNKF");
 		ColumnParameters tenTo14F = new ColumnParameters("tenTo14F", "10 - 14 female", "gender=F|age=10-14", "F4");
 		ColumnParameters fifteenTo19F = new ColumnParameters("fifteenTo19F", "15 - 19 female", "gender=F|age=15-19", "F5");
 		ColumnParameters twentyTo24F = new ColumnParameters("twentyTo24F", "20 - 24 female", "gender=F|age=20-24", "F6");
@@ -132,7 +131,7 @@ public class TxCurrDataset extends BaseDataSet {
 		ColumnParameters thirty5To39F = new ColumnParameters("thirty5To39F", "35 - 39 female", "gender=F|age=35-39", "F9");
 		ColumnParameters foutyTo44F = new ColumnParameters("foutyTo44F", "40 - 44 female", "gender=F|age=40-44", "F10");
 		ColumnParameters fouty5To49F = new ColumnParameters("fouty5To49F", "45 - 49 female", "gender=F|age=45-49", "F11");
-		ColumnParameters above50F = new ColumnParameters("above50F", "50+ female", "gender=F|age=50+", "F12");
+		ColumnParameters above50F = new ColumnParameters("above50F", "50+ female", "gender=F|age=>49", "F12");
 		
 		return Arrays.asList(unknownM, tenTo14M, fifteenTo19M, twentyTo24M, twenty5To29M, thirtyTo34M, thirty5To39M,
 		    foutyTo44M, fouty5To49M, above50M, unknownF, tenTo14F, fifteenTo19F, twentyTo24F, twenty5To29F, thirtyTo34F,
