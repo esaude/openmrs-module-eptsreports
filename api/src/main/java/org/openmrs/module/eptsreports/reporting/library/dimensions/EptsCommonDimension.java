@@ -103,7 +103,7 @@ public class EptsCommonDimension {
 	 * 
 	 * @return {@link org.openmrs.module.reporting.indicator.dimension.CohortDimension}
 	 */
-	public CohortDefinitionDimension age() {
+	public CohortDefinitionDimension getAgeDimension() {
 		CohortDefinitionDimension dim = new CohortDefinitionDimension();
 		dim.addParameter(new Parameter("effectiveDate", "End Date", Date.class));
 		dim.setName("age");

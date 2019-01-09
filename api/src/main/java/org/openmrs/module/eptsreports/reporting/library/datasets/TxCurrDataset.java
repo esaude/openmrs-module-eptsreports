@@ -55,7 +55,8 @@ public class TxCurrDataset extends BaseDataSet {
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		
 		dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
-		dataSetDefinition.addDimension("age", EptsReportUtils.map(eptsCommonDimension.age(), "effectiveDate=${endDate}"));
+		dataSetDefinition.addDimension("age",
+		    EptsReportUtils.map(eptsCommonDimension.getAgeDimension(), "effectiveDate=${endDate}"));
 		
 		CohortDefinition enrolledBeforeEndDate = genericCohortQueries.createInProgram("InARTProgram",
 		    hivMetadata.getARTProgram());

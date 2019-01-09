@@ -162,7 +162,8 @@ public class TxNewDataset extends BaseDataSet {
 		// Obtain patients breastfeeding newly enrolled on ART
 		dataSetDefinition.addDimension("maternity", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
 		dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
-		dataSetDefinition.addDimension("age", EptsReportUtils.map(eptsCommonDimension.age(), "effectiveDate=${endDate}"));
+		dataSetDefinition.addDimension("age",
+		    EptsReportUtils.map(eptsCommonDimension.getAgeDimension(), "effectiveDate=${endDate}"));
 		
 		dataSetDefinition.addColumn("ANC", "TX_NEW: Pregnant Started ART",
 		    EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings), "maternity=breastfeeding");
