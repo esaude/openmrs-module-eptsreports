@@ -36,7 +36,7 @@ public class SetupTxNew extends EptsDataExportManager {
 	
 	@Autowired
 	private GenericCohortQueries genericCohortQueries;
-
+	
 	public SetupTxNew() {
 	}
 	
@@ -78,7 +78,7 @@ public class SetupTxNew extends EptsDataExportManager {
 		
 		reportDefinition.setBaseCohortDefinition(genericCohortQueries.getBaseCohort(),
 		    ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
-
+		
 		return reportDefinition;
 	}
 	

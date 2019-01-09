@@ -13,20 +13,15 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.calculation.txnew.StartedArtDuringPeriodCalculation;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
-import org.openmrs.module.eptsreports.reporting.library.queries.TxNewQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -37,9 +32,13 @@ import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Defines all of the TxNew Cohort Definition instances we want to expose for EPTS
@@ -267,33 +266,21 @@ public class TxNewCohortQueries {
 	}
 	
 	/**
-	 * Obtain patients from TxNew Union Query.
+	 * Obtain patients who started ART in a date range
 	 * 
 	 * @return CohortDefinition
 	 */
 	@DocumentedDefinition(value = "txNewUnionNumerator")
 	public CohortDefinition getTxNewUnionNumerator() {
 		
-		Map<String, Integer> queryParameters = new HashMap<String, Integer>();
+		CalculationCohortDefinition patientsWhoStartedArt = new CalculationCohortDefinition("patients who started ART",
+		        Context.getRegisteredComponents(StartedArtDuringPeriodCalculation.class).get(0));
 		
-		queryParameters.put("artProgram", hivMetadata.getARTProgram().getProgramId());
-		queryParameters.put("arvPharmaciaEncounter", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
-		queryParameters.put("arvAdultoSeguimentoEncounter", hivMetadata.getAdultoSeguimentoEncounterType()
-		        .getEncounterTypeId());
-		queryParameters.put("arvPediatriaSeguimentoEncounter", hivMetadata.getARVPediatriaSeguimentoEncounterType()
-		        .getEncounterTypeId());
-		queryParameters.put("arvPlanConcept", hivMetadata.getARVPlanConcept().getConceptId());
-		queryParameters.put("startDrugsConcept", hivMetadata.getstartDrugsConcept().getConceptId());
-		queryParameters.put("historicalDrugsConcept", hivMetadata.gethistoricalDrugStartDateConcept().getConceptId());
+		patientsWhoStartedArt.addParameter(new Parameter("startDate", "onOrAfter", Date.class));
+		patientsWhoStartedArt.addParameter(new Parameter("onDate", "onOrBefore", Date.class));
+		patientsWhoStartedArt.addParameter(new Parameter("location", "location", Location.class));
 		
-		SqlCohortDefinition txNewUnionNumerator = new SqlCohortDefinition();
-		txNewUnionNumerator.setName("TxNewUnionNumerator");
-		txNewUnionNumerator.setQuery(TxNewQueries.getTxNewUnionQueries(queryParameters));
-		
-		txNewUnionNumerator.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-		txNewUnionNumerator.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-		txNewUnionNumerator.addParameter(new Parameter("location", "location", Location.class));
-		return txNewUnionNumerator;
+		return patientsWhoStartedArt;
 	}
 	
 	/**
@@ -310,20 +297,19 @@ public class TxNewCohortQueries {
 		txNewComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		txNewComposition.addParameter(new Parameter("location", "location", Location.class));
 		txNewComposition.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
-		String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}";
 		
-		txNewComposition.getSearches().put("inART",
-		    new Mapped<CohortDefinition>(getTxNewUnionNumerator(), ParameterizableUtil.createParameterMappings(mappings)));
-		txNewComposition.getSearches().put(
-		    "transferredIn",
-		    new Mapped<CohortDefinition>(getPatientsTransferredFromOtherHealthFacility(), ParameterizableUtil
-		            .createParameterMappings(mappings)));
-		txNewComposition.getSearches().put(
-		    "restartedTreatment",
-		    new Mapped<CohortDefinition>(hivCohortQueries.getPatientsWhoRestartedTreatment(), ParameterizableUtil
-		            .createParameterMappings("onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}")));
+		Mapped<CohortDefinition> startedART = Mapped.map(getTxNewUnionNumerator(),
+		    "startDate=${onOrAfter},onDate=${onOrBefore},location=${location}");
+		Mapped<CohortDefinition> transferredIn = Mapped.map(getPatientsTransferredFromOtherHealthFacility(),
+		    "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}");
+		Mapped<CohortDefinition> restartedTreatment = Mapped.map(hivCohortQueries.getPatientsWhoRestartedTreatment(),
+		    "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}");
 		
-		txNewComposition.setCompositionString("inART NOT (transferredIn OR restartedTreatment)");
+		txNewComposition.getSearches().put("startedART", startedART);
+		txNewComposition.getSearches().put("transferredIn", transferredIn);
+		txNewComposition.getSearches().put("restartedTreatment", restartedTreatment);
+		
+		txNewComposition.setCompositionString("startedART NOT (transferredIn OR restartedTreatment)");
 		return txNewComposition;
 	}
 }

@@ -37,6 +37,9 @@ public class CalculationCohortDefinition extends BaseCohortDefinition {
 	private Date onDate;
 	
 	@ConfigurationProperty(group = "calculation")
+	private Date startDate;
+	
+	@ConfigurationProperty(group = "calculation")
 	private Object withResult;
 	
 	@ConfigurationProperty(group = "calculation")
@@ -161,4 +164,11 @@ public class CalculationCohortDefinition extends BaseCohortDefinition {
 		this.location = location;
 	}
 	
+	public Date getStartDate() {
+		return startDate;
+	}
+	
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
 }

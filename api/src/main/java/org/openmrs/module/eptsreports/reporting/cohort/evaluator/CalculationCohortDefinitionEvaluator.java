@@ -72,12 +72,18 @@ public class CalculationCohortDefinitionEvaluator implements CohortDefinitionEva
 				}
 			}
 		}
+		
+		Date startDate = cd.getStartDate();
+		if (startDate == null) {
+			startDate = (Date) context.getParameterValue("startDate");
+		}
 		Location location = cd.getLocation();
 		
 		PatientCalculationService pcs = Context.getService(PatientCalculationService.class);
 		PatientCalculationContext calcContext = pcs.createCalculationContext();
 		calcContext.setNow(onDate);
 		calcContext.addToCache("location", location);
+		calcContext.addToCache("startDate", startDate);
 		
 		Cohort cohort = context.getBaseCohort();
 		if (cohort == null) {
