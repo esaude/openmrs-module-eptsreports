@@ -7,6 +7,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.InitialArtStartDateCalculation;
+import org.openmrs.module.reporting.common.Age;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -42,5 +43,11 @@ public class StartedArtAtXtoYAgeCalculation extends AbstractPatientCalculation {
 		}
 		
 		return calculationResultMap;
+	}
+
+	private Integer ageInYearsAtDate(Date birthDate, Date artInitiationDate) {
+		Age age = new Age(birthDate, artInitiationDate);
+
+		return age.getFullYears();
 	}
 }

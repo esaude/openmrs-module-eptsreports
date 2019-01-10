@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.calculation.txnew.StartedArtAtXtoYAgeCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.txnew.StartedArtBellowXAgeCalculation;
@@ -76,6 +77,8 @@ public class AgeCohortQueries {
 		        .get(0));
 		cd.addCalculationParameter("minAge", minAge);
 		cd.addCalculationParameter("maxAge", maxAge);
+		cd.addParameter(new Parameter("onDate", "onDate", Date.class));
+		cd.addParameter(new Parameter("location", "location", Location.class));
 		return cd;
 	}
 	
@@ -87,6 +90,8 @@ public class AgeCohortQueries {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition("patients with age bellow " + maxAge
 		        + " on ART start date", Context.getRegisteredComponents(StartedArtBellowXAgeCalculation.class).get(0));
 		cd.addCalculationParameter("maxAge", maxAge);
+		cd.addParameter(new Parameter("onDate", "onDate", Date.class));
+		cd.addParameter(new Parameter("location", "location", Location.class));
 		return cd;
 	}
 	
@@ -98,6 +103,8 @@ public class AgeCohortQueries {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition("patients with age over " + minAge
 		        + " on ART start date", Context.getRegisteredComponents(StartedArtOverXAgeCalculation.class).get(0));
 		cd.addCalculationParameter("minAge", minAge);
+		cd.addParameter(new Parameter("onDate", "onDate", Date.class));
+		cd.addParameter(new Parameter("location", "location", Location.class));
 		return cd;
 	}
 	

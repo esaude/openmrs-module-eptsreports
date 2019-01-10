@@ -59,7 +59,8 @@ public class TxNewDataset extends BaseDataSet {
 		
 		dataSetDefinition.addDimension("maternity", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
 		dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
-		dataSetDefinition.addDimension("age", noMappings(eptsCommonDimension.txNewAges()));
+		dataSetDefinition.addDimension("age",
+		    EptsReportUtils.map(eptsCommonDimension.txNewAges(), "location=${location},endDate=${endDate}"));
 		
 		dataSetDefinition.addColumn("1All", "TX_NEW: New on ART", new Mapped<CohortIndicator>(
 		        patientEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings(mappings)), "");
