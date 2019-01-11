@@ -1,15 +1,13 @@
 /*
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * The contents of this file are subject to the OpenMRS Public License Version
+ * 1.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://license.openmrs.org
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
  *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS, LLC. All Rights Reserved.
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
@@ -19,6 +17,7 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -47,6 +46,9 @@ public class TxCurrCohortQueries {
 	@Autowired
 	private HivMetadata hivMetadata;
 	
+	@Autowired
+	private GenericCohortQueries genericCohorts;
+	
 	// Looks for patients with first drug pickup (encounter type 18=S.TARV:
 	// FARMACIA) before or on end date
 	@DocumentedDefinition(value = "patientWithFirstDrugPickupEncounter")
@@ -64,7 +66,8 @@ public class TxCurrCohortQueries {
 		return patientWithFirstDrugPickupEncounter;
 	}
 	
-	// Looks for patients registered as START DRUGS (answer to question 1255 = ARV
+	// Looks for patients registered as START DRUGS (answer to question 1255 =
+	// ARV
 	// PLAN is 1256 = START DRUGS) in the first drug pickup (encounter type
 	// 18=S.TARV: FARMACIA) or follow up consultation for adults and children
 	// (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA
@@ -89,10 +92,13 @@ public class TxCurrCohortQueries {
 		return patientWithSTARTDRUGSObs;
 	}
 	
-	// Looks for with START DATE (Concept 1190=HISTORICAL DRUG START DATE) filled in
-	// drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation
+	// Looks for with START DATE (Concept 1190=HISTORICAL DRUG START DATE)
+	// filled in
+	// drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up
+	// consultation
 	// for adults and children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and
-	// 9=S.TARV: PEDIATRIA SEGUIMENTO) where START DATE is before or equal end date
+	// 9=S.TARV: PEDIATRIA SEGUIMENTO) where START DATE is before or equal end
+	// date
 	@DocumentedDefinition(value = "patientWithHistoricalDrugStartDateObs")
 	public CohortDefinition getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate() {
 		SqlCohortDefinition patientWithHistoricalDrugStartDateObs = new SqlCohortDefinition();
@@ -139,8 +145,10 @@ public class TxCurrCohortQueries {
 		return leftARTProgramBeforeOrOnEndDate;
 	}
 	
-	// Looks for patients that from the date scheduled for next drug pickup (concept
-	// 5096=RETURN VISIT DATE FOR ARV DRUG) until end date have completed 28 days
+	// Looks for patients that from the date scheduled for next drug pickup
+	// (concept
+	// 5096=RETURN VISIT DATE FOR ARV DRUG) until end date have completed 28
+	// days
 	// and have not returned
 	@DocumentedDefinition(value = "patientsThatMissedNexPickup")
 	public SqlCohortDefinition getPatientsThatMissedNexPickup() {
@@ -317,6 +325,8 @@ public class TxCurrCohortQueries {
 		    "12",
 		    new Mapped<CohortDefinition>(patientsWithNextConsultationDate, ParameterizableUtil
 		            .createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
+		TxCurrComposition.addSearch("baseCohort",
+		    EptsReportUtils.map(genericCohorts.getBaseCohort(), "endDate=${onOrBefore},location=${location}"));
 		
 		String compositionString;
 		if (currentSpec) {
@@ -337,6 +347,7 @@ public class TxCurrCohortQueries {
 			compositionString = compositionString + " AND 10";
 		}
 		
+		compositionString = compositionString + " and baseCohort";
 		TxCurrComposition.setCompositionString(compositionString);
 		return TxCurrComposition;
 	}
