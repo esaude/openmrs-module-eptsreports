@@ -121,7 +121,7 @@ public class TxCurrCohortQueries {
 	// Patients who left ART program before or on end date(4). Includes: dead,
 	// transferred to, stopped and abandoned (patient state 10, 7, 8 or 9)
 	@DocumentedDefinition(value = "leftARTProgramBeforeOrOnEndDate")
-	public SqlCohortDefinition getPatientsWhoLeftARTProgramBeforeOrOnEndDate() {
+	public CohortDefinition getPatientsWhoLeftARTProgramBeforeOrOnEndDate() {
 		SqlCohortDefinition leftARTProgramBeforeOrOnEndDate = new SqlCohortDefinition();
 		leftARTProgramBeforeOrOnEndDate.setName("leftARTProgramBeforeOrOnEndDate");
 		leftARTProgramBeforeOrOnEndDate
@@ -149,7 +149,7 @@ public class TxCurrCohortQueries {
 	// days
 	// and have not returned
 	@DocumentedDefinition(value = "patientsThatMissedNexPickup")
-	public SqlCohortDefinition getPatientsThatMissedNexPickup() {
+	public CohortDefinition getPatientsThatMissedNexPickup() {
 		SqlCohortDefinition definition = new SqlCohortDefinition();
 		definition.setName("patientsThatMissedNexPickup");
 		String query = "select patient_id from ( Select p.patient_id,max(encounter_datetime) encounter_datetime from patient p inner join encounter e on e.patient_id=p.patient_id where p.voided=0 and e.voided=0 and e.encounter_type=%s"
@@ -167,7 +167,7 @@ public class TxCurrCohortQueries {
 	// consultation (concept 1410=RETURN VISIT DATE) until the end date have not
 	// completed 28 days
 	@DocumentedDefinition(value = "patientsThatDidNotMissNextConsultation")
-	public SqlCohortDefinition getPatientsThatDidNotMissNextConsultation() {
+	public CohortDefinition getPatientsThatDidNotMissNextConsultation() {
 		SqlCohortDefinition definition = new SqlCohortDefinition();
 		definition.setName("patientsThatDidNotMissNextConsultation");
 		definition.setQuery("select patient_id from " + "( Select p.patient_id,max(encounter_datetime) encounter_datetime "
@@ -191,7 +191,7 @@ public class TxCurrCohortQueries {
 	// (concept 5096=RETURN VISIT DATE FOR ARV DRUG) until the end date have not
 	// completed 28 days
 	@DocumentedDefinition(value = "patientsReportedAsAbandonmentButStillInPeriod")
-	public SqlCohortDefinition getPatientsReportedAsAbandonmentButStillInPeriod() {
+	public CohortDefinition getPatientsReportedAsAbandonmentButStillInPeriod() {
 		SqlCohortDefinition definition = new SqlCohortDefinition();
 		definition.setName("patientsReportedAsAbandonmentButStillInPeriod");
 		definition
@@ -216,7 +216,7 @@ public class TxCurrCohortQueries {
 	 * @return
 	 */
 	@DocumentedDefinition(value = "patientsWithNextPickupDate")
-	public SqlCohortDefinition getPatientsWithNextPickupDate() {
+	public CohortDefinition getPatientsWithNextPickupDate() {
 		SqlCohortDefinition definition = new SqlCohortDefinition();
 		definition.setName("patientsWithNextPickupDate");
 		String encounterTypes = StringUtils.join(
@@ -234,7 +234,7 @@ public class TxCurrCohortQueries {
 	 * @return
 	 */
 	@DocumentedDefinition(value = "patientsWithNextConsultationDate")
-	public SqlCohortDefinition getPatientsWithNextConsultationDate() {
+	public CohortDefinition getPatientsWithNextConsultationDate() {
 		SqlCohortDefinition definition = new SqlCohortDefinition();
 		definition.setName("patientsWithNextConsultationDate");
 		String encounterTypes = StringUtils.join(Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()
@@ -281,6 +281,7 @@ public class TxCurrCohortQueries {
 		TxCurrComposition.addParameter(new Parameter("location", "location", Location.class));
 		TxCurrComposition.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
 		TxCurrComposition.addParameter(new Parameter("locations", "location", Location.class));
+
 		TxCurrComposition.addSearch("1", EptsReportUtils.map(inARTProgramAtEndDate,"onOrBefore=${onOrBefore},locations=${location}"));
 		TxCurrComposition.addSearch("2", EptsReportUtils.map(patientWithSTARTDRUGSObs,"onOrBefore=${onOrBefore},location=${location}"));
 		TxCurrComposition.addSearch("3", EptsReportUtils.map(patientWithHistoricalDrugStartDateObs,"onOrBefore=${onOrBefore},location=${location}"));
@@ -291,7 +292,8 @@ public class TxCurrCohortQueries {
 		TxCurrComposition.addSearch("8", EptsReportUtils.map(patientsReportedAsAbandonmentButStillInPeriod, String.format("onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s", abandonmentDays)));
 		TxCurrComposition.addSearch("11", EptsReportUtils.map(patientsWithNextPickupDate,"onOrBefore=${onOrBefore},location=${location}"));
 		TxCurrComposition.addSearch("12", EptsReportUtils.map(patientsWithNextConsultationDate, "onOrBefore=${onOrBefore},location=${location}"));
-
+		TxCurrComposition.addSearch("baseCohort", EptsReportUtils.map(genericCohorts.getBaseCohort(), "endDate=${onOrBefore},location=${location}"));
+		
 		String compositionString;
 		if (currentSpec) {
 			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR ((6 OR (NOT 11)) AND (NOT (7 OR 8))))) AND (11 OR 12)";
