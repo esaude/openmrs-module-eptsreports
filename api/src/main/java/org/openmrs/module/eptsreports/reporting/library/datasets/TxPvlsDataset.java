@@ -20,7 +20,6 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQuer
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
-import org.openmrs.module.eptsreports.reporting.library.indicators.PregnantIndicators;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -37,9 +36,6 @@ public class TxPvlsDataset extends BaseDataSet {
 	
 	@Autowired
 	private EptsCommonDimension eptsCommonDimension;
-	
-	@Autowired
-	private PregnantIndicators pregnantIndicators;
 	
 	@Autowired
 	private EptsGeneralIndicator eptsGeneralIndicator;
@@ -77,9 +73,11 @@ public class TxPvlsDataset extends BaseDataSet {
 		        eptsGeneralIndicator.getIndicator("breastfeedingWomenWithViralLoadSuppression not documented numerator", EptsReportUtils.map(txPvls.getBreastFeedingWomenNotDocumentedNumerator(), mappings) ), mappings),
 				"");
 		dsd.addColumn("B03", "Pregnant and on routine Numerator", EptsReportUtils.map(
-		    pregnantIndicators.getPregnantWomenWithSuppressedViralLoadIn12MonthsAndOnRoutineNumerator(), mappings), "");
+				eptsGeneralIndicator.getIndicator("pregnantWomenWithViralLoadSuppression and on routine", EptsReportUtils.map(txPvls.getPregnantAndOnRoutineNumerator(), mappings) ), mappings),
+				"");
 		dsd.addColumn("B04", "Pregnant and NOT documented Numerator", EptsReportUtils.map(
-		    pregnantIndicators.getPregnantWomenWithSuppressedViralLoadIn12MonthsNotDocumentedNumerator(), mappings), "");
+				eptsGeneralIndicator.getIndicator("pregnantWomenWithViralLoadSuppression and NOT documented", EptsReportUtils.map(txPvls.getPregnantAndNotDocumentedNumerator(), mappings) ), mappings),
+				"");
 		
 		// add breastfeeding and pregnant Denominator
 		dsd.addColumn(
@@ -95,9 +93,11 @@ public class TxPvlsDataset extends BaseDataSet {
 		        eptsGeneralIndicator.getIndicator("breastfeedingWomenWithViralLoad-not documented denominator", EptsReportUtils.map(txPvls.getBreastfeedingWomenAndNotDocumentedWithViralLoadResultsDenominator(), mappings) ), mappings),
 				"");
 		dsd.addColumn("B07", "Pregnant and on routine Denominator", EptsReportUtils.map(
-		    pregnantIndicators.getPregnantWomenWithViralLoadIn12MonthsAndOnRoutineDenominator(), mappings), "");
+				eptsGeneralIndicator.getIndicator("pregnantWomenWithViralLoad and not documented denominator", EptsReportUtils.map(txPvls.getPregnantWomenAndOnRoutineWithViralLoadResultsDenominator(), mappings) ), mappings),
+				"");
 		dsd.addColumn("B08", "Pregnant and NOT documented Denominator", EptsReportUtils.map(
-		    pregnantIndicators.getPregnantWomenWithViralLoadIn12MonthsAndNotDocumentedDenominator(), mappings), "");
+				eptsGeneralIndicator.getIndicator("pregnantWomenWithViralLoad results not documented denominator", EptsReportUtils.map(txPvls.getPregnantWomenAndNotDocumentedWithViralLoadResultsDenominator(), mappings) ), mappings),
+				"");
 		
 		// constructing the rows for children // /// Numerator routine
 		addRow(dsd, "3NR", "Children numerator routine",
