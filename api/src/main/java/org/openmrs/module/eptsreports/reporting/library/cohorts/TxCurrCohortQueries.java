@@ -1,15 +1,13 @@
 /*
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * The contents of this file are subject to the OpenMRS Public License Version
+ * 1.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://license.openmrs.org
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
  *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS, LLC. All Rights Reserved.
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
@@ -40,6 +38,11 @@ public class TxCurrCohortQueries {
 	        + "and obs.obs_datetime = (select max(encounter.encounter_datetime) from encounter "
 	        + "where encounter.encounter_type in (%s) and encounter.patient_id = obs.person_id and encounter.location_id = obs.location_id and encounter.voided = false and encounter.encounter_datetime <= :onOrBefore) ";
 	
+	private static final String EXCLUDE_PATIENTS_ENRROLLED_BUT_WITHOUT_CONSULTATION = "select distinct(person.person_id) from patient_program "
+	        + "join person on person.person_id = patient_program.patient_id where patient_program.location_id = :location and patient_program.program_id = %s "
+	        + "and person.voided = 0 and patient_program.patient_id not in "
+	        + "(select encounter.patient_id from encounter where encounter.location_id = :location)";
+	
 	private static final int OLD_SPEC_ABANDONMENT_DAYS = 60;
 	
 	private static final int CURRENT_SPEC_ABANDONMENT_DAYS = 31;
@@ -64,7 +67,8 @@ public class TxCurrCohortQueries {
 		return patientWithFirstDrugPickupEncounter;
 	}
 	
-	// Looks for patients registered as START DRUGS (answer to question 1255 = ARV
+	// Looks for patients registered as START DRUGS (answer to question 1255 =
+	// ARV
 	// PLAN is 1256 = START DRUGS) in the first drug pickup (encounter type
 	// 18=S.TARV: FARMACIA) or follow up consultation for adults and children
 	// (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA
@@ -89,10 +93,13 @@ public class TxCurrCohortQueries {
 		return patientWithSTARTDRUGSObs;
 	}
 	
-	// Looks for with START DATE (Concept 1190=HISTORICAL DRUG START DATE) filled in
-	// drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation
+	// Looks for with START DATE (Concept 1190=HISTORICAL DRUG START DATE)
+	// filled in
+	// drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up
+	// consultation
 	// for adults and children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and
-	// 9=S.TARV: PEDIATRIA SEGUIMENTO) where START DATE is before or equal end date
+	// 9=S.TARV: PEDIATRIA SEGUIMENTO) where START DATE is before or equal end
+	// date
 	@DocumentedDefinition(value = "patientWithHistoricalDrugStartDateObs")
 	public CohortDefinition getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate() {
 		SqlCohortDefinition patientWithHistoricalDrugStartDateObs = new SqlCohortDefinition();
@@ -139,8 +146,10 @@ public class TxCurrCohortQueries {
 		return leftARTProgramBeforeOrOnEndDate;
 	}
 	
-	// Looks for patients that from the date scheduled for next drug pickup (concept
-	// 5096=RETURN VISIT DATE FOR ARV DRUG) until end date have completed 28 days
+	// Looks for patients that from the date scheduled for next drug pickup
+	// (concept
+	// 5096=RETURN VISIT DATE FOR ARV DRUG) until end date have completed 28
+	// days
 	// and have not returned
 	@DocumentedDefinition(value = "patientsThatMissedNexPickup")
 	public SqlCohortDefinition getPatientsThatMissedNexPickup() {
@@ -241,6 +250,22 @@ public class TxCurrCohortQueries {
 	}
 	
 	/**
+	 * Patients enrolled on ART Program but without at least any consultation/pickup(without record
+	 * on obs)
+	 * 
+	 * @return
+	 */
+	@DocumentedDefinition(value = "patientsEnrrolledOnArtWithoutAnyConsultation")
+	public SqlCohortDefinition getPatientsEnrrolledOnArtWithoutAnyConsultation() {
+		SqlCohortDefinition definition = new SqlCohortDefinition();
+		definition.setName("patientsEnrrolledOnArtWithoutAnyConsultation");
+		definition.setQuery(String.format(EXCLUDE_PATIENTS_ENRROLLED_BUT_WITHOUT_CONSULTATION, hivMetadata.getARTProgram()
+		        .getProgramId()));
+		definition.addParameter(new Parameter("location", "location", Location.class));
+		return definition;
+	}
+	
+	/**
 	 * Build TxCurr composition cohort definition
 	 * 
 	 * @param cohortName
@@ -265,7 +290,8 @@ public class TxCurrCohortQueries {
 	        CohortDefinition patientsThatMissedNexPickup, CohortDefinition patientsThatDidNotMissNextConsultation,
 	        CohortDefinition patientsReportedAsAbandonmentButStillInPeriod, CohortDefinition ageCohort,
 	        CohortDefinition genderCohort, CohortDefinition patientsWithNextPickupDate,
-	        CohortDefinition patientsWithNextConsultationDate, boolean currentSpec) {
+	        CohortDefinition patientsWithNextConsultationDate,
+	        CohortDefinition patientsEnrrolledOnArtWithoutAnyConsultation, boolean currentSpec) {
 		
 		final int abandonmentDays = currentSpec ? CURRENT_SPEC_ABANDONMENT_DAYS : OLD_SPEC_ABANDONMENT_DAYS;
 		CompositionCohortDefinition TxCurrComposition = new CompositionCohortDefinition();
@@ -318,11 +344,16 @@ public class TxCurrCohortQueries {
 		    new Mapped<CohortDefinition>(patientsWithNextConsultationDate, ParameterizableUtil
 		            .createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
 		
+		TxCurrComposition.getSearches().put(
+		    "13",
+		    new Mapped<CohortDefinition>(patientsEnrrolledOnArtWithoutAnyConsultation, ParameterizableUtil
+		            .createParameterMappings("location=${location}")));
+		
 		String compositionString;
 		if (currentSpec) {
-			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR ((6 OR (NOT 11)) AND (NOT (7 OR 8))))) AND (11 OR 12)";
+			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR ((6 OR (NOT 11)) AND (NOT (7 OR 8))))) AND (11 OR 12) AND NOT 13";
 		} else {
-			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND (NOT (7 OR 8)))))";
+			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND (NOT (7 OR 8))))) AND NOT 13";
 		}
 		
 		if (ageCohort != null) {
