@@ -1,15 +1,13 @@
 /*
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * The contents of this file are subject to the OpenMRS Public License Version
+ * 1.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://license.openmrs.org
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
  *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS, LLC. All Rights Reserved.
  */
 
 package org.openmrs.module.eptsreports.reporting.library.datasets;
@@ -74,6 +72,8 @@ public class TxCurrDataset extends BaseDataSet {
 		        .getPatientsReportedAsAbandonmentButStillInPeriod();
 		SqlCohortDefinition patientsWithNextPickupDate = txCurrCohortQueries.getPatientsWithNextPickupDate();
 		SqlCohortDefinition patientsWithNextConsultationDate = txCurrCohortQueries.getPatientsWithNextConsultationDate();
+		SqlCohortDefinition patientsEnrrolledOnArtWithoutAnyConsultation = txCurrCohortQueries
+		        .getPatientsEnrrolledOnArtWithoutAnyConsultation();
 		
 		CohortDefinition males = genderCohortQueries.MaleCohort();
 		CohortDefinition females = genderCohortQueries.FemaleCohort();
@@ -92,7 +92,8 @@ public class TxCurrDataset extends BaseDataSet {
 			    enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
 			    patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup,
 			    patientsThatDidNotMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod, ageCohort, males,
-			    patientsWithNextPickupDate, patientsWithNextConsultationDate, currentSpec);
+			    patientsWithNextPickupDate, patientsWithNextConsultationDate, patientsEnrrolledOnArtWithoutAnyConsultation,
+			    currentSpec);
 			CohortIndicator indicator = hivIndicators
 			        .patientInYearRangeEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(rangeMales);
 			dataSetDefinition.addColumn(
@@ -112,7 +113,8 @@ public class TxCurrDataset extends BaseDataSet {
 			    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
 			    patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup,
 			    patientsThatDidNotMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod, ageCohort, females,
-			    patientsWithNextPickupDate, patientsWithNextConsultationDate, currentSpec);
+			    patientsWithNextPickupDate, patientsWithNextConsultationDate, patientsEnrrolledOnArtWithoutAnyConsultation,
+			    currentSpec);
 			CohortIndicator indicator = hivIndicators
 			        .patientInYearRangeEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(rangeFemales);
 			dataSetDefinition.addColumn(
@@ -128,7 +130,7 @@ public class TxCurrDataset extends BaseDataSet {
 		    patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup,
 		    patientsThatDidNotMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod,
 		    genericCohortQueries.getUnknownAgeCohort(), males, patientsWithNextPickupDate, patientsWithNextConsultationDate,
-		    currentSpec);
+		    patientsEnrrolledOnArtWithoutAnyConsultation, currentSpec);
 		CohortIndicator unknownMalesIndicator = hivIndicators
 		        .patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(unknownMales);
 		dataSetDefinition.addColumn("C1UNKM", "TX_CURR: Unknown Age", new Mapped<CohortIndicator>(unknownMalesIndicator,
@@ -140,7 +142,7 @@ public class TxCurrDataset extends BaseDataSet {
 		    patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup,
 		    patientsThatDidNotMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod,
 		    genericCohortQueries.getUnknownAgeCohort(), females, patientsWithNextPickupDate,
-		    patientsWithNextConsultationDate, currentSpec);
+		    patientsWithNextConsultationDate, patientsEnrrolledOnArtWithoutAnyConsultation, currentSpec);
 		CohortIndicator unknownFemalesIndicator = hivIndicators
 		        .patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(unknownFemales);
 		dataSetDefinition.addColumn("C1UNKF", "TX_CURR: Unknown Age", new Mapped<CohortIndicator>(unknownFemalesIndicator,
@@ -151,7 +153,8 @@ public class TxCurrDataset extends BaseDataSet {
 		    enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
 		    patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup,
 		    patientsThatDidNotMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod, null, null,
-		    patientsWithNextPickupDate, patientsWithNextConsultationDate, currentSpec);
+		    patientsWithNextPickupDate, patientsWithNextConsultationDate, patientsEnrrolledOnArtWithoutAnyConsultation,
+		    currentSpec);
 		CohortIndicator allIndicator = hivIndicators.patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(all);
 		dataSetDefinition.addColumn("C1All", "TX_CURR: Currently on ART", new Mapped<CohortIndicator>(allIndicator,
 		        ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}")), "");

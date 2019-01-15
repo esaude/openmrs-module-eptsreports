@@ -39,6 +39,12 @@ public class TxCurrCohortQueries {
 	        + "and obs.obs_datetime = (select max(encounter.encounter_datetime) from encounter "
 	        + "where encounter.encounter_type in (%s) and encounter.patient_id = obs.person_id and encounter.location_id = obs.location_id and encounter.voided = false and encounter.encounter_datetime <= :onOrBefore) ";
 	
+	private static final String EXCLUDE_PATIENTS_ENRROLLED_BUT_WITHOUT_CONSULTATION = "select distinct(person.person_id) "
+	        + "from patient_program join person on person.person_id = patient_program.patient_id "
+	        + "    left join encounter on (encounter.patient_id = patient_program.patient_id and encounter.location_id = :location) "
+	        + "where patient_program.location_id = :location and patient_program.program_id = %s "
+	        + "    and person.voided = 0 and encounter.patient_id is null ";
+	
 	private static final int OLD_SPEC_ABANDONMENT_DAYS = 60;
 	
 	private static final int CURRENT_SPEC_ABANDONMENT_DAYS = 31;
@@ -249,6 +255,22 @@ public class TxCurrCohortQueries {
 	}
 	
 	/**
+	 * Patients enrolled on ART Program but without at least any consultation/pickup(without record
+	 * on obs)
+	 * 
+	 * @return
+	 */
+	@DocumentedDefinition(value = "patientsEnrrolledOnArtWithoutAnyConsultation")
+	public SqlCohortDefinition getPatientsEnrrolledOnArtWithoutAnyConsultation() {
+		SqlCohortDefinition definition = new SqlCohortDefinition();
+		definition.setName("patientsEnrrolledOnArtWithoutAnyConsultation");
+		definition.setQuery(String.format(EXCLUDE_PATIENTS_ENRROLLED_BUT_WITHOUT_CONSULTATION, hivMetadata.getARTProgram()
+		        .getProgramId()));
+		definition.addParameter(new Parameter("location", "location", Location.class));
+		return definition;
+	}
+	
+	/**
 	 * Build TxCurr composition cohort definition
 	 * 
 	 * @param cohortName
@@ -273,7 +295,8 @@ public class TxCurrCohortQueries {
 	        CohortDefinition patientsThatMissedNexPickup, CohortDefinition patientsThatDidNotMissNextConsultation,
 	        CohortDefinition patientsReportedAsAbandonmentButStillInPeriod, CohortDefinition ageCohort,
 	        CohortDefinition genderCohort, CohortDefinition patientsWithNextPickupDate,
-	        CohortDefinition patientsWithNextConsultationDate, boolean currentSpec) {
+	        CohortDefinition patientsWithNextConsultationDate,
+	        CohortDefinition patientsEnrrolledOnArtWithoutAnyConsultation, boolean currentSpec) {
 		
 		final int abandonmentDays = currentSpec ? CURRENT_SPEC_ABANDONMENT_DAYS : OLD_SPEC_ABANDONMENT_DAYS;
 		CompositionCohortDefinition TxCurrComposition = new CompositionCohortDefinition();
@@ -328,11 +351,16 @@ public class TxCurrCohortQueries {
 		TxCurrComposition.addSearch("baseCohort",
 		    EptsReportUtils.map(genericCohorts.getBaseCohort(), "endDate=${onOrBefore},location=${location}"));
 		
+		TxCurrComposition.getSearches().put(
+		    "13",
+		    new Mapped<CohortDefinition>(patientsEnrrolledOnArtWithoutAnyConsultation, ParameterizableUtil
+		            .createParameterMappings("location=${location}")));
+		
 		String compositionString;
 		if (currentSpec) {
-			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR ((6 OR (NOT 11)) AND (NOT (7 OR 8))))) AND (11 OR 12)";
+			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR ((6 OR (NOT 11)) AND (NOT (7 OR 8))))) AND (11 OR 12) AND NOT 13";
 		} else {
-			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND (NOT (7 OR 8)))))";
+			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND (NOT (7 OR 8))))) AND NOT 13";
 		}
 		
 		if (ageCohort != null) {
