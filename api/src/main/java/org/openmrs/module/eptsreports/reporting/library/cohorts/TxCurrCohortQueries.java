@@ -38,10 +38,11 @@ public class TxCurrCohortQueries {
 	        + "and obs.obs_datetime = (select max(encounter.encounter_datetime) from encounter "
 	        + "where encounter.encounter_type in (%s) and encounter.patient_id = obs.person_id and encounter.location_id = obs.location_id and encounter.voided = false and encounter.encounter_datetime <= :onOrBefore) ";
 	
-	private static final String EXCLUDE_PATIENTS_ENRROLLED_BUT_WITHOUT_CONSULTATION = "select distinct(person.person_id) from patient_program "
-	        + "join person on person.person_id = patient_program.patient_id where patient_program.location_id = :location and patient_program.program_id = %s "
-	        + "and person.voided = 0 and patient_program.patient_id not in "
-	        + "(select encounter.patient_id from encounter where encounter.location_id = :location)";
+	private static final String EXCLUDE_PATIENTS_ENRROLLED_BUT_WITHOUT_CONSULTATION = "select distinct(person.person_id) "
+	        + "from patient_program join person on person.person_id = patient_program.patient_id "
+	        + "    left join encounter on (encounter.patient_id = patient_program.patient_id and encounter.location_id = :location) "
+	        + "where patient_program.location_id = :location and patient_program.program_id = %s "
+	        + "    and person.voided = 0 and encounter.patient_id is null ";
 	
 	private static final int OLD_SPEC_ABANDONMENT_DAYS = 60;
 	
