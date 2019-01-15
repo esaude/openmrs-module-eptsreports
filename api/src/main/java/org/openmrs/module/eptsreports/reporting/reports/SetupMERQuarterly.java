@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxPvlsDataset;
@@ -26,6 +27,7 @@ import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportMa
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,9 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 	
 	@Autowired
 	private TxCurrDataset txCurrDataset;
+	
+	@Autowired
+	private GenericCohortQueries genericCohortQueries;
 	
 	@Override
 	public String getVersion() {
@@ -75,6 +80,8 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 		reportDefinition.setName(getName());
 		reportDefinition.setDescription(getDescription());
 		reportDefinition.setParameters(getParameters());
+		reportDefinition.setBaseCohortDefinition(genericCohortQueries.getBaseCohort(),
+		    ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
 		reportDefinition.addDataSetDefinition("N", Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
 		reportDefinition.addDataSetDefinition("C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
 		reportDefinition.addDataSetDefinition("P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
