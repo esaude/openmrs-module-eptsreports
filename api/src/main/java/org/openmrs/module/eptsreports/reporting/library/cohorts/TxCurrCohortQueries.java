@@ -330,7 +330,7 @@ public class TxCurrCohortQueries {
 		
 		String compositionString;
 		if (currentSpec) {
-			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR ((6 OR (NOT 11)) AND (NOT (7 OR 8))))) AND (11 OR 12)";
+			compositionString = "((1 OR 2 OR 3 OR 4) AND NOT (11 AND 6) AND NOT (12 AND 7 AND NOT 11)) AND NOT 5";
 		} else {
 			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND (NOT (7 OR 8)))))";
 		}
