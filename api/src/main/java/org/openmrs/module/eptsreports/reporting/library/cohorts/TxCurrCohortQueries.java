@@ -136,8 +136,6 @@ public class TxCurrCohortQueries {
 		                + ", "
 		                + hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()
 		                + ","
-		                + hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId()
-		                + ","
 		                + hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()
 		                + ") and ps.end_date is null and ps.start_date<=:onOrBefore and pg.location_id=:location group by p.patient_id");
 		leftARTProgramBeforeOrOnEndDate.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
