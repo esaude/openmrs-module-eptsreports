@@ -126,18 +126,15 @@ public class TxCurrCohortQueries {
 	public SqlCohortDefinition getPatientsWhoLeftARTProgramBeforeOrOnEndDate() {
 		SqlCohortDefinition leftARTProgramBeforeOrOnEndDate = new SqlCohortDefinition();
 		leftARTProgramBeforeOrOnEndDate.setName("leftARTProgramBeforeOrOnEndDate");
-		leftARTProgramBeforeOrOnEndDate
-		        .setQuery("select p.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id "
-		                + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-		                + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id="
-		                + hivMetadata.getARTProgram().getProgramId()
-		                + " and ps.state in ("
-		                + hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState().getProgramWorkflowStateId()
-		                + ", "
-		                + hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()
-		                + ","
-		                + hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()
-		                + ") and ps.end_date is null and ps.start_date<=:onOrBefore and pg.location_id=:location group by p.patient_id");
+		String leftARTProgramQueryString = "select p.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id "
+		        + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+		        + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s and ps.state in (%s, %s, %s) and ps.end_date is null and ps.start_date<=:onOrBefore and pg.location_id=:location "
+		        + "group by p.patient_id";
+		
+		leftARTProgramBeforeOrOnEndDate.setQuery(String.format(leftARTProgramQueryString, hivMetadata.getARTProgram()
+		        .getProgramId(), hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState()
+		        .getProgramWorkflowStateId(), hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId(),
+		    hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()));
 		leftARTProgramBeforeOrOnEndDate.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		leftARTProgramBeforeOrOnEndDate.addParameter(new Parameter("location", "location", Location.class));
 		return leftARTProgramBeforeOrOnEndDate;
