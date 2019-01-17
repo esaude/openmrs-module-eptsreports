@@ -26,6 +26,16 @@ public class HivIndicators extends BaseIndicators {
 	@Autowired
 	private TxPvlsCohortQueries pvls;
 	
+	public CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
+		return newCohortIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(
+		    cohortDefinition, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
+	}
+
+	public CohortIndicator patientEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
+		return newCohortIndicator("patientNewlyEnrolledInHIVIndicator",
+		    EptsReportUtils.map(cohortDefinition, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+	}
+
 	public CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(
 	        CohortDefinition cohortDefinition) {
 		return newCohortIndicator(
@@ -34,36 +44,36 @@ public class HivIndicators extends BaseIndicators {
 		            .map(cohortDefinition,
 		                "onOrBefore=${endDate},location=${location},effectiveDate=${endDate},locations=${location},locations=${location}"));
 	}
-	
+
 	public CohortIndicator patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(CohortDefinition cohortDefinition) {
 		return newCohortIndicator("patientNewlyEnrolledInHIVIndicator",
 		    EptsReportUtils.map(cohortDefinition, "onOrBefore=${endDate},location=${location},locations=${location}"));
 	}
-	
+
 	// add viral load indicators
 	/**
 	 * Find patients with VL <1000 - viral suppression
-	 * 
+	 *
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator patientsWithViralLoadSuppression() {
 		return newCohortIndicator("suppressed viral load", EptsReportUtils.map(pvls.getPatientsWithViralLoadSuppression(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
-	
+
 	/**
 	 * Find patients with viral load between dates
-	 * 
+	 *
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator patientsWithViralLoadBetweenDates() {
 		return newCohortIndicator("patients with viral load", EptsReportUtils.map(pvls.getPatientsWithViralLoadResults(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
-	
+
 	/**
 	 * Find patients with viral load suppression and on routine Numerator
-	 * 
+	 *
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getPatientsWithViralLoadSuppressionOnRoutineForAdultsAndChildren() {
@@ -71,10 +81,10 @@ public class HivIndicators extends BaseIndicators {
 		    pvls.getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
-	
+
 	/**
 	 * Find patients with viral load suppression and NOT documented Numerator
-	 * 
+	 *
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getPatientsWithViralLoadSuppressionNotDocumentedForAdultsAndChildren() {
@@ -82,10 +92,10 @@ public class HivIndicators extends BaseIndicators {
 		    pvls.getPatientWithViralSuppressionAndNotDocumentedForAdultsAndChildren(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
-	
+
 	/**
 	 * Find patients with viral load results and on routine Denominator
-	 * 
+	 *
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getPatientsWithViralLoadResultsAndOnRoutineForAdultsAndChildren() {
@@ -93,10 +103,10 @@ public class HivIndicators extends BaseIndicators {
 		    pvls.getPatientsWithViralLoadREsultsAndOnRoutineForChildrenAndAdults(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 	}
-	
+
 	/**
 	 * Find patients with viral load results and on routine Denominator
-	 * 
+	 *
 	 * @return CohortIndicator
 	 */
 	public CohortIndicator getPatientsWithViralLoadResultsAndNotDocumentedForAdultsAndChildren() {
