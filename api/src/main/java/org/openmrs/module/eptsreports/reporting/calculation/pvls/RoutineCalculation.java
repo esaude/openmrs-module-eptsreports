@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.openmrs.Concept;
-import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Obs;
@@ -143,14 +142,14 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 						for (Obs vlObs : viralLoadForPatientTakenWithin12Months) {
 							if (vlObs != null && vlObs.getObsDatetime() != null) {
 								Date vlDate = vlObs.getObsDatetime();
-								if(criteria.equals("AC")) {
+								if(criteria.equals(EptsReportConstants.PatientsOnRoutineEnum.ADULTCHILDREN)) {
 									if (EptsCalculationUtils.monthsSince(artInitiationDate, vlDate) > 6
 											&& EptsCalculationUtils.monthsSince(artInitiationDate, vlDate) <= 9) {
 										isOnRoutine = true;
 										break;
 									}
 								}
-								else if(criteria.equals("BP")) {
+								else if(criteria.equals(EptsReportConstants.PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)) {
 									if (EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) > 3
 											&& EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) <= 6) {
 										isOnRoutine = true;
@@ -184,14 +183,14 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 						        && currentObs.getObsDatetime() != null
 						        && previousObs.getObsDatetime().before(currentObs.getObsDatetime())) {
 
-							if(criteria.equals("AC")) {
+							if(criteria.equals(EptsReportConstants.PatientsOnRoutineEnum.ADULTCHILDREN)) {
 								if (EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(), currentObs.getObsDatetime()) >= 12
 										&& EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(),
 										currentObs.getObsDatetime()) <= 15) {
 									isOnRoutine = true;
 								}
 							}
-							else if(criteria.equals("BP")) {
+							else if(criteria.equals(EptsReportConstants.PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)) {
 								isOnRoutine = true;
 							}
 						}
