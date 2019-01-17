@@ -62,4 +62,10 @@ public final class EptsReportConstants {
 	public static final String GLOBAL_PROPERTY_TB_PROGRAM_UUID = "eptsreports.tbProgramUuid";
 	
 	public static final String GLOBAL_PROPERTY_HIV_CARE_PROGRAM_UUID = "eptsreports.hivCareProgramUuid";
+
+	//Enumeration
+	public enum PatientsOnRoutineEnum {
+		BREASTFEEDINGPREGNANT,
+		ADULTCHILDREN
+	}
 }

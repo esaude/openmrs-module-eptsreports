@@ -37,6 +37,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalcu
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -67,7 +68,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 		Concept regimeConcept = hivMetadata.getRegimeConcept();
 		Date latestVlLowerDateLimit = EptsCalculationUtils.addMonths(context.getNow(), -12);
 		EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
-		String criteria = (String) params.get("criteria");
+		EptsReportConstants.PatientsOnRoutineEnum criteria = (EptsReportConstants.PatientsOnRoutineEnum) params.get("criteria");
 		
 		// lookups
 		CalculationResultMap patientHavingVL = EptsCalculations.getObs(viralLoadConcept, cohort, Arrays.asList(location),
