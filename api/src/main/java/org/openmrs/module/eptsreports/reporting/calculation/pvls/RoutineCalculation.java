@@ -42,7 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalculation {
+public class RoutineCalculation extends AbstractPatientCalculation {
 	
 	@Autowired
 	private HivMetadata hivMetadata;
@@ -67,6 +67,7 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 		Concept regimeConcept = hivMetadata.getRegimeConcept();
 		Date latestVlLowerDateLimit = EptsCalculationUtils.addMonths(context.getNow(), -12);
 		EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
+		String criteria = (String) params.get("criteria");
 		
 		// lookups
 		CalculationResultMap patientHavingVL = EptsCalculations.getObs(viralLoadConcept, cohort, Arrays.asList(location),
@@ -104,7 +105,7 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 				artInitiationDate = (Date) artStartDateResult.getValue();
 			}
 			// check that this patient should be on ART for more than six months
-			if (artInitiationDate != null && lastVlObs != null && lastVlObs.getObsDatetime() != null) {
+			if (artInitiationDate != null && lastVlObs != null && lastVlObs.getObsDatetime() != null && criteria != null) {
 				
 				// we do not consider if the patient's last VL obs is not within window
 				if (lastVlObs.getObsDatetime().after(latestVlLowerDateLimit)
@@ -141,10 +142,19 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 						for (Obs vlObs : viralLoadForPatientTakenWithin12Months) {
 							if (vlObs != null && vlObs.getObsDatetime() != null) {
 								Date vlDate = vlObs.getObsDatetime();
-								if (EptsCalculationUtils.monthsSince(artInitiationDate, vlDate) > 6
-								        && EptsCalculationUtils.monthsSince(artInitiationDate, vlDate) <= 9) {
-									isOnRoutine = true;
-									break;
+								if(criteria.equals("AC")) {
+									if (EptsCalculationUtils.monthsSince(artInitiationDate, vlDate) > 6
+											&& EptsCalculationUtils.monthsSince(artInitiationDate, vlDate) <= 9) {
+										isOnRoutine = true;
+										break;
+									}
+								}
+								else if(criteria.equals("BP")) {
+									if (EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) > 3
+											&& EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) <= 6) {
+										isOnRoutine = true;
+										break;
+									}
 								}
 							}
 						}
@@ -172,10 +182,15 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 						        && previousObs.getObsDatetime() != null && previousObs.getValueNumeric() < 1000
 						        && currentObs.getObsDatetime() != null
 						        && previousObs.getObsDatetime().before(currentObs.getObsDatetime())) {
-							
-							if (EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(), currentObs.getObsDatetime()) >= 12
-							        && EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(),
-							            currentObs.getObsDatetime()) <= 15) {
+
+							if(criteria.equals("AC")) {
+								if (EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(), currentObs.getObsDatetime()) >= 12
+										&& EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(),
+										currentObs.getObsDatetime()) <= 15) {
+									isOnRoutine = true;
+								}
+							}
+							else if(criteria.equals("BP")) {
 								isOnRoutine = true;
 							}
 						}

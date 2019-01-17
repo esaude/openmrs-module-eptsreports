@@ -17,7 +17,7 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForMoreThanXmonthsCalcultion;
-import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineForAdultsAndChildrenCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineForBreastfeedingAndPregnantWomenCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsQueries;
@@ -168,12 +168,13 @@ public class TxPvlsCohortQueries {
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getpatientsOnRoutineAdultsAndChildren() {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria1", Context.getRegisteredComponents(
-		    RoutineForAdultsAndChildrenCalculation.class).get(0));
+	public CohortDefinition getpatientsOnRoutine(String criteria) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria", Context.getRegisteredComponents(
+		    RoutineCalculation.class).get(0));
 		cd.setName("Routine for adults and children");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addCalculationParameter("criteria", criteria);
 		return cd;
 		
 	}
@@ -206,7 +207,7 @@ public class TxPvlsCohortQueries {
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("supp", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
 		cd.addSearch("routine",
-		    EptsReportUtils.map(getpatientsOnRoutineAdultsAndChildren(), "onDate=${endDate},location=${location}"));
+		    EptsReportUtils.map(getpatientsOnRoutine("AC"), "onDate=${endDate},location=${location}"));
 		cd.setCompositionString("supp AND routine");
 		return cd;
 	}
@@ -226,7 +227,7 @@ public class TxPvlsCohortQueries {
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("supp", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
 		cd.addSearch("routine",
-		    EptsReportUtils.map(getpatientsOnRoutineAdultsAndChildren(), "onDate=${endDate},location=${location}"));
+		    EptsReportUtils.map(getpatientsOnRoutine("AC"), "onDate=${endDate},location=${location}"));
 		cd.setCompositionString("supp AND NOT routine");
 		return cd;
 	}
@@ -245,7 +246,7 @@ public class TxPvlsCohortQueries {
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
 		cd.addSearch("routine",
-		    EptsReportUtils.map(getpatientsOnRoutineAdultsAndChildren(), "onDate=${endDate},location=${location}"));
+		    EptsReportUtils.map(getpatientsOnRoutine("AC"), "onDate=${endDate},location=${location}"));
 		cd.setCompositionString("results AND routine");
 		return cd;
 	}
@@ -264,7 +265,7 @@ public class TxPvlsCohortQueries {
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
 		cd.addSearch("routine",
-		    EptsReportUtils.map(getpatientsOnRoutineAdultsAndChildren(), "onDate=${endDate},location=${location}"));
+		    EptsReportUtils.map(getpatientsOnRoutine("AC"), "onDate=${endDate},location=${location}"));
 		cd.setCompositionString("results AND NOT routine");
 		return cd;
 	}
@@ -285,7 +286,7 @@ public class TxPvlsCohortQueries {
 		cd.addSearch("breastfeedingVl", EptsReportUtils.map(getBreastfeedingWomenWhoHaveViralSuppression(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("routine",
-		    EptsReportUtils.map(getPregnantAndBreastfeedingWomenOnRoutine(), "onDate=${endDate},location=${location}"));
+		    EptsReportUtils.map(getpatientsOnRoutine("BP"), "onDate=${endDate},location=${location}"));
 		cd.setCompositionString("breastfeedingVl AND routine");
 		
 		return cd;
@@ -305,7 +306,7 @@ public class TxPvlsCohortQueries {
 		cd.addSearch("breastfeedingVl", EptsReportUtils.map(getBreastfeedingWomenWhoHaveViralSuppression(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("routine",
-		    EptsReportUtils.map(getPregnantAndBreastfeedingWomenOnRoutine(), "onDate=${endDate},location=${location}"));
+		    EptsReportUtils.map(getpatientsOnRoutine("BP"), "onDate=${endDate},location=${location}"));
 		cd.setCompositionString("breastfeedingVl AND NOT routine");
 		
 		return cd;
@@ -361,7 +362,7 @@ public class TxPvlsCohortQueries {
 		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenWithViralLoadSuppressionNumerator(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("routine",
-		    EptsReportUtils.map(getPregnantAndBreastfeedingWomenOnRoutine(), "onDate=${endDate},location=${location}"));
+		    EptsReportUtils.map(getpatientsOnRoutine("BP"), "onDate=${endDate},location=${location}"));
 		cd.setCompositionString("pregnant AND routine");
 		return cd;
 	}
@@ -380,7 +381,7 @@ public class TxPvlsCohortQueries {
 		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenWithViralLoadSuppressionNumerator(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("routine",
-		    EptsReportUtils.map(getPregnantAndBreastfeedingWomenOnRoutine(), "onDate=${endDate},location=${location}"));
+		    EptsReportUtils.map(getpatientsOnRoutine("BP"), "onDate=${endDate},location=${location}"));
 		cd.setCompositionString("pregnant AND NOT routine");
 		return cd;
 	}
@@ -401,7 +402,7 @@ public class TxPvlsCohortQueries {
 		cd.addSearch("vlandBreastfeeding", EptsReportUtils.map(getBreastfeedingWomenWhoHaveViralLoadResults(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("routine",
-		    EptsReportUtils.map(getPregnantAndBreastfeedingWomenOnRoutine(), "onDate=${endDate},location=${location}"));
+		    EptsReportUtils.map(getpatientsOnRoutine("BP"), "onDate=${endDate},location=${location}"));
 		cd.setCompositionString("vlandBreastfeeding AND routine");
 		return cd;
 	}
@@ -420,7 +421,7 @@ public class TxPvlsCohortQueries {
 		cd.addSearch("vlandBreastfeeding", EptsReportUtils.map(getBreastfeedingWomenWhoHaveViralLoadResults(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("routine",
-		    EptsReportUtils.map(getPregnantAndBreastfeedingWomenOnRoutine(), "onDate=${endDate},location=${location}"));
+		    EptsReportUtils.map(getpatientsOnRoutine("BP"), "onDate=${endDate},location=${location}"));
 		cd.setCompositionString("vlandBreastfeeding AND NOT routine");
 		return cd;
 	}
@@ -440,7 +441,7 @@ public class TxPvlsCohortQueries {
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenWithViralLoadResultsDenominator(), mappings));
 		cd.addSearch("routine",
-		    EptsReportUtils.map(getPregnantAndBreastfeedingWomenOnRoutine(), "onDate=${endDate},location=${location}"));
+		    EptsReportUtils.map(getpatientsOnRoutine("BP"), "onDate=${endDate},location=${location}"));
 		cd.setCompositionString("pregnant AND routine");
 		return cd;
 	}
@@ -459,7 +460,7 @@ public class TxPvlsCohortQueries {
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenWithViralLoadResultsDenominator(), mappings));
 		cd.addSearch("routine",
-		    EptsReportUtils.map(getPregnantAndBreastfeedingWomenOnRoutine(), "onDate=${endDate},location=${location}"));
+		    EptsReportUtils.map(getpatientsOnRoutine("BP"), "onDate=${endDate},location=${location}"));
 		cd.setCompositionString("pregnant AND NOT routine");
 		return cd;
 	}
