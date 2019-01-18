@@ -53,8 +53,9 @@ public class HivCohortQueries {
 		sql.addParameter(new Parameter("endDate", "End Date", Date.class));
 		sql.addParameter(new Parameter("location", "Location", Location.class));
 		sql.setQuery(ViralLoadQueries.getPatientsWithViralLoadSuppression(hivMetadata.getMisauLaboratorioEncounterType()
-		        .getEncounterTypeId(), hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-				hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(), hivMetadata.getHivViralLoadConcept().getConceptId()));
+		        .getEncounterTypeId(), hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(), hivMetadata
+		        .getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(), hivMetadata.getHivViralLoadConcept()
+		        .getConceptId()));
 		return sql;
 	}
 	
@@ -73,8 +74,8 @@ public class HivCohortQueries {
 		sql.addParameter(new Parameter("location", "Location", Location.class));
 		sql.setQuery(ViralLoadQueries.getPatientsHavingViralLoadInLast12Months(hivMetadata
 		        .getMisauLaboratorioEncounterType().getEncounterTypeId(), hivMetadata.getAdultoSeguimentoEncounterType()
-				.getEncounterTypeId(), hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(), hivMetadata.getHivViralLoadConcept()
-		        .getConceptId()));
+		        .getEncounterTypeId(), hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+		    hivMetadata.getHivViralLoadConcept().getConceptId()));
 		return sql;
 	}
 	

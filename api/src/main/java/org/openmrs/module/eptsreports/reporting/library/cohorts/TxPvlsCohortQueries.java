@@ -324,7 +324,8 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("suppression", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
-		cd.addSearch("pregnant", EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(), "startDate=${endDate-12m},endDate=${endDate},location=${location}"));
+		cd.addSearch("pregnant", EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+		    "startDate=${endDate-12m},endDate=${endDate},location=${location}"));
 		cd.setCompositionString("suppression AND pregnant");
 		return cd;
 	}
@@ -342,7 +343,8 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
-		cd.addSearch("pregnant", EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(), "startDate=${endDate-12m},endDate=${endDate},location=${location}"));
+		cd.addSearch("pregnant", EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+		    "startDate=${endDate-12m},endDate=${endDate},location=${location}"));
 		cd.setCompositionString("results AND pregnant");
 		return cd;
 	}

@@ -20,17 +20,14 @@ public class ViralLoadQueries {
 	 * 
 	 * @return String
 	 */
-	public static String getPatientsWithViralLoadSuppression(int labEncounter, int adultSeguimentoEncounter, int pediatriaSeguimentoEncounter,  int vlConceptQuestion) {
+	public static String getPatientsWithViralLoadSuppression(int labEncounter, int adultSeguimentoEncounter,
+	        int pediatriaSeguimentoEncounter, int vlConceptQuestion) {
 		return "SELECT ultima_carga.patient_id FROM(SELECT p.patient_id,MAX(o.obs_datetime) data_carga"
 		        + " FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id"
 		        + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
-		        + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type IN (" + labEncounter
-				+ ","
-				+adultSeguimentoEncounter
-				+ ","
-				+pediatriaSeguimentoEncounter
-				+ ")"
-		        + " AND  o.concept_id=" + vlConceptQuestion + " AND o.value_numeric IS NOT NULL AND"
+		        + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type IN (" + labEncounter + ","
+		        + adultSeguimentoEncounter + "," + pediatriaSeguimentoEncounter + ")" + " AND  o.concept_id="
+		        + vlConceptQuestion + " AND o.value_numeric IS NOT NULL AND"
 		        + " e.encounter_datetime BETWEEN date_add(:endDate, interval -12 MONTH) and :endDate AND"
 		        + " e.location_id=:location GROUP BY p.patient_id" + ") ultima_carga"
 		        + " INNER JOIN obs ON obs.person_id=ultima_carga.patient_id AND obs.obs_datetime="
@@ -43,15 +40,12 @@ public class ViralLoadQueries {
 	 * 
 	 * @return String
 	 */
-	public static String getPatientsHavingViralLoadInLast12Months(int labEncounter, int adultSeguimentoEncounter, int pediatriaSeguimentoEncounter,  int vlConceptQuestion) {
+	public static String getPatientsHavingViralLoadInLast12Months(int labEncounter, int adultSeguimentoEncounter,
+	        int pediatriaSeguimentoEncounter, int vlConceptQuestion) {
 		return "SELECT p.patient_id FROM  patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN"
 		        + " obs o ON e.encounter_id=o.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND"
-		        + " e.encounter_type IN (" + labEncounter
-				+ ","
-				+adultSeguimentoEncounter
-				+ ","
-				+pediatriaSeguimentoEncounter
-				+ ") AND o.concept_id=" + vlConceptQuestion
+		        + " e.encounter_type IN (" + labEncounter + "," + adultSeguimentoEncounter + ","
+		        + pediatriaSeguimentoEncounter + ") AND o.concept_id=" + vlConceptQuestion
 		        + " AND o.value_numeric IS NOT NULL AND"
 		        + " e.encounter_datetime BETWEEN date_add(:endDate, interval -12 MONTH) AND :endDate AND"
 		        + " e.location_id=:location";

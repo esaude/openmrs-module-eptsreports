@@ -55,8 +55,9 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
 		CalculationResultMap arvsInitiationDateMap = calculate(
 		    Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0), cohort, context);
 		Date oneYearBefore = EptsCalculationUtils.addMonths(context.getNow(), -12);
-		CalculationResultMap lastVl = EptsCalculations.lastObs(Arrays.asList(labEncounterType, adultFollowup, childFollowup), viralLoadConcept, location,
-		    oneYearBefore, context.getNow(), cohort, context);
+		CalculationResultMap lastVl = EptsCalculations.lastObs(
+		    Arrays.asList(labEncounterType, adultFollowup, childFollowup), viralLoadConcept, location, oneYearBefore,
+		    context.getNow(), cohort, context);
 		
 		for (Integer ptId : cohort) {
 			boolean isOnArtForMoreThan3Months = false;

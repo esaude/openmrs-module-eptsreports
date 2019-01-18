@@ -93,7 +93,8 @@ public class RoutineForAdultsAndChildrenCalculation extends AbstractPatientCalcu
 		// get the ART initiation date
 		CalculationResultMap arvsInitiationDateMap = calculate(
 		    Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0), cohort, context);
-		CalculationResultMap lastVl = EptsCalculations.lastObs(Arrays.asList(labEncounterType, adultFollowup, childFollowup), viralLoadConcept, location,
+		CalculationResultMap lastVl = EptsCalculations.lastObs(
+		    Arrays.asList(labEncounterType, adultFollowup, childFollowup), viralLoadConcept, location,
 		    latestVlLowerDateLimit, context.getNow(), cohort, context);
 		
 		for (Integer pId : cohort) {
