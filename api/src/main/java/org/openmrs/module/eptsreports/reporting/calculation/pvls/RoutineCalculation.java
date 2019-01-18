@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
@@ -94,6 +95,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 		    Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0), cohort, context);
 		CalculationResultMap lastVl = EptsCalculations.lastObs(Arrays.asList(labEncounterType), viralLoadConcept, location,
 		    latestVlLowerDateLimit, context.getNow(), cohort, context);
+		//get patients who have been on ART for more than 3 months
+		Set<Integer> onArtForMoreThan3Months = EptsCalculationUtils.patientsThatPass(calculate(Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0), cohort, context));
 		
 		for (Integer pId : cohort) {
 			boolean isOnRoutine = false;
@@ -105,7 +108,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 				artInitiationDate = (Date) artStartDateResult.getValue();
 			}
 			// check that this patient should be on ART for more than six months
-			if (artInitiationDate != null && lastVlObs != null && lastVlObs.getObsDatetime() != null && criteria != null) {
+			if (artInitiationDate != null && lastVlObs != null && lastVlObs.getObsDatetime() != null && criteria != null && onArtForMoreThan3Months.contains(pId)) {
 				
 				// we do not consider if the patient's last VL obs is not within window
 				if (lastVlObs.getObsDatetime().after(latestVlLowerDateLimit)
