@@ -163,10 +163,10 @@ public class TxCurrCohortQueries {
 	// Looks for patients that from the date scheduled for next follow up
 	// consultation (concept 1410=RETURN VISIT DATE) until the end date have not
 	// completed 28 days
-	@DocumentedDefinition(value = "patientsThatDidNotMissNextConsultation")
-	public SqlCohortDefinition getPatientsThatDidNotMissNextConsultation() {
+	@DocumentedDefinition(value = "patientsThatMissNextConsultation")
+	public SqlCohortDefinition getPatientsThatMissNextConsultation() {
 		SqlCohortDefinition definition = new SqlCohortDefinition();
-		definition.setName("patientsThatDidNotMissNextConsultation");
+		definition.setName("patientsThatMissNextConsultation");
 		definition.setQuery("select patient_id from " + "( Select p.patient_id,max(encounter_datetime) encounter_datetime "
 		        + "from patient p inner join encounter e on e.patient_id=p.patient_id "
 		        + "where p.voided=0 and e.voided=0 and e.encounter_type in ("
@@ -176,7 +176,7 @@ public class TxCurrCohortQueries {
 		        + "inner join obs o on o.person_id=max_mov.patient_id "
 		        + "where max_mov.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id="
 		        + hivMetadata.getReturnVisitDateConcept().getConceptId()
-		        + " and o.location_id=:location AND DATEDIFF(:onOrBefore,o.value_datetime)<:abandonmentDays");
+		        + " and o.location_id=:location AND DATEDIFF(:onOrBefore,o.value_datetime)>=:abandonmentDays");
 		definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		definition.addParameter(new Parameter("location", "location", Location.class));
 		definition.addParameter(new Parameter("abandonmentDays", "abandonmentDays", Integer.class));
@@ -265,7 +265,7 @@ public class TxCurrCohortQueries {
 	public CohortDefinition getTxCurrCompositionCohort(String cohortName, CohortDefinition inARTProgramAtEndDate,
 	        CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs,
 	        CohortDefinition patientsWithDrugPickUpEncounters, CohortDefinition patientsWhoLeftARTProgramBeforeOrOnEndDate,
-	        CohortDefinition patientsThatMissedNexPickup, CohortDefinition patientsThatDidNotMissNextConsultation,
+	        CohortDefinition patientsThatMissedNexPickup, CohortDefinition patientsThatMissNextConsultation,
 	        CohortDefinition patientsReportedAsAbandonmentButStillInPeriod, CohortDefinition ageCohort,
 	        CohortDefinition genderCohort, CohortDefinition patientsWithNextPickupDate,
 	        CohortDefinition patientsWithNextConsultationDate, boolean currentSpec) {
@@ -304,7 +304,7 @@ public class TxCurrCohortQueries {
 		            .format("onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s", abandonmentDays))));
 		TxCurrComposition.getSearches().put(
 		    "7",
-		    new Mapped<CohortDefinition>(patientsThatDidNotMissNextConsultation, ParameterizableUtil
+		    new Mapped<CohortDefinition>(patientsThatMissNextConsultation, ParameterizableUtil
 		            .createParameterMappings(String.format(
 		                "onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s", abandonmentDays))));
 		TxCurrComposition.getSearches().put(
@@ -327,7 +327,7 @@ public class TxCurrCohortQueries {
 		if (currentSpec) {
 			compositionString = "((1 OR 2 OR 3 OR 4) AND NOT (11 AND 6) AND NOT (12 AND 7 AND NOT 11)) AND NOT 5";
 		} else {
-			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND (NOT (7 OR 8)))))";
+			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND (NOT (NOT 7 OR 8)))))";
 		}
 		
 		if (ageCohort != null) {
