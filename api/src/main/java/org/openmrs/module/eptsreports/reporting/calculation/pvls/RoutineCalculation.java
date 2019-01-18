@@ -36,7 +36,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalcu
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PatientsOnRoutineEnum;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -67,7 +67,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 		Concept regimeConcept = hivMetadata.getRegimeConcept();
 		Date latestVlLowerDateLimit = EptsCalculationUtils.addMonths(context.getNow(), -12);
 		EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
-		EptsReportConstants.PatientsOnRoutineEnum criteria = (EptsReportConstants.PatientsOnRoutineEnum) params.get("criteria");
+		PatientsOnRoutineEnum criteria = (PatientsOnRoutineEnum) params.get("criteria");
 		
 		// lookups
 		CalculationResultMap patientHavingVL = EptsCalculations.getObs(viralLoadConcept, cohort, Arrays.asList(location),
@@ -142,14 +142,14 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 						for (Obs vlObs : viralLoadForPatientTakenWithin12Months) {
 							if (vlObs != null && vlObs.getObsDatetime() != null) {
 								Date vlDate = vlObs.getObsDatetime();
-								if(criteria.equals(EptsReportConstants.PatientsOnRoutineEnum.ADULTCHILDREN)) {
+								if(criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)) {
 									if (EptsCalculationUtils.monthsSince(artInitiationDate, vlDate) > 6
 											&& EptsCalculationUtils.monthsSince(artInitiationDate, vlDate) <= 9) {
 										isOnRoutine = true;
 										break;
 									}
 								}
-								else if(criteria.equals(EptsReportConstants.PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)) {
+								else if(criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)) {
 									if (EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) > 3
 											&& EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) <= 6) {
 										isOnRoutine = true;
@@ -183,14 +183,14 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 						        && currentObs.getObsDatetime() != null
 						        && previousObs.getObsDatetime().before(currentObs.getObsDatetime())) {
 
-							if(criteria.equals(EptsReportConstants.PatientsOnRoutineEnum.ADULTCHILDREN)) {
+							if(criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)) {
 								if (EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(), currentObs.getObsDatetime()) >= 12
 										&& EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(),
 										currentObs.getObsDatetime()) <= 15) {
 									isOnRoutine = true;
 								}
 							}
-							else if(criteria.equals(EptsReportConstants.PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)) {
+							else if(criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)) {
 								isOnRoutine = true;
 							}
 						}
