@@ -128,7 +128,7 @@ public class TxCurrCohortQueries {
 		leftARTProgramBeforeOrOnEndDate.setName("leftARTProgramBeforeOrOnEndDate");
 		String leftARTProgramQueryString = "select p.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id "
 		        + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-		        + "left join encounter on encounter.patient_id = p.patient_id and encounter.encounter_type in (%s) and encounter.voided = false and encounter.encounter_datetime > ps.start_date "
+		        + "left join encounter on encounter.patient_id = p.patient_id and encounter.encounter_type in (%s) and encounter.voided = false and encounter.encounter_datetime > ps.start_date and encounter.location_id = pg.location_id "
 		        + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s and ps.state in (%s) and ps.end_date is null and ps.start_date<=:onOrBefore and pg.location_id=:location and encounter.encounter_id is null "
 		        + "group by p.patient_id";
 		
