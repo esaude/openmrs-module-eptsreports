@@ -69,6 +69,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 		Date latestVlLowerDateLimit = EptsCalculationUtils.addMonths(context.getNow(), -12);
 		EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
 		PatientsOnRoutineEnum criteria = (PatientsOnRoutineEnum) params.get("criteria");
+		EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
+		EncounterType childFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
 		
 		// lookups
 		CalculationResultMap patientHavingVL = EptsCalculations.getObs(viralLoadConcept, cohort, Arrays.asList(location),
@@ -93,7 +95,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 		// get the ART initiation date
 		CalculationResultMap arvsInitiationDateMap = calculate(
 		    Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0), cohort, context);
-		CalculationResultMap lastVl = EptsCalculations.lastObs(Arrays.asList(labEncounterType), viralLoadConcept, location,
+		CalculationResultMap lastVl = EptsCalculations.lastObs(
+		    Arrays.asList(labEncounterType, adultFollowup, childFollowup), viralLoadConcept, location,
 		    latestVlLowerDateLimit, context.getNow(), cohort, context);
 		//get patients who have been on ART for more than 3 months
 		Set<Integer> onArtForMoreThan3Months = EptsCalculationUtils.patientsThatPass(calculate(Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0), cohort, context));
