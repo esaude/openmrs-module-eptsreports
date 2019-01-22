@@ -22,7 +22,6 @@ import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDim
 import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
@@ -77,13 +76,11 @@ public class TxCurrDataset extends BaseDataSet {
 		CohortDefinition patientsWithNextPickupDate = txCurrCohortQueries.getPatientsWithNextPickupDate();
 		CohortDefinition patientsWithNextConsultationDate = txCurrCohortQueries.getPatientsWithNextConsultationDate();
 		
-		SqlCohortDefinition patientsEnrrolledOnArtWithoutAnyConsultation = txCurrCohortQueries
-		        .getPatientsEnrrolledOnArtWithoutAnyConsultation();
 		CohortDefinition ranges = txCurrCohortQueries.getTxCurrCompositionCohort("compositionCohort", enrolledBeforeEndDate,
 		    patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
 		    patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup, patientsThatDidNotMissNextConsultation,
 		    patientsReportedAsAbandonmentButStillInPeriod, patientsWithNextPickupDate, patientsWithNextConsultationDate,
-		    patientsEnrrolledOnArtWithoutAnyConsultation, currentSpec);
+		    currentSpec);
 		CohortIndicator indicator = hivIndicators
 		        .patientInYearRangeEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(ranges);
 		
@@ -91,7 +88,12 @@ public class TxCurrDataset extends BaseDataSet {
 		addRow(dataSetDefinition, "C2", "Adults", EptsReportUtils.map(indicator, mappings), getColumnsForAdults());
 		
 		// Total
-		CohortIndicator allIndicator = hivIndicators.patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(ranges);
+		CohortDefinition all = txCurrCohortQueries.getTxCurrCompositionCohort("allPatientsCurrentlyInART",
+		    enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
+		    patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup,
+		    patientsThatDidNotMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod,
+		    patientsWithNextPickupDate, patientsWithNextConsultationDate, currentSpec);
+		CohortIndicator allIndicator = hivIndicators.patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(all);
 		dataSetDefinition.addColumn("C1All", "TX_CURR: Currently on ART", new Mapped<CohortIndicator>(allIndicator,
 		        ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}")), "");
 		
