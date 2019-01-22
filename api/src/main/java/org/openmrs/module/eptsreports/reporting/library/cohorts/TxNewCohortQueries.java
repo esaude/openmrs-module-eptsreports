@@ -182,7 +182,7 @@ public class TxNewCohortQueries {
 		
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addParameter(new Parameter("locationList", "Location", Location.class));
 		
 		return cd;
 	}
@@ -240,7 +240,7 @@ public class TxNewCohortQueries {
 		cd.addParameter(new Parameter("location", "location", Location.class));
 		
 		cd.addSearch("DATAPARTO", EptsReportUtils.map(getPatientsWithUpdatedDepartureInART(),
-		    "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+		    "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
 		cd.addSearch("INICIOLACTANTE", EptsReportUtils.map(
 		    genericCohorts.hasCodedObs(hivMetadata.getCriteriaForArtStart(), BaseObsCohortDefinition.TimeModifier.FIRST,
 		        SetComparator.IN, Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
