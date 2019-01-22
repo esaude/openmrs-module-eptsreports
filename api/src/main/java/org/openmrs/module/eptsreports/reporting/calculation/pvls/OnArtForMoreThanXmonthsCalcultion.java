@@ -14,7 +14,6 @@
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -49,13 +48,16 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
 		Location location = (Location) context.getFromCache("location");
 		Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
 		EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
+		EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
+		EncounterType childFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
 		
 		// get data inicio TARV
 		CalculationResultMap arvsInitiationDateMap = calculate(
 		    Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0), cohort, context);
 		Date oneYearBefore = EptsCalculationUtils.addMonths(context.getNow(), -12);
-		CalculationResultMap lastVl = EptsCalculations.lastObs(Arrays.asList(labEncounterType), viralLoadConcept, location,
-		    oneYearBefore, context.getNow(), cohort, context);
+		CalculationResultMap lastVl = EptsCalculations.lastObs(
+		    Arrays.asList(labEncounterType, adultFollowup, childFollowup), viralLoadConcept, location, oneYearBefore,
+		    context.getNow(), cohort, context);
 		
 		for (Integer ptId : cohort) {
 			boolean isOnArtForMoreThan3Months = false;
