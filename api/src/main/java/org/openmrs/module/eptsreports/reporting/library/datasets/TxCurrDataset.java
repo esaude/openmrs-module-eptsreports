@@ -21,7 +21,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
+import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -45,7 +45,7 @@ public class TxCurrDataset extends BaseDataSet {
 	private GenericCohortQueries genericCohortQueries;
 
 	@Autowired
-	private HivIndicators hivIndicators;
+	private EptsGeneralIndicator eptsGeneralIndicator;
 
 	@Autowired
 	private HivMetadata hivMetadata;
@@ -90,8 +90,7 @@ public class TxCurrDataset extends BaseDataSet {
 					patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup,
 					patientsThatMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod, ageCohort, males,
 					patientsWithNextPickupDate, patientsWithNextConsultationDate, currentSpec);
-			CohortIndicator indicator = hivIndicators
-					.patientInYearRangeEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(rangeMales);
+			CohortIndicator indicator = eptsGeneralIndicator.getIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicatorMales", EptsReportUtils.map(rangeMales, "onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
 			dataSetDefinition.addColumn(
 					columnName,
 					label,
@@ -109,8 +108,7 @@ public class TxCurrDataset extends BaseDataSet {
 					patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup, patientsThatMissNextConsultation,
 					patientsReportedAsAbandonmentButStillInPeriod, ageCohort, females, patientsWithNextPickupDate,
 					patientsWithNextConsultationDate, currentSpec);
-			CohortIndicator indicator = hivIndicators
-					.patientInYearRangeEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(rangeFemales);
+			CohortIndicator indicator = eptsGeneralIndicator.getIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicatorFemales", EptsReportUtils.map(rangeFemales, "onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
 			dataSetDefinition.addColumn(
 					columnName,
 					label,
@@ -124,8 +122,7 @@ public class TxCurrDataset extends BaseDataSet {
 				patientsThatMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod,
 				genericCohortQueries.getUnknownAgeCohort(), males, patientsWithNextPickupDate, patientsWithNextConsultationDate,
 				currentSpec);
-		CohortIndicator unknownMalesIndicator = hivIndicators
-				.patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(unknownMales);
+		CohortIndicator unknownMalesIndicator = eptsGeneralIndicator.getIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicatorUnknownMales", EptsReportUtils.map(unknownMales, "onOrBefore=${endDate},location=${location}"));
 		dataSetDefinition.addColumn("C1UNKM", "TX_CURR: Unknown Age", EptsReportUtils.map(unknownMalesIndicator,
 				"endDate=${endDate},location=${location}"), "");
 
@@ -136,8 +133,7 @@ public class TxCurrDataset extends BaseDataSet {
 				patientsThatMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod,
 				genericCohortQueries.getUnknownAgeCohort(), females, patientsWithNextPickupDate,
 				patientsWithNextConsultationDate, currentSpec);
-		CohortIndicator unknownFemalesIndicator = hivIndicators
-				.patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(unknownFemales);
+		CohortIndicator unknownFemalesIndicator = eptsGeneralIndicator.getIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicatorUnknownFemales", EptsReportUtils.map(unknownFemales, "onOrBefore=${endDate},location=${location}"));
 		dataSetDefinition.addColumn("C1UNKF", "TX_CURR: Unknown Age", EptsReportUtils.map(unknownFemalesIndicator,
 				"endDate=${endDate},location=${location}"), "");
 
@@ -147,7 +143,7 @@ public class TxCurrDataset extends BaseDataSet {
 				patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup,
 				patientsThatMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod, null, null,
 				patientsWithNextPickupDate, patientsWithNextConsultationDate, currentSpec);
-		CohortIndicator allIndicator = hivIndicators.patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(all);
+		CohortIndicator allIndicator = eptsGeneralIndicator.getIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicatorUnknownFemales", EptsReportUtils.map(all, "onOrBefore=${endDate},location=${location}"));
 		dataSetDefinition.addColumn("C1All", "TX_CURR: Currently on ART", EptsReportUtils.map(allIndicator,
 				"endDate=${endDate},location=${location}"), "");
 
