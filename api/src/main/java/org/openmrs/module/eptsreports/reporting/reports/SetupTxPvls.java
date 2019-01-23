@@ -35,7 +35,7 @@ public class SetupTxPvls extends EptsDataExportManager {
 	
 	@Autowired
 	private TxPvlsDataset txPvlsDataset;
-
+	
 	@Autowired
 	private GenericCohortQueries genericCohortQueries;
 	
@@ -69,7 +69,8 @@ public class SetupTxPvls extends EptsDataExportManager {
 		
 		rd.addDataSetDefinition("Tx_Pvls Data Set", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
 		// add a base cohort here to help in calculations running
-		rd.setBaseCohortDefinition(EptsReportUtils.map(genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+		rd.setBaseCohortDefinition(EptsReportUtils.map(genericCohortQueries.getBaseCohort(),
+		    "endDate=${endDate},location=${location}"));
 		
 		return rd;
 	}

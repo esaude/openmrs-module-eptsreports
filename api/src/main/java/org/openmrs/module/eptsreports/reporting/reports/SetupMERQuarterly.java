@@ -44,7 +44,7 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 	
 	@Autowired
 	private TxCurrDataset txCurrDataset;
-
+	
 	@Autowired
 	private GenericCohortQueries genericCohortQueries;
 	
@@ -84,8 +84,9 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 		reportDefinition.addDataSetDefinition("C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
 		reportDefinition.addDataSetDefinition("P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
 		// add a base cohort here to help in calculations running
-		reportDefinition.setBaseCohortDefinition(EptsReportUtils.map(genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
-
+		reportDefinition.setBaseCohortDefinition(EptsReportUtils.map(genericCohortQueries.getBaseCohort(),
+		    "endDate=${endDate},location=${location}"));
+		
 		return reportDefinition;
 	}
 	

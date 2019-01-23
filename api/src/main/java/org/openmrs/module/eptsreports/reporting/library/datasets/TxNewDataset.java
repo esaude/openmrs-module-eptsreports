@@ -48,7 +48,7 @@ public class TxNewDataset extends BaseDataSet {
 	
 	@Autowired
 	private HivCohortQueries hivCohortQueries;
-
+	
 	@Autowired
 	private EptsGeneralIndicator eptsGeneralIndicator;
 	
@@ -121,9 +121,12 @@ public class TxNewDataset extends BaseDataSet {
 			    "patientEnrolledInARTStartedMales", inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs,
 			    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility,
 			    patientsWhoRestartedTreatment, ageCohort, males);
-			CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator = eptsGeneralIndicator.getIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(patientInYearRangeEnrolledInARTStarted, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
+			CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator = eptsGeneralIndicator.getIndicator(
+			    "patientInYearRangeEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(
+			        patientInYearRangeEnrolledInARTStarted,
+			        "onOrAfter=${startDate},onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
 			dataSetDefinition.addColumn("1M" + i, "Males:TX_NEW: New on ART by age and sex: " + ageCohort.getName(),
-			    EptsReportUtils.map(patientInYearRangeEnrolledInHIVStartedARTIndicator, mappings),"");
+			    EptsReportUtils.map(patientInYearRangeEnrolledInHIVStartedARTIndicator, mappings), "");
 			
 			i++;
 		}
@@ -135,17 +138,23 @@ public class TxNewDataset extends BaseDataSet {
 			    "patientEnrolledInARTStartedMales", inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs,
 			    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility,
 			    patientsWhoRestartedTreatment, ageCohort, females);
-			CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator = eptsGeneralIndicator.getIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(patientInYearRangeEnrolledInARTStarted, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
+			CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator = eptsGeneralIndicator.getIndicator(
+			    "patientInYearRangeEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(
+			        patientInYearRangeEnrolledInARTStarted,
+			        "onOrAfter=${startDate},onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
 			dataSetDefinition.addColumn("1F" + j, "Females:TX_NEW: New on ART by age and sex: " + ageCohort.getName(),
-			    EptsReportUtils.map(patientInYearRangeEnrolledInHIVStartedARTIndicator,mappings), "");
+			    EptsReportUtils.map(patientInYearRangeEnrolledInHIVStartedARTIndicator, mappings), "");
 			j++;
 		}
 		
 		CohortDefinition patientEnrolledInART = txNewCohortQueries.getTxNewCompositionCohort("patientEnrolledInART",
 		    inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
 		    patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility, patientsWhoRestartedTreatment, null, null);
-		CohortIndicator patientEnrolledInHIVStartedARTIndicator = eptsGeneralIndicator.getIndicator("patientNewlyEnrolledInHIVIndicator", EptsReportUtils.map(patientEnrolledInART, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-		dataSetDefinition.addColumn("1All", "TX_NEW: New on ART", EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings), "");
+		CohortIndicator patientEnrolledInHIVStartedARTIndicator = eptsGeneralIndicator.getIndicator(
+		    "patientNewlyEnrolledInHIVIndicator",
+		    EptsReportUtils.map(patientEnrolledInART, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		dataSetDefinition.addColumn("1All", "TX_NEW: New on ART",
+		    EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings), "");
 		
 		// Obtain patients breastfeeding newly enrolled on ART
 		dataSetDefinition.addDimension("maternity", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));

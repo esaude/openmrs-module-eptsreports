@@ -31,125 +31,131 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TxCurrDataset extends BaseDataSet {
-
+	
 	@Autowired
 	private AgeCohortQueries ageCohortQueries;
-
+	
 	@Autowired
 	private GenderCohortQueries genderCohortQueries;
-
+	
 	@Autowired
 	private TxCurrCohortQueries txCurrCohortQueries;
-
+	
 	@Autowired
 	private GenericCohortQueries genericCohortQueries;
-
+	
 	@Autowired
 	private EptsGeneralIndicator eptsGeneralIndicator;
-
+	
 	@Autowired
 	private HivMetadata hivMetadata;
-
+	
 	public CohortIndicatorDataSetDefinition constructTxCurrDataset(boolean currentSpec) {
-
+		
 		CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
 		dataSetDefinition.setName("TX_CURR Data Set");
 		dataSetDefinition.addParameters(getParameters());
-
+		
 		CohortDefinition enrolledBeforeEndDate = genericCohortQueries.createInProgram("InARTProgram",
-				hivMetadata.getARTProgram());
+		    hivMetadata.getARTProgram());
 		CohortDefinition patientWithSTARTDRUGSObs = txCurrCohortQueries.getPatientWithSTARTDRUGSObsBeforeOrOnEndDate();
 		CohortDefinition patientWithHistoricalDrugStartDateObs = txCurrCohortQueries
-				.getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate();
+		        .getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate();
 		CohortDefinition patientsWithDrugPickUpEncounters = txCurrCohortQueries
-				.getPatientWithFirstDrugPickupEncounterBeforeOrOnEndDate();
+		        .getPatientWithFirstDrugPickupEncounterBeforeOrOnEndDate();
 		CohortDefinition patientsWhoLeftARTProgramBeforeOrOnEndDate = txCurrCohortQueries
-				.getPatientsWhoLeftARTProgramBeforeOrOnEndDate();
+		        .getPatientsWhoLeftARTProgramBeforeOrOnEndDate();
 		CohortDefinition patientsThatMissedNexPickup = txCurrCohortQueries.getPatientsThatMissedNexPickup();
 		CohortDefinition patientsThatMissNextConsultation = txCurrCohortQueries.getPatientsThatMissNextConsultation();
 		CohortDefinition patientsReportedAsAbandonmentButStillInPeriod = txCurrCohortQueries
-				.getPatientsReportedAsAbandonmentButStillInPeriod();
+		        .getPatientsReportedAsAbandonmentButStillInPeriod();
 		CohortDefinition patientsWithNextPickupDate = txCurrCohortQueries.getPatientsWithNextPickupDate();
 		CohortDefinition patientsWithNextConsultationDate = txCurrCohortQueries.getPatientsWithNextConsultationDate();
-
+		
 		CohortDefinition males = genderCohortQueries.MaleCohort();
 		CohortDefinition females = genderCohortQueries.FemaleCohort();
-
+		
 		ArrayList<CohortDefinition> agesRange = createAgeCohorts();
-
+		
 		final String columnNameTemplate = "C1%s%s";
 		final String labelTemplate = "%s:TX_CURR: Currently on ART by age and sex: %s";
-
+		
 		// Males
 		int i = 1;
 		for (CohortDefinition ageCohort : agesRange) {
 			String columnName = String.format(columnNameTemplate, "M", String.valueOf(i++));
 			String label = String.format(labelTemplate, "Males", ageCohort.getName());
 			CohortDefinition rangeMales = txCurrCohortQueries.getTxCurrCompositionCohort("patientEnrolledInARTStartedMales",
-					enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
-					patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup,
-					patientsThatMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod, ageCohort, males,
-					patientsWithNextPickupDate, patientsWithNextConsultationDate, currentSpec);
-			CohortIndicator indicator = eptsGeneralIndicator.getIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicatorMales", EptsReportUtils.map(rangeMales, "onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
-			dataSetDefinition.addColumn(
-					columnName,
-					label,
-					EptsReportUtils.map(indicator, "endDate=${endDate},location=${location}"), "");
+			    enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
+			    patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup,
+			    patientsThatMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod, ageCohort, males,
+			    patientsWithNextPickupDate, patientsWithNextConsultationDate, currentSpec);
+			CohortIndicator indicator = eptsGeneralIndicator.getIndicator(
+			    "patientInYearRangeEnrolledInHIVStartedARTIndicatorMales",
+			    EptsReportUtils.map(rangeMales, "onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
+			dataSetDefinition.addColumn(columnName, label,
+			    EptsReportUtils.map(indicator, "endDate=${endDate},location=${location}"), "");
 		}
-
+		
 		// Females
 		i = 1;
 		for (CohortDefinition ageCohort : agesRange) {
 			String columnName = String.format(columnNameTemplate, "F", String.valueOf(i++));
 			String label = String.format(labelTemplate, "Females", ageCohort.getName());
 			CohortDefinition rangeFemales = txCurrCohortQueries.getTxCurrCompositionCohort(
-					"patientEnrolledInARTStartedFemales", enrolledBeforeEndDate, patientWithSTARTDRUGSObs,
-					patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
-					patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup, patientsThatMissNextConsultation,
-					patientsReportedAsAbandonmentButStillInPeriod, ageCohort, females, patientsWithNextPickupDate,
-					patientsWithNextConsultationDate, currentSpec);
-			CohortIndicator indicator = eptsGeneralIndicator.getIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicatorFemales", EptsReportUtils.map(rangeFemales, "onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
-			dataSetDefinition.addColumn(
-					columnName,
-					label,
-					EptsReportUtils.map(indicator, "endDate=${endDate},location=${location}"), "");
+			    "patientEnrolledInARTStartedFemales", enrolledBeforeEndDate, patientWithSTARTDRUGSObs,
+			    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
+			    patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup, patientsThatMissNextConsultation,
+			    patientsReportedAsAbandonmentButStillInPeriod, ageCohort, females, patientsWithNextPickupDate,
+			    patientsWithNextConsultationDate, currentSpec);
+			CohortIndicator indicator = eptsGeneralIndicator.getIndicator(
+			    "patientInYearRangeEnrolledInHIVStartedARTIndicatorFemales",
+			    EptsReportUtils.map(rangeFemales, "onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
+			dataSetDefinition.addColumn(columnName, label,
+			    EptsReportUtils.map(indicator, "endDate=${endDate},location=${location}"), "");
 		}
-
+		
 		// Unknown males
 		CohortDefinition unknownMales = txCurrCohortQueries.getTxCurrCompositionCohort("allPatientsCurrentlyInART",
-				enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
-				patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup,
-				patientsThatMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod,
-				genericCohortQueries.getUnknownAgeCohort(), males, patientsWithNextPickupDate, patientsWithNextConsultationDate,
-				currentSpec);
-		CohortIndicator unknownMalesIndicator = eptsGeneralIndicator.getIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicatorUnknownMales", EptsReportUtils.map(unknownMales, "onOrBefore=${endDate},location=${location}"));
-		dataSetDefinition.addColumn("C1UNKM", "TX_CURR: Unknown Age", EptsReportUtils.map(unknownMalesIndicator,
-				"endDate=${endDate},location=${location}"), "");
-
+		    enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
+		    patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup,
+		    patientsThatMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod,
+		    genericCohortQueries.getUnknownAgeCohort(), males, patientsWithNextPickupDate, patientsWithNextConsultationDate,
+		    currentSpec);
+		CohortIndicator unknownMalesIndicator = eptsGeneralIndicator.getIndicator(
+		    "patientInYearRangeEnrolledInHIVStartedARTIndicatorUnknownMales",
+		    EptsReportUtils.map(unknownMales, "onOrBefore=${endDate},location=${location}"));
+		dataSetDefinition.addColumn("C1UNKM", "TX_CURR: Unknown Age",
+		    EptsReportUtils.map(unknownMalesIndicator, "endDate=${endDate},location=${location}"), "");
+		
 		// Unknown females
 		CohortDefinition unknownFemales = txCurrCohortQueries.getTxCurrCompositionCohort("allPatientsCurrentlyInART",
-				enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
-				patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup,
-				patientsThatMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod,
-				genericCohortQueries.getUnknownAgeCohort(), females, patientsWithNextPickupDate,
-				patientsWithNextConsultationDate, currentSpec);
-		CohortIndicator unknownFemalesIndicator = eptsGeneralIndicator.getIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicatorUnknownFemales", EptsReportUtils.map(unknownFemales, "onOrBefore=${endDate},location=${location}"));
-		dataSetDefinition.addColumn("C1UNKF", "TX_CURR: Unknown Age", EptsReportUtils.map(unknownFemalesIndicator,
-				"endDate=${endDate},location=${location}"), "");
-
+		    enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
+		    patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup,
+		    patientsThatMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod,
+		    genericCohortQueries.getUnknownAgeCohort(), females, patientsWithNextPickupDate,
+		    patientsWithNextConsultationDate, currentSpec);
+		CohortIndicator unknownFemalesIndicator = eptsGeneralIndicator.getIndicator(
+		    "patientInYearRangeEnrolledInHIVStartedARTIndicatorUnknownFemales",
+		    EptsReportUtils.map(unknownFemales, "onOrBefore=${endDate},location=${location}"));
+		dataSetDefinition.addColumn("C1UNKF", "TX_CURR: Unknown Age",
+		    EptsReportUtils.map(unknownFemalesIndicator, "endDate=${endDate},location=${location}"), "");
+		
 		// Total
 		CohortDefinition all = txCurrCohortQueries.getTxCurrCompositionCohort("allPatientsCurrentlyInART",
-				enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
-				patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup,
-				patientsThatMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod, null, null,
-				patientsWithNextPickupDate, patientsWithNextConsultationDate, currentSpec);
-		CohortIndicator allIndicator = eptsGeneralIndicator.getIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicatorUnknownFemales", EptsReportUtils.map(all, "onOrBefore=${endDate},location=${location}"));
-		dataSetDefinition.addColumn("C1All", "TX_CURR: Currently on ART", EptsReportUtils.map(allIndicator,
-				"endDate=${endDate},location=${location}"), "");
-
+		    enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
+		    patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup,
+		    patientsThatMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod, null, null,
+		    patientsWithNextPickupDate, patientsWithNextConsultationDate, currentSpec);
+		CohortIndicator allIndicator = eptsGeneralIndicator.getIndicator(
+		    "patientInYearRangeEnrolledInHIVStartedARTIndicatorUnknownFemales",
+		    EptsReportUtils.map(all, "onOrBefore=${endDate},location=${location}"));
+		dataSetDefinition.addColumn("C1All", "TX_CURR: Currently on ART",
+		    EptsReportUtils.map(allIndicator, "endDate=${endDate},location=${location}"), "");
+		
 		return dataSetDefinition;
 	}
-
+	
 	private ArrayList<CohortDefinition> createAgeCohorts() {
 		ArrayList<CohortDefinition> agesRange = new ArrayList<CohortDefinition>();
 		agesRange.add(ageCohortQueries.createBelowYAgeCohort("PatientBelow1Year", 1));
