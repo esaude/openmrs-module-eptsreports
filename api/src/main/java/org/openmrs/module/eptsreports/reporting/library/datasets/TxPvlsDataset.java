@@ -19,7 +19,6 @@ import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
-import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -30,9 +29,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TxPvlsDataset extends BaseDataSet {
-	
-	@Autowired
-	private HivIndicators hivIndicators;
 	
 	@Autowired
 	private EptsCommonDimension eptsCommonDimension;
@@ -56,13 +52,13 @@ public class TxPvlsDataset extends BaseDataSet {
 		dsd.addDimension("age",
 		    EptsReportUtils.map(eptsCommonDimension.pvlsAges(), "endDate=${endDate},location=${location}"));
 		
-		// Totals for both numerator and denomonator
+		// Totals for both numerator and denominator
 		
 		dsd.addColumn("0N", "Total patients with suppressed Viral load - Numerator",
-		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadSuppression(), mappings), "");
+		    EptsReportUtils.map(eptsGeneralIndicator.getIndicator("suppressed viral load", EptsReportUtils.map(txPvls.getPatientsWithViralLoadSuppression(), mappings)), mappings), "");
 		
 		dsd.addColumn("0D", "Total patients with Viral load - Denominator",
-		    EptsReportUtils.map(hivIndicators.patientsWithViralLoadBetweenDates(), mappings), "");
+		    EptsReportUtils.map(eptsGeneralIndicator.getIndicator("patients with viral load", EptsReportUtils.map(txPvls.getPatientsWithViralLoadResults(), mappings)), mappings), "");
 		
 		// add patients on routine for adults and children
 		dsd.addColumn("B01", "Breast feeding and on routine Numerator", EptsReportUtils.map(
@@ -101,33 +97,33 @@ public class TxPvlsDataset extends BaseDataSet {
 		
 		// constructing the rows for children // /// Numerator routine
 		addRow(dsd, "3NR", "Children numerator routine",
-		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionOnRoutineForAdultsAndChildren(), mappings),
+		    EptsReportUtils.map(eptsGeneralIndicator.getIndicator("viral load suppression on routine adults and children", EptsReportUtils.map(txPvls.getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren(), mappings)), mappings),
 		    childrenColumns()); ////// Numerator NOT documented
 		addRow(dsd, "3NND", "Children numerator NOT documented", EptsReportUtils.map(
-		    hivIndicators.getPatientsWithViralLoadSuppressionNotDocumentedForAdultsAndChildren(), mappings),
+		    eptsGeneralIndicator.getIndicator("viral load suppression on routine adults and children", EptsReportUtils.map(txPvls.getPatientWithViralSuppressionAndNotDocumentedForAdultsAndChildren(), mappings)), mappings),
 		    childrenColumns());
 		
 		// constructing the rows for adults ///// Numerator routine
 		addRow(dsd, "4NR", "Adults numerator routine",
-		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadSuppressionOnRoutineForAdultsAndChildren(), mappings),
+		    EptsReportUtils.map(eptsGeneralIndicator.getIndicator("viral load suppression on routine adults", EptsReportUtils.map(txPvls.getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren(), mappings)), mappings),
 		    getColumnsForAdults()); //// Numerator NOT documented
 		addRow(dsd, "4NND", "Adults numerator NOT documented", EptsReportUtils.map(
-		    hivIndicators.getPatientsWithViralLoadSuppressionNotDocumentedForAdultsAndChildren(), mappings),
+		    eptsGeneralIndicator.getIndicator("viral load suppression on routine adults", EptsReportUtils.map(txPvls.getPatientWithViralSuppressionAndNotDocumentedForAdultsAndChildren(), mappings)), mappings),
 		    getColumnsForAdults());
 		
 		// denominators follow here for routine and NOT documented // /// Denominator
 		// routine for children
 		addRow(dsd, "3DR", "Children denominator routine",
-		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsAndOnRoutineForAdultsAndChildren(), mappings),
+		    EptsReportUtils.map(eptsGeneralIndicator.getIndicator("viral load results on routine adults and children", EptsReportUtils.map(txPvls.getPatientsWithViralLoadREsultsAndOnRoutineForChildrenAndAdults(), mappings)), mappings),
 		    childrenColumns()); ///// Denominator NOT documented
 		addRow(dsd, "3DND", "Children denominator NOT documented", EptsReportUtils.map(
-		    hivIndicators.getPatientsWithViralLoadResultsAndNotDocumentedForAdultsAndChildren(), mappings),
+		    eptsGeneralIndicator.getIndicator("viral load suppression on routine adults", EptsReportUtils.map(txPvls.getPatientsWithViralLoadREsultsAndNotDocumenetdForChildrenAndAdults(), mappings)), mappings),
 		    childrenColumns()); ///// Denominator routine for adults
 		addRow(dsd, "4DR", "Adults denominator routine",
-		    EptsReportUtils.map(hivIndicators.getPatientsWithViralLoadResultsAndOnRoutineForAdultsAndChildren(), mappings),
+		    EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Adults denominator routine indicator", EptsReportUtils.map(txPvls.getPatientsWithViralLoadREsultsAndOnRoutineForChildrenAndAdults(), mappings)), mappings),
 		    getColumnsForAdults()); //// denominator NOT documented
 		addRow(dsd, "4DND", "Adults denominator NOT documented", EptsReportUtils.map(
-		    hivIndicators.getPatientsWithViralLoadResultsAndNotDocumentedForAdultsAndChildren(), mappings),
+		    eptsGeneralIndicator.getIndicator("Adults denominator NOT documented indicator", EptsReportUtils.map(txPvls.getPatientsWithViralLoadREsultsAndNotDocumenetdForChildrenAndAdults(), mappings)), mappings),
 		    getColumnsForAdults());
 		
 		return dsd;
