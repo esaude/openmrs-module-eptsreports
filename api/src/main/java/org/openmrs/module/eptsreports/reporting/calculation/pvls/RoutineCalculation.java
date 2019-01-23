@@ -98,9 +98,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 		CalculationResultMap lastVl = EptsCalculations.lastObs(
 		    Arrays.asList(labEncounterType, adultFollowup, childFollowup), viralLoadConcept, location,
 		    latestVlLowerDateLimit, context.getNow(), cohort, context);
-		//get patients who have been on ART for more than 3 months
-		Set<Integer> onArtForMoreThan3Months = EptsCalculationUtils.patientsThatPass(calculate(Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0), cohort, context));
-		
+
 		for (Integer pId : cohort) {
 			boolean isOnRoutine = false;
 			Date artInitiationDate = null;
@@ -111,7 +109,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 				artInitiationDate = (Date) artStartDateResult.getValue();
 			}
 			// check that this patient should be on ART for more than six months
-			if (artInitiationDate != null && lastVlObs != null && lastVlObs.getObsDatetime() != null && criteria != null && onArtForMoreThan3Months.contains(pId)) {
+			if (artInitiationDate != null && lastVlObs != null && lastVlObs.getObsDatetime() != null && criteria != null) {
 				
 				// we do not consider if the patient's last VL obs is not within window
 				if (lastVlObs.getObsDatetime().after(latestVlLowerDateLimit)
