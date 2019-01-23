@@ -66,22 +66,26 @@ public class TxNewCohortQueries {
 	@Autowired
 	private AgeCohortQueries ageCohortQueries;
 	
-	// Looks for patients enrolled on ART program (program 2=SERVICO TARV -
-	// TRATAMENTO), transferred from other health facility (program workflow state
-	// is 29=TRANSFER FROM OTHER FACILITY) between start date and end date
+	/**
+	 * Looks for patients enrolled on ART program (program 2=SERVICO TARV - TRATAMENTO), transferred
+	 * from other health facility (program workflow state is 29=TRANSFER FROM OTHER FACILITY)
+	 * between start date and end date
+	 * 
+	 * @return CohortDefinition
+	 */
 	@DocumentedDefinition(value = "transferredFromOtherHealthFacility")
 	public CohortDefinition getPatientsTransferredFromOtherHealthFacility() {
 		SqlCohortDefinition transferredFromOtherHealthFacility = new SqlCohortDefinition();
 		transferredFromOtherHealthFacility.setName("transferredFromOtherHealthFacility");
-		transferredFromOtherHealthFacility.setQuery("select p.patient_id from patient p "
+		String query = "select p.patient_id from patient p "
 		        + "inner join patient_program pg on p.patient_id=pg.patient_id "
 		        + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-		        + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id="
-		        + hivMetadata.getARTProgram().getProgramId() + " and ps.state="
-		        + hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()
+		        + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%d" + " and ps.state=%d"
 		        + " and ps.start_date=pg.date_enrolled"
 		        + " and ps.start_date between :onOrAfter and :onOrBefore and location_id=:location "
-		        + "group by p.patient_id");
+		        + "group by p.patient_id";
+		transferredFromOtherHealthFacility.setQuery(String.format(query, hivMetadata.getARTProgram().getProgramId(),
+		    hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()));
 		transferredFromOtherHealthFacility.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		transferredFromOtherHealthFacility.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		transferredFromOtherHealthFacility.addParameter(new Parameter("location", "location", Location.class));
@@ -227,8 +231,8 @@ public class TxNewCohortQueries {
 	/**
 	 * Build TxNew composition cohort definition
 	 * 
-	 * @param cohortName
-	 * @param ageCohort
+	 * @param cohortName Cohort name
+	 * @param ageCohort Age Cohort
 	 * @return CompositionQuery
 	 */
 	public CohortDefinition getTxNewCompositionCohort(String cohortName, CohortDefinition ageCohort) {
