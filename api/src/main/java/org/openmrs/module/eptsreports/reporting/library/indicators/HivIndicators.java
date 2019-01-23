@@ -25,16 +25,7 @@ public class HivIndicators extends BaseIndicators {
 	
 	@Autowired
 	private TxPvlsCohortQueries pvls;
-	
-	public CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
-		return newCohortIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(
-		    cohortDefinition, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
-	}
-	
-	public CohortIndicator patientEnrolledInHIVStartedARTIndicator(CohortDefinition cohortDefinition) {
-		return newCohortIndicator("patientNewlyEnrolledInHIVIndicator",
-		    EptsReportUtils.map(cohortDefinition, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-	}
+
 
 	public CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(CohortDefinition cohortDefinition) {
 		return newCohortIndicator("patientInYearRangeEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(cohortDefinition,
