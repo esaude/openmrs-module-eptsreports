@@ -74,26 +74,19 @@ public class TxCurrDataset extends BaseDataSet {
 		CohortDefinition patientsWithNextPickupDate = txCurrCohortQueries.getPatientsWithNextPickupDate();
 		CohortDefinition patientsWithNextConsultationDate = txCurrCohortQueries.getPatientsWithNextConsultationDate();
 		
-		CohortDefinition ranges = txCurrCohortQueries.getTxCurrCompositionCohort("compositionCohort", enrolledBeforeEndDate,
-		    patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters,
-		    patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup, patientsThatMissNextConsultation,
-		    patientsReportedAsAbandonmentButStillInPeriod, null, null, patientsWithNextPickupDate,
-		    patientsWithNextConsultationDate, currentSpec);
-		CohortIndicator indicator = hivIndicators
-		        .patientInYearRangeEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(ranges);
-		
-		addRow(dataSetDefinition, "C1", "Children", EptsReportUtils.map(indicator, mappings), getColumnsForChildren());
-		addRow(dataSetDefinition, "C2", "Adults", EptsReportUtils.map(indicator, mappings), getColumnsForAdults());
-		
-		// Total
-		CohortDefinition all = txCurrCohortQueries.getTxCurrCompositionCohort("allPatientsCurrentlyInART",
+		CohortDefinition txCurrCompositionCohort = txCurrCohortQueries.getTxCurrCompositionCohort("compositionCohort",
 		    enrolledBeforeEndDate, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
 		    patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup,
 		    patientsThatMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod, null, null,
 		    patientsWithNextPickupDate, patientsWithNextConsultationDate, currentSpec);
-		CohortIndicator allIndicator = hivIndicators.patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(all);
-		dataSetDefinition.addColumn("C1All", "TX_CURR: Currently on ART", new Mapped<CohortIndicator>(allIndicator,
-		        ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}")), "");
+		
+		CohortIndicator txCurrIndicator = hivIndicators
+		        .patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(txCurrCompositionCohort);
+		
+		addRow(dataSetDefinition, "C1", "Children", EptsReportUtils.map(txCurrIndicator, mappings), getColumnsForChildren());
+		addRow(dataSetDefinition, "C2", "Adults", EptsReportUtils.map(txCurrIndicator, mappings), getColumnsForAdults());
+		dataSetDefinition
+		        .addColumn("C1All", "TX_CURR: Currently on ART", EptsReportUtils.map(txCurrIndicator, mappings), "");
 		
 		return dataSetDefinition;
 	}
