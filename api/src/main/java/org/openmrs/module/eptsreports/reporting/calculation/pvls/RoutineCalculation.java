@@ -98,9 +98,10 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 		CalculationResultMap lastVl = EptsCalculations.lastObs(
 		    Arrays.asList(labEncounterType, adultFollowup, childFollowup), viralLoadConcept, location,
 		    latestVlLowerDateLimit, context.getNow(), cohort, context);
-		//get patients who have been on ART for more than 3 months
-		Set<Integer> onArtForMoreThan3Months = EptsCalculationUtils.patientsThatPass(calculate(Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0), cohort, context));
-
+		// get patients who have been on ART for more than 3 months
+		Set<Integer> onArtForMoreThan3Months = EptsCalculationUtils.patientsThatPass(calculate(Context
+		        .getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0), cohort, context));
+		
 		for (Integer pId : cohort) {
 			boolean isOnRoutine = false;
 			Date artInitiationDate = null;
@@ -111,7 +112,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 				artInitiationDate = (Date) artStartDateResult.getValue();
 			}
 			// check that this patient should be on ART for more than six months
-			if (artInitiationDate != null && lastVlObs != null && lastVlObs.getObsDatetime() != null && criteria != null && onArtForMoreThan3Months.contains(pId)) {
+			if (artInitiationDate != null && lastVlObs != null && lastVlObs.getObsDatetime() != null && criteria != null
+			        && onArtForMoreThan3Months.contains(pId)) {
 				
 				// we do not consider if the patient's last VL obs is not within window
 				if (lastVlObs.getObsDatetime().after(latestVlLowerDateLimit)
@@ -148,16 +150,15 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 						for (Obs vlObs : viralLoadForPatientTakenWithin12Months) {
 							if (vlObs != null && vlObs.getObsDatetime() != null) {
 								Date vlDate = vlObs.getObsDatetime();
-								if(criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)) {
+								if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)) {
 									if (EptsCalculationUtils.monthsSince(artInitiationDate, vlDate) > 6
-											&& EptsCalculationUtils.monthsSince(artInitiationDate, vlDate) <= 9) {
+									        && EptsCalculationUtils.monthsSince(artInitiationDate, vlDate) <= 9) {
 										isOnRoutine = true;
 										break;
 									}
-								}
-								else if(criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)) {
+								} else if (criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)) {
 									if (EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) > 3
-											&& EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) <= 6) {
+									        && EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) <= 6) {
 										isOnRoutine = true;
 										break;
 									}
@@ -188,15 +189,15 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 						        && previousObs.getObsDatetime() != null && previousObs.getValueNumeric() < 1000
 						        && currentObs.getObsDatetime() != null
 						        && previousObs.getObsDatetime().before(currentObs.getObsDatetime())) {
-
-							if(criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)) {
-								if (EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(), currentObs.getObsDatetime()) >= 12
-										&& EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(),
-										currentObs.getObsDatetime()) <= 15) {
+							
+							if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)) {
+								if (EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(),
+								    currentObs.getObsDatetime()) >= 12
+								        && EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(),
+								            currentObs.getObsDatetime()) <= 15) {
 									isOnRoutine = true;
 								}
-							}
-							else if(criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)) {
+							} else if (criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)) {
 								isOnRoutine = true;
 							}
 						}
