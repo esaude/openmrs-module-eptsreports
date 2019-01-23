@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -16,7 +17,6 @@ import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalcu
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,11 +37,15 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
         Location location = (Location) context.getFromCache("location");
         Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
         Date latestVlStartDate = EptsCalculationUtils.addMonths(context.getNow(), -12);
+		EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
+		EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
+		EncounterType childFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
         //get female patients only
         Set<Integer> female = EptsCalculationUtils.female(cohort, context);
         //get the last VL results for patients
-        CalculationResultMap lastVlObsMap = EptsCalculations.getObs(viralLoadConcept, female, Arrays.asList(location),
-                null, TimeQualifier.ANY, latestVlStartDate, context);
+		CalculationResultMap lastVlObsMap = EptsCalculations.lastObs(
+				Arrays.asList(labEncounterType, adultFollowup, childFollowup), viralLoadConcept, location,
+				latestVlStartDate, context.getNow(), cohort, context);
         //get results maps for pregnancy
 
         for(Integer pId: cohort){
