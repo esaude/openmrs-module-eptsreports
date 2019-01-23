@@ -17,7 +17,6 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -327,8 +326,6 @@ public class TxCurrCohortQueries {
 		    "12",
 		    new Mapped<CohortDefinition>(patientsWithNextConsultationDate, ParameterizableUtil
 		            .createParameterMappings("onOrBefore=${onOrBefore},location=${location}")));
-		TxCurrComposition.addSearch("baseCohort",
-		    EptsReportUtils.map(genericCohorts.getBaseCohort(), "endDate=${onOrBefore},location=${location}"));
 		
 		String compositionString;
 		if (currentSpec) {
@@ -349,7 +346,6 @@ public class TxCurrCohortQueries {
 			compositionString = compositionString + " AND 10";
 		}
 		
-		compositionString = compositionString + " and baseCohort";
 		TxCurrComposition.setCompositionString(compositionString);
 		return TxCurrComposition;
 	}
