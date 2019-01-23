@@ -25,6 +25,7 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.Months;
 import org.openmrs.Cohort;
+import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.api.APIException;
@@ -296,5 +297,16 @@ public class EptsCalculationUtils {
 	 */
 	public static Set<Integer> female(Collection<Integer> cohort, PatientCalculationContext context) {
 		return patientsThatPass(genders(cohort, context), "F");
+	}
+
+	/**
+	 * Convenience method to fetch a patient result as a coded obs value
+	 * @param results the calculation result map
+	 * @param patientId the patient id
+	 * @return the coded obs value
+	 */
+	public static Concept codedObsResultForPatient(CalculationResultMap results, Integer patientId) {
+		Obs o = obsResultForPatient(results, patientId);
+		return o == null ? null : o.getValueCoded();
 	}
 }

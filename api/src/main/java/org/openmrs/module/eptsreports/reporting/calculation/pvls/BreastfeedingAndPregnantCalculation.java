@@ -40,23 +40,34 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 		EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
 		EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
 		EncounterType childFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
+		EncounterType adultInitial = hivMetadata.getARVAdultInitialEncounterType();
+
+
+		Concept pregnant = hivMetadata.getPregnantConcept();
+		Concept gestation = hivMetadata.getGestationConcept();
+
         //get female patients only
         Set<Integer> female = EptsCalculationUtils.female(cohort, context);
         //get the last VL results for patients
 		CalculationResultMap lastVlObsMap = EptsCalculations.lastObs(
 				Arrays.asList(labEncounterType, adultFollowup, childFollowup), viralLoadConcept, location,
 				latestVlStartDate, context.getNow(), cohort, context);
-        //get results maps for pregnancy
+        //get results maps for pregnant women
+		CalculationResultMap markedPregnant = EptsCalculations.lastObs(Arrays.asList(adultInitial, adultFollowup), pregnant, location, null, context.getNow(), female, context);
 
         for(Integer pId: cohort){
             boolean pass = false;
             Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVlObsMap, pId);
+            Obs markedPregnantObs = EptsCalculationUtils.obsResultForPatient(markedPregnant, pId);
             if(female.contains(pId) && lastVlObs != null && lastVlObs.getObsDatetime() != null) {
                 Date pregnancyStartDate = EptsCalculationUtils.addMonths(lastVlObs.getObsDatetime(), -9);
                 Date breastfeedingStartDate = EptsCalculationUtils.addMonths(lastVlObs.getObsDatetime(), -18);
                 Date endDate = lastVlObs.getObsDatetime();
-
-                pass = true;
+				if(markedPregnantObs != null && markedPregnantObs.getValueCoded() != null && markedPregnantObs.getValueCoded().equals(gestation)
+					&& (markedPregnantObs.getObsDatetime().equals(pregnancyStartDate) || markedPregnantObs.getObsDatetime().after(pregnancyStartDate))
+						&& (markedPregnantObs.getObsDatetime().equals(endDate) || markedPregnantObs.getObsDatetime().before(endDate)))) {
+					pass = true;
+				}
             }
             ret.put(pId, new BooleanResult(pass, this));
         }
