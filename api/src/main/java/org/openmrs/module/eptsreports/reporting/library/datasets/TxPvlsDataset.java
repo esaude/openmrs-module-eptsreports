@@ -79,6 +79,8 @@ public class TxPvlsDataset extends BaseDataSet {
 		// hivIndicators.getPatientsOnArtForMoreThan3MonthsAndMatchLocation(),
 		// "endDate=${endDate},location=${location}"), "");
 		// add breastfeeding and pregnant Numerator
+		//breastfeeding and pregnant
+		dsd.addColumn("BP", "Breastfeeding and Pregnant", EptsReportUtils.map(breastfeedingIndicators.getBreastfeedingAndPregnantWomen(), "endDate=${endDate},location=${location}"), "");
 		
 		// add patients on routine for adults and children
 		dsd.addColumn("B01", "Breast feeding and on routine Numerator", EptsReportUtils.map(

@@ -43,6 +43,7 @@ import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
+import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -275,5 +276,25 @@ public class EptsCalculationUtils {
 		c.add(Calendar.MONTH, months);
 		return c.getTime();
 	}
-	
+
+	/**
+	 * Evaluates genders of each patient
+	 * @param cohort the patient ids
+	 * @param context the calculation context
+	 * @return the genders in a calculation result map
+	 */
+	public static CalculationResultMap genders(Collection<Integer> cohort, PatientCalculationContext context) {
+		GenderDataDefinition def = new GenderDataDefinition("gender");
+		return evaluateWithReporting(def, cohort, null, null, context);
+	}
+
+	/**
+	 * Patients who are female
+	 * @param cohort the patient ids
+	 * @param context the calculation context
+	 * @return the filtered cohort
+	 */
+	public static Set<Integer> female(Collection<Integer> cohort, PatientCalculationContext context) {
+		return patientsThatPass(genders(cohort, context), "F");
+	}
 }

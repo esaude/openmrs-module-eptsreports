@@ -16,6 +16,7 @@ import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.BreastfeedingAndPregnantCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForMoreThanXmonthsCalcultion;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineForAdultsAndChildrenCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineForBreastfeedingAndPregnantWomenCalculation;
@@ -497,6 +498,18 @@ public class TxPvlsCohortQueries {
 		    hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(), hivMetadata.getHivViralLoadConcept()
 		            .getConceptId()));
 		return sql;
+	}
+
+	/**
+	 * Get patients who are pregnant or breastfeeding
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getPatientsWhoArePregnantOrBreastfeeding() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("breastfeeding or pregnant", Context
+				.getRegisteredComponents(BreastfeedingAndPregnantCalculation.class).get(0));
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		return cd;
 	}
 	
 }
