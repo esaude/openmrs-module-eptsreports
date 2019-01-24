@@ -14,6 +14,7 @@ import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
@@ -72,7 +73,11 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
             Obs weeksObs = EptsCalculationUtils.obsResultForPatient(markedPregnantByWeeks, pId);
             Obs markedPregnantObs = EptsCalculationUtils.obsResultForPatient(markedPregnant, pId);
             Obs markedEdd = EptsCalculationUtils.obsResultForPatient(markedPregnantOnEdd, pId);
-            PatientProgram patientProgram = (PatientProgram) markedPregnantInProgram.get(pId);
+			SimpleResult result = (SimpleResult) markedPregnantInProgram.get(pId);
+			PatientProgram patientProgram = null;
+			if(result != null) {
+				patientProgram = (PatientProgram)result.getValue();
+			}
 
             if(female.contains(pId) && lastVlObs != null && lastVlObs.getObsDatetime() != null && criteria != null) {
                 Date pregnancyStartDate = EptsCalculationUtils.addMonths(lastVlObs.getObsDatetime(), -9);
