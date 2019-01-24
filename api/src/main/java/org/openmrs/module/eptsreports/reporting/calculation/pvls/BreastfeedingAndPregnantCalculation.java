@@ -10,8 +10,11 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Obs;
+import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
+import org.openmrs.PatientState;
 import org.openmrs.Program;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
@@ -67,6 +70,9 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
         CalculationResultMap markedPregnantOnEdd = EptsCalculations.lastObs(Arrays.asList(adultInitial, adultFollowup), edd, location, null, context.getNow(), female, context);
         CalculationResultMap markedPregnantInProgram = EptsCalculations.firstPatientProgram(ptv, location, female, context);
 
+        //get results maps for the breastfeeding women
+
+
         for(Integer pId: cohort){
             boolean pass = false;
             Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVlObsMap, pId);
@@ -78,6 +84,10 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 			if(result != null) {
 				patientProgram = (PatientProgram)result.getValue();
 			}
+			//get patient_state for pregnant and breastfeeding
+			Patient patient = Context.getPatientService().getPatient(pId);
+			PatientState breastfeedingState = Context.getProgramWorkflowService().getPatientState(25);
+			PatientState pregnantState = Context.getProgramWorkflowService().getPatientState(27);
 
             if(female.contains(pId) && lastVlObs != null && lastVlObs.getObsDatetime() != null && criteria != null) {
                 Date pregnancyStartDate = EptsCalculationUtils.addMonths(lastVlObs.getObsDatetime(), -9);
@@ -105,9 +115,19 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
                             && (patientProgram.getDateEnrolled().equals(endDate) || patientProgram.getDateEnrolled().before(endDate))) {
                         pass = true;
                     }
+                    if(pregnantState != null && pregnantState.getStartDate() != null
+							&& (pregnantState.getStartDate().equals(pregnancyStartDate) || pregnantState.getStartDate().after(pregnancyStartDate))
+							&& (pregnantState.getStartDate().equals(endDate) || pregnantState.getStartDate().before(endDate))) {
+                    	pass = true;
+					}
                 }
                 else if(criteria.equals(BreastfeedingAndPregnant.BREASTFEEDING)) {
-
+					if(breastfeedingState != null && breastfeedingState.getStartDate() != null
+							&& (breastfeedingState.getStartDate().equals(breastfeedingStartDate) || breastfeedingState.getStartDate().after(breastfeedingStartDate))
+							&& (breastfeedingState.getStartDate().equals(endDate) || breastfeedingState.getStartDate().before(endDate))) {
+						pass = true;
+					}
+					
                 }
             }
             ret.put(pId, new BooleanResult(pass, this));
