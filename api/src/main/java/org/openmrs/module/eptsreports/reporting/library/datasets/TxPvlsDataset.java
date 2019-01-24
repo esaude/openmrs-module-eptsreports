@@ -78,8 +78,8 @@ public class TxPvlsDataset extends BaseDataSet {
 		// "endDate=${endDate},location=${location}"), "");
 		// add breastfeeding and pregnant Numerator
 		//breastfeeding and pregnant
-		dsd.addColumn("P", "Pregnant", EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Pregnant", EptsReportUtils.map(txPvls.getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.PREGNANT), "endDate=${endDate},location=${location}")), "endDate=${endDate},location=${location}"), "");
-		dsd.addColumn("B", "Breastfeeding", EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Breastfeeding", EptsReportUtils.map(txPvls.getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.BREASTFEEDING), "endDate=${endDate},location=${location}")), "endDate=${endDate},location=${location}"), "");
+		dsd.addColumn("P", "Pregnant", EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Pregnant", EptsReportUtils.map(txPvls.getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.PREGNANT), "onDate=${endDate},location=${location}")), "onDate=${endDate},location=${location}"), "");
+		dsd.addColumn("B", "Breastfeeding", EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Breastfeeding", EptsReportUtils.map(txPvls.getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.BREASTFEEDING), "onDate=${endDate},location=${location}")), "onDate=${endDate},location=${location}"), "");
 		dsd.addColumn(
 		    "0D",
 		    "Total patients with Viral load - Denominator",
