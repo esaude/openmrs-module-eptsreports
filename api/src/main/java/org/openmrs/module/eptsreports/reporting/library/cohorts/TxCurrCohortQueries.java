@@ -47,6 +47,9 @@ public class TxCurrCohortQueries {
 	@Autowired
 	private GenericCohortQueries genericCohorts;
 	
+	@Autowired
+	private GenericCohortQueries genericCohortQueries;
+	
 	/**
 	 * @return Cohort of patients with first drug pickup (encounter type 18=S.TARV: FARMACIA) before
 	 *         or on end date
@@ -247,29 +250,12 @@ public class TxCurrCohortQueries {
 	}
 	
 	/**
-	 * Build TxCurr composition cohort definition
-	 * 
-	 * @param cohortName
-	 * @param inARTProgramAtEndDate
-	 * @param patientWithSTARTDRUGSObs
-	 * @param patientWithHistoricalDrugStartDateObs
-	 * @param patientsWithDrugPickUpEncounters
-	 * @param patientsWhoLeftARTProgramBeforeOrOnEndDate
-	 * @param patientsThatMissedNexPickup
-	 * @param patientsReportedAsAbandonmentButStillInPeriod
-	 * @param patientsWithNextPickupDate
-	 * @param patientsWithNextConsultationDate
+	 * @param cohortName Cohort name
 	 * @param currentSpec
-	 * @return CompositionQuery
+	 * @return TxCurr composition cohort definition
 	 */
 	@DocumentedDefinition(value = "getTxCurrCompositionCohort")
-	public CohortDefinition getTxCurrCompositionCohort(String cohortName, CohortDefinition inARTProgramAtEndDate,
-	        CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs,
-	        CohortDefinition patientsWithDrugPickUpEncounters, CohortDefinition patientsWhoLeftARTProgramBeforeOrOnEndDate,
-	        CohortDefinition patientsThatMissedNexPickup, CohortDefinition patientsThatMissNextConsultation,
-	        CohortDefinition patientsReportedAsAbandonmentButStillInPeriod, CohortDefinition ageCohort,
-	        CohortDefinition genderCohort, CohortDefinition patientsWithNextPickupDate,
-	        CohortDefinition patientsWithNextConsultationDate, boolean currentSpec) {
+	public CohortDefinition getTxCurrCompositionCohort(String cohortName, boolean currentSpec) {
 		
 		final int abandonmentDays = currentSpec ? CURRENT_SPEC_ABANDONMENT_DAYS : OLD_SPEC_ABANDONMENT_DAYS;
 		CompositionCohortDefinition TxCurrComposition = new CompositionCohortDefinition();
@@ -280,33 +266,43 @@ public class TxCurrCohortQueries {
 		TxCurrComposition.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
 		TxCurrComposition.addParameter(new Parameter("locations", "location", Location.class));
 		
-		TxCurrComposition.addSearch("1",
+		CohortDefinition inARTProgramAtEndDate = genericCohortQueries.createInProgram("InARTProgram",
+		    hivMetadata.getARTProgram());
+		TxCurrComposition.getSearches().put("1",
 		    EptsReportUtils.map(inARTProgramAtEndDate, "onOrBefore=${onOrBefore},locations=${location}"));
-		TxCurrComposition.addSearch("2",
-		    EptsReportUtils.map(patientWithSTARTDRUGSObs, "onOrBefore=${onOrBefore},location=${location}"));
-		TxCurrComposition.addSearch("3",
-		    EptsReportUtils.map(patientWithHistoricalDrugStartDateObs, "onOrBefore=${onOrBefore},location=${location}"));
-		TxCurrComposition.addSearch("4",
-		    EptsReportUtils.map(patientsWithDrugPickUpEncounters, "onOrBefore=${onOrBefore},location=${location}"));
-		TxCurrComposition
-		        .addSearch("5", EptsReportUtils.map(patientsWhoLeftARTProgramBeforeOrOnEndDate,
-		            "onOrBefore=${onOrBefore},location=${location}"));
-		TxCurrComposition.addSearch(
+		TxCurrComposition.getSearches().put(
+		    "2",
+		    EptsReportUtils.map(getPatientWithSTARTDRUGSObsBeforeOrOnEndDate(),
+		        "onOrBefore=${onOrBefore},location=${location}"));
+		TxCurrComposition.getSearches().put(
+		    "3",
+		    EptsReportUtils.map(getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate(),
+		        "onOrBefore=${onOrBefore},location=${location}"));
+		TxCurrComposition.getSearches().put(
+		    "4",
+		    EptsReportUtils.map(getPatientWithFirstDrugPickupEncounterBeforeOrOnEndDate(),
+		        "onOrBefore=${onOrBefore},location=${location}"));
+		TxCurrComposition.getSearches().put(
+		    "5",
+		    EptsReportUtils.map(getPatientsWhoLeftARTProgramBeforeOrOnEndDate(),
+		        "onOrBefore=${onOrBefore},location=${location}"));
+		TxCurrComposition.getSearches().put(
 		    "6",
-		    EptsReportUtils.map(patientsThatMissedNexPickup,
+		    EptsReportUtils.map(getPatientsThatMissedNexPickup(),
 		        String.format("onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s", abandonmentDays)));
-		TxCurrComposition.addSearch(
+		TxCurrComposition.getSearches().put(
 		    "7",
-		    EptsReportUtils.map(patientsThatMissNextConsultation,
+		    EptsReportUtils.map(getPatientsThatMissNextConsultation(),
 		        String.format("onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s", abandonmentDays)));
-		TxCurrComposition.addSearch(
+		TxCurrComposition.getSearches().put(
 		    "8",
-		    EptsReportUtils.map(patientsReportedAsAbandonmentButStillInPeriod,
+		    EptsReportUtils.map(getPatientsReportedAsAbandonmentButStillInPeriod(),
 		        String.format("onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s", abandonmentDays)));
-		TxCurrComposition.addSearch("11",
-		    EptsReportUtils.map(patientsWithNextPickupDate, "onOrBefore=${onOrBefore},location=${location}"));
-		TxCurrComposition.addSearch("12",
-		    EptsReportUtils.map(patientsWithNextConsultationDate, "onOrBefore=${onOrBefore},location=${location}"));
+		TxCurrComposition.getSearches().put("11",
+		    EptsReportUtils.map(getPatientsWithNextPickupDate(), "onOrBefore=${onOrBefore},location=${location}"));
+		TxCurrComposition.getSearches().put("12",
+		    EptsReportUtils.map(getPatientsWithNextConsultationDate(), "onOrBefore=${onOrBefore},location=${location}"));
+		
 		TxCurrComposition.addSearch("baseCohort",
 		    EptsReportUtils.map(genericCohorts.getBaseCohort(), "endDate=${onOrBefore},location=${location}"));
 		
@@ -315,15 +311,6 @@ public class TxCurrCohortQueries {
 			compositionString = "((1 OR 2 OR 3 OR 4) AND NOT (11 AND 6) AND NOT (12 AND 7 AND NOT 11)) AND NOT 5";
 		} else {
 			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND (NOT (NOT 7 OR 8)))))";
-		}
-		
-		if (ageCohort != null) {
-			TxCurrComposition.getSearches().put("9", EptsReportUtils.map(ageCohort, "effectiveDate=${effectiveDate}"));
-			compositionString = compositionString + " AND 9";
-		}
-		if (genderCohort != null) {
-			TxCurrComposition.getSearches().put("10", EptsReportUtils.map(genderCohort, null));
-			compositionString = compositionString + " AND 10";
 		}
 		
 		compositionString = compositionString + " and baseCohort";
