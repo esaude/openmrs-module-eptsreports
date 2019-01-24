@@ -24,6 +24,7 @@ import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxPvlsDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -83,9 +84,9 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 		reportDefinition.addDataSetDefinition("N", Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
 		reportDefinition.addDataSetDefinition("C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
 		reportDefinition.addDataSetDefinition("P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
-		
-		reportDefinition.setBaseCohortDefinition(genericCohortQueries.getBaseCohort(),
-		    ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
+		// add a base cohort here to help in calculations running
+		reportDefinition.setBaseCohortDefinition(EptsReportUtils.map(genericCohortQueries.getBaseCohort(),
+		    "endDate=${endDate},location=${location}"));
 		
 		return reportDefinition;
 	}

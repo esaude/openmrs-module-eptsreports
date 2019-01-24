@@ -21,6 +21,8 @@ import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxPvlsDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -67,6 +69,9 @@ public class SetupTxPvls extends EptsDataExportManager {
 		rd.setParameters(txPvlsDataset.getParameters());
 		
 		rd.addDataSetDefinition("Tx_Pvls Data Set", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
+		// add a base cohort here to help in calculations running
+		rd.setBaseCohortDefinition(EptsReportUtils.map(genericCohortQueries.getBaseCohort(),
+		    "endDate=${endDate},location=${location}"));
 		
 		rd.setBaseCohortDefinition(genericCohortQueries.getBaseCohort(),
 		    ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
