@@ -19,12 +19,10 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
-import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
+import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,7 +37,7 @@ public class TxCurrDataset extends BaseDataSet {
 	private GenericCohortQueries genericCohortQueries;
 	
 	@Autowired
-	private HivIndicators hivIndicators;
+	private EptsGeneralIndicator eptsGeneralIndicator;
 	
 	@Autowired
 	private HivMetadata hivMetadata;
@@ -79,9 +77,9 @@ public class TxCurrDataset extends BaseDataSet {
 		    patientsWithDrugPickUpEncounters, patientsWhoLeftARTProgramBeforeOrOnEndDate, patientsThatMissedNexPickup,
 		    patientsThatMissNextConsultation, patientsReportedAsAbandonmentButStillInPeriod, null, null,
 		    patientsWithNextPickupDate, patientsWithNextConsultationDate, currentSpec);
-		
-		CohortIndicator txCurrIndicator = hivIndicators
-		        .patientEnrolledInHIVStartedARTIndicatorBeforeOrOnEndDate(txCurrCompositionCohort);
+		CohortIndicator txCurrIndicator = eptsGeneralIndicator.getIndicator(
+		    "patientInYearRangeEnrolledInHIVStartedARTIndicatorUnknownFemales",
+		    EptsReportUtils.map(txCurrCompositionCohort, "onOrBefore=${endDate},location=${location}"));
 		
 		addRow(dataSetDefinition, "C1", "Children", EptsReportUtils.map(txCurrIndicator, mappings), getColumnsForChildren());
 		addRow(dataSetDefinition, "C2", "Adults", EptsReportUtils.map(txCurrIndicator, mappings), getColumnsForAdults());

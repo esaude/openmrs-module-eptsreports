@@ -11,19 +11,23 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.eptsreports.reporting.library.indicators;
 
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TbIndicators extends BaseIndicators {
+public class EptsGeneralIndicator extends BaseIndicators {
 	
-	public CohortIndicator tuberculosePatientNewlyInitiatingARTIndicator(CohortDefinition cohortDefinition) {
-		return newCohortIndicator("tuberculosePatientNewlyInitiatingARTIndicator",
-		    EptsReportUtils.map(cohortDefinition, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-		
+	/**
+	 * Methods that takes a cohort defintion and return and indicator definition for reuse
+	 * 
+	 * @return CohortIndicator
+	 */
+	public CohortIndicator getIndicator(String name, Mapped<CohortDefinition> cd) {
+		return newCohortIndicator(name, cd);
 	}
 }

@@ -21,14 +21,12 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQuer
 import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
-import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
+import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -46,13 +44,13 @@ public class TxNewDataset extends BaseDataSet {
 	private TxNewCohortQueries txNewCohortQueries;
 	
 	@Autowired
-	private HivIndicators hivIndicators;
-	
-	@Autowired
 	private EptsCommonDimension eptsCommonDimension;
 	
 	@Autowired
 	private HivCohortQueries hivCohortQueries;
+	
+	@Autowired
+	private EptsGeneralIndicator eptsGeneralIndicator;
 	
 	public DataSetDefinition constructTxNewDataset() {
 		
@@ -123,13 +121,12 @@ public class TxNewDataset extends BaseDataSet {
 			    "patientEnrolledInARTStartedMales", inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs,
 			    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility,
 			    patientsWhoRestartedTreatment, ageCohort, males);
-			CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator = hivIndicators
-			        .patientInYearRangeEnrolledInHIVStartedARTIndicator(patientInYearRangeEnrolledInARTStarted);
-			dataSetDefinition.addColumn(
-			    "1M" + i,
-			    "Males:TX_NEW: New on ART by age and sex: " + ageCohort.getName(),
-			    new Mapped<CohortIndicator>(patientInYearRangeEnrolledInHIVStartedARTIndicator, ParameterizableUtil
-			            .createParameterMappings(mappings)), "");
+			CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator = eptsGeneralIndicator.getIndicator(
+			    "patientInYearRangeEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(
+			        patientInYearRangeEnrolledInARTStarted,
+			        "onOrAfter=${startDate},onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
+			dataSetDefinition.addColumn("1M" + i, "Males:TX_NEW: New on ART by age and sex: " + ageCohort.getName(),
+			    EptsReportUtils.map(patientInYearRangeEnrolledInHIVStartedARTIndicator, mappings), "");
 			
 			i++;
 		}
@@ -141,23 +138,23 @@ public class TxNewDataset extends BaseDataSet {
 			    "patientEnrolledInARTStartedMales", inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs,
 			    patientWithHistoricalDrugStartDateObs, patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility,
 			    patientsWhoRestartedTreatment, ageCohort, females);
-			CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator = hivIndicators
-			        .patientInYearRangeEnrolledInHIVStartedARTIndicator(patientInYearRangeEnrolledInARTStarted);
-			dataSetDefinition.addColumn(
-			    "1F" + j,
-			    "Females:TX_NEW: New on ART by age and sex: " + ageCohort.getName(),
-			    new Mapped<CohortIndicator>(patientInYearRangeEnrolledInHIVStartedARTIndicator, ParameterizableUtil
-			            .createParameterMappings(mappings)), "");
+			CohortIndicator patientInYearRangeEnrolledInHIVStartedARTIndicator = eptsGeneralIndicator.getIndicator(
+			    "patientInYearRangeEnrolledInHIVStartedARTIndicator", EptsReportUtils.map(
+			        patientInYearRangeEnrolledInARTStarted,
+			        "onOrAfter=${startDate},onOrBefore=${endDate},location=${location},effectiveDate=${endDate}"));
+			dataSetDefinition.addColumn("1F" + j, "Females:TX_NEW: New on ART by age and sex: " + ageCohort.getName(),
+			    EptsReportUtils.map(patientInYearRangeEnrolledInHIVStartedARTIndicator, mappings), "");
 			j++;
 		}
 		
 		CohortDefinition patientEnrolledInART = txNewCohortQueries.getTxNewCompositionCohort("patientEnrolledInART",
 		    inARTProgramDuringTimePeriod, patientWithSTARTDRUGSObs, patientWithHistoricalDrugStartDateObs,
 		    patientsWithDrugPickUpEncounters, transferredFromOtherHealthFacility, patientsWhoRestartedTreatment, null, null);
-		CohortIndicator patientEnrolledInHIVStartedARTIndicator = hivIndicators
-		        .patientEnrolledInHIVStartedARTIndicator(patientEnrolledInART);
-		dataSetDefinition.addColumn("1All", "TX_NEW: New on ART", new Mapped<CohortIndicator>(
-		        patientEnrolledInHIVStartedARTIndicator, ParameterizableUtil.createParameterMappings(mappings)), "");
+		CohortIndicator patientEnrolledInHIVStartedARTIndicator = eptsGeneralIndicator.getIndicator(
+		    "patientNewlyEnrolledInHIVIndicator",
+		    EptsReportUtils.map(patientEnrolledInART, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		dataSetDefinition.addColumn("1All", "TX_NEW: New on ART",
+		    EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings), "");
 		
 		// Obtain patients breastfeeding newly enrolled on ART
 		dataSetDefinition.addDimension("maternity", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
