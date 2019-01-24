@@ -78,6 +78,9 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 		CalculationResultMap deliveryDateMap = EptsCalculations.lastObs(Arrays.asList(adultInitial, adultFollowup), priorDeliveryDate, location, null, context.getNow(), female, context);
 		CalculationResultMap criteriaHivStartMap = EptsCalculations.lastObs(Arrays.asList(adultInitial, adultFollowup), criteriaForHivStart, location, null, context.getNow(), female, context);
 		CalculationResultMap lactatingMap = EptsCalculations.lastObs(Arrays.asList(adultInitial, adultFollowup), breastfeedingConcept, location, null, context.getNow(), female, context);
+		// get patients who have been on ART for more than 3 months
+		Set<Integer> onArtForMoreThan3Months = EptsCalculationUtils.patientsThatPass(calculate(Context
+				.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0), cohort, context));
 
         for(Integer pId: cohort){
             boolean pass = false;
@@ -98,7 +101,7 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 			PatientState pregnantState = null;
 
 
-            if(female.contains(pId) && lastVlObs != null && lastVlObs.getObsDatetime() != null && criteria != null) {
+            if(female.contains(pId) && lastVlObs != null && lastVlObs.getObsDatetime() != null && criteria != null && onArtForMoreThan3Months.contains(pId)) {
                 Date pregnancyStartDate = EptsCalculationUtils.addMonths(lastVlObs.getObsDatetime(), -9);
                 Date breastfeedingStartDate = EptsCalculationUtils.addMonths(lastVlObs.getObsDatetime(), -18);
                 Date endDate = lastVlObs.getObsDatetime();
