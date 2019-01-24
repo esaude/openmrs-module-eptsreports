@@ -81,18 +81,19 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
             Obs markedEdd = EptsCalculationUtils.obsResultForPatient(markedPregnantOnEdd, pId);
 			SimpleResult result = (SimpleResult) markedPregnantInProgram.get(pId);
 			PatientProgram patientProgram = null;
-			if(result != null) {
-				patientProgram = (PatientProgram)result.getValue();
-			}
-			//get patient_state for pregnant and breastfeeding
-			Patient patient = Context.getPatientService().getPatient(pId);
-			PatientState breastfeedingState = Context.getProgramWorkflowService().getPatientState(25);
-			PatientState pregnantState = Context.getProgramWorkflowService().getPatientState(27);
+
 
             if(female.contains(pId) && lastVlObs != null && lastVlObs.getObsDatetime() != null && criteria != null) {
                 Date pregnancyStartDate = EptsCalculationUtils.addMonths(lastVlObs.getObsDatetime(), -9);
                 Date breastfeedingStartDate = EptsCalculationUtils.addMonths(lastVlObs.getObsDatetime(), -18);
                 Date endDate = lastVlObs.getObsDatetime();
+
+                if(result != null) {
+                    patientProgram = (PatientProgram)result.getValue();
+                }
+                //get patient_state for pregnant and breastfeeding
+                PatientState breastfeedingState = Context.getProgramWorkflowService().getPatientState(25);
+                PatientState pregnantState = Context.getProgramWorkflowService().getPatientState(27);
                 
 				if(criteria.equals(BreastfeedingAndPregnant.PREGNANT)) {
                     if (markedPregnantObs != null && markedPregnantObs.getValueCoded() != null && markedPregnantObs.getValueCoded().equals(gestation)
