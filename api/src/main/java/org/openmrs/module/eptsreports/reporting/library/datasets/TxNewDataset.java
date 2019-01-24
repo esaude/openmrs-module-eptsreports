@@ -14,13 +14,9 @@
 
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
-import org.openmrs.module.eptsreports.reporting.library.indicators.HivIndicators;
+import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -31,7 +27,8 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static org.openmrs.module.reporting.evaluation.parameter.Mapped.noMappings;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class TxNewDataset extends BaseDataSet {
@@ -40,10 +37,10 @@ public class TxNewDataset extends BaseDataSet {
 	private TxNewCohortQueries txNewCohortQueries;
 	
 	@Autowired
-	private HivIndicators hivIndicators;
+	private EptsCommonDimension eptsCommonDimension;
 	
 	@Autowired
-	private EptsCommonDimension eptsCommonDimension;
+	private EptsGeneralIndicator eptsGeneralIndicator;
 	
 	public DataSetDefinition constructTxNewDataset() {
 		
@@ -54,8 +51,9 @@ public class TxNewDataset extends BaseDataSet {
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		
 		CohortDefinition patientEnrolledInART = txNewCohortQueries.getTxNewCompositionCohort("patientEnrolledInART", null);
-		CohortIndicator patientEnrolledInHIVStartedARTIndicator = hivIndicators
-		        .patientEnrolledInHIVStartedARTIndicator(patientEnrolledInART);
+		CohortIndicator patientEnrolledInHIVStartedARTIndicator = eptsGeneralIndicator.getIndicator(
+		    "patientNewlyEnrolledInHIVIndicator",
+		    EptsReportUtils.map(patientEnrolledInART, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 		
 		dataSetDefinition.addDimension("maternity", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
 		dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));

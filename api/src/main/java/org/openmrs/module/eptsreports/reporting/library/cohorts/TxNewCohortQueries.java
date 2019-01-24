@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
@@ -38,7 +38,6 @@ import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -112,7 +111,7 @@ public class TxNewCohortQueries {
 		
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addParameter(new Parameter("locationList", "Location", Location.class));
 		
 		return cd;
 	}
@@ -170,7 +169,7 @@ public class TxNewCohortQueries {
 		cd.addParameter(new Parameter("location", "location", Location.class));
 		
 		cd.addSearch("DATAPARTO", EptsReportUtils.map(getPatientsWithUpdatedDepartureInART(),
-		    "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+		    "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
 		cd.addSearch("INICIOLACTANTE", EptsReportUtils.map(
 		    genericCohorts.hasCodedObs(hivMetadata.getCriteriaForArtStart(), BaseObsCohortDefinition.TimeModifier.FIRST,
 		        SetComparator.IN, Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
