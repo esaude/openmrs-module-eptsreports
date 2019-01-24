@@ -21,6 +21,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForMoreTha
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsQueries;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.BreastfeedingAndPregnant;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PatientsOnRoutineEnum;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -491,11 +492,12 @@ public class TxPvlsCohortQueries {
 	 * Get patients who are pregnant or breastfeeding
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getPatientsWhoArePregnantOrBreastfeeding() {
+	public CohortDefinition getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant criteria) {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition("breastfeeding or pregnant", Context
 				.getRegisteredComponents(BreastfeedingAndPregnantCalculation.class).get(0));
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addCalculationParameter("criteria", criteria);
 		return cd;
 	}
 	

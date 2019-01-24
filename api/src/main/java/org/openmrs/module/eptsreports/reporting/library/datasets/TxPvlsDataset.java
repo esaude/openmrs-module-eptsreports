@@ -19,6 +19,7 @@ import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.BreastfeedingAndPregnant;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -77,7 +78,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		// "endDate=${endDate},location=${location}"), "");
 		// add breastfeeding and pregnant Numerator
 		//breastfeeding and pregnant
-		dsd.addColumn("P", "Pregnant", EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Pregnant", EptsReportUtils.map(txPvls.getPatientsWhoArePregnantOrBreastfeeding(), "endDate=${endDate},location=${location}")), "endDate=${endDate},location=${location}"), "");
+		dsd.addColumn("P", "Pregnant", EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Pregnant", EptsReportUtils.map(txPvls.getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.PREGNANT), "endDate=${endDate},location=${location}")), "endDate=${endDate},location=${location}"), "");
 		dsd.addColumn(
 		    "0D",
 		    "Total patients with Viral load - Denominator",

@@ -17,6 +17,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalcu
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.BreastfeedingAndPregnant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,6 +36,7 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
         CalculationResultMap ret = new CalculationResultMap();
         Location location = (Location) context.getFromCache("location");
+        BreastfeedingAndPregnant criteria = (BreastfeedingAndPregnant) params.get("criteria");
         Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
         Date latestVlStartDate = EptsCalculationUtils.addMonths(context.getNow(), -12);
 		EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
@@ -45,6 +47,7 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 
 		Concept pregnant = hivMetadata.getPregnantConcept();
 		Concept gestation = hivMetadata.getGestationConcept();
+		Concept pregnantBasedOnWeeks = hivMetadata.getNumberOfWeeksPregnant();
 
         //get female patients only
         Set<Integer> female = EptsCalculationUtils.female(cohort, context);
@@ -54,21 +57,34 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 				latestVlStartDate, context.getNow(), cohort, context);
         //get results maps for pregnant women
 		CalculationResultMap markedPregnant = EptsCalculations.lastObs(Arrays.asList(adultInitial, adultFollowup), pregnant, location, null, context.getNow(), female, context);
+        CalculationResultMap markedPregnantByWeeks = EptsCalculations.lastObs(Arrays.asList(adultInitial, adultFollowup), pregnantBasedOnWeeks, location, null, context.getNow(), female, context);
 
         for(Integer pId: cohort){
             boolean pass = false;
             Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVlObsMap, pId);
+            Obs weeksObs = EptsCalculationUtils.obsResultForPatient(markedPregnantByWeeks, pId);
             Obs markedPregnantObs = EptsCalculationUtils.obsResultForPatient(markedPregnant, pId);
-            if(female.contains(pId) && lastVlObs != null && lastVlObs.getObsDatetime() != null) {
+
+            if(female.contains(pId) && lastVlObs != null && lastVlObs.getObsDatetime() != null && criteria != null) {
                 Date pregnancyStartDate = EptsCalculationUtils.addMonths(lastVlObs.getObsDatetime(), -9);
                 Date breastfeedingStartDate = EptsCalculationUtils.addMonths(lastVlObs.getObsDatetime(), -18);
                 Date endDate = lastVlObs.getObsDatetime();
                 
-				if(markedPregnantObs != null && markedPregnantObs.getValueCoded() != null && markedPregnantObs.getValueCoded().equals(gestation)
-					&& (markedPregnantObs.getObsDatetime().equals(pregnancyStartDate) || markedPregnantObs.getObsDatetime().after(pregnancyStartDate))
-						&& (markedPregnantObs.getObsDatetime().equals(endDate) || markedPregnantObs.getObsDatetime().before(endDate))) {
-					pass = true;
-				}
+				if(criteria.equals(BreastfeedingAndPregnant.PREGNANT)) {
+                    if (markedPregnantObs != null && markedPregnantObs.getValueCoded() != null && markedPregnantObs.getValueCoded().equals(gestation)
+                            && (markedPregnantObs.getObsDatetime().equals(pregnancyStartDate) || markedPregnantObs.getObsDatetime().after(pregnancyStartDate))
+                            && (markedPregnantObs.getObsDatetime().equals(endDate) || markedPregnantObs.getObsDatetime().before(endDate))) {
+                        pass = true;
+                    }
+                    if (weeksObs != null && weeksObs.getValueNumeric() != null && weeksObs.getObsDatetime() != null
+                            && (weeksObs.getObsDatetime().equals(pregnancyStartDate) || weeksObs.getObsDatetime().after(pregnancyStartDate))
+                            && (weeksObs.getObsDatetime().equals(endDate) || weeksObs.getObsDatetime().before(endDate))) {
+                        pass = true;
+                    }
+                }
+                else if(criteria.equals(BreastfeedingAndPregnant.BREASTFEEDING)) {
+
+                }
             }
             ret.put(pId, new BooleanResult(pass, this));
         }
