@@ -148,11 +148,11 @@ public class EptsCalculations {
 	 * @param context the calculation context
 	 * @return the enrollments in a calculation result map
 	 */
-	public static CalculationResultMap firstProgramEnrollment(Program program, Collection<Integer> cohort,
+	public static CalculationResultMap lastProgramEnrollment(Program program, Collection<Integer> cohort,
 	        PatientCalculationContext context) {
 		ProgramEnrollmentsForPatientDataDefinition def = new ProgramEnrollmentsForPatientDataDefinition();
-		def.setName("first in " + program.getName());
-		def.setWhichEnrollment(TimeQualifier.FIRST);
+		def.setName("Last in " + program.getName());
+		def.setWhichEnrollment(TimeQualifier.LAST);
 		def.setProgram(program);
 		def.setEnrolledOnOrBefore(context.getNow());
 		CalculationResultMap results = EptsCalculationUtils.evaluateWithReporting(def, cohort,
