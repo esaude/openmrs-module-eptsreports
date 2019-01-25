@@ -125,22 +125,21 @@ public class TxCurrCohortQueries {
 	public CohortDefinition getPatientsWhoLeftARTProgramBeforeOrOnEndDate() {
 		SqlCohortDefinition leftARTProgramBeforeOrOnEndDate = new SqlCohortDefinition();
 		leftARTProgramBeforeOrOnEndDate.setName("leftARTProgramBeforeOrOnEndDate");
-		String leftARTProgramQueryString = "SELECT p.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id=pg.patient_id "
-		        + "INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
-		        + "LEFT JOIN encounter ON encounter.patient_id = p.patient_id AND encounter.encounter_type in (%s) AND encounter.voided = false AND encounter.encounter_datetime > ps.start_date AND encounter.location_id = pg.location_id "
-		        + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND pg.program_id=%s AND ps.state in (%s) AND ps.end_date is null AND ps.start_date<=:onOrBefore AND pg.location_id=:location AND encounter.encounter_id IS NULL "
-		        + "GROUP BY p.patient_id";
 		
-		String encounterTypes = StringUtils.join(Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()
-		        .getEncounterTypeId(), hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-		    hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()), ',');
+		String leftARTProgramQueryString = "select p.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id "
+		        + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+		        + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s"
+		        + " and ps.state in (%s) and ps.end_date is null and ps.start_date<=:onOrBefore and pg.location_id=:location group by p.patient_id";
+		
 		String abandonStates = StringUtils.join(Arrays.asList(hivMetadata
 		        .getTransferredOutToAnotherHealthFacilityWorkflowState().getProgramWorkflowStateId(), hivMetadata
 		        .getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId(), hivMetadata
 		        .getPatientHasDiedWorkflowState().getProgramWorkflowStateId(), hivMetadata.getAbandonedWorkflowState()
 		        .getProgramWorkflowStateId()), ',');
-		leftARTProgramBeforeOrOnEndDate.setQuery(String.format(leftARTProgramQueryString, encounterTypes, hivMetadata
-		        .getARTProgram().getProgramId(), abandonStates));
+		
+		leftARTProgramBeforeOrOnEndDate.setQuery(String.format(leftARTProgramQueryString, hivMetadata.getARTProgram()
+		        .getProgramId(), abandonStates));
+		
 		leftARTProgramBeforeOrOnEndDate.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		leftARTProgramBeforeOrOnEndDate.addParameter(new Parameter("location", "location", Location.class));
 		return leftARTProgramBeforeOrOnEndDate;
@@ -308,9 +307,9 @@ public class TxCurrCohortQueries {
 		
 		String compositionString;
 		if (currentSpec) {
-			compositionString = "((1 OR 2 OR 3 OR 4) AND NOT (11 AND 6) AND NOT (12 AND 7 AND NOT 11)) AND NOT 5";
+			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR ((6 OR (NOT 11)) AND (NOT (7 OR 8))))) AND (11 OR 12)";
 		} else {
-			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND (NOT (NOT 7 OR 8)))))";
+			compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND (NOT (7 OR 8)))))";
 		}
 		
 		compositionString = compositionString + " and baseCohort";
