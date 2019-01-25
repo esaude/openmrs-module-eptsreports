@@ -155,7 +155,7 @@ public class EptsCalculations {
 		def.setWhichEnrollment(TimeQualifier.LAST);
 		def.setProgram(program);
 		def.setEnrolledOnOrBefore(context.getNow());
-		return return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
+		return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
 	}
 	
 	/**
