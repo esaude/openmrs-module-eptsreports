@@ -155,9 +155,7 @@ public class EptsCalculations {
 		def.setWhichEnrollment(TimeQualifier.LAST);
 		def.setProgram(program);
 		def.setEnrolledOnOrBefore(context.getNow());
-		CalculationResultMap results = EptsCalculationUtils.evaluateWithReporting(def, cohort,
-		    new HashMap<String, Object>(), null, context);
-		return EptsCalculationUtils.ensureEmptyListResults(results, cohort);
+		return return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
 	}
 	
 	/**
