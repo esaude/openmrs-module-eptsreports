@@ -1,6 +1,8 @@
 EPTS Reports Module
 ==========================
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1889390f9f5246fbb3179fef3f1e2ac8)](https://app.codacy.com/app/esaude-ops/openmrs-module-eptsreports?utm_source=github.com&utm_medium=referral&utm_content=esaude/openmrs-module-eptsreports&utm_campaign=Badge_Grade_Dashboard)
+
 Description
 -----------
 PEPFAR reports for EPTS project in Mozambique
