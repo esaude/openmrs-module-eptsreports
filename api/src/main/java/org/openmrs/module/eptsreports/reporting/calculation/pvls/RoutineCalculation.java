@@ -112,25 +112,22 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 					ListResult vlObsResult = (ListResult) patientHavingVL.get(pId);
 					
 					List<Obs> viralLoadForPatientTakenWithin12Months = new ArrayList<Obs>();
-					List<Obs> vLoadList = new ArrayList<Obs>();
 					
-					vLoadList = getViralLoadForPatientTakenWithin12Months(context, latestVlLowerDateLimit, vlObsResult,
-					    viralLoadForPatientTakenWithin12Months, vLoadList);
+					List<Obs> vLoadList = getViralLoadForPatientTakenWithin12Months(context, latestVlLowerDateLimit,
+					    vlObsResult, viralLoadForPatientTakenWithin12Months);
 					
 					// find out for criteria 1 a
-					if (viralLoadForPatientTakenWithin12Months.size() >= 1) {
-						// the patients should be 6 to 9 months after ART initiation
-						// get the obs date for this VL and compare that with the provided dates
-						if (isOnRoutineCriteria1(criteria, artInitiationDate, viralLoadForPatientTakenWithin12Months)) {
-							isOnRoutine = true;
-						}
+					// the patients should be 6 to 9 months after ART initiation
+					// get the obs date for this VL and compare that with the provided dates
+					if (viralLoadForPatientTakenWithin12Months.size() >= 1
+					        && isOnRoutineCriteria1(criteria, artInitiationDate, viralLoadForPatientTakenWithin12Months)) {
+						isOnRoutine = true;
 					}
 					
 					// find out criteria 2
-					if (viralLoadForPatientTakenWithin12Months.size() > 1) {
-						if (isOnRoutineCriteria2(criteria, viralLoadForPatientTakenWithin12Months)) {
-							isOnRoutine = true;
-						}
+					if (viralLoadForPatientTakenWithin12Months.size() > 1
+					        && isOnRoutineCriteria2(criteria, viralLoadForPatientTakenWithin12Months)) {
+						isOnRoutine = true;
 					}
 					
 					// find out criteria 3
@@ -231,8 +228,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 	}
 	
 	private List<Obs> getViralLoadForPatientTakenWithin12Months(PatientCalculationContext context,
-	        Date latestVlLowerDateLimit, ListResult vlObsResult, List<Obs> viralLoadForPatientTakenWithin12Months,
-	        List<Obs> vLoadList) {
+	        Date latestVlLowerDateLimit, ListResult vlObsResult, List<Obs> viralLoadForPatientTakenWithin12Months) {
+		List<Obs> vLoadList = Collections.emptyList();
 		if (vlObsResult != null && !vlObsResult.isEmpty()) {
 			vLoadList = EptsCalculationUtils.extractResultValues(vlObsResult);
 			
