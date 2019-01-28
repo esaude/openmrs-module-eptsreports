@@ -48,24 +48,6 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 	@Autowired
 	private HivMetadata hivMetadata;
 	
-	private static final List<Concept> CODED_OBS_VALUES = new ArrayList<Concept>() {
-		
-		private static final long serialVersionUID = -2519621620069050839L;
-		{
-			add(new Concept(6108));
-			add(new Concept(1311));
-			add(new Concept(1312));
-			add(new Concept(1313));
-			add(new Concept(1314));
-			add(new Concept(1315));
-			add(new Concept(6109));
-			add(new Concept(6325));
-			add(new Concept(6326));
-			add(new Concept(6327));
-			add(new Concept(6328));
-		}
-	};
-	
 	/**
 	 * Patients on ART for the last X months with one VL result registered in the 12 month period
 	 * Between Y to Z months after ART initiation TODO: merge with
@@ -95,7 +77,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 		    null, TimeQualifier.ANY, latestVlLowerDateLimit, context);
 		
 		CalculationResultMap changingRegimenLines = EptsCalculations.getObs(regimeConcept, cohort, Arrays.asList(location),
-		    CODED_OBS_VALUES, TimeQualifier.FIRST, null, context);
+		    getSecondLineTreatmentArvs(), TimeQualifier.FIRST, null, context);
 		
 		// get the ART initiation date
 		CalculationResultMap arvsInitiationDateMap = calculate(
@@ -266,5 +248,21 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 			}
 		}
 		return vLoadList;
+	}
+	
+	private List<Concept> getSecondLineTreatmentArvs() {
+		List<Concept> secondLineArvs = new ArrayList<Concept>();
+		secondLineArvs.add(hivMetadata.getAzt3tcAbcEfvConcept());
+		secondLineArvs.add(hivMetadata.getD4t3tcAbcEfvConcept());
+		secondLineArvs.add(hivMetadata.getAzt3tcAbcLpvConcept());
+		secondLineArvs.add(hivMetadata.getD4t3tcAbcLpvConcept());
+		secondLineArvs.add(hivMetadata.getAztDdiLpvConcept());
+		secondLineArvs.add(hivMetadata.getTdf3tcEfvConcept());
+		secondLineArvs.add(hivMetadata.getAzt3tcLpvConcept());
+		secondLineArvs.add(hivMetadata.getAbc3tcEfvConcept());
+		secondLineArvs.add(hivMetadata.getAbc3tcNvpConcept());
+		secondLineArvs.add(hivMetadata.getAbc3tcLpvConcept());
+		secondLineArvs.add(hivMetadata.getTdf3tcLpvConcept());
+		return secondLineArvs;
 	}
 }

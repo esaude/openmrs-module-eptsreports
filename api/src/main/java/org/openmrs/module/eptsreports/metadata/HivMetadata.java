@@ -69,6 +69,74 @@ public class HivMetadata extends CommonMetadata {
 		return getConcept(uuid);
 	}
 	
+	// Second line ARV concepts
+	
+	public Concept getAzt3tcAbcEfvConcept() {
+		String uuid = Context.getAdministrationService().getGlobalProperty(
+		    EptsReportConstants.GLOBAL_PROPERTY_AZT_3TC_ABC_EFV_CONCEPT_ID);
+		return getConcept(uuid);
+	}
+	
+	public Concept getD4t3tcAbcEfvConcept() {
+		String uuid = Context.getAdministrationService().getGlobalProperty(
+		    EptsReportConstants.GLOBAL_PROPERTY_D4T_3TC_ABC_EFV_CONCEPT_ID);
+		return getConcept(uuid);
+	}
+	
+	public Concept getAzt3tcAbcLpvConcept() {
+		String uuid = Context.getAdministrationService().getGlobalProperty(
+		    EptsReportConstants.GLOBAL_PROPERTY_AZT_3TC_ABC_LPV_CONCEPT_ID);
+		return getConcept(uuid);
+	}
+	
+	public Concept getD4t3tcAbcLpvConcept() {
+		String uuid = Context.getAdministrationService().getGlobalProperty(
+		    EptsReportConstants.GLOBAL_PROPERTY_D4T_3TC_ABC_LPV_CONCEPT_ID);
+		return getConcept(uuid);
+	}
+	
+	public Concept getAztDdiLpvConcept() {
+		String uuid = Context.getAdministrationService().getGlobalProperty(
+		    EptsReportConstants.GLOBAL_PROPERTY_AZT_DDI_LPV_CONCEPT_ID);
+		return getConcept(uuid);
+	}
+	
+	public Concept getTdf3tcEfvConcept() {
+		String uuid = Context.getAdministrationService().getGlobalProperty(
+		    EptsReportConstants.GLOBAL_PROPERTY_TDF_3TC_EFV_CONCEPT_ID);
+		return getConcept(uuid);
+	}
+	
+	public Concept getAzt3tcLpvConcept() {
+		String uuid = Context.getAdministrationService().getGlobalProperty(
+		    EptsReportConstants.GLOBAL_PROPERTY_AZT_3TC_LPV_CONCEPT_ID);
+		return getConcept(uuid);
+	}
+	
+	public Concept getAbc3tcEfvConcept() {
+		String uuid = Context.getAdministrationService().getGlobalProperty(
+		    EptsReportConstants.GLOBAL_PROPERTY_ABC_3TC_EFV_CONCEPT_ID);
+		return getConcept(uuid);
+	}
+	
+	public Concept getAbc3tcNvpConcept() {
+		String uuid = Context.getAdministrationService().getGlobalProperty(
+		    EptsReportConstants.GLOBAL_PROPERTY_ABC_3TC_NVP_CONCEPT_ID);
+		return getConcept(uuid);
+	}
+	
+	public Concept getAbc3tcLpvConcept() {
+		String uuid = Context.getAdministrationService().getGlobalProperty(
+		    EptsReportConstants.GLOBAL_PROPERTY_ABC_3TC_LPV_CONCEPT_ID);
+		return getConcept(uuid);
+	}
+	
+	public Concept getTdf3tcLpvConcept() {
+		String uuid = Context.getAdministrationService().getGlobalProperty(
+		    EptsReportConstants.GLOBAL_PROPERTY_TDF_3TC_LPV_CONCEPT_ID);
+		return getConcept(uuid);
+	}
+	
 	// Encounter types
 	// encounterType_id = 6
 	public EncounterType getAdultoSeguimentoEncounterType() {
