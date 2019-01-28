@@ -1,12 +1,8 @@
 language: java
-cache:
-  directories:
-    - $HOME/.cache/codacy
 before_install:
-  - mkdir $HOME/.cache/codacy
   - sudo apt-get install jq
-  - wget -O $HOME/.cache/codacy/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r '.assets[0].browser_download_url')
+  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r '.assets[0].browser_download_url')
 after_success:
   - mvn clean install
   - mvn jacoco:report coveralls:report
-  - java -jar ~/.cache/codacy/codacy-coverage-reporter-assembly-latest.jar report -l Java -r omod/target/site/jacoco/jacoco.xml
+  - java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r omod/target/site/jacoco/jacoco.xml
