@@ -55,7 +55,7 @@ public class TxCurrCohortQueries {
 	 *         or on end date
 	 */
 	@DocumentedDefinition(value = "patientWithFirstDrugPickupEncounter")
-	public CohortDefinition getPatientWithFirstDrugPickupEncounterBeforeOrOnEndDate() {
+	private CohortDefinition getPatientWithFirstDrugPickupEncounterBeforeOrOnEndDate() {
 		SqlCohortDefinition patientWithFirstDrugPickupEncounter = new SqlCohortDefinition();
 		patientWithFirstDrugPickupEncounter.setName("patientWithFirstDrugPickupEncounter");
 		String query = "SELECT p.patient_id " + "FROM patient p " + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
@@ -75,7 +75,7 @@ public class TxCurrCohortQueries {
 	 *         SEGUIMENTO and 9=S.TARV: PEDIATRIA SEGUIMENTO) before or on end date
 	 */
 	@DocumentedDefinition(value = "patientWithSTARTDRUGSObs")
-	public CohortDefinition getPatientWithSTARTDRUGSObsBeforeOrOnEndDate() {
+	private CohortDefinition getPatientWithSTARTDRUGSObsBeforeOrOnEndDate() {
 		SqlCohortDefinition patientWithSTARTDRUGSObs = new SqlCohortDefinition();
 		patientWithSTARTDRUGSObs.setName("patientWithSTARTDRUGSObs");
 		String query = "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
@@ -100,7 +100,7 @@ public class TxCurrCohortQueries {
 	 *         PEDIATRIA SEGUIMENTO) where START DATE is before or equal end date
 	 */
 	@DocumentedDefinition(value = "patientWithHistoricalDrugStartDateObs")
-	public CohortDefinition getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate() {
+	private CohortDefinition getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate() {
 		SqlCohortDefinition patientWithHistoricalDrugStartDateObs = new SqlCohortDefinition();
 		patientWithHistoricalDrugStartDateObs.setName("patientWithHistoricalDrugStartDateObs");
 		String query = "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
@@ -122,7 +122,7 @@ public class TxCurrCohortQueries {
 	 *         transferred to, stopped and abandoned (patient state 10, 7, 8 or 9)
 	 */
 	@DocumentedDefinition(value = "leftARTProgramBeforeOrOnEndDate")
-	public CohortDefinition getPatientsWhoLeftARTProgramBeforeOrOnEndDate() {
+	private CohortDefinition getPatientsWhoLeftARTProgramBeforeOrOnEndDate() {
 		SqlCohortDefinition leftARTProgramBeforeOrOnEndDate = new SqlCohortDefinition();
 		leftARTProgramBeforeOrOnEndDate.setName("leftARTProgramBeforeOrOnEndDate");
 		
@@ -151,7 +151,7 @@ public class TxCurrCohortQueries {
 	 *         not returned
 	 */
 	@DocumentedDefinition(value = "patientsThatMissedNexPickup")
-	public CohortDefinition getPatientsThatMissedNexPickup() {
+	private CohortDefinition getPatientsThatMissedNexPickup() {
 		SqlCohortDefinition definition = new SqlCohortDefinition();
 		definition.setName("patientsThatMissedNexPickup");
 		String query = "SELECT patient_id FROM (SELECT p.patient_id,max(encounter_datetime) encounter_datetime FROM patient p INNER JOIN encounter e on e.patient_id=p.patient_id WHERE p.voided=0 AND e.voided=0 AND e.encounter_type=%s"
@@ -170,7 +170,7 @@ public class TxCurrCohortQueries {
 	 *         (concept 1410=RETURN VISIT DATE) until the end date have not completed 28 days
 	 */
 	@DocumentedDefinition(value = "patientsThatMissNextConsultation")
-	public CohortDefinition getPatientsThatMissNextConsultation() {
+	private CohortDefinition getPatientsThatMissNextConsultation() {
 		SqlCohortDefinition definition = new SqlCohortDefinition();
 		definition.setName("patientsThatMissNextConsultation");
 		String query = "SELECT patient_id FROM " + "(SELECT p.patient_id,max(encounter_datetime) encounter_datetime "
@@ -195,7 +195,7 @@ public class TxCurrCohortQueries {
 	 *         VISIT DATE FOR ARV DRUG) until the end date have not completed 28 days
 	 */
 	@DocumentedDefinition(value = "patientsReportedAsAbandonmentButStillInPeriod")
-	public CohortDefinition getPatientsReportedAsAbandonmentButStillInPeriod() {
+	private CohortDefinition getPatientsReportedAsAbandonmentButStillInPeriod() {
 		SqlCohortDefinition definition = new SqlCohortDefinition();
 		definition.setName("patientsReportedAsAbandonmentButStillInPeriod");
 		String query = "SELECT abandono.patient_id FROM (SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id=pg.patient_id INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND pg.program_id=%d "
@@ -218,7 +218,7 @@ public class TxCurrCohortQueries {
 	 * @return
 	 */
 	@DocumentedDefinition(value = "patientsWithNextPickupDate")
-	public CohortDefinition getPatientsWithNextPickupDate() {
+	private CohortDefinition getPatientsWithNextPickupDate() {
 		SqlCohortDefinition definition = new SqlCohortDefinition();
 		definition.setName("patientsWithNextPickupDate");
 		String encounterTypes = StringUtils.join(
@@ -236,7 +236,7 @@ public class TxCurrCohortQueries {
 	 * @return
 	 */
 	@DocumentedDefinition(value = "patientsWithNextConsultationDate")
-	public CohortDefinition getPatientsWithNextConsultationDate() {
+	private CohortDefinition getPatientsWithNextConsultationDate() {
 		SqlCohortDefinition definition = new SqlCohortDefinition();
 		definition.setName("patientsWithNextConsultationDate");
 		String encounterTypes = StringUtils.join(Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()
