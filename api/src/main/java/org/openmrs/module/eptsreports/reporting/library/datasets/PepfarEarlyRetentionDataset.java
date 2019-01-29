@@ -27,11 +27,10 @@ public class PepfarEarlyRetentionDataset extends BaseDataSet{
         dsd.addParameters(getParameters());
 
         //apply disagregations here
-		dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
 		dsd.addDimension("age",
 				EptsReportUtils.map(eptsCommonDimension.pvlsAges(), "endDate=${endDate},location=${location}"));
 		//start forming the columns
-
+		dsd.addColumn("T1", "Early retention", EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Early retention", EptsReportUtils.map(pepfarEarlyRetentionCohortQueries.getPatientsRetainedOnArtFor3MonthsFromArtInitiation(), "")), ""), "");
         return dsd;
     }
 }

@@ -14,9 +14,11 @@ public class PepfarEarlyRetentionQueries {
     public static String getPatientsRetainedOnArt3MonthsAfterArtInitiation(int arvPharmaciaEncounter,
                                                                            int arvAdultoSeguimentoEncounter,
                                                                            int arvPediatriaSeguimentoEncounter,
-                                                                           int arvPlanConcept, int startDrugsConcept ) {
+                                                                           int arvPlanConcept, int startDrugsConcept,
+                                                                           int historicalDrugsConcept,
+                                                                           int artProgram) {
 
-        return "SELECT p.patient_id, MIN(e.encounter_datetime) data_inicio from patient p "
+        return "SELECT p.patient_id, MIN(e.encounter_datetime) data_inicio FROM patient p "
                 + "INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o on o.encounter_id=e.encounter_id "
                 + "WHERE e.voided=0 and o.voided=0 and p.voided=0 and e.encounter_type IN ("
                 + arvPharmaciaEncounter
@@ -28,6 +30,35 @@ public class PepfarEarlyRetentionQueries {
                 + arvPlanConcept
                 + " AND o.value_coded="
                 + startDrugsConcept
-                + " AND e.encounter_datetime <= :onOrBefore and e.location_id=:location GROUP BY p.patient_id";
+                + " AND e.encounter_datetime <= :onOrBefore and e.location_id=:location GROUP BY p.patient_id"
+                + " UNION "
+                + "SELECT p.patient_id, MIN(value_datetime) data_inicio FROM patient p "
+                + "INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+                + "WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type IN("
+                + arvPharmaciaEncounter
+                + ","
+                + arvAdultoSeguimentoEncounter
+                + ","
+                + arvPediatriaSeguimentoEncounter
+                + ") AND o.concept_id="
+                + historicalDrugsConcept
+                + " AND o.value_datetime is NOT null and o.value_datetime <= :onOrBefore AND e.location_id=:location "
+                + " GROUP BY p.patient_id"
+                + " UNION "
+                +"SELECT patient_id FROM (SELECT patient_id, MIN(data_inicio) data_inicio FROM "
+                + "(SELECT p.patient_id, date_enrolled data_inicio FROM patient p "
+                + "INNER JOIN patient_program pg ON p.patient_id=pg.patient_id "
+                + "WHERE pg.voided=0 AND p.voided=0 AND pg.program_id= "
+                + artProgram
+                + " AND pg.date_enrolled <= :onOrBefore AND pg.location_id=:location"
+                + " UNION "
+                +"SELECT e.patient_id, MIN(e.encounter_datetime) data_inicio FROM patient p "
+                + "INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided=0 AND e.encounter_type= "
+                + arvPharmaciaEncounter
+                + " AND e.voided=0 and e.encounter_datetime <= :onOrBefore AND e.location_id=:location "
+                + "group by p.patient_id) temp1 group by patient_id) temp2 INNER JOIN person pe on temp2.patient_id=pe.person_id "
+                + "WHERE (data_inicio between :onOrAfter and :onOrBefore)"
+                ;
+
     }
 }
