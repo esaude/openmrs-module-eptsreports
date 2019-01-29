@@ -17,20 +17,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Handler(supports = JembiObsDefinition.class, order = 50)
 public class JembiObsDefinitionEvaluator implements PatientDataEvaluator {
-	
+
 	@Autowired
 	private EvaluationService evaluationService;
-	
+
 	@Override
-	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
-	        throws EvaluationException {
+	public EvaluatedPatientData evaluate(PatientDataDefinition definition,
+			EvaluationContext context) throws EvaluationException {
 		JembiObsDefinition def = (JembiObsDefinition) definition;
 		EvaluatedPatientData c = new EvaluatedPatientData(def, context);
-		
-		if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
+
+		if (context.getBaseCohort() != null
+				&& context.getBaseCohort().isEmpty()) {
 			return c;
 		}
-		
+
 		HqlQueryBuilder q = new HqlQueryBuilder();
 		q.select("obs.person.personId", "obs");
 		q.from(Obs.class, "obs");
@@ -46,20 +47,21 @@ public class JembiObsDefinitionEvaluator implements PatientDataEvaluator {
 		} else {
 			q.orderAsc("obs.valueDatetime");
 		}
-		
-		List<Object[]> queryResult = evaluationService.evaluateToList(q, context);
-		
+
+		List<Object[]> queryResult = evaluationService.evaluateToList(q,
+				context);
+
 		ListMap<Integer, Obs> patientToObs = new ListMap<Integer, Obs>();
 		for (Object[] row : queryResult) {
 			patientToObs.putInList((Integer) row[0], (Obs) row[1]);
 		}
-		
+
 		for (Integer pId : patientToObs.keySet()) {
 			List<Obs> observations = patientToObs.get(pId);
 			c.addData(pId, observations.get(0));
 		}
-		
+
 		return c;
 	}
-	
+
 }

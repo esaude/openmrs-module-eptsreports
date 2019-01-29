@@ -16,6 +16,6 @@ import org.springframework.stereotype.Component;
  */
 @Component("eptsreports.EptsReportsConfig")
 public class EptsReportsConfig {
-	
+
 	public final static String MODULE_PRIVILEGE = "EPTS Reports Privilege";
 }

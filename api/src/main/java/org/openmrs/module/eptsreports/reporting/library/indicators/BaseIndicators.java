@@ -24,14 +24,15 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 
 // Generic Indicators Class for functions shared across all indicators
 public abstract class BaseIndicators {
-	
-	protected CohortIndicator newCohortIndicator(String name, Mapped<CohortDefinition> cohort) {
+
+	protected CohortIndicator newCohortIndicator(String name,
+			Mapped<CohortDefinition> cohort) {
 		CohortIndicator i = new CohortIndicator(name);
 		i.setCohortDefinition(cohort);
 		i.addParameter(new Parameter("startDate", "Start date", Date.class));
 		i.addParameter(new Parameter("endDate", "End date", Date.class));
 		i.addParameter(new Parameter("location", "Facility", Location.class));
-		
+
 		return i;
 	}
 }

@@ -12,41 +12,43 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.JembiProgramEnrollmentForPatientDefinition")
-public class JembiProgramEnrollmentForPatientDefinition extends BaseDataDefinition implements PatientDataDefinition {
-	
+public class JembiProgramEnrollmentForPatientDefinition
+		extends
+			BaseDataDefinition implements PatientDataDefinition {
+
 	@ConfigurationProperty(required = true)
 	private Program program;
-	
+
 	@ConfigurationProperty(required = true)
 	private Location location;
-	
+
 	public JembiProgramEnrollmentForPatientDefinition() {
 		super();
 	}
-	
+
 	public JembiProgramEnrollmentForPatientDefinition(String name) {
 		super(name);
 	}
-	
+
 	@Override
 	public Class<?> getDataType() {
 		return PatientProgram.class;
 	}
-	
+
 	public void setProgram(Program program) {
 		this.program = program;
 	}
-	
+
 	public void setLocation(Location location) {
 		this.location = location;
 	}
-	
+
 	public Program getProgram() {
 		return program;
 	}
-	
+
 	public Location getLocation() {
 		return location;
 	}
-	
+
 }

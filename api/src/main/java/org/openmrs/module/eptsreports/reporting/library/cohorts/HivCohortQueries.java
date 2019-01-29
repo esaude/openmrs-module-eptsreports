@@ -31,17 +31,17 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class HivCohortQueries {
-	
+
 	@Autowired
 	private HivMetadata hivMetadata;
-	
+
 	@Autowired
 	private GenericCohortQueries genericCohortQueires;
-	
+
 	/**
-	 * Adult and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml)
-	 * documented in the medical records and /or supporting laboratory results within the past 12
-	 * months
+	 * Adult and pediatric patients on ART with suppressed viral load results
+	 * (<1,000 copies/ml) documented in the medical records and /or supporting
+	 * laboratory results within the past 12 months
 	 * 
 	 * @return CohortDefinition
 	 */
@@ -52,16 +52,21 @@ public class HivCohortQueries {
 		sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		sql.addParameter(new Parameter("endDate", "End Date", Date.class));
 		sql.addParameter(new Parameter("location", "Location", Location.class));
-		sql.setQuery(ViralLoadQueries.getPatientsWithViralLoadSuppression(hivMetadata.getMisauLaboratorioEncounterType()
-		        .getEncounterTypeId(), hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(), hivMetadata
-		        .getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(), hivMetadata.getHivViralLoadConcept()
-		        .getConceptId()));
+		sql.setQuery(ViralLoadQueries.getPatientsWithViralLoadSuppression(
+				hivMetadata.getMisauLaboratorioEncounterType()
+						.getEncounterTypeId(), hivMetadata
+						.getAdultoSeguimentoEncounterType()
+						.getEncounterTypeId(), hivMetadata
+						.getARVPediatriaSeguimentoEncounterType()
+						.getEncounterTypeId(), hivMetadata
+						.getHivViralLoadConcept().getConceptId()));
 		return sql;
 	}
-	
+
 	/**
-	 * Number of adult and pediatric ART patients with a viral load result documented in the patient
-	 * medical record and/ or laboratory records in the past 12 months.
+	 * Number of adult and pediatric ART patients with a viral load result
+	 * documented in the patient medical record and/ or laboratory records in
+	 * the past 12 months.
 	 * 
 	 * @return CohortDefinition
 	 */
@@ -72,13 +77,17 @@ public class HivCohortQueries {
 		sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		sql.addParameter(new Parameter("endDate", "End Date", Date.class));
 		sql.addParameter(new Parameter("location", "Location", Location.class));
-		sql.setQuery(ViralLoadQueries.getPatientsHavingViralLoadInLast12Months(hivMetadata
-		        .getMisauLaboratorioEncounterType().getEncounterTypeId(), hivMetadata.getAdultoSeguimentoEncounterType()
-		        .getEncounterTypeId(), hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-		    hivMetadata.getHivViralLoadConcept().getConceptId()));
+		sql.setQuery(ViralLoadQueries.getPatientsHavingViralLoadInLast12Months(
+				hivMetadata.getMisauLaboratorioEncounterType()
+						.getEncounterTypeId(), hivMetadata
+						.getAdultoSeguimentoEncounterType()
+						.getEncounterTypeId(), hivMetadata
+						.getARVPediatriaSeguimentoEncounterType()
+						.getEncounterTypeId(), hivMetadata
+						.getHivViralLoadConcept().getConceptId()));
 		return sql;
 	}
-	
+
 	/**
 	 * Adult and pediatric patients on ART who have re-initiated the treatment.
 	 * 
@@ -86,7 +95,8 @@ public class HivCohortQueries {
 	 */
 	@DocumentedDefinition(value = "restartedTreatment")
 	public CohortDefinition getPatientsWhoRestartedTreatment() {
-		return genericCohortQueires.hasCodedObs(hivMetadata.getARVPlanConcept(),
-		    Collections.singletonList(hivMetadata.getRestartConcept()));
+		return genericCohortQueires.hasCodedObs(
+				hivMetadata.getARVPlanConcept(),
+				Collections.singletonList(hivMetadata.getRestartConcept()));
 	}
 }

@@ -15,8 +15,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository("eptsreports.EptsReportsDao")
 public class EptsReportsDao {
-	
+
 	@Autowired
 	DbSessionFactory sessionFactory;
-	
+
 }

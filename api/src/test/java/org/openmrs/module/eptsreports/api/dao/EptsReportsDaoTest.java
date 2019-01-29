@@ -17,16 +17,17 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * It is an integration test (extends BaseModuleContextSensitiveTest), which verifies DAO methods
- * against the in-memory H2 database. The database is initially loaded with data from
- * standardTestDataset.xml in openmrs-api. All test methods are executed in transactions, which are
- * rolled back by the end of each test method.
+ * It is an integration test (extends BaseModuleContextSensitiveTest), which
+ * verifies DAO methods against the in-memory H2 database. The database is
+ * initially loaded with data from standardTestDataset.xml in openmrs-api. All
+ * test methods are executed in transactions, which are rolled back by the end
+ * of each test method.
  */
 public class EptsReportsDaoTest extends BaseModuleContextSensitiveTest {
-	
+
 	@Autowired
 	EptsReportsDao dao;
-	
+
 	@Test
 	@Ignore
 	public void removeReport_UuidExistsAndShouldSucceed() {

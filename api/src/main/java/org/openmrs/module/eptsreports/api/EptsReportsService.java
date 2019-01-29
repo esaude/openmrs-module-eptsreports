@@ -15,4 +15,5 @@ import org.openmrs.api.OpenmrsService;
  * The main service of this module, which is exposed for other modules. See
  * moduleApplicationContext.xml on how it is wired up.
  */
-public interface EptsReportsService extends OpenmrsService {}
+public interface EptsReportsService extends OpenmrsService {
+}

@@ -22,13 +22,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller("${rootrootArtifactid}.EptsReportsController")
 @RequestMapping(value = "module/eptsreports/eptsreports.form")
 public class EptsReportsController {
-	
+
 	/** Logger for this class and subclasses */
 	protected final Log log = LogFactory.getLog(getClass());
-	
+
 	/** Success form view name */
 	private final String VIEW = "module/eptsreports/eptsreports";
-	
+
 	/**
 	 * Initially called after the getUsers method to get the landing form name
 	 * 
@@ -38,7 +38,7 @@ public class EptsReportsController {
 	public String onGet() {
 		return VIEW;
 	}
-	
+
 	/**
 	 * All the parameters are optional based on the necessity
 	 * 
@@ -48,14 +48,15 @@ public class EptsReportsController {
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public String onPost(HttpSession httpSession, @ModelAttribute("anyRequestObject") Object anyRequestObject,
-	        BindingResult errors) {
-		
+	public String onPost(HttpSession httpSession,
+			@ModelAttribute("anyRequestObject") Object anyRequestObject,
+			BindingResult errors) {
+
 		if (errors.hasErrors()) {
 			// return error view
 		}
-		
+
 		return VIEW;
 	}
-	
+
 }

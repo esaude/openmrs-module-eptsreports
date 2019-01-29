@@ -13,12 +13,14 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.eptsreports.api.EptsReportsService;
 import org.openmrs.module.eptsreports.api.dao.EptsReportsDao;
 
-public class EptsReportsServiceImpl extends BaseOpenmrsService implements EptsReportsService {
-	
+public class EptsReportsServiceImpl extends BaseOpenmrsService
+		implements
+			EptsReportsService {
+
 	/**
 	 * Injected in moduleApplicationContext.xml
 	 */
 	public void setDao(EptsReportsDao dao) {
 	}
-	
+
 }

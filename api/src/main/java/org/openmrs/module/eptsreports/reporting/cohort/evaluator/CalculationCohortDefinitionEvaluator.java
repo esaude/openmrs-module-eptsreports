@@ -35,32 +35,40 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
  * Evaluator for calculation based cohorts
  */
 @Handler(supports = CalculationCohortDefinition.class)
-public class CalculationCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
-	
+public class CalculationCohortDefinitionEvaluator
+		implements
+			CohortDefinitionEvaluator {
+
 	/**
 	 * @see org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator#evaluate(org.openmrs.module.reporting.cohort.definition.CohortDefinition,
 	 *      org.openmrs.module.reporting.evaluation.EvaluationContext)
 	 */
 	@Override
-	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
+	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition,
+			EvaluationContext context) throws EvaluationException {
 		CalculationResultMap map = doCalculation(cohortDefinition, context);
-		
+
 		CalculationCohortDefinition cd = (CalculationCohortDefinition) cohortDefinition;
-		Set<Integer> passing = EptsCalculationUtils.patientsThatPass(map, cd.getWithResult());
-		
-		return new EvaluatedCohort(new Cohort(passing), cohortDefinition, context);
+		Set<Integer> passing = EptsCalculationUtils.patientsThatPass(map,
+				cd.getWithResult());
+
+		return new EvaluatedCohort(new Cohort(passing), cohortDefinition,
+				context);
 	}
-	
+
 	/**
 	 * Performs the calculation
 	 * 
-	 * @param cohortDefinition the cohort definition
-	 * @param context the evaluation context
+	 * @param cohortDefinition
+	 *            the cohort definition
+	 * @param context
+	 *            the evaluation context
 	 * @return the calculation results
 	 */
-	protected CalculationResultMap doCalculation(CohortDefinition cohortDefinition, EvaluationContext context) {
+	protected CalculationResultMap doCalculation(
+			CohortDefinition cohortDefinition, EvaluationContext context) {
 		CalculationCohortDefinition cd = (CalculationCohortDefinition) cohortDefinition;
-		
+
 		// Use date from cohort definition, or from ${date} or ${endDate} or now
 		Date onDate = cd.getOnDate();
 		if (onDate == null) {
@@ -73,17 +81,19 @@ public class CalculationCohortDefinitionEvaluator implements CohortDefinitionEva
 			}
 		}
 		Location location = cd.getLocation();
-		
-		PatientCalculationService pcs = Context.getService(PatientCalculationService.class);
+
+		PatientCalculationService pcs = Context
+				.getService(PatientCalculationService.class);
 		PatientCalculationContext calcContext = pcs.createCalculationContext();
 		calcContext.setNow(onDate);
 		calcContext.addToCache("location", location);
-		
+
 		Cohort cohort = context.getBaseCohort();
 		if (cohort == null) {
 			cohort = Context.getPatientSetService().getAllPatients();
 		}
-		
-		return pcs.evaluate(cohort.getMemberIds(), cd.getCalculation(), cd.getCalculationParameters(), calcContext);
+
+		return pcs.evaluate(cohort.getMemberIds(), cd.getCalculation(),
+				cd.getCalculationParameters(), calcContext);
 	}
 }

@@ -21,9 +21,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EptsGeneralIndicator extends BaseIndicators {
-	
+
 	/**
-	 * Methods that takes a cohort defintion and return and indicator definition for reuse
+	 * Methods that takes a cohort defintion and return and indicator definition
+	 * for reuse
 	 * 
 	 * @return CohortIndicator
 	 */

@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GenderCohortQueries {
-	
+
 	/**
 	 * Patients who are female
 	 * 
@@ -32,7 +32,7 @@ public class GenderCohortQueries {
 		cohort.setMaleIncluded(false);
 		return cohort;
 	}
-	
+
 	/**
 	 * Patients who are male
 	 * 
@@ -45,5 +45,5 @@ public class GenderCohortQueries {
 		cohort.setFemaleIncluded(false);
 		return cohort;
 	}
-	
+
 }

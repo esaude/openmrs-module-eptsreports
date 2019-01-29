@@ -31,37 +31,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Defines all of the TxNew Cohort Definition instances we want to expose for EPTS
+ * Defines all of the TxNew Cohort Definition instances we want to expose for
+ * EPTS
  */
 @Component
 public class TxPvlsCohortQueries {
-	
+
 	@Autowired
 	private GenericCohortQueries genericCohortQueries;
-	
+
 	@Autowired
 	private HivCohortQueries hivCohortQueries;
-	
+
 	@Autowired
 	private TxNewCohortQueries txNewCohortQueries;
-	
+
 	@Autowired
 	private HivMetadata hivMetadata;
-	
+
 	/**
-	 * Patients who have NOT been on ART for 3 months based on the ART initiation date and date of
-	 * last viral load registered
+	 * Patients who have NOT been on ART for 3 months based on the ART
+	 * initiation date and date of last viral load registered
 	 * 
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getPatientsWhoAreMoreThan3MonthsOnArt() {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition("On ART for at least 3 months", Context
-		        .getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0));
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(
+				"On ART for at least 3 months", Context
+						.getRegisteredComponents(
+								OnArtForMoreThanXmonthsCalcultion.class).get(0));
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		return cd;
 	}
-	
+
 	/**
 	 * Breast feeding women with viral load suppression
 	 * 
@@ -74,15 +77,21 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("breastfeeding", EptsReportUtils.map(txNewCohortQueries.getTxNewBreastfeedingComposition(),
-		    "onOrAfter=${endDate-12m},onOrBefore=${endDate},location=${location}"));
-		cd.addSearch("suppression", EptsReportUtils.map(getPatientsWithViralLoadSuppression(),
-		    "startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.addSearch(
+				"breastfeeding",
+				EptsReportUtils.map(
+						txNewCohortQueries.getTxNewBreastfeedingComposition(),
+						"onOrAfter=${endDate-12m},onOrBefore=${endDate},location=${location}"));
+		cd.addSearch(
+				"suppression",
+				EptsReportUtils
+						.map(getPatientsWithViralLoadSuppression(),
+								"startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.setCompositionString("breastfeeding AND suppression");
-		
+
 		return cd;
 	}
-	
+
 	/**
 	 * Breast feeding women with viral load suppression
 	 * 
@@ -95,18 +104,24 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("breastfeeding", EptsReportUtils.map(txNewCohortQueries.getTxNewBreastfeedingComposition(),
-		    "onOrAfter=${endDate-12m},onOrBefore=${endDate},location=${location}"));
-		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(),
-		    "startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.addSearch(
+				"breastfeeding",
+				EptsReportUtils.map(
+						txNewCohortQueries.getTxNewBreastfeedingComposition(),
+						"onOrAfter=${endDate-12m},onOrBefore=${endDate},location=${location}"));
+		cd.addSearch(
+				"results",
+				EptsReportUtils
+						.map(getPatientsWithViralLoadResults(),
+								"startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.setCompositionString("breastfeeding AND results");
-		
+
 		return cd;
 	}
-	
+
 	/**
-	 * Patients with viral suppression of <1000 in the last 12 months excluding dead, LTFU,
-	 * transferred out, stopped ART
+	 * Patients with viral suppression of <1000 in the last 12 months excluding
+	 * dead, LTFU, transferred out, stopped ART
 	 */
 	public CohortDefinition getPatientsWithViralLoadSuppression() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -114,18 +129,20 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("supp",
-		    EptsReportUtils.map(hivCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
-		cd.addSearch("baseCohort", EptsReportUtils.map(genericCohortQueries.getBaseCohort(), mappings));
-		cd.addSearch("onArtLongEnough",
-		    EptsReportUtils.map(getPatientsWhoAreMoreThan3MonthsOnArt(), "onDate=${endDate},location=${location}"));
+		cd.addSearch("supp", EptsReportUtils.map(hivCohortQueries
+				.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
+		cd.addSearch("baseCohort", EptsReportUtils.map(
+				genericCohortQueries.getBaseCohort(), mappings));
+		cd.addSearch("onArtLongEnough", EptsReportUtils.map(
+				getPatientsWhoAreMoreThan3MonthsOnArt(),
+				"onDate=${endDate},location=${location}"));
 		cd.setCompositionString("supp AND baseCohort AND onArtLongEnough");
 		return cd;
 	}
-	
+
 	/**
-	 * Patients with viral results recorded in the last 12 months excluding dead, LTFU, transferred
-	 * out, stopped ARTtxNewCohortQueries
+	 * Patients with viral results recorded in the last 12 months excluding
+	 * dead, LTFU, transferred out, stopped ARTtxNewCohortQueries
 	 */
 	public CohortDefinition getPatientsWithViralLoadResults() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -133,14 +150,19 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("results", EptsReportUtils.map(hivCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
-		cd.addSearch("baseCohort", EptsReportUtils.map(genericCohortQueries.getBaseCohort(), mappings));
-		cd.addSearch("onArtLongEnough",
-		    EptsReportUtils.map(getPatientsWhoAreMoreThan3MonthsOnArt(), "onDate=${endDate},location=${location}"));
+		cd.addSearch("results",
+				EptsReportUtils.map(
+						hivCohortQueries.getPatientsViralLoadWithin12Months(),
+						mappings));
+		cd.addSearch("baseCohort", EptsReportUtils.map(
+				genericCohortQueries.getBaseCohort(), mappings));
+		cd.addSearch("onArtLongEnough", EptsReportUtils.map(
+				getPatientsWhoAreMoreThan3MonthsOnArt(),
+				"onDate=${endDate},location=${location}"));
 		cd.setCompositionString("results AND baseCohort AND onArtLongEnough");
 		return cd;
 	}
-	
+
 	/**
 	 * Get patients who are aged between age bracket
 	 * 
@@ -148,11 +170,12 @@ public class TxPvlsCohortQueries {
 	 * @param max
 	 * @return
 	 */
-	public CohortDefinition findPatientsBetweenAgeBracketsInYears(int min, int max) {
+	public CohortDefinition findPatientsBetweenAgeBracketsInYears(int min,
+			int max) {
 		return genericCohortQueries.generalSql("aged between age brackets",
-		    TxPvlsQueries.getPatientsBetweenAgeBracketsInYears(min, max));
+				TxPvlsQueries.getPatientsBetweenAgeBracketsInYears(min, max));
 	}
-	
+
 	/**
 	 * Find patients who are aged below
 	 * 
@@ -160,27 +183,31 @@ public class TxPvlsCohortQueries {
 	 * @return
 	 */
 	public CohortDefinition findPatientsagedBelowInYears(int age) {
-		return genericCohortQueries.generalSql("aged between age brackets", TxPvlsQueries.getPatientsWhoAreBelowXyears(age));
+		return genericCohortQueries.generalSql("aged between age brackets",
+				TxPvlsQueries.getPatientsWhoAreBelowXyears(age));
 	}
-	
+
 	/**
 	 * Get adults and children patients who are on routine
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum criteria) {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition("criteria", Context.getRegisteredComponents(
-		    RoutineCalculation.class).get(0));
+	public CohortDefinition getPatientsWhoAreOnRoutine(
+			PatientsOnRoutineEnum criteria) {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition(
+				"criteria", Context.getRegisteredComponents(
+						RoutineCalculation.class).get(0));
 		cd.setName("Routine for all patients controlled by parameter");
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		cd.addCalculationParameter("criteria", criteria);
 		return cd;
-		
+
 	}
-	
+
 	/**
-	 * Get patients having viral load suppression and routine for adults and children - Numerator
+	 * Get patients having viral load suppression and routine for adults and
+	 * children - Numerator
 	 * 
 	 * @retrun CohortDefinition
 	 */
@@ -191,16 +218,20 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("supp", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
-		cd.addSearch("routine", EptsReportUtils.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
-		    "onDate=${endDate},location=${location}"));
+		cd.addSearch("supp", EptsReportUtils.map(
+				getPatientsWithViralLoadSuppression(), mappings));
+		cd.addSearch(
+				"routine",
+				EptsReportUtils
+						.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
+								"onDate=${endDate},location=${location}"));
 		cd.setCompositionString("supp AND routine");
 		return cd;
 	}
-	
+
 	/**
-	 * Get patients having viral load suppression and not documented for adults and children -
-	 * Numerator
+	 * Get patients having viral load suppression and not documented for adults
+	 * and children - Numerator
 	 * 
 	 * @retrun CohortDefinition
 	 */
@@ -211,13 +242,17 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("supp", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
-		cd.addSearch("routine", EptsReportUtils.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
-		    "onDate=${endDate},location=${location}"));
+		cd.addSearch("supp", EptsReportUtils.map(
+				getPatientsWithViralLoadSuppression(), mappings));
+		cd.addSearch(
+				"routine",
+				EptsReportUtils
+						.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
+								"onDate=${endDate},location=${location}"));
 		cd.setCompositionString("supp AND NOT routine");
 		return cd;
 	}
-	
+
 	/**
 	 * Get patients with viral load results and on routine - Denominator
 	 * 
@@ -230,13 +265,17 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
-		cd.addSearch("routine", EptsReportUtils.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
-		    "onDate=${endDate},location=${location}"));
+		cd.addSearch("results", EptsReportUtils.map(
+				getPatientsWithViralLoadResults(), mappings));
+		cd.addSearch(
+				"routine",
+				EptsReportUtils
+						.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
+								"onDate=${endDate},location=${location}"));
 		cd.setCompositionString("results AND routine");
 		return cd;
 	}
-	
+
 	/**
 	 * Get patients with viral load results and NOT documented
 	 * 
@@ -249,13 +288,17 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
-		cd.addSearch("routine", EptsReportUtils.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
-		    "onDate=${endDate},location=${location}"));
+		cd.addSearch("results", EptsReportUtils.map(
+				getPatientsWithViralLoadResults(), mappings));
+		cd.addSearch(
+				"routine",
+				EptsReportUtils
+						.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
+								"onDate=${endDate},location=${location}"));
 		cd.setCompositionString("results AND NOT routine");
 		return cd;
 	}
-	
+
 	// breastfeeding and pregnant women
 	// breast feeding Numerator.
 	/**
@@ -269,15 +312,21 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("breastfeedingVl", EptsReportUtils.map(getBreastfeedingWomenWhoHaveViralSuppression(),
-		    "startDate=${startDate},endDate=${endDate},location=${location}"));
-		cd.addSearch("routine", EptsReportUtils.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-		    "onDate=${endDate},location=${location}"));
+		cd.addSearch(
+				"breastfeedingVl",
+				EptsReportUtils
+						.map(getBreastfeedingWomenWhoHaveViralSuppression(),
+								"startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.addSearch(
+				"routine",
+				EptsReportUtils
+						.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
+								"onDate=${endDate},location=${location}"));
 		cd.setCompositionString("breastfeedingVl AND routine");
-		
+
 		return cd;
 	}
-	
+
 	/**
 	 * Get breastfeeding women NOT documented Numerator
 	 * 
@@ -289,15 +338,21 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("breastfeedingVl", EptsReportUtils.map(getBreastfeedingWomenWhoHaveViralSuppression(),
-		    "startDate=${startDate},endDate=${endDate},location=${location}"));
-		cd.addSearch("routine", EptsReportUtils.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-		    "onDate=${endDate},location=${location}"));
+		cd.addSearch(
+				"breastfeedingVl",
+				EptsReportUtils
+						.map(getBreastfeedingWomenWhoHaveViralSuppression(),
+								"startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.addSearch(
+				"routine",
+				EptsReportUtils
+						.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
+								"onDate=${endDate},location=${location}"));
 		cd.setCompositionString("breastfeedingVl AND NOT routine");
-		
+
 		return cd;
 	}
-	
+
 	/**
 	 * Get pregnant women Numerator
 	 * 
@@ -310,13 +365,17 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("suppression", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
-		cd.addSearch("pregnant", EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-		    "startDate=${endDate-12m},endDate=${endDate},location=${location}"));
+		cd.addSearch("suppression", EptsReportUtils.map(
+				getPatientsWithViralLoadSuppression(), mappings));
+		cd.addSearch(
+				"pregnant",
+				EptsReportUtils.map(
+						txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+						"startDate=${endDate-12m},endDate=${endDate},location=${location}"));
 		cd.setCompositionString("suppression AND pregnant");
 		return cd;
 	}
-	
+
 	/**
 	 * Get pregnant women Denominator
 	 * 
@@ -329,13 +388,17 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
-		cd.addSearch("pregnant", EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-		    "startDate=${endDate-12m},endDate=${endDate},location=${location}"));
+		cd.addSearch("results", EptsReportUtils.map(
+				getPatientsWithViralLoadResults(), mappings));
+		cd.addSearch(
+				"pregnant",
+				EptsReportUtils.map(
+						txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+						"startDate=${endDate-12m},endDate=${endDate},location=${location}"));
 		cd.setCompositionString("results AND pregnant");
 		return cd;
 	}
-	
+
 	/**
 	 * Get pregnant, has viral load suppression, and on routine Numerator
 	 * 
@@ -347,14 +410,20 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenWithViralLoadSuppressionNumerator(),
-		    "startDate=${startDate},endDate=${endDate},location=${location}"));
-		cd.addSearch("routine", EptsReportUtils.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-		    "onDate=${endDate},location=${location}"));
+		cd.addSearch(
+				"pregnant",
+				EptsReportUtils
+						.map(getPregnantWomenWithViralLoadSuppressionNumerator(),
+								"startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.addSearch(
+				"routine",
+				EptsReportUtils
+						.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
+								"onDate=${endDate},location=${location}"));
 		cd.setCompositionString("pregnant AND routine");
 		return cd;
 	}
-	
+
 	/**
 	 * Get pregnant, has viral load, and NOT documented Numerator
 	 * 
@@ -366,18 +435,25 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenWithViralLoadSuppressionNumerator(),
-		    "startDate=${startDate},endDate=${endDate},location=${location}"));
-		cd.addSearch("routine", EptsReportUtils.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-		    "onDate=${endDate},location=${location}"));
+		cd.addSearch(
+				"pregnant",
+				EptsReportUtils
+						.map(getPregnantWomenWithViralLoadSuppressionNumerator(),
+								"startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.addSearch(
+				"routine",
+				EptsReportUtils
+						.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
+								"onDate=${endDate},location=${location}"));
 		cd.setCompositionString("pregnant AND NOT routine");
 		return cd;
 	}
-	
+
 	// Pregnant and breastfeeding denominator
 	// Breastfeeding
 	/**
-	 * Patients who have viral load results, breastfeeding and on routine denominator
+	 * Patients who have viral load results, breastfeeding and on routine
+	 * denominator
 	 * 
 	 * @return CohortDefinition
 	 */
@@ -387,16 +463,23 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("vlandBreastfeeding", EptsReportUtils.map(getBreastfeedingWomenWhoHaveViralLoadResults(),
-		    "startDate=${startDate},endDate=${endDate},location=${location}"));
-		cd.addSearch("routine", EptsReportUtils.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-		    "onDate=${endDate},location=${location}"));
+		cd.addSearch(
+				"vlandBreastfeeding",
+				EptsReportUtils
+						.map(getBreastfeedingWomenWhoHaveViralLoadResults(),
+								"startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.addSearch(
+				"routine",
+				EptsReportUtils
+						.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
+								"onDate=${endDate},location=${location}"));
 		cd.setCompositionString("vlandBreastfeeding AND routine");
 		return cd;
 	}
-	
+
 	/**
-	 * Patients who have virial load results and NOT documented and are breastfeeding denominator
+	 * Patients who have virial load results and NOT documented and are
+	 * breastfeeding denominator
 	 * 
 	 * @return CohortDefinition
 	 */
@@ -406,17 +489,24 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("vlandBreastfeeding", EptsReportUtils.map(getBreastfeedingWomenWhoHaveViralLoadResults(),
-		    "startDate=${startDate},endDate=${endDate},location=${location}"));
-		cd.addSearch("routine", EptsReportUtils.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-		    "onDate=${endDate},location=${location}"));
+		cd.addSearch(
+				"vlandBreastfeeding",
+				EptsReportUtils
+						.map(getBreastfeedingWomenWhoHaveViralLoadResults(),
+								"startDate=${startDate},endDate=${endDate},location=${location}"));
+		cd.addSearch(
+				"routine",
+				EptsReportUtils
+						.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
+								"onDate=${endDate},location=${location}"));
 		cd.setCompositionString("vlandBreastfeeding AND NOT routine");
 		return cd;
 	}
-	
+
 	// Pregnant
 	/**
-	 * Patients who are pregnant, have viral load results and on routine denominator
+	 * Patients who are pregnant, have viral load results and on routine
+	 * denominator
 	 * 
 	 * @return CohortDefinition
 	 */
@@ -427,13 +517,17 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenWithViralLoadResultsDenominator(), mappings));
-		cd.addSearch("routine", EptsReportUtils.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-		    "onDate=${endDate},location=${location}"));
+		cd.addSearch("pregnant", EptsReportUtils.map(
+				getPregnantWomenWithViralLoadResultsDenominator(), mappings));
+		cd.addSearch(
+				"routine",
+				EptsReportUtils
+						.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
+								"onDate=${endDate},location=${location}"));
 		cd.setCompositionString("pregnant AND routine");
 		return cd;
 	}
-	
+
 	/**
 	 * Patients who are pregnant, have viral load and NOT Documented
 	 * 
@@ -446,13 +540,17 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenWithViralLoadResultsDenominator(), mappings));
-		cd.addSearch("routine", EptsReportUtils.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-		    "onDate=${endDate},location=${location}"));
+		cd.addSearch("pregnant", EptsReportUtils.map(
+				getPregnantWomenWithViralLoadResultsDenominator(), mappings));
+		cd.addSearch(
+				"routine",
+				EptsReportUtils
+						.map(getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
+								"onDate=${endDate},location=${location}"));
 		cd.setCompositionString("pregnant AND NOT routine");
 		return cd;
 	}
-	
+
 	/**
 	 * Patients doing ART for at least 3 months compared to the VL date
 	 * 
@@ -464,26 +562,31 @@ public class TxPvlsCohortQueries {
 		sql.addParameter(new Parameter("onDate", "onDate", Date.class));
 		sql.addParameter(new Parameter("location", "Location", Location.class));
 		String query = "select patient_start_date.patient_id from ( "
-		        + "select all_start_dates.patient_id, min(all_start_dates.start_date) start_date from ( "
-		        + "select person_id patient_id, min(date(obs.obs_datetime)) start_date from obs where obs.location_id = :location and obs.concept_id = %s and obs.value_coded = %s and obs.voided = false group by patient_id "
-		        + "union "
-		        + "select person_id patient_id, min(date(obs.value_datetime)) start_date from obs where obs.location_id = :location and obs.concept_id = %s and obs.voided = false group by patient_id "
-		        + "union "
-		        + "select patient_id, date(min(patient_program.date_enrolled)) start_date from patient_program where patient_program.location_id = :location and patient_program.program_id = %s and patient_program.voided = false group by patient_id "
-		        + "union "
-		        + "select patient_id, min(date(encounter.encounter_datetime)) start_date from encounter where encounter.encounter_type = %s and encounter.voided = false and encounter.location_id = :location group by patient_id "
-		        + "union "
-		        + "select person_id patient_id, date(min(obs.obs_datetime)) start_date from obs where obs.location_id = :location and obs.concept_id = %s and obs.value_coded = %s and obs.voided = false group by patient_id "
-		        + ") all_start_dates group by all_start_dates.patient_id) patient_start_date join (select encounter.patient_id, max(date(encounter.encounter_datetime)) result_date from encounter join obs on obs.encounter_id = encounter.encounter_id "
-		        + "where encounter.encounter_type = %s and encounter.voided = false and encounter.location_id = :location and encounter.encounter_datetime between date_add(:onDate, interval -1 year) and :onDate and obs.value_numeric is not null and obs.concept_id = %s and obs.voided = false "
-		        + "group by patient_id) patient_vl on patient_vl.patient_id = patient_start_date.patient_id where date_add(patient_start_date.start_date, interval 3 month) <= patient_vl.result_date ";
-		sql.setQuery(String.format(query, hivMetadata.getARVPlanConcept().getConceptId(), hivMetadata.getstartDrugsConcept()
-		        .getConceptId(), hivMetadata.gethistoricalDrugStartDateConcept().getConceptId(), hivMetadata.getARTProgram()
-		        .getProgramId(), hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(), hivMetadata
-		        .getARVPlanConcept().getConceptId(), hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
-		    hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(), hivMetadata.getHivViralLoadConcept()
-		            .getConceptId()));
+				+ "select all_start_dates.patient_id, min(all_start_dates.start_date) start_date from ( "
+				+ "select person_id patient_id, min(date(obs.obs_datetime)) start_date from obs where obs.location_id = :location and obs.concept_id = %s and obs.value_coded = %s and obs.voided = false group by patient_id "
+				+ "union "
+				+ "select person_id patient_id, min(date(obs.value_datetime)) start_date from obs where obs.location_id = :location and obs.concept_id = %s and obs.voided = false group by patient_id "
+				+ "union "
+				+ "select patient_id, date(min(patient_program.date_enrolled)) start_date from patient_program where patient_program.location_id = :location and patient_program.program_id = %s and patient_program.voided = false group by patient_id "
+				+ "union "
+				+ "select patient_id, min(date(encounter.encounter_datetime)) start_date from encounter where encounter.encounter_type = %s and encounter.voided = false and encounter.location_id = :location group by patient_id "
+				+ "union "
+				+ "select person_id patient_id, date(min(obs.obs_datetime)) start_date from obs where obs.location_id = :location and obs.concept_id = %s and obs.value_coded = %s and obs.voided = false group by patient_id "
+				+ ") all_start_dates group by all_start_dates.patient_id) patient_start_date join (select encounter.patient_id, max(date(encounter.encounter_datetime)) result_date from encounter join obs on obs.encounter_id = encounter.encounter_id "
+				+ "where encounter.encounter_type = %s and encounter.voided = false and encounter.location_id = :location and encounter.encounter_datetime between date_add(:onDate, interval -1 year) and :onDate and obs.value_numeric is not null and obs.concept_id = %s and obs.voided = false "
+				+ "group by patient_id) patient_vl on patient_vl.patient_id = patient_start_date.patient_id where date_add(patient_start_date.start_date, interval 3 month) <= patient_vl.result_date ";
+		sql.setQuery(String.format(query, hivMetadata.getARVPlanConcept()
+				.getConceptId(), hivMetadata.getstartDrugsConcept()
+				.getConceptId(), hivMetadata
+				.gethistoricalDrugStartDateConcept().getConceptId(),
+				hivMetadata.getARTProgram().getProgramId(), hivMetadata
+						.getARVPharmaciaEncounterType().getEncounterTypeId(),
+				hivMetadata.getARVPlanConcept().getConceptId(), hivMetadata
+						.getTransferFromOtherFacilityConcept().getConceptId(),
+				hivMetadata.getMisauLaboratorioEncounterType()
+						.getEncounterTypeId(), hivMetadata
+						.getHivViralLoadConcept().getConceptId()));
 		return sql;
 	}
-	
+
 }

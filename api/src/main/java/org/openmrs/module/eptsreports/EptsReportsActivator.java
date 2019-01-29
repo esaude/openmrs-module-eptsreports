@@ -17,41 +17,41 @@ import org.openmrs.module.eptsreports.metadata.MetadataLookupException;
 import org.openmrs.module.eptsreports.reporting.EptsReportInitializer;
 
 /**
- * This class contains the logic that is run every time this module is either started or shutdown
+ * This class contains the logic that is run every time this module is either
+ * started or shutdown
  */
 public class EptsReportsActivator extends BaseModuleActivator {
-	
+
 	private Log log = LogFactory.getLog(this.getClass());
-	
+
 	private EptsReportInitializer reportsInitializer = new EptsReportInitializer();
-	
+
 	@Override
 	public void contextRefreshed() {
 		log.debug("EPTS Reports Module refreshed");
 	}
-	
+
 	@Override
 	public void willRefreshContext() {
 		log.debug("Refreshing EPTS Reports Module");
 	}
-	
+
 	@Override
 	public void willStart() {
 		log.debug("Starting EPTS Reports Module");
 	}
-	
+
 	@Override
 	public void willStop() {
 		log.debug("Stopping EPTS Reports Module");
 		try {
 			reportsInitializer.purgeReports();
 			log.debug("EPTS Reports purged");
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			log.error("An error occured trying to purge EPTS reports", e);
 		}
 	}
-	
+
 	/**
 	 * @see #started()
 	 */
@@ -59,17 +59,17 @@ public class EptsReportsActivator extends BaseModuleActivator {
 		try {
 			reportsInitializer.initializeReports();
 			log.info("Started EPTS Reports Module");
-		}
-		catch (MetadataLookupException e) {
-			Context.getAlertService().notifySuperUsers("eptsreports.startuperror.globalproperties", null);
+		} catch (MetadataLookupException e) {
+			Context.getAlertService().notifySuperUsers(
+					"eptsreports.startuperror.globalproperties", null);
 			throw e;
-		}
-		catch (Exception e) {
-			Context.getAlertService().notifySuperUsers("eptsreports.startuperror.general", null);
+		} catch (Exception e) {
+			Context.getAlertService().notifySuperUsers(
+					"eptsreports.startuperror.general", null);
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * @see #stopped()
 	 */

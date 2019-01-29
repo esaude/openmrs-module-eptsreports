@@ -29,62 +29,67 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  */
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
 public class CalculationCohortDefinition extends BaseCohortDefinition {
-	
+
 	@ConfigurationProperty(required = true, group = "calculation")
 	private PatientCalculation calculation;
-	
+
 	@ConfigurationProperty(group = "calculation")
 	private Date onDate;
-	
+
 	@ConfigurationProperty(group = "calculation")
 	private Object withResult;
-	
+
 	@ConfigurationProperty(group = "calculation")
 	private Map<String, Object> calculationParameters;
-	
+
 	@ConfigurationProperty(group = "calculation")
 	private Location location;
-	
+
 	/**
 	 * Default constructor
 	 */
 	public CalculationCohortDefinition() {
 	}
-	
+
 	/**
 	 * Constructs a new calculation based cohort definition
 	 * 
-	 * @param calculation the calculation
+	 * @param calculation
+	 *            the calculation
 	 */
 	public CalculationCohortDefinition(PatientCalculation calculation) {
 		setCalculation(calculation);
 	}
-	
+
 	/**
 	 * Constructor to populate name and calculation
 	 * 
-	 * @param name the name
-	 * @param calculation the calculation
+	 * @param name
+	 *            the name
+	 * @param calculation
+	 *            the calculation
 	 */
-	public CalculationCohortDefinition(String name, PatientCalculation calculation) {
+	public CalculationCohortDefinition(String name,
+			PatientCalculation calculation) {
 		setName(name);
 		setCalculation(calculation);
 	}
-	
+
 	/**
 	 * @return the calculation
 	 */
 	public PatientCalculation getCalculation() {
 		return calculation;
 	}
-	
+
 	/**
-	 * @param calculation the calculation to set
+	 * @param calculation
+	 *            the calculation to set
 	 */
 	public void setCalculation(PatientCalculation calculation) {
 		this.calculation = calculation;
 	}
-	
+
 	/**
 	 * Gets the date for which to calculate
 	 * 
@@ -93,16 +98,17 @@ public class CalculationCohortDefinition extends BaseCohortDefinition {
 	public Date getOnDate() {
 		return onDate;
 	}
-	
+
 	/**
 	 * Sets the date for which to calculate
 	 * 
-	 * @param onDate the date
+	 * @param onDate
+	 *            the date
 	 */
 	public void setOnDate(Date onDate) {
 		this.onDate = onDate;
 	}
-	
+
 	/**
 	 * Gets the result value required for inclusion in the cohort
 	 * 
@@ -111,16 +117,17 @@ public class CalculationCohortDefinition extends BaseCohortDefinition {
 	public Object getWithResult() {
 		return withResult;
 	}
-	
+
 	/**
 	 * Sets the result value required for inclusion in the cohort
 	 * 
-	 * @param withResult the result value
+	 * @param withResult
+	 *            the result value
 	 */
 	public void setWithResult(Object withResult) {
 		this.withResult = withResult;
 	}
-	
+
 	/**
 	 * Gets the calculation parameters
 	 * 
@@ -129,36 +136,40 @@ public class CalculationCohortDefinition extends BaseCohortDefinition {
 	public Map<String, Object> getCalculationParameters() {
 		return calculationParameters;
 	}
-	
+
 	/**
 	 * Sets the calculation parameters
 	 * 
-	 * @param calculationParameters the calculation parameters
+	 * @param calculationParameters
+	 *            the calculation parameters
 	 */
-	public void setCalculationParameters(Map<String, Object> calculationParameters) {
+	public void setCalculationParameters(
+			Map<String, Object> calculationParameters) {
 		this.calculationParameters = calculationParameters;
 	}
-	
+
 	/**
 	 * Adds a calculation parameter
 	 * 
-	 * @param name the name
-	 * @param value the value
+	 * @param name
+	 *            the name
+	 * @param value
+	 *            the value
 	 */
 	public void addCalculationParameter(String name, Object value) {
 		if (calculationParameters == null) {
 			calculationParameters = new HashMap<String, Object>();
 		}
-		
+
 		calculationParameters.put(name, value);
 	}
-	
+
 	public Location getLocation() {
 		return location;
 	}
-	
+
 	public void setLocation(Location location) {
 		this.location = location;
 	}
-	
+
 }

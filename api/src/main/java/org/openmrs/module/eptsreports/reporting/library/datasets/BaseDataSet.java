@@ -23,26 +23,33 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 
 public abstract class BaseDataSet {
-	
+
 	/**
-	 * Adds a row to a dataset based on an indicator and a list of column parameters
+	 * Adds a row to a dataset based on an indicator and a list of column
+	 * parameters
 	 * 
-	 * @param cohortDsd the dataset
-	 * @param baseName the base columm name
-	 * @param baseLabel the base column label
-	 * @param indicator the indicator
-	 * @param columns the column parameters
+	 * @param cohortDsd
+	 *            the dataset
+	 * @param baseName
+	 *            the base columm name
+	 * @param baseLabel
+	 *            the base column label
+	 * @param indicator
+	 *            the indicator
+	 * @param columns
+	 *            the column parameters
 	 */
-	protected void addRow(CohortIndicatorDataSetDefinition cohortDsd, String baseName, String baseLabel,
-	        Mapped<CohortIndicator> indicator, List<ColumnParameters> columns) {
-		
+	protected void addRow(CohortIndicatorDataSetDefinition cohortDsd,
+			String baseName, String baseLabel,
+			Mapped<CohortIndicator> indicator, List<ColumnParameters> columns) {
+
 		for (ColumnParameters column : columns) {
 			String name = baseName + "-" + column.getColumn();
 			String label = baseLabel + " (" + column.getLabel() + ")";
 			cohortDsd.addColumn(name, label, indicator, column.getDimensions());
 		}
 	}
-	
+
 	public List<Parameter> getParameters() {
 		List<Parameter> parameters = new ArrayList<Parameter>();
 		parameters.add(ReportingConstants.START_DATE_PARAMETER);
@@ -50,31 +57,35 @@ public abstract class BaseDataSet {
 		parameters.add(ReportingConstants.LOCATION_PARAMETER);
 		return parameters;
 	}
-	
+
 	class ColumnParameters {
-		
+
 		private String name;
-		
+
 		private String label;
-		
+
 		private String dimensions;
-		
+
 		private String column;
-		
+
 		/**
 		 * Default constructor
 		 * 
-		 * @param name the name
-		 * @param label the label
-		 * @param dimensions the dimension parameters
+		 * @param name
+		 *            the name
+		 * @param label
+		 *            the label
+		 * @param dimensions
+		 *            the dimension parameters
 		 */
-		public ColumnParameters(String name, String label, String dimensions, String column) {
+		public ColumnParameters(String name, String label, String dimensions,
+				String column) {
 			this.name = name;
 			this.label = label;
 			this.dimensions = dimensions;
 			this.column = column;
 		}
-		
+
 		/**
 		 * Gets the name
 		 * 
@@ -83,7 +94,7 @@ public abstract class BaseDataSet {
 		public String getName() {
 			return name;
 		}
-		
+
 		/**
 		 * Gets the label
 		 * 
@@ -92,7 +103,7 @@ public abstract class BaseDataSet {
 		public String getLabel() {
 			return label;
 		}
-		
+
 		/**
 		 * Gets the dimension parameters
 		 * 
@@ -101,7 +112,7 @@ public abstract class BaseDataSet {
 		public String getDimensions() {
 			return dimensions;
 		}
-		
+
 		/**
 		 * Gets the column
 		 * 

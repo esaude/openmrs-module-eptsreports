@@ -36,44 +36,44 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SetupMERQuarterly extends EptsDataExportManager {
-	
+
 	@Autowired
 	private TxPvlsDataset txPvlsDataset;
-	
+
 	@Autowired
 	private TxNewDataset txNewDataset;
-	
+
 	@Autowired
 	private TxCurrDataset txCurrDataset;
-	
+
 	@Autowired
 	private GenericCohortQueries genericCohortQueries;
-	
+
 	@Override
 	public String getVersion() {
 		return "1.0-SNAPSHOT";
 	}
-	
+
 	@Override
 	public String getUuid() {
 		return "fa20c1ac-94ea-11e3-96de-0023156365e4";
 	}
-	
+
 	@Override
 	public String getExcelDesignUuid() {
 		return "cea86583-9ca5-4ad9-94e4-e20081a57619";
 	}
-	
+
 	@Override
 	public String getName() {
 		return "PEPFAR MER 2.3 Quarterly";
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return "MER Quarterly Report";
 	}
-	
+
 	@Override
 	public ReportDefinition constructReportDefinition() {
 		ReportDefinition reportDefinition = new ReportDefinition();
@@ -81,35 +81,47 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 		reportDefinition.setName(getName());
 		reportDefinition.setDescription(getDescription());
 		reportDefinition.setParameters(getParameters());
-		reportDefinition.setBaseCohortDefinition(genericCohortQueries.getBaseCohort(),
-		    ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
-		reportDefinition.addDataSetDefinition("N", Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
-		reportDefinition.addDataSetDefinition("C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
-		reportDefinition.addDataSetDefinition("P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
+		reportDefinition
+				.setBaseCohortDefinition(
+						genericCohortQueries.getBaseCohort(),
+						ParameterizableUtil
+								.createParameterMappings("endDate=${endDate},location=${location}"));
+		reportDefinition
+				.addDataSetDefinition("N", Mapped
+						.mapStraightThrough(txNewDataset
+								.constructTxNewDataset()));
+		reportDefinition
+				.addDataSetDefinition("C", Mapped
+						.mapStraightThrough(txCurrDataset
+								.constructTxCurrDataset(true)));
+		reportDefinition.addDataSetDefinition("P", Mapped
+				.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
 		// add a base cohort here to help in calculations running
-		reportDefinition.setBaseCohortDefinition(EptsReportUtils.map(genericCohortQueries.getBaseCohort(),
-		    "endDate=${endDate},location=${location}"));
-		
+		reportDefinition.setBaseCohortDefinition(EptsReportUtils.map(
+				genericCohortQueries.getBaseCohort(),
+				"endDate=${endDate},location=${location}"));
+
 		return reportDefinition;
 	}
-	
+
 	@Override
-	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
+	public List<ReportDesign> constructReportDesigns(
+			ReportDefinition reportDefinition) {
 		ReportDesign reportDesign = null;
 		try {
-			reportDesign = createXlsReportDesign(reportDefinition, "PEPFAR_MER_2.3_REPORT.xls", "PEPFAR Quarterly Report",
-			    getExcelDesignUuid(), null);
+			reportDesign = createXlsReportDesign(reportDefinition,
+					"PEPFAR_MER_2.3_REPORT.xls", "PEPFAR Quarterly Report",
+					getExcelDesignUuid(), null);
 			Properties props = new Properties();
 			props.put("sortWeight", "5000");
 			reportDesign.setProperties(props);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		
+
 		return Arrays.asList(reportDesign);
 	}
-	
+
 	@Override
 	public List<Parameter> getParameters() {
 		List<Parameter> parameters = new ArrayList<Parameter>();
@@ -118,5 +130,5 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 		parameters.add(ReportingConstants.LOCATION_PARAMETER);
 		return parameters;
 	}
-	
+
 }

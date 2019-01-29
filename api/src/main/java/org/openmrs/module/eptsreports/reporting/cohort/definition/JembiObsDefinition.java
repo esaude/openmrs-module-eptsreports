@@ -12,63 +12,65 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.JembiObsDefinition")
-public class JembiObsDefinition extends BaseDataDefinition implements PatientDataDefinition {
-	
+public class JembiObsDefinition extends BaseDataDefinition
+		implements
+			PatientDataDefinition {
+
 	@ConfigurationProperty(required = true)
 	private Concept question;
-	
+
 	@ConfigurationProperty
 	private Concept answer;
-	
+
 	@ConfigurationProperty(required = true)
 	private Location location;
-	
+
 	@ConfigurationProperty(required = true)
 	private boolean sortByDatetime = true;
-	
+
 	public JembiObsDefinition() {
 		super();
 	}
-	
+
 	public JembiObsDefinition(String name) {
 		super(name);
 	}
-	
+
 	@Override
 	public Class<?> getDataType() {
 		return PatientProgram.class;
 	}
-	
+
 	public Concept getQuestion() {
 		return question;
 	}
-	
+
 	public void setQuestion(Concept question) {
 		this.question = question;
 	}
-	
+
 	public Concept getAnswer() {
 		return answer;
 	}
-	
+
 	public void setAnswer(Concept answer) {
 		this.answer = answer;
 	}
-	
+
 	public Location getLocation() {
 		return location;
 	}
-	
+
 	public void setLocation(Location location) {
 		this.location = location;
 	}
-	
+
 	public boolean isSortByDatetime() {
 		return sortByDatetime;
 	}
-	
+
 	public void setSortByDatetime(boolean sortByDatetime) {
 		this.sortByDatetime = sortByDatetime;
 	}
-	
+
 }

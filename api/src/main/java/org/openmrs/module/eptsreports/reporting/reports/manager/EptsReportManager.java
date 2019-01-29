@@ -28,32 +28,41 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.manager.BaseReportManager;
 
 /**
- * Base implementation of ReportManager that provides some common method implementations
+ * Base implementation of ReportManager that provides some common method
+ * implementations
  */
 public abstract class EptsReportManager extends BaseReportManager {
-	
-	protected void addColumn(PatientDataSetDefinition dsd, String columnName, PatientDataDefinition pdd) {
+
+	protected void addColumn(PatientDataSetDefinition dsd, String columnName,
+			PatientDataDefinition pdd) {
 		dsd.addColumn(columnName, pdd, Mapped.straightThroughMappings(pdd));
 	}
-	
-	protected void addColumn(EncounterDataSetDefinition dsd, String columnName, PatientDataDefinition pdd) {
+
+	protected void addColumn(EncounterDataSetDefinition dsd, String columnName,
+			PatientDataDefinition pdd) {
 		addColumn(dsd, columnName, new PatientToEncounterDataDefinition(pdd));
 	}
-	
-	protected void addColumn(EncounterDataSetDefinition dsd, String columnName, EncounterDataDefinition edd) {
-		dsd.addColumn(columnName, edd, ObjectUtil.toString(Mapped.straightThroughMappings(edd), "=", ","));
+
+	protected void addColumn(EncounterDataSetDefinition dsd, String columnName,
+			EncounterDataDefinition edd) {
+		dsd.addColumn(columnName, edd, ObjectUtil.toString(
+				Mapped.straightThroughMappings(edd), "=", ","));
 	}
-	
-	protected void addColumn(ObsDataSetDefinition dsd, String columnName, PatientDataDefinition pdd) {
+
+	protected void addColumn(ObsDataSetDefinition dsd, String columnName,
+			PatientDataDefinition pdd) {
 		addColumn(dsd, columnName, new PatientToObsDataDefinition(pdd));
 	}
-	
-	protected void addColumn(ObsDataSetDefinition dsd, String columnName, EncounterDataDefinition edd) {
+
+	protected void addColumn(ObsDataSetDefinition dsd, String columnName,
+			EncounterDataDefinition edd) {
 		addColumn(dsd, columnName, new EncounterToObsDataDefinition(edd));
 	}
-	
-	protected void addColumn(ObsDataSetDefinition dsd, String columnName, ObsDataDefinition odd) {
-		dsd.addColumn(columnName, odd, ObjectUtil.toString(Mapped.straightThroughMappings(odd), "=", ","));
+
+	protected void addColumn(ObsDataSetDefinition dsd, String columnName,
+			ObsDataDefinition odd) {
+		dsd.addColumn(columnName, odd, ObjectUtil.toString(
+				Mapped.straightThroughMappings(odd), "=", ","));
 	}
-	
+
 }
