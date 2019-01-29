@@ -73,7 +73,7 @@ public class PepfarEarlyRetentionQueries {
 									+") inicio"
 								+"GROUP BY patient_id"
 								+")inicio1"
-							+"WHERE data_inicio BETWEEN date_add(date_add(:endDate, interval -4 month), interval 1 day) AND date_add(:endDate, interval -3 month)"
+							+" WHERE data_inicio BETWEEN date_add(date_add(:endDate, interval -4 month), interval 1 day) AND date_add(:endDate, interval -3 month)"
 						+") inicio_real"
 					+" INNER JOIN encounter e ON e.patient_id=inicio_real.patient_id"
 					+" WHERE e.voided=0 AND e.encounter_type IN("
