@@ -45,9 +45,6 @@ public class TxPvlsCohortQueries {
 	private HivCohortQueries hivCohortQueries;
 	
 	@Autowired
-	private TxNewCohortQueries txNewCohortQueries;
-	
-	@Autowired
 	private HivMetadata hivMetadata;
 	
 	/**
