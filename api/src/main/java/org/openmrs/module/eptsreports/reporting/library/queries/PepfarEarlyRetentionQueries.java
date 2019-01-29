@@ -17,12 +17,12 @@ public class PepfarEarlyRetentionQueries {
 	        int arvAdultoSeguimentoEncounter, int arvPediatriaSeguimentoEncounter, int arvPlanConcept,
 	        int startDrugsConcept, int historicalDrugsConcept, int artProgram, int transferFromStates) {
 		
-		return "SELECT inicio_real.patient_id("
-					+" FROM "
+		return "SELECT inicio_real.patient_id"
+					+" FROM ("
 						+" SELECT patient_id,data_inicio"
-						+" FROM("
+						+" FROM ("
 								+"SELECT patient_id,min(data_inicio) data_inicio"
-								+" FROM("
+								+" FROM ("
 									+" SELECT p.patient_id,MIN(e.encounter_datetime) data_inicio"
 									+" FROM patient p"
 									+" INNER JOIN encounter e ON p.patient_id=e.patient_id"
@@ -70,11 +70,11 @@ public class PepfarEarlyRetentionQueries {
 									+arvPharmaciaEncounter
 									+"AND e.voided=0 and e.encounter_datetime<=:endDate and e.location_id=:location"
 									+"GROUP BY p.patient_id"
-								+") inicio"
+									+") inicio"
 								+"GROUP BY patient_id"
-						+")inicio1"
-					+"WHERE data_inicio BETWEEN date_add(date_add(:endDate, interval -4 month), interval 1 day) AND date_add(:endDate, interval -3 month)"
-					+") inicio_real"
+								+")inicio1"
+							+"WHERE data_inicio BETWEEN date_add(date_add(:endDate, interval -4 month), interval 1 day) AND date_add(:endDate, interval -3 month)"
+						+") inicio_real"
 					+" INNER JOIN encounter e ON e.patient_id=inicio_real.patient_id"
 					+" WHERE e.voided=0 AND e.encounter_type IN("
 					+arvPharmaciaEncounter
@@ -87,7 +87,7 @@ public class PepfarEarlyRetentionQueries {
 					+" inicio_real.patient_id NOT IN"
 							+"("
 									+"SELECT pg.patient_id"
-									+" FROM 	patient p"
+									+" FROM patient p"
 									+" INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
 									+" INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id"
 									+" WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND"
