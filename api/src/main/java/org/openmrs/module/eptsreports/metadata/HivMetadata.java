@@ -162,5 +162,17 @@ public class HivMetadata extends CommonMetadata {
 		    EptsReportConstants.GLOBAL_PROPERTY_ART_PROGRAM_UUID);
 		return getProgramWorkflowState(artProgramUuid, "2", "PATIENT HAS DIED");
 	}
+
+	public ProgramWorkflowState getPatientIsPregnantWorkflowState() {
+		String ptvProgramUuid = Context.getAdministrationService().getGlobalProperty(
+				EptsReportConstants.GLOBAL_PTV_ETV_PROGRAM_UUID);
+		return getProgramWorkflowState(ptvProgramUuid, "5", "PREGNANT");
+	}
+
+	public ProgramWorkflowState getPatientIsBreastfeedingWorkflowState() {
+		String ptvProgramUuid = Context.getAdministrationService().getGlobalProperty(
+				EptsReportConstants.GLOBAL_PTV_ETV_PROGRAM_UUID);
+		return getProgramWorkflowState(ptvProgramUuid, "5", "GAVE BIRTH");
+	}
 	
 }

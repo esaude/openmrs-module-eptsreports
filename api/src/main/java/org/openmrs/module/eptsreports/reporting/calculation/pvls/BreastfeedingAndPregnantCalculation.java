@@ -146,11 +146,11 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 				// get patient_state for pregnant and breastfeeding
 				if (patientProgram != null) {
 					for (PatientState patientState : patientProgram.getCurrentStates()) {
-						if (patientState.getState().getProgramWorkflowStateId() == 27) {
+						if (patientState.getState().equals(hivMetadata.getPatientIsPregnantWorkflowState())) {
 							pregnantState = patientState;
 							
 						}
-						if (patientState.getState().getProgramWorkflowStateId() == 25) {
+						if (patientState.getState().equals(hivMetadata.getPatientIsBreastfeedingWorkflowState())) {
 							breastfeedingState = patientState;
 						}
 					}
