@@ -76,8 +76,9 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("breastfeeding", EptsReportUtils.map(getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.BREASTFEEDING),
-				"onDate=${endDate},location=${location}"));
+		cd.addSearch("breastfeeding", EptsReportUtils.map(
+		    getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.BREASTFEEDING),
+		    "onDate=${endDate},location=${location}"));
 		cd.addSearch("suppression", EptsReportUtils.map(getPatientsWithViralLoadSuppression(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.setCompositionString("breastfeeding AND suppression");
@@ -97,7 +98,8 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("breastfeeding", EptsReportUtils.map(getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.BREASTFEEDING),
+		cd.addSearch("breastfeeding", EptsReportUtils.map(
+		    getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.BREASTFEEDING),
 		    "onDate=${endDate},location=${location}"));
 		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
@@ -313,7 +315,8 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("suppression", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
-		cd.addSearch("pregnant", EptsReportUtils.map(getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.PREGNANT),
+		cd.addSearch("pregnant", EptsReportUtils.map(
+		    getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.PREGNANT),
 		    "onDate=${endDate},location=${location}"));
 		cd.setCompositionString("suppression AND pregnant");
 		return cd;
@@ -332,8 +335,9 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
-		cd.addSearch("pregnant", EptsReportUtils.map(getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.PREGNANT),
-				"onDate=${endDate},location=${location}"));
+		cd.addSearch("pregnant", EptsReportUtils.map(
+		    getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.PREGNANT),
+		    "onDate=${endDate},location=${location}"));
 		cd.setCompositionString("results AND pregnant");
 		return cd;
 	}
@@ -487,14 +491,15 @@ public class TxPvlsCohortQueries {
 		            .getConceptId()));
 		return sql;
 	}
-
+	
 	/**
 	 * Get patients who are pregnant or breastfeeding
+	 * 
 	 * @return CohortDefinition
 	 */
 	public CohortDefinition getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant criteria) {
 		CalculationCohortDefinition cd = new CalculationCohortDefinition("breastfeeding or pregnant", Context
-				.getRegisteredComponents(BreastfeedingAndPregnantCalculation.class).get(0));
+		        .getRegisteredComponents(BreastfeedingAndPregnantCalculation.class).get(0));
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		cd.addCalculationParameter("criteria", criteria);

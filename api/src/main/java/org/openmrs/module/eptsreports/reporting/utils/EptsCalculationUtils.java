@@ -277,9 +277,10 @@ public class EptsCalculationUtils {
 		c.add(Calendar.MONTH, months);
 		return c.getTime();
 	}
-
+	
 	/**
 	 * Evaluates genders of each patient
+	 * 
 	 * @param cohort the patient ids
 	 * @param context the calculation context
 	 * @return the genders in a calculation result map
@@ -288,9 +289,10 @@ public class EptsCalculationUtils {
 		GenderDataDefinition def = new GenderDataDefinition("gender");
 		return evaluateWithReporting(def, cohort, null, null, context);
 	}
-
+	
 	/**
 	 * Patients who are female
+	 * 
 	 * @param cohort the patient ids
 	 * @param context the calculation context
 	 * @return the filtered cohort
@@ -298,9 +300,10 @@ public class EptsCalculationUtils {
 	public static Set<Integer> female(Collection<Integer> cohort, PatientCalculationContext context) {
 		return patientsThatPass(genders(cohort, context), "F");
 	}
-
+	
 	/**
 	 * Convenience method to fetch a patient result as a coded obs value
+	 * 
 	 * @param results the calculation result map
 	 * @param patientId the patient id
 	 * @return the coded obs value

@@ -67,7 +67,7 @@ public final class EptsReportConstants {
 	public enum PatientsOnRoutineEnum {
 		BREASTFEEDINGPREGNANT, ADULTCHILDREN
 	}
-
+	
 	public enum BreastfeedingAndPregnant {
 		BREASTFEEDING, PREGNANT
 	}

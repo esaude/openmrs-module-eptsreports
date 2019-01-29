@@ -61,7 +61,7 @@ public class TxPvlsDataset extends BaseDataSet {
 		    EptsReportUtils.map(
 		        eptsGeneralIndicator.getIndicator("suppressed viral load",
 		            EptsReportUtils.map(txPvls.getPatientsWithViralLoadSuppression(), mappings)), mappings), "");
-
+		
 		// Columns useful for debugging totals
 		// dsd.addColumn("Routine-AC", "Adults and Children", EptsReportUtils
 		// .map(hivIndicators.getPatientsWhoAreOnRoutineAdultsAndChildren(),
@@ -77,14 +77,39 @@ public class TxPvlsDataset extends BaseDataSet {
 		// hivIndicators.getPatientsOnArtForMoreThan3MonthsAndMatchLocation(),
 		// "endDate=${endDate},location=${location}"), "");
 		// add breastfeeding and pregnant Numerator
-		//breastfeeding and pregnant
-		dsd.addColumn("P", "Pregnant", EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Pregnant", EptsReportUtils.map(txPvls.getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.PREGNANT), "onDate=${endDate},location=${location}")), "endDate=${endDate},location=${location}"), "");
-		dsd.addColumn("B", "Breastfeeding", EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Breastfeeding", EptsReportUtils.map(txPvls.getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.BREASTFEEDING), "onDate=${endDate},location=${location}")), "endDate=${endDate},location=${location}"), "");
-
-		dsd.addColumn("PVLS", "Pregnant and has VL suppression", EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Pregnant and VLS", EptsReportUtils.map(txPvls.getPregnantWomenWithViralLoadSuppressionNumerator(), mappings)), mappings), "");
-		dsd.addColumn("PVLR", "Pregnant and has VL results", EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Pregnant and VLR", EptsReportUtils.map(txPvls.getPregnantWomenWithViralLoadResultsDenominator(), mappings)), mappings), "");
-		dsd.addColumn("BVLS", "Breastfeeding and has VL suppression", EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Breastfeeding and VLS", EptsReportUtils.map(txPvls.getBreastfeedingWomenWhoHaveViralSuppression(), mappings)), mappings), "");
-		dsd.addColumn("BVLR", "Breastfeeding and has VL results", EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Breastfeeding and VLR", EptsReportUtils.map(txPvls.getBreastfeedingWomenWhoHaveViralLoadResults(), mappings)), mappings), "");
+		// breastfeeding and pregnant
+		dsd.addColumn("P", "Pregnant", EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Pregnant", EptsReportUtils
+		        .map(txPvls.getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.PREGNANT),
+		            "onDate=${endDate},location=${location}")), "endDate=${endDate},location=${location}"), "");
+		dsd.addColumn("B", "Breastfeeding", EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Breastfeeding",
+		    EptsReportUtils.map(txPvls.getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.BREASTFEEDING),
+		        "onDate=${endDate},location=${location}")), "endDate=${endDate},location=${location}"), "");
+		
+		dsd.addColumn(
+		    "PVLS",
+		    "Pregnant and has VL suppression",
+		    EptsReportUtils.map(
+		        eptsGeneralIndicator.getIndicator("Pregnant and VLS",
+		            EptsReportUtils.map(txPvls.getPregnantWomenWithViralLoadSuppressionNumerator(), mappings)), mappings),
+		    "");
+		dsd.addColumn(
+		    "PVLR",
+		    "Pregnant and has VL results",
+		    EptsReportUtils.map(
+		        eptsGeneralIndicator.getIndicator("Pregnant and VLR",
+		            EptsReportUtils.map(txPvls.getPregnantWomenWithViralLoadResultsDenominator(), mappings)), mappings), "");
+		dsd.addColumn(
+		    "BVLS",
+		    "Breastfeeding and has VL suppression",
+		    EptsReportUtils.map(
+		        eptsGeneralIndicator.getIndicator("Breastfeeding and VLS",
+		            EptsReportUtils.map(txPvls.getBreastfeedingWomenWhoHaveViralSuppression(), mappings)), mappings), "");
+		dsd.addColumn(
+		    "BVLR",
+		    "Breastfeeding and has VL results",
+		    EptsReportUtils.map(
+		        eptsGeneralIndicator.getIndicator("Breastfeeding and VLR",
+		            EptsReportUtils.map(txPvls.getBreastfeedingWomenWhoHaveViralLoadResults(), mappings)), mappings), "");
 		dsd.addColumn(
 		    "0D",
 		    "Total patients with Viral load - Denominator",
