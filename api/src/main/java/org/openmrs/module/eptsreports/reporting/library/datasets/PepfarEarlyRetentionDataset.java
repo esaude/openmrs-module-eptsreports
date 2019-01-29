@@ -23,7 +23,7 @@ public class PepfarEarlyRetentionDataset extends BaseDataSet {
 	
 	public DataSetDefinition constructPepfarEarlyRetentionDatset() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		String mappings = "endDate=${endDate},location=${location}";
 		dsd.setName("Pepfar early retention Data Set");
 		dsd.addParameters(getParameters());
 		
@@ -33,7 +33,7 @@ public class PepfarEarlyRetentionDataset extends BaseDataSet {
 		// start forming the columns
 		dsd.addColumn("T1", "Patients retained on ART 3 months after ART initiation", EptsReportUtils.map(
 		    eptsGeneralIndicator.getIndicator("Early retention", EptsReportUtils.map(
-		        pepfarEarlyRetentionCohortQueries.getPatientsRetainedOnArtFor3MonthsFromArtInitiation(), mappings)),
+		        pepfarEarlyRetentionCohortQueries.getResultant3MonthsArtRetention(), mappings)),
 		    mappings), "");
 		return dsd;
 	}
