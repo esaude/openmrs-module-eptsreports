@@ -23,25 +23,27 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 /**
- * Defines @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition} for pepfar early indicator
- * report
+ * Defines @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition} for pepfar early
+ * indicator report
  */
 
 @Component
 public class PepfarEarlyRetentionCohortQueries {
-
-    @Autowired
-    private HivMetadata hivMetadata;
-
-    public CohortDefinition getPatientsRetainedOnArtFor3MonthsFromArtInitiation() {
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("patientsRetentionFor3MonthsOnART");
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addParameter(new Parameter("location", "Location", Location.class));
-        cd.setQuery(PepfarEarlyRetentionQueries.getPatientsRetainedOnArt3MonthsAfterArtInitiation(hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(), hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPlanConcept().getConceptId(), hivMetadata.getstartDrugsConcept().getConceptId(), hivMetadata.gethistoricalDrugStartDateConcept().getConceptId(), hivMetadata.getARTProgram().getProgramId()));
-        return cd;
-    }
+	
+	@Autowired
+	private HivMetadata hivMetadata;
+	
+	public CohortDefinition getPatientsRetainedOnArtFor3MonthsFromArtInitiation() {
+		SqlCohortDefinition cd = new SqlCohortDefinition();
+		cd.setName("patientsRetentionFor3MonthsOnART");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.setQuery(PepfarEarlyRetentionQueries.getPatientsRetainedOnArt3MonthsAfterArtInitiation(hivMetadata
+		        .getARVPharmaciaEncounterType().getEncounterTypeId(), hivMetadata.getAdultoSeguimentoEncounterType()
+		        .getEncounterTypeId(), hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+		    hivMetadata.getARVPlanConcept().getConceptId(), hivMetadata.getstartDrugsConcept().getConceptId(), hivMetadata
+		            .gethistoricalDrugStartDateConcept().getConceptId(), hivMetadata.getARTProgram().getProgramId(), hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()));
+		return cd;
+	}
 }
