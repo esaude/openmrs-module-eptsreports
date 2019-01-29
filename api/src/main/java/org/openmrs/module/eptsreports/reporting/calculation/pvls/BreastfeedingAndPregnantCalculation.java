@@ -160,9 +160,8 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 					if (markedPregnantList.size() > 0) {
 						for (Obs obs : markedPregnantList) {
 							if (obs != null && obs.getObsDatetime() != null
-							        && (obs.getObsDatetime().equals(pregnancyStartDate)
-							                || obs.getObsDatetime().after(pregnancyStartDate))
-							        && (obs.getObsDatetime().equals(endDate) || obs.getObsDatetime().before(endDate))) {
+							        && (obs.getObsDatetime().compareTo(pregnancyStartDate) >= 0)
+							        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
 								pass = true;
 								break;
 							}
@@ -171,9 +170,8 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 					if (markedPregnantByWeeksList.size() > 0) {
 						for (Obs obs : markedPregnantByWeeksList) {
 							if (obs != null && obs.getValueNumeric() != null && obs.getObsDatetime() != null
-							        && (obs.getObsDatetime().equals(pregnancyStartDate)
-							                || obs.getObsDatetime().after(pregnancyStartDate))
-							        && (obs.getObsDatetime().equals(endDate) || obs.getObsDatetime().before(endDate))) {
+							        && (obs.getObsDatetime().compareTo(pregnancyStartDate) >= 0)
+							        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
 								pass = true;
 								break;
 							}
@@ -183,25 +181,21 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 					if (markedPregnantOnEddList.size() > 0) {
 						for (Obs obs : markedPregnantOnEddList) {
 							if (obs != null && obs.getValueDatetime() != null && obs.getObsDatetime() != null
-							        && (obs.getObsDatetime().equals(pregnancyStartDate)
-							                || obs.getObsDatetime().after(pregnancyStartDate))
-							        && (obs.getObsDatetime().equals(endDate) || obs.getObsDatetime().before(endDate))) {
+							        && (obs.getObsDatetime().compareTo(pregnancyStartDate) >= 0)
+							        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
 								pass = true;
 								break;
 							}
 						}
 					}
 					if (patientProgram != null && patientProgram.getDateEnrolled() != null
-					        && (patientProgram.getDateEnrolled().equals(pregnancyStartDate)
-					                || patientProgram.getDateEnrolled().after(pregnancyStartDate))
-					        && (patientProgram.getDateEnrolled().equals(endDate)
-					                || patientProgram.getDateEnrolled().before(endDate))) {
+					        && (patientProgram.getDateEnrolled().compareTo(pregnancyStartDate) >= 0)
+					        && (patientProgram.getDateEnrolled().compareTo(endDate) <= 0)) {
 						pass = true;
 					}
 					if (pregnantState != null && pregnantState.getStartDate() != null
-					        && (pregnantState.getStartDate().equals(pregnancyStartDate)
-					                || pregnantState.getStartDate().after(pregnancyStartDate))
-					        && (pregnantState.getStartDate().equals(endDate) || pregnantState.getStartDate().before(endDate))) {
+					        && (pregnantState.getStartDate().compareTo(pregnancyStartDate) >= 0)
+					        && (pregnantState.getStartDate().compareTo(endDate) <= 0)) {
 						pass = true;
 					}
 					if (pregnantState != null && breastfeedingState != null && pregnantState.getStartDate() != null
@@ -212,18 +206,15 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 					}
 				} else if (criteria.equals(BreastfeedingAndPregnant.BREASTFEEDING)) {
 					if (breastfeedingState != null && breastfeedingState.getStartDate() != null
-					        && (breastfeedingState.getStartDate().equals(breastfeedingStartDate)
-					                || breastfeedingState.getStartDate().after(breastfeedingStartDate))
-					        && (breastfeedingState.getStartDate().equals(endDate)
-					                || breastfeedingState.getStartDate().before(endDate))) {
+					        && (breastfeedingState.getStartDate().compareTo(breastfeedingStartDate) >= 0)
+					        && (breastfeedingState.getStartDate().compareTo(endDate) <= 0)) {
 						pass = true;
 					}
 					if (deliveryDateMapList.size() > 0) {
 						for (Obs obs : deliveryDateMapList) {
 							if (obs != null && obs.getValueDatetime() != null
-							        && (obs.getObsDatetime().equals(breastfeedingStartDate)
-							                || obs.getObsDatetime().after(breastfeedingStartDate))
-							        && (obs.getObsDatetime().equals(endDate) || obs.getObsDatetime().before(endDate))) {
+							        && (obs.getObsDatetime().compareTo(breastfeedingStartDate) >= 0)
+							        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
 								pass = true;
 								break;
 							}
@@ -232,9 +223,8 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 					if (criteriaHivStartMapList.size() > 0) {
 						for (Obs obs : criteriaHivStartMapList) {
 							if (obs != null && obs.getObsDatetime() != null
-							        && (obs.getObsDatetime().equals(breastfeedingStartDate)
-							                || obs.getObsDatetime().after(breastfeedingStartDate))
-							        && (obs.getObsDatetime().equals(endDate) || obs.getObsDatetime().before(endDate))) {
+							        && (obs.getObsDatetime().compareTo(breastfeedingStartDate) >= 0)
+							        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
 								pass = true;
 								break;
 							}
@@ -243,9 +233,8 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 					if (lactatingMapList.size() > 0) {
 						for (Obs obs : lactatingMapList) {
 							if (obs != null && obs.getObsDatetime() != null
-							        && (obs.getObsDatetime().equals(breastfeedingStartDate)
-							                || obs.getObsDatetime().after(breastfeedingStartDate))
-							        && (obs.getObsDatetime().equals(endDate) || obs.getObsDatetime().before(endDate))) {
+							        && (obs.getObsDatetime().compareTo(breastfeedingStartDate) >= 0)
+							        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
 								pass = true;
 								
 							}
