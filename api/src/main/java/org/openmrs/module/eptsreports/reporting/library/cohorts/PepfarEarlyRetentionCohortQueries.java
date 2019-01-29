@@ -14,7 +14,9 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.PepfarEarlyRetentionQueries;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,37 @@ public class PepfarEarlyRetentionCohortQueries {
 		        .getEncounterTypeId(), hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
 		    hivMetadata.getARVPlanConcept().getConceptId(), hivMetadata.getstartDrugsConcept().getConceptId(), hivMetadata
 		            .gethistoricalDrugStartDateConcept().getConceptId(), hivMetadata.getARTProgram().getProgramId(), hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()));
+		return cd;
+	}
+
+	private CohortDefinition getPatientsToExcludeBasedOnStates(int state) {
+		SqlCohortDefinition cd = new SqlCohortDefinition();
+		cd.setName("The exclusion criteria by work flow states");
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		String query = "SELECT pg.patient_id"
+						+" FROM patient p"
+						+" INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
+						+" INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id"
+						+" WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND"
+						+" pg.program_id="
+						+hivMetadata.getARTProgram().getProgramId()+" AND ps.state="+state
+						+" AND ps.start_date=pg.date_enrolled AND"
+						+" ps.start_date BETWEEN date_add(date_add(:endDate, interval -4 month), interval 1 day) AND date_add(:endDate, interval -3 month) and location_id=:location";
+		cd.setQuery(query);
+		return cd;
+	}
+
+	private CohortDefinition getExclusionCriteriaByStates() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Get exclusion criteria");
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addSearch("transferredOut", EptsReportUtils.map(getPatientsToExcludeBasedOnStates(hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState().getProgramWorkflowStateId()),"endDate=${endDate},location=${location}"));
+		cd.addSearch("transferredIn", EptsReportUtils.map(getPatientsToExcludeBasedOnStates(hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()),"endDate=${endDate},location=${location}"));
+		cd.addSearch("suspended", EptsReportUtils.map(getPatientsToExcludeBasedOnStates(hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),"endDate=${endDate},location=${location}"));
+		cd.addSearch("abandoned", EptsReportUtils.map(getPatientsToExcludeBasedOnStates(hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId()),"endDate=${endDate},location=${location}"));
+		cd.setCompositionString("transferredOut OR transferredIn OR suspended OR abandoned");
 		return cd;
 	}
 }

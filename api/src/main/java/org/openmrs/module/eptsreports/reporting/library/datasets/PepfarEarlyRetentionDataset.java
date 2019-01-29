@@ -31,7 +31,7 @@ public class PepfarEarlyRetentionDataset extends BaseDataSet {
 		dsd.addDimension("age",
 		    EptsReportUtils.map(eptsCommonDimension.pvlsAges(), "endDate=${endDate},location=${location}"));
 		// start forming the columns
-		dsd.addColumn("T1", "Early retention", EptsReportUtils.map(
+		dsd.addColumn("T1", "Patients retained on ART 3 months after ART initiation", EptsReportUtils.map(
 		    eptsGeneralIndicator.getIndicator("Early retention", EptsReportUtils.map(
 		        pepfarEarlyRetentionCohortQueries.getPatientsRetainedOnArtFor3MonthsFromArtInitiation(), mappings)),
 		    mappings), "");
