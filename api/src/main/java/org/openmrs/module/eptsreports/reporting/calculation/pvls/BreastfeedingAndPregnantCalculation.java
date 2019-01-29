@@ -199,10 +199,8 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 						pass = true;
 					}
 					if (pregnantState != null && breastfeedingState != null && pregnantState.getStartDate() != null
-					        && breastfeedingState.getStartDate() != null) {
-						if (breastfeedingState.getStartDate().after(pregnantState.getEndDate())) {
+					        && breastfeedingState.getStartDate() != null && breastfeedingState.getStartDate().after(pregnantState.getEndDate())) {
 							pass = false;
-						}
 					}
 				} else if (criteria.equals(BreastfeedingAndPregnant.BREASTFEEDING)) {
 					if (breastfeedingState != null && breastfeedingState.getStartDate() != null
@@ -241,10 +239,8 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 						}
 					}
 					if (pregnantState != null && breastfeedingState != null && pregnantState.getStartDate() != null
-					        && breastfeedingState.getStartDate() != null) {
-						if (breastfeedingState.getStartDate().before(pregnantState.getEndDate())) {
+					        && breastfeedingState.getStartDate() != null && breastfeedingState.getStartDate().before(pregnantState.getEndDate())) {
 							pass = false;
-						}
 					}
 					
 				}
