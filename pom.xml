@@ -92,28 +92,13 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>net.revelc.code.formatter</groupId>
-				<artifactId>formatter-maven-plugin</artifactId>
-				<version>2.7.1</version>
-				<configuration>
-					<directories>
-						<directory>.</directory>
-					</directories>
-					<configFile>../OpenMRSFormatter.xml</configFile>
-					<includes>
-						<include>**/*.java</include>
-						<include>**/*.js</include>
-						<include>**/*.json</include>
-					</includes>
+				<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+				<artifactId>maven-java-formatter-plugin</artifactId>
+				<configuration combine.self="override">
+					<configFile></configFile>
+					<overrideConfigCompilerVersion>true</overrideConfigCompilerVersion>
+					<lineEnding>LF</lineEnding>
 				</configuration>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>format</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 
 			<!-- Code Coverage Tool -->
