@@ -55,8 +55,10 @@ public class SetupPepfarEarlyRetentionIndicatorsReport extends EptsDataExportMan
 		rd.addDataSetDefinition("Pepfar early retention Data Set",
 		    Mapped.mapStraightThrough(pepfarEarlyRetentionDataset.constructPepfarEarlyRetentionDatset()));
 		// add a base cohort here to help in calculations running
-		rd.setBaseCohortDefinition(EptsReportUtils.map(genericCohortQueries.getBaseCohort(),
-		    "endDate=${endDate},location=${location}"));
+		/*
+		 * rd.setBaseCohortDefinition(EptsReportUtils.map(genericCohortQueries.
+		 * getBaseCohort(), "endDate=${endDate},location=${location}"));
+		 */
 		
 		return rd;
 	}

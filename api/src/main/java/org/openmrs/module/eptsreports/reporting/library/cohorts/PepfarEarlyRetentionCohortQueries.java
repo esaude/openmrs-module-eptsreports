@@ -11,6 +11,8 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Date;
+
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.PepfarEarlyRetentionQueries;
@@ -21,8 +23,6 @@ import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 /**
  * Defines @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition} for pepfar early
@@ -79,19 +79,39 @@ public class PepfarEarlyRetentionCohortQueries {
 		cd.setName("Patients who are lost to follow up");
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		return cd;
-	}
-	
-	private CohortDefinition getTotalPatientsToExcludeFromMainQuery() {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Total patients to be excluded from main query");
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("excludeByState",
-		    EptsReportUtils.map(getExclusionCriteriaByStates(), "endDate=${endDate},location=${location}"));
-		cd.addSearch("excludeByLtfu", EptsReportUtils.map(getPatientToExcludeBasedOnLostToFollowUpPatients(),
-		    "endDate=${endDate},location=${location}"));
-		cd.setCompositionString("excludeByState OR excludeByLtfu");
+		
+		// get patients who have next scheduled drugs pick up date and never returned 60
+		// days later
+		SqlCohortDefinition missedDrugPickUp = new SqlCohortDefinition();
+		missedDrugPickUp.setName("patientsThatMissedNextDrugPickup");
+		missedDrugPickUp.addParameter(new Parameter("endDate", "End Date", Date.class));
+		missedDrugPickUp.addParameter(new Parameter("location", "location", Location.class));
+		String query = "SELECT patient_id FROM ( SELECT p.patient_id,MAX(encounter_datetime) encounter_datetime FROM patient p INNER JOIN encounter e ON e.patient_id=p.patient_id WHERE p.voided=0 AND e.voided=0 AND e.encounter_type=%s"
+		        + " AND e.location_id=:location AND e.encounter_datetime<=:endDate GROUP BY p.patient_id ) max_frida INNER JOIN obs o ON o.person_id=max_frida.patient_id WHERE max_frida.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id=%s"
+		        + " AND o.location_id=:location AND datediff(:endDate,o.value_datetime)>=60";
+		missedDrugPickUp.setQuery(String.format(query, hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+		    hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
+		
+		// get patients who have no drug pick up date but have next appointment date and
+		// have NOT shown up 60 days later
+		SqlCohortDefinition missedNextVisit = new SqlCohortDefinition();
+		missedNextVisit.setName("patientsThatMissNextConsultation");
+		missedNextVisit.addParameter(new Parameter("endDate", "End Date", Date.class));
+		missedNextVisit.addParameter(new Parameter("location", "location", Location.class));
+		missedNextVisit.setQuery("SELECT patient_id FROM "
+		        + "( SELECT p.patient_id,MAX(encounter_datetime) encounter_datetime "
+		        + "FROM patient p INNER JOIN encounter e ON e.patient_id=p.patient_id "
+		        + "WHERE p.voided=0 AND e.voided=0 AND e.encounter_type in ("
+		        + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + ", "
+		        + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") "
+		        + "AND e.location_id=:location AND e.encounter_datetime<=:endDate GROUP BY p.patient_id ) max_mov "
+		        + "INNER JOIN obs o ON o.person_id=max_mov.patient_id "
+		        + "WHERE max_mov.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id="
+		        + hivMetadata.getReturnVisitDateConcept().getConceptId()
+		        + " AND o.location_id=:location AND DATEDIFF(:endDate,o.value_datetime)>=60");
+		cd.addSearch("missedPickUps", EptsReportUtils.map(missedDrugPickUp, "endDate=${endDate},location=${location}"));
+		cd.addSearch("missedNextVisit", EptsReportUtils.map(missedNextVisit, "endDate=${endDate},location=${location}"));
+		cd.setCompositionString("missedPickUps OR missedNextVisit");
 		return cd;
 	}
 	
@@ -102,8 +122,9 @@ public class PepfarEarlyRetentionCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		cd.addSearch("baseTotal", EptsReportUtils.map(getPatientsRetainedOnArtFor3MonthsFromArtInitiation(),
 		    "endDate=${endDate},location=${location}"));
-		cd.addSearch("exclusions",
-		    EptsReportUtils.map(getTotalPatientsToExcludeFromMainQuery(), "endDate=${endDate},location=${location}"));
+		cd.addSearch("excludeByLtfu", EptsReportUtils.map(getPatientToExcludeBasedOnLostToFollowUpPatients(),
+		    "endDate=${endDate},location=${location}"));
+		cd.setCompositionString("baseTotal AND NOT excludeByLtfu");
 		return cd;
 	}
 }
