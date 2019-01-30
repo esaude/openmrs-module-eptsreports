@@ -18,6 +18,7 @@ import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri3monthsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
@@ -48,6 +49,9 @@ public class EptsCommonDimension {
 	
 	@Autowired
 	private HivMetadata hivMetadata;
+	
+	@Autowired
+	private Eri3monthsCohortQueries eri3monthsCohortQueries;
 	
 	/**
 	 * Gender dimension
@@ -167,8 +171,8 @@ public class EptsCommonDimension {
 		dim.addParameter(new Parameter("endDate", "End Date", Date.class));
 		dim.addParameter(new Parameter("location", "location", Location.class));
 		dim.setName("Get patient states");
-		dim.addCohortDefinition("IART", EptsReportUtils.map(txNewCohortQueries.getTxNewBreastfeedingComposition(),
-		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		dim.addCohortDefinition("IART", EptsReportUtils.map(eri3monthsCohortQueries.getPatientsWhoIntiatedArt(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		
 		dim.addCohortDefinition("AIT", EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));

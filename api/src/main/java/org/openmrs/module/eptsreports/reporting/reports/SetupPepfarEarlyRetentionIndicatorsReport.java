@@ -70,7 +70,7 @@ public class SetupPepfarEarlyRetentionIndicatorsReport extends EptsDataExportMan
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
 		ReportDesign reportDesign = null;
 		try {
-			reportDesign = createXlsReportDesign(reportDefinition, "PEPFAR_Early_Retention.xls", "ERI-3 Months-Report",
+			reportDesign = createXlsReportDesign(reportDefinition, "IM_ER3_Report.xls", "ERI-3 Months-Report",
 			    getExcelDesignUuid(), null);
 			Properties props = new Properties();
 			props.put("sortWeight", "5000");

@@ -62,7 +62,7 @@ public class Eri3monthsDataset extends BaseDataSet {
 		            EptsReportUtils.map(
 		                pepfarEarlyRetentionCohortQueries.getChildrenRetaineOnArtFor3MonthsFromArtInitiation(), mappings)),
 		        mappings), retentionColumns());
-		addRow(dsd, "I4",
+		addRow(dsd, "I5",
 		    "Adults (14+, excluding pregnant and breastfeeding women)  retained on ART 3 months after ART initiation",
 		    EptsReportUtils.map(
 		        eptsGeneralIndicator.getIndicator("adults", EptsReportUtils.map(
@@ -77,8 +77,8 @@ public class Eri3monthsDataset extends BaseDataSet {
 		        "state=AIT", "02");
 		ColumnParameters dead = new ColumnParameters("dead", "Dead", "state=DP", "03");
 		ColumnParameters lostTfu = new ColumnParameters("ltfu", "Lost to follow up", "state=LTFU", "04");
-		ColumnParameters stopped = new ColumnParameters("stopped", "Stopped treatment", "state=STP", "05");
-		ColumnParameters transfers = new ColumnParameters("transfers", "Transferred Out", "state=TOP", "06");
+		ColumnParameters transfers = new ColumnParameters("transfers", "Transferred Out", "state=TOP", "05");
+		ColumnParameters stopped = new ColumnParameters("stopped", "Stopped treatment", "state=STP", "06");
 		return Arrays.asList(initiatedArt, aliveInTreatment, dead, lostTfu, transfers, stopped);
 	}
 }

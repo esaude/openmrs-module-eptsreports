@@ -134,7 +134,7 @@ public class Eri3monthsCohortQueries {
 		cd.setName("Adults having ART retention for than 3 months");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addParameter(new Parameter("location" + "", "Location", Location.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
 		cd.addSearch("all", EptsReportUtils.map(getPatientsRetainedOnArtForXMonthsFromArtInitiation(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("adults", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(15, 200),
@@ -144,6 +144,30 @@ public class Eri3monthsCohortQueries {
 		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomenRetainedOnArtFor3MonthsFromArtInitiation(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.setCompositionString("all AND adults AND NOT(pregnant OR breastfeeding)");
+		return cd;
+	}
+	
+	/**
+	 * Get patients who initiated ART
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getPatientsWhoIntiatedArt() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Patients who initiated ART");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addSearch("startDrugs", EptsReportUtils.map(txNewCohortQueries.getPatientWithSTARTDRUGSObs(),
+		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		cd.addSearch("pickDrugs", EptsReportUtils.map(txNewCohortQueries.getPatientWithFirstDrugPickupEncounter(),
+		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		cd.addSearch("artProgram", EptsReportUtils.map(txNewCohortQueries.getPatientsinARTProgramDuringTimePeriod(),
+		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		cd.addSearch("pickDrugsAtPharmacy", EptsReportUtils.map(
+		    txNewCohortQueries.getPatientsinARTProgramDuringTimePeriod(),
+		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		cd.setCompositionString("startDrugs OR pickDrugs OR artProgram OR pickDrugsAtPharmacy");
 		return cd;
 	}
 }
