@@ -36,6 +36,7 @@ import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -58,104 +59,32 @@ public class TxNewCohortQueries {
 	@Autowired
 	private GenderCohortQueries genderCohorts;
 	
-	// Looks for patients enrolled in ART program (program 2=SERVICO TARV -
-	// TRATAMENTO) before or on end date
-	@DocumentedDefinition(value = "inARTProgramDuringTimePeriod")
-	public CohortDefinition getPatientsinARTProgramDuringTimePeriod() {
-		SqlCohortDefinition inARTProgramDuringTimePeriod = new SqlCohortDefinition();
-		inARTProgramDuringTimePeriod.setName("inARTProgramDuringTimePeriod");
-		inARTProgramDuringTimePeriod
-		        .setQuery("select p.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id "
-		                + "where pg.voided=0 and p.voided=0 and pg.program_id= "
-		                + hivMetadata.getARTProgram().getProgramId()
-		                + " and pg.date_enrolled <= :onOrBefore and pg.location_id=:location");
-		inARTProgramDuringTimePeriod.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-		inARTProgramDuringTimePeriod.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-		inARTProgramDuringTimePeriod.addParameter(new Parameter("location", "location", Location.class));
-		return inARTProgramDuringTimePeriod;
-	}
+	@Autowired
+	private HivCohortQueries hivCohortQueries;
 	
-	// Looks for patients registered as START DRUGS (answer to question 1255 = ARV
-	// PLAN is 1256 = START DRUGS) in the first drug pickup (encounter type
-	// 18=S.TARV: FARMACIA) or follow up consultation for adults and children
-	// (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA
-	// SEGUIMENTO) before or on end date
-	@DocumentedDefinition(value = "patientWithSTARTDRUGSObs")
-	public CohortDefinition getPatientWithSTARTDRUGSObs() {
-		SqlCohortDefinition patientWithSTARTDRUGSObs = new SqlCohortDefinition();
-		patientWithSTARTDRUGSObs.setName("patientWithSTARTDRUGSObs");
-		patientWithSTARTDRUGSObs.setQuery("select p.patient_id "
-		        + "from patient p inner join encounter e on p.patient_id=e.patient_id "
-		        + "inner join obs o on o.encounter_id=e.encounter_id "
-		        + "where e.voided=0 and o.voided=0 and p.voided=0 and e.encounter_type in ("
-		        + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId() + ","
-		        + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + ","
-		        + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ")" + " and o.concept_id="
-		        + hivMetadata.getARVPlanConcept().getConceptId() + " and o.value_coded="
-		        + hivMetadata.getstartDrugsConcept().getConceptId()
-		        + " and e.encounter_datetime <= :onOrBefore and e.location_id=:location group by p.patient_id");
-		patientWithSTARTDRUGSObs.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-		patientWithSTARTDRUGSObs.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-		patientWithSTARTDRUGSObs.addParameter(new Parameter("location", "location", Location.class));
-		return patientWithSTARTDRUGSObs;
-	}
+	@Autowired
+	private AgeCohortQueries ageCohortQueries;
 	
-	// Looks for with START DATE (Concept 1190=HISTORICAL DRUG START DATE) filled in
-	// drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation
-	// for adults and children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and
-	// 9=S.TARV: PEDIATRIA SEGUIMENTO) where START DATE is before or equal end date
-	@DocumentedDefinition(value = "patientWithHistoricalDrugStartDateObs")
-	public CohortDefinition getPatientWithHistoricalDrugStartDateObs() {
-		SqlCohortDefinition patientWithHistoricalDrugStartDateObs = new SqlCohortDefinition();
-		patientWithHistoricalDrugStartDateObs.setName("patientWithHistoricalDrugStartDateObs");
-		patientWithHistoricalDrugStartDateObs.setQuery("select p.patient_id from patient p "
-		        + "inner join encounter e on p.patient_id=e.patient_id inner join obs o on e.encounter_id=o.encounter_id "
-		        + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
-		        + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId() + ","
-		        + hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId() + ","
-		        + hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId() + ") and o.concept_id="
-		        + hivMetadata.gethistoricalDrugStartDateConcept().getConceptId() + " and o.value_datetime is not null "
-		        + " and o.value_datetime <= :onOrBefore and e.location_id=:location group by p.patient_id");
-		patientWithHistoricalDrugStartDateObs.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-		patientWithHistoricalDrugStartDateObs.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-		patientWithHistoricalDrugStartDateObs.addParameter(new Parameter("location", "location", Location.class));
-		return patientWithHistoricalDrugStartDateObs;
-	}
-	
-	// Looks for patients with first drug pickup (encounter type 18=S.TARV:
-	// FARMACIA) before or on end date
-	@DocumentedDefinition(value = "patientWithFirstDrugPickupEncounter")
-	public CohortDefinition getPatientWithFirstDrugPickupEncounter() {
-		SqlCohortDefinition patientWithFirstDrugPickupEncounter = new SqlCohortDefinition();
-		patientWithFirstDrugPickupEncounter.setName("patientWithFirstDrugPickupEncounter");
-		patientWithFirstDrugPickupEncounter
-		        .setQuery("select e.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id "
-		                + "where p.voided=0 and e.encounter_type= "
-		                + hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()
-		                + " and e.voided=0 and e.encounter_datetime <= :onOrBefore and e.location_id=:location "
-		                + "group by p.patient_id");
-		patientWithFirstDrugPickupEncounter.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-		patientWithFirstDrugPickupEncounter.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-		patientWithFirstDrugPickupEncounter.addParameter(new Parameter("location", "location", Location.class));
-		return patientWithFirstDrugPickupEncounter;
-	}
-	
-	// Looks for patients enrolled on ART program (program 2=SERVICO TARV -
-	// TRATAMENTO), transferred from other health facility (program workflow state
-	// is 29=TRANSFER FROM OTHER FACILITY) between start date and end date
+	/**
+	 * Looks for patients enrolled on ART program (program 2=SERVICO TARV - TRATAMENTO), transferred
+	 * from other health facility (program workflow state is 29=TRANSFER FROM OTHER FACILITY)
+	 * between start date and end date
+	 * 
+	 * @return CohortDefinition
+	 */
 	@DocumentedDefinition(value = "transferredFromOtherHealthFacility")
 	public CohortDefinition getPatientsTransferredFromOtherHealthFacility() {
 		SqlCohortDefinition transferredFromOtherHealthFacility = new SqlCohortDefinition();
 		transferredFromOtherHealthFacility.setName("transferredFromOtherHealthFacility");
-		transferredFromOtherHealthFacility.setQuery("select p.patient_id from patient p "
+		String query = "select p.patient_id from patient p "
 		        + "inner join patient_program pg on p.patient_id=pg.patient_id "
 		        + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-		        + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id="
-		        + hivMetadata.getARTProgram().getProgramId() + " and ps.state="
-		        + hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()
+		        + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%d" + " and ps.state=%d"
 		        + " and ps.start_date=pg.date_enrolled"
 		        + " and ps.start_date between :onOrAfter and :onOrBefore and location_id=:location "
-		        + "group by p.patient_id");
+		        + "group by p.patient_id";
+		transferredFromOtherHealthFacility.setQuery(String.format(query, hivMetadata.getARTProgram().getProgramId(),
+		    hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()));
 		transferredFromOtherHealthFacility.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 		transferredFromOtherHealthFacility.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 		transferredFromOtherHealthFacility.addParameter(new Parameter("location", "location", Location.class));
@@ -269,7 +198,7 @@ public class TxNewCohortQueries {
 	 * @return CohortDefinition
 	 */
 	@DocumentedDefinition(value = "txNewUnionNumerator")
-	public CohortDefinition getTxNewUnionNumerator(CohortDefinition AgeCohort) {
+	public CohortDefinition getTxNewUnionNumerator(String name, CohortDefinition ageCohort) {
 		
 		Map<String, Integer> queryParameters = new HashMap<String, Integer>();
 		
@@ -283,13 +212,13 @@ public class TxNewCohortQueries {
 		queryParameters.put("startDrugsConcept", hivMetadata.getstartDrugsConcept().getConceptId());
 		queryParameters.put("historicalDrugsConcept", hivMetadata.gethistoricalDrugStartDateConcept().getConceptId());
 		
-		if (AgeCohort != null && AgeCohort instanceof AgeCohortDefinition) {
-			queryParameters.put("minAge", ((AgeCohortDefinition) AgeCohort).getMinAge());
-			queryParameters.put("maxAge", ((AgeCohortDefinition) AgeCohort).getMaxAge());
+		if (ageCohort instanceof AgeCohortDefinition) {
+			queryParameters.put("minAge", ((AgeCohortDefinition) ageCohort).getMinAge());
+			queryParameters.put("maxAge", ((AgeCohortDefinition) ageCohort).getMaxAge());
 		}
 		
 		SqlCohortDefinition txNewUnionNumerator = new SqlCohortDefinition();
-		txNewUnionNumerator.setName("TxNewUnionNumerator");
+		txNewUnionNumerator.setName(name);
 		txNewUnionNumerator.setQuery(TxNewQueries.getTxNewUnionQueries(queryParameters));
 		
 		txNewUnionNumerator.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
@@ -301,45 +230,75 @@ public class TxNewCohortQueries {
 	/**
 	 * Build TxNew composition cohort definition
 	 * 
-	 * @param cohortName
-	 * @param inARTProgramDuringTimePeriod
-	 * @param patientWithSTARTDRUGSObs
-	 * @param patientWithHistoricalDrugStartDateObs
-	 * @param patientsWithDrugPickUpEncounters
-	 * @param transferredFromOtherHealthFacility
-	 * @param AgeCohort
-	 * @param GenderCohort
+	 * @param cohortName Cohort name
+	 * @param ageCohort Age Cohort
 	 * @return CompositionQuery
 	 */
-	@DocumentedDefinition(value = "getTxNewCompositionCohort")
-	public CohortDefinition getTxNewCompositionCohort(String cohortName, CohortDefinition inARTProgramDuringTimePeriod,
-	        CohortDefinition patientWithSTARTDRUGSObs, CohortDefinition patientWithHistoricalDrugStartDateObs,
-	        CohortDefinition patientsWithDrugPickUpEncounters, CohortDefinition transferredFromOtherHealthFacility,
-	        CohortDefinition restartedTreatment, CohortDefinition AgeCohort, CohortDefinition GenderCohort) {
-		CompositionCohortDefinition TxNewComposition = new CompositionCohortDefinition();
-		TxNewComposition.setName(cohortName);
-		TxNewComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-		TxNewComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-		TxNewComposition.addParameter(new Parameter("location", "location", Location.class));
-		TxNewComposition.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
-		String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}";
+	public CohortDefinition getTxNewCompositionCohort(String cohortName, CohortDefinition ageCohort) {
+		CompositionCohortDefinition txNewComposition = new CompositionCohortDefinition();
+		txNewComposition.setName(cohortName);
+		txNewComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		txNewComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		txNewComposition.addParameter(new Parameter("location", "location", Location.class));
 		
-		TxNewComposition.addSearch("1", EptsReportUtils.map(getTxNewUnionNumerator(AgeCohort), mappings));
-		TxNewComposition.addSearch("2", EptsReportUtils.map(transferredFromOtherHealthFacility, mappings));
-		TxNewComposition.addSearch("restartedTreatment", EptsReportUtils.map(restartedTreatment,
-		    "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
-		TxNewComposition.addSearch("baseCohort", EptsReportUtils.map(genericCohorts.getBaseCohort(),
-		    "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
+		Mapped<CohortDefinition> startedART = Mapped.map(getTxNewUnionNumerator("all patients who started art", ageCohort),
+		    "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}");
+		Mapped<CohortDefinition> transferredIn = Mapped.map(getPatientsTransferredFromOtherHealthFacility(),
+		    "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}");
+		Mapped<CohortDefinition> restartedTreatment = Mapped.map(hivCohortQueries.getPatientsWhoRestartedTreatment(),
+		    "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}");
 		
-		String compositionString = "baseCohort AND (1 NOT (2 OR restartedTreatment))";
+		txNewComposition.getSearches().put("startedART", startedART);
+		txNewComposition.getSearches().put("transferredIn", transferredIn);
+		txNewComposition.getSearches().put("restartedTreatment", restartedTreatment);
 		
-		if (GenderCohort != null) {
-			TxNewComposition.addSearch("4", EptsReportUtils.map(GenderCohort, null));
-			
-			compositionString = compositionString + " AND 4";
-		}
-		
-		TxNewComposition.setCompositionString(compositionString);
-		return TxNewComposition;
+		txNewComposition.setCompositionString("startedART NOT (transferredIn OR restartedTreatment)");
+		return txNewComposition;
+	}
+	
+	/**
+	 * @param minAge Minimum age
+	 * @param maxAge Maximum age
+	 * @return Patients with age in years between {@code minAge} and {@code maxAge} on ART start
+	 *         date.
+	 */
+	public CohortDefinition createXtoYAgeOnArtStartDateCohort(int minAge, int maxAge) {
+		String name = "patients with age between " + minAge + " and " + maxAge + " on ART start date";
+		// add 1 to maxAge because in getTxNewUnionQueries '<' is used to compare to
+		// maxAge
+		CohortDefinition ageCohort = ageCohortQueries.createXtoYAgeCohort("", minAge, maxAge + 1);
+		CohortDefinition cd = getTxNewCompositionCohort(name, ageCohort);
+		cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		cd.addParameter(new Parameter("location", "location", Location.class));
+		return cd;
+	}
+	
+	/**
+	 * @param maxAge Maximum age
+	 * @return Patients with age in years bellow {@code maxAge} on ART start date.
+	 */
+	public CohortDefinition createBelowXAgeOnArtStartDateCohort(int maxAge) {
+		String name = "patients with age bellow " + maxAge + " on ART start date";
+		CohortDefinition ageCohort = ageCohortQueries.createBelowYAgeCohort("", maxAge + 1);
+		CohortDefinition cd = getTxNewCompositionCohort(name, ageCohort);
+		cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		cd.addParameter(new Parameter("location", "location", Location.class));
+		return cd;
+	}
+	
+	/**
+	 * @param minAge Minimum age
+	 * @return Patients with age in years equal or above {@code minAge} on ART start date.
+	 */
+	public CohortDefinition createOverXAgeOnArtStartDateCohort(int minAge) {
+		String name = "patients with age over " + minAge + " on ART start date";
+		CohortDefinition ageCohort = ageCohortQueries.createOverXAgeCohort("", minAge);
+		CohortDefinition cd = getTxNewCompositionCohort(name, ageCohort);
+		cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+		cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+		cd.addParameter(new Parameter("location", "location", Location.class));
+		return cd;
 	}
 }

@@ -143,6 +143,41 @@ public class EptsCommonDimension {
 		return dim;
 	}
 	
+	public CohortDefinitionDimension txNewAges() {
+		CohortDefinitionDimension dim = new CohortDefinitionDimension();
+		dim.setName("age dimension");
+		dim.addParameter(new Parameter("startDate", "startDate", Date.class));
+		dim.addParameter(new Parameter("endDate", "endDate", Date.class));
+		dim.addParameter(new Parameter("location", "location", Location.class));
+		String mappings = "location=${location},onOrAfter=${startDate},onOrBefore=${endDate}";
+		dim.addCohortDefinition("<1",
+		    EptsReportUtils.map(txNewCohortQueries.createBelowXAgeOnArtStartDateCohort(1), mappings));
+		dim.addCohortDefinition("1-4",
+		    EptsReportUtils.map(txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(1, 4), mappings));
+		dim.addCohortDefinition("5-9",
+		    EptsReportUtils.map(txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(5, 9), mappings));
+		dim.addCohortDefinition("10-14",
+		    EptsReportUtils.map(txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(10, 14), mappings));
+		dim.addCohortDefinition("15-19",
+		    EptsReportUtils.map(txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(15, 19), mappings));
+		dim.addCohortDefinition("20-24",
+		    EptsReportUtils.map(txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(20, 24), mappings));
+		dim.addCohortDefinition("25-29",
+		    EptsReportUtils.map(txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(25, 29), mappings));
+		dim.addCohortDefinition("30-34",
+		    EptsReportUtils.map(txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(30, 34), mappings));
+		dim.addCohortDefinition("35-39",
+		    EptsReportUtils.map(txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(35, 39), mappings));
+		dim.addCohortDefinition("40-44",
+		    EptsReportUtils.map(txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(40, 44), mappings));
+		dim.addCohortDefinition("45-49",
+		    EptsReportUtils.map(txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(45, 49), mappings));
+		dim.addCohortDefinition("50+",
+		    EptsReportUtils.map(txNewCohortQueries.createOverXAgeOnArtStartDateCohort(50), mappings));
+		dim.addCohortDefinition("unknown", EptsReportUtils.map(genericCohortQueries.getUnknownAgeCohort(), ""));
+		return dim;
+	}
+	
 	/**
 	 * @return CohortDefinitionDimension
 	 */
