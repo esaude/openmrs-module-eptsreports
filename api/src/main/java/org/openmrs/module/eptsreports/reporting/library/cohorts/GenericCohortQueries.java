@@ -184,4 +184,31 @@ public class GenericCohortQueries {
 		return definition;
 	}
 	
+	/**
+	 * Get patient status per program
+	 * 
+	 * @param state
+	 * @param program
+	 * @return
+	 */
+	public CohortDefinition getPatientsToExcludeBasedOnStates(int program, int state) {
+		SqlCohortDefinition cd = new SqlCohortDefinition();
+		cd.setName("The exclusion criteria by work flow states");
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		String query = "SELECT pg.patient_id"
+		        + " FROM patient p"
+		        + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
+		        + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id"
+		        + " WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND"
+		        + " pg.program_id="
+		        + program
+		        + " AND ps.state="
+		        + state
+		        + " AND ps.start_date=pg.date_enrolled AND"
+		        + " ps.start_date BETWEEN date_add(date_add(:endDate, interval -4 month), interval 1 day) AND date_add(:endDate, interval -3 month) and location_id=:location";
+		cd.setQuery(query);
+		return cd;
+	}
+	
 }

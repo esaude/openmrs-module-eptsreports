@@ -35,6 +35,9 @@ public class PepfarEarlyRetentionCohortQueries {
 	@Autowired
 	private HivMetadata hivMetadata;
 	
+	@Autowired
+	private GenericCohortQueries genericCohortQueries;
+	
 	private CohortDefinition getPatientsRetainedOnArtFor3MonthsFromArtInitiation() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
 		cd.setName("patientsRetentionFor3MonthsOnART");
@@ -45,41 +48,32 @@ public class PepfarEarlyRetentionCohortQueries {
 		        .getARVPharmaciaEncounterType().getEncounterTypeId(), hivMetadata.getAdultoSeguimentoEncounterType()
 		        .getEncounterTypeId(), hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
 		    hivMetadata.getARVPlanConcept().getConceptId(), hivMetadata.getstartDrugsConcept().getConceptId(), hivMetadata
-		            .gethistoricalDrugStartDateConcept().getConceptId(), hivMetadata.getARTProgram().getProgramId(), hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()));
+		            .gethistoricalDrugStartDateConcept().getConceptId(), hivMetadata.getARTProgram().getProgramId(),
+		    hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()));
 		return cd;
 	}
-
-	private CohortDefinition getPatientsToExcludeBasedOnStates(int state) {
-		SqlCohortDefinition cd = new SqlCohortDefinition();
-		cd.setName("The exclusion criteria by work flow states");
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
-		String query = "SELECT pg.patient_id"
-						+" FROM patient p"
-						+" INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
-						+" INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id"
-						+" WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND"
-						+" pg.program_id="
-						+hivMetadata.getARTProgram().getProgramId()+" AND ps.state="+state
-						+" AND ps.start_date=pg.date_enrolled AND"
-						+" ps.start_date BETWEEN date_add(date_add(:endDate, interval -4 month), interval 1 day) AND date_add(:endDate, interval -3 month) and location_id=:location";
-		cd.setQuery(query);
-		return cd;
-	}
-
+	
 	private CohortDefinition getExclusionCriteriaByStates() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("Get exclusion criteria");
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("transferredOut", EptsReportUtils.map(getPatientsToExcludeBasedOnStates(hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState().getProgramWorkflowStateId()),"endDate=${endDate},location=${location}"));
-		cd.addSearch("transferredIn", EptsReportUtils.map(getPatientsToExcludeBasedOnStates(hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()),"endDate=${endDate},location=${location}"));
-		cd.addSearch("suspended", EptsReportUtils.map(getPatientsToExcludeBasedOnStates(hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),"endDate=${endDate},location=${location}"));
-		cd.addSearch("abandoned", EptsReportUtils.map(getPatientsToExcludeBasedOnStates(hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId()),"endDate=${endDate},location=${location}"));
+		cd.addSearch("transferredOut", EptsReportUtils.map(genericCohortQueries.getPatientsToExcludeBasedOnStates(
+		    hivMetadata.getARTProgram().getProgramId(), hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState()
+		            .getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
+		cd.addSearch("transferredIn", EptsReportUtils.map(genericCohortQueries.getPatientsToExcludeBasedOnStates(hivMetadata
+		        .getARTProgram().getProgramId(), hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState()
+		        .getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
+		cd.addSearch("suspended", EptsReportUtils.map(genericCohortQueries.getPatientsToExcludeBasedOnStates(hivMetadata
+		        .getARTProgram().getProgramId(), hivMetadata.getSuspendedTreatmentWorkflowState()
+		        .getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
+		cd.addSearch("abandoned", EptsReportUtils.map(genericCohortQueries.getPatientsToExcludeBasedOnStates(hivMetadata
+		        .getARTProgram().getProgramId(), hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId()),
+		    "endDate=${endDate},location=${location}"));
 		cd.setCompositionString("transferredOut OR transferredIn OR suspended OR abandoned");
 		return cd;
 	}
-
+	
 	private CohortDefinition getPatientToExcludeBasedOnLostToFollowUpPatients() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("Patients who are lost to follow up");
@@ -87,23 +81,29 @@ public class PepfarEarlyRetentionCohortQueries {
 		cd.addParameter(new Parameter("location", "Location", Location.class));
 		return cd;
 	}
+	
 	private CohortDefinition getTotalPatientsToExcludeFromMainQuery() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("Total patients to be excluded from main query");
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("excludeByState", EptsReportUtils.map(getExclusionCriteriaByStates(), "endDate=${endDate},location=${location}"));
-		cd.addSearch("excludeByLtfu", EptsReportUtils.map(getPatientToExcludeBasedOnLostToFollowUpPatients(), "endDate=${endDate},location=${location}"));
+		cd.addSearch("excludeByState",
+		    EptsReportUtils.map(getExclusionCriteriaByStates(), "endDate=${endDate},location=${location}"));
+		cd.addSearch("excludeByLtfu", EptsReportUtils.map(getPatientToExcludeBasedOnLostToFollowUpPatients(),
+		    "endDate=${endDate},location=${location}"));
 		cd.setCompositionString("excludeByState OR excludeByLtfu");
 		return cd;
 	}
+	
 	public CohortDefinition getResultant3MonthsArtRetention() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("3 Months Retention with exclusions");
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("baseTotal", EptsReportUtils.map(getPatientsRetainedOnArtFor3MonthsFromArtInitiation(), "endDate=${endDate},location=${location}"));
-		cd.addSearch("exclusions", EptsReportUtils.map(getTotalPatientsToExcludeFromMainQuery(),"endDate=${endDate},location=${location}" ));
+		cd.addSearch("baseTotal", EptsReportUtils.map(getPatientsRetainedOnArtFor3MonthsFromArtInitiation(),
+		    "endDate=${endDate},location=${location}"));
+		cd.addSearch("exclusions",
+		    EptsReportUtils.map(getTotalPatientsToExcludeFromMainQuery(), "endDate=${endDate},location=${location}"));
 		return cd;
 	}
 }

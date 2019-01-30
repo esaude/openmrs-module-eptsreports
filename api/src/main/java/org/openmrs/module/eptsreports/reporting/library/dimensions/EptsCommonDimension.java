@@ -16,6 +16,7 @@ package org.openmrs.module.eptsreports.reporting.library.dimensions;
 import java.util.Date;
 
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
@@ -44,6 +45,9 @@ public class EptsCommonDimension {
 	
 	@Autowired
 	private GenericCohortQueries genericCohortQueries;
+	
+	@Autowired
+	private HivMetadata hivMetadata;
 	
 	/**
 	 * Gender dimension
@@ -149,6 +153,40 @@ public class EptsCommonDimension {
 		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 		dim.addCohortDefinition("pregnant", EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
+		return dim;
+	}
+	
+	/**
+	 * Get the dimensions based on the patient states
+	 * 
+	 * @return CohortDefinitionDimension
+	 */
+	public CohortDefinitionDimension getPatientStatesDimension() {
+		CohortDefinitionDimension dim = new CohortDefinitionDimension();
+		dim.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		dim.addParameter(new Parameter("endDate", "End Date", Date.class));
+		dim.addParameter(new Parameter("location", "location", Location.class));
+		dim.setName("Get patient states");
+		dim.addCohortDefinition("BW", EptsReportUtils.map(txNewCohortQueries.getTxNewBreastfeedingComposition(),
+		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+		dim.addCohortDefinition("PW", EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("CP", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(0, 14),
+		    "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("ADP", EptsReportUtils.map(
+		    txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(15, 200), "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("DP", EptsReportUtils.map(genericCohortQueries.getPatientsToExcludeBasedOnStates(hivMetadata
+		        .getARTProgram().getProgramId(), hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
+		    "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("ANP", EptsReportUtils.map(
+		    genericCohortQueries.getPatientsToExcludeBasedOnStates(hivMetadata.getARTProgram().getProgramId(), hivMetadata
+		            .getAbandonedWorkflowState().getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("SP", EptsReportUtils.map(genericCohortQueries.getPatientsToExcludeBasedOnStates(hivMetadata
+		        .getARTProgram().getProgramId(), hivMetadata.getSuspendedTreatmentWorkflowState()
+		        .getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("TOP", EptsReportUtils.map(genericCohortQueries.getPatientsToExcludeBasedOnStates(
+		    hivMetadata.getARTProgram().getProgramId(), hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState()
+		            .getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
 		return dim;
 	}
 }
