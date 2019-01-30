@@ -3,7 +3,6 @@ package org.openmrs.module.eptsreports.reporting.reports;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.PepfarEarlyRetentionDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -54,11 +53,6 @@ public class SetupPepfarEarlyRetentionIndicatorsReport extends EptsDataExportMan
 		
 		rd.addDataSetDefinition("Pepfar early retention Data Set",
 		    Mapped.mapStraightThrough(pepfarEarlyRetentionDataset.constructPepfarEarlyRetentionDatset()));
-		// add a base cohort here to help in calculations running
-		/*
-		 * rd.setBaseCohortDefinition(EptsReportUtils.map(genericCohortQueries.
-		 * getBaseCohort(), "endDate=${endDate},location=${location}"));
-		 */
 		
 		return rd;
 	}
