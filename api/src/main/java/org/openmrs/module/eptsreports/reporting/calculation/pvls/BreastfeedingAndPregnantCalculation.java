@@ -157,98 +157,115 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 				}
 				
 				if (criteria.equals(BreastfeedingAndPregnant.PREGNANT)) {
-					if (!markedPregnantList.isEmpty()) {
-						for (Obs obs : markedPregnantList) {
-							if (obs != null && obs.getObsDatetime() != null
-							        && (obs.getObsDatetime().compareTo(pregnancyStartDate) >= 0)
-							        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
-								pass = true;
-								break;
-							}
-						}
-					}
-					if (!markedPregnantByWeeksList.isEmpty()) {
-						for (Obs obs : markedPregnantByWeeksList) {
-							if (obs != null && obs.getValueNumeric() != null && obs.getObsDatetime() != null
-							        && (obs.getObsDatetime().compareTo(pregnancyStartDate) >= 0)
-							        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
-								pass = true;
-								break;
-							}
-						}
-					}
-					
-					if (!markedPregnantOnEddList.isEmpty()) {
-						for (Obs obs : markedPregnantOnEddList) {
-							if (obs != null && obs.getValueDatetime() != null && obs.getObsDatetime() != null
-							        && (obs.getObsDatetime().compareTo(pregnancyStartDate) >= 0)
-							        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
-								pass = true;
-								break;
-							}
-						}
-					}
-					if (patientProgram != null && patientProgram.getDateEnrolled() != null
-					        && (patientProgram.getDateEnrolled().compareTo(pregnancyStartDate) >= 0)
-					        && (patientProgram.getDateEnrolled().compareTo(endDate) <= 0)) {
-						pass = true;
-					}
-					if (pregnantState != null && pregnantState.getStartDate() != null
-					        && (pregnantState.getStartDate().compareTo(pregnancyStartDate) >= 0)
-					        && (pregnantState.getStartDate().compareTo(endDate) <= 0)) {
-						pass = true;
-					}
-					if (pregnantState != null && breastfeedingState != null && pregnantState.getStartDate() != null
-					        && breastfeedingState.getStartDate() != null
-					        && breastfeedingState.getStartDate().after(pregnantState.getEndDate())) {
-						pass = false;
-					}
+					pass = pregnantCriteria(markedPregnantList, markedPregnantByWeeksList, markedPregnantOnEddList, patientProgram,
+					    pregnantState, breastfeedingState, pregnancyStartDate, endDate);
 				} else if (criteria.equals(BreastfeedingAndPregnant.BREASTFEEDING)) {
-					if (breastfeedingState != null && breastfeedingState.getStartDate() != null
-					        && (breastfeedingState.getStartDate().compareTo(breastfeedingStartDate) >= 0)
-					        && (breastfeedingState.getStartDate().compareTo(endDate) <= 0)) {
-						pass = true;
-					}
-					if (!deliveryDateMapList.isEmpty()) {
-						for (Obs obs : deliveryDateMapList) {
-							if (obs != null && obs.getValueDatetime() != null
-							        && (obs.getObsDatetime().compareTo(breastfeedingStartDate) >= 0)
-							        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
-								pass = true;
-								break;
-							}
-						}
-					}
-					if (!criteriaHivStartMapList.isEmpty()) {
-						for (Obs obs : criteriaHivStartMapList) {
-							if (obs != null && obs.getObsDatetime() != null
-							        && (obs.getObsDatetime().compareTo(breastfeedingStartDate) >= 0)
-							        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
-								pass = true;
-								break;
-							}
-						}
-					}
-					if (!lactatingMapList.isEmpty()) {
-						for (Obs obs : lactatingMapList) {
-							if (obs != null && obs.getObsDatetime() != null
-							        && (obs.getObsDatetime().compareTo(breastfeedingStartDate) >= 0)
-							        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
-								pass = true;
-								
-							}
-						}
-					}
-					if (pregnantState != null && breastfeedingState != null && pregnantState.getStartDate() != null
-					        && breastfeedingState.getStartDate() != null
-					        && breastfeedingState.getStartDate().before(pregnantState.getEndDate())) {
-						pass = false;
-					}
 					
+					pass = breastfeedingCriteria(deliveryDateMapList, criteriaHivStartMapList, breastfeedingState, pregnantState,
+					    lactatingMapList, breastfeedingStartDate, endDate);
 				}
 			}
 			ret.put(pId, new BooleanResult(pass, this));
 		}
 		return ret;
+	}
+	
+	private boolean pregnantCriteria(List<Obs> markedPregnantList, List<Obs> markedPregnantByWeeksList,
+	        List<Obs> markedPregnantOnEddList, PatientProgram patientProgram, PatientState pregnantState,
+	        PatientState breastfeedingState, Date pregnancyStartDate, Date endDate) {
+		boolean pass = false;
+		if (!markedPregnantList.isEmpty()) {
+			for (Obs obs : markedPregnantList) {
+				if (obs != null && obs.getObsDatetime() != null && (obs.getObsDatetime().compareTo(pregnancyStartDate) >= 0)
+				        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
+					pass = true;
+					break;
+				}
+			}
+		}
+		if (!markedPregnantByWeeksList.isEmpty()) {
+			for (Obs obs : markedPregnantByWeeksList) {
+				if (obs != null && obs.getValueNumeric() != null && obs.getObsDatetime() != null
+				        && (obs.getObsDatetime().compareTo(pregnancyStartDate) >= 0)
+				        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
+					pass = true;
+					break;
+				}
+			}
+		}
+		
+		if (!markedPregnantOnEddList.isEmpty()) {
+			for (Obs obs : markedPregnantOnEddList) {
+				if (obs != null && obs.getValueDatetime() != null && obs.getObsDatetime() != null
+				        && (obs.getObsDatetime().compareTo(pregnancyStartDate) >= 0)
+				        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
+					pass = true;
+					break;
+				}
+			}
+		}
+		if (patientProgram != null && patientProgram.getDateEnrolled() != null
+		        && (patientProgram.getDateEnrolled().compareTo(pregnancyStartDate) >= 0)
+		        && (patientProgram.getDateEnrolled().compareTo(endDate) <= 0)) {
+			pass = true;
+		}
+		if (pregnantState != null && pregnantState.getStartDate() != null
+		        && (pregnantState.getStartDate().compareTo(pregnancyStartDate) >= 0)
+		        && (pregnantState.getStartDate().compareTo(endDate) <= 0)) {
+			pass = true;
+		}
+		if (pregnantState != null && breastfeedingState != null && pregnantState.getStartDate() != null
+		        && breastfeedingState.getStartDate() != null
+		        && breastfeedingState.getStartDate().after(pregnantState.getEndDate())) {
+			pass = false;
+		}
+		return pass;
+	}
+	
+	private boolean breastfeedingCriteria(List<Obs> deliveryDateMapList, List<Obs> criteriaHivStartMapList,
+	        PatientState breastfeedingState, PatientState pregnantState, List<Obs> lactatingMapList,
+	        Date breastfeedingStartDate, Date endDate) {
+		boolean pass = false;
+		if (breastfeedingState != null && breastfeedingState.getStartDate() != null
+		        && (breastfeedingState.getStartDate().compareTo(breastfeedingStartDate) >= 0)
+		        && (breastfeedingState.getStartDate().compareTo(endDate) <= 0)) {
+			pass = true;
+		}
+		if (!deliveryDateMapList.isEmpty()) {
+			for (Obs obs : deliveryDateMapList) {
+				if (obs != null && obs.getValueDatetime() != null
+				        && (obs.getObsDatetime().compareTo(breastfeedingStartDate) >= 0)
+				        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
+					pass = true;
+					break;
+				}
+			}
+		}
+		if (!criteriaHivStartMapList.isEmpty()) {
+			for (Obs obs : criteriaHivStartMapList) {
+				if (obs != null && obs.getObsDatetime() != null
+				        && (obs.getObsDatetime().compareTo(breastfeedingStartDate) >= 0)
+				        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
+					pass = true;
+					break;
+				}
+			}
+		}
+		if (!lactatingMapList.isEmpty()) {
+			for (Obs obs : lactatingMapList) {
+				if (obs != null && obs.getObsDatetime() != null
+				        && (obs.getObsDatetime().compareTo(breastfeedingStartDate) >= 0)
+				        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
+					pass = true;
+					
+				}
+			}
+		}
+		if (pregnantState != null && breastfeedingState != null && pregnantState.getStartDate() != null
+		        && breastfeedingState.getStartDate() != null
+		        && breastfeedingState.getStartDate().before(pregnantState.getEndDate())) {
+			pass = false;
+		}
+		return pass;
 	}
 }
