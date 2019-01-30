@@ -61,23 +61,6 @@ public class TxPvlsDataset extends BaseDataSet {
 		    EptsReportUtils.map(
 		        eptsGeneralIndicator.getIndicator("suppressed viral load",
 		            EptsReportUtils.map(txPvls.getPatientsWithViralLoadSuppression(), mappings)), mappings), "");
-		
-		// Columns useful for debugging totals
-		// dsd.addColumn("Routine-AC", "Adults and Children", EptsReportUtils
-		// .map(hivIndicators.getPatientsWhoAreOnRoutineAdultsAndChildren(),
-		// "endDate=${endDate},location=${location}"),
-		// "");
-		// dsd.addColumn("Routine-BP", "Breastfeeding and Pregnant women",
-		// EptsReportUtils
-		// .map(breastfeedingIndicators.getBreastfeedingAndPregnantOnRoutine(),
-		// "endDate=${endDate},location=${location}"),
-		// "");
-		// dsd.addColumn("Qualified Patients", "Patients that are on ART for more than 3
-		// months and match location", EptsReportUtils.map(
-		// hivIndicators.getPatientsOnArtForMoreThan3MonthsAndMatchLocation(),
-		// "endDate=${endDate},location=${location}"), "");
-		// add breastfeeding and pregnant Numerator
-		// breastfeeding and pregnant
 		dsd.addColumn("P", "Pregnant", EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Pregnant", EptsReportUtils
 		        .map(txPvls.getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.PREGNANT),
 		            "onDate=${endDate},location=${location}")), "endDate=${endDate},location=${location}"), "");
