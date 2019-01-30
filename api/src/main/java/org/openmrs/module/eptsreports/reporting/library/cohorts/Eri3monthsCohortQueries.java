@@ -41,6 +41,9 @@ public class Eri3monthsCohortQueries {
 	@Autowired
 	private TxPvlsCohortQueries txPvlsCohortQueries;
 	
+	@Autowired
+	private GenericCohortQueries genericCohortQueries;
+	
 	/**
 	 * Get all patients who have 3 months ART retention after initiation
 	 * 
@@ -168,6 +171,26 @@ public class Eri3monthsCohortQueries {
 		    txNewCohortQueries.getPatientsinARTProgramDuringTimePeriod(),
 		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 		cd.setCompositionString("startDrugs OR pickDrugs OR artProgram OR pickDrugsAtPharmacy");
+		return cd;
+	}
+	
+	/**
+	 * Get patients who are alive and on treatment - probably all those who have been on ART for
+	 * more than 3 months
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getPatientsWhoAreAliveAndOnTreatment() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Patients who are a live and on treatment");
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		cd.addSearch("onTreatment", EptsReportUtils.map(txPvlsCohortQueries.getPatientsWhoAreMoreThan3MonthsOnArt(),
+		    "onDate=${endDate},location=${location}"));
+		cd.addSearch("dead", EptsReportUtils.map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata
+		        .getARTProgram().getProgramId(), hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
+		    "endDate=${endDate},location=${location}"));
+		cd.setCompositionString("onTreatment AND NOT dead");
 		return cd;
 	}
 }

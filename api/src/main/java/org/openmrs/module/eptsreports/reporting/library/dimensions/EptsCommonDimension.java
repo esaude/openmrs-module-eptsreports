@@ -174,22 +174,22 @@ public class EptsCommonDimension {
 		dim.addCohortDefinition("IART", EptsReportUtils.map(eri3monthsCohortQueries.getPatientsWhoIntiatedArt(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		
-		dim.addCohortDefinition("AIT", EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-		    "startDate=${startDate},endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("AIT", EptsReportUtils.map(eri3monthsCohortQueries.getPatientsWhoAreAliveAndOnTreatment(),
+		    "endDate=${endDate},location=${location}"));
 		
-		dim.addCohortDefinition("DP", EptsReportUtils.map(genericCohortQueries.getPatientsToExcludeBasedOnStates(hivMetadata
+		dim.addCohortDefinition("DP", EptsReportUtils.map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata
 		        .getARTProgram().getProgramId(), hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
 		    "endDate=${endDate},location=${location}"));
 		
 		dim.addCohortDefinition("LTFU",
 		    EptsReportUtils.map(genericCohortQueries.getLostToFollowUpPatients(), "endDate=${endDate},location=${location}"));
 		
-		dim.addCohortDefinition("TOP", EptsReportUtils.map(genericCohortQueries.getPatientsToExcludeBasedOnStates(
-		    hivMetadata.getARTProgram().getProgramId(), hivMetadata.getSuspendedTreatmentWorkflowState()
-		            .getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
-		dim.addCohortDefinition("STP", EptsReportUtils.map(genericCohortQueries.getPatientsToExcludeBasedOnStates(
-		    hivMetadata.getARTProgram().getProgramId(), hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState()
-		            .getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("TOP", EptsReportUtils.map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata
+		        .getARTProgram().getProgramId(), hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState()
+		        .getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("STP", EptsReportUtils.map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata
+		        .getARTProgram().getProgramId(), hivMetadata.getSuspendedTreatmentWorkflowState()
+		        .getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
 		return dim;
 	}
 }
