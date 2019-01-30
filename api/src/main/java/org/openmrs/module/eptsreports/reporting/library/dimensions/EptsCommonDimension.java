@@ -167,24 +167,23 @@ public class EptsCommonDimension {
 		dim.addParameter(new Parameter("endDate", "End Date", Date.class));
 		dim.addParameter(new Parameter("location", "location", Location.class));
 		dim.setName("Get patient states");
-		dim.addCohortDefinition("BW", EptsReportUtils.map(txNewCohortQueries.getTxNewBreastfeedingComposition(),
+		dim.addCohortDefinition("IART", EptsReportUtils.map(txNewCohortQueries.getTxNewBreastfeedingComposition(),
 		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-		dim.addCohortDefinition("PW", EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+		
+		dim.addCohortDefinition("AIT", EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
-		dim.addCohortDefinition("CP", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(0, 14),
-		    "endDate=${endDate},location=${location}"));
-		dim.addCohortDefinition("ADP", EptsReportUtils.map(
-		    txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(15, 200), "endDate=${endDate},location=${location}"));
+		
 		dim.addCohortDefinition("DP", EptsReportUtils.map(genericCohortQueries.getPatientsToExcludeBasedOnStates(hivMetadata
 		        .getARTProgram().getProgramId(), hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
 		    "endDate=${endDate},location=${location}"));
-		dim.addCohortDefinition("ANP", EptsReportUtils.map(
-		    genericCohortQueries.getPatientsToExcludeBasedOnStates(hivMetadata.getARTProgram().getProgramId(), hivMetadata
-		            .getAbandonedWorkflowState().getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
-		dim.addCohortDefinition("SP", EptsReportUtils.map(genericCohortQueries.getPatientsToExcludeBasedOnStates(hivMetadata
-		        .getARTProgram().getProgramId(), hivMetadata.getSuspendedTreatmentWorkflowState()
-		        .getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
+		
+		dim.addCohortDefinition("LTFU",
+		    EptsReportUtils.map(genericCohortQueries.getLostToFollowUpPatients(), "endDate=${endDate},location=${location}"));
+		
 		dim.addCohortDefinition("TOP", EptsReportUtils.map(genericCohortQueries.getPatientsToExcludeBasedOnStates(
+		    hivMetadata.getARTProgram().getProgramId(), hivMetadata.getSuspendedTreatmentWorkflowState()
+		            .getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("STP", EptsReportUtils.map(genericCohortQueries.getPatientsToExcludeBasedOnStates(
 		    hivMetadata.getARTProgram().getProgramId(), hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState()
 		            .getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
 		return dim;

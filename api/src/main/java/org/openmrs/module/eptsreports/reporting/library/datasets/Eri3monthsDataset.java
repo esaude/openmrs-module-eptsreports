@@ -31,10 +31,7 @@ public class Eri3monthsDataset extends BaseDataSet {
 		dsd.addParameters(getParameters());
 		
 		// apply disagregations here
-		dsd.addDimension("age",
-		    EptsReportUtils.map(eptsCommonDimension.pvlsAges(), "endDate=${endDate},location=${location}"));
 		dsd.addDimension("state", EptsReportUtils.map(eptsCommonDimension.getPatientStatesDimension(), mappings));
-		dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
 		// start forming the columns
 		dsd.addColumn("I0", "Total patients retained on ART for 3 months", EptsReportUtils.map(
 		    eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
@@ -75,14 +72,13 @@ public class Eri3monthsDataset extends BaseDataSet {
 	}
 	
 	private List<ColumnParameters> retentionColumns() {
-		ColumnParameters pw = new ColumnParameters("pregnant women", "Pregnant Women", "gender=F|state=PW", "01");
-		ColumnParameters bw = new ColumnParameters("breastfeeding women", "Breastfeeding Women", "gender=F|state=BW", "02");
-		ColumnParameters cp = new ColumnParameters("children", "Children", "state=CP", "03");
-		ColumnParameters adp = new ColumnParameters("Adults", "Adults", "state=ADP", "04");
-		ColumnParameters dp = new ColumnParameters("Dead", "Dead", "state=DP", "05");
-		ColumnParameters anp = new ColumnParameters("abandoned", "Abandoned", "state=ANP", "06");
-		ColumnParameters sp = new ColumnParameters("suspended", "Suspended", "state=SP", "07");
-		ColumnParameters top = new ColumnParameters("transfers", "Transfers", "state=TOP", "08");
-		return Arrays.asList(pw, bw, cp, adp, dp, anp, sp, top);
+		ColumnParameters initiatedArt = new ColumnParameters("initiated ART", "Initiated ART", "state=IART", "01");
+		ColumnParameters aliveInTreatment = new ColumnParameters("alive in Treatment", "Alive and In Treatment",
+		        "state=AIT", "02");
+		ColumnParameters dead = new ColumnParameters("dead", "Dead", "state=DP", "03");
+		ColumnParameters lostTfu = new ColumnParameters("ltfu", "Lost to follow up", "state=LTFU", "04");
+		ColumnParameters stopped = new ColumnParameters("stopped", "Stopped treatment", "state=STP", "05");
+		ColumnParameters transfers = new ColumnParameters("transfers", "Transferred Out", "state=TOP", "06");
+		return Arrays.asList(initiatedArt, aliveInTreatment, dead, lostTfu, transfers, stopped);
 	}
 }

@@ -218,7 +218,7 @@ public class GenericCohortQueries {
 	 * 
 	 * @return
 	 */
-	private CohortDefinition getLostToFollowUpPatients() {
+	public CohortDefinition getLostToFollowUpPatients() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("Patients who are lost to follow up");
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
