@@ -1,6 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import org.openmrs.module.eptsreports.reporting.library.cohorts.PepfarEarlyRetentionCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri3monthsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -13,10 +13,10 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class PepfarEarlyRetentionDataset extends BaseDataSet {
+public class Eri3monthsDataset extends BaseDataSet {
 	
 	@Autowired
-	private PepfarEarlyRetentionCohortQueries pepfarEarlyRetentionCohortQueries;
+	private Eri3monthsCohortQueries pepfarEarlyRetentionCohortQueries;
 	
 	@Autowired
 	private EptsGeneralIndicator eptsGeneralIndicator;
@@ -27,7 +27,7 @@ public class PepfarEarlyRetentionDataset extends BaseDataSet {
 	public DataSetDefinition constructPepfarEarlyRetentionDatset() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		dsd.setName("Pepfar early retention Data Set");
+		dsd.setName("ERI-3months Data Set");
 		dsd.addParameters(getParameters());
 		
 		// apply disagregations here
@@ -36,10 +36,41 @@ public class PepfarEarlyRetentionDataset extends BaseDataSet {
 		dsd.addDimension("state", EptsReportUtils.map(eptsCommonDimension.getPatientStatesDimension(), mappings));
 		dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
 		// start forming the columns
-		addRow(dsd, "I1", "Patients retained on ART 3 months after ART initiation", EptsReportUtils.map(
-		    eptsGeneralIndicator.getIndicator("Early retention", EptsReportUtils.map(
+		dsd.addColumn("I0", "Total patients retained on ART for 3 months", EptsReportUtils.map(
+		    eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
+		        pepfarEarlyRetentionCohortQueries.getPatientsRetainedOnArtForXMonthsFromArtInitiation(), mappings)),
+		    mappings), "");
+		addRow(dsd, "I1", "All Patients retained on ART 3 months after ART initiation", EptsReportUtils.map(
+		    eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
 		        pepfarEarlyRetentionCohortQueries.getPatientsRetainedOnArtForXMonthsFromArtInitiation(), mappings)),
 		    mappings), retentionColumns());
+		addRow(
+		    dsd,
+		    "I2",
+		    "Pregnant women retained on ART 3 months after ART initiation",
+		    EptsReportUtils.map(
+		        eptsGeneralIndicator.getIndicator("pregnant women", EptsReportUtils.map(
+		            pepfarEarlyRetentionCohortQueries.getPregnantWomenRetainedOnArtFor3MonthsFromArtInitiation(), mappings)),
+		        mappings), retentionColumns());
+		addRow(dsd, "I3", "Breastfeeding women retained on ART 3 months after ART initiation",
+		    EptsReportUtils.map(
+		        eptsGeneralIndicator.getIndicator("breastfeeding women", EptsReportUtils.map(
+		            pepfarEarlyRetentionCohortQueries.getBreastfeedingWomenRetainedOnArtFor3MonthsFromArtInitiation(),
+		            mappings)), mappings), retentionColumns());
+		addRow(dsd, "I4",
+		    "Children (0-14, excluding pregnant and breastfeeding women) retained on ART 3 months after ART initiation",
+		    EptsReportUtils.map(
+		        eptsGeneralIndicator.getIndicator(
+		            "children",
+		            EptsReportUtils.map(
+		                pepfarEarlyRetentionCohortQueries.getChildrenRetaineOnArtFor3MonthsFromArtInitiation(), mappings)),
+		        mappings), retentionColumns());
+		addRow(dsd, "I4",
+		    "Adults (14+, excluding pregnant and breastfeeding women)  retained on ART 3 months after ART initiation",
+		    EptsReportUtils.map(
+		        eptsGeneralIndicator.getIndicator("adults", EptsReportUtils.map(
+		            pepfarEarlyRetentionCohortQueries.getAdultsRetaineOnArtFor3MonthsFromArtInitiation(), mappings)),
+		        mappings), retentionColumns());
 		return dsd;
 	}
 	

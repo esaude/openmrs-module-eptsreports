@@ -1,24 +1,25 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.PepfarEarlyRetentionDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.Eri3monthsDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-
 @Component
 public class SetupPepfarEarlyRetentionIndicatorsReport extends EptsDataExportManager {
 	
 	@Autowired
-	private PepfarEarlyRetentionDataset pepfarEarlyRetentionDataset;
+	private Eri3monthsDataset pepfarEarlyRetentionDataset;
 	
 	@Autowired
 	private GenericCohortQueries genericCohortQueries;
@@ -35,7 +36,7 @@ public class SetupPepfarEarlyRetentionIndicatorsReport extends EptsDataExportMan
 	
 	@Override
 	public String getName() {
-		return "PEPFAR Early Retention Indicators Report";
+		return "ERI-3 Months-Report";
 	}
 	
 	@Override
@@ -53,6 +54,9 @@ public class SetupPepfarEarlyRetentionIndicatorsReport extends EptsDataExportMan
 		
 		rd.addDataSetDefinition("Pepfar early retention Data Set",
 		    Mapped.mapStraightThrough(pepfarEarlyRetentionDataset.constructPepfarEarlyRetentionDatset()));
+		// add a base cohort here to help in calculations running
+		rd.setBaseCohortDefinition(EptsReportUtils.map(genericCohortQueries.getBaseCohort(),
+		    "endDate=${endDate},location=${location}"));
 		
 		return rd;
 	}
@@ -66,8 +70,8 @@ public class SetupPepfarEarlyRetentionIndicatorsReport extends EptsDataExportMan
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
 		ReportDesign reportDesign = null;
 		try {
-			reportDesign = createXlsReportDesign(reportDefinition, "PEPFAR_Early_Retention.xls",
-			    "PEPFAR_Early_Retention_Indicators", getExcelDesignUuid(), null);
+			reportDesign = createXlsReportDesign(reportDefinition, "PEPFAR_Early_Retention.xls", "ERI-3 Months-Report",
+			    getExcelDesignUuid(), null);
 			Properties props = new Properties();
 			props.put("sortWeight", "5000");
 			reportDesign.setProperties(props);
