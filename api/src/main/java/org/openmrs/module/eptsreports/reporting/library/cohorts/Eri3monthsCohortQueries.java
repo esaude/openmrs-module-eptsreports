@@ -183,14 +183,21 @@ public class Eri3monthsCohortQueries {
 	public CohortDefinition getPatientsWhoAreAliveAndOnTreatment() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("Patients who are a live and on treatment");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("onTreatment", EptsReportUtils.map(txPvlsCohortQueries.getPatientsWhoAreMoreThan3MonthsOnArt(),
-		    "onDate=${endDate},location=${location}"));
+		cd.addSearch("initiatedArt", EptsReportUtils.map(getPatientsRetainedOnArtForXMonthsFromArtInitiation(),
+		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("dead", EptsReportUtils.map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata
 		        .getARTProgram().getProgramId(), hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
 		    "endDate=${endDate},location=${location}"));
-		cd.setCompositionString("onTreatment AND NOT dead");
+		cd.addSearch("transfersOut", EptsReportUtils.map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata
+		        .getARTProgram().getProgramId(), hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState()
+		        .getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
+		cd.addSearch("suspended", EptsReportUtils.map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata
+		        .getARTProgram().getProgramId(), hivMetadata.getSuspendedTreatmentWorkflowState()
+		        .getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
+		cd.setCompositionString("initiatedArt AND NOT (dead OR transfersOut OR suspended)");
 		return cd;
 	}
 }

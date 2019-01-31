@@ -32,11 +32,38 @@ public class Eri3monthsDataset extends BaseDataSet {
 		
 		// apply disagregations here
 		dsd.addDimension("state", EptsReportUtils.map(eptsCommonDimension.getPatientStatesDimension(), mappings));
+		
 		// start forming the columns
-		dsd.addColumn("I0", "Total patients retained on ART for 3 months", EptsReportUtils.map(
+		dsd.addColumn("All", "Total patients retained on ART for 3 months", EptsReportUtils.map(
 		    eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
 		        pepfarEarlyRetentionCohortQueries.getPatientsRetainedOnArtForXMonthsFromArtInitiation(), mappings)),
 		    mappings), "");
+		dsd.addColumn(
+		    "PW",
+		    "Total women retained on ART for 3 months who are pregnant ",
+		    EptsReportUtils.map(
+		        eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
+		            pepfarEarlyRetentionCohortQueries.getPregnantWomenRetainedOnArtFor3MonthsFromArtInitiation(), mappings)),
+		        mappings), "");
+		dsd.addColumn(
+		    "BW",
+		    "Total women retained on ART for 3 months who are breastfeeding ",
+		    EptsReportUtils.map(
+		        eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
+		            pepfarEarlyRetentionCohortQueries.getPregnantWomenRetainedOnArtFor3MonthsFromArtInitiation(), mappings)),
+		        mappings), "");
+		dsd.addColumn("C", "Total children retained on ART for 3 months",
+		    EptsReportUtils.map(
+		        eptsGeneralIndicator.getIndicator(
+		            "all patients",
+		            EptsReportUtils.map(
+		                pepfarEarlyRetentionCohortQueries.getChildrenRetaineOnArtFor3MonthsFromArtInitiation(), mappings)),
+		        mappings), "");
+		dsd.addColumn("A", "Total Adults retained on ART for 3 months", EptsReportUtils.map(
+		    eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
+		        pepfarEarlyRetentionCohortQueries.getAdultsRetaineOnArtFor3MonthsFromArtInitiation(), mappings)), mappings),
+		    "");
+		
 		addRow(dsd, "I1", "All Patients retained on ART 3 months after ART initiation", EptsReportUtils.map(
 		    eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
 		        pepfarEarlyRetentionCohortQueries.getPatientsRetainedOnArtForXMonthsFromArtInitiation(), mappings)),
@@ -63,7 +90,7 @@ public class Eri3monthsDataset extends BaseDataSet {
 		                pepfarEarlyRetentionCohortQueries.getChildrenRetaineOnArtFor3MonthsFromArtInitiation(), mappings)),
 		        mappings), retentionColumns());
 		addRow(dsd, "I5",
-		    "Adults (14+, excluding pregnant and breastfeeding women)  retained on ART 3 months after ART initiation",
+		    "Adults (15+, excluding pregnant and breastfeeding women)  retained on ART 3 months after ART initiation",
 		    EptsReportUtils.map(
 		        eptsGeneralIndicator.getIndicator("adults", EptsReportUtils.map(
 		            pepfarEarlyRetentionCohortQueries.getAdultsRetaineOnArtFor3MonthsFromArtInitiation(), mappings)),

@@ -171,7 +171,8 @@ public class EptsCommonDimension {
 		dim.addParameter(new Parameter("endDate", "End Date", Date.class));
 		dim.addParameter(new Parameter("location", "location", Location.class));
 		dim.setName("Get patient states");
-		dim.addCohortDefinition("IART", EptsReportUtils.map(eri3monthsCohortQueries.getPatientsWhoIntiatedArt(),
+		dim.addCohortDefinition("IART", EptsReportUtils.map(
+		    eri3monthsCohortQueries.getPatientsRetainedOnArtForXMonthsFromArtInitiation(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		
 		dim.addCohortDefinition("AIT", EptsReportUtils.map(eri3monthsCohortQueries.getPatientsWhoAreAliveAndOnTreatment(),
