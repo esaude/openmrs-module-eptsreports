@@ -152,7 +152,7 @@ public class Eri3monthsCohortQueries {
 	
 	/**
 	 * Get patients who are alive and on treatment - probably all those who have been on ART for
-	 * more than 3 months
+	 * more than 3 months excluding the dead, transfers or suspended
 	 * 
 	 * @return CohortDefinition
 	 */

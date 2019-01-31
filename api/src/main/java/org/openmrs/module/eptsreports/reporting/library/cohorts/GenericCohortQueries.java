@@ -50,43 +50,6 @@ public class GenericCohortQueries {
 	private HivMetadata hivMetadata;
 	
 	/**
-	 * Generic Encounter cohort
-	 * 
-	 * @param types the encounter types
-	 * @return the cohort definition
-	 */
-	public CohortDefinition hasEncounter(EncounterType... types) {
-		EncounterCohortDefinition cd = new EncounterCohortDefinition();
-		cd.setName("has encounter between dates");
-		cd.setTimeQualifier(TimeQualifier.ANY);
-		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("locationList", "Location", Location.class));
-		if (types.length > 0) {
-			cd.setEncounterTypeList(Arrays.asList(types));
-		}
-		return cd;
-	}
-	
-	/**
-	 * Generic ProgramEnrollement cohort
-	 * 
-	 * @param programs the programs
-	 * @return the cohort definition
-	 */
-	public CohortDefinition enrolled(Program... programs) {
-		ProgramEnrollmentCohortDefinition cd = new ProgramEnrollmentCohortDefinition();
-		cd.setName("enrolled in program between dates");
-		cd.addParameter(new Parameter("enrolledOnOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("enrolledOnOrBefore", "Before Date", Date.class));
-		cd.addParameter(new Parameter("locationList", "Location", Location.class));
-		if (programs.length > 0) {
-			cd.setPrograms(Arrays.asList(programs));
-		}
-		return cd;
-	}
-	
-	/**
 	 * Generic Coded Observation cohort
 	 * 
 	 * @param question the question concept
@@ -250,6 +213,28 @@ public class GenericCohortQueries {
 		cd.addSearch("missedPickUps", EptsReportUtils.map(missedDrugPickUp, "endDate=${endDate},location=${location}"));
 		cd.addSearch("missedNextVisit", EptsReportUtils.map(missedNextVisit, "endDate=${endDate},location=${location}"));
 		cd.setCompositionString("missedPickUps OR missedNextVisit");
+		return cd;
+	}
+	
+	/**
+	 * Get deceased patients, we need to check in the person table and patient states
+	 * 
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getDeceasedPatients() {
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Get deceased patients based on patient states and person object");
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		
+		cd.addSearch("dead", EptsReportUtils.map(
+		    getPatientsBasedOnPatientStates(hivMetadata.getARTProgram().getProgramId(), hivMetadata
+		            .getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
+		    "endDate=${endDate},location=${location}"));
+		cd.addSearch("deceased", EptsReportUtils.map(
+		    generalSql("deceased",
+		        "SELECT patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id AND pe.dead=1"), ""));
+		cd.setCompositionString("dead OR deceased");
 		return cd;
 	}
 	

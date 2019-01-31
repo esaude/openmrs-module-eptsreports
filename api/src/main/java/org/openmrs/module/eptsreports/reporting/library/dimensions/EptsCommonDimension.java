@@ -178,9 +178,8 @@ public class EptsCommonDimension {
 		dim.addCohortDefinition("AIT", EptsReportUtils.map(eri3monthsCohortQueries.getPatientsWhoAreAliveAndOnTreatment(),
 		    "endDate=${endDate},location=${location}"));
 		
-		dim.addCohortDefinition("DP", EptsReportUtils.map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata
-		        .getARTProgram().getProgramId(), hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
-		    "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("DP",
+		    EptsReportUtils.map(genericCohortQueries.getDeceasedPatients(), "endDate=${endDate},location=${location}"));
 		
 		dim.addCohortDefinition("LTFU",
 		    EptsReportUtils.map(genericCohortQueries.getLostToFollowUpPatients(), "endDate=${endDate},location=${location}"));
