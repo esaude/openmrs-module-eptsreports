@@ -190,6 +190,8 @@ public class EptsCommonDimension {
 		dim.addCohortDefinition("STP", EptsReportUtils.map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata
 		        .getARTProgram().getProgramId(), hivMetadata.getSuspendedTreatmentWorkflowState()
 		        .getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
+		dim.addCohortDefinition("adults", EptsReportUtils.map(
+		    txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(15, 200), "endDate=${endDate},location=${location}"));
 		return dim;
 	}
 }
