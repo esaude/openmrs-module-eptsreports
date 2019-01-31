@@ -123,7 +123,7 @@ public class Eri3monthsCohortQueries {
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomenRetainedOnArtFor3MonthsFromArtInitiation(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
-		cd.setCompositionString("all AND children AND NOT(pregnant OR breastfeeding)");
+		cd.setCompositionString("(all AND children) AND NOT(pregnant OR breastfeeding)");
 		return cd;
 	}
 	
@@ -146,31 +146,7 @@ public class Eri3monthsCohortQueries {
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomenRetainedOnArtFor3MonthsFromArtInitiation(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
-		cd.setCompositionString("all AND adults AND NOT(pregnant OR breastfeeding)");
-		return cd;
-	}
-	
-	/**
-	 * Get patients who initiated ART
-	 * 
-	 * @return CohortDefinition
-	 */
-	public CohortDefinition getPatientsWhoIntiatedArt() {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Patients who initiated ART");
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("startDrugs", EptsReportUtils.map(txNewCohortQueries.getPatientWithSTARTDRUGSObs(),
-		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-		cd.addSearch("pickDrugs", EptsReportUtils.map(txNewCohortQueries.getPatientWithFirstDrugPickupEncounter(),
-		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-		cd.addSearch("artProgram", EptsReportUtils.map(txNewCohortQueries.getPatientsinARTProgramDuringTimePeriod(),
-		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-		cd.addSearch("pickDrugsAtPharmacy", EptsReportUtils.map(
-		    txNewCohortQueries.getPatientsinARTProgramDuringTimePeriod(),
-		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-		cd.setCompositionString("startDrugs OR pickDrugs OR artProgram OR pickDrugsAtPharmacy");
+		cd.setCompositionString("(all AND adults) AND NOT(pregnant OR breastfeeding)");
 		return cd;
 	}
 	
