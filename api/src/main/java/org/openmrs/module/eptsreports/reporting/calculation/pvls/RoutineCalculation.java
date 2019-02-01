@@ -145,6 +145,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 	
 	private boolean isOnRoutineCriteria3(CalculationResultMap changingRegimenLines, Integer pId, Obs lastVlObs,
 	        List<Obs> vLoadList) {
+		boolean isOnRoutine = false;
+		
 		Obs obs = EptsCalculationUtils.obsResultForPatient(changingRegimenLines, pId);
 		
 		Date latestVlDate = lastVlObs.getObsDatetime();
@@ -152,6 +154,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 			Date startRegimeDate = obs.getObsDatetime();
 			
 			if (startRegimeDate != null && startRegimeDate.before(latestVlDate)) {
+				isOnRoutine = true;
 				// check that there is no other VL registered between first encounter_date and
 				// vl_registered_date
 				// loop through the vls and exclude the patient if they have an obs falling
@@ -160,12 +163,12 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 					if (obs1.getObsDatetime() != null
 					        && (obs1.getObsDatetime().after(startRegimeDate) || obs1.getObsDatetime()
 					                .equals(startRegimeDate)) && obs1.getObsDatetime().before(latestVlDate)) {
-						return false;
+						isOnRoutine = false;
 					}
 				}
 			}
 		}
-		return true;
+		return isOnRoutine;
 	}
 	
 	private boolean isOnRoutineCriteria2(PatientsOnRoutineEnum criteria, List<Obs> viralLoadForPatientTakenWithin12Months) {
