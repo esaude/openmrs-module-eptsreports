@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupPepfarEarlyRetentionIndicatorsReport extends EptsDataExportManager {
+public class SetupImEr4Report extends EptsDataExportManager {
 	
 	@Autowired
 	private Eri3monthsDataset pepfarEarlyRetentionDataset;
@@ -36,12 +36,12 @@ public class SetupPepfarEarlyRetentionIndicatorsReport extends EptsDataExportMan
 	
 	@Override
 	public String getName() {
-		return "ERI-3 Months-Report";
+		return "IM-ER4-Report";
 	}
 	
 	@Override
 	public String getDescription() {
-		return "Implementation of new Retention Indicators report";
+		return "Implementation of PEPFAR Early Retention Indicators - 4 months";
 	}
 	
 	@Override
@@ -52,7 +52,7 @@ public class SetupPepfarEarlyRetentionIndicatorsReport extends EptsDataExportMan
 		rd.setDescription(getDescription());
 		rd.setParameters(pepfarEarlyRetentionDataset.getParameters());
 		
-		rd.addDataSetDefinition("Pepfar early retention Data Set",
+		rd.addDataSetDefinition("ERI-4 Months Data Set",
 		    Mapped.mapStraightThrough(pepfarEarlyRetentionDataset.constructPepfarEarlyRetentionDatset()));
 		// add a base cohort here to help in calculations running
 		rd.setBaseCohortDefinition(EptsReportUtils.map(genericCohortQueries.getBaseCohort(),
@@ -70,7 +70,7 @@ public class SetupPepfarEarlyRetentionIndicatorsReport extends EptsDataExportMan
 	public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
 		ReportDesign reportDesign = null;
 		try {
-			reportDesign = createXlsReportDesign(reportDefinition, "IM_ER3_Report.xls", "ERI-3 Months-Report",
+			reportDesign = createXlsReportDesign(reportDefinition, "IM_ER3_Report.xls", "ERI-4 Months-Report",
 			    getExcelDesignUuid(), null);
 			Properties props = new Properties();
 			props.put("sortWeight", "5000");
