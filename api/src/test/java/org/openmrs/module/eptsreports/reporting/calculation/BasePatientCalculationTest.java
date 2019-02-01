@@ -1,5 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.calculation;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -110,9 +112,13 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
 					if (p != null) {
 						Obs matchedObs = null;
 						for (Obs o : Context.getObsService().getObservationsByPersonAndConcept(p, question)) {
-							// either with mached value or boolean
+							// either with mached value or boolean || datetime
 							if ((answer != null && answer.equals(o.getValueCoded()))
-							        || question.getDatatype().getUuid().equals("8d4a5cca-c2cc-11de-8d13-0010c6dffd0f")) {
+							        || question
+							                .getDatatype()
+							                .getUuid()
+							                .matches(
+							                    "8d4a5cca-c2cc-11de-8d13-0010c6dffd0f|8d4a5af4-c2cc-11de-8d13-0010c6dffd0f")) {
 								matchedObs = o;
 								break;
 							}
@@ -160,5 +166,43 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
 				        .getValue();
 			}
 		};
+	}
+	
+	Obs createBasicObs(Patient patient, Concept concept, Encounter encounter, Date dateTime, Location location, Object value) {
+		Obs o = new Obs();
+		o.setConcept(concept);
+		o.setPerson(patient);
+		o.setEncounter(encounter);
+		o.setObsDatetime(dateTime);
+		o.setLocation(location);
+		if (value instanceof Double) {
+			o.setValueNumeric((Double) value);
+		} else if (value instanceof Boolean) {
+			o.setValueBoolean((Boolean) value);
+		} else if (value instanceof Concept) {
+			o.setValueCoded((Concept) value);
+		} else if (value instanceof Date) {
+			o.setValueDatetime((Date) value);
+		}
+		
+		return Context.getObsService().saveObs(o, null);
+	}
+	
+	Date getDate(String dateString, SimpleDateFormat sdf) {
+		try {
+			return sdf.parse(dateString);
+		}
+		catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	void matchOtherResultsExcept(Integer patientIdNotToMatch, CalculationResultMap evaluatedResult) {
+		CalculationResultMap otherResult = (CalculationResultMap) evaluatedResult.clone();
+		CalculationResultMap initialResult = (CalculationResultMap) getResult().clone();
+		initialResult.remove(2);
+		otherResult.remove(2);
+		Assert.assertEquals(initialResult.toString(), otherResult.toString());
 	}
 }

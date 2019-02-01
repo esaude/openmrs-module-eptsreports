@@ -24,6 +24,8 @@
 		<dependency>
         	<groupId>org.openmrs.module</groupId>
             <artifactId>serialization.xstream-api-2.0</artifactId>
+            <version>${serializationVersion}</version>
+            <scope>test</scope>
        </dependency>
 
 		<dependency>
