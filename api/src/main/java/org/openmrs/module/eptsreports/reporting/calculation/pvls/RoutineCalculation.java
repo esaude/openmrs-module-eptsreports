@@ -32,21 +32,16 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PatientsOnRoutineEnum;
 import org.openmrs.module.reporting.common.TimeQualifier;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RoutineCalculation extends AbstractPatientCalculation {
-	
-	@Autowired
-	private HivMetadata hivMetadata;
 	
 	/**
 	 * Patients on ART for the last X months with one VL result registered in the 12 month period
@@ -64,13 +59,13 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 		
 		CalculationResultMap map = new CalculationResultMap();
 		Location location = (Location) context.getFromCache("location");
-		Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
-		Concept regimeConcept = hivMetadata.getRegimeConcept();
+		Concept viralLoadConcept = getHivMetadata().getHivViralLoadConcept();
+		Concept regimeConcept = getHivMetadata().getRegimeConcept();
 		Date latestVlLowerDateLimit = EptsCalculationUtils.addMonths(context.getNow(), -12);
-		EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
+		EncounterType labEncounterType = getHivMetadata().getMisauLaboratorioEncounterType();
 		PatientsOnRoutineEnum criteria = (PatientsOnRoutineEnum) params.get("criteria");
-		EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
-		EncounterType childFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
+		EncounterType adultFollowup = getHivMetadata().getAdultoSeguimentoEncounterType();
+		EncounterType childFollowup = getHivMetadata().getARVPediatriaSeguimentoEncounterType();
 		
 		// lookups
 		CalculationResultMap patientHavingVL = EptsCalculations.getObs(viralLoadConcept, cohort, Arrays.asList(location),
