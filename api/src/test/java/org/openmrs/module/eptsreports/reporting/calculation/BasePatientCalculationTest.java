@@ -15,6 +15,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.api.EptsReportsService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
+//TODO probably move this into calculation module
 public abstract class BasePatientCalculationTest extends BaseModuleContextSensitiveTest {
 
   CalculationsTestsCache calculationsTestsCache;
