@@ -84,11 +84,11 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
   }
 
   void matchOtherResultsExcept(
-      CalculationResultMap evaluatedResult, Integer... patientIdNotToMatch) {
+      CalculationResultMap evaluatedResult, Integer... patientsIdNotToMatch) {
     CalculationResultMap otherResult = (CalculationResultMap) evaluatedResult.clone();
     CalculationResultMap initialResult = (CalculationResultMap) getResult().clone();
-    if (patientIdNotToMatch != null) {
-      for (int i : patientIdNotToMatch) {
+    if (patientsIdNotToMatch != null) {
+      for (int i : patientsIdNotToMatch) {
         initialResult.remove(i);
         otherResult.remove(i);
       }
