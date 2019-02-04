@@ -41,6 +41,28 @@ public final class EptsReportConstants {
 
 	public static final String GLOBAL_PROPERTY_RESTART_CONCEPT_UUID = "eptsreports.restartConceptUuid";
 
+	public static final String GLOBAL_PROPERTY_AZT_3TC_ABC_EFV_CONCEPT_ID = "eptsreports.AZT_3TC_ABC_EFV_ConceptUuid";
+
+	public static final String GLOBAL_PROPERTY_D4T_3TC_ABC_EFV_CONCEPT_ID = "eptsreports.D4T_3TC_ABC_EFV_ConceptUuid";
+
+	public static final String GLOBAL_PROPERTY_AZT_3TC_ABC_LPV_CONCEPT_ID = "eptsreports.AZT_3TC_ABC_LPV_ConceptUuid";
+
+	public static final String GLOBAL_PROPERTY_D4T_3TC_ABC_LPV_CONCEPT_ID = "eptsreports.D4T_3TC_ABC_LPV_ConceptUuid";
+
+	public static final String GLOBAL_PROPERTY_AZT_DDI_LPV_CONCEPT_ID = "eptsreports.AZT_DDI_LPV_ConceptUuid";
+
+	public static final String GLOBAL_PROPERTY_TDF_3TC_EFV_CONCEPT_ID = "eptsreports.TDF_3TC_EFV_ConceptUuid";
+
+	public static final String GLOBAL_PROPERTY_AZT_3TC_LPV_CONCEPT_ID = "eptsreports.AZT_3TC_LPV_ConceptUuid";
+
+	public static final String GLOBAL_PROPERTY_ABC_3TC_EFV_CONCEPT_ID = "eptsreports.ABC_3TC_EFV_ConceptUuid";
+
+	public static final String GLOBAL_PROPERTY_ABC_3TC_NVP_CONCEPT_ID = "eptsreports.ABC_3TC_NVP_ConceptUuid";
+
+	public static final String GLOBAL_PROPERTY_ABC_3TC_LPV_CONCEPT_ID = "eptsreports.ABC_3TC_LPV_ConceptUuid";
+
+	public static final String GLOBAL_PROPERTY_TDF_3TC_LPV_CONCEPT_ID = "eptsreports.TDF_3TC_LPV_ConceptUuid";
+
 	// Encounter types
 	public static final String GLOBAL_PROPERTY_S_TARV_ADULTO_SEGUIMENTO_ENCOUNTER_TYPE_UUID = "eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid";
 
