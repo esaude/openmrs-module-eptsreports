@@ -38,13 +38,10 @@ import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PatientsOnRoutineEnum;
 import org.openmrs.module.reporting.common.TimeQualifier;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RoutineCalculation extends AbstractPatientCalculation {
-
-  @Autowired private HivMetadata hivMetadata;
 
   /**
    * Patients on ART for the last X months with one VL result registered in the 12 month period
@@ -61,6 +58,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 
     CalculationResultMap map = new CalculationResultMap();
     Location location = (Location) context.getFromCache("location");
+    HivMetadata hivMetadata = getHivMetadata();
     Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
     Concept regimeConcept = hivMetadata.getRegimeConcept();
     Date latestVlLowerDateLimit = EptsCalculationUtils.addMonths(context.getNow(), -12);
@@ -303,6 +301,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 
   private List<Concept> getSecondLineTreatmentArvs() {
     List<Concept> secondLineArvs = new ArrayList<Concept>();
+    HivMetadata hivMetadata = getHivMetadata();
     secondLineArvs.add(hivMetadata.getAzt3tcAbcEfvConcept());
     secondLineArvs.add(hivMetadata.getD4t3tcAbcEfvConcept());
     secondLineArvs.add(hivMetadata.getAzt3tcAbcLpvConcept());

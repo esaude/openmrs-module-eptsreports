@@ -25,6 +25,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
@@ -40,10 +41,11 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
 
     CalculationResultMap map = new CalculationResultMap();
     Location location = (Location) context.getFromCache("location");
-    Concept viralLoadConcept = getHivMetadata().getHivViralLoadConcept();
-    EncounterType labEncounterType = getHivMetadata().getMisauLaboratorioEncounterType();
-    EncounterType adultFollowup = getHivMetadata().getAdultoSeguimentoEncounterType();
-    EncounterType childFollowup = getHivMetadata().getARVPediatriaSeguimentoEncounterType();
+    HivMetadata hivMetadata = getHivMetadata();
+    Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
+    EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
+    EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
+    EncounterType childFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
 
     // get data inicio TARV
     CalculationResultMap arvsInitiationDateMap =
