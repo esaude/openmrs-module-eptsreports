@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class Eri3monthsCohortQueries {
+public class Eri4MonthsCohortQueries {
 	
 	@Autowired
 	private HivMetadata hivMetadata;
@@ -69,7 +69,7 @@ public class Eri3monthsCohortQueries {
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getPregnantWomenRetainedOnArtFor3MonthsFromArtInitiation() {
+	public CohortDefinition getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("Pregnant women retain on ART for more than 3 months from ART initiation date");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -89,7 +89,7 @@ public class Eri3monthsCohortQueries {
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getBreastfeedingWomenRetainedOnArtFor3MonthsFromArtInitiation() {
+	public CohortDefinition getBreastfeedingWomenRetainedOnArtFor4MonthsFromArtInitiation() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("Breastfeeding women retain on ART for more than 3 months from ART initiation date");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -109,7 +109,7 @@ public class Eri3monthsCohortQueries {
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getChildrenRetaineOnArtFor3MonthsFromArtInitiation() {
+	public CohortDefinition getChildrenRetaineOnArtFor4MonthsFromArtInitiation() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("Children having ART retention for than 3 months");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -119,9 +119,9 @@ public class Eri3monthsCohortQueries {
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("children", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(0, 14),
 		    "endDate=${endDate},location=${location}"));
-		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenRetainedOnArtFor3MonthsFromArtInitiation(),
+		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
-		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomenRetainedOnArtFor3MonthsFromArtInitiation(),
+		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomenRetainedOnArtFor4MonthsFromArtInitiation(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.setCompositionString("(all AND children) AND NOT(pregnant OR breastfeeding)");
 		return cd;
@@ -132,7 +132,7 @@ public class Eri3monthsCohortQueries {
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getAdultsRetaineOnArtFor3MonthsFromArtInitiation() {
+	public CohortDefinition getAdultsRetaineOnArtFor4MonthsFromArtInitiation() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("Adults having ART retention for than 3 months");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -142,9 +142,9 @@ public class Eri3monthsCohortQueries {
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("adults", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(15, 200),
 		    "endDate=${endDate},location=${location}"));
-		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenRetainedOnArtFor3MonthsFromArtInitiation(),
+		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
-		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomenRetainedOnArtFor3MonthsFromArtInitiation(),
+		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomenRetainedOnArtFor4MonthsFromArtInitiation(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.setCompositionString("(all AND adults) AND NOT(pregnant OR breastfeeding)");
 		return cd;

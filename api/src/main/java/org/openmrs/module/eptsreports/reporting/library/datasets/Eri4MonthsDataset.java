@@ -1,6 +1,22 @@
+/*
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri3monthsCohortQueries;
+import java.util.Arrays;
+import java.util.List;
+
+import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri4MonthsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
@@ -10,14 +26,11 @@ import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.List;
-
 @Component
-public class Eri3monthsDataset extends BaseDataSet {
+public class Eri4MonthsDataset extends BaseDataSet {
 	
 	@Autowired
-	private Eri3monthsCohortQueries pepfarEarlyRetentionCohortQueries;
+	private Eri4MonthsCohortQueries eri4MonthsCohortQueries;
 	
 	@Autowired
 	private EptsGeneralIndicator eptsGeneralIndicator;
@@ -27,23 +40,21 @@ public class Eri3monthsDataset extends BaseDataSet {
 	
 	@Autowired
 	private TxNewCohortQueries txNewCohortQueries;
-	
-	public DataSetDefinition constructPepfarEarlyRetentionDatset() {
+
+	public DataSetDefinition constructEri4MonthsDatset() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-		dsd.setName("ERI-3months Data Set");
+		dsd.setName("ERI-4months Data Set");
 		dsd.addParameters(getParameters());
 		
 		// apply disagregations here
 		dsd.addDimension("state", EptsReportUtils.map(eptsCommonDimension.getPatientStatesDimension(), mappings));
 		dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
-		dsd.addDimension("age",
-		    EptsReportUtils.map(eptsCommonDimension.pvlsAges(), "endDate=${endDate},location=${location}"));
 		
 		// start forming the columns
-		addRow(dsd, "All", "Total patients retained on ART for 3 months", EptsReportUtils.map(
+		addRow(dsd, "All", "Total patients retained on ART for 4 months", EptsReportUtils.map(
 		    eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
-		        pepfarEarlyRetentionCohortQueries.getPatientsRetainedOnArtForXMonthsFromArtInitiation(), mappings)),
+		        eri4MonthsCohortQueries.getPatientsRetainedOnArtForXMonthsFromArtInitiation(), mappings)),
 		    mappings), genderColumns());
 		dsd.addColumn(
 		    "Pregnant Women",
@@ -53,46 +64,46 @@ public class Eri3monthsDataset extends BaseDataSet {
 		            EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(), mappings)), mappings), "");
 		dsd.addColumn(
 		    "PW",
-		    "Total women retained on ART for 3 months who are pregnant ",
+		    "Total women retained on ART for 4 months who are pregnant ",
 		    EptsReportUtils.map(
 		        eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
-		            pepfarEarlyRetentionCohortQueries.getPregnantWomenRetainedOnArtFor3MonthsFromArtInitiation(), mappings)),
+		            eri4MonthsCohortQueries.getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation(), mappings)),
 		        mappings), "");
 		dsd.addColumn(
 		    "BW",
-		    "Total women retained on ART for 3 months who are breastfeeding ",
+		    "Total women retained on ART for 4 months who are breastfeeding ",
 		    EptsReportUtils.map(
 		        eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
-		            pepfarEarlyRetentionCohortQueries.getPregnantWomenRetainedOnArtFor3MonthsFromArtInitiation(), mappings)),
+		            eri4MonthsCohortQueries.getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation(), mappings)),
 		        mappings), "");
-		dsd.addColumn("C", "Total children retained on ART for 3 months",
+		dsd.addColumn("C", "Total children retained on ART for 4 months",
 		    EptsReportUtils.map(
 		        eptsGeneralIndicator.getIndicator(
 		            "all patients",
 		            EptsReportUtils.map(
-		                pepfarEarlyRetentionCohortQueries.getChildrenRetaineOnArtFor3MonthsFromArtInitiation(), mappings)),
+		                eri4MonthsCohortQueries.getChildrenRetaineOnArtFor4MonthsFromArtInitiation(), mappings)),
 		        mappings), "");
-		dsd.addColumn("A", "Total Adults retained on ART for 3 months", EptsReportUtils.map(
+		dsd.addColumn("A", "Total Adults retained on ART for 4 months", EptsReportUtils.map(
 		    eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
-		        pepfarEarlyRetentionCohortQueries.getAdultsRetaineOnArtFor3MonthsFromArtInitiation(), mappings)), mappings),
+		        eri4MonthsCohortQueries.getAdultsRetaineOnArtFor4MonthsFromArtInitiation(), mappings)), mappings),
 		    "");
 		
-		addRow(dsd, "I1", "All Patients retained on ART 3 months after ART initiation", EptsReportUtils.map(
+		addRow(dsd, "I1", "All Patients retained on ART 4 months after ART initiation", EptsReportUtils.map(
 		    eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
-		        pepfarEarlyRetentionCohortQueries.getPatientsRetainedOnArtForXMonthsFromArtInitiation(), mappings)),
+		        eri4MonthsCohortQueries.getPatientsRetainedOnArtForXMonthsFromArtInitiation(), mappings)),
 		    mappings), retentionColumns());
 		addRow(
 		    dsd,
 		    "I2",
-		    "Pregnant women retained on ART 3 months after ART initiation",
+		    "Pregnant women retained on ART 4 months after ART initiation",
 		    EptsReportUtils.map(
 		        eptsGeneralIndicator.getIndicator("pregnant women", EptsReportUtils.map(
-		            pepfarEarlyRetentionCohortQueries.getPregnantWomenRetainedOnArtFor3MonthsFromArtInitiation(), mappings)),
+		            eri4MonthsCohortQueries.getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation(), mappings)),
 		        mappings), retentionColumns());
 		addRow(dsd, "I3", "Breastfeeding women retained on ART 3 months after ART initiation",
 		    EptsReportUtils.map(
 		        eptsGeneralIndicator.getIndicator("breastfeeding women", EptsReportUtils.map(
-		            pepfarEarlyRetentionCohortQueries.getBreastfeedingWomenRetainedOnArtFor3MonthsFromArtInitiation(),
+		            eri4MonthsCohortQueries.getBreastfeedingWomenRetainedOnArtFor4MonthsFromArtInitiation(),
 		            mappings)), mappings), retentionColumns());
 		addRow(dsd, "I4",
 		    "Children (0-14, excluding pregnant and breastfeeding women) retained on ART 3 months after ART initiation",
@@ -100,13 +111,13 @@ public class Eri3monthsDataset extends BaseDataSet {
 		        eptsGeneralIndicator.getIndicator(
 		            "children",
 		            EptsReportUtils.map(
-		                pepfarEarlyRetentionCohortQueries.getChildrenRetaineOnArtFor3MonthsFromArtInitiation(), mappings)),
+		                eri4MonthsCohortQueries.getChildrenRetaineOnArtFor4MonthsFromArtInitiation(), mappings)),
 		        mappings), retentionColumns());
 		addRow(dsd, "I5",
 		    "Adults (15+, excluding pregnant and breastfeeding women)  retained on ART 3 months after ART initiation",
 		    EptsReportUtils.map(
 		        eptsGeneralIndicator.getIndicator("adults", EptsReportUtils.map(
-		            pepfarEarlyRetentionCohortQueries.getAdultsRetaineOnArtFor3MonthsFromArtInitiation(), mappings)),
+		            eri4MonthsCohortQueries.getAdultsRetaineOnArtFor4MonthsFromArtInitiation(), mappings)),
 		        mappings), retentionColumns());
 		return dsd;
 	}

@@ -16,7 +16,7 @@ import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri3monthsCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri4MonthsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
@@ -49,7 +49,7 @@ public class EptsCommonDimension {
 	private HivMetadata hivMetadata;
 	
 	@Autowired
-	private Eri3monthsCohortQueries eri3monthsCohortQueries;
+	private Eri4MonthsCohortQueries eri3monthsCohortQueries;
 	
 	/**
 	 * Gender dimension

@@ -1,3 +1,16 @@
+/*
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
 package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.io.IOException;
@@ -6,7 +19,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.Eri3monthsDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.Eri4MonthsDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -19,7 +32,7 @@ import org.springframework.stereotype.Component;
 public class SetupImEr4Report extends EptsDataExportManager {
 	
 	@Autowired
-	private Eri3monthsDataset pepfarEarlyRetentionDataset;
+	private Eri4MonthsDataset eri3MonthsDataset;
 	
 	@Autowired
 	private GenericCohortQueries genericCohortQueries;
@@ -50,10 +63,10 @@ public class SetupImEr4Report extends EptsDataExportManager {
 		rd.setUuid(getUuid());
 		rd.setName(getName());
 		rd.setDescription(getDescription());
-		rd.setParameters(pepfarEarlyRetentionDataset.getParameters());
+		rd.setParameters(eri3MonthsDataset.getParameters());
 		
 		rd.addDataSetDefinition("ERI-4 Months Data Set",
-		    Mapped.mapStraightThrough(pepfarEarlyRetentionDataset.constructPepfarEarlyRetentionDatset()));
+		    Mapped.mapStraightThrough(eri3MonthsDataset.constructEri4MonthsDatset()));
 		// add a base cohort here to help in calculations running
 		rd.setBaseCohortDefinition(EptsReportUtils.map(genericCohortQueries.getBaseCohort(),
 		    "endDate=${endDate},location=${location}"));
