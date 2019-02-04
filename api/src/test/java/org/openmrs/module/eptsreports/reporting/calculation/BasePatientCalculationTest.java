@@ -19,9 +19,9 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
 
   CalculationsTestsCache calculationsTestsCache;
 
-  protected PatientCalculationService service;
+  PatientCalculationService service;
 
-  protected PatientCalculationContext evaluationContext;
+  PatientCalculationContext evaluationContext;
 
   abstract PatientCalculation getCalculation();
 
