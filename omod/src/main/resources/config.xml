@@ -9,10 +9,11 @@
 	<package>org.openmrs.module.eptsreports</package>
 	<author>Jembi Health Systems NPC</author>
 	<description>
-			${project.parent.description}
+		${project.parent.description}
 	</description>
 
-	<activator>org.openmrs.module.eptsreports.EptsReportsActivator</activator>
+	<activator>org.openmrs.module.eptsreports.EptsReportsActivator
+	</activator>
 
 	<!-- <updateURL>https://modules.openmrs.org/modules/download/@MODULE_ID@/update.rdf</updateURL> -->
 	<!-- /Base Module Properties -->
@@ -26,10 +27,14 @@
 	</extension>
 
 	<require_modules>
-		<require_module version="${reportingVersion}">org.openmrs.module.reporting</require_module>
-		<require_module version="${serializationVersion}">org.openmrs.module.serialization.xstream</require_module>
-		<require_module version="${calculationVersion}">org.openmrs.calculation</require_module>
-		<require_module version="${htmlWidgetsVersion}">org.openmrs.module.htmlwidgets</require_module>
+		<require_module version="${reportingVersion}">org.openmrs.module.reporting
+		</require_module>
+		<require_module version="${serializationVersion}">org.openmrs.module.serialization.xstream
+		</require_module>
+		<require_module version="${calculationVersion}">org.openmrs.calculation
+		</require_module>
+		<require_module version="${htmlWidgetsVersion}">org.openmrs.module.htmlwidgets
+		</require_module>
 	</require_modules>
 
 	<aware_of_modules>
@@ -37,20 +42,13 @@
 	</aware_of_modules>
 
 
-	<!-- AOP
-	<advice>
-		<point>org.openmrs.api.FormService</point>
-		<class>@MODULE_PACKAGE@.advice.DuplicateFormAdvisor</class>
-	</advice>
-	 /AOP -->
+	<!-- AOP <advice> <point>org.openmrs.api.FormService</point> <class>@MODULE_PACKAGE@.advice.DuplicateFormAdvisor</class> 
+		</advice> /AOP -->
 
 
-	<!-- Required Privileges
-	<privilege>
-		<name>Form Entry</name>
-		<description>Allows user to access Form Entry pages/functions</description>
-	</privilege>
-	 /Required Privileges -->
+	<!-- Required Privileges <privilege> <name>Form Entry</name> <description>Allows 
+		user to access Form Entry pages/functions</description> </privilege> /Required 
+		Privileges -->
 
 
 	<globalProperty>
@@ -61,6 +59,7 @@
 		</description>
 	</globalProperty>
 
+<<<<<<< HEAD
     <globalProperty>
         <property>@MODULE_ID@.historicalStartDateConceptUuid</property>
         <defaultValue>e1d8f690-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -300,14 +299,304 @@
 		</signatures>
 	</dwr>
 	-->
+=======
+	<globalProperty>
+		<property>@MODULE_ID@.historicalStartDateConceptUuid</property>
+		<defaultValue>e1d8f690-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the DATA DE INICIO DO TARV concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.yesConceptUuid</property>
+		<defaultValue>e1d81b62-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the SIM concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.sTarvAdultoSeguimentoEncounterTypeUuid
+		</property>
+		<defaultValue>e278f956-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: ADULTO SEGUIMENTO encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.sTarvPediatriaSeguimentoEncounterTypeUuid
+		</property>
+		<defaultValue>e278fce4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: PEDIATRIA SEGUIMENTO encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.arvPlanConceptUuid</property>
+		<defaultValue>e1d9ee10-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the GESTÃO DE TARV concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.artProgramUuid</property>
+		<defaultValue>efe2481f-9e75-4515-8d5a-86bfde2b5ad3</defaultValue>
+		<description>
+			UUID for the SERVICO TARV - TRATAMENTO program
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.sTarvFarmaciaEncounterTypeUuid</property>
+		<defaultValue>e279133c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: FARMACIA encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.transferFromOtherFacilityConceptUuid</property>
+		<defaultValue>e1da7d3a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TRANSFERIDO DE concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.tuberculosisTreatmentPlanConceptUuid</property>
+		<defaultValue>e1d9fbda-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TRATAMENTO DE TUBERCULOSE concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.tbProgramUuid</property>
+		<defaultValue>142d23c4-c29f-4799-8047-eb3af911fd21</defaultValue>
+		<description>
+			UUID for the Programa de Combate a Tuberculose
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.sTarvAdultoInitialAEncounterTypeUuid</property>
+		<defaultValue>e278f820-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: ADULTO INICIAL A encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.sTarvPediatriaInicialAEncounterTypeUuid
+		</property>
+		<defaultValue>e278fa8c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: PEDIATRIA INICIAL A encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.hivViralLoadConceptUuid</property>
+		<defaultValue>e1d6247e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the HIV CARGA VIRAL concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.priorDeliveryDateConceptUuid</property>
+		<defaultValue>e1e765c2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Prior Delivery Date concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.criteriaForArtStartUuid</property>
+		<defaultValue>607315ab-2f52-4d9f-b28a-6383b9a5f9c4</defaultValue>
+		<description>
+			UUID for the CRITÉRIO PARA INICIO DE TRATAMENTO ARV concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.returnVisitDateForArvDrugConceptUuid</property>
+		<defaultValue>e1e2efd8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the DATA DO PROXIMO LEVANTAMENTO DE ARV concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.ptvEtvProgramUuid</property>
+		<defaultValue>06057245-ca21-43ab-a02f-e861d7e54593</defaultValue>
+		<description>
+			UUID for the PTV program
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.misauLaboratorioEncounterTypeUuid</property>
+		<defaultValue>e2790f68-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the MISAU: LABORATORIO program
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.pregnantConceptUuid</property>
+		<defaultValue>e1e056a6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the GESTANTE concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.gestationConceptUuid</property>
+		<defaultValue>e1cdd58a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the GESTACAO concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.numberOfWeeksPregnantConceptUuid</property>
+		<defaultValue>e1da0788-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the SEMANAS DE GESTAÇÃO concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.pregnancyDueDateConceptUuid</property>
+		<defaultValue>e1dca8ee-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the DATA GRAVIDEZ concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.breastfeedingConceptUuid</property>
+		<defaultValue>bc4fe755-fc8f-49b8-9956-baf2477e8313</defaultValue>
+		<description>
+			UUID for the BREASTFEEDING concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.returnVisitDateConceptConceptUuid</property>
+		<defaultValue>e1dae630-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the DATA DE PROXIMA CONSULTA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.hivCareProgramUuid</property>
+		<defaultValue>7b2e4a0a-d4eb-4df7-be30-78ca4b28ca99</defaultValue>
+		<description>
+			UUID for the Programa de seguimento e cuidado aos pacientes HIV+ program
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.artSecondLineSwitchUuid</property>
+		<defaultValue>7f367983-9911-4f8c-bbfc-a85678801f64</defaultValue>
+		<description>
+			UUID for the SECOND LINE concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.regimeUuid</property>
+		<defaultValue>e1d83e4e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REGIME concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.restartConceptUuid</property>
+		<defaultValue>e1de1bfc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REINICIAR concept
+		</description>
+	</globalProperty>
+
+	<!-- 2nd line ARV Concepts -->
+
+	<globalProperty>
+		<property>@MODULE_ID@.AZT_3TC_ABC_EFV_ConceptUuid</property>
+		<defaultValue>35a0268e-c1b4-4911-b865-a6d993bfc2f7</defaultValue>
+		<description>AZT_3TC_ABC_EFV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.D4T_3TC_ABC_EFV_ConceptUuid</property>
+		<defaultValue>d39b4713-fdb2-43ec-bb0a-35a093f8bba4</defaultValue>
+		<description>D4T_3TC_ABC_EFV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.AZT_3TC_ABC_LPV_ConceptUuid</property>
+		<defaultValue>106e650c-0fe3-4193-acb4-74afe900382a</defaultValue>
+		<description>AZT_3TC_ABC_LPV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.D4T_3TC_ABC_LPV_ConceptUuid</property>
+		<defaultValue>4f9f0a4b-d1a2-44cb-bcee-9c4d91c13606</defaultValue>
+		<description>D4T_3TC_ABC_LPV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.AZT_DDI_LPV_ConceptUuid</property>
+		<defaultValue>5239a445-d56b-46c0-b977-a6bc152da5b7</defaultValue>
+		<description>AZT_DDI_LPV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.TDF_3TC_EFV_ConceptUuid</property>
+		<defaultValue>e1da3154-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>TDF_3TC_EFV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.AZT_3TC_LPV_ConceptUuid</property>
+		<defaultValue>e1da3046-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>AZT_3TC_LPV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.ABC_3TC_EFV_ConceptUuid</property>
+		<defaultValue>e1da2f42-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>ABC_3TC_EFV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.ABC_3TC_NVP_ConceptUuid</property>
+		<defaultValue>e1da2e3e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>ABC_3TC_NVP</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.ABC_3TC_LPV_ConceptUuid</property>
+		<defaultValue>e1da2d30-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>ABC_3TC_LPV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.TDF_3TC_LPV_ConceptUuid</property>
+		<defaultValue>f8c5d365-7636-4449-9acd-c83c4fd2ea01</defaultValue>
+		<description>TDF_3TC_LPV</description>
+	</globalProperty>
+
+	<!-- 2nd line ARV Concepts -->
+
+	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
+		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
+		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
+		@MODULE_PACKAGE@.web.DWRFormEntryService; DWRFormEntryService.enterForm(Integer 
+		patientId, Integer formId, boolean useEncounter, List<String> fields); ]]> 
+		</signatures> </dwr> -->
+>>>>>>> 9bba5bc5d07c94becb3048a426ab13de3d68b386
 
 	<!-- Servlets -->
-	<!-- Accessed through the url /pageContext()/moduleServlet/<moduleId>/<servlet-name>
-	<servlet>
-		<servlet-name>formDownload</servlet-name>
-		<servlet-class>@MODULE_PACKAGE@.web.FormDownloadServlet</servlet-class>
-	</servlet>
-	-->
+	<!-- Accessed through the url /pageContext()/moduleServlet/<moduleId>/<servlet-name> 
+		<servlet> <servlet-name>formDownload</servlet-name> <servlet-class>@MODULE_PACKAGE@.web.FormDownloadServlet</servlet-class> 
+		</servlet> -->
 	<!-- /Servlets -->
 
 
