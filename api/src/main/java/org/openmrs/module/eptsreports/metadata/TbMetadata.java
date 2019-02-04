@@ -14,26 +14,28 @@
 package org.openmrs.module.eptsreports.metadata;
 
 import org.openmrs.Concept;
-import org.openmrs.api.context.Context;
 import org.openmrs.Program;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.springframework.stereotype.Component;
 
 @Component("tbMetadata")
 public class TbMetadata extends CommonMetadata {
-	
-	// Concepts
-	public Concept getTUBERCULOSIS_TREATMENT_PLANConcept() {
-		String uuid = Context.getAdministrationService().getGlobalProperty(
-		    EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_PLAN_CONCEPT_UUID);
-		return getConcept(uuid);
-	}
-	
-	// Programs
-	public Program getTBProgram() {
-		String uuid = Context.getAdministrationService().getGlobalProperty(
-		    EptsReportConstants.GLOBAL_PROPERTY_TB_PROGRAM_UUID);
-		return getProgram(uuid);
-	}
-	
+
+  // Concepts
+  public Concept getTUBERCULOSIS_TREATMENT_PLANConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(
+                EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_PLAN_CONCEPT_UUID);
+    return getConcept(uuid);
+  }
+
+  // Programs
+  public Program getTBProgram() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_TB_PROGRAM_UUID);
+    return getProgram(uuid);
+  }
 }
