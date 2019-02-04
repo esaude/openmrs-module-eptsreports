@@ -1,6 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
-public class PepfarEarlyRetentionQueries {
+public class Eri4MonthsQueries {
 	
 	/**
 	 * Select all patients (adults and children) who ever initiated the treatment by end of
@@ -13,7 +13,7 @@ public class PepfarEarlyRetentionQueries {
 	 * 
 	 * @return a union of cohort
 	 */
-	public static String getPatientsRetainedOnArt3MonthsAfterArtInitiation(int arvPharmaciaEncounter,
+	public static String getPatientsRetainedOnArt4MonthsAfterArtInitiation(int arvPharmaciaEncounter,
 	        int arvAdultoSeguimentoEncounter, int arvPediatriaSeguimentoEncounter, int arvPlanConcept,
 	        int startDrugsConcept, int historicalDrugsConcept, int artProgram, int transferFromStates) {
 		

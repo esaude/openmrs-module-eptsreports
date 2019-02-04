@@ -40,7 +40,7 @@ public class Eri4MonthsDataset extends BaseDataSet {
 	
 	@Autowired
 	private TxNewCohortQueries txNewCohortQueries;
-
+	
 	public DataSetDefinition constructEri4MonthsDatset() {
 		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
@@ -52,73 +52,73 @@ public class Eri4MonthsDataset extends BaseDataSet {
 		dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
 		
 		// start forming the columns
-		addRow(dsd, "All", "Total patients retained on ART for 4 months", EptsReportUtils.map(
-		    eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
-		        eri4MonthsCohortQueries.getPatientsRetainedOnArtForXMonthsFromArtInitiation(), mappings)),
-		    mappings), genderColumns());
+		addRow(
+		    dsd,
+		    "All",
+		    "Total patients retained on ART for 4 months",
+		    EptsReportUtils.map(
+		        eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
+		            eri4MonthsCohortQueries.getPatientsRetainedOnArtFor4MonthsFromArtInitiation(), mappings)), mappings),
+		    genderColumns());
 		dsd.addColumn(
 		    "Pregnant Women",
 		    "Pregnant Women",
 		    EptsReportUtils.map(
 		        eptsGeneralIndicator.getIndicator("Pregnant Women",
 		            EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(), mappings)), mappings), "");
-		dsd.addColumn(
-		    "PW",
-		    "Total women retained on ART for 4 months who are pregnant ",
-		    EptsReportUtils.map(
-		        eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
-		            eri4MonthsCohortQueries.getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation(), mappings)),
-		        mappings), "");
-		dsd.addColumn(
-		    "BW",
-		    "Total women retained on ART for 4 months who are breastfeeding ",
-		    EptsReportUtils.map(
-		        eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
-		            eri4MonthsCohortQueries.getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation(), mappings)),
-		        mappings), "");
-		dsd.addColumn("C", "Total children retained on ART for 4 months",
-		    EptsReportUtils.map(
-		        eptsGeneralIndicator.getIndicator(
-		            "all patients",
-		            EptsReportUtils.map(
-		                eri4MonthsCohortQueries.getChildrenRetaineOnArtFor4MonthsFromArtInitiation(), mappings)),
-		        mappings), "");
-		dsd.addColumn("A", "Total Adults retained on ART for 4 months", EptsReportUtils.map(
+		dsd.addColumn("PW", "Total women retained on ART for 4 months who are pregnant ", EptsReportUtils.map(
 		    eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
-		        eri4MonthsCohortQueries.getAdultsRetaineOnArtFor4MonthsFromArtInitiation(), mappings)), mappings),
+		        eri4MonthsCohortQueries.getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation(), mappings)), mappings),
 		    "");
-		
-		addRow(dsd, "I1", "All Patients retained on ART 4 months after ART initiation", EptsReportUtils.map(
+		dsd.addColumn("BW", "Total women retained on ART for 4 months who are breastfeeding ", EptsReportUtils.map(
 		    eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
-		        eri4MonthsCohortQueries.getPatientsRetainedOnArtForXMonthsFromArtInitiation(), mappings)),
+		        eri4MonthsCohortQueries.getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation(), mappings)), mappings),
+		    "");
+		dsd.addColumn(
+		    "C",
+		    "Total children retained on ART for 4 months",
+		    EptsReportUtils.map(
+		        eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
+		            eri4MonthsCohortQueries.getChildrenRetainedOnArtFor4MonthsFromArtInitiation(), mappings)), mappings), "");
+		dsd.addColumn(
+		    "A",
+		    "Total Adults retained on ART for 4 months",
+		    EptsReportUtils.map(
+		        eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
+		            eri4MonthsCohortQueries.getAdultsRetaineOnArtFor4MonthsFromArtInitiation(), mappings)), mappings), "");
+		
+		addRow(
+		    dsd,
+		    "I1",
+		    "All Patients retained on ART 4 months after ART initiation",
+		    EptsReportUtils.map(
+		        eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
+		            eri4MonthsCohortQueries.getPatientsRetainedOnArtFor4MonthsFromArtInitiation(), mappings)), mappings),
+		    retentionColumns());
+		addRow(dsd, "I2", "Pregnant women retained on ART 4 months after ART initiation", EptsReportUtils.map(
+		    eptsGeneralIndicator.getIndicator("pregnant women", EptsReportUtils.map(
+		        eri4MonthsCohortQueries.getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation(), mappings)), mappings),
+		    retentionColumns());
+		addRow(dsd, "I3", "Breastfeeding women retained on ART 3 months after ART initiation", EptsReportUtils.map(
+		    eptsGeneralIndicator.getIndicator("breastfeeding women", EptsReportUtils.map(
+		        eri4MonthsCohortQueries.getBreastfeedingWomenRetainedOnArtFor4MonthsFromArtInitiation(), mappings)),
 		    mappings), retentionColumns());
 		addRow(
 		    dsd,
-		    "I2",
-		    "Pregnant women retained on ART 4 months after ART initiation",
-		    EptsReportUtils.map(
-		        eptsGeneralIndicator.getIndicator("pregnant women", EptsReportUtils.map(
-		            eri4MonthsCohortQueries.getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation(), mappings)),
-		        mappings), retentionColumns());
-		addRow(dsd, "I3", "Breastfeeding women retained on ART 3 months after ART initiation",
-		    EptsReportUtils.map(
-		        eptsGeneralIndicator.getIndicator("breastfeeding women", EptsReportUtils.map(
-		            eri4MonthsCohortQueries.getBreastfeedingWomenRetainedOnArtFor4MonthsFromArtInitiation(),
-		            mappings)), mappings), retentionColumns());
-		addRow(dsd, "I4",
+		    "I4",
 		    "Children (0-14, excluding pregnant and breastfeeding women) retained on ART 3 months after ART initiation",
 		    EptsReportUtils.map(
-		        eptsGeneralIndicator.getIndicator(
-		            "children",
-		            EptsReportUtils.map(
-		                eri4MonthsCohortQueries.getChildrenRetaineOnArtFor4MonthsFromArtInitiation(), mappings)),
-		        mappings), retentionColumns());
-		addRow(dsd, "I5",
+		        eptsGeneralIndicator.getIndicator("children", EptsReportUtils.map(
+		            eri4MonthsCohortQueries.getChildrenRetainedOnArtFor4MonthsFromArtInitiation(), mappings)), mappings),
+		    retentionColumns());
+		addRow(
+		    dsd,
+		    "I5",
 		    "Adults (15+, excluding pregnant and breastfeeding women)  retained on ART 3 months after ART initiation",
 		    EptsReportUtils.map(
 		        eptsGeneralIndicator.getIndicator("adults", EptsReportUtils.map(
-		            eri4MonthsCohortQueries.getAdultsRetaineOnArtFor4MonthsFromArtInitiation(), mappings)),
-		        mappings), retentionColumns());
+		            eri4MonthsCohortQueries.getAdultsRetaineOnArtFor4MonthsFromArtInitiation(), mappings)), mappings),
+		    retentionColumns());
 		return dsd;
 	}
 	

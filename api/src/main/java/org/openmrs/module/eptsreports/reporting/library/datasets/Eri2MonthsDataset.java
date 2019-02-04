@@ -18,15 +18,15 @@ import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Eri2MonthsDataset extends BaseDataSet{
-
-    public DataSetDefinition constructEri2MonthsDatset() {
-
-        CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-        String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-        dsd.setName("ERI-2months Data Set");
-        dsd.addParameters(getParameters());
-        return dsd;
-
-    }
+public class Eri2MonthsDataset extends BaseDataSet {
+	
+	public DataSetDefinition constructEri2MonthsDatset() {
+		
+		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+		dsd.setName("ERI-2months Data Set");
+		dsd.addParameters(getParameters());
+		return dsd;
+		
+	}
 }

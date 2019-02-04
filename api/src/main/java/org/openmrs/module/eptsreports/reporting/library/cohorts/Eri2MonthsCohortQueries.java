@@ -14,8 +14,6 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.library.queries.Eri4MonthsQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -24,16 +22,8 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Defines @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition} for pepfar early
- * indicator report
- */
-
 @Component
-public class Eri4MonthsCohortQueries {
-	
-	@Autowired
-	private HivMetadata hivMetadata;
+public class Eri2MonthsCohortQueries {
 	
 	@Autowired
 	private TxNewCohortQueries txNewCohortQueries;
@@ -41,41 +31,32 @@ public class Eri4MonthsCohortQueries {
 	@Autowired
 	private TxPvlsCohortQueries txPvlsCohortQueries;
 	
-	@Autowired
-	private GenericCohortQueries genericCohortQueries;
-	
 	/**
-	 * Get all patients who have 4 months ART retention after initiation
+	 * Get patients who have 2 months ART retention after ART initiation
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getPatientsRetainedOnArtFor4MonthsFromArtInitiation() {
+	public CohortDefinition getPatientsRetainedOnArtFor2MonthsFromArtInitiation() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();
-		cd.setName("patientsRetentionFor4MonthsOnART");
+		cd.setName("patientsRetentionFor2MonthsOnART");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location" + "", "Location", Location.class));
-		cd.setQuery(Eri4MonthsQueries.getPatientsRetainedOnArt4MonthsAfterArtInitiation(hivMetadata
-		        .getARVPharmaciaEncounterType().getEncounterTypeId(), hivMetadata.getAdultoSeguimentoEncounterType()
-		        .getEncounterTypeId(), hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-		    hivMetadata.getARVPlanConcept().getConceptId(), hivMetadata.getstartDrugsConcept().getConceptId(), hivMetadata
-		            .gethistoricalDrugStartDateConcept().getConceptId(), hivMetadata.getARTProgram().getProgramId(),
-		    hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()));
 		return cd;
 	}
 	
 	/**
-	 * Get pregnant women who have more than 4 months retention on ART
+	 * Get pregnant women who have more than 2 months retention on ART
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation() {
+	public CohortDefinition getPregnantWomenRetainedOnArtFor2MonthsFromArtInitiation() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Pregnant women retain on ART for more than 4 months from ART initiation date");
+		cd.setName("Pregnant women retain on ART for more than 2 months from ART initiation date");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location" + "", "Location", Location.class));
-		cd.addSearch("all", EptsReportUtils.map(getPatientsRetainedOnArtFor4MonthsFromArtInitiation(),
+		cd.addSearch("all", EptsReportUtils.map(getPatientsRetainedOnArtFor2MonthsFromArtInitiation(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("pregnant", EptsReportUtils.map(txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
@@ -85,17 +66,17 @@ public class Eri4MonthsCohortQueries {
 	}
 	
 	/**
-	 * Get breastfeeding women who have more than 4 months ART retention
+	 * Get breastfeeding women who have more than 2 months ART retention
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getBreastfeedingWomenRetainedOnArtFor4MonthsFromArtInitiation() {
+	public CohortDefinition getBreastfeedingWomenRetainedOnArtFor2MonthsFromArtInitiation() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Breastfeeding women retain on ART for more than 4 months from ART initiation date");
+		cd.setName("Breastfeeding women retain on ART for more than 2 months from ART initiation date");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location" + "", "Location", Location.class));
-		cd.addSearch("all", EptsReportUtils.map(getPatientsRetainedOnArtFor4MonthsFromArtInitiation(),
+		cd.addSearch("all", EptsReportUtils.map(getPatientsRetainedOnArtFor2MonthsFromArtInitiation(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("breastfeeding", EptsReportUtils.map(txNewCohortQueries.getTxNewBreastfeedingComposition(),
 		    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
@@ -109,19 +90,19 @@ public class Eri4MonthsCohortQueries {
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getChildrenRetainedOnArtFor4MonthsFromArtInitiation() {
+	public CohortDefinition getChildrenRetainedOnArtFor2MonthsFromArtInitiation() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Children having ART retention for than 3 months");
+		cd.setName("Children having ART retention for than 2 months");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location" + "", "Location", Location.class));
-		cd.addSearch("all", EptsReportUtils.map(getPatientsRetainedOnArtFor4MonthsFromArtInitiation(),
+		cd.addSearch("all", EptsReportUtils.map(getPatientsRetainedOnArtFor2MonthsFromArtInitiation(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("children", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(0, 14),
 		    "endDate=${endDate},location=${location}"));
-		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation(),
+		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenRetainedOnArtFor2MonthsFromArtInitiation(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
-		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomenRetainedOnArtFor4MonthsFromArtInitiation(),
+		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomenRetainedOnArtFor2MonthsFromArtInitiation(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.setCompositionString("(all AND children) AND NOT(pregnant OR breastfeeding)");
 		return cd;
@@ -132,48 +113,21 @@ public class Eri4MonthsCohortQueries {
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getAdultsRetaineOnArtFor4MonthsFromArtInitiation() {
+	public CohortDefinition getAdultsRetaineOnArtFor2MonthsFromArtInitiation() {
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Adults having ART retention for than 3 months");
+		cd.setName("Adults having ART retention for than 2 months");
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("all", EptsReportUtils.map(getPatientsRetainedOnArtFor4MonthsFromArtInitiation(),
+		cd.addSearch("all", EptsReportUtils.map(getPatientsRetainedOnArtFor2MonthsFromArtInitiation(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.addSearch("adults", EptsReportUtils.map(txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(15, 200),
 		    "endDate=${endDate},location=${location}"));
-		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation(),
+		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantWomenRetainedOnArtFor2MonthsFromArtInitiation(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
-		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomenRetainedOnArtFor4MonthsFromArtInitiation(),
+		cd.addSearch("breastfeeding", EptsReportUtils.map(getBreastfeedingWomenRetainedOnArtFor2MonthsFromArtInitiation(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
 		cd.setCompositionString("(all AND adults) AND NOT(pregnant OR breastfeeding)");
-		return cd;
-	}
-	
-	/**
-	 * Get patients who are alive and on treatment - probably all those who have been on ART for
-	 * more than 3 months excluding the dead, transfers or suspended
-	 * 
-	 * @return CohortDefinition
-	 */
-	public CohortDefinition getPatientsWhoAreAliveAndOnTreatment() {
-		CompositionCohortDefinition cd = new CompositionCohortDefinition();
-		cd.setName("Patients who are a live and on treatment");
-		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("initiatedArt", EptsReportUtils.map(getPatientsRetainedOnArtFor4MonthsFromArtInitiation(),
-		    "startDate=${startDate},endDate=${endDate},location=${location}"));
-		cd.addSearch("dead", EptsReportUtils.map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata
-		        .getARTProgram().getProgramId(), hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
-		    "endDate=${endDate},location=${location}"));
-		cd.addSearch("transfersOut", EptsReportUtils.map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata
-		        .getARTProgram().getProgramId(), hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState()
-		        .getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
-		cd.addSearch("suspended", EptsReportUtils.map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata
-		        .getARTProgram().getProgramId(), hivMetadata.getSuspendedTreatmentWorkflowState()
-		        .getProgramWorkflowStateId()), "endDate=${endDate},location=${location}"));
-		cd.setCompositionString("initiatedArt AND NOT (dead OR transfersOut OR suspended)");
 		return cd;
 	}
 }
