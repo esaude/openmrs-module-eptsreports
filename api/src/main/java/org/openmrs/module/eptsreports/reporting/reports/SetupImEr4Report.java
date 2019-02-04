@@ -14,83 +14,68 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxPvlsDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.Eri4MonthsDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
-import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupMERQuarterly extends EptsDataExportManager {
+public class SetupImEr4Report extends EptsDataExportManager {
 
-  @Autowired private TxPvlsDataset txPvlsDataset;
-
-  @Autowired private TxNewDataset txNewDataset;
-
-  @Autowired private TxCurrDataset txCurrDataset;
+  @Autowired private Eri4MonthsDataset eri3MonthsDataset;
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
   @Override
-  public String getVersion() {
-    return "1.0-SNAPSHOT";
+  public String getExcelDesignUuid() {
+    return "a2a71742-22fe-11e9-be5e-7f732f0e15c6";
   }
 
   @Override
   public String getUuid() {
-    return "fa20c1ac-94ea-11e3-96de-0023156365e4";
-  }
-
-  @Override
-  public String getExcelDesignUuid() {
-    return "cea86583-9ca5-4ad9-94e4-e20081a57619";
+    return "b0b3b854-22fe-11e9-a16a-03dcc5ccbc2e";
   }
 
   @Override
   public String getName() {
-    return "PEPFAR MER 2.3 Quarterly";
+    return "IM-ER4-Report";
   }
 
   @Override
   public String getDescription() {
-    return "MER Quarterly Report";
+    return "Implementation of PEPFAR Early Retention Indicators - 4 months";
   }
 
   @Override
   public ReportDefinition constructReportDefinition() {
-    ReportDefinition reportDefinition = new ReportDefinition();
-    reportDefinition.setUuid(getUuid());
-    reportDefinition.setName(getName());
-    reportDefinition.setDescription(getDescription());
-    reportDefinition.setParameters(getParameters());
-    reportDefinition.setBaseCohortDefinition(
-        genericCohortQueries.getBaseCohort(),
-        ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
-    reportDefinition.addDataSetDefinition(
-        "N", Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
-    reportDefinition.addDataSetDefinition(
-        "C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
-    reportDefinition.addDataSetDefinition(
-        "P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
+    ReportDefinition rd = new ReportDefinition();
+    rd.setUuid(getUuid());
+    rd.setName(getName());
+    rd.setDescription(getDescription());
+    rd.setParameters(eri3MonthsDataset.getParameters());
+
+    rd.addDataSetDefinition(
+        "ERI-4 Months Data Set",
+        Mapped.mapStraightThrough(eri3MonthsDataset.constructEri4MonthsDatset()));
     // add a base cohort here to help in calculations running
-    reportDefinition.setBaseCohortDefinition(
+    rd.setBaseCohortDefinition(
         EptsReportUtils.map(
             genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
 
-    return reportDefinition;
+    return rd;
+  }
+
+  @Override
+  public String getVersion() {
+    return "1.0-SNAPSHOT";
   }
 
   @Override
@@ -100,8 +85,8 @@ public class SetupMERQuarterly extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "PEPFAR_MER_2.3_REPORT.xls",
-              "PEPFAR Quarterly Report",
+              "IM_ER3_Report.xls",
+              "ERI-4 Months-Report",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
@@ -112,14 +97,5 @@ public class SetupMERQuarterly extends EptsDataExportManager {
     }
 
     return Arrays.asList(reportDesign);
-  }
-
-  @Override
-  public List<Parameter> getParameters() {
-    List<Parameter> parameters = new ArrayList<Parameter>();
-    parameters.add(ReportingConstants.START_DATE_PARAMETER);
-    parameters.add(ReportingConstants.END_DATE_PARAMETER);
-    parameters.add(ReportingConstants.LOCATION_PARAMETER);
-    return parameters;
   }
 }

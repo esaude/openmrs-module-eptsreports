@@ -11,65 +11,71 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-
 package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.Eri2MonthsDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupTxCurr21 extends EptsDataExportManager {
+public class SetupImEr2Report extends EptsDataExportManager {
 
-  @Autowired private TxCurrDataset txCurrDataset;
+  @Autowired private GenericCohortQueries genericCohortQueries;
+
+  @Autowired private Eri2MonthsDataset eri2MonthsDataset;
 
   @Override
-  public String getVersion() {
-    return "1.0-SNAPSHOT";
+  public String getExcelDesignUuid() {
+    return "d5df7a6a-2852-11e9-b382-3bdd35cf3401";
   }
 
   @Override
   public String getUuid() {
-    return "381077e6-ceb8-4288-863e-818499515a30";
-  }
-
-  @Override
-  public String getExcelDesignUuid() {
-    return "8a75c3be-995a-4448-a259-4d57d991b614";
+    return "e2e62a74-2852-11e9-88ac-47ceb00c64cb";
   }
 
   @Override
   public String getName() {
-    return "TX_CURR Report 2.1";
+    return "IM-ER2-Report";
   }
 
   @Override
   public String getDescription() {
-    return "Number of adults and children currently receiving antiretroviral therapy (ART) (Old Spec).";
+    return "PEPFAR Early Retention Indicators - 2 Months";
   }
 
   @Override
   public ReportDefinition constructReportDefinition() {
-    ReportDefinition reportDefinition = new ReportDefinition();
-    reportDefinition.setUuid(getUuid());
-    reportDefinition.setName(getName());
-    reportDefinition.setDescription(getDescription());
-    reportDefinition.setParameters(txCurrDataset.getParameters());
+    ReportDefinition rd = new ReportDefinition();
+    rd.setUuid(getUuid());
+    rd.setName(getName());
+    rd.setDescription(getDescription());
+    rd.setParameters(eri2MonthsDataset.getParameters());
 
-    reportDefinition.addDataSetDefinition(
-        txCurrDataset.constructTxCurrDataset(false),
-        ParameterizableUtil.createParameterMappings(
-            "endDate=${endDate},startDate=${startDate},location=${location}"));
+    rd.addDataSetDefinition(
+        "ERI-2 Months Data Set",
+        Mapped.mapStraightThrough(eri2MonthsDataset.constructEri2MonthsDatset()));
+    // add a base cohort here to help in calculations running
+    rd.setBaseCohortDefinition(
+        EptsReportUtils.map(
+            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
 
-    return reportDefinition;
+    return rd;
+  }
+
+  @Override
+  public String getVersion() {
+    return "1.0-SNAPSHOT";
   }
 
   @Override
@@ -78,9 +84,12 @@ public class SetupTxCurr21 extends EptsDataExportManager {
     try {
       reportDesign =
           createXlsReportDesign(
-              reportDefinition, "TXCURR_2.1.xls", "TXCURR_2.1.xls_", getExcelDesignUuid(), null);
+              reportDefinition,
+              "ERI_2MonthsReport.xls",
+              "ERI_2 Months-Report",
+              getExcelDesignUuid(),
+              null);
       Properties props = new Properties();
-      props.put("repeatingSections", "sheet:1,dataset:TX_CURR Data Set");
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {
