@@ -190,11 +190,10 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 		        && previousObs.getObsDatetime() != null && previousObs.getValueNumeric() < 1000
 		        && currentObs.getObsDatetime() != null && previousObs.getObsDatetime().before(currentObs.getObsDatetime())) {
 			
-			if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)) {
-				if (EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(), currentObs.getObsDatetime()) >= 12
-				        && EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(), currentObs.getObsDatetime()) <= 15) {
-					isOnRoutine = true;
-				}
+			if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)
+			        && (EptsCalculationUtils.monthsSince(previousObs.getObsDatetime(), currentObs.getObsDatetime()) >= 12 && EptsCalculationUtils
+			                .monthsSince(previousObs.getObsDatetime(), currentObs.getObsDatetime()) <= 15)) {
+				isOnRoutine = true;
 			} else if (criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)) {
 				isOnRoutine = true;
 			}
@@ -204,15 +203,13 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 	
 	private boolean isOnRoutineCriteria1(PatientsOnRoutineEnum criteria, Date artInitiationDate,
 	        List<Obs> viralLoadForPatientTakenWithin12Months) {
-		boolean isOnRoutine = false;
 		for (Obs vlObs : viralLoadForPatientTakenWithin12Months) {
 			if (vlObs != null && vlObs.getObsDatetime() != null) {
 				Date vlDate = vlObs.getObsDatetime();
-				if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)) {
-					if (EptsCalculationUtils.monthsSince(artInitiationDate, vlDate) > 6
-					        && EptsCalculationUtils.monthsSince(artInitiationDate, vlDate) <= 9) {
-						return true;
-					}
+				if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)
+				        && (EptsCalculationUtils.monthsSince(artInitiationDate, vlDate) > 6 && EptsCalculationUtils
+				                .monthsSince(artInitiationDate, vlDate) <= 9)) {
+					return true;
 				} else if (criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)
 				        && EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) > 3
 				        && EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) <= 6) {
@@ -220,7 +217,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 				}
 			}
 		}
-		return isOnRoutine;
+		return false;
 	}
 	
 	private List<Obs> getViralLoadForPatientTakenWithin12Months(PatientCalculationContext context,
