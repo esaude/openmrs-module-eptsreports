@@ -24,24 +24,37 @@
   	<concept_name concept_name_id="5777005" concept_id="7777005" name="Historical drugs start date" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777005"/>
   	
   	
-  	<obs obs_id="3777001" person_id="7" concept_id="7777001" encounter_id="3" obs_datetime="2019-01-29 00:00:00.0" location_id="1" value_numeric="150.0" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777001"/>
-	<obs obs_id="3777002" person_id="6" concept_id="7777002" encounter_id="3" obs_datetime="2019-01-19 00:00:00.0" location_id="1" value_coded="7777003" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777002"/>
-	<obs obs_id="3777003" person_id="7" concept_id="7777005" encounter_id="3" obs_datetime="2019-01-18 00:00:00.0" location_id="1" value_datetime="2019-01-18 00:00:00.0" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777003"/>
-	<obs obs_id="3777004" person_id="999" concept_id="7777002" encounter_id="3" obs_datetime="2019-01-20 00:00:00.0" location_id="1" value_coded="7777004" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777004"/>
-	
-
 	<encounter_type encounter_type_id="6777001" name="Child Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777001"/>
   	<encounter_type encounter_type_id="6777002" name="Adult Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777002"/>
   	<encounter_type encounter_type_id="6777003" name="ARV Pharmacia" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777003"/>
+  	<encounter_type encounter_type_id="6777004" name="Adult initial" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777004"/>
+  	<encounter_type encounter_type_id="6777005" name="Child initial" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777005"/>
   	
   	
   	<encounter encounter_id="2777001" encounter_type="6777003" patient_id="8" location_id="1" form_id="1" encounter_datetime="2019-01-21 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6277001"/>
+  	<encounter encounter_id="2777002" encounter_type="6777004" patient_id="7" location_id="1" form_id="1" encounter_datetime="2019-01-21 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6277002"/>
+  	<encounter encounter_id="2777003" encounter_type="6777004" patient_id="999" location_id="1" form_id="1" encounter_datetime="2019-01-21 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6277003"/>
+  	<encounter encounter_id="2777004" encounter_type="6777004" patient_id="432" location_id="1" form_id="1" encounter_datetime="2019-01-21 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6277004"/>
+  	<encounter encounter_id="2777005" encounter_type="6777004" patient_id="2" location_id="1" form_id="1" encounter_datetime="2019-01-21 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6277005"/>
+  	<encounter encounter_id="2777006" encounter_type="6777004" patient_id="6" location_id="1" form_id="1" encounter_datetime="2019-01-21 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6277006"/>
   	
   	
-	<global_property property="eptsreports.hivViralLoadConceptUuid" property_value="en_GB" uuid="a09ab2c5-878e-4905-b25d-578417777001"/>
-	<global_property property="eptsreports.misauLaboratorioEncounterTypeUuid" property_value="en_GB" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d09a0ac8"/>
-	<global_property property="eptsreports.sTarvPediatriaInicialAEncounterTypeUuid" property_value="en_GB" uuid="a09ab2c5-878e-4905-b25d-578416777001"/>
-	<global_property property="eptsreports.sTarvAdultoInitialAEncounterTypeUuid" property_value="en_GB" uuid="a09ab2c5-878e-4905-b25d-578416777002"/>
+  	<obs obs_id="3777001" person_id="7" concept_id="7777001" encounter_id="3" obs_datetime="2019-01-29 00:00:00.0" location_id="1" value_numeric="150.0" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777001"/>
+	<obs obs_id="3777002" person_id="6" concept_id="7777002" encounter_id="3" obs_datetime="2018-10-21 00:00:00.0" location_id="1" value_coded="7777003" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777002"/>
+	<obs obs_id="3777003" person_id="7" concept_id="7777005" encounter_id="2777002" obs_datetime="2019-01-18 00:00:00.0" location_id="1" value_datetime="2019-01-18 00:00:00.0" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777003"/>
+	<obs obs_id="3777004" person_id="999" concept_id="7777002" encounter_id="3" obs_datetime="2019-01-20 00:00:00.0" location_id="1" value_coded="7777004" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777004"/>
+	<obs obs_id="3777005" person_id="999" concept_id="7777001" encounter_id="2777003" obs_datetime="2018-12-12 00:00:00.0" location_id="1" value_numeric="152.0" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777005"/>
+	<obs obs_id="3777006" person_id="432" concept_id="7777001" encounter_id="2777004" obs_datetime="2018-12-12 00:00:00.0" location_id="1" value_numeric="153.0" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777006"/>
+	<obs obs_id="3777007" person_id="2" concept_id="7777001" encounter_id="2777005" obs_datetime="2018-12-12 00:00:00.0" location_id="1" value_numeric="122.0" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777007"/>
+	<obs obs_id="3777008" person_id="6" concept_id="7777001" encounter_id="2777005" obs_datetime="2019-02-02 00:00:00.0" location_id="1" value_numeric="102.0" comments="" creator="1" date_created="2019-01-31 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777008"/>
+	
+	
+	<global_property property="eptsreports.hivViralLoadConceptUuid" property_value="a09ab2c5-878e-4905-b25d-578417777001" uuid="a09ab2c5-878e-4905-b25d-578417777001"/>
+	<global_property property="eptsreports.misauLaboratorioEncounterTypeUuid" property_value="02c533ab-b74b-4ee4-b6e5-ffb6d09a0ac8" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d09a0ac8"/>
+	<global_property property="eptsreports.sTarvPediatriaInitialAEncounterTypeUuid" property_value="a09ab2c5-878e-4905-b25d-578416777001" uuid="a09ab2c5-878e-4905-b25d-578416777001"/>
+	<global_property property="eptsreports.sTarvAdultoInitialAEncounterTypeUuid" property_value="a09ab2c5-878e-4905-b25d-578416777002" uuid="a09ab2c5-878e-4905-b25d-578416777002"/>
+	<global_property property="eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid" property_value="02c533ab-b74b-4ee4-b6e5-ffb6d6777004" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777004"/>
+	<global_property property="eptsreports.sTarvPediatriaSeguimentoEncounterTypeUuid" property_value="02c533ab-b74b-4ee4-b6e5-ffb6d6777005" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777005"/>
 	
 	<global_property property="eptsreports.artProgramUuid" property_value="da4a0391-ba62-4fad-ad66-1e3722d16380" uuid="da4a0391-ba62-4fad-ad66-1e3722d16380"/>
 	<global_property property="eptsreports.arvPlanConceptUuid" property_value="a09ab2c5-878e-4905-b25d-578417777002" uuid="a09ab2c5-878e-4905-b25d-578417777002"/>
