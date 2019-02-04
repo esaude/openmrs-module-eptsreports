@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
@@ -37,98 +36,90 @@ import org.springframework.stereotype.Component;
 @Component
 public class SetupMERQuarterly extends EptsDataExportManager {
 
-	@Autowired
-	private TxPvlsDataset txPvlsDataset;
+  @Autowired private TxPvlsDataset txPvlsDataset;
 
-	@Autowired
-	private TxNewDataset txNewDataset;
+  @Autowired private TxNewDataset txNewDataset;
 
-	@Autowired
-	private TxCurrDataset txCurrDataset;
+  @Autowired private TxCurrDataset txCurrDataset;
 
-	@Autowired
-	private GenericCohortQueries genericCohortQueries;
+  @Autowired private GenericCohortQueries genericCohortQueries;
 
-	@Override
-	public String getVersion() {
-		return "1.0-SNAPSHOT";
-	}
+  @Override
+  public String getVersion() {
+    return "1.0-SNAPSHOT";
+  }
 
-	@Override
-	public String getUuid() {
-		return "fa20c1ac-94ea-11e3-96de-0023156365e4";
-	}
+  @Override
+  public String getUuid() {
+    return "fa20c1ac-94ea-11e3-96de-0023156365e4";
+  }
 
-	@Override
-	public String getExcelDesignUuid() {
-		return "cea86583-9ca5-4ad9-94e4-e20081a57619";
-	}
+  @Override
+  public String getExcelDesignUuid() {
+    return "cea86583-9ca5-4ad9-94e4-e20081a57619";
+  }
 
-	@Override
-	public String getName() {
-		return "PEPFAR MER 2.3 Quarterly";
-	}
+  @Override
+  public String getName() {
+    return "PEPFAR MER 2.3 Quarterly";
+  }
 
-	@Override
-	public String getDescription() {
-		return "MER Quarterly Report";
-	}
+  @Override
+  public String getDescription() {
+    return "MER Quarterly Report";
+  }
 
-	@Override
-	public ReportDefinition constructReportDefinition() {
-		ReportDefinition reportDefinition = new ReportDefinition();
-		reportDefinition.setUuid(getUuid());
-		reportDefinition.setName(getName());
-		reportDefinition.setDescription(getDescription());
-		reportDefinition.setParameters(getParameters());
-		reportDefinition
-				.setBaseCohortDefinition(
-						genericCohortQueries.getBaseCohort(),
-						ParameterizableUtil
-								.createParameterMappings("endDate=${endDate},location=${location}"));
-		reportDefinition
-				.addDataSetDefinition("N", Mapped
-						.mapStraightThrough(txNewDataset
-								.constructTxNewDataset()));
-		reportDefinition
-				.addDataSetDefinition("C", Mapped
-						.mapStraightThrough(txCurrDataset
-								.constructTxCurrDataset(true)));
-		reportDefinition.addDataSetDefinition("P", Mapped
-				.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
-		// add a base cohort here to help in calculations running
-		reportDefinition.setBaseCohortDefinition(EptsReportUtils.map(
-				genericCohortQueries.getBaseCohort(),
-				"endDate=${endDate},location=${location}"));
+  @Override
+  public ReportDefinition constructReportDefinition() {
+    ReportDefinition reportDefinition = new ReportDefinition();
+    reportDefinition.setUuid(getUuid());
+    reportDefinition.setName(getName());
+    reportDefinition.setDescription(getDescription());
+    reportDefinition.setParameters(getParameters());
+    reportDefinition.setBaseCohortDefinition(
+        genericCohortQueries.getBaseCohort(),
+        ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
+    reportDefinition.addDataSetDefinition(
+        "N", Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
+    reportDefinition.addDataSetDefinition(
+        "C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
+    reportDefinition.addDataSetDefinition(
+        "P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
+    // add a base cohort here to help in calculations running
+    reportDefinition.setBaseCohortDefinition(
+        EptsReportUtils.map(
+            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
 
-		return reportDefinition;
-	}
+    return reportDefinition;
+  }
 
-	@Override
-	public List<ReportDesign> constructReportDesigns(
-			ReportDefinition reportDefinition) {
-		ReportDesign reportDesign = null;
-		try {
-			reportDesign = createXlsReportDesign(reportDefinition,
-					"PEPFAR_MER_2.3_REPORT.xls", "PEPFAR Quarterly Report",
-					getExcelDesignUuid(), null);
-			Properties props = new Properties();
-			props.put("sortWeight", "5000");
-			reportDesign.setProperties(props);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+  @Override
+  public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
+    ReportDesign reportDesign = null;
+    try {
+      reportDesign =
+          createXlsReportDesign(
+              reportDefinition,
+              "PEPFAR_MER_2.3_REPORT.xls",
+              "PEPFAR Quarterly Report",
+              getExcelDesignUuid(),
+              null);
+      Properties props = new Properties();
+      props.put("sortWeight", "5000");
+      reportDesign.setProperties(props);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
 
-		return Arrays.asList(reportDesign);
-	}
+    return Arrays.asList(reportDesign);
+  }
 
-	@Override
-	public List<Parameter> getParameters() {
-		List<Parameter> parameters = new ArrayList<Parameter>();
-		parameters.add(ReportingConstants.START_DATE_PARAMETER);
-		parameters.add(ReportingConstants.END_DATE_PARAMETER);
-		parameters.add(ReportingConstants.LOCATION_PARAMETER);
-		return parameters;
-	}
-
+  @Override
+  public List<Parameter> getParameters() {
+    List<Parameter> parameters = new ArrayList<Parameter>();
+    parameters.add(ReportingConstants.START_DATE_PARAMETER);
+    parameters.add(ReportingConstants.END_DATE_PARAMETER);
+    parameters.add(ReportingConstants.LOCATION_PARAMETER);
+    return parameters;
+  }
 }

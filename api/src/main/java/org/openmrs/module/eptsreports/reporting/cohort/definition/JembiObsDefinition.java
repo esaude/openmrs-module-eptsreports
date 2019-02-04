@@ -1,3 +1,17 @@
+/*
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
+
 package org.openmrs.module.eptsreports.reporting.cohort.definition;
 
 import org.openmrs.Concept;
@@ -12,65 +26,61 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.JembiObsDefinition")
-public class JembiObsDefinition extends BaseDataDefinition
-		implements
-			PatientDataDefinition {
+public class JembiObsDefinition extends BaseDataDefinition implements PatientDataDefinition {
 
-	@ConfigurationProperty(required = true)
-	private Concept question;
+  @ConfigurationProperty(required = true)
+  private Concept question;
 
-	@ConfigurationProperty
-	private Concept answer;
+  @ConfigurationProperty private Concept answer;
 
-	@ConfigurationProperty(required = true)
-	private Location location;
+  @ConfigurationProperty(required = true)
+  private Location location;
 
-	@ConfigurationProperty(required = true)
-	private boolean sortByDatetime = true;
+  @ConfigurationProperty(required = true)
+  private boolean sortByDatetime = true;
 
-	public JembiObsDefinition() {
-		super();
-	}
+  public JembiObsDefinition() {
+    super();
+  }
 
-	public JembiObsDefinition(String name) {
-		super(name);
-	}
+  public JembiObsDefinition(String name) {
+    super(name);
+  }
 
-	@Override
-	public Class<?> getDataType() {
-		return PatientProgram.class;
-	}
+  @Override
+  public Class<?> getDataType() {
+    return PatientProgram.class;
+  }
 
-	public Concept getQuestion() {
-		return question;
-	}
+  public Concept getQuestion() {
+    return question;
+  }
 
-	public void setQuestion(Concept question) {
-		this.question = question;
-	}
+  public void setQuestion(Concept question) {
+    this.question = question;
+  }
 
-	public Concept getAnswer() {
-		return answer;
-	}
+  public Concept getAnswer() {
+    return answer;
+  }
 
-	public void setAnswer(Concept answer) {
-		this.answer = answer;
-	}
+  public void setAnswer(Concept answer) {
+    this.answer = answer;
+  }
 
-	public Location getLocation() {
-		return location;
-	}
+  public Location getLocation() {
+    return location;
+  }
 
-	public void setLocation(Location location) {
-		this.location = location;
-	}
+  public void setLocation(Location location) {
+    this.location = location;
+  }
 
-	public boolean isSortByDatetime() {
-		return sortByDatetime;
-	}
+  public boolean isSortByDatetime() {
+    return sortByDatetime;
+  }
 
-	public void setSortByDatetime(boolean sortByDatetime) {
-		this.sortByDatetime = sortByDatetime;
-	}
-
+  public void setSortByDatetime(boolean sortByDatetime) {
+    this.sortByDatetime = sortByDatetime;
+  }
 }

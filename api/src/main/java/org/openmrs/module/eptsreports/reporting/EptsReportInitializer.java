@@ -25,39 +25,31 @@ import org.openmrs.module.reporting.report.util.ReportUtil;
 
 public class EptsReportInitializer {
 
-	private Log log = LogFactory.getLog(this.getClass());
+  private Log log = LogFactory.getLog(this.getClass());
 
-	/**
-	 * Initializes all EPTS reports and remove deprocated reports from database.
-	 */
-	public void initializeReports() {
-		for (ReportManager reportManager : Context
-				.getRegisteredComponents(EptsReportManager.class)) {
-			if (reportManager.getClass().getAnnotation(Deprecated.class) != null) {
-				// remove depricated reports
-				EptsReportUtils.purgeReportDefinition(reportManager);
-				log.info("Report " + reportManager.getName()
-						+ " is deprecated.  Removing it from database.");
-			} else {
-				// setup EPTS active reports
-				EptsReportUtils.setupReportDefinition(reportManager);
-				log.info("Setting up report " + reportManager.getName() + "...");
-			}
-		}
-		ReportUtil.updateGlobalProperty(
-				ReportingConstants.GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE,
-				"-1");
-	}
+  /** Initializes all EPTS reports and remove deprocated reports from database. */
+  public void initializeReports() {
+    for (ReportManager reportManager : Context.getRegisteredComponents(EptsReportManager.class)) {
+      if (reportManager.getClass().getAnnotation(Deprecated.class) != null) {
+        // remove depricated reports
+        EptsReportUtils.purgeReportDefinition(reportManager);
+        log.info(
+            "Report " + reportManager.getName() + " is deprecated.  Removing it from database.");
+      } else {
+        // setup EPTS active reports
+        EptsReportUtils.setupReportDefinition(reportManager);
+        log.info("Setting up report " + reportManager.getName() + "...");
+      }
+    }
+    ReportUtil.updateGlobalProperty(
+        ReportingConstants.GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE, "-1");
+  }
 
-	/**
-	 * Purges all EPTS reports from database.
-	 */
-	public void purgeReports() {
-		for (ReportManager reportManager : Context
-				.getRegisteredComponents(EptsReportManager.class)) {
-			EptsReportUtils.purgeReportDefinition(reportManager);
-			log.info("Report " + reportManager.getName()
-					+ " removed from database.");
-		}
-	}
+  /** Purges all EPTS reports from database. */
+  public void purgeReports() {
+    for (ReportManager reportManager : Context.getRegisteredComponents(EptsReportManager.class)) {
+      EptsReportUtils.purgeReportDefinition(reportManager);
+      log.info("Report " + reportManager.getName() + " removed from database.");
+    }
+  }
 }
