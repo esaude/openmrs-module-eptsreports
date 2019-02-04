@@ -141,4 +141,27 @@ public class Eri2MonthsCohortQueries {
 		cd.setCompositionString("(all AND adults) AND NOT(pregnant OR breastfeeding)");
 		return cd;
 	}
+	/**
+	 * Get patients who did not pick up drugs on their second visit
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getPatientsWhoDidNotPickDrugsOnTheirSecondVisit() {
+		SqlCohortDefinition cd = new SqlCohortDefinition();
+		cd.setName("Patients who did not pick up drugs during their second visit");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		return cd;
+	}
+
+	/**
+	 * Get patients who picked up drugs on their second visit
+	 * @return CohortDefinition
+	 */
+	public CohortDefinition getPatientsWhoPickedUpDrugsOnTheirSecondVisit() {
+		SqlCohortDefinition cd = new SqlCohortDefinition();
+		cd.setName("Patients who picked drugs during their second visit");
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		return cd;
+	}
 }

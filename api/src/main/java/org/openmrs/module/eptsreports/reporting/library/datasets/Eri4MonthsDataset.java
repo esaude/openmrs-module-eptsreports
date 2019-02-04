@@ -48,7 +48,7 @@ public class Eri4MonthsDataset extends BaseDataSet {
 		dsd.addParameters(getParameters());
 		
 		// apply disagregations here
-		dsd.addDimension("state", EptsReportUtils.map(eptsCommonDimension.getPatientStatesDimension(), mappings));
+		dsd.addDimension("state", EptsReportUtils.map(eptsCommonDimension.getEri4MonthsDimension(), mappings));
 		dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
 		
 		// start forming the columns
@@ -94,15 +94,15 @@ public class Eri4MonthsDataset extends BaseDataSet {
 		    EptsReportUtils.map(
 		        eptsGeneralIndicator.getIndicator("all patients", EptsReportUtils.map(
 		            eri4MonthsCohortQueries.getPatientsRetainedOnArtFor4MonthsFromArtInitiation(), mappings)), mappings),
-		    retentionColumns());
+		    get4MonthsRetentionColumns());
 		addRow(dsd, "I2", "Pregnant women retained on ART 4 months after ART initiation", EptsReportUtils.map(
 		    eptsGeneralIndicator.getIndicator("pregnant women", EptsReportUtils.map(
 		        eri4MonthsCohortQueries.getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation(), mappings)), mappings),
-		    retentionColumns());
+		    get4MonthsRetentionColumns());
 		addRow(dsd, "I3", "Breastfeeding women retained on ART 3 months after ART initiation", EptsReportUtils.map(
 		    eptsGeneralIndicator.getIndicator("breastfeeding women", EptsReportUtils.map(
 		        eri4MonthsCohortQueries.getBreastfeedingWomenRetainedOnArtFor4MonthsFromArtInitiation(), mappings)),
-		    mappings), retentionColumns());
+		    mappings), get4MonthsRetentionColumns());
 		addRow(
 		    dsd,
 		    "I4",
@@ -110,7 +110,7 @@ public class Eri4MonthsDataset extends BaseDataSet {
 		    EptsReportUtils.map(
 		        eptsGeneralIndicator.getIndicator("children", EptsReportUtils.map(
 		            eri4MonthsCohortQueries.getChildrenRetainedOnArtFor4MonthsFromArtInitiation(), mappings)), mappings),
-		    retentionColumns());
+		    get4MonthsRetentionColumns());
 		addRow(
 		    dsd,
 		    "I5",
@@ -118,11 +118,11 @@ public class Eri4MonthsDataset extends BaseDataSet {
 		    EptsReportUtils.map(
 		        eptsGeneralIndicator.getIndicator("adults", EptsReportUtils.map(
 		            eri4MonthsCohortQueries.getAdultsRetaineOnArtFor4MonthsFromArtInitiation(), mappings)), mappings),
-		    retentionColumns());
+		    get4MonthsRetentionColumns());
 		return dsd;
 	}
 	
-	private List<ColumnParameters> retentionColumns() {
+	private List<ColumnParameters> get4MonthsRetentionColumns() {
 		ColumnParameters initiatedArt = new ColumnParameters("initiated ART", "Initiated ART", "state=IART", "01");
 		ColumnParameters aliveInTreatment = new ColumnParameters("alive in Treatment", "Alive and In Treatment",
 		        "state=AIT", "02");
