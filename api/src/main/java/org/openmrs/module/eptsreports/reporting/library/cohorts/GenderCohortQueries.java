@@ -19,31 +19,30 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GenderCohortQueries {
-	
-	/**
-	 * Patients who are female
-	 * 
-	 * @return the cohort definition
-	 */
-	public CohortDefinition FemaleCohort() {
-		GenderCohortDefinition cohort = new GenderCohortDefinition();
-		cohort.setName("FemaleCohort");
-		cohort.setFemaleIncluded(true);
-		cohort.setMaleIncluded(false);
-		return cohort;
-	}
-	
-	/**
-	 * Patients who are male
-	 * 
-	 * @return the cohort definition
-	 */
-	public CohortDefinition MaleCohort() {
-		GenderCohortDefinition cohort = new GenderCohortDefinition();
-		cohort.setName("MaleCohort");
-		cohort.setMaleIncluded(true);
-		cohort.setFemaleIncluded(false);
-		return cohort;
-	}
-	
+
+  /**
+   * Patients who are female
+   *
+   * @return the cohort definition
+   */
+  public CohortDefinition FemaleCohort() {
+    GenderCohortDefinition cohort = new GenderCohortDefinition();
+    cohort.setName("FemaleCohort");
+    cohort.setFemaleIncluded(true);
+    cohort.setMaleIncluded(false);
+    return cohort;
+  }
+
+  /**
+   * Patients who are male
+   *
+   * @return the cohort definition
+   */
+  public CohortDefinition MaleCohort() {
+    GenderCohortDefinition cohort = new GenderCohortDefinition();
+    cohort.setName("MaleCohort");
+    cohort.setMaleIncluded(true);
+    cohort.setFemaleIncluded(false);
+    return cohort;
+  }
 }
