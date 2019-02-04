@@ -14,6 +14,8 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.library.queries.Eri2MonthsQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -31,6 +33,9 @@ public class Eri2MonthsCohortQueries {
 	@Autowired
 	private TxPvlsCohortQueries txPvlsCohortQueries;
 	
+	@Autowired
+	private HivMetadata hivMetadata;
+	
 	/**
 	 * Get patients who have 2 months ART retention after ART initiation
 	 * 
@@ -42,6 +47,12 @@ public class Eri2MonthsCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location" + "", "Location", Location.class));
+		cd.setQuery(Eri2MonthsQueries.getPatientsRetainedOnArt2MonthsAfterArtInitiation(hivMetadata
+		        .getARVPharmaciaEncounterType().getEncounterTypeId(), hivMetadata.getAdultoSeguimentoEncounterType()
+		        .getEncounterTypeId(), hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+		    hivMetadata.getARVPlanConcept().getConceptId(), hivMetadata.getstartDrugsConcept().getConceptId(), hivMetadata
+		            .gethistoricalDrugStartDateConcept().getConceptId(), hivMetadata.getARTProgram().getProgramId(),
+		    hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()));
 		return cd;
 	}
 	
