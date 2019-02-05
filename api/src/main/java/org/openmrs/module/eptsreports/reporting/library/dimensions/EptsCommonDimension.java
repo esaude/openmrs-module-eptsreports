@@ -17,7 +17,6 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
@@ -32,8 +31,6 @@ public class EptsCommonDimension {
   @Autowired private AgeCohortQueries ageCohortQueries;
 
   @Autowired private TxNewCohortQueries txNewCohortQueries;
-
-  @Autowired private TxPvlsCohortQueries txPvlsCohortQueries;
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
@@ -55,77 +52,73 @@ public class EptsCommonDimension {
    *
    * @return {@link org.openmrs.module.reporting.indicator.dimension.CohortDimension}
    */
-  public CohortDefinitionDimension pvlsAges() {
+  public CohortDefinitionDimension age() {
     CohortDefinitionDimension dim = new CohortDefinitionDimension();
-    dim.addParameter(new Parameter("endDate", "End Date", Date.class));
-    dim.addParameter(new Parameter("location", "Location", Location.class));
-    dim.setName("pvls ages");
+    dim.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+    dim.setName("age dimension");
 
     dim.addCohortDefinition(
-        "UK",
-        EptsReportUtils.map(
-            ageCohortQueries.getPatientsWithUnknownAge(),
-            "endDate=${endDate},location=${location}"));
+        "UK", EptsReportUtils.map(ageCohortQueries.getPatientsWithUnknownAge(), ""));
     dim.addCohortDefinition(
         "<1",
         EptsReportUtils.map(
-            txPvlsCohortQueries.findPatientsagedBelowInYears(1),
-            "endDate=${endDate},location=${location}"));
+            ageCohortQueries.createBelowYAgeCohort("patients with age bellow 1", 1),
+            "effectiveDate=${effectiveDate}"));
     dim.addCohortDefinition(
         "1-4",
         EptsReportUtils.map(
-            txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(1, 4),
-            "endDate=${endDate},location=${location}"));
+            ageCohortQueries.createXtoYAgeCohort("patients with age between 1 and 4", 1, 4),
+            "effectiveDate=${effectiveDate}"));
     dim.addCohortDefinition(
         "5-9",
         EptsReportUtils.map(
-            txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(5, 9),
-            "endDate=${endDate},location=${location}"));
+            ageCohortQueries.createXtoYAgeCohort("patients with age between 5 and 9", 5, 9),
+            "effectiveDate=${effectiveDate}"));
     dim.addCohortDefinition(
         "10-14",
         EptsReportUtils.map(
-            txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(10, 14),
-            "endDate=${endDate},location=${location}"));
+            ageCohortQueries.createXtoYAgeCohort("patients with age between 10 and 14", 10, 14),
+            "effectiveDate=${effectiveDate}"));
     dim.addCohortDefinition(
         "15-19",
         EptsReportUtils.map(
-            txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(15, 19),
-            "endDate=${endDate},location=${location}"));
+            ageCohortQueries.createXtoYAgeCohort("patients with age between 15 and 19", 15, 19),
+            "effectiveDate=${effectiveDate}"));
     dim.addCohortDefinition(
         "20-24",
         EptsReportUtils.map(
-            txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(20, 24),
-            "endDate=${endDate},location=${location}"));
+            ageCohortQueries.createXtoYAgeCohort("patients with age between 20 and 24", 20, 24),
+            "effectiveDate=${effectiveDate}"));
     dim.addCohortDefinition(
         "25-29",
         EptsReportUtils.map(
-            txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(25, 29),
-            "endDate=${endDate},location=${location}"));
+            ageCohortQueries.createXtoYAgeCohort("patients with age between 25 and 29", 25, 29),
+            "effectiveDate=${effectiveDate}"));
     dim.addCohortDefinition(
         "30-34",
         EptsReportUtils.map(
-            txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(30, 34),
-            "endDate=${endDate},location=${location}"));
+            ageCohortQueries.createXtoYAgeCohort("patients with age between 30 and 34", 30, 34),
+            "effectiveDate=${effectiveDate}"));
     dim.addCohortDefinition(
         "35-39",
         EptsReportUtils.map(
-            txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(35, 39),
-            "endDate=${endDate},location=${location}"));
+            ageCohortQueries.createXtoYAgeCohort("patients with age between 35 and 39", 35, 39),
+            "effectiveDate=${effectiveDate}"));
     dim.addCohortDefinition(
         "40-44",
         EptsReportUtils.map(
-            txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(40, 44),
-            "endDate=${endDate},location=${location}"));
+            ageCohortQueries.createXtoYAgeCohort("patients with age between 40 and 44", 40, 44),
+            "effectiveDate=${effectiveDate}"));
     dim.addCohortDefinition(
         "45-49",
         EptsReportUtils.map(
-            txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(45, 49),
-            "endDate=${endDate},location=${location}"));
+            ageCohortQueries.createXtoYAgeCohort("patients with age between 45 and 49", 45, 49),
+            "effectiveDate=${effectiveDate}"));
     dim.addCohortDefinition(
         "50+",
         EptsReportUtils.map(
-            txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(50, 200),
-            "endDate=${endDate},location=${location}"));
+            ageCohortQueries.createOverXAgeCohort("patients with age over 50", 50),
+            "effectiveDate=${effectiveDate}"));
     return dim;
   }
 

@@ -42,9 +42,7 @@ public class TxCurrDataset extends BaseDataSet {
 
     dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dataSetDefinition.addDimension(
-        "age",
-        EptsReportUtils.map(
-            eptsCommonDimension.pvlsAges(), "endDate=${endDate},location=${location}"));
+        "age", EptsReportUtils.map(eptsCommonDimension.age(), "effectiveDate=${endDate}"));
 
     CohortDefinition txCurrCompositionCohort =
         txCurrCohortQueries.getTxCurrCompositionCohort("compositionCohort", currentSpec);

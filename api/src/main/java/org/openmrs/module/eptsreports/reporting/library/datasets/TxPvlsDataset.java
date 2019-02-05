@@ -47,9 +47,7 @@ public class TxPvlsDataset extends BaseDataSet {
     dsd.addDimension(
         "query", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
     dsd.addDimension(
-        "age",
-        EptsReportUtils.map(
-            eptsCommonDimension.pvlsAges(), "endDate=${endDate},location=${location}"));
+        "age", EptsReportUtils.map(eptsCommonDimension.age(), "effectiveDate=${endDate}"));
 
     // Totals for both numerator and denominator
 
