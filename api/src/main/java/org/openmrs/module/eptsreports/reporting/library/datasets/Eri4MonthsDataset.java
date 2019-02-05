@@ -52,9 +52,9 @@ public class Eri4MonthsDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "all patients",
                 EptsReportUtils.map(
-                    eri4MonthsCohortQueries.getPatientsRetainedOnArtFor4MonthsFromArtInitiation(),
-                    mappings)),
-            mappings),
+                    eri4MonthsCohortQueries.getPatientsWhoInitiatedArtLessTransferIns(),
+                    "endDate=${endDate},location=${location}")),
+            "endDate=${endDate},location=${location}"),
         get4MonthsRetentionColumns());
     addRow(
         dsd,

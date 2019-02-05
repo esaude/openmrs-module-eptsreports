@@ -229,8 +229,8 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "IART",
         EptsReportUtils.map(
-            eri4MonthsCohortQueries.getPatientsRetainedOnArtFor4MonthsFromArtInitiation(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            eri4MonthsCohortQueries.getPatientsWhoInitiatedArtLessTransferIns(),
+            "endDate=${endDate},location=${location}"));
 
     dim.addCohortDefinition(
         "AIT",
@@ -264,11 +264,6 @@ public class EptsCommonDimension {
             genericCohortQueries.getPatientsBasedOnPatientStates(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),
-            "endDate=${endDate},location=${location}"));
-    dim.addCohortDefinition(
-        "adults",
-        EptsReportUtils.map(
-            txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(15, 200),
             "endDate=${endDate},location=${location}"));
     return dim;
   }
