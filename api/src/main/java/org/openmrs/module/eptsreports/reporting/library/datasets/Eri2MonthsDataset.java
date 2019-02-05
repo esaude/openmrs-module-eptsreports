@@ -41,7 +41,10 @@ public class Eri2MonthsDataset extends BaseDataSet {
     dsd.addParameters(getParameters());
     // apply disaggregations
     dsd.addDimension(
-        "state", EptsReportUtils.map(eptsCommonDimension.getEri2MonthsDimension(), mappings));
+        "state",
+        EptsReportUtils.map(
+            eptsCommonDimension.getEri2MonthsDimension(),
+            "endDate=${endDate},location=${location}"));
 
     addRow(
         dsd,
@@ -51,10 +54,9 @@ public class Eri2MonthsDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "All patients",
                 EptsReportUtils.map(
-                    eri2MonthsCohortQueries
-                        .getAllPatientsRetainedOnArtFor2MonthsFromArtInitiation(),
-                    mappings)),
-            mappings),
+                    eri2MonthsCohortQueries.getAllPatientsWhoInitiatedArt(),
+                    "endDate=${endDate},location=${location}")),
+            "endDate=${endDate},location=${location}"),
         get2MonthsRetentionColumns());
     addRow(
         dsd,

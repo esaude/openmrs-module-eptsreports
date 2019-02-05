@@ -86,7 +86,7 @@ public class Eri2MonthsQueries {
         + " AND date_enrolled<=:endDate AND location_id=:location "
         + "UNION "
         + "SELECT e.patient_id, MIN(e.encounter_datetime) AS data_inicio "
-        + "FROM patient p"
+        + "FROM patient p "
         + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
         + "WHERE p.voided=0 AND e.encounter_type="
         + arvPharmaciaEncounter
@@ -95,7 +95,7 @@ public class Eri2MonthsQueries {
         + ") inicio "
         + "GROUP BY patient_id "
         + ")inicio1 "
-        + "WHERE data_inicio BETWEEN :startDate and :endDate "
+        + "WHERE data_inicio BETWEEN date_add(date_add(:endDate, interval -2 month), interval 1 day) AND date_add(:endDate, interval -1 month) "
         + ") inicio_real "
         + "INNER JOIN encounter e ON e.patient_id=inicio_real.patient_id "
         + "WHERE e.voided=0 AND e.encounter_type IN ("
