@@ -84,7 +84,7 @@ public class Eri4MonthsCohortQueries {
         "pregnant",
         EptsReportUtils.map(
             txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${endDate-4m},endDate=${endDate-3m},location=${location}"));
     cd.setCompositionString("all AND pregnant");
     return cd;
   }
@@ -109,7 +109,7 @@ public class Eri4MonthsCohortQueries {
         "breastfeeding",
         EptsReportUtils.map(
             txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            "onOrAfter=${endDate-4m},onOrBefore=${endDate-3m},location=${location}"));
     cd.setCompositionString("all AND breastfeeding");
     return cd;
   }
