@@ -32,29 +32,116 @@ public class Eri2MonthsCohortQueries {
 
   @Autowired private HivMetadata hivMetadata;
 
+  @Autowired private GenericCohortQueries genericCohortQueries;
+
   /**
-   * Get patients who have 2 months ART retention after ART initiation
+   * Get patients who have 2 months ART retention after ART initiation A
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getPatientsRetainedOnArtFor2MonthsFromArtInitiation() {
+  public CohortDefinition getAllPatientsRetainedOnArtFor2MonthsFromArtInitiation() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("patientsRetentionFor2MonthsOnART");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location" + "", "Location", Location.class));
     cd.setQuery(
-        Eri2MonthsQueries.getPatientsRetainedOnArt2MonthsAfterArtInitiation(
+        Eri2MonthsQueries.allPatientsWhoInitiatedTreatmentDuringReportingPeriod(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             hivMetadata.getstartDrugsConcept().getConceptId(),
             hivMetadata.gethistoricalDrugStartDateConcept().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId()));
+    return cd;
+  }
+
+  /**
+   * B
+   *
+   * @return
+   */
+  public CohortDefinition getTransferInPatients() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Transfer Ins");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location" + "", "Location", Location.class));
+    cd.setQuery(
+        Eri2MonthsQueries.getTransferInPatients(
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata
                 .getTransferredFromOtherHealthFacilityWorkflowState()
                 .getProgramWorkflowStateId()));
+    return cd;
+  }
+
+  /**
+   * C
+   *
+   * @return
+   */
+  public CohortDefinition
+      getAllPatientsWhoReturnedFor2ndConsultationOR2ndDrugsPickUpWithin33Days() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients who picked up drugs in 33 days");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        Eri2MonthsQueries.getAllPatientsWhoReturnedFor2ndConsultationOR2ndDrugsPickUpWithin33Days(
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPlanConcept().getConceptId(),
+            hivMetadata.getstartDrugsConcept().getConceptId(),
+            hivMetadata.gethistoricalDrugStartDateConcept().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId()));
+    return cd;
+  }
+
+  /**
+   * Get all patients who initiated ART 2 months from ART initiation less transfer ins return the
+   * patient who initiated ART
+   *
+   * @retrun CohortDefinition
+   */
+  public CohortDefinition getAllPatientsWhoInitiatedArt() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("All patients who initiated ART less tarnsfer ins");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location" + "", "Location", Location.class));
+
+    cd.addSearch(
+        "all",
+        EptsReportUtils.map(
+            getAllPatientsRetainedOnArtFor2MonthsFromArtInitiation(),
+            "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "transferIns",
+        EptsReportUtils.map(getTransferInPatients(), "endDate=${endDate},location=${location}"));
+    cd.setCompositionString("all AND NOT transferIns");
+    return cd;
+  }
+
+  /**
+   * A and B and C
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getAllPatientsWhoStartedArtAndPickedDrugsOnTheirNextVisit() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Patients who  picked up drugs during their second visit and had initiated ART");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "initiatedArt",
+        EptsReportUtils.map(
+            getAllPatientsWhoInitiatedArt(), "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "pickedDrugs",
+        EptsReportUtils.map(
+            getAllPatientsWhoReturnedFor2ndConsultationOR2ndDrugsPickUpWithin33Days(),
+            "endDate=${endDate},location=${location}"));
+    cd.setCompositionString("initiatedArt AND pickedDrugs");
     return cd;
   }
 
@@ -72,7 +159,7 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "all",
         EptsReportUtils.map(
-            getPatientsRetainedOnArtFor2MonthsFromArtInitiation(),
+            getAllPatientsRetainedOnArtFor2MonthsFromArtInitiation(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "pregnant",
@@ -97,7 +184,7 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "all",
         EptsReportUtils.map(
-            getPatientsRetainedOnArtFor2MonthsFromArtInitiation(),
+            getAllPatientsRetainedOnArtFor2MonthsFromArtInitiation(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "breastfeeding",
@@ -122,7 +209,7 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "all",
         EptsReportUtils.map(
-            getPatientsRetainedOnArtFor2MonthsFromArtInitiation(),
+            getAllPatientsRetainedOnArtFor2MonthsFromArtInitiation(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "children",
@@ -157,7 +244,7 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "all",
         EptsReportUtils.map(
-            getPatientsRetainedOnArtFor2MonthsFromArtInitiation(),
+            getAllPatientsRetainedOnArtFor2MonthsFromArtInitiation(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "adults",
@@ -179,28 +266,77 @@ public class Eri2MonthsCohortQueries {
   }
 
   /**
-   * Get patients who did not pick up drugs on their second visit
+   * Get patients who did not pick up drugs on their second visit Did NOT pick up the drugs
    *
    * @return CohortDefinition
    */
   public CohortDefinition getPatientsWhoDidNotPickDrugsOnTheirSecondVisit() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients who did not pick up drugs during their second visit");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addSearch(
+        "initiatedArt",
+        EptsReportUtils.map(
+            getAllPatientsWhoInitiatedArt(), "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "pickedDrugs",
+        EptsReportUtils.map(
+            getAllPatientsWhoReturnedFor2ndConsultationOR2ndDrugsPickUpWithin33Days(),
+            "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
+                hivMetadata.getARTProgram().getProgramId(),
+                hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
+            "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "transfers",
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
+                hivMetadata.getARTProgram().getProgramId(),
+                hivMetadata
+                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                    .getProgramWorkflowStateId()),
+            "endDate=${endDate},location=${location}"));
+    cd.setCompositionString("initiatedArt AND NOT (pickedDrugs OR dead OR transfers)");
     return cd;
   }
 
   /**
-   * Get patients who picked up drugs on their second visit
+   * Get patients who picked up drugs on their second visit A and B and C and NOt (dead and
+   * tarnsfers)
    *
    * @return CohortDefinition
    */
   public CohortDefinition getPatientsWhoPickedUpDrugsOnTheirSecondVisit() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Patients who picked drugs during their second visit");
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Patients who  picked up drugs during their second visit");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addSearch(
+        "pickedDrugsAndStartedART",
+        EptsReportUtils.map(
+            getAllPatientsWhoStartedArtAndPickedDrugsOnTheirNextVisit(),
+            "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
+                hivMetadata.getARTProgram().getProgramId(),
+                hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
+            "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "transfers",
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
+                hivMetadata.getARTProgram().getProgramId(),
+                hivMetadata
+                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                    .getProgramWorkflowStateId()),
+            "endDate=${endDate},location=${location}"));
+    cd.setCompositionString("pickedDrugsAndStartedART AND NOT (dead OR transfers)");
     return cd;
   }
 }
