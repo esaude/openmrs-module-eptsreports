@@ -246,7 +246,7 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "LTFU",
         EptsReportUtils.map(
-            genericCohortQueries.getLostToFollowUpPatients(),
+            eri4MonthsCohortQueries.getAllPatientsWhoAreLostToFollowUpDuringPeriod(),
             "endDate=${endDate},location=${location}"));
 
     dim.addCohortDefinition(

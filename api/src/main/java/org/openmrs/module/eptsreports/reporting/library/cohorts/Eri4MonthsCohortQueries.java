@@ -288,4 +288,28 @@ public class Eri4MonthsCohortQueries {
     cd.setCompositionString("(initiatedArt AND consultation) AND NOT (dead OR transfersOut)");
     return cd;
   }
+
+  /**
+   * Get lost to follow up patients within 4 months from ART initiation
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getAllPatientsWhoAreLostToFollowUpDuringPeriod() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Lost to follow up patients");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "initiatedArt",
+        EptsReportUtils.map(
+            getPatientsWhoInitiatedArtLessTransferIns(),
+            "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "missedVisit",
+        EptsReportUtils.map(
+            genericCohortQueries.getLostToFollowUpPatients(),
+            "endDate=${endDate},location=${location}"));
+    cd.setCompositionString("initiatedArt AND missedVisit");
+    return cd;
+  }
 }
