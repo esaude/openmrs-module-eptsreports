@@ -280,25 +280,24 @@ public class EptsCommonDimension {
    */
   public CohortDefinitionDimension getEri2MonthsDimension() {
     CohortDefinitionDimension dim = new CohortDefinitionDimension();
-    dim.addParameter(new Parameter("startDate", "Start Date", Date.class));
     dim.addParameter(new Parameter("endDate", "End Date", Date.class));
     dim.addParameter(new Parameter("location", "location", Location.class));
     dim.setName("Get patients dimensions for Eri2Months");
     dim.addCohortDefinition(
         "IART",
         EptsReportUtils.map(
-            eri2MonthsCohortQueries.getAllPatientsRetainedOnArtFor2MonthsFromArtInitiation(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            eri2MonthsCohortQueries.getAllPatientsWhoInitiatedArt(),
+            "endDate=${endDate},location=${location}"));
     dim.addCohortDefinition(
         "DNPUD",
         EptsReportUtils.map(
             eri2MonthsCohortQueries.getPatientsWhoDidNotPickDrugsOnTheirSecondVisit(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "endDate=${endDate},location=${location}"));
     dim.addCohortDefinition(
         "PUD",
         EptsReportUtils.map(
             eri2MonthsCohortQueries.getPatientsWhoPickedUpDrugsOnTheirSecondVisit(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "endDate=${endDate},location=${location}"));
     dim.addCohortDefinition(
         "DP",
         EptsReportUtils.map(

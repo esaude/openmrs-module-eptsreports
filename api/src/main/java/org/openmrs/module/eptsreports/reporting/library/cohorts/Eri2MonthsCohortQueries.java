@@ -100,7 +100,7 @@ public class Eri2MonthsCohortQueries {
 
   /**
    * Get all patients who initiated ART 2 months from ART initiation less transfer ins return the
-   * patient who initiated ART
+   * patient who initiated ART A and B
    *
    * @retrun CohortDefinition
    */
@@ -273,8 +273,8 @@ public class Eri2MonthsCohortQueries {
   public CohortDefinition getPatientsWhoDidNotPickDrugsOnTheirSecondVisit() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients who did not pick up drugs during their second visit");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "initiatedArt",
         EptsReportUtils.map(
@@ -313,8 +313,8 @@ public class Eri2MonthsCohortQueries {
   public CohortDefinition getPatientsWhoPickedUpDrugsOnTheirSecondVisit() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients who  picked up drugs during their second visit");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "pickedDrugsAndStartedART",
         EptsReportUtils.map(

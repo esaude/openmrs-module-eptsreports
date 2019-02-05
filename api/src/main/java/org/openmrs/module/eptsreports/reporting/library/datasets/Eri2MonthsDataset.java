@@ -41,7 +41,10 @@ public class Eri2MonthsDataset extends BaseDataSet {
     dsd.addParameters(getParameters());
     // apply disaggregations
     dsd.addDimension(
-        "state", EptsReportUtils.map(eptsCommonDimension.getEri2MonthsDimension(), mappings));
+        "state",
+        EptsReportUtils.map(
+            eptsCommonDimension.getEri2MonthsDimension(),
+            "endDate=${endDate},location=${location}"));
 
     addRow(
         dsd,
