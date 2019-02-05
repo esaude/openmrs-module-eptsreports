@@ -15,7 +15,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.api.EptsReportsService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-//TODO probably move this into calculation module
+// TODO probably move this into calculation module
 public abstract class BasePatientCalculationTest extends BaseModuleContextSensitiveTest {
 
   CalculationsTestsCache calculationsTestsCache;
@@ -23,6 +23,8 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
   PatientCalculationService service;
 
   PatientCalculationContext evaluationContext;
+
+  Map<String, Object> params = new HashMap<String, Object>();
 
   abstract PatientCalculation getCalculation();
 
@@ -38,7 +40,7 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
 
     Map<String, Object> cacheEntries = new HashMap<String, Object>();
     cacheEntries.put("location", Context.getLocationService().getLocation(1));
-    setEvaluationContext(calculationsTestsCache.getDate("2019-01-30 00:00:00.0"));
+    setEvaluationContext(calculationsTestsCache.getDate("2019-05-30 00:00:00.0"));
     setEvaluationContext(cacheEntries);
 
     executeDataSet("calculationsTest.xml");
@@ -58,9 +60,9 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
     Assert.assertNotNull(calculation);
     Assert.assertNotNull(cohort);
     Assert.assertNotNull(result);
-    Assert.assertEquals(result.size(), service.evaluate(cohort, calculation).size());
     CalculationResultMap evaluatedResult =
-        service.evaluate(cohort, calculation, getEvaluationContext());
+        service.evaluate(cohort, calculation, params, getEvaluationContext());
+    Assert.assertEquals(result.size(), evaluatedResult.size());
     Assert.assertEquals(result.toString(), evaluatedResult.toString());
   }
 

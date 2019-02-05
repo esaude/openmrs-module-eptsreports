@@ -7,7 +7,7 @@ import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 
-//TODO probably move this into calculation module
+// TODO probably move this into calculation module
 public class CountingCalculationTest extends BasePatientCalculationTest {
 
   @Override

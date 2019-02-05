@@ -31,8 +31,8 @@ public class OnArtForMoreThanXmonthsCalcultionTest extends BasePatientCalculatio
     // initiated ART on 2008-08-01 by hiv enrolment and received and vl result on
     // 2018-12-12
     map.put(2, new SimpleResult(true, calculation, evaluationContext));
-    // initiated ART on 2018-10-21 by starting ARV plan observation and vl result on
-    // 2019-02-02
+    // initiated ART on 2018-06-21 by starting ARV plan observation and vl result on
+    // 2019-04-02
     map.put(6, new SimpleResult(true, calculation, evaluationContext));
     // initiated ART on 2019-01-18 by historical start date observation but not with
     // any vl result

@@ -2,9 +2,9 @@ package org.openmrs.module.eptsreports.reporting.calculation;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import mockit.Mock;
@@ -21,8 +21,10 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.openmrs.module.reporting.common.TimeQualifier;
 
 /** This acts as a test level storage of shared calculations logic & data */
 public class CalculationsTestsCache {
@@ -37,6 +39,18 @@ public class CalculationsTestsCache {
       e.printStackTrace();
     }
     return null;
+  }
+
+  /**
+   * @param a;startDate
+   * @param b; endDate
+   * @param d;date in question
+   * @return true if d is between a & b else false
+   */
+  boolean dateBetween(Date a, Date b, Date d) {
+    return a == null || b == null || d == null
+        ? false
+        : (d.equals(a) || d.equals(b) || (a.compareTo(d) * d.compareTo(b) >= 0));
   }
 
   /** Mocks {@link EptsCalculations} with org.jmockit */
@@ -88,7 +102,7 @@ public class CalculationsTestsCache {
                 break;
               }
             }
-            addObsToMap(calculation, context, map, i, matchedObs);
+            map.put(i, new SimpleResult(matchedObs, calculation, context));
           }
         }
         return map;
@@ -127,17 +141,21 @@ public class CalculationsTestsCache {
           if (p != null) {
             Obs matchedObs = null;
             List<Obs> observations =
-                Context.getObsService().getObservationsByPersonAndConcept(p, concept);
-            // from last to first
-            Collections.sort(
-                observations,
-                new Comparator<Obs>() {
+                Context.getObsService()
+                    .getObservations(
+                        Arrays.asList(p.getPerson()),
+                        null,
+                        Arrays.asList(concept),
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        startDate,
+                        endDate,
+                        false);
 
-                  @Override
-                  public int compare(Obs o1, Obs o2) {
-                    return o2.getObsDatetime().compareTo(o1.getObsDatetime());
-                  }
-                });
             for (Obs o : observations) {
               if (o.getEncounter()
                   .getEncounterType()
@@ -148,21 +166,59 @@ public class CalculationsTestsCache {
                 break;
               }
             }
-            addObsToMap(calculation, context, map, i, matchedObs);
+            map.put(i, new SimpleResult(matchedObs, calculation, context));
           }
         }
         return map;
       }
 
-      private void addObsToMap(
-          final PatientCalculation calculation,
-          PatientCalculationContext context,
-          CalculationResultMap map,
-          int i,
-          Obs matchedObs) {
-        if (matchedObs != null) {
-          map.put(i, new SimpleResult(matchedObs, calculation, context));
+      @Mock
+      CalculationResultMap getObs(
+          Concept concept,
+          Collection<Integer> cohort,
+          List<Location> locationList,
+          List<Concept> valueCodedList,
+          TimeQualifier timeQualifier,
+          Date startDate,
+          PatientCalculationContext context) {
+        CalculationResultMap map = new CalculationResultMap();
+        for (int i : cohort) {
+          Patient p = Context.getPatientService().getPatient(i);
+          if (p != null) {
+            Obs matchedObs = null;
+            // TODO, this startDate parameter fails the 2nd criteria
+            List<Obs> observations =
+                Context.getObsService()
+                    .getObservations(
+                        Arrays.asList(p.getPerson()),
+                        null,
+                        Arrays.asList(concept),
+                        valueCodedList,
+                        null,
+                        locationList,
+                        null,
+                        null,
+                        null,
+                        startDate,
+                        null,
+                        false);
+
+            if (timeQualifier.equals(TimeQualifier.FIRST)) {
+              Collections.reverse(observations);
+              if (!observations.isEmpty()) {
+                matchedObs = observations.get(0);
+              }
+              map.put(i, new SimpleResult(matchedObs, calculation, context));
+            } else if (timeQualifier.equals(TimeQualifier.ANY)) {
+              ListResult results = new ListResult();
+              for (Obs o : observations) {
+                results.add(new SimpleResult(o, calculation, context));
+              }
+              map.put(i, results);
+            }
+          }
         }
+        return map;
       }
     };
   }
