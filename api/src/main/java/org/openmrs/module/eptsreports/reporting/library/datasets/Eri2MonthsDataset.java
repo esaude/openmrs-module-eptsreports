@@ -104,7 +104,7 @@ public class Eri2MonthsDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Adults",
                 EptsReportUtils.map(
-                    eri2MonthsCohortQueries.getAdultsRetaineOnArtFor2MonthsFromArtInitiation(),
+                    eri2MonthsCohortQueries.getAdultsRetainedOnArtFor2MonthsFromArtInitiation(),
                     mappings)),
             mappings),
         get2MonthsRetentionColumns());

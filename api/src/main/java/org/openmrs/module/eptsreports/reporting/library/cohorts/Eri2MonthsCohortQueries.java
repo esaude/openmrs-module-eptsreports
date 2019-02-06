@@ -111,14 +111,14 @@ public class Eri2MonthsCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "all",
+        "initiatedArt",
         EptsReportUtils.map(
             getAllPatientsRetainedOnArtFor2MonthsFromArtInitiation(),
             "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "transferIns",
         EptsReportUtils.map(getTransferInPatients(), "endDate=${endDate},location=${location}"));
-    cd.setCompositionString("all AND NOT transferIns");
+    cd.setCompositionString("initiatedArt AND NOT transferIns");
     return cd;
   }
 
@@ -157,7 +157,7 @@ public class Eri2MonthsCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
-        "all",
+        "initiatedART",
         EptsReportUtils.map(
             getAllPatientsWhoInitiatedArt(), "endDate=${endDate},location=${location}"));
     cd.addSearch(
@@ -165,7 +165,7 @@ public class Eri2MonthsCohortQueries {
         EptsReportUtils.map(
             txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
             "startDate=${endDate-2m},endDate=${endDate-1m},location=${location}"));
-    cd.setCompositionString("all AND pregnant");
+    cd.setCompositionString("initiatedART AND pregnant");
     return cd;
   }
 
@@ -181,7 +181,7 @@ public class Eri2MonthsCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
-        "all",
+        "initiatedART",
         EptsReportUtils.map(
             getAllPatientsWhoInitiatedArt(), "endDate=${endDate},location=${location}"));
     cd.addSearch(
@@ -189,7 +189,7 @@ public class Eri2MonthsCohortQueries {
         EptsReportUtils.map(
             txNewCohortQueries.getTxNewBreastfeedingComposition(),
             "onOrAfter=${endDate-2m},onOrBefore=${endDate-1m},location=${location}"));
-    cd.setCompositionString("all AND breastfeeding");
+    cd.setCompositionString("initiatedART AND breastfeeding");
     return cd;
   }
 
@@ -233,14 +233,14 @@ public class Eri2MonthsCohortQueries {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getAdultsRetaineOnArtFor2MonthsFromArtInitiation() {
+  public CohortDefinition getAdultsRetainedOnArtFor2MonthsFromArtInitiation() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Adults having ART retention for than 2 months");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
-        "all",
+        "initiatedART",
         EptsReportUtils.map(
             getAllPatientsWhoInitiatedArt(), "endDate=${endDate},location=${location}"));
     cd.addSearch(
@@ -259,7 +259,7 @@ public class Eri2MonthsCohortQueries {
             txNewCohortQueries.getTxNewBreastfeedingComposition(),
             "onOrAfter=${endDate-2m},onOrBefore=${endDate-1m},location=${location}"));
     cd.setCompositionString(
-        "(initiatedART AND children) AND NOT ((initiatedART AND pregnant) OR (initiatedART AND breastfeeding))");
+        "(initiatedART AND adults) AND NOT ((initiatedART AND pregnant) OR (initiatedART AND breastfeeding))");
     return cd;
   }
 
