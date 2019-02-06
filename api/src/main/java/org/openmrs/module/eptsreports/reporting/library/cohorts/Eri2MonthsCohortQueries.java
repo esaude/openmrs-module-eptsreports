@@ -35,7 +35,8 @@ public class Eri2MonthsCohortQueries {
   @Autowired private GenericCohortQueries genericCohortQueries;
 
   /**
-   * Get patients who have 2 months ART retention after ART initiation A
+   * Get patients who have 2 months ART retention after ART initiation A TODO: harmonise with TxNew
+   * Union query
    *
    * @return CohortDefinition
    */

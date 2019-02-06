@@ -14,7 +14,8 @@ package org.openmrs.module.eptsreports.reporting.library.queries;
 public class Eri2MonthsQueries {
 
   /**
-   * C
+   * C TODO: merge with allPatientsWhoInitiatedTreatmentDuringReportingPeriod and harmonizez with
+   * txNew union query
    *
    * @param arvPharmaciaEncounter
    * @param arvAdultoSeguimentoEncounter
