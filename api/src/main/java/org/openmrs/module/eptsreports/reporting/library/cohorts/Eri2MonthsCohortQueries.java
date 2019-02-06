@@ -340,7 +340,7 @@ public class Eri2MonthsCohortQueries {
 
   /**
    * Get all patients who initiated ART(A), less transfer ins(B) intersected with those who picked
-   * up drugs in 33 days
+   * up drugs in 33 days AND those who suspended treatment withi the reporting period
    *
    * @return CohortDefinition
    */
@@ -361,6 +361,36 @@ public class Eri2MonthsCohortQueries {
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),
             "endDate=${endDate},location=${location}"));
+    cd.setCompositionString("initiatedArtAndPickedDrugs AND suspendedTreatment");
+    return cd;
+  }
+
+  /**
+   * Get all patients who initiated ART(A), less transfer ins(B) intersected with those who picked
+   * up drugs in 33 days AND those who suspended treatment withi the reporting period
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoInitiatedArtAndPickedDrugsButTransferredOut() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Patients who transferred out during period");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "initiatedArtAndPickedDrugs",
+        EptsReportUtils.map(
+            getAllPatientsWhoStartedArtAndPickedDrugsOnTheirNextVisit(),
+            "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "transferredOut",
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
+                hivMetadata.getARTProgram().getProgramId(),
+                hivMetadata
+                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                    .getProgramWorkflowStateId()),
+            "endDate=${endDate},location=${location}"));
+    cd.setCompositionString("initiatedArtAndPickedDrugs AND transferredOut");
     return cd;
   }
 }
