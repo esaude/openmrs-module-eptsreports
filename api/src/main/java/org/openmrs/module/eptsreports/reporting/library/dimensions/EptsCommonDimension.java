@@ -296,7 +296,8 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "DP",
         EptsReportUtils.map(
-            genericCohortQueries.getDeceasedPatients(), "endDate=${endDate},location=${location}"));
+            eri2MonthsCohortQueries.getPatientsWhoInitiatedArtAndDead(),
+            "endDate=${endDate},location=${location}"));
     dim.addCohortDefinition(
         "TOP",
         EptsReportUtils.map(

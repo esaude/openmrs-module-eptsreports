@@ -224,8 +224,7 @@ public class Eri2MonthsCohortQueries {
         EptsReportUtils.map(
             txNewCohortQueries.getTxNewBreastfeedingComposition(),
             "onOrAfter=${endDate-2m},onOrBefore=${endDate-1m},location=${location}"));
-    cd.setCompositionString(
-        "(initiatedART AND children) AND NOT ((initiatedART AND pregnant) OR (initiatedART AND breastfeeding))");
+    cd.setCompositionString("(initiatedART AND children) AND NOT (pregnant OR breastfeeding)");
     return cd;
   }
 
@@ -259,8 +258,7 @@ public class Eri2MonthsCohortQueries {
         EptsReportUtils.map(
             txNewCohortQueries.getTxNewBreastfeedingComposition(),
             "onOrAfter=${endDate-2m},onOrBefore=${endDate-1m},location=${location}"));
-    cd.setCompositionString(
-        "(initiatedART AND adults) AND NOT ((initiatedART AND pregnant) OR (initiatedART AND breastfeeding))");
+    cd.setCompositionString("(initiatedART AND adults) AND NOT (pregnant OR breastfeeding)");
     return cd;
   }
 
@@ -335,7 +333,31 @@ public class Eri2MonthsCohortQueries {
 
   /**
    * Get all patients who initiated ART(A), less transfer ins(B) intersected with those who picked
-   * up drugs in 33 days AND those who suspended treatment withi the reporting period
+   * up drugs in 33 days AND who died within the reporting period
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoInitiatedArtAndDead() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Patients who died during period");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "initiatedArtAndPickedDrugs",
+        EptsReportUtils.map(
+            getAllPatientsWhoStartedArtAndPickedDrugsOnTheirNextVisit(),
+            "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            genericCohortQueries.getDeceasedPatients(), "endDate=${endDate},location=${location}"));
+    cd.setCompositionString("initiatedArtAndPickedDrugs AND dead");
+    return cd;
+  }
+
+  /**
+   * Get all patients who initiated ART(A), less transfer ins(B) intersected with those who picked
+   * up drugs in 33 days AND those who suspended treatment within the reporting period
    *
    * @return CohortDefinition
    */
@@ -362,7 +384,7 @@ public class Eri2MonthsCohortQueries {
 
   /**
    * Get all patients who initiated ART(A), less transfer ins(B) intersected with those who picked
-   * up drugs in 33 days AND those who suspended treatment withi the reporting period
+   * up drugs in 33 days AND those who suspended treatment within the reporting period
    *
    * @return CohortDefinition
    */
