@@ -81,7 +81,7 @@ public class Eri4MonthsCohortQueries {
   }
 
   /**
-   * C Get all patients who initoated treatment and had a drug pick up or had a consultation between
+   * C Get all patients who initiated treatment and had a drug pick up or had a consultation between
    * 61 and 120 days from the encounter date
    */
   public CohortDefinition
@@ -202,14 +202,15 @@ public class Eri4MonthsCohortQueries {
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
-            getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${endDate-4m},endDate=${endDate-3m},location=${location}"));
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            getBreastfeedingWomenRetainedOnArtFor4MonthsFromArtInitiation(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.setCompositionString("(initiatedART AND children) AND NOT(pregnant OR breastfeeding)");
+            txNewCohortQueries.getTxNewBreastfeedingComposition(),
+            "onOrAfter=${endDate-4m},onOrBefore=${endDate-3m},location=${location}"));
+    cd.setCompositionString(
+        "(initiatedART AND children) AND NOT ((initiatedART AND pregnant) OR (initiatedART AND breastfeeding))");
     return cd;
   }
 
@@ -237,14 +238,15 @@ public class Eri4MonthsCohortQueries {
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
-            getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${endDate-4m},endDate=${endDate-3m},location=${location}"));
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            getBreastfeedingWomenRetainedOnArtFor4MonthsFromArtInitiation(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.setCompositionString("(initiatedART AND adults) AND NOT(pregnant OR breastfeeding)");
+            txNewCohortQueries.getTxNewBreastfeedingComposition(),
+            "onOrAfter=${endDate-4m},onOrBefore=${endDate-3m},location=${location}"));
+    cd.setCompositionString(
+        "(initiatedART AND adults) AND NOT((initiatedART AND pregnant) OR (initiatedART AND breastfeeding))");
     return cd;
   }
 
@@ -272,10 +274,7 @@ public class Eri4MonthsCohortQueries {
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
-            "endDate=${endDate},location=${location}"));
+            genericCohortQueries.getDeceasedPatients(), "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
