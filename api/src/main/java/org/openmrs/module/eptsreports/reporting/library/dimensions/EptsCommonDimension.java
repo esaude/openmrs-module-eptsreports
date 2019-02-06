@@ -246,7 +246,7 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "LTFU",
         EptsReportUtils.map(
-            genericCohortQueries.getLostToFollowUpPatients(),
+            eri4MonthsCohortQueries.getAllPatientsWhoAreLostToFollowUpDuringPeriod(),
             "endDate=${endDate},location=${location}"));
 
     dim.addCohortDefinition(
@@ -300,18 +300,12 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "TOP",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
-                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()),
+            eri2MonthsCohortQueries.getPatientsWhoInitiatedArtAndPickedDrugsButTransferredOut(),
             "endDate=${endDate},location=${location}"));
     dim.addCohortDefinition(
         "STP",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),
+            eri2MonthsCohortQueries.getPatientsWhoInitiatedArtAndPickedDrugsButSuspendedTreatment(),
             "endDate=${endDate},location=${location}"));
     return dim;
   }

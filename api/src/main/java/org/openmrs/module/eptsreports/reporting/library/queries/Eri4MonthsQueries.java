@@ -192,4 +192,8 @@ public class Eri4MonthsQueries {
         + " AND ps.start_date=pg.date_enrolled AND "
         + "ps.start_date BETWEEN date_add(date_add(:endDate, interval -4 month), interval 1 day) AND date_add(:endDate, interval -3 month) AND location_id=:location";
   }
+
+  public static String getLostToFollowUpPatients() {
+    return "";
+  }
 }
