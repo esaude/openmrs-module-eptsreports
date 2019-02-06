@@ -85,8 +85,8 @@ public class SetupImEr2Report extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "ERI_2MonthsReport.xls",
-              "ERI_2 Months-Report",
+              "IM_ER2_Report.xls",
+              "ERI-2Months-Report",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
