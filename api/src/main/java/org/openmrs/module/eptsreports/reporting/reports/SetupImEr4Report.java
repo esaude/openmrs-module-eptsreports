@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SetupImEr4Report extends EptsDataExportManager {
 
-  @Autowired private Eri4MonthsDataset eri3MonthsDataset;
+  @Autowired private Eri4MonthsDataset eri4MonthsDataset;
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
@@ -61,11 +61,11 @@ public class SetupImEr4Report extends EptsDataExportManager {
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
-    rd.setParameters(eri3MonthsDataset.getParameters());
+    rd.setParameters(eri4MonthsDataset.getParameters());
 
     rd.addDataSetDefinition(
         "ERI-4 Months Data Set",
-        Mapped.mapStraightThrough(eri3MonthsDataset.constructEri4MonthsDatset()));
+        Mapped.mapStraightThrough(eri4MonthsDataset.constructEri4MonthsDatset()));
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
@@ -86,8 +86,8 @@ public class SetupImEr4Report extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "IM_ER3_Report.xls",
-              "ERI-4 Months-Report",
+              "IM_ER4_Report.xls",
+              "ERI-4Months-Report",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
