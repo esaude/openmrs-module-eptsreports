@@ -35,7 +35,7 @@ public class Eri4MonthsDataset extends BaseDataSet {
 
   public DataSetDefinition constructEri4MonthsDatset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String mappings = "startDate=${endDate-4m+1d},endDate=${endDate-3m},location=${location}";
     dsd.setName("ERI-4months Data Set");
     dsd.addParameters(getParameters());
 
@@ -52,9 +52,8 @@ public class Eri4MonthsDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "all patients",
                 EptsReportUtils.map(
-                    eri4MonthsCohortQueries.getPatientsWhoInitiatedArtLessTransferIns(),
-                    "endDate=${endDate},location=${location}")),
-            "endDate=${endDate},location=${location}"),
+                    eri4MonthsCohortQueries.getPatientsWhoInitiatedArtLessTransferIns(), mappings)),
+            mappings),
         get4MonthsRetentionColumns());
     addRow(
         dsd,
