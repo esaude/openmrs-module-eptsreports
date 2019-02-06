@@ -43,7 +43,7 @@ public class Eri2MonthsCohortQueries {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("patientsRetentionFor2MonthsOnART");
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location" + "", "Location", Location.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setQuery(
         Eri2MonthsQueries.allPatientsWhoInitiatedTreatmentDuringReportingPeriod(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
@@ -65,7 +65,7 @@ public class Eri2MonthsCohortQueries {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Transfer Ins");
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location" + "", "Location", Location.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setQuery(
         Eri2MonthsQueries.getTransferInPatients(
             hivMetadata.getARTProgram().getProgramId(),
@@ -155,7 +155,7 @@ public class Eri2MonthsCohortQueries {
     cd.setName("Pregnant women retain on ART for more than 2 months from ART initiation date");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location" + "", "Location", Location.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "all",
         EptsReportUtils.map(
@@ -179,7 +179,7 @@ public class Eri2MonthsCohortQueries {
     cd.setName("Breastfeeding women retain on ART for more than 2 months from ART initiation date");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location" + "", "Location", Location.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "all",
         EptsReportUtils.map(
@@ -203,7 +203,7 @@ public class Eri2MonthsCohortQueries {
     cd.setName("Children having ART retention for than 2 months");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location" + "", "Location", Location.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "initiatedART",
         EptsReportUtils.map(
@@ -285,10 +285,7 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
-            "endDate=${endDate},location=${location}"));
+            genericCohortQueries.getDeceasedPatients(), "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "transfers",
         EptsReportUtils.map(
@@ -321,10 +318,7 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
-            "endDate=${endDate},location=${location}"));
+            genericCohortQueries.getDeceasedPatients(), "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "transfers",
         EptsReportUtils.map(
