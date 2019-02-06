@@ -309,9 +309,7 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "STP",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),
+            eri2MonthsCohortQueries.getPatientsWhoInitiatedArtAndPickedDrugsButSuspendedTreatment(),
             "endDate=${endDate},location=${location}"));
     return dim;
   }
