@@ -62,7 +62,7 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "<1",
         EptsReportUtils.map(
-            ageCohortQueries.createBelowYAgeCohort("patients with age bellow 1", 1),
+            ageCohortQueries.createXtoYAgeCohort("patients with age bellow 1", null, 1),
             "effectiveDate=${effectiveDate}"));
     dim.addCohortDefinition(
         "1-4",
@@ -117,7 +117,7 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "50+",
         EptsReportUtils.map(
-            ageCohortQueries.createOverXAgeCohort("patients with age over 50", 50),
+            ageCohortQueries.createXtoYAgeCohort("patients with age over 50", 50, null),
             "effectiveDate=${effectiveDate}"));
     return dim;
   }

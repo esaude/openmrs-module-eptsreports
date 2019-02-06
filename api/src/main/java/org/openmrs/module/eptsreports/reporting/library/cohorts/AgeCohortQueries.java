@@ -25,29 +25,19 @@ public class AgeCohortQueries {
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
-  public CohortDefinition createBelowYAgeCohort(String name, int maxAge) {
-    AgeCohortDefinition patientsWithAgeBelow = new AgeCohortDefinition();
-    patientsWithAgeBelow.setName(name);
-    patientsWithAgeBelow.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
-    patientsWithAgeBelow.setMaxAge(maxAge - 1);
-    return patientsWithAgeBelow;
-  }
-
-  public CohortDefinition createXtoYAgeCohort(String name, int minAge, int maxAge) {
+  public CohortDefinition createXtoYAgeCohort(String name, Integer minAge, Integer maxAge) {
     AgeCohortDefinition xToYCohort = new AgeCohortDefinition();
     xToYCohort.setName(name);
-    xToYCohort.setMaxAge(maxAge);
-    xToYCohort.setMinAge(minAge);
-    xToYCohort.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
+    if (minAge != null) {
+      xToYCohort.setMinAge(minAge);
+    }
+    if (maxAge != null) {
+      // if minAge is not supplied subtract 1 so it does not include patients with age == maxAge
+      int age = minAge != null ? maxAge : maxAge - 1;
+      xToYCohort.setMaxAge(age);
+    }
+    xToYCohort.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
     return xToYCohort;
-  }
-
-  public CohortDefinition createOverXAgeCohort(String name, int minAge) {
-    AgeCohortDefinition overXCohort = new AgeCohortDefinition();
-    overXCohort.setName(name);
-    overXCohort.setMinAge(minAge);
-    overXCohort.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
-    return overXCohort;
   }
 
   /**

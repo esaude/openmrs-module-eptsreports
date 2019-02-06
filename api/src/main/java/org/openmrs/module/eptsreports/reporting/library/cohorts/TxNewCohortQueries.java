@@ -316,7 +316,7 @@ public class TxNewCohortQueries {
    */
   public CohortDefinition createBelowXAgeOnArtStartDateCohort(int maxAge) {
     String name = "patients with age bellow " + maxAge + " on ART start date";
-    CohortDefinition ageCohort = ageCohortQueries.createBelowYAgeCohort("", maxAge + 1);
+    CohortDefinition ageCohort = ageCohortQueries.createXtoYAgeCohort("", null, maxAge + 1);
     CohortDefinition cd = getTxNewCompositionCohort(name, ageCohort);
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
@@ -330,7 +330,7 @@ public class TxNewCohortQueries {
    */
   public CohortDefinition createOverXAgeOnArtStartDateCohort(int minAge) {
     String name = "patients with age over " + minAge + " on ART start date";
-    CohortDefinition ageCohort = ageCohortQueries.createOverXAgeCohort("", minAge);
+    CohortDefinition ageCohort = ageCohortQueries.createXtoYAgeCohort("", minAge, null);
     CohortDefinition cd = getTxNewCompositionCohort(name, ageCohort);
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
