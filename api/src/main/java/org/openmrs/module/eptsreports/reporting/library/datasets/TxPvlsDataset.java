@@ -16,6 +16,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 import java.util.Arrays;
 import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortStrategy;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -24,6 +25,7 @@ import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDef
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -34,6 +36,10 @@ public class TxPvlsDataset extends BaseDataSet {
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
 
   @Autowired private TxPvlsCohortQueries txPvls;
+
+  @Autowired
+  @Qualifier("common")
+  private AgeDimensionCohortStrategy ageDimensionCohortStrategy;
 
   public DataSetDefinition constructTxPvlsDatset() {
 
@@ -47,7 +53,9 @@ public class TxPvlsDataset extends BaseDataSet {
     dsd.addDimension(
         "query", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
     dsd.addDimension(
-        "age", EptsReportUtils.map(eptsCommonDimension.age(), "effectiveDate=${endDate}"));
+        "age",
+        EptsReportUtils.map(
+            eptsCommonDimension.age(ageDimensionCohortStrategy), "effectiveDate=${endDate}"));
 
     // Totals for both numerator and denominator
 

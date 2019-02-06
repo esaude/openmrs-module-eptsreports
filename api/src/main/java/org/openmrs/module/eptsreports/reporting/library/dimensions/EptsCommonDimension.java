@@ -13,9 +13,7 @@ package org.openmrs.module.eptsreports.reporting.library.dimensions;
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -28,11 +26,7 @@ public class EptsCommonDimension {
 
   @Autowired private GenderCohortQueries genderCohortQueries;
 
-  @Autowired private AgeCohortQueries ageCohortQueries;
-
   @Autowired private TxNewCohortQueries txNewCohortQueries;
-
-  @Autowired private GenericCohortQueries genericCohortQueries;
 
   /**
    * Gender dimension
@@ -52,129 +46,37 @@ public class EptsCommonDimension {
    *
    * @return {@link org.openmrs.module.reporting.indicator.dimension.CohortDimension}
    */
-  public CohortDefinitionDimension age() {
+  public CohortDefinitionDimension age(AgeDimensionCohortStrategy ageCohort) {
     CohortDefinitionDimension dim = new CohortDefinitionDimension();
-    dim.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
+    dim.setParameters(ageCohort.getParameters());
     dim.setName("age dimension");
 
+    dim.addCohortDefinition("UK", ageCohort.createUnknownAgeCohort());
     dim.addCohortDefinition(
-        "UK", EptsReportUtils.map(ageCohortQueries.getPatientsWithUnknownAge(), ""));
+        "<1", ageCohort.createXtoYAgeCohort("patients with age bellow 1", null, 1));
     dim.addCohortDefinition(
-        "<1",
-        EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("patients with age bellow 1", null, 1),
-            "effectiveDate=${effectiveDate}"));
+        "1-4", ageCohort.createXtoYAgeCohort("patients with age between 1 and 4", 1, 4));
     dim.addCohortDefinition(
-        "1-4",
-        EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("patients with age between 1 and 4", 1, 4),
-            "effectiveDate=${effectiveDate}"));
+        "5-9", ageCohort.createXtoYAgeCohort("patients with age between 5 and 9", 5, 9));
     dim.addCohortDefinition(
-        "5-9",
-        EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("patients with age between 5 and 9", 5, 9),
-            "effectiveDate=${effectiveDate}"));
+        "10-14", ageCohort.createXtoYAgeCohort("patients with age between 10 and 14", 10, 14));
     dim.addCohortDefinition(
-        "10-14",
-        EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("patients with age between 10 and 14", 10, 14),
-            "effectiveDate=${effectiveDate}"));
+        "15-19", ageCohort.createXtoYAgeCohort("patients with age between 15 and 19", 15, 19));
     dim.addCohortDefinition(
-        "15-19",
-        EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("patients with age between 15 and 19", 15, 19),
-            "effectiveDate=${effectiveDate}"));
+        "20-24", ageCohort.createXtoYAgeCohort("patients with age between 20 and 24", 20, 24));
     dim.addCohortDefinition(
-        "20-24",
-        EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("patients with age between 20 and 24", 20, 24),
-            "effectiveDate=${effectiveDate}"));
+        "25-29", ageCohort.createXtoYAgeCohort("patients with age between 25 and 29", 25, 29));
     dim.addCohortDefinition(
-        "25-29",
-        EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("patients with age between 25 and 29", 25, 29),
-            "effectiveDate=${effectiveDate}"));
+        "30-34", ageCohort.createXtoYAgeCohort("patients with age between 30 and 34", 30, 34));
     dim.addCohortDefinition(
-        "30-34",
-        EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("patients with age between 30 and 34", 30, 34),
-            "effectiveDate=${effectiveDate}"));
+        "35-39", ageCohort.createXtoYAgeCohort("patients with age between 35 and 39", 35, 39));
     dim.addCohortDefinition(
-        "35-39",
-        EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("patients with age between 35 and 39", 35, 39),
-            "effectiveDate=${effectiveDate}"));
+        "40-44", ageCohort.createXtoYAgeCohort("patients with age between 40 and 44", 40, 44));
     dim.addCohortDefinition(
-        "40-44",
-        EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("patients with age between 40 and 44", 40, 44),
-            "effectiveDate=${effectiveDate}"));
+        "45-49", ageCohort.createXtoYAgeCohort("patients with age between 45 and 49", 45, 49));
     dim.addCohortDefinition(
-        "45-49",
-        EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("patients with age between 45 and 49", 45, 49),
-            "effectiveDate=${effectiveDate}"));
-    dim.addCohortDefinition(
-        "50+",
-        EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("patients with age over 50", 50, null),
-            "effectiveDate=${effectiveDate}"));
-    return dim;
-  }
+        "50+", ageCohort.createXtoYAgeCohort("patients with age over 50", 50, null));
 
-  public CohortDefinitionDimension txNewAges() {
-    CohortDefinitionDimension dim = new CohortDefinitionDimension();
-    dim.setName("age dimension");
-    dim.addParameter(new Parameter("startDate", "startDate", Date.class));
-    dim.addParameter(new Parameter("endDate", "endDate", Date.class));
-    dim.addParameter(new Parameter("location", "location", Location.class));
-    String mappings = "location=${location},onOrAfter=${startDate},onOrBefore=${endDate}";
-    dim.addCohortDefinition(
-        "<1",
-        EptsReportUtils.map(txNewCohortQueries.createBelowXAgeOnArtStartDateCohort(1), mappings));
-    dim.addCohortDefinition(
-        "1-4",
-        EptsReportUtils.map(txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(1, 4), mappings));
-    dim.addCohortDefinition(
-        "5-9",
-        EptsReportUtils.map(txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(5, 9), mappings));
-    dim.addCohortDefinition(
-        "10-14",
-        EptsReportUtils.map(
-            txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(10, 14), mappings));
-    dim.addCohortDefinition(
-        "15-19",
-        EptsReportUtils.map(
-            txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(15, 19), mappings));
-    dim.addCohortDefinition(
-        "20-24",
-        EptsReportUtils.map(
-            txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(20, 24), mappings));
-    dim.addCohortDefinition(
-        "25-29",
-        EptsReportUtils.map(
-            txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(25, 29), mappings));
-    dim.addCohortDefinition(
-        "30-34",
-        EptsReportUtils.map(
-            txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(30, 34), mappings));
-    dim.addCohortDefinition(
-        "35-39",
-        EptsReportUtils.map(
-            txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(35, 39), mappings));
-    dim.addCohortDefinition(
-        "40-44",
-        EptsReportUtils.map(
-            txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(40, 44), mappings));
-    dim.addCohortDefinition(
-        "45-49",
-        EptsReportUtils.map(
-            txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(45, 49), mappings));
-    dim.addCohortDefinition(
-        "50+",
-        EptsReportUtils.map(txNewCohortQueries.createOverXAgeOnArtStartDateCohort(50), mappings));
-    dim.addCohortDefinition(
-        "unknown", EptsReportUtils.map(genericCohortQueries.getUnknownAgeCohort(), ""));
     return dim;
   }
 

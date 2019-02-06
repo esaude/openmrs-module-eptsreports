@@ -15,6 +15,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 import java.util.Arrays;
 import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortStrategy;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -22,6 +23,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -33,6 +35,10 @@ public class TxCurrDataset extends BaseDataSet {
 
   @Autowired private EptsCommonDimension eptsCommonDimension;
 
+  @Autowired
+  @Qualifier("common")
+  private AgeDimensionCohortStrategy ageDimensionCohortStrategy;
+
   public CohortIndicatorDataSetDefinition constructTxCurrDataset(boolean currentSpec) {
 
     CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
@@ -42,7 +48,9 @@ public class TxCurrDataset extends BaseDataSet {
 
     dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dataSetDefinition.addDimension(
-        "age", EptsReportUtils.map(eptsCommonDimension.age(), "effectiveDate=${endDate}"));
+        "age",
+        EptsReportUtils.map(
+            eptsCommonDimension.age(ageDimensionCohortStrategy), "effectiveDate=${endDate}"));
 
     CohortDefinition txCurrCompositionCohort =
         txCurrCohortQueries.getTxCurrCompositionCohort("compositionCohort", currentSpec);
