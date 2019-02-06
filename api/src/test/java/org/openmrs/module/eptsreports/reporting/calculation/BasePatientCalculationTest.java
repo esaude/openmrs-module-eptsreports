@@ -47,7 +47,7 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
 
     PatientCalculation calculation = getCalculation();
     calculationsTestsCache.stubEptsCalculations(calculation);
-    calculationsTestsCache.stubEptsCalculationUtils(calculation);
+    calculationsTestsCache.stubEptsCalculationUtils();
   }
 
   /** This test runs for all classes that extend this class, it's the basic calculation unit test */

@@ -45,8 +45,8 @@ public class CalculationsTestsCache {
   }
 
   /** Mocks {@link EptsCalculationUtils} with org.jmockit */
-  public void stubEptsCalculationUtils(final PatientCalculation calculation) {
-    new EptsCalculationUtilsMock(calculation);
+  public void stubEptsCalculationUtils() {
+    new EptsCalculationUtilsMock();
   }
 
   public Obs createBasicObs(

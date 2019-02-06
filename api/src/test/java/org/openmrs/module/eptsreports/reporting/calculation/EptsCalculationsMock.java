@@ -25,7 +25,7 @@ import org.openmrs.module.reporting.common.TimeQualifier;
 
 public class EptsCalculationsMock extends MockUp<EptsCalculations> {
 
-  PatientCalculation calculation;
+  private PatientCalculation calculation;
 
   public EptsCalculationsMock(PatientCalculation calculation) {
     this.calculation = calculation;
@@ -147,7 +147,7 @@ public class EptsCalculationsMock extends MockUp<EptsCalculations> {
   }
 
   @Mock
-  CalculationResultMap getObs(
+  public CalculationResultMap getObs(
       Concept concept,
       Collection<Integer> cohort,
       List<Location> locationList,
