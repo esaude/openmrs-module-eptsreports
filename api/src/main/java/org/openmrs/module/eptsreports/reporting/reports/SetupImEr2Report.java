@@ -21,6 +21,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQue
 import org.openmrs.module.eptsreports.reporting.library.datasets.Eri2MonthsDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -93,7 +94,7 @@ public class SetupImEr2Report extends EptsDataExportManager {
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new ReportingException(e.toString());
     }
 
     return Arrays.asList(reportDesign);
