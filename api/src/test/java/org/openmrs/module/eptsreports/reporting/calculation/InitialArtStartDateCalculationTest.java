@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
+import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.InitialArtStartDateCalculation;
@@ -30,6 +31,7 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
     CalculationResultMap map = new CalculationResultMap();
 
     // initiated ART by hiv enrolment
+    PatientCalculationContext evaluationContext = getEvaluationContext();
     map.put(
         2,
         new SimpleResult(
@@ -69,18 +71,19 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
   }
 
   @Test
-  public void evaluate_shouldConsiderLeastInitiationDateForMultipleEntryPoints() {
+  public void evaluateShouldConsiderLeastInitiationDateForMultipleEntryPoints() {
     // initiating ART by starting ARV plan observation in addition to HIV
     // enrollment
+    PatientCalculationContext evaluationContext = getEvaluationContext();
     calculationsTestsCache.createBasicObs(
         Context.getPatientService().getPatient(2),
         Context.getConceptService().getConcept(7777002),
         Context.getEncounterService().getEncounter(3),
         calculationsTestsCache.getDate("2008-07-01 00:00:00.0"),
-        (Location) getEvaluationContext().getFromCache("location"),
+        (Location) evaluationContext.getFromCache("location"),
         Context.getConceptService().getConcept(7777003));
     CalculationResultMap evaluatedResult =
-        service.evaluate(getCohort(), getCalculation(), getEvaluationContext());
+        service.evaluate(getCohort(), getCalculation(), evaluationContext);
     Assert.assertEquals(
         calculationsTestsCache.getDate("2008-07-01 00:00:00.0"), evaluatedResult.get(2).getValue());
     // the rest should not be touched
@@ -92,9 +95,9 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
         Context.getConceptService().getConcept(7777005),
         Context.getEncounterService().getEncounter(3),
         calculationsTestsCache.getDate("2019-01-01 00:00:00.0"),
-        (Location) getEvaluationContext().getFromCache("location"),
+        (Location) evaluationContext.getFromCache("location"),
         calculationsTestsCache.getDate("2008-06-01 00:00:00.0"));
-    evaluatedResult = service.evaluate(getCohort(), getCalculation(), getEvaluationContext());
+    evaluatedResult = service.evaluate(getCohort(), getCalculation(), evaluationContext);
     Assert.assertEquals(
         calculationsTestsCache.getDate("2008-06-01 00:00:00.0"), evaluatedResult.get(2).getValue());
     // the rest should not be touched
@@ -106,9 +109,9 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
         Context.getConceptService().getConcept(7777002),
         Context.getEncounterService().getEncounter(3),
         calculationsTestsCache.getDate("2019-01-02 00:00:00.0"),
-        (Location) getEvaluationContext().getFromCache("location"),
+        (Location) evaluationContext.getFromCache("location"),
         Context.getConceptService().getConcept(7777004));
-    evaluatedResult = service.evaluate(getCohort(), getCalculation(), getEvaluationContext());
+    evaluatedResult = service.evaluate(getCohort(), getCalculation(), evaluationContext);
     Assert.assertEquals(
         calculationsTestsCache.getDate("2008-06-01 00:00:00.0"), evaluatedResult.get(2).getValue());
     // the rest should not be touched

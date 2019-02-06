@@ -18,19 +18,19 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 // TODO probably move this into calculation module
 public abstract class BasePatientCalculationTest extends BaseModuleContextSensitiveTest {
 
-  CalculationsTestsCache calculationsTestsCache;
+  protected CalculationsTestsCache calculationsTestsCache;
 
-  PatientCalculationService service;
+  protected PatientCalculationService service;
 
-  PatientCalculationContext evaluationContext;
+  private PatientCalculationContext evaluationContext;
 
-  Map<String, Object> params = new HashMap<String, Object>();
+  protected Map<String, Object> params = new HashMap<String, Object>();
 
-  abstract PatientCalculation getCalculation();
+  public abstract PatientCalculation getCalculation();
 
-  abstract Collection<Integer> getCohort();
+  public abstract Collection<Integer> getCohort();
 
-  abstract CalculationResultMap getResult();
+  public abstract CalculationResultMap getResult();
 
   @Before
   public void setUp() throws Exception {
@@ -52,7 +52,7 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
 
   /** This test runs for all classes that extend this class, it's the basic calculation unit test */
   @Test
-  public void evaluate_shouldReturnMatchedResultMapBySizeAndPrintOutGivenCalculationCohort() {
+  public void evaluateShouldReturnMatchedResultMapBySizeAndPrintOutGivenCalculationCohort() {
     Assert.assertNotNull(Context.getService(EptsReportsService.class));
     CalculationResultMap result = getResult();
     PatientCalculation calculation = getCalculation();
@@ -66,15 +66,12 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
     Assert.assertEquals(result.toString(), evaluatedResult.toString());
   }
 
-  void setEvaluationContext(Date now) {
-    if (now == null) {
-      now = new Date();
-    }
-    evaluationContext.setNow(now);
+  protected void setEvaluationContext(Date now) {
+    evaluationContext.setNow(now == null ? new Date() : now);
   }
 
   @SuppressWarnings("rawtypes")
-  void setEvaluationContext(Map<String, Object> cacheEntries) {
+  protected void setEvaluationContext(Map<String, Object> cacheEntries) {
     if (cacheEntries != null && !cacheEntries.isEmpty()) {
       for (Map.Entry e : cacheEntries.entrySet()) {
         evaluationContext.addToCache((String) e.getKey(), e.getValue());
@@ -82,11 +79,11 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
     }
   }
 
-  PatientCalculationContext getEvaluationContext() {
+  public PatientCalculationContext getEvaluationContext() {
     return evaluationContext;
   }
 
-  void matchOtherResultsExcept(
+  protected void matchOtherResultsExcept(
       CalculationResultMap evaluatedResult, Integer... patientsIdNotToMatch) {
     CalculationResultMap otherResult = (CalculationResultMap) evaluatedResult.clone();
     CalculationResultMap initialResult = (CalculationResultMap) getResult().clone();

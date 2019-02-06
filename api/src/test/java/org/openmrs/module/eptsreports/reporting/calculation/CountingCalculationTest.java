@@ -11,17 +11,17 @@ import org.openmrs.calculation.result.SimpleResult;
 public class CountingCalculationTest extends BasePatientCalculationTest {
 
   @Override
-  PatientCalculation getCalculation() {
+  public PatientCalculation getCalculation() {
     return new CountingCalculation();
   }
 
   @Override
-  Collection<Integer> getCohort() {
+  public Collection<Integer> getCohort() {
     return Arrays.asList(new Integer[] {1, 2, 3});
   }
 
   @Override
-  CalculationResultMap getResult() {
+  public CalculationResultMap getResult() {
     PatientCalculation calculation = getCalculation();
     CalculationResultMap map = new CalculationResultMap();
     map.put(1, new SimpleResult(1, calculation, getEvaluationContext()));

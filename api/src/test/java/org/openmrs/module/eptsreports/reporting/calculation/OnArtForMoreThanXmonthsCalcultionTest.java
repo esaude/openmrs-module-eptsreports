@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
+import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForMoreThanXmonthsCalcultion;
@@ -30,6 +31,7 @@ public class OnArtForMoreThanXmonthsCalcultionTest extends BasePatientCalculatio
 
     // initiated ART on 2008-08-01 by hiv enrolment and received and vl result on
     // 2018-12-12
+    PatientCalculationContext evaluationContext = getEvaluationContext();
     map.put(2, new SimpleResult(true, calculation, evaluationContext));
     // initiated ART on 2018-06-21 by starting ARV plan observation and vl result on
     // 2019-04-02
@@ -50,7 +52,7 @@ public class OnArtForMoreThanXmonthsCalcultionTest extends BasePatientCalculatio
   }
 
   @Test
-  public void calculate_lastVlShouldBeUsed_whenThereAreMoreThanOne() {
+  public void calculateLastVlShouldBeUsedWhenThereAreMoreThanOne() {
     // add next vl after 3 months on ART in addition to previous one before 3 months
     calculationsTestsCache.createBasicObs(
         Context.getPatientService().getPatient(999),
