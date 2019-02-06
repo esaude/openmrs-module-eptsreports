@@ -107,6 +107,27 @@ public class Eri4MonthsCohortQueries {
   }
 
   /**
+   * Get lost to follow up patients
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoAreLostToFollowUpWithinPeriod() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Get lost to follow up patients within period");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        Eri4MonthsQueries.getLostToFollowUpPatientsWithPeriod(
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateConcept().getConceptId(),
+            60));
+    return cd;
+  }
+
+  /**
    * A and NOT B
    *
    * @return CohortDefinition
@@ -306,7 +327,7 @@ public class Eri4MonthsCohortQueries {
     cd.addSearch(
         "missedVisit",
         EptsReportUtils.map(
-            genericCohortQueries.getLostToFollowUpPatients(),
+            getPatientsWhoAreLostToFollowUpWithinPeriod(),
             "endDate=${endDate},location=${location}"));
     cd.setCompositionString("initiatedArt AND missedVisit");
     return cd;

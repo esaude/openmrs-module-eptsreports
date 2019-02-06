@@ -193,7 +193,38 @@ public class Eri4MonthsQueries {
         + "ps.start_date BETWEEN date_add(date_add(:endDate, interval -4 month), interval 1 day) AND date_add(:endDate, interval -3 month) AND location_id=:location";
   }
 
-  public static String getLostToFollowUpPatients() {
-    return "";
+  public static String getLostToFollowUpPatientsWithPeriod(
+      int arvFarmacyEncounterType,
+      int missedDrugsConceptId,
+      int adultEncounteyType,
+      int paedEncounterType,
+      int returnVisitConcept,
+      int daysThreshold) {
+    return "SELECT patient_id FROM "
+        + "(SELECT patient_id,value_datetime FROM "
+        + "( SELECT p.patient_id,MAX(encounter_datetime) AS encounter_datetime FROM patient p "
+        + "INNER JOIN encounter e ON e.patient_id=p.patient_id WHERE p.voided=0 AND e.voided=0 AND e.encounter_type in("
+        + arvFarmacyEncounterType
+        + ") AND e.location_id=:location AND e.encounter_datetime<=:endDate GROUP BY p.patient_id ) max_frida "
+        + "INNER JOIN obs o ON o.person_id=max_frida.patient_id WHERE max_frida.encounter_datetime=o.obs_datetime AND "
+        + "o.voided=0 AND o.concept_id= "
+        + missedDrugsConceptId
+        + " AND o.location_id=:location AND encounter_datetime BETWEEN "
+        + "date_add(date_add(:endDate, interval -4 month), interval 1 day) and date_add(:endDate, interval -3 month) "
+        + " UNION "
+        + "SELECT patient_id, value_datetime FROM( SELECT p.patient_id,MAX(encounter_datetime)AS encounter_datetime "
+        + "FROM patient p INNER JOIN encounter e ON e.patient_id=p.patient_id WHERE p.voided=0 AND e.voided=0 AND "
+        + "e.encounter_type in ("
+        + adultEncounteyType
+        + ","
+        + paedEncounterType
+        + ") AND e.location_id=:location AND e.encounter_datetime<=:endDate "
+        + "GROUP BY p.patient_id ) max_mov INNER JOIN obs o ON o.person_id=max_mov.patient_id "
+        + "WHERE max_mov.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id="
+        + returnVisitConcept
+        + " AND o.location_id=:location "
+        + "AND encounter_datetime BETWEEN date_add(date_add(:endDate, interval -4 month), interval 1 day) and date_add(:endDate, interval -3 month) "
+        + ") final WHERE datediff(:endDate,final.value_datetime)>="
+        + daysThreshold;
   }
 }
