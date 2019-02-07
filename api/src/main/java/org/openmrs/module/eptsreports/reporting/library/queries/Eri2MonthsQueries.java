@@ -111,27 +111,6 @@ public class Eri2MonthsQueries {
   }
 
   /**
-   * B
-   *
-   * @param artProgram
-   * @param transferFromState
-   * @return
-   */
-  public static String getTransferInPatients(int artProgram, int transferFromState) {
-    return "SELECT pg.patient_id "
-        + "FROM patient p "
-        + "INNER JOIN patient_program pg on p.patient_id=pg.patient_id "
-        + "INNER JOIN patient_state ps on pg.patient_program_id=ps.patient_program_id "
-        + "WHERE pg.voided=0 and ps.voided=0 AND p.voided=0 AND  "
-        + "pg.program_id="
-        + artProgram
-        + " AND ps.state="
-        + transferFromState
-        + " AND ps.start_date=pg.date_enrolled AND "
-        + "ps.start_date BETWEEN date_add(date_add(:endDate, interval -2 month), interval 1 day) AND date_add(:endDate, interval -1 month) AND location_id=:location";
-  }
-
-  /**
    * @param arvPharmaciaEncounter
    * @param arvAdultoSeguimentoEncounter
    * @param arvPediatriaSeguimentoEncounter

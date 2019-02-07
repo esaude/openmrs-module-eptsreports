@@ -279,7 +279,7 @@ public class EptsCommonDimension {
         "IART",
         EptsReportUtils.map(
             eri2MonthsCohortQueries.getAllPatientsWhoInitiatedArt(),
-            "endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     dim.addCohortDefinition(
         "DNPUD",
         EptsReportUtils.map(

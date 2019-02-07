@@ -59,26 +59,6 @@ public class Eri2MonthsCohortQueries {
   }
 
   /**
-   * B
-   *
-   * @return
-   */
-  public CohortDefinition getTransferInPatients() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Transfer Ins");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.setQuery(
-        Eri2MonthsQueries.getTransferInPatients(
-            hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata
-                .getTransferredFromOtherHealthFacilityWorkflowState()
-                .getProgramWorkflowStateId()));
-    return cd;
-  }
-
-  /**
    * C
    *
    * @return
@@ -123,7 +103,11 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "transferIns",
         EptsReportUtils.map(
-            getTransferInPatients(),
+            genericCohortQueries.getPatientsBasedOnPatientStates(
+                hivMetadata.getARTProgram().getProgramId(),
+                hivMetadata
+                    .getTransferredFromOtherHealthFacilityWorkflowState()
+                    .getProgramWorkflowStateId()),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.setCompositionString("initiatedArt AND NOT transferIns");
     return cd;
