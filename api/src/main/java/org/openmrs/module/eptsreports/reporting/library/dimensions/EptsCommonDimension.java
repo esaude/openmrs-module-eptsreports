@@ -297,12 +297,12 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "TOP",
         EptsReportUtils.map(
-            eri2MonthsCohortQueries.getPatientsWhoInitiatedArtAndPickedDrugsButTransferredOut(),
+            eri2MonthsCohortQueries.getPatientsWhoInitiatedArtButTransferredOut(),
             "endDate=${endDate},location=${location}"));
     dim.addCohortDefinition(
         "STP",
         EptsReportUtils.map(
-            eri2MonthsCohortQueries.getPatientsWhoInitiatedArtAndPickedDrugsButSuspendedTreatment(),
+            eri2MonthsCohortQueries.getPatientsWhoInitiatedArtButSuspendedTreatment(),
             "endDate=${endDate},location=${location}"));
     return dim;
   }
