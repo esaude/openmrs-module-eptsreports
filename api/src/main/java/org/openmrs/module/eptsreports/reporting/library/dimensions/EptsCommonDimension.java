@@ -271,6 +271,7 @@ public class EptsCommonDimension {
    */
   public CohortDefinitionDimension getEri2MonthsDimension() {
     CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.addParameter(new Parameter("startDate", "Start Date", Date.class));
     dim.addParameter(new Parameter("endDate", "End Date", Date.class));
     dim.addParameter(new Parameter("location", "location", Location.class));
     dim.setName("Get patients dimensions for Eri2Months");
@@ -283,27 +284,27 @@ public class EptsCommonDimension {
         "DNPUD",
         EptsReportUtils.map(
             eri2MonthsCohortQueries.getPatientsWhoDidNotPickDrugsOnTheirSecondVisit(),
-            "endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     dim.addCohortDefinition(
         "PUD",
         EptsReportUtils.map(
             eri2MonthsCohortQueries.getPatientsWhoPickedUpDrugsOnTheirSecondVisit(),
-            "endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     dim.addCohortDefinition(
         "DP",
         EptsReportUtils.map(
             eri2MonthsCohortQueries.getPatientsWhoInitiatedArtAndDead(),
-            "endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     dim.addCohortDefinition(
         "TOP",
         EptsReportUtils.map(
             eri2MonthsCohortQueries.getPatientsWhoInitiatedArtButTransferredOut(),
-            "endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     dim.addCohortDefinition(
         "STP",
         EptsReportUtils.map(
             eri2MonthsCohortQueries.getPatientsWhoInitiatedArtButSuspendedTreatment(),
-            "endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     return dim;
   }
 }
