@@ -6,10 +6,10 @@ import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 
 public class AgeCohortQueriesTest {
 
-  AgeCohortQueries ageCohortQueries = new AgeCohortQueries();
+  private AgeCohortQueries ageCohortQueries = new AgeCohortQueries();
 
   @Test
-  public void createXtoYAgeCohort_shouldAgeCohortDefinitionWithMinAndMaxAge() {
+  public void createXtoYAgeCohortShouldAgeCohortDefinitionWithMinAndMaxAge() {
     AgeCohortDefinition ageCohort =
         (AgeCohortDefinition)
             ageCohortQueries.createXtoYAgeCohort("patients with age between 10 and 14", 10, 14);
@@ -19,7 +19,7 @@ public class AgeCohortQueriesTest {
   }
 
   @Test
-  public void createXtoYAgeCohort_shouldAgeCohortDefinitionWitOnlyMinAge() {
+  public void createXtoYAgeCohortShouldAgeCohortDefinitionWitOnlyMinAge() {
     AgeCohortDefinition ageCohort =
         (AgeCohortDefinition)
             ageCohortQueries.createXtoYAgeCohort("patients with age above 10", 10, null);
@@ -29,7 +29,7 @@ public class AgeCohortQueriesTest {
   }
 
   @Test
-  public void createXtoYAgeCohort_shouldAgeCohortDefinitionWitOnlyMaxAge() {
+  public void createXtoYAgeCohortShouldAgeCohortDefinitionWitOnlyMaxAge() {
     AgeCohortDefinition ageCohort =
         (AgeCohortDefinition)
             ageCohortQueries.createXtoYAgeCohort("patients with age bellow 14", null, 14);
