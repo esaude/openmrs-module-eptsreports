@@ -226,28 +226,24 @@ public class EptsCommonDimension {
     dim.addParameter(new Parameter("endDate", "End Date", Date.class));
     dim.addParameter(new Parameter("location", "location", Location.class));
     dim.setName("Get patient states");
+    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     dim.addCohortDefinition(
         "IART",
         EptsReportUtils.map(
-            eri4MonthsCohortQueries.getPatientsWhoInitiatedArtLessTransferIns(),
-            "endDate=${endDate},location=${location}"));
+            eri4MonthsCohortQueries.getPatientsWhoInitiatedArtLessTransferIns(), mappings));
 
     dim.addCohortDefinition(
         "AIT",
         EptsReportUtils.map(
-            eri4MonthsCohortQueries.getPatientsWhoAreAliveAndOnTreatment(),
-            "endDate=${endDate},location=${location}"));
+            eri4MonthsCohortQueries.getPatientsWhoAreAliveAndOnTreatment(), mappings));
 
     dim.addCohortDefinition(
-        "DP",
-        EptsReportUtils.map(
-            genericCohortQueries.getDeceasedPatients(), "endDate=${endDate},location=${location}"));
+        "DP", EptsReportUtils.map(genericCohortQueries.getDeceasedPatients(), mappings));
 
     dim.addCohortDefinition(
         "LTFU",
         EptsReportUtils.map(
-            eri4MonthsCohortQueries.getAllPatientsWhoAreLostToFollowUpDuringPeriod(),
-            "endDate=${endDate},location=${location}"));
+            eri4MonthsCohortQueries.getAllPatientsWhoAreLostToFollowUpDuringPeriod(), mappings));
 
     dim.addCohortDefinition(
         "TOP",
@@ -257,14 +253,14 @@ public class EptsCommonDimension {
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
-            "endDate=${endDate},location=${location}"));
+            mappings));
     dim.addCohortDefinition(
         "STP",
         EptsReportUtils.map(
             genericCohortQueries.getPatientsBasedOnPatientStates(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),
-            "endDate=${endDate},location=${location}"));
+            mappings));
     return dim;
   }
 

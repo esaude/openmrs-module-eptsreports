@@ -162,31 +162,33 @@ public class GenericCohortQueries {
   public CohortDefinition getPatientsBasedOnPatientStates(int program, int state) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("The exclusion criteria by work flow states");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     String query =
         "SELECT pg.patient_id"
             + " FROM patient p"
             + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
-            + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id"
+            + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id AND ps.start_date=pg.date_enrolled "
             + " WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND"
             + " pg.program_id="
             + program
             + " AND ps.state="
             + state
-            + " AND ps.start_date=pg.date_enrolled AND location_id=:location";
+            + " AND ps.start_date BETWEEN :startDate AND :endDate AND location_id=:location";
     cd.setQuery(query);
     return cd;
   }
 
   /**
-   * Get deceased patients, we need to check in the person table and patient states
+   * Get deceased patients, we need to check in the person table and patient states,
    *
    * @return CohortDefinition
    */
   public CohortDefinition getDeceasedPatients() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Get deceased patients based on patient states and person object");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
@@ -196,14 +198,14 @@ public class GenericCohortQueries {
             getPatientsBasedOnPatientStates(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
-            "endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "deceased",
         EptsReportUtils.map(
             generalSql(
                 "deceased",
-                "SELECT patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id AND pe.dead=1"),
-            ""));
+                "SELECT patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id AND pe.dead=1 WHERE pe.death_date BETWEEN :startDate AND :endDate"),
+            "startDate=${startDate},endDate=${endDate}"));
     cd.setCompositionString("dead OR deceased");
     return cd;
   }
