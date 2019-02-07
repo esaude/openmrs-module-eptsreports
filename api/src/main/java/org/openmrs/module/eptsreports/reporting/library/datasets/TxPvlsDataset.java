@@ -1,15 +1,13 @@
 /*
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * The contents of this file are subject to the OpenMRS Public License Version
+ * 1.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://license.openmrs.org
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
  *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS, LLC. All Rights Reserved.
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
@@ -19,7 +17,6 @@ import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.BreastfeedingAndPregnant;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -61,12 +58,33 @@ public class TxPvlsDataset extends BaseDataSet {
 		    EptsReportUtils.map(
 		        eptsGeneralIndicator.getIndicator("suppressed viral load",
 		            EptsReportUtils.map(txPvls.getPatientsWithViralLoadSuppression(), mappings)), mappings), "");
-		dsd.addColumn("P", "Pregnant", EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Pregnant", EptsReportUtils
-		        .map(txPvls.getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.PREGNANT),
-		            "onDate=${endDate},location=${location}")), "endDate=${endDate},location=${location}"), "");
-		dsd.addColumn("B", "Breastfeeding", EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Breastfeeding",
-		    EptsReportUtils.map(txPvls.getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.BREASTFEEDING),
-		        "onDate=${endDate},location=${location}")), "endDate=${endDate},location=${location}"), "");
+		
+		// dsd.addColumn("P", "Pregnant",
+		// EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Pregnant",
+		// EptsReportUtils
+		// .map(txPvls.getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.PREGNANT),
+		// "onDate=${endDate},location=${location}")),
+		// "endDate=${endDate},location=${location}"), "");
+		
+		dsd.addColumn("P", "Pregnant", EptsReportUtils.map(
+		    eptsGeneralIndicator.getIndicator("Pregnant",
+		        EptsReportUtils.map(txPvls.getPregnantSQLQuery(), "endDate=${endDate},location=${location}")),
+		    "endDate=${endDate},location=${location}"), "");
+		
+		// dsd.addColumn("B", "Breastfeeding",
+		// EptsReportUtils.map(
+		// eptsGeneralIndicator.getIndicator("Breastfeeding",
+		// EptsReportUtils.map(
+		// txPvls.getPatientsWhoArePregnantOrBreastfeeding(
+		// BreastfeedingAndPregnant.BREASTFEEDING),
+		// "onDate=${endDate},location=${location}")),
+		// "endDate=${endDate},location=${location}"),
+		// "");
+		
+		dsd.addColumn("B", "Breastfeeding", EptsReportUtils.map(
+		    eptsGeneralIndicator.getIndicator("Breastfeeding",
+		        EptsReportUtils.map(txPvls.getBreastFeedingSQLQuery(), "endDate=${endDate},location=${location}")),
+		    "endDate=${endDate},location=${location}"), "");
 		
 		dsd.addColumn(
 		    "PVLS",
@@ -158,12 +176,14 @@ public class TxPvlsDataset extends BaseDataSet {
 		            txPvls.getPatientWithViralSuppressionAndNotDocumentedForAdultsAndChildren(), mappings)), mappings),
 		    getColumnsForAdults());
 		
-		// denominators follow here for routine and NOT documented // /// Denominator
+		// denominators follow here for routine and NOT documented // ///
+		// Denominator
 		// routine for children
 		addRow(dsd, "3DR", "Children denominator routine", EptsReportUtils.map(
 		    eptsGeneralIndicator.getIndicator("viral load results on routine adults and children",
 		        EptsReportUtils.map(txPvls.getPatientsWithViralLoadREsultsAndOnRoutineForChildrenAndAdults(), mappings)),
-		    mappings), childrenColumns()); ///// Denominator NOT documented
+		    mappings), childrenColumns()); ///// Denominator NOT
+		                                   ///// documented
 		addRow(
 		    dsd,
 		    "3DND",

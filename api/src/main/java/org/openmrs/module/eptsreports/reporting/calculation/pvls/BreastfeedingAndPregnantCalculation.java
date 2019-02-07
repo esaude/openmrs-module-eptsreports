@@ -2,6 +2,7 @@ package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -45,12 +46,20 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 		CalculationResultMap ret = new CalculationResultMap();
 		Location location = (Location) context.getFromCache("location");
+		Date endDate = context.getNow();
 		BreastfeedingAndPregnant criteria = (BreastfeedingAndPregnant) params.get("criteria");
 		Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
-		Date latestVlStartDate = EptsCalculationUtils.addMonths(context.getNow(), -12);
+		Date latestVlStartDate = EptsCalculationUtils.addMonths(endDate, -12);
+		Calendar instance = Calendar.getInstance();
+		
+		instance.setTime(latestVlStartDate);
+		instance.add(Calendar.DATE, 1);
+		latestVlStartDate = instance.getTime();
+		
 		EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
 		EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
 		EncounterType adultInitial = hivMetadata.getARVAdultInitialEncounterType();
+		EncounterType arvPediatria = hivMetadata.getARVPediatriaSeguimentoEncounterType();
 		
 		Concept pregnant = hivMetadata.getPregnantConcept();
 		Concept gestation = hivMetadata.getGestationConcept();
@@ -66,11 +75,14 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 		// get female patients only
 		Set<Integer> female = EptsCalculationUtils.female(cohort, context);
 		// get the last VL results for patients
-		CalculationResultMap lastVlObsMap = EptsCalculations.lastObs(Arrays.asList(labEncounterType, adultFollowup, adultInitial),
-		    viralLoadConcept, location, latestVlStartDate, context.getNow(), cohort, context);
+		CalculationResultMap lastVlObsMap = EptsCalculations.lastObs(
+		    Arrays.asList(labEncounterType, adultFollowup, adultInitial, arvPediatria), viralLoadConcept, location, latestVlStartDate,
+		    context.getNow(), female, context);
 		// get results maps for pregnant women
+		
 		CalculationResultMap markedPregnant = EptsCalculations.getObs(pregnant, female, Arrays.asList(location),
 		    Arrays.asList(gestation), TimeQualifier.ANY, null, context);
+		
 		CalculationResultMap markedPregnantByWeeks = EptsCalculations.getObs(pregnantBasedOnWeeks, female, Arrays.asList(location),
 		    null, TimeQualifier.ANY, null, context);
 		CalculationResultMap markedPregnantOnEdd = EptsCalculations.getObs(edd, female, Arrays.asList(location), null,
@@ -86,9 +98,9 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 		    Arrays.asList(yes), TimeQualifier.ANY, null, context);
 		// get patients who have been on ART for more than 3 months
 		Set<Integer> onArtForMoreThan3Months = EptsCalculationUtils.patientsThatPass(
-		    calculate(Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0), cohort, context));
+		    calculate(Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0), female, context));
 		
-		for (Integer pId : cohort) {
+		for (Integer pId : female) {
 			boolean pass = false;
 			Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVlObsMap, pId);
 			SimpleResult result = (SimpleResult) markedPregnantInProgram.get(pId);
@@ -134,18 +146,17 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 			PatientState breastfeedingState = null;
 			PatientState pregnantState = null;
 			
-			if (female.contains(pId) && lastVlObs != null && lastVlObs.getObsDatetime() != null && criteria != null
-			        && onArtForMoreThan3Months.contains(pId)) {
+			if (onArtForMoreThan3Months.contains(pId) && lastVlObs != null && lastVlObs.getObsDatetime() != null) {
 				Date pregnancyStartDate = EptsCalculationUtils.addMonths(lastVlObs.getObsDatetime(), -9);
 				Date breastfeedingStartDate = EptsCalculationUtils.addMonths(lastVlObs.getObsDatetime(), -18);
-				Date endDate = lastVlObs.getObsDatetime();
+				endDate = lastVlObs.getObsDatetime();
 				
 				if (result != null) {
 					patientProgram = (PatientProgram) result.getValue();
 				}
 				// get patient_state for pregnant and breastfeeding
 				if (patientProgram != null) {
-					for (PatientState patientState : patientProgram.getCurrentStates()) {
+					for (PatientState patientState : patientProgram.getStates()) {
 						if (patientState.getState().equals(hivMetadata.getPatientIsPregnantWorkflowState())) {
 							pregnantState = patientState;
 							
@@ -196,6 +207,7 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 		
 		if (!markedPregnantOnEddList.isEmpty()) {
 			for (Obs obs : markedPregnantOnEddList) {
+				
 				if (obs != null && obs.getValueDatetime() != null && obs.getObsDatetime() != null
 				        && (obs.getObsDatetime().compareTo(pregnancyStartDate) >= 0)
 				        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
@@ -215,9 +227,10 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 			pass = true;
 		}
 		if (pregnantState != null && breastfeedingState != null && pregnantState.getStartDate() != null
-		        && breastfeedingState.getStartDate() != null
+		        && breastfeedingState.getStartDate() != null && pregnantState.getEndDate() != null
 		        && breastfeedingState.getStartDate().after(pregnantState.getEndDate())) {
 			pass = false;
+			
 		}
 		return pass;
 	}
@@ -257,14 +270,16 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 				        && (obs.getObsDatetime().compareTo(breastfeedingStartDate) >= 0)
 				        && (obs.getObsDatetime().compareTo(endDate) <= 0)) {
 					pass = true;
+					break;
 					
 				}
 			}
 		}
 		if (pregnantState != null && breastfeedingState != null && pregnantState.getStartDate() != null
-		        && breastfeedingState.getStartDate() != null
+		        && breastfeedingState.getStartDate() != null && pregnantState.getEndDate() != null
 		        && breastfeedingState.getStartDate().before(pregnantState.getEndDate())) {
 			pass = false;
+			
 		}
 		return pass;
 	}
