@@ -96,7 +96,7 @@ public class Eri2MonthsQueries {
         + ") inicio "
         + "GROUP BY patient_id "
         + ")inicio1 "
-        + "WHERE data_inicio BETWEEN date_add(date_add(:endDate, interval -2 month), interval 1 day) AND date_add(:endDate, interval -1 month) "
+        + "WHERE data_inicio BETWEEN :startDate AND :endDate "
         + ") inicio_real "
         + "INNER JOIN encounter e ON e.patient_id=inicio_real.patient_id "
         + "WHERE e.voided=0 AND e.encounter_type IN ("
@@ -186,7 +186,7 @@ public class Eri2MonthsQueries {
         + ") inicio "
         + "GROUP BY patient_id "
         + ")inicio1 "
-        + "WHERE data_inicio BETWEEN date_add(date_add(:endDate, interval -2 month), interval 1 day) and date_add(:endDate, interval -1 month) "
+        + "WHERE data_inicio BETWEEN :startDate AND :endDate "
         + ") inicio_real "
         + "GROUP BY inicio_real.patient_id";
   }
