@@ -107,7 +107,8 @@ public class Eri2MonthsQueries {
         + arvPediatriaSeguimentoEncounter
         + ") AND e.location_id=:location AND "
         + "e.encounter_datetime BETWEEN inicio_real.data_inicio AND date_add(inicio_real.data_inicio, interval 33 day) "
-        + "GROUP BY inicio_real.patient_id ";
+        + "GROUP BY inicio_real.patient_id "
+        + "HAVING MIN(e.encounter_datetime) < MAX(e.encounter_datetime)";
   }
 
   /**
