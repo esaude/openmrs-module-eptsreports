@@ -261,6 +261,10 @@ public class EptsCommonDimension {
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),
             mappings));
+    dim.addCohortDefinition(
+        "ANIT",
+        EptsReportUtils.map(
+            eri4MonthsCohortQueries.getPatientsWhoAreAliveAndNotOnTreatment(), mappings));
     return dim;
   }
 

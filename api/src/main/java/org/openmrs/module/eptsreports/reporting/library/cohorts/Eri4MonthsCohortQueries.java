@@ -323,4 +323,44 @@ public class Eri4MonthsCohortQueries {
     cd.setCompositionString("initiatedArt AND missedVisit");
     return cd;
   }
+
+  /**
+   * Get patients who are alive and on treatment - probably all those who have been on ART for more
+   * than 3 months excluding the dead, transfers or suspended (A AND NOT B) AND C
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoAreAliveAndNotOnTreatment() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Patients who are a live and NOT treatment");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "initiatedArt",
+        EptsReportUtils.map(
+            getPatientsWhoInitiatedArtLessTransferIns(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "consultation",
+        EptsReportUtils.map(
+            getAllPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120OfEncounterDate(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            genericCohortQueries.getDeceasedPatients(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "transfersOut",
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
+                hivMetadata.getARTProgram().getProgramId(),
+                hivMetadata
+                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                    .getProgramWorkflowStateId()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("initiatedArt AND NOT (consultation OR dead OR transfersOut)");
+    return cd;
+  }
 }

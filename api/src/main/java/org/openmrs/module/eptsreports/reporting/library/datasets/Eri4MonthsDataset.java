@@ -122,6 +122,9 @@ public class Eri4MonthsDataset extends BaseDataSet {
         new ColumnParameters("transfers", "Transferred Out", "state=TOP", "05");
     ColumnParameters stopped =
         new ColumnParameters("stopped", "Stopped treatment", "state=STP", "06");
-    return Arrays.asList(initiatedArt, aliveInTreatment, dead, lostTfu, transfers, stopped);
+    ColumnParameters aliveNotInTreatment =
+        new ColumnParameters("Not in treatment", "Alive and NOT in treatment", "state=ANIT", "07");
+    return Arrays.asList(
+        initiatedArt, aliveInTreatment, dead, lostTfu, transfers, stopped, aliveNotInTreatment);
   }
 }
