@@ -15,7 +15,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 import java.util.Arrays;
 import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortStrategy;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -36,8 +36,8 @@ public class TxCurrDataset extends BaseDataSet {
   @Autowired private EptsCommonDimension eptsCommonDimension;
 
   @Autowired
-  @Qualifier("common")
-  private AgeDimensionCohortStrategy ageDimensionCohortStrategy;
+  @Qualifier("commonAgeDimensionCohort")
+  private AgeDimensionCohortInterface ageDimensionCohort;
 
   public CohortIndicatorDataSetDefinition constructTxCurrDataset(boolean currentSpec) {
 
@@ -50,7 +50,7 @@ public class TxCurrDataset extends BaseDataSet {
     dataSetDefinition.addDimension(
         "age",
         EptsReportUtils.map(
-            eptsCommonDimension.age(ageDimensionCohortStrategy), "effectiveDate=${endDate}"));
+            eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
 
     CohortDefinition txCurrCompositionCohort =
         txCurrCohortQueries.getTxCurrCompositionCohort("compositionCohort", currentSpec);

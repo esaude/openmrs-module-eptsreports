@@ -17,7 +17,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 import java.util.Arrays;
 import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortStrategy;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -39,8 +39,8 @@ public class TxNewDataset extends BaseDataSet {
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
 
   @Autowired
-  @Qualifier("txnew")
-  private AgeDimensionCohortStrategy ageDimensionCohortStrategy;
+  @Qualifier("txNewAgeDimensionCohort")
+  private AgeDimensionCohortInterface ageDimensionCohort;
 
   public DataSetDefinition constructTxNewDataset() {
 
@@ -63,7 +63,7 @@ public class TxNewDataset extends BaseDataSet {
         "maternity", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
     dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dataSetDefinition.addDimension(
-        "age", EptsReportUtils.map(eptsCommonDimension.age(ageDimensionCohortStrategy), mappings));
+        "age", EptsReportUtils.map(eptsCommonDimension.age(ageDimensionCohort), mappings));
 
     dataSetDefinition.addColumn(
         "1All",

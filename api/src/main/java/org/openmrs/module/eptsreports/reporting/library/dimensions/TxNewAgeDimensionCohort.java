@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 /**
  * Uses age cohorts that determine age on ART start date.
  */
-@Component("txnew")
-public class TxNewAgeDimensionCohortStrategy implements AgeDimensionCohortStrategy {
+@Component("txNewAgeDimensionCohort")
+public class TxNewAgeDimensionCohort implements AgeDimensionCohortInterface {
 
   @Autowired private TxNewCohortQueries txNewCohortQueries;
 

@@ -16,7 +16,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 import java.util.Arrays;
 import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortStrategy;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -38,8 +38,8 @@ public class TxPvlsDataset extends BaseDataSet {
   @Autowired private TxPvlsCohortQueries txPvls;
 
   @Autowired
-  @Qualifier("common")
-  private AgeDimensionCohortStrategy ageDimensionCohortStrategy;
+  @Qualifier("commonAgeDimensionCohort")
+  private AgeDimensionCohortInterface ageDimensionCohort;
 
   public DataSetDefinition constructTxPvlsDatset() {
 
@@ -55,7 +55,7 @@ public class TxPvlsDataset extends BaseDataSet {
     dsd.addDimension(
         "age",
         EptsReportUtils.map(
-            eptsCommonDimension.age(ageDimensionCohortStrategy), "effectiveDate=${endDate}"));
+            eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
 
     // Totals for both numerator and denominator
 

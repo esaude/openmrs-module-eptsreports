@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 /**
  * Uses {@link AgeCohortQueries}
  */
-@Component("common")
-public class CommonAgeDimensionCohortStrategy implements AgeDimensionCohortStrategy {
+@Component("commonAgeDimensionCohort")
+public class CommonAgeDimensionCohort implements AgeDimensionCohortInterface {
 
   @Autowired private AgeCohortQueries ageCohortQueries;
 
