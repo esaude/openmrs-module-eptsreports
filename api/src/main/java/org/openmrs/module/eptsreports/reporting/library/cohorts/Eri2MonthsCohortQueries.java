@@ -283,7 +283,7 @@ public class Eri2MonthsCohortQueries {
         "dead",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate+1m},location=${location}"));
     cd.addSearch(
         "transfers",
         EptsReportUtils.map(
@@ -353,7 +353,7 @@ public class Eri2MonthsCohortQueries {
         "dead",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${startDate},endDate=${endDate+1m},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.setCompositionString("initiatedArtAndNotTransferIns AND dead");
     return cd;
   }

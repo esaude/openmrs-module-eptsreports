@@ -289,12 +289,12 @@ public class Eri4MonthsCohortQueries {
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
+            genericCohortQueries.getPatientsBasedOnPatientStatesDeadTransferredOutStopped(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate+1m},location=${location}"));
     cd.setCompositionString("(initiatedArt AND consultation) AND NOT (dead OR transfersOut)");
     return cd;
   }
@@ -354,12 +354,12 @@ public class Eri4MonthsCohortQueries {
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
+            genericCohortQueries.getPatientsBasedOnPatientStatesDeadTransferredOutStopped(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate+1m},location=${location}"));
     cd.setCompositionString("initiatedArt AND NOT (consultation OR dead OR transfersOut)");
     return cd;
   }

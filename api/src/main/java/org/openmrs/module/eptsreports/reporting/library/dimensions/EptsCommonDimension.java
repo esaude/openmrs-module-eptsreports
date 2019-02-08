@@ -248,7 +248,7 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "TOP",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
+            genericCohortQueries.getPatientsBasedOnPatientStatesDeadTransferredOutStopped(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
@@ -257,7 +257,7 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "STP",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
+            genericCohortQueries.getPatientsBasedOnPatientStatesDeadTransferredOutStopped(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),
             mappings));
