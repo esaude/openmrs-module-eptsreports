@@ -292,7 +292,7 @@ public class Eri2MonthsCohortQueries {
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate+1m},location=${location}"));
     cd.setCompositionString("initiatedArt AND NOT (pickedDrugs OR dead OR transfers)");
     return cd;
   }
@@ -327,7 +327,7 @@ public class Eri2MonthsCohortQueries {
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate+1m},location=${location}"));
     cd.setCompositionString("pickedDrugsAndStartedART AND NOT (dead OR transfers)");
     return cd;
   }
@@ -353,7 +353,7 @@ public class Eri2MonthsCohortQueries {
         "dead",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate+1m},location=${location}"));
     cd.setCompositionString("initiatedArtAndNotTransferIns AND dead");
     return cd;
   }
@@ -381,7 +381,7 @@ public class Eri2MonthsCohortQueries {
             genericCohortQueries.getPatientsBasedOnPatientStatesDeadTransferredOutStopped(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate+1m},location=${location}"));
     cd.setCompositionString("initiatedArtAndNotTransferIns AND suspendedTreatment");
     return cd;
   }
@@ -411,7 +411,7 @@ public class Eri2MonthsCohortQueries {
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate+1m},location=${location}"));
     cd.setCompositionString("initiatedArtAndNotTransferIns AND transferredOut");
     return cd;
   }
