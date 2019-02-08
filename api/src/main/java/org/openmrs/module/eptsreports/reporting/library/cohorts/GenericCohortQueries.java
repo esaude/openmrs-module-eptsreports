@@ -195,7 +195,7 @@ public class GenericCohortQueries {
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
-            getPatientsBasedOnPatientStatesDeadTransferoutStopped(
+            getPatientsBasedOnPatientStatesDeadTransferredOutStopped(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
@@ -217,7 +217,7 @@ public class GenericCohortQueries {
    * @param state
    * @return
    */
-  public CohortDefinition getPatientsBasedOnPatientStatesDeadTransferoutStopped(
+  public CohortDefinition getPatientsBasedOnPatientStatesDeadTransferredOutStopped(
       int program, int state) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Patient states based on end of reporting period");
