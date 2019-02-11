@@ -59,31 +59,14 @@ public class TxPvlsDataset extends BaseDataSet {
 		        eptsGeneralIndicator.getIndicator("suppressed viral load",
 		            EptsReportUtils.map(txPvls.getPatientsWithViralLoadSuppression(), mappings)), mappings), "");
 		
-		// dsd.addColumn("P", "Pregnant",
-		// EptsReportUtils.map(eptsGeneralIndicator.getIndicator("Pregnant",
-		// EptsReportUtils
-		// .map(txPvls.getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.PREGNANT),
-		// "onDate=${endDate},location=${location}")),
-		// "endDate=${endDate},location=${location}"), "");
-		
 		dsd.addColumn("P", "Pregnant", EptsReportUtils.map(
 		    eptsGeneralIndicator.getIndicator("Pregnant",
-		        EptsReportUtils.map(txPvls.getPregnantSQLQuery(), "endDate=${endDate},location=${location}")),
+		        EptsReportUtils.map(txPvls.getPatientsWhoArePregnant(), "endDate=${endDate},location=${location}")),
 		    "endDate=${endDate},location=${location}"), "");
-		
-		// dsd.addColumn("B", "Breastfeeding",
-		// EptsReportUtils.map(
-		// eptsGeneralIndicator.getIndicator("Breastfeeding",
-		// EptsReportUtils.map(
-		// txPvls.getPatientsWhoArePregnantOrBreastfeeding(
-		// BreastfeedingAndPregnant.BREASTFEEDING),
-		// "onDate=${endDate},location=${location}")),
-		// "endDate=${endDate},location=${location}"),
-		// "");
 		
 		dsd.addColumn("B", "Breastfeeding", EptsReportUtils.map(
 		    eptsGeneralIndicator.getIndicator("Breastfeeding",
-		        EptsReportUtils.map(txPvls.getBreastFeedingSQLQuery(), "endDate=${endDate},location=${location}")),
+		        EptsReportUtils.map(txPvls.getPatientsWhoAreBreastfeeding(), "onDate=${endDate},location=${location}")),
 		    "endDate=${endDate},location=${location}"), "");
 		
 		dsd.addColumn(

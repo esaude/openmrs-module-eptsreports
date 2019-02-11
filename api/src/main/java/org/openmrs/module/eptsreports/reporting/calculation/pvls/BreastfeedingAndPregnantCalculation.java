@@ -87,13 +87,16 @@ public class BreastfeedingAndPregnantCalculation extends AbstractPatientCalculat
 		    null, TimeQualifier.ANY, null, context);
 		CalculationResultMap markedPregnantOnEdd = EptsCalculations.getObs(edd, female, Arrays.asList(location), null,
 		    TimeQualifier.ANY, null, context);
+		
 		CalculationResultMap markedPregnantInProgram = EptsCalculations.lastProgramEnrollment(ptv, female, context);
 		
 		// get results maps for the breastfeeding women
 		CalculationResultMap deliveryDateMap = EptsCalculations.getObs(priorDeliveryDate, female, Arrays.asList(location), null,
 		    TimeQualifier.ANY, null, context);
+		
 		CalculationResultMap criteriaHivStartMap = EptsCalculations.getObs(criteriaForHivStart, female, Arrays.asList(location),
 		    Arrays.asList(breastfeedingConcept), TimeQualifier.ANY, null, context);
+		
 		CalculationResultMap lactatingMap = EptsCalculations.getObs(breastfeedingConcept, female, Arrays.asList(location),
 		    Arrays.asList(yes), TimeQualifier.ANY, null, context);
 		// get patients who have been on ART for more than 3 months

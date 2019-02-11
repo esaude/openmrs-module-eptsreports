@@ -16,13 +16,12 @@ import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.calculation.pvls.BreastfeedingAndPregnantCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.BreastfeedingCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForMoreThanXmonthsCalcultion;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.PregnantCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
-import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsQueries;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.BreastfeedingAndPregnant;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PatientsOnRoutineEnum;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -74,12 +73,13 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("breastfeeding",
-		    EptsReportUtils.map(getBreastFeedingSQLQuery(), "endDate=${endDate},location=${location}"));
 		
 		// cd.addSearch("breastfeeding",
-		// EptsReportUtils.map(getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.BREASTFEEDING),
-		// "onDate=${endDate},location=${location}"));
+		// EptsReportUtils.map(getBreastFeedingSQLQuery(),
+		// "endDate=${endDate},location=${location}"));
+		
+		cd.addSearch("breastfeeding",
+		    EptsReportUtils.map(getPatientsWhoAreBreastfeeding(), "onDate=${endDate},location=${location}"));
 		
 		cd.addSearch("suppression", EptsReportUtils.map(getPatientsWithViralLoadSuppression(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
@@ -100,13 +100,13 @@ public class TxPvlsCohortQueries {
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addSearch("breastfeeding",
-		    EptsReportUtils.map(getBreastFeedingSQLQuery(), "endDate=${endDate},location=${location}"));
 		
-		//
 		// cd.addSearch("breastfeeding",
-		// EptsReportUtils.map(getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.BREASTFEEDING),
-		// "onDate=${endDate},location=${location}"));
+		// EptsReportUtils.map(getBreastFeedingSQLQuery(),
+		// "endDate=${endDate},location=${location}"));
+		
+		cd.addSearch("breastfeeding",
+		    EptsReportUtils.map(getPatientsWhoAreBreastfeeding(), "onDate=${endDate},location=${location}"));
 		
 		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(),
 		    "startDate=${startDate},endDate=${endDate},location=${location}"));
@@ -323,7 +323,11 @@ public class TxPvlsCohortQueries {
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("suppression", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
 		
-		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantSQLQuery(), "endDate=${endDate},location=${location}"));
+		// cd.addSearch("pregnant", EptsReportUtils.map(getPregnantSQLQuery(),
+		// "endDate=${endDate},location=${location}"));
+		
+		cd.addSearch("pregnant",
+		    EptsReportUtils.map(this.getPatientsWhoArePregnant(), "endDate=${endDate},location=${location}"));
 		
 		// cd.addSearch("pregnant",
 		// EptsReportUtils.map(getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.PREGNANT),
@@ -346,7 +350,10 @@ public class TxPvlsCohortQueries {
 		String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 		cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
 		
-		cd.addSearch("pregnant", EptsReportUtils.map(getPregnantSQLQuery(), "endDate=${endDate},location=${location}"));
+		// cd.addSearch("pregnant", EptsReportUtils.map(getPregnantSQLQuery(),
+		// "endDate=${endDate},location=${location}"));
+		cd.addSearch("pregnant",
+		    EptsReportUtils.map(this.getPatientsWhoArePregnant(), "endDate=${endDate},location=${location}"));
 		
 		// cd.addSearch("pregnant",
 		// EptsReportUtils.map(getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant.PREGNANT),
@@ -506,131 +513,44 @@ public class TxPvlsCohortQueries {
 	}
 	
 	/**
-	 * Get patients who are pregnant or breastfeeding
+	 * Get patients who are breastfeeding
 	 * 
 	 * @return CohortDefinition
 	 */
-	public CohortDefinition getPatientsWhoArePregnantOrBreastfeeding(BreastfeedingAndPregnant criteria) {
-		CalculationCohortDefinition cd = new CalculationCohortDefinition("breastfeeding or pregnant", Context
-		        .getRegisteredComponents(BreastfeedingAndPregnantCalculation.class).get(0));
+	public CohortDefinition getPatientsWhoAreBreastfeeding() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("breastfeeding", Context.getRegisteredComponents(
+		    BreastfeedingCalculation.class).get(0));
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.addParameter(new Parameter("location", "Location", Location.class));
-		cd.addCalculationParameter("criteria", criteria);
 		return cd;
 	}
 	
-	public CohortDefinition getPregnantSQLQuery() {
-		SqlCohortDefinition sql = new SqlCohortDefinition();
-		sql.setName("pregnant");
-		sql.addParameter(new Parameter("endDate", "endDate", Date.class));
-		sql.addParameter(new Parameter("location", "Location", Location.class));
-		sql.setQuery(PregnantQueries.PREGNANT_SQL_QUERY);
-		return sql;
+	public CohortDefinition getPatientsWhoArePregnant() {
+		
+		CompositionCohortDefinition cd = new CompositionCohortDefinition();
+		cd.setName("Get pregnant and not breastfeeding");
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
+		String mappings = "onDate=${endDate},location=${location}";
+		cd.addSearch("pregnant", EptsReportUtils.map(this.getPatientsWhoArePregnantCohort(), mappings));
+		cd.addSearch("breastfeeding", EptsReportUtils.map(this.getPatientsWhoAreBreastfeeding(), mappings));
+		
+		cd.setCompositionString("pregnant AND NOT breastfeeding");
+		
+		return cd;
 	}
 	
-	public CohortDefinition getBreastFeedingSQLQuery() {
+	/**
+	 * Get patients who are pregnant
+	 * 
+	 * @return CohortDefinition
+	 */
+	private CohortDefinition getPatientsWhoArePregnantCohort() {
+		CalculationCohortDefinition cd = new CalculationCohortDefinition("pregnant", Context.getRegisteredComponents(
+		    PregnantCalculation.class).get(0));
+		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+		cd.addParameter(new Parameter("location", "Location", Location.class));
 		
-		SqlCohortDefinition sql = new SqlCohortDefinition();
-		sql.setName("Breastfeeding");
-		sql.addParameter(new Parameter("endDate", "endDate", Date.class));
-		sql.addParameter(new Parameter("location", "Location", Location.class));
-		sql.setQuery(PregnantQueries.BREASTFEEDING_SQL);
-		
-		return sql;
+		return cd;
 	}
-	
-	// String query = "select carga_viral.patient_id from " + "( Select
-	// patient_id,min(data_inicio) data_inicio from "
-	// + " ( Select p.patient_id,min(e.encounter_datetime) data_inicio "
-	// + " from patient p "
-	// + " inner join encounter e on p.patient_id=e.patient_id "
-	// + " inner join obs o on o.encounter_id=e.encounter_id "
-	// + " where e.voided=0 and o.voided=0 and p.voided=0 and "
-	// + " e.encounter_type in (18,6,9) and o.concept_id=1255 and
-	// o.value_coded=1256 and "
-	// + " e.encounter_datetime<=:endDate and e.location_id=:location "
-	// + " group by p.patient_id union "
-	// + " Select p.patient_id,min(value_datetime) data_inicio from patient
-	// p "
-	// + " inner join encounter e on p.patient_id=e.patient_id "
-	// + " inner join obs o on e.encounter_id=o.encounter_id "
-	// + " where p.voided=0 and e.voided=0 and o.voided=0 and
-	// e.encounter_type in (18,6,9) and "
-	// + " o.concept_id=1190 and o.value_datetime is not null and "
-	// + " o.value_datetime<=:endDate and e.location_id=:location "
-	// + " group by p.patient_id union "
-	// + " select pg.patient_id,date_enrolled data_inicio "
-	// + " from patient p inner join patient_program pg on
-	// p.patient_id=pg.patient_id "
-	// + " where pg.voided=0 and p.voided=0 and program_id=2 and
-	// date_enrolled<=:endDate and location_id=:location "
-	// + " union SELECT e.patient_id, MIN(e.encounter_datetime) AS
-	// data_inicio "
-	// + " FROM patient p "
-	// + " inner join encounter e on p.patient_id=e.patient_id "
-	// + " WHERE p.voided=0 and e.encounter_type=18 AND e.voided=0 and
-	// e.encounter_datetime<=:endDate and e.location_id=:location "
-	// + " GROUP BY p.patient_id) inicio " + " group by
-	// patient_id)inicio_real inner join ( "
-	// + " Select
-	// ultima_carga.patient_id,ultima_carga.data_carga,obs.value_numeric
-	// valor_carga " + " from "
-	// + " ( Select p.patient_id,max(o.obs_datetime) data_carga "
-	// + " from patient p inner join encounter e on
-	// p.patient_id=e.patient_id "
-	// + " inner join obs o on e.encounter_id=o.encounter_id "
-	// + " where p.voided=0 and e.voided=0 and o.voided=0 and
-	// e.encounter_type in (13,6,9) and "
-	// + " o.concept_id=856 and o.value_numeric is not null and "
-	// + " e.encounter_datetime between date_add(date_add(:endDate, interval
-	// -12 MONTH), interval 1 day) and :endDate and e.location_id=:location
-	// "
-	// + " group by p.patient_id) ultima_carga "
-	// + " inner join obs on obs.person_id=ultima_carga.patient_id and
-	// obs.obs_datetime=ultima_carga.data_carga "
-	// + " where obs.voided=0 and obs.concept_id=856 and
-	// obs.location_id=:location "
-	// + ") carga_viral on inicio_real.patient_id=carga_viral.patient_id "
-	// + " inner join ( Select p.patient_id, e.encounter_datetime data_parto
-	// "
-	// + " from patient p inner join encounter e on
-	// p.patient_id=e.patient_id "
-	// + " inner join obs o on e.encounter_id=o.encounter_id "
-	// + " where p.voided=0 and e.voided=0 and o.voided=0 and
-	// concept_id=6332 and value_coded=1065 and "
-	// + " e.encounter_type in (5,6,9) and e.encounter_datetime <=:endDate
-	// and e.location_id=:location "
-	// + " union Select p.patient_id, e.encounter_datetime data_parto from
-	// patient p "
-	// + " inner join encounter e on p.patient_id=e.patient_id "
-	// + " inner join obs o on e.encounter_id=o.encounter_id "
-	// + " where p.voided=0 and e.voided=0 and o.voided=0 and
-	// concept_id=6334 and value_coded=6332 and "
-	// + " e.encounter_type in (5,6,9) and e.encounter_datetime<=:endDate
-	// and e.location_id=:location "
-	// + " union " + " Select p.patient_id,o.value_datetime data_parto "
-	// + " from patient p inner join encounter e on
-	// p.patient_id=e.patient_id "
-	// + " inner join obs o on e.encounter_id=o.encounter_id "
-	// + " where p.voided=0 and e.voided=0 and o.voided=0 and
-	// concept_id=5599 and "
-	// + " e.encounter_type in (5,6) and o.value_datetime<=:endDate and
-	// e.location_id=:location "
-	// + " union select pg.patient_id,ps.start_date data_parto "
-	// + " from patient p inner join patient_program pg on
-	// p.patient_id=pg.patient_id "
-	// + " inner join patient_state ps on
-	// pg.patient_program_id=ps.patient_program_id "
-	// + " where pg.voided=0 and ps.voided=0 and p.voided=0 and "
-	// + " pg.program_id=8 and ps.state=27 and ps.end_date is null and "
-	// + " ps.start_date<=:endDate and location_id=:location "
-	// + " ) lactante_real on
-	// lactante_real.patient_id=carga_viral.patient_id "
-	// + " where carga_viral.data_carga>=date_add(inicio_real.data_inicio,
-	// interval 3 MONTH) and "
-	// + " carga_viral.data_carga>lactante_real.data_parto and "
-	// + " lactante_real.data_parto between date_add(carga_viral.data_carga,
-	// interval -18 MONTH) and carga_viral.data_carga "; // and
-	// carga_viral.valor_carga<1000
-	
 }

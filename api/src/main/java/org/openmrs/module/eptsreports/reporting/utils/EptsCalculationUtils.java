@@ -1,15 +1,13 @@
 /*
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * The contents of this file are subject to the OpenMRS Public License Version
+ * 1.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://license.openmrs.org
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
  *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS, LLC. All Rights Reserved.
  */
 package org.openmrs.module.eptsreports.reporting.utils;
 
@@ -207,7 +205,8 @@ public class EptsCalculationUtils {
 		for (Map.Entry<Integer, CalculationResult> e : results.entrySet()) {
 			CalculationResult result = e.getValue();
 			
-			// If there is no required result, just check trueness of result, otherwise
+			// If there is no required result, just check trueness of result,
+			// otherwise
 			// check result matches required result
 			if ((requiredResult == null && ResultUtil.isTrue(result))
 			        || (result != null && result.getValue().equals(requiredResult))) {
@@ -299,6 +298,17 @@ public class EptsCalculationUtils {
 	 */
 	public static Set<Integer> female(Collection<Integer> cohort, PatientCalculationContext context) {
 		return patientsThatPass(genders(cohort, context), "F");
+	}
+	
+	/**
+	 * Patients who are male
+	 * 
+	 * @param cohort the patient ids
+	 * @param context the calculation context
+	 * @return the filtered cohort
+	 */
+	public static Set<Integer> male(Collection<Integer> cohort, PatientCalculationContext context) {
+		return patientsThatPass(genders(cohort, context), "M");
 	}
 	
 	/**
