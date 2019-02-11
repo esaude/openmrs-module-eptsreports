@@ -14,7 +14,6 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
-
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -23,43 +22,42 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AgeCohortQueries {
-	
-	@Autowired
-	private GenericCohortQueries genericCohortQueries;
-	
-	public CohortDefinition createBelowYAgeCohort(String name, int maxAge) {
-		AgeCohortDefinition patientsWithAgeBelow = new AgeCohortDefinition();
-		patientsWithAgeBelow.setName(name);
-		patientsWithAgeBelow.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
-		patientsWithAgeBelow.setMaxAge(maxAge - 1);
-		return patientsWithAgeBelow;
-	}
-	
-	public CohortDefinition createXtoYAgeCohort(String name, int minAge, int maxAge) {
-		AgeCohortDefinition xToYCohort = new AgeCohortDefinition();
-		xToYCohort.setName(name);
-		xToYCohort.setMaxAge(maxAge);
-		xToYCohort.setMinAge(minAge);
-		xToYCohort.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
-		return xToYCohort;
-	}
-	
-	public CohortDefinition createOverXAgeCohort(String name, int minAge) {
-		AgeCohortDefinition overXCohort = new AgeCohortDefinition();
-		overXCohort.setName(name);
-		overXCohort.setMinAge(minAge);
-		overXCohort.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
-		return overXCohort;
-	}
-	
-	/**
-	 * Person with Unknown age, the birthdate column is null
-	 * 
-	 * @return CohortDefinition
-	 */
-	public CohortDefinition getPatientsWithUnknownAge() {
-		return genericCohortQueries.generalSql("unknownAge",
-		    "SELECT p.patient_id FROM patient p JOIN person pr ON p.patient_id = pr.person_id WHERE pr.birthdate IS NULL");
-	}
-	
+
+  @Autowired private GenericCohortQueries genericCohortQueries;
+
+  public CohortDefinition createBelowYAgeCohort(String name, int maxAge) {
+    AgeCohortDefinition patientsWithAgeBelow = new AgeCohortDefinition();
+    patientsWithAgeBelow.setName(name);
+    patientsWithAgeBelow.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
+    patientsWithAgeBelow.setMaxAge(maxAge - 1);
+    return patientsWithAgeBelow;
+  }
+
+  public CohortDefinition createXtoYAgeCohort(String name, int minAge, int maxAge) {
+    AgeCohortDefinition xToYCohort = new AgeCohortDefinition();
+    xToYCohort.setName(name);
+    xToYCohort.setMaxAge(maxAge);
+    xToYCohort.setMinAge(minAge);
+    xToYCohort.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
+    return xToYCohort;
+  }
+
+  public CohortDefinition createOverXAgeCohort(String name, int minAge) {
+    AgeCohortDefinition overXCohort = new AgeCohortDefinition();
+    overXCohort.setName(name);
+    overXCohort.setMinAge(minAge);
+    overXCohort.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
+    return overXCohort;
+  }
+
+  /**
+   * Person with Unknown age, the birthdate column is null
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWithUnknownAge() {
+    return genericCohortQueries.generalSql(
+        "unknownAge",
+        "SELECT p.patient_id FROM patient p JOIN person pr ON p.patient_id = pr.person_id WHERE pr.birthdate IS NULL");
+  }
 }
