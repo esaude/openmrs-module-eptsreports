@@ -123,12 +123,11 @@ public class TxPvlsCohortQueries {
         "supp",
         EptsReportUtils.map(
             hivCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), mappings));
-    cd.addSearch("baseCohort", EptsReportUtils.map(genericCohortQueries.getBaseCohort(), mappings));
     cd.addSearch(
         "onArtLongEnough",
         EptsReportUtils.map(
             getPatientsWhoAreMoreThan3MonthsOnArt(), "onDate=${endDate},location=${location}"));
-    cd.setCompositionString("supp AND baseCohort AND onArtLongEnough");
+    cd.setCompositionString("supp AND onArtLongEnough");
     return cd;
   }
 
@@ -145,12 +144,11 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "results",
         EptsReportUtils.map(hivCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
-    cd.addSearch("baseCohort", EptsReportUtils.map(genericCohortQueries.getBaseCohort(), mappings));
     cd.addSearch(
         "onArtLongEnough",
         EptsReportUtils.map(
             getPatientsWhoAreMoreThan3MonthsOnArt(), "onDate=${endDate},location=${location}"));
-    cd.setCompositionString("results AND baseCohort AND onArtLongEnough");
+    cd.setCompositionString("results AND onArtLongEnough");
     return cd;
   }
 
