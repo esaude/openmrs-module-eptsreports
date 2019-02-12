@@ -1,6 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +14,6 @@ import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.PatientState;
 import org.openmrs.Program;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
@@ -58,6 +58,11 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
     Program ptv = hivMetadata.getPtvEtvProgram();
     Date oneYearBefore = EptsCalculationUtils.addMonths(context.getNow(), -12);
 
+    Calendar instance = Calendar.getInstance();
+    instance.setTime(oneYearBefore);
+    instance.add(Calendar.DATE, 1);
+    Date oneYearBeforePlusOneDay = instance.getTime();
+
     // get female patients only
     Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);
 
@@ -90,18 +95,12 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
             context);
     CalculationResultMap markedPregnantInProgram =
         EptsCalculations.lastProgramEnrollment(ptv, femaleCohort, context);
-    Set<Integer> onArtForMoreThan3Months =
-        EptsCalculationUtils.patientsThatPass(
-            calculate(
-                Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0),
-                femaleCohort,
-                context));
     CalculationResultMap lastVl =
         EptsCalculations.lastObs(
             Arrays.asList(labEncounterType, adultFollowup, childFollowup),
             viralLoadConcept,
             location,
-            oneYearBefore,
+            oneYearBeforePlusOneDay,
             context.getNow(),
             cohort,
             context);
@@ -109,9 +108,9 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
     for (Integer pId : femaleCohort) {
 
       Boolean isCandidate = false;
-      if (onArtForMoreThan3Months.contains(pId)) {
+      Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVl, pId);
 
-        Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVl, pId);
+      if (lastVlObs != null && lastVlObs.getObsDatetime() != null) {
         Date lastVlDate = lastVlObs.getObsDatetime();
 
         ListResult lactatingResult = (ListResult) lactatingMap.get(pId);
