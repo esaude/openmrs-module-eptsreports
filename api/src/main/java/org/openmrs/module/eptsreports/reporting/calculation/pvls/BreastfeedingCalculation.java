@@ -170,6 +170,7 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
 
     PatientState patientState = this.getPatientState(pregnantInProgram);
     return patientState != null
+        && patientState.getStartDate() != null
         && this.isIBreastFeedingnViralLoadRange(lastVlDate, patientState.getStartDate());
   }
 

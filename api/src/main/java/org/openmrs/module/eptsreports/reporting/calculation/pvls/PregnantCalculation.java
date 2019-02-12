@@ -179,6 +179,7 @@ public class PregnantCalculation extends AbstractPatientCalculation {
     PatientState patientState = this.getPatientState(pregnantInProgramResut);
 
     return patientState != null
+        && patientState.getStartDate() != null
         && patientState.getEndDate() == null
         && this.isInPregnantViralLoadRange(lastVlDate, patientState.getStartDate());
   }
@@ -191,9 +192,9 @@ public class PregnantCalculation extends AbstractPatientCalculation {
       patientProgram = (PatientProgram) result.getValue();
       if (patientProgram != null) {
         for (PatientState patientState : patientProgram.getStates()) {
-          if (patientState
-              .getState()
-              .equals(this.hivMetadata.getPatientIsPregnantWorkflowState())) {
+          if (this.hivMetadata
+              .getPatientIsPregnantWorkflowState()
+              .equals(patientState.getState())) {
             return patientState;
           }
         }
