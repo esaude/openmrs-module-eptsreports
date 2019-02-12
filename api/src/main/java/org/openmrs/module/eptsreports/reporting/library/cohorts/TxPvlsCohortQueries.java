@@ -30,8 +30,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class TxPvlsCohortQueries {
 
-  @Autowired private GenericCohortQueries genericCohortQueries;
-
   @Autowired private HivCohortQueries hivCohortQueries;
 
   @Autowired private TxNewCohortQueries txNewCohortQueries;

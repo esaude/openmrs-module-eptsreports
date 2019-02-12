@@ -11,9 +11,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Uses {@link AgeCohortQueries}
- */
+/** Uses {@link AgeCohortQueries} */
 @Component("commonAgeDimensionCohort")
 public class CommonAgeDimensionCohort implements AgeDimensionCohortInterface {
 

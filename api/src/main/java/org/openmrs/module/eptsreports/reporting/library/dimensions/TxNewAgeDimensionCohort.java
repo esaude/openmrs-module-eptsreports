@@ -13,9 +13,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Uses age cohorts that determine age on ART start date.
- */
+/** Uses age cohorts that determine age on ART start date. */
 @Component("txNewAgeDimensionCohort")
 public class TxNewAgeDimensionCohort implements AgeDimensionCohortInterface {
 

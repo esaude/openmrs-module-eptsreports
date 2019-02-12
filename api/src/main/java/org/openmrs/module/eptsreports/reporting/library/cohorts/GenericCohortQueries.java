@@ -175,5 +175,4 @@ public class GenericCohortQueries {
     parameters.put("artProgramId", String.valueOf(hivMetadata.getARTProgram().getProgramId()));
     return generalSql("baseCohort", BaseQueries.getBaseCohortQuery(parameters));
   }
-
 }
