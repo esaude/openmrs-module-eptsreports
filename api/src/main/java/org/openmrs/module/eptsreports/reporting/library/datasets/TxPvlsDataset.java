@@ -68,7 +68,8 @@ public class TxPvlsDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Pregnant",
                 EptsReportUtils.map(
-                    txPvls.getPatientsWhoArePregnant(), "endDate=${endDate},location=${location}")),
+                    txPvls.getPatientsWhoArePregnantAndNotBreastfeeding(),
+                    "endDate=${endDate},location=${location}")),
             "endDate=${endDate},location=${location}"),
         "");
 
