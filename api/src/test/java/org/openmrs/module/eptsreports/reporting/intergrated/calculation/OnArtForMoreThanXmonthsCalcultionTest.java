@@ -1,4 +1,4 @@
-package org.openmrs.module.eptsreports.reporting.calculation;
+package org.openmrs.module.eptsreports.reporting.intergrated.calculation;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -54,11 +54,11 @@ public class OnArtForMoreThanXmonthsCalcultionTest extends BasePatientCalculatio
   @Test
   public void calculateLastVlShouldBeUsedWhenThereAreMoreThanOne() {
     // add next vl after 3 months on ART in addition to previous one before 3 months
-    calculationsTestsCache.createBasicObs(
+    openmrsTestHelper.createBasicObs(
         Context.getPatientService().getPatient(999),
         Context.getConceptService().getConcept(7777001),
         Context.getEncounterService().getEncounter(2777005),
-        calculationsTestsCache.getDate("2019-05-10 00:00:00.0"),
+        testsHelper.getDate("2019-05-10 00:00:00.0"),
         (Location) getEvaluationContext().getFromCache("location"),
         140.0);
     CalculationResultMap evaluatedResult =
@@ -69,11 +69,11 @@ public class OnArtForMoreThanXmonthsCalcultionTest extends BasePatientCalculatio
 
     // add initiation by historical start date in addition to HIV enrollment on
     // lacking 432 at-least 3 months earlier
-    calculationsTestsCache.createBasicObs(
+    openmrsTestHelper.createBasicObs(
         Context.getPatientService().getPatient(432),
         Context.getConceptService().getConcept(7777002),
         Context.getEncounterService().getEncounter(3),
-        calculationsTestsCache.getDate("2018-08-12 00:00:00.0"),
+        testsHelper.getDate("2018-08-12 00:00:00.0"),
         (Location) getEvaluationContext().getFromCache("location"),
         Context.getConceptService().getConcept(7777004));
     evaluatedResult = service.evaluate(getCohort(), getCalculation(), getEvaluationContext());

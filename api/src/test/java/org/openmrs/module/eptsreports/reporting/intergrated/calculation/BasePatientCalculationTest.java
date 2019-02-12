@@ -1,4 +1,4 @@
-package org.openmrs.module.eptsreports.reporting.calculation;
+package org.openmrs.module.eptsreports.reporting.intergrated.calculation;
 
 import java.util.Collection;
 import java.util.Date;
@@ -13,12 +13,18 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.api.EptsReportsService;
+import org.openmrs.module.eptsreports.reporting.helper.OpenMRSTestHelper;
+import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
+import org.openmrs.module.eptsreports.reporting.helper.calculation.EptsCalculationUtilsMock;
+import org.openmrs.module.eptsreports.reporting.helper.calculation.EptsCalculationsMock;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 // TODO probably move this into calculation module
 public abstract class BasePatientCalculationTest extends BaseModuleContextSensitiveTest {
 
-  protected CalculationsTestsCache calculationsTestsCache;
+  protected TestsHelper testsHelper;
+
+  protected OpenMRSTestHelper openmrsTestHelper;
 
   protected PatientCalculationService service;
 
@@ -36,18 +42,19 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
   public void setUp() throws Exception {
     service = Context.getService(PatientCalculationService.class);
     evaluationContext = service.createCalculationContext();
-    calculationsTestsCache = new CalculationsTestsCache();
+    testsHelper = new TestsHelper();
+    openmrsTestHelper = new OpenMRSTestHelper();
 
     Map<String, Object> cacheEntries = new HashMap<String, Object>();
     cacheEntries.put("location", Context.getLocationService().getLocation(1));
-    setEvaluationContext(calculationsTestsCache.getDate("2019-05-30 00:00:00.0"));
+    setEvaluationContext(testsHelper.getDate("2019-05-30 00:00:00.0"));
     setEvaluationContext(cacheEntries);
 
     executeDataSet("calculationsTest.xml");
 
     PatientCalculation calculation = getCalculation();
-    calculationsTestsCache.stubEptsCalculations(calculation);
-    calculationsTestsCache.stubEptsCalculationUtils();
+    new EptsCalculationsMock(calculation);
+    new EptsCalculationUtilsMock();
   }
 
   /** This test runs for all classes that extend this class, it's the basic calculation unit test */

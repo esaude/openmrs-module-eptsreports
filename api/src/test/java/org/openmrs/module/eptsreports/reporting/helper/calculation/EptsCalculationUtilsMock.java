@@ -1,4 +1,4 @@
-package org.openmrs.module.eptsreports.reporting.calculation;
+package org.openmrs.module.eptsreports.reporting.helper.calculation;
 
 import mockit.Mock;
 import mockit.MockUp;
@@ -7,6 +7,7 @@ import org.openmrs.Obs;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 
+/** Mocks {@link EptsCalculationUtils} with org.jmockit */
 public class EptsCalculationUtilsMock extends MockUp<EptsCalculationUtils> {
 
   @Mock

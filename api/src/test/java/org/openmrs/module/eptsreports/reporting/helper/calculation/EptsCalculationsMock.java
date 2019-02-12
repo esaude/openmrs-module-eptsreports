@@ -1,4 +1,4 @@
-package org.openmrs.module.eptsreports.reporting.calculation;
+package org.openmrs.module.eptsreports.reporting.helper.calculation;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,8 +21,10 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.reporting.common.TimeQualifier;
 
+/** Mocks {@link EptsCalculations} with org.jmockit */
 public class EptsCalculationsMock extends MockUp<EptsCalculations> {
 
   private PatientCalculation calculation;

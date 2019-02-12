@@ -1,4 +1,4 @@
-package org.openmrs.module.eptsreports.reporting.calculation;
+package org.openmrs.module.eptsreports.reporting.intergrated.calculation;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -73,10 +73,9 @@ public class RoutineCalculationTest extends BasePatientCalculationTest {
     // init & VL date
     params.put("criteria", PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT);
     Obs obs = Context.getObsService().getObs(3777002);
-    Assert.assertEquals(
-        calculationsTestsCache.getDate("2018-06-21 00:00:00.0"), obs.getObsDatetime());
+    Assert.assertEquals(testsHelper.getDate("2018-06-21 00:00:00.0"), obs.getObsDatetime());
     // session gets auto updated without saving
-    obs.setObsDatetime(calculationsTestsCache.getDate("2018-10-21 00:00:00.0"));
+    obs.setObsDatetime(testsHelper.getDate("2018-10-21 00:00:00.0"));
     Assert.assertEquals(
         getResult().toString(),
         service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext()).toString());
@@ -91,26 +90,24 @@ public class RoutineCalculationTest extends BasePatientCalculationTest {
     // test with routine criteria2 > 12 && <= 16 months
     // change now from: 2019-05-30 00:00:00.0, needs to be on ART for
     // atleast 3 months
-    setEvaluationContext(calculationsTestsCache.getDate("2019-01-01 00:00:00.0"));
+    setEvaluationContext(testsHelper.getDate("2019-01-01 00:00:00.0"));
     // initiate ART
     Obs obsInitArt = Context.getObsService().getObs(3777002);
-    Assert.assertEquals(
-        calculationsTestsCache.getDate("2018-06-21 00:00:00.0"), obsInitArt.getObsDatetime());
-    obsInitArt.setObsDatetime(calculationsTestsCache.getDate("2018-01-01 00:00:00.0"));
+    Assert.assertEquals(testsHelper.getDate("2018-06-21 00:00:00.0"), obsInitArt.getObsDatetime());
+    obsInitArt.setObsDatetime(testsHelper.getDate("2018-01-01 00:00:00.0"));
 
     Obs obs = Context.getObsService().getObs(3777008);
-    Assert.assertEquals(
-        calculationsTestsCache.getDate("2019-04-02 00:00:00.0"), obs.getObsDatetime());
+    Assert.assertEquals(testsHelper.getDate("2019-04-02 00:00:00.0"), obs.getObsDatetime());
     // first VL obs should be within 12 months backwards from now
-    obs.setObsDatetime(calculationsTestsCache.getDate("2018-01-01 00:00:00.0"));
+    obs.setObsDatetime(testsHelper.getDate("2018-01-01 00:00:00.0"));
 
     // second VL obs should be within 12 months backwards from now but
     // atleast 12 months from previous VL
-    calculationsTestsCache.createBasicObs(
+    openmrsTestHelper.createBasicObs(
         Context.getPatientService().getPatient(6),
         Context.getConceptService().getConcept(7777001),
         Context.getEncounterService().getEncounter(2777006),
-        calculationsTestsCache.getDate("2019-01-01 00:00:00.0"),
+        testsHelper.getDate("2019-01-01 00:00:00.0"),
         (Location) getEvaluationContext().getFromCache("location"),
         132.3);
     Assert.assertEquals(

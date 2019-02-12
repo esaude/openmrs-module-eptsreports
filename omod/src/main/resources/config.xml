@@ -145,16 +145,16 @@
 		<property>@MODULE_ID@.sTarvAdultoInitialAEncounterTypeUuid</property>
 		<defaultValue>e278f820-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
-			UUID for the S.TARV: ADULTO INITIAL A encounter type
+			UUID for the S.TARV: ADULTO INICIAL A encounter type
 		</description>
 	</globalProperty>
 
 	<globalProperty>
-		<property>@MODULE_ID@.sTarvPediatriaInitialAEncounterTypeUuid
+		<property>@MODULE_ID@.sTarvPediatriaInicialAEncounterTypeUuid
 		</property>
 		<defaultValue>e278fa8c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
-			UUID for the S.TARV: PEDIATRIA INITIAL A encounter type
+			UUID for the S.TARV: PEDIATRIA INICIAL A encounter type
 		</description>
 	</globalProperty>
 

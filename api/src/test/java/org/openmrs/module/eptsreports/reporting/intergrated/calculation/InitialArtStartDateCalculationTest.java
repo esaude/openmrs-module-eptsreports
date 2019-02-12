@@ -1,4 +1,4 @@
-package org.openmrs.module.eptsreports.reporting.calculation;
+package org.openmrs.module.eptsreports.reporting.intergrated.calculation;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -35,35 +35,35 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
     map.put(
         2,
         new SimpleResult(
-            new Timestamp(calculationsTestsCache.getDate("2008-08-01 00:00:00.0").getTime()),
+            new Timestamp(testsHelper.getDate("2008-08-01 00:00:00.0").getTime()),
             calculation,
             evaluationContext));
     // initiated ART by starting ARV plan observation
     map.put(
         6,
         new SimpleResult(
-            new Timestamp(calculationsTestsCache.getDate("2018-06-21 00:00:00.0").getTime()),
+            new Timestamp(testsHelper.getDate("2018-06-21 00:00:00.0").getTime()),
             calculation,
             evaluationContext));
     // initiated ART by historical start date observation
     map.put(
         7,
         new SimpleResult(
-            new Timestamp(calculationsTestsCache.getDate("2019-01-18 00:00:00.0").getTime()),
+            new Timestamp(testsHelper.getDate("2019-01-18 00:00:00.0").getTime()),
             calculation,
             evaluationContext));
     // initiated ART by first phamarcy encounter observation
     map.put(
         8,
         new SimpleResult(
-            new Timestamp(calculationsTestsCache.getDate("2019-01-21 00:00:00.0").getTime()),
+            new Timestamp(testsHelper.getDate("2019-01-21 00:00:00.0").getTime()),
             calculation,
             evaluationContext));
     // initiated ART by ARV transfer in observation
     map.put(
         999,
         new SimpleResult(
-            new Timestamp(calculationsTestsCache.getDate("2019-01-20 00:00:00.0").getTime()),
+            new Timestamp(testsHelper.getDate("2019-01-20 00:00:00.0").getTime()),
             calculation,
             evaluationContext));
     map.put(432, new SimpleResult("", calculation, evaluationContext));
@@ -75,45 +75,45 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
     // initiating ART by starting ARV plan observation in addition to HIV
     // enrollment
     PatientCalculationContext evaluationContext = getEvaluationContext();
-    calculationsTestsCache.createBasicObs(
+    openmrsTestHelper.createBasicObs(
         Context.getPatientService().getPatient(2),
         Context.getConceptService().getConcept(7777002),
         Context.getEncounterService().getEncounter(3),
-        calculationsTestsCache.getDate("2008-07-01 00:00:00.0"),
+        testsHelper.getDate("2008-07-01 00:00:00.0"),
         (Location) evaluationContext.getFromCache("location"),
         Context.getConceptService().getConcept(7777003));
     CalculationResultMap evaluatedResult =
         service.evaluate(getCohort(), getCalculation(), evaluationContext);
     Assert.assertEquals(
-        calculationsTestsCache.getDate("2008-07-01 00:00:00.0"), evaluatedResult.get(2).getValue());
+        testsHelper.getDate("2008-07-01 00:00:00.0"), evaluatedResult.get(2).getValue());
     // the rest should not be touched
     matchOtherResultsExcept(evaluatedResult, 2);
 
     // initiating ART by historical start date in addition to HIV enrollment
-    calculationsTestsCache.createBasicObs(
+    openmrsTestHelper.createBasicObs(
         Context.getPatientService().getPatient(2),
         Context.getConceptService().getConcept(7777005),
         Context.getEncounterService().getEncounter(3),
-        calculationsTestsCache.getDate("2019-01-01 00:00:00.0"),
+        testsHelper.getDate("2019-01-01 00:00:00.0"),
         (Location) evaluationContext.getFromCache("location"),
-        calculationsTestsCache.getDate("2008-06-01 00:00:00.0"));
+        testsHelper.getDate("2008-06-01 00:00:00.0"));
     evaluatedResult = service.evaluate(getCohort(), getCalculation(), evaluationContext);
     Assert.assertEquals(
-        calculationsTestsCache.getDate("2008-06-01 00:00:00.0"), evaluatedResult.get(2).getValue());
+        testsHelper.getDate("2008-06-01 00:00:00.0"), evaluatedResult.get(2).getValue());
     // the rest should not be touched
     matchOtherResultsExcept(evaluatedResult, 2);
 
     // initiating ART by historical start date in addition to HIV enrollment
-    calculationsTestsCache.createBasicObs(
+    openmrsTestHelper.createBasicObs(
         Context.getPatientService().getPatient(2),
         Context.getConceptService().getConcept(7777002),
         Context.getEncounterService().getEncounter(3),
-        calculationsTestsCache.getDate("2019-01-02 00:00:00.0"),
+        testsHelper.getDate("2019-01-02 00:00:00.0"),
         (Location) evaluationContext.getFromCache("location"),
         Context.getConceptService().getConcept(7777004));
     evaluatedResult = service.evaluate(getCohort(), getCalculation(), evaluationContext);
     Assert.assertEquals(
-        calculationsTestsCache.getDate("2008-06-01 00:00:00.0"), evaluatedResult.get(2).getValue());
+        testsHelper.getDate("2008-06-01 00:00:00.0"), evaluatedResult.get(2).getValue());
     // the rest should not be touched
     matchOtherResultsExcept(evaluatedResult, 2);
 
