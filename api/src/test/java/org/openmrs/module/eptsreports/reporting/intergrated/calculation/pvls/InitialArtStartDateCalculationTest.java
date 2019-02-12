@@ -1,4 +1,4 @@
-package org.openmrs.module.eptsreports.reporting.intergrated.calculation;
+package org.openmrs.module.eptsreports.reporting.intergrated.calculation.pvls;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -12,6 +12,7 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.InitialArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
 
 public class InitialArtStartDateCalculationTest extends BasePatientCalculationTest {
 

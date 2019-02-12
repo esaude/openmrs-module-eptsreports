@@ -1,4 +1,4 @@
-package org.openmrs.module.eptsreports.reporting.helper.calculation;
+package org.openmrs.module.eptsreports.reporting.mock.calculation;
 
 import mockit.Mock;
 import mockit.MockUp;
