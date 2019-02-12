@@ -1,7 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -47,10 +46,6 @@ public class PregnantCalculation extends AbstractPatientCalculation {
 
     Location location = (Location) context.getFromCache("location");
     Date oneYearBefore = EptsCalculationUtils.addMonths(context.getNow(), -12);
-    Calendar instance = Calendar.getInstance();
-    instance.setTime(oneYearBefore);
-    instance.add(Calendar.DATE, 1);
-    Date oneYearBeforePlusOneDay = instance.getTime();
 
     EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
     EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
@@ -104,7 +99,7 @@ public class PregnantCalculation extends AbstractPatientCalculation {
             Arrays.asList(labEncounterType, adultFollowup, pediatriaFollowup),
             viralLoadConcept,
             location,
-            oneYearBeforePlusOneDay,
+            oneYearBefore,
             context.getNow(),
             cohort,
             context);

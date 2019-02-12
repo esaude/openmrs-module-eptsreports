@@ -1,7 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -58,11 +57,6 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
     Program ptv = hivMetadata.getPtvEtvProgram();
     Date oneYearBefore = EptsCalculationUtils.addMonths(context.getNow(), -12);
 
-    Calendar instance = Calendar.getInstance();
-    instance.setTime(oneYearBefore);
-    instance.add(Calendar.DATE, 1);
-    Date oneYearBeforePlusOneDay = instance.getTime();
-
     // get female patients only
     Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);
 
@@ -100,7 +94,7 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
             Arrays.asList(labEncounterType, adultFollowup, childFollowup),
             viralLoadConcept,
             location,
-            oneYearBeforePlusOneDay,
+            oneYearBefore,
             context.getNow(),
             cohort,
             context);
