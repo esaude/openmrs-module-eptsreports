@@ -311,17 +311,6 @@ public class EptsCalculationUtils {
   }
 
   /**
-   * Patients who are male
-   *
-   * @param cohort the patient ids
-   * @param context the calculation context
-   * @return the filtered cohort
-   */
-  public static Set<Integer> male(Collection<Integer> cohort, PatientCalculationContext context) {
-    return patientsThatPass(genders(cohort, context), "M");
-  }
-
-  /**
    * Convenience method to fetch a patient result as a coded obs value
    *
    * @param results the calculation result map

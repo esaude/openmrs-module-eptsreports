@@ -110,7 +110,6 @@ public class PregnantCalculation extends AbstractPatientCalculation {
       Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVl, pId);
 
       if (lastVlObs != null && lastVlObs.getObsDatetime() != null) {
-
         Date lastVlDate = lastVlObs.getObsDatetime();
 
         ListResult pregnantResult = (ListResult) pregnantMap.get(pId);
@@ -134,11 +133,6 @@ public class PregnantCalculation extends AbstractPatientCalculation {
       }
       resultMap.put(pId, new BooleanResult(isCandidate, this));
     }
-
-    for (Integer pId : EptsCalculationUtils.male(cohort, context)) {
-      resultMap.put(pId, new BooleanResult(false, this));
-    }
-
     return resultMap;
   }
 

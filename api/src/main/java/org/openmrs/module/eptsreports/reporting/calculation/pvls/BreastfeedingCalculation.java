@@ -127,10 +127,6 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
       }
       resultMap.put(pId, new BooleanResult(isCandidate, this));
     }
-
-    for (Integer pId : EptsCalculationUtils.male(cohort, context)) {
-      resultMap.put(pId, new BooleanResult(false, this));
-    }
     return resultMap;
   }
 
