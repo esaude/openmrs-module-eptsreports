@@ -215,10 +215,8 @@ public class TxNewCohortQueries {
                 Arrays.asList(commonMetadata.getYesConcept())),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
 
-    String compositionString = "DATAPARTO";
-    //    String compositionString =
-    //            "((DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE) NOT GRAVIDAS) AND
-    // FEMININO";
+    String compositionString =
+        "((DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE) NOT GRAVIDAS) AND FEMININO";
 
     cd.setCompositionString(compositionString);
     return cd;
