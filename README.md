@@ -45,10 +45,11 @@ Reports Implemented
 
 ## MER Reports
 
-|Report                 |Indicators Used                                  |
+|Report                 |Indicators Used                                  
 |-----------------------|-------------------------------------------------|
-|*PEPFAR MER 2.3 Quarterly*    |Tx_Curr, Tx_New, Tx_Pvls                         |
-|*TX_CURR Report 2.1*   |Tx_Curr2.1                                          |
+|*PEPFAR MER 2.3 Quarterly* |Tx_Curr, Tx_New, Tx_Pvls                     
+|*TX_CURR Report 2.1*       |Tx_Curr2.1                                   
+|*IM-ER-Report*             |IM-ER2, IM-ER4                               
 
 ## MER Indicators
 
@@ -58,6 +59,8 @@ Reports Implemented
 |*Tx_Curr*  |Number of adults and children currently receiving antiretroviral therapy (ART). New spec using 30 day period
 |*Tx_Curr2.1*  |Number of adults and children currently receiving antiretroviral therapy (ART). Using old spec using 60 day period
 |*Tx_New*   |Number of adults and children newly enrolled on antiretroviral therapy (ART).
+|*IM-ER2*   |Implementation of PEPFAR Early Retention Indicators - 2 months
+|*IM-ER4*   |Implementation of PEPFAR Early Retention Indicators - 4 months
 
 How to perform a release
 -------------------------
