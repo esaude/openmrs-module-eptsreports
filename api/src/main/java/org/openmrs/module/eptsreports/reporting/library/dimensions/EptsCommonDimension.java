@@ -307,12 +307,12 @@ public class EptsCommonDimension {
         "TOP",
         EptsReportUtils.map(
             eri2MonthsCohortQueries.getPatientsWhoInitiatedArtButTransferredOut(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${reportingEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     dim.addCohortDefinition(
         "STP",
         EptsReportUtils.map(
             eri2MonthsCohortQueries.getPatientsWhoInitiatedArtButSuspendedTreatment(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${reportingEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     return dim;
   }
 }
