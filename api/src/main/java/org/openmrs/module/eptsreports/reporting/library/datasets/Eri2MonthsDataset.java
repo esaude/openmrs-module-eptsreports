@@ -37,7 +37,7 @@ public class Eri2MonthsDataset extends BaseDataSet {
 
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     String mappingsInd =
-        "cohortStartDate=${endDate-2m+1d},endDate=${endDate-1m},reportingEndDate=${endDate},location=${location}";
+        "cohortStartDate=${endDate-2m+1d},cohortEndDate=${endDate-1m},reportingEndDate=${endDate},location=${location}";
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     dsd.setName("ERI-2months Data Set");
     dsd.addParameters(getParameters());
