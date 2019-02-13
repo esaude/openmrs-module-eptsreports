@@ -62,30 +62,6 @@ public class TxPvlsDataset extends BaseDataSet {
         "");
 
     dsd.addColumn(
-        "P",
-        "Pregnant",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Pregnant",
-                EptsReportUtils.map(
-                    txPvls.getPatientsWhoArePregnantAndNotBreastfeeding(),
-                    "endDate=${endDate},location=${location}")),
-            "endDate=${endDate},location=${location}"),
-        "");
-
-    dsd.addColumn(
-        "B",
-        "Breastfeeding",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Breastfeeding",
-                EptsReportUtils.map(
-                    txPvls.getPatientsWhoAreBreastfeeding(),
-                    "onDate=${endDate},location=${location}")),
-            "endDate=${endDate},location=${location}"),
-        "");
-
-    dsd.addColumn(
         "PVLS",
         "Pregnant and has VL suppression",
         EptsReportUtils.map(
