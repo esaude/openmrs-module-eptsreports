@@ -91,15 +91,16 @@ public class Eri2MonthsCohortQueries {
   public CohortDefinition getAllPatientsWhoInitiatedArt() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("All patients who initiated ART less transfer ins");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("cohortStartDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("cohortEndDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("reportingEndDate", "Reporting End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
         "initiatedArt",
         EptsReportUtils.map(
             getAllPatientsRetainedOnArtFor2MonthsFromArtInitiation(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "transferIns",
         EptsReportUtils.map(
@@ -108,7 +109,7 @@ public class Eri2MonthsCohortQueries {
                 hivMetadata
                     .getTransferredFromOtherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
     cd.setCompositionString("initiatedArt AND NOT transferIns");
     return cd;
   }
@@ -128,7 +129,7 @@ public class Eri2MonthsCohortQueries {
         "initiatedArt",
         EptsReportUtils.map(
             getAllPatientsWhoInitiatedArt(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "cohortStartDate=${startDate},cohortEndDate=${endDate},location=${location}"));
     cd.addSearch(
         "pickedDrugs",
         EptsReportUtils.map(
@@ -146,19 +147,20 @@ public class Eri2MonthsCohortQueries {
   public CohortDefinition getPregnantWomenRetainedOnArtFor2MonthsFromArtInitiation() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Pregnant women retain on ART for more than 2 months from ART initiation date");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("cohortStartDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("cohortEndDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("reportingEndDate", "Reporting End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "initiatedART",
         EptsReportUtils.map(
             getAllPatientsWhoInitiatedArt(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
             txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
     cd.setCompositionString("initiatedART AND pregnant");
     return cd;
   }
@@ -171,19 +173,20 @@ public class Eri2MonthsCohortQueries {
   public CohortDefinition getBreastfeedingWomenRetainedOnArtFor2MonthsFromArtInitiation() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Breastfeeding women retain on ART for more than 2 months from ART initiation date");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("cohortStartDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("cohortEndDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("reportingEndDate", "Reporting End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "initiatedART",
         EptsReportUtils.map(
             getAllPatientsWhoInitiatedArt(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
             txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}"));
     cd.setCompositionString("initiatedART AND breastfeeding");
     return cd;
   }
@@ -196,29 +199,30 @@ public class Eri2MonthsCohortQueries {
   public CohortDefinition getChildrenRetainedOnArtFor2MonthsFromArtInitiation() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Children having ART retention for than 2 months");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("cohortStartDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("cohortEndDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("reportingEndDate", "Reporting End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "initiatedART",
         EptsReportUtils.map(
             getAllPatientsWhoInitiatedArt(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "children",
         EptsReportUtils.map(
             txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(0, 14),
-            "endDate=${endDate},location=${location}"));
+            "endDate=${cohortStartDate},location=${location}"));
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
             txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
             txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}"));
     cd.setCompositionString("(initiatedART AND children) AND NOT (pregnant OR breastfeeding)");
     return cd;
   }
@@ -231,29 +235,30 @@ public class Eri2MonthsCohortQueries {
   public CohortDefinition getAdultsRetainedOnArtFor2MonthsFromArtInitiation() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Adults having ART retention for than 2 months");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("cohortStartDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("cohortEndDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("reportingEndDate", "Reporting End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "initiatedART",
         EptsReportUtils.map(
             getAllPatientsWhoInitiatedArt(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "adults",
         EptsReportUtils.map(
             txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(15, 200),
-            "endDate=${endDate},location=${location}"));
+            "endDate=${cohortStartDate},location=${location}"));
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
             txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
             txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}"));
     cd.setCompositionString("(initiatedART AND adults) AND NOT (pregnant OR breastfeeding)");
     return cd;
   }
@@ -273,7 +278,7 @@ public class Eri2MonthsCohortQueries {
         "initiatedArt",
         EptsReportUtils.map(
             getAllPatientsWhoInitiatedArt(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "cohortStartDate=${startDate},cohortEndDate=${endDate},location=${location}"));
     cd.addSearch(
         "pickedDrugs",
         EptsReportUtils.map(
@@ -287,7 +292,7 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "transfers",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStatesDeadTransferredOutStopped(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
@@ -322,7 +327,7 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "transfers",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStatesDeadTransferredOutStopped(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
@@ -341,19 +346,20 @@ public class Eri2MonthsCohortQueries {
   public CohortDefinition getPatientsWhoInitiatedArtAndDead() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients who died during period");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("cohortStartDate", "Cohort Start Date", Date.class));
+    cd.addParameter(new Parameter("cohortEndDate", "Cohort End Date", Date.class));
+    cd.addParameter(new Parameter("reportingEndDate", "Reporting End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "initiatedArtAndNotTransferIns",
         EptsReportUtils.map(
             getAllPatientsWhoInitiatedArt(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
     cd.setCompositionString("initiatedArtAndNotTransferIns AND dead");
     return cd;
   }
@@ -367,21 +373,22 @@ public class Eri2MonthsCohortQueries {
   public CohortDefinition getPatientsWhoInitiatedArtButSuspendedTreatment() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients who suspended treatment");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("cohortStartDate", "Cohort Start Date", Date.class));
+    cd.addParameter(new Parameter("cohortEndDate", "Cohort End Date", Date.class));
+    cd.addParameter(new Parameter("reportingEndDate", "Reporting End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "initiatedArtAndNotTransferIns",
         EptsReportUtils.map(
             getAllPatientsWhoInitiatedArt(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "suspendedTreatment",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStatesDeadTransferredOutStopped(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),
-            "startDate=${startDate},endDate=${endDate+1m},location=${location}"));
+            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
     cd.setCompositionString("initiatedArtAndNotTransferIns AND suspendedTreatment");
     return cd;
   }
@@ -395,23 +402,24 @@ public class Eri2MonthsCohortQueries {
   public CohortDefinition getPatientsWhoInitiatedArtButTransferredOut() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients who transferred out during period");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("cohortStartDate", "Cohort Start Date", Date.class));
+    cd.addParameter(new Parameter("cohortEndDate", "Cohort End Date", Date.class));
+    cd.addParameter(new Parameter("reportingEndDate", "Reporting End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "initiatedArtAndNotTransferIns",
         EptsReportUtils.map(
             getAllPatientsWhoInitiatedArt(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "transferredOut",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStatesDeadTransferredOutStopped(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
-            "startDate=${startDate},endDate=${endDate+1m},location=${location}"));
+            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
     cd.setCompositionString("initiatedArtAndNotTransferIns AND transferredOut");
     return cd;
   }
