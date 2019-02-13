@@ -224,9 +224,12 @@ public class EptsCommonDimension {
     CohortDefinitionDimension dim = new CohortDefinitionDimension();
     dim.addParameter(new Parameter("startDate", "Start Date", Date.class));
     dim.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dim.addParameter(new Parameter("reportEndDate", "Report End Date", Date.class));
     dim.addParameter(new Parameter("location", "location", Location.class));
     dim.setName("Get patient states");
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String deadTransferredOutSuspendedMappings =
+        "startDate=${startDate},endDate=${reportEndDate},location=${location}";
     dim.addCohortDefinition(
         "IART",
         EptsReportUtils.map(
@@ -253,14 +256,14 @@ public class EptsCommonDimension {
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
-            mappings));
+            deadTransferredOutSuspendedMappings));
     dim.addCohortDefinition(
         "STP",
         EptsReportUtils.map(
             genericCohortQueries.getPatientsBasedOnPatientStatesDeadTransferredOutStopped(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),
-            mappings));
+            deadTransferredOutSuspendedMappings));
     dim.addCohortDefinition(
         "ANIT",
         EptsReportUtils.map(
