@@ -287,7 +287,7 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "transfers",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStatesDeadTransferredOutStopped(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
@@ -322,7 +322,7 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "transfers",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStatesDeadTransferredOutStopped(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
@@ -378,7 +378,7 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "suspendedTreatment",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStatesDeadTransferredOutStopped(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),
             "startDate=${startDate},endDate=${endDate+1m},location=${location}"));
@@ -406,7 +406,7 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "transferredOut",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStatesDeadTransferredOutStopped(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()

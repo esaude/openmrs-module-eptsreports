@@ -289,7 +289,7 @@ public class Eri4MonthsCohortQueries {
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStatesDeadTransferredOutStopped(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
@@ -354,7 +354,7 @@ public class Eri4MonthsCohortQueries {
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStatesDeadTransferredOutStopped(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
