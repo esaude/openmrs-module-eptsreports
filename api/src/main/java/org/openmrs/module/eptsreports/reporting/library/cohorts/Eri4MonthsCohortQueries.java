@@ -34,7 +34,7 @@ public class Eri4MonthsCohortQueries {
 
   @Autowired private TxNewCohortQueries txNewCohortQueries;
 
-  @Autowired private TxPvlsCohortQueries txPvlsCohortQueries;
+  @Autowired private AgeCohortQueries ageCohortQueries;
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
@@ -208,7 +208,7 @@ public class Eri4MonthsCohortQueries {
     cd.addSearch(
         "children",
         EptsReportUtils.map(
-            txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(0, 14),
+            ageCohortQueries.createXtoYAgeCohort("Children 0 - 14", 0, 14),
             "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "pregnant",
@@ -243,7 +243,7 @@ public class Eri4MonthsCohortQueries {
     cd.addSearch(
         "adults",
         EptsReportUtils.map(
-            txPvlsCohortQueries.findPatientsBetweenAgeBracketsInYears(15, 200),
+            ageCohortQueries.createXtoYAgeCohort("Adult +15", 15, 200),
             "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "pregnant",

@@ -138,21 +138,6 @@ public class GenericCohortQueries {
   }
 
   /**
-   * Finds patients that do not have birthdate defined
-   *
-   * @return
-   */
-  public CohortDefinition getUnknownAgeCohort() {
-    SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("unknownAgeCohort");
-    definition.setQuery(
-        "select patient.patient_id from patient join person on person.person_id = patient.patient_id "
-            + "where patient.voided = 0 and person.voided = 0 and person.birthdate is null");
-    definition.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
-    return definition;
-  }
-
-  /**
    * Get patients states based on program, state and end of reporting period
    *
    * @param program

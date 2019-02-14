@@ -302,40 +302,14 @@ public class TxNewCohortQueries {
    * @param maxAge Maximum age
    * @return Patients with age in years between {@code minAge} and {@code maxAge} on ART start date.
    */
-  public CohortDefinition createXtoYAgeOnArtStartDateCohort(int minAge, int maxAge) {
-    String name = "patients with age between " + minAge + " and " + maxAge + " on ART start date";
-    // add 1 to maxAge because in getTxNewUnionQueries '<' is used to
-    // compare to
-    // maxAge
-    CohortDefinition ageCohort = ageCohortQueries.createXtoYAgeCohort("", minAge, maxAge + 1);
-    CohortDefinition cd = getTxNewCompositionCohort(name, ageCohort);
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-    return cd;
-  }
-
-  /**
-   * @param maxAge Maximum age
-   * @return Patients with age in years bellow {@code maxAge} on ART start date.
-   */
-  public CohortDefinition createBelowXAgeOnArtStartDateCohort(int maxAge) {
-    String name = "patients with age bellow " + maxAge + " on ART start date";
-    CohortDefinition ageCohort = ageCohortQueries.createBelowYAgeCohort("", maxAge + 1);
-    CohortDefinition cd = getTxNewCompositionCohort(name, ageCohort);
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-    return cd;
-  }
-
-  /**
-   * @param minAge Minimum age
-   * @return Patients with age in years equal or above {@code minAge} on ART start date.
-   */
-  public CohortDefinition createOverXAgeOnArtStartDateCohort(int minAge) {
-    String name = "patients with age over " + minAge + " on ART start date";
-    CohortDefinition ageCohort = ageCohortQueries.createOverXAgeCohort("", minAge);
+  public CohortDefinition createXtoYAgeOnArtStartDateCohort(
+      String name, Integer minAge, Integer maxAge) {
+    // add 1 to maxAge because in getTxNewUnionQueries '<' is used to compare to maxAge
+    Integer age = maxAge;
+    if (age != null) {
+      age++;
+    }
+    CohortDefinition ageCohort = ageCohortQueries.createXtoYAgeCohort("", minAge, age);
     CohortDefinition cd = getTxNewCompositionCohort(name, ageCohort);
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
