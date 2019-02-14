@@ -32,7 +32,6 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -42,10 +41,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
-
-  @Autowired private HivMetadata hivMetadata;
-
-  @Autowired private CommonMetadata commonMetadata;
 
   /**
    * @should return null for patients who have not started ART
@@ -61,7 +56,8 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 
     CalculationResultMap map = new CalculationResultMap();
     Location location = (Location) context.getFromCache("location");
-
+    HivMetadata hivMetadata = getHivMetadata();
+    CommonMetadata commonMetadata = getCommonMetadata();
     Program treatmentProgram = hivMetadata.getARTProgram();
     Concept arvPlan = hivMetadata.getARVPlanConcept();
     Concept startDrugsConcept = hivMetadata.getstartDrugsConcept();
