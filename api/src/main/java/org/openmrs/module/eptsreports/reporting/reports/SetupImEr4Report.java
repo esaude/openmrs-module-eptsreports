@@ -66,7 +66,7 @@ public class SetupImEr4Report extends EptsDataExportManager {
 
     rd.addDataSetDefinition(
         "ERI-4 Months Data Set",
-        Mapped.mapStraightThrough(eri4MonthsDataset.constructEri4MonthsDatset()));
+        Mapped.mapStraightThrough(eri4MonthsDataset.constructEri4MonthsDataset()));
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(

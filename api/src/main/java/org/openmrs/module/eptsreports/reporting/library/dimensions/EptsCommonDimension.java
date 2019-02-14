@@ -133,28 +133,30 @@ public class EptsCommonDimension {
     dim.addParameter(new Parameter("reportEndDate", "Report End Date", Date.class));
     dim.addParameter(new Parameter("location", "location", Location.class));
     dim.setName("Get patient states");
-    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String cohortPeriodMappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String mappings = cohortPeriodMappings + ",reportEndDate=${reportEndDate}";
     String endOfReportingPeriodMappings =
         "startDate=${startDate},endDate=${reportEndDate},location=${location}";
     dim.addCohortDefinition(
         "IART",
         EptsReportUtils.map(
-            eri4MonthsCohortQueries.getPatientsWhoInitiatedArtLessTransferIns(), mappings));
+            eri4MonthsCohortQueries.getPatientsWhoInitiatedArtLessTransferIns(),
+            cohortPeriodMappings));
 
     dim.addCohortDefinition(
         "AIT",
         EptsReportUtils.map(
-            eri4MonthsCohortQueries.getPatientsWhoAreAliveAndOnTreatment(), endOfReportingPeriodMappings));
+            eri4MonthsCohortQueries.getPatientsWhoAreAliveAndOnTreatment(), mappings));
 
     dim.addCohortDefinition(
         "DP",
-        EptsReportUtils.map(genericCohortQueries.getDeceasedPatients(), endOfReportingPeriodMappings));
+        EptsReportUtils.map(
+            genericCohortQueries.getDeceasedPatients(), endOfReportingPeriodMappings));
 
     dim.addCohortDefinition(
         "LTFU",
         EptsReportUtils.map(
-            eri4MonthsCohortQueries.getAllPatientsWhoAreLostToFollowUpDuringPeriod(),
-            endOfReportingPeriodMappings));
+            eri4MonthsCohortQueries.getAllPatientsWhoAreLostToFollowUpDuringPeriod(), mappings));
 
     dim.addCohortDefinition(
         "TOP",
@@ -177,8 +179,7 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "ANIT",
         EptsReportUtils.map(
-            eri4MonthsCohortQueries.getPatientsWhoAreAliveAndNotOnTreatment(),
-            endOfReportingPeriodMappings));
+            eri4MonthsCohortQueries.getPatientsWhoAreAliveAndNotOnTreatment(), mappings));
     return dim;
   }
 

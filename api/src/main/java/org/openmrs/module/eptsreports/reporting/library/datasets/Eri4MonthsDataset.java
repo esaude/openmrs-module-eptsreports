@@ -33,7 +33,7 @@ public class Eri4MonthsDataset extends BaseDataSet {
 
   @Autowired private EptsCommonDimension eptsCommonDimension;
 
-  public DataSetDefinition constructEri4MonthsDatset() {
+  public DataSetDefinition constructEri4MonthsDataset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     String cohortPeriodMappings =
         "startDate=${endDate-5m+1d},endDate=${endDate-4m},location=${location}";

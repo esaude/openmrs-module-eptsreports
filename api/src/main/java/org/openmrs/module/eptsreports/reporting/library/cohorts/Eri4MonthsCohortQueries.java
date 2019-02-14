@@ -209,7 +209,7 @@ public class Eri4MonthsCohortQueries {
         "children",
         EptsReportUtils.map(
             ageCohortQueries.createXtoYAgeCohort("Children 0 - 14", 0, 14),
-            "endDate=${endDate},location=${location}"));
+            "effectiveDate=${endDate}"));
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
@@ -244,7 +244,7 @@ public class Eri4MonthsCohortQueries {
         "adults",
         EptsReportUtils.map(
             ageCohortQueries.createXtoYAgeCohort("Adult +15", 15, 200),
-            "endDate=${endDate},location=${location}"));
+            "effectiveDate=${endDate}"));
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
@@ -270,6 +270,7 @@ public class Eri4MonthsCohortQueries {
     cd.setName("Patients who are a live and on treatment");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("reportEndDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "initiatedArt",
@@ -285,7 +286,7 @@ public class Eri4MonthsCohortQueries {
         "dead",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${reportEndDate},location=${location}"));
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
@@ -294,7 +295,7 @@ public class Eri4MonthsCohortQueries {
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
-            "startDate=${startDate},endDate=${endDate+1m},location=${location}"));
+            "startDate=${startDate},endDate=${reportEndDate},location=${location}"));
     cd.setCompositionString("(initiatedArt AND consultation) AND NOT (dead OR transfersOut)");
     return cd;
   }
@@ -309,6 +310,7 @@ public class Eri4MonthsCohortQueries {
     cd.setName("Lost to follow up patients");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("reportEndDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "initiatedArt",
@@ -319,7 +321,7 @@ public class Eri4MonthsCohortQueries {
         "missedVisit",
         EptsReportUtils.map(
             getPatientsWhoAreLostToFollowUpWithinPeriod(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${reportEndDate},location=${location}"));
     cd.setCompositionString("initiatedArt AND missedVisit");
     return cd;
   }
@@ -335,6 +337,7 @@ public class Eri4MonthsCohortQueries {
     cd.setName("Patients who are a live and NOT treatment");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("reportEndDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "initiatedArt",
@@ -350,7 +353,7 @@ public class Eri4MonthsCohortQueries {
         "dead",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${reportEndDate},location=${location}"));
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
@@ -359,7 +362,7 @@ public class Eri4MonthsCohortQueries {
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
-            "startDate=${startDate},endDate=${endDate+1m},location=${location}"));
+            "startDate=${startDate},endDate=${reportEndDate},location=${location}"));
     cd.setCompositionString("initiatedArt AND NOT (consultation OR dead OR transfersOut)");
     return cd;
   }
