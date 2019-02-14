@@ -36,16 +36,18 @@ public class Eri4MonthsDataset extends BaseDataSet {
   public DataSetDefinition constructEri4MonthsDataset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     String cohortPeriodMappings =
-        "startDate=${endDate-5m+1d},endDate=${endDate-4m},location=${location}";
-    String dimensionMappings = cohortPeriodMappings + ",reportEndDate={endDate}";
-    String reportPeriodMappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+        "cohortStartDate=${endDate-5m+1d},cohortEndDate=${endDate-4m},location=${location}";
+    String indicatorMappings =
+        "cohortStartDate=${endDate-5m+1d},cohortEndDate=${endDate-4m},reportingStartDate=${startDate},reportingEndDate=${endDate},location=${location}";
+    String reportingPeriodMappings =
+        "startDate=${startDate},endDate=${endDate},location=${location}";
     dsd.setName("ERI-4months Data Set");
     dsd.addParameters(getParameters());
 
     // apply disaggregations here
     dsd.addDimension(
         "state",
-        EptsReportUtils.map(eptsCommonDimension.getEri4MonthsDimension(), dimensionMappings));
+        EptsReportUtils.map(eptsCommonDimension.getEri4MonthsDimension(), indicatorMappings));
 
     // start forming the columns
     addRow(
@@ -58,7 +60,7 @@ public class Eri4MonthsDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     eri4MonthsCohortQueries.getPatientsWhoInitiatedArtLessTransferIns(),
                     cohortPeriodMappings)),
-            reportPeriodMappings),
+            reportingPeriodMappings),
         get4MonthsRetentionColumns());
     addRow(
         dsd,
@@ -71,7 +73,7 @@ public class Eri4MonthsDataset extends BaseDataSet {
                     eri4MonthsCohortQueries
                         .getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation(),
                     cohortPeriodMappings)),
-            reportPeriodMappings),
+            reportingPeriodMappings),
         get4MonthsRetentionColumns());
     addRow(
         dsd,
@@ -84,7 +86,7 @@ public class Eri4MonthsDataset extends BaseDataSet {
                     eri4MonthsCohortQueries
                         .getBreastfeedingWomenRetainedOnArtFor4MonthsFromArtInitiation(),
                     cohortPeriodMappings)),
-            reportPeriodMappings),
+            reportingPeriodMappings),
         get4MonthsRetentionColumns());
     addRow(
         dsd,
@@ -96,7 +98,7 @@ public class Eri4MonthsDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     eri4MonthsCohortQueries.getChildrenRetainedOnArtFor4MonthsFromArtInitiation(),
                     cohortPeriodMappings)),
-            reportPeriodMappings),
+            reportingPeriodMappings),
         get4MonthsRetentionColumns());
     addRow(
         dsd,
@@ -108,7 +110,7 @@ public class Eri4MonthsDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     eri4MonthsCohortQueries.getAdultsRetaineOnArtFor4MonthsFromArtInitiation(),
                     cohortPeriodMappings)),
-            reportPeriodMappings),
+            reportingPeriodMappings),
         get4MonthsRetentionColumns());
     return dsd;
   }
