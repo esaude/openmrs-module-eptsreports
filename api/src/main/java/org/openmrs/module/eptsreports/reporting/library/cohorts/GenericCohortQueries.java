@@ -22,7 +22,10 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Program;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.calculation.retention.AgeOnArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
@@ -192,6 +195,17 @@ public class GenericCohortQueries {
                 "SELECT patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id AND pe.dead=1 WHERE pe.death_date <=:endDate"),
             "startDate=${startDate},endDate=${endDate}"));
     cd.setCompositionString("dead OR deceased");
+    return cd;
+  }
+
+  public CohortDefinition getAgeOnArtStartDate(Integer minAge, Integer maxAge) {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            "criteria", Context.getRegisteredComponents(AgeOnArtStartDateCalculation.class).get(0));
+    cd.setName("Childrens on art start date");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addCalculationParameter("minAge", minAge);
+    cd.addCalculationParameter("maxAge", maxAge);
     return cd;
   }
 }

@@ -208,8 +208,7 @@ public class Eri4MonthsCohortQueries {
     cd.addSearch(
         "children",
         EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("Children 0 - 14", 0, 14),
-            "effectiveDate=${cohortEndDate}"));
+            genericCohortQueries.getAgeOnArtStartDate(0, 14), "location=${location}"));
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
@@ -243,8 +242,7 @@ public class Eri4MonthsCohortQueries {
     cd.addSearch(
         "adults",
         EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("Adult +15", 15, 200),
-            "effectiveDate=${endDate}"));
+            genericCohortQueries.getAgeOnArtStartDate(15, null), "location=${location}"));
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(

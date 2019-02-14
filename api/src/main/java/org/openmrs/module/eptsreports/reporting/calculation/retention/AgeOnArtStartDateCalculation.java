@@ -18,9 +18,7 @@ import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefiniti
 import org.springframework.stereotype.Component;
 
 @Component
-public class ChildrenCalculation extends AbstractPatientCalculation {
-
-  private static final int CHILDREN_MAXIMUM_AGE = 14;
+public class AgeOnArtStartDateCalculation extends AbstractPatientCalculation {
 
   @Override
   public CalculationResultMap evaluate(
@@ -36,16 +34,36 @@ public class ChildrenCalculation extends AbstractPatientCalculation {
     CalculationResultMap birthDates =
         EptsCalculationUtils.evaluateWithReporting(
             new BirthdateDataDefinition(), cohort, null, null, context);
+    Integer minAge = (Integer) parameterValues.get("minAge");
+    Integer maxAge = (Integer) parameterValues.get("maxAge");
     for (Integer patientId : cohort) {
       Date artStartDate = getArtStartDate(patientId, artStartDates);
       Date birthDate = getBirthDate(patientId, birthDates);
       if (artStartDate != null && birthDate != null && birthDate.compareTo(artStartDate) <= 0) {
         int years =
             Years.yearsIn(new Interval(birthDate.getTime(), artStartDate.getTime())).getYears();
-        map.put(patientId, new BooleanResult(years <= CHILDREN_MAXIMUM_AGE, this));
+        map.put(
+            patientId,
+            new BooleanResult(isMinAgeOk(minAge, years) && isMaxAgeOk(maxAge, years), this));
       }
     }
     return map;
+  }
+
+  private boolean isMaxAgeOk(Integer maxAge, int years) {
+    if (maxAge != null) {
+      return years <= maxAge.intValue();
+    }
+    // if no max age specified any age will do
+    return true;
+  }
+
+  private boolean isMinAgeOk(Integer minAge, int years) {
+    if (minAge != null) {
+      return years >= minAge.intValue();
+    }
+    // if no min age specified any age will do
+    return true;
   }
 
   private Date getBirthDate(Integer patientId, CalculationResultMap birthDates) {
