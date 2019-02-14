@@ -101,7 +101,7 @@ public class PregnantCalculation extends AbstractPatientCalculation {
             location,
             oneYearBefore,
             context.getNow(),
-            cohort,
+            femaleCohort,
             context);
 
     for (Integer pId : femaleCohort) {
@@ -127,7 +127,6 @@ public class PregnantCalculation extends AbstractPatientCalculation {
             || this.isPregnantByWeeks(lastVlDate, pregnantByWeeksObsList)
             || this.isPregnantDueDate(lastVlDate, pregnantDueDateObsList)
             || this.isPregnantInProgram(lastVlDate, pregnantInProgramResut)) {
-
           isCandidate = true;
         }
       }
@@ -171,7 +170,6 @@ public class PregnantCalculation extends AbstractPatientCalculation {
   private boolean isPregnantInProgram(Date lastVlDate, SimpleResult pregnantInProgramResut) {
 
     PatientState patientState = this.getPatientState(pregnantInProgramResut);
-
     return patientState != null
         && patientState.getStartDate() != null
         && patientState.getEndDate() == null

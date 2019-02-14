@@ -96,14 +96,13 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
             location,
             oneYearBefore,
             context.getNow(),
-            cohort,
+            femaleCohort,
             context);
 
     for (Integer pId : femaleCohort) {
 
       Boolean isCandidate = false;
       Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVl, pId);
-
       if (lastVlObs != null && lastVlObs.getObsDatetime() != null) {
         Date lastVlDate = lastVlObs.getObsDatetime();
 
@@ -167,6 +166,7 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
     PatientState patientState = this.getPatientState(pregnantInProgram);
     return patientState != null
         && patientState.getStartDate() != null
+        && patientState.getEndDate() == null
         && this.isIBreastFeedingnViralLoadRange(lastVlDate, patientState.getStartDate());
   }
 
@@ -177,10 +177,11 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
     if (result != null) {
       patientProgram = (PatientProgram) result.getValue();
       if (patientProgram != null) {
-        for (PatientState patientState : patientProgram.getStates()) {
-          if (patientState
-              .getState()
-              .equals(hivMetadata.getPatientIsBreastfeedingWorkflowState())) {
+
+        for (PatientState patientState : patientProgram.getCurrentStates()) {
+          if (this.hivMetadata
+              .getPatientIsBreastfeedingWorkflowState()
+              .equals(patientState.getState())) {
             return patientState;
           }
         }
