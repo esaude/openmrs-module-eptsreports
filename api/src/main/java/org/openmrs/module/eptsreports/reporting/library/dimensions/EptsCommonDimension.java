@@ -228,7 +228,7 @@ public class EptsCommonDimension {
     dim.addParameter(new Parameter("location", "location", Location.class));
     dim.setName("Get patient states");
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-    String deadTransferredOutSuspendedMappings =
+    String endOfReportingPeriodMappings =
         "startDate=${startDate},endDate=${reportEndDate},location=${location}";
     dim.addCohortDefinition(
         "IART",
@@ -238,15 +238,17 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "AIT",
         EptsReportUtils.map(
-            eri4MonthsCohortQueries.getPatientsWhoAreAliveAndOnTreatment(), mappings));
+            eri4MonthsCohortQueries.getPatientsWhoAreAliveAndOnTreatment(), endOfReportingPeriodMappings));
 
     dim.addCohortDefinition(
-        "DP", EptsReportUtils.map(genericCohortQueries.getDeceasedPatients(), mappings));
+        "DP",
+        EptsReportUtils.map(genericCohortQueries.getDeceasedPatients(), endOfReportingPeriodMappings));
 
     dim.addCohortDefinition(
         "LTFU",
         EptsReportUtils.map(
-            eri4MonthsCohortQueries.getAllPatientsWhoAreLostToFollowUpDuringPeriod(), mappings));
+            eri4MonthsCohortQueries.getAllPatientsWhoAreLostToFollowUpDuringPeriod(),
+            endOfReportingPeriodMappings));
 
     dim.addCohortDefinition(
         "TOP",
@@ -256,18 +258,21 @@ public class EptsCommonDimension {
                 hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
-            deadTransferredOutSuspendedMappings));
+            endOfReportingPeriodMappings));
+
     dim.addCohortDefinition(
         "STP",
         EptsReportUtils.map(
             genericCohortQueries.getPatientsBasedOnPatientStates(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),
-            deadTransferredOutSuspendedMappings));
+            endOfReportingPeriodMappings));
+
     dim.addCohortDefinition(
         "ANIT",
         EptsReportUtils.map(
-            eri4MonthsCohortQueries.getPatientsWhoAreAliveAndNotOnTreatment(), mappings));
+            eri4MonthsCohortQueries.getPatientsWhoAreAliveAndNotOnTreatment(),
+            endOfReportingPeriodMappings));
     return dim;
   }
 
