@@ -13,7 +13,10 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 import org.openmrs.Location;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.calculation.retention.ChildrenCalculation;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.Eri2MonthsQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -209,10 +212,7 @@ public class Eri2MonthsCohortQueries {
             getAllPatientsWhoInitiatedArt(),
             "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
-        "children",
-        EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("Children 0 - 14", 0, 14),
-            "effectiveDate=${cohortStartDate}"));
+        "children", EptsReportUtils.map(getChildrensOnArtStartDate(), "location=${location}"));
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
@@ -421,6 +421,15 @@ public class Eri2MonthsCohortQueries {
                     .getProgramWorkflowStateId()),
             "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
     cd.setCompositionString("initiatedArtAndNotTransferIns AND transferredOut");
+    return cd;
+  }
+
+  public CohortDefinition getChildrensOnArtStartDate() {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            "criteria", Context.getRegisteredComponents(ChildrenCalculation.class).get(0));
+    cd.setName("Childrens on art start date");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
     return cd;
   }
 }
