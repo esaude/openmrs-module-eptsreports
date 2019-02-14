@@ -37,8 +37,8 @@ public class Eri4MonthsDataset extends BaseDataSet {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     String cohortPeriodMappings =
         "cohortStartDate=${endDate-5m+1d},cohortEndDate=${endDate-4m},location=${location}";
-    String indicatorMappings =
-        "cohortStartDate=${endDate-5m+1d},cohortEndDate=${endDate-4m},reportingStartDate=${startDate},reportingEndDate=${endDate},location=${location}";
+    String dimensionMappings =
+        cohortPeriodMappings + ",reportingStartDate=${startDate},reportingEndDate=${endDate}";
     String reportingPeriodMappings =
         "startDate=${startDate},endDate=${endDate},location=${location}";
     dsd.setName("ERI-4months Data Set");
@@ -47,7 +47,7 @@ public class Eri4MonthsDataset extends BaseDataSet {
     // apply disaggregations here
     dsd.addDimension(
         "state",
-        EptsReportUtils.map(eptsCommonDimension.getEri4MonthsDimension(), indicatorMappings));
+        EptsReportUtils.map(eptsCommonDimension.getEri4MonthsDimension(), dimensionMappings));
 
     // start forming the columns
     addRow(

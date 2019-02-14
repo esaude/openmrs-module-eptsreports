@@ -134,7 +134,7 @@ public class Eri4MonthsCohortQueries {
                 hivMetadata
                     .getTransferredFromOtherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
-            "startDate=${cohortStartDate},endDate=${cohortStartDate},location=${location}"));
+            "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
     cd.setCompositionString("initiatedART AND NOT transferIns");
     return cd;
   }
