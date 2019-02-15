@@ -14,18 +14,19 @@
 	<encounter encounter_id="2777009" encounter_type="6777002" patient_id="7" location_id="1" form_id="1" encounter_datetime="2018-09-21 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="50ffc760-30f3-11e9-8fa2-db28ea3f111d"/>
 	<encounter encounter_id="2777010" encounter_type="6777004" patient_id="8" location_id="1" form_id="1" encounter_datetime="2019-01-02 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="be77e236-30fe-11e9-84d0-8bb8b152cb4b"/>
 	<encounter encounter_id="2777011" encounter_type="6777004" patient_id="8" location_id="1" form_id="1" encounter_datetime="2018-10-15 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="3bfeddea-30ff-11e9-876a-1f4196a26650"/>
+	<encounter encounter_id="2777012" encounter_type="6777004" patient_id="501" location_id="1" form_id="1" encounter_datetime="2019-01-21 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="8ed84de4-3109-11e9-95b2-6f43a0a92066"/>
+	<encounter encounter_id="2777013" encounter_type="6777004" patient_id="501" location_id="1" form_id="1" encounter_datetime="2018-01-21 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="83c2f1a0-310b-11e9-b0b8-8bcf020c6363"/>
 	
 	<obs obs_id="3777010" person_id="501" concept_id="7777001" encounter_id="2777007" obs_datetime="2018-12-12 00:00:00.0" location_id="1" value_numeric="110.0" comments="" creator="1" date_created="2019-01-31 14:11:13.0" voided="false" uuid="73fbad6c-30f1-11e9-aba9-c74001fb51a9"/>
 	<obs obs_id="3777011" person_id="7" concept_id="7777001" encounter_id="2777008" obs_datetime="2019-01-02 00:00:00.0" location_id="1" value_numeric="122.0" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="ce38e068-30f3-11e9-964e-db1ff5e177e4"/>
 	<obs obs_id="3777012" person_id="7" concept_id="7777019" encounter_id="2777009" obs_datetime="2018-09-21 00:00:00.0" location_id="1" value_coded="7777020" comments="" creator="1" date_created="2019-01-31 14:11:13.0" voided="false" uuid="4abefcda-30f4-11e9-b2ea-0ff505068f4a"/>
 	<obs obs_id="3777013" person_id="8" concept_id="7777001" encounter_id="2777010" obs_datetime="2019-02-28 00:00:00.0" location_id="1" value_numeric="130.0" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="eae02072-30fe-11e9-ac80-238e510bef40"/>
 	<obs obs_id="3777014" person_id="8" concept_id="7777021" encounter_id="2777011" obs_datetime="2018-10-15 00:00:00.0" location_id="1" value_numeric="20" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="1249870c-30ff-11e9-bb5a-9fe9972483dc"/>
-	
+	<obs obs_id="3777015" person_id="501" concept_id="7777001" encounter_id="2777012" obs_datetime="2019-01-21 00:00:00.0" location_id="1" value_numeric="110.0" comments="" creator="1" date_created="2019-01-31 14:11:13.0" voided="false" uuid="b13c8e0e-3109-11e9-8339-0bd238bfffbe"/>
+	<obs obs_id="3777016" person_id="501" concept_id="7777025" encounter_id="2777013" obs_datetime="2018-01-21 00:00:00.0" location_id="1" value_coded="7777020" comments="" creator="1" date_created="2019-01-31 14:11:13.0" voided="false" uuid="66d59a0c-310b-11e9-b03a-a7b89e6ff4e2"/>
 	
 	<patient_program patient_program_id="28075" patient_id="501" program_id="8" date_enrolled="2018-08-09 00:00:00.0" creator="1" date_created="2019-03-02 10:26:40.0" voided="false" uuid="c7aa626e-d59f-4ca7-8ca9-dde329b99a62" location_id="1"/>
-	<program_workflow program_workflow_id="5" program_id="8" concept_id="7777024" creator="1" date_created="2019-03-02 11:39:12.0" retired="false"  uuid="38b2c29f-496c-4b3d-b792-e2f7cdc7c8b7"/>
-  	<program_workflow_state program_workflow_state_id="25" program_workflow_id="5" concept_id="7777019" initial="true" terminal="false" creator="1" date_created="2019-03-02 11:40:22.0" retired="false" uuid="8e3d2224-b91f-4978-95ba-683929011086"/>
-  	<patient_state patient_state_id="49188" patient_program_id="28075" state="25" start_date="2018-08-09" creator="1" date_created="2019-03-02 10:27:38.0" voided="false" uuid="6a3a096b-6bab-446b-ba9e-7ecacb0388cd"/>
+	<patient_state patient_state_id="49188" patient_program_id="28075" state="25" start_date="2018-08-09" creator="1" date_created="2019-03-02 10:27:38.0" voided="false" uuid="6a3a096b-6bab-446b-ba9e-7ecacb0388cd"/>
 	
 
 </dataset>

@@ -23,7 +23,6 @@ import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -34,8 +33,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class BreastfeedingCalculation extends AbstractPatientCalculation {
 
-  @Autowired private HivMetadata hivMetadata;
-
   @Override
   public CalculationResultMap evaluate(
       Collection<Integer> cohort,
@@ -44,6 +41,8 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
     CalculationResultMap resultMap = new CalculationResultMap();
 
     Location location = (Location) context.getFromCache("location");
+
+    HivMetadata hivMetadata = getHivMetadata();
 
     Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
     EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
@@ -179,7 +178,7 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
       if (patientProgram != null) {
 
         for (PatientState patientState : patientProgram.getCurrentStates()) {
-          if (this.hivMetadata
+          if (this.getHivMetadata()
               .getPatientIsBreastfeedingWorkflowState()
               .equals(patientState.getState())) {
             return patientState;
