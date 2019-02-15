@@ -38,7 +38,7 @@ public class PregnantCalculationTest extends BasePatientCalculationTest {
     // Patient is is marked as pregnant(YES) in Adult initial Followup
     map.put(7, new SimpleResult(true, calculation, evaluationContext));
 
-    map.put(8, new SimpleResult(false, calculation, evaluationContext));
+    map.put(8, new SimpleResult(true, calculation, evaluationContext));
 
     return map;
   }
@@ -51,6 +51,16 @@ public class PregnantCalculationTest extends BasePatientCalculationTest {
   /*
    * Patients that are female and enrolled on PTV/ETC program during the
    * period range
+   *
+   * Patient Id : 501
+   *
+   * End Date Period: 2019-05-30
+   *
+   * Latest Viral Load Date: 2018-12-12
+   *
+   * Patient State Start Date: 2018-08-09
+   *
+   * rule tested : PregnantCalculation.isPregnantInProgram(Date, SimpleResult)
    */
   @Test
   public void shouldEvaluateOnePatientMarkedAsPregnantByEnrollInPTVProgram() {
@@ -65,11 +75,24 @@ public class PregnantCalculationTest extends BasePatientCalculationTest {
   }
 
   /*
+   *
    * Patients that are female and were marked as “PREGNANT” in the initial
    * consultation or follow-up consultation during the period range
+   *
+   * Patient Id: 7
+   *
+   * End Date Period: 2019-06-30
+   *
+   * Latest Viral Load Date: 2019-01-02
+   *
+   * Pregnant Date: 2018-09-21
+   *
+   * rule tested : PregnantCalculation.isPregnant(Date, List<Obs>)
    */
   @Test
   public void shouldEvaluateOnePatientMarkedAsPregrantByAdultFollowup() {
+
+    setEvaluationContext(testsHelper.getDate("2019-06-30 00:00:00.0"));
 
     CalculationResultMap evaluatedResult =
         service.evaluate(getCohort(), getCalculation(), getEvaluationContext());
@@ -77,5 +100,32 @@ public class PregnantCalculationTest extends BasePatientCalculationTest {
     Assert.assertEquals(true, evaluatedResult.get(7).getValue());
 
     matchOtherResultsExcept(evaluatedResult, 8, 501);
+  }
+
+  /*
+   * Patients that are female and have “Number of weeks Pregnant” registered
+   * in the initial or follow-up consultation during the period range
+   *
+   * Patient Id: 8
+   *
+   * End Date Period: 2019-03-01
+   *
+   * Day registered nr of weeks of pregnant: 2018-10-15
+   *
+   * Latest Viral Load Date: 2019-02-28
+   *
+   * rule tested : PregnantCalculation.isPregnantByWeeks(Date, List<Obs>)
+   */
+  @Test
+  public void shoudEvaluateOnePatientMarkedAsPreagnantByWeeks() {
+
+    setEvaluationContext(testsHelper.getDate("2019-03-01 00:00:00.0"));
+
+    CalculationResultMap evaluatedResult =
+        service.evaluate(getCohort(), getCalculation(), getEvaluationContext());
+
+    Assert.assertEquals(true, evaluatedResult.get(8).getValue());
+
+    matchOtherResultsExcept(evaluatedResult, 7, 501);
   }
 }

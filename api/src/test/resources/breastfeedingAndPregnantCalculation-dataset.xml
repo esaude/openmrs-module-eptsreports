@@ -10,14 +10,16 @@
 	<patient patient_id="501" creator="1" date_created="2006-01-18 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:57.0" voided="false" void_reason=""/>
   	
   	<encounter encounter_id="2777007" encounter_type="6777004" patient_id="501" location_id="1" form_id="1" encounter_datetime="2019-01-21 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="7c846fd2-30f1-11e9-bbb3-57ecdc2884bf"/>
-	<encounter encounter_id="2777008" encounter_type="6777004" patient_id="7" location_id="1" form_id="1" encounter_datetime="2019-01-21 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="1dcb3bae-30f3-11e9-80ce-1b8174342358"/>
-	<encounter encounter_id="2777009" encounter_type="6777002" patient_id="7" location_id="1" form_id="1" encounter_datetime="2018-10-20 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="50ffc760-30f3-11e9-8fa2-db28ea3f111d"/>
-	
+	<encounter encounter_id="2777008" encounter_type="6777004" patient_id="7" location_id="1" form_id="1" encounter_datetime="2019-01-02 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="1dcb3bae-30f3-11e9-80ce-1b8174342358"/>
+	<encounter encounter_id="2777009" encounter_type="6777002" patient_id="7" location_id="1" form_id="1" encounter_datetime="2018-09-21 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="50ffc760-30f3-11e9-8fa2-db28ea3f111d"/>
+	<encounter encounter_id="2777010" encounter_type="6777004" patient_id="8" location_id="1" form_id="1" encounter_datetime="2019-01-02 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="be77e236-30fe-11e9-84d0-8bb8b152cb4b"/>
+	<encounter encounter_id="2777011" encounter_type="6777004" patient_id="8" location_id="1" form_id="1" encounter_datetime="2018-10-15 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="3bfeddea-30ff-11e9-876a-1f4196a26650"/>
 	
 	<obs obs_id="3777010" person_id="501" concept_id="7777001" encounter_id="2777007" obs_datetime="2018-12-12 00:00:00.0" location_id="1" value_numeric="110.0" comments="" creator="1" date_created="2019-01-31 14:11:13.0" voided="false" uuid="73fbad6c-30f1-11e9-aba9-c74001fb51a9"/>
-	<obs obs_id="3777011" person_id="7" concept_id="7777001" encounter_id="2777008" obs_datetime="2018-12-12 00:00:00.0" location_id="1" value_numeric="122.0" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="ce38e068-30f3-11e9-964e-db1ff5e177e4"/>
-	<obs obs_id="3777012" person_id="7" concept_id="7777019" encounter_id="2777009" obs_datetime="2018-10-20 00:00:00.0" location_id="1" value_coded="7777020" comments="" creator="1" date_created="2019-01-31 14:11:13.0" voided="false" uuid="4abefcda-30f4-11e9-b2ea-0ff505068f4a"/>
-	
+	<obs obs_id="3777011" person_id="7" concept_id="7777001" encounter_id="2777008" obs_datetime="2019-01-02 00:00:00.0" location_id="1" value_numeric="122.0" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="ce38e068-30f3-11e9-964e-db1ff5e177e4"/>
+	<obs obs_id="3777012" person_id="7" concept_id="7777019" encounter_id="2777009" obs_datetime="2018-09-21 00:00:00.0" location_id="1" value_coded="7777020" comments="" creator="1" date_created="2019-01-31 14:11:13.0" voided="false" uuid="4abefcda-30f4-11e9-b2ea-0ff505068f4a"/>
+	<obs obs_id="3777013" person_id="8" concept_id="7777001" encounter_id="2777010" obs_datetime="2019-02-28 00:00:00.0" location_id="1" value_numeric="130.0" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="eae02072-30fe-11e9-ac80-238e510bef40"/>
+	<obs obs_id="3777014" person_id="8" concept_id="7777021" encounter_id="2777011" obs_datetime="2018-10-15 00:00:00.0" location_id="1" value_numeric="20" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="1249870c-30ff-11e9-bb5a-9fe9972483dc"/>
 	
 	
 	<patient_program patient_program_id="28075" patient_id="501" program_id="8" date_enrolled="2018-08-09 00:00:00.0" creator="1" date_created="2019-03-02 10:26:40.0" voided="false" uuid="c7aa626e-d59f-4ca7-8ca9-dde329b99a62" location_id="1"/>
