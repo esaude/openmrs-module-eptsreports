@@ -92,11 +92,11 @@
   	<concept_set concept_set_id="8777017" concept_id="7777017" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777017"/>
   	<concept_set concept_set_id="8777018" concept_id="7777018" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777018"/>
  
- 
-  	<program program_id="8" concept_id="7777023" creator="1" date_created="2019-03-02 11:30:33.0" retired="false" name="PTV" description="Programa de representa o estado de gravidez de uma mulher" uuid="06057245-ca21-43ab-a02f-e861d7e54593"/>
+ 	
+ 	<program program_id="8" concept_id="7777023" creator="1" date_created="2019-03-02 11:30:33.0" retired="false" name="PTV" description="Programa de representa o estado de gravidez de uma mulher" uuid="06057245-ca21-43ab-a02f-e861d7e54593"/>
   	
-  	 	
-  	<encounter_type encounter_type_id="6777001" name="Child Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777001"/>
+  	
+ 	<encounter_type encounter_type_id="6777001" name="Child Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777001"/>
   	<encounter_type encounter_type_id="6777002" name="Adult Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="e278f956-1d5f-11e0-b929-000c29ad1d07"/>
   	<encounter_type encounter_type_id="6777003" name="ARV Pharmacia" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777003"/>
   	<encounter_type encounter_type_id="6777004" name="Adult initial" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777004"/>
@@ -120,7 +120,7 @@
 	<obs obs_id="3777007" person_id="2" concept_id="7777001" encounter_id="2777005" obs_datetime="2018-12-12 00:00:00.0" location_id="1" value_numeric="122.0" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777007"/>
 	<obs obs_id="3777008" person_id="6" concept_id="7777001" encounter_id="2777005" obs_datetime="2019-04-02 00:00:00.0" location_id="1" value_numeric="102.0" comments="" creator="1" date_created="2019-01-31 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777008"/>
 	<obs obs_id="3777009" person_id="6" concept_id="7777006" encounter_id="2777005" obs_datetime="2019-04-02 00:00:00.0" location_id="1" value_coded="7777008" comments="" creator="1" date_created="2019-01-31 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777009"/>
-	
+		
 	
 	<global_property property="eptsreports.hivViralLoadConceptUuid" property_value="e1d6247e-1d5f-11e0-b929-000c29ad1d07" uuid="a09ab2c5-878e-4905-b25d-578417777001"/>
 	<global_property property="eptsreports.misauLaboratorioEncounterTypeUuid" property_value="e2790f68-1d5f-11e0-b929-000c29ad1d07" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d09a0ac8"/>

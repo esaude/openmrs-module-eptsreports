@@ -3,7 +3,6 @@ package org.openmrs.module.eptsreports.reporting.helper;
 import java.util.Date;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
@@ -35,16 +34,5 @@ public class OpenMRSTestHelper {
     }
 
     return Context.getObsService().saveObs(newObservation, null);
-  }
-
-  public Encounter createEncounter(
-      Patient patient, EncounterType encounterType, Date dateTime, Location location) {
-    Encounter encounter = new Encounter();
-    encounter.setPatient(patient);
-    encounter.setEncounterType(encounterType);
-    encounter.setEncounterDatetime(dateTime);
-    encounter.setLocation(location);
-
-    return Context.getEncounterService().saveEncounter(encounter);
   }
 }
