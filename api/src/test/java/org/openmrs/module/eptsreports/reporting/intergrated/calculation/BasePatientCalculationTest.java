@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +13,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
+import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.api.EptsReportsService;
 import org.openmrs.module.eptsreports.reporting.helper.OpenMRSTestHelper;
@@ -61,16 +64,16 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
   @Test
   public void evaluateShouldReturnMatchedResultMapBySizeAndPrintOutGivenCalculationCohort() {
     Assert.assertNotNull(Context.getService(EptsReportsService.class));
-    CalculationResultMap result = getResult();
     PatientCalculation calculation = getCalculation();
     Collection<Integer> cohort = getCohort();
     Assert.assertNotNull(calculation);
+    CalculationResultMap result = getResult();
     Assert.assertNotNull(cohort);
     Assert.assertNotNull(result);
     CalculationResultMap evaluatedResult =
         service.evaluate(cohort, calculation, params, getEvaluationContext());
     Assert.assertEquals(result.size(), evaluatedResult.size());
-    Assert.assertEquals(result.toString(), evaluatedResult.toString());
+    Assert.assertEquals(true, checkMatchCalculationResults(result, evaluatedResult));
   }
 
   protected void setEvaluationContext(Date now) {
@@ -100,6 +103,34 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
         otherResult.remove(i);
       }
     }
-    Assert.assertEquals(initialResult.toString(), otherResult.toString());
+    Assert.assertEquals(true, checkMatchCalculationResults(initialResult, otherResult));
+  }
+
+  private boolean checkMatchCalculationResults(
+      CalculationResultMap result, CalculationResultMap evaluatedResult) {
+    boolean finalMach = false;
+    for (Entry<Integer, CalculationResult> resultKV : result.entrySet()) {
+      finalMach = isKeyAndValueInEvaluatedResults(resultKV, evaluatedResult.entrySet());
+    }
+    return finalMach;
+  }
+
+  private boolean isKeyAndValueInEvaluatedResults(
+      Entry<Integer, CalculationResult> resultKV,
+      Set<Entry<Integer, CalculationResult>> evaluatedResultKV) {
+    Integer key = resultKV.getKey();
+    CalculationResult value = resultKV.getValue();
+    for (Entry<Integer, CalculationResult> evaluatedKV : evaluatedResultKV) {
+      Integer evaluatedKey = evaluatedKV.getKey();
+      CalculationResult evaluatedValue = evaluatedKV.getValue();
+
+      if (key.intValue() == evaluatedKey.intValue()) {
+        if ((value.getValue() == null && evaluatedValue.getValue() == null)
+            || (value.getValue().equals(evaluatedValue.getValue()))) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }
