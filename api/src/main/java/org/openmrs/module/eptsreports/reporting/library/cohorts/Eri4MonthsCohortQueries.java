@@ -320,7 +320,21 @@ public class Eri4MonthsCohortQueries {
         EptsReportUtils.map(
             getPatientsWhoAreLostToFollowUpWithinPeriod(),
             "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
-    cd.setCompositionString("initiatedArt AND missedVisit");
+    cd.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            genericCohortQueries.getDeceasedPatients(),
+            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+    cd.addSearch(
+        "transfersOut",
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
+                hivMetadata.getARTProgram().getProgramId(),
+                hivMetadata
+                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                    .getProgramWorkflowStateId()),
+            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+    cd.setCompositionString("initiatedArt AND missedVisit AND NOT (dead OR transfersOut)");
     return cd;
   }
 

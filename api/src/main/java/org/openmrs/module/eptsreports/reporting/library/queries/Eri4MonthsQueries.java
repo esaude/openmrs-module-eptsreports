@@ -179,6 +179,7 @@ public class Eri4MonthsQueries {
         + "GROUP BY inicio_real.patient_id";
   }
 
+  // TODO: harmonise with LTFU queries from TxCurr
   public static String getLostToFollowUpPatientsWithPeriod(
       int arvFarmacyEncounterType,
       int missedDrugsConceptId,
