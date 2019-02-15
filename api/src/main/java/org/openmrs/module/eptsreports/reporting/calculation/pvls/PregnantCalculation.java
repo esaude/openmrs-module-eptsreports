@@ -23,7 +23,6 @@ import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,8 +32,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class PregnantCalculation extends AbstractPatientCalculation {
-
-  @Autowired private HivMetadata hivMetadata;
 
   @Override
   public CalculationResultMap evaluate(
@@ -47,6 +44,7 @@ public class PregnantCalculation extends AbstractPatientCalculation {
     Location location = (Location) context.getFromCache("location");
     Date oneYearBefore = EptsCalculationUtils.addMonths(context.getNow(), -12);
 
+    HivMetadata hivMetadata = getHivMetadata();
     EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
     EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
     EncounterType pediatriaFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
@@ -184,7 +182,7 @@ public class PregnantCalculation extends AbstractPatientCalculation {
       patientProgram = (PatientProgram) result.getValue();
       if (patientProgram != null) {
         for (PatientState patientState : patientProgram.getStates()) {
-          if (this.hivMetadata
+          if (this.getHivMetadata()
               .getPatientIsPregnantWorkflowState()
               .equals(patientState.getState())) {
             return patientState;

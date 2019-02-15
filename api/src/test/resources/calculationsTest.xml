@@ -7,7 +7,7 @@
 	graphic logo is a trademark of OpenMRS Inc. -->
 	
 <dataset>
-	<concept concept_id="7777001" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777001"/>
+	<concept concept_id="7777001" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1d6247e-1d5f-11e0-b929-000c29ad1d07"/>
   	<concept_name concept_id="7777001" name="Viral Load" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_id="5777001" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777001"/>
   	<concept_numeric concept_id="7777001" hi_normal="1497.0" low_absolute="40.0" low_critical="75.0" hi_critical="500" hi_absolute="1600" units="cells/mmL" precise="1"/>
   	
@@ -62,6 +62,23 @@
   	<concept concept_id="7777018" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777018"/>
   	<concept_name concept_name_id="5777018" concept_id="7777018" name="Tdf3tcLpv Second regimen line ARV" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777018"/>
   	
+  	<concept concept_id="7777019" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1e056a6-1d5f-11e0-b929-000c29ad1d07"/>
+  	<concept_name concept_name_id="5777019" concept_id="7777019" name="PREGNANT" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="b09b9e78-3059-11e9-bee9-5780600a708e"/>
+  	
+  	<concept concept_id="7777020" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1d81b62-1d5f-11e0-b929-000c29ad1d07"/>
+  	<concept_name concept_name_id="5777020" concept_id="7777020" name="YES" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="dd9e2ca6-3059-11e9-ac8e-678eec31324a"/>
+  	
+  	<concept concept_id="7777021" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1da0788-1d5f-11e0-b929-000c29ad1d07"/>
+  	<concept_name concept_name_id="5777021" concept_id="7777021" name="NUMBER OF WEEKS PREGNANT" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="ab5e678a-3061-11e9-b63b-4f04eabee0d4"/>
+  	
+  	<concept concept_id="7777022" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1dca8ee-1d5f-11e0-b929-000c29ad1d07"/>
+  	<concept_name concept_name_id="5777022" concept_id="7777022" name="PREGNANCY DUE DATE" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="2f8496b0-3062-11e9-91f6-5f4f95c602f8"/>
+  	
+  	<concept concept_id="7777023" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1dca6e6-1d5f-11e0-b929-000c29ad1d07"/>
+  	<concept_name concept_name_id="5777023" concept_id="7777023" name="PTV" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="c1f972fe-3067-11e9-9214-37162b3db162"/>
+  	
+  	<concept concept_id="7777024" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1e482ee-1d5f-11e0-b929-000c29ad1d07"/>
+  	<concept_name concept_name_id="5777024" concept_id="7777024" name="PREGNANCY STATUS" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="e243e69e-1d5f-11e0-b929-000c29ad1d07"/>
   	
   	<concept_set concept_set_id="8777008" concept_id="7777008" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777008"/>
   	<concept_set concept_set_id="8777009" concept_id="7777009" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777009"/>
@@ -74,14 +91,17 @@
   	<concept_set concept_set_id="8777016" concept_id="7777016" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777016"/>
   	<concept_set concept_set_id="8777017" concept_id="7777017" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777017"/>
   	<concept_set concept_set_id="8777018" concept_id="7777018" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777018"/>
+ 
+ 
+  	<program program_id="8" concept_id="7777023" creator="1" date_created="2019-03-02 11:30:33.0" retired="false" name="PTV" description="Programa de representa o estado de gravidez de uma mulher" uuid="06057245-ca21-43ab-a02f-e861d7e54593"/>
   	
-  	
-	<encounter_type encounter_type_id="6777001" name="Child Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777001"/>
-  	<encounter_type encounter_type_id="6777002" name="Adult Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777002"/>
+  	 	
+  	<encounter_type encounter_type_id="6777001" name="Child Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777001"/>
+  	<encounter_type encounter_type_id="6777002" name="Adult Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="e278f956-1d5f-11e0-b929-000c29ad1d07"/>
   	<encounter_type encounter_type_id="6777003" name="ARV Pharmacia" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777003"/>
   	<encounter_type encounter_type_id="6777004" name="Adult initial" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777004"/>
   	<encounter_type encounter_type_id="6777005" name="Child initial" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777005"/>
-  	
+  	<encounter_type encounter_type_id="6777006" name="MISAU: LABORATORIO" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="e2790f68-1d5f-11e0-b929-000c29ad1d07"/>
   	
   	<encounter encounter_id="2777001" encounter_type="6777003" patient_id="8" location_id="1" form_id="1" encounter_datetime="2019-01-21 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6277001"/>
   	<encounter encounter_id="2777002" encounter_type="6777004" patient_id="7" location_id="1" form_id="1" encounter_datetime="2019-01-21 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6277002"/>
@@ -89,8 +109,8 @@
   	<encounter encounter_id="2777004" encounter_type="6777004" patient_id="432" location_id="1" form_id="1" encounter_datetime="2019-01-21 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6277004"/>
   	<encounter encounter_id="2777005" encounter_type="6777004" patient_id="2" location_id="1" form_id="1" encounter_datetime="2019-01-21 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6277005"/>
   	<encounter encounter_id="2777006" encounter_type="6777004" patient_id="6" location_id="1" form_id="1" encounter_datetime="2019-01-21 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6277006"/>
-  	
-  	
+    	
+    	
   	<obs obs_id="3777001" person_id="7" concept_id="7777001" encounter_id="3" obs_datetime="2019-01-29 00:00:00.0" location_id="1" value_numeric="150.0" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777001"/>
 	<obs obs_id="3777002" person_id="6" concept_id="7777002" encounter_id="3" obs_datetime="2018-06-21 00:00:00.0" location_id="1" value_coded="7777003" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777002"/>
 	<obs obs_id="3777003" person_id="7" concept_id="7777005" encounter_id="2777002" obs_datetime="2019-01-18 00:00:00.0" location_id="1" value_datetime="2019-01-18 00:00:00.0" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777003"/>
@@ -102,11 +122,11 @@
 	<obs obs_id="3777009" person_id="6" concept_id="7777006" encounter_id="2777005" obs_datetime="2019-04-02 00:00:00.0" location_id="1" value_coded="7777008" comments="" creator="1" date_created="2019-01-31 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777009"/>
 	
 	
-	<global_property property="eptsreports.hivViralLoadConceptUuid" property_value="a09ab2c5-878e-4905-b25d-578417777001" uuid="a09ab2c5-878e-4905-b25d-578417777001"/>
-	<global_property property="eptsreports.misauLaboratorioEncounterTypeUuid" property_value="02c533ab-b74b-4ee4-b6e5-ffb6d09a0ac8" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d09a0ac8"/>
+	<global_property property="eptsreports.hivViralLoadConceptUuid" property_value="e1d6247e-1d5f-11e0-b929-000c29ad1d07" uuid="a09ab2c5-878e-4905-b25d-578417777001"/>
+	<global_property property="eptsreports.misauLaboratorioEncounterTypeUuid" property_value="e2790f68-1d5f-11e0-b929-000c29ad1d07" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d09a0ac8"/>
 	<global_property property="eptsreports.sTarvPediatriaInitialAEncounterTypeUuid" property_value="a09ab2c5-878e-4905-b25d-578416777001" uuid="a09ab2c5-878e-4905-b25d-578416777001"/>
 	<global_property property="eptsreports.sTarvAdultoInitialAEncounterTypeUuid" property_value="a09ab2c5-878e-4905-b25d-578416777002" uuid="a09ab2c5-878e-4905-b25d-578416777002"/>
-	<global_property property="eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid" property_value="02c533ab-b74b-4ee4-b6e5-ffb6d6777004" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777004"/>
+	<global_property property="eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid" property_value="e278f956-1d5f-11e0-b929-000c29ad1d07" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777004"/>
 	<global_property property="eptsreports.sTarvPediatriaSeguimentoEncounterTypeUuid" property_value="02c533ab-b74b-4ee4-b6e5-ffb6d6777005" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777005"/>
 	<global_property property="eptsreports.artProgramUuid" property_value="da4a0391-ba62-4fad-ad66-1e3722d16380" uuid="da4a0391-ba62-4fad-ad66-1e3722d16380"/>
 	<global_property property="eptsreports.arvPlanConceptUuid" property_value="a09ab2c5-878e-4905-b25d-578417777002" uuid="a09ab2c5-878e-4905-b25d-578417777002"/>
@@ -126,4 +146,10 @@
 	<global_property property="eptsreports.ABC_3TC_NVP_ConceptUuid" property_value="a09ab2c5-878e-4905-b25d-578417777016" uuid="a09ab2c5-878e-4905-b25d-578417777016"/>
 	<global_property property="eptsreports.ABC_3TC_LPV_ConceptUuid" property_value="a09ab2c5-878e-4905-b25d-578417777017" uuid="a09ab2c5-878e-4905-b25d-578417777017"/>
 	<global_property property="eptsreports.TDF_3TC_LPV_ConceptUuid" property_value="a09ab2c5-878e-4905-b25d-578417777018" uuid="a09ab2c5-878e-4905-b25d-578417777018"/>
+	<global_property property="eptsreports.pregnantConceptUuid" property_value="e1e056a6-1d5f-11e0-b929-000c29ad1d07" uuid="f7e1206c-303d-11e9-9b14-4b7c940be819"/>
+	<global_property property="eptsreports.yesConceptUuid" property_value="e1d81b62-1d5f-11e0-b929-000c29ad1d07" uuid="3c78e4d0-303e-11e9-9f67-5bb21c8782f4"/>
+	<global_property property="eptsreports.numberOfWeeksPregnantConceptUuid" property_value="e1da0788-1d5f-11e0-b929-000c29ad1d07" uuid="843bdc64-303e-11e9-9eb8-f7ec59695ca6"/>
+	<global_property property="eptsreports.pregnancyDueDateConceptUuid" property_value="e1dca8ee-1d5f-11e0-b929-000c29ad1d07" uuid="b96aed76-303e-11e9-8c2c-7f0ff2500278"/>
+	<global_property property="eptsreports.ptvEtvProgramUuid" property_value="06057245-ca21-43ab-a02f-e861d7e54593" uuid="e85ad3e4-303e-11e9-bc40-bb68b233ca93"/>
+	
 </dataset>
