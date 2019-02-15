@@ -94,19 +94,55 @@ public class Eri4MonthsCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getPatientsWhoAreLostToFollowUpWithinPeriod() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Get lost to follow up patients within period");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    int daysThreshold = 60;
+
+    cd.addSearch(
+        "drugPickupLTFU",
+        EptsReportUtils.map(
+            getPatientsLostToFollowUpOnDrugPickup(daysThreshold),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "consultationLTFU",
+        EptsReportUtils.map(
+            getPatientsLostToFollowUpOnConsultation(daysThreshold),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("drugPickupLTFU AND consultationLTFU");
+
+    return cd;
+  }
+
+  private SqlCohortDefinition getPatientsLostToFollowUpOnConsultation(int daysThreshold) {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setQuery(
-        Eri4MonthsQueries.getLostToFollowUpPatientsWithPeriod(
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+        Eri4MonthsQueries.getPatientsLostToFollowUpOnConsultation(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
-            60));
+            daysThreshold));
+    return cd;
+  }
+
+  private SqlCohortDefinition getPatientsLostToFollowUpOnDrugPickup(int daysThreshold) {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        Eri4MonthsQueries.getPatientsLostToFollowUpOnDrugPickup(
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+            daysThreshold));
     return cd;
   }
 
