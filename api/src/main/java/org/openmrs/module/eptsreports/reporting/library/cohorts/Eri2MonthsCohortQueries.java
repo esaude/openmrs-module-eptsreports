@@ -28,8 +28,6 @@ public class Eri2MonthsCohortQueries {
 
   @Autowired private TxNewCohortQueries txNewCohortQueries;
 
-  @Autowired private AgeCohortQueries ageCohortQueries;
-
   @Autowired private HivMetadata hivMetadata;
 
   @Autowired private GenericCohortQueries genericCohortQueries;
@@ -246,7 +244,7 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "adults",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeOnArtStartDate(15, null), "location=${location}"));
+            genericCohortQueries.getAgeOnArtStartDate(15, 200), "location=${location}"));
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
