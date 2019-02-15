@@ -33,6 +33,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -110,8 +111,12 @@ public class TxNewCohortQueries {
     encounterTypes.add(hivMetadata.getARVAdultInitialEncounterType());
     cd.setEncounterTypeList(encounterTypes);
 
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.setOperator1(RangeComparator.GREATER_EQUAL);
+    cd.setOperator2(RangeComparator.LESS_EQUAL);
+
+    cd.addParameter(new Parameter("value1", "After Date", Date.class));
+    cd.addParameter(new Parameter("value2", "Before Date", Date.class));
+
     cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
     return cd;
@@ -178,7 +183,7 @@ public class TxNewCohortQueries {
         "DATAPARTO",
         EptsReportUtils.map(
             getPatientsWithUpdatedDepartureInART(),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
+            "value1=${onOrAfter},value2=${onOrBefore},locationList=${location}"));
     cd.addSearch(
         "INICIOLACTANTE",
         EptsReportUtils.map(
