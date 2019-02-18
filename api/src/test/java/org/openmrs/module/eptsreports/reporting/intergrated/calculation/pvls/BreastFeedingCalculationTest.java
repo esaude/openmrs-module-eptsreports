@@ -34,7 +34,7 @@ public class BreastFeedingCalculationTest extends BasePatientCalculationTest {
 
     map.put(501, new SimpleResult(true, calculation, evaluationContext));
 
-    map.put(7, new SimpleResult(false, calculation, evaluationContext));
+    map.put(7, new SimpleResult(true, calculation, evaluationContext));
 
     map.put(8, new SimpleResult(false, calculation, evaluationContext));
 
@@ -68,5 +68,22 @@ public class BreastFeedingCalculationTest extends BasePatientCalculationTest {
     Assert.assertEquals(true, evaluatedResult.get(501).getValue());
 
     matchOtherResultsExcept(evaluatedResult, 7, 8);
+  }
+
+  /*
+   * rule tested : org.openmrs.module.eptsreports.reporting.calculation.pvls.
+   * BreastfeedingCalculation.hasHIVStartDate(Date, List<Obs>)
+   */
+  @Test
+  public void shouldEvaluatePatientMarkedAsLactatingByHIVStartDate() {
+
+    setEvaluationContext(testsHelper.getDate("2015-06-30 00:00:00.0"));
+
+    CalculationResultMap evaluatedResult =
+        service.evaluate(getCohort(), getCalculation(), getEvaluationContext());
+
+    evaluatedResult = service.evaluate(getCohort(), getCalculation(), getEvaluationContext());
+    Assert.assertEquals(true, evaluatedResult.get(7).getValue());
+    matchOtherResultsExcept(evaluatedResult, 501, 8);
   }
 }
