@@ -124,11 +124,10 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
       Integer evaluatedKey = evaluatedKV.getKey();
       CalculationResult evaluatedValue = evaluatedKV.getValue();
 
-      if (key.intValue() == evaluatedKey.intValue()) {
-        if ((value.getValue() == null && evaluatedValue.getValue() == null)
-            || (value.getValue().equals(evaluatedValue.getValue()))) {
-          return true;
-        }
+      if ((key.intValue() == evaluatedKey.intValue())
+          && ((value.getValue() == null && evaluatedValue.getValue() == null)
+              || (value.getValue().equals(evaluatedValue.getValue())))) {
+        return true;
       }
     }
     return false;
