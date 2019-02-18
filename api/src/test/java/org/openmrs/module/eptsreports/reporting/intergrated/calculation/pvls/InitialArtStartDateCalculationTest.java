@@ -67,7 +67,7 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
             new Timestamp(testsHelper.getDate("2019-01-20 00:00:00.0").getTime()),
             calculation,
             evaluationContext));
-    map.put(432, new SimpleResult("", calculation, evaluationContext));
+    map.put(432, new SimpleResult(null, calculation, evaluationContext));
     return map;
   }
 
