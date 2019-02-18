@@ -167,26 +167,23 @@ public class PregnantCalculation extends AbstractPatientCalculation {
 
   private boolean isPregnantInProgram(Date lastVlDate, SimpleResult pregnantInProgramResut) {
 
-    PatientState patientState = this.getPatientState(pregnantInProgramResut);
-    return patientState != null
-        && patientState.getStartDate() != null
-        && patientState.getEndDate() == null
-        && this.isInPregnantViralLoadRange(lastVlDate, patientState.getStartDate());
+    PatientProgram patientProgram = getPTVPregnantPatientProgram(pregnantInProgramResut);
+
+    return patientProgram != null
+        && patientProgram.getDateEnrolled() != null
+        && this.isInPregnantViralLoadRange(lastVlDate, patientProgram.getDateEnrolled());
   }
 
-  private PatientState getPatientState(SimpleResult result) {
-
-    PatientProgram patientProgram = null;
+  private PatientProgram getPTVPregnantPatientProgram(SimpleResult result) {
 
     if (result != null) {
-      patientProgram = (PatientProgram) result.getValue();
+      PatientProgram patientProgram = (PatientProgram) result.getValue();
       if (patientProgram != null) {
-        for (PatientState patientState : patientProgram.getStates()) {
-          if (this.getHivMetadata()
-              .getPatientIsPregnantWorkflowState()
-              .equals(patientState.getState())) {
-            return patientState;
-          }
+        PatientState currentState =
+            patientProgram.getCurrentState(
+                this.getHivMetadata().getPatientIsPregnantWorkflowState().getProgramWorkflow());
+        if (currentState != null) {
+          return patientProgram;
         }
       }
     }
