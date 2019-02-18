@@ -1,4 +1,4 @@
-package org.openmrs.module.eptsreports.reporting.intergrated.calculation;
+package org.openmrs.module.eptsreports.reporting.intergrated.calculation.pvls;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -14,6 +14,7 @@ import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineCalculation;
+import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PatientsOnRoutineEnum;
 
 public class RoutineCalculationTest extends BasePatientCalculationTest {

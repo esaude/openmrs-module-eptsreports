@@ -1,4 +1,4 @@
-package org.openmrs.module.eptsreports.reporting.intergrated.calculation;
+package org.openmrs.module.eptsreports.reporting.intergrated.calculation.pvls;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,6 +11,7 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForMoreThanXmonthsCalcultion;
+import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
 
 public class OnArtForMoreThanXmonthsCalcultionTest extends BasePatientCalculationTest {
 

@@ -15,8 +15,8 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.api.EptsReportsService;
 import org.openmrs.module.eptsreports.reporting.helper.OpenMRSTestHelper;
 import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
-import org.openmrs.module.eptsreports.reporting.helper.calculation.EptsCalculationUtilsMock;
-import org.openmrs.module.eptsreports.reporting.helper.calculation.EptsCalculationsMock;
+import org.openmrs.module.eptsreports.reporting.mock.calculation.EptsCalculationUtilsMock;
+import org.openmrs.module.eptsreports.reporting.mock.calculation.EptsCalculationsMock;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 // TODO probably move this into calculation module
