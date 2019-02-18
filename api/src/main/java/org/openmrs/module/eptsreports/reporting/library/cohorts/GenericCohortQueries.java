@@ -14,7 +14,6 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,18 +22,20 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Program;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.calculation.retention.AgeOnArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.ProgramEnrollmentCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,43 +45,6 @@ import org.springframework.stereotype.Component;
 public class GenericCohortQueries {
 
   @Autowired private HivMetadata hivMetadata;
-
-  /**
-   * Generic Encounter cohort
-   *
-   * @param types the encounter types
-   * @return the cohort definition
-   */
-  public CohortDefinition hasEncounter(EncounterType... types) {
-    EncounterCohortDefinition cd = new EncounterCohortDefinition();
-    cd.setName("has encounter between dates");
-    cd.setTimeQualifier(TimeQualifier.ANY);
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    if (types.length > 0) {
-      cd.setEncounterTypeList(Arrays.asList(types));
-    }
-    return cd;
-  }
-
-  /**
-   * Generic ProgramEnrollement cohort
-   *
-   * @param programs the programs
-   * @return the cohort definition
-   */
-  public CohortDefinition enrolled(Program... programs) {
-    ProgramEnrollmentCohortDefinition cd = new ProgramEnrollmentCohortDefinition();
-    cd.setName("enrolled in program between dates");
-    cd.addParameter(new Parameter("enrolledOnOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("enrolledOnOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    if (programs.length > 0) {
-      cd.setPrograms(Arrays.asList(programs));
-    }
-    return cd;
-  }
 
   /**
    * Generic Coded Observation cohort
@@ -177,17 +141,71 @@ public class GenericCohortQueries {
   }
 
   /**
-   * Finds patients that do not have birthdate defined
+   * Get patients states based on program, state and end of reporting period
    *
+   * @param program
+   * @param state
    * @return
    */
-  public CohortDefinition getUnknownAgeCohort() {
-    SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("unknownAgeCohort");
-    definition.setQuery(
-        "select patient.patient_id from patient join person on person.person_id = patient.patient_id "
-            + "where patient.voided = 0 and person.voided = 0 and person.birthdate is null");
-    definition.addParameter(new Parameter("effectiveDate", "endDate", Date.class));
-    return definition;
+  public CohortDefinition getPatientsBasedOnPatientStates(int program, int state) {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patient states based on end of reporting period");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    String query =
+        "SELECT pg.patient_id"
+            + " FROM patient p"
+            + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
+            + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
+            + " WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND"
+            + " pg.program_id="
+            + program
+            + " AND ps.state="
+            + state
+            + " AND ps.start_date BETWEEN :startDate AND :endDate AND location_id=:location";
+    cd.setQuery(query);
+    return cd;
+  }
+
+  /**
+   * Get deceased patients, we need to check in the person table and patient states,
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getDeceasedPatients() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Get deceased patients based on patient states and person object");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            getPatientsBasedOnPatientStates(
+                hivMetadata.getARTProgram().getProgramId(),
+                hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "deceased",
+        EptsReportUtils.map(
+            generalSql(
+                "deceased",
+                "SELECT patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id AND pe.dead=1 WHERE pe.death_date <=:endDate"),
+            "startDate=${startDate},endDate=${endDate}"));
+    cd.setCompositionString("dead OR deceased");
+    return cd;
+  }
+
+  public CohortDefinition getAgeOnArtStartDate(Integer minAge, Integer maxAge) {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            "criteria", Context.getRegisteredComponents(AgeOnArtStartDateCalculation.class).get(0));
+    cd.setName("Childrens on art start date");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addCalculationParameter("minAge", minAge);
+    cd.addCalculationParameter("maxAge", maxAge);
+    return cd;
   }
 }
