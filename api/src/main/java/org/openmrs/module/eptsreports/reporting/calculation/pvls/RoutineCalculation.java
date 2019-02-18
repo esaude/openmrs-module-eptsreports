@@ -303,7 +303,6 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 
   private List<Concept> getSecondLineTreatmentArvs() {
     List<Concept> secondLineArvs = new ArrayList<Concept>();
-    // HivMetadata hivMetadata = getHivMetadata();
     secondLineArvs.add(hivMetadata.getAzt3tcAbcEfvConcept());
     secondLineArvs.add(hivMetadata.getD4t3tcAbcEfvConcept());
     secondLineArvs.add(hivMetadata.getAzt3tcAbcLpvConcept());
