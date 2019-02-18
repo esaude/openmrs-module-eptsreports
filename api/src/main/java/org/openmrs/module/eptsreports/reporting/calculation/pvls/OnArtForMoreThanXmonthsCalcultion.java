@@ -30,10 +30,13 @@ import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalcu
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculation {
+
+  @Autowired private HivMetadata hivMetadata;
 
   @Override
   public CalculationResultMap evaluate(
@@ -41,7 +44,6 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
 
     CalculationResultMap map = new CalculationResultMap();
     Location location = (Location) context.getFromCache("location");
-    HivMetadata hivMetadata = getHivMetadata();
     Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
     EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
     EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();

@@ -23,8 +23,6 @@ import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ResultUtil;
-import org.openmrs.module.eptsreports.metadata.CommonMetadata;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
 
 /** Abstract base class for patient calculations */
 public abstract class AbstractPatientCalculation extends BaseCalculation
@@ -58,13 +56,5 @@ public abstract class AbstractPatientCalculation extends BaseCalculation
       PatientCalculationContext calculationContext) {
     return Context.getService(PatientCalculationService.class)
         .evaluate(cohort, calculation, calculationContext);
-  }
-
-  protected HivMetadata getHivMetadata() {
-    return Context.getRegisteredComponents(HivMetadata.class).get(0);
-  }
-
-  protected CommonMetadata getCommonMetadata() {
-    return Context.getRegisteredComponents(CommonMetadata.class).get(0);
   }
 }

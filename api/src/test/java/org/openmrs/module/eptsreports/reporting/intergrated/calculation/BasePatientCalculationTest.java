@@ -13,19 +13,19 @@ import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.eptsreports.api.EptsReportsService;
 import org.openmrs.module.eptsreports.reporting.helper.OpenMRSTestHelper;
 import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
 import org.openmrs.module.eptsreports.reporting.mock.calculation.EptsCalculationUtilsMock;
 import org.openmrs.module.eptsreports.reporting.mock.calculation.EptsCalculationsMock;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 // TODO probably move this into calculation module
 public abstract class BasePatientCalculationTest extends BaseModuleContextSensitiveTest {
 
-  protected TestsHelper testsHelper;
+  @Autowired protected TestsHelper testsHelper;
 
-  protected OpenMRSTestHelper openmrsTestHelper;
+  @Autowired protected OpenMRSTestHelper openmrsTestHelper;
 
   protected PatientCalculationService service;
 
@@ -43,8 +43,6 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
   public void setUp() throws Exception {
     service = Context.getService(PatientCalculationService.class);
     evaluationContext = service.createCalculationContext();
-    testsHelper = new TestsHelper();
-    openmrsTestHelper = new OpenMRSTestHelper();
 
     Map<String, Object> cacheEntries = new HashMap<String, Object>();
     cacheEntries.put("location", Context.getLocationService().getLocation(1));
@@ -61,7 +59,6 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
   /** This test runs for all classes that extend this class, it's the basic calculation unit test */
   @Test
   public void evaluateShouldReturnMatchedResultMapBySizeAndPrintOutGivenCalculationCohort() {
-    Assert.assertNotNull(Context.getService(EptsReportsService.class));
     CalculationResultMap result = getResult();
     PatientCalculation calculation = getCalculation();
     Collection<Integer> cohort = getCohort();

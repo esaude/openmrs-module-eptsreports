@@ -33,6 +33,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -110,8 +111,12 @@ public class TxNewCohortQueries {
     encounterTypes.add(hivMetadata.getARVAdultInitialEncounterType());
     cd.setEncounterTypeList(encounterTypes);
 
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.setOperator1(RangeComparator.GREATER_EQUAL);
+    cd.setOperator2(RangeComparator.LESS_EQUAL);
+
+    cd.addParameter(new Parameter("value1", "After Date", Date.class));
+    cd.addParameter(new Parameter("value2", "Before Date", Date.class));
+
     cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
     return cd;
@@ -178,7 +183,7 @@ public class TxNewCohortQueries {
         "DATAPARTO",
         EptsReportUtils.map(
             getPatientsWithUpdatedDepartureInART(),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
+            "value1=${onOrAfter},value2=${onOrBefore},locationList=${location}"));
     cd.addSearch(
         "INICIOLACTANTE",
         EptsReportUtils.map(
@@ -297,40 +302,14 @@ public class TxNewCohortQueries {
    * @param maxAge Maximum age
    * @return Patients with age in years between {@code minAge} and {@code maxAge} on ART start date.
    */
-  public CohortDefinition createXtoYAgeOnArtStartDateCohort(int minAge, int maxAge) {
-    String name = "patients with age between " + minAge + " and " + maxAge + " on ART start date";
-    // add 1 to maxAge because in getTxNewUnionQueries '<' is used to
-    // compare to
-    // maxAge
-    CohortDefinition ageCohort = ageCohortQueries.createXtoYAgeCohort("", minAge, maxAge + 1);
-    CohortDefinition cd = getTxNewCompositionCohort(name, ageCohort);
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-    return cd;
-  }
-
-  /**
-   * @param maxAge Maximum age
-   * @return Patients with age in years bellow {@code maxAge} on ART start date.
-   */
-  public CohortDefinition createBelowXAgeOnArtStartDateCohort(int maxAge) {
-    String name = "patients with age bellow " + maxAge + " on ART start date";
-    CohortDefinition ageCohort = ageCohortQueries.createBelowYAgeCohort("", maxAge + 1);
-    CohortDefinition cd = getTxNewCompositionCohort(name, ageCohort);
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-    return cd;
-  }
-
-  /**
-   * @param minAge Minimum age
-   * @return Patients with age in years equal or above {@code minAge} on ART start date.
-   */
-  public CohortDefinition createOverXAgeOnArtStartDateCohort(int minAge) {
-    String name = "patients with age over " + minAge + " on ART start date";
-    CohortDefinition ageCohort = ageCohortQueries.createOverXAgeCohort("", minAge);
+  public CohortDefinition createXtoYAgeOnArtStartDateCohort(
+      String name, Integer minAge, Integer maxAge) {
+    // add 1 to maxAge because in getTxNewUnionQueries '<' is used to compare to maxAge
+    Integer age = maxAge;
+    if (age != null) {
+      age++;
+    }
+    CohortDefinition ageCohort = ageCohortQueries.createXtoYAgeCohort("", minAge, age);
     CohortDefinition cd = getTxNewCompositionCohort(name, ageCohort);
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));

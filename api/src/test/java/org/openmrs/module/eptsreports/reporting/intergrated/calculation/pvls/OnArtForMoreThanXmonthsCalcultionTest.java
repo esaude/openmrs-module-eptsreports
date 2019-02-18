@@ -17,7 +17,7 @@ public class OnArtForMoreThanXmonthsCalcultionTest extends BasePatientCalculatio
 
   @Override
   public PatientCalculation getCalculation() {
-    return new OnArtForMoreThanXmonthsCalcultion();
+    return Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0);
   }
 
   @Override
