@@ -3,6 +3,7 @@ package org.openmrs.module.eptsreports.reporting.intergrated.calculation;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
@@ -69,8 +70,7 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
     Assert.assertNotNull(result);
     CalculationResultMap evaluatedResult =
         service.evaluate(cohort, calculation, params, getEvaluationContext());
-    Assert.assertEquals(result.size(), evaluatedResult.size());
-    Assert.assertEquals(result.toString(), evaluatedResult.toString());
+    Assert.assertTrue(matchCalculationResults(result, evaluatedResult));
   }
 
   protected void setEvaluationContext(Date now) {
@@ -100,6 +100,27 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
         otherResult.remove(i);
       }
     }
-    Assert.assertEquals(initialResult.toString(), otherResult.toString());
+    Assert.assertTrue(matchCalculationResults(initialResult, otherResult));
+  }
+
+  protected boolean matchCalculationResults(
+      CalculationResultMap results1, CalculationResultMap results2) {
+    boolean matched = true;
+    if (results1.size() != results2.size() || !results1.keySet().equals(results2.keySet())) {
+      matched = false;
+    } else {
+      Iterator<Integer> results1Iterator = results1.keySet().iterator();
+      while (results1Iterator.hasNext()) {
+        Integer key = results1Iterator.next();
+        if (results1.get(key).getValue() == null) {
+          matched = results2.get(key).getValue() == null;
+        } else if (results2.get(key).getValue() == null) {
+          matched = results1.get(key).getValue() == null;
+        } else if (!results1.get(key).getValue().equals(results2.get(key).getValue())) {
+          matched = false;
+        }
+      }
+    }
+    return matched;
   }
 }
