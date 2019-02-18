@@ -21,7 +21,7 @@ public class RoutineCalculationTest extends BasePatientCalculationTest {
 
   @Override
   public PatientCalculation getCalculation() {
-    return new RoutineCalculation();
+    return Context.getRegisteredComponents(RoutineCalculation.class).get(0);
   }
 
   @Override

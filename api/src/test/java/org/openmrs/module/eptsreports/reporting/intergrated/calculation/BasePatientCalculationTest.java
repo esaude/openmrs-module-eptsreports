@@ -6,25 +6,24 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.eptsreports.api.EptsReportsService;
 import org.openmrs.module.eptsreports.reporting.helper.OpenMRSTestHelper;
 import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
 import org.openmrs.module.eptsreports.reporting.mock.calculation.EptsCalculationUtilsMock;
 import org.openmrs.module.eptsreports.reporting.mock.calculation.EptsCalculationsMock;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 // TODO probably move this into calculation module
 public abstract class BasePatientCalculationTest extends BaseModuleContextSensitiveTest {
 
-  protected TestsHelper testsHelper;
+  @Autowired protected TestsHelper testsHelper;
 
-  protected OpenMRSTestHelper openmrsTestHelper;
+  @Autowired protected OpenMRSTestHelper openmrsTestHelper;
 
   protected PatientCalculationService service;
 
@@ -42,8 +41,6 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
   public void setUp() throws Exception {
     service = Context.getService(PatientCalculationService.class);
     evaluationContext = service.createCalculationContext();
-    testsHelper = new TestsHelper();
-    openmrsTestHelper = new OpenMRSTestHelper();
 
     Map<String, Object> cacheEntries = new HashMap<String, Object>();
     cacheEntries.put("location", Context.getLocationService().getLocation(1));
@@ -55,22 +52,6 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
     PatientCalculation calculation = getCalculation();
     new EptsCalculationsMock(calculation);
     new EptsCalculationUtilsMock();
-  }
-
-  /** This test runs for all classes that extend this class, it's the basic calculation unit test */
-  @Test
-  public void evaluateShouldReturnMatchedResultMapBySizeAndPrintOutGivenCalculationCohort() {
-    Assert.assertNotNull(Context.getService(EptsReportsService.class));
-    CalculationResultMap result = getResult();
-    PatientCalculation calculation = getCalculation();
-    Collection<Integer> cohort = getCohort();
-    Assert.assertNotNull(calculation);
-    Assert.assertNotNull(cohort);
-    Assert.assertNotNull(result);
-    CalculationResultMap evaluatedResult =
-        service.evaluate(cohort, calculation, params, getEvaluationContext());
-    Assert.assertEquals(result.size(), evaluatedResult.size());
-    Assert.assertEquals(result.toString(), evaluatedResult.toString());
   }
 
   protected void setEvaluationContext(Date now) {

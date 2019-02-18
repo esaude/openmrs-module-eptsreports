@@ -18,7 +18,7 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
 
   @Override
   public PatientCalculation getCalculation() {
-    return new InitialArtStartDateCalculation();
+    return Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0);
   }
 
   @Override
