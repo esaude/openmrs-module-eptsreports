@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +17,6 @@ import org.mockito.Spy;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.api.APIException;
-import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.ServiceContext;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
@@ -46,8 +46,6 @@ public class EptsCalculationUtilsTest extends BaseContextMockTest {
   @Mock PatientCalculationService service;
 
   @Spy private TestsHelper testsHelper;
-
-  @Mock AdministrationService administrationService;
 
   @Mock PatientDataService patientDataService;
 
