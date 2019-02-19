@@ -54,6 +54,18 @@ public class RoutineCalculationTest extends BaseContextMockTest {
 
   @InjectMocks private RoutineCalculation routineCalculation;
 
+  // TODO use getDate from test utils
+  public SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
+  public Date getDate(String dateString) {
+    try {
+      return DATE_FORMAT.parse(dateString);
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
   @Test
   public void
       evaluateShouldReturnTrueForAdultsAndChildrenWithVl12To15MonthsApartAndValueOfLessThan1000Copies() {
@@ -296,17 +308,5 @@ public class RoutineCalculationTest extends BaseContextMockTest {
     params.put("criteria", criteria);
 
     return routineCalculation.evaluate(cohort, params, calculationContext);
-  }
-
-  // TODO use getDate from test utils
-  public SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-
-  public Date getDate(String dateString) {
-    try {
-      return DATE_FORMAT.parse(dateString);
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-    return null;
   }
 }
