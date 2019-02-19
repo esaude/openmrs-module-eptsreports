@@ -90,7 +90,7 @@ public class PregnantCalculation extends AbstractPatientCalculation {
             context);
 
     CalculationResultMap markedPregnantInProgram =
-        EptsCalculations.lastProgramEnrollment(ptv, femaleCohort, context);
+        EptsCalculations.lastProgramEnrollment(ptv, femaleCohort, location, context);
 
     CalculationResultMap lastVl =
         EptsCalculations.lastObs(

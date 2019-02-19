@@ -1,15 +1,13 @@
 /*
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * The contents of this file are subject to the OpenMRS Public License Version
+ * 1.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://license.openmrs.org
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
  *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS, LLC. All Rights Reserved.
  */
 package org.openmrs.module.eptsreports.reporting.calculation;
 
@@ -29,7 +27,6 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.common.VitalStatus;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
-import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefinition;
 import org.openmrs.util.OpenmrsUtil;
@@ -158,18 +155,22 @@ public class EptsCalculations {
    *
    * @param program the program
    * @param cohort the patient ids
+   * @param location the {@link Location}
    * @param context the calculation context
    * @return the enrollments in a calculation result map
    */
   public static CalculationResultMap lastProgramEnrollment(
-      Program program, Collection<Integer> cohort, PatientCalculationContext context) {
-    ProgramEnrollmentsForPatientDataDefinition def =
-        new ProgramEnrollmentsForPatientDataDefinition();
-    def.setName("Last in " + program.getName());
-    def.setWhichEnrollment(TimeQualifier.LAST);
-    def.setProgram(program);
-    def.setEnrolledOnOrBefore(context.getNow());
-    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
+      Program program,
+      Collection<Integer> cohort,
+      Location location,
+      PatientCalculationContext context) {
+
+    JembiProgramEnrollmentForPatientDefinition definition =
+        new JembiProgramEnrollmentForPatientDefinition("Last in " + program.getName());
+    definition.setProgram(program);
+    definition.setLocation(location);
+    definition.setWhichEnrollment(TimeQualifier.LAST);
+    return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
   }
 
   /**

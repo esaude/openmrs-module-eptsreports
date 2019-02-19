@@ -87,7 +87,7 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
             null,
             context);
     CalculationResultMap markedPregnantInProgram =
-        EptsCalculations.lastProgramEnrollment(ptv, femaleCohort, context);
+        EptsCalculations.lastProgramEnrollment(ptv, femaleCohort, location, context);
     CalculationResultMap lastVl =
         EptsCalculations.lastObs(
             Arrays.asList(labEncounterType, adultFollowup, childFollowup),
@@ -176,7 +176,6 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
     if (result != null) {
       patientProgram = (PatientProgram) result.getValue();
       if (patientProgram != null) {
-
         for (PatientState patientState : patientProgram.getCurrentStates()) {
           if (this.getHivMetadata()
               .getPatientIsBreastfeedingWorkflowState()
