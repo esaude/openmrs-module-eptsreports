@@ -106,8 +106,7 @@ public class EptsCalculationUtilsTest extends BaseContextMockTest {
 
   @SuppressWarnings({"unchecked"})
   @Test(expected = APIException.class)
-  public void evaluateWithReportingShouldRightlyThrowAPIInstanceOfEvaluationException()
-      throws Exception {
+  public void evaluateWithReportingShouldThrowAPIInsteadOfEvaluationException() throws Exception {
     when(patientDataService.evaluate(
             any(PatientDataDefinition.class), any(EvaluationContext.class)))
         .thenThrow(EvaluationException.class);
