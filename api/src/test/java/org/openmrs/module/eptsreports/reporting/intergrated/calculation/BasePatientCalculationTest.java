@@ -15,7 +15,6 @@ import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.helper.OpenMRSTestHelper;
 import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
-import org.openmrs.module.eptsreports.reporting.mock.calculation.EptsCalculationUtilsMock;
 import org.openmrs.module.eptsreports.reporting.mock.calculation.EptsCalculationsMock;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +52,6 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
 
     PatientCalculation calculation = getCalculation();
     new EptsCalculationsMock(calculation);
-    new EptsCalculationUtilsMock();
   }
 
   /** This test runs for all classes that extend this class, it's the basic calculation unit test */
