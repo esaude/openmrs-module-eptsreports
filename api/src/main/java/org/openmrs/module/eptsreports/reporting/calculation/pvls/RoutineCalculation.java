@@ -159,8 +159,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
           }
 
           // find out criteria 2
-          if (viralLoadForPatientTakenWithin12Months.size() > 1
-              && isOnRoutineCriteria2(criteria, viralLoadForPatientTakenWithin12Months)) {
+          if (isOnRoutineCriteria2(criteria, viralLoadForPatientTakenWithin12Months, vLoadList)) {
             isOnRoutine = true;
           }
 
@@ -212,27 +211,37 @@ public class RoutineCalculation extends AbstractPatientCalculation {
   }
 
   private boolean isOnRoutineCriteria2(
-      PatientsOnRoutineEnum criteria, List<Obs> viralLoadForPatientTakenWithin12Months) {
+      PatientsOnRoutineEnum criteria,
+      List<Obs> viralLoadForPatientTakenWithin12Months,
+      List<Obs> allViralLoadForPatient) {
+
     boolean isOnRoutine = false;
-    // Sort list of VL obs
-    Collections.sort(
-        viralLoadForPatientTakenWithin12Months,
+
+    // There is only one Vl for this patient so current can only be the first one
+    if (allViralLoadForPatient.size() == 1) {
+      return false;
+    }
+
+    // Sorts list of VL obs by id in reverse order
+    Comparator<Obs> vlComparator =
         new Comparator<Obs>() {
 
           @Override
           public int compare(Obs obs1, Obs obs2) {
-            return obs1.getObsId().compareTo(obs2.getObsId());
+            return obs2.getObsId().compareTo(obs1.getObsId());
           }
-        });
-    Obs currentObs =
-        viralLoadForPatientTakenWithin12Months.get(
-            viralLoadForPatientTakenWithin12Months.size() - 1);
+        };
+    Collections.sort(viralLoadForPatientTakenWithin12Months, vlComparator);
+    Collections.sort(allViralLoadForPatient, vlComparator);
 
-    // find previous obs from entire list not just the obs in the 12month
-    // window
-    Obs previousObs =
-        viralLoadForPatientTakenWithin12Months.get(
-            viralLoadForPatientTakenWithin12Months.size() - 2);
+    Obs currentObs = viralLoadForPatientTakenWithin12Months.get(0);
+    Obs previousObs = allViralLoadForPatient.get(0);
+    for (Obs obs : allViralLoadForPatient) {
+      if (currentObs.getObsId() > obs.getObsId()) {
+        previousObs = obs;
+        break;
+      }
+    }
 
     if (currentObs != null
         && previousObs != null
@@ -242,18 +251,17 @@ public class RoutineCalculation extends AbstractPatientCalculation {
         && currentObs.getObsDatetime() != null
         && previousObs.getObsDatetime().before(currentObs.getObsDatetime())) {
 
-      if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)
-          && (EptsCalculationUtils.monthsSince(
-                      previousObs.getObsDatetime(), currentObs.getObsDatetime())
-                  >= 12
-              && EptsCalculationUtils.monthsSince(
-                      previousObs.getObsDatetime(), currentObs.getObsDatetime())
-                  <= 15)) {
-        isOnRoutine = true;
+      int monthsSince =
+          EptsCalculationUtils.monthsSince(
+              previousObs.getObsDatetime(), currentObs.getObsDatetime());
+
+      if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)) {
+        isOnRoutine = monthsSince >= 12 && monthsSince <= 15;
       } else if (criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)) {
         isOnRoutine = true;
       }
     }
+
     return isOnRoutine;
   }
 
