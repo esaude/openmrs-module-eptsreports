@@ -15,7 +15,6 @@ package org.openmrs.module.eptsreports.reporting.calculation;
 
 import java.util.Collection;
 import java.util.Map;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.BaseCalculation;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -23,10 +22,13 @@ import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ResultUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /** Abstract base class for patient calculations */
 public abstract class AbstractPatientCalculation extends BaseCalculation
     implements PatientCalculation {
+
+  @Autowired private PatientCalculationService patientCalculationService;
 
   /**
    * Filters a calculation result map to reduce results to booleans
@@ -50,11 +52,10 @@ public abstract class AbstractPatientCalculation extends BaseCalculation
    * @param calculationContext the calculation context
    * @return the calculation result map
    */
-  protected static CalculationResultMap calculate(
+  protected CalculationResultMap calculate(
       PatientCalculation calculation,
       Collection<Integer> cohort,
       PatientCalculationContext calculationContext) {
-    return Context.getService(PatientCalculationService.class)
-        .evaluate(cohort, calculation, calculationContext);
+    return patientCalculationService.evaluate(cohort, calculation, calculationContext);
   }
 }

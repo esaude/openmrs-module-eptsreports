@@ -47,6 +47,8 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 
   @Autowired private CommonMetadata commonMetadata;
 
+  @Autowired private EptsCalculations eptsCalculations;
+
   /**
    * @should return null for patients who have not started ART
    * @should return start date for patients who have started ART
@@ -70,15 +72,15 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
     EncounterType encounterTypePharmacy = hivMetadata.getARVPharmaciaEncounterType();
 
     CalculationResultMap inProgramMap =
-        EptsCalculations.firstPatientProgram(treatmentProgram, location, cohort, context);
+        eptsCalculations.firstPatientProgram(treatmentProgram, location, cohort, context);
     CalculationResultMap startDrugMap =
-        EptsCalculations.firstObs(arvPlan, startDrugsConcept, location, true, cohort, context);
+        eptsCalculations.firstObs(arvPlan, startDrugsConcept, location, true, cohort, context);
     CalculationResultMap historicalMap =
-        EptsCalculations.firstObs(hostoricalStartConcept, null, location, false, cohort, context);
+        eptsCalculations.firstObs(hostoricalStartConcept, null, location, false, cohort, context);
     CalculationResultMap pharmacyEncounterMap =
-        EptsCalculations.firstEncounter(encounterTypePharmacy, cohort, location, context);
+        eptsCalculations.firstEncounter(encounterTypePharmacy, cohort, location, context);
     CalculationResultMap transferInMap =
-        EptsCalculations.firstObs(arvPlan, transferInConcept, location, true, cohort, context);
+        eptsCalculations.firstObs(arvPlan, transferInConcept, location, true, cohort, context);
 
     for (Integer pId : cohort) {
       Date requiredDate = null;

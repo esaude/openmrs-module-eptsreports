@@ -38,6 +38,8 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
 
   @Autowired private HivMetadata hivMetadata;
 
+  @Autowired private EptsCalculations eptsCalculations;
+
   @Override
   public CalculationResultMap evaluate(
       Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
@@ -57,7 +59,7 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
             context);
     Date oneYearBefore = EptsCalculationUtils.addMonths(context.getNow(), -12);
     CalculationResultMap lastVl =
-        EptsCalculations.lastObs(
+        eptsCalculations.lastObs(
             Arrays.asList(labEncounterType, adultFollowup, childFollowup),
             viralLoadConcept,
             location,

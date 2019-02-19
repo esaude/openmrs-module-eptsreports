@@ -26,7 +26,6 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Obs;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
@@ -45,6 +44,12 @@ import org.springframework.stereotype.Component;
 public class RoutineCalculation extends AbstractPatientCalculation {
 
   @Autowired private HivMetadata hivMetadata;
+
+  @Autowired private InitialArtStartDateCalculation initialArtStartDateCalculation;
+
+  @Autowired private OnArtForMoreThanXmonthsCalcultion onArtForMoreThanXmonthsCalcultion;
+
+  @Autowired private EptsCalculations eptsCalculations;
 
   /**
    * Patients on ART for the last X months with one VL result registered in the 12 month period
@@ -71,7 +76,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 
     // lookups
     CalculationResultMap patientHavingVL =
-        EptsCalculations.getObs(
+        eptsCalculations.getObs(
             viralLoadConcept,
             cohort,
             Arrays.asList(location),
@@ -81,7 +86,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
             context);
 
     CalculationResultMap changingRegimenLines =
-        EptsCalculations.getObs(
+        eptsCalculations.getObs(
             regimeConcept,
             cohort,
             Arrays.asList(location),
@@ -92,12 +97,9 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 
     // get the ART initiation date
     CalculationResultMap arvsInitiationDateMap =
-        calculate(
-            Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0),
-            cohort,
-            context);
+        calculate(initialArtStartDateCalculation, cohort, context);
     CalculationResultMap lastVl =
-        EptsCalculations.lastObs(
+        eptsCalculations.lastObs(
             Arrays.asList(labEncounterType, adultFollowup, childFollowup),
             viralLoadConcept,
             location,
@@ -108,10 +110,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
     // get patients who have been on ART for more than 3 months
     Set<Integer> onArtForMoreThan3Months =
         EptsCalculationUtils.patientsThatPass(
-            calculate(
-                Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0),
-                cohort,
-                context));
+            calculate(onArtForMoreThanXmonthsCalcultion, cohort, context));
 
     for (Integer pId : cohort) {
       boolean isOnRoutine = false;
