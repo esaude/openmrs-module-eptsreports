@@ -1,9 +1,13 @@
 package org.openmrs.module.eptsreports.reporting.unit.utils;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +15,9 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
+import org.openmrs.api.APIException;
+import org.openmrs.api.AdministrationService;
+import org.openmrs.api.context.ServiceContext;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.patient.PatientCalculationServiceImpl;
@@ -19,20 +26,42 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiObsDefinition;
 import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterDatetimeDataDefinition;
+import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
+import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.service.PatientDataService;
+import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
+import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
+import org.openmrs.module.reporting.data.person.service.PersonDataService;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.test.BaseContextMockTest;
 
 public class EptsCalculationUtilsTest extends BaseContextMockTest {
 
   @Mock PatientCalculationService service;
 
-  @Spy protected TestsHelper testsHelper;
+  @Spy private TestsHelper testsHelper;
+
+  @Mock AdministrationService administrationService;
+
+  @Mock PatientDataService patientDataService;
+
+  @Mock PersonDataService personDataService;
+
+  @Mock ServiceContext serviceContext;
 
   PatientCalculationContext calculationContext;
 
+  @SuppressWarnings("deprecation")
   @Before
   public void init() {
+    contextMockHelper.setService(PersonDataService.class, personDataService);
+    contextMockHelper.setService(PatientDataService.class, patientDataService);
     when(service.createCalculationContext())
         .thenReturn(new PatientCalculationServiceImpl().new SimplePatientCalculationContext());
     calculationContext = service.createCalculationContext();
@@ -57,7 +86,102 @@ public class EptsCalculationUtilsTest extends BaseContextMockTest {
     Assert.assertEquals(list, replacedMap.get(3));
   }
 
-  public void evaluateWithReporting() {}
+  @Test(expected = RuntimeException.class)
+  public void evaluateWithReportingShouldThrowExceptionWithNullDataDefition()
+      throws RuntimeException {
+    EptsCalculationUtils.evaluateWithReporting(
+        null, Arrays.asList(1, 2, 3), null, null, calculationContext);
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void evaluateWithReportingShouldThrowExceptionWithNonPersonOrPatientDataDefition()
+      throws RuntimeException {
+    // EncounterDatetimeDataDefinition can be any datadefition besides
+    // PersonDataDefinition and
+    // PatientDataDefinition
+    EptsCalculationUtils.evaluateWithReporting(
+        new EncounterDatetimeDataDefinition(),
+        Arrays.asList(1, 2, 3),
+        null,
+        null,
+        calculationContext);
+  }
+
+  @SuppressWarnings({"unchecked"})
+  @Test(expected = APIException.class)
+  public void evaluateWithReportingShouldRightlyThrowAPIInstanceOfEvaluationException()
+      throws Exception {
+    when(patientDataService.evaluate(
+            any(PatientDataDefinition.class), any(EvaluationContext.class)))
+        .thenThrow(EvaluationException.class);
+    EptsCalculationUtils.evaluateWithReporting(
+        new JembiObsDefinition(), Arrays.asList(1, 2), null, null, calculationContext);
+  }
+
+  @Test
+  public void evaluateWithReportingShouldRightlyEvaluatePatientAndPersonData()
+      throws EvaluationException {
+    EvaluatedPatientData patientData = new EvaluatedPatientData();
+    EvaluatedPersonData personData = new EvaluatedPersonData();
+    Map<Integer, Object> data = new HashMap<Integer, Object>();
+    Obs obs = new Obs(1);
+    // represents any other object
+    Encounter encounter = new Encounter(1);
+    List<? extends Object> list = Arrays.asList("hi", "there", 4);
+    data.put(1, "");
+    data.put(2, obs);
+    data.put(3, false);
+    data.put(4, true);
+    data.put(5, encounter);
+    data.put(6, null);
+    data.put(7, list);
+    data.put(8, new Object());
+    patientData.setData(data);
+    personData.setData(data);
+    // evaluating patient data definition
+    when(patientDataService.evaluate(
+            any(PatientDataDefinition.class), any(EvaluationContext.class)))
+        .thenReturn(patientData);
+    CalculationResultMap patientResult =
+        EptsCalculationUtils.evaluateWithReporting(
+            new JembiObsDefinition(),
+            Arrays.asList(1, 2, 3, 4, 5, 6, 7),
+            null,
+            null,
+            calculationContext);
+    evaluationTest(obs, encounter, list, patientResult);
+
+    // evaluating persondata defition
+    when(personDataService.evaluate(any(PersonDataDefinition.class), any(EvaluationContext.class)))
+        .thenReturn(personData);
+    CalculationResultMap personResult =
+        EptsCalculationUtils.evaluateWithReporting(
+            new ObsForPersonDataDefinition(),
+            Arrays.asList(1, 2, 3, 4, 5, 6, 7),
+            null,
+            null,
+            calculationContext);
+    evaluationTest(obs, encounter, list, personResult);
+  }
+
+  private void evaluationTest(
+      Obs obs, Encounter encounter, List<? extends Object> list, CalculationResultMap result) {
+    Assert.assertEquals("", result.get(1).getValue());
+    Assert.assertTrue(result.get(1) instanceof SimpleResult);
+    Assert.assertEquals(obs, result.get(2).getValue());
+    Assert.assertTrue(result.get(2) instanceof ObsResult);
+    Assert.assertFalse((boolean) result.get(3).getValue());
+    Assert.assertTrue(result.get(3) instanceof BooleanResult);
+    Assert.assertTrue((boolean) result.get(4).getValue());
+    Assert.assertTrue(result.get(4) instanceof BooleanResult);
+    Assert.assertEquals(encounter, result.get(5).getValue());
+    Assert.assertTrue(result.get(5) instanceof SimpleResult);
+    Assert.assertNull(result.get(6));
+    Assert.assertEquals(list.toString(), result.get(7).getValue().toString());
+    Assert.assertTrue(result.get(7) instanceof ListResult);
+    // should not include any objects outside the defined cohort
+    Assert.assertFalse(result.containsKey(8));
+  }
 
   /** unit tests {@link EptsCalculationUtils#resultForPatient(CalculationResultMap, Integer)} */
   @Test
