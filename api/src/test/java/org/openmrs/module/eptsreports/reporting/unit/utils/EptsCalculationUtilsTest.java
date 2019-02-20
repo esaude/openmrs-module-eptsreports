@@ -42,17 +42,17 @@ import org.openmrs.test.BaseContextMockTest;
 
 public class EptsCalculationUtilsTest extends BaseContextMockTest {
 
-  @Mock PatientCalculationService service;
+  @Mock private PatientCalculationService service;
 
   @Spy private TestsHelper testsHelper;
 
-  @Mock PatientDataService patientDataService;
+  @Mock private PatientDataService patientDataService;
 
-  @Mock PersonDataService personDataService;
+  @Mock private PersonDataService personDataService;
 
-  @Mock ServiceContext serviceContext;
+  @Mock private ServiceContext serviceContext;
 
-  PatientCalculationContext calculationContext;
+  private PatientCalculationContext calculationContext;
 
   @SuppressWarnings("deprecation")
   @Before
@@ -145,6 +145,7 @@ public class EptsCalculationUtilsTest extends BaseContextMockTest {
             null,
             null,
             calculationContext);
+    Assert.assertNotNull(patientResult);
     evaluationTest(obs, encounter, list, patientResult);
 
     // evaluating persondata defition
@@ -157,6 +158,7 @@ public class EptsCalculationUtilsTest extends BaseContextMockTest {
             null,
             null,
             calculationContext);
+    Assert.assertNotNull(personResult);
     evaluationTest(obs, encounter, list, personResult);
   }
 
