@@ -16,7 +16,6 @@ import org.mockito.Spy;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.api.APIException;
-import org.openmrs.api.context.ServiceContext;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.patient.PatientCalculationServiceImpl;
@@ -49,8 +48,6 @@ public class EptsCalculationUtilsTest extends BaseContextMockTest {
   @Mock private PatientDataService patientDataService;
 
   @Mock private PersonDataService personDataService;
-
-  @Mock private ServiceContext serviceContext;
 
   private PatientCalculationContext calculationContext;
 
@@ -227,37 +224,6 @@ public class EptsCalculationUtilsTest extends BaseContextMockTest {
     Assert.assertNull(EptsCalculationUtils.resultForPatient(map, 11));
   }
 
-  /** unit tests {@link EptsCalculationUtils#obsResultForPatient(CalculationResultMap, Integer)} */
-  @Test
-  public void obsResultForPatientShouldReturnRightPatientResultValue() {
-    CalculationResultMap map = new CalculationResultMap();
-    Obs obs = new Obs(1);
-    map.put(7, new ObsResult(obs, null));
-    map.put(9, new ObsResult(null, null));
-    // returns obs for Obsresult
-    Assert.assertEquals(obs, EptsCalculationUtils.obsResultForPatient(map, 7));
-    // retuns null for null obsresult
-    Assert.assertNull(EptsCalculationUtils.obsResultForPatient(map, 9));
-  }
-
-  /**
-   * unit tests {@link EptsCalculationUtils#encounterResultForPatient(CalculationResultMap,
-   * Integer)}
-   */
-  @Test
-  public void encounterResultForPatientShouldReturnRightPatientResultValue() {
-    CalculationResultMap map = new CalculationResultMap();
-
-    Encounter enc = new Encounter(2);
-    map.put(10, new SimpleResult(enc, null, calculationContext));
-    map.put(11, new SimpleResult(null, null, calculationContext));
-
-    // returns encounter for Encounter simple result
-    Assert.assertEquals(enc, EptsCalculationUtils.encounterResultForPatient(map, 10));
-    // returns encounter for Encounter simple result
-    Assert.assertNull(EptsCalculationUtils.encounterResultForPatient(map, 11));
-  }
-
   @Test
   public void patientsThatPassShouldRetrieveMatchedResultsCohort() {
     CalculationResultMap map = new CalculationResultMap();
@@ -374,5 +340,23 @@ public class EptsCalculationUtilsTest extends BaseContextMockTest {
             (testsHelper.getDate("2019-02-28 00:00:00.0")),
             testsHelper.getDate("2019-01-21 00:00:00.0")));
     Assert.assertEquals(null, EptsCalculationUtils.earliest(null, null));
+  }
+
+  @Test
+  public void addMonthsShouldReturnDateWithAddedMonths() {
+    Assert.assertEquals(
+        testsHelper.getDate("2019-01-21 00:00:00.0"),
+        EptsCalculationUtils.addMonths(testsHelper.getDate("2019-02-21 00:00:00.0"), -1));
+    Assert.assertEquals(
+        testsHelper.getDate("2019-02-21 00:00:00.0"),
+        EptsCalculationUtils.addMonths(testsHelper.getDate("2019-02-21 00:00:00.0"), 0));
+    Assert.assertEquals(
+        testsHelper.getDate("2019-01-21 00:00:00.0"),
+        EptsCalculationUtils.addMonths(testsHelper.getDate("2018-10-21 00:00:00.0"), 3));
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void addMonthsShouldThrowExceptionWithNullDate() throws NullPointerException {
+    EptsCalculationUtils.addMonths(null, -1);
   }
 }
