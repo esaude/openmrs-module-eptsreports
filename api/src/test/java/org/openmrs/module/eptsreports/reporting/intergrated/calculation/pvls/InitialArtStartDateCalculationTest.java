@@ -104,7 +104,7 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
     // the rest should not be touched
     matchOtherResultsExcept(evaluatedResult, 2);
 
-    // initiating ART by historical start date in addition to HIV enrollment
+    // initiating ART enrolling on ARV plan and transferred in
     openmrsTestHelper.createBasicObs(
         Context.getPatientService().getPatient(2),
         Context.getConceptService().getConcept(7777002),

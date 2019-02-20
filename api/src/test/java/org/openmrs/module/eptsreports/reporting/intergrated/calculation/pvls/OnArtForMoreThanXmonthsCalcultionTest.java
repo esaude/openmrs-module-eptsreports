@@ -36,7 +36,7 @@ public class OnArtForMoreThanXmonthsCalcultionTest extends BasePatientCalculatio
     map.put(2, new SimpleResult(true, calculation, evaluationContext));
     // initiated ART on 2018-06-21 by starting ARV plan observation and vl result on
     // 2019-04-02
-    map.put(6, new SimpleResult(true, calculation, evaluationContext));
+    map.put(6, new SimpleResult(false, calculation, evaluationContext));
     // initiated ART on 2019-01-18 by historical start date observation but not with
     // any vl result
     map.put(7, new SimpleResult(false, calculation, evaluationContext));
@@ -58,13 +58,13 @@ public class OnArtForMoreThanXmonthsCalcultionTest extends BasePatientCalculatio
     openmrsTestHelper.createBasicObs(
         Context.getPatientService().getPatient(999),
         Context.getConceptService().getConcept(7777001),
-        Context.getEncounterService().getEncounter(2777005),
+        Context.getEncounterService().getEncounter(2777003),
         testsHelper.getDate("2019-05-10 00:00:00.0"),
         (Location) getEvaluationContext().getFromCache("location"),
         140.0);
     CalculationResultMap evaluatedResult =
         service.evaluate(getCohort(), getCalculation(), getEvaluationContext());
-    Assert.assertEquals(true, evaluatedResult.get(999).getValue());
+    Assert.assertEquals(false, evaluatedResult.get(999).getValue());
     // the rest should not be touched
     matchOtherResultsExcept(evaluatedResult, 999);
 
@@ -78,7 +78,7 @@ public class OnArtForMoreThanXmonthsCalcultionTest extends BasePatientCalculatio
         (Location) getEvaluationContext().getFromCache("location"),
         Context.getConceptService().getConcept(7777004));
     evaluatedResult = service.evaluate(getCohort(), getCalculation(), getEvaluationContext());
-    Assert.assertEquals(true, evaluatedResult.get(432).getValue());
+    Assert.assertEquals(false, evaluatedResult.get(432).getValue());
     // the rest should not be touched
     matchOtherResultsExcept(evaluatedResult, 999, 432);
   }
