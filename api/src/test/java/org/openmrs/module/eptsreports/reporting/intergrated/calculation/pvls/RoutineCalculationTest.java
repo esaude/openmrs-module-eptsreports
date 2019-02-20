@@ -42,7 +42,7 @@ public class RoutineCalculationTest extends BasePatientCalculationTest {
     // initiated ART on 2018-06-21 by starting ARV plan observation and vl
     // result on
     // 2019-04-02
-    map.put(6, new SimpleResult(true, calculation, evaluationContext));
+    map.put(6, new SimpleResult(false, calculation, evaluationContext));
     // initiated ART on 2019-01-18 by historical start date observation but
     // not with
     // any vl result
