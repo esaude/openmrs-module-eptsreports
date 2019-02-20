@@ -11,11 +11,12 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.patient.PatientCalculationServiceImpl;
@@ -38,12 +39,17 @@ import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.test.BaseContextMockTest;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({Context.class})
 public class EptsCalculationUtilsTest extends BaseContextMockTest {
 
   @Mock private PatientCalculationService service;
 
-  @Spy private TestsHelper testsHelper;
+  private TestsHelper testsHelper;
 
   @Mock private PatientDataService patientDataService;
 
@@ -51,15 +57,16 @@ public class EptsCalculationUtilsTest extends BaseContextMockTest {
 
   private PatientCalculationContext calculationContext;
 
-  @SuppressWarnings("deprecation")
   @Before
   public void init() {
-    contextMockHelper.setService(PersonDataService.class, personDataService);
-    contextMockHelper.setService(PatientDataService.class, patientDataService);
+    testsHelper = new TestsHelper();
     when(service.createCalculationContext())
         .thenReturn(new PatientCalculationServiceImpl().new SimplePatientCalculationContext());
     calculationContext = service.createCalculationContext();
     calculationContext.setNow(testsHelper.getDate("2019-05-30 00:00:00.0"));
+    PowerMockito.mockStatic(Context.class);
+    when(Context.getService(PatientDataService.class)).thenReturn(patientDataService);
+    when(Context.getService(PersonDataService.class)).thenReturn(personDataService);
   }
 
   /**
