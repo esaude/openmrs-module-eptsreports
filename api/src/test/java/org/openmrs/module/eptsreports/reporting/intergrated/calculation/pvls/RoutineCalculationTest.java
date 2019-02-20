@@ -4,9 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.CalculationContext;
@@ -80,49 +78,5 @@ public class RoutineCalculationTest extends BasePatientCalculationTest {
     Assert.assertEquals(
         getResult().toString(),
         service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext()).toString());
-  }
-
-  /**
-   * TODO investigate.i hope routine criteria 2 is alright, i find it strange; being on ART for
-   * atleast 12 months with 2 VL with at-least 12 months away from each other when lookup is
-   * constrained to only 12 months from context now!
-   */
-  public void calculateRoutineCriteria2() {
-    // test with routine criteria2 > 12 && <= 16 months
-    // change now from: 2019-05-30 00:00:00.0, needs to be on ART for
-    // atleast 3 months
-    setEvaluationContext(testsHelper.getDate("2019-01-01 00:00:00.0"));
-    // initiate ART
-    Obs obsInitArt = Context.getObsService().getObs(3777002);
-    Assert.assertEquals(testsHelper.getDate("2018-06-21 00:00:00.0"), obsInitArt.getObsDatetime());
-    obsInitArt.setObsDatetime(testsHelper.getDate("2018-01-01 00:00:00.0"));
-
-    Obs obs = Context.getObsService().getObs(3777008);
-    Assert.assertEquals(testsHelper.getDate("2019-04-02 00:00:00.0"), obs.getObsDatetime());
-    // first VL obs should be within 12 months backwards from now
-    obs.setObsDatetime(testsHelper.getDate("2018-01-01 00:00:00.0"));
-
-    // second VL obs should be within 12 months backwards from now but
-    // atleast 12 months from previous VL
-    openmrsTestHelper.createBasicObs(
-        Context.getPatientService().getPatient(6),
-        Context.getConceptService().getConcept(7777001),
-        Context.getEncounterService().getEncounter(2777006),
-        testsHelper.getDate("2019-01-01 00:00:00.0"),
-        (Location) getEvaluationContext().getFromCache("location"),
-        132.3);
-    Assert.assertEquals(
-        getResult().toString(),
-        service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext()).toString());
-
-    // TODO also test BreastFeeding criteria in here
-    params.put("criteria", PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT);
-  }
-
-  @Ignore
-  /** TODO same issue as on above test case */
-  public void calculateRoutineCriteria3() {
-    Assert.assertNotNull(getResult());
-    // TODO write out, test data is already existing
   }
 }

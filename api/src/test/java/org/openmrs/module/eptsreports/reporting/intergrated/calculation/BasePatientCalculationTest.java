@@ -18,7 +18,6 @@ import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-// TODO probably move this into calculation module
 public abstract class BasePatientCalculationTest extends BaseModuleContextSensitiveTest {
 
   @Autowired protected TestsHelper testsHelper;
