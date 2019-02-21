@@ -2,6 +2,10 @@ package org.openmrs.module.eptsreports.reporting.intergrated.calculation.pvls;
 
 import java.util.Arrays;
 import java.util.Collection;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -47,5 +51,41 @@ public class OnArtForMoreThanXmonthsCalcultionTest extends BasePatientCalculatio
     map.put(432, new SimpleResult(false, calculation, evaluationContext));
 
     return map;
+  }
+
+  @Test
+  public void calculateLastVlShouldBeUsedWhenThereAreMoreThanOne() {
+    // add next vl after 3 months on ART in addition to previous one before 3 months
+    openmrsTestHelper.createBasicObs(
+        Context.getPatientService().getPatient(999),
+        Context.getConceptService().getConcept(7777001),
+        Context.getEncounterService().getEncounter(2777003),
+        testsHelper.getDate("2019-05-10 00:00:00.0"),
+        (Location) getEvaluationContext().getFromCache("location"),
+        140.0);
+    CalculationResultMap evaluatedResult =
+        service.evaluate(getCohort(), getCalculation(), getEvaluationContext());
+    Assert.assertEquals(false, evaluatedResult.get(999).getValue());
+    // the rest should not be touched
+    matchOtherResultsExcept(evaluatedResult, 999);
+
+    // add initiation by historical start date in addition to HIV enrollment on
+    // lacking 432 at-least 3 months earlier
+    openmrsTestHelper.createBasicObs(
+        Context.getPatientService().getPatient(432),
+        Context.getConceptService().getConcept(7777002),
+        Context.getEncounterService().getEncounter(3),
+        testsHelper.getDate("2018-08-12 00:00:00.0"),
+        (Location) getEvaluationContext().getFromCache("location"),
+        Context.getConceptService().getConcept(7777004));
+    evaluatedResult = service.evaluate(getCohort(), getCalculation(), getEvaluationContext());
+    Assert.assertEquals(false, evaluatedResult.get(432).getValue());
+    // the rest should not be touched
+    matchOtherResultsExcept(evaluatedResult, 999, 432);
+  }
+
+  @Before
+  public void initialise() throws Exception {
+    executeDataSet("pvlsTest.xml");
   }
 }

@@ -60,7 +60,8 @@ public class RoutineCalculationTest extends BasePatientCalculationTest {
   }
 
   @Before
-  public void initialise() {
+  public void initialise() throws Exception {
+    executeDataSet("pvlsTest.xml");
     // initially test with routine criteria1 > 6 && >= 9 months between ART
     // init & VL date
     params.put("criteria", PatientsOnRoutineEnum.ADULTCHILDREN);

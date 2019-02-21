@@ -3,6 +3,7 @@ package org.openmrs.module.eptsreports.reporting.intergrated.calculation.pvls;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collection;
+import org.junit.Before;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -65,13 +66,6 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
             calculation,
             evaluationContext));
     map.put(432, new SimpleResult(null, calculation, evaluationContext));
-    // initiated ART by ARV transfer in observation
-    map.put(
-        999,
-        new SimpleResult(
-            new Timestamp(testsHelper.getDate("2019-01-20 00:00:00.0").getTime()),
-            calculation,
-            evaluationContext));
     // initiated ART by hiv enrolment and also has first phamarcy encounter observation, ealrier is
     // considerd
     map.put(
@@ -81,5 +75,10 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
             calculation,
             evaluationContext));
     return map;
+  }
+
+  @Before
+  public void initialise() throws Exception {
+    executeDataSet("pvlsTest.xml");
   }
 }
