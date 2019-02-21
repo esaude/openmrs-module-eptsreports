@@ -61,7 +61,6 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 
     CalculationResultMap map = new CalculationResultMap();
     Location location = (Location) context.getFromCache("location");
-
     Program treatmentProgram = hivMetadata.getARTProgram();
     Concept arvPlan = hivMetadata.getARVPlanConcept();
     Concept startDrugsConcept = hivMetadata.getstartDrugsConcept();

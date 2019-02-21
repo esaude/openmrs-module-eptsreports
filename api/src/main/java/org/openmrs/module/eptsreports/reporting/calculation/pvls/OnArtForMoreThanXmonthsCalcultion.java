@@ -50,6 +50,7 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
     EncounterType childFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
 
     // get data inicio TARV
+    // TODO: pass in as a parameter and only recalculate if parameter is null
     CalculationResultMap arvsInitiationDateMap =
         calculate(
             Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0),
