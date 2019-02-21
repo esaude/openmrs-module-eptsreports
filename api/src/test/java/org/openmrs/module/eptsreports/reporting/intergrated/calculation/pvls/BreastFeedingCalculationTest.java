@@ -56,10 +56,10 @@ public class BreastFeedingCalculationTest extends BasePatientCalculationTest {
    * rule tested: org.openmrs.module.eptsreports.reporting.calculation.pvls.
    * BreastfeedingCalculation.isLactating(Date, List<Obs>)
    */
-  @Test
+
   public void shouldEvaluatePatientMarkedAsLactatinng() {
 
-    setEvaluationContext(testsHelper.getDate("2019-06-30 00:00:00.0"));
+    setEvaluationContext(testsHelper.getDate("2019-01-30 00:00:00.0"));
 
     CalculationResultMap evaluatedResult =
         service.evaluate(getCohort(), getCalculation(), getEvaluationContext());

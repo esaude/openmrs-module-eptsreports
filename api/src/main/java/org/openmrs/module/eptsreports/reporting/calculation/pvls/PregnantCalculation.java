@@ -16,7 +16,6 @@ import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
-import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
@@ -90,7 +89,7 @@ public class PregnantCalculation extends AbstractPatientCalculation {
             context);
 
     CalculationResultMap markedPregnantInProgram =
-        EptsCalculations.lastProgramEnrollment(ptv, femaleCohort, location, context);
+        EptsCalculations.allProgramEnrollment(ptv, femaleCohort, context);
 
     CalculationResultMap lastVl =
         EptsCalculations.lastObs(
@@ -113,18 +112,20 @@ public class PregnantCalculation extends AbstractPatientCalculation {
         ListResult pregnantResult = (ListResult) pregnantMap.get(pId);
         ListResult pregnantByWeeksResullt = (ListResult) markedPregnantByWeeks.get(pId);
         ListResult pregnantDueDateResult = (ListResult) markedPregnantDueDate.get(pId);
+        ListResult pregnantsInProgramResults = (ListResult) markedPregnantInProgram.get(pId);
 
         List<Obs> pregnantObsList = EptsCalculationUtils.extractResultValues(pregnantResult);
         List<Obs> pregnantByWeeksObsList =
             EptsCalculationUtils.extractResultValues(pregnantByWeeksResullt);
         List<Obs> pregnantDueDateObsList =
             EptsCalculationUtils.extractResultValues(pregnantDueDateResult);
-        SimpleResult pregnantInProgramResut = (SimpleResult) markedPregnantInProgram.get(pId);
+        List<PatientProgram> patientProgams =
+            EptsCalculationUtils.extractResultValues(pregnantsInProgramResults);
 
         if (this.isPregnant(lastVlDate, pregnantObsList)
             || this.isPregnantByWeeks(lastVlDate, pregnantByWeeksObsList)
             || this.isPregnantDueDate(lastVlDate, pregnantDueDateObsList)
-            || this.isPregnantInProgram(lastVlDate, pregnantInProgramResut)) {
+            || this.isPregnantInProgram(lastVlDate, patientProgams, location)) {
           isCandidate = true;
         }
       }
@@ -165,28 +166,35 @@ public class PregnantCalculation extends AbstractPatientCalculation {
     return false;
   }
 
-  private boolean isPregnantInProgram(Date lastVlDate, SimpleResult pregnantInProgramResut) {
+  private boolean isPregnantInProgram(
+      Date lastVlDate, List<PatientProgram> patientPrograms, Location location) {
 
-    PatientProgram patientProgram = getPTVPregnantPatientProgram(pregnantInProgramResut);
+    PatientProgram patientProgram = getPTVPregnantPatientProgram(patientPrograms, location);
 
     return patientProgram != null
         && patientProgram.getDateEnrolled() != null
         && this.isInPregnantViralLoadRange(lastVlDate, patientProgram.getDateEnrolled());
   }
 
-  private PatientProgram getPTVPregnantPatientProgram(SimpleResult result) {
+  private PatientProgram getPTVPregnantPatientProgram(
+      List<PatientProgram> patientPrograms, Location location) {
 
-    if (result != null) {
-      PatientProgram patientProgram = (PatientProgram) result.getValue();
-      if (patientProgram != null) {
-        PatientState currentState =
-            patientProgram.getCurrentState(
-                this.getHivMetadata().getPatientIsPregnantWorkflowState().getProgramWorkflow());
-        if (currentState != null) {
-          return patientProgram;
+    for (PatientProgram patientProgram : patientPrograms) {
+
+      if (location.equals(patientProgram.getLocation())) {
+
+        for (PatientState patientState : patientProgram.getCurrentStates()) {
+
+          if (patientState != null
+              && this.getHivMetadata()
+                  .getPatientIsPregnantWorkflowState()
+                  .equals(patientState.getState())) {
+            return patientProgram;
+          }
         }
       }
     }
+
     return null;
   }
 

@@ -19,14 +19,17 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Program;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiObsDefinition;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiPatientStateDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiProgramEnrollmentForPatientDefinition;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.common.VitalStatus;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefinition;
 import org.openmrs.util.OpenmrsUtil;
@@ -151,26 +154,42 @@ public class EptsCalculations {
   }
 
   /**
-   * Evaluates the first program enrollment of the specified program
+   * Evaluates the last patient state for the specified programWorkflowState
    *
-   * @param program the program
-   * @param cohort the patient ids
-   * @param location the {@link Location}
-   * @param context the calculation context
-   * @return the enrollments in a calculation result map
+   * @param cohort
+   * @param location
+   * @param startDate
+   * @param endDate
+   * @param programWorkflowState
+   * @param context
+   * @return
    */
-  public static CalculationResultMap lastProgramEnrollment(
-      Program program,
+  public static CalculationResultMap allPatientStates(
       Collection<Integer> cohort,
       Location location,
+      ProgramWorkflowState programWorkflowState,
       PatientCalculationContext context) {
 
-    JembiProgramEnrollmentForPatientDefinition definition =
-        new JembiProgramEnrollmentForPatientDefinition("Last in " + program.getName());
-    definition.setProgram(program);
-    definition.setLocation(location);
-    definition.setWhichEnrollment(TimeQualifier.LAST);
-    return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
+    JembiPatientStateDefinition def = new JembiPatientStateDefinition();
+    def.setLocation(location);
+    def.setStartedOnOrBefore(context.getNow());
+    def.setStates(Arrays.asList(programWorkflowState));
+    def.setWhich(TimeQualifier.ANY);
+
+    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
+  }
+
+  public static CalculationResultMap allProgramEnrollment(
+      Program program, Collection<Integer> cohort, PatientCalculationContext context) {
+    ProgramEnrollmentsForPatientDataDefinition def =
+        new ProgramEnrollmentsForPatientDataDefinition();
+
+    def.setName("All in " + program.getName());
+    def.setWhichEnrollment(TimeQualifier.ANY);
+    def.setProgram(program);
+    def.setEnrolledOnOrBefore(context.getNow());
+
+    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
   }
 
   /**
