@@ -11,7 +11,6 @@ import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
-import org.openmrs.PatientState;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -50,10 +49,10 @@ public class PregnantCalculation extends AbstractPatientCalculation {
 
     Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
     Concept pregnant = hivMetadata.getPregnantConcept();
-    Concept yes = hivMetadata.getYesConcept();
     Concept pregnantBasedOnWeeks = hivMetadata.getNumberOfWeeksPregnant();
     Concept pregnancyDueDate = hivMetadata.getPregnancyDueDate();
     Program ptv = hivMetadata.getPtvEtvProgram();
+    Concept gestation = hivMetadata.getGestationConcept();
 
     // get female patients only
     Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);
@@ -63,7 +62,7 @@ public class PregnantCalculation extends AbstractPatientCalculation {
             pregnant,
             femaleCohort,
             Arrays.asList(location),
-            Arrays.asList(yes),
+            Arrays.asList(gestation),
             TimeQualifier.ANY,
             null,
             context);
@@ -102,7 +101,6 @@ public class PregnantCalculation extends AbstractPatientCalculation {
             context);
 
     for (Integer pId : femaleCohort) {
-
       Boolean isCandidate = false;
       Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVl, pId);
 
@@ -169,33 +167,14 @@ public class PregnantCalculation extends AbstractPatientCalculation {
   private boolean isPregnantInProgram(
       Date lastVlDate, List<PatientProgram> patientPrograms, Location location) {
 
-    PatientProgram patientProgram = getPTVPregnantPatientProgram(patientPrograms, location);
-
-    return patientProgram != null
-        && patientProgram.getDateEnrolled() != null
-        && this.isInPregnantViralLoadRange(lastVlDate, patientProgram.getDateEnrolled());
-  }
-
-  private PatientProgram getPTVPregnantPatientProgram(
-      List<PatientProgram> patientPrograms, Location location) {
-
     for (PatientProgram patientProgram : patientPrograms) {
-
-      if (location.equals(patientProgram.getLocation())) {
-
-        for (PatientState patientState : patientProgram.getCurrentStates()) {
-
-          if (patientState != null
-              && this.getHivMetadata()
-                  .getPatientIsPregnantWorkflowState()
-                  .equals(patientState.getState())) {
-            return patientProgram;
-          }
-        }
+      if (location.equals(patientProgram.getLocation())
+          && patientProgram.getDateEnrolled() != null
+          && isInPregnantViralLoadRange(lastVlDate, patientProgram.getDateEnrolled())) {
+        return true;
       }
     }
-
-    return null;
+    return false;
   }
 
   private boolean isInPregnantViralLoadRange(Date viralLoadDate, Date pregnancyDate) {

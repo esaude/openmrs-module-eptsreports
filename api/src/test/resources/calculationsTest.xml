@@ -92,6 +92,10 @@
   	<concept concept_id="7777028" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="98979f92-b5bf-4716-b5de-679c88dd755a"/>
   	<concept_name concept_name_id="5777028" concept_id="7777028" name="GAVE BIRTH" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="ba4224e2-310d-11e9-87a2-5b7ba44d255a"/>
   	
+  	<concept concept_id="7777029" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1cdd58a-1d5f-11e0-b929-000c29ad1d07"/>
+  	<concept_name concept_name_id="5777029" concept_id="7777029" name="PREGNANCY" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="9d98bd1e-35e6-11e9-98d5-578d0b38d001"/>
+  	
+  	
   	<concept_set concept_set_id="8777008" concept_id="7777008" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777008"/>
   	<concept_set concept_set_id="8777009" concept_id="7777009" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777009"/>
   	<concept_set concept_set_id="8777010" concept_id="7777010" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777010"/>
@@ -169,5 +173,6 @@
 	<global_property property="eptsreports.breastfeedingConceptUuid" property_value="bc4fe755-fc8f-49b8-9956-baf2477e8313" uuid="ef85a522-3106-11e9-9094-832fb05f5437"/>
 	<global_property property="eptsreports.criteriaForArtStartUuid" property_value="607315ab-2f52-4d9f-b28a-6383b9a5f9c4" uuid="05bd3ad4-3108-11e9-ad81-5fcf3f14848e"/>
 	<global_property property="eptsreports.priorDeliveryDateConceptUuid" property_value="e1e765c2-1d5f-11e0-b929-000c29ad1d07" uuid="71a3b318-3108-11e9-a0fd-4f6f73f5282a"/>
+	<global_property property="eptsreports.gestationConceptUuid" property_value="e1cdd58a-1d5f-11e0-b929-000c29ad1d07" uuid="6670eea6-35e6-11e9-8819-2321bbfa341f"/>
 	
 </dataset>
