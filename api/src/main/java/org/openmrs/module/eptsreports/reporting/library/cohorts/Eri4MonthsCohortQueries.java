@@ -37,29 +37,6 @@ public class Eri4MonthsCohortQueries {
   @Autowired private GenericCohortQueries genericCohortQueries;
 
   /**
-   * Get all patients who have 4 months ART retention after initiation (A)
-   *
-   * @return CohortDefinition
-   */
-  public CohortDefinition getPatientsWhoStartedArt4MonthsFromArtInitiation() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("patientsRetentionFor4MonthsOnART - Started ART");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.setQuery(
-        Eri4MonthsQueries.allPatientsWhoInitiatedTreatmentDuringReportingPeriod(
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPlanConcept().getConceptId(),
-            hivMetadata.getstartDrugsConcept().getConceptId(),
-            hivMetadata.gethistoricalDrugStartDateConcept().getConceptId(),
-            hivMetadata.getARTProgram().getProgramId()));
-    return cd;
-  }
-
-  /**
    * C Get all patients who initiated treatment and had a drug pick up or had a consultation between
    * 61 and 120 days from the encounter date
    */
@@ -158,8 +135,8 @@ public class Eri4MonthsCohortQueries {
     cd.addSearch(
         "initiatedART",
         EptsReportUtils.map(
-            getPatientsWhoStartedArt4MonthsFromArtInitiation(),
-            "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
+            genericCohortQueries.getStartedArtOnPeriod(false),
+            "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "transferIns",
         EptsReportUtils.map(

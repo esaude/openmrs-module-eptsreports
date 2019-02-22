@@ -33,30 +33,6 @@ public class Eri2MonthsCohortQueries {
   @Autowired private GenericCohortQueries genericCohortQueries;
 
   /**
-   * Get patients who have 2 months ART retention after ART initiation A TODO: harmonise with TxNew
-   * Union query
-   *
-   * @return CohortDefinition
-   */
-  public CohortDefinition getAllPatientsRetainedOnArtFor2MonthsFromArtInitiation() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("patientsRetentionFor2MonthsOnART");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.setQuery(
-        Eri2MonthsQueries.allPatientsWhoInitiatedTreatmentDuringReportingPeriod(
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPlanConcept().getConceptId(),
-            hivMetadata.getstartDrugsConcept().getConceptId(),
-            hivMetadata.gethistoricalDrugStartDateConcept().getConceptId(),
-            hivMetadata.getARTProgram().getProgramId()));
-    return cd;
-  }
-
-  /**
    * C
    *
    * @return
@@ -97,8 +73,8 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "initiatedArt",
         EptsReportUtils.map(
-            getAllPatientsRetainedOnArtFor2MonthsFromArtInitiation(),
-            "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
+            genericCohortQueries.getStartedArtOnPeriod(false),
+            "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "transferIns",
         EptsReportUtils.map(
