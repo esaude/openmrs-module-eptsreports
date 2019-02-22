@@ -7,7 +7,9 @@ import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.springframework.stereotype.Component;
 
+@Component("openMRSTestsHelper")
 public class OpenMRSTestHelper {
 
   public Obs createBasicObs(

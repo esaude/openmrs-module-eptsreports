@@ -3,7 +3,9 @@ package org.openmrs.module.eptsreports.reporting.helper;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.springframework.stereotype.Component;
 
+@Component("testsHelper")
 public class TestsHelper {
 
   public SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s");

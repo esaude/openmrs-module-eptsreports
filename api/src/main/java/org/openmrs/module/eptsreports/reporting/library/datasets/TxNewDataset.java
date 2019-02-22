@@ -17,16 +17,16 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 import java.util.Arrays;
 import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -37,6 +37,10 @@ public class TxNewDataset extends BaseDataSet {
   @Autowired private EptsCommonDimension eptsCommonDimension;
 
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
+
+  @Autowired
+  @Qualifier("txNewAgeDimensionCohort")
+  private AgeDimensionCohortInterface ageDimensionCohort;
 
   public DataSetDefinition constructTxNewDataset() {
 
@@ -59,14 +63,12 @@ public class TxNewDataset extends BaseDataSet {
         "maternity", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
     dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dataSetDefinition.addDimension(
-        "age", EptsReportUtils.map(eptsCommonDimension.txNewAges(), mappings));
+        "age", EptsReportUtils.map(eptsCommonDimension.age(ageDimensionCohort), mappings));
 
     dataSetDefinition.addColumn(
         "1All",
         "TX_NEW: New on ART",
-        new Mapped<CohortIndicator>(
-            patientEnrolledInHIVStartedARTIndicator,
-            ParameterizableUtil.createParameterMappings(mappings)),
+        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
         "");
 
     dataSetDefinition.addColumn(
@@ -94,7 +96,7 @@ public class TxNewDataset extends BaseDataSet {
 
   private List<ColumnParameters> getMaleColumns() {
     ColumnParameters unknownM =
-        new ColumnParameters("unknownM", "Unknown age male", "gender=M|age=unknown", "unknownM");
+        new ColumnParameters("unknownM", "Unknown age male", "gender=M|age=UK", "unknownM");
     ColumnParameters under1M =
         new ColumnParameters("under1M", "under 1 year male", "gender=M|age=<1", "under1M");
     ColumnParameters oneTo4M =
@@ -138,7 +140,7 @@ public class TxNewDataset extends BaseDataSet {
 
   private List<ColumnParameters> getFemaleColumns() {
     ColumnParameters unknownF =
-        new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=unknown", "unknownF");
+        new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=UK", "unknownF");
     ColumnParameters under1F =
         new ColumnParameters("under1F", "under 1 year female", "gender=F|age=<1", "under1F");
     ColumnParameters oneTo4F =

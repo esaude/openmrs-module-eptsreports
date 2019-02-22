@@ -21,6 +21,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -30,6 +31,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class PregnantCalculation extends AbstractPatientCalculation {
+
+  @Autowired private HivMetadata hivMetadata;
 
   @Override
   public CalculationResultMap evaluate(
@@ -42,17 +45,16 @@ public class PregnantCalculation extends AbstractPatientCalculation {
     Location location = (Location) context.getFromCache("location");
     Date oneYearBefore = EptsCalculationUtils.addMonths(context.getNow(), -12);
 
-    HivMetadata hivMetadata = getHivMetadata();
-    EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
-    EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
-    EncounterType pediatriaFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
+    EncounterType labEncounterType = this.hivMetadata.getMisauLaboratorioEncounterType();
+    EncounterType adultFollowup = this.hivMetadata.getAdultoSeguimentoEncounterType();
+    EncounterType pediatriaFollowup = this.hivMetadata.getARVPediatriaSeguimentoEncounterType();
 
-    Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
-    Concept pregnant = hivMetadata.getPregnantConcept();
-    Concept pregnantBasedOnWeeks = hivMetadata.getNumberOfWeeksPregnant();
-    Concept pregnancyDueDate = hivMetadata.getPregnancyDueDate();
-    Program ptv = hivMetadata.getPtvEtvProgram();
-    Concept gestation = hivMetadata.getGestationConcept();
+    Concept viralLoadConcept = this.hivMetadata.getHivViralLoadConcept();
+    Concept pregnant = this.hivMetadata.getPregnantConcept();
+    Concept pregnantBasedOnWeeks = this.hivMetadata.getNumberOfWeeksPregnant();
+    Concept pregnancyDueDate = this.hivMetadata.getPregnancyDueDate();
+    Program ptv = this.hivMetadata.getPtvEtvProgram();
+    Concept gestation = this.hivMetadata.getGestationConcept();
 
     // get female patients only
     Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);
@@ -170,7 +172,7 @@ public class PregnantCalculation extends AbstractPatientCalculation {
     for (PatientProgram patientProgram : patientPrograms) {
       if (location.equals(patientProgram.getLocation())
           && patientProgram.getDateEnrolled() != null
-          && isInPregnantViralLoadRange(lastVlDate, patientProgram.getDateEnrolled())) {
+          && this.isInPregnantViralLoadRange(lastVlDate, patientProgram.getDateEnrolled())) {
         return true;
       }
     }

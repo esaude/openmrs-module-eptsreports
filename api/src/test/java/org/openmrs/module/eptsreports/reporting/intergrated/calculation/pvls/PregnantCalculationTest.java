@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -17,7 +18,7 @@ public class PregnantCalculationTest extends BasePatientCalculationTest {
   @Override
   public PatientCalculation getCalculation() {
 
-    return new PregnantCalculation();
+    return Context.getRegisteredComponents(PregnantCalculation.class).get(0);
   }
 
   @Override
@@ -45,7 +46,7 @@ public class PregnantCalculationTest extends BasePatientCalculationTest {
 
   @Before
   public void initialise() throws Exception {
-    executeDataSet("breastfeedingAndPregnantCalculation-dataset.xml");
+    executeDataSet("pvlsTest.xml");
   }
 
   /*
@@ -56,9 +57,9 @@ public class PregnantCalculationTest extends BasePatientCalculationTest {
    *
    * End Date Period: 2019-05-30
    *
-   * Latest Viral Load Date: 2018-12-12
+   * Latest Viral Load Date: 2018-06-01
    *
-   * Patient State Start Date: 2018-08-09
+   * Patient Program Enrolled Date: 2018-05-30
    *
    * rule tested : PregnantCalculation.isPregnantInProgram(Date, SimpleResult)
    */
@@ -127,5 +128,23 @@ public class PregnantCalculationTest extends BasePatientCalculationTest {
     Assert.assertEquals(true, evaluatedResult.get(8).getValue());
 
     matchOtherResultsExcept(evaluatedResult, 7, 501);
+  }
+
+  /*
+   * Patient ID: 7
+   *
+   * rule tested: PregnantCalculation.isPregnantDueDate(Date, List<Obs>)
+   */
+  @Test
+  public void shouldEvaluatePatientMarkedAsPregnantByDueDate() {
+
+    setEvaluationContext(testsHelper.getDate("1999-02-01 00:00:00.0"));
+
+    CalculationResultMap evaluatedResult =
+        service.evaluate(getCohort(), getCalculation(), getEvaluationContext());
+
+    Assert.assertEquals(true, evaluatedResult.get(7).getValue());
+
+    matchOtherResultsExcept(evaluatedResult, 8, 501);
   }
 }

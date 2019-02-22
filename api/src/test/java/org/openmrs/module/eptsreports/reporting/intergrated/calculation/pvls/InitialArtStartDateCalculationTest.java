@@ -3,9 +3,7 @@ package org.openmrs.module.eptsreports.reporting.intergrated.calculation.pvls;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Assert;
-import org.junit.Test;
-import org.openmrs.Location;
+import org.junit.Before;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -18,12 +16,12 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
 
   @Override
   public PatientCalculation getCalculation() {
-    return new InitialArtStartDateCalculation();
+    return Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0);
   }
 
   @Override
   public Collection<Integer> getCohort() {
-    return Arrays.asList(new Integer[] {2, 6, 7, 8, 999, 432});
+    return Arrays.asList(new Integer[] {2, 6, 7, 8, 999, 432, 1777001});
   }
 
   @Override
@@ -68,58 +66,19 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
             calculation,
             evaluationContext));
     map.put(432, new SimpleResult(null, calculation, evaluationContext));
+    // initiated ART by hiv enrolment and also has first phamarcy encounter observation, ealrier is
+    // considerd
+    map.put(
+        1777001,
+        new SimpleResult(
+            new Timestamp(testsHelper.getDate("2018-06-21 00:00:00.0").getTime()),
+            calculation,
+            evaluationContext));
     return map;
   }
 
-  @Test
-  public void evaluateShouldConsiderLeastInitiationDateForMultipleEntryPoints() {
-    // initiating ART by starting ARV plan observation in addition to HIV
-    // enrollment
-    PatientCalculationContext evaluationContext = getEvaluationContext();
-    openmrsTestHelper.createBasicObs(
-        Context.getPatientService().getPatient(2),
-        Context.getConceptService().getConcept(7777002),
-        Context.getEncounterService().getEncounter(3),
-        testsHelper.getDate("2008-07-01 00:00:00.0"),
-        (Location) evaluationContext.getFromCache("location"),
-        Context.getConceptService().getConcept(7777003));
-    CalculationResultMap evaluatedResult =
-        service.evaluate(getCohort(), getCalculation(), evaluationContext);
-    Assert.assertEquals(
-        testsHelper.getDate("2008-07-01 00:00:00.0"), evaluatedResult.get(2).getValue());
-    // the rest should not be touched
-    matchOtherResultsExcept(evaluatedResult, 2);
-
-    // initiating ART by historical start date in addition to HIV enrollment
-    openmrsTestHelper.createBasicObs(
-        Context.getPatientService().getPatient(2),
-        Context.getConceptService().getConcept(7777005),
-        Context.getEncounterService().getEncounter(3),
-        testsHelper.getDate("2019-01-01 00:00:00.0"),
-        (Location) evaluationContext.getFromCache("location"),
-        testsHelper.getDate("2008-06-01 00:00:00.0"));
-    evaluatedResult = service.evaluate(getCohort(), getCalculation(), evaluationContext);
-    Assert.assertEquals(
-        testsHelper.getDate("2008-06-01 00:00:00.0"), evaluatedResult.get(2).getValue());
-    // the rest should not be touched
-    matchOtherResultsExcept(evaluatedResult, 2);
-
-    // initiating ART by historical start date in addition to HIV enrollment
-    openmrsTestHelper.createBasicObs(
-        Context.getPatientService().getPatient(2),
-        Context.getConceptService().getConcept(7777002),
-        Context.getEncounterService().getEncounter(3),
-        testsHelper.getDate("2019-01-02 00:00:00.0"),
-        (Location) evaluationContext.getFromCache("location"),
-        Context.getConceptService().getConcept(7777004));
-    evaluatedResult = service.evaluate(getCohort(), getCalculation(), evaluationContext);
-    Assert.assertEquals(
-        testsHelper.getDate("2008-06-01 00:00:00.0"), evaluatedResult.get(2).getValue());
-    // the rest should not be touched
-    matchOtherResultsExcept(evaluatedResult, 2);
-
-    // TODO does the results have to contain every patient from the cohort
-    // received with empty values!
-    Assert.assertEquals(getCohort().size(), evaluatedResult.size());
+  @Before
+  public void initialise() throws Exception {
+    executeDataSet("pvlsTest.xml");
   }
 }
