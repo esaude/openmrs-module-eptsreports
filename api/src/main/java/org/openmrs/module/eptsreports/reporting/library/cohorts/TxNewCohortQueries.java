@@ -130,11 +130,6 @@ public class TxNewCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getPatientsPregnantEnrolledOnART() {
-    CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
-    compositionCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    compositionCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    compositionCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
-
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("patientsPregnantEnrolledOnART");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -149,16 +144,7 @@ public class TxNewCohortQueries {
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getPtvEtvProgram().getProgramId()));
-
-    compositionCohortDefinition.addSearch(
-        "pregnant",
-        EptsReportUtils.map(
-            cd, "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
-    compositionCohortDefinition.addSearch(
-        "female", EptsReportUtils.map(genderCohorts.FemaleCohort(), ""));
-    compositionCohortDefinition.setCompositionString("pregnant AND female");
-
-    return compositionCohortDefinition;
+    return cd;
   }
 
   /**
