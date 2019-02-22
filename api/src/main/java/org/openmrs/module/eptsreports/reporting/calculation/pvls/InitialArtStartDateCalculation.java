@@ -25,6 +25,7 @@ import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
@@ -113,5 +114,13 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
       map.put(pId, new SimpleResult(requiredDate, this));
     }
     return map;
+  }
+
+  public static Date getArtStartDate(Integer patientId, CalculationResultMap artStartDates) {
+    CalculationResult calculationResult = artStartDates.get(patientId);
+    if (calculationResult != null) {
+      return (Date) calculationResult.getValue();
+    }
+    return null;
   }
 }

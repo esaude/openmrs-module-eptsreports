@@ -37,7 +37,7 @@ public class AgeOnArtStartDateCalculation extends AbstractPatientCalculation {
     Integer minAge = (Integer) parameterValues.get("minAge");
     Integer maxAge = (Integer) parameterValues.get("maxAge");
     for (Integer patientId : cohort) {
-      Date artStartDate = getArtStartDate(patientId, artStartDates);
+      Date artStartDate = InitialArtStartDateCalculation.getArtStartDate(patientId, artStartDates);
       Date birthDate = getBirthDate(patientId, birthDates);
       if (artStartDate != null && birthDate != null && birthDate.compareTo(artStartDate) <= 0) {
         int years =
@@ -71,14 +71,6 @@ public class AgeOnArtStartDateCalculation extends AbstractPatientCalculation {
     if (result != null) {
       Birthdate birthDate = (Birthdate) result.getValue();
       return birthDate.getBirthdate();
-    }
-    return null;
-  }
-
-  private Date getArtStartDate(Integer patientId, CalculationResultMap artStartDates) {
-    CalculationResult calculationResult = artStartDates.get(patientId);
-    if (calculationResult != null) {
-      return (Date) calculationResult.getValue();
     }
     return null;
   }

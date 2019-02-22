@@ -276,9 +276,16 @@ public class TxNewCohortQueries {
     txNewComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     txNewComposition.addParameter(new Parameter("location", "location", Location.class));
 
+    CohortDefinition artCohortDefinition;
+    if (ageCohort == null) {
+      artCohortDefinition = genericCohorts.getStartedArtOnPeriod();
+    } else {
+      artCohortDefinition = getTxNewUnionNumerator("all patients who started art", ageCohort);
+    }
+
     Mapped<CohortDefinition> startedART =
         Mapped.map(
-            getTxNewUnionNumerator("all patients who started art", ageCohort),
+            artCohortDefinition,
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}");
     Mapped<CohortDefinition> transferredIn =
         Mapped.map(
