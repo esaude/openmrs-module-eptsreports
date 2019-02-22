@@ -93,8 +93,9 @@ public class PregnantQueries {
       int adultSegEncounter,
       int etvProgram) {
 
-    return "Select 	p.patient_id"
-        + " from 	patient p"
+    return "Select     p.patient_id"
+        + " from patient p"
+        + " inner join person pe on p.patient_id=pe.person_id"
         + " inner join encounter e on p.patient_id=e.patient_id"
         + " inner join obs o on e.encounter_id=o.encounter_id"
         + " where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
@@ -105,22 +106,26 @@ public class PregnantQueries {
         + adultInitailEncounter
         + ","
         + adultSegEncounter
-        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location"
+        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location and pe.gender='F'"
         + " union"
-        + " Select 	p.patient_id"
-        + " from 	patient p inner join encounter e on p.patient_id=e.patient_id"
+        + " Select p.patient_id"
+        + " from patient p"
+        + " inner join person pe on p.patient_id=pe.person_id"
+        + " inner join encounter e on p.patient_id=e.patient_id"
         + " inner join obs o on e.encounter_id=o.encounter_id"
-        + " where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
+        + " where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
         + weeksPregnantConcept
         + " and"
         + " e.encounter_type in ("
         + adultInitailEncounter
         + ","
         + adultSegEncounter
-        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location"
+        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location and pe.gender='F' "
         + " union"
         + " Select p.patient_id"
-        + " from patient p inner join encounter e on p.patient_id=e.patient_id"
+        + " from patient p"
+        + " inner join person pe on p.patient_id=pe.person_id"
+        + " inner join encounter e on p.patient_id=e.patient_id"
         + " inner join obs o on e.encounter_id=o.encounter_id"
         + " where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
         + eddConcept
@@ -129,11 +134,12 @@ public class PregnantQueries {
         + adultInitailEncounter
         + ","
         + adultSegEncounter
-        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location"
+        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location and pe.gender='F'"
         + " union"
         + " select pp.patient_id from patient_program pp"
+        + " inner join person pe on pp.patient_id=pe.person_id"
         + " where pp.program_id="
         + etvProgram
-        + " and pp.voided=0 and pp.date_enrolled between :startDate and :endDate and pp.location_id=:location";
+        + " and pp.voided=0 and pp.date_enrolled between :startDate and :endDate and pp.location_id=:location and pe.gender='F'";
   }
 }
