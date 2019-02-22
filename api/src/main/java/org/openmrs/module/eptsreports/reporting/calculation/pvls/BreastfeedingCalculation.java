@@ -147,23 +147,16 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
   }
 
   private boolean isLactating(Date lastVlDate, Obs lactantObs) {
-
-    if (lactantObs != null
+    return lactantObs != null
         && this.isInBreastFeedingnViralLoadRange(
-            lastVlDate, lactantObs.getEncounter().getEncounterDatetime())) {
-      return true;
-    }
-    return false;
+            lastVlDate, lactantObs.getEncounter().getEncounterDatetime());
   }
 
   private boolean hasHIVStartDate(Date lastVlDate, Obs hivStartDateObs) {
 
-    if (hivStartDateObs != null
+    return hivStartDateObs != null
         && this.isInBreastFeedingnViralLoadRange(
-            lastVlDate, hivStartDateObs.getEncounter().getEncounterDatetime())) {
-      return true;
-    }
-    return false;
+            lastVlDate, hivStartDateObs.getEncounter().getEncounterDatetime());
   }
 
   private boolean isBreastFeedingInProgram(Date lastVlDate, List<PatientState> patientStateList) {
