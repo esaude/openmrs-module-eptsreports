@@ -63,6 +63,8 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap map = new CalculationResultMap();
     Location location = (Location) context.getFromCache("location");
 
+    boolean considerTransferredIn = getConsiderTransferredInParameter(parameterValues);
+
     Program treatmentProgram = hivMetadata.getARTProgram();
     Concept arvPlan = hivMetadata.getARVPlanConcept();
     Concept startDrugsConcept = hivMetadata.getstartDrugsConcept();
@@ -102,9 +104,11 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
       if (pharmacyEncounter != null) {
         enrollmentDates.add(pharmacyEncounter.getEncounterDatetime());
       }
-      Obs transferInObs = EptsCalculationUtils.obsResultForPatient(transferInMap, pId);
-      if (transferInObs != null) {
-        enrollmentDates.add(transferInObs.getObsDatetime());
+      if (considerTransferredIn) {
+        Obs transferInObs = EptsCalculationUtils.obsResultForPatient(transferInMap, pId);
+        if (transferInObs != null) {
+          enrollmentDates.add(transferInObs.getObsDatetime());
+        }
       }
       enrollmentDates.removeAll(Collections.singleton(null));
       if (enrollmentDates.size() > 0) {
@@ -114,6 +118,14 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
       map.put(pId, new SimpleResult(requiredDate, this));
     }
     return map;
+  }
+
+  private boolean getConsiderTransferredInParameter(Map<String, Object> parameterValues) {
+    Boolean considerTransferredIn = (Boolean) parameterValues.get("considerTransferredIn");
+    if (considerTransferredIn == null) {
+      considerTransferredIn = true;
+    }
+    return considerTransferredIn;
   }
 
   public static Date getArtStartDate(Integer patientId, CalculationResultMap artStartDates) {

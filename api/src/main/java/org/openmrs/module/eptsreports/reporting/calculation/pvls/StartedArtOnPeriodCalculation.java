@@ -39,6 +39,7 @@ public class StartedArtOnPeriodCalculation extends AbstractPatientCalculation {
         calculate(
             Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0),
             cohort,
+            parameterValues,
             context);
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
     Date onOrAfter = (Date) context.getFromCache("onOrAfter");

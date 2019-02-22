@@ -278,7 +278,7 @@ public class TxNewCohortQueries {
 
     CohortDefinition artCohortDefinition;
     if (ageCohort == null) {
-      artCohortDefinition = genericCohorts.getStartedArtOnPeriod();
+      artCohortDefinition = genericCohorts.getStartedArtOnPeriod(false);
     } else {
       artCohortDefinition = getTxNewUnionNumerator("all patients who started art", ageCohort);
     }

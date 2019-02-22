@@ -210,7 +210,7 @@ public class GenericCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getStartedArtOnPeriod() {
+  public CohortDefinition getStartedArtOnPeriod(boolean considerTransferredIn) {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
             Context.getRegisteredComponents(StartedArtOnPeriodCalculation.class).get(0));
@@ -218,6 +218,7 @@ public class GenericCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addCalculationParameter("considerTransferredIn", considerTransferredIn);
     return cd;
   }
 }
