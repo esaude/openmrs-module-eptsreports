@@ -303,24 +303,4 @@ public class TxNewCohortQueries {
     txNewComposition.setCompositionString("startedART NOT (transferredIn OR restartedTreatment)");
     return txNewComposition;
   }
-
-  /**
-   * @param minAge Minimum age
-   * @param maxAge Maximum age
-   * @return Patients with age in years between {@code minAge} and {@code maxAge} on ART start date.
-   */
-  public CohortDefinition createXtoYAgeOnArtStartDateCohort(
-      String name, Integer minAge, Integer maxAge) {
-    // add 1 to maxAge because in getTxNewUnionQueries '<' is used to compare to maxAge
-    Integer age = maxAge;
-    if (age != null) {
-      age++;
-    }
-    CohortDefinition ageCohort = ageCohortQueries.createXtoYAgeCohort("", minAge, age);
-    CohortDefinition cd = getTxNewCompositionCohort(name, ageCohort);
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-    return cd;
-  }
 }

@@ -32,9 +32,9 @@ public class AgeCohortQueriesTest {
   public void createXtoYAgeCohortShouldAgeCohortDefinitionWitOnlyMaxAge() {
     AgeCohortDefinition ageCohort =
         (AgeCohortDefinition)
-            ageCohortQueries.createXtoYAgeCohort("patients with age bellow 14", null, 14);
+            ageCohortQueries.createXtoYAgeCohort("patients with age bellow 14", 0, 13);
 
-    Assert.assertNull(ageCohort.getMinAge());
+    Assert.assertEquals(Integer.valueOf(0), ageCohort.getMinAge());
     Assert.assertEquals(Integer.valueOf(13), ageCohort.getMaxAge());
   }
 }
