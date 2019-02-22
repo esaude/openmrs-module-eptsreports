@@ -325,7 +325,7 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
-            this.getBreastfeedingWomenWhoAreNotPregnant(),
+            this.getPatientsWhoArePregnantAndNotBreastfeeding(),
             "endDate=${endDate},location=${location}"));
     cd.setCompositionString("suppression AND pregnant");
     return cd;
@@ -347,7 +347,7 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
-            this.getBreastfeedingWomenWhoAreNotPregnant(),
+            this.getPatientsWhoArePregnantAndNotBreastfeeding(),
             "endDate=${endDate},location=${location}"));
     cd.setCompositionString("results AND pregnant");
     return cd;
@@ -519,7 +519,7 @@ public class TxPvlsCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getBreastfeedingWomenWhoAreNotPregnant() {
+  public CohortDefinition getPatientsWhoArePregnantAndNotBreastfeeding() {
 
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Get pregnant and not breastfeeding");
