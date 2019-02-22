@@ -286,13 +286,6 @@ public class EptsCalculationUtils {
     return c.getTime();
   }
 
-  public static Date addDays(Date endDate, int days) {
-    Calendar c = Calendar.getInstance();
-    c.setTime(endDate);
-    c.add(Calendar.DATE, days);
-    return c.getTime();
-  }
-
   /**
    * Evaluates genders of each patient
    *
