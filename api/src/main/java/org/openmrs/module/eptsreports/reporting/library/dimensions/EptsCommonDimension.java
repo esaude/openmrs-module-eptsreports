@@ -16,6 +16,7 @@ import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri2MonthsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri4MonthsCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.EriCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
@@ -39,6 +40,8 @@ public class EptsCommonDimension {
   @Autowired private Eri4MonthsCohortQueries eri4MonthsCohortQueries;
 
   @Autowired private Eri2MonthsCohortQueries eri2MonthsCohortQueries;
+
+  @Autowired private EriCohortQueries eriCohortQueries;
 
   /**
    * Gender dimension
@@ -138,7 +141,7 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "IART",
         EptsReportUtils.map(
-            eri4MonthsCohortQueries.getPatientsWhoInitiatedArtLessTransferIns(),
+            eriCohortQueries.getAllPatientsWhoInitiatedArt(),
             "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
 
     dim.addCohortDefinition(
@@ -200,7 +203,7 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "IART",
         EptsReportUtils.map(
-            eri2MonthsCohortQueries.getAllPatientsWhoInitiatedArt(),
+            eriCohortQueries.getAllPatientsWhoInitiatedArt(),
             "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
     dim.addCohortDefinition(
         "DNPUD",
