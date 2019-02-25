@@ -1,7 +1,8 @@
-package org.openmrs.module.eptsreports.reporting.library.cohorts;
+package org.openmrs.module.eptsreports.reporting.unit.library.cohorts;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 
 public class AgeCohortQueriesTest {
