@@ -87,20 +87,20 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
         PatientProgram patientProgram = (PatientProgram) result.getValue();
         enrollmentDates.add(patientProgram.getDateEnrolled());
       }
-      Obs startDrugsObs = EptsCalculationUtils.obsResultForPatient(startDrugMap, pId);
+      Obs startDrugsObs = EptsCalculationUtils.resultForPatient(startDrugMap, pId);
       if (startDrugsObs != null) {
         enrollmentDates.add(startDrugsObs.getObsDatetime());
       }
-      Obs historicalDateObs = EptsCalculationUtils.obsResultForPatient(historicalMap, pId);
+      Obs historicalDateObs = EptsCalculationUtils.resultForPatient(historicalMap, pId);
       if (historicalDateObs != null) {
         enrollmentDates.add(historicalDateObs.getValueDatetime());
       }
       Encounter pharmacyEncounter =
-          EptsCalculationUtils.encounterResultForPatient(pharmacyEncounterMap, pId);
+          EptsCalculationUtils.resultForPatient(pharmacyEncounterMap, pId);
       if (pharmacyEncounter != null) {
         enrollmentDates.add(pharmacyEncounter.getEncounterDatetime());
       }
-      Obs transferInObs = EptsCalculationUtils.obsResultForPatient(transferInMap, pId);
+      Obs transferInObs = EptsCalculationUtils.resultForPatient(transferInMap, pId);
       if (transferInObs != null) {
         enrollmentDates.add(transferInObs.getObsDatetime());
       }
