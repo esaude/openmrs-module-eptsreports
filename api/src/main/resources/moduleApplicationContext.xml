@@ -55,8 +55,4 @@
             </list>
         </property>
     </bean>
-
-  <bean name="patientCalculationService"
-    class="org.openmrs.calculation.patient.PatientCalculationServiceImpl"/>
-
 </beans>
