@@ -107,15 +107,15 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
 
       Boolean isCandidate = false;
 
-      Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVl, pId);
+      Obs lastVlObs = EptsCalculationUtils.resultForPatient(lastVl, pId);
 
       if (lastVlObs != null && lastVlObs.getObsDatetime() != null) {
         Date lastVlDate = lastVlObs.getObsDatetime();
 
         ListResult patientResult = (ListResult) patientStateMap.get(pId);
 
-        Obs lactattingObs = EptsCalculationUtils.obsResultForPatient(lactatingMap, pId);
-        Obs criteriaHivObs = EptsCalculationUtils.obsResultForPatient(criteriaHivStartMap, pId);
+        Obs lactattingObs = EptsCalculationUtils.resultForPatient(lactatingMap, pId);
+        Obs criteriaHivObs = EptsCalculationUtils.resultForPatient(criteriaHivStartMap, pId);
         ListResult deliveryDateResult = (ListResult) deliveryDateMap.get(pId);
         List<Obs> deliveryDateObsList =
             EptsCalculationUtils.extractResultValues(deliveryDateResult);

@@ -104,7 +104,7 @@ public class PregnantCalculation extends AbstractPatientCalculation {
 
     for (Integer pId : femaleCohort) {
       Boolean isCandidate = false;
-      Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVl, pId);
+      Obs lastVlObs = EptsCalculationUtils.resultForPatient(lastVl, pId);
 
       if (lastVlObs != null && lastVlObs.getObsDatetime() != null) {
         Date lastVlDate = lastVlObs.getObsDatetime();
