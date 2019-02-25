@@ -38,13 +38,18 @@ import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PatientsOnRoutineEnum;
 import org.openmrs.module.reporting.common.TimeQualifier;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RoutineCalculation extends AbstractPatientCalculation {
 
-  @Autowired private HivMetadata hivMetadata;
+  private HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
+
+  private InitialArtStartDateCalculation artStartDateCalculation =
+      Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0);
+
+  private OnArtForMoreThanXmonthsCalcultion onArtForMoreThanXmonthsCalcultion =
+      Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0);
 
   /**
    * Patients on ART for the last X months with one VL result registered in the 12 month period
@@ -92,10 +97,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 
     // get the ART initiation date
     CalculationResultMap arvsInitiationDateMap =
-        calculate(
-            Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0),
-            cohort,
-            context);
+        calculate(artStartDateCalculation, cohort, context);
     CalculationResultMap lastVl =
         EptsCalculations.lastObs(
             Arrays.asList(labEncounterType, adultFollowup, childFollowup),
@@ -105,13 +107,11 @@ public class RoutineCalculation extends AbstractPatientCalculation {
             context.getNow(),
             cohort,
             context);
+
     // get patients who have been on ART for more than 3 months
     Set<Integer> onArtForMoreThan3Months =
         EptsCalculationUtils.patientsThatPass(
-            calculate(
-                Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0),
-                cohort,
-                context));
+            calculate(onArtForMoreThanXmonthsCalcultion, cohort, context));
 
     for (Integer pId : cohort) {
       boolean isOnRoutine = false;
