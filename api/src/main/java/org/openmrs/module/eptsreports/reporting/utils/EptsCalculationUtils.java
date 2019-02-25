@@ -24,7 +24,6 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.Months;
 import org.openmrs.Cohort;
-import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
@@ -144,6 +143,7 @@ public class EptsCalculationUtils {
    * @param calculationContext the calculation context
    * @return the calculation result
    */
+  @SuppressWarnings("rawtypes")
   protected static CalculationResult toCalculationResult(
       Object obj, PatientCalculation calculation, PatientCalculationContext calculationContext) {
     if (obj == null) {
@@ -170,36 +170,13 @@ public class EptsCalculationUtils {
    * @param patientId the patient id
    * @return the result value
    */
+  @SuppressWarnings("unchecked")
   public static <T> T resultForPatient(CalculationResultMap results, Integer patientId) {
     CalculationResult result = results.get(patientId);
     if (result != null && !result.isEmpty()) {
       return (T) result.getValue();
     }
     return null;
-  }
-
-  /**
-   * Convenience method to fetch a patient result as an obs TODO: refactor this since it is
-   * providing any extra functionality to resultForPatient
-   *
-   * @param results the calculation result map
-   * @param patientId the patient id
-   * @return the obs result
-   */
-  public static Obs obsResultForPatient(CalculationResultMap results, Integer patientId) {
-    return resultForPatient(results, patientId);
-  }
-
-  /**
-   * Convenience method to fetch a patient result as an encounter
-   *
-   * @param results the calculation result map
-   * @param patientId the patient id
-   * @return the encounter result
-   */
-  public static Encounter encounterResultForPatient(
-      CalculationResultMap results, Integer patientId) {
-    return resultForPatient(results, patientId);
   }
 
   /**
@@ -255,6 +232,7 @@ public class EptsCalculationUtils {
    * @param <T> the type of each value
    * @return the list of values
    */
+  @SuppressWarnings("unchecked")
   public static <T> List<T> extractResultValues(ListResult result) {
     List<T> values = new ArrayList<T>();
     if (result != null) {
@@ -279,9 +257,16 @@ public class EptsCalculationUtils {
     return OpenmrsUtil.compareWithNullAsLatest(d1, d2) >= 0 ? d2 : d1;
   }
 
-  public static Date addMonths(Date endDate, int months) {
+  /**
+   * Adds months to a date
+   *
+   * @param date, to add months to
+   * @param months, number of months to add to date
+   * @return new date with added months
+   */
+  public static Date addMonths(Date date, int months) {
     Calendar c = Calendar.getInstance();
-    c.setTime(endDate);
+    c.setTime(date);
     c.add(Calendar.MONTH, months);
     return c.getTime();
   }
