@@ -16,7 +16,7 @@
     <patient patient_id="90" creator="1" date_created="2006-01-18 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:57.0" voided="false" void_reason=""/>
    	<patient patient_id="91" creator="1" date_created="2006-01-18 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:57.0" voided="false" void_reason=""/>
    	  
-  	<patient_program patient_program_id="1" patient_id="2" program_id="1" location_id="1" date_enrolled="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 11:40:48.0" changed_by="1" date_changed="2008-08-18 12:29:29.0" voided="false" uuid="b75462a0-4c92-451e-b8bc-e98b38b76534"/>
+  	<patient_program patient_program_id="1" patient_id="2" program_id="9" location_id="1" date_enrolled="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 11:40:48.0" changed_by="1" date_changed="2008-08-18 12:29:29.0" voided="false" uuid="b75462a0-4c92-451e-b8bc-e98b38b76534"/>
   	<patient_program patient_program_id="28075" patient_id="501" program_id="8" date_enrolled="2018-05-30 00:00:00.0" creator="1" date_created="2019-03-02 10:26:40.0" voided="false" uuid="c7aa626e-d59f-4ca7-8ca9-dde329b99a62" location_id="1"/>
 	<patient_program patient_program_id="28076" patient_id="90" program_id="8" date_enrolled="2018-08-30 00:00:00.0" creator="1" date_created="2019-03-02 10:26:40.0" voided="false" uuid="e690b8c6-363d-11e9-a3d1-1390672f0572" location_id="1"/>
 	
