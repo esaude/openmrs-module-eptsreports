@@ -1,15 +1,13 @@
 /*
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * The contents of this file are subject to the OpenMRS Public License Version
+ * 1.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://license.openmrs.org
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
  *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS, LLC. All Rights Reserved.
  */
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
@@ -95,8 +93,9 @@ public class PregnantQueries {
       int adultSegEncounter,
       int etvProgram) {
 
-    return "Select 	p.patient_id"
-        + " from 	patient p"
+    return "Select     p.patient_id"
+        + " from patient p"
+        + " inner join person pe on p.patient_id=pe.person_id"
         + " inner join encounter e on p.patient_id=e.patient_id"
         + " inner join obs o on e.encounter_id=o.encounter_id"
         + " where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
@@ -107,22 +106,26 @@ public class PregnantQueries {
         + adultInitailEncounter
         + ","
         + adultSegEncounter
-        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location"
+        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location and pe.gender='F'"
         + " union"
-        + " Select 	p.patient_id"
-        + " from 	patient p inner join encounter e on p.patient_id=e.patient_id"
+        + " Select p.patient_id"
+        + " from patient p"
+        + " inner join person pe on p.patient_id=pe.person_id"
+        + " inner join encounter e on p.patient_id=e.patient_id"
         + " inner join obs o on e.encounter_id=o.encounter_id"
-        + " where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
+        + " where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
         + weeksPregnantConcept
         + " and"
         + " e.encounter_type in ("
         + adultInitailEncounter
         + ","
         + adultSegEncounter
-        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location"
+        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location and pe.gender='F' "
         + " union"
         + " Select p.patient_id"
-        + " from patient p inner join encounter e on p.patient_id=e.patient_id"
+        + " from patient p"
+        + " inner join person pe on p.patient_id=pe.person_id"
+        + " inner join encounter e on p.patient_id=e.patient_id"
         + " inner join obs o on e.encounter_id=o.encounter_id"
         + " where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
         + eddConcept
@@ -131,11 +134,12 @@ public class PregnantQueries {
         + adultInitailEncounter
         + ","
         + adultSegEncounter
-        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location"
+        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location and pe.gender='F'"
         + " union"
         + " select pp.patient_id from patient_program pp"
+        + " inner join person pe on pp.patient_id=pe.person_id"
         + " where pp.program_id="
         + etvProgram
-        + " and pp.voided=0 and pp.date_enrolled between :startDate and :endDate and pp.location_id=:location";
+        + " and pp.voided=0 and pp.date_enrolled between :startDate and :endDate and pp.location_id=:location and pe.gender='F'";
   }
 }
