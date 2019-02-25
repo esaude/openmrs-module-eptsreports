@@ -34,7 +34,7 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
 	}
 	
 	@Test
-	public void shouldBeTrueIfPatientIsWithingAgeBracket() {
+	public void shouldBeTrueIfPatientIsWithinAgeBracket() {
 		Map<String, Object> parameterValues = new HashMap<String, Object>();
 		parameterValues.put("minAge", 10);
 		parameterValues.put("maxAge", 14);
@@ -58,7 +58,7 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
 	}
 	
 	@Test
-	public void shouldBeFalseIfPatientIsWithingAgeBracket() {
+	public void shouldBeFalseIfPatientIsOutsideAgeBracket() {
 		Map<String, Object> parameterValues = new HashMap<String, Object>();
 		parameterValues.put("minAge", 11);
 		parameterValues.put("maxAge", 14);
@@ -119,7 +119,7 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
 		BooleanResult result = (BooleanResult) results.get(patientId);
 		Assert.assertNull(result);
 	}
-
+	
 	@Before
 	public void initialise() throws Exception {
 		executeDataSet("genericTest.xml");
