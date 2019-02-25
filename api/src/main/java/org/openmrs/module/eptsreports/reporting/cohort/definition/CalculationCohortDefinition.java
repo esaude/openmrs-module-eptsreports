@@ -21,9 +21,11 @@ import org.openmrs.Location;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyAndParameterCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /** Cohort definition based on a calculation */
-// @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
+@Caching(strategy = ConfigurationPropertyAndParameterCachingStrategy.class)
 public class CalculationCohortDefinition extends BaseCohortDefinition {
 
   @ConfigurationProperty(required = true, group = "calculation")
