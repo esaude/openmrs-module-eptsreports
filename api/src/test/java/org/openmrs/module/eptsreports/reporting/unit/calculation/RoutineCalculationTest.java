@@ -77,18 +77,6 @@ public class RoutineCalculationTest extends BaseContextMockTest {
     testsHelper = new TestsHelper();
   }
 
-  // TODO use getDate from test utils
-  public SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-
-  public Date getDate(String dateString) {
-    try {
-      return DATE_FORMAT.parse(dateString);
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-    return null;
-  }
-
   @Test
   public void
       evaluateShouldReturnTrueForAdultsAndChildrenWithVl12To15MonthsApartAndValueOfLessThan1000Copies() {
