@@ -1,4 +1,4 @@
-package org.openmrs.module.eptsreports.reporting.unit.calculation;
+package org.openmrs.module.eptsreports.reporting.intergrated.utils;
 
 import static org.hamcrest.Matchers.is;
 
@@ -15,7 +15,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-public class EptsCalculationsTest extends BaseModuleContextSensitiveTest {
+public class EptsCalculationUtilsTest extends BaseModuleContextSensitiveTest {
 
   private List<Integer> cohort = Arrays.asList(2, 6, 7, 8, 999);
 
@@ -23,7 +23,7 @@ public class EptsCalculationsTest extends BaseModuleContextSensitiveTest {
 
   /** Setup each test */
   @Before
-  public void setup() {
+  public void initialise() {
     context = Context.getService(PatientCalculationService.class).createCalculationContext();
     context.setNow(new Date());
   }
