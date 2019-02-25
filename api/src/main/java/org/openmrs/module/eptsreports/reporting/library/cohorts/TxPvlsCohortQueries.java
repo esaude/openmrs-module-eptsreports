@@ -14,7 +14,9 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.BreastfeedingCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForMoreThanXmonthsCalcultion;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.PregnantCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PatientsOnRoutineEnum;
@@ -31,8 +33,6 @@ import org.springframework.stereotype.Component;
 public class TxPvlsCohortQueries {
 
   @Autowired private HivCohortQueries hivCohortQueries;
-
-  @Autowired private TxNewCohortQueries txNewCohortQueries;
 
   /**
    * Patients who have NOT been on ART for 3 months based on the ART initiation date and date of
@@ -62,11 +62,12 @@ public class TxPvlsCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${endDate-12m},onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreBreastfeeding(), "onDate=${endDate},location=${location}"));
+
     cd.addSearch(
         "suppression",
         EptsReportUtils.map(
@@ -89,11 +90,12 @@ public class TxPvlsCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${endDate-12m},onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreBreastfeeding(), "onDate=${endDate},location=${location}"));
+
     cd.addSearch(
         "results",
         EptsReportUtils.map(
@@ -323,8 +325,8 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${endDate-12m},endDate=${endDate},location=${location}"));
+            this.getPatientsWhoArePregnantAndNotBreastfeeding(),
+            "endDate=${endDate},location=${location}"));
     cd.setCompositionString("suppression AND pregnant");
     return cd;
   }
@@ -345,8 +347,8 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${endDate-12m},endDate=${endDate},location=${location}"));
+            this.getPatientsWhoArePregnantAndNotBreastfeeding(),
+            "endDate=${endDate},location=${location}"));
     cd.setCompositionString("results AND pregnant");
     return cd;
   }
@@ -499,6 +501,52 @@ public class TxPvlsCohortQueries {
             getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
             "onDate=${endDate},location=${location}"));
     cd.setCompositionString("pregnant AND NOT routine");
+    return cd;
+  }
+
+  /**
+   * Get patients who are breastfeeding
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoAreBreastfeeding() {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            "breastfeeding",
+            Context.getRegisteredComponents(BreastfeedingCalculation.class).get(0));
+    cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    return cd;
+  }
+
+  public CohortDefinition getPatientsWhoArePregnantAndNotBreastfeeding() {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Get pregnant and not breastfeeding");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    String mappings = "onDate=${endDate},location=${location}";
+    cd.addSearch("pregnant", EptsReportUtils.map(this.getPatientsWhoArePregnantCohort(), mappings));
+    cd.addSearch(
+        "breastfeeding", EptsReportUtils.map(this.getPatientsWhoAreBreastfeeding(), mappings));
+
+    cd.setCompositionString("breastfeeding AND NOT pregnant");
+
+    return cd;
+  }
+
+  /**
+   * Get patients who are pregnant
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getPatientsWhoArePregnantCohort() {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            "pregnant", Context.getRegisteredComponents(PregnantCalculation.class).get(0));
+    cd.addParameter(new Parameter("onDate", "On Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
     return cd;
   }
 }

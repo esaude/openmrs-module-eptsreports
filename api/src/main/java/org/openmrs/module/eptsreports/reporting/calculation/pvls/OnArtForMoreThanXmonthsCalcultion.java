@@ -70,7 +70,7 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
     for (Integer ptId : cohort) {
       boolean isOnArtForMoreThan3Months = false;
       SimpleResult artStartDateResult = (SimpleResult) arvsInitiationDateMap.get(ptId);
-      Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVl, ptId);
+      Obs lastVlObs = EptsCalculationUtils.resultForPatient(lastVl, ptId);
       if (checkNotNull(artStartDateResult, lastVlObs)) {
         Date artStartDate = (Date) artStartDateResult.getValue();
         Date lastVlDate = lastVlObs.getObsDatetime();

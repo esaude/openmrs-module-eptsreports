@@ -1,15 +1,13 @@
 /*
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * The contents of this file are subject to the OpenMRS Public License Version
+ * 1.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://license.openmrs.org
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
  *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS, LLC. All Rights Reserved.
  */
 
 package org.openmrs.module.eptsreports.reporting.cohort.evaluator;
@@ -19,6 +17,7 @@ import org.openmrs.PatientProgram;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiProgramEnrollmentForPatientDefinition;
 import org.openmrs.module.reporting.common.ListMap;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.evaluator.PatientDataEvaluator;
@@ -51,7 +50,12 @@ public class JembiProgramEnrollmentForPatientEvaluator implements PatientDataEva
     q.whereEqual("patientProgram.program", def.getProgram());
     q.whereEqual("patientProgram.location", def.getLocation());
     q.whereEqual("patientProgram.voided", false);
-    q.orderAsc("patientProgram.dateEnrolled");
+
+    if (TimeQualifier.LAST == def.getWhichEnrollment()) {
+      q.orderDesc("patientProgram.dateEnrolled");
+    } else {
+      q.orderAsc("patientProgram.dateEnrolled");
+    }
 
     List<Object[]> queryResult = evaluationService.evaluateToList(q, context);
 
