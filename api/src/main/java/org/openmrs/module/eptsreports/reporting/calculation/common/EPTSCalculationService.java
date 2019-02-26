@@ -30,12 +30,14 @@ import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
+import org.springframework.stereotype.Component;
 
 /**
  * Utility class of common base calculations TODO: refactor needs to be merged with
  * EptsCalculationUtils
  */
-public class EPTSCalculationServie {
+@Component
+public class EPTSCalculationService {
 
   /**
    * Evaluates all obs of a given type of each patient TODO: refactor this to filter on patient id
@@ -46,7 +48,7 @@ public class EPTSCalculationServie {
    * @param context the calculation context
    * @return the obss in a calculation result map
    */
-  public static CalculationResultMap allObs(
+  public CalculationResultMap allObs(
       Concept concept, Collection<Integer> cohort, PatientCalculationContext context) {
     ObsForPersonDataDefinition def =
         new ObsForPersonDataDefinition(
@@ -63,7 +65,7 @@ public class EPTSCalculationServie {
    * @param context the calculation context
    * @return the obss in a calculation result map
    */
-  public static CalculationResultMap firstObs(
+  public CalculationResultMap firstObs(
       Concept concept, Collection<Integer> cohort, PatientCalculationContext context) {
     ObsForPersonDataDefinition def =
         new ObsForPersonDataDefinition(
@@ -81,7 +83,7 @@ public class EPTSCalculationServie {
    * @param context
    * @return
    */
-  public static CalculationResultMap getObs(
+  public CalculationResultMap getObs(
       Concept concept,
       Collection<Integer> cohort,
       List<Location> locationList,
@@ -115,7 +117,7 @@ public class EPTSCalculationServie {
    * @param context the calculation context
    * @return the obss in a calculation result map
    */
-  public static CalculationResultMap lastObs(
+  public CalculationResultMap lastObs(
       Concept concept, Collection<Integer> cohort, PatientCalculationContext context) {
     ObsForPersonDataDefinition def =
         new ObsForPersonDataDefinition(
@@ -134,7 +136,7 @@ public class EPTSCalculationServie {
    * @param context
    * @return
    */
-  public static CalculationResultMap allPatientStates(
+  public CalculationResultMap allPatientStates(
       Collection<Integer> cohort,
       Location location,
       ProgramWorkflowState programWorkflowState,
@@ -149,7 +151,7 @@ public class EPTSCalculationServie {
     return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
   }
 
-  public static CalculationResultMap allProgramEnrollment(
+  public CalculationResultMap allProgramEnrollment(
       Program program, Collection<Integer> cohort, PatientCalculationContext context) {
     ProgramEnrollmentsForPatientDataDefinition def =
         new ProgramEnrollmentsForPatientDataDefinition();
@@ -170,7 +172,7 @@ public class EPTSCalculationServie {
    * @param context the calculation context
    * @return the encounters in a calculation result map
    */
-  public static CalculationResultMap firstEncounter(
+  public CalculationResultMap firstEncounter(
       EncounterType encounterType,
       Collection<Integer> cohort,
       Location location,
@@ -187,7 +189,7 @@ public class EPTSCalculationServie {
     return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
   }
 
-  public static CalculationResultMap firstObs(
+  public CalculationResultMap firstObs(
       Concept question,
       Concept answer,
       Location location,
@@ -202,7 +204,7 @@ public class EPTSCalculationServie {
     return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
   }
 
-  public static CalculationResultMap firstPatientProgram(
+  public CalculationResultMap firstPatientProgram(
       Program program,
       Location location,
       Collection<Integer> cohort,
@@ -214,7 +216,7 @@ public class EPTSCalculationServie {
     return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
   }
 
-  public static CalculationResultMap lastObs(
+  public CalculationResultMap lastObs(
       List<EncounterType> encounterTypes,
       Concept concept,
       Location location,

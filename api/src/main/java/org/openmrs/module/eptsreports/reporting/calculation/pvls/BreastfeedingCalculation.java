@@ -17,7 +17,7 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
-import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationServie;
+import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +32,7 @@ import org.springframework.stereotype.Component;
 public class BreastfeedingCalculation extends AbstractPatientCalculation {
 
   @Autowired private HivMetadata hivMetadata;
+  @Autowired private EPTSCalculationService ePTSCalculationService;
 
   @Override
   public CalculationResultMap evaluate(
@@ -57,7 +58,7 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
     Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);
 
     CalculationResultMap lactatingMap =
-        EPTSCalculationServie.getObs(
+        ePTSCalculationService.getObs(
             breastfeedingConcept,
             femaleCohort,
             Arrays.asList(location),
@@ -67,7 +68,7 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
             context);
 
     CalculationResultMap criteriaHivStartMap =
-        EPTSCalculationServie.getObs(
+        ePTSCalculationService.getObs(
             criteriaForHivStart,
             femaleCohort,
             Arrays.asList(location),
@@ -77,7 +78,7 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
             context);
 
     CalculationResultMap deliveryDateMap =
-        EPTSCalculationServie.getObs(
+        ePTSCalculationService.getObs(
             priorDeliveryDate,
             femaleCohort,
             Arrays.asList(location),
@@ -87,14 +88,14 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
             context);
 
     CalculationResultMap patientStateMap =
-        EPTSCalculationServie.allPatientStates(
+        ePTSCalculationService.allPatientStates(
             femaleCohort,
             location,
             this.hivMetadata.getPatientIsBreastfeedingWorkflowState(),
             context);
 
     CalculationResultMap lastVl =
-        EPTSCalculationServie.lastObs(
+        ePTSCalculationService.lastObs(
             Arrays.asList(labEncounterType, adultFollowup, childFollowup),
             viralLoadConcept,
             location,
