@@ -34,6 +34,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -159,31 +160,35 @@ public class TxNewCohortQueries {
 		transferredFromOtherHealthFacility.addParameter(new Parameter("location", "location", Location.class));
 		return transferredFromOtherHealthFacility;
 	}
-	
-	/**
-	 * PATIENTS WITH UPDATED DATE OF DEPARTURE IN THE ART SERVICE Are patients with date of delivery
-	 * updated in the tarv service. Note that the 'Start Date' and 'End Date' parameters refer to the
-	 * date of delivery and not the date of registration (update)
-	 * 
-	 * @return CohortDefinition
-	 */
-	public CohortDefinition getPatientsWithUpdatedDepartureInART() {
-		DateObsCohortDefinition cd = new DateObsCohortDefinition();
-		cd.setName("patientsWithUpdatedDepartureInART");
-		cd.setQuestion(commonMetadata.getPriorDeliveryDateConcept());
-		cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
-		
-		List<EncounterType> encounterTypes = new ArrayList<EncounterType>();
-		encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
-		encounterTypes.add(hivMetadata.getARVAdultInitialEncounterType());
-		cd.setEncounterTypeList(encounterTypes);
-		
-		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-		cd.addParameter(new Parameter("location", "Location", Location.class));
-		
-		return cd;
-	}
+	    
+    /**
+     * PATIENTS WITH UPDATED DATE OF DEPARTURE IN THE ART SERVICE Are patients with date of delivery
+     * updated in the tarv service. Note that the 'Start Date' and 'End Date' parameters refer to the
+     * date of delivery and not the date of registration (update)
+     *
+     * @return CohortDefinition
+     */
+    public CohortDefinition getPatientsWithUpdatedDepartureInART() {
+        DateObsCohortDefinition cd = new DateObsCohortDefinition();
+        cd.setName("patientsWithUpdatedDepartureInART");
+        cd.setQuestion(commonMetadata.getPriorDeliveryDateConcept());
+        cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
+    
+        List<EncounterType> encounterTypes = new ArrayList<EncounterType>();
+        encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
+        encounterTypes.add(hivMetadata.getARVAdultInitialEncounterType());
+        cd.setEncounterTypeList(encounterTypes);
+    
+        cd.setOperator1(RangeComparator.GREATER_EQUAL);
+        cd.setOperator2(RangeComparator.LESS_EQUAL);
+    
+        cd.addParameter(new Parameter("value1", "After Date", Date.class));
+        cd.addParameter(new Parameter("value2", "Before Date", Date.class));
+    
+        cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    
+        return cd;
+    }
 	
 	/**
 	 * PREGNANCY ENROLLED IN THE ART SERVICE These are patients who are pregnant during the initiation
@@ -235,7 +240,7 @@ public class TxNewCohortQueries {
 		cd.addParameter(new Parameter("location", "location", Location.class));
 		
 		cd.addSearch("DATAPARTO", EptsReportUtils.map(getPatientsWithUpdatedDepartureInART(),
-		    "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+            "value1=${onOrAfter},value2=${onOrBefore},locationList=${location}"));
 		cd.addSearch("INICIOLACTANTE",
 		    EptsReportUtils.map(
 		        genericCohorts.hasCodedObs(hivMetadata.getCriteriaForArtStart(), BaseObsCohortDefinition.TimeModifier.FIRST,
