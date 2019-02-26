@@ -9,7 +9,7 @@
  *
  * Copyright (C) OpenMRS, LLC. All Rights Reserved.
  */
-package org.openmrs.module.eptsreports.reporting.calculation.pvls;
+package org.openmrs.module.eptsreports.reporting.calculation.generic;
 
 import java.util.ArrayList;
 import java.util.Collection;
