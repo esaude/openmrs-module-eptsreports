@@ -40,40 +40,6 @@ import org.springframework.stereotype.Component;
 public class EPTSCalculationService {
 
   /**
-   * Evaluates all obs of a given type of each patient TODO: refactor this to filter on patient id
-   * while fetching obs
-   *
-   * @param concept the obs' concept
-   * @param cohort the patient ids
-   * @param context the calculation context
-   * @return the obss in a calculation result map
-   */
-  public CalculationResultMap allObs(
-      Concept concept, Collection<Integer> cohort, PatientCalculationContext context) {
-    ObsForPersonDataDefinition def =
-        new ObsForPersonDataDefinition(
-            "all obs", TimeQualifier.ANY, concept, context.getNow(), null);
-    return EptsCalculationUtils.ensureEmptyListResults(
-        EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context), cohort);
-  }
-
-  /**
-   * Evaluates the first obs of a given type of each patient
-   *
-   * @param concept the obs' concept
-   * @param cohort the patient ids
-   * @param context the calculation context
-   * @return the obss in a calculation result map
-   */
-  public CalculationResultMap firstObs(
-      Concept concept, Collection<Integer> cohort, PatientCalculationContext context) {
-    ObsForPersonDataDefinition def =
-        new ObsForPersonDataDefinition(
-            "first obs", TimeQualifier.FIRST, concept, context.getNow(), null);
-    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
-  }
-
-  /**
    * Evaluate for obs based on the time modifier
    *
    * @param concept
@@ -106,22 +72,6 @@ public class EPTSCalculationService {
       def.setLocationList(locationList);
     }
 
-    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
-  }
-
-  /**
-   * Evaluates the last obs of a given type of each patient
-   *
-   * @param concept the obs' concept
-   * @param cohort the patient ids
-   * @param context the calculation context
-   * @return the obss in a calculation result map
-   */
-  public CalculationResultMap lastObs(
-      Concept concept, Collection<Integer> cohort, PatientCalculationContext context) {
-    ObsForPersonDataDefinition def =
-        new ObsForPersonDataDefinition(
-            "last obs", TimeQualifier.LAST, concept, context.getNow(), null);
     return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
   }
 
