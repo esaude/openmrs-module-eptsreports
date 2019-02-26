@@ -9,7 +9,7 @@
  *
  * Copyright (C) OpenMRS, LLC. All Rights Reserved.
  */
-package org.openmrs.module.eptsreports.reporting.calculation;
+package org.openmrs.module.eptsreports.reporting.calculation.common;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,6 +22,7 @@ import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiObsDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiPatientStateDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiProgramEnrollmentForPatientDefinition;
@@ -38,7 +39,7 @@ import org.openmrs.util.OpenmrsUtil;
  * Utility class of common base calculations TODO: refactor needs to be merged with
  * EptsCalculationUtils
  */
-public class EptsCalculations {
+public class EPTSCalculationServie {
 
   /**
    * Evaluates alive-ness of each patient

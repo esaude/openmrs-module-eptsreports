@@ -30,7 +30,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
+import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationServie;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -69,15 +69,16 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
     EncounterType encounterTypePharmacy = hivMetadata.getARVPharmaciaEncounterType();
 
     CalculationResultMap inProgramMap =
-        EptsCalculations.firstPatientProgram(treatmentProgram, location, cohort, context);
+        EPTSCalculationServie.firstPatientProgram(treatmentProgram, location, cohort, context);
     CalculationResultMap startDrugMap =
-        EptsCalculations.firstObs(arvPlan, startDrugsConcept, location, true, cohort, context);
+        EPTSCalculationServie.firstObs(arvPlan, startDrugsConcept, location, true, cohort, context);
     CalculationResultMap historicalMap =
-        EptsCalculations.firstObs(hostoricalStartConcept, null, location, false, cohort, context);
+        EPTSCalculationServie.firstObs(
+            hostoricalStartConcept, null, location, false, cohort, context);
     CalculationResultMap pharmacyEncounterMap =
-        EptsCalculations.firstEncounter(encounterTypePharmacy, cohort, location, context);
+        EPTSCalculationServie.firstEncounter(encounterTypePharmacy, cohort, location, context);
     CalculationResultMap transferInMap =
-        EptsCalculations.firstObs(arvPlan, transferInConcept, location, true, cohort, context);
+        EPTSCalculationServie.firstObs(arvPlan, transferInConcept, location, true, cohort, context);
 
     for (Integer pId : cohort) {
       Date requiredDate = null;

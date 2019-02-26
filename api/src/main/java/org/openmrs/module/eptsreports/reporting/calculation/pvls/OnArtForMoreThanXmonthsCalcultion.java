@@ -28,7 +28,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
-import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
+import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationServie;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -58,7 +58,7 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
             context);
     Date oneYearBefore = EptsCalculationUtils.addMonths(context.getNow(), -12);
     CalculationResultMap lastVl =
-        EptsCalculations.lastObs(
+        EPTSCalculationServie.lastObs(
             Arrays.asList(labEncounterType, adultFollowup, childFollowup),
             viralLoadConcept,
             location,

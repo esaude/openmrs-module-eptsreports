@@ -17,7 +17,7 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
-import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
+import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationServie;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +57,7 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
     Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);
 
     CalculationResultMap lactatingMap =
-        EptsCalculations.getObs(
+        EPTSCalculationServie.getObs(
             breastfeedingConcept,
             femaleCohort,
             Arrays.asList(location),
@@ -67,7 +67,7 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
             context);
 
     CalculationResultMap criteriaHivStartMap =
-        EptsCalculations.getObs(
+        EPTSCalculationServie.getObs(
             criteriaForHivStart,
             femaleCohort,
             Arrays.asList(location),
@@ -77,7 +77,7 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
             context);
 
     CalculationResultMap deliveryDateMap =
-        EptsCalculations.getObs(
+        EPTSCalculationServie.getObs(
             priorDeliveryDate,
             femaleCohort,
             Arrays.asList(location),
@@ -87,14 +87,14 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
             context);
 
     CalculationResultMap patientStateMap =
-        EptsCalculations.allPatientStates(
+        EPTSCalculationServie.allPatientStates(
             femaleCohort,
             location,
             this.hivMetadata.getPatientIsBreastfeedingWorkflowState(),
             context);
 
     CalculationResultMap lastVl =
-        EptsCalculations.lastObs(
+        EPTSCalculationServie.lastObs(
             Arrays.asList(labEncounterType, adultFollowup, childFollowup),
             viralLoadConcept,
             location,

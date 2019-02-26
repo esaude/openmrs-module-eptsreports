@@ -34,7 +34,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
-import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
+import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationServie;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PatientsOnRoutineEnum;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -71,7 +71,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 
     // lookups
     CalculationResultMap patientHavingVL =
-        EptsCalculations.getObs(
+        EPTSCalculationServie.getObs(
             viralLoadConcept,
             cohort,
             Arrays.asList(location),
@@ -81,7 +81,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
             context);
 
     CalculationResultMap changingRegimenLines =
-        EptsCalculations.getObs(
+        EPTSCalculationServie.getObs(
             regimeConcept,
             cohort,
             Arrays.asList(location),
@@ -97,7 +97,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
             cohort,
             context);
     CalculationResultMap lastVl =
-        EptsCalculations.lastObs(
+        EPTSCalculationServie.lastObs(
             Arrays.asList(labEncounterType, adultFollowup, childFollowup),
             viralLoadConcept,
             location,
