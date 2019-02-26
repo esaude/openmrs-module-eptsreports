@@ -22,51 +22,20 @@ import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiObsDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiPatientStateDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiProgramEnrollmentForPatientDefinition;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
-import org.openmrs.module.reporting.common.VitalStatus;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefinition;
-import org.openmrs.util.OpenmrsUtil;
 
 /**
  * Utility class of common base calculations TODO: refactor needs to be merged with
  * EptsCalculationUtils
  */
 public class EPTSCalculationServie {
-
-  /**
-   * Evaluates alive-ness of each patient
-   *
-   * @param cohort the patient ids
-   * @param context the calculation context
-   * @return the alive-nesses in a calculation result map
-   */
-  public static CalculationResultMap alive(
-      Collection<Integer> cohort, PatientCalculationContext context) {
-    VitalStatusDataDefinition def = new VitalStatusDataDefinition("alive");
-    CalculationResultMap vitals =
-        EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
-
-    CalculationResultMap ret = new CalculationResultMap();
-    for (int ptId : cohort) {
-      boolean alive = false;
-      if (vitals.get(ptId) != null) {
-        VitalStatus vs = (VitalStatus) vitals.get(ptId).getValue();
-        alive =
-            !vs.getDead()
-                || OpenmrsUtil.compareWithNullAsEarliest(vs.getDeathDate(), context.getNow()) > 0;
-      }
-      ret.put(ptId, new BooleanResult(alive, null, context));
-    }
-    return ret;
-  }
 
   /**
    * Evaluates all obs of a given type of each patient TODO: refactor this to filter on patient id
