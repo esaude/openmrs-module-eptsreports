@@ -29,7 +29,7 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
-  public Concept getstartDrugsConcept() {
+  public Concept getStartDrugsConcept() {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_START_DRUGS_CONCEPT_UUID);

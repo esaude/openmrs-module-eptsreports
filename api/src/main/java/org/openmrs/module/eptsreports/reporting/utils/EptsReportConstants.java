@@ -29,6 +29,12 @@ public final class EptsReportConstants {
   public static final String GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_PLAN_CONCEPT_UUID =
       "eptsreports.tuberculosisTreatmentPlanConceptUuid";
 
+  public static final String GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_PLAN_INICIAR_CONCEPT_UUID =
+      "eptsreports.tuberculosisTreatmentPlanIniciarConceptUuid";
+
+  public static final String GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_STARTDATE_CONCEPT_UUID =
+      "eptsreports.tuberculosisTreatmentStartDateConceptUuid";
+
   public static final String GLOBAL_PROPERTY_TRANSFER_FROM_OTHER_FACILITY_CONCEPT_UUID =
       "eptsreports.transferFromOtherFacilityConceptUuid";
 
@@ -131,6 +137,15 @@ public final class EptsReportConstants {
 
   public static final String GLOBAL_PROPERTY_HIV_CARE_PROGRAM_UUID =
       "eptsreports.hivCareProgramUuid";
+
+  public static final String GLOBAL_PROPERTY_TUBERCULOSIS_LIVRO_ENCOUNTER_TYPE_UUID =
+      "eptsreports.tbLivroEncounterTypeUuid";
+
+  public static final String GLOBAL_PROPERTY_TUBERCULOSIS_PROCESSO_ENCOUNTER_TYPE_UUID =
+      "eptsreports.tbProcessoEncounterTypeUuid";
+
+  public static final String GLOBAL_PROPERTY_TUBERCULOSIS_RASTREIO_ENCOUNTER_TYPE_UUID =
+      "eptsreports.tbRastreioEncounterTypeUuid";
 
   // Enumeration
   public enum PatientsOnRoutineEnum {

@@ -63,7 +63,7 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
     Location location = (Location) context.getFromCache("location");
     Program treatmentProgram = hivMetadata.getARTProgram();
     Concept arvPlan = hivMetadata.getARVPlanConcept();
-    Concept startDrugsConcept = hivMetadata.getstartDrugsConcept();
+    Concept startDrugsConcept = hivMetadata.getStartDrugsConcept();
     Concept transferInConcept = hivMetadata.getTransferFromOtherFacilityConcept();
     Concept hostoricalStartConcept = commonMetadata.gethistoricalDrugStartDateConcept();
     EncounterType encounterTypePharmacy = hivMetadata.getARVPharmaciaEncounterType();

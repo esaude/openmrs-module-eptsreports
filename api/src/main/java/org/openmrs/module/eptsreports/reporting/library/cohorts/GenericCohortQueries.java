@@ -14,6 +14,7 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +34,10 @@ import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.Ti
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -71,6 +74,28 @@ public class GenericCohortQueries {
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
     cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
+    return cd;
+  }
+
+  public CohortDefinition hasCodedObs(
+      Concept question,
+      TimeModifier timeModifier,
+      SetComparator operator,
+      List<EncounterType> encounterTypes,
+      List<Concept> values,
+      Map<String, Object> parameterValues) {
+    CodedObsCohortDefinition cd =
+        (CodedObsCohortDefinition)
+            hasCodedObs(question, timeModifier, operator, encounterTypes, values);
+    if (parameterValues != null && parameterValues.containsKey("startDate")) {
+      cd.setOnOrAfter((Date) parameterValues.get("startDate"));
+    }
+    if (parameterValues != null && parameterValues.containsKey("endDate")) {
+      cd.setOnOrBefore((Date) parameterValues.get("endDate"));
+    }
+    if (parameterValues != null && parameterValues.containsKey("location")) {
+      cd.setLocationList((Arrays.asList((Location) parameterValues.get("location"))));
+    }
     return cd;
   }
 
@@ -206,6 +231,40 @@ public class GenericCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addCalculationParameter("minAge", minAge);
     cd.addCalculationParameter("maxAge", maxAge);
+    return cd;
+  }
+
+  /**
+   * Generic Date Observation cohort
+   *
+   * @param question the question concept
+   * @return the cohort definition
+   */
+  public CohortDefinition hasDateObs(
+      Concept question,
+      TimeModifier timeModifier,
+      List<EncounterType> encounterTypes,
+      RangeComparator operator1,
+      RangeComparator operator2,
+      Map<String, Object> parameterValues) {
+    DateObsCohortDefinition cd = new DateObsCohortDefinition();
+    cd.setName("has obs between dates");
+    cd.setQuestion(question);
+    cd.setTimeModifier(timeModifier);
+    cd.setEncounterTypeList(encounterTypes);
+    if (parameterValues != null && parameterValues.containsKey("startDate")) {
+      cd.setValue1((Date) parameterValues.get("startDate"));
+    }
+    cd.setOperator1(operator1);
+    if (parameterValues != null && parameterValues.containsKey("endDate")) {
+      cd.setValue2((Date) parameterValues.get("endDate"));
+    }
+    cd.setOperator2(operator2);
+
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+
     return cd;
   }
 }

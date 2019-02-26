@@ -242,7 +242,7 @@ public class TxNewCohortQueries {
         "arvPediatriaSeguimentoEncounter",
         hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId());
     queryParameters.put("arvPlanConcept", hivMetadata.getARVPlanConcept().getConceptId());
-    queryParameters.put("startDrugsConcept", hivMetadata.getstartDrugsConcept().getConceptId());
+    queryParameters.put("startDrugsConcept", hivMetadata.getStartDrugsConcept().getConceptId());
     queryParameters.put(
         "historicalDrugsConcept", hivMetadata.gethistoricalDrugStartDateConcept().getConceptId());
 

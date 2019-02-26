@@ -14,6 +14,7 @@
 package org.openmrs.module.eptsreports.metadata;
 
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
@@ -23,11 +24,28 @@ import org.springframework.stereotype.Component;
 public class TbMetadata extends CommonMetadata {
 
   // Concepts
-  public Concept getTUBERCULOSIS_TREATMENT_PLANConcept() {
+  public Concept getTBTreatmentPlanConcept() {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty(
                 EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_PLAN_CONCEPT_UUID);
+    return getConcept(uuid);
+  }
+
+  public Concept getTBTreatmentPlanIniciarConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(
+                EptsReportConstants
+                    .GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_PLAN_INICIAR_CONCEPT_UUID);
+    return getConcept(uuid);
+  }
+
+  public Concept getTBDrugTreatmentStartDate() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(
+                EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_STARTDATE_CONCEPT_UUID);
     return getConcept(uuid);
   }
 
@@ -37,5 +55,30 @@ public class TbMetadata extends CommonMetadata {
         Context.getAdministrationService()
             .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_TB_PROGRAM_UUID);
     return getProgram(uuid);
+  }
+
+  // encounter types
+  public EncounterType getTBLivroEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(
+                EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_LIVRO_ENCOUNTER_TYPE_UUID);
+    return getEncounterType(uuid);
+  }
+
+  public EncounterType getTBProcessoEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(
+                EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_PROCESSO_ENCOUNTER_TYPE_UUID);
+    return getEncounterType(uuid);
+  }
+
+  public EncounterType getTBRastreioEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(
+                EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_RASTREIO_ENCOUNTER_TYPE_UUID);
+    return getEncounterType(uuid);
   }
 }
