@@ -38,9 +38,10 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
 		Map<String, Object> parameterValues = new HashMap<String, Object>();
 		parameterValues.put("minAge", 10);
 		parameterValues.put("maxAge", 14);
-		CalculationResultMap results = service.evaluate(Arrays.asList(1777001), getCalculation(), parameterValues,
+		final int patientId = 1777001;
+		CalculationResultMap results = service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues,
 		    getEvaluationContext());
-		BooleanResult result = (BooleanResult) results.get(1777001);
+		BooleanResult result = (BooleanResult) results.get(patientId);
 		Assert.assertNotNull(result);
 		Assert.assertEquals(Boolean.TRUE, result.getValue());
 	}
