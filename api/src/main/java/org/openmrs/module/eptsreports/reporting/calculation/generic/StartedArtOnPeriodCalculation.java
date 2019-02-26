@@ -14,7 +14,6 @@ package org.openmrs.module.eptsreports.reporting.calculation.generic;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
-
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -29,30 +28,39 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class StartedArtOnPeriodCalculation extends AbstractPatientCalculation {
-	
-	private static final String ON_OR_AFTER = "onOrAfter";
-	
-	private static final String ON_OR_BEFORE = "onOrBefore";
-	
-	@Override
-	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
-	        PatientCalculationContext context) {
-		CalculationResultMap map = new CalculationResultMap();
-		CalculationResultMap artStartDates = calculate(
-		    Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0), cohort, parameterValues, context);
-		Date onOrBefore = (Date) context.getFromCache(ON_OR_BEFORE);
-		Date onOrAfter = (Date) context.getFromCache(ON_OR_AFTER);
-		if (onOrBefore != null && onOrAfter != null) {
-			for (Integer patientId : cohort) {
-				Date artStartDate = InitialArtStartDateCalculation.getArtStartDate(patientId, artStartDates);
-				if (artStartDate != null) {
-					boolean withinPeriod = artStartDate.compareTo(onOrAfter) >= 0 && artStartDate.compareTo(onOrBefore) <= 0;
-					map.put(patientId, new BooleanResult(withinPeriod, this));
-				}
-			}
-			return map;
-		} else {
-			throw new IllegalArgumentException(String.format("Parameters %s and %s must be set", ON_OR_AFTER, ON_OR_BEFORE));
-		}
-	}
+
+  private static final String ON_OR_AFTER = "onOrAfter";
+
+  private static final String ON_OR_BEFORE = "onOrBefore";
+
+  @Override
+  public CalculationResultMap evaluate(
+      Collection<Integer> cohort,
+      Map<String, Object> parameterValues,
+      PatientCalculationContext context) {
+    CalculationResultMap map = new CalculationResultMap();
+    CalculationResultMap artStartDates =
+        calculate(
+            Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0),
+            cohort,
+            parameterValues,
+            context);
+    Date onOrBefore = (Date) context.getFromCache(ON_OR_BEFORE);
+    Date onOrAfter = (Date) context.getFromCache(ON_OR_AFTER);
+    if (onOrBefore != null && onOrAfter != null) {
+      for (Integer patientId : cohort) {
+        Date artStartDate =
+            InitialArtStartDateCalculation.getArtStartDate(patientId, artStartDates);
+        if (artStartDate != null) {
+          boolean withinPeriod =
+              artStartDate.compareTo(onOrAfter) >= 0 && artStartDate.compareTo(onOrBefore) <= 0;
+          map.put(patientId, new BooleanResult(withinPeriod, this));
+        }
+      }
+      return map;
+    } else {
+      throw new IllegalArgumentException(
+          String.format("Parameters %s and %s must be set", ON_OR_AFTER, ON_OR_BEFORE));
+    }
+  }
 }
