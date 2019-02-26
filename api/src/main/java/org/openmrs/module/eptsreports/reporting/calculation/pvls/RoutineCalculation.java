@@ -123,7 +123,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
       boolean isOnRoutine = false;
       Date artInitiationDate = null;
       SimpleResult artStartDateResult = (SimpleResult) arvsInitiationDateMap.get(pId);
-      Obs lastVlObs = EptsCalculationUtils.obsResultForPatient(lastVl, pId);
+      Obs lastVlObs = EptsCalculationUtils.resultForPatient(lastVl, pId);
 
       if (artStartDateResult != null) {
         artInitiationDate = (Date) artStartDateResult.getValue();
@@ -181,7 +181,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
       CalculationResultMap changingRegimenLines, Integer pId, Obs lastVlObs, List<Obs> vLoadList) {
     boolean isOnRoutine = false;
 
-    Obs obs = EptsCalculationUtils.obsResultForPatient(changingRegimenLines, pId);
+    Obs obs = EptsCalculationUtils.resultForPatient(changingRegimenLines, pId);
 
     Date latestVlDate = lastVlObs.getObsDatetime();
     if (obs != null && latestVlDate != null) {

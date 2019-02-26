@@ -1,30 +1,29 @@
 /*
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * The contents of this file are subject to the OpenMRS Public License Version
+ * 1.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://license.openmrs.org
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
  *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS, LLC. All Rights Reserved.
  */
 package org.openmrs.module.eptsreports.reporting.calculation;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Program;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiObsDefinition;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiPatientStateDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiProgramEnrollmentForPatientDefinition;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -35,7 +34,10 @@ import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefin
 import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefinition;
 import org.openmrs.util.OpenmrsUtil;
 
-/** Utility class of common base calculations */
+/**
+ * Utility class of common base calculations TODO: refactor needs to be merged with
+ * EptsCalculationUtils
+ */
 public class EptsCalculations {
 
   /**
@@ -152,25 +154,42 @@ public class EptsCalculations {
   }
 
   /**
-   * Evaluates the first program enrollment of the specified program
+   * Evaluates the last patient state for the specified programWorkflowState
    *
-   * @param program the program
-   * @param cohort the patient ids
-   * @param context the calculation context
-   * @return the enrollments in a calculation result map
+   * @param cohort
+   * @param location
+   * @param startDate
+   * @param endDate
+   * @param programWorkflowState
+   * @param context
+   * @return
    */
-  public static CalculationResultMap firstProgramEnrollment(
+  public static CalculationResultMap allPatientStates(
+      Collection<Integer> cohort,
+      Location location,
+      ProgramWorkflowState programWorkflowState,
+      PatientCalculationContext context) {
+
+    JembiPatientStateDefinition def = new JembiPatientStateDefinition();
+    def.setLocation(location);
+    def.setStartedOnOrBefore(context.getNow());
+    def.setStates(Arrays.asList(programWorkflowState));
+    def.setWhich(TimeQualifier.ANY);
+
+    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
+  }
+
+  public static CalculationResultMap allProgramEnrollment(
       Program program, Collection<Integer> cohort, PatientCalculationContext context) {
     ProgramEnrollmentsForPatientDataDefinition def =
         new ProgramEnrollmentsForPatientDataDefinition();
-    def.setName("first in " + program.getName());
-    def.setWhichEnrollment(TimeQualifier.FIRST);
+
+    def.setName("All in " + program.getName());
+    def.setWhichEnrollment(TimeQualifier.ANY);
     def.setProgram(program);
     def.setEnrolledOnOrBefore(context.getNow());
-    CalculationResultMap results =
-        EptsCalculationUtils.evaluateWithReporting(
-            def, cohort, new HashMap<String, Object>(), null, context);
-    return EptsCalculationUtils.ensureEmptyListResults(results, cohort);
+
+    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
   }
 
   /**

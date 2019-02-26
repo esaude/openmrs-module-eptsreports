@@ -1,15 +1,13 @@
 /*
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * The contents of this file are subject to the OpenMRS Public License Version
+ * 1.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at http://license.openmrs.org
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ * the specific language governing rights and limitations under the License.
  *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS, LLC. All Rights Reserved.
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
@@ -69,6 +67,46 @@ public class TxPvlsDataset extends BaseDataSet {
             mappings),
         "");
 
+    dsd.addColumn(
+        "PVLS",
+        "Pregnant and has VL suppression",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Pregnant and VLS",
+                EptsReportUtils.map(
+                    txPvls.getPregnantWomenWithViralLoadSuppressionNumerator(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "PVLR",
+        "Pregnant and has VL results",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Pregnant and VLR",
+                EptsReportUtils.map(
+                    txPvls.getPregnantWomenWithViralLoadResultsDenominator(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "BVLS",
+        "Breastfeeding and has VL suppression",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Breastfeeding and VLS",
+                EptsReportUtils.map(
+                    txPvls.getBreastfeedingWomenWhoHaveViralSuppression(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "BVLR",
+        "Breastfeeding and has VL results",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Breastfeeding and VLR",
+                EptsReportUtils.map(
+                    txPvls.getBreastfeedingWomenWhoHaveViralLoadResults(), mappings)),
+            mappings),
+        "");
     dsd.addColumn(
         "0D",
         "Total patients with Viral load - Denominator",
@@ -176,7 +214,7 @@ public class TxPvlsDataset extends BaseDataSet {
                     txPvls.getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren(),
                     mappings)),
             mappings),
-        childrenColumns()); // //// Numerator NOT documented
+        childrenColumns()); ////// Numerator NOT documented
     addRow(
         dsd,
         "3NND",
@@ -202,7 +240,7 @@ public class TxPvlsDataset extends BaseDataSet {
                     txPvls.getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren(),
                     mappings)),
             mappings),
-        getColumnsForAdults()); // // Numerator NOT documented
+        getColumnsForAdults()); //// Numerator NOT documented
     addRow(
         dsd,
         "4NND",
@@ -230,7 +268,8 @@ public class TxPvlsDataset extends BaseDataSet {
                     txPvls.getPatientsWithViralLoadREsultsAndOnRoutineForChildrenAndAdults(),
                     mappings)),
             mappings),
-        childrenColumns()); // /// Denominator NOT documented
+        childrenColumns()); ///// Denominator NOT
+    ///// documented
     addRow(
         dsd,
         "3DND",
@@ -242,7 +281,7 @@ public class TxPvlsDataset extends BaseDataSet {
                     txPvls.getPatientsWithViralLoadREsultsAndNotDocumenetdForChildrenAndAdults(),
                     mappings)),
             mappings),
-        childrenColumns()); // /// Denominator routine for adults
+        childrenColumns()); ///// Denominator routine for adults
     addRow(
         dsd,
         "4DR",
@@ -254,7 +293,7 @@ public class TxPvlsDataset extends BaseDataSet {
                     txPvls.getPatientsWithViralLoadREsultsAndOnRoutineForChildrenAndAdults(),
                     mappings)),
             mappings),
-        getColumnsForAdults()); // // denominator NOT documented
+        getColumnsForAdults()); //// denominator NOT documented
     addRow(
         dsd,
         "4DND",
