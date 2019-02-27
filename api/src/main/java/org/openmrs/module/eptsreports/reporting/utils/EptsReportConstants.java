@@ -29,9 +29,6 @@ public final class EptsReportConstants {
   public static final String GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_PLAN_CONCEPT_UUID =
       "eptsreports.tuberculosisTreatmentPlanConceptUuid";
 
-  public static final String GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_PLAN_INICIAR_CONCEPT_UUID =
-      "eptsreports.tuberculosisTreatmentPlanIniciarConceptUuid";
-
   public static final String GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_STARTDATE_CONCEPT_UUID =
       "eptsreports.tuberculosisTreatmentStartDateConceptUuid";
 

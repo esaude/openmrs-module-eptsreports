@@ -14,24 +14,20 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
-import org.openmrs.module.reporting.ReportingConstants;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxTBDataset;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupMERSemiAnnualReport extends EptsDataExportManager {
+public class SetupMERSemiAnnualReport extends SetupMERQuarterly {
 
-  @Autowired private GenericCohortQueries genericCohortQueries;
+  @Autowired private TxTBDataset txTBDataset;
 
   @Override
   public String getVersion() {
@@ -60,15 +56,10 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
 
   @Override
   public ReportDefinition constructReportDefinition() {
-    ReportDefinition reportDefinition = new ReportDefinition();
-    reportDefinition.setUuid(getUuid());
-    reportDefinition.setName(getName());
-    reportDefinition.setDescription(getDescription());
-    reportDefinition.setParameters(getParameters());
-    // add a base cohort here to help in calculations running
-    reportDefinition.setBaseCohortDefinition(
-        EptsReportUtils.map(
-            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+    ReportDefinition reportDefinition = super.constructReportDefinition();
+
+    reportDefinition.addDataSetDefinition(
+        "T", Mapped.mapStraightThrough(txTBDataset.constructTxTBDataset()));
 
     return reportDefinition;
   }
@@ -92,14 +83,5 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
     }
 
     return Arrays.asList(reportDesign);
-  }
-
-  @Override
-  public List<Parameter> getParameters() {
-    List<Parameter> parameters = new ArrayList<Parameter>();
-    parameters.add(ReportingConstants.START_DATE_PARAMETER);
-    parameters.add(ReportingConstants.END_DATE_PARAMETER);
-    parameters.add(ReportingConstants.LOCATION_PARAMETER);
-    return parameters;
   }
 }

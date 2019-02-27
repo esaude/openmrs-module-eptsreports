@@ -32,15 +32,6 @@ public class TbMetadata extends CommonMetadata {
     return getConcept(uuid);
   }
 
-  public Concept getTBTreatmentPlanIniciarConcept() {
-    String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty(
-                EptsReportConstants
-                    .GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_PLAN_INICIAR_CONCEPT_UUID);
-    return getConcept(uuid);
-  }
-
   public Concept getTBDrugTreatmentStartDate() {
     String uuid =
         Context.getAdministrationService()

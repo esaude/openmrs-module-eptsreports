@@ -46,7 +46,7 @@ public class TXTBQueries {
         + historicalDrugsStartDateConceptId
         + " AND o.value_datetime IS NOT NULL AND o.value_datetime <= :endDate AND e.location_id = :location "
         + "GROUP BY p.patient_id UNION SELECT pg.patient_id, date_enrolled data_inicio FROM patient p "
-        + "INNER JOIN patient_program pg ON p.patient_i d = pg.patient_id WHERE pg.voided = 0 AND p.voided = 0 "
+        + "INNER JOIN patient_program pg ON p.patient_id = pg.patient_id WHERE pg.voided = 0 AND p.voided = 0 "
         + "AND program_id = "
         + ARTProgramId
         + " AND date_enrolled <= :endDate AND location_id = :location "
@@ -56,5 +56,93 @@ public class TXTBQueries {
         + " "
         + "AND e.voided = 0 AND e.encounter_datetime <= :endDate AND e.location_id = :location GROUP BY p.patient_id) inicio_real "
         + "GROUP BY patient_id)inicio WHERE data_inicio BETWEEN :startDate AND :endDate ";
+  }
+
+  // exited by either transfer out, treatment suspension, treatment abandoned
+  // or death of patient
+  public static String patientsWhoCameOutOfARVTreatmentProgram(
+      Integer ARTProgramId,
+      Integer transferOutStateId,
+      Integer treatmentSuspensionStateId,
+      Integer treatmentAbandonedStateId,
+      Integer deathStateId) {
+    return "SELECT pg.patient_id FROM patient p  "
+        + "INNER JOIN patient_program pg  ON p.patient_id = pg.patient_id  "
+        + "INNER JOIN patient_state ps  ON pg.patient_program_id = ps.patient_program_id "
+        + "WHERE pg.voided = 0  AND ps.voided = 0  AND p.voided = 0  AND pg.program_id = "
+        + ARTProgramId
+        + " AND ps.state IN ( "
+        + transferOutStateId
+        + ", "
+        + treatmentSuspensionStateId
+        + ", "
+        + treatmentAbandonedStateId
+        + ", "
+        + deathStateId
+        + " )  AND ps.end_date IS NULL  AND ps.start_date <= :endDate  "
+        + "AND location_id = :location ";
+  }
+
+  /** ABANDONO NÃO NOTIFICADO - TARV SqlCohortDefinition#a1145104-132f-460b-b85e-ea265916625b */
+  public static String abandonedWithNoNotification(
+      Integer programId,
+      Integer returnVisitDateConceptId,
+      Integer returnVisitDateForARVDrugConceptId,
+      Integer pharmacyEncounterTypeId,
+      Integer artAdultFollowupEncounterTypeId,
+      Integer artPedInicioEncounterTypeId,
+      Integer transferOutStateId,
+      Integer treatmentSuspensionStateId,
+      Integer treatmentAbandonedStateId,
+      Integer deathStateId) {
+    return "SELECT patient_id FROM (SELECT p.patient_id, Max(encounter_datetime) encounter_datetime FROM patient p "
+        + "INNER JOIN encounter e ON e.patient_id = p.patient_id WHERE p.voided = 0 AND e.voided = 0 "
+        + "AND e.encounter_type = "
+        + pharmacyEncounterTypeId
+        + " AND e.location_id = :location AND e.encounter_datetime <= :endDate GROUP BY p.patient_id) max_frida "
+        + "INNER JOIN obs o ON o.person_id = max_frida.patient_id WHERE max_frida.encounter_datetime = o.obs_datetime AND o.voided = 0 "
+        + "AND o.concept_id = "
+        + returnVisitDateForARVDrugConceptId
+        + " AND o.location_id = :location AND patient_id "
+        + "NOT IN (SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id = pg.patient_id "
+        + "INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id WHERE pg.voided = 0 AND ps.voided = 0 "
+        + "AND p.voided = 0 AND pg.program_id = "
+        + programId
+        + " AND ps.state IN ( "
+        + transferOutStateId
+        + ", "
+        + treatmentSuspensionStateId
+        + ", "
+        + treatmentAbandonedStateId
+        + ", "
+        + deathStateId
+        + ") AND ps.end_date IS NULL AND ps.start_date <= :endDate "
+        + "AND location_id = :location) AND patient_id NOT IN(SELECT patient_id FROM "
+        + "(SELECT p.patient_id, Max(encounter_datetime) encounter_datetime FROM patient p "
+        + "INNER JOIN encounter e ON e.patient_id = p.patient_id WHERE p.voided = 0 AND e.voided = 0 "
+        + "AND e.encounter_type IN ( "
+        + artAdultFollowupEncounterTypeId
+        + ", "
+        + artPedInicioEncounterTypeId
+        + " ) AND e.location_id = :location AND e.encounter_datetime <= :endDate GROUP BY p.patient_id) max_mov "
+        + "INNER JOIN obs o ON o.person_id = max_mov.patient_id WHERE max_mov.encounter_datetime = o.obs_datetime AND o.voided = 0 "
+        + "AND o.concept_id = "
+        + returnVisitDateConceptId
+        + " AND o.location_id = :location AND Datediff(:endDate, o.value_datetime) <= 60) AND patient_id "
+        + "NOT IN(SELECT abandono.patient_id FROM (SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id = pg.patient_id "
+        + "INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id WHERE pg.voided = 0 AND ps.voided = 0 AND p.voided = 0 AND pg.program_id = 2 "
+        + "AND ps.state = "
+        + treatmentAbandonedStateId
+        + " AND ps.end_date IS NULL AND ps.start_date <= :endDate AND location_id = :location)abandono "
+        + "INNER JOIN (SELECT max_frida.patient_id, max_frida.encounter_datetime, o.value_datetime FROM "
+        + "(SELECT p.patient_id, Max(encounter_datetime) encounter_datetime FROM patient p "
+        + "INNER JOIN encounter e ON e.patient_id = p.patient_id WHERE p.voided = 0 AND e.voided = 0 AND e.encounter_type = "
+        + pharmacyEncounterTypeId
+        + " AND e.location_id = :location "
+        + "AND e.encounter_datetime <= :endDate GROUP BY p.patient_id) max_frida INNER JOIN obs o ON o.person_id = max_frida.patient_id "
+        + "WHERE max_frida.encounter_datetime = o.obs_datetime AND o.voided = 0 AND o.concept_id = "
+        + returnVisitDateForARVDrugConceptId
+        + " AND o.location_id = :location) ultimo_fila "
+        + "ON abandono.patient_id = ultimo_fila.patient_id WHERE Datediff(:endDate, ultimo_fila.value_datetime) < 60) AND Datediff(:endDate, o.value_datetime) >= 60; ";
   }
 }
