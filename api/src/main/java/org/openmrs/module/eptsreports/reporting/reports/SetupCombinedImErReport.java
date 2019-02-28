@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.Eri2MonthsDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.Eri4MonthsDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
@@ -29,7 +32,13 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
 	private Eri2MonthsDataset eri2MonthsDataset;
 	
 	@Autowired
-	private Eri4MonthsDataset eri4MonthsDataset;
+  private Eri4MonthsDataset eri4MonthsDataset;
+  
+  @Autowired
+	private TxNewDataset txNewDataset;
+	
+	@Autowired
+	private TxCurrDataset txCurrDataset;
 	
 	@Override
 	public String getExcelDesignUuid() {
@@ -57,7 +66,11 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
 		rd.setUuid(getUuid());
 		rd.setName(getName());
 		rd.setDescription(getDescription());
-		rd.setParameters(getParameters());
+    rd.setParameters(getParameters());
+    
+    rd.addDataSetDefinition("N", Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
+
+		rd.addDataSetDefinition("C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
 		
 		rd.addDataSetDefinition("ERI2", Mapped.mapStraightThrough(eri2MonthsDataset.constructEri2MonthsDatset()));
 		
