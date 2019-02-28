@@ -47,19 +47,6 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
   }
 
   @Test
-  public void shouldBeNullResultIfPatientHasNotStartedArt() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
-    final int patientId = 10;
-    parameterValues.put("minAge", patientId);
-    parameterValues.put("maxAge", 14);
-    CalculationResultMap results =
-        service.evaluate(
-            Arrays.asList(patientId), getCalculation(), parameterValues, getEvaluationContext());
-    BooleanResult result = (BooleanResult) results.get(patientId);
-    Assert.assertNull(result);
-  }
-
-  @Test
   public void shouldBeFalseIfPatientIsOutsideAgeBracket() {
     Map<String, Object> parameterValues = new HashMap<String, Object>();
     parameterValues.put("minAge", 11);
