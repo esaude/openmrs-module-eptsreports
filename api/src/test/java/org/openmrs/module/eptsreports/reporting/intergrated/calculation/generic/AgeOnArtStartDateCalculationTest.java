@@ -90,16 +90,17 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
   }
 
   @Test
-  public void shouldBeNullIfPatientStartedArtBeforeWasBorn() {
+  public void shouldConsiderPatientWithZeroYearIfHeStartedArtBeforeWasBorn() {
     Map<String, Object> parameterValues = new HashMap<String, Object>();
-    parameterValues.put("minAge", 10);
-    parameterValues.put("maxAge", 14);
+    parameterValues.put("minAge", 0);
+    parameterValues.put("maxAge", 0);
     final int patientId = 1777002;
     CalculationResultMap results =
         service.evaluate(
             Arrays.asList(patientId), getCalculation(), parameterValues, getEvaluationContext());
     BooleanResult result = (BooleanResult) results.get(patientId);
-    Assert.assertNull(result);
+    Assert.assertNotNull(result);
+    Assert.assertEquals(Boolean.TRUE, result.getValue());
   }
 
   @Test

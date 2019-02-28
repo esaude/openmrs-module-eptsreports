@@ -44,9 +44,14 @@ public class AgeOnArtStartDateCalculation extends AbstractPatientCalculation {
         Date artStartDate =
             InitialArtStartDateCalculation.getArtStartDate(patientId, artStartDates);
         Date birthDate = getBirthDate(patientId, birthDates);
-        if (artStartDate != null && birthDate != null && birthDate.compareTo(artStartDate) <= 0) {
-          int years =
-              Years.yearsIn(new Interval(birthDate.getTime(), artStartDate.getTime())).getYears();
+        if (artStartDate != null && birthDate != null) {
+          // is considered with zero years old if started art before
+          // was born so that is consistent with current behaviour
+          int years = 0;
+          if (birthDate.compareTo(artStartDate) <= 0) {
+            years =
+                Years.yearsIn(new Interval(birthDate.getTime(), artStartDate.getTime())).getYears();
+          }
           map.put(
               patientId,
               new BooleanResult(isMinAgeOk(minAge, years) && isMaxAgeOk(maxAge, years), this));
