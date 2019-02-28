@@ -30,7 +30,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
+import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -46,6 +46,8 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
   @Autowired private HivMetadata hivMetadata;
 
   @Autowired private CommonMetadata commonMetadata;
+
+  @Autowired private EPTSCalculationService ePTSCalculationService;
 
   /**
    * @should return null for patients who have not started ART
@@ -69,15 +71,18 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
     EncounterType encounterTypePharmacy = hivMetadata.getARVPharmaciaEncounterType();
 
     CalculationResultMap inProgramMap =
-        EptsCalculations.firstPatientProgram(treatmentProgram, location, cohort, context);
+        ePTSCalculationService.firstPatientProgram(treatmentProgram, location, cohort, context);
     CalculationResultMap startDrugMap =
-        EptsCalculations.firstObs(arvPlan, startDrugsConcept, location, true, cohort, context);
+        ePTSCalculationService.firstObs(
+            arvPlan, startDrugsConcept, location, true, cohort, context);
     CalculationResultMap historicalMap =
-        EptsCalculations.firstObs(hostoricalStartConcept, null, location, false, cohort, context);
+        ePTSCalculationService.firstObs(
+            hostoricalStartConcept, null, location, false, cohort, context);
     CalculationResultMap pharmacyEncounterMap =
-        EptsCalculations.firstEncounter(encounterTypePharmacy, cohort, location, context);
+        ePTSCalculationService.firstEncounter(encounterTypePharmacy, cohort, location, context);
     CalculationResultMap transferInMap =
-        EptsCalculations.firstObs(arvPlan, transferInConcept, location, true, cohort, context);
+        ePTSCalculationService.firstObs(
+            arvPlan, transferInConcept, location, true, cohort, context);
 
     for (Integer pId : cohort) {
       Date requiredDate = null;
