@@ -199,7 +199,8 @@ public class GenericCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getAgeOnArtStartDate(Integer minAge, Integer maxAge) {
+  public CohortDefinition getAgeOnArtStartDate(
+      Integer minAge, Integer maxAge, boolean considerPatientThatStartedBeforeWasBorn) {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
             Context.getRegisteredComponents(AgeOnArtStartDateCalculation.class).get(0));
@@ -207,7 +208,13 @@ public class GenericCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addCalculationParameter("minAge", minAge);
     cd.addCalculationParameter("maxAge", maxAge);
+    cd.addCalculationParameter(
+        "considerPatientThatStartedBeforeWasBorn", considerPatientThatStartedBeforeWasBorn);
     return cd;
+  }
+
+  public CohortDefinition getAgeOnArtStartDate(Integer minAge, Integer maxAge) {
+    return getAgeOnArtStartDate(minAge, maxAge, false);
   }
 
   public CohortDefinition getStartedArtOnPeriod(boolean considerTransferredIn) {

@@ -81,6 +81,7 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
     Map<String, Object> parameterValues = new HashMap<String, Object>();
     parameterValues.put("minAge", 0);
     parameterValues.put("maxAge", 0);
+    parameterValues.put("considerPatientThatStartedBeforeWasBorn", true);
     final int patientId = 1777002;
     CalculationResultMap results =
         service.evaluate(
@@ -88,6 +89,33 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
     BooleanResult result = (BooleanResult) results.get(patientId);
     Assert.assertNotNull(result);
     Assert.assertEquals(Boolean.TRUE, result.getValue());
+  }
+
+  @Test
+  public void shouldBeNullIfPatientStartedArtBeforeWasBornIfParameterNotSet() {
+    Map<String, Object> parameterValues = new HashMap<String, Object>();
+    parameterValues.put("minAge", 0);
+    parameterValues.put("maxAge", 0);
+    final int patientId = 1777002;
+    CalculationResultMap results =
+        service.evaluate(
+            Arrays.asList(patientId), getCalculation(), parameterValues, getEvaluationContext());
+    BooleanResult result = (BooleanResult) results.get(patientId);
+    Assert.assertNull(result);
+  }
+
+  @Test
+  public void shouldBeNullIfPatientStartedArtBeforeWasBornIfParameterSetToFalse() {
+    Map<String, Object> parameterValues = new HashMap<String, Object>();
+    parameterValues.put("minAge", 0);
+    parameterValues.put("maxAge", 0);
+    parameterValues.put("considerPatientThatStartedBeforeWasBorn", false);
+    final int patientId = 1777002;
+    CalculationResultMap results =
+        service.evaluate(
+            Arrays.asList(patientId), getCalculation(), parameterValues, getEvaluationContext());
+    BooleanResult result = (BooleanResult) results.get(patientId);
+    Assert.assertNull(result);
   }
 
   @Test

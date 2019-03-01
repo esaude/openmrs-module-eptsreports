@@ -39,22 +39,28 @@ public class AgeOnArtStartDateCalculation extends AbstractPatientCalculation {
             new BirthdateDataDefinition(), cohort, null, null, context);
     Integer minAge = (Integer) parameterValues.get(MIN_AGE);
     Integer maxAge = (Integer) parameterValues.get(MAX_AGE);
+    Boolean considerPatientThatStartedBeforeWasBorn =
+        (Boolean) parameterValues.get("considerPatientThatStartedBeforeWasBorn");
+    if (considerPatientThatStartedBeforeWasBorn == null) {
+      considerPatientThatStartedBeforeWasBorn = false;
+    }
     if (minAge != null && maxAge != null) {
       for (Integer patientId : cohort) {
         Date artStartDate =
             InitialArtStartDateCalculation.getArtStartDate(patientId, artStartDates);
         Date birthDate = getBirthDate(patientId, birthDates);
         if (artStartDate != null && birthDate != null) {
-          // is considered with zero years old if started art before
-          // was born so that is consistent with current behaviour
-          int years = 0;
-          if (birthDate.compareTo(artStartDate) <= 0) {
-            years =
+          final boolean datesConsistent = birthDate.compareTo(artStartDate) <= 0;
+          if (datesConsistent) {
+            int years =
                 Years.yearsIn(new Interval(birthDate.getTime(), artStartDate.getTime())).getYears();
+            map.put(
+                patientId,
+                new BooleanResult(isMinAgeOk(minAge, years) && isMaxAgeOk(maxAge, years), this));
+          } else if (considerPatientThatStartedBeforeWasBorn) {
+            map.put(
+                patientId, new BooleanResult(isMinAgeOk(minAge, 0) && isMaxAgeOk(maxAge, 0), this));
           }
-          map.put(
-              patientId,
-              new BooleanResult(isMinAgeOk(minAge, years) && isMaxAgeOk(maxAge, years), this));
         }
       }
       return map;
