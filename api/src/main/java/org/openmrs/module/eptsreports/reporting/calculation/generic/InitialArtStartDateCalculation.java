@@ -9,7 +9,7 @@
  *
  * Copyright (C) OpenMRS, LLC. All Rights Reserved.
  */
-package org.openmrs.module.eptsreports.reporting.calculation.pvls;
+package org.openmrs.module.eptsreports.reporting.calculation.generic;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +25,7 @@ import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
@@ -63,6 +64,9 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 
     CalculationResultMap map = new CalculationResultMap();
     Location location = (Location) context.getFromCache("location");
+
+    boolean considerTransferredIn = getConsiderTransferredInParameter(parameterValues);
+
     Program treatmentProgram = hivMetadata.getARTProgram();
     Concept arvPlan = hivMetadata.getARVPlanConcept();
     Concept startDrugsConcept = hivMetadata.getstartDrugsConcept();
@@ -105,9 +109,11 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
       if (pharmacyEncounter != null) {
         enrollmentDates.add(pharmacyEncounter.getEncounterDatetime());
       }
-      Obs transferInObs = EptsCalculationUtils.resultForPatient(transferInMap, pId);
-      if (transferInObs != null) {
-        enrollmentDates.add(transferInObs.getObsDatetime());
+      if (considerTransferredIn) {
+        Obs transferInObs = EptsCalculationUtils.resultForPatient(transferInMap, pId);
+        if (transferInObs != null) {
+          enrollmentDates.add(transferInObs.getObsDatetime());
+        }
       }
       enrollmentDates.removeAll(Collections.singleton(null));
       if (enrollmentDates.size() > 0) {
@@ -117,5 +123,21 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
       map.put(pId, new SimpleResult(requiredDate, this));
     }
     return map;
+  }
+
+  private boolean getConsiderTransferredInParameter(Map<String, Object> parameterValues) {
+    Boolean considerTransferredIn = (Boolean) parameterValues.get("considerTransferredIn");
+    if (considerTransferredIn == null) {
+      considerTransferredIn = true;
+    }
+    return considerTransferredIn;
+  }
+
+  public static Date getArtStartDate(Integer patientId, CalculationResultMap artStartDates) {
+    CalculationResult calculationResult = artStartDates.get(patientId);
+    if (calculationResult != null) {
+      return (Date) calculationResult.getValue();
+    }
+    return null;
   }
 }
