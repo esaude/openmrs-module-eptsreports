@@ -57,14 +57,87 @@ public class TxTBDataset extends BaseDataSet {
             EptsReportUtils.map(txTbCohortQueries.notifiedTbPatientsOnARTService(), mappings));
     dataSetDefinition.addColumn(
         "TXB",
-        "TX_TB_NUM: Notified TB On ART",
+        "TX_TB: Notified TB On ART",
         EptsReportUtils.map(notifiedTbPatientsOnARTService, mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "TXB_NUM",
+        "TX_TB: Numerator",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "getNotifiedTBPatientsAtARVService",
+                EptsReportUtils.map(
+                    txTbCohortQueries.getNotifiedTBPatientsAtARVService(), mappings)),
+            mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "TXB_NUM_NEW",
+        "TX_TB: Numerator new",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "notifiedTbPatientsOnARVNewStarting",
+                EptsReportUtils.map(
+                    txTbCohortQueries.notifiedTbPatientsOnARVNewStarting(), mappings)),
+            mappings),
         "");
     addRow(
         dataSetDefinition,
-        "TXBD",
-        "TX_TB_NUM - disaggregated",
+        "TXB_NUM",
+        "TXB_NUM - disaggregated",
         EptsReportUtils.map(notifiedTbPatientsOnARTService, mappings),
+        dissagregations());
+
+    CohortIndicator screenedTbNegative =
+        eptsGeneralIndicator.getIndicator(
+            "patientsWhoScreenTbNegative",
+            EptsReportUtils.map(txTbCohortQueries.patientsWhoScreenTbNegative(), mappings));
+    dataSetDefinition.addColumn(
+        "TXB_DEN", "TX_TB: Denominator", EptsReportUtils.map(screenedTbNegative, mappings), "");
+    dataSetDefinition.addColumn(
+        "TXB_DEN_POS",
+        "TX_TB: Denominator - Screened Positive",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "patientsOnARTWhoScreenedTBPositiveForAPeriod",
+                EptsReportUtils.map(
+                    txTbCohortQueries.patientsOnARTWhoScreenedTBPositiveForAPeriod(), mappings)),
+            mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "TXB_DEN_NEG",
+        "TX_TB: Denominator - Screened Negative",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "patientsOnARTWhoScreenedTBNegativeForAPeriod",
+                EptsReportUtils.map(
+                    txTbCohortQueries.patientsOnARTWhoScreenedTBNegativeForAPeriod(), mappings)),
+            mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "TXB_DEN_POS_NEW",
+        "TX_TB: Denominator - Newly Screened Positive",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "patientsWithPositiveTBTrialNotTransferredOut",
+                EptsReportUtils.map(
+                    txTbCohortQueries.patientsWithPositiveTBTrialNotTransferredOut(), mappings)),
+            mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "TXB_DEN_NEG_NEW",
+        "TX_TB: Denominator - Newly Screened Negative",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "patientsWithNegativeTBTrialNotTransferredOut",
+                EptsReportUtils.map(
+                    txTbCohortQueries.patientsWithNegativeTBTrialNotTransferredOut(), mappings)),
+            mappings),
+        "");
+    addRow(
+        dataSetDefinition,
+        "TXB_DEN",
+        "TXB_DEN - disaggregated",
+        EptsReportUtils.map(screenedTbNegative, mappings),
         dissagregations());
 
     return dataSetDefinition;

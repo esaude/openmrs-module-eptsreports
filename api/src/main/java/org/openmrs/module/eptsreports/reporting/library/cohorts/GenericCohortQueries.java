@@ -14,7 +14,6 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -76,28 +75,6 @@ public class GenericCohortQueries {
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
     cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
-    return cd;
-  }
-
-  public CohortDefinition hasCodedObs(
-      Concept question,
-      TimeModifier timeModifier,
-      SetComparator operator,
-      List<EncounterType> encounterTypes,
-      List<Concept> values,
-      Map<String, Object> parameterValues) {
-    CodedObsCohortDefinition cd =
-        (CodedObsCohortDefinition)
-            hasCodedObs(question, timeModifier, operator, encounterTypes, values);
-    if (parameterValues != null && parameterValues.containsKey("startDate")) {
-      cd.setOnOrAfter((Date) parameterValues.get("startDate"));
-    }
-    if (parameterValues != null && parameterValues.containsKey("endDate")) {
-      cd.setOnOrBefore((Date) parameterValues.get("endDate"));
-    }
-    if (parameterValues != null && parameterValues.containsKey("location")) {
-      cd.setLocationList((Arrays.asList((Location) parameterValues.get("location"))));
-    }
     return cd;
   }
 

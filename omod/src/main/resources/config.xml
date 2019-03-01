@@ -373,6 +373,16 @@
 		<defaultValue>f8c5d365-7636-4449-9acd-c83c4fd2ea01</defaultValue>
 		<description>TDF_3TC_LPV</description>
 	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.tbScreeningConceptUuid</property>
+		<defaultValue>ea1851dc-151b-4c1e-b763-5df48082159d</defaultValue>
+		<description>Concept uuid for SCREENING FOR TB</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.noConceptUuid</property>
+		<defaultValue>e1d81c70-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>Concept uuid for NO</description>
+	</globalProperty>
 
 	<!-- 2nd line ARV Concepts -->
 

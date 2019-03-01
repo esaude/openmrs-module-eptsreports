@@ -23,6 +23,8 @@ public final class EptsReportConstants {
 
   public static final String GLOBAL_PROPERTY_YES_CONCEPT_UUID = "eptsreports.yesConceptUuid";
 
+  public static final String GLOBAL_PROPERTY_NO_CONCEPT_UUID = "eptsreports.noConceptUuid";
+
   public static final String GLOBAL_PROPERTY_ARV_PLAN_CONCEPT_UUID =
       "eptsreports.arvPlanConceptUuid";
 
@@ -143,6 +145,9 @@ public final class EptsReportConstants {
 
   public static final String GLOBAL_PROPERTY_TUBERCULOSIS_RASTREIO_ENCOUNTER_TYPE_UUID =
       "eptsreports.tbRastreioEncounterTypeUuid";
+
+  public static final String GLOBAL_PROPERTY_TUBERCULOSIS_SCREENING_CONCEPT_ID =
+      "eptsreports.tbScreeningConceptUuid";
 
   // Enumeration
   public enum PatientsOnRoutineEnum {

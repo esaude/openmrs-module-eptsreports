@@ -72,4 +72,12 @@ public class TbMetadata extends CommonMetadata {
                 EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_RASTREIO_ENCOUNTER_TYPE_UUID);
     return getEncounterType(uuid);
   }
+
+  public Concept getTbScreeningConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(
+                EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_SCREENING_CONCEPT_ID);
+    return getConcept(uuid);
+  }
 }

@@ -17,7 +17,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TXTBCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxTBDataset;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -28,6 +31,7 @@ import org.springframework.stereotype.Component;
 public class SetupMERSemiAnnualReport extends SetupMERQuarterly {
 
   @Autowired private TxTBDataset txTBDataset;
+  @Autowired private TXTBCohortQueries txtBCohortQueries;
 
   @Override
   public String getVersion() {
@@ -58,6 +62,10 @@ public class SetupMERSemiAnnualReport extends SetupMERQuarterly {
   public ReportDefinition constructReportDefinition() {
     ReportDefinition reportDefinition = super.constructReportDefinition();
 
+    reportDefinition.setBaseCohortDefinition(
+        EptsReportUtils.map(
+            txtBCohortQueries.getPatientsEnrolledInARTCareAndOnTreatment(),
+            "endDate=${endDate},location=${location}"));
     reportDefinition.addDataSetDefinition(
         "T", Mapped.mapStraightThrough(txTBDataset.constructTxTBDataset()));
 
@@ -79,7 +87,7 @@ public class SetupMERSemiAnnualReport extends SetupMERQuarterly {
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new ReportingException(e.getMessage());
     }
 
     return Arrays.asList(reportDesign);
