@@ -51,6 +51,15 @@ public class TxTBDataset extends BaseDataSet {
         "query", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
     dataSetDefinition.addDimension(
         "age", EptsReportUtils.map(eptsCommonDimension.age(ageDimensionCohort), mappings));
+    addTXTBNumerator(mappings, dataSetDefinition);
+
+    addTXTBDenominator(mappings, dataSetDefinition);
+
+    return dataSetDefinition;
+  }
+
+  private void addTXTBNumerator(
+      String mappings, CohortIndicatorDataSetDefinition dataSetDefinition) {
     CohortIndicator notifiedTbPatientsOnARTService =
         eptsGeneralIndicator.getIndicator(
             "notifiedTbPatientsOnARTService",
@@ -86,7 +95,10 @@ public class TxTBDataset extends BaseDataSet {
         "TXB_NUM - disaggregated",
         EptsReportUtils.map(notifiedTbPatientsOnARTService, mappings),
         dissagregations());
+  }
 
+  private void addTXTBDenominator(
+      String mappings, CohortIndicatorDataSetDefinition dataSetDefinition) {
     CohortIndicator screenedTbNegative =
         eptsGeneralIndicator.getIndicator(
             "patientsWhoScreenTbNegative",
@@ -139,8 +151,6 @@ public class TxTBDataset extends BaseDataSet {
         "TXB_DEN - disaggregated",
         EptsReportUtils.map(screenedTbNegative, mappings),
         dissagregations());
-
-    return dataSetDefinition;
   }
 
   private List<ColumnParameters> dissagregations() {

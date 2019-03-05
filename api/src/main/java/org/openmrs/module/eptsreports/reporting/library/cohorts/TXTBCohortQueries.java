@@ -9,7 +9,6 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.TXTBQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.TXTBQueries.AbandonedWithoutNotificationParams;
-import org.openmrs.module.eptsreports.reporting.library.queries.TXTBQueries.EnrolledInARTCareAndOnTreatmentParams;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
@@ -248,17 +247,24 @@ public class TXTBCohortQueries {
         genericCohortQueries.generalSql(
             "NAONOTIFICADO",
             TXTBQueries.abandonedWithNoNotification(
-                new AbandonedWithoutNotificationParams(
-                    artProgram.getProgramId(),
-                    hivMetadata.getReturnVisitDateConcept().getConceptId(),
-                    hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
-                    hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                    hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
-                    hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState().getId(),
-                    hivMetadata.getSuspendedTreatmentWorkflowState().getId(),
-                    hivMetadata.getAbandonedWorkflowState().getId(),
-                    hivMetadata.getPatientHasDiedWorkflowState().getId())));
+                new AbandonedWithoutNotificationParams()
+                    .programId(artProgram.getProgramId())
+                    .returnVisitDateConceptId(
+                        hivMetadata.getReturnVisitDateConcept().getConceptId())
+                    .returnVisitDateForARVDrugConceptId(
+                        hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId())
+                    .pharmacyEncounterTypeId(
+                        hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())
+                    .artAdultFollowupEncounterTypeId(
+                        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())
+                    .artPedInicioEncounterTypeId(
+                        hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId())
+                    .transferOutStateId(
+                        hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState().getId())
+                    .treatmentSuspensionStateId(
+                        hivMetadata.getSuspendedTreatmentWorkflowState().getId())
+                    .treatmentAbandonedStateId(hivMetadata.getAbandonedWorkflowState().getId())
+                    .deathStateId(hivMetadata.getPatientHasDiedWorkflowState().getId())));
     cd.addSearch("TARV", EptsReportUtils.map(TARV, mappings));
     cd.addSearch("NAONOTIFICADO", EptsReportUtils.map(NAONOTIFICADO, mappings));
     cd.setCompositionString("TARV NOT NAONOTIFICADO");
@@ -317,17 +323,16 @@ public class TXTBCohortQueries {
         genericCohortQueries.generalSql(
             "",
             TXTBQueries.patientsEnrolledInARTCareAndOnTreatment(
-                new EnrolledInARTCareAndOnTreatmentParams(
-                    hivMetadata.getHIVCareProgram().getProgramId(),
-                    hivMetadata.getARTProgram().getProgramId(),
-                    hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
-                    hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
-                    hivMetadata
-                        .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                        .getProgramWorkflowStateId() /*28?*/,
-                    hivMetadata
-                        .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                        .getProgramWorkflowStateId() /*29?*/)));
+                hivMetadata.getHIVCareProgram().getProgramId(),
+                hivMetadata.getARTProgram().getProgramId(),
+                hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+                hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
+                hivMetadata
+                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                    .getProgramWorkflowStateId() /*28?*/,
+                hivMetadata
+                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                    .getProgramWorkflowStateId() /*29?*/));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 

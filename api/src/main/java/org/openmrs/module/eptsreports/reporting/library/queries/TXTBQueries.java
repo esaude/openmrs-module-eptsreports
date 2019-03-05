@@ -137,54 +137,35 @@ public class TXTBQueries {
   }
 
   public static String patientsEnrolledInARTCareAndOnTreatment(
-      EnrolledInARTCareAndOnTreatmentParams params) {
+      Integer artCareProgramId,
+      Integer artTreatmentProgramId,
+      Integer artAdultInitialEncounterTypeId,
+      Integer artPedsInitialEncounterTypeId,
+      Integer screeningState,
+      Integer evaluationAndPrepState) {
     return "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON e.patient_id = p.patient_id "
         + "WHERE e.voided = 0 AND p.voided = 0 AND e.encounter_type IN ( "
-        + params.artAdultInitialEncounterTypeId
+        + artAdultInitialEncounterTypeId
         + ", "
-        + params.artPedsInitialEncounterTypeId
+        + artPedsInitialEncounterTypeId
         + " ) AND e.encounter_datetime <= :endDate AND e.location_id = :location "
         + "UNION SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id = pg.patient_id WHERE pg.voided = 0 AND p.voided = 0 "
         + "AND program_id = "
-        + params.artCareProgramId
+        + artCareProgramId
         + " AND date_enrolled <= :endDate AND location_id = :location UNION SELECT pg.patient_id FROM patient p "
         + "INNER JOIN patient_program pg ON p.patient_id = pg.patient_id INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id "
         + "WHERE pg.voided = 0 AND ps.voided = 0 AND p.voided = 0 AND pg.program_id = "
-        + params.artCareProgramId
+        + artCareProgramId
         + " AND ps.state = "
-        + params.screeningState
+        + screeningState
         + " AND ps.start_date = pg.date_enrolled AND ps.start_date <= :endDate "
         + "AND location_id = :location UNION SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id = pg.patient_id "
         + "INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id WHERE pg.voided = 0 AND ps.voided = 0 AND p.voided = 0 "
         + "AND pg.program_id = "
-        + params.artTreatmentProgramId
+        + artTreatmentProgramId
         + " AND ps.state = "
-        + params.evaluationAndPrepState
+        + evaluationAndPrepState
         + " AND ps.start_date <= :endDate AND location_id = :location ";
-  }
-
-  public static class EnrolledInARTCareAndOnTreatmentParams {
-    protected Integer artCareProgramId;
-    protected Integer artTreatmentProgramId;
-    protected Integer artAdultInitialEncounterTypeId;
-    protected Integer artPedsInitialEncounterTypeId;
-    protected Integer screeningState;
-    protected Integer evaluationAndPrepState;
-
-    public EnrolledInARTCareAndOnTreatmentParams(
-        Integer artCareProgramId,
-        Integer artTreatmentProgramId,
-        Integer artAdultInitialState,
-        Integer artPedsInitialState,
-        Integer screeningState,
-        Integer evaluationAndPrepState) {
-      this.artCareProgramId = artCareProgramId;
-      this.artTreatmentProgramId = artTreatmentProgramId;
-      this.artAdultInitialEncounterTypeId = artAdultInitialState;
-      this.artPedsInitialEncounterTypeId = artPedsInitialState;
-      this.screeningState = screeningState;
-      this.evaluationAndPrepState = evaluationAndPrepState;
-    }
   }
 
   public static class AbandonedWithoutNotificationParams {
@@ -199,27 +180,61 @@ public class TXTBQueries {
     protected Integer treatmentAbandonedStateId;
     protected Integer deathStateId;
 
-    public AbandonedWithoutNotificationParams(
-        Integer programId,
-        Integer returnVisitDateConceptId,
-        Integer returnVisitDateForARVDrugConceptId,
-        Integer pharmacyEncounterTypeId,
-        Integer artAdultFollowupEncounterTypeId,
-        Integer artPedInicioEncounterTypeId,
-        Integer transferOutStateId,
-        Integer treatmentSuspensionStateId,
-        Integer treatmentAbandonedStateId,
-        Integer deathStateId) {
+    public AbandonedWithoutNotificationParams programId(Integer programId) {
       this.programId = programId;
+      return this;
+    }
+
+    public AbandonedWithoutNotificationParams returnVisitDateConceptId(
+        Integer returnVisitDateConceptId) {
       this.returnVisitDateConceptId = returnVisitDateConceptId;
+      return this;
+    }
+
+    public AbandonedWithoutNotificationParams returnVisitDateForARVDrugConceptId(
+        Integer returnVisitDateForARVDrugConceptId) {
       this.returnVisitDateForARVDrugConceptId = returnVisitDateForARVDrugConceptId;
+      return this;
+    }
+
+    public AbandonedWithoutNotificationParams pharmacyEncounterTypeId(
+        Integer pharmacyEncounterTypeId) {
       this.pharmacyEncounterTypeId = pharmacyEncounterTypeId;
+      return this;
+    }
+
+    public AbandonedWithoutNotificationParams artAdultFollowupEncounterTypeId(
+        Integer artAdultFollowupEncounterTypeId) {
       this.artAdultFollowupEncounterTypeId = artAdultFollowupEncounterTypeId;
+      return this;
+    }
+
+    public AbandonedWithoutNotificationParams artPedInicioEncounterTypeId(
+        Integer artPedInicioEncounterTypeId) {
       this.artPedInicioEncounterTypeId = artPedInicioEncounterTypeId;
+      return this;
+    }
+
+    public AbandonedWithoutNotificationParams transferOutStateId(Integer transferOutStateId) {
       this.transferOutStateId = transferOutStateId;
+      return this;
+    }
+
+    public AbandonedWithoutNotificationParams treatmentSuspensionStateId(
+        Integer treatmentSuspensionStateId) {
       this.treatmentSuspensionStateId = treatmentSuspensionStateId;
+      return this;
+    }
+
+    public AbandonedWithoutNotificationParams treatmentAbandonedStateId(
+        Integer treatmentAbandonedStateId) {
       this.treatmentAbandonedStateId = treatmentAbandonedStateId;
+      return this;
+    }
+
+    public AbandonedWithoutNotificationParams deathStateId(Integer deathStateId) {
       this.deathStateId = deathStateId;
+      return this;
     }
   }
 }
