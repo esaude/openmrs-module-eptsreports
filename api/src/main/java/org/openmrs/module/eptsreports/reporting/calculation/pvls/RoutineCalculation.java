@@ -167,7 +167,9 @@ public class RoutineCalculation extends AbstractPatientCalculation {
             // second
             // Date when started on second line will be considered
             // the changing date
-            isOnRoutine = isOnRoutineCriteria3(changingRegimenLines, pId, lastVlObs, vLoadList);
+            isOnRoutine =
+                isOnRoutineCriteria3(
+                    changingRegimenLines, pId, lastVlObs, viralLoadForPatientTakenWithin12Months);
           }
         }
       }
@@ -178,7 +180,10 @@ public class RoutineCalculation extends AbstractPatientCalculation {
   }
 
   private boolean isOnRoutineCriteria3(
-      CalculationResultMap changingRegimenLines, Integer pId, Obs lastVlObs, List<Obs> vLoadList) {
+      CalculationResultMap changingRegimenLines,
+      Integer pId,
+      Obs lastVlObs,
+      List<Obs> viralLoadForPatientTakenWithin12Months) {
     boolean isOnRoutine = false;
 
     Obs obs = EptsCalculationUtils.resultForPatient(changingRegimenLines, pId);
@@ -195,7 +200,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
         // loop through the vls and exclude the patient if they have an
         // obs falling
         // between the 2 dates
-        for (Obs obs1 : vLoadList) {
+        for (Obs obs1 : viralLoadForPatientTakenWithin12Months) {
           if (obs1.getObsDatetime() != null
               && (obs1.getObsDatetime().after(startRegimeDate)
                   || obs1.getObsDatetime().equals(startRegimeDate))
