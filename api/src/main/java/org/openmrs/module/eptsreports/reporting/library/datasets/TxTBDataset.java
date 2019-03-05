@@ -48,8 +48,6 @@ public class TxTBDataset extends BaseDataSet {
 
     dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dataSetDefinition.addDimension(
-        "query", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
-    dataSetDefinition.addDimension(
         "age", EptsReportUtils.map(eptsCommonDimension.age(ageDimensionCohort), mappings));
     addTXTBNumerator(mappings, dataSetDefinition);
 
