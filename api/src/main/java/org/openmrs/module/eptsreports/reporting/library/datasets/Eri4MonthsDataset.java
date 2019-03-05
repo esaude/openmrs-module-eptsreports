@@ -15,7 +15,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.Arrays;
 import java.util.List;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.EriCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri4MonthsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -27,11 +27,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class Eri4MonthsDataset extends BaseDataSet {
 
+  @Autowired private Eri4MonthsCohortQueries eri4MonthsCohortQueries;
+
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
 
   @Autowired private EptsCommonDimension eptsCommonDimension;
-
-  @Autowired private EriCohortQueries eriCohortQueries;
 
   public DataSetDefinition constructEri4MonthsDataset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
@@ -58,7 +58,8 @@ public class Eri4MonthsDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "all patients",
                 EptsReportUtils.map(
-                    eriCohortQueries.getAllPatientsWhoInitiatedArt(), cohortPeriodMappings)),
+                    eri4MonthsCohortQueries.getPatientsWhoInitiatedArtLessTransferIns(),
+                    cohortPeriodMappings)),
             reportingPeriodMappings),
         get4MonthsRetentionColumns());
     addRow(
@@ -69,7 +70,9 @@ public class Eri4MonthsDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "pregnant women",
                 EptsReportUtils.map(
-                    eriCohortQueries.getPregnantWomenRetainedOnArt(), cohortPeriodMappings)),
+                    eri4MonthsCohortQueries
+                        .getPregnantWomenRetainedOnArtFor4MonthsFromArtInitiation(),
+                    cohortPeriodMappings)),
             reportingPeriodMappings),
         get4MonthsRetentionColumns());
     addRow(
@@ -80,7 +83,9 @@ public class Eri4MonthsDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "breastfeeding women",
                 EptsReportUtils.map(
-                    eriCohortQueries.getBreastfeedingWomenRetained(), cohortPeriodMappings)),
+                    eri4MonthsCohortQueries
+                        .getBreastfeedingWomenRetainedOnArtFor4MonthsFromArtInitiation(),
+                    cohortPeriodMappings)),
             reportingPeriodMappings),
         get4MonthsRetentionColumns());
     addRow(
@@ -90,7 +95,9 @@ public class Eri4MonthsDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "children",
-                EptsReportUtils.map(eriCohortQueries.getChildrenRetained(), cohortPeriodMappings)),
+                EptsReportUtils.map(
+                    eri4MonthsCohortQueries.getChildrenRetainedOnArtFor4MonthsFromArtInitiation(),
+                    cohortPeriodMappings)),
             reportingPeriodMappings),
         get4MonthsRetentionColumns());
     addRow(
@@ -100,7 +107,9 @@ public class Eri4MonthsDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "adults",
-                EptsReportUtils.map(eriCohortQueries.getAdultsRetained(), cohortPeriodMappings)),
+                EptsReportUtils.map(
+                    eri4MonthsCohortQueries.getAdultsRetaineOnArtFor4MonthsFromArtInitiation(),
+                    cohortPeriodMappings)),
             reportingPeriodMappings),
         get4MonthsRetentionColumns());
     return dsd;

@@ -51,7 +51,7 @@ public class TxNewDataset extends BaseDataSet {
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     CohortDefinition patientEnrolledInART =
-        txNewCohortQueries.getTxNewCompositionCohort("patientEnrolledInART");
+        txNewCohortQueries.getTxNewCompositionCohort("patientEnrolledInART", null);
     CohortIndicator patientEnrolledInHIVStartedARTIndicator =
         eptsGeneralIndicator.getIndicator(
             "patientNewlyEnrolledInHIVIndicator",

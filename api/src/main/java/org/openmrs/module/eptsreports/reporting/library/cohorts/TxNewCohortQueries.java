@@ -16,14 +16,18 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.TxNewQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -50,6 +54,8 @@ public class TxNewCohortQueries {
   @Autowired private GenderCohortQueries genderCohorts;
 
   @Autowired private HivCohortQueries hivCohortQueries;
+
+  @Autowired private AgeCohortQueries ageCohortQueries;
 
   /**
    * Looks for patients enrolled on ART program (program 2=SERVICO TARV - TRATAMENTO), transferred
@@ -216,13 +222,53 @@ public class TxNewCohortQueries {
   }
 
   /**
+   * Obtain patients from TxNew Union Query TODO: passing the start & end age like this is not ideal
+   * - needs to be refactored to use preferred approach using age cohort
+   *
+   * @return CohortDefinition
+   */
+  @DocumentedDefinition(value = "txNewUnionNumerator")
+  public CohortDefinition getTxNewUnionNumerator(String name, CohortDefinition ageCohort) {
+
+    Map<String, Integer> queryParameters = new HashMap<String, Integer>();
+
+    queryParameters.put("artProgram", hivMetadata.getARTProgram().getProgramId());
+    queryParameters.put(
+        "arvPharmaciaEncounter", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    queryParameters.put(
+        "arvAdultoSeguimentoEncounter",
+        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    queryParameters.put(
+        "arvPediatriaSeguimentoEncounter",
+        hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    queryParameters.put("arvPlanConcept", hivMetadata.getARVPlanConcept().getConceptId());
+    queryParameters.put("startDrugsConcept", hivMetadata.getstartDrugsConcept().getConceptId());
+    queryParameters.put(
+        "historicalDrugsConcept", hivMetadata.gethistoricalDrugStartDateConcept().getConceptId());
+
+    if (ageCohort instanceof AgeCohortDefinition) {
+      queryParameters.put("minAge", ((AgeCohortDefinition) ageCohort).getMinAge());
+      queryParameters.put("maxAge", ((AgeCohortDefinition) ageCohort).getMaxAge());
+    }
+
+    SqlCohortDefinition txNewUnionNumerator = new SqlCohortDefinition();
+    txNewUnionNumerator.setName(name);
+    txNewUnionNumerator.setQuery(TxNewQueries.getTxNewUnionQueries(queryParameters));
+
+    txNewUnionNumerator.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    txNewUnionNumerator.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    txNewUnionNumerator.addParameter(new Parameter("location", "location", Location.class));
+    return txNewUnionNumerator;
+  }
+
+  /**
    * Build TxNew composition cohort definition
    *
    * @param cohortName Cohort name
    * @param ageCohort Age Cohort
    * @return CompositionQuery
    */
-  public CohortDefinition getTxNewCompositionCohort(String cohortName) {
+  public CohortDefinition getTxNewCompositionCohort(String cohortName, CohortDefinition ageCohort) {
     CompositionCohortDefinition txNewComposition = new CompositionCohortDefinition();
     txNewComposition.setName(cohortName);
     txNewComposition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
@@ -231,7 +277,7 @@ public class TxNewCohortQueries {
 
     Mapped<CohortDefinition> startedART =
         Mapped.map(
-            genericCohorts.getStartedArtOnPeriod(false),
+            getTxNewUnionNumerator("all patients who started art", ageCohort),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}");
     Mapped<CohortDefinition> transferredIn =
         Mapped.map(
@@ -248,5 +294,25 @@ public class TxNewCohortQueries {
 
     txNewComposition.setCompositionString("startedART NOT (transferredIn OR restartedTreatment)");
     return txNewComposition;
+  }
+
+  /**
+   * @param minAge Minimum age
+   * @param maxAge Maximum age
+   * @return Patients with age in years between {@code minAge} and {@code maxAge} on ART start date.
+   */
+  public CohortDefinition createXtoYAgeOnArtStartDateCohort(
+      String name, Integer minAge, Integer maxAge) {
+    // add 1 to maxAge because in getTxNewUnionQueries '<' is used to compare to maxAge
+    Integer age = maxAge;
+    if (age != null) {
+      age++;
+    }
+    CohortDefinition ageCohort = ageCohortQueries.createXtoYAgeCohort("", minAge, age);
+    CohortDefinition cd = getTxNewCompositionCohort(name, ageCohort);
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    return cd;
   }
 }

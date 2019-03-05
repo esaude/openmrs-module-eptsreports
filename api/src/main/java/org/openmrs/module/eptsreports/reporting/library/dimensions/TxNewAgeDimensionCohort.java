@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -17,14 +17,16 @@ import org.springframework.stereotype.Component;
 @Component("txNewAgeDimensionCohort")
 public class TxNewAgeDimensionCohort implements AgeDimensionCohortInterface {
 
-  @Autowired private GenericCohortQueries genericCohorts;
+  @Autowired private TxNewCohortQueries txNewCohortQueries;
 
   @Autowired private AgeCohortQueries ageCohortQueries;
 
   @Override
   public Mapped<CohortDefinition> createXtoYAgeCohort(String name, Integer minAge, Integer maxAge) {
+    CohortDefinition ageCohort =
+        txNewCohortQueries.createXtoYAgeOnArtStartDateCohort(name, minAge, maxAge);
     return EptsReportUtils.map(
-        genericCohorts.getAgeOnArtStartDate(minAge, maxAge, true), "location=${location}");
+        ageCohort, "location=${location},onOrAfter=${startDate},onOrBefore=${endDate}");
   }
 
   @Override

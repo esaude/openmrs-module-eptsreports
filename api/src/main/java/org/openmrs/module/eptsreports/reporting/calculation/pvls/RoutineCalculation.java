@@ -1,13 +1,15 @@
 /*
- * The contents of this file are subject to the OpenMRS Public License Version
- * 1.0 (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at http://license.openmrs.org
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
  *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
- * the specific language governing rights and limitations under the License.
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
  *
- * Copyright (C) OpenMRS, LLC. All Rights Reserved.
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
@@ -32,8 +34,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
-import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
-import org.openmrs.module.eptsreports.reporting.calculation.generic.InitialArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PatientsOnRoutineEnum;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -53,8 +54,6 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 
   private OnArtForMoreThanXmonthsCalcultion onArtForMoreThanXmonthsCalcultion =
       Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0);
-
-  @Autowired private EPTSCalculationService ePTSCalculationService;
 
   /**
    * Patients on ART for the last X months with one VL result registered in the 12 month period
@@ -83,7 +82,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 
     // lookups
     CalculationResultMap patientHavingVL =
-        ePTSCalculationService.getObs(
+        EptsCalculations.getObs(
             viralLoadConcept,
             cohort,
             Arrays.asList(location),
@@ -93,7 +92,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
             context);
 
     CalculationResultMap changingRegimenLines =
-        ePTSCalculationService.getObs(
+        EptsCalculations.getObs(
             regimeConcept,
             cohort,
             Arrays.asList(location),
@@ -106,7 +105,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
     CalculationResultMap arvsInitiationDateMap =
         calculate(artStartDateCalculation, cohort, context);
     CalculationResultMap lastVl =
-        ePTSCalculationService.lastObs(
+        EptsCalculations.lastObs(
             Arrays.asList(labEncounterType, adultFollowup, childFollowup),
             viralLoadConcept,
             location,

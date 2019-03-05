@@ -66,8 +66,7 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            getPatientsWhoAreBreastfeedingAndNotPregnant(),
-            "endDate=${endDate},location=${location}"));
+            getPatientsWhoAreBreastfeeding(), "onDate=${endDate},location=${location}"));
 
     cd.addSearch(
         "suppression",
@@ -95,8 +94,7 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            getPatientsWhoAreBreastfeedingAndNotPregnant(),
-            "endDate=${endDate},location=${location}"));
+            getPatientsWhoAreBreastfeeding(), "onDate=${endDate},location=${location}"));
 
     cd.addSearch(
         "results",
@@ -327,7 +325,8 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
-            this.getPatientsWhoArePregnantCohort(), "onDate=${endDate},location=${location}"));
+            this.getPatientsWhoArePregnantAndNotBreastfeeding(),
+            "endDate=${endDate},location=${location}"));
     cd.setCompositionString("suppression AND pregnant");
     return cd;
   }
@@ -348,7 +347,8 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
-            this.getPatientsWhoArePregnantCohort(), "onDate=${endDate},location=${location}"));
+            this.getPatientsWhoArePregnantAndNotBreastfeeding(),
+            "endDate=${endDate},location=${location}"));
     cd.setCompositionString("results AND pregnant");
     return cd;
   }
@@ -519,10 +519,10 @@ public class TxPvlsCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getPatientsWhoAreBreastfeedingAndNotPregnant() {
+  public CohortDefinition getPatientsWhoArePregnantAndNotBreastfeeding() {
 
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("Get breastfeeding women who are NOT pregnant");
+    cd.setName("Get pregnant and not breastfeeding");
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     String mappings = "onDate=${endDate},location=${location}";

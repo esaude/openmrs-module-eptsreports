@@ -1,4 +1,4 @@
-package org.openmrs.module.eptsreports.reporting.intergrated.calculation.generic;
+package org.openmrs.module.eptsreports.reporting.intergrated.calculation.pvls;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -9,7 +9,7 @@ import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
-import org.openmrs.module.eptsreports.reporting.calculation.generic.InitialArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.InitialArtStartDateCalculation;
 import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
 
 public class InitialArtStartDateCalculationTest extends BasePatientCalculationTest {
@@ -21,7 +21,7 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
 
   @Override
   public Collection<Integer> getCohort() {
-    return Arrays.asList(new Integer[] {2, 6, 7, 8, 999, 432, 1777005});
+    return Arrays.asList(new Integer[] {2, 6, 7, 8, 999, 432, 1777001});
   }
 
   @Override
@@ -69,7 +69,7 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
     // initiated ART by hiv enrolment and also has first phamarcy encounter observation, ealrier is
     // considerd
     map.put(
-        1777005,
+        1777001,
         new SimpleResult(
             new Timestamp(testsHelper.getDate("2018-06-21 00:00:00.0").getTime()),
             calculation,
@@ -79,6 +79,6 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
 
   @Before
   public void initialise() throws Exception {
-    executeDataSet("genericTest.xml");
+    executeDataSet("pvlsTest.xml");
   }
 }
