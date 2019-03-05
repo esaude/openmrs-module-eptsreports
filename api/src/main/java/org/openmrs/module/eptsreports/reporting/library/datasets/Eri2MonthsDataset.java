@@ -15,7 +15,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.Arrays;
 import java.util.List;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri2MonthsCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.EriCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -31,7 +31,7 @@ public class Eri2MonthsDataset extends BaseDataSet {
 
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
 
-  @Autowired private Eri2MonthsCohortQueries eri2MonthsCohortQueries;
+  @Autowired private EriCohortQueries eriCohortQueries;
 
   public DataSetDefinition constructEri2MonthsDatset() {
 
@@ -52,8 +52,7 @@ public class Eri2MonthsDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "All patients",
-                EptsReportUtils.map(
-                    eri2MonthsCohortQueries.getAllPatientsWhoInitiatedArt(), mappingsInd)),
+                EptsReportUtils.map(eriCohortQueries.getAllPatientsWhoInitiatedArt(), mappingsInd)),
             mappings),
         get2MonthsRetentionColumns());
     addRow(
@@ -63,10 +62,7 @@ public class Eri2MonthsDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Pregnant women",
-                EptsReportUtils.map(
-                    eri2MonthsCohortQueries
-                        .getPregnantWomenRetainedOnArtFor2MonthsFromArtInitiation(),
-                    mappingsInd)),
+                EptsReportUtils.map(eriCohortQueries.getPregnantWomenRetainedOnArt(), mappingsInd)),
             mappings),
         get2MonthsRetentionColumns());
     addRow(
@@ -76,10 +72,7 @@ public class Eri2MonthsDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Breastfeeding women",
-                EptsReportUtils.map(
-                    eri2MonthsCohortQueries
-                        .getBreastfeedingWomenRetainedOnArtFor2MonthsFromArtInitiation(),
-                    mappingsInd)),
+                EptsReportUtils.map(eriCohortQueries.getBreastfeedingWomenRetained(), mappingsInd)),
             mappings),
         get2MonthsRetentionColumns());
     addRow(
@@ -89,9 +82,7 @@ public class Eri2MonthsDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Children",
-                EptsReportUtils.map(
-                    eri2MonthsCohortQueries.getChildrenRetainedOnArtFor2MonthsFromArtInitiation(),
-                    mappingsInd)),
+                EptsReportUtils.map(eriCohortQueries.getChildrenRetained(), mappingsInd)),
             mappings),
         get2MonthsRetentionColumns());
     addRow(
@@ -100,10 +91,7 @@ public class Eri2MonthsDataset extends BaseDataSet {
         "Adults (15+, excluding pregnant and breastfeeding women)  retained on ART 2 months after ART initiation",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Adults",
-                EptsReportUtils.map(
-                    eri2MonthsCohortQueries.getAdultsRetainedOnArtFor2MonthsFromArtInitiation(),
-                    mappingsInd)),
+                "Adults", EptsReportUtils.map(eriCohortQueries.getAdultsRetained(), mappingsInd)),
             mappings),
         get2MonthsRetentionColumns());
     return dsd;

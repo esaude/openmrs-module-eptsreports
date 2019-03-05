@@ -14,6 +14,7 @@
 package org.openmrs.module.eptsreports.reporting.calculation;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.BaseCalculation;
@@ -48,13 +49,30 @@ public abstract class AbstractPatientCalculation extends BaseCalculation
    * @param calculation the calculation
    * @param cohort the patient ids
    * @param calculationContext the calculation context
+   * @param parameterValues the parameter values
+   * @return the calculation result map
+   */
+  protected static CalculationResultMap calculate(
+      PatientCalculation calculation,
+      Collection<Integer> cohort,
+      Map<String, Object> parameterValues,
+      PatientCalculationContext calculationContext) {
+    return Context.getService(PatientCalculationService.class)
+        .evaluate(cohort, calculation, parameterValues, calculationContext);
+  }
+
+  /**
+   * Evaluates a given calculation on each patient
+   *
+   * @param calculation the calculation
+   * @param cohort the patient ids
+   * @param calculationContext the calculation context
    * @return the calculation result map
    */
   protected static CalculationResultMap calculate(
       PatientCalculation calculation,
       Collection<Integer> cohort,
       PatientCalculationContext calculationContext) {
-    return Context.getService(PatientCalculationService.class)
-        .evaluate(cohort, calculation, calculationContext);
+    return calculate(calculation, cohort, new HashMap<String, Object>(), calculationContext);
   }
 }
