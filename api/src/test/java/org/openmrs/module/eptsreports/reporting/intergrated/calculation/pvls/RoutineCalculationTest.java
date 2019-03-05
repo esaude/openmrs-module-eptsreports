@@ -2,6 +2,7 @@ package org.openmrs.module.eptsreports.reporting.intergrated.calculation.pvls;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +10,7 @@ import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.CalculationContext;
 import org.openmrs.calculation.patient.PatientCalculation;
+import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineCalculation;
@@ -24,7 +26,7 @@ public class RoutineCalculationTest extends BasePatientCalculationTest {
 
   @Override
   public Collection<Integer> getCohort() {
-    return Arrays.asList(new Integer[] {2, 6, 7, 8, 999, 432});
+    return Arrays.asList(new Integer[] {13, 6, 7, 8, 999, 432});
   }
 
   @Override
@@ -36,7 +38,7 @@ public class RoutineCalculationTest extends BasePatientCalculationTest {
     // initiated ART on 2008-08-01 by hiv enrolment and received and vl
     // result on
     // 2018-12-12
-    map.put(2, new SimpleResult(false, calculation, evaluationContext));
+    map.put(13, new SimpleResult(false, calculation, evaluationContext));
     // initiated ART on 2018-06-21 by starting ARV plan observation and vl
     // result on
     // 2019-04-02
@@ -79,5 +81,33 @@ public class RoutineCalculationTest extends BasePatientCalculationTest {
     Assert.assertEquals(
         getResult().toString(),
         service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext()).toString());
+  }
+
+  @Test
+  public void
+      calculateRoutineCriteria2WhenAdultsAndChildrenShouldMatchBetween12To15MonthsAndVlOfLessThan1000Copies() {
+    List<Integer> cohort = Arrays.asList(10);
+    PatientCalculationContext evaluationContext = getEvaluationContext();
+    params.put("criteria", PatientsOnRoutineEnum.ADULTCHILDREN);
+    Assert.assertTrue(
+        service.evaluate(cohort, getCalculation(), params, evaluationContext).getAsBoolean(10));
+  }
+
+  @Test
+  public void
+      calculateRoutineCriteria2WhenBreastfeedingAndPregnantShouldMatchBetween12To15Months() {
+    List<Integer> cohort = Arrays.asList(11);
+    PatientCalculationContext evaluationContext = getEvaluationContext();
+    params.put("criteria", PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT);
+    Assert.assertTrue(
+        service.evaluate(cohort, getCalculation(), params, evaluationContext).getAsBoolean(11));
+  }
+
+  @Test
+  public void calculateRoutineCriteria3WShouldMatchStartRegimeBeforeLatestVlDate() {
+    List<Integer> cohort = Arrays.asList(12);
+    PatientCalculationContext evaluationContext = getEvaluationContext();
+    Assert.assertTrue(
+        service.evaluate(cohort, getCalculation(), params, evaluationContext).getAsBoolean(12));
   }
 }
