@@ -1,13 +1,15 @@
 /*
- * The contents of this file are subject to the OpenMRS Public License Version
- * 1.0 (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at http://license.openmrs.org
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
  *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
- * the specific language governing rights and limitations under the License.
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
  *
- * Copyright (C) OpenMRS, LLC. All Rights Reserved.
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
@@ -26,8 +28,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
-import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
-import org.openmrs.module.eptsreports.reporting.calculation.generic.InitialArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,8 +37,6 @@ import org.springframework.stereotype.Component;
 public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculation {
 
   @Autowired private HivMetadata hivMetadata;
-
-  @Autowired private EPTSCalculationService ePTSCalculationService;
 
   @Override
   public CalculationResultMap evaluate(
@@ -51,8 +50,7 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
     EncounterType childFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
 
     // get data inicio TARV
-    // TODO: pass in as a parameter and only recalculate if parameter is
-    // null
+    // TODO: pass in as a parameter and only recalculate if parameter is null
     CalculationResultMap arvsInitiationDateMap =
         calculate(
             Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0),
@@ -60,7 +58,7 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
             context);
     Date oneYearBefore = EptsCalculationUtils.addMonths(context.getNow(), -12);
     CalculationResultMap lastVl =
-        ePTSCalculationService.lastObs(
+        EptsCalculations.lastObs(
             Arrays.asList(labEncounterType, adultFollowup, childFollowup),
             viralLoadConcept,
             location,

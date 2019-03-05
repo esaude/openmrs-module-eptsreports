@@ -78,8 +78,6 @@ public class CalculationCohortDefinitionEvaluator implements CohortDefinitionEva
     PatientCalculationContext calcContext = pcs.createCalculationContext();
     calcContext.setNow(onDate);
     calcContext.addToCache("location", location);
-    calcContext.addToCache("onOrAfter", context.getParameterValue("onOrAfter"));
-    calcContext.addToCache("onOrBefore", context.getParameterValue("onOrBefore"));
 
     Cohort cohort = context.getBaseCohort();
     if (cohort == null) {

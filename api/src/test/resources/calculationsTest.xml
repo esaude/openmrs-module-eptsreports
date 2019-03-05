@@ -95,9 +95,6 @@
   	<concept concept_id="7777029" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1cdd58a-1d5f-11e0-b929-000c29ad1d07"/>
   	<concept_name concept_name_id="5777029" concept_id="7777029" name="PREGNANCY" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="9d98bd1e-35e6-11e9-98d5-578d0b38d001"/>
   	
-	<concept concept_id="7777030" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2012-02-29 09:46:11.0" version="" uuid="be53ec04-d2ae-485e-9a6c-e167deef9a95"/>
-	<concept_name concept_id="7777030" name="SERVICO TARV - TRATAMENTO" locale="pt" creator="1" date_created="2012-02-29 09:46:11.0" concept_name_id="5777029" voided="false" uuid="46126628-55b6-4bd7-b15a-9b5bc02d5ecd" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
-
   	
   	<concept_set concept_set_id="8777008" concept_id="7777008" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777008"/>
   	<concept_set concept_set_id="8777009" concept_id="7777009" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777009"/>
@@ -113,7 +110,6 @@
  
  	
  	<program program_id="8" concept_id="7777023" creator="1" date_created="2019-03-02 11:30:33.0" retired="false" name="PTV" description="Programa de representa o estado de gravidez de uma mulher" uuid="06057245-ca21-43ab-a02f-e861d7e54593"/>
-	<program program_id="9" concept_id="7777030" creator="1" date_created="2012-02-29 09:46:38.0" changed_by="1" date_changed="2013-07-24 11:45:49.0" retired="false" name="SERVICO TARV - TRATAMENTO" description="Programa de seguimento e tratamento aos pacientes HIV+" uuid="efe2481f-9e75-4515-8d5a-86bfde2b5ad3"/>
   	
 	<encounter_type encounter_type_id="6777001" name="Child Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777001"/>
   	<encounter_type encounter_type_id="6777002" name="Adult Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777002"/>
@@ -128,7 +124,7 @@
 	<global_property property="eptsreports.sTarvAdultoInitialAEncounterTypeUuid" property_value="02c533ab-b74b-4ee4-b6e5-ffb6d6777004" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777004"/>
 	<global_property property="eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid" property_value="02c533ab-b74b-4ee4-b6e5-ffb6d6777002" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777002"/>
 	<global_property property="eptsreports.sTarvPediatriaSeguimentoEncounterTypeUuid" property_value="02c533ab-b74b-4ee4-b6e5-ffb6d6777001" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777001"/>
-	<global_property property="eptsreports.artProgramUuid" property_value="efe2481f-9e75-4515-8d5a-86bfde2b5ad3" uuid="efe2481f-9e75-4515-8d5a-86bfde2b5ad3"/>
+	<global_property property="eptsreports.artProgramUuid" property_value="da4a0391-ba62-4fad-ad66-1e3722d16380" uuid="da4a0391-ba62-4fad-ad66-1e3722d16380"/>
 	<global_property property="eptsreports.arvPlanConceptUuid" property_value="a09ab2c5-878e-4905-b25d-578417777002" uuid="a09ab2c5-878e-4905-b25d-578417777002"/>
 	<global_property property="eptsreports.startDrugsConceptUuid" property_value="a09ab2c5-878e-4905-b25d-578417777003" uuid="a09ab2c5-878e-4905-b25d-578417777003"/>
 	<global_property property="eptsreports.transferFromOtherFacilityConceptUuid" property_value="a09ab2c5-878e-4905-b25d-578417777004" uuid="a09ab2c5-878e-4905-b25d-578417777004"/>

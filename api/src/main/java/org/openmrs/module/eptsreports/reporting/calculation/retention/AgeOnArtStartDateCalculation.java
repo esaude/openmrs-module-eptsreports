@@ -1,4 +1,4 @@
-package org.openmrs.module.eptsreports.reporting.calculation.generic;
+package org.openmrs.module.eptsreports.reporting.calculation.retention;
 
 import java.util.Collection;
 import java.util.Date;
@@ -11,6 +11,7 @@ import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.InitialArtStartDateCalculation;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
@@ -18,10 +19,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AgeOnArtStartDateCalculation extends AbstractPatientCalculation {
-
-  private static final String MAX_AGE = "maxAge";
-
-  private static final String MIN_AGE = "minAge";
 
   @Override
   public CalculationResultMap evaluate(
@@ -37,45 +34,36 @@ public class AgeOnArtStartDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap birthDates =
         EptsCalculationUtils.evaluateWithReporting(
             new BirthdateDataDefinition(), cohort, null, null, context);
-    Integer minAge = (Integer) parameterValues.get(MIN_AGE);
-    Integer maxAge = (Integer) parameterValues.get(MAX_AGE);
-    Boolean considerPatientThatStartedBeforeWasBorn =
-        (Boolean) parameterValues.get("considerPatientThatStartedBeforeWasBorn");
-    if (considerPatientThatStartedBeforeWasBorn == null) {
-      considerPatientThatStartedBeforeWasBorn = false;
-    }
-    if (minAge != null && maxAge != null) {
-      for (Integer patientId : cohort) {
-        Date artStartDate =
-            InitialArtStartDateCalculation.getArtStartDate(patientId, artStartDates);
-        Date birthDate = getBirthDate(patientId, birthDates);
-        if (artStartDate != null && birthDate != null) {
-          final boolean datesConsistent = birthDate.compareTo(artStartDate) <= 0;
-          if (datesConsistent) {
-            int years =
-                Years.yearsIn(new Interval(birthDate.getTime(), artStartDate.getTime())).getYears();
-            map.put(
-                patientId,
-                new BooleanResult(isMinAgeOk(minAge, years) && isMaxAgeOk(maxAge, years), this));
-          } else if (considerPatientThatStartedBeforeWasBorn) {
-            map.put(
-                patientId, new BooleanResult(isMinAgeOk(minAge, 0) && isMaxAgeOk(maxAge, 0), this));
-          }
-        }
+    Integer minAge = (Integer) parameterValues.get("minAge");
+    Integer maxAge = (Integer) parameterValues.get("maxAge");
+    for (Integer patientId : cohort) {
+      Date artStartDate = getArtStartDate(patientId, artStartDates);
+      Date birthDate = getBirthDate(patientId, birthDates);
+      if (artStartDate != null && birthDate != null && birthDate.compareTo(artStartDate) <= 0) {
+        int years =
+            Years.yearsIn(new Interval(birthDate.getTime(), artStartDate.getTime())).getYears();
+        map.put(
+            patientId,
+            new BooleanResult(isMinAgeOk(minAge, years) && isMaxAgeOk(maxAge, years), this));
       }
-      return map;
-    } else {
-      throw new IllegalArgumentException(
-          String.format("Parameters %s and %s must be set", MIN_AGE, MAX_AGE));
     }
+    return map;
   }
 
   private boolean isMaxAgeOk(Integer maxAge, int years) {
-    return years <= maxAge.intValue();
+    if (maxAge != null) {
+      return years <= maxAge.intValue();
+    }
+    // if no max age specified any age will do
+    return true;
   }
 
   private boolean isMinAgeOk(Integer minAge, int years) {
-    return years >= minAge.intValue();
+    if (minAge != null) {
+      return years >= minAge.intValue();
+    }
+    // if no min age specified any age will do
+    return true;
   }
 
   private Date getBirthDate(Integer patientId, CalculationResultMap birthDates) {
@@ -83,6 +71,14 @@ public class AgeOnArtStartDateCalculation extends AbstractPatientCalculation {
     if (result != null) {
       Birthdate birthDate = (Birthdate) result.getValue();
       return birthDate.getBirthdate();
+    }
+    return null;
+  }
+
+  private Date getArtStartDate(Integer patientId, CalculationResultMap artStartDates) {
+    CalculationResult calculationResult = artStartDates.get(patientId);
+    if (calculationResult != null) {
+      return (Date) calculationResult.getValue();
     }
     return null;
   }

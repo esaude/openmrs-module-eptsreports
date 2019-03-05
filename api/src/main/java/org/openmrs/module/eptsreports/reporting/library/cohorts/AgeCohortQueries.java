@@ -32,7 +32,9 @@ public class AgeCohortQueries {
       xToYCohort.setMinAge(minAge);
     }
     if (maxAge != null) {
-      xToYCohort.setMaxAge(maxAge);
+      // if minAge is not supplied subtract 1 so it does not include patients with age == maxAge
+      int age = minAge != null ? maxAge : maxAge - 1;
+      xToYCohort.setMaxAge(age);
     }
     xToYCohort.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
     return xToYCohort;

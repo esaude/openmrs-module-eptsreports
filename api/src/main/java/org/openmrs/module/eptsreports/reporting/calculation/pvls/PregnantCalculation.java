@@ -18,7 +18,7 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
-import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
+import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +33,6 @@ import org.springframework.stereotype.Component;
 public class PregnantCalculation extends AbstractPatientCalculation {
 
   @Autowired private HivMetadata hivMetadata;
-
-  @Autowired private EPTSCalculationService ePTSCalculationService;
 
   @Override
   public CalculationResultMap evaluate(
@@ -62,7 +60,7 @@ public class PregnantCalculation extends AbstractPatientCalculation {
     Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);
 
     CalculationResultMap pregnantMap =
-        ePTSCalculationService.getObs(
+        EptsCalculations.getObs(
             pregnant,
             femaleCohort,
             Arrays.asList(location),
@@ -72,7 +70,7 @@ public class PregnantCalculation extends AbstractPatientCalculation {
             context);
 
     CalculationResultMap markedPregnantByWeeks =
-        ePTSCalculationService.getObs(
+        EptsCalculations.getObs(
             pregnantBasedOnWeeks,
             femaleCohort,
             Arrays.asList(location),
@@ -82,7 +80,7 @@ public class PregnantCalculation extends AbstractPatientCalculation {
             context);
 
     CalculationResultMap markedPregnantDueDate =
-        ePTSCalculationService.getObs(
+        EptsCalculations.getObs(
             pregnancyDueDate,
             femaleCohort,
             Arrays.asList(location),
@@ -92,10 +90,10 @@ public class PregnantCalculation extends AbstractPatientCalculation {
             context);
 
     CalculationResultMap markedPregnantInProgram =
-        ePTSCalculationService.allProgramEnrollment(ptv, femaleCohort, context);
+        EptsCalculations.allProgramEnrollment(ptv, femaleCohort, context);
 
     CalculationResultMap lastVl =
-        ePTSCalculationService.lastObs(
+        EptsCalculations.lastObs(
             Arrays.asList(labEncounterType, adultFollowup, pediatriaFollowup),
             viralLoadConcept,
             location,
