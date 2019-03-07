@@ -90,7 +90,7 @@ public class TxTBDataset extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "TXB_NUM",
-        "TXB_NUM - disaggregated",
+        "TXB_NUM: Numerator - disaggregated",
         EptsReportUtils.map(notifiedTbPatientsOnARTService, mappings),
         dissagregations());
   }
@@ -146,7 +146,7 @@ public class TxTBDataset extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "TXB_DEN",
-        "TXB_DEN - disaggregated",
+        "TXB_DEN: Denominator - disaggregated",
         EptsReportUtils.map(screenedTbNegative, mappings),
         dissagregations());
   }

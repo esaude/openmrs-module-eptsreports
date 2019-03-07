@@ -14,9 +14,16 @@
 
 package org.openmrs.module.eptsreports.reporting.utils;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.ReportingException;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -84,5 +91,36 @@ public class EptsReportUtils {
       mappings = ""; // probably not necessary, just to be safe
     }
     return new Mapped<T>(parameterizable, ParameterizableUtil.createParameterMappings(mappings));
+  }
+
+  public static String mergeParameterMappings(String... parameters) {
+    if (parameters == null || parameters.length == 0) {
+      throw new ReportingException("parameters are required");
+    }
+    LinkedHashSet<String> params = new LinkedHashSet<>();
+    for (String p : parameters) {
+      params.addAll(new LinkedHashSet<String>(Arrays.asList(p.split(","))));
+    }
+    return StringUtils.join(params, ",");
+  }
+
+  public static String removeMissingParameterMappingsFromCohortDefintion(
+      CohortDefinition definition, String mappings) {
+    if (definition == null || StringUtils.isEmpty(mappings)) {
+      return mappings;
+    }
+    Iterator<String> mappingsIterator =
+        new LinkedHashSet<String>(Arrays.asList(mappings.split(","))).iterator();
+    LinkedHashSet<String> existingMappingsSet = new LinkedHashSet<String>();
+    while (mappingsIterator.hasNext()) {
+      String mapping = mappingsIterator.next();
+      for (Parameter p : definition.getParameters()) {
+        String paramMap = "${" + p.getName() + "}";
+        if (mapping.trim().endsWith(paramMap)) {
+          existingMappingsSet.add(mapping);
+        }
+      }
+    }
+    return StringUtils.join(existingMappingsSet, ",");
   }
 }
