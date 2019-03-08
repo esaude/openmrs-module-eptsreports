@@ -66,8 +66,7 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            getPatientsWhoAreBreastfeedingAndNotPregnant(),
-            "endDate=${endDate},location=${location}"));
+            getPatientsWhoAreBreastfeeding(), "onDate=${endDate},location=${location}"));
 
     cd.addSearch(
         "suppression",
@@ -95,8 +94,7 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            getPatientsWhoAreBreastfeedingAndNotPregnant(),
-            "endDate=${endDate},location=${location}"));
+            getPatientsWhoAreBreastfeeding(), "onDate=${endDate},location=${location}"));
 
     cd.addSearch(
         "results",
