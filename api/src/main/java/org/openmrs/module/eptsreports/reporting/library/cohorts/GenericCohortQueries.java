@@ -24,7 +24,9 @@ import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.ActiveOnArtCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.AgeOnArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtBeforeDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtOnPeriodCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
@@ -226,6 +228,27 @@ public class GenericCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
     cd.addCalculationParameter("considerTransferredIn", considerTransferredIn);
+    return cd;
+  }
+
+  public CohortDefinition getStartedArtBeforeDate() {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(StartedArtBeforeDateCalculation.class).get(0));
+    cd.setName("Art start date");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    return cd;
+  }
+
+  public CohortDefinition getActiveOnArt() {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(ActiveOnArtCalculation.class).get(0));
+    cd.setName("Active on ART before date");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addCalculationParameter("considerTransferredIn", false);
     return cd;
   }
 }

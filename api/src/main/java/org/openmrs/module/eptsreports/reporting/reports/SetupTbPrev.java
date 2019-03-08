@@ -21,11 +21,9 @@ import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TbPrevDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,15 +68,11 @@ public class SetupTbPrev extends EptsDataExportManager {
     reportDefinition.setName(getName());
     reportDefinition.setDescription(getDescription());
     reportDefinition.setParameters(getParameters());
-    reportDefinition.setBaseCohortDefinition(
-        genericCohortQueries.getBaseCohort(),
-        ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
     reportDefinition.addDataSetDefinition(
         "TBPREV", Mapped.mapStraightThrough(tbPrevDataset.constructTbPrevDatset()));
-    // add a base cohort here to help in calculations running
-    reportDefinition.setBaseCohortDefinition(
-        EptsReportUtils.map(
-            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+    //  reportDefinition.setBaseCohortDefinition(
+    //  genericCohortQueries.getBaseCohort(),
+    //  ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
     return reportDefinition;
   }
 
