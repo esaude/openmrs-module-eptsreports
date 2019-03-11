@@ -9,7 +9,7 @@
  *
  * Copyright (C) OpenMRS, LLC. All Rights Reserved.
  */
-package org.openmrs.module.eptsreports.reporting.calculation.pvls;
+package org.openmrs.module.eptsreports.reporting.calculation.generic;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,12 +25,13 @@ import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
+import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -47,6 +48,8 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 
   @Autowired private CommonMetadata commonMetadata;
 
+  @Autowired private EPTSCalculationService ePTSCalculationService;
+
   /**
    * @should return null for patients who have not started ART
    * @should return start date for patients who have started ART
@@ -61,6 +64,9 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 
     CalculationResultMap map = new CalculationResultMap();
     Location location = (Location) context.getFromCache("location");
+
+    boolean considerTransferredIn = getConsiderTransferredInParameter(parameterValues);
+
     Program treatmentProgram = hivMetadata.getARTProgram();
     Concept arvPlan = hivMetadata.getARVPlanConcept();
     Concept startDrugsConcept = hivMetadata.getstartDrugsConcept();
@@ -69,15 +75,18 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
     EncounterType encounterTypePharmacy = hivMetadata.getARVPharmaciaEncounterType();
 
     CalculationResultMap inProgramMap =
-        EptsCalculations.firstPatientProgram(treatmentProgram, location, cohort, context);
+        ePTSCalculationService.firstPatientProgram(treatmentProgram, location, cohort, context);
     CalculationResultMap startDrugMap =
-        EptsCalculations.firstObs(arvPlan, startDrugsConcept, location, true, cohort, context);
+        ePTSCalculationService.firstObs(
+            arvPlan, startDrugsConcept, location, true, cohort, context);
     CalculationResultMap historicalMap =
-        EptsCalculations.firstObs(hostoricalStartConcept, null, location, false, cohort, context);
+        ePTSCalculationService.firstObs(
+            hostoricalStartConcept, null, location, false, cohort, context);
     CalculationResultMap pharmacyEncounterMap =
-        EptsCalculations.firstEncounter(encounterTypePharmacy, cohort, location, context);
+        ePTSCalculationService.firstEncounter(encounterTypePharmacy, cohort, location, context);
     CalculationResultMap transferInMap =
-        EptsCalculations.firstObs(arvPlan, transferInConcept, location, true, cohort, context);
+        ePTSCalculationService.firstObs(
+            arvPlan, transferInConcept, location, true, cohort, context);
 
     for (Integer pId : cohort) {
       Date requiredDate = null;
@@ -100,9 +109,11 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
       if (pharmacyEncounter != null) {
         enrollmentDates.add(pharmacyEncounter.getEncounterDatetime());
       }
-      Obs transferInObs = EptsCalculationUtils.resultForPatient(transferInMap, pId);
-      if (transferInObs != null) {
-        enrollmentDates.add(transferInObs.getObsDatetime());
+      if (considerTransferredIn) {
+        Obs transferInObs = EptsCalculationUtils.resultForPatient(transferInMap, pId);
+        if (transferInObs != null) {
+          enrollmentDates.add(transferInObs.getObsDatetime());
+        }
       }
       enrollmentDates.removeAll(Collections.singleton(null));
       if (enrollmentDates.size() > 0) {
@@ -112,5 +123,21 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
       map.put(pId, new SimpleResult(requiredDate, this));
     }
     return map;
+  }
+
+  private boolean getConsiderTransferredInParameter(Map<String, Object> parameterValues) {
+    Boolean considerTransferredIn = (Boolean) parameterValues.get("considerTransferredIn");
+    if (considerTransferredIn == null) {
+      considerTransferredIn = true;
+    }
+    return considerTransferredIn;
+  }
+
+  public static Date getArtStartDate(Integer patientId, CalculationResultMap artStartDates) {
+    CalculationResult calculationResult = artStartDates.get(patientId);
+    if (calculationResult != null) {
+      return (Date) calculationResult.getValue();
+    }
+    return null;
   }
 }

@@ -24,7 +24,8 @@ import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.calculation.retention.AgeOnArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.AgeOnArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtOnPeriodCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -198,14 +199,33 @@ public class GenericCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getAgeOnArtStartDate(Integer minAge, Integer maxAge) {
+  public CohortDefinition getAgeOnArtStartDate(
+      Integer minAge, Integer maxAge, boolean considerPatientThatStartedBeforeWasBorn) {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
-            "criteria", Context.getRegisteredComponents(AgeOnArtStartDateCalculation.class).get(0));
-    cd.setName("Childrens on art start date");
+            Context.getRegisteredComponents(AgeOnArtStartDateCalculation.class).get(0));
+    cd.setName("Age on ART start date");
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addCalculationParameter("minAge", minAge);
     cd.addCalculationParameter("maxAge", maxAge);
+    cd.addCalculationParameter(
+        "considerPatientThatStartedBeforeWasBorn", considerPatientThatStartedBeforeWasBorn);
+    return cd;
+  }
+
+  public CohortDefinition getAgeOnArtStartDate(Integer minAge, Integer maxAge) {
+    return getAgeOnArtStartDate(minAge, maxAge, false);
+  }
+
+  public CohortDefinition getStartedArtOnPeriod(boolean considerTransferredIn) {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(StartedArtOnPeriodCalculation.class).get(0));
+    cd.setName("Art start date");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addCalculationParameter("considerTransferredIn", considerTransferredIn);
     return cd;
   }
 }
