@@ -540,7 +540,7 @@ public class TxPvlsCohortQueries {
    *
    * @return CohortDefinition
    */
-  private CohortDefinition getPatientsWhoArePregnantCohort() {
+  public CohortDefinition getPatientsWhoArePregnantCohort() {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
             "pregnant", Context.getRegisteredComponents(PregnantCalculation.class).get(0));

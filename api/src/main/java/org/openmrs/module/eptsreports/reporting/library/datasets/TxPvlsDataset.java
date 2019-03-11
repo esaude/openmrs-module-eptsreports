@@ -77,6 +77,30 @@ public class TxPvlsDataset extends BaseDataSet {
                     txPvls.getPregnantWomenWithViralLoadSuppressionNumerator(), mappings)),
             mappings),
         "");
+
+    dsd.addColumn(
+        "Pregnant",
+        "Pregnant Mothers",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "pregnant",
+                EptsReportUtils.map(
+                    txPvls.getPatientsWhoArePregnantCohort(),
+                    "onDate=${endDate},location=${location}")),
+            "endDate=${endDate},location=${location}"),
+        "");
+
+    dsd.addColumn(
+        "Breastfeeding",
+        "Breastfeeding Mothers",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Breastfeeding",
+                EptsReportUtils.map(
+                    txPvls.getPatientsWhoAreBreastfeeding(),
+                    "onDate=${endDate},location=${location}")),
+            "endDate=${endDate},location=${location}"),
+        "");
     dsd.addColumn(
         "PVLR",
         "Pregnant and has VL results",

@@ -60,7 +60,7 @@ public class BreastFeedingCalculationTest extends BasePatientCalculationTest {
    * rule tested: BreastfeedingCalculation.isLactating(Date, List<Obs>)
    */
   @Test
-  public void shouldEvaluatePatientMarkedAsBreastFeedingByLactatinng() {
+  public void shouldEvaluatePatientMarkedAsBreastFeedingByLactating() {
 
     setEvaluationContext(testsHelper.getDate("2019-01-30 00:00:00.0"));
 
