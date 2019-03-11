@@ -36,8 +36,8 @@ import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
-import org.openmrs.module.eptsreports.reporting.calculation.EptsCalculations;
-import org.openmrs.module.eptsreports.reporting.calculation.pvls.InitialArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.InitialArtStartDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForMoreThanXmonthsCalcultion;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineCalculation;
 import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
@@ -49,7 +49,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Context.class, EptsCalculations.class})
+@PrepareForTest({Context.class})
 public class RoutineCalculationTest extends BaseContextMockTest {
 
   @Mock private HivMetadata hivMetadata;
@@ -57,6 +57,8 @@ public class RoutineCalculationTest extends BaseContextMockTest {
   @Mock private InitialArtStartDateCalculation initialArtStartDateCalculation;
 
   @Mock private OnArtForMoreThanXmonthsCalcultion onArtForMoreThanXmonthsCalcultion;
+
+  @Mock private EPTSCalculationService eptsCalculationService;
 
   @Spy
   private PatientCalculationService patientCalculationService = new PatientCalculationServiceImpl();
@@ -68,7 +70,6 @@ public class RoutineCalculationTest extends BaseContextMockTest {
   @Before
   public void init() {
     PowerMockito.mockStatic(Context.class);
-    PowerMockito.mockStatic(EptsCalculations.class);
     when(Context.getRegisteredComponents(HivMetadata.class))
         .thenReturn(Collections.singletonList(hivMetadata));
     when(Context.getRegisteredComponents(InitialArtStartDateCalculation.class))
@@ -76,6 +77,8 @@ public class RoutineCalculationTest extends BaseContextMockTest {
     when(Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class))
         .thenReturn(Collections.singletonList(onArtForMoreThanXmonthsCalcultion));
     when(Context.getService(PatientCalculationService.class)).thenReturn(patientCalculationService);
+    when(Context.getRegisteredComponents(EPTSCalculationService.class))
+        .thenReturn(Collections.singletonList(eptsCalculationService));
     routineCalculation = new RoutineCalculation();
     testsHelper = new TestsHelper();
   }
@@ -275,7 +278,7 @@ public class RoutineCalculationTest extends BaseContextMockTest {
       value.add(new ObsResult(obs, null));
     }
     vlResultsMap.put(patient.getId(), value);
-    when(EptsCalculations.getObs(
+    when(eptsCalculationService.getObs(
             eq(viralLoadConcept),
             eq(cohort),
             eq(Arrays.asList(location)),
@@ -287,7 +290,7 @@ public class RoutineCalculationTest extends BaseContextMockTest {
 
     CalculationResultMap regimenChangeMap = new CalculationResultMap();
     regimenChangeMap.put(patient.getId(), new ObsResult(regimeChange, null));
-    when(EptsCalculations.getObs(
+    when(eptsCalculationService.getObs(
             eq(regimeConcept),
             eq(cohort),
             eq(Arrays.asList(location)),
@@ -305,7 +308,7 @@ public class RoutineCalculationTest extends BaseContextMockTest {
 
     CalculationResultMap lastVlMap = new CalculationResultMap();
     lastVlMap.put(patient.getId(), new ObsResult(lastVl, null));
-    when(EptsCalculations.lastObs(
+    when(eptsCalculationService.lastObs(
             eq(Arrays.asList(labEncounterType, adultFollowup, childFollowup)),
             eq(viralLoadConcept),
             eq(location),

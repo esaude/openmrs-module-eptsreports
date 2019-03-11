@@ -54,7 +54,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
   private OnArtForMoreThanXmonthsCalcultion onArtForMoreThanXmonthsCalcultion =
       Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0);
 
-  @Autowired private EPTSCalculationService ePTSCalculationService;
+  private EPTSCalculationService ePTSCalculationService =
+      Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
 
   /**
    * Patients on ART for the last X months with one VL result registered in the 12 month period
