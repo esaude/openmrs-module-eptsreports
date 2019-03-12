@@ -17,7 +17,6 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQuer
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PregnantOrBreastfeedingWomen;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -77,32 +76,6 @@ public class TxPvlsDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     txPvls.getPregnantWomenWithViralLoadSuppressionNumerator(), mappings)),
             mappings),
-        "");
-
-    dsd.addColumn(
-        "Pregnant",
-        "Pregnant Mothers",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "pregnant",
-                EptsReportUtils.map(
-                    txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-                        PregnantOrBreastfeedingWomen.PREGNANTwOMEN),
-                    "onDate=${endDate},location=${location}")),
-            "endDate=${endDate},location=${location}"),
-        "");
-
-    dsd.addColumn(
-        "Breastfeeding",
-        "Breastfeeding Mothers",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Breastfeeding",
-                EptsReportUtils.map(
-                    txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-                        PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN),
-                    "onDate=${endDate},location=${location}")),
-            "endDate=${endDate},location=${location}"),
         "");
     dsd.addColumn(
         "PVLR",
