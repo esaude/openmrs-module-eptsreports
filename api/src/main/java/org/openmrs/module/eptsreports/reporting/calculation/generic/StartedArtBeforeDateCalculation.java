@@ -14,7 +14,6 @@ package org.openmrs.module.eptsreports.reporting.calculation.generic;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
-
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -29,37 +28,44 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class StartedArtBeforeDateCalculation extends AbstractPatientCalculation {
-	
-	private static final String ON_OR_BEFORE = "onOrBefore";
-	
-	@Override
-	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
-	        PatientCalculationContext context) {
-		CalculationResultMap map = new CalculationResultMap();
-		CalculationResultMap artStartDates = calculate(
-		    Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0), cohort, parameterValues, context);
-		Date endDate = (Date) parameterValues.get(ON_OR_BEFORE);
-		if (endDate == null) {
-			endDate = (Date) context.getFromCache(ON_OR_BEFORE);
-		}
-		if (endDate != null) {
-			for (Integer patientId : cohort) {
-				Date artStartDate = InitialArtStartDateCalculation.getArtStartDate(patientId, artStartDates);
-				if (artStartDate != null && artStartDate.compareTo(endDate) <= 0) {
-					map.put(patientId, new BooleanResult(true, this));
-				}
-			}
-			return map;
-		} else {
-			throw new IllegalArgumentException(String.format("Parameter %s must be set", ON_OR_BEFORE));
-		}
-	}
-	
-	public static boolean isStartedArt(Integer patientId, CalculationResultMap calculationResultMap) {
-		BooleanResult result = (BooleanResult) calculationResultMap.get(patientId);
-		if (result != null) {
-			return result.getValue().equals(Boolean.TRUE);
-		}
-		return false;
-	}
+
+  private static final String ON_OR_BEFORE = "onOrBefore";
+
+  @Override
+  public CalculationResultMap evaluate(
+      Collection<Integer> cohort,
+      Map<String, Object> parameterValues,
+      PatientCalculationContext context) {
+    CalculationResultMap map = new CalculationResultMap();
+    CalculationResultMap artStartDates =
+        calculate(
+            Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0),
+            cohort,
+            parameterValues,
+            context);
+    Date endDate = (Date) parameterValues.get(ON_OR_BEFORE);
+    if (endDate == null) {
+      endDate = (Date) context.getFromCache(ON_OR_BEFORE);
+    }
+    if (endDate != null) {
+      for (Integer patientId : cohort) {
+        Date artStartDate =
+            InitialArtStartDateCalculation.getArtStartDate(patientId, artStartDates);
+        if (artStartDate != null && artStartDate.compareTo(endDate) <= 0) {
+          map.put(patientId, new BooleanResult(true, this));
+        }
+      }
+      return map;
+    } else {
+      throw new IllegalArgumentException(String.format("Parameter %s must be set", ON_OR_BEFORE));
+    }
+  }
+
+  public static boolean isStartedArt(Integer patientId, CalculationResultMap calculationResultMap) {
+    BooleanResult result = (BooleanResult) calculationResultMap.get(patientId);
+    if (result != null) {
+      return result.getValue().equals(Boolean.TRUE);
+    }
+    return false;
+  }
 }

@@ -226,7 +226,8 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
     EncounterType encounterType = new EncounterType(6777002);
     Location location = new Location(1);
     CalculationResultMap encounterResultMap =
-        this.eptsCalculationService.firstEncounter(encounterType, cohort, location, context);
+        this.eptsCalculationService.firstEncounter(
+            Arrays.asList(encounterType), cohort, location, context);
 
     Assert.assertNotNull(encounterResultMap);
 
@@ -239,6 +240,7 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
     Assert.assertEquals(Integer.valueOf(location.getId()), firstEncounter999.getLocation().getId());
     Assert.assertEquals(Integer.valueOf(2777023), firstEncounter999.getId());
   }
+
   /**
    * @see EPTSCalculationService#firstObs(Concept, Concept, Location, boolean, java.util.Collection,
    *     PatientCalculationContext)

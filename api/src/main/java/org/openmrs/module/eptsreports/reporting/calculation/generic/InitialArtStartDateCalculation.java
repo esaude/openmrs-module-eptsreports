@@ -12,6 +12,7 @@
 package org.openmrs.module.eptsreports.reporting.calculation.generic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -83,7 +84,8 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
         ePTSCalculationService.firstObs(
             hostoricalStartConcept, null, location, false, cohort, context);
     CalculationResultMap pharmacyEncounterMap =
-        ePTSCalculationService.firstEncounter(encounterTypePharmacy, cohort, location, context);
+        ePTSCalculationService.firstEncounter(
+            Arrays.asList(encounterTypePharmacy), cohort, location, context);
     CalculationResultMap transferInMap =
         ePTSCalculationService.firstObs(
             arvPlan, transferInConcept, location, true, cohort, context);

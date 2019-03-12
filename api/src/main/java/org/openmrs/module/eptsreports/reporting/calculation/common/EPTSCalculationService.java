@@ -146,19 +146,42 @@ public class EPTSCalculationService {
    * @return the encounters in a calculation result map
    */
   public CalculationResultMap firstEncounter(
-      EncounterType encounterType,
+      List<EncounterType> encounterTypes,
       Collection<Integer> cohort,
       Location location,
       PatientCalculationContext context) {
     EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition();
     def.setWhich(TimeQualifier.FIRST);
     def.setLocationList(Arrays.asList(location));
-    if (encounterType != null) {
-      def.setName("first encounter of type " + encounterType.getName());
-      def.addType(encounterType);
+    if (encounterTypes != null) {
+      def.setName("first encounter ");
+      def.setTypes(encounterTypes);
     } else {
       def.setName("first encounter of any type");
     }
+    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
+  }
+
+  /**
+   * The most recent encounter before date
+   *
+   * @param encounterType the encounter type
+   * @param cohort the patient ids
+   * @param context the calculation context
+   * @return the encounters in a calculation result map
+   */
+  public CalculationResultMap lastEncounterBeforeDate(
+      List<EncounterType> encounterTypes,
+      Collection<Integer> cohort,
+      Location location,
+      Date date,
+      PatientCalculationContext context) {
+    EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition();
+    def.setName("lastEncounterBeforeDate");
+    def.setWhich(TimeQualifier.LAST);
+    def.setOnOrBefore(date);
+    def.setLocationList(Arrays.asList(location));
+    def.setTypes(encounterTypes);
     return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
   }
 

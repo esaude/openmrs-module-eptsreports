@@ -16,7 +16,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.joda.time.Days;
+import org.joda.time.Interval;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
+import org.openmrs.Obs;
 import org.openmrs.PatientState;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -38,6 +44,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ActiveOnArtCalculation extends AbstractPatientCalculation {
 
+  private static final int TOLERANCE_FOR_NEXT_CONSULTATION = 61;
+
+  private static final int TOLERANCE_FOR_NEXT_PICKUP = 60;
+
   private static final String ON_OR_BEFORE = "onOrBefore";
 
   @Autowired private EPTSCalculationService eptsCalculationService;
@@ -58,6 +68,9 @@ public class ActiveOnArtCalculation extends AbstractPatientCalculation {
             context);
     Location location = (Location) context.getFromCache("location");
     Date endDate = (Date) parameterValues.get(ON_OR_BEFORE);
+    if (endDate == null) {
+      endDate = (Date) context.getFromCache(ON_OR_BEFORE);
+    }
     CalculationResultMap abandonments =
         eptsCalculationService.patientStatesBeforeDate(
             cohort,
@@ -69,16 +82,74 @@ public class ActiveOnArtCalculation extends AbstractPatientCalculation {
                 hivMetadata.getPatientHasDiedWorkflowState(),
                 hivMetadata.getAbandonedWorkflowState()),
             context);
+    final List<EncounterType> pharmacyEncounterTypes =
+        Arrays.asList(hivMetadata.getARVPharmaciaEncounterType());
+    final List<EncounterType> consultationEncounterTypes =
+        Arrays.asList(
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType());
+    CalculationResultMap mostRecentPharmacyEncounter =
+        eptsCalculationService.lastEncounterBeforeDate(
+            pharmacyEncounterTypes, cohort, location, endDate, context);
+    CalculationResultMap mostRecentConsultationEncounter =
+        eptsCalculationService.lastEncounterBeforeDate(
+            consultationEncounterTypes, cohort, location, endDate, context);
+    final Concept nextPickupConcept = hivMetadata.getReturnVisitDateForArvDrugConcept();
+    final Concept nextConsultationConcept = hivMetadata.getReturnVisitDateConcept();
+    CalculationResultMap pharmacyObservations =
+        eptsCalculationService.lastObs(
+            pharmacyEncounterTypes, nextPickupConcept, location, null, endDate, cohort, context);
+    CalculationResultMap consultationObservations =
+        eptsCalculationService.lastObs(
+            consultationEncounterTypes,
+            nextConsultationConcept,
+            location,
+            null,
+            endDate,
+            cohort,
+            context);
     for (Integer patientId : cohort) {
       List<PatientState> patientAbandonments =
           EptsCalculationUtils.extractResultValues((ListResult) abandonments.get(patientId));
       boolean startedArt =
           StartedArtBeforeDateCalculation.isStartedArt(patientId, startedArtBeforeDate);
-      if (startedArt && patientAbandonments.isEmpty()) {
+      Encounter pharmacyEncounter =
+          EptsCalculationUtils.resultForPatient(mostRecentPharmacyEncounter, patientId);
+      Encounter consultationEncounter =
+          EptsCalculationUtils.resultForPatient(mostRecentConsultationEncounter, patientId);
+      Obs nextPickupObs = EptsCalculationUtils.resultForPatient(pharmacyObservations, patientId);
+      Obs nextConsultationObs =
+          EptsCalculationUtils.resultForPatient(consultationObservations, patientId);
+      final Boolean missedPickup =
+          isMissed(pharmacyEncounter, nextPickupObs, TOLERANCE_FOR_NEXT_PICKUP, endDate);
+      final Boolean missedConsultation =
+          isMissed(
+              consultationEncounter, nextConsultationObs, TOLERANCE_FOR_NEXT_CONSULTATION, endDate);
+      if (startedArt
+          && patientAbandonments.isEmpty()
+          && (!Boolean.TRUE.equals(missedPickup)
+              || (Boolean.TRUE.equals(missedPickup) && Boolean.FALSE.equals(missedConsultation)))) {
         map.put(patientId, new BooleanResult(true, this));
       }
     }
     return map;
+  }
+
+  public Boolean isMissed(Encounter encounter, Obs obs, int days, Date endDate) {
+    if (encounter != null
+        && obs != null
+        && encounter.getEncounterDatetime().equals(obs.getObsDatetime())) {
+      Date date = obs.getValueDatetime();
+      if (date != null) {
+        if (date.compareTo(endDate) <= 0) {
+          int difference = Days.daysIn(new Interval(date.getTime(), endDate.getTime())).getDays();
+          return difference >= days;
+        } else {
+          return false;
+        }
+      }
+    }
+    return null;
   }
 
   public static boolean isActiveOnArt(
