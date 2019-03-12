@@ -40,4 +40,17 @@ public class TbPrevCohortQueries {
     definition.addParameter(new Parameter("locationList", "Location", Location.class));
     return definition;
   }
+
+  public CohortDefinition getPatientsThatFinalizedProfilaxiaIsoniazidaOnPeriod() {
+    DateObsCohortDefinition definition = new DateObsCohortDefinition();
+    definition.setName("getPatientsThatFinalizedProfilaxiaIsoniazidaOnPeriod");
+    definition.setQuestion(hivMetadata.getDataFinalizacaoProfilaxiaIsoniazidaConcept());
+    definition.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    definition.setOperator1(RangeComparator.GREATER_EQUAL);
+    definition.setOperator2(RangeComparator.LESS_EQUAL);
+    definition.addParameter(new Parameter("value1", "After Date", Date.class));
+    definition.addParameter(new Parameter("value2", "Before Date", Date.class));
+    definition.addParameter(new Parameter("locationList", "Location", Location.class));
+    return definition;
+  }
 }

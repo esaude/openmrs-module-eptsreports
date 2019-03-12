@@ -106,6 +106,9 @@ public final class EptsReportConstants {
   public static final String GLOBAL_PROPERTY_DATA_INICIO_PROFILAXIA_ISONIAZIDA_CONCEPT_ID =
       "eptsreports.DataInicioProfilaxiaIsoniazidaConceptUuid";
 
+  public static final String GLOBAL_PROPERTY_DATA_FINALIZACAO_PROFILAXIA_ISONIAZIDA_CONCEPT_ID =
+      "eptsreports.DataFimProfilaxiaIsoniazidaConceptUuid";
+
   // Encounter types
   public static final String GLOBAL_PROPERTY_S_TARV_ADULTO_SEGUIMENTO_ENCOUNTER_TYPE_UUID =
       "eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid";

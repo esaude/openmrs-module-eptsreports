@@ -54,7 +54,7 @@ public class TbPrevDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Numerator Total",
                 EptsReportUtils.map(
-                    tbPrevCohortQueries.getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod(),
+                    tbPrevCohortQueries.getPatientsThatFinalizedProfilaxiaIsoniazidaOnPeriod(),
                     "value1=${startDate},value2=${endDate},locationList=${location}")),
             mappings),
         "");
