@@ -244,7 +244,7 @@ public class TxNewCohortQueries {
     queryParameters.put("arvPlanConcept", hivMetadata.getARVPlanConcept().getConceptId());
     queryParameters.put("startDrugsConcept", hivMetadata.getStartDrugsConcept().getConceptId());
     queryParameters.put(
-        "historicalDrugsConcept", hivMetadata.gethistoricalDrugStartDateConcept().getConceptId());
+        "historicalDrugsConcept", hivMetadata.getHistoricalDrugStartDateConcept().getConceptId());
 
     if (ageCohort instanceof AgeCohortDefinition) {
       queryParameters.put("minAge", ((AgeCohortDefinition) ageCohort).getMinAge());

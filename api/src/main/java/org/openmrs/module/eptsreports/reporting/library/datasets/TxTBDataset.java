@@ -100,7 +100,8 @@ public class TxTBDataset extends BaseDataSet {
     CohortIndicator screenedTbNegative =
         eptsGeneralIndicator.getIndicator(
             "patientsWhoScreenTbNegative",
-            EptsReportUtils.map(txTbCohortQueries.patientsWhoScreenTbNegative(), mappings));
+            EptsReportUtils.map(
+                txTbCohortQueries.patientsWhoScreenTbNegativeOrPositive(), mappings));
     dataSetDefinition.addColumn(
         "TXB_DEN", "TX_TB: Denominator", EptsReportUtils.map(screenedTbNegative, mappings), "");
     dataSetDefinition.addColumn(

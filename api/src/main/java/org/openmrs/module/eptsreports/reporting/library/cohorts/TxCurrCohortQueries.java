@@ -233,7 +233,7 @@ public class TxCurrCohortQueries {
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.gethistoricalDrugStartDateConcept().getConceptId()));
+            hivMetadata.getHistoricalDrugStartDateConcept().getConceptId()));
     patientWithHistoricalDrugStartDateObs.addParameter(
         new Parameter("onOrBefore", "onOrBefore", Date.class));
     patientWithHistoricalDrugStartDateObs.addParameter(

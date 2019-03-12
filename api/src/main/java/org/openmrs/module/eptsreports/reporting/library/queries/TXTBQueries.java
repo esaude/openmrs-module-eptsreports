@@ -1,5 +1,8 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+import java.util.List;
+import org.apache.commons.lang.StringUtils;
+
 public class TXTBQueries {
 
   /**
@@ -166,6 +169,72 @@ public class TXTBQueries {
         + " AND ps.state = "
         + evaluationAndPrepState
         + " AND ps.start_date <= :endDate AND location_id = :location ";
+  }
+
+  public static String inARTProgramToEndDateAtLocation(Integer aRTProgramId) {
+    return "select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id where pg.voided=0 and p.voided=0 and program_id="
+        + aRTProgramId
+        + " and date_enrolled<=:endDate and location_id=:location";
+  }
+
+  public static String inTBProgramToEndDateAtLocation(Integer tbProgramId) {
+    return "select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id where pg.voided=0 and p.voided=0 and program_id="
+        + tbProgramId
+        + " and date_enrolled between :startDate and :endDate and location_id=:location";
+  }
+
+  public static String anyCodedObsToEndDate(
+      Integer questionId, List<Integer> answerIds, List<Integer> encounterTypeIds) {
+    return "select person_id from obs where concept_id = "
+        + questionId
+        + " and value_coded in ("
+        + StringUtils.join(answerIds, ",")
+        + ") and encounter_id in(select distinct encounter_id from encounter where encounter_type in("
+        + StringUtils.join(encounterTypeIds, ",")
+        + ")) and location_id = :location and voided=0 and obs_datetime <= :endDate";
+  }
+
+  public static String lastCodedObsFromStartToEndDate(
+      Integer questionId, List<Integer> answerIds, List<Integer> encounterTypeIds) {
+    return "select person_id from obs where concept_id = "
+        + questionId
+        + " and value_coded in ("
+        + StringUtils.join(answerIds, ",")
+        + ") and encounter_id in(select distinct encounter_id from encounter where encounter_type in("
+        + StringUtils.join(encounterTypeIds, ",")
+        + ")) and location_id = :location and voided=0 and obs_datetime >= :startDate and obs_datetime <= :endDate";
+  }
+
+  public static String dateObs(
+      Integer questionId, List<Integer> encounterTypeIds, boolean startDate) {
+    String sql =
+        "select person_id from obs where concept_id = "
+            + questionId
+            + " and encounter_id in(select distinct encounter_id from encounter where encounter_type in("
+            + StringUtils.join(encounterTypeIds, ",")
+            + ")) and location_id = :location and ";
+    if (startDate) {
+      sql += "value_datetime >= :startDate and value_datetime <= :endDate and voided=0";
+    } else {
+      sql += "value_datetime <= :endDate and voided=0";
+    }
+    return sql;
+  }
+
+  public static String encounterObs(Integer encounterTypeId) {
+    return "select distinct patient_id from encounter where encounter_type ="
+        + encounterTypeId
+        + " and location_id = :location and encounter_datetime <= :endDate and voided=0;";
+  }
+
+  public static String patientsTransferredFromARTTreatment(
+      Integer artProgramId, Integer transferOutStateId) {
+    return "select pg.patient_id from patient p  inner join patient_program pg on p.patient_id=pg.patient_id inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+        + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id="
+        + artProgramId
+        + " and ps.state="
+        + transferOutStateId
+        + " and ps.start_date=pg.date_enrolled and ps.start_date between :startDate and :endDate and location_id=:location";
   }
 
   public static class AbandonedWithoutNotificationParams {

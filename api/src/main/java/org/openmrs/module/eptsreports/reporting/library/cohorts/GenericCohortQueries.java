@@ -33,13 +33,9 @@ import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.Ti
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
-import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -210,42 +206,6 @@ public class GenericCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addCalculationParameter("minAge", minAge);
     cd.addCalculationParameter("maxAge", maxAge);
-    return cd;
-  }
-
-  /**
-   * Generic Date Observation cohort
-   *
-   * @param question the question concept
-   * @return the cohort definition
-   */
-  public CohortDefinition hasDateObs(
-      Concept question,
-      TimeModifier timeModifier,
-      List<EncounterType> encounterTypes,
-      RangeComparator operator1,
-      RangeComparator operator2) {
-    DateObsCohortDefinition cd = new DateObsCohortDefinition();
-    cd.setName("has obs between dates");
-    cd.setQuestion(question);
-    cd.setTimeModifier(timeModifier);
-    cd.setEncounterTypeList(encounterTypes);
-
-    cd.setOperator2(operator2);
-
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-
-    return cd;
-  }
-
-  public CohortDefinition hasEncounter(
-      List<EncounterType> encounterTypeList, TimeQualifier timeQualifier) {
-    EncounterCohortDefinition cd = new EncounterCohortDefinition();
-    cd.setEncounterTypeList(encounterTypeList);
-    cd.setTimeQualifier(timeQualifier);
-
     return cd;
   }
 }

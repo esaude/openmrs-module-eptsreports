@@ -51,7 +51,7 @@ public class Eri2MonthsCohortQueries {
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             hivMetadata.getStartDrugsConcept().getConceptId(),
-            hivMetadata.gethistoricalDrugStartDateConcept().getConceptId(),
+            hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId()));
     return cd;
   }
@@ -75,7 +75,7 @@ public class Eri2MonthsCohortQueries {
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             hivMetadata.getStartDrugsConcept().getConceptId(),
-            hivMetadata.gethistoricalDrugStartDateConcept().getConceptId(),
+            hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId()));
     return cd;
   }
