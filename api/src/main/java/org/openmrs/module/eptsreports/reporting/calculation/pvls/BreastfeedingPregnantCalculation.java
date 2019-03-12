@@ -10,10 +10,11 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PregnantOrBreastfeedingWomen;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PregnantCalculation extends AbstractPatientCalculation {
+public class BreastfeedingPregnantCalculation extends AbstractPatientCalculation {
 
   @Override
   public CalculationResultMap evaluate(
@@ -22,6 +23,9 @@ public class PregnantCalculation extends AbstractPatientCalculation {
       PatientCalculationContext context) {
 
     CalculationResultMap resultMap = new CalculationResultMap();
+
+    PregnantOrBreastfeedingWomen state =
+        (PregnantOrBreastfeedingWomen) parameterValues.get("state");
 
     // get female patients only
     Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);
@@ -40,13 +44,24 @@ public class PregnantCalculation extends AbstractPatientCalculation {
       boolean isCandidate = false;
       Date pregnancyDate = (Date) pregnantDateMap.get(ptId).getValue();
       Date breastfeedingDate = (Date) breastfeedingDateMap.get(ptId).getValue();
-      if (pregnancyDate != null) {
-        isCandidate = true;
-      }
-      if (breastfeedingDate != null
-          && pregnancyDate != null
-          && breastfeedingDate.after(pregnancyDate)) {
-        isCandidate = false;
+      if (state.equals(PregnantOrBreastfeedingWomen.PREGNANTwOMEN)) {
+        if (pregnancyDate != null) {
+          isCandidate = true;
+        }
+        if (breastfeedingDate != null
+            && pregnancyDate != null
+            && breastfeedingDate.after(pregnancyDate)) {
+          isCandidate = false;
+        }
+      } else if (state.equals(PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN)) {
+        if (breastfeedingDate != null) {
+          isCandidate = true;
+        }
+        if (breastfeedingDate != null
+            && pregnancyDate != null
+            && pregnancyDate.after(breastfeedingDate)) {
+          isCandidate = false;
+        }
       }
       resultMap.put(ptId, new BooleanResult(isCandidate, this));
     }

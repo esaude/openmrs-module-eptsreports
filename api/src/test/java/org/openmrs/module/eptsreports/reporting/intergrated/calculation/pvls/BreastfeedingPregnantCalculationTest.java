@@ -10,15 +10,15 @@ import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
-import org.openmrs.module.eptsreports.reporting.calculation.pvls.PregnantCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.BreastfeedingPregnantCalculation;
 import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
 
-public class PregnantCalculationTest extends BasePatientCalculationTest {
+public class BreastfeedingPregnantCalculationTest extends BasePatientCalculationTest {
 
   @Override
   public PatientCalculation getCalculation() {
 
-    return Context.getRegisteredComponents(PregnantCalculation.class).get(0);
+    return Context.getRegisteredComponents(BreastfeedingPregnantCalculation.class).get(0);
   }
 
   @Override
