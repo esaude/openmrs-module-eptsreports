@@ -12,6 +12,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.BreastfeedingPregnantCalculation;
 import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PregnantOrBreastfeedingWomen;
 
 public class BreastfeedingPregnantCalculationTest extends BasePatientCalculationTest {
 
@@ -47,6 +48,7 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
   @Before
   public void initialise() throws Exception {
     executeDataSet("pvlsTest.xml");
+    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTwOMEN);
   }
 
   /*
@@ -66,10 +68,11 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
   @Test
   public void shouldEvaluateOnePatientMarkedAsPregnantByEnrollInPTVProgram() {
 
-    CalculationResultMap evaluatedResult =
-        service.evaluate(getCohort(), getCalculation(), getEvaluationContext());
+    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTwOMEN);
 
-    evaluatedResult = service.evaluate(getCohort(), getCalculation(), getEvaluationContext());
+    CalculationResultMap evaluatedResult =
+        service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext());
+
     Assert.assertEquals(true, evaluatedResult.get(501).getValue());
 
     matchOtherResultsExcept(evaluatedResult, 7, 8);
@@ -94,9 +97,10 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
   public void shouldEvaluateOnePatientMarkedAsPregrantByAdultFollowup() {
 
     setEvaluationContext(testsHelper.getDate("2019-06-30 00:00:00.0"));
+    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTwOMEN);
 
     CalculationResultMap evaluatedResult =
-        service.evaluate(getCohort(), getCalculation(), getEvaluationContext());
+        service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext());
 
     Assert.assertEquals(true, evaluatedResult.get(7).getValue());
 
@@ -121,9 +125,10 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
   public void shoudEvaluateOnePatientMarkedAsPreagnantByWeeks() {
 
     setEvaluationContext(testsHelper.getDate("2019-03-01 00:00:00.0"));
+    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTwOMEN);
 
     CalculationResultMap evaluatedResult =
-        service.evaluate(getCohort(), getCalculation(), getEvaluationContext());
+        service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext());
 
     Assert.assertEquals(true, evaluatedResult.get(8).getValue());
 
@@ -139,9 +144,10 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
   public void shouldEvaluatePatientMarkedAsPregnantByDueDate() {
 
     setEvaluationContext(testsHelper.getDate("1999-02-01 00:00:00.0"));
+    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTwOMEN);
 
     CalculationResultMap evaluatedResult =
-        service.evaluate(getCohort(), getCalculation(), getEvaluationContext());
+        service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext());
 
     Assert.assertEquals(true, evaluatedResult.get(7).getValue());
 
