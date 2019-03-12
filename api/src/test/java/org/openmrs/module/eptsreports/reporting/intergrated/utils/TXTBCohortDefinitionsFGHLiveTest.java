@@ -32,7 +32,7 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
   @Override
   public Boolean useInMemoryDatabase() {
     /*
-     * ensure ~/.OpenMRS/openmrs-runtime.properties exists with your props
+     * ensure ~/.OpenMRS/openmrs-runtime.properties exists with your properties
      * such as; connection.username=openmrs
      * connection.url=jdbc:mysql://127.0.0.1:3316/openmrs
      * connection.password=wTV.Tpp0|Q&c
@@ -41,7 +41,7 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
   }
 
   @Before
-  public void setup() throws Exception {
+  public void initialize() throws Exception {
     Context.authenticate("admin", "eSaude123");
   }
 
