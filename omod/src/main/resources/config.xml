@@ -341,6 +341,11 @@
 		<defaultValue>f8c5d365-7636-4449-9acd-c83c4fd2ea01</defaultValue>
 		<description>TDF_3TC_LPV</description>
 	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.DataInicioProfilaxiaIsoniazidaConceptUuid</property>
+		<defaultValue>6fa92ac9-0a96-4372-9e10-dd9683c19135</defaultValue>
+		<description>Data de inicio de profilaxia com Isoniazida</description>
+	</globalProperty>
 
 	<!-- 2nd line ARV Concepts -->
 

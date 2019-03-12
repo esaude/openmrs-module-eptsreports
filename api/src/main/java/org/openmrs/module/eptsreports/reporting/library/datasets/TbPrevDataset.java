@@ -14,6 +14,7 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TbPrevCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -27,6 +28,8 @@ public class TbPrevDataset extends BaseDataSet {
   @Autowired private GenericCohortQueries genericCohortQueries;
 
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
+
+  @Autowired private TbPrevCohortQueries tbPrevCohortQueries;
 
   public DataSetDefinition constructTbPrevDatset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
@@ -42,6 +45,17 @@ public class TbPrevDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     genericCohortQueries.getActiveOnArt(),
                     "onOrBefore=${endDate},location=${location}")),
+            mappings),
+        "");
+    dsd.addColumn(
+        "TEST-01",
+        "Teste",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Numerator Total",
+                EptsReportUtils.map(
+                    tbPrevCohortQueries.getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod(),
+                    "value1=${startDate},value2=${endDate},locationList=${location}")),
             mappings),
         "");
     return dsd;
