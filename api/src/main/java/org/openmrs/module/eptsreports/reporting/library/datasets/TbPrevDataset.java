@@ -34,7 +34,7 @@ public class TbPrevDataset extends BaseDataSet {
 
   @Autowired private TbPrevDimensions tbPrevDimensions;
 
-  public DataSetDefinition constructTbPrevDatset() {
+  public DataSetDefinition constructDatset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     dsd.setName("TB PREV Data Set");

@@ -22,6 +22,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQue
 import org.openmrs.module.eptsreports.reporting.library.datasets.TbPrevDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
@@ -70,7 +71,7 @@ public class SetupTbPrev extends EptsDataExportManager {
     reportDefinition.setDescription(getDescription());
     reportDefinition.setParameters(getParameters());
     reportDefinition.addDataSetDefinition(
-        "TBPREV", Mapped.mapStraightThrough(tbPrevDataset.constructTbPrevDatset()));
+        "TBPREV", Mapped.mapStraightThrough(tbPrevDataset.constructDatset()));
     reportDefinition.setBaseCohortDefinition(
         genericCohortQueries.getBaseCohort(),
         ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
@@ -89,7 +90,7 @@ public class SetupTbPrev extends EptsDataExportManager {
       reportDesign.setProperties(props);
       return Arrays.asList(reportDesign);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new ReportingException("Error while creating report designs", e);
     }
   }
 
