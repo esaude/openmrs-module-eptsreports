@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TbPrevCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -24,8 +23,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TbPrevDataset extends BaseDataSet {
-
-  @Autowired private GenericCohortQueries genericCohortQueries;
 
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
 
@@ -43,19 +40,19 @@ public class TbPrevDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Numerator Total",
                 EptsReportUtils.map(
-                    tbPrevCohortQueries.getNumeratorQuery(),
+                    tbPrevCohortQueries.getNumerator(),
                     "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
             mappings),
         "");
     dsd.addColumn(
-        "TEST-01",
-        "Teste",
+        "DEN-TOTAL",
+        "Denominator Total",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Numerator Total",
+                "Denominator Total",
                 EptsReportUtils.map(
-                    tbPrevCohortQueries.getPatientsThatFinalizedProfilaxiaIsoniazidaOnPeriod(),
-                    "value1=${startDate},value2=${endDate},locationList=${location}")),
+                    tbPrevCohortQueries.getDenominator(),
+                    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
             mappings),
         "");
     return dsd;
