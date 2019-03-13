@@ -14,6 +14,7 @@ import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
@@ -23,7 +24,6 @@ import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalcu
 import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -34,8 +34,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class PregnantDateCalculation extends AbstractPatientCalculation {
 
-  @Autowired private HivMetadata hivMetadata;
-  @Autowired private EPTSCalculationService ePTSCalculationService;
+  private HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
+  private EPTSCalculationService ePTSCalculationService =
+      Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
 
   @Override
   public CalculationResultMap evaluate(
