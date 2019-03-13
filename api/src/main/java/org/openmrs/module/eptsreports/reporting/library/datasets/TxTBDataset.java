@@ -37,7 +37,7 @@ public class TxTBDataset extends BaseDataSet {
   @Autowired private TXTBCohortQueries txTbCohortQueries;
 
   @Autowired
-  @Qualifier("txNewAgeDimensionCohort")
+  @Qualifier("commonAgeDimensionCohort")
   private AgeDimensionCohortInterface ageDimensionCohort;
 
   public DataSetDefinition constructTxTBDataset() {
@@ -48,7 +48,9 @@ public class TxTBDataset extends BaseDataSet {
 
     dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dataSetDefinition.addDimension(
-        "age", EptsReportUtils.map(eptsCommonDimension.age(ageDimensionCohort), mappings));
+        "age",
+        EptsReportUtils.map(
+            eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
     addTXTBNumerator(mappings, dataSetDefinition);
 
     addTXTBDenominator(mappings, dataSetDefinition);
@@ -99,7 +101,7 @@ public class TxTBDataset extends BaseDataSet {
       String mappings, CohortIndicatorDataSetDefinition dataSetDefinition) {
     CohortIndicator screenedTbNegative =
         eptsGeneralIndicator.getIndicator(
-            "patientsWhoScreenTbNegative",
+            "patientsWhoScreenTbNegativeOrPositive",
             EptsReportUtils.map(
                 txTbCohortQueries.patientsWhoScreenTbNegativeOrPositive(), mappings));
     dataSetDefinition.addColumn(
@@ -154,9 +156,11 @@ public class TxTBDataset extends BaseDataSet {
 
   private List<ColumnParameters> dissagregations() {
     return Arrays.asList(
-        new ColumnParameters("0-14Females", "0-14 anos - Feminino", "gender=F|age=0-14", "F1"),
+        new ColumnParameters("<15Females", "<15 anos - Feminino", "gender=F|age=<15", "F1"),
         new ColumnParameters(">=15Females", "15+ anos Feminino", "gender=F|age=15+", "F2"),
-        new ColumnParameters("0-14Males", "0-14 anos - Masculino", "gender=M|age=0-14", "M1"),
-        new ColumnParameters(">=15Males", "15+ anos Masculino", "gender=M|age=15+", "M2"));
+        new ColumnParameters("UnknownFemales", "Unknown anos Feminino", "gender=F|age=UK", "UK1"),
+        new ColumnParameters("<15Males", "<15 anos - Masculino", "gender=M|age=<15", "M1"),
+        new ColumnParameters(">=15Males", "15+ anos Masculino", "gender=M|age=15+", "M2"),
+        new ColumnParameters("UnknownMales", "Unknown anos Masculino", "gender=M|age=UK", "UK2"));
   }
 }

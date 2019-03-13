@@ -16,6 +16,7 @@ import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinitio
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -59,21 +60,20 @@ public class TXTBCohortQueries {
 
     CohortDefinition TBPROGRAMA = getInTBProgram();
     CohortDefinition INICIOST =
-        genericCohortQueries.generalSql(
-            "tbTreatment",
-            TXTBQueries.anyCodedObsToEndDate(
-                tbMetadata.getTBTreatmentPlanConcept().getConceptId(),
-                Arrays.asList(hivMetadata.getStartDrugsConcept().getId()),
-                Arrays.asList(
-                    tbMetadata.getTBProcessoEncounterType().getId(),
-                    hivMetadata.getAdultoSeguimentoEncounterType().getId(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getId())));
-
+        genericCohortQueries.hasCodedObs(
+            tbMetadata.getTBTreatmentPlanConcept(),
+            TimeModifier.ANY,
+            SetComparator.IN,
+            Arrays.asList(
+                tbMetadata.getTBProcessoEncounterType(),
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+            Arrays.asList(commonMetadata.getStartDrugsConcept()));
     CohortDefinition DATAINICIO = tbTreatmentStartUsingEndDate();
     addGeneralParameters(TBPROGRAMA);
     cd.addSearch("TBPROGRAMA", map(TBPROGRAMA, generalParameterMapping));
     addGeneralParameters(INICIOST);
-    cd.addSearch("INICIOST", map(INICIOST, generalParameterMapping));
+    cd.addSearch("INICIOST", map(INICIOST, codedObsParameterMapping));
     addGeneralParameters(DATAINICIO);
     cd.addSearch("DATAINICIO", map(DATAINICIO, generalParameterMapping));
     cd.setCompositionString("TBPROGRAMA OR INICIOST OR DATAINICIO");
@@ -144,7 +144,7 @@ public class TXTBCohortQueries {
     addGeneralParameters(PROGRAMA);
     cd.addSearch("PROGRAMA", map(PROGRAMA, generalParameterMapping));
     addGeneralParameters(CONCEITO1255);
-    cd.addSearch("CONCEITO1255", map(CONCEITO1255, generalParameterMapping));
+    cd.addSearch("CONCEITO1255", map(CONCEITO1255, codedObsParameterMapping));
     addGeneralParameters(CONCEITODATA);
     cd.addSearch("CONCEITODATA", map(CONCEITODATA, generalParameterMapping));
     addGeneralParameters(FRIDAFILA);
@@ -155,17 +155,16 @@ public class TXTBCohortQueries {
 
   /** ALGUMA VEZ ESTEVE EM TRATAMENTO ARV - PERIODO FINAL */
   public CohortDefinition everyTimeARVTreatedFinal() {
-    return genericCohortQueries.generalSql(
-        "startART",
-        TXTBQueries.anyCodedObsToEndDate(
-            hivMetadata.getARVPlanConcept().getConceptId(),
-            Arrays.asList(
-                hivMetadata.getStartDrugsConcept().getConceptId(),
-                hivMetadata.getTransferFromOtherFacilityConcept().getConceptId()),
-            Arrays.asList(
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())));
+    return genericCohortQueries.hasCodedObs(
+        hivMetadata.getARVPlanConcept(),
+        TimeModifier.ANY,
+        SetComparator.IN,
+        Arrays.asList(
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+            hivMetadata.getARVPharmaciaEncounterType()),
+        Arrays.asList(
+            hivMetadata.getStartDrugsConcept(), hivMetadata.getTransferFromOtherFacilityConcept()));
   }
 
   /**
@@ -414,23 +413,14 @@ public class TXTBCohortQueries {
 
     CohortDefinition ACTUALTARV = getPatientsInARTWithoutAbandonedNotification();
 
-    CohortDefinition RASTREIOPOSITIVO =
-        genericCohortQueries.generalSql(
-            "tbScreening",
-            TXTBQueries.anyCodedObsToEndDate(
-                tbMetadata.getTbScreeningConcept().getId(),
-                Arrays.asList(commonMetadata.getYesConcept().getId()),
-                Arrays.asList(
-                    hivMetadata.getAdultoSeguimentoEncounterType().getId(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getId())));
-
+    CohortDefinition RASTREIOPOSITIVO = codedPositiveTbScreening();
     CohortDefinition NOVOSINICIOS =
         getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation();
 
     addGeneralParameters(ACTUALTARV);
     cd.addSearch("ACTUALTARV", map(ACTUALTARV, generalParameterMapping));
     addGeneralParameters(RASTREIOPOSITIVO);
-    cd.addSearch("RASTREIOPOSITIVO", map(RASTREIOPOSITIVO, generalParameterMapping));
+    cd.addSearch("RASTREIOPOSITIVO", map(RASTREIOPOSITIVO, codedObsParameterMapping));
     addGeneralParameters(NOVOSINICIOS);
     cd.addSearch("NOVOSINICIOS", map(NOVOSINICIOS, generalParameterMapping));
     cd.setCompositionString("(ACTUALTARV AND RASTREIOPOSITIVO) NOT NOVOSINICIOS");
@@ -449,22 +439,13 @@ public class TXTBCohortQueries {
 
     CohortDefinition ACTUALTARV = getPatientsInARTWithoutAbandonedNotification();
 
-    CohortDefinition RASTREIONEGATIVO =
-        genericCohortQueries.generalSql(
-            "tbScreening",
-            TXTBQueries.anyCodedObsToEndDate(
-                tbMetadata.getTbScreeningConcept().getId(),
-                Arrays.asList(commonMetadata.getNoConcept().getId()),
-                Arrays.asList(
-                    hivMetadata.getAdultoSeguimentoEncounterType().getId(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getId())));
-
+    CohortDefinition RASTREIONEGATIVO = codedNegativeTbScreening();
     CohortDefinition NOVOSINICIOS =
         getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation();
     addGeneralParameters(ACTUALTARV);
     cd.addSearch("ACTUALTARV", map(ACTUALTARV, generalParameterMapping));
     addGeneralParameters(RASTREIONEGATIVO);
-    cd.addSearch("RASTREIONEGATIVO", map(RASTREIONEGATIVO, generalParameterMapping));
+    cd.addSearch("RASTREIONEGATIVO", map(RASTREIONEGATIVO, codedObsParameterMapping));
     addGeneralParameters(NOVOSINICIOS);
     cd.addSearch("NOVOSINICIOS", map(NOVOSINICIOS, generalParameterMapping));
     cd.setCompositionString("(ACTUALTARV AND RASTREIONEGATIVO) NOT NOVOSINICIOS");
@@ -541,5 +522,14 @@ public class TXTBCohortQueries {
     cd.setCompositionString("INICIOTARVTB AND RASTREIOTBNEG");
     addGeneralParameters(cd);
     return cd;
+  }
+
+  /**
+   * NUMERO DE PACIENTES TARV COM RASTREIO DE TUBERCULOSE POSITIVO/NEGATIVO NUM DETERMINADO PERIODO
+   */
+  public CohortIndicator dd() {
+    CohortIndicator ci = new CohortIndicator();
+    // 342
+    return ci;
   }
 }

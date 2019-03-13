@@ -82,6 +82,16 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
     return Context.getService(CohortDefinitionService.class).evaluate(cd, context);
   }
 
+  private EvaluatedCohort evaluateCohortDefinition(
+      CohortDefinition cd, Date startDate, Date endDate, Location location)
+      throws EvaluationException {
+    addParameters(cd);
+    EvaluationContext context = new EvaluationContext();
+
+    setParameters(startDate, endDate, location, context);
+    return Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+  }
+
   @Test
   public void getPatientsWhoCameOutOfARVTreatmentProgram() throws EvaluationException {
     // TODO remove startDate
@@ -100,7 +110,8 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
   @Test
   public void everyTimeARVTreatedFinal() throws EvaluationException {
     // TODO remove startDate
-    EvaluatedCohort result = evaluateCohortDefinition(txTbCohortQueries.everyTimeARVTreatedFinal());
+    EvaluatedCohort result =
+        evaluateCodedObsCohortDefinition(txTbCohortQueries.everyTimeARVTreatedFinal());
     Assert.assertEquals(322, result.size());
   }
 
@@ -178,12 +189,24 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
     EvaluatedCohort result =
         evaluateCohortDefinition(txTbCohortQueries.patientsWhoScreenTbNegativeOrPositive());
     Assert.assertEquals(342, result.size());
+    System.out.println(result.getCommaSeparatedPatientIds());
   }
 
   @Test
   public void patientsOnARTWhoScreenedTBPositiveForAPeriod() throws EvaluationException {
     EvaluatedCohort result =
         evaluateCohortDefinition(txTbCohortQueries.patientsOnARTWhoScreenedTBPositiveForAPeriod());
+    Assert.assertEquals(0, result.size());
+  }
+
+  @Test
+  public void patientsOnARTWhoScreenedTBPositiveForAPeriodLocation379() throws EvaluationException {
+    EvaluatedCohort result =
+        evaluateCohortDefinition(
+            txTbCohortQueries.patientsOnARTWhoScreenedTBPositiveForAPeriod(),
+            DateUtil.getDateTime(2013, 02, 06),
+            DateUtil.getDateTime(2019, 03, 06),
+            Context.getLocationService().getLocation(379));
     Assert.assertEquals(0, result.size());
   }
 

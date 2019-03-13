@@ -183,28 +183,6 @@ public class TXTBQueries {
         + " and date_enrolled between :startDate and :endDate and location_id=:location";
   }
 
-  public static String anyCodedObsToEndDate(
-      Integer questionId, List<Integer> answerIds, List<Integer> encounterTypeIds) {
-    return "select person_id from obs where concept_id = "
-        + questionId
-        + " and value_coded in ("
-        + StringUtils.join(answerIds, ",")
-        + ") and encounter_id in(select distinct encounter_id from encounter where encounter_type in("
-        + StringUtils.join(encounterTypeIds, ",")
-        + ")) and location_id = :location and voided=0 and obs_datetime <= :endDate";
-  }
-
-  public static String lastCodedObsFromStartToEndDate(
-      Integer questionId, List<Integer> answerIds, List<Integer> encounterTypeIds) {
-    return "select person_id from obs where concept_id = "
-        + questionId
-        + " and value_coded in ("
-        + StringUtils.join(answerIds, ",")
-        + ") and encounter_id in(select distinct encounter_id from encounter where encounter_type in("
-        + StringUtils.join(encounterTypeIds, ",")
-        + ")) and location_id = :location and voided=0 and obs_datetime >= :startDate and obs_datetime <= :endDate";
-  }
-
   public static String dateObs(
       Integer questionId, List<Integer> encounterTypeIds, boolean startDate) {
     String sql =
