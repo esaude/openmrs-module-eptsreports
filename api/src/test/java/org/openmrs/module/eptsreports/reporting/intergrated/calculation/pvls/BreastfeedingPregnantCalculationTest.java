@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
@@ -153,4 +154,12 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
 
     matchOtherResultsExcept(evaluatedResult, 8, 501);
   }
+
+  @Test
+  @Ignore
+  public void shouldReturnPregnantIfMostRecent() {}
+
+  @Test
+  @Ignore
+  public void shouldReturnBreastfeedingIfMostRecent() {}
 }
