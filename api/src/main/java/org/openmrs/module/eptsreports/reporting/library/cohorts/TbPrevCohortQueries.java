@@ -14,8 +14,10 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -27,6 +29,8 @@ import org.springframework.stereotype.Component;
 public class TbPrevCohortQueries {
 
   @Autowired private HivMetadata hivMetadata;
+
+  @Autowired private GenericCohortQueries genericCohortQueries;
 
   public CohortDefinition getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod() {
     DateObsCohortDefinition definition = new DateObsCohortDefinition();
@@ -51,6 +55,38 @@ public class TbPrevCohortQueries {
     definition.addParameter(new Parameter("value1", "After Date", Date.class));
     definition.addParameter(new Parameter("value2", "Before Date", Date.class));
     definition.addParameter(new Parameter("locationList", "Location", Location.class));
+    return definition;
+  }
+
+  public CohortDefinition getNumeratorQuery() {
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("TB-PREV Numerator Query");
+    definition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    definition.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+    definition.addSearch(
+        "active-art",
+        EptsReportUtils.map(
+            genericCohortQueries.getActiveOnArt(),
+            "onOrBefore=${onOrBefore},location=${location}"));
+    definition.addSearch(
+        "started-profilaxia",
+        EptsReportUtils.map(
+            getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod(),
+            "value1=${onOrAfter-6m},value2=${onOrBefore-6m},locationList=${location}"));
+    definition.addSearch(
+        "finalized-profilaxia",
+        EptsReportUtils.map(
+            getPatientsThatFinalizedProfilaxiaIsoniazidaOnPeriod(),
+            "value1=${onOrAfter},value2=${onOrBefore},locationList=${location}"));
+    definition.addSearch(
+        "started-on-period",
+        EptsReportUtils.map(
+            genericCohortQueries.getStartedArtOnPeriod(false),
+            "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
+    definition.setCompositionString(
+        "((active-art AND started-profilaxia AND finalized-profilaxia) NOT started-on-period) OR "
+            + "(started-on-period AND started-profilaxia AND finalized-profilaxia)");
     return definition;
   }
 }

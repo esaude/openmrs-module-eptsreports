@@ -43,8 +43,8 @@ public class TbPrevDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Numerator Total",
                 EptsReportUtils.map(
-                    genericCohortQueries.getActiveOnArt(),
-                    "onOrBefore=${endDate},location=${location}")),
+                    tbPrevCohortQueries.getNumeratorQuery(),
+                    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
             mappings),
         "");
     dsd.addColumn(
