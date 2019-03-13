@@ -16,6 +16,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class BreastfeedingPregnantCalculation extends AbstractPatientCalculation {
 
+  private PregnantDateCalculation pregnantDateCalculation =
+      Context.getRegisteredComponents(PregnantDateCalculation.class).get(0);
+
+  private BreastfeedingDateCalculation breastfeedingDateCalculation =
+      Context.getRegisteredComponents(BreastfeedingDateCalculation.class).get(0);
+
   @Override
   public CalculationResultMap evaluate(
       Collection<Integer> cohort,
@@ -31,15 +37,9 @@ public class BreastfeedingPregnantCalculation extends AbstractPatientCalculation
     Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);
 
     CalculationResultMap pregnantDateMap =
-        calculate(
-            Context.getRegisteredComponents(PregnantDateCalculation.class).get(0),
-            femaleCohort,
-            context);
+        calculate(pregnantDateCalculation, femaleCohort, context);
     CalculationResultMap breastfeedingDateMap =
-        calculate(
-            Context.getRegisteredComponents(BreastfeedingDateCalculation.class).get(0),
-            femaleCohort,
-            context);
+        calculate(breastfeedingDateCalculation, femaleCohort, context);
     for (Integer ptId : femaleCohort) {
       boolean isCandidate = false;
       Date pregnancyDate = (Date) pregnantDateMap.get(ptId).getValue();
