@@ -95,7 +95,7 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
    * rule tested : PregnantCalculation.isPregnant(Date, List<Obs>)
    */
   @Test
-  public void shouldEvaluateOnePatientMarkedAsPregrantByAdultFollowup() {
+  public void shouldEvaluateOnePatientMarkedAsPregnantByAdultFollowup() {
 
     setEvaluationContext(testsHelper.getDate("2019-06-30 00:00:00.0"));
     params.put("state", PregnantOrBreastfeedingWomen.PREGNANTwOMEN);
