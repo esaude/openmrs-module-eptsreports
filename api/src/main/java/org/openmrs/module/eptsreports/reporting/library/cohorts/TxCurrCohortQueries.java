@@ -153,7 +153,6 @@ public class TxCurrCohortQueries {
       compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND (NOT (7 OR 8)))))";
     }
 
-    compositionString = compositionString + " and baseCohort";
     txCurrComposition.setCompositionString(compositionString);
     return txCurrComposition;
   }
