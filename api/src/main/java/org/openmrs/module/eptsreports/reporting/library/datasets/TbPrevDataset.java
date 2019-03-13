@@ -13,7 +13,10 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
+import java.util.Arrays;
+import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TbPrevCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -28,11 +31,17 @@ public class TbPrevDataset extends BaseDataSet {
 
   @Autowired private TbPrevCohortQueries tbPrevCohortQueries;
 
+  @Autowired private EptsCommonDimension eptsCommonDimension;
+
   public DataSetDefinition constructTbPrevDatset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     dsd.setName("TB PREV Data Set");
     dsd.addParameters(getParameters());
+    dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
+    dsd.addDimension(
+        "age",
+        EptsReportUtils.map(tbPrevCohortQueries.getAgeDimension(), "effectiveDate=${endDate}"));
     dsd.addColumn(
         "NUM-TOTAL",
         "Numerator Total",
@@ -41,6 +50,28 @@ public class TbPrevDataset extends BaseDataSet {
                 "Numerator Total",
                 EptsReportUtils.map(
                     tbPrevCohortQueries.getNumerator(),
+                    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
+            mappings),
+        "");
+    dsd.addColumn(
+        "NUM-DIM-01",
+        "Numerator Dimension 1",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Numerator Dimension 1",
+                EptsReportUtils.map(
+                    tbPrevCohortQueries.getNumeratorDimension1(),
+                    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
+            mappings),
+        "");
+    dsd.addColumn(
+        "NUM-DIM-02",
+        "Numerator Dimension 2",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Numerator Dimension 2",
+                EptsReportUtils.map(
+                    tbPrevCohortQueries.getNumeratorDimesion2(),
                     "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
             mappings),
         "");
@@ -55,6 +86,60 @@ public class TbPrevDataset extends BaseDataSet {
                     "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
             mappings),
         "");
+    dsd.addColumn(
+        "DEN-DIM-01",
+        "Denominator Dimension 1",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Denominator Dimension 1",
+                EptsReportUtils.map(
+                    tbPrevCohortQueries.getDenominatorDimension1(),
+                    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
+            mappings),
+        "");
+    dsd.addColumn(
+        "DEN-DIM-02",
+        "Denominator Dimension 2",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Denominator Dimension 2",
+                EptsReportUtils.map(
+                    tbPrevCohortQueries.getDenominatorDimension2(),
+                    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
+            mappings),
+        "");
+    addRow(
+        dsd,
+        "R01",
+        "Ages of Numerator",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Ages of Numerator",
+                EptsReportUtils.map(
+                    tbPrevCohortQueries.getNumerator(),
+                    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
+            mappings),
+        getAgeColumns());
+    addRow(
+        dsd,
+        "R02",
+        "Ages of Denominator",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Ages of Denominator",
+                EptsReportUtils.map(
+                    tbPrevCohortQueries.getDenominator(),
+                    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
+            mappings),
+        getAgeColumns());
     return dsd;
+  }
+
+  private List<ColumnParameters> getAgeColumns() {
+    return Arrays.asList(
+        new ColumnParameters("M0-14", "M0-14", "age=0-14|gender=M", "01"),
+        new ColumnParameters("M15+", "M15+", "age=15+|gender=M", "02"),
+        new ColumnParameters("F0-14", "F0-14", "age=0-14|gender=F", "03"),
+        new ColumnParameters("F15+", "F15+", "age=15+|gender=F", "04"));
   }
 }
