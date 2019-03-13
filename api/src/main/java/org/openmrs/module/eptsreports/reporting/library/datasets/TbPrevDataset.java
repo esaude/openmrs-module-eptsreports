@@ -13,10 +13,9 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import java.util.Arrays;
-import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TbPrevCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.TbPrevDimensions;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -33,6 +32,8 @@ public class TbPrevDataset extends BaseDataSet {
 
   @Autowired private EptsCommonDimension eptsCommonDimension;
 
+  @Autowired private TbPrevDimensions tbPrevDimensions;
+
   public DataSetDefinition constructTbPrevDatset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
@@ -40,8 +41,7 @@ public class TbPrevDataset extends BaseDataSet {
     dsd.addParameters(getParameters());
     dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dsd.addDimension(
-        "age",
-        EptsReportUtils.map(tbPrevCohortQueries.getAgeDimension(), "effectiveDate=${endDate}"));
+        "age", EptsReportUtils.map(tbPrevDimensions.getAgeDimension(), "effectiveDate=${endDate}"));
     dsd.addColumn(
         "NUM-TOTAL",
         "Numerator Total",
@@ -119,7 +119,7 @@ public class TbPrevDataset extends BaseDataSet {
                     tbPrevCohortQueries.getNumerator(),
                     "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
             mappings),
-        getAgeColumns());
+        tbPrevDimensions.getAgeColumns());
     addRow(
         dsd,
         "R02",
@@ -131,15 +131,7 @@ public class TbPrevDataset extends BaseDataSet {
                     tbPrevCohortQueries.getDenominator(),
                     "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
             mappings),
-        getAgeColumns());
+        tbPrevDimensions.getAgeColumns());
     return dsd;
-  }
-
-  private List<ColumnParameters> getAgeColumns() {
-    return Arrays.asList(
-        new ColumnParameters("M0-14", "M0-14", "age=0-14|gender=M", "01"),
-        new ColumnParameters("M15+", "M15+", "age=15+|gender=M", "02"),
-        new ColumnParameters("F0-14", "F0-14", "age=0-14|gender=F", "03"),
-        new ColumnParameters("F15+", "F15+", "age=15+|gender=F", "04"));
   }
 }

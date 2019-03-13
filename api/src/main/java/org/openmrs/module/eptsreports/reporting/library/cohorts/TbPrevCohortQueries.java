@@ -21,7 +21,6 @@ import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinitio
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,8 +31,6 @@ public class TbPrevCohortQueries {
   @Autowired private HivMetadata hivMetadata;
 
   @Autowired private GenericCohortQueries genericCohortQueries;
-
-  @Autowired private AgeCohortQueries ageCohortQueries;
 
   public CohortDefinition getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod() {
     DateObsCohortDefinition definition = new DateObsCohortDefinition();
@@ -220,21 +217,5 @@ public class TbPrevCohortQueries {
             "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
     definition.setCompositionString("started-on-period AND started-profilaxia");
     return definition;
-  }
-
-  public CohortDefinitionDimension getAgeDimension() {
-    CohortDefinitionDimension dim = new CohortDefinitionDimension();
-    dim.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
-    dim.setName("TB-PREV age dimension");
-    dim.addCohortDefinition(
-        "0-14",
-        EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("0-14", 0, 14), "effectiveDate=${effectiveDate}"));
-    dim.addCohortDefinition(
-        "15+",
-        EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("15+", 15, 200),
-            "effectiveDate=${effectiveDate}"));
-    return dim;
   }
 }
