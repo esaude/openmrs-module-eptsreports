@@ -41,8 +41,6 @@ public class TxCurrCohortQueries {
 
   @Autowired private HivMetadata hivMetadata;
 
-  @Autowired private GenericCohortQueries genericCohorts;
-
   @Autowired private GenericCohortQueries genericCohortQueries;
 
   /**
@@ -139,11 +137,6 @@ public class TxCurrCohortQueries {
             EptsReportUtils.map(
                 getPatientsWithNextConsultationDate(),
                 "onOrBefore=${onOrBefore},location=${location}"));
-
-    txCurrComposition.addSearch(
-        "baseCohort",
-        EptsReportUtils.map(
-            genericCohorts.getBaseCohort(), "endDate=${onOrBefore},location=${location}"));
 
     String compositionString;
     if (currentSpec) {

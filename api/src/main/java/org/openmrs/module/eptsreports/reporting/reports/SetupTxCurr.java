@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
@@ -76,7 +75,7 @@ public class SetupTxCurr extends EptsDataExportManager {
         txCurrDataset.constructTxCurrDataset(true),
         ParameterizableUtil.createParameterMappings(
             "endDate=${endDate},startDate=${startDate},location=${location}"));
-    
+
     // add a base cohort here to help in calculations running
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
