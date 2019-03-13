@@ -49,7 +49,7 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
   @Before
   public void initialise() throws Exception {
     executeDataSet("pvlsTest.xml");
-    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTwOMEN);
+    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTWOMEN);
   }
 
   /*
@@ -69,7 +69,7 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
   @Test
   public void shouldEvaluateOnePatientMarkedAsPregnantByEnrollInPTVProgram() {
 
-    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTwOMEN);
+    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTWOMEN);
 
     CalculationResultMap evaluatedResult =
         service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext());
@@ -98,7 +98,7 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
   public void shouldEvaluateOnePatientMarkedAsPregnantByAdultFollowup() {
 
     setEvaluationContext(testsHelper.getDate("2019-06-30 00:00:00.0"));
-    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTwOMEN);
+    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTWOMEN);
 
     CalculationResultMap evaluatedResult =
         service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext());
@@ -126,7 +126,7 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
   public void shoudEvaluateOnePatientMarkedAsPreagnantByWeeks() {
 
     setEvaluationContext(testsHelper.getDate("2019-03-01 00:00:00.0"));
-    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTwOMEN);
+    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTWOMEN);
 
     CalculationResultMap evaluatedResult =
         service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext());
@@ -145,7 +145,7 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
   public void shouldEvaluatePatientMarkedAsPregnantByDueDate() {
 
     setEvaluationContext(testsHelper.getDate("1999-02-01 00:00:00.0"));
-    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTwOMEN);
+    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTWOMEN);
 
     CalculationResultMap evaluatedResult =
         service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext());
@@ -156,8 +156,17 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
   }
 
   @Test
-  @Ignore
-  public void shouldReturnPregnantIfMostRecent() {}
+  public void shouldReturnPregnantIfMostRecent() {
+    setEvaluationContext(testsHelper.getDate("2018-09-20 00:00:00.0"));
+    params.put("state", PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN);
+
+    CalculationResultMap evaluatedResult =
+        service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext());
+
+    Assert.assertEquals(true, evaluatedResult.get(7).getValue());
+
+    matchOtherResultsExcept(evaluatedResult, 8, 501);
+  }
 
   @Test
   @Ignore

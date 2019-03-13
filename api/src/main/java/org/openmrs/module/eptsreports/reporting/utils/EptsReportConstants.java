@@ -139,7 +139,7 @@ public final class EptsReportConstants {
   }
 
   public enum PregnantOrBreastfeedingWomen {
-    PREGNANTwOMEN,
+    PREGNANTWOMEN,
     BREASTFEEDINGWOMEN
   }
 }

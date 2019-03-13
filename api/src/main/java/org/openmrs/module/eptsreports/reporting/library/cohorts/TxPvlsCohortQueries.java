@@ -330,7 +330,7 @@ public class TxPvlsCohortQueries {
         "pregnant",
         EptsReportUtils.map(
             this.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-                PregnantOrBreastfeedingWomen.PREGNANTwOMEN),
+                PregnantOrBreastfeedingWomen.PREGNANTWOMEN),
             "onDate=${endDate},location=${location}"));
     cd.setCompositionString("suppression AND pregnant");
     return cd;
@@ -353,7 +353,7 @@ public class TxPvlsCohortQueries {
         "pregnant",
         EptsReportUtils.map(
             this.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-                PregnantOrBreastfeedingWomen.PREGNANTwOMEN),
+                PregnantOrBreastfeedingWomen.PREGNANTWOMEN),
             "onDate=${endDate},location=${location}"));
     cd.setCompositionString("results AND pregnant");
     return cd;
