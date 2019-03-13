@@ -24,6 +24,7 @@ import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportMa
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,9 +71,9 @@ public class SetupTbPrev extends EptsDataExportManager {
     reportDefinition.setParameters(getParameters());
     reportDefinition.addDataSetDefinition(
         "TBPREV", Mapped.mapStraightThrough(tbPrevDataset.constructTbPrevDatset()));
-    //  reportDefinition.setBaseCohortDefinition(
-    //  genericCohortQueries.getBaseCohort(),
-    //  ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
+    reportDefinition.setBaseCohortDefinition(
+        genericCohortQueries.getBaseCohort(),
+        ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
     return reportDefinition;
   }
 
