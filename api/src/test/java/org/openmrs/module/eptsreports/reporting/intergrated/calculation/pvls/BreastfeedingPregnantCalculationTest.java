@@ -48,7 +48,7 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
   @Before
   public void initialise() throws Exception {
     executeDataSet("pvlsTest.xml");
-    params.put("state", PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN);
+    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTWOMEN);
   }
 
   @Test
