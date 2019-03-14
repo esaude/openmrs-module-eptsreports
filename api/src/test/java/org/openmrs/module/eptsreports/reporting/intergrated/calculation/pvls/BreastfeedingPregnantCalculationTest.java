@@ -72,8 +72,8 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
     CalculationResultMap evaluatedResult =
         service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext());
 
-    Assert.assertEquals(false, evaluatedResult.get(8).getValue());
+    Assert.assertEquals(true, evaluatedResult.get(501).getValue());
 
-    matchOtherResultsExcept(evaluatedResult, 7, 501);
+    matchOtherResultsExcept(evaluatedResult, 7, 8);
   }
 }
