@@ -21,7 +21,7 @@ public class BreastFeedingDateCalculationTest extends BasePatientCalculationTest
 
   @Override
   public Collection<Integer> getCohort() {
-    return Arrays.asList(new Integer[] {7, 8, 501, 90, 91});
+    return Arrays.asList(new Integer[] {7, 90, 91, 501});
   }
 
   @Override
@@ -31,6 +31,7 @@ public class BreastFeedingDateCalculationTest extends BasePatientCalculationTest
     CalculationResultMap map = new CalculationResultMap();
 
     PatientCalculationContext evaluationContext = getEvaluationContext();
+    evaluationContext.setNow(testsHelper.getDate("2019-02-28 00:00:00.0"));
 
     // Date marked as breastFeeding : 2018-01-21
     map.put(
@@ -48,14 +49,14 @@ public class BreastFeedingDateCalculationTest extends BasePatientCalculationTest
             evaluationContext));
     // BreastfeedingCalculation.hasDeliveryDate(2018-07-01 00:00:00.0, List<Obs>)
     map.put(
-        7,
+        91,
         new SimpleResult(
             new Timestamp(testsHelper.getDate("2018-07-01 00:00:00.0").getTime()),
             calculation,
             evaluationContext));
-    // BreastfeedingCalculation.isBreastFeedingInProgram(2018-08-30 00:00:00.0, List<PatientState>)
+    /// BreastfeedingCalculation.isBreastFeedingInProgram(2018-08-10, List<PatientState>)
     map.put(
-        7,
+        90,
         new SimpleResult(
             new Timestamp(testsHelper.getDate("2018-08-30 00:00:00.0").getTime()),
             calculation,
