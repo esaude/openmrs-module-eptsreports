@@ -31,19 +31,13 @@ public class PregnantDateCalculationTest extends BasePatientCalculationTest {
     CalculationResultMap map = new CalculationResultMap();
 
     PatientCalculationContext evaluationContext = getEvaluationContext();
+    evaluationContext.setNow(testsHelper.getDate("2019-03-01 00:00:00.0"));
 
     // PregnantCalculation.isPregnantInProgram(2018-05-30 00:00:00.0, SimpleResult)
     map.put(
         501,
         new SimpleResult(
             new Timestamp(testsHelper.getDate("2018-05-30 00:00:00.0").getTime()),
-            calculation,
-            evaluationContext));
-    // PregnantCalculation.isPregnant(2018-09-21 00:00:00.0, List<Obs>)
-    map.put(
-        7,
-        new SimpleResult(
-            new Timestamp(testsHelper.getDate("2018-09-21 00:00:00.0").getTime()),
             calculation,
             evaluationContext));
     // PregnantCalculation.isPregnantByWeeks(2018-10-15 00:00:00.0, List<Obs>)
@@ -54,11 +48,11 @@ public class PregnantDateCalculationTest extends BasePatientCalculationTest {
             new Timestamp(testsHelper.getDate("2018-10-15 00:00:00.0").getTime()),
             calculation,
             evaluationContext));
-    // PregnantCalculation.isPregnantDueDate(1998-09-01 00:00:00.0, List<Obs>)
+    // PregnantCalculation.isPregnantDueDate(2018-04-01 00:00:00.0, List<Obs>)
     map.put(
         7,
         new SimpleResult(
-            new Timestamp(testsHelper.getDate("1998-09-01 00:00:00.0").getTime()),
+            new Timestamp(testsHelper.getDate("2018-09-21 00:00:00.0").getTime()),
             calculation,
             evaluationContext));
 
