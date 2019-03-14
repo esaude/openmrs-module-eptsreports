@@ -74,6 +74,10 @@
   <encounter encounter_id="2777096" encounter_type="6777002" patient_id="13" location_id="1" form_id="1" encounter_datetime="2018-12-12 00:00:00.0" creator="1" date_created="2019-01-31 14:09:05.0" voided="false" uuid="135e711d-1f64-46ec-8692-58b90b733cb0"/>
   <encounter encounter_id="2777098" encounter_type="6777002" patient_id="7" location_id="1" form_id="1" encounter_datetime="2018-06-20 00:00:00.0" creator="1" date_created="2019-02-25 14:09:05.0" voided="false" uuid="d70229bc-4588-11e9-93ad-8f0b62d39992"/>
   <encounter encounter_id="2777097" encounter_type="6777002" patient_id="7" location_id="1" form_id="1" encounter_datetime="2018-08-20 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0" voided="false" uuid="1cff53c8-4588-11e9-b168-a750d8825dfb"/>
+  <encounter encounter_id="2777099" encounter_type="6777002" patient_id="8" location_id="1" form_id="1" encounter_datetime="2018-06-20 00:00:00.0" creator="1" date_created="2019-02-25 14:09:05.0" voided="false" uuid="1f24dbe8-4626-11e9-9c90-379e16d07a8b"/>
+  <encounter encounter_id="2777100" encounter_type="6777002" patient_id="8" location_id="1" form_id="1" encounter_datetime="2018-08-10 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0" voided="false" uuid="30bbb71e-4626-11e9-940b-ab68a9238f86"/>
+
+
 
 
   <obs obs_id="3777002" person_id="6" concept_id="7777002" encounter_id="3" obs_datetime="2018-06-21 00:00:00.0" location_id="1" value_coded="7777003" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263503777002"/>
@@ -112,6 +116,8 @@
   <obs obs_id="3777096" person_id="13" concept_id="7777005" encounter_id="2777096" obs_datetime="2017-12-12 00:00:00.0" location_id="1" value_numeric="122.0" comments="" creator="1" date_created="2019-01-29 14:11:13.0" voided="false" uuid="e2bb3ecd-a867-4a05-a71a-fce27058a763"/>
   <obs obs_id="3777098" person_id="7" concept_id="7777025" encounter_id="2777098" obs_datetime="2018-06-20 00:00:00.0" location_id="1" value_coded="7777020" comments="" creator="1" date_created="2019-02-25 14:29:05.0" voided="false" uuid="083f8aba-4589-11e9-9989-2b8beadf4a1d"/>
   <obs obs_id="3777097" person_id="7" concept_id="7777024" encounter_id="2777097" obs_datetime="2018-08-20 00:00:00.0" location_id="1" value_coded="7777029" comments="" creator="1" date_created="2019-02-28 14:29:05.0" voided="false" uuid="73afbe10-4588-11e9-829f-33845ed67092"/>
+  <obs obs_id="3777099" person_id="8" concept_id="7777025" encounter_id="2777099" obs_datetime="2018-06-20 00:00:00.0" location_id="1" value_coded="7777020" comments="" creator="1" date_created="2019-02-25 14:29:05.0" voided="false" uuid="467a0df8-4626-11e9-ab9a-eb2a028799ad"/>
+  <obs obs_id="37770100" person_id="8" concept_id="7777024" encounter_id="2777100" obs_datetime="2018-08-20 00:00:00.0" location_id="1" value_coded="7777029" comments="" creator="1" date_created="2019-02-28 14:29:05.0" voided="false" uuid="51ca0848-4626-11e9-925d-272ac6f9c8c8"/>
 
 
 </dataset>

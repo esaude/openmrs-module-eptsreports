@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
@@ -52,109 +51,6 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
     params.put("state", PregnantOrBreastfeedingWomen.PREGNANTWOMEN);
   }
 
-  /*
-   * Patients that are female and enrolled on PTV/ETC program during the
-   * period range
-   *
-   * Patient Id : 501
-   *
-   * End Date Period: 2019-05-30
-   *
-   * Latest Viral Load Date: 2018-06-01
-   *
-   * Patient Program Enrolled Date: 2018-05-30
-   *
-   * rule tested : PregnantCalculation.isPregnantInProgram(Date, SimpleResult)
-   */
-  @Test
-  public void shouldEvaluateOnePatientMarkedAsPregnantByEnrollInPTVProgram() {
-
-    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTWOMEN);
-
-    CalculationResultMap evaluatedResult =
-        service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext());
-
-    Assert.assertEquals(true, evaluatedResult.get(501).getValue());
-
-    matchOtherResultsExcept(evaluatedResult, 7, 8);
-  }
-
-  /*
-   *
-   * Patients that are female and were marked as “PREGNANT” in the initial
-   * consultation or follow-up consultation during the period range
-   *
-   * Patient Id: 7
-   *
-   * End Date Period: 2019-06-30
-   *
-   * Latest Viral Load Date: 2019-01-02
-   *
-   * Pregnant Date: 2018-09-21
-   *
-   * rule tested : PregnantCalculation.isPregnant(Date, List<Obs>)
-   */
-  @Test
-  public void shouldEvaluateOnePatientMarkedAsPregnantByAdultFollowup() {
-
-    setEvaluationContext(testsHelper.getDate("2019-06-30 00:00:00.0"));
-    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTWOMEN);
-
-    CalculationResultMap evaluatedResult =
-        service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext());
-
-    Assert.assertEquals(true, evaluatedResult.get(7).getValue());
-
-    matchOtherResultsExcept(evaluatedResult, 8, 501);
-  }
-
-  /*
-   * Patients that are female and have “Number of weeks Pregnant” registered
-   * in the initial or follow-up consultation during the period range
-   *
-   * Patient Id: 8
-   *
-   * End Date Period: 2019-03-01
-   *
-   * Day registered nr of weeks of pregnant: 2018-10-15
-   *
-   * Latest Viral Load Date: 2019-02-28
-   *
-   * rule tested : PregnantCalculation.isPregnantByWeeks(Date, List<Obs>)
-   */
-  @Test
-  public void shoudEvaluateOnePatientMarkedAsPreagnantByWeeks() {
-
-    setEvaluationContext(testsHelper.getDate("2019-03-01 00:00:00.0"));
-    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTWOMEN);
-
-    CalculationResultMap evaluatedResult =
-        service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext());
-
-    Assert.assertEquals(true, evaluatedResult.get(8).getValue());
-
-    matchOtherResultsExcept(evaluatedResult, 7, 501);
-  }
-
-  /*
-   * Patient ID: 7
-   *
-   * rule tested: PregnantCalculation.isPregnantDueDate(Date, List<Obs>)
-   */
-  @Test
-  public void shouldEvaluatePatientMarkedAsPregnantByDueDate() {
-
-    setEvaluationContext(testsHelper.getDate("1999-02-01 00:00:00.0"));
-    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTWOMEN);
-
-    CalculationResultMap evaluatedResult =
-        service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext());
-
-    Assert.assertEquals(true, evaluatedResult.get(7).getValue());
-
-    matchOtherResultsExcept(evaluatedResult, 8, 501);
-  }
-
   @Test
   public void shouldReturnPregnantIfMostRecent() {
     setEvaluationContext(testsHelper.getDate("2018-09-20 00:00:00.0"));
@@ -169,6 +65,15 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
   }
 
   @Test
-  @Ignore
-  public void shouldReturnBreastfeedingIfMostRecent() {}
+  public void shouldReturnBreastfeedingIfMostRecent() {
+    setEvaluationContext(testsHelper.getDate("2018-09-20 00:00:00.0"));
+    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTWOMEN);
+
+    CalculationResultMap evaluatedResult =
+        service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext());
+
+    Assert.assertEquals(false, evaluatedResult.get(8).getValue());
+
+    matchOtherResultsExcept(evaluatedResult, 7, 501);
+  }
 }
