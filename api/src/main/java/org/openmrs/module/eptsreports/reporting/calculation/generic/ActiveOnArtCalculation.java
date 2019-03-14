@@ -67,10 +67,7 @@ public class ActiveOnArtCalculation extends AbstractPatientCalculation {
             parameterValues,
             context);
     Location location = (Location) context.getFromCache("location");
-    Date endDate = (Date) parameterValues.get(ON_OR_BEFORE);
-    if (endDate == null) {
-      endDate = (Date) context.getFromCache(ON_OR_BEFORE);
-    }
+    Date endDate = getEndDate(parameterValues, context);
     CalculationResultMap abandonments =
         eptsCalculationService.patientStatesBeforeDate(
             cohort,
@@ -109,30 +106,62 @@ public class ActiveOnArtCalculation extends AbstractPatientCalculation {
             cohort,
             context);
     for (Integer patientId : cohort) {
-      List<PatientState> patientAbandonments =
-          EptsCalculationUtils.extractResultValues((ListResult) abandonments.get(patientId));
+      boolean registredAbandonment = isRegistredAbandonment(abandonments, patientId);
       boolean startedArt =
           StartedArtBeforeDateCalculation.isStartedArt(patientId, startedArtBeforeDate);
-      Encounter pharmacyEncounter =
-          EptsCalculationUtils.resultForPatient(mostRecentPharmacyEncounter, patientId);
-      Encounter consultationEncounter =
-          EptsCalculationUtils.resultForPatient(mostRecentConsultationEncounter, patientId);
-      Obs nextPickupObs = EptsCalculationUtils.resultForPatient(pharmacyObservations, patientId);
-      Obs nextConsultationObs =
-          EptsCalculationUtils.resultForPatient(consultationObservations, patientId);
-      final Boolean missedPickup =
-          isMissed(pharmacyEncounter, nextPickupObs, TOLERANCE_FOR_NEXT_PICKUP, endDate);
-      final Boolean missedConsultation =
-          isMissed(
-              consultationEncounter, nextConsultationObs, TOLERANCE_FOR_NEXT_CONSULTATION, endDate);
-      if (startedArt
-          && patientAbandonments.isEmpty()
-          && (!Boolean.TRUE.equals(missedPickup)
-              || (Boolean.TRUE.equals(missedPickup) && Boolean.FALSE.equals(missedConsultation)))) {
+      final boolean attendedNextAppointment =
+          isAttendedNextAppointment(
+              endDate,
+              mostRecentPharmacyEncounter,
+              mostRecentConsultationEncounter,
+              pharmacyObservations,
+              consultationObservations,
+              patientId);
+      if (startedArt && !registredAbandonment && attendedNextAppointment) {
         map.put(patientId, new BooleanResult(true, this));
       }
     }
     return map;
+  }
+
+  private Date getEndDate(Map<String, Object> parameterValues, PatientCalculationContext context) {
+    Date endDate = (Date) parameterValues.get(ON_OR_BEFORE);
+    if (endDate == null) {
+      endDate = (Date) context.getFromCache(ON_OR_BEFORE);
+    }
+    return endDate;
+  }
+
+  private boolean isRegistredAbandonment(CalculationResultMap abandonments, Integer patientId) {
+    List<PatientState> patientAbandonments =
+        EptsCalculationUtils.extractResultValues((ListResult) abandonments.get(patientId));
+    boolean registredAbandonment = !patientAbandonments.isEmpty();
+    return registredAbandonment;
+  }
+
+  private boolean isAttendedNextAppointment(
+      Date endDate,
+      CalculationResultMap mostRecentPharmacyEncounter,
+      CalculationResultMap mostRecentConsultationEncounter,
+      CalculationResultMap pharmacyObservations,
+      CalculationResultMap consultationObservations,
+      Integer patientId) {
+    Encounter pharmacyEncounter =
+        EptsCalculationUtils.resultForPatient(mostRecentPharmacyEncounter, patientId);
+    Encounter consultationEncounter =
+        EptsCalculationUtils.resultForPatient(mostRecentConsultationEncounter, patientId);
+    Obs nextPickupObs = EptsCalculationUtils.resultForPatient(pharmacyObservations, patientId);
+    Obs nextConsultationObs =
+        EptsCalculationUtils.resultForPatient(consultationObservations, patientId);
+    final Boolean missedPickup =
+        isMissed(pharmacyEncounter, nextPickupObs, TOLERANCE_FOR_NEXT_PICKUP, endDate);
+    final Boolean missedConsultation =
+        isMissed(
+            consultationEncounter, nextConsultationObs, TOLERANCE_FOR_NEXT_CONSULTATION, endDate);
+    final boolean attendedNextAppointment =
+        !Boolean.TRUE.equals(missedPickup)
+            || (Boolean.TRUE.equals(missedPickup) && Boolean.FALSE.equals(missedConsultation));
+    return attendedNextAppointment;
   }
 
   public Boolean isMissed(Encounter encounter, Obs obs, int days, Date endDate) {
