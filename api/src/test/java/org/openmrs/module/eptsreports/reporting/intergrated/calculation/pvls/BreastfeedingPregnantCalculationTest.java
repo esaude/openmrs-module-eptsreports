@@ -54,6 +54,19 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
   @Test
   public void shouldReturnPregnantIfMostRecent() {
     setEvaluationContext(testsHelper.getDate("2018-09-20 00:00:00.0"));
+    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTWOMEN);
+
+    CalculationResultMap evaluatedResult =
+        service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext());
+
+    Assert.assertEquals(true, evaluatedResult.get(501).getValue());
+
+    matchOtherResultsExcept(evaluatedResult, 8, 7);
+  }
+
+  @Test
+  public void shouldReturnBreastfeedingIfMostRecent() {
+    setEvaluationContext(testsHelper.getDate("2018-09-20 00:00:00.0"));
     params.put("state", PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN);
 
     CalculationResultMap evaluatedResult =
@@ -62,18 +75,5 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
     Assert.assertEquals(true, evaluatedResult.get(7).getValue());
 
     matchOtherResultsExcept(evaluatedResult, 8, 501);
-  }
-
-  @Test
-  public void shouldReturnBreastfeedingIfMostRecent() {
-    setEvaluationContext(testsHelper.getDate("2018-09-20 00:00:00.0"));
-    params.put("state", PregnantOrBreastfeedingWomen.PREGNANTWOMEN);
-
-    CalculationResultMap evaluatedResult =
-        service.evaluate(getCohort(), getCalculation(), params, getEvaluationContext());
-
-    Assert.assertEquals(true, evaluatedResult.get(501).getValue());
-
-    matchOtherResultsExcept(evaluatedResult, 7, 8);
   }
 }
