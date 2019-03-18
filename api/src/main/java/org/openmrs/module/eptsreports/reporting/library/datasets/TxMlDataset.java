@@ -2,8 +2,10 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.Arrays;
 import java.util.List;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxMlCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
+import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -20,6 +22,10 @@ public class TxMlDataset extends BaseDataSet {
   @Qualifier("commonAgeDimensionCohort")
   private AgeDimensionCohortInterface ageDimensionCohort;
 
+  @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
+
+  @Autowired private TxMlCohortQueries txMlCohortQueries;
+
   public DataSetDefinition constructtxMlDataset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
@@ -31,6 +37,33 @@ public class TxMlDataset extends BaseDataSet {
         "age",
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
+    // start building the datasets
+    // get the column for the totals
+    dsd.addColumn(
+        "MA",
+        "Total missed appointments",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "totals missed",
+                EptsReportUtils.map(
+                    txMlCohortQueries.getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
+                    mappings)),
+            mappings),
+        "");
+    // Missed appointment and dead
+    addRow(
+        dsd,
+        "MAD",
+        "Dead",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "missed and dead",
+                EptsReportUtils.map(
+                    txMlCohortQueries
+                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutButDiedDurungReportingPeriod(),
+                    mappings)),
+            mappings),
+        getColumnsForAgeAndGender());
     return dsd;
   }
 
@@ -88,6 +121,7 @@ public class TxMlDataset extends BaseDataSet {
         new ColumnParameters("above50F", "50+ female", "gender=F|age=50+", "25");
     ColumnParameters unknownF =
         new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=UK", "26");
+    ColumnParameters total = new ColumnParameters("totals", "Totals", "", "27");
 
     return Arrays.asList(
         under1M,
