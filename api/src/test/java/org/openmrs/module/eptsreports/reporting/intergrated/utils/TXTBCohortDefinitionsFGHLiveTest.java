@@ -7,6 +7,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.calculation.CalculationWithResult;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.InitialArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TXTBCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -243,7 +246,7 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
   @Test
   public void getPatientsTransferredFromARTTreatment() throws EvaluationException {
     EvaluatedCohort result =
-        evaluateCohortDefinition(txTbCohortQueries.getPatientsTransferredFromARTTreatment());
+        evaluateCohortDefinition(txTbCohortQueries.getPatientsTransferredIntoARTTreatment());
     Assert.assertEquals(65, result.size());
   }
 
@@ -272,5 +275,36 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
     EvaluatedCohort result =
         evaluateCodedObsCohortDefinition(txTbCohortQueries.codedPositiveTbScreening());
     Assert.assertEquals(18, result.size());
+  }
+
+  @Test
+  public void patientsNotInitiationOnARTAtDate() throws EvaluationException {
+    CalculationCohortDefinition artInit =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0));
+    // all patients both initiated and not
+    Assert.assertEquals(12328, evaluateCohortDefinition(artInit).size());
+    // only non initiated patients
+    artInit.setWithResult(CalculationWithResult.NULL);
+    Assert.assertEquals(11906, evaluateCohortDefinition(artInit).size());
+  }
+
+  @Test
+  public void patientsTranferredInWithoutARTInitiationDate() throws EvaluationException {
+    CalculationCohortDefinition artInit =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0));
+    artInit.setWithResult(CalculationWithResult.NULL);
+    EvaluatedCohort c1 =
+        evaluateCohortDefinition(txTbCohortQueries.getPatientsTransferredIntoARTTreatment());
+    EvaluatedCohort c2 = evaluateCohortDefinition(artInit);
+    Assert.assertEquals(65, c1.size());
+    Assert.assertEquals(11906, c2.size());
+
+    // c1 AND c2
+    EvaluatedCohort result =
+        evaluateCohortDefinition(txTbCohortQueries.patientsTranferredInWithoutARTInitiationDate());
+
+    Assert.assertEquals(0, result.size());
   }
 }

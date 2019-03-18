@@ -51,7 +51,7 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
 
   /** This test runs for all classes that extend this class, it's the basic calculation unit test */
   @Test
-  public void evaluateShouldReturnMatchedResultMapBySizeAndPrintOutGivenCalculationCohort() {
+  public void evaluateShouldReturnMatchedResultMapGivenCalculationCohort() {
     CalculationResultMap result = getResult();
     PatientCalculation calculation = getCalculation();
     Collection<Integer> cohort = getCohort();

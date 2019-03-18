@@ -99,13 +99,16 @@ public class TxTBDataset extends BaseDataSet {
 
   private void addTXTBDenominator(
       String mappings, CohortIndicatorDataSetDefinition dataSetDefinition) {
-    CohortIndicator screenedTbNegative =
+    CohortIndicator screenedTbNegativeOrPositive =
         eptsGeneralIndicator.getIndicator(
             "patientsWhoScreenTbNegativeOrPositive",
             EptsReportUtils.map(
                 txTbCohortQueries.patientsWhoScreenTbNegativeOrPositive(), mappings));
     dataSetDefinition.addColumn(
-        "TXB_DEN", "TX_TB: Denominator", EptsReportUtils.map(screenedTbNegative, mappings), "");
+        "TXB_DEN",
+        "TX_TB: Denominator",
+        EptsReportUtils.map(screenedTbNegativeOrPositive, mappings),
+        "");
     dataSetDefinition.addColumn(
         "TXB_DEN_POS",
         "TX_TB: Denominator - Screened Positive",
@@ -150,7 +153,7 @@ public class TxTBDataset extends BaseDataSet {
         dataSetDefinition,
         "TXB_DEN",
         "TXB_DEN: Denominator - disaggregated",
-        EptsReportUtils.map(screenedTbNegative, mappings),
+        EptsReportUtils.map(screenedTbNegativeOrPositive, mappings),
         dissagregations());
   }
 

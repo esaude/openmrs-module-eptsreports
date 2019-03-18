@@ -36,6 +36,7 @@ import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.calculation.result.ResultUtil;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
+import org.openmrs.module.eptsreports.reporting.calculation.CalculationWithResult;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
@@ -195,8 +196,9 @@ public class EptsCalculationUtils {
       // If there is no required result, just check trueness of result,
       // otherwise
       // check result matches required result
-      if ((requiredResult == null && ResultUtil.isTrue(result))
-          || (result != null && result.getValue().equals(requiredResult))) {
+      if ((CalculationWithResult.NULL.equals(requiredResult) && result.getValue() == null)
+          || ((requiredResult == null && (ResultUtil.isTrue(result) || result.getValue() == null))
+              || (result != null && result.getValue().equals(requiredResult)))) {
         ret.add(e.getKey());
       }
     }

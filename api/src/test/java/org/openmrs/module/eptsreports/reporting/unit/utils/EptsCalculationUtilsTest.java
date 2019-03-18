@@ -25,6 +25,7 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
+import org.openmrs.module.eptsreports.reporting.calculation.CalculationWithResult;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiObsDefinition;
 import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
@@ -274,15 +275,30 @@ public class EptsCalculationUtilsTest extends BaseContextMockTest {
   }
 
   @Test
-  public void patientsThatPassShouldRetrieveMatchedResultsCohortWithNonNullOrUnEmptyResult() {
+  public void patientsThatPassShouldRetrieveMatchedResultsCohortWithNullButNotFalseResult() {
     CalculationResultMap map = new CalculationResultMap();
     map.put(1, new SimpleResult(1, null, calculationContext));
     map.put(2, new BooleanResult(false, null, calculationContext));
     map.put(3, new BooleanResult(true, null, calculationContext));
     map.put(4, new SimpleResult("", null, calculationContext));
+    map.put(5, new SimpleResult(null, null, calculationContext));
 
     Assert.assertEquals(
-        new HashSet<Integer>(Arrays.asList(1, 3)), EptsCalculationUtils.patientsThatPass(map));
+        new HashSet<Integer>(Arrays.asList(1, 3, 5)), EptsCalculationUtils.patientsThatPass(map));
+  }
+
+  @Test
+  public void patientsThatPassShouldRetrieveOnlyNullResultWhenRequested() {
+    CalculationResultMap map = new CalculationResultMap();
+    map.put(1, new SimpleResult(1, null, calculationContext));
+    map.put(2, new BooleanResult(false, null, calculationContext));
+    map.put(3, new BooleanResult(true, null, calculationContext));
+    map.put(4, new SimpleResult("", null, calculationContext));
+    map.put(5, new SimpleResult(null, null, calculationContext));
+
+    Assert.assertEquals(
+        new HashSet<Integer>(Arrays.asList(5)),
+        EptsCalculationUtils.patientsThatPass(map, CalculationWithResult.NULL));
   }
 
   @Test

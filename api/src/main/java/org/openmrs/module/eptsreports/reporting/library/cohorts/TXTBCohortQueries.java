@@ -4,9 +4,13 @@ import java.util.Arrays;
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.Program;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
+import org.openmrs.module.eptsreports.reporting.calculation.CalculationWithResult;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.InitialArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.TXTBQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.TXTBQueries.AbandonedWithoutNotificationParams;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -16,7 +20,6 @@ import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinitio
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -84,10 +87,10 @@ public class TXTBCohortQueries {
    * PROGRAMA: PACIENTES TRANSFERIDOS DE NO PROGRAMA DE TRATAMENTO ARV: NUM PERIODO. codes include:
    * TRANSFDEPRG
    */
-  public CohortDefinition getPatientsTransferredFromARTTreatment() {
+  public CohortDefinition getPatientsTransferredIntoARTTreatment() {
     return genericCohortQueries.generalSql(
         "TRANSFDEPRG",
-        TXTBQueries.patientsTransferredFromARTTreatment(
+        TXTBQueries.patientsTransferredFromOrIntoProgram(
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata
                 .getTransferredFromOtherHealthFacilityWorkflowState()
@@ -104,7 +107,7 @@ public class TXTBCohortQueries {
         "INICIO DE TRATAMENTO ARV - NUM PERIODO: EXCLUI TRANSFERIDOS DE COM DATA DE INICIO CONHECIDA (SQL)");
 
     Program artProgram = hivMetadata.getARTProgram();
-    CohortDefinition TRANSFDEPRG = getPatientsTransferredFromARTTreatment();
+    CohortDefinition TRANSFDEPRG = getPatientsTransferredIntoARTTreatment();
     CohortDefinition INICIO =
         genericCohortQueries.generalSql(
             "INICIO",
@@ -153,7 +156,11 @@ public class TXTBCohortQueries {
     return cd;
   }
 
-  /** ALGUMA VEZ ESTEVE EM TRATAMENTO ARV - PERIODO FINAL */
+  /**
+   * ALGUMA VEZ ESTEVE EM TRATAMENTO ARV - PERIODO FINAL 2.a.ii: All patients who have initiated the
+   * drugs (ARV PLAN = START DRUGS) at the pharmacy or clinical visits that occurred during the
+   * reporting period;
+   */
   public CohortDefinition everyTimeARVTreatedFinal() {
     return genericCohortQueries.hasCodedObs(
         hivMetadata.getARVPlanConcept(),
@@ -290,8 +297,6 @@ public class TXTBCohortQueries {
     return cd;
   }
 
-  // -- TODO upwards retain as private
-
   /**
    * PACIENTES NOTIFICADOS DO TRATAMENTO DE TB NO SERVICO TARV - ACTIVOS EM TARV. Existing indicator
    * codes: ACTIVOSTARV, TARV, NOTIFICADOSTB
@@ -383,14 +388,14 @@ public class TXTBCohortQueries {
 
     CohortDefinition ACTUALTARV = getPatientsInARTWithoutAbandonedNotification();
 
+    CohortDefinition INICIOTARV =
+        getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation();
+
     // PACIENTES COM RASTREIO DE TUBERCULOSE NEGATIVO
     CohortDefinition RASTREIONEGATIVO = codedNegativeTbScreening();
 
     // PACIENTES COM RASTREIO DE TUBERCULOSE POSITIVO
     CohortDefinition RASTREIOTBPOS = codedPositiveTbScreening();
-
-    CohortDefinition INICIOTARV =
-        getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation();
 
     addGeneralParameters(ACTUALTARV);
     cd.addSearch("ACTUALTARV", map(ACTUALTARV, generalParameterMapping));
@@ -524,12 +529,21 @@ public class TXTBCohortQueries {
     return cd;
   }
 
-  /**
-   * NUMERO DE PACIENTES TARV COM RASTREIO DE TUBERCULOSE POSITIVO/NEGATIVO NUM DETERMINADO PERIODO
-   */
-  public CohortIndicator dd() {
-    CohortIndicator ci = new CohortIndicator();
-    // 342
-    return ci;
+  /** patients who were transferred in from another facility and do not have ART Initiation Date */
+  public CohortDefinition patientsTranferredInWithoutARTInitiationDate() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    CohortDefinition TRANSFDEPRG = getPatientsTransferredIntoARTTreatment();
+    addGeneralParameters(TRANSFDEPRG);
+    CalculationCohortDefinition NOARTINIT =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0));
+    NOARTINIT.setWithResult(CalculationWithResult.NULL);
+    addGeneralParameters(NOARTINIT);
+
+    cd.addSearch("TRANSFDEPRG", map(TRANSFDEPRG, generalParameterMapping));
+    cd.addSearch("NOARTINIT", map(NOARTINIT, generalParameterMapping));
+    cd.setCompositionString("TRANSFDEPRG AND NOARTINIT");
+    addGeneralParameters(cd);
+    return cd;
   }
 }

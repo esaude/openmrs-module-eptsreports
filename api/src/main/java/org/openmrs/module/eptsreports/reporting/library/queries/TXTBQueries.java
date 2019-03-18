@@ -205,13 +205,13 @@ public class TXTBQueries {
         + " and location_id = :location and encounter_datetime <= :endDate and voided=0;";
   }
 
-  public static String patientsTransferredFromARTTreatment(
-      Integer artProgramId, Integer transferOutStateId) {
+  public static String patientsTransferredFromOrIntoProgram(
+      Integer programId, Integer transferStateId) {
     return "select pg.patient_id from patient p  inner join patient_program pg on p.patient_id=pg.patient_id inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
         + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id="
-        + artProgramId
+        + programId
         + " and ps.state="
-        + transferOutStateId
+        + transferStateId
         + " and ps.start_date=pg.date_enrolled and ps.start_date between :startDate and :endDate and location_id=:location";
   }
 
