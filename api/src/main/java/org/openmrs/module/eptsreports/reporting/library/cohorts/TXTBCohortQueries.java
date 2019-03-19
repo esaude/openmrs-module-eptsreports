@@ -8,7 +8,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
-import org.openmrs.module.eptsreports.reporting.calculation.CalculationWithResult;
+import org.openmrs.module.eptsreports.reporting.calculation.CalculationWithResultFinder;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.InitialArtStartDateCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.TXTBQueries;
@@ -54,7 +54,6 @@ public class TXTBCohortQueries {
   /**
    * PACIENTES NOTIFICADOS DO TRATAMENTO DE TB NO SERVICO TARV: DIFERENTES FONTES
    *
-   * @param parameterValues
    * @return
    */
   public CohortDefinition getNotifiedTBTreatmentPatientsOnART() {
@@ -537,12 +536,33 @@ public class TXTBCohortQueries {
     CalculationCohortDefinition NOARTINIT =
         new CalculationCohortDefinition(
             Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0));
-    NOARTINIT.setWithResult(CalculationWithResult.NULL);
+    NOARTINIT.setWithResultFinder(CalculationWithResultFinder.NULL);
     addGeneralParameters(NOARTINIT);
 
     cd.addSearch("TRANSFDEPRG", map(TRANSFDEPRG, generalParameterMapping));
     cd.addSearch("NOARTINIT", map(NOARTINIT, generalParameterMapping));
     cd.setCompositionString("TRANSFDEPRG AND NOARTINIT");
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  /**
+   * patients who were transferred in from another facility and do have ART Initiation Date not
+   * within the reporting period.
+   */
+  public CohortDefinition patientsTranferredInWithARTInitiationDateOutsideReportingPeriod() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    CohortDefinition TRANSFDEPRG = getPatientsTransferredIntoARTTreatment();
+    addGeneralParameters(TRANSFDEPRG);
+    CalculationCohortDefinition OUTARTINIT =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0));
+    OUTARTINIT.setWithResultFinder(CalculationWithResultFinder.DATE_OUTSIDE);
+    addGeneralParameters(OUTARTINIT);
+
+    cd.addSearch("TRANSFDEPRG", map(TRANSFDEPRG, generalParameterMapping));
+    cd.addSearch("OUTARTINIT", map(OUTARTINIT, generalParameterMapping));
+    cd.setCompositionString("TRANSFDEPRG AND OUTARTINIT");
     addGeneralParameters(cd);
     return cd;
   }

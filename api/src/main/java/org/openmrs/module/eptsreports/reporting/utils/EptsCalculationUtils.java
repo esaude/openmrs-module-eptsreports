@@ -36,7 +36,7 @@ import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.calculation.result.ResultUtil;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
-import org.openmrs.module.eptsreports.reporting.calculation.CalculationWithResult;
+import org.openmrs.module.eptsreports.reporting.calculation.CalculationWithResultFinder;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
@@ -189,6 +189,22 @@ public class EptsCalculationUtils {
    * @return the extracted patient ids
    */
   public static Set<Integer> patientsThatPass(CalculationResultMap results, Object requiredResult) {
+    return patientsThatPass(results, requiredResult, CalculationWithResultFinder.DEFAULT, null);
+  }
+
+  /**
+   * Extracts patients from calculation result map with matching results
+   *
+   * @param results calculation result map
+   * @param requiredResult the required result value
+   * @param context
+   * @return the extracted patient ids
+   */
+  public static Set<Integer> patientsThatPass(
+      CalculationResultMap results,
+      Object requiredResult,
+      CalculationWithResultFinder resultFinder,
+      EvaluationContext context) {
     Set<Integer> ret = new HashSet<Integer>();
     for (Map.Entry<Integer, CalculationResult> e : results.entrySet()) {
       CalculationResult result = e.getValue();
@@ -196,9 +212,26 @@ public class EptsCalculationUtils {
       // If there is no required result, just check trueness of result,
       // otherwise
       // check result matches required result
-      if ((CalculationWithResult.NULL.equals(requiredResult) && result.getValue() == null)
-          || ((requiredResult == null && (ResultUtil.isTrue(result) || result.getValue() == null))
-              || (result != null && result.getValue().equals(requiredResult)))) {
+      boolean nullResultFinder =
+          CalculationWithResultFinder.NULL.equals(resultFinder)
+              && result.getValue() == null
+              && requiredResult == null;
+      boolean defaultResultFinder =
+          CalculationWithResultFinder.DEFAULT.equals(resultFinder)
+              && ((requiredResult == null
+                      && (ResultUtil.isTrue(result) || result.getValue() == null))
+                  || (result != null && result.getValue().equals(requiredResult)));
+      boolean dateOutsideResultFinder =
+          context != null
+              && CalculationWithResultFinder.DATE_OUTSIDE.equals(resultFinder)
+              && result.getValue() instanceof Date
+              && context.getParameterValue("startDate") instanceof Date
+              && context.getParameterValue("endDate") instanceof Date
+              && !dateBetween(
+                  (Date) context.getParameterValue("startDate"),
+                  (Date) context.getParameterValue("endDate"),
+                  (Date) result.getValue());
+      if (nullResultFinder || defaultResultFinder || dateOutsideResultFinder) {
         ret.add(e.getKey());
       }
     }
@@ -296,5 +329,19 @@ public class EptsCalculationUtils {
    */
   public static Set<Integer> female(Collection<Integer> cohort, PatientCalculationContext context) {
     return patientsThatPass(genders(cohort, context), "F");
+  }
+
+  /**
+   * @param startDate
+   * @param endDate
+   * @param dateInQuestion
+   * @return whether dateInQuestion is between startDate and endDate
+   */
+  public static boolean dateBetween(Date startDate, Date endDate, Date dateInQuestion) {
+    return startDate == null || endDate == null || dateInQuestion == null
+        ? false
+        : (dateInQuestion.equals(startDate)
+            || dateInQuestion.equals(endDate)
+            || (startDate.compareTo(dateInQuestion) * dateInQuestion.compareTo(endDate) >= 0));
   }
 }

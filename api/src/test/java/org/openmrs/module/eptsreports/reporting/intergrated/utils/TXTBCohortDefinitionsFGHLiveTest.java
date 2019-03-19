@@ -7,7 +7,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.eptsreports.reporting.calculation.CalculationWithResult;
+import org.openmrs.module.eptsreports.reporting.calculation.CalculationWithResultFinder;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.InitialArtStartDateCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TXTBCohortQueries;
@@ -69,6 +69,17 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
     context.addParameterValue("onOrAfter", DateUtil.getDateTime(2013, 02, 06));
     context.addParameterValue("onOrBefore", DateUtil.getDateTime(2019, 03, 06));
     context.addParameterValue("locationList", Context.getLocationService().getLocation(103));
+    return Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+  }
+
+  /** evaluate for location#103 from 06/feb/2019 to 06/mar/2019 */
+  private EvaluatedCohort evaluateCalculationCohortDefinition(CohortDefinition cd)
+      throws EvaluationException {
+    addParameters(cd);
+    EvaluationContext context = new EvaluationContext();
+    context.addParameterValue("onOrAfter", DateUtil.getDateTime(2019, 02, 06));
+    context.addParameterValue("onOrBefore", DateUtil.getDateTime(2019, 03, 06));
+    context.addParameterValue("location", Context.getLocationService().getLocation(103));
     return Context.getService(CohortDefinitionService.class).evaluate(cd, context);
   }
 
@@ -283,10 +294,14 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
         new CalculationCohortDefinition(
             Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0));
     // all patients both initiated and not
+    artInit.setWithResultFinder(CalculationWithResultFinder.DEFAULT);
     Assert.assertEquals(12328, evaluateCohortDefinition(artInit).size());
     // only non initiated patients
-    artInit.setWithResult(CalculationWithResult.NULL);
+    artInit.setWithResultFinder(CalculationWithResultFinder.NULL);
     Assert.assertEquals(11906, evaluateCohortDefinition(artInit).size());
+
+    // evaluate with onOrAfter and onOrBefore does no change
+    Assert.assertEquals(11906, evaluateCalculationCohortDefinition(artInit).size());
   }
 
   @Test
@@ -294,12 +309,32 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
     CalculationCohortDefinition artInit =
         new CalculationCohortDefinition(
             Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0));
-    artInit.setWithResult(CalculationWithResult.NULL);
+    artInit.setWithResultFinder(CalculationWithResultFinder.NULL);
     EvaluatedCohort c1 =
         evaluateCohortDefinition(txTbCohortQueries.getPatientsTransferredIntoARTTreatment());
     EvaluatedCohort c2 = evaluateCohortDefinition(artInit);
     Assert.assertEquals(65, c1.size());
     Assert.assertEquals(11906, c2.size());
+
+    // c1 AND c2
+    EvaluatedCohort result =
+        evaluateCohortDefinition(txTbCohortQueries.patientsTranferredInWithoutARTInitiationDate());
+
+    Assert.assertEquals(0, result.size());
+  }
+
+  @Test
+  public void patientsTranferredInWithARTInitiationDateOutsideReportingPeriod()
+      throws EvaluationException {
+    CalculationCohortDefinition artInit =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0));
+    artInit.setWithResultFinder(CalculationWithResultFinder.DATE_OUTSIDE);
+    EvaluatedCohort c1 =
+        evaluateCohortDefinition(txTbCohortQueries.getPatientsTransferredIntoARTTreatment());
+    EvaluatedCohort c2 = evaluateCohortDefinition(artInit);
+    Assert.assertEquals(65, c1.size());
+    Assert.assertEquals(1, c2.size());
 
     // c1 AND c2
     EvaluatedCohort result =

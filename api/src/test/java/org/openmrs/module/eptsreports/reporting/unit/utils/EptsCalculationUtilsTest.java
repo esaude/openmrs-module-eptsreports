@@ -4,6 +4,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,7 +26,7 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
-import org.openmrs.module.eptsreports.reporting.calculation.CalculationWithResult;
+import org.openmrs.module.eptsreports.reporting.calculation.CalculationWithResultFinder;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiObsDefinition;
 import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
@@ -298,7 +299,7 @@ public class EptsCalculationUtilsTest extends BaseContextMockTest {
 
     Assert.assertEquals(
         new HashSet<Integer>(Arrays.asList(5)),
-        EptsCalculationUtils.patientsThatPass(map, CalculationWithResult.NULL));
+        EptsCalculationUtils.patientsThatPass(map, null, CalculationWithResultFinder.NULL, null));
   }
 
   @Test
@@ -381,5 +382,74 @@ public class EptsCalculationUtilsTest extends BaseContextMockTest {
   @Test(expected = NullPointerException.class)
   public void addMonthsShouldThrowExceptionWithNullDate() throws NullPointerException {
     EptsCalculationUtils.addMonths(null, -1);
+  }
+
+  @Test
+  public void dateBetweenShouldBeFalseForAnyOrAllNulls() {
+    Assert.assertFalse(EptsCalculationUtils.dateBetween(null, new Date(), new Date()));
+    Assert.assertFalse(EptsCalculationUtils.dateBetween(new Date(), new Date(), null));
+    Assert.assertFalse(EptsCalculationUtils.dateBetween(new Date(), null, new Date()));
+    Assert.assertFalse(EptsCalculationUtils.dateBetween(null, new Date(), null));
+    Assert.assertFalse(EptsCalculationUtils.dateBetween(new Date(), null, null));
+    Assert.assertFalse(EptsCalculationUtils.dateBetween(null, null, new Date()));
+    Assert.assertFalse(EptsCalculationUtils.dateBetween(null, null, null));
+  }
+
+  @Test
+  public void dateBetweenShouldMatchDatesRightly() {
+    Assert.assertTrue(
+        EptsCalculationUtils.dateBetween(
+            testsHelper.getDate("2019-01-19 00:00:00.0"),
+            testsHelper.getDate("2019-01-21 00:00:00.0"),
+            testsHelper.getDate("2019-01-20 00:00:00.0")));
+    Assert.assertTrue(
+        EptsCalculationUtils.dateBetween(
+            testsHelper.getDate("2019-01-19 00:00:00.0"),
+            testsHelper.getDate("2019-01-20 00:00:00.0"),
+            testsHelper.getDate("2019-01-19 00:00:00.0")));
+    Assert.assertTrue(
+        EptsCalculationUtils.dateBetween(
+            testsHelper.getDate("2019-01-19 00:00:00.0"),
+            testsHelper.getDate("2019-01-20 00:00:00.0"),
+            testsHelper.getDate("2019-01-20 00:00:00.0")));
+    Assert.assertTrue(
+        EptsCalculationUtils.dateBetween(
+            testsHelper.getDate("2019-01-20 00:00:00.0"),
+            testsHelper.getDate("2019-01-20 00:00:00.0"),
+            testsHelper.getDate("2019-01-20 00:00:00.0")));
+    Assert.assertFalse(
+        EptsCalculationUtils.dateBetween(
+            testsHelper.getDate("2019-01-19 00:00:00.0"),
+            testsHelper.getDate("2019-01-20 00:00:00.0"),
+            testsHelper.getDate("2019-01-20 00:00:00.1")));
+  }
+
+  @Test
+  public void patientsThatPassShouldRetrieveOnlyOutsideMatchedDate() {
+    CalculationResultMap map = new CalculationResultMap();
+    map.put(
+        1,
+        new SimpleResult(testsHelper.getDate("2019-02-01 00:00:00.0"), null, calculationContext));
+    map.put(
+        2,
+        new SimpleResult(testsHelper.getDate("2019-02-05 00:00:00.0"), null, calculationContext));
+    map.put(3, new SimpleResult(true, null, calculationContext));
+    map.put(4, new SimpleResult("", null, calculationContext));
+    map.put(
+        5,
+        new SimpleResult(testsHelper.getDate("2019-02-09 00:00:00.0"), null, calculationContext));
+    EvaluationContext context = new EvaluationContext();
+    context.addParameterValue("startDate", testsHelper.getDate("2019-02-03 00:00:00.0"));
+    context.addParameterValue("endDate", testsHelper.getDate("2019-02-06 00:00:00.0"));
+
+    Assert.assertEquals(
+        new HashSet<Integer>(Arrays.asList(1, 5)),
+        EptsCalculationUtils.patientsThatPass(
+            map, null, CalculationWithResultFinder.DATE_OUTSIDE, context));
+
+    Assert.assertEquals(
+        new HashSet<Integer>(),
+        EptsCalculationUtils.patientsThatPass(
+            map, null, CalculationWithResultFinder.DATE_OUTSIDE, null));
   }
 }
