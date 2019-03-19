@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PepfarMerTxMlNumeratorReport extends EptsDataExportManager {
+
   @Autowired private TxMlDataset txMlDataset;
 
   @Override
@@ -42,6 +43,7 @@ public class PepfarMerTxMlNumeratorReport extends EptsDataExportManager {
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
+    rd.setParameters(txMlDataset.getParameters());
     rd.addDataSetDefinition(
         "Tx_Ml Data Set", Mapped.mapStraightThrough(txMlDataset.constructtxMlDataset()));
 
