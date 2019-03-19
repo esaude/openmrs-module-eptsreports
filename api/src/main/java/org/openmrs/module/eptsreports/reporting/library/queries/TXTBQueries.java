@@ -215,6 +215,15 @@ public class TXTBQueries {
         + " and ps.start_date=pg.date_enrolled and ps.start_date between :startDate and :endDate and location_id=:location";
   }
 
+  public static String patientWithFirstDrugPickupEncounter(Integer encounterTypeId) {
+    return "SELECT p.patient_id "
+        + "FROM patient p "
+        + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
+        + "WHERE p.voided=0 AND e.encounter_type="
+        + encounterTypeId
+        + " AND e.voided=0 AND e.encounter_datetime>=:startDate AND e.encounter_datetime<=:endDate AND e.location_id=:location GROUP BY p.patient_id";
+  }
+
   public static class AbandonedWithoutNotificationParams {
     protected Integer programId;
     protected Integer returnVisitDateConceptId;

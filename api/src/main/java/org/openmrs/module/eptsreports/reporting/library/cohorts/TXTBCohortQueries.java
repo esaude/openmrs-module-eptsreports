@@ -528,6 +528,13 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  public CohortDefinition patientWithFirstDrugPickupEncounterWithinReportingDate() {
+    return genericCohortQueries.generalSql(
+        "patientWithFirstDrugPickupEncounter",
+        TXTBQueries.patientWithFirstDrugPickupEncounter(
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
+  }
+
   /** patients who were transferred in from another facility and do not have ART Initiation Date */
   public CohortDefinition patientsTranferredInWithoutARTInitiationDate() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -564,6 +571,60 @@ public class TXTBCohortQueries {
     cd.addSearch("OUTARTINIT", map(OUTARTINIT, generalParameterMapping));
     cd.setCompositionString("TRANSFDEPRG AND OUTARTINIT");
     addGeneralParameters(cd);
+    return cd;
+  }
+
+  public CohortDefinition artListA() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    CohortDefinition i = patientWithFirstDrugPickupEncounterWithinReportingDate();
+    addGeneralParameters(i);
+    cd.addSearch("i", map(i, generalParameterMapping));
+    CohortDefinition ii = everyTimeARVTreatedFinal();
+    addGeneralParameters(ii);
+    cd.addSearch("ii", map(ii, generalParameterMapping));
+    CohortDefinition iii = artTargetHistoricalStartUsingEndDate();
+    addGeneralParameters(iii);
+    cd.addSearch("iii", map(iii, generalParameterMapping));
+    CohortDefinition iv = getInARTProgram();
+    addGeneralParameters(iv);
+    cd.addSearch("iv", map(iv, generalParameterMapping));
+    CohortDefinition v1 = patientsTranferredInWithoutARTInitiationDate();
+    addGeneralParameters(v1);
+    cd.addSearch("v1", map(v1, generalParameterMapping));
+    CohortDefinition v2 = patientsTranferredInWithARTInitiationDateOutsideReportingPeriod();
+    addGeneralParameters(v2);
+    cd.addSearch("v2", map(v2, generalParameterMapping));
+    cd.setCompositionString("(i OR ii OR iii OR iv) OR NOT (v1 OR v2)");
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  public CohortDefinition artListB() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    CohortDefinition i = everyTimeARVTreatedFinal();
+    addGeneralParameters(i);
+    cd.addSearch("i", map(i, generalParameterMapping));
+    CohortDefinition ii = artTargetHistoricalStartUsingEndDate();
+    addGeneralParameters(ii);
+    cd.addSearch("ii", map(ii, generalParameterMapping));
+    CohortDefinition iii = getInARTProgram();
+    addGeneralParameters(iii);
+    cd.addSearch("iii", map(iii, generalParameterMapping));
+
+    cd.setCompositionString("i OR ii OR iii");
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  public CohortDefinition artList() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    CohortDefinition a = artListA();
+    addGeneralParameters(a);
+    cd.addSearch("A", map(a, generalParameterMapping));
+    CohortDefinition b = artListB();
+    addGeneralParameters(b);
+    cd.addSearch("B", map(b, generalParameterMapping));
+    cd.setCompositionString("A OR B");
     return cd;
   }
 }

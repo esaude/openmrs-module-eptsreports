@@ -338,8 +338,35 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
 
     // c1 AND c2
     EvaluatedCohort result =
-        evaluateCohortDefinition(txTbCohortQueries.patientsTranferredInWithoutARTInitiationDate());
+        evaluateCohortDefinition(
+            txTbCohortQueries.patientsTranferredInWithARTInitiationDateOutsideReportingPeriod());
 
     Assert.assertEquals(0, result.size());
+  }
+
+  @Test
+  public void patientWithFirstDrugPickupEncounterWithinReportingDate() throws EvaluationException {
+    EvaluatedCohort result =
+        evaluateCohortDefinition(
+            txTbCohortQueries.patientWithFirstDrugPickupEncounterWithinReportingDate());
+    Assert.assertEquals(414, result.size());
+  }
+
+  @Test
+  public void artListA() throws EvaluationException {
+    EvaluatedCohort result = evaluateCohortDefinition(txTbCohortQueries.artListA());
+    Assert.assertEquals(12328, result.size());
+  }
+
+  @Test
+  public void artListB() throws EvaluationException {
+    EvaluatedCohort result = evaluateCohortDefinition(txTbCohortQueries.artListB());
+    Assert.assertEquals(8629, result.size());
+  }
+
+  @Test
+  public void artList() throws EvaluationException {
+    EvaluatedCohort result = evaluateCohortDefinition(txTbCohortQueries.artList());
+    Assert.assertEquals(12328, result.size());
   }
 }
