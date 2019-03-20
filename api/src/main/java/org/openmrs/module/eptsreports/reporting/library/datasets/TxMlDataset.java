@@ -60,7 +60,7 @@ public class TxMlDataset extends BaseDataSet {
                 "missed and dead",
                 EptsReportUtils.map(
                     txMlCohortQueries
-                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutButDiedDurungReportingPeriod(),
+                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutButDiedDuringReportingPeriod(),
                     mappings)),
             mappings),
         getColumnsForAgeAndGender());

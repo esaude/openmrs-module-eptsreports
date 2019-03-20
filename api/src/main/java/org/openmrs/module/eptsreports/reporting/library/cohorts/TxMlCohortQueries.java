@@ -51,21 +51,12 @@ public class TxMlCohortQueries {
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "silentTransfers",
-        EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
-                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.setCompositionString("missedAppointment AND NOT transferOut");
     return cd;
   }
 
   public CohortDefinition
-      getPatientsWhoMissedNextAppointmentAndNotTransferredOutButDiedDurungReportingPeriod() {
+  getPatientsWhoMissedNextAppointmentAndNotTransferredOutButDiedDuringReportingPeriod() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
         "Get patients who missed appointment and are NOT transferred out, but died during reporting period");
