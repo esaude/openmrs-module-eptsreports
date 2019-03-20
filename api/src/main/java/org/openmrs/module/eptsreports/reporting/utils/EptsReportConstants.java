@@ -137,4 +137,9 @@ public final class EptsReportConstants {
     BREASTFEEDINGPREGNANT,
     ADULTCHILDREN
   }
+
+  public enum PregnantOrBreastfeedingWomen {
+    PREGNANTWOMEN,
+    BREASTFEEDINGWOMEN
+  }
 }

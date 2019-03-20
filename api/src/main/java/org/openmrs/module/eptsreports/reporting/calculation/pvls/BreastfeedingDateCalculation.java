@@ -1,7 +1,9 @@
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -11,16 +13,16 @@ import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.PatientState;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
+import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,10 +31,11 @@ import org.springframework.stereotype.Component;
  * @return CalculationResultMap
  */
 @Component
-public class BreastfeedingCalculation extends AbstractPatientCalculation {
+public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
 
-  @Autowired private HivMetadata hivMetadata;
-  @Autowired private EPTSCalculationService ePTSCalculationService;
+  private HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
+  private EPTSCalculationService ePTSCalculationService =
+      Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
 
   @Override
   public CalculationResultMap evaluate(
@@ -106,7 +109,7 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
 
     for (Integer pId : femaleCohort) {
 
-      Boolean isCandidate = false;
+      Date resultantDate = null;
 
       Obs lastVlObs = EptsCalculationUtils.resultForPatient(lastVl, pId);
 
@@ -123,56 +126,78 @@ public class BreastfeedingCalculation extends AbstractPatientCalculation {
         List<PatientState> patientStateList =
             EptsCalculationUtils.extractResultValues(patientResult);
 
-        if (this.isLactating(lastVlDate, lactattingObs)
-            || this.hasHIVStartDate(lastVlDate, criteriaHivObs)
-            || (this.hasDeliveryDate(lastVlDate, deliveryDateObsList))
-            || this.isBreastFeedingInProgram(lastVlDate, patientStateList)) {
+        // get a list of all eligible dates
+        List<Date> allEligibleDates =
+            Arrays.asList(
+                this.isLactating(lastVlDate, lactattingObs),
+                this.hasHIVStartDate(lastVlDate, criteriaHivObs),
+                this.hasDeliveryDate(lastVlDate, deliveryDateObsList),
+                this.isInBreastFeedingInProgram(lastVlDate, patientStateList));
 
-          isCandidate = true;
+        // have a resultant list of dates
+        List<Date> resultantList = new ArrayList<>();
+        if (allEligibleDates.size() > 0) {
+          for (Date breastfeedingDate : allEligibleDates) {
+            if (breastfeedingDate != null) {
+              resultantList.add(breastfeedingDate);
+            }
+          }
+        }
+        if (resultantList.size() > 0) {
+          Collections.sort(resultantList);
+          // then pick the most recent entry, which is the last one
+          resultantDate = resultantList.get(resultantList.size() - 1);
         }
       }
-      resultMap.put(pId, new BooleanResult(isCandidate, this));
+      resultMap.put(pId, new SimpleResult(resultantDate, this));
     }
     return resultMap;
   }
 
-  private boolean hasDeliveryDate(Date lastVlDate, List<Obs> deliveryDateObsList) {
-
+  private Date hasDeliveryDate(Date lastVlDate, List<Obs> deliveryDateObsList) {
+    Date deliveryDate = null;
     for (Obs deliverDateObs : deliveryDateObsList) {
       if (deliverDateObs.getValueDatetime() != null
-          && this.isInBreastFeedingnViralLoadRange(lastVlDate, deliverDateObs.getValueDatetime())) {
-        return true;
+          && this.isInBreastFeedingViralLoadRange(lastVlDate, deliverDateObs.getValueDatetime())) {
+        deliveryDate = deliverDateObs.getValueDatetime();
       }
     }
-    return false;
+    return deliveryDate;
   }
 
-  private boolean isLactating(Date lastVlDate, Obs lactantObs) {
-    return lactantObs != null
-        && this.isInBreastFeedingnViralLoadRange(
-            lastVlDate, lactantObs.getEncounter().getEncounterDatetime());
+  private Date isLactating(Date lastVlDate, Obs lactantObs) {
+    Date lactatingDate = null;
+    if (lactantObs != null
+        && this.isInBreastFeedingViralLoadRange(
+            lastVlDate, lactantObs.getEncounter().getEncounterDatetime())) {
+      lactatingDate = lactantObs.getEncounter().getEncounterDatetime();
+    }
+    return lactatingDate;
   }
 
-  private boolean hasHIVStartDate(Date lastVlDate, Obs hivStartDateObs) {
-
-    return hivStartDateObs != null
-        && this.isInBreastFeedingnViralLoadRange(
-            lastVlDate, hivStartDateObs.getEncounter().getEncounterDatetime());
+  private Date hasHIVStartDate(Date lastVlDate, Obs hivStartDateObs) {
+    Date hivStartDate = null;
+    if (hivStartDateObs != null
+        && this.isInBreastFeedingViralLoadRange(
+            lastVlDate, hivStartDateObs.getEncounter().getEncounterDatetime())) {
+      hivStartDate = hivStartDateObs.getEncounter().getEncounterDatetime();
+    }
+    return hivStartDate;
   }
 
-  private boolean isBreastFeedingInProgram(Date lastVlDate, List<PatientState> patientStateList) {
-
+  private Date isInBreastFeedingInProgram(Date lastVlDate, List<PatientState> patientStateList) {
+    Date inProgramDate = null;
     if (!patientStateList.isEmpty()) {
       for (PatientState patientState : patientStateList) {
-        if (this.isInBreastFeedingnViralLoadRange(lastVlDate, patientState.getStartDate())) {
-          return true;
+        if (this.isInBreastFeedingViralLoadRange(lastVlDate, patientState.getStartDate())) {
+          inProgramDate = patientState.getStartDate();
         }
       }
     }
-    return false;
+    return inProgramDate;
   }
 
-  private boolean isInBreastFeedingnViralLoadRange(Date viralLoadDate, Date breastFeedingDate) {
+  private boolean isInBreastFeedingViralLoadRange(Date viralLoadDate, Date breastFeedingDate) {
 
     Date startDate = EptsCalculationUtils.addMonths(viralLoadDate, -18);
     return breastFeedingDate.compareTo(startDate) >= 0
