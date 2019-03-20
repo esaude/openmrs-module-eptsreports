@@ -63,25 +63,14 @@ public class TXTBQueries {
 
   // exited by either transfer out, treatment suspension, treatment abandoned
   // or death of patient
-  public static String patientsWhoCameOutOfARVTreatmentProgram(
-      Integer ARTProgramId,
-      Integer transferOutStateId,
-      Integer treatmentSuspensionStateId,
-      Integer treatmentAbandonedStateId,
-      Integer deathStateId) {
+  public static String patientsAtProgramStates(Integer ARTProgramId, List<Integer> stateIds) {
     return "SELECT pg.patient_id FROM patient p  "
         + "INNER JOIN patient_program pg  ON p.patient_id = pg.patient_id  "
         + "INNER JOIN patient_state ps  ON pg.patient_program_id = ps.patient_program_id "
         + "WHERE pg.voided = 0  AND ps.voided = 0  AND p.voided = 0  AND pg.program_id = "
         + ARTProgramId
         + " AND ps.state IN ( "
-        + transferOutStateId
-        + ", "
-        + treatmentSuspensionStateId
-        + ", "
-        + treatmentAbandonedStateId
-        + ", "
-        + deathStateId
+        + StringUtils.join(stateIds, ",")
         + " )  AND ps.end_date IS NULL  AND ps.start_date <= :endDate  "
         + "AND location_id = :location ";
   }
@@ -196,6 +185,19 @@ public class TXTBQueries {
     } else {
       sql += "value_datetime <= :endDate and voided=0";
     }
+    return sql;
+  }
+
+  public static String dateObsWithinXMonthsBeforeStartDate(
+      Integer questionId, List<Integer> encounterTypeIds, Integer xMonths) {
+    String sql =
+        "select person_id from obs where concept_id = "
+            + questionId
+            + " and encounter_id in(select distinct encounter_id from encounter where encounter_type in("
+            + StringUtils.join(encounterTypeIds, ",")
+            + ")) and location_id = :location and value_datetime >= DATE_SUB(:startDate, INTERVAL "
+            + xMonths
+            + " MONTH) and value_datetime <= :startDate and voided=0";
     return sql;
   }
 

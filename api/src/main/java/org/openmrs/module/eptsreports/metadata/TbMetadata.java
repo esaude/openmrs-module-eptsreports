@@ -77,7 +77,28 @@ public class TbMetadata extends CommonMetadata {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty(
-                EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_SCREENING_CONCEPT_ID);
+                EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_SCREENING_CONCEPT_UUID);
+    return getConcept(uuid);
+  }
+
+  public Concept getResearchResultConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_RESEARCH_RESULT_CONCEPT_UUID);
+    return getConcept(uuid);
+  }
+
+  public Concept getPositiveConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_POSITIVE_CONCEPT_UUID);
+    return getConcept(uuid);
+  }
+
+  public Concept getNegativeConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_NEGATIVE_CONCEPT_UUID);
     return getConcept(uuid);
   }
 }

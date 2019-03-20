@@ -383,6 +383,27 @@
 		<defaultValue>e1d81c70-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>Concept uuid for NO</description>
 	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.researchResultForTbConceptUuid</property>
+		<defaultValue>106c484c-a5a3-4c8b-9586-09b1f22c324d</defaultValue>
+		<description>
+			UUID for the RESULT OF RESEARCH FOR TB OF BK and/or RX concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.positiveConceptUuid</property>
+		<defaultValue>e1d47386-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Positive concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.negativeConceptUuid</property>
+		<defaultValue>e1d446cc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Negative concept
+		</description>
+	</globalProperty>
 
 	<!-- 2nd line ARV Concepts -->
 

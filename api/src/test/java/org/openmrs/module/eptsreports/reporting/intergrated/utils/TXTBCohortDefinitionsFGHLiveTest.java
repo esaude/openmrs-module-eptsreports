@@ -149,7 +149,7 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
   public void tbTreatmentStartUsingEndDate() throws EvaluationException {
     // TODO remove startDate
     EvaluatedCohort result =
-        evaluateCohortDefinition(txTbCohortQueries.tbTreatmentStartUsingEndDate());
+        evaluateCohortDefinition(txTbCohortQueries.tbTreatmentWithinReportingDate());
     Assert.assertEquals(3, result.size());
   }
 
@@ -277,14 +277,14 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
   @Test
   public void codedNegativeTbScreening() throws EvaluationException {
     EvaluatedCohort result =
-        evaluateCodedObsCohortDefinition(txTbCohortQueries.codedNegativeTbScreening());
+        evaluateCodedObsCohortDefinition(txTbCohortQueries.codedNoTbScreening());
     Assert.assertEquals(413, result.size());
   }
 
   @Test
   public void codedPositiveTbScreening() throws EvaluationException {
     EvaluatedCohort result =
-        evaluateCodedObsCohortDefinition(txTbCohortQueries.codedPositiveTbScreening());
+        evaluateCodedObsCohortDefinition(txTbCohortQueries.codedYesTbScreening());
     Assert.assertEquals(18, result.size());
   }
 
@@ -368,5 +368,23 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
   public void artList() throws EvaluationException {
     EvaluatedCohort result = evaluateCohortDefinition(txTbCohortQueries.artList());
     Assert.assertEquals(12328, result.size());
+  }
+
+  @Test
+  public void txTbDenominatorA() throws EvaluationException {
+    EvaluatedCohort result = evaluateCohortDefinition(txTbCohortQueries.txTbDenominatorA());
+    Assert.assertEquals(432, result.size());
+  }
+
+  @Test
+  public void txTbDenominatorB() throws EvaluationException {
+    EvaluatedCohort result = evaluateCohortDefinition(txTbCohortQueries.txTbDenominatorB());
+    Assert.assertEquals(0, result.size());
+  }
+
+  @Test
+  public void txTbDenominator() throws EvaluationException {
+    EvaluatedCohort result = evaluateCohortDefinition(txTbCohortQueries.txTbDenominator());
+    Assert.assertEquals(432, result.size());
   }
 }
