@@ -387,4 +387,10 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
     EvaluatedCohort result = evaluateCohortDefinition(txTbCohortQueries.txTbDenominator());
     Assert.assertEquals(432, result.size());
   }
+
+  @Test
+  public void txTbNumerator() throws EvaluationException {
+    EvaluatedCohort result = evaluateCohortDefinition(txTbCohortQueries.txTbNumerator());
+    Assert.assertEquals(9, result.size());
+  }
 }
