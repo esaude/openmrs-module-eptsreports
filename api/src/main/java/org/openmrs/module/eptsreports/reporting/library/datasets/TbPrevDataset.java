@@ -114,6 +114,8 @@ public class TbPrevDataset extends BaseDataSet {
         EptsReportUtils.map(
             ageCohortQueries.createXtoYAgeCohort("15+", 15, 200),
             "effectiveDate=${effectiveDate}"));
+    dim.addCohortDefinition(
+        "UNK", EptsReportUtils.map(ageCohortQueries.createUnknownAgeCohort(), ""));
     return dim;
   }
 
