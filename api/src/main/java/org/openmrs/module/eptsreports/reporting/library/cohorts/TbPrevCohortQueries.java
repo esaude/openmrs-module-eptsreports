@@ -35,26 +35,11 @@ public class TbPrevCohortQueries {
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private HivCohortQueries hivCohortQueries;
-
   public CohortDefinition getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod() {
     DateObsCohortDefinition definition = new DateObsCohortDefinition();
     definition.setName("getPatientsThatStartedProfilaxiaIsoniazida");
     definition.setQuestion(hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept());
     definition.setTimeModifier(BaseObsCohortDefinition.TimeModifier.FIRST);
-    definition.setOperator1(RangeComparator.GREATER_EQUAL);
-    definition.setOperator2(RangeComparator.LESS_EQUAL);
-    definition.addParameter(new Parameter("value1", "After Date", Date.class));
-    definition.addParameter(new Parameter("value2", "Before Date", Date.class));
-    definition.addParameter(new Parameter("locationList", "Location", Location.class));
-    return definition;
-  }
-
-  public CohortDefinition getPatientsThatFinalizedProfilaxiaIsoniazidaOnPeriod() {
-    DateObsCohortDefinition definition = new DateObsCohortDefinition();
-    definition.setName("getPatientsThatFinalizedProfilaxiaIsoniazidaOnPeriod");
-    definition.setQuestion(hivMetadata.getDataFinalizacaoProfilaxiaIsoniazidaConcept());
-    definition.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
     definition.setOperator1(RangeComparator.GREATER_EQUAL);
     definition.setOperator2(RangeComparator.LESS_EQUAL);
     definition.addParameter(new Parameter("value1", "After Date", Date.class));
@@ -127,63 +112,6 @@ public class TbPrevCohortQueries {
     return definition;
   }
 
-  public CohortDefinition getNumeratorDimension1() {
-    CompositionCohortDefinition definition = new CompositionCohortDefinition();
-    definition.setName("TB-PREV Numerator Query");
-    definition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    definition.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
-    definition.addParameter(new Parameter("location", "Location", Location.class));
-    definition.addSearch(
-        "active-art",
-        EptsReportUtils.map(
-            genericCohortQueries.getActiveOnArt(),
-            "onOrBefore=${onOrBefore},location=${location}"));
-    definition.addSearch(
-        "started-profilaxia",
-        EptsReportUtils.map(
-            getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod(),
-            "value1=${onOrAfter-6m},value2=${onOrBefore-6m},locationList=${location}"));
-    definition.addSearch(
-        "finalized-profilaxia",
-        EptsReportUtils.map(
-            getPatientsThatFinalizedProfilaxiaIsoniazidaOnPeriod(),
-            "value1=${onOrAfter},value2=${onOrBefore},locationList=${location}"));
-    definition.addSearch(
-        "started-on-period",
-        EptsReportUtils.map(
-            genericCohortQueries.getStartedArtOnPeriod(false, true),
-            "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
-    definition.setCompositionString(
-        "(active-art AND started-profilaxia AND finalized-profilaxia) NOT started-on-period");
-    return definition;
-  }
-
-  public CohortDefinition getNumeratorDimesion2() {
-    CompositionCohortDefinition definition = new CompositionCohortDefinition();
-    definition.setName("TB-PREV Numerator Query");
-    definition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    definition.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
-    definition.addParameter(new Parameter("location", "Location", Location.class));
-    definition.addSearch(
-        "started-profilaxia",
-        EptsReportUtils.map(
-            getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod(),
-            "value1=${onOrAfter-6m},value2=${onOrBefore-6m},locationList=${location}"));
-    definition.addSearch(
-        "finalized-profilaxia",
-        EptsReportUtils.map(
-            getPatientsThatFinalizedProfilaxiaIsoniazidaOnPeriod(),
-            "value1=${onOrAfter},value2=${onOrBefore},locationList=${location}"));
-    definition.addSearch(
-        "started-on-period",
-        EptsReportUtils.map(
-            genericCohortQueries.getStartedArtOnPeriod(false, true),
-            "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
-    definition.setCompositionString(
-        "started-on-period AND started-profilaxia AND finalized-profilaxia");
-    return definition;
-  }
-
   public CohortDefinition getDenominator() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("TB-PREV Denominator Query");
@@ -207,51 +135,6 @@ public class TbPrevCohortQueries {
             "value1=${onOrAfter-6m},value2=${onOrBefore-6m},locationList=${location}"));
     definition.setCompositionString(
         "(started-by-end-previous-reporting-period OR started-on-previous-period) AND started-isoniazid");
-    return definition;
-  }
-
-  public CohortDefinition getDenominatorDimension1() {
-    CompositionCohortDefinition definition = new CompositionCohortDefinition();
-    definition.setName("TB-PREV Denominator Dimension 1 Query");
-    definition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    definition.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
-    definition.addParameter(new Parameter("location", "Location", Location.class));
-    definition.addSearch(
-        "active-art",
-        EptsReportUtils.map(
-            genericCohortQueries.getActiveOnArt(),
-            "onOrBefore=${onOrBefore},location=${location}"));
-    definition.addSearch(
-        "started-profilaxia",
-        EptsReportUtils.map(
-            getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod(),
-            "value1=${onOrAfter-6m},value2=${onOrBefore-6m},locationList=${location}"));
-    definition.addSearch(
-        "started-on-period",
-        EptsReportUtils.map(
-            genericCohortQueries.getStartedArtOnPeriod(false, true),
-            "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
-    definition.setCompositionString("(active-art AND started-profilaxia) NOT started-on-period");
-    return definition;
-  }
-
-  public CohortDefinition getDenominatorDimension2() {
-    CompositionCohortDefinition definition = new CompositionCohortDefinition();
-    definition.setName("TB-PREV Denominator Dimension 2 Query");
-    definition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    definition.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
-    definition.addParameter(new Parameter("location", "Location", Location.class));
-    definition.addSearch(
-        "started-profilaxia",
-        EptsReportUtils.map(
-            getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod(),
-            "value1=${onOrAfter-6m},value2=${onOrBefore-6m},locationList=${location}"));
-    definition.addSearch(
-        "started-on-period",
-        EptsReportUtils.map(
-            genericCohortQueries.getStartedArtOnPeriod(false, true),
-            "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
-    definition.setCompositionString("started-on-period AND started-profilaxia");
     return definition;
   }
 
