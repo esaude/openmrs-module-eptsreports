@@ -40,7 +40,7 @@ public class TxMlDataset extends BaseDataSet {
     // start building the datasets
     // get the column for the totals
     dsd.addColumn(
-        "MA",
+        "M1",
         "Total missed appointments",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -50,10 +50,23 @@ public class TxMlDataset extends BaseDataSet {
                     mappings)),
             mappings),
         "");
+    // get totals disaggregated by gender and age
+    addRow(
+        dsd,
+        "M2",
+        "Age and Gender",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Age and Gender",
+                EptsReportUtils.map(
+                    txMlCohortQueries.getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
+                    mappings)),
+            mappings),
+        getColumnsForAgeAndGender());
     // Missed appointment and dead
     addRow(
         dsd,
-        "MAD",
+        "M3",
         "Dead",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -61,6 +74,21 @@ public class TxMlDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     txMlCohortQueries
                         .getPatientsWhoMissedNextAppointmentAndNotTransferredOutButDiedDuringReportingPeriod(),
+                    mappings)),
+            mappings),
+        getColumnsForAgeAndGender());
+
+    // Not consented
+    addRow(
+        dsd,
+        "M4",
+        "Not consistent",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Not consistent",
+                EptsReportUtils.map(
+                    txMlCohortQueries
+                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndNotConsistentDuringReportingPeriod(),
                     mappings)),
             mappings),
         getColumnsForAgeAndGender());
@@ -149,6 +177,6 @@ public class TxMlDataset extends BaseDataSet {
         foutyTo44F,
         fouty5To49F,
         above50F,
-        unknownF);
+        unknownF, total);
   }
 }
