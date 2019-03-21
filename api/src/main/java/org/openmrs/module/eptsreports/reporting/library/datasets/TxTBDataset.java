@@ -60,18 +60,14 @@ public class TxTBDataset extends BaseDataSet {
 
   private void addTXTBNumerator(
       String mappings, CohortIndicatorDataSetDefinition dataSetDefinition) {
-    CohortIndicator notifiedTbPatientsOnARTService =
+    CohortIndicator numerator =
         eptsGeneralIndicator.getIndicator(
-            "notifiedTbPatientsOnARTService",
-            EptsReportUtils.map(txTbCohortQueries.notifiedTbPatientsOnARTService(), mappings));
+            "NUMERATOR", EptsReportUtils.map(txTbCohortQueries.txTbNumerator(), mappings));
+    dataSetDefinition.addColumn(
+        "TXB_NUM", "TX_TB: Notified TB On ART", EptsReportUtils.map(numerator, mappings), "");
     dataSetDefinition.addColumn(
         "TXB",
-        "TX_TB: Notified TB On ART",
-        EptsReportUtils.map(notifiedTbPatientsOnARTService, mappings),
-        "");
-    dataSetDefinition.addColumn(
-        "TXB_NUM",
-        "TX_TB: Numerator",
+        "TX_TB: On ART",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "getNotifiedTBPatientsAtARVService",
@@ -93,22 +89,17 @@ public class TxTBDataset extends BaseDataSet {
         dataSetDefinition,
         "TXB_NUM",
         "TXB_NUM: Numerator - disaggregated",
-        EptsReportUtils.map(notifiedTbPatientsOnARTService, mappings),
+        EptsReportUtils.map(numerator, mappings),
         dissagregations());
   }
 
   private void addTXTBDenominator(
       String mappings, CohortIndicatorDataSetDefinition dataSetDefinition) {
-    CohortIndicator screenedTbNegativeOrPositive =
+    CohortIndicator denominator =
         eptsGeneralIndicator.getIndicator(
-            "patientsWhoScreenTbNegativeOrPositive",
-            EptsReportUtils.map(
-                txTbCohortQueries.patientsWhoScreenTbNegativeOrPositive(), mappings));
+            "DENOMINATOR", EptsReportUtils.map(txTbCohortQueries.txTbDenominator(), mappings));
     dataSetDefinition.addColumn(
-        "TXB_DEN",
-        "TX_TB: Denominator",
-        EptsReportUtils.map(screenedTbNegativeOrPositive, mappings),
-        "");
+        "TXB_DEN", "TX_TB: Denominator", EptsReportUtils.map(denominator, mappings), "");
     dataSetDefinition.addColumn(
         "TXB_DEN_POS",
         "TX_TB: Denominator - Screened Positive",
@@ -153,7 +144,7 @@ public class TxTBDataset extends BaseDataSet {
         dataSetDefinition,
         "TXB_DEN",
         "TXB_DEN: Denominator - disaggregated",
-        EptsReportUtils.map(screenedTbNegativeOrPositive, mappings),
+        EptsReportUtils.map(denominator, mappings),
         dissagregations());
   }
 
