@@ -231,7 +231,7 @@ public class TxNewCohortQueries {
 
     Mapped<CohortDefinition> startedART =
         Mapped.map(
-            genericCohorts.getStartedArtOnPeriod(false),
+            genericCohorts.getStartedArtOnPeriod(false, true),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}");
     Mapped<CohortDefinition> transferredIn =
         Mapped.map(

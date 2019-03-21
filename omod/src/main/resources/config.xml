@@ -351,6 +351,11 @@
 		<defaultValue>9e555978-3a02-4da4-855e-7b1bfc807347</defaultValue>
 		<description>Data de finalizacao de profilaxia com Isoniazida</description>
 	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.isoniazidUseConceptUuid</property>
+		<defaultValue>be4a76ca-662a-4c39-903b-71983f5f67c9</defaultValue>
+		<description>Uso de Isoniazida</description>
+	</globalProperty>
 
 	<!-- 2nd line ARV Concepts -->
 

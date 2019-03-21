@@ -66,7 +66,8 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap map = new CalculationResultMap();
     Location location = (Location) context.getFromCache("location");
 
-    boolean considerTransferredIn = getConsiderTransferredInParameter(parameterValues);
+    boolean considerTransferredIn = isConsiderTransferredInParameter(parameterValues);
+    boolean considerPharmacyEncounter = isConsiderPharmacyEncounter(parameterValues);
 
     Program treatmentProgram = hivMetadata.getARTProgram();
     Concept arvPlan = hivMetadata.getARVPlanConcept();
@@ -79,16 +80,16 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
         ePTSCalculationService.firstPatientProgram(treatmentProgram, location, cohort, context);
     CalculationResultMap startDrugMap =
         ePTSCalculationService.firstObs(
-            arvPlan, startDrugsConcept, location, true, cohort, context);
+            arvPlan, startDrugsConcept, location, true, null, null, cohort, context);
     CalculationResultMap historicalMap =
         ePTSCalculationService.firstObs(
-            hostoricalStartConcept, null, location, false, cohort, context);
+            hostoricalStartConcept, null, location, false, null, null, cohort, context);
     CalculationResultMap pharmacyEncounterMap =
         ePTSCalculationService.firstEncounter(
             Arrays.asList(encounterTypePharmacy), cohort, location, context);
     CalculationResultMap transferInMap =
         ePTSCalculationService.firstObs(
-            arvPlan, transferInConcept, location, true, cohort, context);
+            arvPlan, transferInConcept, location, true, null, null, cohort, context);
 
     for (Integer pId : cohort) {
       Date requiredDate = null;
@@ -106,10 +107,12 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
       if (historicalDateObs != null) {
         enrollmentDates.add(historicalDateObs.getValueDatetime());
       }
-      Encounter pharmacyEncounter =
-          EptsCalculationUtils.resultForPatient(pharmacyEncounterMap, pId);
-      if (pharmacyEncounter != null) {
-        enrollmentDates.add(pharmacyEncounter.getEncounterDatetime());
+      if (considerPharmacyEncounter) {
+        Encounter pharmacyEncounter =
+            EptsCalculationUtils.resultForPatient(pharmacyEncounterMap, pId);
+        if (pharmacyEncounter != null) {
+          enrollmentDates.add(pharmacyEncounter.getEncounterDatetime());
+        }
       }
       if (considerTransferredIn) {
         Obs transferInObs = EptsCalculationUtils.resultForPatient(transferInMap, pId);
@@ -127,12 +130,20 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
     return map;
   }
 
-  private boolean getConsiderTransferredInParameter(Map<String, Object> parameterValues) {
+  private boolean isConsiderTransferredInParameter(Map<String, Object> parameterValues) {
     Boolean considerTransferredIn = (Boolean) parameterValues.get("considerTransferredIn");
     if (considerTransferredIn == null) {
       considerTransferredIn = true;
     }
     return considerTransferredIn;
+  }
+
+  private boolean isConsiderPharmacyEncounter(Map<String, Object> parameterValues) {
+    Boolean considerPharmacyEncounter = (Boolean) parameterValues.get("considerPharmacyEncounter");
+    if (considerPharmacyEncounter == null) {
+      considerPharmacyEncounter = true;
+    }
+    return considerPharmacyEncounter;
   }
 
   public static Date getArtStartDate(Integer patientId, CalculationResultMap artStartDates) {

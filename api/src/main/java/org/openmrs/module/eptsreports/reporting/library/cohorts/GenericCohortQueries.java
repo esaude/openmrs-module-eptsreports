@@ -219,7 +219,8 @@ public class GenericCohortQueries {
     return getAgeOnArtStartDate(minAge, maxAge, false);
   }
 
-  public CohortDefinition getStartedArtOnPeriod(boolean considerTransferredIn) {
+  public CohortDefinition getStartedArtOnPeriod(
+      boolean considerTransferredIn, boolean considerPharmacyEncounter) {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
             Context.getRegisteredComponents(StartedArtOnPeriodCalculation.class).get(0));
@@ -228,14 +229,16 @@ public class GenericCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
     cd.addCalculationParameter("considerTransferredIn", considerTransferredIn);
+    cd.addCalculationParameter("considerPharmacyEncounter", considerPharmacyEncounter);
     return cd;
   }
 
-  public CohortDefinition getStartedArtBeforeDate() {
+  public CohortDefinition getStartedArtBeforeDate(boolean considerTransferredIn) {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
             Context.getRegisteredComponents(StartedArtBeforeDateCalculation.class).get(0));
     cd.setName("Art start date");
+    cd.addCalculationParameter("considerTransferredIn", considerTransferredIn);
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     return cd;

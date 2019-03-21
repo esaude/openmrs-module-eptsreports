@@ -253,7 +253,8 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
     List<Location> locationList = Arrays.asList(new Location(1));
 
     CalculationResultMap obsMap =
-        this.eptsCalculationService.firstObs(concept, null, new Location(1), true, cohort, context);
+        this.eptsCalculationService.firstObs(
+            concept, null, new Location(1), true, null, null, cohort, context);
     Obs obs = EptsCalculationUtils.resultForPatient(obsMap, 7);
 
     Assert.assertNotNull(obs);
