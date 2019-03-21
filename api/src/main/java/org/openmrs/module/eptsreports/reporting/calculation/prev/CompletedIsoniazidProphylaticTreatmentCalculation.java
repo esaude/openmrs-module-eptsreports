@@ -178,6 +178,10 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
     if (date == null) {
       date = (Date) context.getFromCache(parameterName);
     }
-    return date;
+    if (date != null) {
+      return date;
+    } else {
+      throw new IllegalArgumentException(String.format("Parameter %s must be set", parameterName));
+    }
   }
 }
