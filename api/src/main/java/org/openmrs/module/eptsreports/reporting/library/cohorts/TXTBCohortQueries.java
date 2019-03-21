@@ -761,7 +761,7 @@ public class TXTBCohortQueries {
     CohortDefinition artList = artList();
     addGeneralParameters(artList);
     cd.addSearch("artList", map(artList, generalParameterMapping));
-    cd.setCompositionString("(i AND ii) INTERSECTION artList");
+    cd.setCompositionString("(i AND ii) NOT artList");
     addGeneralParameters(cd);
     return cd;
   }
