@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
@@ -12,120 +13,107 @@ public class TXTBQueries {
    * @return sql
    */
   public static String arvTreatmentIncludesTransfersFromWithKnownStartData(
-      Integer ARVPlanConceptId,
+      Integer arvPlanConceptId,
       Integer startDrugsConceptId,
       Integer historicalDrugsStartDateConceptId,
-      Integer ARTProgramId,
+      Integer artProgramId,
       Integer pharmacyEncounterTypeId,
       Integer artAdultFollowupEncounterTypeId,
       Integer artPedFollowupEncounterTypeId) {
-    return "SELECT patient_id FROM (SELECT patient_id, Min(data_inicio) data_inicio "
-        + "FROM (SELECT p.patient_id, Min(e.encounter_datetime) data_inicio FROM patient p "
-        + "INNER JOIN encounter e ON p.patient_id = e.patient_id "
-        + "INNER JOIN obs o ON o.encounter_id = e.encounter_id "
-        + "WHERE e.voided = 0 AND o.voided = 0 AND p.voided = 0 AND e.encounter_type IN ( "
-        + pharmacyEncounterTypeId
-        + ", "
-        + artAdultFollowupEncounterTypeId
-        + ", "
-        + artPedFollowupEncounterTypeId
-        + " ) "
-        + "AND o.concept_id = "
-        + ARVPlanConceptId
-        + " AND o.value_coded = "
-        + startDrugsConceptId
-        + " AND e.encounter_datetime <= :endDate "
-        + "AND e.location_id = :location GROUP BY p.patient_id "
-        + "UNION SELECT p.patient_id, Min(value_datetime) data_inicio FROM patient p "
-        + "INNER JOIN encounter e ON p.patient_id = e.patient_id INNER JOIN obs o ON e.encounter_id = o.encounter_id "
-        + "WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND e.encounter_type IN ( "
-        + pharmacyEncounterTypeId
-        + ", "
-        + artAdultFollowupEncounterTypeId
-        + ", "
-        + artPedFollowupEncounterTypeId
-        + " ) "
-        + "AND o.concept_id = "
-        + historicalDrugsStartDateConceptId
-        + " AND o.value_datetime IS NOT NULL AND o.value_datetime <= :endDate AND e.location_id = :location "
-        + "GROUP BY p.patient_id UNION SELECT pg.patient_id, date_enrolled data_inicio FROM patient p "
-        + "INNER JOIN patient_program pg ON p.patient_id = pg.patient_id WHERE pg.voided = 0 AND p.voided = 0 "
-        + "AND program_id = "
-        + ARTProgramId
-        + " AND date_enrolled <= :endDate AND location_id = :location "
-        + "UNION SELECT e.patient_id, Min(e.encounter_datetime) AS data_inicio FROM patient p "
-        + "INNER JOIN encounter e ON p.patient_id = e.patient_id WHERE p.voided = 0 AND e.encounter_type = "
-        + pharmacyEncounterTypeId
-        + " "
-        + "AND e.voided = 0 AND e.encounter_datetime <= :endDate AND e.location_id = :location GROUP BY p.patient_id) inicio_real "
-        + "GROUP BY patient_id)inicio WHERE data_inicio BETWEEN :startDate AND :endDate ";
+    String encounterTypeIds =
+        StringUtils.join(
+            Arrays.asList(
+                pharmacyEncounterTypeId,
+                artAdultFollowupEncounterTypeId,
+                artPedFollowupEncounterTypeId),
+            ",");
+    return String.format(
+        "SELECT patient_id FROM (SELECT patient_id, Min(data_inicio) data_inicio "
+            + "FROM (SELECT p.patient_id, Min(e.encounter_datetime) data_inicio FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "WHERE e.voided = 0 AND o.voided = 0 AND p.voided = 0 AND e.encounter_type IN ( %s ) "
+            + "AND o.concept_id = %s AND o.value_coded = %s AND e.encounter_datetime <= :endDate "
+            + "AND e.location_id = :location GROUP BY p.patient_id "
+            + "UNION SELECT p.patient_id, Min(value_datetime) data_inicio FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id = e.patient_id INNER JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND e.encounter_type IN ( %s ) "
+            + "AND o.concept_id = %s AND o.value_datetime IS NOT NULL AND o.value_datetime <= :endDate AND e.location_id = :location "
+            + "GROUP BY p.patient_id UNION SELECT pg.patient_id, date_enrolled data_inicio FROM patient p "
+            + "INNER JOIN patient_program pg ON p.patient_id = pg.patient_id WHERE pg.voided = 0 AND p.voided = 0 "
+            + "AND program_id = %s AND date_enrolled <= :endDate AND location_id = :location "
+            + "UNION SELECT e.patient_id, Min(e.encounter_datetime) AS data_inicio FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id = e.patient_id WHERE p.voided = 0 AND e.encounter_type = %s "
+            + "AND e.voided = 0 AND e.encounter_datetime <= :endDate AND e.location_id = :location GROUP BY p.patient_id) inicio_real "
+            + "GROUP BY patient_id)inicio WHERE data_inicio BETWEEN :startDate AND :endDate ",
+        encounterTypeIds,
+        arvPlanConceptId,
+        startDrugsConceptId,
+        encounterTypeIds,
+        historicalDrugsStartDateConceptId,
+        artProgramId,
+        pharmacyEncounterTypeId);
   }
 
   // exited by either transfer out, treatment suspension, treatment abandoned
   // or death of patient
-  public static String patientsAtProgramStates(Integer ARTProgramId, List<Integer> stateIds) {
-    return "SELECT pg.patient_id FROM patient p  "
-        + "INNER JOIN patient_program pg  ON p.patient_id = pg.patient_id  "
-        + "INNER JOIN patient_state ps  ON pg.patient_program_id = ps.patient_program_id "
-        + "WHERE pg.voided = 0  AND ps.voided = 0  AND p.voided = 0  AND pg.program_id = "
-        + ARTProgramId
-        + " AND ps.state IN ( "
-        + StringUtils.join(stateIds, ",")
-        + " )  AND ps.end_date IS NULL  AND ps.start_date <= :endDate  "
-        + "AND location_id = :location ";
+  public static String patientsAtProgramStates(Integer artProgramId, List<Integer> stateIds) {
+    return String.format(
+        "SELECT pg.patient_id FROM patient p  "
+            + "INNER JOIN patient_program pg  ON p.patient_id = pg.patient_id  "
+            + "INNER JOIN patient_state ps  ON pg.patient_program_id = ps.patient_program_id "
+            + "WHERE pg.voided = 0  AND ps.voided = 0  AND p.voided = 0  AND pg.program_id = %s "
+            + "AND ps.state IN ( %s )  AND ps.end_date IS NULL  AND ps.start_date <= :endDate  "
+            + "AND location_id = :location ",
+        artProgramId, StringUtils.join(stateIds, ","));
   }
 
   /** ABANDONO NÃO NOTIFICADO - TARV SqlCohortDefinition#a1145104-132f-460b-b85e-ea265916625b */
   public static String abandonedWithNoNotification(AbandonedWithoutNotificationParams params) {
-    return "SELECT patient_id FROM (SELECT p.patient_id, Max(encounter_datetime) encounter_datetime FROM patient p "
-        + "INNER JOIN encounter e ON e.patient_id = p.patient_id WHERE p.voided = 0 AND e.voided = 0 "
-        + "AND e.encounter_type = "
-        + params.pharmacyEncounterTypeId
-        + " AND e.location_id = :location AND e.encounter_datetime <= :endDate GROUP BY p.patient_id) max_frida "
-        + "INNER JOIN obs o ON o.person_id = max_frida.patient_id WHERE max_frida.encounter_datetime = o.obs_datetime AND o.voided = 0 "
-        + "AND o.concept_id = "
-        + params.returnVisitDateForARVDrugConceptId
-        + " AND o.location_id = :location AND patient_id "
-        + "NOT IN (SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id = pg.patient_id "
-        + "INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id WHERE pg.voided = 0 AND ps.voided = 0 "
-        + "AND p.voided = 0 AND pg.program_id = "
-        + params.programId
-        + " AND ps.state IN ( "
-        + params.transferOutStateId
-        + ", "
-        + params.treatmentSuspensionStateId
-        + ", "
-        + params.treatmentAbandonedStateId
-        + ", "
-        + params.deathStateId
-        + ") AND ps.end_date IS NULL AND ps.start_date <= :endDate "
-        + "AND location_id = :location) AND patient_id NOT IN(SELECT patient_id FROM "
-        + "(SELECT p.patient_id, Max(encounter_datetime) encounter_datetime FROM patient p "
-        + "INNER JOIN encounter e ON e.patient_id = p.patient_id WHERE p.voided = 0 AND e.voided = 0 "
-        + "AND e.encounter_type IN ( "
-        + params.artAdultFollowupEncounterTypeId
-        + ", "
-        + params.artPedInicioEncounterTypeId
-        + " ) AND e.location_id = :location AND e.encounter_datetime <= :endDate GROUP BY p.patient_id) max_mov "
-        + "INNER JOIN obs o ON o.person_id = max_mov.patient_id WHERE max_mov.encounter_datetime = o.obs_datetime AND o.voided = 0 "
-        + "AND o.concept_id = "
-        + params.returnVisitDateConceptId
-        + " AND o.location_id = :location AND Datediff(:endDate, o.value_datetime) <= 60) AND patient_id "
-        + "NOT IN(SELECT abandono.patient_id FROM (SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id = pg.patient_id "
-        + "INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id WHERE pg.voided = 0 AND ps.voided = 0 AND p.voided = 0 AND pg.program_id = 2 "
-        + "AND ps.state = "
-        + params.treatmentAbandonedStateId
-        + " AND ps.end_date IS NULL AND ps.start_date <= :endDate AND location_id = :location)abandono "
-        + "INNER JOIN (SELECT max_frida.patient_id, max_frida.encounter_datetime, o.value_datetime FROM "
-        + "(SELECT p.patient_id, Max(encounter_datetime) encounter_datetime FROM patient p "
-        + "INNER JOIN encounter e ON e.patient_id = p.patient_id WHERE p.voided = 0 AND e.voided = 0 AND e.encounter_type = "
-        + params.pharmacyEncounterTypeId
-        + " AND e.location_id = :location "
-        + "AND e.encounter_datetime <= :endDate GROUP BY p.patient_id) max_frida INNER JOIN obs o ON o.person_id = max_frida.patient_id "
-        + "WHERE max_frida.encounter_datetime = o.obs_datetime AND o.voided = 0 AND o.concept_id = "
-        + params.returnVisitDateForARVDrugConceptId
-        + " AND o.location_id = :location) ultimo_fila "
-        + "ON abandono.patient_id = ultimo_fila.patient_id WHERE Datediff(:endDate, ultimo_fila.value_datetime) < 60) AND Datediff(:endDate, o.value_datetime) >= 60; ";
+    String stateIds =
+        StringUtils.join(
+            Arrays.asList(
+                params.transferOutStateId,
+                params.treatmentSuspensionStateId,
+                params.treatmentAbandonedStateId,
+                params.deathStateId),
+            ",");
+    return String.format(
+        "SELECT patient_id FROM (SELECT p.patient_id, Max(encounter_datetime) encounter_datetime FROM patient p "
+            + "INNER JOIN encounter e ON e.patient_id = p.patient_id WHERE p.voided = 0 AND e.voided = 0 "
+            + "AND e.encounter_type = %s AND e.location_id = :location AND e.encounter_datetime <= :endDate GROUP BY p.patient_id) max_frida "
+            + "INNER JOIN obs o ON o.person_id = max_frida.patient_id WHERE max_frida.encounter_datetime = o.obs_datetime AND o.voided = 0 "
+            + "AND o.concept_id = %s AND o.location_id = :location AND patient_id "
+            + "NOT IN (SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id = pg.patient_id "
+            + "INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id WHERE pg.voided = 0 AND ps.voided = 0 "
+            + "AND p.voided = 0 AND pg.program_id = %s AND ps.state IN ( %s ) AND ps.end_date IS NULL AND ps.start_date <= :endDate "
+            + "AND location_id = :location) AND patient_id NOT IN(SELECT patient_id FROM "
+            + "(SELECT p.patient_id, Max(encounter_datetime) encounter_datetime FROM patient p "
+            + "INNER JOIN encounter e ON e.patient_id = p.patient_id WHERE p.voided = 0 AND e.voided = 0 "
+            + "AND e.encounter_type IN ( %s, %s ) AND e.location_id = :location AND e.encounter_datetime <= :endDate GROUP BY p.patient_id) max_mov "
+            + "INNER JOIN obs o ON o.person_id = max_mov.patient_id WHERE max_mov.encounter_datetime = o.obs_datetime AND o.voided = 0 "
+            + "AND o.concept_id = %s AND o.location_id = :location AND Datediff(:endDate, o.value_datetime) <= 60) AND patient_id "
+            + "NOT IN(SELECT abandono.patient_id FROM (SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id = pg.patient_id "
+            + "INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id WHERE pg.voided = 0 AND ps.voided = 0 AND p.voided = 0 AND pg.program_id = %s "
+            + "AND ps.state = %s AND ps.end_date IS NULL AND ps.start_date <= :endDate AND location_id = :location)abandono "
+            + "INNER JOIN (SELECT max_frida.patient_id, max_frida.encounter_datetime, o.value_datetime FROM "
+            + "(SELECT p.patient_id, Max(encounter_datetime) encounter_datetime FROM patient p "
+            + "INNER JOIN encounter e ON e.patient_id = p.patient_id WHERE p.voided = 0 AND e.voided = 0 AND e.encounter_type = %s"
+            + " AND e.location_id = :location "
+            + "AND e.encounter_datetime <= :endDate GROUP BY p.patient_id) max_frida INNER JOIN obs o ON o.person_id = max_frida.patient_id "
+            + "WHERE max_frida.encounter_datetime = o.obs_datetime AND o.voided = 0 AND o.concept_id = %s AND o.location_id = :location) ultimo_fila "
+            + "ON abandono.patient_id = ultimo_fila.patient_id WHERE Datediff(:endDate, ultimo_fila.value_datetime) < 60) AND Datediff(:endDate, o.value_datetime) >= 60;",
+        params.pharmacyEncounterTypeId,
+        params.returnVisitDateForARVDrugConceptId,
+        params.programId,
+        stateIds,
+        params.artAdultFollowupEncounterTypeId,
+        params.artPedInicioEncounterTypeId,
+        params.returnVisitDateConceptId,
+        params.programId,
+        params.treatmentAbandonedStateId,
+        params.pharmacyEncounterTypeId,
+        params.returnVisitDateForARVDrugConceptId);
   }
 
   public static String patientsEnrolledInARTCareAndOnTreatment(
@@ -135,51 +123,43 @@ public class TXTBQueries {
       Integer artPedsInitialEncounterTypeId,
       Integer screeningState,
       Integer evaluationAndPrepState) {
-    return "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON e.patient_id = p.patient_id "
-        + "WHERE e.voided = 0 AND p.voided = 0 AND e.encounter_type IN ( "
-        + artAdultInitialEncounterTypeId
-        + ", "
-        + artPedsInitialEncounterTypeId
-        + " ) AND e.encounter_datetime <= :endDate AND e.location_id = :location "
-        + "UNION SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id = pg.patient_id WHERE pg.voided = 0 AND p.voided = 0 "
-        + "AND program_id = "
-        + artCareProgramId
-        + " AND date_enrolled <= :endDate AND location_id = :location UNION SELECT pg.patient_id FROM patient p "
-        + "INNER JOIN patient_program pg ON p.patient_id = pg.patient_id INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id "
-        + "WHERE pg.voided = 0 AND ps.voided = 0 AND p.voided = 0 AND pg.program_id = "
-        + artCareProgramId
-        + " AND ps.state = "
-        + screeningState
-        + " AND ps.start_date = pg.date_enrolled AND ps.start_date <= :endDate "
-        + "AND location_id = :location UNION SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id = pg.patient_id "
-        + "INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id WHERE pg.voided = 0 AND ps.voided = 0 AND p.voided = 0 "
-        + "AND pg.program_id = "
-        + artTreatmentProgramId
-        + " AND ps.state = "
-        + evaluationAndPrepState
-        + " AND ps.start_date <= :endDate AND location_id = :location ";
+    return String.format(
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "WHERE e.voided = 0 AND p.voided = 0 AND e.encounter_type IN ( %s, %s ) AND e.encounter_datetime <= :endDate AND e.location_id = :location "
+            + "UNION SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id = pg.patient_id WHERE pg.voided = 0 AND p.voided = 0 "
+            + "AND program_id = %s AND date_enrolled <= :endDate AND location_id = :location UNION SELECT pg.patient_id FROM patient p "
+            + "INNER JOIN patient_program pg ON p.patient_id = pg.patient_id INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id "
+            + "WHERE pg.voided = 0 AND ps.voided = 0 AND p.voided = 0 AND pg.program_id = %s AND ps.state = %s AND ps.start_date = pg.date_enrolled AND ps.start_date <= :endDate "
+            + "AND location_id = :location UNION SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id = pg.patient_id "
+            + "INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id WHERE pg.voided = 0 AND ps.voided = 0 AND p.voided = 0 "
+            + "AND pg.program_id = %s AND ps.state = %s AND ps.start_date <= :endDate AND location_id = :location",
+        artAdultInitialEncounterTypeId,
+        artPedsInitialEncounterTypeId,
+        artCareProgramId,
+        artCareProgramId,
+        screeningState,
+        artTreatmentProgramId,
+        evaluationAndPrepState);
   }
 
   public static String inARTProgramToEndDateAtLocation(Integer aRTProgramId) {
-    return "select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id where pg.voided=0 and p.voided=0 and program_id="
-        + aRTProgramId
-        + " and date_enrolled<=:endDate and location_id=:location";
+    return String.format(
+        "select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id where pg.voided=0 and p.voided=0 and program_id=%s and date_enrolled<=:endDate and location_id=:location",
+        aRTProgramId);
   }
 
   public static String inTBProgramToEndDateAtLocation(Integer tbProgramId) {
-    return "select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id where pg.voided=0 and p.voided=0 and program_id="
-        + tbProgramId
-        + " and date_enrolled between :startDate and :endDate and location_id=:location";
+    return String.format(
+        "select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id where pg.voided=0 and p.voided=0 and program_id=%s and date_enrolled between :startDate and :endDate and location_id=:location",
+        tbProgramId);
   }
 
   public static String dateObs(
       Integer questionId, List<Integer> encounterTypeIds, boolean startDate) {
     String sql =
-        "select person_id from obs where concept_id = "
-            + questionId
-            + " and encounter_id in(select distinct encounter_id from encounter where encounter_type in("
-            + StringUtils.join(encounterTypeIds, ",")
-            + ")) and location_id = :location and ";
+        String.format(
+            "select person_id from obs where concept_id = %s and encounter_id in(select distinct encounter_id from encounter where encounter_type in(%s)) and location_id = :location and ",
+            questionId, StringUtils.join(encounterTypeIds, ","));
     if (startDate) {
       sql += "value_datetime >= :startDate and value_datetime <= :endDate and voided=0";
     } else {
@@ -190,40 +170,34 @@ public class TXTBQueries {
 
   public static String dateObsWithinXMonthsBeforeStartDate(
       Integer questionId, List<Integer> encounterTypeIds, Integer xMonths) {
-    String sql =
-        "select person_id from obs where concept_id = "
-            + questionId
-            + " and encounter_id in(select distinct encounter_id from encounter where encounter_type in("
-            + StringUtils.join(encounterTypeIds, ",")
-            + ")) and location_id = :location and value_datetime >= DATE_SUB(:startDate, INTERVAL "
-            + xMonths
-            + " MONTH) and value_datetime <= :startDate and voided=0";
-    return sql;
+    return String.format(
+        "select person_id from obs where concept_id = %s and encounter_id in(select distinct encounter_id from encounter where encounter_type in(%s)) and location_id = :location and value_datetime >= DATE_SUB(:startDate, INTERVAL "
+            + "%s MONTH) and value_datetime <= :startDate and voided=0",
+        questionId, StringUtils.join(encounterTypeIds, ","), xMonths);
   }
 
   public static String encounterObs(Integer encounterTypeId) {
-    return "select distinct patient_id from encounter where encounter_type ="
-        + encounterTypeId
-        + " and location_id = :location and encounter_datetime <= :endDate and voided=0;";
+    return String.format(
+        "select distinct patient_id from encounter where encounter_type =%s and location_id = :location and encounter_datetime <= :endDate and voided=0;",
+        encounterTypeId);
   }
 
   public static String patientsTransferredFromOrIntoProgram(
       Integer programId, Integer transferStateId) {
-    return "select pg.patient_id from patient p  inner join patient_program pg on p.patient_id=pg.patient_id inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-        + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id="
-        + programId
-        + " and ps.state="
-        + transferStateId
-        + " and ps.start_date=pg.date_enrolled and ps.start_date between :startDate and :endDate and location_id=:location";
+    return String.format(
+        "select pg.patient_id from patient p  inner join patient_program pg on p.patient_id=pg.patient_id inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s and ps.state="
+            + "%s and ps.start_date=pg.date_enrolled and ps.start_date between :startDate and :endDate and location_id=:location",
+        programId, transferStateId);
   }
 
   public static String patientWithFirstDrugPickupEncounter(Integer encounterTypeId) {
-    return "SELECT p.patient_id "
-        + "FROM patient p "
-        + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
-        + "WHERE p.voided=0 AND e.encounter_type="
-        + encounterTypeId
-        + " AND e.voided=0 AND e.encounter_datetime>=:startDate AND e.encounter_datetime<=:endDate AND e.location_id=:location GROUP BY p.patient_id";
+    return String.format(
+        "SELECT p.patient_id "
+            + "FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "WHERE p.voided=0 AND e.encounter_type=%s AND e.voided=0 AND e.encounter_datetime>=:startDate AND e.encounter_datetime<=:endDate AND e.location_id=:location GROUP BY p.patient_id",
+        encounterTypeId);
   }
 
   public static class AbandonedWithoutNotificationParams {

@@ -42,7 +42,7 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 
   @Autowired private TxCurrDataset txCurrDataset;
 
-  @Autowired private GenericCohortQueries genericCohortQueries;
+  @Autowired protected GenericCohortQueries genericCohortQueries;
 
   @Override
   public String getVersion() {

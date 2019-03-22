@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TXTBCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxTBDataset;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
@@ -31,7 +30,6 @@ import org.springframework.stereotype.Component;
 public class SetupMERSemiAnnualReport extends SetupMERQuarterly {
 
   @Autowired private TxTBDataset txTBDataset;
-  @Autowired private TXTBCohortQueries txtBCohortQueries;
 
   @Override
   public String getVersion() {
@@ -64,8 +62,7 @@ public class SetupMERSemiAnnualReport extends SetupMERQuarterly {
 
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
-            txtBCohortQueries.getPatientsEnrolledInARTCareAndOnTreatment(),
-            "endDate=${endDate},location=${location}"));
+            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
     reportDefinition.addDataSetDefinition(
         "T", Mapped.mapStraightThrough(txTBDataset.constructTxTBDataset()));
 
