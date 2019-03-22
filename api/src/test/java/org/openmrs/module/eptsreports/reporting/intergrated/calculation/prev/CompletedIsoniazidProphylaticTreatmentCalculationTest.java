@@ -117,4 +117,30 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
     BooleanResult result = (BooleanResult) results.get(patientId);
     Assert.assertNull(result);
   }
+
+  @Test
+  public void shouldBeTrueIfDoesNotHaveEndDateButAnsweredYesEnoughTimes() {
+    Map<String, Object> parameterValues = new HashMap<String, Object>();
+    PatientCalculationContext context = getEvaluationContext();
+    Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
+
+    calendar.set(2018, Calendar.JANUARY, 1);
+    context.addToCache("beginPeriodStartDate", calendar.getTime());
+
+    calendar.set(2018, Calendar.JANUARY, 5);
+    context.addToCache("beginPeriodEndDate", calendar.getTime());
+
+    calendar.set(2018, Calendar.JULY, 5);
+    context.addToCache("completionPeriodStartDate", calendar.getTime());
+
+    calendar.set(2018, Calendar.JULY, 10);
+    context.addToCache("completionPeriodEndDate", calendar.getTime());
+
+    final int patientId = 91;
+    CalculationResultMap results =
+        service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues, context);
+    BooleanResult result = (BooleanResult) results.get(patientId);
+    Assert.assertNotNull(result);
+    Assert.assertEquals(Boolean.TRUE, result.getValue());
+  }
 }
