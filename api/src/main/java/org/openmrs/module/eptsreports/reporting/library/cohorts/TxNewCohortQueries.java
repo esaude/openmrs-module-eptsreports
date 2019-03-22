@@ -147,13 +147,14 @@ public class TxNewCohortQueries {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getPatientsWhoGaveBirthTwoYearsAgo() {
+  public CohortDefinition getPatientsWhoGaveBirthWithinReportingPeriod() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("patientsWhoGaveBirthTwoYearsAgo");
+    cd.setName("patientsWhoGaveBirthWithinReportingPeriod");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setQuery(
-        BreastfeedingQueries.getPatientsWhoGaveBirthTwoYearsAgo(
+        BreastfeedingQueries.getPatientsWhoGaveBirthWithinReportingPeriod(
             hivMetadata.getPtvEtvProgram().getProgramId(), 27));
 
     return cd;
@@ -190,7 +191,7 @@ public class TxNewCohortQueries {
     cd.addSearch(
         "LACTANTEPROGRAMA",
         EptsReportUtils.map(
-            getPatientsWhoGaveBirthTwoYearsAgo(), "startDate=${onOrAfter},location=${location}"));
+            getPatientsWhoGaveBirthWithinReportingPeriod(), "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
     cd.addSearch("FEMININO", EptsReportUtils.map(genderCohorts.FemaleCohort(), ""));
     cd.addSearch(
         "LACTANTE",
