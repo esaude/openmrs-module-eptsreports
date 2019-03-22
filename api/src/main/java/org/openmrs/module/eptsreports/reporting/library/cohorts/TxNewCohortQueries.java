@@ -188,11 +188,6 @@ public class TxNewCohortQueries {
                 Arrays.asList(commonMetadata.getBreastfeeding())),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
     cd.addSearch(
-        "GRAVIDAS",
-        EptsReportUtils.map(
-            getPatientsPregnantEnrolledOnART(),
-            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
-    cd.addSearch(
         "LACTANTEPROGRAMA",
         EptsReportUtils.map(
             getPatientsWhoGaveBirthTwoYearsAgo(), "startDate=${onOrAfter},location=${location}"));
@@ -209,7 +204,7 @@ public class TxNewCohortQueries {
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
 
     String compositionString =
-        "((DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE) NOT GRAVIDAS) AND FEMININO";
+        "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE) AND FEMININO";
 
     cd.setCompositionString(compositionString);
     return cd;

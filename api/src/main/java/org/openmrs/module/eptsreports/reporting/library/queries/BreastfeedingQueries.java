@@ -26,6 +26,6 @@ public class BreastfeedingQueries {
         + " and ps.state="
         + patientState
         + " and ps.end_date is null and"
-        + " ps.start_date between date_add(:startDate, interval -2 year) and date_add(:startDate, interval -1 day) and location_id=:location";
+        + " ps.start_date between :startDate and :endDate and location_id=:location";
   }
 }
