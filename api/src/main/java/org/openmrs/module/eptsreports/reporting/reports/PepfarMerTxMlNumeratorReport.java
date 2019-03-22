@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Component;
 public class PepfarMerTxMlNumeratorReport extends EptsDataExportManager {
 
   @Autowired private TxMlDataset txMlDataset;
+
+  @Autowired private GenericCohortQueries genericCohortQueries;
 
   @Override
   public String getExcelDesignUuid() {
@@ -46,6 +50,10 @@ public class PepfarMerTxMlNumeratorReport extends EptsDataExportManager {
     rd.setParameters(txMlDataset.getParameters());
     rd.addDataSetDefinition(
         "Tx_Ml Data Set", Mapped.mapStraightThrough(txMlDataset.constructtxMlDataset()));
+    // add a base cohort to the report
+    rd.setBaseCohortDefinition(
+        genericCohortQueries.getBaseCohort(),
+        ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
 
     return rd;
   }
