@@ -177,6 +177,7 @@ public class TxMlDataset extends BaseDataSet {
         foutyTo44F,
         fouty5To49F,
         above50F,
-        unknownF, total);
+        unknownF,
+        total);
   }
 }
