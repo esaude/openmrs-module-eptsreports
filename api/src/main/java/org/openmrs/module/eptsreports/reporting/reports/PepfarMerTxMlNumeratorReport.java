@@ -71,7 +71,7 @@ public class PepfarMerTxMlNumeratorReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "TPEPFAR_MER_23_SEMIANNUAL_TX_ML.xls",
+              "PEPFAR_MER_23_SEMIANNUAL_TX_ML.xls",
               "PEPFAR MER 2.3 SEMIANNUAL TX_TB",
               getExcelDesignUuid(),
               null);
