@@ -16,17 +16,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class BreastfeedingPregnantCalculation extends AbstractPatientCalculation {
 
-  private PregnantDateCalculation pregnantDateCalculation =
-      Context.getRegisteredComponents(PregnantDateCalculation.class).get(0);
-
-  private BreastfeedingDateCalculation breastfeedingDateCalculation =
-      Context.getRegisteredComponents(BreastfeedingDateCalculation.class).get(0);
-
   @Override
   public CalculationResultMap evaluate(
       Collection<Integer> cohort,
       Map<String, Object> parameterValues,
       PatientCalculationContext context) {
+
+    // External Dependencies
+    PregnantDateCalculation pregnantDateCalculation =
+        Context.getRegisteredComponents(PregnantDateCalculation.class).get(0);
+    BreastfeedingDateCalculation breastfeedingDateCalculation =
+        Context.getRegisteredComponents(BreastfeedingDateCalculation.class).get(0);
 
     CalculationResultMap resultMap = new CalculationResultMap();
 

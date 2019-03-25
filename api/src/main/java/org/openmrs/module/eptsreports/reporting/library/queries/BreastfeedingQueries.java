@@ -15,7 +15,8 @@ package org.openmrs.module.eptsreports.reporting.library.queries;
 
 public class BreastfeedingQueries {
 
-  public static String getPatientsWhoGaveBirthWithinReportingPeriod(int etvProgram, int patientState) {
+  public static String getPatientsWhoGaveBirthWithinReportingPeriod(
+      int etvProgram, int patientState) {
     return "select 	pg.patient_id"
         + " from patient p"
         + " inner join patient_program pg on p.patient_id=pg.patient_id"

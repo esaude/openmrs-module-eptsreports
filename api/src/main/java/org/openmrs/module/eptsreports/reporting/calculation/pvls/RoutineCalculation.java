@@ -46,17 +46,6 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 
   public static final int CRITERIA2_MONTHS_MAX = 15;
 
-  private HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
-
-  private InitialArtStartDateCalculation artStartDateCalculation =
-      Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0);
-
-  private OnArtForMoreThanXmonthsCalcultion onArtForMoreThanXmonthsCalcultion =
-      Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0);
-
-  private EPTSCalculationService ePTSCalculationService =
-      Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
-
   /**
    * Patients on ART for the last X months with one VL result registered in the 12 month period
    * Between Y to Z months after ART initiation
@@ -69,6 +58,15 @@ public class RoutineCalculation extends AbstractPatientCalculation {
   @Override
   public CalculationResultMap evaluate(
       Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
+
+    // External Dependencies
+    HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
+    InitialArtStartDateCalculation artStartDateCalculation =
+        Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0);
+    OnArtForMoreThanXmonthsCalcultion onArtForMoreThanXmonthsCalcultion =
+        Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0);
+    EPTSCalculationService ePTSCalculationService =
+        Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
 
     CalculationResultMap map = new CalculationResultMap();
     Location location = (Location) context.getFromCache("location");
@@ -98,7 +96,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
             regimeConcept,
             cohort,
             Arrays.asList(location),
-            getSecondLineTreatmentArvs(),
+            getSecondLineTreatmentArvs(hivMetadata),
             TimeQualifier.FIRST,
             null,
             context);
@@ -305,7 +303,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
     return viralLoadForPatientTakenWithin12Months;
   }
 
-  private List<Concept> getSecondLineTreatmentArvs() {
+  private List<Concept> getSecondLineTreatmentArvs(HivMetadata hivMetadata) {
     List<Concept> secondLineArvs = new ArrayList<Concept>();
     secondLineArvs.add(hivMetadata.getAzt3tcAbcEfvConcept());
     secondLineArvs.add(hivMetadata.getD4t3tcAbcEfvConcept());

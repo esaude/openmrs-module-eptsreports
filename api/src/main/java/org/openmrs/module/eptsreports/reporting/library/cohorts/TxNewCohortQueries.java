@@ -191,7 +191,8 @@ public class TxNewCohortQueries {
     cd.addSearch(
         "LACTANTEPROGRAMA",
         EptsReportUtils.map(
-            getPatientsWhoGaveBirthWithinReportingPeriod(), "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
+            getPatientsWhoGaveBirthWithinReportingPeriod(),
+            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
     cd.addSearch("FEMININO", EptsReportUtils.map(genderCohorts.FemaleCohort(), ""));
     cd.addSearch(
         "LACTANTE",
