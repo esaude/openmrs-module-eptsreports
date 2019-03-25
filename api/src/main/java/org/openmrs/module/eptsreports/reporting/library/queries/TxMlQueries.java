@@ -11,35 +11,35 @@ public class TxMlQueries {
       int adultoSequimento,
       int arvPediatriaSeguimento) {
 
-    return "SELECT patient_id FROM (SELECT p.patient_id,MAX(encounter_datetime) encounter_datetime FROM patient p "
-        + "INNER JOIN encounter e ON e.patient_id=p.patient_id WHERE p.voided=0 AND e.voided=0 "
-        + "AND e.encounter_type IN("
-        + pharmacyEncounterType
-        + ") AND e.location_id=:location AND e.encounter_datetime<=:endDate "
-        + "GROUP BY p.patient_id ) max_frida INNER JOIN obs o ON o.person_id=max_frida.patient_id "
-        + "WHERE max_frida.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id="
-        + returnVisitDateForDrugsConcept
-        + " AND o.location_id=:location AND DATEDIFF(:endDate,o.value_datetime)>="
-        + min
-        + " AND DATEDIFF(:endDate,o.value_datetime)<="
-        + max
-        + " UNION "
-        + "SELECT patient_id FROM "
-        + "(SELECT p.patient_id,MAX(encounter_datetime) encounter_datetime "
-        + "FROM patient p INNER JOIN encounter e ON e.patient_id=p.patient_id "
-        + "WHERE p.voided=0 AND e.voided=0 AND e.encounter_type IN ("
-        + adultoSequimento
-        + ","
-        + arvPediatriaSeguimento
-        + ") "
-        + "AND e.location_id=:location AND e.encounter_datetime<=:endDate GROUP BY p.patient_id ) max_mov "
-        + "INNER JOIN obs o ON o.person_id=max_mov.patient_id "
-        + "WHERE max_mov.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id="
-        + returnVisitDate
-        + " AND o.location_id=:location AND DATEDIFF(:endDate,o.value_datetime)>="
-        + min
-        + " AND DATEDIFF(:endDate,o.value_datetime)<="
-        + max;
+    String query =
+        "SELECT patient_id FROM (SELECT p.patient_id,MAX(encounter_datetime) encounter_datetime FROM patient p "
+            + "INNER JOIN encounter e ON e.patient_id=p.patient_id WHERE p.voided=0 AND e.voided=0 "
+            + "AND e.encounter_type IN(%d) AND e.location_id=:location AND e.encounter_datetime<=:endDate "
+            + "GROUP BY p.patient_id ) max_frida INNER JOIN obs o ON o.person_id=max_frida.patient_id "
+            + "WHERE max_frida.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id=%d"
+            + " AND o.location_id=:location AND DATEDIFF(:endDate,o.value_datetime)>=%d"
+            + " AND DATEDIFF(:endDate,o.value_datetime)<=%d"
+            + " UNION "
+            + "SELECT patient_id FROM "
+            + "(SELECT p.patient_id,MAX(encounter_datetime) encounter_datetime "
+            + "FROM patient p INNER JOIN encounter e ON e.patient_id=p.patient_id "
+            + "WHERE p.voided=0 AND e.voided=0 AND e.encounter_type IN (%d, %d) "
+            + "AND e.location_id=:location AND e.encounter_datetime<=:endDate GROUP BY p.patient_id ) max_mov "
+            + "INNER JOIN obs o ON o.person_id=max_mov.patient_id "
+            + "WHERE max_mov.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id=%d"
+            + " AND o.location_id=:location AND DATEDIFF(:endDate,o.value_datetime)>=%d"
+            + " AND DATEDIFF(:endDate,o.value_datetime)<=%d";
+    return String.format(
+        query,
+        pharmacyEncounterType,
+        returnVisitDateForDrugsConcept,
+        min,
+        max,
+        adultoSequimento,
+        arvPediatriaSeguimento,
+        returnVisitDate,
+        min,
+        max);
   }
 
   public static String getNonConsistentPatients(
@@ -47,18 +47,19 @@ public class TxMlQueries {
       int prevencaoPositivaSeguimento,
       int acceptContactConcept,
       int noConcept) {
-    return "SELECT patient_id FROM (SELECT p.patient_id,MAX(encounter_datetime) encounter_datetime FROM patient p "
-        + "INNER JOIN encounter e ON e.patient_id=p.patient_id WHERE p.voided=0 AND e.voided=0 "
-        + "AND e.encounter_type IN("
-        + prevencaoPositivaInicial
-        + ","
-        + prevencaoPositivaSeguimento
-        + ") AND e.location_id=:location AND e.encounter_datetime<=:endDate "
-        + "GROUP BY p.patient_id ) max_encounter INNER JOIN obs o ON o.person_id=max_encounter.patient_id "
-        + "WHERE max_encounter.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id="
-        + acceptContactConcept
-        + " AND o.value_coded="
-        + noConcept
-        + " AND o.location_id=:location";
+    String query =
+        "SELECT patient_id FROM (SELECT p.patient_id,MAX(encounter_datetime) encounter_datetime FROM patient p "
+            + "INNER JOIN encounter e ON e.patient_id=p.patient_id WHERE p.voided=0 AND e.voided=0 "
+            + "AND e.encounter_type IN(%d, %d) AND e.location_id=:location AND e.encounter_datetime<=:endDate "
+            + "GROUP BY p.patient_id ) max_encounter INNER JOIN obs o ON o.person_id=max_encounter.patient_id "
+            + "WHERE max_encounter.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id=%d"
+            + " AND o.value_coded=%d AND o.location_id=:location";
+
+    return String.format(
+        query,
+        prevencaoPositivaInicial,
+        prevencaoPositivaSeguimento,
+        acceptContactConcept,
+        noConcept);
   }
 }
