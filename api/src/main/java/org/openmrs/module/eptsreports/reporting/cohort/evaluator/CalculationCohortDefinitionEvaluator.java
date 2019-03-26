@@ -45,7 +45,9 @@ public class CalculationCohortDefinitionEvaluator implements CohortDefinitionEva
     CalculationResultMap map = doCalculation(cohortDefinition, context);
 
     CalculationCohortDefinition cd = (CalculationCohortDefinition) cohortDefinition;
-    Set<Integer> passing = EptsCalculationUtils.patientsThatPass(map, cd.getWithResult());
+    Set<Integer> passing =
+        EptsCalculationUtils.patientsThatPass(
+            map, cd.getWithResult(), cd.getWithResultFinder(), context);
 
     return new EvaluatedCohort(new Cohort(passing), cohortDefinition, context);
   }

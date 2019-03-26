@@ -132,6 +132,38 @@
 			UUID for the TRATAMENTO DE TUBERCULOSE concept
 		</description>
 	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsreports.tuberculosisTreatmentStartDateConceptUuid</property>
+		<defaultValue>e1d85906-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TRATAMENTO start date DE TUBERCULOSE concept
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsreports.tbLivroEncounterTypeUuid</property>
+		<defaultValue>e2791b98-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TUBERCULOSE: LIVRO encounter type
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsreports.tbProcessoEncounterTypeUuid</property>
+		<defaultValue>e2791cc4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TUBERCULOSE: PROCESSO encounter type
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsreports.tbRastreioEncounterTypeUuid</property>
+		<defaultValue>e27915a8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TUBERCULOSE: RASTREIO encounter type
+		</description>
+	</globalProperty>
 
 	<globalProperty>
 		<property>@MODULE_ID@.tbProgramUuid</property>
@@ -355,6 +387,35 @@
 		<property>@MODULE_ID@.isoniazidUseConceptUuid</property>
 		<defaultValue>be4a76ca-662a-4c39-903b-71983f5f67c9</defaultValue>
 		<description>Uso de Isoniazida</description>
+		<property>eptsreports.tbScreeningConceptUuid</property>
+		<defaultValue>ea1851dc-151b-4c1e-b763-5df48082159d</defaultValue>
+		<description>Concept uuid for SCREENING FOR TB</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.noConceptUuid</property>
+		<defaultValue>e1d81c70-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>Concept uuid for NO</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.researchResultForTbConceptUuid</property>
+		<defaultValue>106c484c-a5a3-4c8b-9586-09b1f22c324d</defaultValue>
+		<description>
+			UUID for the RESULT OF RESEARCH FOR TB OF BK and/or RX concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.positiveConceptUuid</property>
+		<defaultValue>e1d47386-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Positive concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.negativeConceptUuid</property>
+		<defaultValue>e1d446cc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Negative concept
+		</description>
 	</globalProperty>
 
 	<!-- 2nd line ARV Concepts -->

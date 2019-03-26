@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxTBDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -16,11 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PepfarMerTxMlNumeratorReport extends EptsDataExportManager {
+public class SetupMERSemiAnnualReport extends EptsDataExportManager {
 
   @Autowired private TxMlDataset txMlDataset;
 
   @Autowired private GenericCohortQueries genericCohortQueries;
+
+  @Autowired private TxTBDataset txTBDataset;
 
   @Override
   public String getExcelDesignUuid() {
@@ -34,12 +37,12 @@ public class PepfarMerTxMlNumeratorReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return " PEPFAR MER Semiannual Report";
+    return "PEPFAR Semiannual Report";
   }
 
   @Override
   public String getDescription() {
-    return "PEPFAR MER TX_ML Numerator Indicator Report";
+    return "PEPFAR Semiannual Report";
   }
 
   @Override
@@ -49,8 +52,8 @@ public class PepfarMerTxMlNumeratorReport extends EptsDataExportManager {
     rd.setName(getName());
     rd.setDescription(getDescription());
     rd.setParameters(txMlDataset.getParameters());
-    rd.addDataSetDefinition(
-        "Tx_Ml Data Set", Mapped.mapStraightThrough(txMlDataset.constructtxMlDataset()));
+    rd.addDataSetDefinition("TXML", Mapped.mapStraightThrough(txMlDataset.constructtxMlDataset()));
+    rd.addDataSetDefinition("T", Mapped.mapStraightThrough(txTBDataset.constructTxTBDataset()));
     // add a base cohort to the report
     rd.setBaseCohortDefinition(
         genericCohortQueries.getBaseCohort(),
@@ -71,8 +74,8 @@ public class PepfarMerTxMlNumeratorReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "PEPFAR_MER_23_SEMIANNUAL_TX_ML.xls",
-              "PEPFAR MER 2.3 SEMIANNUAL TX_TB",
+              "PEPFAR_SEMIANNUAL_REPORT.xls",
+              "PEPFAR SEMIANNUAL REPORT",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
