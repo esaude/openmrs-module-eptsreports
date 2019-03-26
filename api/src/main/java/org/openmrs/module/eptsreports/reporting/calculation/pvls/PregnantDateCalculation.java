@@ -34,31 +34,32 @@ import org.springframework.stereotype.Component;
 @Component
 public class PregnantDateCalculation extends AbstractPatientCalculation {
 
-  private HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
-  private EPTSCalculationService ePTSCalculationService =
-      Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
-
   @Override
   public CalculationResultMap evaluate(
       Collection<Integer> cohort,
       Map<String, Object> parameterValues,
       PatientCalculationContext context) {
 
+    // External dependencies
+    HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
+    EPTSCalculationService ePTSCalculationService =
+        Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
+
     CalculationResultMap resultMap = new CalculationResultMap();
 
     Location location = (Location) context.getFromCache("location");
     Date oneYearBefore = EptsCalculationUtils.addMonths(context.getNow(), -12);
 
-    EncounterType labEncounterType = this.hivMetadata.getMisauLaboratorioEncounterType();
-    EncounterType adultFollowup = this.hivMetadata.getAdultoSeguimentoEncounterType();
-    EncounterType pediatriaFollowup = this.hivMetadata.getARVPediatriaSeguimentoEncounterType();
+    EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
+    EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
+    EncounterType pediatriaFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
 
-    Concept viralLoadConcept = this.hivMetadata.getHivViralLoadConcept();
-    Concept pregnant = this.hivMetadata.getPregnantConcept();
-    Concept pregnantBasedOnWeeks = this.hivMetadata.getNumberOfWeeksPregnant();
-    Concept pregnancyDueDate = this.hivMetadata.getPregnancyDueDate();
-    Program ptv = this.hivMetadata.getPtvEtvProgram();
-    Concept gestation = this.hivMetadata.getGestationConcept();
+    Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
+    Concept pregnant = hivMetadata.getPregnantConcept();
+    Concept pregnantBasedOnWeeks = hivMetadata.getNumberOfWeeksPregnant();
+    Concept pregnancyDueDate = hivMetadata.getPregnancyDueDate();
+    Program ptv = hivMetadata.getPtvEtvProgram();
+    Concept gestation = hivMetadata.getGestationConcept();
 
     // get female patients only
     Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);

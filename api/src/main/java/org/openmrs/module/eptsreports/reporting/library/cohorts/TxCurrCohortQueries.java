@@ -111,7 +111,7 @@ public class TxCurrCohortQueries {
         .put(
             "7",
             EptsReportUtils.map(
-                getPatientsThatMissNextConsultation(),
+                getPatientsThatDidNotMissNextConsultation(),
                 String.format(
                     "onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s",
                     abandonmentDays)));
@@ -298,10 +298,10 @@ public class TxCurrCohortQueries {
    * @return Cohort of patients that from the date scheduled for next follow up consultation
    *     (concept 1410=RETURN VISIT DATE) until the end date have not completed 28 days
    */
-  @DocumentedDefinition(value = "patientsThatMissNextConsultation")
-  private CohortDefinition getPatientsThatMissNextConsultation() {
+  @DocumentedDefinition(value = "patientsThatDidNotMissNextConsultation")
+  private CohortDefinition getPatientsThatDidNotMissNextConsultation() {
     SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("patientsThatMissNextConsultation");
+    definition.setName("patientsThatDidNotMissNextConsultation");
     String query =
         "SELECT patient_id FROM "
             + "(SELECT p.patient_id,max(encounter_datetime) encounter_datetime "
@@ -310,7 +310,7 @@ public class TxCurrCohortQueries {
             + "AND e.location_id=:location AND e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_mov "
             + "INNER JOIN obs o ON o.person_id=max_mov.patient_id "
             + "WHERE max_mov.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id=%d "
-            + "AND o.location_id=:location AND DATEDIFF(:onOrBefore,o.value_datetime)>=:abandonmentDays";
+            + "AND o.location_id=:location AND DATEDIFF(:onOrBefore,o.value_datetime)<:abandonmentDays";
     definition.setQuery(
         String.format(
             query,

@@ -15,7 +15,8 @@ package org.openmrs.module.eptsreports.reporting.library.queries;
 
 public class BreastfeedingQueries {
 
-  public static String getPatientsWhoGaveBirthTwoYearsAgo(int etvProgram, int patientState) {
+  public static String getPatientsWhoGaveBirthWithinReportingPeriod(
+      int etvProgram, int patientState) {
     return "select 	pg.patient_id"
         + " from patient p"
         + " inner join patient_program pg on p.patient_id=pg.patient_id"
@@ -26,6 +27,6 @@ public class BreastfeedingQueries {
         + " and ps.state="
         + patientState
         + " and ps.end_date is null and"
-        + " ps.start_date between date_add(:startDate, interval -2 year) and date_add(:startDate, interval -1 day) and location_id=:location";
+        + " ps.start_date between :startDate and :endDate and location_id=:location";
   }
 }
