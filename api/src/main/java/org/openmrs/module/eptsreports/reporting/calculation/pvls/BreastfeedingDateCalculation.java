@@ -33,28 +33,30 @@ import org.springframework.stereotype.Component;
 @Component
 public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
 
-  private HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
-  private EPTSCalculationService ePTSCalculationService =
-      Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
-
   @Override
   public CalculationResultMap evaluate(
       Collection<Integer> cohort,
       Map<String, Object> parameterValues,
       PatientCalculationContext context) {
+
+    // External Dependencies
+    HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
+    EPTSCalculationService ePTSCalculationService =
+        Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
+
     CalculationResultMap resultMap = new CalculationResultMap();
 
     Location location = (Location) context.getFromCache("location");
 
-    Concept viralLoadConcept = this.hivMetadata.getHivViralLoadConcept();
-    EncounterType labEncounterType = this.hivMetadata.getMisauLaboratorioEncounterType();
-    EncounterType adultFollowup = this.hivMetadata.getAdultoSeguimentoEncounterType();
-    EncounterType childFollowup = this.hivMetadata.getARVPediatriaSeguimentoEncounterType();
+    Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
+    EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
+    EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
+    EncounterType childFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
 
-    Concept breastfeedingConcept = this.hivMetadata.getBreastfeeding();
-    Concept yes = this.hivMetadata.getYesConcept();
-    Concept criteriaForHivStart = this.hivMetadata.getCriteriaForArtStart();
-    Concept priorDeliveryDate = this.hivMetadata.getPriorDeliveryDateConcept();
+    Concept breastfeedingConcept = hivMetadata.getBreastfeeding();
+    Concept yes = hivMetadata.getYesConcept();
+    Concept criteriaForHivStart = hivMetadata.getCriteriaForArtStart();
+    Concept priorDeliveryDate = hivMetadata.getPriorDeliveryDateConcept();
     Date oneYearBefore = EptsCalculationUtils.addMonths(context.getNow(), -12);
 
     // get female patients only
@@ -92,10 +94,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
 
     CalculationResultMap patientStateMap =
         ePTSCalculationService.allPatientStates(
-            femaleCohort,
-            location,
-            this.hivMetadata.getPatientIsBreastfeedingWorkflowState(),
-            context);
+            femaleCohort, location, hivMetadata.getPatientIsBreastfeedingWorkflowState(), context);
 
     CalculationResultMap lastVl =
         ePTSCalculationService.lastObs(

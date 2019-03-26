@@ -147,13 +147,14 @@ public class TxNewCohortQueries {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getPatientsWhoGaveBirthTwoYearsAgo() {
+  public CohortDefinition getPatientsWhoGaveBirthWithinReportingPeriod() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("patientsWhoGaveBirthTwoYearsAgo");
+    cd.setName("patientsWhoGaveBirthWithinReportingPeriod");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setQuery(
-        BreastfeedingQueries.getPatientsWhoGaveBirthTwoYearsAgo(
+        BreastfeedingQueries.getPatientsWhoGaveBirthWithinReportingPeriod(
             hivMetadata.getPtvEtvProgram().getProgramId(), 27));
 
     return cd;
@@ -188,14 +189,10 @@ public class TxNewCohortQueries {
                 Arrays.asList(commonMetadata.getBreastfeeding())),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
     cd.addSearch(
-        "GRAVIDAS",
-        EptsReportUtils.map(
-            getPatientsPregnantEnrolledOnART(),
-            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
-    cd.addSearch(
         "LACTANTEPROGRAMA",
         EptsReportUtils.map(
-            getPatientsWhoGaveBirthTwoYearsAgo(), "startDate=${onOrAfter},location=${location}"));
+            getPatientsWhoGaveBirthWithinReportingPeriod(),
+            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
     cd.addSearch("FEMININO", EptsReportUtils.map(genderCohorts.FemaleCohort(), ""));
     cd.addSearch(
         "LACTANTE",
@@ -209,7 +206,7 @@ public class TxNewCohortQueries {
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
 
     String compositionString =
-        "((DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE) NOT GRAVIDAS) AND FEMININO";
+        "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE) AND FEMININO";
 
     cd.setCompositionString(compositionString);
     return cd;
