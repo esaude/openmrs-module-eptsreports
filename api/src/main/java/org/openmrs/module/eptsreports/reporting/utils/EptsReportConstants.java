@@ -112,6 +112,11 @@ public final class EptsReportConstants {
   public static final String GLOBAL_PROPERTY_ISONIAZID_USE_CONCEPT_ID =
       "eptsreports.isoniazidUseConceptUuid";
 
+  public static final String GLOBAL_PROPERTY_ACCEPT_CONTACT_CONCEPT_ID =
+      "eptsreports.acceptContactConceptUuid";
+
+  public static final String GLOBAL_PROPERTY_NO_CONCEPT_ID = "eptsreports.noConceptUuid";
+
   // Encounter types
   public static final String GLOBAL_PROPERTY_S_TARV_ADULTO_SEGUIMENTO_ENCOUNTER_TYPE_UUID =
       "eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid";
@@ -131,6 +136,13 @@ public final class EptsReportConstants {
   public static final String GLOBAL_PROPERTY_MISAU_LABORATORIO_ENCOUNTER_TYPE_UUID =
       "eptsreports.misauLaboratorioEncounterTypeUuid";
 
+  public static final String GLOBAL_PROPERTY_APSS_PREVENCAO_POSITIVA_INICIAL_ENCOUNTER_TYPE_UUID =
+      "eptsreports.apssPrevencaoPositivaInicialInicialEncounterTypeUuid";
+
+  public static final String
+      GLOBAL_PROPERTY_APSS_PREVENCAO_POSITIVA_SEGUIMENTO_ENCOUNTER_TYPE_UUID =
+          "eptsreports.apssPrevencaoPositivaSeguimentoEncounterTypeUuid";
+
   // Programs
   public static final String GLOBAL_PROPERTY_ART_PROGRAM_UUID = "eptsreports.artProgramUuid";
 
@@ -145,5 +157,10 @@ public final class EptsReportConstants {
   public enum PatientsOnRoutineEnum {
     BREASTFEEDINGPREGNANT,
     ADULTCHILDREN
+  }
+
+  public enum PregnantOrBreastfeedingWomen {
+    PREGNANTWOMEN,
+    BREASTFEEDINGWOMEN
   }
 }

@@ -18,8 +18,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -30,6 +32,8 @@ import org.springframework.stereotype.Component;
 public class SetupTxCurr21 extends EptsDataExportManager {
 
   @Autowired private TxCurrDataset txCurrDataset;
+
+  @Autowired private GenericCohortQueries genericCohortQueries;
 
   @Override
   public String getVersion() {
@@ -68,6 +72,11 @@ public class SetupTxCurr21 extends EptsDataExportManager {
         txCurrDataset.constructTxCurrDataset(false),
         ParameterizableUtil.createParameterMappings(
             "endDate=${endDate},startDate=${startDate},location=${location}"));
+
+    // add a base cohort here to help in calculations running
+    reportDefinition.setBaseCohortDefinition(
+        EptsReportUtils.map(
+            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
 
     return reportDefinition;
   }

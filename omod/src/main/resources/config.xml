@@ -359,6 +359,38 @@
 
 	<!-- 2nd line ARV Concepts -->
 
+	<globalProperty>
+		<property>@MODULE_ID@.apssPrevencaoPositivaInicialInicialEncounterTypeUuid</property>
+		<defaultValue>f0bc6401-4e62-43e5-97e2-6ab027bb0405</defaultValue>
+		<description>
+			UUID for the APSS: PREVENÇÃO POSITIVA - INICIAL encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.apssPrevencaoPositivaSeguimentoEncounterTypeUuid</property>
+		<defaultValue>f4aa93fe-8737-4f70-9532-542b768459d7</defaultValue>
+		<description>
+			UUID for the APSS: PREVENÇÃO POSITIVA - SEGUIMENTO encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.acceptContactConceptUuid</property>
+		<defaultValue>6d6b3f98-4038-4a08-889c-51a7c4079e11</defaultValue>
+		<description>
+			UUID for the CAN YOU BE CONTACTED WITH HEALTH UNIT IN CASE OF NEED concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.noConceptUuid</property>
+		<defaultValue>e1d81c70-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the NO concept
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 

@@ -155,6 +155,21 @@ public class HivMetadata extends CommonMetadata {
             .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_TDF_3TC_LPV_CONCEPT_ID);
     return getConcept(uuid);
   }
+  // concept id 6306
+  public Concept getAcceptContactConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ACCEPT_CONTACT_CONCEPT_ID);
+    return getConcept(uuid);
+  }
+
+  // concept id 1066
+  public Concept getNoConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_NO_CONCEPT_ID);
+    return getConcept(uuid);
+  }
 
   public Concept getDataInicioProfilaxiaIsoniazidaConcept() {
     String uuid =
@@ -231,6 +246,26 @@ public class HivMetadata extends CommonMetadata {
         Context.getAdministrationService()
             .getGlobalProperty(
                 EptsReportConstants.GLOBAL_PROPERTY_MISAU_LABORATORIO_ENCOUNTER_TYPE_UUID);
+    return getEncounterType(uuid);
+  }
+
+  // encounter type 34
+  public EncounterType getPrevencaoPositivaInicialEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(
+                EptsReportConstants
+                    .GLOBAL_PROPERTY_APSS_PREVENCAO_POSITIVA_INICIAL_ENCOUNTER_TYPE_UUID);
+    return getEncounterType(uuid);
+  }
+
+  // encounter type 35
+  public EncounterType getPrevencaoPositivaSeguimentoEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(
+                EptsReportConstants
+                    .GLOBAL_PROPERTY_APSS_PREVENCAO_POSITIVA_SEGUIMENTO_ENCOUNTER_TYPE_UUID);
     return getEncounterType(uuid);
   }
 
