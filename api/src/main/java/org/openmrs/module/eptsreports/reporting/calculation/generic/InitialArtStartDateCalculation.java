@@ -126,7 +126,10 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
   }
 
   private boolean getConsiderTransferredInParameter(Map<String, Object> parameterValues) {
-    Boolean considerTransferredIn = (Boolean) parameterValues.get("considerTransferredIn");
+    Boolean considerTransferredIn = null;
+    if (parameterValues != null) {
+      considerTransferredIn = (Boolean) parameterValues.get("considerTransferredIn");
+    }
     if (considerTransferredIn == null) {
       considerTransferredIn = true;
     }
