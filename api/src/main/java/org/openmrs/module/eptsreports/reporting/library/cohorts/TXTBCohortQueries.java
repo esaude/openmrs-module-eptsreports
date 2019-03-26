@@ -757,7 +757,7 @@ public class TXTBCohortQueries {
     CohortDefinition artList = artList();
     addGeneralParameters(artList);
     cd.addSearch("artList", map(artList, generalParameterMapping));
-    cd.setCompositionString("(i OR ii OR iii OR iv) INTERSECTION artList");
+    cd.setCompositionString("(i OR ii OR iii OR iv) AND artList");
     addGeneralParameters(cd);
     return cd;
   }
@@ -797,7 +797,7 @@ public class TXTBCohortQueries {
     CohortDefinition artList = artList();
     addGeneralParameters(artList);
     cd.addSearch("artList", map(artList, generalParameterMapping));
-    cd.setCompositionString("(i OR ii) INTERSECTION artList");
+    cd.setCompositionString("(i OR ii) AND artList");
     addGeneralParameters(cd);
     return cd;
   }
@@ -884,7 +884,7 @@ public class TXTBCohortQueries {
     CohortDefinition B = positiveScreening();
     addGeneralParameters(B);
     cd.addSearch("B", map(B, generalParameterMapping));
-    cd.setCompositionString("DEN INTERSECTION A INTERSECTION B");
+    cd.setCompositionString("DEN AND A AND B");
     addGeneralParameters(cd);
     return cd;
   }
@@ -900,7 +900,7 @@ public class TXTBCohortQueries {
     CohortDefinition B = negativeScreening();
     addGeneralParameters(B);
     cd.addSearch("B", map(B, generalParameterMapping));
-    cd.setCompositionString("DEN INTERSECTION A INTERSECTION B");
+    cd.setCompositionString("DEN AND A AND B");
     addGeneralParameters(cd);
     return cd;
   }
@@ -916,7 +916,7 @@ public class TXTBCohortQueries {
     CohortDefinition B = positiveScreening();
     addGeneralParameters(B);
     cd.addSearch("B", map(B, generalParameterMapping));
-    cd.setCompositionString("DEN INTERSECTION A INTERSECTION B");
+    cd.setCompositionString("DEN AND A AND B");
     addGeneralParameters(cd);
     return cd;
   }
@@ -932,7 +932,7 @@ public class TXTBCohortQueries {
     CohortDefinition B = negativeScreening();
     addGeneralParameters(B);
     cd.addSearch("B", map(B, generalParameterMapping));
-    cd.setCompositionString("DEN INTERSECTION A INTERSECTION B");
+    cd.setCompositionString("DEN AND A AND B");
     addGeneralParameters(cd);
     return cd;
   }
@@ -945,7 +945,7 @@ public class TXTBCohortQueries {
     CohortDefinition A = artListA();
     addGeneralParameters(A);
     cd.addSearch("A", map(A, generalParameterMapping));
-    cd.setCompositionString("NUM INTERSECTION A");
+    cd.setCompositionString("NUM AND A");
     addGeneralParameters(cd);
     return cd;
   }
@@ -958,7 +958,7 @@ public class TXTBCohortQueries {
     CohortDefinition A = artListB();
     addGeneralParameters(A);
     cd.addSearch("A", map(A, generalParameterMapping));
-    cd.setCompositionString("NUM INTERSECTION A");
+    cd.setCompositionString("NUM AND A");
     addGeneralParameters(cd);
     return cd;
   }
