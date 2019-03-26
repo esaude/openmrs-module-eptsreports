@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.openmrs.Location;
 import org.openmrs.calculation.patient.PatientCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.CalculationWithResultFinder;
 import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyAndParameterCachingStrategy;
@@ -36,6 +37,9 @@ public class CalculationCohortDefinition extends BaseCohortDefinition {
 
   @ConfigurationProperty(group = "calculation")
   private Object withResult;
+
+  @ConfigurationProperty(group = "calculation")
+  private CalculationWithResultFinder withResultFinder;
 
   @ConfigurationProperty(group = "calculation")
   private Map<String, Object> calculationParameters;
@@ -150,5 +154,13 @@ public class CalculationCohortDefinition extends BaseCohortDefinition {
 
   public void setLocation(Location location) {
     this.location = location;
+  }
+
+  public CalculationWithResultFinder getWithResultFinder() {
+    return withResultFinder;
+  }
+
+  public void setWithResultFinder(CalculationWithResultFinder withResultFinder) {
+    this.withResultFinder = withResultFinder;
   }
 }

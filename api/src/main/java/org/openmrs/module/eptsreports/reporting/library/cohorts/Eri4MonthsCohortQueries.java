@@ -54,8 +54,8 @@ public class Eri4MonthsCohortQueries {
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                 hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
                 hivMetadata.getARVPlanConcept().getConceptId(),
-                hivMetadata.getstartDrugsConcept().getConceptId(),
-                hivMetadata.gethistoricalDrugStartDateConcept().getConceptId(),
+                hivMetadata.getStartDrugsConcept().getConceptId(),
+                hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata
                     .getTransferredFromOtherHealthFacilityWorkflowState()
