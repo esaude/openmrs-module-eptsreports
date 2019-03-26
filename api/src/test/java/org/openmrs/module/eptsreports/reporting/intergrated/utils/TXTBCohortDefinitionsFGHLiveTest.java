@@ -149,7 +149,7 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
   public void tbTreatmentStartUsingEndDate() throws EvaluationException {
     // TODO remove startDate
     EvaluatedCohort result =
-        evaluateCohortDefinition(txTbCohortQueries.tbTreatmentWithinReportingDate());
+        evaluateCohortDefinition(txTbCohortQueries.tbTreatmentStartDateWithinReportingDate());
     Assert.assertEquals(3, result.size());
   }
 

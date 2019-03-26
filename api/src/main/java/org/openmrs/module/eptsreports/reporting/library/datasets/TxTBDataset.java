@@ -63,33 +63,28 @@ public class TxTBDataset extends BaseDataSet {
     CohortIndicator numerator =
         eptsGeneralIndicator.getIndicator(
             "NUMERATOR", EptsReportUtils.map(txTbCohortQueries.txTbNumerator(), mappings));
+    CohortIndicator patientsPreviouslyOnARTNumerator =
+        eptsGeneralIndicator.getIndicator(
+            "patientsPreviouslyOnARTNumerator",
+            EptsReportUtils.map(txTbCohortQueries.patientsPreviouslyOnARTNumerator(), mappings));
+    CohortIndicator patientsNewOnARTNumerator =
+        eptsGeneralIndicator.getIndicator(
+            "patientsNewOnARTNumerator",
+            EptsReportUtils.map(txTbCohortQueries.patientsNewOnARTNumerator(), mappings));
+
     dataSetDefinition.addColumn(
-        "TXB_NUM", "TX_TB: Notified TB On ART", EptsReportUtils.map(numerator, mappings), "");
-    dataSetDefinition.addColumn(
-        "TXB",
-        "TX_TB: On ART",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "getNotifiedTBPatientsAtARVService",
-                EptsReportUtils.map(
-                    txTbCohortQueries.getNotifiedTBPatientsAtARVService(), mappings)),
-            mappings),
-        "");
-    dataSetDefinition.addColumn(
-        "TXB_NUM_NEW",
-        "TX_TB: Numerator new",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "notifiedTbPatientsOnARVNewStarting",
-                EptsReportUtils.map(
-                    txTbCohortQueries.notifiedTbPatientsOnARVNewStarting(), mappings)),
-            mappings),
-        "");
+        "TXB_NUM", "TX_TB: Numerator total", EptsReportUtils.map(numerator, mappings), "");
     addRow(
         dataSetDefinition,
-        "TXB_NUM",
-        "TXB_NUM: Numerator - disaggregated",
-        EptsReportUtils.map(numerator, mappings),
+        "TXB_NUM_PREV",
+        "Numerator (patientsPreviouslyOnARTNumerator)",
+        EptsReportUtils.map(patientsPreviouslyOnARTNumerator, mappings),
+        dissagregations());
+    addRow(
+        dataSetDefinition,
+        "TXB_NUM_NEW",
+        "Numerator (patientsNewOnARTNumerator)",
+        EptsReportUtils.map(patientsNewOnARTNumerator, mappings),
         dissagregations());
   }
 
@@ -98,53 +93,48 @@ public class TxTBDataset extends BaseDataSet {
     CohortIndicator denominator =
         eptsGeneralIndicator.getIndicator(
             "DENOMINATOR", EptsReportUtils.map(txTbCohortQueries.txTbDenominator(), mappings));
+    CohortIndicator previouslyOnARTPostiveScreening =
+        eptsGeneralIndicator.getIndicator(
+            "DENOMINATOR",
+            EptsReportUtils.map(txTbCohortQueries.previouslyOnARTPostiveScreening(), mappings));
+    CohortIndicator previouslyOnARTNegativeScreening =
+        eptsGeneralIndicator.getIndicator(
+            "DENOMINATOR",
+            EptsReportUtils.map(txTbCohortQueries.previouslyOnARTNegativeScreening(), mappings));
+    CohortIndicator newOnARTPositiveScreening =
+        eptsGeneralIndicator.getIndicator(
+            "DENOMINATOR",
+            EptsReportUtils.map(txTbCohortQueries.newOnARTPositiveScreening(), mappings));
+    CohortIndicator newOnARTNegativeScreening =
+        eptsGeneralIndicator.getIndicator(
+            "DENOMINATOR",
+            EptsReportUtils.map(txTbCohortQueries.newOnARTNegativeScreening(), mappings));
+
     dataSetDefinition.addColumn(
-        "TXB_DEN", "TX_TB: Denominator", EptsReportUtils.map(denominator, mappings), "");
-    dataSetDefinition.addColumn(
-        "TXB_DEN_POS",
-        "TX_TB: Denominator - Screened Positive",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "patientsOnARTWhoScreenedTBPositiveForAPeriod",
-                EptsReportUtils.map(
-                    txTbCohortQueries.patientsOnARTWhoScreenedTBPositiveForAPeriod(), mappings)),
-            mappings),
-        "");
-    dataSetDefinition.addColumn(
-        "TXB_DEN_NEG",
-        "TX_TB: Denominator - Screened Negative",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "patientsOnARTWhoScreenedTBNegativeForAPeriod",
-                EptsReportUtils.map(
-                    txTbCohortQueries.patientsOnARTWhoScreenedTBNegativeForAPeriod(), mappings)),
-            mappings),
-        "");
-    dataSetDefinition.addColumn(
-        "TXB_DEN_POS_NEW",
-        "TX_TB: Denominator - Newly Screened Positive",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "patientsWithPositiveTBTrialNotTransferredOut",
-                EptsReportUtils.map(
-                    txTbCohortQueries.patientsWithPositiveTBTrialNotTransferredOut(), mappings)),
-            mappings),
-        "");
-    dataSetDefinition.addColumn(
-        "TXB_DEN_NEG_NEW",
-        "TX_TB: Denominator - Newly Screened Negative",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "patientsWithNegativeTBTrialNotTransferredOut",
-                EptsReportUtils.map(
-                    txTbCohortQueries.patientsWithNegativeTBTrialNotTransferredOut(), mappings)),
-            mappings),
-        "");
+        "TXB_DEN", "TX_TB: Denominator total", EptsReportUtils.map(denominator, mappings), "");
     addRow(
         dataSetDefinition,
-        "TXB_DEN",
-        "TXB_DEN: Denominator - disaggregated",
-        EptsReportUtils.map(denominator, mappings),
+        "TXB_DEN_NEW_POS",
+        "Denominator (newOnARTPositiveScreening)",
+        EptsReportUtils.map(newOnARTPositiveScreening, mappings),
+        dissagregations());
+    addRow(
+        dataSetDefinition,
+        "TXB_DEN_NEW_NEG",
+        "Denominator (newOnARTNegativeScreening)",
+        EptsReportUtils.map(newOnARTNegativeScreening, mappings),
+        dissagregations());
+    addRow(
+        dataSetDefinition,
+        "TXB_DEN_PREV_POS",
+        "Denominator (previouslyOnARTPostiveScreening)",
+        EptsReportUtils.map(previouslyOnARTPostiveScreening, mappings),
+        dissagregations());
+    addRow(
+        dataSetDefinition,
+        "TXB_DEN_PREV_NEG",
+        "Denominator (previouslyOnARTNegativeScreening)",
+        EptsReportUtils.map(previouslyOnARTNegativeScreening, mappings),
         dissagregations());
   }
 
@@ -152,9 +142,9 @@ public class TxTBDataset extends BaseDataSet {
     return Arrays.asList(
         new ColumnParameters("<15Females", "<15 anos - Feminino", "gender=F|age=<15", "F1"),
         new ColumnParameters(">=15Females", "15+ anos Feminino", "gender=F|age=15+", "F2"),
-        new ColumnParameters("UnknownFemales", "Unknown anos Feminino", "gender=F|age=UK", "UK1"),
+        new ColumnParameters("UnknownFemales", "Unknown anos Feminino", "gender=F|age=UK", "F3"),
         new ColumnParameters("<15Males", "<15 anos - Masculino", "gender=M|age=<15", "M1"),
         new ColumnParameters(">=15Males", "15+ anos Masculino", "gender=M|age=15+", "M2"),
-        new ColumnParameters("UnknownMales", "Unknown anos Masculino", "gender=M|age=UK", "UK2"));
+        new ColumnParameters("UnknownMales", "Unknown anos Masculino", "gender=M|age=UK", "M3"));
   }
 }
