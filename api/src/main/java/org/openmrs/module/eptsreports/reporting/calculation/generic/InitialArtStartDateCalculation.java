@@ -69,9 +69,9 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 
     Program treatmentProgram = hivMetadata.getARTProgram();
     Concept arvPlan = hivMetadata.getARVPlanConcept();
-    Concept startDrugsConcept = hivMetadata.getstartDrugsConcept();
+    Concept startDrugsConcept = hivMetadata.getStartDrugsConcept();
     Concept transferInConcept = hivMetadata.getTransferFromOtherFacilityConcept();
-    Concept hostoricalStartConcept = commonMetadata.gethistoricalDrugStartDateConcept();
+    Concept hostoricalStartConcept = commonMetadata.getHistoricalDrugStartDateConcept();
     EncounterType encounterTypePharmacy = hivMetadata.getARVPharmaciaEncounterType();
 
     CalculationResultMap inProgramMap =
@@ -126,7 +126,10 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
   }
 
   private boolean getConsiderTransferredInParameter(Map<String, Object> parameterValues) {
-    Boolean considerTransferredIn = (Boolean) parameterValues.get("considerTransferredIn");
+    Boolean considerTransferredIn = null;
+    if (parameterValues != null) {
+      considerTransferredIn = (Boolean) parameterValues.get("considerTransferredIn");
+    }
     if (considerTransferredIn == null) {
       considerTransferredIn = true;
     }

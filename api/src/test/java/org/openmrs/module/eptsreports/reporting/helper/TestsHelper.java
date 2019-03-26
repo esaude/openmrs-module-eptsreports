@@ -19,18 +19,4 @@ public class TestsHelper {
     }
     return null;
   }
-
-  /**
-   * @param startDate
-   * @param endDate
-   * @param dateInQuestion
-   * @return whether dateInQuestion is between startDate and endDate
-   */
-  public boolean dateBetween(Date startDate, Date endDate, Date dateInQuestion) {
-    return startDate == null || endDate == null || dateInQuestion == null
-        ? false
-        : (dateInQuestion.equals(startDate)
-            || dateInQuestion.equals(endDate)
-            || (startDate.compareTo(dateInQuestion) * dateInQuestion.compareTo(endDate) >= 0));
-  }
 }
