@@ -66,8 +66,9 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap map = new CalculationResultMap();
     Location location = (Location) context.getFromCache("location");
 
-    boolean considerTransferredIn = isConsiderTransferredInParameter(parameterValues);
-    boolean considerPharmacyEncounter = isConsiderPharmacyEncounter(parameterValues);
+    boolean considerTransferredIn = getBooleanParameter(parameterValues, "considerTransferredIn");
+    boolean considerPharmacyEncounter =
+        getBooleanParameter(parameterValues, "considerPharmacyEncounter");
 
     Program treatmentProgram = hivMetadata.getARTProgram();
     Concept arvPlan = hivMetadata.getARVPlanConcept();
@@ -130,23 +131,15 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
     return map;
   }
 
-  private boolean isConsiderTransferredInParameter(Map<String, Object> parameterValues) {
-    Boolean considerTransferredIn = null;
+  private boolean getBooleanParameter(Map<String, Object> parameterValues, String parameterName) {
+    Boolean parameterValue = null;
     if (parameterValues != null) {
-      considerTransferredIn = (Boolean) parameterValues.get("considerTransferredIn");
+      parameterValue = (Boolean) parameterValues.get(parameterName);
     }
-    if (considerTransferredIn == null) {
-      considerTransferredIn = true;
+    if (parameterValue == null) {
+      parameterValue = true;
     }
-    return considerTransferredIn;
-  }
-
-  private boolean isConsiderPharmacyEncounter(Map<String, Object> parameterValues) {
-    Boolean considerPharmacyEncounter = (Boolean) parameterValues.get("considerPharmacyEncounter");
-    if (considerPharmacyEncounter == null) {
-      considerPharmacyEncounter = true;
-    }
-    return considerPharmacyEncounter;
+    return parameterValue;
   }
 
   public static Date getArtStartDate(Integer patientId, CalculationResultMap artStartDates) {
