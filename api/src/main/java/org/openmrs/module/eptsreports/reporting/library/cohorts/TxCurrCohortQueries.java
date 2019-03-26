@@ -204,7 +204,7 @@ public class TxCurrCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
-            hivMetadata.getstartDrugsConcept().getConceptId(),
+            hivMetadata.getStartDrugsConcept().getConceptId(),
             hivMetadata.getTransferFromOtherFacilityConcept().getConceptId()));
     patientWithSTARTDRUGSObs.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     patientWithSTARTDRUGSObs.addParameter(new Parameter("location", "location", Location.class));
@@ -233,7 +233,7 @@ public class TxCurrCohortQueries {
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.gethistoricalDrugStartDateConcept().getConceptId()));
+            hivMetadata.getHistoricalDrugStartDateConcept().getConceptId()));
     patientWithHistoricalDrugStartDateObs.addParameter(
         new Parameter("onOrBefore", "onOrBefore", Date.class));
     patientWithHistoricalDrugStartDateObs.addParameter(

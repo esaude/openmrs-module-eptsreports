@@ -23,11 +23,16 @@ public final class EptsReportConstants {
 
   public static final String GLOBAL_PROPERTY_YES_CONCEPT_UUID = "eptsreports.yesConceptUuid";
 
+  public static final String GLOBAL_PROPERTY_NO_CONCEPT_UUID = "eptsreports.noConceptUuid";
+
   public static final String GLOBAL_PROPERTY_ARV_PLAN_CONCEPT_UUID =
       "eptsreports.arvPlanConceptUuid";
 
   public static final String GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_PLAN_CONCEPT_UUID =
       "eptsreports.tuberculosisTreatmentPlanConceptUuid";
+
+  public static final String GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_STARTDATE_CONCEPT_UUID =
+      "eptsreports.tuberculosisTreatmentStartDateConceptUuid";
 
   public static final String GLOBAL_PROPERTY_TRANSFER_FROM_OTHER_FACILITY_CONCEPT_UUID =
       "eptsreports.transferFromOtherFacilityConceptUuid";
@@ -131,6 +136,27 @@ public final class EptsReportConstants {
 
   public static final String GLOBAL_PROPERTY_HIV_CARE_PROGRAM_UUID =
       "eptsreports.hivCareProgramUuid";
+
+  public static final String GLOBAL_PROPERTY_TUBERCULOSIS_LIVRO_ENCOUNTER_TYPE_UUID =
+      "eptsreports.tbLivroEncounterTypeUuid";
+
+  public static final String GLOBAL_PROPERTY_TUBERCULOSIS_PROCESSO_ENCOUNTER_TYPE_UUID =
+      "eptsreports.tbProcessoEncounterTypeUuid";
+
+  public static final String GLOBAL_PROPERTY_TUBERCULOSIS_RASTREIO_ENCOUNTER_TYPE_UUID =
+      "eptsreports.tbRastreioEncounterTypeUuid";
+
+  public static final String GLOBAL_PROPERTY_TUBERCULOSIS_SCREENING_CONCEPT_UUID =
+      "eptsreports.tbScreeningConceptUuid";
+
+  public static final String GLOBAL_PROPERTY_RESEARCH_RESULT_CONCEPT_UUID =
+      "eptsreports.researchResultForTbConceptUuid";
+
+  public static final String GLOBAL_PROPERTY_POSITIVE_CONCEPT_UUID =
+      "eptsreports.positiveConceptUuid";
+
+  public static final String GLOBAL_PROPERTY_NEGATIVE_CONCEPT_UUID =
+      "eptsreports.negativeConceptUuid";
 
   // Enumeration
   public enum PatientsOnRoutineEnum {
