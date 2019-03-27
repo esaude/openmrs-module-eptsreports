@@ -51,8 +51,8 @@ public class TbPrevCohortQueries {
   public CohortDefinition getNumerator() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("TB-PREV Numerator Query");
-    definition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    definition.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
+    definition.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    definition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
     definition.addSearch(
         "started-on-previous-period",
@@ -79,8 +79,8 @@ public class TbPrevCohortQueries {
   public CohortDefinition getNewOnArt() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("TB-PREV New on ART");
-    definition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    definition.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
+    definition.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    definition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
     definition.addSearch(
         "started-on-previous-period",
@@ -94,8 +94,8 @@ public class TbPrevCohortQueries {
   public CohortDefinition getPreviouslyOnArt() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("TB-PREV Previously on ART");
-    definition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    definition.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
+    definition.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    definition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
     definition.addSearch(
         "started-on-previous-period",
@@ -115,8 +115,8 @@ public class TbPrevCohortQueries {
   public CohortDefinition getDenominator() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("TB-PREV Denominator Query");
-    definition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    definition.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
+    definition.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    definition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
     definition.addSearch(
         "started-on-previous-period",

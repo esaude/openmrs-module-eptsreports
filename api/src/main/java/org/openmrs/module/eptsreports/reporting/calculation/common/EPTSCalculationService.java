@@ -163,29 +163,6 @@ public class EPTSCalculationService {
   }
 
   /**
-   * The most recent encounter before date
-   *
-   * @param encounterType the encounter type
-   * @param cohort the patient ids
-   * @param context the calculation context
-   * @return the encounters in a calculation result map
-   */
-  public CalculationResultMap lastEncounterBeforeDate(
-      List<EncounterType> encounterTypes,
-      Collection<Integer> cohort,
-      Location location,
-      Date date,
-      PatientCalculationContext context) {
-    EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition();
-    def.setName("lastEncounterBeforeDate");
-    def.setWhich(TimeQualifier.LAST);
-    def.setOnOrBefore(date);
-    def.setLocationList(Arrays.asList(location));
-    def.setTypes(encounterTypes);
-    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
-  }
-
-  /**
    * Evaluates the first Obs for a given question and answer
    *
    * @param question
