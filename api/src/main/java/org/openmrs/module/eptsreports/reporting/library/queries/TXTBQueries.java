@@ -187,7 +187,7 @@ public class TXTBQueries {
   public static String dateObsBeforeStartDate(Integer questionId, List<Integer> encounterTypeIds) {
     String sql =
         String.format(
-            "select person_id from obs where concept_id = %s and encounter_id in(select distinct encounter_id from encounter where encounter_type in(%s)) and location_id = :location and value_datetime < :startDate and voided=0 and value_coded in (%s)",
+            "select person_id from obs where concept_id = %s and encounter_id in(select distinct encounter_id from encounter where encounter_type in(%s)) and location_id = :location and value_datetime < :startDate and voided=0",
             questionId, StringUtils.join(encounterTypeIds, ","));
 
     return sql;
