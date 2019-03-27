@@ -173,6 +173,20 @@ public class TXTBCohortQueries {
             hivMetadata.getStartDrugsConcept(), hivMetadata.getTransferFromOtherFacilityConcept()));
   }
 
+  public CohortDefinition everyTimeARTTreatedFinalBeforeStartDate() {
+    return genericCohortQueries.generalSql(
+        "artTreatedBeforeStartDate",
+        TXTBQueries.codedObsBeforeStartDate(
+            hivMetadata.getARVPlanConcept().getConceptId(),
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType().getId(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType().getId(),
+                hivMetadata.getARVPharmaciaEncounterType().getId()),
+            Arrays.asList(
+                hivMetadata.getStartDrugsConcept().getId(),
+                hivMetadata.getTransferFromOtherFacilityConcept().getId())));
+  }
+
   /**
    * INICIO DE TRATAMENTO DE TUBERCULOSE DATA NOTIFICADA NAS FICHAS DE: SEGUIMENTO, RASTREIO E LIVRO
    * TB. codes: DATAINICIO
@@ -204,11 +218,29 @@ public class TXTBCohortQueries {
             false));
   }
 
+  public CohortDefinition artTargetHistoricalStartUsingEndDateBeforeStartDate() {
+    return genericCohortQueries.generalSql(
+        "startARTHistoricalTarget",
+        TXTBQueries.dateObsBeforeStartDate(
+            tbMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())));
+  }
+
   /** PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA TRATAMENTO ARV (TARV) - PERIODO FINAL */
   public CohortDefinition getInARTProgram() {
     return genericCohortQueries.generalSql(
         "SAIDAPROGRAMA",
         TXTBQueries.inARTProgramToEndDateAtLocation(hivMetadata.getARTProgram().getProgramId()));
+  }
+
+  public CohortDefinition getInARTProgramBeforeStartDate() {
+    return genericCohortQueries.generalSql(
+        "SAIDAPROGRAMA1",
+        TXTBQueries.inARTProgramToEndDateAtLocationBeforeStartDate(
+            hivMetadata.getARTProgram().getProgramId()));
   }
 
   /** PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA DE TUBERCULOSE - NUM PERIODO */
@@ -544,7 +576,14 @@ public class TXTBCohortQueries {
   public CohortDefinition patientWithFirstDrugPickupEncounterWithinReportingDate() {
     return genericCohortQueries.generalSql(
         "patientWithFirstDrugPickupEncounter",
-        TXTBQueries.patientWithFirstDrugPickupEncounter(
+        TXTBQueries.patientWithFirstDrugPickupEncounterInReportingPeriod(
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
+  }
+
+  public CohortDefinition patientWithFirstDrugPickupEncounterBeforeStartDate() {
+    return genericCohortQueries.generalSql(
+        "patientWithFirstDrugPickupEncounter",
+        TXTBQueries.patientWithFirstDrugPickupEncounterBeforeStartDate(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
   }
 
@@ -594,7 +633,7 @@ public class TXTBCohortQueries {
     cd.addSearch("i", map(i, generalParameterMapping));
     CohortDefinition ii = everyTimeARVTreatedFinal();
     addGeneralParameters(ii);
-    cd.addSearch("ii", map(ii, generalParameterMapping));
+    cd.addSearch("ii", map(ii, codedObsParameterMapping));
     CohortDefinition iii = artTargetHistoricalStartUsingEndDate();
     addGeneralParameters(iii);
     cd.addSearch("iii", map(iii, generalParameterMapping));
@@ -614,17 +653,19 @@ public class TXTBCohortQueries {
 
   public CohortDefinition artListB() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition i = everyTimeARVTreatedFinal();
+    CohortDefinition i = everyTimeARTTreatedFinalBeforeStartDate();
     addGeneralParameters(i);
     cd.addSearch("i", map(i, generalParameterMapping));
-    CohortDefinition ii = artTargetHistoricalStartUsingEndDate();
+    CohortDefinition ii = artTargetHistoricalStartUsingEndDateBeforeStartDate();
     addGeneralParameters(ii);
     cd.addSearch("ii", map(ii, generalParameterMapping));
-    CohortDefinition iii = getInARTProgram();
+    CohortDefinition iii = getInARTProgramBeforeStartDate();
     addGeneralParameters(iii);
     cd.addSearch("iii", map(iii, generalParameterMapping));
-
-    cd.setCompositionString("i OR ii OR iii");
+    CohortDefinition iv = patientWithFirstDrugPickupEncounterBeforeStartDate();
+    addGeneralParameters(iv);
+    cd.addSearch("iv", map(iv, generalParameterMapping));
+    cd.setCompositionString("i OR ii OR iii OR iv");
     addGeneralParameters(cd);
     return cd;
   }

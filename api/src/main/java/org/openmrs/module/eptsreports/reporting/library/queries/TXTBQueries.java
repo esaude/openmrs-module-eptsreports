@@ -148,6 +148,12 @@ public class TXTBQueries {
         aRTProgramId);
   }
 
+  public static String inARTProgramToEndDateAtLocationBeforeStartDate(Integer aRTProgramId) {
+    return String.format(
+        "select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id where pg.voided=0 and p.voided=0 and program_id=%s and date_enrolled<:startDate and location_id=:location",
+        aRTProgramId);
+  }
+
   public static String inTBProgramWithinReportingPeriodAtLocation(Integer tbProgramId) {
     return String.format(
         "select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id where pg.voided=0 and p.voided=0 and program_id=%s and date_enrolled between :startDate and :endDate and location_id=:location",
@@ -165,6 +171,25 @@ public class TXTBQueries {
     } else {
       sql += "value_datetime <= :endDate and voided=0";
     }
+    return sql;
+  }
+
+  public static String codedObsBeforeStartDate(
+      Integer questionId, List<Integer> encounterTypeIds, List<Integer> answerIds) {
+    String sql =
+        String.format(
+            "select person_id from obs where concept_id = %s and encounter_id in(select distinct encounter_id from encounter where encounter_type in(%s)) and location_id = :location and obs_datetime < :startDate and voided=0 and value_coded in (%s)",
+            questionId, StringUtils.join(encounterTypeIds, ","), StringUtils.join(answerIds, ","));
+
+    return sql;
+  }
+
+  public static String dateObsBeforeStartDate(Integer questionId, List<Integer> encounterTypeIds) {
+    String sql =
+        String.format(
+            "select person_id from obs where concept_id = %s and encounter_id in(select distinct encounter_id from encounter where encounter_type in(%s)) and location_id = :location and value_datetime < :startDate and voided=0 and value_coded in (%s)",
+            questionId, StringUtils.join(encounterTypeIds, ","));
+
     return sql;
   }
 
@@ -191,12 +216,22 @@ public class TXTBQueries {
         programId, transferStateId);
   }
 
-  public static String patientWithFirstDrugPickupEncounter(Integer encounterTypeId) {
+  public static String patientWithFirstDrugPickupEncounterInReportingPeriod(
+      Integer encounterTypeId) {
     return String.format(
         "SELECT p.patient_id "
             + "FROM patient p "
             + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "WHERE p.voided=0 AND e.encounter_type=%s AND e.voided=0 AND e.encounter_datetime>=:startDate AND e.encounter_datetime<=:endDate AND e.location_id=:location GROUP BY p.patient_id",
+        encounterTypeId);
+  }
+
+  public static String patientWithFirstDrugPickupEncounterBeforeStartDate(Integer encounterTypeId) {
+    return String.format(
+        "SELECT p.patient_id "
+            + "FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "WHERE p.voided=0 AND e.encounter_type=%s AND e.voided=0 AND e.encounter_datetime<:startDate AND e.location_id=:location GROUP BY p.patient_id",
         encounterTypeId);
   }
 
