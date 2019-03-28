@@ -15,7 +15,6 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.Arrays;
 import java.util.List;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TbPrevCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
@@ -35,8 +34,6 @@ public class TbPrevDataset extends BaseDataSet {
   @Autowired private TbPrevCohortQueries tbPrevCohortQueries;
 
   @Autowired private EptsCommonDimension eptsCommonDimension;
-
-  @Autowired private AgeCohortQueries ageCohortQueries;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
