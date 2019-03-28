@@ -83,14 +83,6 @@ public class CalculationCohortDefinitionEvaluator implements CohortDefinitionEva
     calcContext.addToCache("onOrAfter", context.getParameterValue("onOrAfter"));
     calcContext.addToCache("onOrBefore", context.getParameterValue("onOrBefore"));
 
-    calcContext.addToCache(
-        "beginPeriodStartDate", context.getParameterValue("beginPeriodStartDate"));
-    calcContext.addToCache("beginPeriodEndDate", context.getParameterValue("beginPeriodEndDate"));
-    calcContext.addToCache(
-        "completionPeriodStartDate", context.getParameterValue("completionPeriodStartDate"));
-    calcContext.addToCache(
-        "completionPeriodEndDate", context.getParameterValue("completionPeriodEndDate"));
-
     Cohort cohort = context.getBaseCohort();
     if (cohort == null) {
       cohort = Context.getPatientSetService().getAllPatients();

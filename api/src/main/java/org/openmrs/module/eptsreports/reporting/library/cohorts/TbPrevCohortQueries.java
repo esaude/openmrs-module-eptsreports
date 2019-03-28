@@ -68,9 +68,7 @@ public class TbPrevCohortQueries {
         "completed-isoniazid",
         EptsReportUtils.map(
             getPatientsThatCompletedIsoniazidProphylacticTreatment(),
-            "beginPeriodStartDate=${onOrAfter-6m},beginPeriodEndDate=${onOrBefore-6m},"
-                + "completionPeriodStartDate=${onOrAfter},completionPeriodEndDate=${onOrBefore+1m},"
-                + "location=${location}"));
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
     definition.setCompositionString(
         "(started-by-end-previous-reporting-period OR started-on-previous-period) AND completed-isoniazid");
     return definition;
@@ -145,12 +143,8 @@ public class TbPrevCohortQueries {
                 .get(0));
     cd.setName("Patients that completed Isoniazid prophylatic treatment");
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addParameter(new Parameter("beginPeriodStartDate", "beginPeriodStartDate", Date.class));
-    cd.addParameter(new Parameter("beginPeriodEndDate", "beginPeriodEndDate", Date.class));
-    cd.addParameter(
-        new Parameter("completionPeriodStartDate", "completionPeriodStartDate", Date.class));
-    cd.addParameter(
-        new Parameter("completionPeriodEndDate", "completionPeriodEndDate", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     return cd;
   }
 }

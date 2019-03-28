@@ -48,17 +48,10 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
 
-    calendar.set(2018, Calendar.JANUARY, 1);
-    context.addToCache("beginPeriodStartDate", calendar.getTime());
-
-    calendar.set(2018, Calendar.JANUARY, 5);
-    context.addToCache("beginPeriodEndDate", calendar.getTime());
-
-    calendar.set(2018, Calendar.JULY, 5);
-    context.addToCache("completionPeriodStartDate", calendar.getTime());
-
-    calendar.set(2018, Calendar.JULY, 10);
-    context.addToCache("completionPeriodEndDate", calendar.getTime());
+    calendar.set(2018, Calendar.JULY, 1);
+    context.addToCache("onOrAfter", calendar.getTime());
+    calendar.set(2018, Calendar.JULY, 2);
+    context.addToCache("onOrBefore", calendar.getTime());
 
     final int patientId = 90;
     CalculationResultMap results =
@@ -74,17 +67,10 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
 
-    calendar.set(2018, Calendar.JANUARY, 2);
-    context.addToCache("beginPeriodStartDate", calendar.getTime());
-
-    calendar.set(2018, Calendar.JANUARY, 5);
-    context.addToCache("beginPeriodEndDate", calendar.getTime());
-
-    calendar.set(2018, Calendar.JULY, 5);
-    context.addToCache("completionPeriodStartDate", calendar.getTime());
-
-    calendar.set(2018, Calendar.JULY, 10);
-    context.addToCache("completionPeriodEndDate", calendar.getTime());
+    calendar.set(2018, Calendar.JULY, 2);
+    context.addToCache("onOrAfter", calendar.getTime());
+    calendar.set(2018, Calendar.JULY, 2);
+    context.addToCache("onOrBefore", calendar.getTime());
 
     final int patientId = 90;
     CalculationResultMap results =
@@ -99,17 +85,9 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
 
-    calendar.set(2018, Calendar.JANUARY, 1);
-    context.addToCache("beginPeriodStartDate", calendar.getTime());
-
-    calendar.set(2018, Calendar.JANUARY, 5);
-    context.addToCache("beginPeriodEndDate", calendar.getTime());
-
-    calendar.set(2018, Calendar.JULY, 6);
-    context.addToCache("completionPeriodStartDate", calendar.getTime());
-
-    calendar.set(2018, Calendar.JULY, 10);
-    context.addToCache("completionPeriodEndDate", calendar.getTime());
+    calendar.set(2018, Calendar.JULY, 1);
+    context.addToCache("onOrAfter", calendar.getTime());
+    context.addToCache("onOrBefore", calendar.getTime());
 
     final int patientId = 90;
     CalculationResultMap results =
@@ -124,17 +102,9 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
 
-    calendar.set(2018, Calendar.JANUARY, 1);
-    context.addToCache("beginPeriodStartDate", calendar.getTime());
-
-    calendar.set(2018, Calendar.JANUARY, 5);
-    context.addToCache("beginPeriodEndDate", calendar.getTime());
-
-    calendar.set(2018, Calendar.JULY, 5);
-    context.addToCache("completionPeriodStartDate", calendar.getTime());
-
-    calendar.set(2018, Calendar.JULY, 10);
-    context.addToCache("completionPeriodEndDate", calendar.getTime());
+    calendar.set(2018, Calendar.JULY, 1);
+    context.addToCache("onOrAfter", calendar.getTime());
+    context.addToCache("onOrBefore", calendar.getTime());
 
     final int patientId = 91;
     CalculationResultMap results =

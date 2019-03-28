@@ -33,8 +33,8 @@
 		creator="1" date_created="2019-01-29 14:11:13.0" voided="false"
 		uuid="be48cdcb-6a76-47e3-9f2e-263503777011" />
 	<obs obs_id="3777012" person_id="90" concept_id="7777033"
-		encounter_id="2777001" obs_datetime="2018-07-05 00:00:00.0"
-		location_id="1" value_datetime="2018-07-05 00:00:00.0" comments=""
+		encounter_id="2777001" obs_datetime="2018-08-02 00:00:00.0"
+		location_id="1" value_datetime="2018-08-02 00:00:00.0" comments=""
 		creator="1" date_created="2019-01-29 14:11:13.0" voided="false"
 		uuid="be48cdcb-6a76-47e3-9f2e-263503777012" />
 	<obs obs_id="3777013" person_id="91" concept_id="7777032"

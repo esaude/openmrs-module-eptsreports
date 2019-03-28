@@ -41,19 +41,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractPatientCalculation {
 
+  private static final int COMPLETION_PERIOD_OFFSET = 1;
+
+  private static final int TREATMENT_BEGIN_PERIOD_OFFSET = -6;
+
   private static final int NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED = 6;
 
   private static final int MONTHS_TO_CHECK_FOR_ISONIAZID_USAGE = 7;
 
   private static final int MINIMUM_DURATION_IN_DAYS = 180;
 
-  private static final String BEGIN_PERIOD_START_DATE = "beginPeriodStartDate";
+  private static final String ON_OR_AFTER = "onOrAfter";
 
-  private static final String BEGIN_PERIOD_END_DATE = "beginPeriodEndDate";
-
-  private static final String COMPLETION_PERIOD_START_DATE = "completionPeriodStartDate";
-
-  private static final String COMPLETION_PERIOD_END_DATE = "completionPeriodEndDate";
+  private static final String ON_OR_BEFORE = "onOrBefore";
 
   @Autowired private HivMetadata hivMetadata;
 
@@ -67,74 +67,83 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
     CalculationResultMap map = new CalculationResultMap();
     Location location = (Location) context.getFromCache("location");
 
-    Date beginPeriodStartDate = getDateParameter(parameterValues, context, BEGIN_PERIOD_START_DATE);
-    Date beginPeriodEndDate = getDateParameter(parameterValues, context, BEGIN_PERIOD_END_DATE);
-    Date completionPeriodStartDate =
-        getDateParameter(parameterValues, context, COMPLETION_PERIOD_START_DATE);
-    Date completionPeriodEndDate =
-        getDateParameter(parameterValues, context, COMPLETION_PERIOD_END_DATE);
+    Date onOrBefore = (Date) context.getFromCache(ON_OR_BEFORE);
+    Date onOrAfter = (Date) context.getFromCache(ON_OR_AFTER);
 
-    final List<EncounterType> consultationEncounterTypes =
-        Arrays.asList(
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType());
-    CalculationResultMap startProfilaxiaObservations =
-        ePTSCalculationService.firstObs(
-            hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept(),
-            null,
-            location,
-            false,
-            beginPeriodStartDate,
-            beginPeriodEndDate,
-            cohort,
-            context);
-    CalculationResultMap endProfilaxiaObservations =
-        ePTSCalculationService.lastObs(
-            hivMetadata.getDataFinalizacaoProfilaxiaIsoniazidaConcept(),
-            null,
-            location,
-            false,
-            completionPeriodStartDate,
-            completionPeriodEndDate,
-            cohort,
-            context);
-    CalculationResultMap isoniazidUsageObservationsList =
-        ePTSCalculationService.allObservations(
-            hivMetadata.getIsoniazidUsageConcept(),
-            hivMetadata.getYesConcept(),
-            consultationEncounterTypes,
-            location,
-            cohort,
-            context);
+    if (onOrAfter != null && onOrBefore != null) {
+      Date beginPeriodStartDate =
+          EptsCalculationUtils.addMonths(onOrAfter, TREATMENT_BEGIN_PERIOD_OFFSET);
+      Date beginPeriodEndDate =
+          EptsCalculationUtils.addMonths(onOrBefore, TREATMENT_BEGIN_PERIOD_OFFSET);
+      Date completionPeriodStartDate = onOrAfter;
+      Date completionPeriodEndDate =
+          EptsCalculationUtils.addMonths(onOrBefore, COMPLETION_PERIOD_OFFSET);
 
-    for (Integer patientId : cohort) {
-      Obs startProfilaxiaObs =
-          EptsCalculationUtils.resultForPatient(startProfilaxiaObservations, patientId);
-      Obs endProfilaxiaObs =
-          EptsCalculationUtils.resultForPatient(endProfilaxiaObservations, patientId);
-      Date startDate = getDateFromObs(startProfilaxiaObs);
-      Date endDate = getDateFromObs(endProfilaxiaObs);
-      boolean inconsistent =
-          (startDate != null && endDate != null && startDate.compareTo(endDate) > 0)
-              || (startDate == null && endDate != null);
-      if (!inconsistent && startDate != null) {
-        boolean completed = startDate != null && endDate != null;
-        if (completed) {
-          int profilaxiaDuration =
-              Days.daysIn(new Interval(startDate.getTime(), endDate.getTime())).getDays();
-          if (profilaxiaDuration >= MINIMUM_DURATION_IN_DAYS) {
-            map.put(patientId, new BooleanResult(true, this));
-          }
-        } else {
-          int yesAnswers =
-              calculateNumberOfYesAnswers(isoniazidUsageObservationsList, patientId, startDate);
-          if (yesAnswers >= NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED) {
-            map.put(patientId, new BooleanResult(true, this));
+      final List<EncounterType> consultationEncounterTypes =
+          Arrays.asList(
+              hivMetadata.getAdultoSeguimentoEncounterType(),
+              hivMetadata.getARVPediatriaSeguimentoEncounterType());
+      CalculationResultMap startProfilaxiaObservations =
+          ePTSCalculationService.firstObs(
+              hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept(),
+              null,
+              location,
+              false,
+              beginPeriodStartDate,
+              beginPeriodEndDate,
+              cohort,
+              context);
+      CalculationResultMap endProfilaxiaObservations =
+          ePTSCalculationService.lastObs(
+              hivMetadata.getDataFinalizacaoProfilaxiaIsoniazidaConcept(),
+              null,
+              location,
+              false,
+              completionPeriodStartDate,
+              completionPeriodEndDate,
+              cohort,
+              context);
+      CalculationResultMap isoniazidUsageObservationsList =
+          ePTSCalculationService.allObservations(
+              hivMetadata.getIsoniazidUsageConcept(),
+              hivMetadata.getYesConcept(),
+              consultationEncounterTypes,
+              location,
+              cohort,
+              context);
+
+      for (Integer patientId : cohort) {
+        Obs startProfilaxiaObs =
+            EptsCalculationUtils.resultForPatient(startProfilaxiaObservations, patientId);
+        Obs endProfilaxiaObs =
+            EptsCalculationUtils.resultForPatient(endProfilaxiaObservations, patientId);
+        Date startDate = getDateFromObs(startProfilaxiaObs);
+        Date endDate = getDateFromObs(endProfilaxiaObs);
+        boolean inconsistent =
+            (startDate != null && endDate != null && startDate.compareTo(endDate) > 0)
+                || (startDate == null && endDate != null);
+        if (!inconsistent && startDate != null) {
+          boolean completed = startDate != null && endDate != null;
+          if (completed) {
+            int profilaxiaDuration =
+                Days.daysIn(new Interval(startDate.getTime(), endDate.getTime())).getDays();
+            if (profilaxiaDuration >= MINIMUM_DURATION_IN_DAYS) {
+              map.put(patientId, new BooleanResult(true, this));
+            }
+          } else {
+            int yesAnswers =
+                calculateNumberOfYesAnswers(isoniazidUsageObservationsList, patientId, startDate);
+            if (yesAnswers >= NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED) {
+              map.put(patientId, new BooleanResult(true, this));
+            }
           }
         }
       }
+      return map;
+    } else {
+      throw new IllegalArgumentException(
+          String.format("Parameters %s and %s must be set", ON_OR_AFTER, ON_OR_BEFORE));
     }
-    return map;
   }
 
   private int calculateNumberOfYesAnswers(
