@@ -175,22 +175,4 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
     }
     return null;
   }
-
-  private Date getDateParameter(
-      Map<String, Object> parameterValues,
-      PatientCalculationContext context,
-      String parameterName) {
-    Date date = null;
-    if (parameterValues != null) {
-      date = (Date) parameterValues.get(parameterName);
-    }
-    if (date == null) {
-      date = (Date) context.getFromCache(parameterName);
-    }
-    if (date != null) {
-      return date;
-    } else {
-      throw new IllegalArgumentException(String.format("Parameter %s must be set", parameterName));
-    }
-  }
 }
