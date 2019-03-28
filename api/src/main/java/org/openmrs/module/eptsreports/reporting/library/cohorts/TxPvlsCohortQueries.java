@@ -170,6 +170,30 @@ public class TxPvlsCohortQueries {
   }
 
   /**
+   * Get all patients on routine as a sum of those on breastfeedingAndPregnant and AdultsAndChildren
+   * We now counting routine patients as a whole set
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getSumTotalsOfPatientsOnRoutine() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("endDate", "On Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "breastfeedingPregnant",
+        EptsReportUtils.map(
+            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
+            "onDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "adultChildren",
+        EptsReportUtils.map(
+            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
+            "onDate=${endDate},location=${location}"));
+    cd.setCompositionString("breastfeedingPregnant OR adultChildren");
+    return cd;
+  }
+
+  /**
    * Get patients having viral load suppression and routine for adults and children - Numerator
    *
    * @retrun CohortDefinition
@@ -185,8 +209,7 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "routine",
         EptsReportUtils.map(
-            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
-            "onDate=${endDate},location=${location}"));
+            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
     cd.setCompositionString("supp AND routine");
     return cd;
   }
@@ -208,8 +231,7 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "routine",
         EptsReportUtils.map(
-            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
-            "onDate=${endDate},location=${location}"));
+            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
     cd.setCompositionString("supp AND NOT routine");
     return cd;
   }
@@ -230,8 +252,7 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "routine",
         EptsReportUtils.map(
-            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
-            "onDate=${endDate},location=${location}"));
+            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
     cd.setCompositionString("results AND routine");
     return cd;
   }
@@ -252,8 +273,7 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "routine",
         EptsReportUtils.map(
-            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
-            "onDate=${endDate},location=${location}"));
+            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
     cd.setCompositionString("results AND NOT routine");
     return cd;
   }
@@ -279,8 +299,7 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "routine",
         EptsReportUtils.map(
-            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-            "onDate=${endDate},location=${location}"));
+            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
     cd.setCompositionString("breastfeedingVl AND routine");
 
     return cd;
@@ -305,8 +324,7 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "routine",
         EptsReportUtils.map(
-            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-            "onDate=${endDate},location=${location}"));
+            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
     cd.setCompositionString("breastfeedingVl AND NOT routine");
 
     return cd;
@@ -378,8 +396,7 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "routine",
         EptsReportUtils.map(
-            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-            "onDate=${endDate},location=${location}"));
+            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
     cd.setCompositionString("pregnant AND routine");
     return cd;
   }
@@ -403,8 +420,7 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "routine",
         EptsReportUtils.map(
-            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-            "onDate=${endDate},location=${location}"));
+            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
     cd.setCompositionString("pregnant AND NOT routine");
     return cd;
   }
@@ -430,8 +446,7 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "routine",
         EptsReportUtils.map(
-            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-            "onDate=${endDate},location=${location}"));
+            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
     cd.setCompositionString("vlandBreastfeeding AND routine");
     return cd;
   }
@@ -455,8 +470,7 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "routine",
         EptsReportUtils.map(
-            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-            "onDate=${endDate},location=${location}"));
+            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
     cd.setCompositionString("vlandBreastfeeding AND NOT routine");
     return cd;
   }
@@ -480,8 +494,7 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "routine",
         EptsReportUtils.map(
-            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-            "onDate=${endDate},location=${location}"));
+            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
     cd.setCompositionString("pregnant AND routine");
     return cd;
   }
@@ -504,8 +517,7 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "routine",
         EptsReportUtils.map(
-            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-            "onDate=${endDate},location=${location}"));
+            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
     cd.setCompositionString("pregnant AND NOT routine");
     return cd;
   }
