@@ -28,7 +28,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/** Defines all of the TxNew Cohort Definition instances we want to expose for EPTS */
+/** Defines all of the TxPvls Cohort Definition instances we want to expose for EPTS */
 @Component
 public class TxPvlsCohortQueries {
 
@@ -183,12 +183,12 @@ public class TxPvlsCohortQueries {
         "breastfeedingPregnant",
         EptsReportUtils.map(
             getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-            "onDate=${endDate},location=${location}"));
+            "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "adultChildren",
         EptsReportUtils.map(
             getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
-            "onDate=${endDate},location=${location}"));
+            "endDate=${endDate},location=${location}"));
     cd.setCompositionString("breastfeedingPregnant OR adultChildren");
     return cd;
   }
