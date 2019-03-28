@@ -39,7 +39,7 @@ public class CalculationCohortDefinition extends BaseCohortDefinition {
   private Object withResult;
 
   @ConfigurationProperty(group = "calculation")
-  private CalculationWithResultFinder withResultFinder;
+  private CalculationWithResultFinder withResultFinder = CalculationWithResultFinder.DEFAULT;
 
   @ConfigurationProperty(group = "calculation")
   private Map<String, Object> calculationParameters;
