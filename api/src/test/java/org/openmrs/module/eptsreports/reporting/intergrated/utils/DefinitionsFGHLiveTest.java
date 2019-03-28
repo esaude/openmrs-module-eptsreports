@@ -17,7 +17,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-public class DefinitionsFGHLiveTest extends BaseModuleContextSensitiveTest {
+public abstract class DefinitionsFGHLiveTest extends BaseModuleContextSensitiveTest {
   /** @see BaseContextSensitiveTest#useInMemoryDatabase() */
   @Override
   public Boolean useInMemoryDatabase() {
