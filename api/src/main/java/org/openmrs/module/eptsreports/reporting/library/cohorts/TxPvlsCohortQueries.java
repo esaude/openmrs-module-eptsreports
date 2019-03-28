@@ -183,12 +183,12 @@ public class TxPvlsCohortQueries {
         "breastfeedingPregnant",
         EptsReportUtils.map(
             getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-            "endDate=${endDate},location=${location}"));
+            "onDate=${endDate},location=${location}"));
     cd.addSearch(
         "adultChildren",
         EptsReportUtils.map(
             getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
-            "endDate=${endDate},location=${location}"));
+            "onDate=${endDate},location=${location}"));
     cd.setCompositionString("breastfeedingPregnant OR adultChildren");
     return cd;
   }
