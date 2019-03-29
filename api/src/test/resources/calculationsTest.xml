@@ -98,6 +98,14 @@
 	<concept concept_id="7777030" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2012-02-29 09:46:11.0" version="" uuid="be53ec04-d2ae-485e-9a6c-e167deef9a95"/>
 	<concept_name concept_id="7777030" name="SERVICO TARV - TRATAMENTO" locale="pt" creator="1" date_created="2012-02-29 09:46:11.0" concept_name_id="5777029" voided="false" uuid="46126628-55b6-4bd7-b15a-9b5bc02d5ecd" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
 
+	<concept concept_id="7777031" retired="false" datatype_id="11" class_id="7" is_set="false" creator="1" date_created="2011-01-26 16:11:27.0" changed_by="1" date_changed="2016-11-16 10:09:29.0" uuid="be4a76ca-662a-4c39-903b-71983f5f67c9"/>
+	<concept_name concept_id="7777031" name="ISONIAZID PROPYLAXIS" locale="en" creator="1" date_created="2015-11-22 20:57:42.0" concept_name_id="7777031" voided="false" uuid="16bfb16f-50dd-478e-8330-69a49f66cf0e" locale_preferred="false"/>
+
+	<concept concept_id="7777032" retired="false" datatype_id="11" class_id="7" is_set="false" creator="1" date_created="2011-02-18 14:54:08.0" changed_by="1" date_changed="2016-10-31 17:09:46.0" uuid="6fa92ac9-0a96-4372-9e10-dd9683c19135"/>
+	<concept_name concept_id="7777032" name="ISONIAZID PROPHYLAXIS START DATE" locale="en" creator="1" date_created="2011-02-18 14:54:08.0" concept_name_id="7777032" voided="false" uuid="64e62cbd-3fe6-4343-a022-7c9ab01346c6" concept_name_type="FULLY_SPECIFIED" locale_preferred="false"/>
+
+	<concept concept_id="7777033" retired="false" datatype_id="11" class_id="7" is_set="false" creator="1" date_created="2011-02-18 13:55:12.0" changed_by="1" date_changed="2016-10-31 12:17:03.0" uuid="9e555978-3a02-4da4-855e-7b1bfc807347"/>
+	<concept_name concept_id="7777033" name="ISONIAZID PROPHYLAXIS END DATE" locale="en" creator="1" date_created="2011-02-18 13:55:12.0" concept_name_id="7777033" voided="false" uuid="07164d17-c4e6-46e1-87ce-59f872a21dc8" concept_name_type="FULLY_SPECIFIED" locale_preferred="false"/>
   	
   	<concept_set concept_set_id="8777008" concept_id="7777008" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777008"/>
   	<concept_set concept_set_id="8777009" concept_id="7777009" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777009"/>
@@ -155,5 +163,8 @@
 	<global_property property="eptsreports.criteriaForArtStartUuid" property_value="607315ab-2f52-4d9f-b28a-6383b9a5f9c4" uuid="05bd3ad4-3108-11e9-ad81-5fcf3f14848e"/>
 	<global_property property="eptsreports.priorDeliveryDateConceptUuid" property_value="e1e765c2-1d5f-11e0-b929-000c29ad1d07" uuid="71a3b318-3108-11e9-a0fd-4f6f73f5282a"/>
 	<global_property property="eptsreports.gestationConceptUuid" property_value="e1cdd58a-1d5f-11e0-b929-000c29ad1d07" uuid="6670eea6-35e6-11e9-8819-2321bbfa341f"/>
+	<global_property property="eptsreports.DataFimProfilaxiaIsoniazidaConceptUuid" property_value="9e555978-3a02-4da4-855e-7b1bfc807347" description="Data de finalizacao de profilaxia com Isoniazida" uuid="30aa408c-cd99-4f62-b7c8-2c20dd9b798b"/>
+	<global_property property="eptsreports.DataInicioProfilaxiaIsoniazidaConceptUuid" property_value="6fa92ac9-0a96-4372-9e10-dd9683c19135" description="Data de inicio de profilaxia com Isoniazida" uuid="064cdd91-f014-4856-9300-9b9b73ddfe70"/>
+	<global_property property="eptsreports.isoniazidUseConceptUuid" property_value="be4a76ca-662a-4c39-903b-71983f5f67c9" description="Uso de Isoniazida" uuid="8b866a7d-c72d-41c6-9171-36dcf5234937"/>
 	
 </dataset>

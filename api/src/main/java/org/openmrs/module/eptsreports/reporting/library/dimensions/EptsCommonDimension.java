@@ -19,6 +19,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri4MonthsCohort
 import org.openmrs.module.eptsreports.reporting.library.cohorts.EriCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TbPrevCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -42,6 +43,8 @@ public class EptsCommonDimension {
   @Autowired private Eri2MonthsCohortQueries eri2MonthsCohortQueries;
 
   @Autowired private EriCohortQueries eriCohortQueries;
+
+  @Autowired private TbPrevCohortQueries tbPrevCohortQueries;
 
   /**
    * Gender dimension
@@ -74,7 +77,7 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "5-9", ageDimensionCohort.createXtoYAgeCohort("patients with age between 5 and 9", 5, 9));
     dim.addCohortDefinition(
-        "<15", ageDimensionCohort.createXtoYAgeCohort("patients with age below 15", 0, 15));
+        "<15", ageDimensionCohort.createXtoYAgeCohort("patients with age below 15", 0, 14));
     dim.addCohortDefinition(
         "10-14",
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 10 and 14", 10, 14));
@@ -234,6 +237,25 @@ public class EptsCommonDimension {
         EptsReportUtils.map(
             eri2MonthsCohortQueries.getPatientsWhoInitiatedArtButSuspendedTreatment(),
             "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
+    return dim;
+  }
+
+  public CohortDefinitionDimension getArtStatusDimension() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    dim.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
+    dim.addParameter(new Parameter("location", "Location", Location.class));
+    dim.setName("TB-PREV art-status dimension");
+    dim.addCohortDefinition(
+        "new-on-art",
+        EptsReportUtils.map(
+            tbPrevCohortQueries.getNewOnArt(),
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+    dim.addCohortDefinition(
+        "previously-on-art",
+        EptsReportUtils.map(
+            tbPrevCohortQueries.getPreviouslyOnArt(),
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
     return dim;
   }
 }
