@@ -75,7 +75,8 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
           EptsCalculationUtils.addMonths(onOrAfter, TREATMENT_BEGIN_PERIOD_OFFSET);
       Date beginPeriodEndDate =
           EptsCalculationUtils.addMonths(onOrBefore, TREATMENT_BEGIN_PERIOD_OFFSET);
-      Date completionPeriodStartDate = onOrAfter;
+      Date completionPeriodStartDate =
+          EptsCalculationUtils.addMonths(onOrAfter, TREATMENT_BEGIN_PERIOD_OFFSET);
       Date completionPeriodEndDate =
           EptsCalculationUtils.addMonths(onOrBefore, COMPLETION_PERIOD_OFFSET);
 
@@ -130,12 +131,11 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
             if (profilaxiaDuration >= MINIMUM_DURATION_IN_DAYS) {
               map.put(patientId, new BooleanResult(true, this));
             }
-          } else {
-            int yesAnswers =
-                calculateNumberOfYesAnswers(isoniazidUsageObservationsList, patientId, startDate);
-            if (yesAnswers >= NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED) {
-              map.put(patientId, new BooleanResult(true, this));
-            }
+          }
+          int yesAnswers =
+              calculateNumberOfYesAnswers(isoniazidUsageObservationsList, patientId, startDate);
+          if (yesAnswers >= NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED) {
+            map.put(patientId, new BooleanResult(true, this));
           }
         }
       }
