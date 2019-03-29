@@ -25,6 +25,7 @@ import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.AgeOnArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtBeforeDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtOnPeriodCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
@@ -159,13 +160,10 @@ public class GenericCohortQueries {
             + " FROM patient p"
             + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
             + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
-            + " WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND"
-            + " pg.program_id="
-            + program
-            + " AND ps.state="
-            + state
+            + " WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 "
+            + " AND pg.program_id=%s AND ps.state=%s AND ps.end_date is null "
             + " AND ps.start_date BETWEEN :startDate AND :endDate AND location_id=:location";
-    cd.setQuery(query);
+    cd.setQuery(String.format(query, program, state));
     return cd;
   }
 
@@ -217,7 +215,8 @@ public class GenericCohortQueries {
     return getAgeOnArtStartDate(minAge, maxAge, false);
   }
 
-  public CohortDefinition getStartedArtOnPeriod(boolean considerTransferredIn) {
+  public CohortDefinition getStartedArtOnPeriod(
+      boolean considerTransferredIn, boolean considerPharmacyEncounter) {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
             Context.getRegisteredComponents(StartedArtOnPeriodCalculation.class).get(0));
@@ -226,6 +225,18 @@ public class GenericCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
     cd.addCalculationParameter("considerTransferredIn", considerTransferredIn);
+    cd.addCalculationParameter("considerPharmacyEncounter", considerPharmacyEncounter);
+    return cd;
+  }
+
+  public CohortDefinition getStartedArtBeforeDate(boolean considerTransferredIn) {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(StartedArtBeforeDateCalculation.class).get(0));
+    cd.setName("Art start date");
+    cd.addCalculationParameter("considerTransferredIn", considerTransferredIn);
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     return cd;
   }
 }

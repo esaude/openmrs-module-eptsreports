@@ -132,15 +132,16 @@
 			UUID for the TRATAMENTO DE TUBERCULOSE concept
 		</description>
 	</globalProperty>
-	
+
 	<globalProperty>
-		<property>eptsreports.tuberculosisTreatmentStartDateConceptUuid</property>
+		<property>eptsreports.tuberculosisTreatmentStartDateConceptUuid
+		</property>
 		<defaultValue>e1d85906-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
 			UUID for the TRATAMENTO start date DE TUBERCULOSE concept
 		</description>
 	</globalProperty>
-	
+
 	<globalProperty>
 		<property>eptsreports.tbLivroEncounterTypeUuid</property>
 		<defaultValue>e2791b98-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -148,7 +149,7 @@
 			UUID for the TUBERCULOSE: LIVRO encounter type
 		</description>
 	</globalProperty>
-	
+
 	<globalProperty>
 		<property>eptsreports.tbProcessoEncounterTypeUuid</property>
 		<defaultValue>e2791cc4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -156,7 +157,7 @@
 			UUID for the TUBERCULOSE: PROCESSO encounter type
 		</description>
 	</globalProperty>
-	
+
 	<globalProperty>
 		<property>eptsreports.tbRastreioEncounterTypeUuid</property>
 		<defaultValue>e27915a8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -210,7 +211,8 @@
 		<property>@MODULE_ID@.criteriaForArtStartUuid</property>
 		<defaultValue>607315ab-2f52-4d9f-b28a-6383b9a5f9c4</defaultValue>
 		<description>
-			UUID for the CRITÉRIO PARA INICIO DE TRATAMENTO ARV concept
+			UUID for the CRITÉRIO PARA INICIO DE TRATAMENTO ARV
+			concept
 		</description>
 	</globalProperty>
 
@@ -290,7 +292,8 @@
 		<property>@MODULE_ID@.hivCareProgramUuid</property>
 		<defaultValue>7b2e4a0a-d4eb-4df7-be30-78ca4b28ca99</defaultValue>
 		<description>
-			UUID for the Programa de seguimento e cuidado aos pacientes HIV+ program
+			UUID for the Programa de seguimento e cuidado aos
+			pacientes HIV+ program
 		</description>
 	</globalProperty>
 	<globalProperty>
@@ -374,6 +377,24 @@
 		<description>TDF_3TC_LPV</description>
 	</globalProperty>
 	<globalProperty>
+		<property>@MODULE_ID@.DataInicioProfilaxiaIsoniazidaConceptUuid
+		</property>
+		<defaultValue>6fa92ac9-0a96-4372-9e10-dd9683c19135</defaultValue>
+		<description>Data de inicio de profilaxia com Isoniazida</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.DataFimProfilaxiaIsoniazidaConceptUuid
+		</property>
+		<defaultValue>9e555978-3a02-4da4-855e-7b1bfc807347</defaultValue>
+		<description>Data de finalizacao de profilaxia com Isoniazida
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.isoniazidUseConceptUuid</property>
+		<defaultValue>be4a76ca-662a-4c39-903b-71983f5f67c9</defaultValue>
+		<description>Uso de Isoniazida</description>
+	</globalProperty>
+	<globalProperty>
 		<property>eptsreports.tbScreeningConceptUuid</property>
 		<defaultValue>ea1851dc-151b-4c1e-b763-5df48082159d</defaultValue>
 		<description>Concept uuid for SCREENING FOR TB</description>
@@ -387,7 +408,8 @@
 		<property>eptsreports.researchResultForTbConceptUuid</property>
 		<defaultValue>106c484c-a5a3-4c8b-9586-09b1f22c324d</defaultValue>
 		<description>
-			UUID for the RESULT OF RESEARCH FOR TB OF BK and/or RX concept
+			UUID for the RESULT OF RESEARCH FOR TB OF BK and/or RX
+			concept
 		</description>
 	</globalProperty>
 	<globalProperty>
@@ -408,18 +430,22 @@
 	<!-- 2nd line ARV Concepts -->
 
 	<globalProperty>
-		<property>@MODULE_ID@.apssPrevencaoPositivaInicialInicialEncounterTypeUuid</property>
+		<property>@MODULE_ID@.apssPrevencaoPositivaInicialInicialEncounterTypeUuid
+		</property>
 		<defaultValue>f0bc6401-4e62-43e5-97e2-6ab027bb0405</defaultValue>
 		<description>
-			UUID for the APSS: PREVENÇÃO POSITIVA - INICIAL encounter type
+			UUID for the APSS: PREVENÇÃO POSITIVA - INICIAL encounter
+			type
 		</description>
 	</globalProperty>
 
 	<globalProperty>
-		<property>@MODULE_ID@.apssPrevencaoPositivaSeguimentoEncounterTypeUuid</property>
+		<property>@MODULE_ID@.apssPrevencaoPositivaSeguimentoEncounterTypeUuid
+		</property>
 		<defaultValue>f4aa93fe-8737-4f70-9532-542b768459d7</defaultValue>
 		<description>
-			UUID for the APSS: PREVENÇÃO POSITIVA - SEGUIMENTO encounter type
+			UUID for the APSS: PREVENÇÃO POSITIVA - SEGUIMENTO
+			encounter type
 		</description>
 	</globalProperty>
 
@@ -427,7 +453,8 @@
 		<property>@MODULE_ID@.acceptContactConceptUuid</property>
 		<defaultValue>6d6b3f98-4038-4a08-889c-51a7c4079e11</defaultValue>
 		<description>
-			UUID for the CAN YOU BE CONTACTED WITH HEALTH UNIT IN CASE OF NEED concept
+			UUID for the CAN YOU BE CONTACTED WITH HEALTH UNIT IN
+			CASE OF NEED concept
 		</description>
 	</globalProperty>
 

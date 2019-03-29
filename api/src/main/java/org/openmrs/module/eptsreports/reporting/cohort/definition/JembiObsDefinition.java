@@ -14,6 +14,7 @@
 
 package org.openmrs.module.eptsreports.reporting.cohort.definition;
 
+import java.util.Date;
 import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.PatientProgram;
@@ -38,6 +39,15 @@ public class JembiObsDefinition extends BaseDataDefinition implements PatientDat
 
   @ConfigurationProperty(required = true)
   private boolean sortByDatetime = true;
+
+  @ConfigurationProperty(required = true)
+  private boolean first = true;
+
+  @ConfigurationProperty(required = false)
+  private Date valueDateTimeOnOrAfter;
+
+  @ConfigurationProperty(required = false)
+  private Date valueDateTimeOnOrBefore;
 
   public JembiObsDefinition() {
     super();
@@ -82,5 +92,29 @@ public class JembiObsDefinition extends BaseDataDefinition implements PatientDat
 
   public void setSortByDatetime(boolean sortByDatetime) {
     this.sortByDatetime = sortByDatetime;
+  }
+
+  public boolean isFirst() {
+    return first;
+  }
+
+  public void setFirst(boolean first) {
+    this.first = first;
+  }
+
+  public Date getValueDateTimeOnOrAfter() {
+    return valueDateTimeOnOrAfter;
+  }
+
+  public void setValueDateTimeOnOrAfter(Date valueDateTimeOnOrAfter) {
+    this.valueDateTimeOnOrAfter = valueDateTimeOnOrAfter;
+  }
+
+  public Date getValueDateTimeOnOrBefore() {
+    return valueDateTimeOnOrBefore;
+  }
+
+  public void setValueDateTimeOnOrBefore(Date valueDateTimeOnOrBefore) {
+    this.valueDateTimeOnOrBefore = valueDateTimeOnOrBefore;
   }
 }
