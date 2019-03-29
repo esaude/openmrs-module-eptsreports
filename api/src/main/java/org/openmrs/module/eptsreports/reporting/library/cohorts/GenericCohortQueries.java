@@ -160,13 +160,10 @@ public class GenericCohortQueries {
             + " FROM patient p"
             + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
             + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
-            + " WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND"
-            + " pg.program_id="
-            + program
-            + " AND ps.state="
-            + state
+            + " WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 "
+            + " AND pg.program_id=%s AND ps.state=%s AND ps.end_date is null "
             + " AND ps.start_date BETWEEN :startDate AND :endDate AND location_id=:location";
-    cd.setQuery(query);
+    cd.setQuery(String.format(query, program, state));
     return cd;
   }
 

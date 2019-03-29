@@ -133,8 +133,22 @@ public class TbPrevCohortQueries {
         EptsReportUtils.map(
             getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod(),
             "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
+    definition.addSearch(
+        "transferred-out",
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
+                hivMetadata.getARTProgram().getProgramId(),
+                hivMetadata
+                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                    .getProgramWorkflowStateId()),
+            "startDate=${onOrAfter-200y},endDate=${onOrBefore},location=${location}"));
+    definition.addSearch(
+        "completed-isoniazid",
+        EptsReportUtils.map(
+            getPatientsThatCompletedIsoniazidProphylacticTreatment(),
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
     definition.setCompositionString(
-        "started-by-end-previous-reporting-period AND started-isoniazid");
+        "started-by-end-previous-reporting-period AND (started-isoniazid NOT (transferred-out NOT completed-isoniazid))");
     return definition;
   }
 
