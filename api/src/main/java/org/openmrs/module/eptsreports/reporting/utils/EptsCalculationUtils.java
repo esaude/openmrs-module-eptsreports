@@ -263,7 +263,7 @@ public class EptsCalculationUtils {
   }
 
   /**
-   * Calculates the months since the given date
+   * Calculates the months since the given date factoring in days into the result
    *
    * @param date1 the date
    * @param date2 the date2
