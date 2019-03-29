@@ -15,8 +15,8 @@ public class TxMlQueries {
         "SELECT patient_id FROM "
             + "(SELECT p.patient_id,MAX(o.value_datetime) return_date "
             + "FROM patient p "
-            + "INNER JOIN encounter e ON e.patient_id = p.patient_id AND e.encounter_datetime <=:endDate "
-            + "INNER JOIN obs o ON o.encounter_id = e.encounter_id AND o.obs_datetime <=:endDate "
+            + "INNER JOIN encounter e ON e.patient_id = p.patient_id AND e.encounter_datetime <=:endDate AND e.location_id=:location "
+            + "INNER JOIN obs o ON o.encounter_id = e.encounter_id AND o.obs_datetime <=:endDate AND o.location_id=:location "
             + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided=0 "
             + "AND e.encounter_type IN (%d, %d, %d) "
             + "AND o.concept_id in (%d, %d) "
@@ -64,7 +64,7 @@ public class TxMlQueries {
             + " WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND"
             + " pg.program_id=%d"
             + " AND ps.state=%d"
-            + " AND ps.start_date <=:endDate AND location_id=:location AND ps.end_date is null";
+            + " AND ps.start_date BETWEEN (:endDate - INTERVAL 183 DAY) AND  :endDate AND pg.location_id=:location AND ps.end_date is null";
     return String.format(query, program, state);
   }
 }
