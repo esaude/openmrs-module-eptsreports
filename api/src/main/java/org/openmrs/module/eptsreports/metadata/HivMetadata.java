@@ -171,6 +171,30 @@ public class HivMetadata extends CommonMetadata {
     return getConcept(uuid);
   }
 
+  public Concept getDataInicioProfilaxiaIsoniazidaConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(
+                EptsReportConstants.GLOBAL_PROPERTY_DATA_INICIO_PROFILAXIA_ISONIAZIDA_CONCEPT_ID);
+    return getConcept(uuid);
+  }
+
+  public Concept getDataFinalizacaoProfilaxiaIsoniazidaConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(
+                EptsReportConstants
+                    .GLOBAL_PROPERTY_DATA_FINALIZACAO_PROFILAXIA_ISONIAZIDA_CONCEPT_ID);
+    return getConcept(uuid);
+  }
+
+  public Concept getIsoniazidUsageConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_ISONIAZID_USE_CONCEPT_ID);
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {

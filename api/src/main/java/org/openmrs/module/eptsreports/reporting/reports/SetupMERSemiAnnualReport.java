@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TbPrevDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxTBDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
@@ -24,6 +25,8 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
   @Autowired private GenericCohortQueries genericCohortQueries;
 
   @Autowired private TxTBDataset txTBDataset;
+
+  @Autowired private TbPrevDataset tbPrevDataset;
 
   @Override
   public String getExcelDesignUuid() {
@@ -59,6 +62,7 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
     rd.setParameters(txMlDataset.getParameters());
     rd.addDataSetDefinition("TXML", Mapped.mapStraightThrough(txMlDataset.constructtxMlDataset()));
     rd.addDataSetDefinition("T", Mapped.mapStraightThrough(txTBDataset.constructTxTBDataset()));
+    rd.addDataSetDefinition("TBPREV", Mapped.mapStraightThrough(tbPrevDataset.constructDatset()));
     // add a base cohort to the report
     rd.setBaseCohortDefinition(
         genericCohortQueries.getBaseCohort(),

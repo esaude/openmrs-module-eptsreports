@@ -96,6 +96,29 @@ public class EPTSCalculationService {
   }
 
   /**
+   * Evaluates the last patient state for the specified programWorkflowState
+   *
+   * @param cohort
+   * @param location
+   * @param programWorkflowState
+   * @param context
+   * @return
+   */
+  public CalculationResultMap patientStatesBeforeDate(
+      Collection<Integer> cohort,
+      Location location,
+      Date endDate,
+      List<ProgramWorkflowState> states,
+      PatientCalculationContext context) {
+    JembiPatientStateDefinition def = new JembiPatientStateDefinition();
+    def.setLocation(location);
+    def.setStartedOnOrBefore(context.getNow());
+    def.setStates(states);
+    def.setWhich(TimeQualifier.ANY);
+    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
+  }
+
+  /**
    * Evaluates all ProgramEnrollment for specific Program
    *
    * @param program
@@ -123,16 +146,16 @@ public class EPTSCalculationService {
    * @return the encounters in a calculation result map
    */
   public CalculationResultMap firstEncounter(
-      EncounterType encounterType,
+      List<EncounterType> encounterTypes,
       Collection<Integer> cohort,
       Location location,
       PatientCalculationContext context) {
     EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition();
     def.setWhich(TimeQualifier.FIRST);
     def.setLocationList(Arrays.asList(location));
-    if (encounterType != null) {
-      def.setName("first encounter of type " + encounterType.getName());
-      def.addType(encounterType);
+    if (encounterTypes != null) {
+      def.setName("first encounter ");
+      def.setTypes(encounterTypes);
     } else {
       def.setName("first encounter of any type");
     }
@@ -155,13 +178,49 @@ public class EPTSCalculationService {
       Concept answer,
       Location location,
       boolean sortByDatetime,
+      Date valueDateTimeOnOrAfter,
+      Date valueDateTimeOnOrBefore,
       Collection<Integer> cohort,
       PatientCalculationContext context) {
     JembiObsDefinition definition = new JembiObsDefinition("JembiObsDefinition");
     definition.setQuestion(question);
     definition.setAnswer(answer);
     definition.setLocation(location);
+    definition.setFirst(true);
     definition.setSortByDatetime(sortByDatetime);
+    definition.setValueDateTimeOnOrAfter(valueDateTimeOnOrAfter);
+    definition.setValueDateTimeOnOrBefore(valueDateTimeOnOrBefore);
+    return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
+  }
+
+  /**
+   * Evaluates the last Obs for a given question and answer
+   *
+   * @param question
+   * @param answer
+   * @param location
+   * @param sortByDatetime
+   * @param cohort
+   * @param context
+   * @return
+   */
+  public CalculationResultMap lastObs(
+      Concept question,
+      Concept answer,
+      Location location,
+      boolean sortByDatetime,
+      Date valueDateTimeOnOrAfter,
+      Date valueDateTimeOnOrBefore,
+      Collection<Integer> cohort,
+      PatientCalculationContext context) {
+    JembiObsDefinition definition = new JembiObsDefinition("JembiObsDefinition");
+    definition.setQuestion(question);
+    definition.setAnswer(answer);
+    definition.setLocation(location);
+    definition.setFirst(false);
+    definition.setSortByDatetime(sortByDatetime);
+    definition.setValueDateTimeOnOrAfter(valueDateTimeOnOrAfter);
+    definition.setValueDateTimeOnOrBefore(valueDateTimeOnOrBefore);
     return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
   }
 
@@ -214,6 +273,23 @@ public class EPTSCalculationService {
     definition.setOnOrAfter(startDate);
     definition.setOnOrBefore(endDate);
     definition.setWhich(TimeQualifier.LAST);
+    return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
+  }
+
+  public CalculationResultMap allObservations(
+      Concept question,
+      Concept answer,
+      List<EncounterType> encounterTypes,
+      Location location,
+      Collection<Integer> cohort,
+      PatientCalculationContext context) {
+    ObsForPersonDataDefinition definition = new ObsForPersonDataDefinition();
+    definition.setName("last obs");
+    definition.setEncounterTypeList(encounterTypes);
+    definition.setQuestion(question);
+    definition.setValueCodedList(Arrays.asList(answer));
+    definition.setLocationList(Arrays.asList(location));
+    definition.setWhich(TimeQualifier.ANY);
     return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
   }
 }
