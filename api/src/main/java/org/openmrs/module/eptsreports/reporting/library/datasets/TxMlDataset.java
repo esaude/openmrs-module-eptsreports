@@ -47,8 +47,8 @@ public class TxMlDataset extends BaseDataSet {
                 "totals missed",
                 EptsReportUtils.map(
                     txMlCohortQueries.getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
-                    mappings)),
-            mappings),
+                    "endDate=${endDate},location=${location}")),
+            "endDate=${endDate},location=${location}"),
         "");
     // get totals disaggregated by gender and age
     addRow(
@@ -60,8 +60,8 @@ public class TxMlDataset extends BaseDataSet {
                 "Age and Gender",
                 EptsReportUtils.map(
                     txMlCohortQueries.getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
-                    mappings)),
-            mappings),
+                    "endDate=${endDate},location=${location}")),
+            "endDate=${endDate},location=${location}"),
         getColumnsForAgeAndGender());
     // Missed appointment and dead
     addRow(
