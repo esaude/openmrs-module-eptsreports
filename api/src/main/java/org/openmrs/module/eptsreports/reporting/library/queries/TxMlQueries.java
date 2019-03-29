@@ -13,9 +13,9 @@ public class TxMlQueries {
 
     String query =
         "SELECT patient_id FROM "
-            + "(SELECT p.patient_id,MAX(o.value_datetime) return_date"
+            + "(SELECT p.patient_id,MAX(o.value_datetime) return_date "
             + "FROM patient p "
-            + "INNER JOIN encounter e ON e.patient_id = p.patient_id AND e.encounter_date <=:endDate"
+            + "INNER JOIN encounter e ON e.patient_id = p.patient_id AND e.encounter_datetime <=:endDate "
             + "INNER JOIN obs o ON o.encounter_id = e.encounter_id AND o.obs_datetime <=:endDate "
             + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided=0 "
             + "AND e.encounter_type IN (%d, %d, %d) "
