@@ -64,7 +64,7 @@ public class TxMlQueries {
             + " WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND"
             + " pg.program_id=%d"
             + " AND ps.state=%d"
-            + " AND ps.start_date <=:endDate AND location_id=:location";
+            + " AND ps.start_date <=:endDate AND location_id=:location AND ps.end_date is null";
     return String.format(query, program, state);
   }
 }
