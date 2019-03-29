@@ -11,18 +11,19 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Arrays;
 import java.util.Date;
+import org.apache.commons.lang3.StringUtils;
+import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.prev.CompletedIsoniazidProphylaticTreatmentCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
-import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
-import org.openmrs.module.reporting.common.RangeComparator;
+import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,16 +37,27 @@ public class TbPrevCohortQueries {
   @Autowired private GenericCohortQueries genericCohortQueries;
 
   public CohortDefinition getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod() {
-    DateObsCohortDefinition definition = new DateObsCohortDefinition();
-    definition.setName("getPatientsThatStartedProfilaxiaIsoniazida");
-    definition.setQuestion(hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept());
-    definition.setTimeModifier(BaseObsCohortDefinition.TimeModifier.FIRST);
-    definition.setOperator1(RangeComparator.GREATER_EQUAL);
-    definition.setOperator2(RangeComparator.LESS_EQUAL);
-    definition.addParameter(new Parameter("value1", "After Date", Date.class));
-    definition.addParameter(new Parameter("value2", "Before Date", Date.class));
-    definition.addParameter(new Parameter("locationList", "Location", Location.class));
-    return definition;
+    Concept treatmentStartConcept = hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept();
+    String encounterTypesList =
+        StringUtils.join(
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType().getId()),
+            ",");
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patient states based on end of reporting period");
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    String query =
+        "select distinct obs.person_id from obs "
+            + "join encounter on encounter.encounter_id = obs.encounter_id "
+            + "where obs.concept_id = %s and obs.voided = false "
+            + "  and obs.value_datetime between :onOrAfter and :onOrBefore "
+            + "  and obs.location_id = :location and encounter.encounter_type in (%s) "
+            + "  and encounter.voided = false ";
+    cd.setQuery(String.format(query, treatmentStartConcept.getConceptId(), encounterTypesList));
+    return cd;
   }
 
   public CohortDefinition getNumerator() {
@@ -54,11 +66,6 @@ public class TbPrevCohortQueries {
     definition.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
     definition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
-    definition.addSearch(
-        "started-on-previous-period",
-        EptsReportUtils.map(
-            genericCohortQueries.getStartedArtOnPeriod(false, false),
-            "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
     definition.addSearch(
         "started-by-end-previous-reporting-period",
         EptsReportUtils.map(
@@ -70,7 +77,7 @@ public class TbPrevCohortQueries {
             getPatientsThatCompletedIsoniazidProphylacticTreatment(),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
     definition.setCompositionString(
-        "(started-by-end-previous-reporting-period OR started-on-previous-period) AND completed-isoniazid");
+        "started-by-end-previous-reporting-period AND completed-isoniazid");
     return definition;
   }
 
@@ -83,7 +90,7 @@ public class TbPrevCohortQueries {
     definition.addSearch(
         "started-on-previous-period",
         EptsReportUtils.map(
-            genericCohortQueries.getStartedArtOnPeriod(false, false),
+            genericCohortQueries.getStartedArtOnPeriod(false, true),
             "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
     definition.setCompositionString("started-on-previous-period");
     return definition;
@@ -98,7 +105,7 @@ public class TbPrevCohortQueries {
     definition.addSearch(
         "started-on-previous-period",
         EptsReportUtils.map(
-            genericCohortQueries.getStartedArtOnPeriod(false, false),
+            genericCohortQueries.getStartedArtOnPeriod(false, true),
             "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
     definition.addSearch(
         "started-by-end-previous-reporting-period",
@@ -117,11 +124,6 @@ public class TbPrevCohortQueries {
     definition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
     definition.addSearch(
-        "started-on-previous-period",
-        EptsReportUtils.map(
-            genericCohortQueries.getStartedArtOnPeriod(false, false),
-            "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
-    definition.addSearch(
         "started-by-end-previous-reporting-period",
         EptsReportUtils.map(
             genericCohortQueries.getStartedArtBeforeDate(false),
@@ -130,9 +132,9 @@ public class TbPrevCohortQueries {
         "started-isoniazid",
         EptsReportUtils.map(
             getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod(),
-            "value1=${onOrAfter-6m},value2=${onOrBefore-6m},locationList=${location}"));
+            "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
     definition.setCompositionString(
-        "(started-by-end-previous-reporting-period OR started-on-previous-period) AND started-isoniazid");
+        "started-by-end-previous-reporting-period AND started-isoniazid");
     return definition;
   }
 
