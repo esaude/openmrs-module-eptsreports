@@ -36,13 +36,18 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
   }
 
   @Override
+  public String getVersion() {
+    return "1.0-SNAPSHOT";
+  }
+
+  @Override
   public String getName() {
-    return "PEPFAR Semiannual Report";
+    return "PEPFAR MER 2.3 Semi-Annual";
   }
 
   @Override
   public String getDescription() {
-    return "PEPFAR Semiannual Report";
+    return "PEPFAR MER 2.3 Semi-Annual Report";
   }
 
   @Override
@@ -60,11 +65,6 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
         ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
 
     return rd;
-  }
-
-  @Override
-  public String getVersion() {
-    return "1.0-SNAPSHOT";
   }
 
   @Override

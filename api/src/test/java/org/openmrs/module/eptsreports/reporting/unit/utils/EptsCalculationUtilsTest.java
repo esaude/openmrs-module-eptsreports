@@ -304,27 +304,34 @@ public class EptsCalculationUtilsTest extends BaseContextMockTest {
 
   @Test
   public void monthsSinceShouldGetMonthsDifferenceBetween2Dates() {
+    float delta = (float) 0.0001;
+
     Assert.assertEquals(
-        0,
-        EptsCalculationUtils.monthsSince(
+        0.5667,
+        EptsCalculationUtils.monthsSinceIncludingDaysDiff(
             testsHelper.getDate("2019-02-01 00:00:00.0"),
-            testsHelper.getDate("2019-02-18 00:00:00.0")));
+            testsHelper.getDate("2019-02-18 00:00:00.0")),
+        delta);
     Assert.assertEquals(
         1,
-        EptsCalculationUtils.monthsSince(
+        EptsCalculationUtils.monthsSinceIncludingDaysDiff(
             testsHelper.getDate("2019-01-21 00:00:00.0"),
-            testsHelper.getDate("2019-02-28 00:00:00.0")));
+            testsHelper.getDate("2019-02-20 00:00:00.0")),
+        delta);
     Assert.assertEquals(
-        61,
-        EptsCalculationUtils.monthsSince(
+        61.9,
+        EptsCalculationUtils.monthsSinceIncludingDaysDiff(
             testsHelper.getDate("2014-01-28 00:00:00.0"),
-            testsHelper.getDate("2019-02-28 00:00:00.0")));
+            testsHelper.getDate("2019-02-28 00:00:00.0")),
+        delta);
+
     // the arguments ordering doesn't matters with joda
     Assert.assertEquals(
-        1,
-        EptsCalculationUtils.monthsSince(
+        1.2667,
+        EptsCalculationUtils.monthsSinceIncludingDaysDiff(
             (testsHelper.getDate("2019-02-28 00:00:00.0")),
-            testsHelper.getDate("2019-01-21 00:00:00.0")));
+            testsHelper.getDate("2019-01-21 00:00:00.0")),
+        delta);
   }
 
   @Test
