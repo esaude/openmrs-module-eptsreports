@@ -118,7 +118,11 @@ public class TXTBQueries {
 
   public static String inTBProgramWithinReportingPeriodAtLocation(Integer tbProgramId) {
     return String.format(
-        "select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id where pg.voided=0 and p.voided=0 and program_id=%s and date_enrolled between :startDate and :endDate and location_id=:location",
+        "select pg.patient_id from patient p "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "where pg.voided=0 and p.voided=0 and program_id=%s "
+            + "and date_enrolled between :startDate and :endDate "
+            + "and location_id=:location",
         tbProgramId);
   }
 
@@ -126,7 +130,11 @@ public class TXTBQueries {
       Integer questionId, List<Integer> encounterTypeIds, boolean startDate) {
     String sql =
         String.format(
-            "select person_id from obs where concept_id = %s and encounter_id in(select distinct encounter_id from encounter where encounter_type in(%s)) and location_id = :location and ",
+            "select person_id from obs "
+                + "where concept_id = %s and encounter_id in("
+                + "select distinct encounter_id "
+                + "from encounter "
+                + "where encounter_type in(%s)) and location_id = :location and ",
             questionId, StringUtils.join(encounterTypeIds, ","));
     if (startDate) {
       sql += "value_datetime >= :startDate and value_datetime <= :endDate and voided=0";
@@ -158,8 +166,13 @@ public class TXTBQueries {
   public static String dateObsWithinXMonthsBeforeStartDate(
       Integer questionId, List<Integer> encounterTypeIds, Integer xMonths) {
     return String.format(
-        "select person_id from obs where concept_id = %s and encounter_id in(select distinct encounter_id from encounter where encounter_type in(%s)) and location_id = :location and value_datetime >= DATE_SUB(:startDate, INTERVAL "
-            + "%s MONTH) and value_datetime <= :startDate and voided=0",
+        "select person_id from obs "
+            + "where concept_id = %s and encounter_id in"
+            + "( select distinct encounter_id from encounter "
+            + "where encounter_type in(%s)) and location_id = :location "
+            + "and value_datetime >= DATE_SUB(:startDate, INTERVAL "
+            + "%s MONTH) "
+            + "and value_datetime <= :startDate and voided=0",
         questionId, StringUtils.join(encounterTypeIds, ","), xMonths);
   }
 

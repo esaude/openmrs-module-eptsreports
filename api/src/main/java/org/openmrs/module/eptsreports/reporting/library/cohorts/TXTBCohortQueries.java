@@ -744,7 +744,7 @@ public class TXTBCohortQueries {
     CohortDefinition B = startedTbTreatmentWith6MonthsBeforeStartDate();
     cd.addSearch("B", map(B, generalParameterMapping));
 
-    cd.setCompositionString("A OR B");
+    cd.setCompositionString("A NOT B");
     addGeneralParameters(cd);
     return cd;
   }
@@ -862,7 +862,6 @@ public class TXTBCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition NUM = txTbNumerator();
     cd.addSearch("NUM", map(NUM, generalParameterMapping));
-    CohortDefinition A = artList();
     cd.addSearch(
         "started-before-start-reporting-period",
         EptsReportUtils.map(
