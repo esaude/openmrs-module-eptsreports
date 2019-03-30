@@ -193,17 +193,20 @@ public class TXTBCohortQueries {
    * TB. codes: DATAINICIO
    */
   public CohortDefinition tbTreatmentStartDateWithinReportingDate() {
-    return genericCohortQueries.generalSql(
-        "startedTbTreatment",
-        TXTBQueries.dateObs(
-            tbMetadata.getTBDrugTreatmentStartDate().getConceptId(),
-            Arrays.asList(
-                tbMetadata.getTBLivroEncounterType().getId(),
-                hivMetadata.getAdultoSeguimentoEncounterType().getId(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getId(),
-                tbMetadata.getTBRastreioEncounterType().getId(),
-                tbMetadata.getTBProcessoEncounterType().getId()),
-            true));
+    CohortDefinition definition =
+        genericCohortQueries.generalSql(
+            "startedTbTreatment",
+            TXTBQueries.dateObs(
+                tbMetadata.getTBDrugTreatmentStartDate().getConceptId(),
+                Arrays.asList(
+                    tbMetadata.getTBLivroEncounterType().getId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getId(),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getId(),
+                    tbMetadata.getTBRastreioEncounterType().getId(),
+                    tbMetadata.getTBProcessoEncounterType().getId()),
+                true));
+    addGeneralParameters(definition);
+    return definition;
   }
 
   /** INICIO DE TARV USANDO O CONCEITO DE DATA - PERIODO FINAL */
@@ -246,10 +249,13 @@ public class TXTBCohortQueries {
 
   /** PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA DE TUBERCULOSE - NUM PERIODO */
   public CohortDefinition getInTBProgram() {
-    return genericCohortQueries.generalSql(
-        "TBPROGRAMA",
-        TXTBQueries.inTBProgramWithinReportingPeriodAtLocation(
-            tbMetadata.getTBProgram().getProgramId()));
+    CohortDefinition definition =
+        genericCohortQueries.generalSql(
+            "TBPROGRAMA",
+            TXTBQueries.inTBProgramWithinReportingPeriodAtLocation(
+                tbMetadata.getTBProgram().getProgramId()));
+    addGeneralParameters(definition);
+    return definition;
   }
 
   /**
@@ -1014,7 +1020,41 @@ public class TXTBCohortQueries {
         EptsReportUtils.map(
             genericCohortQueries.getStartedArtBeforeDate(false),
             "onOrBefore=${endDate},location=${location}"));
-    definition.setCompositionString("art-list");
+    definition.addSearch(
+        "tb-screening", EptsReportUtils.map(yesOrNoInvesitionResult(), generalParameterMapping));
+    definition.addSearch(
+        "tb-investigation",
+        EptsReportUtils.map(positiveOrNegativeInvesitionResult(), generalParameterMapping));
+    definition.addSearch(
+        "started-tb-treatment",
+        EptsReportUtils.map(tbTreatmentStartDateWithinReportingDate(), generalParameterMapping));
+    definition.addSearch(
+        "in-tb-program", EptsReportUtils.map(getInTBProgram(), generalParameterMapping));
+
+    definition.addSearch(
+        "started-tb-treatment-previous-period",
+        EptsReportUtils.map(
+            tbTreatmentStartDateWithinReportingDate(),
+            "startDate=${startDate-6m},endDate=${startDate-1d},location=${location}"));
+    definition.addSearch(
+        "in-tb-program-previous-period",
+        EptsReportUtils.map(
+            getInTBProgram(),
+            "startDate=${startDate-6m},endDate=${startDate-1d},location=${location}"));
+
+    definition.addSearch(
+        "transferred-out",
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
+                hivMetadata.getARTProgram().getProgramId(),
+                hivMetadata
+                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                    .getProgramWorkflowStateId()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    definition.setCompositionString(
+        "(art-list AND  (tb-screening OR tb-investigation OR started-tb-treatment OR in-tb-program)) "
+            + "NOT ((transferred-out NOT started-tb-treatment) OR started-tb-treatment-previous-period OR in-tb-program-previous-period)");
+
     return definition;
   }
 }
