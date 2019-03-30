@@ -95,19 +95,19 @@ public class TxTBDataset extends BaseDataSet {
             "DENOMINATOR", EptsReportUtils.map(txTbCohortQueries.txTbDenominator(), mappings));
     CohortIndicator previouslyOnARTPostiveScreening =
         eptsGeneralIndicator.getIndicator(
-            "DENOMINATOR",
+            "previousOnARTPositiveScreening",
             EptsReportUtils.map(txTbCohortQueries.previouslyOnARTPostiveScreening(), mappings));
     CohortIndicator previouslyOnARTNegativeScreening =
         eptsGeneralIndicator.getIndicator(
-            "DENOMINATOR",
+            "previousOnARTNegativeScreening",
             EptsReportUtils.map(txTbCohortQueries.previouslyOnARTNegativeScreening(), mappings));
     CohortIndicator newOnARTPositiveScreening =
         eptsGeneralIndicator.getIndicator(
-            "DENOMINATOR",
+            "newOnARTPositiveScreening",
             EptsReportUtils.map(txTbCohortQueries.newOnARTPositiveScreening(), mappings));
     CohortIndicator newOnARTNegativeScreening =
         eptsGeneralIndicator.getIndicator(
-            "DENOMINATOR",
+            "newOnARTNegativeScreening",
             EptsReportUtils.map(txTbCohortQueries.newOnARTNegativeScreening(), mappings));
 
     dataSetDefinition.addColumn(
