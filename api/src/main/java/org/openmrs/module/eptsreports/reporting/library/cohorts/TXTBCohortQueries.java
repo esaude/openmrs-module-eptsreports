@@ -56,7 +56,7 @@ public class TXTBCohortQueries {
   /**
    * PACIENTES NOTIFICADOS DO TRATAMENTO DE TB NO SERVICO TARV: DIFERENTES FONTES
    *
-   * @return
+   * @return CompositionCohortDefinition
    */
   public CohortDefinition getNotifiedTBTreatmentPatientsOnART() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -170,23 +170,6 @@ public class TXTBCohortQueries {
             hivMetadata.getStartDrugsConcept(), hivMetadata.getTransferFromOtherFacilityConcept()));
   }
 
-  public CohortDefinition everyTimeARTTreatedFinalBeforeStartDate() {
-    CohortDefinition cd =
-        genericCohortQueries.generalSql(
-            "artTreatedBeforeStartDate",
-            TXTBQueries.codedObsBeforeStartDate(
-                hivMetadata.getARVPlanConcept().getConceptId(),
-                Arrays.asList(
-                    hivMetadata.getAdultoSeguimentoEncounterType().getId(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getId(),
-                    hivMetadata.getARVPharmaciaEncounterType().getId()),
-                Arrays.asList(
-                    hivMetadata.getStartDrugsConcept().getId(),
-                    hivMetadata.getTransferFromOtherFacilityConcept().getId())));
-    addGeneralParameters(cd);
-    return cd;
-  }
-
   /**
    * INICIO DE TRATAMENTO DE TUBERCULOSE DATA NOTIFICADA NAS FICHAS DE: SEGUIMENTO, RASTREIO E LIVRO
    * TB. codes: DATAINICIO
@@ -208,33 +191,6 @@ public class TXTBCohortQueries {
     return cd;
   }
 
-  //  /** INICIO DE TARV USANDO O CONCEITO DE DATA - PERIODO FINAL */
-  //  public CohortDefinition artTargetHistoricalStartUsingEndDate() {
-  //    return genericCohortQueries.generalSql(
-  //        "startARTHistoricalTarget",
-  //        TXTBQueries.dateObs(
-  //            tbMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
-  //            Arrays.asList(
-  //                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-  //                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-  //                hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()),
-  //            false));
-  //  }
-
-  public CohortDefinition artTargetHistoricalStartUsingEndDateBeforeStartDate() {
-    CohortDefinition cd =
-        genericCohortQueries.generalSql(
-            "startARTHistoricalTarget",
-            TXTBQueries.dateObsBeforeStartDate(
-                tbMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
-                Arrays.asList(
-                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-                    hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())));
-    addGeneralParameters(cd);
-    return cd;
-  }
-
   /** PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA DE TUBERCULOSE - NUM PERIODO */
   public CohortDefinition getInTBProgram() {
     CohortDefinition cd =
@@ -249,7 +205,7 @@ public class TXTBCohortQueries {
   /**
    * ACTUALMENTE EM TRATAMENTO ARV (COMPOSICAO) - PERIODO FINAL. Existing indicator codes: TARV
    *
-   * @return
+   * @return CompositionCohortDefinition
    */
   public CohortDefinition getCurrentlyInARTTreatmentCompositionFinalPeriod() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -268,7 +224,7 @@ public class TXTBCohortQueries {
   /**
    * PACIENTES QUE SAIRAM DO PROGRAMA DE TRATAMENTO ARV: PERIODO FINAL
    *
-   * @return
+   * @return SqlCohortDefinition
    */
   public CohortDefinition getPatientsWhoCameOutOfARVTreatmentProgram() {
     Program artProgram = hivMetadata.getARTProgram();
@@ -286,7 +242,7 @@ public class TXTBCohortQueries {
   /**
    * ACTUALMENTE EM TARV ATÉ UM DETERMINADO PERIODO FINAL - SEM INCLUIR ABANDONOS NAO NOTIFICADOS
    *
-   * @return
+   * @return CompositionCohortDefinition
    */
   public CohortDefinition getPatientsInARTWithoutAbandonedNotification() {
     Program artProgram = hivMetadata.getARTProgram();
@@ -329,7 +285,7 @@ public class TXTBCohortQueries {
    * PACIENTES NOTIFICADOS DO TRATAMENTO DE TB NO SERVICO TARV - ACTIVOS EM TARV. Existing indicator
    * codes: ACTIVOSTARV, TARV, NOTIFICADOSTB
    *
-   * @return
+   * @return CompositionCohortDefinition
    */
   public CohortDefinition getNotifiedTBPatientsAtARVService() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -354,7 +310,7 @@ public class TXTBCohortQueries {
    * PACIENTES NOTIFICADOS DO TRATAMENTO DE TB NO SERVICO TARV - NOVOS INICIOS. Existing indicator
    * code: NOVOSINICIOS, T0310IM
    *
-   * @return
+   * @return CompositionCohortDefinition
    */
   public CohortDefinition notifiedTbPatientsOnARVNewStarting() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -565,13 +521,6 @@ public class TXTBCohortQueries {
     return genericCohortQueries.generalSql(
         "patientWithFirstDrugPickupEncounter",
         TXTBQueries.patientWithFirstDrugPickupEncounterInReportingPeriod(
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
-  }
-
-  public CohortDefinition patientWithFirstDrugPickupEncounterBeforeStartDate() {
-    return genericCohortQueries.generalSql(
-        "patientWithFirstDrugPickupEncounter",
-        TXTBQueries.patientWithFirstDrugPickupEncounterBeforeStartDate(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
   }
 
@@ -903,7 +852,7 @@ public class TXTBCohortQueries {
         "started-during-reporting-period",
         EptsReportUtils.map(
             genericCohortQueries.getStartedArtOnPeriod(false, true),
-            "onOrAfter=${startDate}, onOrBefore=${endDate},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("NUM AND started-during-reporting-period");
     addGeneralParameters(cd);
     return cd;
