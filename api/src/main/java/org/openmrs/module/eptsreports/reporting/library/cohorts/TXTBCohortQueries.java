@@ -36,6 +36,7 @@ public class TXTBCohortQueries {
 
   private String generalParameterMapping =
       "startDate=${startDate},endDate=${endDate},location=${location}";
+
   private String codedObsParameterMapping =
       "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
 
@@ -1002,5 +1003,18 @@ public class TXTBCohortQueries {
     cd.setCompositionString("NUM AND A");
     addGeneralParameters(cd);
     return cd;
+  }
+
+  public CohortDefinition getDenominator() {
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    addGeneralParameters(definition);
+    definition.setName("TxTB - Denominator");
+    definition.addSearch(
+        "art-list",
+        EptsReportUtils.map(
+            genericCohortQueries.getStartedArtBeforeDate(false),
+            "onOrBefore=${endDate},location=${location}"));
+    definition.setCompositionString("art-list");
+    return definition;
   }
 }

@@ -16,6 +16,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.Arrays;
 import java.util.List;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TXTBCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
@@ -30,11 +31,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TxTBDataset extends BaseDataSet {
+
   @Autowired private EptsCommonDimension eptsCommonDimension;
 
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
 
   @Autowired private TXTBCohortQueries txTbCohortQueries;
+
+  @Autowired private GenericCohortQueries genericCohortQueries;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
@@ -51,6 +55,7 @@ public class TxTBDataset extends BaseDataSet {
         "age",
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
+
     addTXTBNumerator(mappings, dataSetDefinition);
 
     addTXTBDenominator(mappings, dataSetDefinition);
@@ -111,7 +116,15 @@ public class TxTBDataset extends BaseDataSet {
             EptsReportUtils.map(txTbCohortQueries.newOnARTNegativeScreening(), mappings));
 
     dataSetDefinition.addColumn(
-        "TXB_DEN", "TX_TB: Denominator total", EptsReportUtils.map(denominator, mappings), "");
+        "TXB_DEN",
+        "TX_TB: Denominator total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Denominator Total",
+                EptsReportUtils.map(txTbCohortQueries.getDenominator(), mappings)),
+            mappings),
+        "");
+
     addRow(
         dataSetDefinition,
         "TXB_DEN_NEW_POS",
