@@ -16,7 +16,6 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.Arrays;
 import java.util.List;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TXTBCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
@@ -37,8 +36,6 @@ public class TxTBDataset extends BaseDataSet {
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
 
   @Autowired private TXTBCohortQueries txTbCohortQueries;
-
-  @Autowired private GenericCohortQueries genericCohortQueries;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
@@ -95,24 +92,21 @@ public class TxTBDataset extends BaseDataSet {
 
   private void addTXTBDenominator(
       String mappings, CohortIndicatorDataSetDefinition dataSetDefinition) {
-    CohortIndicator denominator =
-        eptsGeneralIndicator.getIndicator(
-            "DENOMINATOR", EptsReportUtils.map(txTbCohortQueries.txTbDenominator(), mappings));
     CohortIndicator previouslyOnARTPostiveScreening =
         eptsGeneralIndicator.getIndicator(
-            "DENOMINATOR",
+            "previouslyOnARTPostiveScreening",
             EptsReportUtils.map(txTbCohortQueries.previouslyOnARTPostiveScreening(), mappings));
     CohortIndicator previouslyOnARTNegativeScreening =
         eptsGeneralIndicator.getIndicator(
-            "DENOMINATOR",
+            "previouslyOnARTNegativeScreening",
             EptsReportUtils.map(txTbCohortQueries.previouslyOnARTNegativeScreening(), mappings));
     CohortIndicator newOnARTPositiveScreening =
         eptsGeneralIndicator.getIndicator(
-            "DENOMINATOR",
+            "newOnARTPositiveScreening",
             EptsReportUtils.map(txTbCohortQueries.newOnARTPositiveScreening(), mappings));
     CohortIndicator newOnARTNegativeScreening =
         eptsGeneralIndicator.getIndicator(
-            "DENOMINATOR",
+            "newOnARTNegativeScreening",
             EptsReportUtils.map(txTbCohortQueries.newOnARTNegativeScreening(), mappings));
 
     dataSetDefinition.addColumn(
