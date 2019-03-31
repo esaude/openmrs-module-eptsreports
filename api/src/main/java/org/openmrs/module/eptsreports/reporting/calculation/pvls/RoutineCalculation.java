@@ -254,8 +254,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
         && currentObs.getObsDatetime() != null
         && previousObs.getObsDatetime().before(currentObs.getObsDatetime())) {
 
-      int monthsSince =
-          EptsCalculationUtils.monthsSince(
+      float monthsSince =
+          EptsCalculationUtils.monthsSinceIncludingDaysDiff(
               previousObs.getObsDatetime(), currentObs.getObsDatetime());
 
       if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)) {
@@ -275,13 +275,14 @@ public class RoutineCalculation extends AbstractPatientCalculation {
     for (Obs vlObs : viralLoadForPatientTakenWithin12Months) {
       if (vlObs != null && vlObs.getObsDatetime() != null) {
         Date vlDate = vlObs.getObsDatetime();
+        float monthsSince =
+            EptsCalculationUtils.monthsSinceIncludingDaysDiff(vlDate, artInitiationDate);
         if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)
-            && (EptsCalculationUtils.monthsSince(artInitiationDate, vlDate) > 6
-                && EptsCalculationUtils.monthsSince(artInitiationDate, vlDate) <= 9)) {
+            && (monthsSince > 6 && monthsSince <= 9)) {
           return true;
         } else if (criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)
-            && EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) > 3
-            && EptsCalculationUtils.monthsSince(vlDate, artInitiationDate) <= 6) {
+            && monthsSince > 3
+            && monthsSince <= 6) {
           return true;
         }
       }
