@@ -12,6 +12,7 @@
 package org.openmrs.module.eptsreports.reporting.calculation.generic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -65,7 +66,9 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap map = new CalculationResultMap();
     Location location = (Location) context.getFromCache("location");
 
-    boolean considerTransferredIn = getConsiderTransferredInParameter(parameterValues);
+    boolean considerTransferredIn = getBooleanParameter(parameterValues, "considerTransferredIn");
+    boolean considerPharmacyEncounter =
+        getBooleanParameter(parameterValues, "considerPharmacyEncounter");
 
     Program treatmentProgram = hivMetadata.getARTProgram();
     Concept arvPlan = hivMetadata.getARVPlanConcept();
@@ -78,15 +81,16 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
         ePTSCalculationService.firstPatientProgram(treatmentProgram, location, cohort, context);
     CalculationResultMap startDrugMap =
         ePTSCalculationService.firstObs(
-            arvPlan, startDrugsConcept, location, true, cohort, context);
+            arvPlan, startDrugsConcept, location, true, null, null, cohort, context);
     CalculationResultMap historicalMap =
         ePTSCalculationService.firstObs(
-            hostoricalStartConcept, null, location, false, cohort, context);
+            hostoricalStartConcept, null, location, false, null, null, cohort, context);
     CalculationResultMap pharmacyEncounterMap =
-        ePTSCalculationService.firstEncounter(encounterTypePharmacy, cohort, location, context);
+        ePTSCalculationService.firstEncounter(
+            Arrays.asList(encounterTypePharmacy), cohort, location, context);
     CalculationResultMap transferInMap =
         ePTSCalculationService.firstObs(
-            arvPlan, transferInConcept, location, true, cohort, context);
+            arvPlan, transferInConcept, location, true, null, null, cohort, context);
 
     for (Integer pId : cohort) {
       Date requiredDate = null;
@@ -104,10 +108,12 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
       if (historicalDateObs != null) {
         enrollmentDates.add(historicalDateObs.getValueDatetime());
       }
-      Encounter pharmacyEncounter =
-          EptsCalculationUtils.resultForPatient(pharmacyEncounterMap, pId);
-      if (pharmacyEncounter != null) {
-        enrollmentDates.add(pharmacyEncounter.getEncounterDatetime());
+      if (considerPharmacyEncounter) {
+        Encounter pharmacyEncounter =
+            EptsCalculationUtils.resultForPatient(pharmacyEncounterMap, pId);
+        if (pharmacyEncounter != null) {
+          enrollmentDates.add(pharmacyEncounter.getEncounterDatetime());
+        }
       }
       if (considerTransferredIn) {
         Obs transferInObs = EptsCalculationUtils.resultForPatient(transferInMap, pId);
@@ -125,15 +131,15 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
     return map;
   }
 
-  private boolean getConsiderTransferredInParameter(Map<String, Object> parameterValues) {
-    Boolean considerTransferredIn = null;
+  private boolean getBooleanParameter(Map<String, Object> parameterValues, String parameterName) {
+    Boolean parameterValue = null;
     if (parameterValues != null) {
-      considerTransferredIn = (Boolean) parameterValues.get("considerTransferredIn");
+      parameterValue = (Boolean) parameterValues.get(parameterName);
     }
-    if (considerTransferredIn == null) {
-      considerTransferredIn = true;
+    if (parameterValue == null) {
+      parameterValue = true;
     }
-    return considerTransferredIn;
+    return parameterValue;
   }
 
   public static Date getArtStartDate(Integer patientId, CalculationResultMap artStartDates) {

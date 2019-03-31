@@ -54,7 +54,7 @@ public abstract class BaseDataSet {
     return parameters;
   }
 
-  class ColumnParameters {
+  public static class ColumnParameters {
 
     private String name;
 

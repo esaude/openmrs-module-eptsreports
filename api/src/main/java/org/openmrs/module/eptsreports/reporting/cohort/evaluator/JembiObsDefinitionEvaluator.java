@@ -14,6 +14,7 @@
 
 package org.openmrs.module.eptsreports.reporting.cohort.evaluator;
 
+import java.util.Date;
 import java.util.List;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
@@ -53,6 +54,14 @@ public class JembiObsDefinitionEvaluator implements PatientDataEvaluator {
     }
     q.whereEqual("obs.location", def.getLocation());
     q.whereEqual("obs.voided", false);
+    final Date valueDateTimeOnOrAfter = def.getValueDateTimeOnOrAfter();
+    if (valueDateTimeOnOrAfter != null) {
+      q.whereGreaterOrEqualTo("obs.valueDatetime", valueDateTimeOnOrAfter);
+    }
+    Date valueDateTimeOnOrBefore = def.getValueDateTimeOnOrBefore();
+    if (valueDateTimeOnOrBefore != null) {
+      q.whereLessOrEqualTo("obs.valueDatetime", valueDateTimeOnOrBefore);
+    }
     if (def.isSortByDatetime()) {
       q.orderAsc("obs.obsDatetime");
     } else {
@@ -68,7 +77,14 @@ public class JembiObsDefinitionEvaluator implements PatientDataEvaluator {
 
     for (Integer pId : patientToObs.keySet()) {
       List<Obs> observations = patientToObs.get(pId);
-      c.addData(pId, observations.get(0));
+      Obs obs;
+      if (def.isFirst()) {
+        obs = observations.get(0);
+      } else {
+        // last
+        obs = observations.get(observations.size() - 1);
+      }
+      c.addData(pId, obs);
     }
 
     return c;

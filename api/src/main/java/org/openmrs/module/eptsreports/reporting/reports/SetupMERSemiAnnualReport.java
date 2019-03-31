@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TbPrevDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxTBDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
@@ -25,6 +26,8 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
 
   @Autowired private TxTBDataset txTBDataset;
 
+  @Autowired private TbPrevDataset tbPrevDataset;
+
   @Override
   public String getExcelDesignUuid() {
     return "61fea06a-472b-11e9-8b42-876961a472ef";
@@ -36,13 +39,18 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
   }
 
   @Override
+  public String getVersion() {
+    return "1.0-SNAPSHOT";
+  }
+
+  @Override
   public String getName() {
-    return "PEPFAR Semiannual Report";
+    return "PEPFAR MER 2.3 Semi-Annual";
   }
 
   @Override
   public String getDescription() {
-    return "PEPFAR Semiannual Report";
+    return "PEPFAR MER 2.3 Semi-Annual Report";
   }
 
   @Override
@@ -54,6 +62,7 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
     rd.setParameters(txMlDataset.getParameters());
     rd.addDataSetDefinition("TXML", Mapped.mapStraightThrough(txMlDataset.constructtxMlDataset()));
     rd.addDataSetDefinition("T", Mapped.mapStraightThrough(txTBDataset.constructTxTBDataset()));
+    rd.addDataSetDefinition("TBPREV", Mapped.mapStraightThrough(tbPrevDataset.constructDatset()));
     // add a base cohort to the report
     rd.setBaseCohortDefinition(
         genericCohortQueries.getBaseCohort(),
@@ -63,19 +72,14 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
   }
 
   @Override
-  public String getVersion() {
-    return "1.0-SNAPSHOT";
-  }
-
-  @Override
   public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
     ReportDesign reportDesign = null;
     try {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "PEPFAR_SEMIANNUAL_REPORT.xls",
-              "PEPFAR SEMIANNUAL REPORT",
+              "PEPFAR_MER_2.3_SEMIANNUAL.xls",
+              "PEPFAR MER 2.3 Semi-Annual Report",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();

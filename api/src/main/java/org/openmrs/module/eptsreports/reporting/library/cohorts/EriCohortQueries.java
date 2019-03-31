@@ -46,7 +46,7 @@ public class EriCohortQueries {
     cd.addSearch(
         "initiatedArt",
         EptsReportUtils.map(
-            genericCohortQueries.getStartedArtOnPeriod(false),
+            genericCohortQueries.getStartedArtOnPeriod(false, true),
             "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "transferIns",
