@@ -33,6 +33,16 @@ public class TxMlCohortQueries {
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
   }
 
+  public CohortDefinition getTransferOutPatients() {
+    return genericCohortQueries.generalSql(
+        "Transfer out",
+        TxMlQueries.getTransferredOutPatients(
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
+  }
+
   public CohortDefinition getNonConsistentPatients() {
     return genericCohortQueries.generalSql(
         "Non consistent patients",
@@ -55,13 +65,7 @@ public class TxMlCohortQueries {
             getAllPatientsWhoMissedNextAppointment(), "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "transferOut",
-        EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
-                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+        EptsReportUtils.map(getTransferOutPatients(), "endDate=${endDate},location=${location}"));
     cd.setCompositionString("missedAppointment AND NOT transferOut");
     return cd;
   }
