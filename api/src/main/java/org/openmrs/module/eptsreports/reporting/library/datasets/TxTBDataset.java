@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TxTBDataset extends BaseDataSet {
+
   @Autowired private EptsCommonDimension eptsCommonDimension;
 
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
@@ -51,6 +52,7 @@ public class TxTBDataset extends BaseDataSet {
         "age",
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
+
     addTXTBNumerator(mappings, dataSetDefinition);
 
     addTXTBDenominator(mappings, dataSetDefinition);
@@ -90,16 +92,13 @@ public class TxTBDataset extends BaseDataSet {
 
   private void addTXTBDenominator(
       String mappings, CohortIndicatorDataSetDefinition dataSetDefinition) {
-    CohortIndicator denominator =
-        eptsGeneralIndicator.getIndicator(
-            "DENOMINATOR", EptsReportUtils.map(txTbCohortQueries.txTbDenominator(), mappings));
     CohortIndicator previouslyOnARTPostiveScreening =
         eptsGeneralIndicator.getIndicator(
-            "previousOnARTPositiveScreening",
+            "previouslyOnARTPostiveScreening",
             EptsReportUtils.map(txTbCohortQueries.previouslyOnARTPostiveScreening(), mappings));
     CohortIndicator previouslyOnARTNegativeScreening =
         eptsGeneralIndicator.getIndicator(
-            "previousOnARTNegativeScreening",
+            "previouslyOnARTNegativeScreening",
             EptsReportUtils.map(txTbCohortQueries.previouslyOnARTNegativeScreening(), mappings));
     CohortIndicator newOnARTPositiveScreening =
         eptsGeneralIndicator.getIndicator(
@@ -111,7 +110,15 @@ public class TxTBDataset extends BaseDataSet {
             EptsReportUtils.map(txTbCohortQueries.newOnARTNegativeScreening(), mappings));
 
     dataSetDefinition.addColumn(
-        "TXB_DEN", "TX_TB: Denominator total", EptsReportUtils.map(denominator, mappings), "");
+        "TXB_DEN",
+        "TX_TB: Denominator total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Denominator Total",
+                EptsReportUtils.map(txTbCohortQueries.getDenominator(), mappings)),
+            mappings),
+        "");
+
     addRow(
         dataSetDefinition,
         "TXB_DEN_NEW_POS",

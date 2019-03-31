@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.joda.time.Months;
 import org.openmrs.Cohort;
 import org.openmrs.Obs;
@@ -249,7 +250,7 @@ public class EptsCalculationUtils {
   }
 
   /**
-   * Calculates the days since the given date
+   * Calculates the months since the given date
    *
    * @param date1 the date
    * @param date2 the date2
@@ -259,6 +260,30 @@ public class EptsCalculationUtils {
     DateTime d1 = new DateTime(date1.getTime());
     DateTime d2 = new DateTime(date2.getTime());
     return Math.abs(Months.monthsBetween(d1, d2).getMonths());
+  }
+
+  /**
+   * Calculates the months since the given date factoring in days into the result
+   *
+   * @param date1 the date
+   * @param date2 the date2
+   * @return the number of days
+   */
+  public static float monthsSinceIncludingDaysDiff(Date date1, Date date2) {
+    return daysSince(date1, date2) / (float) 30;
+  }
+
+  /**
+   * Calculates the days since the given date
+   *
+   * @param date1 the date
+   * @param date2 the date2
+   * @return the number of days
+   */
+  public static int daysSince(Date date1, Date date2) {
+    DateTime d1 = new DateTime(date1.getTime());
+    DateTime d2 = new DateTime(date2.getTime());
+    return Math.abs(Days.daysBetween(d1, d2).getDays());
   }
 
   /**
