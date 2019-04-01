@@ -453,37 +453,46 @@ public class TXTBCohortQueries {
 
   /** PACIENTES COM RASTREIO DE TUBERCULOSE NEGATIVO codes: RASTREIOTBNEG */
   public CohortDefinition codedNoTbScreening() {
-    return genericCohortQueries.hasCodedObs(
-        tbMetadata.getTbScreeningConcept(),
-        TimeModifier.ANY,
-        SetComparator.IN,
-        Arrays.asList(
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType()),
-        Arrays.asList(commonMetadata.getNoConcept()));
+    CohortDefinition cd =
+        genericCohortQueries.hasCodedObs(
+            tbMetadata.getTbScreeningConcept(),
+            TimeModifier.ANY,
+            SetComparator.IN,
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+            Arrays.asList(commonMetadata.getNoConcept()));
+    addGeneralParameters(cd);
+    return cd;
   }
 
   /** PACIENTES COM RASTREIO DE TUBERCULOSE POSITIVO codes: RASTREIOTBPOS */
   public CohortDefinition codedYesTbScreening() {
-    return genericCohortQueries.hasCodedObs(
-        tbMetadata.getTbScreeningConcept(),
-        TimeModifier.ANY,
-        SetComparator.IN,
-        Arrays.asList(
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType()),
-        Arrays.asList(commonMetadata.getYesConcept()));
+    CohortDefinition cd =
+        genericCohortQueries.hasCodedObs(
+            tbMetadata.getTbScreeningConcept(),
+            TimeModifier.ANY,
+            SetComparator.IN,
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+            Arrays.asList(commonMetadata.getYesConcept()));
+    addGeneralParameters(cd);
+    return cd;
   }
 
   public CohortDefinition tbScreening() {
-    return genericCohortQueries.hasCodedObs(
-        tbMetadata.getTbScreeningConcept(),
-        TimeModifier.ANY,
-        SetComparator.IN,
-        Arrays.asList(
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType()),
-        null);
+    CohortDefinition cd =
+        genericCohortQueries.hasCodedObs(
+            tbMetadata.getTbScreeningConcept(),
+            TimeModifier.ANY,
+            SetComparator.IN,
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+            null);
+    addGeneralParameters(cd);
+    return cd;
   }
 
   /**
@@ -599,25 +608,31 @@ public class TXTBCohortQueries {
   }
 
   public CohortDefinition positiveInvesitionResult() {
-    return genericCohortQueries.hasCodedObs(
-        tbMetadata.getResearchResultConcept(),
-        TimeModifier.ANY,
-        SetComparator.IN,
-        Arrays.asList(
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType()),
-        Arrays.asList(tbMetadata.getPositiveConcept()));
+    CohortDefinition cd =
+        genericCohortQueries.hasCodedObs(
+            tbMetadata.getResearchResultConcept(),
+            TimeModifier.ANY,
+            SetComparator.IN,
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+            Arrays.asList(tbMetadata.getPositiveConcept()));
+    addGeneralParameters(cd);
+    return cd;
   }
 
   public CohortDefinition negativeInvesitionResult() {
-    return genericCohortQueries.hasCodedObs(
-        tbMetadata.getResearchResultConcept(),
-        TimeModifier.ANY,
-        SetComparator.IN,
-        Arrays.asList(
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType()),
-        Arrays.asList(tbMetadata.getNegativeConcept()));
+    CohortDefinition cd =
+        genericCohortQueries.hasCodedObs(
+            tbMetadata.getResearchResultConcept(),
+            TimeModifier.ANY,
+            SetComparator.IN,
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+            Arrays.asList(tbMetadata.getNegativeConcept()));
+    addGeneralParameters(cd);
+    return cd;
   }
 
   /**
