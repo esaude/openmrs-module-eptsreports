@@ -168,6 +168,30 @@ public class GenericCohortQueries {
   }
 
   /**
+   * Get patients states based on program, state and end of reporting period
+   *
+   * @param program
+   * @param state
+   * @return
+   */
+  public CohortDefinition getPatientsBasedOnPatientStatesBeforeDate(int program, int state) {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patient states based on end of reporting period");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    String query =
+        "SELECT pg.patient_id"
+            + " FROM patient p"
+            + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
+            + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
+            + " WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 "
+            + " AND pg.program_id=%s AND ps.state=%s AND ps.end_date is null "
+            + " AND ps.start_date <= :endDate AND location_id=:location";
+    cd.setQuery(String.format(query, program, state));
+    return cd;
+  }
+
+  /**
    * Get deceased patients, we need to check in the person table and patient states,
    *
    * @return CohortDefinition
@@ -193,6 +217,35 @@ public class GenericCohortQueries {
                 "deceased",
                 "SELECT patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id AND pe.dead=1 WHERE pe.death_date <=:endDate"),
             "startDate=${startDate},endDate=${endDate}"));
+    cd.setCompositionString("dead OR deceased");
+    return cd;
+  }
+
+  /**
+   * Get deceased patients, we need to check in the person table and patient states,
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getDeceasedPatientsBeforeDate() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Get deceased patients based on patient states and person object");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            getPatientsBasedOnPatientStatesBeforeDate(
+                hivMetadata.getARTProgram().getProgramId(),
+                hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
+            "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "deceased",
+        EptsReportUtils.map(
+            generalSql(
+                "deceased",
+                "SELECT patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id AND pe.dead=1 WHERE pe.death_date <=:endDate"),
+            "endDate=${endDate}"));
     cd.setCompositionString("dead OR deceased");
     return cd;
   }
