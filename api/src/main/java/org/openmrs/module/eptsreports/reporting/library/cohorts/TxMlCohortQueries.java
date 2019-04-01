@@ -87,7 +87,7 @@ public class TxMlCohortQueries {
         "dead",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate-1000y},endDate=${endDate},location=${location}"));
     cd.setCompositionString("missedAppointmentLessTransfers AND dead");
     return cd;
   }
