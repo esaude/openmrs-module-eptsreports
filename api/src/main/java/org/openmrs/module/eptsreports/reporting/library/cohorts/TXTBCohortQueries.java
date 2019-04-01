@@ -34,8 +34,11 @@ public class TXTBCohortQueries {
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
+  @Autowired private HivCohortQueries hivCohortQueries;
+
   private String generalParameterMapping =
       "startDate=${startDate},endDate=${endDate},location=${location}";
+
   private String codedObsParameterMapping =
       "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
 
@@ -54,7 +57,7 @@ public class TXTBCohortQueries {
   /**
    * PACIENTES NOTIFICADOS DO TRATAMENTO DE TB NO SERVICO TARV: DIFERENTES FONTES
    *
-   * @return
+   * @return CompositionCohortDefinition
    */
   public CohortDefinition getNotifiedTBTreatmentPatientsOnART() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -83,20 +86,6 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * PROGRAMA: PACIENTES TRANSFERIDOS DE NO PROGRAMA DE TRATAMENTO ARV: NUM PERIODO. codes include:
-   * TRANSFDEPRG
-   */
-  public CohortDefinition getPatientsTransferredIntoARTTreatment() {
-    return genericCohortQueries.generalSql(
-        "TRANSFDEPRG",
-        TXTBQueries.patientsTransferredFromOrIntoProgram(
-            hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata
-                .getTransferredFromOtherHealthFacilityWorkflowState()
-                .getProgramWorkflowStateId()));
-  }
-
-  /**
    * INICIO DE TRATAMENTO ARV - NUM PERIODO: EXCLUI TRANSFERIDOS DE COM DATA DE INICIO CONHECIDA
    * (SQL) existing codes: NOVOSINICIOS
    */
@@ -106,7 +95,7 @@ public class TXTBCohortQueries {
         "INICIO DE TRATAMENTO ARV - NUM PERIODO: EXCLUI TRANSFERIDOS DE COM DATA DE INICIO CONHECIDA (SQL)");
 
     Program artProgram = hivMetadata.getARTProgram();
-    CohortDefinition TRANSFDEPRG = getPatientsTransferredIntoARTTreatment();
+    CohortDefinition TRANSFDEPRG = hivCohortQueries.getPatientsTransferredFromOtherHealthFacility();
     CohortDefinition INICIO =
         genericCohortQueries.generalSql(
             "INICIO",
@@ -137,21 +126,30 @@ public class TXTBCohortQueries {
   public CohortDefinition anyTimeARVTreatmentFinalPeriod() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("ALGUMA VEZ ESTEVE EM TRATAMENTO ARV - PERIODO FINAL - REAL (COMPOSICAO)");
+    cd.addParameter(new Parameter("endDate", "EndDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition PROGRAMA = getInARTProgram();
+    CohortDefinition inARTProgramAtEndDate =
+        genericCohortQueries.createInProgram("InARTProgram", hivMetadata.getARTProgram());
     CohortDefinition CONCEITO1255 = everyTimeARVTreatedFinal();
 
-    CohortDefinition CONCEITODATA = artTargetHistoricalStartUsingEndDate();
+    CohortDefinition CONCEITODATA =
+        hivCohortQueries.getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate();
     CohortDefinition FRIDAFILA = arTTreatmentFromPharmacy();
-    addGeneralParameters(PROGRAMA);
-    cd.addSearch("PROGRAMA", map(PROGRAMA, generalParameterMapping));
+
+    cd.addSearch(
+        "inARTProgramAtEndDate",
+        EptsReportUtils.map(
+            inARTProgramAtEndDate, "onOrBefore=${onOrBefore},locations=${location}"));
     addGeneralParameters(CONCEITO1255);
     cd.addSearch("CONCEITO1255", map(CONCEITO1255, codedObsParameterMapping));
     addGeneralParameters(CONCEITODATA);
-    cd.addSearch("CONCEITODATA", map(CONCEITODATA, generalParameterMapping));
+    cd.addSearch(
+        "CONCEITODATA",
+        EptsReportUtils.map(CONCEITODATA, "onOrBefore=${onOrBefore},location=${location}"));
     addGeneralParameters(FRIDAFILA);
     cd.addSearch("FRIDAFILA", map(FRIDAFILA, generalParameterMapping));
-    cd.setCompositionString("CONCEITO1255 OR PROGRAMA OR CONCEITODATA OR FRIDAFILA");
+    cd.setCompositionString("CONCEITO1255 OR inARTProgramAtEndDate OR CONCEITODATA OR FRIDAFILA");
     return cd;
   }
 
@@ -178,17 +176,20 @@ public class TXTBCohortQueries {
    * TB. codes: DATAINICIO
    */
   public CohortDefinition tbTreatmentStartDateWithinReportingDate() {
-    return genericCohortQueries.generalSql(
-        "startedTbTreatment",
-        TXTBQueries.dateObs(
-            tbMetadata.getTBDrugTreatmentStartDate().getConceptId(),
-            Arrays.asList(
-                tbMetadata.getTBLivroEncounterType().getId(),
-                hivMetadata.getAdultoSeguimentoEncounterType().getId(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getId(),
-                tbMetadata.getTBRastreioEncounterType().getId(),
-                tbMetadata.getTBProcessoEncounterType().getId()),
-            true));
+    CohortDefinition definition =
+        genericCohortQueries.generalSql(
+            "startedTbTreatment",
+            TXTBQueries.dateObs(
+                tbMetadata.getTBDrugTreatmentStartDate().getConceptId(),
+                Arrays.asList(
+                    tbMetadata.getTBLivroEncounterType().getId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getId(),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getId(),
+                    tbMetadata.getTBRastreioEncounterType().getId(),
+                    tbMetadata.getTBProcessoEncounterType().getId()),
+                true));
+    addGeneralParameters(definition);
+    return definition;
   }
 
   /** INICIO DE TARV USANDO O CONCEITO DE DATA - PERIODO FINAL */
@@ -204,25 +205,32 @@ public class TXTBCohortQueries {
             false));
   }
 
-  /** PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA TRATAMENTO ARV (TARV) - PERIODO FINAL */
-  public CohortDefinition getInARTProgram() {
+  public CohortDefinition artTargetHistoricalStartUsingEndDateBeforeStartDate() {
     return genericCohortQueries.generalSql(
-        "SAIDAPROGRAMA",
-        TXTBQueries.inARTProgramToEndDateAtLocation(hivMetadata.getARTProgram().getProgramId()));
+        "startARTHistoricalTarget",
+        TXTBQueries.dateObsBeforeStartDate(
+            tbMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())));
   }
 
   /** PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA DE TUBERCULOSE - NUM PERIODO */
   public CohortDefinition getInTBProgram() {
-    return genericCohortQueries.generalSql(
-        "TBPROGRAMA",
-        TXTBQueries.inTBProgramWithinReportingPeriodAtLocation(
-            tbMetadata.getTBProgram().getProgramId()));
+    CohortDefinition definition =
+        genericCohortQueries.generalSql(
+            "TBPROGRAMA",
+            TXTBQueries.inTBProgramWithinReportingPeriodAtLocation(
+                tbMetadata.getTBProgram().getProgramId()));
+    addGeneralParameters(definition);
+    return definition;
   }
 
   /**
    * ACTUALMENTE EM TRATAMENTO ARV (COMPOSICAO) - PERIODO FINAL. Existing indicator codes: TARV
    *
-   * @return
+   * @return CompositionCohortDefinition
    */
   public CohortDefinition getCurrentlyInARTTreatmentCompositionFinalPeriod() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -241,7 +249,7 @@ public class TXTBCohortQueries {
   /**
    * PACIENTES QUE SAIRAM DO PROGRAMA DE TRATAMENTO ARV: PERIODO FINAL
    *
-   * @return
+   * @return SqlCohortDefinition
    */
   public CohortDefinition getPatientsWhoCameOutOfARVTreatmentProgram() {
     Program artProgram = hivMetadata.getARTProgram();
@@ -259,7 +267,7 @@ public class TXTBCohortQueries {
   /**
    * ACTUALMENTE EM TARV ATÉ UM DETERMINADO PERIODO FINAL - SEM INCLUIR ABANDONOS NAO NOTIFICADOS
    *
-   * @return
+   * @return CompositionCohortDefinition
    */
   public CohortDefinition getPatientsInARTWithoutAbandonedNotification() {
     Program artProgram = hivMetadata.getARTProgram();
@@ -302,7 +310,7 @@ public class TXTBCohortQueries {
    * PACIENTES NOTIFICADOS DO TRATAMENTO DE TB NO SERVICO TARV - ACTIVOS EM TARV. Existing indicator
    * codes: ACTIVOSTARV, TARV, NOTIFICADOSTB
    *
-   * @return
+   * @return CompositionCohortDefinition
    */
   public CohortDefinition getNotifiedTBPatientsAtARVService() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -327,7 +335,7 @@ public class TXTBCohortQueries {
    * PACIENTES NOTIFICADOS DO TRATAMENTO DE TB NO SERVICO TARV - NOVOS INICIOS. Existing indicator
    * code: NOVOSINICIOS, T0310IM
    *
-   * @return
+   * @return CompositionCohortDefinition
    */
   public CohortDefinition notifiedTbPatientsOnARVNewStarting() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -362,22 +370,6 @@ public class TXTBCohortQueries {
     addGeneralParameters(NOVOSINICIOS);
     cd.addSearch("NOVOSINICIOS", map(NOVOSINICIOS, generalParameterMapping));
     cd.setCompositionString("ACTIVOSTARV OR NOVOSINICIOS");
-    addGeneralParameters(cd);
-    return cd;
-  }
-
-  /** TX_TB base cohort. PACIENTES INSCRITOS NO SERVICO TARV - PERIODO FINAL (SQL); */
-  public CohortDefinition getPatientsEnrolledInARTCareAndOnTreatment() {
-    CohortDefinition cd =
-        genericCohortQueries.generalSql(
-            "",
-            TXTBQueries.patientsEnrolledInARTCareAndOnTreatment(
-                hivMetadata.getHIVCareProgram().getProgramId(),
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
-                28 /*28 is from query, refers to?*/,
-                29 /*29 is from query, referes to?*/));
     addGeneralParameters(cd);
     return cd;
   }
@@ -461,37 +453,46 @@ public class TXTBCohortQueries {
 
   /** PACIENTES COM RASTREIO DE TUBERCULOSE NEGATIVO codes: RASTREIOTBNEG */
   public CohortDefinition codedNoTbScreening() {
-    return genericCohortQueries.hasCodedObs(
-        tbMetadata.getTbScreeningConcept(),
-        TimeModifier.LAST,
-        SetComparator.IN,
-        Arrays.asList(
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType()),
-        Arrays.asList(commonMetadata.getNoConcept()));
+    CohortDefinition cd =
+        genericCohortQueries.hasCodedObs(
+            tbMetadata.getTbScreeningConcept(),
+            TimeModifier.ANY,
+            SetComparator.IN,
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+            Arrays.asList(commonMetadata.getNoConcept()));
+    addGeneralParameters(cd);
+    return cd;
   }
 
   /** PACIENTES COM RASTREIO DE TUBERCULOSE POSITIVO codes: RASTREIOTBPOS */
   public CohortDefinition codedYesTbScreening() {
-    return genericCohortQueries.hasCodedObs(
-        tbMetadata.getTbScreeningConcept(),
-        TimeModifier.LAST,
-        SetComparator.IN,
-        Arrays.asList(
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType()),
-        Arrays.asList(commonMetadata.getYesConcept()));
+    CohortDefinition cd =
+        genericCohortQueries.hasCodedObs(
+            tbMetadata.getTbScreeningConcept(),
+            TimeModifier.ANY,
+            SetComparator.IN,
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+            Arrays.asList(commonMetadata.getYesConcept()));
+    addGeneralParameters(cd);
+    return cd;
   }
 
   public CohortDefinition tbScreening() {
-    return genericCohortQueries.hasCodedObs(
-        tbMetadata.getTbScreeningConcept(),
-        TimeModifier.LAST,
-        SetComparator.IN,
-        Arrays.asList(
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType()),
-        null);
+    CohortDefinition cd =
+        genericCohortQueries.hasCodedObs(
+            tbMetadata.getTbScreeningConcept(),
+            TimeModifier.ANY,
+            SetComparator.IN,
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+            null);
+    addGeneralParameters(cd);
+    return cd;
   }
 
   /**
@@ -544,14 +545,16 @@ public class TXTBCohortQueries {
   public CohortDefinition patientWithFirstDrugPickupEncounterWithinReportingDate() {
     return genericCohortQueries.generalSql(
         "patientWithFirstDrugPickupEncounter",
-        TXTBQueries.patientWithFirstDrugPickupEncounter(
+        TXTBQueries.patientWithFirstDrugPickupEncounterInReportingPeriod(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
   }
 
   /** patients who were transferred in from another facility and do not have ART Initiation Date */
   public CohortDefinition patientsTranferredInWithoutARTInitiationDate() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition TRANSFDEPRG = getPatientsTransferredIntoARTTreatment();
+    addGeneralParameters(cd);
+
+    CohortDefinition TRANSFDEPRG = hivCohortQueries.getPatientsTransferredFromOtherHealthFacility();
     addGeneralParameters(TRANSFDEPRG);
     CalculationCohortDefinition NOARTINIT =
         new CalculationCohortDefinition(
@@ -559,10 +562,11 @@ public class TXTBCohortQueries {
     NOARTINIT.setWithResultFinder(CalculationWithResultFinder.NULL);
     addGeneralParameters(NOARTINIT);
 
-    cd.addSearch("TRANSFDEPRG", map(TRANSFDEPRG, generalParameterMapping));
+    cd.addSearch(
+        "TRANSFDEPRG",
+        map(TRANSFDEPRG, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch("NOARTINIT", map(NOARTINIT, generalParameterMapping));
     cd.setCompositionString("TRANSFDEPRG AND NOARTINIT");
-    addGeneralParameters(cd);
     return cd;
   }
 
@@ -572,7 +576,7 @@ public class TXTBCohortQueries {
    */
   public CohortDefinition patientsTranferredInWithARTInitiationDateOutsideReportingPeriod() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition TRANSFDEPRG = getPatientsTransferredIntoARTTreatment();
+    CohortDefinition TRANSFDEPRG = hivCohortQueries.getPatientsTransferredFromOtherHealthFacility();
     addGeneralParameters(TRANSFDEPRG);
     CalculationCohortDefinition OUTARTINIT =
         new CalculationCohortDefinition(
@@ -580,88 +584,55 @@ public class TXTBCohortQueries {
     OUTARTINIT.setWithResultFinder(CalculationWithResultFinder.DATE_OUTSIDE);
     addGeneralParameters(OUTARTINIT);
 
-    cd.addSearch("TRANSFDEPRG", map(TRANSFDEPRG, generalParameterMapping));
+    cd.addSearch(
+        "TRANSFDEPRG",
+        map(TRANSFDEPRG, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch("OUTARTINIT", map(OUTARTINIT, generalParameterMapping));
     cd.setCompositionString("TRANSFDEPRG AND OUTARTINIT");
     addGeneralParameters(cd);
     return cd;
   }
 
-  public CohortDefinition artListA() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition i = patientWithFirstDrugPickupEncounterWithinReportingDate();
-    addGeneralParameters(i);
-    cd.addSearch("i", map(i, generalParameterMapping));
-    CohortDefinition ii = everyTimeARVTreatedFinal();
-    addGeneralParameters(ii);
-    cd.addSearch("ii", map(ii, generalParameterMapping));
-    CohortDefinition iii = artTargetHistoricalStartUsingEndDate();
-    addGeneralParameters(iii);
-    cd.addSearch("iii", map(iii, generalParameterMapping));
-    CohortDefinition iv = getInARTProgram();
-    addGeneralParameters(iv);
-    cd.addSearch("iv", map(iv, generalParameterMapping));
-    CohortDefinition v1 = patientsTranferredInWithoutARTInitiationDate();
-    addGeneralParameters(v1);
-    cd.addSearch("v1", map(v1, generalParameterMapping));
-    CohortDefinition v2 = patientsTranferredInWithARTInitiationDateOutsideReportingPeriod();
-    addGeneralParameters(v2);
-    cd.addSearch("v2", map(v2, generalParameterMapping));
-    cd.setCompositionString("(i OR ii OR iii OR iv) OR NOT (v1 OR v2)");
-    addGeneralParameters(cd);
-    return cd;
-  }
-
-  public CohortDefinition artListB() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition i = everyTimeARVTreatedFinal();
-    addGeneralParameters(i);
-    cd.addSearch("i", map(i, generalParameterMapping));
-    CohortDefinition ii = artTargetHistoricalStartUsingEndDate();
-    addGeneralParameters(ii);
-    cd.addSearch("ii", map(ii, generalParameterMapping));
-    CohortDefinition iii = getInARTProgram();
-    addGeneralParameters(iii);
-    cd.addSearch("iii", map(iii, generalParameterMapping));
-
-    cd.setCompositionString("i OR ii OR iii");
-    addGeneralParameters(cd);
-    return cd;
-  }
-
   public CohortDefinition artList() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition a = artListA();
-    addGeneralParameters(a);
-    cd.addSearch("A", map(a, generalParameterMapping));
-    CohortDefinition b = artListB();
-    addGeneralParameters(b);
-    cd.addSearch("B", map(b, generalParameterMapping));
-    cd.setCompositionString("A OR B");
+
+    cd.addSearch(
+        "started-by-end-reporting-period",
+        EptsReportUtils.map(
+            genericCohortQueries.getStartedArtBeforeDate(false),
+            "onOrBefore=${endDate},location=${location}"));
+
+    cd.setCompositionString("started-by-end-reporting-period");
     addGeneralParameters(cd);
     return cd;
   }
 
   public CohortDefinition positiveInvesitionResult() {
-    return genericCohortQueries.hasCodedObs(
-        tbMetadata.getResearchResultConcept(),
-        TimeModifier.LAST,
-        SetComparator.IN,
-        Arrays.asList(
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType()),
-        Arrays.asList(tbMetadata.getPositiveConcept()));
+    CohortDefinition cd =
+        genericCohortQueries.hasCodedObs(
+            tbMetadata.getResearchResultConcept(),
+            TimeModifier.ANY,
+            SetComparator.IN,
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+            Arrays.asList(tbMetadata.getPositiveConcept()));
+    addGeneralParameters(cd);
+    return cd;
   }
 
   public CohortDefinition negativeInvesitionResult() {
-    return genericCohortQueries.hasCodedObs(
-        tbMetadata.getResearchResultConcept(),
-        TimeModifier.LAST,
-        SetComparator.IN,
-        Arrays.asList(
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType()),
-        Arrays.asList(tbMetadata.getNegativeConcept()));
+    CohortDefinition cd =
+        genericCohortQueries.hasCodedObs(
+            tbMetadata.getResearchResultConcept(),
+            TimeModifier.ANY,
+            SetComparator.IN,
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+            Arrays.asList(tbMetadata.getNegativeConcept()));
+    addGeneralParameters(cd);
+    return cd;
   }
 
   /**
@@ -671,10 +642,8 @@ public class TXTBCohortQueries {
   public CohortDefinition positiveOrNegativeInvesitionResult() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition P = positiveInvesitionResult();
-    addGeneralParameters(P);
     cd.addSearch("P", map(P, codedObsParameterMapping));
     CohortDefinition N = negativeInvesitionResult();
-    addGeneralParameters(N);
     cd.addSearch("N", map(N, codedObsParameterMapping));
     cd.setCompositionString("P OR N");
     addGeneralParameters(cd);
@@ -688,10 +657,8 @@ public class TXTBCohortQueries {
   public CohortDefinition yesOrNoInvesitionResult() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition S = codedYesTbScreening();
-    addGeneralParameters(S);
     cd.addSearch("S", map(S, codedObsParameterMapping));
     CohortDefinition N = codedNoTbScreening();
-    addGeneralParameters(N);
     cd.addSearch("N", map(N, codedObsParameterMapping));
     cd.setCompositionString("S OR N");
     addGeneralParameters(cd);
@@ -712,9 +679,9 @@ public class TXTBCohortQueries {
                 Arrays.asList(
                     hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState().getId())));
     addGeneralParameters(transferredOut);
+
     cd.addSearch("transferredOut", map(transferredOut, generalParameterMapping));
     CohortDefinition startedTbTreatment = tbTreatmentStartDateWithinReportingDate();
-    addGeneralParameters(startedTbTreatment);
     cd.addSearch("startedTbTreatment", map(startedTbTreatment, generalParameterMapping));
 
     cd.setCompositionString("transferredOut NOT startedTbTreatment");
@@ -727,35 +694,34 @@ public class TXTBCohortQueries {
    * date of the reporting period
    */
   public CohortDefinition startedTbTreatmentWith6MonthsBeforeStartDate() {
-    return genericCohortQueries.generalSql(
-        "started6MonthsBeforeStartDate",
-        TXTBQueries.dateObsWithinXMonthsBeforeStartDate(
-            tbMetadata.getTBDrugTreatmentStartDate().getConceptId(),
-            Arrays.asList(
-                tbMetadata.getTBLivroEncounterType().getId(),
-                hivMetadata.getAdultoSeguimentoEncounterType().getId(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getId(),
-                tbMetadata.getTBRastreioEncounterType().getId(),
-                tbMetadata.getTBProcessoEncounterType().getId()),
-            6));
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "started6MonthsBeforeStartDate",
+            TXTBQueries.dateObsWithinXMonthsBeforeStartDate(
+                tbMetadata.getTBDrugTreatmentStartDate().getConceptId(),
+                Arrays.asList(
+                    tbMetadata.getTBLivroEncounterType().getId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getId(),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getId(),
+                    tbMetadata.getTBRastreioEncounterType().getId(),
+                    tbMetadata.getTBProcessoEncounterType().getId()),
+                6));
+    addGeneralParameters(cd);
+    return cd;
   }
 
+  // Filter Art_list to Tb_list
   public CohortDefinition txTbDenominatorA() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition i = yesOrNoInvesitionResult();
-    addGeneralParameters(i);
     cd.addSearch("i", map(i, generalParameterMapping));
     CohortDefinition ii = positiveOrNegativeInvesitionResult();
-    addGeneralParameters(ii);
     cd.addSearch("ii", map(ii, generalParameterMapping));
     CohortDefinition iii = tbTreatmentStartDateWithinReportingDate();
-    addGeneralParameters(iii);
     cd.addSearch("iii", map(iii, generalParameterMapping));
     CohortDefinition iv = getInTBProgram();
-    addGeneralParameters(iv);
     cd.addSearch("iv", map(iv, generalParameterMapping));
     CohortDefinition artList = artList();
-    addGeneralParameters(artList);
     cd.addSearch("artList", map(artList, generalParameterMapping));
     cd.setCompositionString("(i OR ii OR iii OR iv) AND artList");
     addGeneralParameters(cd);
@@ -765,15 +731,10 @@ public class TXTBCohortQueries {
   public CohortDefinition txTbDenominatorB() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition i = transferredOutExceptStartedTbTreatment();
-    addGeneralParameters(i);
     cd.addSearch("i", map(i, generalParameterMapping));
     CohortDefinition ii = startedTbTreatmentWith6MonthsBeforeStartDate();
-    addGeneralParameters(ii);
     cd.addSearch("ii", map(ii, generalParameterMapping));
-    CohortDefinition artList = artList();
-    addGeneralParameters(artList);
-    cd.addSearch("artList", map(artList, generalParameterMapping));
-    cd.setCompositionString("(i AND ii) NOT artList");
+    cd.setCompositionString("(i OR ii)");
     addGeneralParameters(cd);
     return cd;
   }
@@ -792,25 +753,10 @@ public class TXTBCohortQueries {
     addGeneralParameters(i);
     cd.addSearch("i", map(i, generalParameterMapping));
     CohortDefinition ii = getInTBProgram();
-    addGeneralParameters(ii);
     cd.addSearch("ii", map(ii, generalParameterMapping));
     CohortDefinition artList = artList();
-    addGeneralParameters(artList);
     cd.addSearch("artList", map(artList, generalParameterMapping));
     cd.setCompositionString("(i OR ii) AND artList");
-    addGeneralParameters(cd);
-    return cd;
-  }
-
-  public CohortDefinition txTbNumeratorB() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition i = startedTbTreatmentWith6MonthsBeforeStartDate();
-    addGeneralParameters(i);
-    cd.addSearch("i", map(i, generalParameterMapping));
-    CohortDefinition artList = artList();
-    addGeneralParameters(artList);
-    cd.addSearch("artList", map(artList, generalParameterMapping));
-    cd.setCompositionString("i NOT artList");
     addGeneralParameters(cd);
     return cd;
   }
@@ -818,12 +764,12 @@ public class TXTBCohortQueries {
   public CohortDefinition txTbNumerator() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition A = txTbNumeratorA();
-    addGeneralParameters(A);
     cd.addSearch("A", map(A, generalParameterMapping));
-    CohortDefinition B = txTbNumeratorB();
-    addGeneralParameters(B);
+
+    CohortDefinition B = startedTbTreatmentWith6MonthsBeforeStartDate();
     cd.addSearch("B", map(B, generalParameterMapping));
-    cd.setCompositionString("A OR B");
+
+    cd.setCompositionString("A NOT B");
     addGeneralParameters(cd);
     return cd;
   }
@@ -831,30 +777,23 @@ public class TXTBCohortQueries {
   public CohortDefinition txTbDenominator() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition A = txTbDenominatorA();
-    addGeneralParameters(A);
     cd.addSearch("A", map(A, generalParameterMapping));
     CohortDefinition B = txTbDenominatorB();
-    addGeneralParameters(B);
     cd.addSearch("B", map(B, generalParameterMapping));
-    cd.setCompositionString("A OR B");
+    cd.setCompositionString("A NOT B");
     addGeneralParameters(cd);
     return cd;
   }
 
   public CohortDefinition positiveScreening() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition A = codedYesTbScreening();
-    addGeneralParameters(A);
-    cd.addSearch("A", map(A, codedObsParameterMapping));
-    CohortDefinition B = positiveOrNegativeInvesitionResult();
-    addGeneralParameters(B);
-    cd.addSearch("B", map(B, generalParameterMapping));
-    CohortDefinition C = tbTreatmentStartDateWithinReportingDate();
-    addGeneralParameters(C);
-    cd.addSearch("C", map(C, generalParameterMapping));
-    CohortDefinition D = getInTBProgram();
-    addGeneralParameters(D);
-    cd.addSearch("D", map(D, generalParameterMapping));
+    cd.addSearch("A", EptsReportUtils.map(codedYesTbScreening(), codedObsParameterMapping));
+    cd.addSearch(
+        "B", EptsReportUtils.map(positiveOrNegativeInvesitionResult(), generalParameterMapping));
+    cd.addSearch(
+        "C",
+        EptsReportUtils.map(tbTreatmentStartDateWithinReportingDate(), generalParameterMapping));
+    cd.addSearch("D", EptsReportUtils.map(getInTBProgram(), generalParameterMapping));
     cd.setCompositionString("A OR B OR C OR D");
     addGeneralParameters(cd);
     return cd;
@@ -874,78 +813,67 @@ public class TXTBCohortQueries {
   }
 
   public CohortDefinition newOnARTPositiveScreening() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition DEN = txTbDenominator();
-    addGeneralParameters(DEN);
-    cd.addSearch("DEN", map(DEN, generalParameterMapping));
-    CohortDefinition A = artListA();
-    addGeneralParameters(A);
-    cd.addSearch("A", map(A, generalParameterMapping));
-    CohortDefinition B = positiveScreening();
-    addGeneralParameters(B);
-    cd.addSearch("B", map(B, generalParameterMapping));
-    cd.setCompositionString("DEN AND A AND B");
-    addGeneralParameters(cd);
-    return cd;
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("newOnARTPositiveScreening()");
+    definition.addSearch(
+        "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
+    definition.addSearch("new-on-art", EptsReportUtils.map(getNewOnArt(), generalParameterMapping));
+    definition.addSearch(
+        "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
+    addGeneralParameters(definition);
+    definition.setCompositionString("denominator AND new-on-art AND positive-screening");
+    return definition;
   }
 
   public CohortDefinition newOnARTNegativeScreening() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition DEN = txTbDenominator();
-    addGeneralParameters(DEN);
-    cd.addSearch("DEN", map(DEN, generalParameterMapping));
-    CohortDefinition A = artListA();
-    addGeneralParameters(A);
-    cd.addSearch("A", map(A, generalParameterMapping));
-    CohortDefinition B = negativeScreening();
-    addGeneralParameters(B);
-    cd.addSearch("B", map(B, generalParameterMapping));
-    cd.setCompositionString("DEN AND A AND B");
-    addGeneralParameters(cd);
-    return cd;
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("newOnARTPositiveScreening()");
+    definition.addSearch(
+        "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
+    definition.addSearch("new-on-art", EptsReportUtils.map(getNewOnArt(), generalParameterMapping));
+    definition.addSearch(
+        "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
+    addGeneralParameters(definition);
+    definition.setCompositionString("(denominator AND new-on-art) NOT positive-screening");
+    return definition;
   }
 
   public CohortDefinition previouslyOnARTPostiveScreening() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition DEN = txTbDenominator();
-    addGeneralParameters(DEN);
-    cd.addSearch("DEN", map(DEN, generalParameterMapping));
-    CohortDefinition A = artListB();
-    addGeneralParameters(A);
-    cd.addSearch("A", map(A, generalParameterMapping));
-    CohortDefinition B = positiveScreening();
-    addGeneralParameters(B);
-    cd.addSearch("B", map(B, generalParameterMapping));
-    cd.setCompositionString("DEN AND A AND B");
-    addGeneralParameters(cd);
-    return cd;
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("newOnARTPositiveScreening()");
+    definition.addSearch(
+        "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
+    definition.addSearch("new-on-art", EptsReportUtils.map(getNewOnArt(), generalParameterMapping));
+    definition.addSearch(
+        "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
+    addGeneralParameters(definition);
+    definition.setCompositionString("(denominator AND positive-screening) NOT new-on-art");
+    return definition;
   }
 
   public CohortDefinition previouslyOnARTNegativeScreening() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition DEN = txTbDenominator();
-    addGeneralParameters(DEN);
-    cd.addSearch("DEN", map(DEN, generalParameterMapping));
-    CohortDefinition A = artListB();
-    addGeneralParameters(A);
-    cd.addSearch("A", map(A, generalParameterMapping));
-    CohortDefinition B = negativeScreening();
-    addGeneralParameters(B);
-    cd.addSearch("B", map(B, generalParameterMapping));
-    cd.setCompositionString("DEN AND A AND B");
-    addGeneralParameters(cd);
-    return cd;
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("previouslyOnARTNegativeScreening()");
+    definition.addSearch(
+        "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
+    definition.addSearch("new-on-art", EptsReportUtils.map(getNewOnArt(), generalParameterMapping));
+    definition.addSearch(
+        "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
+    addGeneralParameters(definition);
+    definition.setCompositionString("denominator NOT (new-on-art OR positive-screening)");
+    return definition;
   }
 
   public CohortDefinition patientsNewOnARTNumerator() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition NUM = txTbNumerator();
-    addGeneralParameters(NUM);
     cd.addSearch("NUM", map(NUM, generalParameterMapping));
-    CohortDefinition A = artListA();
-    addGeneralParameters(A);
-    cd.addSearch("A", map(A, generalParameterMapping));
-    cd.setCompositionString("NUM AND A");
+    cd.addSearch(
+        "started-during-reporting-period",
+        EptsReportUtils.map(
+            genericCohortQueries.getStartedArtOnPeriod(false, true),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.setCompositionString("NUM AND started-during-reporting-period");
     addGeneralParameters(cd);
     return cd;
   }
@@ -953,13 +881,77 @@ public class TXTBCohortQueries {
   public CohortDefinition patientsPreviouslyOnARTNumerator() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition NUM = txTbNumerator();
-    addGeneralParameters(NUM);
     cd.addSearch("NUM", map(NUM, generalParameterMapping));
-    CohortDefinition A = artListB();
-    addGeneralParameters(A);
-    cd.addSearch("A", map(A, generalParameterMapping));
-    cd.setCompositionString("NUM AND A");
+    cd.addSearch(
+        "started-before-start-reporting-period",
+        EptsReportUtils.map(
+            genericCohortQueries.getStartedArtBeforeDate(false),
+            "onOrBefore=${startDate},location=${location}"));
+    cd.setCompositionString("NUM AND started-before-start-reporting-period");
     addGeneralParameters(cd);
     return cd;
+  }
+
+  public CohortDefinition getDenominator() {
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    addGeneralParameters(definition);
+    definition.setName("TxTB - Denominator");
+    definition.addSearch(
+        "art-list",
+        EptsReportUtils.map(
+            genericCohortQueries.getStartedArtBeforeDate(false),
+            "onOrBefore=${endDate},location=${location}"));
+    definition.addSearch(
+        "tb-screening", EptsReportUtils.map(yesOrNoInvesitionResult(), generalParameterMapping));
+    definition.addSearch(
+        "tb-investigation",
+        EptsReportUtils.map(positiveOrNegativeInvesitionResult(), generalParameterMapping));
+    definition.addSearch(
+        "started-tb-treatment",
+        EptsReportUtils.map(tbTreatmentStartDateWithinReportingDate(), generalParameterMapping));
+    definition.addSearch(
+        "in-tb-program", EptsReportUtils.map(getInTBProgram(), generalParameterMapping));
+
+    definition.addSearch(
+        "started-tb-treatment-previous-period",
+        EptsReportUtils.map(
+            tbTreatmentStartDateWithinReportingDate(),
+            "startDate=${startDate-6m},endDate=${startDate-1d},location=${location}"));
+    definition.addSearch(
+        "in-tb-program-previous-period",
+        EptsReportUtils.map(
+            getInTBProgram(),
+            "startDate=${startDate-6m},endDate=${startDate-1d},location=${location}"));
+
+    definition.addSearch(
+        "transferred-out",
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientsBasedOnPatientStates(
+                hivMetadata.getARTProgram().getProgramId(),
+                hivMetadata
+                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                    .getProgramWorkflowStateId()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    definition.setCompositionString(
+        "(art-list AND (tb-screening OR tb-investigation OR started-tb-treatment OR in-tb-program)) "
+            + "NOT ((transferred-out NOT started-tb-treatment) OR started-tb-treatment-previous-period OR in-tb-program-previous-period)");
+
+    return definition;
+  }
+
+  public CohortDefinition getNewOnArt() {
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("TxTB New on ART");
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+    definition.addSearch(
+        "started-on-period",
+        EptsReportUtils.map(
+            genericCohortQueries.getStartedArtOnPeriod(false, true),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    definition.setCompositionString("started-on-period");
+    return definition;
   }
 }

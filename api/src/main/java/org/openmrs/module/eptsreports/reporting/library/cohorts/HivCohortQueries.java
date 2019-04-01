@@ -89,4 +89,70 @@ public class HivCohortQueries {
         hivMetadata.getARVPlanConcept(),
         Collections.singletonList(hivMetadata.getRestartConcept()));
   }
+
+  /**
+   * Looks for patients enrolled on ART program (program 2=SERVICO TARV - TRATAMENTO), transferred
+   * from other health facility (program workflow state is 29=TRANSFER FROM OTHER FACILITY) between
+   * start date and end date
+   *
+   * @return CohortDefinition
+   */
+  @DocumentedDefinition(value = "transferredFromOtherHealthFacility")
+  public CohortDefinition getPatientsTransferredFromOtherHealthFacility() {
+    SqlCohortDefinition transferredFromOtherHealthFacility = new SqlCohortDefinition();
+    transferredFromOtherHealthFacility.setName("transferredFromOtherHealthFacility");
+    String query =
+        "select p.patient_id from patient p "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%d"
+            + " and ps.state=%d"
+            + " and ps.start_date=pg.date_enrolled"
+            + " and ps.start_date between :onOrAfter and :onOrBefore and location_id=:location "
+            + "group by p.patient_id";
+    transferredFromOtherHealthFacility.setQuery(
+        String.format(
+            query,
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getTransferredFromOtherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
+    transferredFromOtherHealthFacility.addParameter(
+        new Parameter("onOrAfter", "onOrAfter", Date.class));
+    transferredFromOtherHealthFacility.addParameter(
+        new Parameter("onOrBefore", "onOrBefore", Date.class));
+    transferredFromOtherHealthFacility.addParameter(
+        new Parameter("location", "location", Location.class));
+    return transferredFromOtherHealthFacility;
+  }
+
+  /**
+   * @return Cohort of patients with START DATE (Concept 1190=HISTORICAL DRUG START DATE) filled in
+   *     drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation for adults and
+   *     children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA SEGUIMENTO)
+   *     where START DATE is before or equal end date
+   */
+  @DocumentedDefinition(value = "patientWithHistoricalDrugStartDateObs")
+  public CohortDefinition getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate() {
+    SqlCohortDefinition patientWithHistoricalDrugStartDateObs = new SqlCohortDefinition();
+    patientWithHistoricalDrugStartDateObs.setName("patientWithHistoricalDrugStartDateObs");
+    String query =
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "WHERE p.voided=0 and e.voided=0 AND o.voided=0 AND e.encounter_type IN (%d, %d, %d) "
+            + "AND o.concept_id=%d "
+            + "AND o.value_datetime IS NOT NULL AND o.value_datetime <= :onOrBefore AND e.location_id=:location GROUP BY p.patient_id";
+    patientWithHistoricalDrugStartDateObs.setQuery(
+        String.format(
+            query,
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getHistoricalDrugStartDateConcept().getConceptId()));
+    patientWithHistoricalDrugStartDateObs.addParameter(
+        new Parameter("onOrBefore", "onOrBefore", Date.class));
+    patientWithHistoricalDrugStartDateObs.addParameter(
+        new Parameter("location", "location", Location.class));
+    return patientWithHistoricalDrugStartDateObs;
+  }
 }

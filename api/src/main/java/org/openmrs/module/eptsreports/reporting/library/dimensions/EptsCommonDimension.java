@@ -245,7 +245,7 @@ public class EptsCommonDimension {
     dim.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     dim.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
     dim.addParameter(new Parameter("location", "Location", Location.class));
-    dim.setName("TB-PREV art-status dimension");
+    dim.setName("ART-status Dimension");
     dim.addCohortDefinition(
         "new-on-art",
         EptsReportUtils.map(

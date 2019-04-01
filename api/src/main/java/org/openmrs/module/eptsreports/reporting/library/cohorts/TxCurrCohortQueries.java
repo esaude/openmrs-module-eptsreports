@@ -43,6 +43,8 @@ public class TxCurrCohortQueries {
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
+  @Autowired private HivCohortQueries hivCohortQueries;
+
   /**
    * @param cohortName Cohort name
    * @param currentSpec
@@ -81,7 +83,7 @@ public class TxCurrCohortQueries {
         .put(
             "3",
             EptsReportUtils.map(
-                getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate(),
+                hivCohortQueries.getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate(),
                 "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
@@ -201,36 +203,6 @@ public class TxCurrCohortQueries {
     patientWithSTARTDRUGSObs.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     patientWithSTARTDRUGSObs.addParameter(new Parameter("location", "location", Location.class));
     return patientWithSTARTDRUGSObs;
-  }
-
-  /**
-   * @return Cohort of patients with START DATE (Concept 1190=HISTORICAL DRUG START DATE) filled in
-   *     drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation for adults and
-   *     children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA SEGUIMENTO)
-   *     where START DATE is before or equal end date
-   */
-  @DocumentedDefinition(value = "patientWithHistoricalDrugStartDateObs")
-  private CohortDefinition getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate() {
-    SqlCohortDefinition patientWithHistoricalDrugStartDateObs = new SqlCohortDefinition();
-    patientWithHistoricalDrugStartDateObs.setName("patientWithHistoricalDrugStartDateObs");
-    String query =
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
-            + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
-            + "WHERE p.voided=0 and e.voided=0 AND o.voided=0 AND e.encounter_type IN (%d, %d, %d) "
-            + "AND o.concept_id=%d "
-            + "AND o.value_datetime IS NOT NULL AND o.value_datetime <= :onOrBefore AND e.location_id=:location GROUP BY p.patient_id";
-    patientWithHistoricalDrugStartDateObs.setQuery(
-        String.format(
-            query,
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getHistoricalDrugStartDateConcept().getConceptId()));
-    patientWithHistoricalDrugStartDateObs.addParameter(
-        new Parameter("onOrBefore", "onOrBefore", Date.class));
-    patientWithHistoricalDrugStartDateObs.addParameter(
-        new Parameter("location", "location", Location.class));
-    return patientWithHistoricalDrugStartDateObs;
   }
 
   /**
