@@ -10,6 +10,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.calculation.CalculationWithResultFinder;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.InitialArtStartDateCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TXTBCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -29,7 +30,10 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Ignore
 public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitiveTest {
+
   @Autowired private TXTBCohortQueries txTbCohortQueries;
+
+  @Autowired private HivCohortQueries hivCohortQueries;
 
   /** @see BaseContextSensitiveTest#useInMemoryDatabase() */
   @Override
@@ -115,13 +119,6 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
   }
 
   @Test
-  public void getInARTProgram() throws EvaluationException {
-    // TODO remove startDate
-    EvaluatedCohort result = evaluateCohortDefinition(txTbCohortQueries.getInARTProgram());
-    Assert.assertEquals(407, result.size());
-  }
-
-  @Test
   public void everyTimeARVTreatedFinal() throws EvaluationException {
     // TODO remove startDate
     EvaluatedCohort result =
@@ -135,14 +132,6 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
     EvaluatedCohort result =
         evaluateCohortDefinition(txTbCohortQueries.anyTimeARVTreatmentFinalPeriod());
     Assert.assertEquals(422, result.size());
-  }
-
-  @Test
-  public void artTargetHistoricalStartUsingEndDate() throws EvaluationException {
-    // TODO remove startDate
-    EvaluatedCohort result =
-        evaluateCohortDefinition(txTbCohortQueries.artTargetHistoricalStartUsingEndDate());
-    Assert.assertEquals(350, result.size());
   }
 
   @Test
@@ -255,13 +244,6 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
   }
 
   @Test
-  public void getPatientsTransferredFromARTTreatment() throws EvaluationException {
-    EvaluatedCohort result =
-        evaluateCohortDefinition(txTbCohortQueries.getPatientsTransferredIntoARTTreatment());
-    Assert.assertEquals(65, result.size());
-  }
-
-  @Test
   public void getNotifiedTBTreatmentPatientsOnART() throws EvaluationException {
     EvaluatedCohort result =
         evaluateCohortDefinition(txTbCohortQueries.getNotifiedTBTreatmentPatientsOnART());
@@ -311,7 +293,7 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
             Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0));
     artInit.setWithResultFinder(CalculationWithResultFinder.NULL);
     EvaluatedCohort c1 =
-        evaluateCohortDefinition(txTbCohortQueries.getPatientsTransferredIntoARTTreatment());
+        evaluateCohortDefinition(hivCohortQueries.getPatientsTransferredFromOtherHealthFacility());
     EvaluatedCohort c2 = evaluateCohortDefinition(artInit);
     Assert.assertEquals(65, c1.size());
     Assert.assertEquals(11906, c2.size());
@@ -331,7 +313,7 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
             Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0));
     artInit.setWithResultFinder(CalculationWithResultFinder.DATE_OUTSIDE);
     EvaluatedCohort c1 =
-        evaluateCohortDefinition(txTbCohortQueries.getPatientsTransferredIntoARTTreatment());
+        evaluateCohortDefinition(hivCohortQueries.getPatientsTransferredFromOtherHealthFacility());
     EvaluatedCohort c2 = evaluateCohortDefinition(artInit);
     Assert.assertEquals(65, c1.size());
     Assert.assertEquals(1, c2.size());
@@ -350,18 +332,6 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
         evaluateCohortDefinition(
             txTbCohortQueries.patientWithFirstDrugPickupEncounterWithinReportingDate());
     Assert.assertEquals(414, result.size());
-  }
-
-  @Test
-  public void artListA() throws EvaluationException {
-    EvaluatedCohort result = evaluateCohortDefinition(txTbCohortQueries.artListA());
-    Assert.assertEquals(12328, result.size());
-  }
-
-  @Test
-  public void artListB() throws EvaluationException {
-    EvaluatedCohort result = evaluateCohortDefinition(txTbCohortQueries.artListB());
-    Assert.assertEquals(8629, result.size());
   }
 
   @Test

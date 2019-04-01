@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 /**
  * Returns the patients that have started ART
  *
- * @return a CulculationResultMap
+ * @return a CalculationResultMap
  */
 @Component
 public class StartedArtOnPeriodCalculation extends AbstractPatientCalculation {

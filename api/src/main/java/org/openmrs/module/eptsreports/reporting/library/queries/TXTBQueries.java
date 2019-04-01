@@ -116,44 +116,6 @@ public class TXTBQueries {
         params.returnVisitDateForARVDrugConceptId);
   }
 
-  public static String patientsEnrolledInARTCareAndOnTreatment(
-      Integer artCareProgramId,
-      Integer artTreatmentProgramId,
-      Integer artAdultInitialEncounterTypeId,
-      Integer artPedsInitialEncounterTypeId,
-      Integer screeningState,
-      Integer evaluationAndPrepState) {
-    return String.format(
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON e.patient_id = p.patient_id "
-            + "WHERE e.voided = 0 AND p.voided = 0 AND e.encounter_type IN ( %s, %s ) AND e.encounter_datetime <= :endDate AND e.location_id = :location "
-            + "UNION SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id = pg.patient_id WHERE pg.voided = 0 AND p.voided = 0 "
-            + "AND program_id = %s AND date_enrolled <= :endDate AND location_id = :location UNION SELECT pg.patient_id FROM patient p "
-            + "INNER JOIN patient_program pg ON p.patient_id = pg.patient_id INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id "
-            + "WHERE pg.voided = 0 AND ps.voided = 0 AND p.voided = 0 AND pg.program_id = %s AND ps.state = %s AND ps.start_date = pg.date_enrolled AND ps.start_date <= :endDate "
-            + "AND location_id = :location UNION SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id = pg.patient_id "
-            + "INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id WHERE pg.voided = 0 AND ps.voided = 0 AND p.voided = 0 "
-            + "AND pg.program_id = %s AND ps.state = %s AND ps.start_date <= :endDate AND location_id = :location",
-        artAdultInitialEncounterTypeId,
-        artPedsInitialEncounterTypeId,
-        artCareProgramId,
-        artCareProgramId,
-        screeningState,
-        artTreatmentProgramId,
-        evaluationAndPrepState);
-  }
-
-  public static String inARTProgramToEndDateAtLocation(Integer aRTProgramId) {
-    return String.format(
-        "select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id where pg.voided=0 and p.voided=0 and program_id=%s and date_enrolled<=:endDate and location_id=:location",
-        aRTProgramId);
-  }
-
-  public static String inARTProgramToEndDateAtLocationBeforeStartDate(Integer aRTProgramId) {
-    return String.format(
-        "select pg.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id where pg.voided=0 and p.voided=0 and program_id=%s and date_enrolled<:startDate and location_id=:location",
-        aRTProgramId);
-  }
-
   public static String inTBProgramWithinReportingPeriodAtLocation(Integer tbProgramId) {
     return String.format(
         "select pg.patient_id from patient p inner join "
@@ -167,7 +129,11 @@ public class TXTBQueries {
       Integer questionId, List<Integer> encounterTypeIds, boolean startDate) {
     String sql =
         String.format(
-            "select person_id from obs where concept_id = %s and encounter_id in(select distinct encounter_id from encounter where encounter_type in(%s)) and location_id = :location and ",
+            "select person_id from obs "
+                + "where concept_id = %s and encounter_id in("
+                + "select distinct encounter_id "
+                + "from encounter "
+                + "where encounter_type in(%s)) and location_id = :location and ",
             questionId, StringUtils.join(encounterTypeIds, ","));
     if (startDate) {
       sql += "value_datetime >= :startDate and value_datetime <= :endDate and voided=0";
@@ -199,8 +165,13 @@ public class TXTBQueries {
   public static String dateObsWithinXMonthsBeforeStartDate(
       Integer questionId, List<Integer> encounterTypeIds, Integer xMonths) {
     return String.format(
-        "select person_id from obs where concept_id = %s and encounter_id in(select distinct encounter_id from encounter where encounter_type in(%s)) and location_id = :location and value_datetime >= DATE_SUB(:startDate, INTERVAL "
-            + "%s MONTH) and value_datetime <= :startDate and voided=0",
+        "select person_id from obs "
+            + "where concept_id = %s and encounter_id in"
+            + "( select distinct encounter_id from encounter "
+            + "where encounter_type in(%s)) and location_id = :location "
+            + "and value_datetime >= DATE_SUB(:startDate, INTERVAL "
+            + "%s MONTH) "
+            + "and value_datetime <= :startDate and voided=0",
         questionId, StringUtils.join(encounterTypeIds, ","), xMonths);
   }
 
@@ -208,15 +179,6 @@ public class TXTBQueries {
     return String.format(
         "select distinct patient_id from encounter where encounter_type =%s and location_id = :location and encounter_datetime <= :endDate and voided=0;",
         encounterTypeId);
-  }
-
-  public static String patientsTransferredFromOrIntoProgram(
-      Integer programId, Integer transferStateId) {
-    return String.format(
-        "select pg.patient_id from patient p  inner join patient_program pg on p.patient_id=pg.patient_id inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s and ps.state="
-            + "%s and ps.start_date=pg.date_enrolled and ps.start_date between :startDate and :endDate and location_id=:location",
-        programId, transferStateId);
   }
 
   public static String patientWithFirstDrugPickupEncounterInReportingPeriod(
