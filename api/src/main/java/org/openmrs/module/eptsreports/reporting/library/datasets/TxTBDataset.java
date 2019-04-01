@@ -30,7 +30,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TxTBDataset extends BaseDataSet {
-
   @Autowired private EptsCommonDimension eptsCommonDimension;
 
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
@@ -52,7 +51,6 @@ public class TxTBDataset extends BaseDataSet {
         "age",
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
-
     addTXTBNumerator(mappings, dataSetDefinition);
 
     addTXTBDenominator(mappings, dataSetDefinition);
