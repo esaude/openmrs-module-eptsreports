@@ -241,6 +241,14 @@ public class HivMetadata extends CommonMetadata {
     return getEncounterType(uuid);
   }
 
+  public EncounterType getEvaluationAndPrepForARTEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(
+                EptsReportConstants.GLOBAL_PROPERTY_EVALUATION_AND_PREP_FOR_ART_UUID);
+    return getEncounterType(uuid);
+  }
+
   public EncounterType getMisauLaboratorioEncounterType() {
     String uuid =
         Context.getAdministrationService()

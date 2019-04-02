@@ -497,6 +497,14 @@
 			UUID for the NO concept
 		</description>
 	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsreports.evaluationAndPrepForARTEncounterTypeUuid</property>
+		<defaultValue>f69df47f-44a2-4cca-9819-a536bd47d927</defaultValue>
+		<description>
+			UUID for the S.TARV: AVALIACAO E PREPARACAO DO CANDIDATO TARV encounter type
+		</description>
+	</globalProperty>
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
