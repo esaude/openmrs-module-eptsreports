@@ -37,22 +37,20 @@ public class TxMlQueries {
   public static String getNonConsistentPatients(
       int prevencaoPositivaInicial,
       int prevencaoPositivaSeguimento,
-      int evaluationAndPrepForART,
       int acceptContactConcept,
       int noConcept) {
     String query =
-        "SELECT patient_id FROM (SELECT p.patient_id,MAX(o.obs_datetime) obs_date FROM patient p "
+        "SELECT patient_id FROM (SELECT p.patient_id,MAX(e.encounter_datetime) As encounter_datetime, o.value_coded AS answer FROM patient p "
             + "INNER JOIN encounter e ON e.patient_id=p.patient_id "
             + "INNER JOIN obs o ON o.person_id = p.patient_id  WHERE p.voided=0 AND e.voided=0 "
-            + "AND e.encounter_type IN(%d, %d, %d) AND e.location_id=:location AND o.obs_datetime<=:endDate "
-            + "AND o.voided=0 AND o.concept_id=%d AND o.value_coded=%d AND o.location_id=:location "
-            + "GROUP BY p.patient_id ) max_obs";
+            + "AND e.encounter_type IN(%d, %d) AND e.location_id=:location AND o.obs_datetime<=:endDate "
+            + "AND o.voided=0 AND o.concept_id=%d AND o.obs_datetime<=:endDate AND o.location_id=:location "
+            + "GROUP BY p.patient_id ) max_enc WHERE max_enc.answer=%d";
 
     return String.format(
         query,
         prevencaoPositivaInicial,
         prevencaoPositivaSeguimento,
-        evaluationAndPrepForART,
         acceptContactConcept,
         noConcept);
   }

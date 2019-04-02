@@ -49,7 +49,6 @@ public class TxMlCohortQueries {
         TxMlQueries.getNonConsistentPatients(
             hivMetadata.getPrevencaoPositivaInicialEncounterType().getEncounterTypeId(),
             hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getEvaluationAndPrepForARTEncounterType().getEncounterTypeId(),
             hivMetadata.getAcceptContactConcept().getConceptId(),
             hivMetadata.getNoConcept().getConceptId()));
   }
