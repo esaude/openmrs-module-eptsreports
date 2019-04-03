@@ -171,7 +171,7 @@ public class TXTBQueries {
             + "where encounter_type in(%s)) and location_id = :location "
             + "and value_datetime >= DATE_SUB(:startDate, INTERVAL "
             + "%s MONTH) "
-            + "and value_datetime <= :startDate and voided=0",
+            + "and value_datetime < :startDate and voided=0",
         questionId, StringUtils.join(encounterTypeIds, ","), xMonths);
   }
 

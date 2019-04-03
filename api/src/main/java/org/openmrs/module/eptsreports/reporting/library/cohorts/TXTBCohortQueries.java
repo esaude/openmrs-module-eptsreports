@@ -182,11 +182,8 @@ public class TXTBCohortQueries {
             TXTBQueries.dateObs(
                 tbMetadata.getTBDrugTreatmentStartDate().getConceptId(),
                 Arrays.asList(
-                    tbMetadata.getTBLivroEncounterType().getId(),
                     hivMetadata.getAdultoSeguimentoEncounterType().getId(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getId(),
-                    tbMetadata.getTBRastreioEncounterType().getId(),
-                    tbMetadata.getTBProcessoEncounterType().getId()),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getId()),
                 true));
     addGeneralParameters(definition);
     return definition;
@@ -700,11 +697,8 @@ public class TXTBCohortQueries {
             TXTBQueries.dateObsWithinXMonthsBeforeStartDate(
                 tbMetadata.getTBDrugTreatmentStartDate().getConceptId(),
                 Arrays.asList(
-                    tbMetadata.getTBLivroEncounterType().getId(),
                     hivMetadata.getAdultoSeguimentoEncounterType().getId(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getId(),
-                    tbMetadata.getTBRastreioEncounterType().getId(),
-                    tbMetadata.getTBProcessoEncounterType().getId()),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getId()),
                 6));
     addGeneralParameters(cd);
     return cd;
@@ -766,10 +760,13 @@ public class TXTBCohortQueries {
     CohortDefinition A = txTbNumeratorA();
     cd.addSearch("A", map(A, generalParameterMapping));
 
-    CohortDefinition B = startedTbTreatmentWith6MonthsBeforeStartDate();
-    cd.addSearch("B", map(B, generalParameterMapping));
+    cd.addSearch(
+        "started-tb-treatment-previous-period",
+        EptsReportUtils.map(
+            tbTreatmentStartDateWithinReportingDate(),
+            "startDate=${startDate-6m},endDate=${startDate-1d},location=${location}"));
 
-    cd.setCompositionString("A NOT B");
+    cd.setCompositionString("A NOT started-tb-treatment-previous-period");
     addGeneralParameters(cd);
     return cd;
   }
@@ -886,7 +883,7 @@ public class TXTBCohortQueries {
         "started-before-start-reporting-period",
         EptsReportUtils.map(
             genericCohortQueries.getStartedArtBeforeDate(false),
-            "onOrBefore=${startDate},location=${location}"));
+            "onOrBefore=${startDate-1d},location=${location}"));
     cd.setCompositionString("NUM AND started-before-start-reporting-period");
     addGeneralParameters(cd);
     return cd;
