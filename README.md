@@ -42,11 +42,12 @@ simply restart OpenMRS/tomcat and the module will be loaded and started.
 
 ## MER Reports
 
-| Report                     | Indicators Used          |
-| -------------------------- | ------------------------ |
-| _PEPFAR MER 2.3 Quarterly_ | Tx_Curr, Tx_New, Tx_Pvls |
-| _TX_CURR Report 2.1_       | Tx_Curr2.1               |
-| _IM-ER-Report_             | IM-ER2, IM-ER4           |
+| Report                        | Indicators Used          |
+| ------------------------------| ------------------------ |
+| _PEPFAR MER 2.3 Quarterly_    | Tx_Curr, Tx_New, Tx_Pvls |
+| _PEPFAR MER 2.3 Semi-Annual_  | Tb_Prev, Tx_TB, tx_ML    |
+| _TX_CURR Report 2.1_          | Tx_Curr2.1               |
+| _IM-ER-Report_                | IM-ER2, IM-ER4           |
 
 ## MER Indicators
 
@@ -55,9 +56,12 @@ simply restart OpenMRS/tomcat and the module will be loaded and started.
 | _Tx_Pvls_    | Percentage of ART patients with a viral load result documented in the medical record and/or laboratory information systems (LIS) within the past 12 months with a suppressed viral load (&lt;1000 copies/ml). |
 | _Tx_Curr_    | Number of adults and children currently receiving antiretroviral therapy (ART). New spec using 30 day period                                                                                                  |
 | _Tx_Curr2.1_ | Number of adults and children currently receiving antiretroviral therapy (ART). Using old spec using 60 day period                                                                                            |
-| _Tx_New_     | Number of adults and children newly enrolled on antiretroviral therapy (ART).                                                                                                                                 |
+| _Tx_New_     | Number of adults and children newly enrolled on antiretroviral therapy (ART).                                                                                                                                 |gi
 | _IM-ER2_     | Implementation of PEPFAR Early Retention Indicators - 2 months                                                                                                                                                |
 | _IM-ER4_     | Implementation of PEPFAR Early Retention Indicators - 4 months                                                                                                                                                |
+| _TB_PREV_    | Indicator reports the proportion of ART patients who completed a standard course of TB preventive treatment within the semiannual reporting period.                                                           |
+| _TX_TB_      | Indicator reports the proportion of ART patients screened for TB in the semiannual reporting period who start TB treatment.                                                                                   |
+| _TX_ML_      | Indicator reports the Number of ART patients with no clinical contact since their last expected contact.                                                                                                      |
 
 ## How to perform a release
 
