@@ -167,9 +167,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
             // second
             // Date when started on second line will be considered
             // the changing date
-            isOnRoutine =
-                isOnRoutineCriteria3(
-                    changingRegimenLines, pId, lastVlObs, viralLoadForPatientTakenWithin12Months);
+            isOnRoutine = isOnRoutineCriteria3(changingRegimenLines, pId, lastVlObs, vLoadList);
           }
         }
       }
@@ -183,7 +181,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
       CalculationResultMap changingRegimenLines,
       Integer pId,
       Obs lastVlObs,
-      List<Obs> viralLoadForPatientTakenWithin12Months) {
+      List<Obs> allViralLoadForPatient) {
     boolean isOnRoutine = false;
 
     Obs obs = EptsCalculationUtils.resultForPatient(changingRegimenLines, pId);
@@ -200,7 +198,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
         // loop through the vls and exclude the patient if they have an
         // obs falling
         // between the 2 dates
-        for (Obs obs1 : viralLoadForPatientTakenWithin12Months) {
+        for (Obs obs1 : allViralLoadForPatient) {
           if (obs1.getObsDatetime() != null
               && (obs1.getObsDatetime().after(startRegimeDate)
                   || obs1.getObsDatetime().equals(startRegimeDate))
@@ -225,26 +223,19 @@ public class RoutineCalculation extends AbstractPatientCalculation {
       return false;
     }
 
-    // Sorts list of VL obs by id in reverse order
+    // Sorts list of VL obs by obsDatetime in reverse order
     Comparator<Obs> vlComparator =
         new Comparator<Obs>() {
-
           @Override
           public int compare(Obs obs1, Obs obs2) {
-            return obs2.getObsId().compareTo(obs1.getObsId());
+            return obs2.getObsDatetime().compareTo(obs1.getObsDatetime());
           }
         };
     Collections.sort(viralLoadForPatientTakenWithin12Months, vlComparator);
     Collections.sort(allViralLoadForPatient, vlComparator);
 
     Obs currentObs = viralLoadForPatientTakenWithin12Months.get(0);
-    Obs previousObs = allViralLoadForPatient.get(0);
-    for (Obs obs : allViralLoadForPatient) {
-      if (currentObs.getObsId() > obs.getObsId()) {
-        previousObs = obs;
-        break;
-      }
-    }
+    Obs previousObs = allViralLoadForPatient.get(1);
 
     if (currentObs != null
         && previousObs != null
@@ -272,6 +263,11 @@ public class RoutineCalculation extends AbstractPatientCalculation {
       PatientsOnRoutineEnum criteria,
       Date artInitiationDate,
       List<Obs> viralLoadForPatientTakenWithin12Months) {
+
+    if (viralLoadForPatientTakenWithin12Months.size() > 1) {
+      return false;
+    }
+
     for (Obs vlObs : viralLoadForPatientTakenWithin12Months) {
       if (vlObs != null && vlObs.getObsDatetime() != null) {
         Date vlDate = vlObs.getObsDatetime();
