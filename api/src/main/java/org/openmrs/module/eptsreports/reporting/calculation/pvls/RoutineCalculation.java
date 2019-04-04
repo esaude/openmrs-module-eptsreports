@@ -271,14 +271,17 @@ public class RoutineCalculation extends AbstractPatientCalculation {
     for (Obs vlObs : viralLoadForPatientTakenWithin12Months) {
       if (vlObs != null && vlObs.getObsDatetime() != null) {
         Date vlDate = vlObs.getObsDatetime();
-        float monthsSince =
-            EptsCalculationUtils.monthsSinceIncludingDaysDiff(vlDate, artInitiationDate);
-        if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)
-            && (monthsSince > 6 && monthsSince <= 9)) {
+        Date threeMonths = EptsCalculationUtils.addMonths(artInitiationDate, 3);
+        Date sixMonths = EptsCalculationUtils.addMonths(artInitiationDate, 6);
+        Date nineMonths = EptsCalculationUtils.addMonths(artInitiationDate, 9);
+        boolean withinAdultLimits =
+            vlDate.compareTo(sixMonths) > 0 && vlDate.compareTo(nineMonths) <= 0;
+        boolean withinBreastfeedingLimits =
+            vlDate.compareTo(threeMonths) > 0 && vlDate.compareTo(sixMonths) <= 0;
+        if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN) && withinAdultLimits) {
           return true;
         } else if (criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)
-            && monthsSince > 3
-            && monthsSince <= 6) {
+            && withinBreastfeedingLimits) {
           return true;
         }
       }
