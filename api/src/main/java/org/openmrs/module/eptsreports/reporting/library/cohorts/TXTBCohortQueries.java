@@ -935,7 +935,7 @@ public class TXTBCohortQueries {
 
     definition.setCompositionString(
         "(art-list AND (tb-screening OR tb-investigation OR started-tb-treatment OR in-tb-program)) "
-            + "NOT ((transferred-out NOT started-tb-treatment) OR started-tb-treatment-previous-period OR in-tb-program-previous-period)");
+            + "NOT ((transferred-out NOT (started-tb-treatment OR in-tb-program)) OR started-tb-treatment-previous-period OR in-tb-program-previous-period)");
 
     return definition;
   }

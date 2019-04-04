@@ -180,6 +180,7 @@ public class EPTSCalculationService {
       boolean sortByDatetime,
       Date valueDateTimeOnOrAfter,
       Date valueDateTimeOnOrBefore,
+      List<EncounterType> encounterTypeList,
       Collection<Integer> cohort,
       PatientCalculationContext context) {
     JembiObsDefinition definition = new JembiObsDefinition("JembiObsDefinition");
@@ -190,6 +191,7 @@ public class EPTSCalculationService {
     definition.setSortByDatetime(sortByDatetime);
     definition.setValueDateTimeOnOrAfter(valueDateTimeOnOrAfter);
     definition.setValueDateTimeOnOrBefore(valueDateTimeOnOrBefore);
+    definition.setEncounterTypeList(encounterTypeList);
     return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
   }
 
