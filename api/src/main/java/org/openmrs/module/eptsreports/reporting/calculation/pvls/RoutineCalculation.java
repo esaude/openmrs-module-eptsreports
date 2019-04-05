@@ -264,10 +264,6 @@ public class RoutineCalculation extends AbstractPatientCalculation {
       Date artInitiationDate,
       List<Obs> viralLoadForPatientTakenWithin12Months) {
 
-    if (viralLoadForPatientTakenWithin12Months.size() > 1) {
-      return false;
-    }
-
     for (Obs vlObs : viralLoadForPatientTakenWithin12Months) {
       if (vlObs != null && vlObs.getObsDatetime() != null) {
         Date vlDate = vlObs.getObsDatetime();
