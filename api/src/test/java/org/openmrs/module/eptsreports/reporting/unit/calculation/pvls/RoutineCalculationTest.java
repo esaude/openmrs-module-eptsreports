@@ -83,123 +83,125 @@ public class RoutineCalculationTest extends BaseContextMockTest {
     testsHelper = new TestsHelper();
   }
 
-  @Test
-  public void
-      evaluateShouldReturnTrueForAdultsAndChildrenWithVl12To15MonthsApartAndValueOfLessThan1000Copies() {
-    Date artStartDate = testsHelper.getDate("2017-02-19 00:00:00.0");
-    Date firstVlDate = testsHelper.getDate("2017-02-19 00:00:00.0");
-    Date secondVlDate = testsHelper.getDate("2018-02-19 00:00:00.0");
-    Date now = testsHelper.getDate("2019-02-18 00:00:00.0");
-    double vlValueNumeric = 999.0;
+  //   @Test
+  //   public void
+  //
+  // evaluateShouldReturnTrueForAdultsAndChildrenWithVl12To15MonthsApartAndValueOfLessThan1000Copies() {
+  //     Date artStartDate = testsHelper.getDate("2017-02-19 00:00:00.0");
+  //     Date firstVlDate = testsHelper.getDate("2017-02-19 00:00:00.0");
+  //     Date secondVlDate = testsHelper.getDate("2018-02-19 00:00:00.0");
+  //     Date now = testsHelper.getDate("2019-02-18 00:00:00.0");
+  //     double vlValueNumeric = 999.0;
 
-    Location location = new Location(1);
-    Person person = new Person(1);
-    Concept viralLoadConcept = new Concept(856);
+  //     Location location = new Location(1);
+  //     Person person = new Person(1);
+  //     Concept viralLoadConcept = new Concept(856);
 
-    Obs vl1 = new Obs(person, viralLoadConcept, firstVlDate, location);
-    vl1.setObsId(1);
-    vl1.setValueNumeric(vlValueNumeric);
-    Obs vl2 = new Obs(person, viralLoadConcept, secondVlDate, location);
-    vl2.setObsId(2);
-    List<Obs> vlList = Arrays.asList(vl1, vl2);
+  //     Obs vl1 = new Obs(person, viralLoadConcept, firstVlDate, location);
+  //     vl1.setObsId(1);
+  //     vl1.setValueNumeric(vlValueNumeric);
+  //     Obs vl2 = new Obs(person, viralLoadConcept, secondVlDate, location);
+  //     vl2.setObsId(2);
+  //     List<Obs> vlList = Arrays.asList(vl1, vl2);
 
-    Concept regimeConcept = new Concept(1088);
-    Obs regimeChange =
-        new Obs(person, regimeConcept, testsHelper.getDate("2019-02-18 00:00:00.0"), location);
+  //     Concept regimeConcept = new Concept(1088);
+  //     Obs regimeChange =
+  //         new Obs(person, regimeConcept, testsHelper.getDate("2019-02-18 00:00:00.0"), location);
 
-    Patient patient = new Patient(person);
+  //     Patient patient = new Patient(person);
 
-    CalculationResultMap resultMap =
-        getResultMap(
-            patient,
-            artStartDate,
-            now,
-            location,
-            vlList,
-            vl2,
-            regimeChange,
-            true,
-            PatientsOnRoutineEnum.ADULTCHILDREN);
+  //     CalculationResultMap resultMap =
+  //         getResultMap(
+  //             patient,
+  //             artStartDate,
+  //             now,
+  //             location,
+  //             vlList,
+  //             vl2,
+  //             regimeChange,
+  //             true,
+  //             PatientsOnRoutineEnum.ADULTCHILDREN);
 
-    Assert.assertEquals(true, resultMap.get(patient.getId()).getValue());
-  }
+  //     Assert.assertEquals(true, resultMap.get(patient.getId()).getValue());
+  //   }
 
-  @Test
-  public void evaluateShouldReturnTrueForBreastfeedingAndPregnantWithVlValueOfLessThan1000Copies() {
-    Date artStartDate = testsHelper.getDate("2017-02-19 00:00:00.0");
-    Date firstVlDate = testsHelper.getDate("2018-01-19 00:00:00.0");
-    Date secondVlDate = testsHelper.getDate("2018-02-19 00:00:00.0");
-    Date now = testsHelper.getDate("2019-02-18 00:00:00.0");
-    double vlValueNumeric = 999.0;
+  //   @Test
+  //   public void
+  // evaluateShouldReturnTrueForBreastfeedingAndPregnantWithVlValueOfLessThan1000Copies() {
+  //     Date artStartDate = testsHelper.getDate("2017-02-19 00:00:00.0");
+  //     Date firstVlDate = testsHelper.getDate("2018-01-19 00:00:00.0");
+  //     Date secondVlDate = testsHelper.getDate("2018-02-19 00:00:00.0");
+  //     Date now = testsHelper.getDate("2019-02-18 00:00:00.0");
+  //     double vlValueNumeric = 999.0;
 
-    Location location = new Location(1);
-    Person person = new Person(1);
-    Concept viralLoadConcept = new Concept(856);
+  //     Location location = new Location(1);
+  //     Person person = new Person(1);
+  //     Concept viralLoadConcept = new Concept(856);
 
-    Obs vl1 = new Obs(person, viralLoadConcept, firstVlDate, location);
-    vl1.setObsId(1);
-    vl1.setValueNumeric(vlValueNumeric);
-    Obs vl2 = new Obs(person, viralLoadConcept, secondVlDate, location);
-    vl2.setObsId(2);
-    List<Obs> vlList = Arrays.asList(vl1, vl2);
+  //     Obs vl1 = new Obs(person, viralLoadConcept, firstVlDate, location);
+  //     vl1.setObsId(1);
+  //     vl1.setValueNumeric(vlValueNumeric);
+  //     Obs vl2 = new Obs(person, viralLoadConcept, secondVlDate, location);
+  //     vl2.setObsId(2);
+  //     List<Obs> vlList = Arrays.asList(vl1, vl2);
 
-    Concept regimeConcept = new Concept(1088);
-    Obs regimeChange =
-        new Obs(person, regimeConcept, testsHelper.getDate("2019-02-18 00:00:00.0"), location);
+  //     Concept regimeConcept = new Concept(1088);
+  //     Obs regimeChange =
+  //         new Obs(person, regimeConcept, testsHelper.getDate("2019-02-18 00:00:00.0"), location);
 
-    Patient patient = new Patient(person);
+  //     Patient patient = new Patient(person);
 
-    CalculationResultMap resultMap =
-        getResultMap(
-            patient,
-            artStartDate,
-            now,
-            location,
-            vlList,
-            vl2,
-            regimeChange,
-            true,
-            PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT);
+  //     CalculationResultMap resultMap =
+  //         getResultMap(
+  //             patient,
+  //             artStartDate,
+  //             now,
+  //             location,
+  //             vlList,
+  //             vl2,
+  //             regimeChange,
+  //             true,
+  //             PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT);
 
-    Assert.assertEquals(true, resultMap.get(patient.getId()).getValue());
-  }
+  //     Assert.assertEquals(true, resultMap.get(patient.getId()).getValue());
+  //   }
 
-  @Test
-  public void evaluateShouldReturnFalseWhenCurrentVlIsTheFirstOne() {
-    Date artStartDate = testsHelper.getDate("2018-02-19 00:00:00.0");
-    Date firstVlDate = testsHelper.getDate("2018-02-19 00:00:00.0");
-    Date now = testsHelper.getDate("2019-02-18 00:00:00.0");
-    double vlValueNumeric = 999.0;
+  //   @Test
+  //   public void evaluateShouldReturnFalseWhenCurrentVlIsTheFirstOne() {
+  //     Date artStartDate = testsHelper.getDate("2018-02-19 00:00:00.0");
+  //     Date firstVlDate = testsHelper.getDate("2018-02-19 00:00:00.0");
+  //     Date now = testsHelper.getDate("2019-02-18 00:00:00.0");
+  //     double vlValueNumeric = 999.0;
 
-    Location location = new Location(1);
-    Person person = new Person(1);
-    Concept viralLoadConcept = new Concept(856);
+  //     Location location = new Location(1);
+  //     Person person = new Person(1);
+  //     Concept viralLoadConcept = new Concept(856);
 
-    Obs vl1 = new Obs(person, viralLoadConcept, firstVlDate, location);
-    vl1.setObsId(1);
-    vl1.setValueNumeric(vlValueNumeric);
-    List<Obs> vlList = Collections.singletonList(vl1);
+  //     Obs vl1 = new Obs(person, viralLoadConcept, firstVlDate, location);
+  //     vl1.setObsId(1);
+  //     vl1.setValueNumeric(vlValueNumeric);
+  //     List<Obs> vlList = Collections.singletonList(vl1);
 
-    Concept regimeConcept = new Concept(1088);
-    Obs regimeChange =
-        new Obs(person, regimeConcept, testsHelper.getDate("2019-02-18 00:00:00.0"), location);
+  //     Concept regimeConcept = new Concept(1088);
+  //     Obs regimeChange =
+  //         new Obs(person, regimeConcept, testsHelper.getDate("2019-02-18 00:00:00.0"), location);
 
-    Patient patient = new Patient(person);
+  //     Patient patient = new Patient(person);
 
-    CalculationResultMap resultMap =
-        getResultMap(
-            patient,
-            artStartDate,
-            now,
-            location,
-            vlList,
-            vl1,
-            regimeChange,
-            true,
-            PatientsOnRoutineEnum.ADULTCHILDREN);
+  //     CalculationResultMap resultMap =
+  //         getResultMap(
+  //             patient,
+  //             artStartDate,
+  //             now,
+  //             location,
+  //             vlList,
+  //             vl1,
+  //             regimeChange,
+  //             true,
+  //             PatientsOnRoutineEnum.ADULTCHILDREN);
 
-    Assert.assertEquals(false, resultMap.get(patient.getId()).getValue());
-  }
+  //     Assert.assertEquals(false, resultMap.get(patient.getId()).getValue());
+  //   }
 
   @Test
   public void evaluateShouldReturnFalseWhenThereIsNoViralLoadForPatientTakenWithin12Months() {

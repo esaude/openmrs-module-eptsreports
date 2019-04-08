@@ -14,8 +14,6 @@ package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -157,11 +155,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
           }
 
           // find out criteria 2
-          if (isOnRoutineCriteria2(
-              criteria,
-              viralLoadForPatientTakenWithin12Months,
-              vLoadList,
-              lastVlObs.getObsDatetime())) {
+          if (isOnRoutineCriteria2(vLoadList, lastVlObs.getObsDatetime())) {
             isOnRoutine = true;
           }
 
@@ -214,62 +208,18 @@ public class RoutineCalculation extends AbstractPatientCalculation {
     return isOnRoutine;
   }
 
-  private boolean isOnRoutineCriteria2(
-      PatientsOnRoutineEnum criteria,
-      List<Obs> viralLoadForPatientTakenWithin12Months,
-      List<Obs> allViralLoadForPatient,
-      Date lastViralLoadDate) {
+  private boolean isOnRoutineCriteria2(List<Obs> allViralLoadForPatient, Date lastViralLoadDate) {
 
     boolean isOnRoutine = false;
 
-    // There is only one Vl for this patient so current can only be the first one
-    if (allViralLoadForPatient.size() == 1) {
-      return false;
-    }
-
-    // Sorts list of VL obs by obsDatetime in reverse order
-    Comparator<Obs> vlComparator =
-        new Comparator<Obs>() {
-          @Override
-          public int compare(Obs obs1, Obs obs2) {
-            return obs2.getObsDatetime().compareTo(obs1.getObsDatetime());
-          }
-        };
-    Collections.sort(viralLoadForPatientTakenWithin12Months, vlComparator);
-    Collections.sort(allViralLoadForPatient, vlComparator);
-
-    Obs currentObs = viralLoadForPatientTakenWithin12Months.get(0);
-    Obs previousObs = allViralLoadForPatient.get(1);
-
-    if (currentObs != null
-        && previousObs != null
-        && previousObs.getValueNumeric() != null
-        && previousObs.getObsDatetime() != null
-        && previousObs.getValueNumeric() < 1000
-        && currentObs.getObsDatetime() != null
-        && previousObs.getObsDatetime().before(currentObs.getObsDatetime())) {
-
-      float monthsSince =
-          EptsCalculationUtils.monthsSinceIncludingDaysDiff(
-              previousObs.getObsDatetime(), currentObs.getObsDatetime());
-
-      if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)) {
-        isOnRoutine = monthsSince >= CRITERIA2_MONTHS_MIN && monthsSince <= CRITERIA2_MONTHS_MAX;
-      } else if (criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)) {
+    Date twelveMonths = EptsCalculationUtils.addMonths(lastViralLoadDate, -CRITERIA2_MONTHS_MIN);
+    Date fifteenMonths = EptsCalculationUtils.addMonths(lastViralLoadDate, -CRITERIA2_MONTHS_MAX);
+    for (Obs allVls : allViralLoadForPatient) {
+      if (allVls.getValueNumeric() < 1000
+          && allVls.getObsDatetime().compareTo(twelveMonths) < 0
+          && allVls.getObsDatetime().compareTo(fifteenMonths) > 0) {
         isOnRoutine = true;
-      }
-    }
-    if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)) {
-      for (Obs allVls : allViralLoadForPatient) {
-        float monthsSince =
-            EptsCalculationUtils.monthsSinceIncludingDaysDiff(
-                allVls.getObsDatetime(), lastViralLoadDate);
-        if (allVls.getValueNumeric() < 1000
-            && monthsSince >= CRITERIA2_MONTHS_MIN
-            && monthsSince <= CRITERIA2_MONTHS_MAX) {
-          isOnRoutine = true;
-          break;
-        }
+        break;
       }
     }
 
