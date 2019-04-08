@@ -282,6 +282,7 @@ public class RoutineCalculationTest extends BaseContextMockTest {
     vlResultsMap.put(patient.getId(), value);
     when(eptsCalculationService.getObs(
             eq(viralLoadConcept),
+            anyList(),
             eq(cohort),
             eq(Arrays.asList(location)),
             (List<Concept>) isNull(),
@@ -294,6 +295,7 @@ public class RoutineCalculationTest extends BaseContextMockTest {
     regimenChangeMap.put(patient.getId(), new ObsResult(regimeChange, null));
     when(eptsCalculationService.getObs(
             eq(regimeConcept),
+            anyList(),
             eq(cohort),
             eq(Arrays.asList(location)),
             (List<Concept>) anyList(),

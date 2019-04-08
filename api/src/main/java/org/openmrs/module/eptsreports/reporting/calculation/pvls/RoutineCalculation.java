@@ -14,6 +14,8 @@ package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +73,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
     Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
     Concept regimeConcept = hivMetadata.getRegimeConcept();
     Date latestVlLowerDateLimit = EptsCalculationUtils.addMonths(context.getNow(), -12);
+
+    // limits the number of obs we are calling up
     Date allVlLowerDateLimit =
         EptsCalculationUtils.addMonths(latestVlLowerDateLimit, -CRITERIA2_MONTHS_MAX);
     EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
@@ -82,6 +86,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
     CalculationResultMap patientHavingVL =
         ePTSCalculationService.getObs(
             viralLoadConcept,
+            null,
             cohort,
             Arrays.asList(location),
             null,
@@ -92,10 +97,11 @@ public class RoutineCalculation extends AbstractPatientCalculation {
     CalculationResultMap changingRegimenLines =
         ePTSCalculationService.getObs(
             regimeConcept,
+            Arrays.asList(adultFollowup, childFollowup),
             cohort,
             Arrays.asList(location),
             getSecondLineTreatmentArvs(hivMetadata),
-            TimeQualifier.FIRST,
+            TimeQualifier.ANY,
             null,
             context);
 
@@ -166,7 +172,12 @@ public class RoutineCalculation extends AbstractPatientCalculation {
             // Date when started on second line will be considered
             // the changing date
             isOnRoutine =
-                isOnRoutineCriteria3(changingRegimenLines, pId, vLoadList, latestVlLowerDateLimit);
+                isOnRoutineCriteria3(
+                    changingRegimenLines,
+                    pId,
+                    vLoadList,
+                    latestVlLowerDateLimit,
+                    lastVlObs.getObsDatetime());
           }
         }
       }
@@ -180,15 +191,36 @@ public class RoutineCalculation extends AbstractPatientCalculation {
       CalculationResultMap changingRegimenLines,
       Integer pId,
       List<Obs> allViralLoadForPatient,
-      Date latestVlLowerDateLimit) {
+      Date latestVlLowerDateLimit,
+      Date lastViralLoadDate) {
     boolean isOnRoutine = false;
 
-    Obs obs = EptsCalculationUtils.resultForPatient(changingRegimenLines, pId);
+    //    Obs obs = EptsCalculationUtils.resultForPatient(changingRegimenLines, pId);
+    ListResult regimenObsResults = (ListResult) changingRegimenLines.get(pId);
+    List<Obs> regimenObsList = EptsCalculationUtils.extractResultValues(regimenObsResults);
 
-    if (obs != null && latestVlLowerDateLimit != null) {
-      Date startRegimeDate = obs.getObsDatetime();
+    if (regimenObsList != null && regimenObsList.size() > 0 && latestVlLowerDateLimit != null) {
+      // Sorts list of VL obs by obs date in reverse order
+      Comparator<Obs> vlComparator =
+          new Comparator<Obs>() {
 
-      if (startRegimeDate != null && startRegimeDate.before(latestVlLowerDateLimit)) {
+            @Override
+            public int compare(Obs obs1, Obs obs2) {
+              return obs2.getObsDatetime().compareTo(obs1.getObsDatetime());
+            }
+          };
+      Collections.sort(regimenObsList, vlComparator);
+
+      Date latestRegimeDate = null;
+      for (Obs regimen : regimenObsList) {
+        Date regimenDate = regimen.getObsDatetime();
+        if (regimenDate.compareTo(lastViralLoadDate) < 0) {
+          latestRegimeDate = regimenDate;
+          break;
+        }
+      }
+
+      if (latestRegimeDate != null) {
         isOnRoutine = true;
         // check that there is no other VL registered between first
         // encounter_date and
@@ -198,7 +230,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
         // between the 2 dates
         for (Obs obs1 : allViralLoadForPatient) {
           if (obs1.getObsDatetime() != null
-              && obs1.getObsDatetime().after(startRegimeDate)
+              && obs1.getObsDatetime().after(latestRegimeDate)
               && obs1.getObsDatetime().before(latestVlLowerDateLimit)) {
             isOnRoutine = false;
           }
