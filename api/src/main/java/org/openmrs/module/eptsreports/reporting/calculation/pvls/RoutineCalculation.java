@@ -167,7 +167,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
             // second
             // Date when started on second line will be considered
             // the changing date
-            isOnRoutine = isOnRoutineCriteria3(changingRegimenLines, pId, lastVlObs, vLoadList);
+            isOnRoutine =
+                isOnRoutineCriteria3(changingRegimenLines, pId, vLoadList, latestVlLowerDateLimit);
           }
         }
       }
@@ -180,17 +181,16 @@ public class RoutineCalculation extends AbstractPatientCalculation {
   private boolean isOnRoutineCriteria3(
       CalculationResultMap changingRegimenLines,
       Integer pId,
-      Obs lastVlObs,
-      List<Obs> allViralLoadForPatient) {
+      List<Obs> allViralLoadForPatient,
+      Date latestVlLowerDateLimit) {
     boolean isOnRoutine = false;
 
     Obs obs = EptsCalculationUtils.resultForPatient(changingRegimenLines, pId);
 
-    Date latestVlDate = lastVlObs.getObsDatetime();
-    if (obs != null && latestVlDate != null) {
+    if (obs != null && latestVlLowerDateLimit != null) {
       Date startRegimeDate = obs.getObsDatetime();
 
-      if (startRegimeDate != null && startRegimeDate.before(latestVlDate)) {
+      if (startRegimeDate != null && startRegimeDate.before(latestVlLowerDateLimit)) {
         isOnRoutine = true;
         // check that there is no other VL registered between first
         // encounter_date and
@@ -200,9 +200,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
         // between the 2 dates
         for (Obs obs1 : allViralLoadForPatient) {
           if (obs1.getObsDatetime() != null
-              && (obs1.getObsDatetime().after(startRegimeDate)
-                  || obs1.getObsDatetime().equals(startRegimeDate))
-              && obs1.getObsDatetime().before(latestVlDate)) {
+              && obs1.getObsDatetime().after(startRegimeDate)
+              && obs1.getObsDatetime().before(latestVlLowerDateLimit)) {
             isOnRoutine = false;
           }
         }
