@@ -263,17 +263,6 @@ public class EptsCalculationUtils {
   }
 
   /**
-   * Calculates the months since the given date factoring in days into the result
-   *
-   * @param date1 the date
-   * @param date2 the date2
-   * @return the number of days
-   */
-  public static float monthsSinceIncludingDaysDiff(Date date1, Date date2) {
-    return daysSince(date1, date2) / (float) 30;
-  }
-
-  /**
    * Calculates the days since the given date
    *
    * @param date1 the date
