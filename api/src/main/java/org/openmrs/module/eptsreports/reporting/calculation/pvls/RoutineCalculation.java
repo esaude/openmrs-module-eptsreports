@@ -157,7 +157,11 @@ public class RoutineCalculation extends AbstractPatientCalculation {
           }
 
           // find out criteria 2
-          if (isOnRoutineCriteria2(criteria, viralLoadForPatientTakenWithin12Months, vLoadList)) {
+          if (isOnRoutineCriteria2(
+              criteria,
+              viralLoadForPatientTakenWithin12Months,
+              vLoadList,
+              lastVlObs.getObsDatetime())) {
             isOnRoutine = true;
           }
 
@@ -213,7 +217,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
   private boolean isOnRoutineCriteria2(
       PatientsOnRoutineEnum criteria,
       List<Obs> viralLoadForPatientTakenWithin12Months,
-      List<Obs> allViralLoadForPatient) {
+      List<Obs> allViralLoadForPatient,
+      Date lastViralLoadDate) {
 
     boolean isOnRoutine = false;
 
@@ -252,6 +257,19 @@ public class RoutineCalculation extends AbstractPatientCalculation {
         isOnRoutine = monthsSince >= CRITERIA2_MONTHS_MIN && monthsSince <= CRITERIA2_MONTHS_MAX;
       } else if (criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)) {
         isOnRoutine = true;
+      }
+    }
+    if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)) {
+      for (Obs allVls : allViralLoadForPatient) {
+        float monthsSince =
+            EptsCalculationUtils.monthsSinceIncludingDaysDiff(
+                allVls.getObsDatetime(), lastViralLoadDate);
+        if (allVls.getValueNumeric() < 1000
+            && monthsSince >= CRITERIA2_MONTHS_MIN
+            && monthsSince <= CRITERIA2_MONTHS_MAX) {
+          isOnRoutine = true;
+          break;
+        }
       }
     }
 
