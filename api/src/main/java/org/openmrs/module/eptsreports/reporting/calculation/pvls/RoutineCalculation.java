@@ -220,16 +220,17 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 
     boolean isOnRoutine = false;
 
+    Date lastVlDaysOff = EptsCalculationUtils.addDays(lastViralLoadDate, -1);
     Date twelveMonths = EptsCalculationUtils.addMonths(lastViralLoadDate, -CRITERIA2_MONTHS_MIN);
     Date fifteenMonths = EptsCalculationUtils.addMonths(lastViralLoadDate, -CRITERIA2_MONTHS_MAX);
-    Date lastVlDaysOff = EptsCalculationUtils.addDays(lastViralLoadDate, -1);
 
+    // check if the patient appears between the dates, if so exit
+    if (EptsCalculationUtils.anyObsBetween(allViralLoadForPatient, twelveMonths, lastVlDaysOff)) {
+      isOnRoutine = false;
+    }
+    // if missed, check through all obs
     for (Obs allVls : allViralLoadForPatient) {
-      if (allVls.getObsDatetime().compareTo(lastVlDaysOff) >= 0
-          && allVls.getObsDatetime().compareTo(twelveMonths) <= 0) {
-        isOnRoutine = false;
-        break;
-      } else if (allVls.getValueNumeric() < 1000
+      if (allVls.getValueNumeric() < 1000
           && allVls.getObsDatetime().compareTo(twelveMonths) < 0
           && allVls.getObsDatetime().compareTo(fifteenMonths) > 0) {
         isOnRoutine = true;
