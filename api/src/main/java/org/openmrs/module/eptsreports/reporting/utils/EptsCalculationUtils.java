@@ -372,4 +372,23 @@ public class EptsCalculationUtils {
             || dateInQuestion.equals(endDate)
             || (startDate.compareTo(dateInQuestion) * dateInQuestion.compareTo(endDate) >= 0));
   }
+
+  /**
+   * Check if there are any Viral Load observations between start and end dates
+   *
+   * @param vlObsList
+   * @param startDate
+   * @param endDate
+   * @return boolean
+   */
+  public static boolean anyObsBetween(List<Obs> vlObsList, Date startDate, Date endDate) {
+    for (Obs obs : vlObsList) {
+      if (obs.getObsDatetime() != null
+          && obs.getObsDatetime().after(startDate)
+          && obs.getObsDatetime().before(endDate)) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
