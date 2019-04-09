@@ -79,6 +79,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
     PatientsOnRoutineEnum criteria = (PatientsOnRoutineEnum) params.get("criteria");
     EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
     EncounterType childFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
+    EncounterType farmacia = hivMetadata.getFarmaciaEncounterType();
 
     // lookups
     CalculationResultMap patientHavingVL =
@@ -95,7 +96,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
     CalculationResultMap changingRegimenLines =
         ePTSCalculationService.getObs(
             regimeConcept,
-            Arrays.asList(adultFollowup, childFollowup),
+            Arrays.asList(farmacia),
             cohort,
             Arrays.asList(location),
             getSecondLineTreatmentArvs(hivMetadata),
