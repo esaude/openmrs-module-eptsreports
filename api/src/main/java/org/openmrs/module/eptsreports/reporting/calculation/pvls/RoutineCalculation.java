@@ -14,8 +14,6 @@ package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -101,7 +99,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
             cohort,
             Arrays.asList(location),
             getSecondLineTreatmentArvs(hivMetadata),
-            TimeQualifier.ANY,
+            TimeQualifier.FIRST,
             null,
             context);
 
@@ -155,8 +153,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
           // the patients should be 6 to 9 months after ART initiation
           // get the obs date for this VL and compare that with the
           // provided dates
-          if (isOnRoutineCriteria1(
-              criteria, artInitiationDate, viralLoadForPatientTakenWithin12Months)) {
+          if (isOnRoutineCriteria1(criteria, artInitiationDate, lastVlObs.getObsDatetime())) {
             isOnRoutine = true;
           }
 
@@ -195,32 +192,15 @@ public class RoutineCalculation extends AbstractPatientCalculation {
       Date lastViralLoadDate) {
     boolean isOnRoutine = false;
 
-    //    Obs obs = EptsCalculationUtils.resultForPatient(changingRegimenLines, pId);
-    ListResult regimenObsResults = (ListResult) changingRegimenLines.get(pId);
-    List<Obs> regimenObsList = EptsCalculationUtils.extractResultValues(regimenObsResults);
+    Obs regimenObs = EptsCalculationUtils.resultForPatient(changingRegimenLines, pId);
 
-    if (regimenObsList != null && regimenObsList.size() > 0 && latestVlLowerDateLimit != null) {
-      // Sorts list of VL obs by obs date in reverse order
-      Comparator<Obs> vlComparator =
-          new Comparator<Obs>() {
+    if (regimenObs != null
+        && regimenObs.getObsDatetime() != null
+        && latestVlLowerDateLimit != null) {
 
-            @Override
-            public int compare(Obs obs1, Obs obs2) {
-              return obs2.getObsDatetime().compareTo(obs1.getObsDatetime());
-            }
-          };
-      Collections.sort(regimenObsList, vlComparator);
+      Date firstRegimeDate = regimenObs.getObsDatetime();
 
-      Date latestRegimeDate = null;
-      for (Obs regimen : regimenObsList) {
-        Date regimenDate = regimen.getObsDatetime();
-        if (regimenDate.compareTo(lastViralLoadDate) < 0) {
-          latestRegimeDate = regimenDate;
-          break;
-        }
-      }
-
-      if (latestRegimeDate != null) {
+      if (firstRegimeDate != null && firstRegimeDate.compareTo(lastViralLoadDate) < 0) {
         isOnRoutine = true;
         // check that there is no other VL registered between first
         // encounter_date and
@@ -230,7 +210,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
         // between the 2 dates
         for (Obs obs1 : allViralLoadForPatient) {
           if (obs1.getObsDatetime() != null
-              && obs1.getObsDatetime().after(latestRegimeDate)
+              && obs1.getObsDatetime().after(firstRegimeDate)
               && obs1.getObsDatetime().before(latestVlLowerDateLimit)) {
             isOnRoutine = false;
           }
@@ -265,26 +245,23 @@ public class RoutineCalculation extends AbstractPatientCalculation {
   }
 
   private boolean isOnRoutineCriteria1(
-      PatientsOnRoutineEnum criteria,
-      Date artInitiationDate,
-      List<Obs> viralLoadForPatientTakenWithin12Months) {
+      PatientsOnRoutineEnum criteria, Date artInitiationDate, Date lastViralLoadDate) {
 
-    for (Obs vlObs : viralLoadForPatientTakenWithin12Months) {
-      if (vlObs != null && vlObs.getObsDatetime() != null) {
-        Date vlDate = vlObs.getObsDatetime();
-        Date threeMonths = EptsCalculationUtils.addMonths(artInitiationDate, 3);
-        Date sixMonths = EptsCalculationUtils.addMonths(artInitiationDate, 6);
-        Date nineMonths = EptsCalculationUtils.addMonths(artInitiationDate, 9);
-        boolean withinAdultLimits =
-            vlDate.compareTo(sixMonths) > 0 && vlDate.compareTo(nineMonths) <= 0;
-        boolean withinBreastfeedingLimits =
-            vlDate.compareTo(threeMonths) > 0 && vlDate.compareTo(sixMonths) <= 0;
-        if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN) && withinAdultLimits) {
-          return true;
-        } else if (criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)
-            && withinBreastfeedingLimits) {
-          return true;
-        }
+    if (lastViralLoadDate != null) {
+      Date threeMonths = EptsCalculationUtils.addMonths(artInitiationDate, 3);
+      Date sixMonths = EptsCalculationUtils.addMonths(artInitiationDate, 6);
+      Date nineMonths = EptsCalculationUtils.addMonths(artInitiationDate, 9);
+      boolean withinAdultLimits =
+          lastViralLoadDate.compareTo(sixMonths) > 0
+              && lastViralLoadDate.compareTo(nineMonths) <= 0;
+      boolean withinBreastfeedingLimits =
+          lastViralLoadDate.compareTo(threeMonths) > 0
+              && lastViralLoadDate.compareTo(sixMonths) <= 0;
+      if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN) && withinAdultLimits) {
+        return true;
+      } else if (criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)
+          && withinBreastfeedingLimits) {
+        return true;
       }
     }
     return false;
