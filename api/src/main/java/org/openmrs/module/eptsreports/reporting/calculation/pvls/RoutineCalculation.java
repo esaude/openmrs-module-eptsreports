@@ -14,8 +14,6 @@ package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -196,7 +194,9 @@ public class RoutineCalculation extends AbstractPatientCalculation {
 
     Obs regimenObs = EptsCalculationUtils.resultForPatient(changingRegimenLines, pId);
 
-    if (regimenObs != null && regimenObs.getObsDatetime() != null && latestVlLowerDateLimit != null) {
+    if (regimenObs != null
+        && regimenObs.getObsDatetime() != null
+        && latestVlLowerDateLimit != null) {
 
       Date firstRegimeDate = regimenObs.getObsDatetime();
 
