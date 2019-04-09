@@ -322,6 +322,20 @@ public class EptsCalculationUtils {
   }
 
   /**
+   * Adds months to a date
+   *
+   * @param date, to add days to
+   * @param days, number of days to add to date
+   * @return new date with added days
+   */
+  public static Date addDays(Date date, int days) {
+    Calendar c = Calendar.getInstance();
+    c.setTime(date);
+    c.add(Calendar.DATE, days);
+    return c.getTime();
+  }
+
+  /**
    * Evaluates genders of each patient
    *
    * @param cohort the patient ids
