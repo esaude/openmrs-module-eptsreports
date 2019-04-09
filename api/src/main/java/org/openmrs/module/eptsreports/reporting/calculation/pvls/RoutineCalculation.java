@@ -153,7 +153,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
           // the patients should be 6 to 9 months after ART initiation
           // get the obs date for this VL and compare that with the
           // provided dates
-          if (isOnRoutineCriteria1(criteria, artInitiationDate, lastVlObs.getObsDatetime())) {
+          if (isOnRoutineCriteria1(
+              criteria, artInitiationDate, lastVlObs.getObsDatetime(), vLoadList)) {
             isOnRoutine = true;
           }
 
@@ -201,20 +202,15 @@ public class RoutineCalculation extends AbstractPatientCalculation {
       Date firstRegimeDate = regimenObs.getObsDatetime();
 
       if (firstRegimeDate != null && firstRegimeDate.compareTo(lastViralLoadDate) < 0) {
-        isOnRoutine = true;
         // check that there is no other VL registered between first
         // encounter_date and
         // vl_registered_date
         // loop through the vls and exclude the patient if they have an
         // obs falling
         // between the 2 dates
-        for (Obs obs1 : allViralLoadForPatient) {
-          if (obs1.getObsDatetime() != null
-              && obs1.getObsDatetime().after(firstRegimeDate)
-              && obs1.getObsDatetime().before(latestVlLowerDateLimit)) {
-            isOnRoutine = false;
-          }
-        }
+        isOnRoutine =
+            !EptsCalculationUtils.anyObsBetween(
+                allViralLoadForPatient, firstRegimeDate, latestVlLowerDateLimit);
       }
     }
     return isOnRoutine;
@@ -239,23 +235,30 @@ public class RoutineCalculation extends AbstractPatientCalculation {
   }
 
   private boolean isOnRoutineCriteria1(
-      PatientsOnRoutineEnum criteria, Date artInitiationDate, Date lastViralLoadDate) {
+      PatientsOnRoutineEnum criteria,
+      Date artInitiationDate,
+      Date lastViralLoadDate,
+      List<Obs> allViralLoadForPatient) {
 
     if (lastViralLoadDate != null) {
       Date threeMonths = EptsCalculationUtils.addMonths(artInitiationDate, 3);
       Date sixMonths = EptsCalculationUtils.addMonths(artInitiationDate, 6);
       Date nineMonths = EptsCalculationUtils.addMonths(artInitiationDate, 9);
+
       boolean withinAdultLimits =
           lastViralLoadDate.compareTo(sixMonths) > 0
               && lastViralLoadDate.compareTo(nineMonths) <= 0;
       boolean withinBreastfeedingLimits =
           lastViralLoadDate.compareTo(threeMonths) > 0
               && lastViralLoadDate.compareTo(sixMonths) <= 0;
+
       if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN) && withinAdultLimits) {
-        return true;
+        return !EptsCalculationUtils.anyObsBetween(
+            allViralLoadForPatient, artInitiationDate, sixMonths);
       } else if (criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)
           && withinBreastfeedingLimits) {
-        return true;
+        return !EptsCalculationUtils.anyObsBetween(
+            allViralLoadForPatient, artInitiationDate, threeMonths);
       }
     }
     return false;
