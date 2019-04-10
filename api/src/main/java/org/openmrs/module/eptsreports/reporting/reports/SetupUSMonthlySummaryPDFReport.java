@@ -4,12 +4,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.UsMonthlySummaryDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +15,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SetupUSMonthlySummaryPDFReport extends EptsDataExportManager {
-
-  @Autowired private GenericCohortQueries genericCohortQueries;
 
   @Autowired private UsMonthlySummaryDataset usMonthlySummaryDataset;
 
@@ -56,10 +52,6 @@ public class SetupUSMonthlySummaryPDFReport extends EptsDataExportManager {
     rd.setParameters(usMonthlySummaryDataset.getParameters());
     rd.addDataSetDefinition(
         "S", Mapped.mapStraightThrough(usMonthlySummaryDataset.constructUsMonthlySummaryDataset()));
-    // add a base cohort to the report
-    rd.setBaseCohortDefinition(
-        genericCohortQueries.getBaseCohort(),
-        ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
 
     return rd;
   }
