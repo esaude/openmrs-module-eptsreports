@@ -56,8 +56,8 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
   /**
    * Using {@link TimeQualifier}3
    *
-   * @see EPTSCalculationService#getObs(Concept, java.util.Collection, List, List, TimeQualifier,
-   *     Date, PatientCalculationContext)
+   * @see EPTSCalculationService#getObs(Concept, List, java.util.Collection, List, List,
+   *     TimeQualifier, Date, PatientCalculationContext)
    */
   @Test
   public void shouldGetFirstObs() {
@@ -68,7 +68,7 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
 
     CalculationResultMap obsMap =
         this.eptsCalculationService.getObs(
-            concept, cohort, locationList, null, TimeQualifier.FIRST, null, context);
+            concept, null, cohort, locationList, null, TimeQualifier.FIRST, null, context);
 
     Obs obs = EptsCalculationUtils.resultForPatient(obsMap, 7);
 
@@ -80,8 +80,8 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
   }
 
   /**
-   * @see EPTSCalculationService#getObs(Concept, java.util.Collection, List, List, TimeQualifier,
-   *     Date, PatientCalculationContext)
+   * @see EPTSCalculationService#getObs(Concept, List, Collection, List, List, TimeQualifier, Date,
+   *     PatientCalculationContext)
    */
   @Test
   public void shouldGetLastObs() {
@@ -92,7 +92,7 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
 
     CalculationResultMap obsMap =
         this.eptsCalculationService.getObs(
-            concept, cohort, locationList, null, TimeQualifier.LAST, null, context);
+            concept, null, cohort, locationList, null, TimeQualifier.LAST, null, context);
 
     Obs obs = EptsCalculationUtils.resultForPatient(obsMap, 7);
 
@@ -104,8 +104,8 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
   }
 
   /**
-   * @see EPTSCalculationService#getObs(Concept, java.util.Collection, List, List, TimeQualifier,
-   *     Date, PatientCalculationContext)
+   * @see EPTSCalculationService#getObs(Concept, List, java.util.Collection, List, List,
+   *     TimeQualifier, Date, PatientCalculationContext)
    */
   @SuppressWarnings("unchecked")
   @Test
@@ -117,7 +117,7 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
 
     CalculationResultMap obsMap =
         this.eptsCalculationService.getObs(
-            concept, cohort, locationList, null, TimeQualifier.ANY, null, context);
+            concept, null, cohort, locationList, null, TimeQualifier.ANY, null, context);
 
     Assert.assertNotNull(obsMap);
     ListResult obsListResult = (ListResult) obsMap.get(7);
@@ -216,7 +216,7 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
   }
 
   /**
-   * @see EPTSCalculationService#firstEncounter(EncounterType, java.util.Collection, Location,
+   * @see EPTSCalculationService#firstEncounter(List, Collection, Location,
    *     PatientCalculationContext)
    */
   @Test
@@ -242,8 +242,8 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
   }
 
   /**
-   * @see EPTSCalculationService#firstObs(Concept, Concept, Location, boolean, java.util.Collection,
-   *     PatientCalculationContext)
+   * @see EPTSCalculationService#firstObs(Concept, Concept, Location, boolean, Date, Date, List,
+   *     Collection, PatientCalculationContext)
    */
   @Test
   public void shouldGetFirstObsByMethodFirstObs() {

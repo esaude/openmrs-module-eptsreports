@@ -65,6 +65,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap lactatingMap =
         ePTSCalculationService.getObs(
             breastfeedingConcept,
+            null,
             femaleCohort,
             Arrays.asList(location),
             Arrays.asList(yes),
@@ -75,6 +76,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap criteriaHivStartMap =
         ePTSCalculationService.getObs(
             criteriaForHivStart,
+            null,
             femaleCohort,
             Arrays.asList(location),
             Arrays.asList(breastfeedingConcept),
@@ -85,6 +87,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap deliveryDateMap =
         ePTSCalculationService.getObs(
             priorDeliveryDate,
+            null,
             femaleCohort,
             Arrays.asList(location),
             null,

@@ -67,6 +67,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap pregnantMap =
         ePTSCalculationService.getObs(
             pregnant,
+            null,
             femaleCohort,
             Arrays.asList(location),
             Arrays.asList(gestation),
@@ -77,6 +78,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap markedPregnantByWeeks =
         ePTSCalculationService.getObs(
             pregnantBasedOnWeeks,
+            null,
             femaleCohort,
             Arrays.asList(location),
             null,
@@ -87,6 +89,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap markedPregnantDueDate =
         ePTSCalculationService.getObs(
             pregnancyDueDate,
+            null,
             femaleCohort,
             Arrays.asList(location),
             null,

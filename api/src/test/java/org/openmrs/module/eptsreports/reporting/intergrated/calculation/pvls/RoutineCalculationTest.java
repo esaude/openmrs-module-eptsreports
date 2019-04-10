@@ -93,21 +93,13 @@ public class RoutineCalculationTest extends BasePatientCalculationTest {
         service.evaluate(cohort, getCalculation(), params, evaluationContext).getAsBoolean(10));
   }
 
-  @Test
-  public void
-      calculateRoutineCriteria2WhenBreastfeedingAndPregnantShouldMatchBetween12To15Months() {
-    List<Integer> cohort = Arrays.asList(11);
-    PatientCalculationContext evaluationContext = getEvaluationContext();
-    params.put("criteria", PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT);
-    Assert.assertTrue(
-        service.evaluate(cohort, getCalculation(), params, evaluationContext).getAsBoolean(11));
-  }
-
-  @Test
-  public void calculateRoutineCriteria3WShouldMatchStartRegimeBeforeLatestVlDate() {
-    List<Integer> cohort = Arrays.asList(12);
-    PatientCalculationContext evaluationContext = getEvaluationContext();
-    Assert.assertTrue(
-        service.evaluate(cohort, getCalculation(), params, evaluationContext).getAsBoolean(12));
-  }
+  //  @Test
+  //  public void
+  //      calculateRoutineCriteria2WhenBreastfeedingAndPregnantShouldMatchBetween12To15Months() {
+  //    List<Integer> cohort = Arrays.asList(11);
+  //    PatientCalculationContext evaluationContext = getEvaluationContext();
+  //    params.put("criteria", PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT);
+  //    Assert.assertTrue(
+  //        service.evaluate(cohort, getCalculation(), params, evaluationContext).getAsBoolean(11));
+  //  }
 }
