@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Properties;
 import org.apache.poi.util.IOUtils;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.db.SerializedObject;
+import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -71,7 +73,7 @@ public abstract class EptsDataExportManager extends EptsReportManager {
    * @return
    * @throws IOException
    */
-  public static ReportDesign createXlsReportDesign(
+  public ReportDesign createXlsReportDesign(
       ReportDefinition reportDefinition,
       String resourceName,
       String reportDesignName,
@@ -80,9 +82,18 @@ public abstract class EptsDataExportManager extends EptsReportManager {
       throws IOException {
 
     ReportService rs = Context.getService(ReportService.class);
-    for (ReportDesign rdd : rs.getAllReportDesigns(false)) {
-      if (reportDesignName.equals(rdd.getName())) {
-        rs.purgeReportDesign(rdd);
+    SerializedObjectDAO serializedObjectDAO =
+        Context.getRegisteredComponents(SerializedObjectDAO.class).get(0);
+
+    ReportDesign reportDesign = rs.getReportDesignByUuid(excelDesignUuid);
+    if (reportDesign != null) {
+      if (reportDesign.getReportDefinition() == null) {
+        SerializedObject serializedObject =
+            serializedObjectDAO.getSerializedObjectByUuid(getUuid());
+        reportDesign.setReportDefinition(new ReportDefinition());
+        reportDesign.getReportDefinition().setId(serializedObject.getId());
+        reportDesign.getReportDefinition().setUuid(serializedObject.getUuid());
+        rs.purgeReportDesign(reportDesign);
       }
     }
 
