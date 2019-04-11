@@ -81,7 +81,7 @@ public abstract class EptsDataExportManager extends EptsReportManager {
 
     ReportService rs = Context.getService(ReportService.class);
     for (ReportDesign rdd : rs.getAllReportDesigns(false)) {
-      if (reportDesignName.equals(rdd.getName())) {
+      if (excelDesignUuid.equals(rdd.getUuid())) {
         rs.purgeReportDesign(rdd);
       }
     }
