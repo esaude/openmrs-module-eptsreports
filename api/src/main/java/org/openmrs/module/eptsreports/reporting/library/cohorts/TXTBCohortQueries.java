@@ -649,7 +649,9 @@ public class TXTBCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition S = codedYesTbScreening();
     cd.addSearch("S", map(S, codedObsParameterMapping));
-    cd.setCompositionString("S");
+    CohortDefinition N = codedNoTbScreening();
+    cd.addSearch("N", map(N, codedObsParameterMapping));
+    cd.setCompositionString("S OR N");
     addGeneralParameters(cd);
     return cd;
   }
