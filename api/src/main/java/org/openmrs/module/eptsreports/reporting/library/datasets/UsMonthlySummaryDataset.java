@@ -1,7 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import java.util.Arrays;
-import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.UsMonthlySummaryCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
@@ -14,6 +12,9 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class UsMonthlySummaryDataset extends BaseDataSet {
@@ -39,14 +40,13 @@ public class UsMonthlySummaryDataset extends BaseDataSet {
         "age",
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
-    addAPDIndicators(mappings, dataSetDefinition);
-    addPDFIndicators(mappings, dataSetDefinition);
+    addAPDIndicators(dataSetDefinition);
+    addPDFIndicators(dataSetDefinition);
 
     return dataSetDefinition;
   }
 
-  private void addAPDIndicators(
-      String mappings, CohortIndicatorDataSetDefinition dataSetDefinition) {
+  private void addAPDIndicators(CohortIndicatorDataSetDefinition dataSetDefinition) {
     dataSetDefinition.addColumn(
         "APDF1",
         "PDF Format assessment By End Date",
@@ -55,7 +55,7 @@ public class UsMonthlySummaryDataset extends BaseDataSet {
                 "getPdfFormatAssetAtFinalDate",
                 EptsReportUtils.map(
                     usMonthlySummaryCohortQueries.getPdfFormatAssetAtFinalDate(), mappings)),
-            mappings),
+                "endDate=${startDate},location=${location}"),
         "");
 
     dataSetDefinition.addColumn(
@@ -90,7 +90,7 @@ public class UsMonthlySummaryDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     usMonthlySummaryCohortQueries.getPdfFormatAssetAtFinalDateForChildren(),
                     mappings)),
-            mappings),
+                "endDate=${startDate},location=${location}"),
         "");
     dataSetDefinition.addColumn(
         "APDF5",
@@ -118,14 +118,13 @@ public class UsMonthlySummaryDataset extends BaseDataSet {
         "");
   }
 
-  private void addPDFIndicators(
-      String mappings, CohortIndicatorDataSetDefinition dataSetDefinition) {
+  private void addPDFIndicators(CohortIndicatorDataSetDefinition dataSetDefinition) {
     Mapped<CohortIndicator> activePatientsToEndDate =
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "getActivePatientsToEndDate",
                 EptsReportUtils.map(usMonthlySummaryCohortQueries.getActiveToEndDate(), mappings)),
-            mappings);
+                "endDate=${startDate},location=${location}");
     addRow(
         dataSetDefinition,
         "B1PDF",
@@ -158,28 +157,14 @@ public class UsMonthlySummaryDataset extends BaseDataSet {
         "Returned to PDF within Reporting period - Disaggregated",
         returnedToPDFInReportingPeriod,
         dissagregations());
-    Mapped<CohortIndicator> inARTExcludingNotAnsweredAbandonedIn4WeeksUntilEndDate =
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "getInARTExcludingNotAnsweredAbandonedIn4WeeksUntilEndDate",
-                EptsReportUtils.map(
-                    usMonthlySummaryCohortQueries
-                        .getInARTExcludingNotAnsweredAbandonedIn4WeeksUntilEndDate(),
-                    mappings)),
-            mappings);
-    addRow(
-        dataSetDefinition,
-        "B4PDF",
-        "In ART Excluding Not Answered Abandoned In 4 Weeks - Disaggregated",
-        inARTExcludingNotAnsweredAbandonedIn4WeeksUntilEndDate,
-        dissagregations());
     Mapped<CohortIndicator> currentlyInARTWithoutPregnancy =
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "currentlyInARTWithoutPregnancy",
                 EptsReportUtils.map(
-                    usMonthlySummaryCohortQueries.currentlyInARTWithoutPregnancy(), mappings)),
-            mappings);
+                        usMonthlySummaryCohortQueries.currentlyInARTWithoutPregnancy(),
+                        "endDate=${endDate},location=${location}")),
+                "endDate=${endDate},location=${location}");
     addRow(
         dataSetDefinition,
         "B4PDF",
