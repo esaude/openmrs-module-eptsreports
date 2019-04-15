@@ -381,21 +381,17 @@ public class TXTBCohortQueries {
     CohortDefinition INICIOTARV =
         getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation();
 
-    // PACIENTES COM RASTREIO DE TUBERCULOSE NEGATIVO
-    CohortDefinition RASTREIONEGATIVO = codedNoTbScreening();
 
     // PACIENTES COM RASTREIO DE TUBERCULOSE POSITIVO
     CohortDefinition RASTREIOTBPOS = codedYesTbScreening();
 
     addGeneralParameters(ACTUALTARV);
     cd.addSearch("ACTUALTARV", map(ACTUALTARV, generalParameterMapping));
-    addGeneralParameters(RASTREIONEGATIVO);
-    cd.addSearch("RASTREIONEGATIVO", map(RASTREIONEGATIVO, codedObsParameterMapping));
     addGeneralParameters(RASTREIOTBPOS);
     cd.addSearch("RASTREIOTBPOS", map(RASTREIOTBPOS, codedObsParameterMapping));
     addGeneralParameters(INICIOTARV);
     cd.addSearch("INICIOTARV", map(INICIOTARV, generalParameterMapping));
-    cd.setCompositionString("(INICIOTARV OR ACTUALTARV) AND (RASTREIONEGATIVO OR RASTREIOTBPOS)");
+    cd.setCompositionString("(INICIOTARV OR ACTUALTARV) AND RASTREIOTBPOS");
     addGeneralParameters(cd);
     return cd;
   }
