@@ -636,9 +636,7 @@ public class TXTBCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition P = positiveInvesitionResult();
     cd.addSearch("P", map(P, codedObsParameterMapping));
-    CohortDefinition N = negativeInvesitionResult();
-    cd.addSearch("N", map(N, codedObsParameterMapping));
-    cd.setCompositionString("P OR N");
+    cd.setCompositionString("P");
     addGeneralParameters(cd);
     return cd;
   }
@@ -651,9 +649,7 @@ public class TXTBCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition S = codedYesTbScreening();
     cd.addSearch("S", map(S, codedObsParameterMapping));
-    CohortDefinition N = codedNoTbScreening();
-    cd.addSearch("N", map(N, codedObsParameterMapping));
-    cd.setCompositionString("S OR N");
+    cd.setCompositionString("S");
     addGeneralParameters(cd);
     return cd;
   }
