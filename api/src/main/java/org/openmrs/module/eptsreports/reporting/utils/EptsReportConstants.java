@@ -148,6 +148,9 @@ public final class EptsReportConstants {
       GLOBAL_PROPERTY_APSS_PREVENCAO_POSITIVA_SEGUIMENTO_ENCOUNTER_TYPE_UUID =
           "eptsreports.apssPrevencaoPositivaSeguimentoEncounterTypeUuid";
 
+  public static final String GLOBAL_PROPERTY_EVALUATION_AND_PREP_FOR_ART_UUID =
+      "eptsreports.evaluationAndPrepForARTEncounterTypeUuid";
+
   // Programs
   public static final String GLOBAL_PROPERTY_ART_PROGRAM_UUID = "eptsreports.artProgramUuid";
 

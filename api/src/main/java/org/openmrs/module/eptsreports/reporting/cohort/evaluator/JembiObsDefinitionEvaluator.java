@@ -52,6 +52,9 @@ public class JembiObsDefinitionEvaluator implements PatientDataEvaluator {
     if (def.getAnswer() != null) {
       q.whereEqual("obs.valueCoded", def.getAnswer());
     }
+    if (def.getEncounterTypeList() != null) {
+      q.whereIn("obs.encounter.encounterType", def.getEncounterTypeList());
+    }
     q.whereEqual("obs.location", def.getLocation());
     q.whereEqual("obs.voided", false);
     final Date valueDateTimeOnOrAfter = def.getValueDateTimeOnOrAfter();

@@ -215,6 +215,15 @@ public class HivMetadata extends CommonMetadata {
     return getEncounterType(uuid);
   }
 
+  // encounterType_id = 18
+  public EncounterType getFarmaciaEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(
+                EptsReportConstants.GLOBAL_PROPERTY_S_TARV_FARMACIA_ENCOUNTER_TYPE_UUID);
+    return getEncounterType(uuid);
+  }
+
   // encounterType_id = 5
   public EncounterType getARVAdultInitialEncounterType() {
     String uuid =
@@ -238,6 +247,14 @@ public class HivMetadata extends CommonMetadata {
         Context.getAdministrationService()
             .getGlobalProperty(
                 EptsReportConstants.GLOBAL_PROPERTY_S_TARV_FARMACIA_ENCOUNTER_TYPE_UUID);
+    return getEncounterType(uuid);
+  }
+
+  public EncounterType getEvaluationAndPrepForARTEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(
+                EptsReportConstants.GLOBAL_PROPERTY_EVALUATION_AND_PREP_FOR_ART_UUID);
     return getEncounterType(uuid);
   }
 

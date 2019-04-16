@@ -15,7 +15,9 @@
 package org.openmrs.module.eptsreports.reporting.cohort.definition;
 
 import java.util.Date;
+import java.util.List;
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.PatientProgram;
 import org.openmrs.module.reporting.common.Localized;
@@ -48,6 +50,9 @@ public class JembiObsDefinition extends BaseDataDefinition implements PatientDat
 
   @ConfigurationProperty(required = false)
   private Date valueDateTimeOnOrBefore;
+
+  @ConfigurationProperty(required = false)
+  private List<EncounterType> encounterTypeList;
 
   public JembiObsDefinition() {
     super();
@@ -116,5 +121,13 @@ public class JembiObsDefinition extends BaseDataDefinition implements PatientDat
 
   public void setValueDateTimeOnOrBefore(Date valueDateTimeOnOrBefore) {
     this.valueDateTimeOnOrBefore = valueDateTimeOnOrBefore;
+  }
+
+  public List<EncounterType> getEncounterTypeList() {
+    return encounterTypeList;
+  }
+
+  public void setEncounterTypeList(List<EncounterType> encounterTypeList) {
+    this.encounterTypeList = encounterTypeList;
   }
 }

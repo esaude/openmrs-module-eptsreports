@@ -170,30 +170,6 @@ public class TxPvlsCohortQueries {
   }
 
   /**
-   * Get all patients on routine as a sum of those on breastfeedingAndPregnant and AdultsAndChildren
-   * We now counting routine patients as a whole set
-   *
-   * @return CohortDefinition
-   */
-  public CohortDefinition getSumTotalsOfPatientsOnRoutine() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.addParameter(new Parameter("endDate", "On Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addSearch(
-        "breastfeedingPregnant",
-        EptsReportUtils.map(
-            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
-            "onDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "adultChildren",
-        EptsReportUtils.map(
-            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
-            "onDate=${endDate},location=${location}"));
-    cd.setCompositionString("breastfeedingPregnant OR adultChildren");
-    return cd;
-  }
-
-  /**
    * Get patients having viral load suppression and routine for adults and children - Numerator
    *
    * @retrun CohortDefinition
@@ -207,10 +183,11 @@ public class TxPvlsCohortQueries {
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     cd.addSearch("supp", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
     cd.addSearch(
-        "routine",
+        "adult-children-routine",
         EptsReportUtils.map(
-            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
-    cd.setCompositionString("supp AND routine");
+            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
+            "onDate=${endDate},location=${location}"));
+    cd.setCompositionString("supp AND adult-children-routine");
     return cd;
   }
 
@@ -229,10 +206,11 @@ public class TxPvlsCohortQueries {
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     cd.addSearch("supp", EptsReportUtils.map(getPatientsWithViralLoadSuppression(), mappings));
     cd.addSearch(
-        "routine",
+        "adult-children-routine",
         EptsReportUtils.map(
-            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
-    cd.setCompositionString("supp AND NOT routine");
+            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
+            "onDate=${endDate},location=${location}"));
+    cd.setCompositionString("supp NOT adult-children-routine");
     return cd;
   }
 
@@ -250,10 +228,11 @@ public class TxPvlsCohortQueries {
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
     cd.addSearch(
-        "routine",
+        "adult-children-routine",
         EptsReportUtils.map(
-            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
-    cd.setCompositionString("results AND routine");
+            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
+            "onDate=${endDate},location=${location}"));
+    cd.setCompositionString("results AND adult-children-routine");
     return cd;
   }
 
@@ -271,10 +250,11 @@ public class TxPvlsCohortQueries {
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     cd.addSearch("results", EptsReportUtils.map(getPatientsWithViralLoadResults(), mappings));
     cd.addSearch(
-        "routine",
+        "adult-children-routine",
         EptsReportUtils.map(
-            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
-    cd.setCompositionString("results AND NOT routine");
+            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.ADULTCHILDREN),
+            "onDate=${endDate},location=${location}"));
+    cd.setCompositionString("results NOT adult-children-routine");
     return cd;
   }
 
@@ -297,10 +277,11 @@ public class TxPvlsCohortQueries {
             getBreastfeedingWomenWhoHaveViralSuppression(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "routine",
+        "breastfeeding-routine",
         EptsReportUtils.map(
-            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
-    cd.setCompositionString("breastfeedingVl AND routine");
+            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
+            "onDate=${endDate},location=${location}"));
+    cd.setCompositionString("breastfeedingVl AND breastfeeding-routine");
 
     return cd;
   }
@@ -322,10 +303,11 @@ public class TxPvlsCohortQueries {
             getBreastfeedingWomenWhoHaveViralSuppression(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "routine",
+        "breastfeeding-routine",
         EptsReportUtils.map(
-            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
-    cd.setCompositionString("breastfeedingVl AND NOT routine");
+            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
+            "onDate=${endDate},location=${location}"));
+    cd.setCompositionString("breastfeedingVl NOT breastfeeding-routine");
 
     return cd;
   }
@@ -394,10 +376,11 @@ public class TxPvlsCohortQueries {
             getPregnantWomenWithViralLoadSuppressionNumerator(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "routine",
+        "breastfeeding-routine",
         EptsReportUtils.map(
-            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
-    cd.setCompositionString("pregnant AND routine");
+            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
+            "onDate=${endDate},location=${location}"));
+    cd.setCompositionString("pregnant AND breastfeeding-routine");
     return cd;
   }
 
@@ -418,10 +401,11 @@ public class TxPvlsCohortQueries {
             getPregnantWomenWithViralLoadSuppressionNumerator(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "routine",
+        "breastfeeding-routine",
         EptsReportUtils.map(
-            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
-    cd.setCompositionString("pregnant AND NOT routine");
+            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
+            "onDate=${endDate},location=${location}"));
+    cd.setCompositionString("pregnant NOT breastfeeding-routine");
     return cd;
   }
 
@@ -444,10 +428,11 @@ public class TxPvlsCohortQueries {
             getBreastfeedingWomenWhoHaveViralLoadResults(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "routine",
+        "breastfeeding-routine",
         EptsReportUtils.map(
-            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
-    cd.setCompositionString("vlandBreastfeeding AND routine");
+            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
+            "onDate=${endDate},location=${location}"));
+    cd.setCompositionString("vlandBreastfeeding AND breastfeeding-routine");
     return cd;
   }
 
@@ -468,10 +453,11 @@ public class TxPvlsCohortQueries {
             getBreastfeedingWomenWhoHaveViralLoadResults(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "routine",
+        "breastfeeding-routine",
         EptsReportUtils.map(
-            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
-    cd.setCompositionString("vlandBreastfeeding AND NOT routine");
+            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
+            "onDate=${endDate},location=${location}"));
+    cd.setCompositionString("vlandBreastfeeding NOT breastfeeding-routine");
     return cd;
   }
 
@@ -492,10 +478,11 @@ public class TxPvlsCohortQueries {
         "pregnant",
         EptsReportUtils.map(getPregnantWomenWithViralLoadResultsDenominator(), mappings));
     cd.addSearch(
-        "routine",
+        "breastfeeding-routine",
         EptsReportUtils.map(
-            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
-    cd.setCompositionString("pregnant AND routine");
+            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
+            "onDate=${endDate},location=${location}"));
+    cd.setCompositionString("pregnant AND breastfeeding-routine");
     return cd;
   }
 
@@ -515,10 +502,11 @@ public class TxPvlsCohortQueries {
         "pregnant",
         EptsReportUtils.map(getPregnantWomenWithViralLoadResultsDenominator(), mappings));
     cd.addSearch(
-        "routine",
+        "breastfeeding-routine",
         EptsReportUtils.map(
-            getSumTotalsOfPatientsOnRoutine(), "endDate=${endDate},location=${location}"));
-    cd.setCompositionString("pregnant AND NOT routine");
+            getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT),
+            "onDate=${endDate},location=${location}"));
+    cd.setCompositionString("pregnant NOT breastfeeding-routine");
     return cd;
   }
 
