@@ -29,7 +29,7 @@ public class UsMonthlySummaryQueries {
   /** APDF5: PDFS FORMADOS NUM DETERMINADO PERIODO CONTENDO CRIANÃ‡A */
   public static String pdfFormatAssetWithinReportingPeriodForChildren() {
     return "select family_id from gaac_family where start_date between :startDate and :endDate and voided=0 and location_id=:location and family_id in "
-        + "(SELECT family_id FROM person p  inner join gaac_family_member ON member_id = person_id where round(datediff(:endDate,birthdate)/360) <=14 )";
+            + "(SELECT family_id FROM person p  inner join gaac_family_member ON member_id = person_id where round(datediff(:endDate,birthdate)/360) <=14)";
   }
 
   /** APDF6: PDFs DESINTEGRADOS NUM PERIODO CONTENDO CRIANÃ‡A */
@@ -280,12 +280,13 @@ public class UsMonthlySummaryQueries {
   /** B8PDF: PACIENTES QUE SAIRAM DO PDF - SUSPENSO */
   public static String comeOutOfPdfSuspension() {
     return "select fm.member_id from gaac_family f inner join gaac_family_member fm on f.family_id=fm.family_id "
-        + "where fm.end_date between :startDate and :endDate and fm.leaving=1 and  fm.voided=0 and f.voided=0 and location_id=:location and reason_leaving_type = 4;";
+            + "where fm.end_date between :startDate and :endDate and fm.leaving=1 and fm.voided=0 and f.voided=0 and location_id=:location and reason_leaving_type = 4;";
   }
 
   /** C1PDF: PACIENTES PDF QUE TIVERAM CONSULTA CLINICA NUM PERIODO */
   public static String clinicalConsultationWithinReportingPeriod() {
     return "select fm.member_id from gaac_family f inner join gaac_family_member fm on f.family_id=fm.family_id "
-        + "where fm.end_date between :startDate and :endDate and fm.leaving=1 and fm.voided=0 and f.voided=0 and location_id=:location and reason_leaving_type = 4;";
+            + "inner join encounter e on e.patient_id=fm.member_id where e.encounter_datetime between :startDate and :endDate and fm.voided=0 and f.voided=0 "
+            + "and e.voided=0 and f.location_id=:location and e.encounter_type in (6,9) and e.location_id=:location;";
   }
 }
