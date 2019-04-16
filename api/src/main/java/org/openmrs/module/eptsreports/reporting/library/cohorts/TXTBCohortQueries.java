@@ -372,7 +372,7 @@ public class TXTBCohortQueries {
   }
 
   /** TX_TB Denominator PACIENTES TARV COM RASTREIO DE TUBERCULOSE POSITIVO/NEGATIVO */
-  public CohortDefinition patientsWhoScreenTbNegativeOrPositive() {
+  public CohortDefinition patientsWhoScreenedTbPositive() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("PACIENTES TARV COM RASTREIO DE TUBERCULOSE POSITIVO/NEGATIVO");
 
@@ -380,7 +380,6 @@ public class TXTBCohortQueries {
 
     CohortDefinition INICIOTARV =
         getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation();
-
 
     // PACIENTES COM RASTREIO DE TUBERCULOSE POSITIVO
     CohortDefinition RASTREIOTBPOS = codedYesTbScreening();
@@ -632,7 +631,7 @@ public class TXTBCohortQueries {
    * at least one “POS” or “NEG” selected for “Resultado da Investigação para TB de BK e/ou RX?”
    * during the reporting period consultations; ( response 703: POS or 664: NEG for question: 6277)
    */
-  public CohortDefinition positiveOrNegativeInvesitionResult() {
+  public CohortDefinition positiveInvestigationResult() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition P = positiveInvesitionResult();
     cd.addSearch("P", map(P, codedObsParameterMapping));
@@ -703,7 +702,7 @@ public class TXTBCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition i = yesOrNoInvesitionResult();
     cd.addSearch("i", map(i, generalParameterMapping));
-    CohortDefinition ii = positiveOrNegativeInvesitionResult();
+    CohortDefinition ii = positiveInvestigationResult();
     cd.addSearch("ii", map(ii, generalParameterMapping));
     CohortDefinition iii = tbTreatmentStartDateWithinReportingDate();
     cd.addSearch("iii", map(iii, generalParameterMapping));
@@ -779,8 +778,7 @@ public class TXTBCohortQueries {
   public CohortDefinition positiveScreening() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addSearch("A", EptsReportUtils.map(codedYesTbScreening(), codedObsParameterMapping));
-    cd.addSearch(
-        "B", EptsReportUtils.map(positiveOrNegativeInvesitionResult(), generalParameterMapping));
+    cd.addSearch("B", EptsReportUtils.map(positiveInvestigationResult(), generalParameterMapping));
     cd.addSearch(
         "C",
         EptsReportUtils.map(tbTreatmentStartDateWithinReportingDate(), generalParameterMapping));
@@ -896,7 +894,7 @@ public class TXTBCohortQueries {
         "tb-screening", EptsReportUtils.map(yesOrNoInvesitionResult(), generalParameterMapping));
     definition.addSearch(
         "tb-investigation",
-        EptsReportUtils.map(positiveOrNegativeInvesitionResult(), generalParameterMapping));
+        EptsReportUtils.map(positiveInvestigationResult(), generalParameterMapping));
     definition.addSearch(
         "started-tb-treatment",
         EptsReportUtils.map(tbTreatmentStartDateWithinReportingDate(), generalParameterMapping));

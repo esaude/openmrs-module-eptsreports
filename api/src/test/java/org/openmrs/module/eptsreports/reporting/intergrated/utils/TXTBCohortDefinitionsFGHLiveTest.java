@@ -190,7 +190,7 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
   @Test
   public void patientsWhoScreenTbNegativeOrPositive() throws EvaluationException {
     EvaluatedCohort result =
-        evaluateCohortDefinition(txTbCohortQueries.patientsWhoScreenTbNegativeOrPositive());
+        evaluateCohortDefinition(txTbCohortQueries.patientsWhoScreenedTbPositive());
     Assert.assertEquals(342, result.size());
     System.out.println(result.getCommaSeparatedPatientIds());
   }
