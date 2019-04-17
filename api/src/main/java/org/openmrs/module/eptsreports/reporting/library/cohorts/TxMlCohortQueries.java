@@ -44,13 +44,30 @@ public class TxMlCohortQueries {
   }
 
   public CohortDefinition getNonConsistentPatients() {
-    return genericCohortQueries.generalSql(
-        "Non consistent patients",
-        TxMlQueries.getNonConsistentPatients(
-            hivMetadata.getPrevencaoPositivaInicialEncounterType().getEncounterTypeId(),
-            hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getAcceptContactConcept().getConceptId(),
-            hivMetadata.getNoConcept().getConceptId()));
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Not Consistent and Not dead");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "nonConsistent",
+        EptsReportUtils.map(
+            genericCohortQueries.generalSql(
+                "Non consistent patients",
+                TxMlQueries.getNonConsistentPatients(
+                    hivMetadata.getPrevencaoPositivaInicialEncounterType().getEncounterTypeId(),
+                    hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getAcceptContactConcept().getConceptId(),
+                    hivMetadata.getNoConcept().getConceptId())),
+            "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            genericCohortQueries.getDeceasedPatientsBeforeDate(),
+            "endDate=${endDate},location=${location}"));
+    cd.setCompositionString("nonConsistent AND NOT dead");
+    return cd;
   }
   // a and b
   public CohortDefinition getPatientsWhoMissedNextAppointmentAndNotTransferredOut() {
