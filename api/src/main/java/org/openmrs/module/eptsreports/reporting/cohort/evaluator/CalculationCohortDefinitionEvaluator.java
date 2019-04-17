@@ -23,7 +23,6 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
-import org.openmrs.module.eptsreports.reporting.utils.Clock;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -63,7 +62,6 @@ public class CalculationCohortDefinitionEvaluator implements CohortDefinitionEva
   protected CalculationResultMap doCalculation(
       CohortDefinition cohortDefinition, EvaluationContext context) {
     CalculationCohortDefinition cd = (CalculationCohortDefinition) cohortDefinition;
-    Clock clock = Context.getRegisteredComponents(Clock.class).get(0);
 
     // Use date from cohort definition, or from ${date} or ${endDate} or now
     Date onDate = cd.getOnDate();
@@ -72,7 +70,7 @@ public class CalculationCohortDefinitionEvaluator implements CohortDefinitionEva
       if (onDate == null) {
         onDate = (Date) context.getParameterValue("endDate");
         if (onDate == null) {
-          onDate = clock.getCurrentDate();
+          onDate = new Date();
         }
       }
     }
