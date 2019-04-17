@@ -22,12 +22,12 @@ import java.util.Map;
 import java.util.Properties;
 import org.apache.poi.util.IOUtils;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.api.EptsReportsService;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
 import org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer;
-import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.util.OpenmrsClassLoader;
 
@@ -71,7 +71,7 @@ public abstract class EptsDataExportManager extends EptsReportManager {
    * @return
    * @throws IOException
    */
-  public static ReportDesign createXlsReportDesign(
+  public ReportDesign createXlsReportDesign(
       ReportDefinition reportDefinition,
       String resourceName,
       String reportDesignName,
@@ -79,12 +79,8 @@ public abstract class EptsDataExportManager extends EptsReportManager {
       Map<? extends Object, ? extends Object> properties)
       throws IOException {
 
-    ReportService rs = Context.getService(ReportService.class);
-    for (ReportDesign rdd : rs.getAllReportDesigns(false)) {
-      if (excelDesignUuid.equals(rdd.getUuid())) {
-        rs.purgeReportDesign(rdd);
-      }
-    }
+    EptsReportsService eptsReportsService = Context.getService(EptsReportsService.class);
+    eptsReportsService.purgeReportDesignIfExists(excelDesignUuid);
 
     ReportDesignResource resource = new ReportDesignResource();
     resource.setName(resourceName);
