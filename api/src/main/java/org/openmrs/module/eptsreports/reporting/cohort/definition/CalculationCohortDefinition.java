@@ -144,8 +144,9 @@ public class CalculationCohortDefinition extends BaseCohortDefinition {
     if (calculationParameters == null) {
       calculationParameters = new HashMap<String, Object>();
     }
-
-    calculationParameters.put(name, value);
+    if (value != null) {
+      calculationParameters.put(name, value);
+    }
   }
 
   public Location getLocation() {
