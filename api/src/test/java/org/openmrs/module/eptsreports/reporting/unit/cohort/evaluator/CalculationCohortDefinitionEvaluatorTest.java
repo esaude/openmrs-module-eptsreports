@@ -1,10 +1,10 @@
 package org.openmrs.module.eptsreports.reporting.unit.cohort.evaluator;
 
+import static junit.framework.TestCase.fail;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.util.*;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -131,8 +131,9 @@ public class CalculationCohortDefinitionEvaluatorTest extends BaseContextMockTes
 
   @Test
   @Ignore
-  public void evaluateShouldSetContextNowToCurrentDate() throws EvaluationException {
-    throw new NotYetImplementedException("Not yet");
+  public void evaluateShouldSetContextNowToCurrentDate() {
+    fail("Not yet Implemented");
+    Assert.assertTrue(true);
   }
 
   @Test
