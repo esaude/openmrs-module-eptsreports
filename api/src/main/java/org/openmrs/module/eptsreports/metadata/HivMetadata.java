@@ -38,6 +38,7 @@ public class HivMetadata extends CommonMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id=5096
   public Concept getReturnVisitDateForArvDrugConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -215,15 +216,6 @@ public class HivMetadata extends CommonMetadata {
     return getEncounterType(uuid);
   }
 
-  // encounterType_id = 18
-  public EncounterType getFarmaciaEncounterType() {
-    String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty(
-                EptsReportConstants.GLOBAL_PROPERTY_S_TARV_FARMACIA_ENCOUNTER_TYPE_UUID);
-    return getEncounterType(uuid);
-  }
-
   // encounterType_id = 5
   public EncounterType getARVAdultInitialEncounterType() {
     String uuid =
@@ -242,6 +234,7 @@ public class HivMetadata extends CommonMetadata {
     return getEncounterType(uuid);
   }
 
+  // encounterType_id = 18
   public EncounterType getARVPharmaciaEncounterType() {
     String uuid =
         Context.getAdministrationService()

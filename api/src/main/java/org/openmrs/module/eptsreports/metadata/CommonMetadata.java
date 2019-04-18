@@ -97,6 +97,7 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
+  // concept_id=1410
   public Concept getReturnVisitDateConcept() {
     String uuid =
         Context.getAdministrationService()
