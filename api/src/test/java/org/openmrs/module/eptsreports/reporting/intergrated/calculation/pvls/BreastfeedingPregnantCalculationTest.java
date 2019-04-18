@@ -2,6 +2,8 @@ package org.openmrs.module.eptsreports.reporting.intergrated.calculation.pvls;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,7 +68,9 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
 
   @Test
   public void shouldReturnBreastfeedingIfMostRecent() {
-    setEvaluationContext(testsHelper.getDate("2018-09-20 00:00:00.0"));
+    HashMap<String, Object> cacheEntries = new HashMap<>();
+    cacheEntries.put("onOrBefore", testsHelper.getDate("2018-09-20 00:00:00.0"));
+    setEvaluationContext(cacheEntries);
     params.put("state", PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN);
 
     CalculationResultMap evaluatedResult =

@@ -1,13 +1,11 @@
 package org.openmrs.module.eptsreports.reporting.unit.cohort.evaluator;
 
-import static junit.framework.TestCase.fail;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.util.*;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -91,52 +89,6 @@ public class CalculationCohortDefinitionEvaluatorTest extends BaseContextMockTes
   }
 
   @Test
-  public void evaluateShouldSetContextNowToDateFromOnDate() throws EvaluationException {
-    Date date = testsHelper.getDate("2018-04-10 00:00:00.0");
-    definition.setOnDate(date);
-    PatientCalculationContext calculationContext =
-        patientCalculationService.createCalculationContext();
-    EvaluationContext context = new EvaluationContext();
-    context.setBaseCohort(new PatientIdSet());
-    when(patientCalculationService.createCalculationContext()).thenReturn(calculationContext);
-    evaluator.evaluate(definition, context);
-    Assert.assertEquals(calculationContext.getNow(), date);
-  }
-
-  @Test
-  public void evaluateShouldSetContextNowToDateFromDateParameter() throws EvaluationException {
-    Date date = testsHelper.getDate("2018-04-10 00:00:00.0");
-    PatientCalculationContext calculationContext =
-        patientCalculationService.createCalculationContext();
-    EvaluationContext context = new EvaluationContext();
-    context.setBaseCohort(new PatientIdSet());
-    context.addParameterValue("date", date);
-    when(patientCalculationService.createCalculationContext()).thenReturn(calculationContext);
-    evaluator.evaluate(definition, context);
-    Assert.assertEquals(calculationContext.getNow(), date);
-  }
-
-  @Test
-  public void evaluateShouldSetContextNowToDateFromEndDateParameter() throws EvaluationException {
-    Date date = testsHelper.getDate("2018-04-10 00:00:00.0");
-    PatientCalculationContext calculationContext =
-        patientCalculationService.createCalculationContext();
-    EvaluationContext context = new EvaluationContext();
-    context.setBaseCohort(new PatientIdSet());
-    context.addParameterValue("endDate", date);
-    when(patientCalculationService.createCalculationContext()).thenReturn(calculationContext);
-    evaluator.evaluate(definition, context);
-    Assert.assertEquals(calculationContext.getNow(), date);
-  }
-
-  @Test
-  @Ignore
-  public void evaluateShouldSetContextNowToCurrentDate() {
-    fail("Not yet Implemented");
-    Assert.assertTrue(true);
-  }
-
-  @Test
   public void evaluateShouldAddLocationToContextCache() throws EvaluationException {
     Location location = new Location(1);
     definition.setLocation(location);
@@ -156,10 +108,10 @@ public class CalculationCohortDefinitionEvaluatorTest extends BaseContextMockTes
         patientCalculationService.createCalculationContext();
     EvaluationContext context = new EvaluationContext();
     context.setBaseCohort(new PatientIdSet());
-    context.addParameterValue("onOrAfter", date);
+    definition.setOnOrAfter(date);
     when(patientCalculationService.createCalculationContext()).thenReturn(calculationContext);
     evaluator.evaluate(definition, context);
-    Assert.assertEquals(calculationContext.getFromCache("onOrAfter"), date);
+    Assert.assertEquals(date, calculationContext.getFromCache("onOrAfter"));
   }
 
   @Test
@@ -169,7 +121,7 @@ public class CalculationCohortDefinitionEvaluatorTest extends BaseContextMockTes
         patientCalculationService.createCalculationContext();
     EvaluationContext context = new EvaluationContext();
     context.setBaseCohort(new PatientIdSet());
-    context.addParameterValue("onOrBefore", date);
+    definition.setOnOrBefore(date);
     when(patientCalculationService.createCalculationContext()).thenReturn(calculationContext);
     evaluator.evaluate(definition, context);
     Assert.assertEquals(calculationContext.getFromCache("onOrBefore"), date);
