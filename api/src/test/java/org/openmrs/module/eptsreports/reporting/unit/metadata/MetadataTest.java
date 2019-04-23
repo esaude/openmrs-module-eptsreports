@@ -1,25 +1,15 @@
 package org.openmrs.module.eptsreports.reporting.unit.metadata;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.HashSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.openmrs.Concept;
-import org.openmrs.ConceptName;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttributeType;
-import org.openmrs.Program;
-import org.openmrs.ProgramWorkflow;
-import org.openmrs.ProgramWorkflowState;
 import org.openmrs.RelationshipType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
@@ -27,7 +17,6 @@ import org.openmrs.api.FormService;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
-import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.Metadata;
 import org.openmrs.module.eptsreports.metadata.MetadataLookupException;
@@ -36,19 +25,17 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Context.class})
 public class MetadataTest extends BaseContextMockTest {
 
-  @Mock private Program hivProgram;
-
-  @Mock private ProgramWorkflow hivInit;
-
   @Mock private Concept concept;
-
-  @Mock private ConceptName conceptName;
-
-  @Mock private ProgramWorkflowService programWorkflowService;
 
   private PatientService patientService;
 
@@ -71,7 +58,6 @@ public class MetadataTest extends BaseContextMockTest {
     personService = mock(PersonService.class);
     locationService = mock(LocationService.class);
     PowerMockito.mockStatic(Context.class);
-    when(Context.getProgramWorkflowService()).thenReturn(programWorkflowService);
     when(Context.getPatientService()).thenReturn(patientService);
     when(Context.getConceptService()).thenReturn(conceptService);
     when(Context.getFormService()).thenReturn(formService);
@@ -80,96 +66,8 @@ public class MetadataTest extends BaseContextMockTest {
     when(Context.getLocationService()).thenReturn(locationService);
   }
 
-  private void setupProgramsMetadata() {
-    when(hivProgram.getName()).thenReturn("HIV");
-    when(programWorkflowService.getProgramByUuid("hiv90098-61c3-11e9-8647-d663bd873d93"))
-        .thenReturn(hivProgram);
-    when(programWorkflowService.getProgramByName("HIV")).thenReturn(hivProgram);
-    when(programWorkflowService.getAllPrograms()).thenReturn(Arrays.asList(hivProgram));
-    when(programWorkflowService.getProgram(1)).thenReturn(hivProgram);
-    when(hivProgram.getWorkflowByName("INITIATION")).thenReturn(hivInit);
-    when(hivProgram.getAllWorkflows()).thenReturn(new HashSet(Arrays.asList(hivInit)));
-    when(hivInit.getConcept()).thenReturn(concept);
-    when(concept.getName()).thenReturn(conceptName);
-    when(conceptName.toString()).thenReturn("initiation");
-    when(hivInit.getUuid()).thenReturn("hiv0Init-61c3-11e9-8647-d663bd873d93");
-    when(hivInit.getId()).thenReturn(new Integer(1));
-  }
-
-  @Test
-  public void getProgramShouldLookUpProgramByUuidOrNameOrId() {
-    setupProgramsMetadata();
-
-    assertEquals(hivProgram, Metadata.getProgram("hiv90098-61c3-11e9-8647-d663bd873d93"));
-    assertEquals(hivProgram, Metadata.getProgram("HIV"));
-    assertEquals(hivProgram, Metadata.getProgram("hiv"));
-    assertEquals(hivProgram, Metadata.getProgram("1"));
-  }
-
-  @Test(expected = MetadataLookupException.class)
-  public void getProgramShouldThrowMetadataLookupExceptionWhenNoProgramIsFound()
-      throws MetadataLookupException {
-    setupProgramsMetadata();
-
-    Metadata.getProgram("missingProgramLookup");
-  }
-
-  @Test
-  public void getProgramWorkflowShouldLookUpWorkFlowByNameOrUuidOrId() {
-    setupProgramsMetadata();
-
-    assertEquals(hivInit, Metadata.getProgramWorkflow("hiv", "INITIATION"));
-    assertEquals(hivInit, Metadata.getProgramWorkflow("hiv", "initiation"));
-    assertEquals(
-        hivInit, Metadata.getProgramWorkflow("hiv", "hiv0Init-61c3-11e9-8647-d663bd873d93"));
-    assertEquals(hivInit, Metadata.getProgramWorkflow("hiv", "1"));
-  }
-
-  @Test(expected = MetadataLookupException.class)
-  public void getProgramWorkflowShouldThrowMetadataLookupExceptionIfWorkflowIsNotFound()
-      throws MetadataLookupException {
-    setupProgramsMetadata();
-
-    Metadata.getProgramWorkflow("hiv", "missingWorkflowLookup");
-  }
-
-  @Test
-  public void getProgramWorkflowStateShouldLookUpStateByNameOrUuidOrId() {
-    setupProgramsMetadata();
-
-    ProgramWorkflowState artInitState = mock(ProgramWorkflowState.class);
-
-    when(hivInit.getStateByName("art")).thenReturn(artInitState);
-    assertEquals(artInitState, Metadata.getProgramWorkflowState("hiv", "INITIATION", "art"));
-
-    when(hivInit.getStates()).thenReturn(new HashSet(Arrays.asList(artInitState)));
-    when(artInitState.getConcept()).thenReturn(concept);
-    when(concept.getName()).thenReturn(conceptName);
-    when(conceptName.toString()).thenReturn("art");
-    assertEquals(artInitState, Metadata.getProgramWorkflowState("hiv", "INITIATION", "ART"));
-
-    when(artInitState.getUuid()).thenReturn("hivAInit-61c3-11e9-8647-d663bd873d93");
-    assertEquals(
-        artInitState,
-        Metadata.getProgramWorkflowState(
-            "hiv", "INITIATION", "hivAInit-61c3-11e9-8647-d663bd873d93"));
-
-    when(artInitState.getId()).thenReturn(new Integer(3));
-    assertEquals(artInitState, Metadata.getProgramWorkflowState("hiv", "INITIATION", "3"));
-  }
-
-  @Test(expected = MetadataLookupException.class)
-  public void getProgramWorkflowStateShouldThrowMetadataLookupExceptionIfStateIsNotFound()
-      throws MetadataLookupException {
-    setupProgramsMetadata();
-
-    Metadata.getProgramWorkflowState("hiv", "INITIATION", "missingStateLookup");
-  }
-
   @Test
   public void getPatientIdentifierTypeShouldLookUpIdTypeByUuidOrNameOrId() {
-    setupProgramsMetadata();
-
     PatientIdentifierType identifierType = new PatientIdentifierType(4);
 
     when(patientService.getPatientIdentifierTypeByUuid("identifier-c3-11e9-8647-d663bd873d93"))
@@ -188,8 +86,6 @@ public class MetadataTest extends BaseContextMockTest {
   @Test(expected = RuntimeException.class)
   public void getPatientIdentifierTypeShouldThrowRuntimeExceptionIfNoneIsFound()
       throws RuntimeException {
-    setupProgramsMetadata();
-
     Metadata.getPatientIdentifierType("missingIdentifierTypeLookup");
   }
 
@@ -443,7 +339,6 @@ public class MetadataTest extends BaseContextMockTest {
     Metadata.getLocation("missingLocationLookup");
   }
 
-  //
   @Test
   public void getPersonAttributeTypeShouldLookUpLocationByUuidOrNameOrId() {
     PersonAttributeType personAttributeType = mock(PersonAttributeType.class);

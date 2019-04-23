@@ -21,7 +21,7 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.springframework.stereotype.Component;
 
 @Component("tbMetadata")
-public class TbMetadata extends CommonMetadata {
+public class TbMetadata extends ProgramsMetadata {
 
   // Concepts
   public Concept getTBTreatmentPlanConcept() {

@@ -20,7 +20,7 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.springframework.stereotype.Component;
 
 @Component("hivMetadata")
-public class HivMetadata extends CommonMetadata {
+public class HivMetadata extends ProgramsMetadata {
 
   // Concepts
   public Concept getHivViralLoadConcept() {
