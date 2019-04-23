@@ -101,30 +101,6 @@ public class EPTSCalculationService {
   }
 
   /**
-   * Evaluates the last patient state for the specified programWorkflowState
-   *
-   * @param cohort
-   * @param location
-   * @param endDate
-   * @param states
-   * @param context
-   * @return
-   */
-  public CalculationResultMap patientStatesBeforeDate(
-      Collection<Integer> cohort,
-      Location location,
-      Date endDate,
-      List<ProgramWorkflowState> states,
-      PatientCalculationContext context) {
-    JembiPatientStateDefinition def = new JembiPatientStateDefinition();
-    def.setLocation(location);
-    def.setStartedOnOrBefore(context.getNow());
-    def.setStates(states);
-    def.setWhich(TimeQualifier.ANY);
-    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
-  }
-
-  /**
    * Evaluates all ProgramEnrollment for specific Program
    *
    * @param program
