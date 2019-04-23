@@ -604,7 +604,7 @@ public class TXTBCohortQueries {
     return cd;
   }
 
-  public CohortDefinition positiveInvesitionResult() {
+  public CohortDefinition positiveInvestigationResult() {
     CohortDefinition cd =
         genericCohortQueries.hasCodedObs(
             tbMetadata.getResearchResultConcept(),
@@ -618,7 +618,7 @@ public class TXTBCohortQueries {
     return cd;
   }
 
-  public CohortDefinition negativeInvesitionResult() {
+  public CohortDefinition negativeInvestigationResult() {
     CohortDefinition cd =
         genericCohortQueries.hasCodedObs(
             tbMetadata.getResearchResultConcept(),
@@ -636,11 +636,11 @@ public class TXTBCohortQueries {
    * at least one “POS” or “NEG” selected for “Resultado da Investigação para TB de BK e/ou RX?”
    * during the reporting period consultations; ( response 703: POS or 664: NEG for question: 6277)
    */
-  public CohortDefinition positiveOrNegativeInvesitionResult() {
+  public CohortDefinition positiveOrNegativeInvestigationResult() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition P = positiveInvesitionResult();
+    CohortDefinition P = positiveInvestigationResult();
     cd.addSearch("P", map(P, codedObsParameterMapping));
-    CohortDefinition N = negativeInvesitionResult();
+    CohortDefinition N = negativeInvestigationResult();
     cd.addSearch("N", map(N, codedObsParameterMapping));
     cd.setCompositionString("P OR N");
     addGeneralParameters(cd);
@@ -651,7 +651,7 @@ public class TXTBCohortQueries {
    * at least one “S” or “N” selected for TB Screening (Rastreio de TB) during the reporting period
    * consultations; (response 1065: YES or 1066: NO for question 6257: SCREENING FOR TB)
    */
-  public CohortDefinition yesOrNoInvesitionResult() {
+  public CohortDefinition yesOrNoInvestigationResult() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition S = codedYesTbScreening();
     cd.addSearch("S", map(S, codedObsParameterMapping));
@@ -707,9 +707,9 @@ public class TXTBCohortQueries {
   // Filter Art_list to Tb_list
   public CohortDefinition txTbDenominatorA() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition i = yesOrNoInvesitionResult();
+    CohortDefinition i = yesOrNoInvestigationResult();
     cd.addSearch("i", map(i, generalParameterMapping));
-    CohortDefinition ii = positiveOrNegativeInvesitionResult();
+    CohortDefinition ii = positiveOrNegativeInvestigationResult();
     cd.addSearch("ii", map(ii, generalParameterMapping));
     CohortDefinition iii = tbTreatmentStartDateWithinReportingDate();
     cd.addSearch("iii", map(iii, generalParameterMapping));
@@ -786,7 +786,7 @@ public class TXTBCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addSearch("A", EptsReportUtils.map(codedYesTbScreening(), codedObsParameterMapping));
     cd.addSearch(
-        "B", EptsReportUtils.map(positiveOrNegativeInvesitionResult(), generalParameterMapping));
+        "B", EptsReportUtils.map(positiveOrNegativeInvestigationResult(), generalParameterMapping));
     cd.addSearch(
         "C",
         EptsReportUtils.map(tbTreatmentStartDateWithinReportingDate(), generalParameterMapping));
@@ -899,10 +899,10 @@ public class TXTBCohortQueries {
             genericCohortQueries.getStartedArtBeforeDate(false),
             "onOrBefore=${endDate},location=${location}"));
     definition.addSearch(
-        "tb-screening", EptsReportUtils.map(yesOrNoInvesitionResult(), generalParameterMapping));
+        "tb-screening", EptsReportUtils.map(yesOrNoInvestigationResult(), generalParameterMapping));
     definition.addSearch(
         "tb-investigation",
-        EptsReportUtils.map(positiveOrNegativeInvesitionResult(), generalParameterMapping));
+        EptsReportUtils.map(positiveOrNegativeInvestigationResult(), generalParameterMapping));
     definition.addSearch(
         "started-tb-treatment",
         EptsReportUtils.map(tbTreatmentStartDateWithinReportingDate(), generalParameterMapping));
