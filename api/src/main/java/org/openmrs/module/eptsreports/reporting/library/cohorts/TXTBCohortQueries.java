@@ -189,30 +189,6 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-  /** INICIO DE TARV USANDO O CONCEITO DE DATA - PERIODO FINAL */
-  public CohortDefinition artTargetHistoricalStartUsingEndDate() {
-    return genericCohortQueries.generalSql(
-        "startARTHistoricalTarget",
-        TXTBQueries.dateObs(
-            tbMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
-            Arrays.asList(
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()),
-            false));
-  }
-
-  public CohortDefinition artTargetHistoricalStartUsingEndDateBeforeStartDate() {
-    return genericCohortQueries.generalSql(
-        "startARTHistoricalTarget",
-        TXTBQueries.dateObsBeforeStartDate(
-            tbMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
-            Arrays.asList(
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())));
-  }
-
   /** PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA DE TUBERCULOSE - NUM PERIODO */
   public CohortDefinition getInTBProgram() {
     CohortDefinition definition =
