@@ -66,7 +66,7 @@ public class JembiObsDefinitionEvaluator implements PatientDataEvaluator {
       q.whereLessOrEqualTo("obs.valueDatetime", valueDateTimeOnOrBefore);
     }
     if (def.isSortByDatetime()) {
-      q.orderAsc("obs.obsDatetime");
+      q.orderAsc("obs.encounter.encounterDatetime");
     } else {
       q.orderAsc("obs.valueDatetime");
     }
