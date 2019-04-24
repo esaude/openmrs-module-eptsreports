@@ -788,12 +788,12 @@ public class TXTBCohortQueries {
   public CohortDefinition newOnARTPositiveScreening() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("newOnARTPositiveScreening()");
+    addGeneralParameters(definition);
     definition.addSearch(
         "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
     definition.addSearch("new-on-art", EptsReportUtils.map(getNewOnArt(), generalParameterMapping));
     definition.addSearch(
         "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
-    addGeneralParameters(definition);
     definition.setCompositionString("denominator AND new-on-art AND positive-screening");
     return definition;
   }
@@ -801,12 +801,12 @@ public class TXTBCohortQueries {
   public CohortDefinition newOnARTNegativeScreening() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("newOnARTPositiveScreening()");
+    addGeneralParameters(definition);
     definition.addSearch(
         "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
     definition.addSearch("new-on-art", EptsReportUtils.map(getNewOnArt(), generalParameterMapping));
     definition.addSearch(
         "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
-    addGeneralParameters(definition);
     definition.setCompositionString("(denominator AND new-on-art) NOT positive-screening");
     return definition;
   }
@@ -814,12 +814,12 @@ public class TXTBCohortQueries {
   public CohortDefinition previouslyOnARTPostiveScreening() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("newOnARTPositiveScreening()");
+    addGeneralParameters(definition);
     definition.addSearch(
         "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
     definition.addSearch("new-on-art", EptsReportUtils.map(getNewOnArt(), generalParameterMapping));
     definition.addSearch(
         "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
-    addGeneralParameters(definition);
     definition.setCompositionString("(denominator AND positive-screening) NOT new-on-art");
     return definition;
   }
@@ -827,12 +827,12 @@ public class TXTBCohortQueries {
   public CohortDefinition previouslyOnARTNegativeScreening() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("previouslyOnARTNegativeScreening()");
+    addGeneralParameters(definition);
     definition.addSearch(
         "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
     definition.addSearch("new-on-art", EptsReportUtils.map(getNewOnArt(), generalParameterMapping));
     definition.addSearch(
         "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
-    addGeneralParameters(definition);
     definition.setCompositionString("denominator NOT (new-on-art OR positive-screening)");
     return definition;
   }
