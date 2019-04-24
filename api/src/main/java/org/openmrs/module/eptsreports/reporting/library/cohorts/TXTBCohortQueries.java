@@ -772,19 +772,6 @@ public class TXTBCohortQueries {
     return cd;
   }
 
-  public CohortDefinition negativeScreening() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition A = tbScreening();
-    addGeneralParameters(A);
-    cd.addSearch("A", map(A, codedObsParameterMapping));
-    CohortDefinition B = positiveScreening();
-    addGeneralParameters(B);
-    cd.addSearch("B", map(B, generalParameterMapping));
-    cd.setCompositionString("A NOT B");
-    addGeneralParameters(cd);
-    return cd;
-  }
-
   public CohortDefinition newOnARTPositiveScreening() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("newOnARTPositiveScreening()");

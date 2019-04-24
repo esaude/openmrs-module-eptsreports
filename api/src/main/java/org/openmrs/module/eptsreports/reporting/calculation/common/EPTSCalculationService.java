@@ -50,14 +50,14 @@ public class EPTSCalculationService {
    * @return
    */
   public CalculationResultMap getObs(
-          Concept concept,
-          List<EncounterType> encounterTypes,
-          Collection<Integer> cohort,
-          List<Location> locationList,
-          List<Concept> valueCodedList,
-          TimeQualifier timeQualifier,
-          Date startDate,
-          PatientCalculationContext context) {
+      Concept concept,
+      List<EncounterType> encounterTypes,
+      Collection<Integer> cohort,
+      List<Location> locationList,
+      List<Concept> valueCodedList,
+      TimeQualifier timeQualifier,
+      Date startDate,
+      PatientCalculationContext context) {
     ObsForPersonDataDefinition def = new ObsForPersonDataDefinition();
     def.setName(timeQualifier.name() + "obs");
     def.setWhich(timeQualifier);
@@ -89,10 +89,10 @@ public class EPTSCalculationService {
    * @return
    */
   public CalculationResultMap allPatientStates(
-          Collection<Integer> cohort,
-          Location location,
-          ProgramWorkflowState programWorkflowState,
-          PatientCalculationContext context) {
+      Collection<Integer> cohort,
+      Location location,
+      ProgramWorkflowState programWorkflowState,
+      PatientCalculationContext context) {
     JembiPatientStateDefinition def = new JembiPatientStateDefinition();
     def.setLocation(location);
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
@@ -113,11 +113,11 @@ public class EPTSCalculationService {
    * @return
    */
   public CalculationResultMap patientStatesBeforeDate(
-          Collection<Integer> cohort,
-          Location location,
-          Date endDate,
-          List<ProgramWorkflowState> states,
-          PatientCalculationContext context) {
+      Collection<Integer> cohort,
+      Location location,
+      Date endDate,
+      List<ProgramWorkflowState> states,
+      PatientCalculationContext context) {
     JembiPatientStateDefinition def = new JembiPatientStateDefinition();
     def.setLocation(location);
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
@@ -136,9 +136,9 @@ public class EPTSCalculationService {
    * @return
    */
   public CalculationResultMap allProgramEnrollment(
-          Program program, Collection<Integer> cohort, PatientCalculationContext context) {
+      Program program, Collection<Integer> cohort, PatientCalculationContext context) {
     ProgramEnrollmentsForPatientDataDefinition def =
-            new ProgramEnrollmentsForPatientDataDefinition();
+        new ProgramEnrollmentsForPatientDataDefinition();
     def.setName("All in " + program.getName());
     def.setWhichEnrollment(TimeQualifier.ANY);
     def.setProgram(program);
@@ -157,10 +157,10 @@ public class EPTSCalculationService {
    * @return first encounter for the patient
    */
   public CalculationResultMap firstEncounter(
-          List<EncounterType> encounterTypes,
-          Collection<Integer> cohort,
-          Location location,
-          PatientCalculationContext context) {
+      List<EncounterType> encounterTypes,
+      Collection<Integer> cohort,
+      Location location,
+      PatientCalculationContext context) {
     EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition();
     def.setWhich(TimeQualifier.FIRST);
     def.setLocationList(Arrays.asList(location));
@@ -185,15 +185,15 @@ public class EPTSCalculationService {
    * @return
    */
   public CalculationResultMap firstObs(
-          Concept question,
-          Concept answer,
-          Location location,
-          boolean sortByDatetime,
-          Date valueDateTimeOnOrAfter,
-          Date valueDateTimeOnOrBefore,
-          List<EncounterType> encounterTypeList,
-          Collection<Integer> cohort,
-          PatientCalculationContext context) {
+      Concept question,
+      Concept answer,
+      Location location,
+      boolean sortByDatetime,
+      Date valueDateTimeOnOrAfter,
+      Date valueDateTimeOnOrBefore,
+      List<EncounterType> encounterTypeList,
+      Collection<Integer> cohort,
+      PatientCalculationContext context) {
     JembiObsDefinition definition = new JembiObsDefinition("JembiObsDefinition");
     definition.setQuestion(question);
     definition.setAnswer(answer);
@@ -218,14 +218,14 @@ public class EPTSCalculationService {
    * @return
    */
   public CalculationResultMap lastObs(
-          Concept question,
-          Concept answer,
-          Location location,
-          boolean sortByDatetime,
-          Date valueDateTimeOnOrAfter,
-          Date valueDateTimeOnOrBefore,
-          Collection<Integer> cohort,
-          PatientCalculationContext context) {
+      Concept question,
+      Concept answer,
+      Location location,
+      boolean sortByDatetime,
+      Date valueDateTimeOnOrAfter,
+      Date valueDateTimeOnOrBefore,
+      Collection<Integer> cohort,
+      PatientCalculationContext context) {
     JembiObsDefinition definition = new JembiObsDefinition("JembiObsDefinition");
     definition.setQuestion(question);
     definition.setAnswer(answer);
@@ -247,12 +247,12 @@ public class EPTSCalculationService {
    * @return
    */
   public CalculationResultMap firstPatientProgram(
-          Program program,
-          Location location,
-          Collection<Integer> cohort,
-          PatientCalculationContext context) {
+      Program program,
+      Location location,
+      Collection<Integer> cohort,
+      PatientCalculationContext context) {
     JembiProgramEnrollmentForPatientDefinition definition =
-            new JembiProgramEnrollmentForPatientDefinition("First Patient Program");
+        new JembiProgramEnrollmentForPatientDefinition("First Patient Program");
     definition.setProgram(program);
     definition.setLocation(location);
     return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
@@ -271,13 +271,13 @@ public class EPTSCalculationService {
    * @return
    */
   public CalculationResultMap lastObs(
-          List<EncounterType> encounterTypes,
-          Concept concept,
-          Location location,
-          Date startDate,
-          Date endDate,
-          Collection<Integer> cohort,
-          PatientCalculationContext context) {
+      List<EncounterType> encounterTypes,
+      Concept concept,
+      Location location,
+      Date startDate,
+      Date endDate,
+      Collection<Integer> cohort,
+      PatientCalculationContext context) {
     ObsForPersonDataDefinition definition = new ObsForPersonDataDefinition();
     definition.setName("last obs");
     definition.setEncounterTypeList(encounterTypes);
@@ -290,12 +290,12 @@ public class EPTSCalculationService {
   }
 
   public CalculationResultMap allObservations(
-          Concept question,
-          Concept answer,
-          List<EncounterType> encounterTypes,
-          Location location,
-          Collection<Integer> cohort,
-          PatientCalculationContext context) {
+      Concept question,
+      Concept answer,
+      List<EncounterType> encounterTypes,
+      Location location,
+      Collection<Integer> cohort,
+      PatientCalculationContext context) {
     ObsForPersonDataDefinition definition = new ObsForPersonDataDefinition();
     definition.setName("last obs");
     definition.setEncounterTypeList(encounterTypes);
