@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
@@ -19,14 +18,10 @@ import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.MetadataLookupException;
 import org.openmrs.module.eptsreports.metadata.ProgramsMetadata;
-import org.openmrs.test.BaseContextMockTest;
+import org.openmrs.module.eptsreports.reporting.unit.PowerMockBaseContextTest;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Context.class})
-public class ProgramsMetadataTest extends BaseContextMockTest {
+public class ProgramsMetadataTest extends PowerMockBaseContextTest {
 
   @Mock private Program hivProgram;
 

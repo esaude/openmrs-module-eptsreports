@@ -1,8 +1,12 @@
 package org.openmrs.module.eptsreports.reporting.unit.metadata;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
@@ -20,20 +24,10 @@ import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.Metadata;
 import org.openmrs.module.eptsreports.metadata.MetadataLookupException;
-import org.openmrs.test.BaseContextMockTest;
+import org.openmrs.module.eptsreports.reporting.unit.PowerMockBaseContextTest;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.Arrays;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Context.class})
-public class MetadataTest extends BaseContextMockTest {
+public class MetadataTest extends PowerMockBaseContextTest {
 
   @Mock private Concept concept;
 
