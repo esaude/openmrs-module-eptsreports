@@ -43,7 +43,7 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
 
     Map<String, Object> cacheEntries = new HashMap<String, Object>();
     cacheEntries.put("location", Context.getLocationService().getLocation(1));
-    setEvaluationContext(testsHelper.getDate("2019-05-30 00:00:00.0"));
+    cacheEntries.put("onOrBefore", testsHelper.getDate("2019-05-30 00:00:00.0"));
     setEvaluationContext(cacheEntries);
 
     executeDataSet("calculationsTest.xml");

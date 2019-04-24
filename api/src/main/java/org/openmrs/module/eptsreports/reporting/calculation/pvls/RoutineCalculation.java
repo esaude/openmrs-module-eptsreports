@@ -70,7 +70,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
     Location location = (Location) context.getFromCache("location");
     Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
     Concept regimeConcept = hivMetadata.getRegimeConcept();
-    Date latestVlLowerDateLimit = EptsCalculationUtils.addMonths(context.getNow(), -12);
+    Date onOrBefore = (Date) context.getFromCache("onOrBefore");
+    Date latestVlLowerDateLimit = EptsCalculationUtils.addMonths(onOrBefore, -12);
 
     // limits the number of obs we are calling up
     Date allVlLowerDateLimit =
@@ -113,7 +114,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
             viralLoadConcept,
             location,
             latestVlLowerDateLimit,
-            context.getNow(),
+            onOrBefore,
             cohort,
             context);
 
@@ -141,14 +142,14 @@ public class RoutineCalculation extends AbstractPatientCalculation {
         // we do not consider if the patient's last VL obs is not within
         // window
         if (lastVlObs.getObsDatetime().after(latestVlLowerDateLimit)
-            && lastVlObs.getObsDatetime().before(context.getNow())) {
+            && lastVlObs.getObsDatetime().before(onOrBefore)) {
 
           // get all the VL results for each patient in the last 12 months
           ListResult vlObsResult = (ListResult) patientHavingVL.get(pId);
           List<Obs> vLoadList = EptsCalculationUtils.extractResultValues(vlObsResult);
           List<Obs> viralLoadForPatientTakenWithin12Months =
               getViralLoadForPatientTakenWithin12Months(
-                  context.getNow(), latestVlLowerDateLimit, vLoadList);
+                  onOrBefore, latestVlLowerDateLimit, vLoadList);
 
           // find out for criteria 1 a
           // the patients should be 6 to 9 months after ART initiation
@@ -270,13 +271,13 @@ public class RoutineCalculation extends AbstractPatientCalculation {
   }
 
   private List<Obs> getViralLoadForPatientTakenWithin12Months(
-      Date now, Date latestVlLowerDateLimit, List<Obs> vLoadList) {
+      Date onOrBefore, Date latestVlLowerDateLimit, List<Obs> vLoadList) {
     List<Obs> viralLoadForPatientTakenWithin12Months = new ArrayList<>();
     // populate viralLoadForPatientTakenWithin12Months with obs which fall within the 12month window
     for (Obs obs : vLoadList) {
       if (obs != null
           && obs.getObsDatetime().after(latestVlLowerDateLimit)
-          && obs.getObsDatetime().before(now)) {
+          && obs.getObsDatetime().before(onOrBefore)) {
         viralLoadForPatientTakenWithin12Months.add(obs);
       }
     }
