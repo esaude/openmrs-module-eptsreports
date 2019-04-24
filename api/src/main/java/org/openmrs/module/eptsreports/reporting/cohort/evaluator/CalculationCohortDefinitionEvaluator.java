@@ -13,10 +13,8 @@
  */
 package org.openmrs.module.eptsreports.reporting.cohort.evaluator;
 
-import java.util.Date;
 import java.util.Set;
 import org.openmrs.Cohort;
-import org.openmrs.Location;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -63,25 +61,11 @@ public class CalculationCohortDefinitionEvaluator implements CohortDefinitionEva
       CohortDefinition cohortDefinition, EvaluationContext context) {
     CalculationCohortDefinition cd = (CalculationCohortDefinition) cohortDefinition;
 
-    // Use date from cohort definition, or from ${date} or ${endDate} or now
-    Date onDate = cd.getOnDate();
-    if (onDate == null) {
-      onDate = (Date) context.getParameterValue("date");
-      if (onDate == null) {
-        onDate = (Date) context.getParameterValue("endDate");
-        if (onDate == null) {
-          onDate = new Date();
-        }
-      }
-    }
-    Location location = cd.getLocation();
-
     PatientCalculationService pcs = Context.getService(PatientCalculationService.class);
     PatientCalculationContext calcContext = pcs.createCalculationContext();
-    calcContext.setNow(onDate);
-    calcContext.addToCache("location", location);
-    calcContext.addToCache("onOrAfter", context.getParameterValue("onOrAfter"));
-    calcContext.addToCache("onOrBefore", context.getParameterValue("onOrBefore"));
+    calcContext.addToCache("location", cd.getLocation());
+    calcContext.addToCache("onOrAfter", cd.getOnOrAfter());
+    calcContext.addToCache("onOrBefore", cd.getOnOrBefore());
 
     Cohort cohort = context.getBaseCohort();
     if (cohort == null) {
