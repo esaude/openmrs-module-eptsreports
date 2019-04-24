@@ -839,29 +839,28 @@ public class TXTBCohortQueries {
 
   public CohortDefinition patientsNewOnARTNumerator() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition NUM = txTbNumerator();
-    cd.addSearch("NUM", map(NUM, generalParameterMapping));
+    addGeneralParameters(cd);
+    cd.addSearch("NUM", map(txTbNumerator(), generalParameterMapping));
     cd.addSearch(
         "started-during-reporting-period",
         EptsReportUtils.map(
             genericCohortQueries.getStartedArtOnPeriod(false, true),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("NUM AND started-during-reporting-period");
-    addGeneralParameters(cd);
     return cd;
   }
 
   public CohortDefinition patientsPreviouslyOnARTNumerator() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition NUM = txTbNumerator();
-    cd.addSearch("NUM", map(NUM, generalParameterMapping));
+    addGeneralParameters(cd);
+    cd.addSearch("NUM", map(txTbNumerator(), generalParameterMapping));
     cd.addSearch(
         "started-before-start-reporting-period",
         EptsReportUtils.map(
             genericCohortQueries.getStartedArtBeforeDate(false),
             "onOrBefore=${startDate-1d},location=${location}"));
     cd.setCompositionString("NUM AND started-before-start-reporting-period");
-    addGeneralParameters(cd);
+
     return cd;
   }
 
@@ -916,9 +915,7 @@ public class TXTBCohortQueries {
   public CohortDefinition getNewOnArt() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("TxTB New on ART");
-    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "Location", Location.class));
+    addGeneralParameters(definition);
     definition.addSearch(
         "started-on-period",
         EptsReportUtils.map(
