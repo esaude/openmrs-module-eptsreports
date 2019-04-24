@@ -2,7 +2,6 @@ package org.openmrs.module.eptsreports.reporting.intergrated.calculation.pvls;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import org.junit.Assert;
 import org.junit.Before;
