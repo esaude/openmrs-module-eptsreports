@@ -307,7 +307,7 @@ public class RoutineCalculationTest extends BaseContextMockTest {
     PatientCalculationContext calculationContext =
         patientCalculationService.createCalculationContext();
     calculationContext.addToCache("location", location);
-    calculationContext.setNow(now);
+    calculationContext.addToCache("onOrBefore", now);
 
     Collection<Integer> cohort = Arrays.asList(patient.getId());
 
