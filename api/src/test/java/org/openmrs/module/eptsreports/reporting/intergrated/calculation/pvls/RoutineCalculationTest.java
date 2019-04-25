@@ -102,12 +102,4 @@ public class RoutineCalculationTest extends BasePatientCalculationTest {
     Assert.assertTrue(
         service.evaluate(cohort, getCalculation(), params, evaluationContext).getAsBoolean(11));
   }
-
-  @Test
-  public void calculateRoutineCriteria3WShouldMatchStartRegimeBeforeLatestVlDate() {
-    List<Integer> cohort = Arrays.asList(12);
-    PatientCalculationContext evaluationContext = getEvaluationContext();
-    Assert.assertTrue(
-        service.evaluate(cohort, getCalculation(), params, evaluationContext).getAsBoolean(12));
-  }
 }

@@ -17,7 +17,6 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.openmrs.Concept;
@@ -41,16 +40,12 @@ import org.openmrs.module.eptsreports.reporting.calculation.generic.InitialArtSt
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForMoreThanXmonthsCalcultion;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineCalculation;
 import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
+import org.openmrs.module.eptsreports.reporting.unit.PowerMockBaseContextTest;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PatientsOnRoutineEnum;
 import org.openmrs.module.reporting.common.TimeQualifier;
-import org.openmrs.test.BaseContextMockTest;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Context.class})
-public class RoutineCalculationTest extends BaseContextMockTest {
+public class RoutineCalculationTest extends PowerMockBaseContextTest {
 
   @Mock private HivMetadata hivMetadata;
 
@@ -83,11 +78,12 @@ public class RoutineCalculationTest extends BaseContextMockTest {
     testsHelper = new TestsHelper();
   }
 
+  // Criteria 2 tests
   @Test
   public void
       evaluateShouldReturnTrueForAdultsAndChildrenWithVl12To15MonthsApartAndValueOfLessThan1000Copies() {
     Date artStartDate = testsHelper.getDate("2017-02-19 00:00:00.0");
-    Date firstVlDate = testsHelper.getDate("2017-02-19 00:00:00.0");
+    Date firstVlDate = testsHelper.getDate("2016-12-19 00:00:00.0");
     Date secondVlDate = testsHelper.getDate("2018-02-19 00:00:00.0");
     Date now = testsHelper.getDate("2019-02-18 00:00:00.0");
     double vlValueNumeric = 999.0;
@@ -125,9 +121,9 @@ public class RoutineCalculationTest extends BaseContextMockTest {
   }
 
   @Test
-  public void evaluateShouldReturnTrueForBreastfeedingAndPregnantWithVlValueOfLessThan1000Copies() {
+  public void evaluateShouldReturnFalseWithVlTwelveMonthsBeforeLastVL() {
     Date artStartDate = testsHelper.getDate("2017-02-19 00:00:00.0");
-    Date firstVlDate = testsHelper.getDate("2018-01-19 00:00:00.0");
+    Date firstVlDate = testsHelper.getDate("2017-03-19 00:00:00.0");
     Date secondVlDate = testsHelper.getDate("2018-02-19 00:00:00.0");
     Date now = testsHelper.getDate("2019-02-18 00:00:00.0");
     double vlValueNumeric = 999.0;
@@ -159,13 +155,51 @@ public class RoutineCalculationTest extends BaseContextMockTest {
             vl2,
             regimeChange,
             true,
-            PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT);
+            PatientsOnRoutineEnum.ADULTCHILDREN);
+
+    Assert.assertEquals(false, resultMap.get(patient.getId()).getValue());
+  }
+
+  // Criteria 3 tests
+  @Test
+  public void evaluateShouldReturnTrueWhenLastVlIsAfterFirstRegimenDate() {
+    Date artStartDate = testsHelper.getDate("2018-02-19 00:00:00.0");
+    Date firstVlDate = testsHelper.getDate("2018-02-19 00:00:00.0");
+    Date now = testsHelper.getDate("2019-02-18 00:00:00.0");
+    double vlValueNumeric = 999.0;
+
+    Location location = new Location(1);
+    Person person = new Person(1);
+    Concept viralLoadConcept = new Concept(856);
+
+    Obs vl1 = new Obs(person, viralLoadConcept, firstVlDate, location);
+    vl1.setObsId(1);
+    vl1.setValueNumeric(vlValueNumeric);
+    List<Obs> vlList = Collections.singletonList(vl1);
+
+    Concept regimeConcept = new Concept(1088);
+    Obs regimeChange =
+        new Obs(person, regimeConcept, testsHelper.getDate("2016-02-18 00:00:00.0"), location);
+
+    Patient patient = new Patient(person);
+
+    CalculationResultMap resultMap =
+        getResultMap(
+            patient,
+            artStartDate,
+            now,
+            location,
+            vlList,
+            vl1,
+            regimeChange,
+            true,
+            PatientsOnRoutineEnum.ADULTCHILDREN);
 
     Assert.assertEquals(true, resultMap.get(patient.getId()).getValue());
   }
 
   @Test
-  public void evaluateShouldReturnFalseWhenCurrentVlIsTheFirstOne() {
+  public void evaluateShouldReturnFalseWhenLastVlIsBeforeFirstRegimenDate() {
     Date artStartDate = testsHelper.getDate("2018-02-19 00:00:00.0");
     Date firstVlDate = testsHelper.getDate("2018-02-19 00:00:00.0");
     Date now = testsHelper.getDate("2019-02-18 00:00:00.0");
@@ -202,7 +236,7 @@ public class RoutineCalculationTest extends BaseContextMockTest {
   }
 
   @Test
-  public void evaluateShouldReturnFalseWhenThereIsNoViralLoadForPatientTakenWithin12Months() {
+  public void evaluateShouldReturnFalseWhenThereIsViralLoadForPatientTakenWithin12Months() {
     Date artStartDate = testsHelper.getDate("2017-02-19 00:00:00.0");
     Date firstVlDate = testsHelper.getDate("2017-02-19 00:00:00.0");
     Date secondVlDate = testsHelper.getDate("2018-01-19 00:00:00.0");
@@ -222,7 +256,7 @@ public class RoutineCalculationTest extends BaseContextMockTest {
 
     Concept regimeConcept = new Concept(1088);
     Obs regimeChange =
-        new Obs(person, regimeConcept, testsHelper.getDate("2019-02-18 00:00:00.0"), location);
+        new Obs(person, regimeConcept, testsHelper.getDate("2017-01-18 00:00:00.0"), location);
 
     Patient patient = new Patient(person);
 
@@ -268,7 +302,7 @@ public class RoutineCalculationTest extends BaseContextMockTest {
     PatientCalculationContext calculationContext =
         patientCalculationService.createCalculationContext();
     calculationContext.addToCache("location", location);
-    calculationContext.setNow(now);
+    calculationContext.addToCache("onOrBefore", now);
 
     Collection<Integer> cohort = Arrays.asList(patient.getId());
 
@@ -280,6 +314,7 @@ public class RoutineCalculationTest extends BaseContextMockTest {
     vlResultsMap.put(patient.getId(), value);
     when(eptsCalculationService.getObs(
             eq(viralLoadConcept),
+            anyList(),
             eq(cohort),
             eq(Arrays.asList(location)),
             (List<Concept>) isNull(),
@@ -292,6 +327,7 @@ public class RoutineCalculationTest extends BaseContextMockTest {
     regimenChangeMap.put(patient.getId(), new ObsResult(regimeChange, null));
     when(eptsCalculationService.getObs(
             eq(regimeConcept),
+            anyList(),
             eq(cohort),
             eq(Arrays.asList(location)),
             (List<Concept>) anyList(),

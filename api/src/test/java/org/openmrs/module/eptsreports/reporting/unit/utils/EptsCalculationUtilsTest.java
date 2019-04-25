@@ -12,7 +12,6 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -29,6 +28,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.CalculationWithResultFinder;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiObsDefinition;
 import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
+import org.openmrs.module.eptsreports.reporting.unit.PowerMockBaseContextTest;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDatetimeDataDefinition;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
@@ -40,14 +40,9 @@ import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.test.BaseContextMockTest;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Context.class})
-public class EptsCalculationUtilsTest extends BaseContextMockTest {
+public class EptsCalculationUtilsTest extends PowerMockBaseContextTest {
 
   @Mock private PatientCalculationService service;
 
@@ -330,34 +325,28 @@ public class EptsCalculationUtilsTest extends BaseContextMockTest {
 
   @Test
   public void monthsSinceShouldGetMonthsIncludingDaysDiffBetween2Dates() {
-    float delta = (float) 0.0001;
-
     Assert.assertEquals(
-        0.5667,
-        EptsCalculationUtils.monthsSinceIncludingDaysDiff(
+        0,
+        EptsCalculationUtils.monthsSince(
             testsHelper.getDate("2019-02-01 00:00:00.0"),
-            testsHelper.getDate("2019-02-18 00:00:00.0")),
-        delta);
+            testsHelper.getDate("2019-02-18 00:00:00.0")));
     Assert.assertEquals(
         1,
-        EptsCalculationUtils.monthsSinceIncludingDaysDiff(
+        EptsCalculationUtils.monthsSince(
             testsHelper.getDate("2019-01-21 00:00:00.0"),
-            testsHelper.getDate("2019-02-20 00:00:00.0")),
-        delta);
+            testsHelper.getDate("2019-02-21 00:00:00.0")));
     Assert.assertEquals(
-        61.9,
-        EptsCalculationUtils.monthsSinceIncludingDaysDiff(
+        61,
+        EptsCalculationUtils.monthsSince(
             testsHelper.getDate("2014-01-28 00:00:00.0"),
-            testsHelper.getDate("2019-02-28 00:00:00.0")),
-        delta);
+            testsHelper.getDate("2019-02-28 00:00:00.0")));
 
     // the arguments ordering doesn't matters with joda
     Assert.assertEquals(
-        1.2667,
-        EptsCalculationUtils.monthsSinceIncludingDaysDiff(
+        1,
+        EptsCalculationUtils.monthsSince(
             (testsHelper.getDate("2019-02-28 00:00:00.0")),
-            testsHelper.getDate("2019-01-21 00:00:00.0")),
-        delta);
+            testsHelper.getDate("2019-01-21 00:00:00.0")));
   }
 
   @Test

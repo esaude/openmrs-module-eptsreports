@@ -263,17 +263,6 @@ public class EptsCalculationUtils {
   }
 
   /**
-   * Calculates the months since the given date factoring in days into the result
-   *
-   * @param date1 the date
-   * @param date2 the date2
-   * @return the number of days
-   */
-  public static float monthsSinceIncludingDaysDiff(Date date1, Date date2) {
-    return daysSince(date1, date2) / (float) 30;
-  }
-
-  /**
    * Calculates the days since the given date
    *
    * @param date1 the date
@@ -333,6 +322,20 @@ public class EptsCalculationUtils {
   }
 
   /**
+   * Adds months to a date
+   *
+   * @param date, to add days to
+   * @param days, number of days to add to date
+   * @return new date with added days
+   */
+  public static Date addDays(Date date, int days) {
+    Calendar c = Calendar.getInstance();
+    c.setTime(date);
+    c.add(Calendar.DATE, days);
+    return c.getTime();
+  }
+
+  /**
    * Evaluates genders of each patient
    *
    * @param cohort the patient ids
@@ -368,5 +371,24 @@ public class EptsCalculationUtils {
         : (dateInQuestion.equals(startDate)
             || dateInQuestion.equals(endDate)
             || (startDate.compareTo(dateInQuestion) * dateInQuestion.compareTo(endDate) >= 0));
+  }
+
+  /**
+   * Check if there are any Viral Load observations between start and end dates
+   *
+   * @param vlObsList
+   * @param startDate
+   * @param endDate
+   * @return boolean
+   */
+  public static boolean anyObsBetween(List<Obs> vlObsList, Date startDate, Date endDate) {
+    for (Obs obs : vlObsList) {
+      if (obs.getObsDatetime() != null
+          && obs.getObsDatetime().after(startDate)
+          && obs.getObsDatetime().before(endDate)) {
+        return true;
+      }
+    }
+    return false;
   }
 }

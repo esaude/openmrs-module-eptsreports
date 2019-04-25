@@ -92,6 +92,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               false,
               beginPeriodStartDate,
               beginPeriodEndDate,
+              null,
               cohort,
               context);
       CalculationResultMap endProfilaxiaObservations =

@@ -149,7 +149,7 @@
 		encounter_datetime="2018-01-21 00:00:00.0" creator="1"
 		date_created="2019-01-31 14:09:05.0" voided="false"
 		uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6277008" />
-	<encounter encounter_id="2777008" encounter_type="6777004"
+	<encounter encounter_id="2777008" encounter_type="6777002"
 		patient_id="1777005" location_id="1" form_id="1"
 		encounter_datetime="2018-01-21 00:00:00.0" creator="1"
 		date_created="2019-01-31 14:09:05.0" voided="false"
@@ -224,9 +224,14 @@
 		encounter_datetime="1998-09-01 00:00:00.0" creator="1"
 		date_created="2015-05-21 14:09:05.0" voided="false"
 		uuid="b4539948-3640-11e9-a2e0-f3026db0c7c1" />
+	<encounter encounter_id="2777023" encounter_type="6777002"
+		patient_id="6" location_id="1" form_id="1"
+		encounter_datetime="1998-09-01 00:00:00.0" creator="1"
+		date_created="2015-05-21 14:09:05.0" voided="false"
+		uuid="24339337-f5d0-4406-b5c2-61d7240175f1" />
 
 	<obs obs_id="3777002" person_id="6" concept_id="7777002"
-		encounter_id="3" obs_datetime="2018-06-21 00:00:00.0" location_id="1"
+		encounter_id="2777023" obs_datetime="2018-06-21 00:00:00.0" location_id="1"
 		value_coded="7777003" comments="" creator="1"
 		date_created="2019-01-29 14:11:13.0" voided="false"
 		uuid="be48cdcb-6a76-47e3-9f2e-263503777002" />
@@ -272,7 +277,7 @@
 		date_created="2019-01-29 14:11:13.0" voided="false"
 		uuid="be48cdcb-6a76-47e3-9f2e-263503777011" />
 	<obs obs_id="3777012" person_id="1777005" concept_id="7777002"
-		encounter_id="3" obs_datetime="2018-06-21 00:00:00.0" location_id="1"
+		encounter_id="2777008" obs_datetime="2018-06-21 00:00:00.0" location_id="1"
 		value_coded="7777003" comments="" creator="1"
 		date_created="2019-01-29 14:11:13.0" voided="false"
 		uuid="be48cdcb-6a76-47e3-9f2e-263503777012" />

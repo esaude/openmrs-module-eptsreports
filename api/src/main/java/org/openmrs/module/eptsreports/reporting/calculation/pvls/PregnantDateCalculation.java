@@ -48,7 +48,8 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap resultMap = new CalculationResultMap();
 
     Location location = (Location) context.getFromCache("location");
-    Date oneYearBefore = EptsCalculationUtils.addMonths(context.getNow(), -12);
+    Date onOrBefore = (Date) context.getFromCache("onOrBefore");
+    Date oneYearBefore = EptsCalculationUtils.addMonths(onOrBefore, -12);
 
     EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
     EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
@@ -67,6 +68,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap pregnantMap =
         ePTSCalculationService.getObs(
             pregnant,
+            null,
             femaleCohort,
             Arrays.asList(location),
             Arrays.asList(gestation),
@@ -77,6 +79,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap markedPregnantByWeeks =
         ePTSCalculationService.getObs(
             pregnantBasedOnWeeks,
+            null,
             femaleCohort,
             Arrays.asList(location),
             null,
@@ -87,6 +90,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap markedPregnantDueDate =
         ePTSCalculationService.getObs(
             pregnancyDueDate,
+            null,
             femaleCohort,
             Arrays.asList(location),
             null,
@@ -103,7 +107,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
             viralLoadConcept,
             location,
             oneYearBefore,
-            context.getNow(),
+            onOrBefore,
             femaleCohort,
             context);
 

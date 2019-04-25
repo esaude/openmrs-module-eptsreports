@@ -40,6 +40,7 @@ public class EPTSCalculationService {
    * Evaluate for obs based on the time modifier
    *
    * @param concept
+   * @param encounterTypes
    * @param cohort
    * @param locationList
    * @param valueCodedList
@@ -50,6 +51,7 @@ public class EPTSCalculationService {
    */
   public CalculationResultMap getObs(
       Concept concept,
+      List<EncounterType> encounterTypes,
       Collection<Integer> cohort,
       List<Location> locationList,
       List<Concept> valueCodedList,
@@ -60,7 +62,11 @@ public class EPTSCalculationService {
     def.setName(timeQualifier.name() + "obs");
     def.setWhich(timeQualifier);
     def.setQuestion(concept);
-    def.setOnOrBefore(context.getNow());
+    if (encounterTypes != null) {
+      def.setEncounterTypeList(encounterTypes);
+    }
+    Date onOrBefore = (Date) context.getFromCache("onOrBefore");
+    def.setOnOrBefore(onOrBefore);
     if (startDate != null) {
       def.setOnOrAfter(startDate);
     }
@@ -89,7 +95,8 @@ public class EPTSCalculationService {
       PatientCalculationContext context) {
     JembiPatientStateDefinition def = new JembiPatientStateDefinition();
     def.setLocation(location);
-    def.setStartedOnOrBefore(context.getNow());
+    Date onOrBefore = (Date) context.getFromCache("onOrBefore");
+    def.setStartedOnOrBefore(onOrBefore);
     def.setStates(Arrays.asList(programWorkflowState));
     def.setWhich(TimeQualifier.ANY);
     return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
@@ -100,7 +107,8 @@ public class EPTSCalculationService {
    *
    * @param cohort
    * @param location
-   * @param programWorkflowState
+   * @param endDate
+   * @param states
    * @param context
    * @return
    */
@@ -112,7 +120,8 @@ public class EPTSCalculationService {
       PatientCalculationContext context) {
     JembiPatientStateDefinition def = new JembiPatientStateDefinition();
     def.setLocation(location);
-    def.setStartedOnOrBefore(context.getNow());
+    Date onOrBefore = (Date) context.getFromCache("onOrBefore");
+    def.setStartedOnOrBefore(onOrBefore);
     def.setStates(states);
     def.setWhich(TimeQualifier.ANY);
     return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
@@ -133,17 +142,19 @@ public class EPTSCalculationService {
     def.setName("All in " + program.getName());
     def.setWhichEnrollment(TimeQualifier.ANY);
     def.setProgram(program);
-    def.setEnrolledOnOrBefore(context.getNow());
+    Date onOrBefore = (Date) context.getFromCache("onOrBefore");
+    def.setEnrolledOnOrBefore(onOrBefore);
     return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
   }
 
   /**
    * Evaluates the first encounter of a given type of each patient
    *
-   * @param encounterType the encounter type
-   * @param cohort the patient ids
-   * @param context the calculation context
-   * @return the encounters in a calculation result map
+   * @param encounterTypes
+   * @param cohort
+   * @param location
+   * @param context
+   * @return first encounter for the patient
    */
   public CalculationResultMap firstEncounter(
       List<EncounterType> encounterTypes,
@@ -180,6 +191,7 @@ public class EPTSCalculationService {
       boolean sortByDatetime,
       Date valueDateTimeOnOrAfter,
       Date valueDateTimeOnOrBefore,
+      List<EncounterType> encounterTypeList,
       Collection<Integer> cohort,
       PatientCalculationContext context) {
     JembiObsDefinition definition = new JembiObsDefinition("JembiObsDefinition");
@@ -190,6 +202,7 @@ public class EPTSCalculationService {
     definition.setSortByDatetime(sortByDatetime);
     definition.setValueDateTimeOnOrAfter(valueDateTimeOnOrAfter);
     definition.setValueDateTimeOnOrBefore(valueDateTimeOnOrBefore);
+    definition.setEncounterTypeList(encounterTypeList);
     return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
   }
 

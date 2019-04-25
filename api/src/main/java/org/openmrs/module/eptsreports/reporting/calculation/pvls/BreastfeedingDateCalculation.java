@@ -57,7 +57,8 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     Concept yes = hivMetadata.getYesConcept();
     Concept criteriaForHivStart = hivMetadata.getCriteriaForArtStart();
     Concept priorDeliveryDate = hivMetadata.getPriorDeliveryDateConcept();
-    Date oneYearBefore = EptsCalculationUtils.addMonths(context.getNow(), -12);
+    Date onOrBefore = (Date) context.getFromCache("onOrBefore");
+    Date oneYearBefore = EptsCalculationUtils.addMonths(onOrBefore, -12);
 
     // get female patients only
     Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);
@@ -65,6 +66,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap lactatingMap =
         ePTSCalculationService.getObs(
             breastfeedingConcept,
+            null,
             femaleCohort,
             Arrays.asList(location),
             Arrays.asList(yes),
@@ -75,6 +77,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap criteriaHivStartMap =
         ePTSCalculationService.getObs(
             criteriaForHivStart,
+            null,
             femaleCohort,
             Arrays.asList(location),
             Arrays.asList(breastfeedingConcept),
@@ -85,6 +88,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap deliveryDateMap =
         ePTSCalculationService.getObs(
             priorDeliveryDate,
+            null,
             femaleCohort,
             Arrays.asList(location),
             null,
@@ -102,7 +106,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
             viralLoadConcept,
             location,
             oneYearBefore,
-            context.getNow(),
+            onOrBefore,
             femaleCohort,
             context);
 
