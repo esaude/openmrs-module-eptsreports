@@ -133,8 +133,8 @@ public class TXTBCohortDefinitionsFGHLiveTest extends DefinitionsFGHLiveTest {
     EvaluatedCohort result =
         evaluateCohortDefinition(
             txTbCohortQueries.patientsOnARTWhoScreenedTBPositiveForAPeriod(),
-                DateUtil.getDateTime(2013, 2, 6),
-                DateUtil.getDateTime(2019, 3, 6),
+            DateUtil.getDateTime(2013, 2, 6),
+            DateUtil.getDateTime(2019, 3, 6),
             Context.getLocationService().getLocation(379));
     Assert.assertEquals(0, result.size());
   }

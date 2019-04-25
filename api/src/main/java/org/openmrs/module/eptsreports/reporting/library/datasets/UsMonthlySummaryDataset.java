@@ -1,5 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
+import java.util.Arrays;
+import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.UsMonthlySummaryCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
@@ -7,14 +9,9 @@ import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIn
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Component
 public class UsMonthlySummaryDataset extends BaseDataSet {
@@ -55,7 +52,7 @@ public class UsMonthlySummaryDataset extends BaseDataSet {
                 "getPdfFormatAssetAtFinalDate",
                 EptsReportUtils.map(
                     usMonthlySummaryCohortQueries.getPdfFormatAssetAtFinalDate(), mappings)),
-                "endDate=${startDate},location=${location}"),
+            "endDate=${startDate},location=${location}"),
         "");
 
     dataSetDefinition.addColumn(
@@ -90,7 +87,7 @@ public class UsMonthlySummaryDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     usMonthlySummaryCohortQueries.getPdfFormatAssetAtFinalDateForChildren(),
                     mappings)),
-                "endDate=${startDate},location=${location}"),
+            "endDate=${startDate},location=${location}"),
         "");
     dataSetDefinition.addColumn(
         "APDF5",
@@ -119,123 +116,105 @@ public class UsMonthlySummaryDataset extends BaseDataSet {
   }
 
   private void addPDFIndicators(CohortIndicatorDataSetDefinition dataSetDefinition) {
-    Mapped<CohortIndicator> activePatientsToEndDate =
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "getActivePatientsToEndDate",
-                EptsReportUtils.map(usMonthlySummaryCohortQueries.getActiveToEndDate(), mappings)),
-                "endDate=${startDate},location=${location}");
     addRow(
         dataSetDefinition,
         "B1PDF",
         "Active to EndDate - Disaggregated",
-        activePatientsToEndDate,
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "getActivePatientsToEndDate",
+                EptsReportUtils.map(usMonthlySummaryCohortQueries.getActiveToEndDate(), mappings)),
+            "endDate=${startDate},location=${location}"),
         dissagregations());
-    Mapped<CohortIndicator> enrolledInReportingPeriod =
+    addRow(
+        dataSetDefinition,
+        "B2PDF",
+        "Enrolled within Reporting period - Disaggregated",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "getEnrolledInReportingPeriod",
                 EptsReportUtils.map(
                     usMonthlySummaryCohortQueries.getEnrolledInReportingPeriod(), mappings)),
-            mappings);
+            mappings),
+        dissagregations());
     addRow(
         dataSetDefinition,
-        "B2PDF",
-        "Enrolled within Reporting period - Disaggregated",
-        enrolledInReportingPeriod,
-        dissagregations());
-    Mapped<CohortIndicator> returnedToPDFInReportingPeriod =
+        "B3PDF",
+        "Returned to PDF within Reporting period - Disaggregated",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "getReturnedToPDFInReportingPeriod",
                 EptsReportUtils.map(
                     usMonthlySummaryCohortQueries.getReturnedToPDFInReportingPeriod(), mappings)),
-            mappings);
-    addRow(
-        dataSetDefinition,
-        "B3PDF",
-        "Returned to PDF within Reporting period - Disaggregated",
-        returnedToPDFInReportingPeriod,
+            mappings),
         dissagregations());
-    Mapped<CohortIndicator> currentlyInARTWithoutPregnancy =
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "currentlyInARTWithoutPregnancy",
-                EptsReportUtils.map(
-                        usMonthlySummaryCohortQueries.currentlyInARTWithoutPregnancy(),
-                        "endDate=${endDate},location=${location}")),
-                "endDate=${endDate},location=${location}");
     addRow(
         dataSetDefinition,
         "B4PDF",
         "Currently in ART Without pregnancy - Disaggregated",
-        currentlyInARTWithoutPregnancy,
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "currentlyInARTWithoutPregnancy",
+                EptsReportUtils.map(
+                    usMonthlySummaryCohortQueries.currentlyInARTWithoutPregnancy(),
+                    "endDate=${endDate},location=${location}")),
+            "endDate=${endDate},location=${location}"),
         dissagregations());
-    Mapped<CohortIndicator> exitFromPdfTransferredTo =
+    addRow(
+        dataSetDefinition,
+        "B5PDF",
+        "Exit from PDF Transferred to - Disaggregated",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "getExitFromPdfTransferredTo",
                 EptsReportUtils.map(
                     usMonthlySummaryCohortQueries.getExitFromPdfTransferredTo(), mappings)),
-            mappings);
+            mappings),
+        dissagregations());
     addRow(
         dataSetDefinition,
-        "B5PDF",
-        "Exit from PDF Transferred to - Disaggregated",
-        exitFromPdfTransferredTo,
-        dissagregations());
-    Mapped<CohortIndicator> comeOutOfPdfRemoved =
+        "B6PDF",
+        "Come out of PDF Removed - Disaggregated",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "getComeOutOfPdfRemoved",
                 EptsReportUtils.map(
                     usMonthlySummaryCohortQueries.getComeOutOfPdfRemoved(), mappings)),
-            mappings);
+            mappings),
+        dissagregations());
     addRow(
         dataSetDefinition,
-        "B6PDF",
-        "Come out of PDF Removed - Disaggregated",
-        comeOutOfPdfRemoved,
-        dissagregations());
-    Mapped<CohortIndicator> comeOutOfPdfObitos =
+        "B7PDF",
+        "Come out of PDF Obitos - Disaggregated",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "getComeOutOfPdfObitos",
                 EptsReportUtils.map(
                     usMonthlySummaryCohortQueries.getComeOutOfPdfObitos(), mappings)),
-            mappings);
+            mappings),
+        dissagregations());
     addRow(
         dataSetDefinition,
-        "B7PDF",
-        "Come out of PDF Obitos - Disaggregated",
-        comeOutOfPdfObitos,
-        dissagregations());
-    Mapped<CohortIndicator> comeOutOfPdfSuspension =
+        "B8PDF",
+        "Come out of PDF Suspension - Disaggregated",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "getComeOutOfPdfSuspension",
                 EptsReportUtils.map(
                     usMonthlySummaryCohortQueries.getComeOutOfPdfSuspension(), mappings)),
-            mappings);
+            mappings),
+        dissagregations());
     addRow(
         dataSetDefinition,
-        "B8PDF",
-        "Come out of PDF Suspension - Disaggregated",
-        comeOutOfPdfSuspension,
-        dissagregations());
-    Mapped<CohortIndicator> clinicalConsultationWithinReportingPeriod =
+        "C1PDF",
+        "Clinical Consultation Within Reporting epriod - Disaggregated",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "getClinicalConsultationWithinReportingPeriod",
                 EptsReportUtils.map(
                     usMonthlySummaryCohortQueries.getClinicalConsultationWithinReportingPeriod(),
                     mappings)),
-            mappings);
-    addRow(
-        dataSetDefinition,
-        "C1PDF",
-        "Clinical Consultation Within Reporting epriod - Disaggregated",
-        clinicalConsultationWithinReportingPeriod,
+            mappings),
         dissagregations());
   }
 
