@@ -3,11 +3,12 @@ package org.openmrs.module.eptsreports.reporting.unit.cohort.evaluator;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.openmrs.Cohort;
@@ -24,19 +25,17 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.evaluator.CalculationCohortDefinitionEvaluator;
 import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
+import org.openmrs.module.eptsreports.reporting.unit.PowerMockBaseContextTest;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.PatientIdSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.test.BaseContextMockTest;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Context.class, EptsCalculationUtils.class, PatientService.class})
-public class CalculationCohortDefinitionEvaluatorTest extends BaseContextMockTest {
+@PrepareForTest({EptsCalculationUtils.class, PatientService.class})
+public class CalculationCohortDefinitionEvaluatorTest extends PowerMockBaseContextTest {
 
   @Spy
   private PatientCalculationService patientCalculationService = new PatientCalculationServiceImpl();

@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.queries.UsMonthlySummaryQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -8,8 +9,6 @@ import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinitio
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 @Component
 public class UsMonthlySummaryCohortQueries {
@@ -78,19 +77,19 @@ public class UsMonthlySummaryCohortQueries {
 
   /** B4PDF */
   public CohortDefinition currentlyInARTWithoutPregnancy() {
-      String mappings = "endDate=${endDate},location=${location}";
+    String mappings = "endDate=${endDate},location=${location}";
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("ACTUALMENTE EM TARV ATÃ‰ UM DETERMINADO PERIODO FINAL- PDF SEM INCLUIR GRAVIDAS");
 
     CohortDefinition TARVACTUAL = getInARTExcludingNotAnsweredAbandonedIn4WeeksUntilEndDate();
-      addEndDateAndLocationParameters(TARVACTUAL);
+    addEndDateAndLocationParameters(TARVACTUAL);
     CohortDefinition PDF = getActiveToEndDate();
-      addEndDateAndLocationParameters(PDF);
+    addEndDateAndLocationParameters(PDF);
 
     cd.addSearch("TARVACTUAL", EptsReportUtils.map(TARVACTUAL, mappings));
     cd.addSearch("PDF", EptsReportUtils.map(PDF, mappings));
     cd.setCompositionString("TARVACTUAL AND PDF");
-      addEndDateAndLocationParameters(cd);
+    addEndDateAndLocationParameters(cd);
     return cd;
   }
 
@@ -133,8 +132,8 @@ public class UsMonthlySummaryCohortQueries {
     cd.addParameter(new Parameter("location", "location", Location.class));
   }
 
-    private void addEndDateAndLocationParameters(CohortDefinition cd) {
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addParameter(new Parameter("location", "location", Location.class));
-    }
+  private void addEndDateAndLocationParameters(CohortDefinition cd) {
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+  }
 }
