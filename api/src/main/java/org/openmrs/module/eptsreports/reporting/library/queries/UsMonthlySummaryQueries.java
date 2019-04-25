@@ -1,65 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
 public class UsMonthlySummaryQueries {
-
-  /** APDF1: PDF FORMADOS E ACTIVOS ATE UMA DATA FINAL */
-  public static String pdfFormatAssetAtFinalDate() {
-    return "select family_id from gaac_family where start_date<:endDate and voided=0 "
-        + "and ((crumbled is null) or (crumbled=0) or (crumbled=1 and date_crumbled>:endDate)) and location_id=:location";
-  }
-
-  /** APDF2: PDFS FORMADOS NUM DETERMINADO PERIODO */
-  public static String pdfFormatAssetWithinReportingPeriod() {
-    return "select family_id from gaac_family where start_date between :startDate and :endDate and voided=0 and location_id=:location";
-  }
-
-  /** APDF3: PDFs DESINTEGRADOS NUM PERIODO */
-  public static String disaggregatedPdfFormatAssetWithinReportingPeriod() {
-    return "select family_id from gaac_family where start_date<=:endDate and crumbled=1 "
-        + "and date_crumbled between :startDate and :endDate and voided=0 and location_id=:location";
-  }
-
-  /** APDF4: PDF FORMADOS E ACTIVOS COM CRIANÃ‡A ATE UMA DATA FINAL */
-  public static String pdfFormatAssetAtFinalDateForChildren() {
-    return "select family_id from gaac_family where start_date<:endDate and voided=0 "
-        + "and ((crumbled is null) or (crumbled=0) or (crumbled=1 and date_crumbled>:endDate)) and location_id=:location and family_id in "
-        + "(SELECT family_id FROM person p  inner join gaac_family_member ON member_id = person_id where round(datediff(:endDate,birthdate)/360) <=14 )";
-  }
-
-  /** APDF5: PDFS FORMADOS NUM DETERMINADO PERIODO CONTENDO CRIANÃ‡A */
-  public static String pdfFormatAssetWithinReportingPeriodForChildren() {
-    return "select family_id from gaac_family where start_date between :startDate and :endDate and voided=0 and location_id=:location and family_id in "
-        + "(SELECT family_id FROM person p  inner join gaac_family_member ON member_id = person_id where round(datediff(:endDate,birthdate)/360) <=14)";
-  }
-
-  /** APDF6: PDFs DESINTEGRADOS NUM PERIODO CONTENDO CRIANÃ‡A */
-  public static String disaggregatedPdfFormatAssetWithinReportingPeriodForChildren() {
-    return "select family_id from gaac_family where start_date<=:endDate and crumbled=1 and date_crumbled between :startDate and :endDate and voided=0 and location_id=:location and family_id in "
-        + "(SELECT family_id FROM person p  inner join gaac_family_member ON member_id = person_id where round(datediff(:endDate,birthdate)/360) <=14 )";
-  }
-
-  /**
-   * B1PDF: PACIENTES ACTIVOS NO PDF ATÃ‰ UM DETERMINADO PERIODO FINAL; B4PDF_PDF: ACTUALMENTE EM
-   * TARV ATÃ‰ UM DETERMINADO PERIODO FINAL - SEM INCLUIR ABANDONOS NAO NOTIFICADOS EM 4 SEMANAS -
-   * REAL (SQL)
-   */
-  public static String activePatientsToEndDate() {
-    return "select fm.member_id from gaac_family f inner join gaac_family_member fm on f.family_id = fm.family_id where fm.start_date<:endDate and fm.voided=0 and f.voided=0 and "
-        + "((leaving is null) or (leaving=0) or (leaving=1 and fm.end_date>:endDate)) and location_id=:location ";
-  }
-
-  /** B2PDF: PACIENTES INSCRITOS NO PDF NUM PERIODO */
-  public static String enrolledInReportingPeriod() {
-    return "select fm.member_id from gaac_family f inner join gaac_family_member fm on f.family_id=fm.family_id where fm.start_date between :startDate "
-        + "and :endDate and fm.voided=0 and f.voided=0 and location_id=:location";
-  }
-
-  /** B3PDF: PACIENTES QUE RETORNARAM AO PDF NUM PERIODO */
-  public static String returnedToPDFInReportingPeriod() {
-    return "Select fm.member_id from gaac_family f inner join gaac_family_member fm on f.family_id=fm.family_id "
-        + "where fm.restart_date between :startDate and :endDate and fm.restart=1 and fm.voided=0 and f.voided=0 and location_id=:location";
-  }
-
   private static String inARTExcludingNotAnsweredAbandonedIn4WeeksUntilEndDateQuery =
       "-- Encontrar os respectivos pacientes para cada estado  \n"
           + "SELECT patient_id  \n"
@@ -253,6 +194,65 @@ public class UsMonthlySummaryQueries {
           + " GROUP  BY patient_id) coorte12meses_final  \n"
           + "-- VerificaÃ§Ã£o qual Ã© o estado final  \n"
           + "WHERE  estado_final = 6 \n";
+
+  /** APDF1: PDF FORMADOS E ACTIVOS ATE UMA DATA FINAL */
+  public static String pdfFormatAssetAtFinalDate() {
+    return "select family_id from gaac_family where start_date<:endDate and voided=0 "
+        + "and ((crumbled is null) or (crumbled=0) or (crumbled=1 and date_crumbled>:endDate)) and location_id=:location";
+  }
+
+  /** APDF2: PDFS FORMADOS NUM DETERMINADO PERIODO */
+  public static String pdfFormatAssetWithinReportingPeriod() {
+    return "select family_id from gaac_family where start_date between :startDate and :endDate and voided=0 and location_id=:location";
+  }
+
+  /** APDF3: PDFs DESINTEGRADOS NUM PERIODO */
+  public static String disaggregatedPdfFormatAssetWithinReportingPeriod() {
+    return "select family_id from gaac_family where start_date<=:endDate and crumbled=1 "
+        + "and date_crumbled between :startDate and :endDate and voided=0 and location_id=:location";
+  }
+
+  /** APDF4: PDF FORMADOS E ACTIVOS COM CRIANÃ‡A ATE UMA DATA FINAL */
+  public static String pdfFormatAssetAtFinalDateForChildren() {
+    return "select family_id from gaac_family where start_date<:endDate and voided=0 "
+        + "and ((crumbled is null) or (crumbled=0) or (crumbled=1 and date_crumbled>:endDate)) and location_id=:location and family_id in "
+        + "(SELECT family_id FROM person p  inner join gaac_family_member ON member_id = person_id where round(datediff(:endDate,birthdate)/360) <=14 )";
+  }
+
+  /** APDF5: PDFS FORMADOS NUM DETERMINADO PERIODO CONTENDO CRIANÃ‡A */
+  public static String pdfFormatAssetWithinReportingPeriodForChildren() {
+    return "select family_id from gaac_family where start_date between :startDate and :endDate and voided=0 and location_id=:location and family_id in "
+        + "(SELECT family_id FROM person p  inner join gaac_family_member ON member_id = person_id where round(datediff(:endDate,birthdate)/360) <=14)";
+  }
+
+  /** APDF6: PDFs DESINTEGRADOS NUM PERIODO CONTENDO CRIANÃ‡A */
+  public static String disaggregatedPdfFormatAssetWithinReportingPeriodForChildren() {
+    return "select family_id from gaac_family where start_date<=:endDate and crumbled=1 and date_crumbled between :startDate and :endDate and voided=0 and location_id=:location and family_id in "
+        + "(SELECT family_id FROM person p  inner join gaac_family_member ON member_id = person_id where round(datediff(:endDate,birthdate)/360) <=14 )";
+  }
+
+  /**
+   * B1PDF: PACIENTES ACTIVOS NO PDF ATÃ‰ UM DETERMINADO PERIODO FINAL; B4PDF_PDF: ACTUALMENTE EM
+   * TARV ATÃ‰ UM DETERMINADO PERIODO FINAL - SEM INCLUIR ABANDONOS NAO NOTIFICADOS EM 4 SEMANAS -
+   * REAL (SQL)
+   */
+  public static String activePatientsToEndDate() {
+    return "select fm.member_id from gaac_family f inner join gaac_family_member fm on f.family_id = fm.family_id where fm.start_date<:endDate and fm.voided=0 and f.voided=0 and "
+        + "((leaving is null) or (leaving=0) or (leaving=1 and fm.end_date>:endDate)) and location_id=:location ";
+  }
+
+  /** B2PDF: PACIENTES INSCRITOS NO PDF NUM PERIODO */
+  public static String enrolledInReportingPeriod() {
+    return "select fm.member_id from gaac_family f inner join gaac_family_member fm on f.family_id=fm.family_id where fm.start_date between :startDate "
+        + "and :endDate and fm.voided=0 and f.voided=0 and location_id=:location";
+  }
+
+  /** B3PDF: PACIENTES QUE RETORNARAM AO PDF NUM PERIODO */
+  public static String returnedToPDFInReportingPeriod() {
+    return "Select fm.member_id from gaac_family f inner join gaac_family_member fm on f.family_id=fm.family_id "
+        + "where fm.restart_date between :startDate and :endDate and fm.restart=1 and fm.voided=0 and f.voided=0 and location_id=:location";
+  }
+
   /**
    * B1PDF, B4PDF_TARVACTUAL: ACTUALMENTE EM TARV ATÃ‰ UM DETERMINADO PERIODO FINAL - SEM INCLUIR
    * ABANDONOS NAO NOTIFICADOS EM 4 SEMANAS - REAL (SQL)
