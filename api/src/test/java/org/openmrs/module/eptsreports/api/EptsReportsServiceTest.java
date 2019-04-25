@@ -10,18 +10,36 @@
 package org.openmrs.module.eptsreports.api;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.openmrs.module.eptsreports.api.dao.EptsReportsDao;
+import org.openmrs.module.eptsreports.api.impl.EptsReportsServiceImpl;
 
 /**
  * This is a unit test, which verifies logic in EPTSreportsService. It doesn't extend
  * BaseModuleContextSensitiveTest, thus it is run without the in-memory DB and Spring context.
  */
-public class EptsReportsServiceTest extends BaseModuleContextSensitiveTest {
+public class EptsReportsServiceTest {
+
+  @InjectMocks EptsReportsServiceImpl basicModuleService;
+
+  @Mock EptsReportsDao dao;
 
   @Before
-  public void setupMocks() {}
+  public void setupMocks() {
+    MockitoAnnotations.initMocks(this);
+  }
 
   @Test
-  public void purgeReportDesignIfExistsShouldDeleteExistingReport() {}
+  @Ignore
+  public void method_shouldDoSomething() {
+    // Given
+
+    // When
+
+    // Then
+  }
 }
