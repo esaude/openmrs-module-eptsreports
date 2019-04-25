@@ -15,77 +15,70 @@ package org.openmrs.module.eptsreports.metadata;
 
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.springframework.stereotype.Component;
 
 @Component("commonMetadata")
 public class CommonMetadata extends Metadata {
 
+  protected String gpTransferFromOtherFacilityConceptUuid =
+      "eptsreports.transferFromOtherFacilityConceptUuid";
+
   // CONCEPTS
   public Concept getYesConcept() {
     String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_YES_CONCEPT_UUID);
+        Context.getAdministrationService().getGlobalProperty("eptsreports.yesConceptUuid");
     return getConcept(uuid);
   }
 
   public Concept getNoConcept() {
-    String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_NO_CONCEPT_UUID);
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.noConceptUuid");
     return getConcept(uuid);
   }
 
   public Concept getStartDrugsConcept() {
     String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_START_DRUGS_CONCEPT_UUID);
+        Context.getAdministrationService().getGlobalProperty("eptsreports.startDrugsConceptUuid");
     return getConcept(uuid);
   }
 
   public Concept getTransferFromOtherFacilityConcept() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty(
-                EptsReportConstants.GLOBAL_PROPERTY_TRANSFER_FROM_OTHER_FACILITY_CONCEPT_UUID);
+            .getGlobalProperty(gpTransferFromOtherFacilityConceptUuid);
     return getConcept(uuid);
   }
 
   public Concept getHistoricalDrugStartDateConcept() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty(
-                EptsReportConstants.GLOBAL_PROPERTY_HISTORICAL_START_DATE_CONCEPT_UUID);
+            .getGlobalProperty("eptsreports.historicalStartDateConceptUuid");
     return getConcept(uuid);
   }
 
   // concept_id=1982
   public Concept getPregnantConcept() {
     String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_PREGNANT_CONCEPT_UUID);
+        Context.getAdministrationService().getGlobalProperty("eptsreports.pregnantConceptUuid");
     return getConcept(uuid);
   }
 
   public Concept getGestationConcept() {
     String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_GESTATION_CONCEPT_UUID);
+        Context.getAdministrationService().getGlobalProperty("eptsreports.gestationConceptUuid");
     return getConcept(uuid);
   }
 
   public Concept getNumberOfWeeksPregnant() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty(
-                EptsReportConstants.GLOBAL_PROPERTY_NUMBER_OF_WEEKS_PREGNANT_CONCEPT_UUID);
+            .getGlobalProperty("eptsreports.numberOfWeeksPregnantConceptUuid");
     return getConcept(uuid);
   }
 
   public Concept getPregnancyDueDate() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_PREGNANCY_DUE_DATE_CONCEPT_UUID);
+            .getGlobalProperty("eptsreports.pregnancyDueDateConceptUuid");
     return getConcept(uuid);
   }
 
@@ -93,7 +86,7 @@ public class CommonMetadata extends Metadata {
   public Concept getBreastfeeding() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_BREASTFEEDING_CONCEPT_UUID);
+            .getGlobalProperty("eptsreports.breastfeedingConceptUuid");
     return getConcept(uuid);
   }
 
@@ -101,7 +94,7 @@ public class CommonMetadata extends Metadata {
   public Concept getReturnVisitDateConcept() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_RETURN_VISIT_DATE_CONCEPT_UUID);
+            .getGlobalProperty("eptsreports.returnVisitDateConceptConceptUuid");
     return getConcept(uuid);
   }
 
@@ -109,8 +102,7 @@ public class CommonMetadata extends Metadata {
   public Concept getPriorDeliveryDateConcept() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty(
-                EptsReportConstants.GLOBAL_PROPERTY_PRIOR_DELIVERY_DATE_CONCEPT_UUID);
+            .getGlobalProperty("eptsreports.priorDeliveryDateConceptUuid");
     return getConcept(uuid);
   }
 }

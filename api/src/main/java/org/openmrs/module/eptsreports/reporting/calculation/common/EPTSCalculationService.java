@@ -65,7 +65,8 @@ public class EPTSCalculationService {
     if (encounterTypes != null) {
       def.setEncounterTypeList(encounterTypes);
     }
-    def.setOnOrBefore(context.getNow());
+    Date onOrBefore = (Date) context.getFromCache("onOrBefore");
+    def.setOnOrBefore(onOrBefore);
     if (startDate != null) {
       def.setOnOrAfter(startDate);
     }
@@ -94,7 +95,8 @@ public class EPTSCalculationService {
       PatientCalculationContext context) {
     JembiPatientStateDefinition def = new JembiPatientStateDefinition();
     def.setLocation(location);
-    def.setStartedOnOrBefore(context.getNow());
+    Date onOrBefore = (Date) context.getFromCache("onOrBefore");
+    def.setStartedOnOrBefore(onOrBefore);
     def.setStates(Arrays.asList(programWorkflowState));
     def.setWhich(TimeQualifier.ANY);
     return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
@@ -118,7 +120,8 @@ public class EPTSCalculationService {
       PatientCalculationContext context) {
     JembiPatientStateDefinition def = new JembiPatientStateDefinition();
     def.setLocation(location);
-    def.setStartedOnOrBefore(context.getNow());
+    Date onOrBefore = (Date) context.getFromCache("onOrBefore");
+    def.setStartedOnOrBefore(onOrBefore);
     def.setStates(states);
     def.setWhich(TimeQualifier.ANY);
     return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
@@ -139,7 +142,8 @@ public class EPTSCalculationService {
     def.setName("All in " + program.getName());
     def.setWhichEnrollment(TimeQualifier.ANY);
     def.setProgram(program);
-    def.setEnrolledOnOrBefore(context.getNow());
+    Date onOrBefore = (Date) context.getFromCache("onOrBefore");
+    def.setEnrolledOnOrBefore(onOrBefore);
     return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
   }
 

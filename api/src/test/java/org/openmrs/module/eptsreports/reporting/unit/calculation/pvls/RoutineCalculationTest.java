@@ -17,7 +17,6 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.openmrs.Concept;
@@ -41,16 +40,12 @@ import org.openmrs.module.eptsreports.reporting.calculation.generic.InitialArtSt
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForMoreThanXmonthsCalcultion;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineCalculation;
 import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
+import org.openmrs.module.eptsreports.reporting.unit.PowerMockBaseContextTest;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PatientsOnRoutineEnum;
 import org.openmrs.module.reporting.common.TimeQualifier;
-import org.openmrs.test.BaseContextMockTest;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Context.class})
-public class RoutineCalculationTest extends BaseContextMockTest {
+public class RoutineCalculationTest extends PowerMockBaseContextTest {
 
   @Mock private HivMetadata hivMetadata;
 
@@ -307,7 +302,7 @@ public class RoutineCalculationTest extends BaseContextMockTest {
     PatientCalculationContext calculationContext =
         patientCalculationService.createCalculationContext();
     calculationContext.addToCache("location", location);
-    calculationContext.setNow(now);
+    calculationContext.addToCache("onOrBefore", now);
 
     Collection<Integer> cohort = Arrays.asList(patient.getId());
 

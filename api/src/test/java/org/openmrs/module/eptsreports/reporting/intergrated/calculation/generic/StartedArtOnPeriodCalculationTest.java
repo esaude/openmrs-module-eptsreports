@@ -87,6 +87,7 @@ public class StartedArtOnPeriodCalculationTest extends BasePatientCalculationTes
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
     calendar.set(2008, Calendar.AUGUST, 1);
     context.addToCache("onOrAfter", calendar.getTime());
+    context.removeFromCache("onOrBefore");
     final int patientId = 1777001;
     service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues, context);
   }
