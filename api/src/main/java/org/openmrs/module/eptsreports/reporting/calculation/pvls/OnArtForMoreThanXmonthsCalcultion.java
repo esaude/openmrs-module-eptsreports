@@ -58,14 +58,15 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
             Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0),
             cohort,
             context);
-    Date oneYearBefore = EptsCalculationUtils.addMonths(context.getNow(), -12);
+    Date onOrBefore = (Date) context.getFromCache("onOrBefore");
+    Date oneYearBefore = EptsCalculationUtils.addMonths(onOrBefore, -12);
     CalculationResultMap lastVl =
         ePTSCalculationService.lastObs(
             Arrays.asList(labEncounterType, adultFollowup, childFollowup),
             viralLoadConcept,
             location,
             oneYearBefore,
-            context.getNow(),
+            onOrBefore,
             cohort,
             context);
 

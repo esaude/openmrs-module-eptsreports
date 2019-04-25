@@ -45,8 +45,8 @@ public class TxPvlsDataset extends BaseDataSet {
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     dsd.setName("Tx_Pvls Data Set");
     dsd.addParameters(getParameters());
-    // tie dimensions to this data definition
 
+    // Tie dimensions to this data definition
     dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dsd.addDimension(
         "query", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
@@ -55,8 +55,8 @@ public class TxPvlsDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
 
-    // Totals for both numerator and denominator
-
+    // Numerator ------------------------------------------------------------
+    // Totals
     dsd.addColumn(
         "0N",
         "Total patients with suppressed Viral load - Numerator",
@@ -67,57 +67,7 @@ public class TxPvlsDataset extends BaseDataSet {
             mappings),
         "");
 
-    dsd.addColumn(
-        "PVLS",
-        "Pregnant and has VL suppression",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Pregnant and VLS",
-                EptsReportUtils.map(
-                    txPvls.getPregnantWomenWithViralLoadSuppressionNumerator(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "PVLR",
-        "Pregnant and has VL results",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Pregnant and VLR",
-                EptsReportUtils.map(
-                    txPvls.getPregnantWomenWithViralLoadResultsDenominator(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "BVLS",
-        "Breastfeeding and has VL suppression",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Breastfeeding and VLS",
-                EptsReportUtils.map(
-                    txPvls.getBreastfeedingWomenWhoHaveViralSuppression(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "BVLR",
-        "Breastfeeding and has VL results",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Breastfeeding and VLR",
-                EptsReportUtils.map(
-                    txPvls.getBreastfeedingWomenWhoHaveViralLoadResults(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "0D",
-        "Total patients with Viral load - Denominator",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "patients with viral load",
-                EptsReportUtils.map(txPvls.getPatientsWithViralLoadResults(), mappings)),
-            mappings),
-        "");
-
-    // add patients on routine for adults and children
+    // Breastfeeding & Pregnant
     dsd.addColumn(
         "B01",
         "Breast feeding and on routine Numerator",
@@ -156,7 +106,47 @@ public class TxPvlsDataset extends BaseDataSet {
             mappings),
         "");
 
-    // add breastfeeding and pregnant Denominator
+    // Adults & children Routine
+    addRow(
+        dsd,
+        "NR",
+        "Children numerator routine",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "viral load suppression on routine adults and children",
+                EptsReportUtils.map(
+                    txPvls.getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren(),
+                    mappings)),
+            mappings),
+        getAdultChildrenColumns());
+
+    // NOT documented Adults & Children
+    addRow(
+        dsd,
+        "NND",
+        "Children numerator NOT documented",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "viral load suppression not documents adults and children",
+                EptsReportUtils.map(
+                    txPvls.getPatientWithViralSuppressionAndNotDocumentedForAdultsAndChildren(),
+                    mappings)),
+            mappings),
+        getAdultChildrenColumns());
+
+    // Denominator -------------------------------------------------------------
+    // Totals
+    dsd.addColumn(
+        "0D",
+        "Total patients with Viral load - Denominator",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "patients with viral load",
+                EptsReportUtils.map(txPvls.getPatientsWithViralLoadResults(), mappings)),
+            mappings),
+        "");
+
+    // Breastfeeding & Pregnant
     dsd.addColumn(
         "B05",
         "Breast feeding and on routine Denominator",
@@ -202,65 +192,11 @@ public class TxPvlsDataset extends BaseDataSet {
             mappings),
         "");
 
-    // constructing the rows for children // /// Numerator routine
+    // Routine for Adults & Children
     addRow(
         dsd,
-        "3NR",
-        "Children numerator routine",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "viral load suppression on routine adults and children",
-                EptsReportUtils.map(
-                    txPvls.getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren(),
-                    mappings)),
-            mappings),
-        childrenColumns()); ////// Numerator NOT documented
-    addRow(
-        dsd,
-        "3NND",
-        "Children numerator NOT documented",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "viral load suppression on routine adults and children",
-                EptsReportUtils.map(
-                    txPvls.getPatientWithViralSuppressionAndNotDocumentedForAdultsAndChildren(),
-                    mappings)),
-            mappings),
-        childrenColumns());
-
-    // constructing the rows for adults ///// Numerator routine
-    addRow(
-        dsd,
-        "4NR",
-        "Adults numerator routine",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "viral load suppression on routine adults",
-                EptsReportUtils.map(
-                    txPvls.getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren(),
-                    mappings)),
-            mappings),
-        getColumnsForAdults()); //// Numerator NOT documented
-    addRow(
-        dsd,
-        "4NND",
-        "Adults numerator NOT documented",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "viral load suppression on routine adults",
-                EptsReportUtils.map(
-                    txPvls.getPatientWithViralSuppressionAndNotDocumentedForAdultsAndChildren(),
-                    mappings)),
-            mappings),
-        getColumnsForAdults());
-
-    // denominators follow here for routine and NOT documented // ///
-    // Denominator
-    // routine for children
-    addRow(
-        dsd,
-        "3DR",
-        "Children denominator routine",
+        "DR",
+        "Adults & Children Denominator Routine",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "viral load results on routine adults and children",
@@ -268,44 +204,21 @@ public class TxPvlsDataset extends BaseDataSet {
                     txPvls.getPatientsWithViralLoadREsultsAndOnRoutineForChildrenAndAdults(),
                     mappings)),
             mappings),
-        childrenColumns()); ///// Denominator NOT
-    ///// documented
+        getAdultChildrenColumns());
+
+    // NOT documented for Adults & Children
     addRow(
         dsd,
-        "3DND",
-        "Children denominator NOT documented",
+        "DND",
+        "Adults & Children Denominator NOT documented",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "viral load suppression on routine adults",
+                "viral load results not documented adults & children",
                 EptsReportUtils.map(
                     txPvls.getPatientsWithViralLoadREsultsAndNotDocumenetdForChildrenAndAdults(),
                     mappings)),
             mappings),
-        childrenColumns()); ///// Denominator routine for adults
-    addRow(
-        dsd,
-        "4DR",
-        "Adults denominator routine",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Adults denominator routine indicator",
-                EptsReportUtils.map(
-                    txPvls.getPatientsWithViralLoadREsultsAndOnRoutineForChildrenAndAdults(),
-                    mappings)),
-            mappings),
-        getColumnsForAdults()); //// denominator NOT documented
-    addRow(
-        dsd,
-        "4DND",
-        "Adults denominator NOT documented",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Adults denominator NOT documented indicator",
-                EptsReportUtils.map(
-                    txPvls.getPatientsWithViralLoadREsultsAndNotDocumenetdForChildrenAndAdults(),
-                    mappings)),
-            mappings),
-        getColumnsForAdults());
+        getAdultChildrenColumns());
 
     return dsd;
   }
@@ -317,67 +230,68 @@ public class TxPvlsDataset extends BaseDataSet {
         ReportingConstants.LOCATION_PARAMETER);
   }
 
-  private List<ColumnParameters> childrenColumns() {
+  private List<ColumnParameters> getAdultChildrenColumns() {
+    // Male
     ColumnParameters under1M =
         new ColumnParameters("under1M", "under 1 year male", "gender=M|age=<1", "01");
     ColumnParameters oneTo4M =
         new ColumnParameters("oneTo4M", "1 - 4 years male", "gender=M|age=1-4", "02");
     ColumnParameters fiveTo9M =
         new ColumnParameters("fiveTo9M", "5 - 9 years male", "gender=M|age=5-9", "03");
-    ColumnParameters under1F =
-        new ColumnParameters("under1F", "under 1 year female", "gender=F|age=<1", "04");
-    ColumnParameters oneTo4F =
-        new ColumnParameters("oneTo4F", "1 - 4 years female", "gender=F|age=1-4", "05");
-    ColumnParameters fiveTo9F =
-        new ColumnParameters("fiveTo9F", "5 - 9 years female", "gender=F|age=5-9", "06");
-    return Arrays.asList(under1M, oneTo4M, fiveTo9M, under1F, oneTo4F, fiveTo9F);
-  }
-
-  private List<ColumnParameters> getColumnsForAdults() {
-    ColumnParameters unknownM =
-        new ColumnParameters("unknownM", "Unknown age male", "gender=M|age=UK", "01");
     ColumnParameters tenTo14M =
-        new ColumnParameters("tenTo14M", "10 - 14 male", "gender=M|age=10-14", "02");
+        new ColumnParameters("tenTo14M", "10 - 14 male", "gender=M|age=10-14", "04");
     ColumnParameters fifteenTo19M =
-        new ColumnParameters("fifteenTo19M", "15 - 19 male", "gender=M|age=15-19", "03");
+        new ColumnParameters("fifteenTo19M", "15 - 19 male", "gender=M|age=15-19", "05");
     ColumnParameters twentyTo24M =
-        new ColumnParameters("twentyTo24M", "20 - 24 male", "gender=M|age=20-24", "04");
+        new ColumnParameters("twentyTo24M", "20 - 24 male", "gender=M|age=20-24", "06");
     ColumnParameters twenty5To29M =
-        new ColumnParameters("twenty4To29M", "25 - 29 male", "gender=M|age=25-29", "05");
+        new ColumnParameters("twenty4To29M", "25 - 29 male", "gender=M|age=25-29", "07");
     ColumnParameters thirtyTo34M =
-        new ColumnParameters("thirtyTo34M", "30 - 34 male", "gender=M|age=30-34", "06");
+        new ColumnParameters("thirtyTo34M", "30 - 34 male", "gender=M|age=30-34", "08");
     ColumnParameters thirty5To39M =
-        new ColumnParameters("thirty5To39M", "35 - 39 male", "gender=M|age=35-39", "07");
+        new ColumnParameters("thirty5To39M", "35 - 39 male", "gender=M|age=35-39", "09");
     ColumnParameters foutyTo44M =
-        new ColumnParameters("foutyTo44M", "40 - 44 male", "gender=M|age=40-44", "08");
+        new ColumnParameters("foutyTo44M", "40 - 44 male", "gender=M|age=40-44", "10");
     ColumnParameters fouty5To49M =
-        new ColumnParameters("fouty5To49M", "45 - 49 male", "gender=M|age=45-49", "09");
+        new ColumnParameters("fouty5To49M", "45 - 49 male", "gender=M|age=45-49", "11");
     ColumnParameters above50M =
-        new ColumnParameters("above50M", "50+ male", "gender=M|age=50+", "10");
+        new ColumnParameters("above50M", "50+ male", "gender=M|age=50+", "12");
+    ColumnParameters unknownM =
+        new ColumnParameters("unknownM", "Unknown age male", "gender=M|age=UK", "13");
 
-    ColumnParameters unknownF =
-        new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=UK", "11");
+    // Female
+    ColumnParameters under1F =
+        new ColumnParameters("under1F", "under 1 year female", "gender=F|age=<1", "14");
+    ColumnParameters oneTo4F =
+        new ColumnParameters("oneTo4F", "1 - 4 years female", "gender=F|age=1-4", "15");
+    ColumnParameters fiveTo9F =
+        new ColumnParameters("fiveTo9F", "5 - 9 years female", "gender=F|age=5-9", "16");
     ColumnParameters tenTo14F =
-        new ColumnParameters("tenTo14F", "10 - 14 female", "gender=F|age=10-14", "12");
+        new ColumnParameters("tenTo14F", "10 - 14 female", "gender=F|age=10-14", "17");
     ColumnParameters fifteenTo19F =
-        new ColumnParameters("fifteenTo19F", "15 - 19 female", "gender=F|age=15-19", "13");
+        new ColumnParameters("fifteenTo19F", "15 - 19 female", "gender=F|age=15-19", "18");
     ColumnParameters twentyTo24F =
-        new ColumnParameters("twentyTo24F", "20 - 24 female", "gender=F|age=20-24", "14");
+        new ColumnParameters("twentyTo24F", "20 - 24 female", "gender=F|age=20-24", "19");
     ColumnParameters twenty5To29F =
-        new ColumnParameters("twenty4To29F", "25 - 29 female", "gender=F|age=25-29", "15");
+        new ColumnParameters("twenty4To29F", "25 - 29 female", "gender=F|age=25-29", "20");
     ColumnParameters thirtyTo34F =
-        new ColumnParameters("thirtyTo34F", "30 - 34 female", "gender=F|age=30-34", "16");
+        new ColumnParameters("thirtyTo34F", "30 - 34 female", "gender=F|age=30-34", "21");
     ColumnParameters thirty5To39F =
-        new ColumnParameters("thirty5To39F", "35 - 39 female", "gender=F|age=35-39", "17");
+        new ColumnParameters("thirty5To39F", "35 - 39 female", "gender=F|age=35-39", "22");
     ColumnParameters foutyTo44F =
-        new ColumnParameters("foutyTo44F", "40 - 44 female", "gender=F|age=40-44", "18");
+        new ColumnParameters("foutyTo44F", "40 - 44 female", "gender=F|age=40-44", "23");
     ColumnParameters fouty5To49F =
-        new ColumnParameters("fouty5To49F", "45 - 49 female", "gender=F|age=45-49", "19");
+        new ColumnParameters("fouty5To49F", "45 - 49 female", "gender=F|age=45-49", "24");
     ColumnParameters above50F =
-        new ColumnParameters("above50F", "50+ female", "gender=F|age=50+", "20");
+        new ColumnParameters("above50F", "50+ female", "gender=F|age=50+", "25");
+    ColumnParameters unknownF =
+        new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=UK", "26");
 
     return Arrays.asList(
         unknownM,
+        under1M,
+        oneTo4M,
+        fiveTo9M,
         tenTo14M,
         fifteenTo19M,
         twentyTo24M,
@@ -388,6 +302,9 @@ public class TxPvlsDataset extends BaseDataSet {
         fouty5To49M,
         above50M,
         unknownF,
+        under1F,
+        oneTo4F,
+        fiveTo9F,
         tenTo14F,
         fifteenTo19F,
         twentyTo24F,
