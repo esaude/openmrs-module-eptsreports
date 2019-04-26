@@ -27,6 +27,7 @@ public class EptsCalculationUtilsTest extends BaseModuleContextSensitiveTest {
     context = Context.getService(PatientCalculationService.class).createCalculationContext();
     context.setNow(new Date());
   }
+
   /**
    * @see
    *     org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils#genders(java.util.Collection,
