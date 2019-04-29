@@ -62,8 +62,7 @@ public class TXTBCohortQueries {
   public CohortDefinition getNotifiedTBTreatmentPatientsOnART() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("PACIENTES NOTIFICADOS DO TRATAMENTO DE TB NO SERVICO TARV: DIFERENTES FONTES");
-
-    CohortDefinition TBPROGRAMA = getInTBProgram();
+    addGeneralParameters(cd);
     CohortDefinition INICIOST =
         genericCohortQueries.hasCodedObs(
             tbMetadata.getTBTreatmentPlanConcept(),
@@ -74,13 +73,10 @@ public class TXTBCohortQueries {
                 hivMetadata.getAdultoSeguimentoEncounterType(),
                 hivMetadata.getARVPediatriaSeguimentoEncounterType()),
             Arrays.asList(commonMetadata.getStartDrugsConcept()));
-    CohortDefinition DATAINICIO = tbTreatmentStartDateWithinReportingDate();
-    addGeneralParameters(TBPROGRAMA);
-    cd.addSearch("TBPROGRAMA", map(TBPROGRAMA, generalParameterMapping));
-    addGeneralParameters(INICIOST);
+    cd.addSearch("TBPROGRAMA", map(getInTBProgram(), generalParameterMapping));
     cd.addSearch("INICIOST", map(INICIOST, codedObsParameterMapping));
-    addGeneralParameters(DATAINICIO);
-    cd.addSearch("DATAINICIO", map(DATAINICIO, generalParameterMapping));
+    cd.addSearch(
+        "DATAINICIO", map(tbTreatmentStartDateWithinReportingDate(), generalParameterMapping));
     cd.setCompositionString("TBPROGRAMA OR INICIOST OR DATAINICIO");
     return cd;
   }
