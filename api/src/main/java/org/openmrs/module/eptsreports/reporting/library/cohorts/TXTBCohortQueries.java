@@ -333,28 +333,17 @@ public class TXTBCohortQueries {
   public CohortDefinition patientsWhoScreenTbNegativeOrPositive() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("PACIENTES TARV COM RASTREIO DE TUBERCULOSE POSITIVO/NEGATIVO");
-
-    CohortDefinition ACTUALTARV = getPatientsInARTWithoutAbandonedNotification();
-
-    CohortDefinition INICIOTARV =
-        getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation();
-
-    // PACIENTES COM RASTREIO DE TUBERCULOSE NEGATIVO
-    CohortDefinition RASTREIONEGATIVO = codedNoTbScreening();
-
-    // PACIENTES COM RASTREIO DE TUBERCULOSE POSITIVO
-    CohortDefinition RASTREIOTBPOS = codedYesTbScreening();
-
-    addGeneralParameters(ACTUALTARV);
-    cd.addSearch("ACTUALTARV", map(ACTUALTARV, generalParameterMapping));
-    addGeneralParameters(RASTREIONEGATIVO);
-    cd.addSearch("RASTREIONEGATIVO", map(RASTREIONEGATIVO, codedObsParameterMapping));
-    addGeneralParameters(RASTREIOTBPOS);
-    cd.addSearch("RASTREIOTBPOS", map(RASTREIOTBPOS, codedObsParameterMapping));
-    addGeneralParameters(INICIOTARV);
-    cd.addSearch("INICIOTARV", map(INICIOTARV, generalParameterMapping));
-    cd.setCompositionString("(INICIOTARV OR ACTUALTARV) AND (RASTREIONEGATIVO OR RASTREIOTBPOS)");
     addGeneralParameters(cd);
+    cd.addSearch(
+        "ACTUALTARV", map(getPatientsInARTWithoutAbandonedNotification(), generalParameterMapping));
+    cd.addSearch("RASTREIONEGATIVO", map(codedNoTbScreening(), codedObsParameterMapping));
+    cd.addSearch("RASTREIOTBPOS", map(codedYesTbScreening(), codedObsParameterMapping));
+    cd.addSearch(
+        "INICIOTARV",
+        map(
+            getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation(),
+            generalParameterMapping));
+    cd.setCompositionString("(INICIOTARV OR ACTUALTARV) AND (RASTREIONEGATIVO OR RASTREIOTBPOS)");
     return cd;
   }
 
@@ -363,21 +352,16 @@ public class TXTBCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
         "PACIENTES ACTUALMENTE EM TARV COM RASTREIO DE TUBERCULOSE POSITIVO NUM DETERMINADO PERIODO");
-
-    CohortDefinition ACTUALTARV = getPatientsInARTWithoutAbandonedNotification();
-
-    CohortDefinition RASTREIOPOSITIVO = codedYesTbScreening();
-    CohortDefinition NOVOSINICIOS =
-        getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation();
-
-    addGeneralParameters(ACTUALTARV);
-    cd.addSearch("ACTUALTARV", map(ACTUALTARV, generalParameterMapping));
-    addGeneralParameters(RASTREIOPOSITIVO);
-    cd.addSearch("RASTREIOPOSITIVO", map(RASTREIOPOSITIVO, codedObsParameterMapping));
-    addGeneralParameters(NOVOSINICIOS);
-    cd.addSearch("NOVOSINICIOS", map(NOVOSINICIOS, generalParameterMapping));
-    cd.setCompositionString("(ACTUALTARV AND RASTREIOPOSITIVO) NOT NOVOSINICIOS");
     addGeneralParameters(cd);
+    cd.addSearch(
+        "ACTUALTARV", map(getPatientsInARTWithoutAbandonedNotification(), generalParameterMapping));
+    cd.addSearch("RASTREIOPOSITIVO", map(codedYesTbScreening(), codedObsParameterMapping));
+    cd.addSearch(
+        "NOVOSINICIOS",
+        map(
+            getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation(),
+            generalParameterMapping));
+    cd.setCompositionString("(ACTUALTARV AND RASTREIOPOSITIVO) NOT NOVOSINICIOS");
     return cd;
   }
 
