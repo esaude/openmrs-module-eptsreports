@@ -733,28 +733,23 @@ public class TXTBCohortQueries {
 
   public CohortDefinition txTbNumerator() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition A = txTbNumeratorA();
-    cd.addSearch("A", map(A, generalParameterMapping));
-
+    addGeneralParameters(cd);
+    cd.addSearch("A", map(txTbNumeratorA(), generalParameterMapping));
     cd.addSearch(
         "started-tb-treatment-previous-period",
         EptsReportUtils.map(
             tbTreatmentStartDateWithinReportingDate(),
             "startDate=${startDate-6m},endDate=${startDate-1d},location=${location}"));
-
     cd.setCompositionString("A NOT started-tb-treatment-previous-period");
-    addGeneralParameters(cd);
     return cd;
   }
 
   public CohortDefinition txTbDenominator() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition A = txTbDenominatorA();
-    cd.addSearch("A", map(A, generalParameterMapping));
-    CohortDefinition B = txTbDenominatorB();
-    cd.addSearch("B", map(B, generalParameterMapping));
-    cd.setCompositionString("A NOT B");
     addGeneralParameters(cd);
+    cd.addSearch("A", map(txTbDenominatorA(), generalParameterMapping));
+    cd.addSearch("B", map(txTbDenominatorB(), generalParameterMapping));
+    cd.setCompositionString("A NOT B");
     return cd;
   }
 
