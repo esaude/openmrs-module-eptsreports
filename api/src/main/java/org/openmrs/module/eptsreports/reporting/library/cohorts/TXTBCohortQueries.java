@@ -209,11 +209,10 @@ public class TXTBCohortQueries {
    * @return SqlCohortDefinition
    */
   public CohortDefinition getPatientsWhoCameOutOfARVTreatmentProgram() {
-    Program artProgram = hivMetadata.getARTProgram();
     return genericCohortQueries.generalSql(
         "SAIDAPROGRAMA",
         TXTBQueries.patientsAtProgramStates(
-            artProgram.getProgramId(),
+            hivMetadata.getARTProgram().getProgramId(),
             Arrays.asList(
                 hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState().getId(),
                 hivMetadata.getSuspendedTreatmentWorkflowState().getId(),
@@ -231,34 +230,37 @@ public class TXTBCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
         "ACTUALMENTE EM TARV ATÉ UM DETERMINADO PERIODO FINAL - SEM INCLUIR ABANDONOS NAO NOTIFICADOS");
-    CohortDefinition TARV = getCurrentlyInARTTreatmentCompositionFinalPeriod();
+    addGeneralParameters(cd);
     // ABANDONO NÃO NOTIFICADO - TARV
-    CohortDefinition NAONOTIFICADO =
-        genericCohortQueries.generalSql(
-            "NAONOTIFICADO",
-            TXTBQueries.abandonedWithNoNotification(
-                new AbandonedWithoutNotificationParams()
-                    .programId(artProgram.getProgramId())
-                    .returnVisitDateConceptId(
-                        hivMetadata.getReturnVisitDateConcept().getConceptId())
-                    .returnVisitDateForARVDrugConceptId(
-                        hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId())
-                    .pharmacyEncounterTypeId(
-                        hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())
-                    .artAdultFollowupEncounterTypeId(
-                        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())
-                    .artPedInicioEncounterTypeId(
-                        hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId())
-                    .transferOutStateId(
-                        hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState().getId())
-                    .treatmentSuspensionStateId(
-                        hivMetadata.getSuspendedTreatmentWorkflowState().getId())
-                    .treatmentAbandonedStateId(hivMetadata.getAbandonedWorkflowState().getId())
-                    .deathStateId(hivMetadata.getPatientHasDiedWorkflowState().getId())));
-    addGeneralParameters(TARV);
-    cd.addSearch("TARV", map(TARV, generalParameterMapping));
-    addGeneralParameters(NAONOTIFICADO);
-    cd.addSearch("NAONOTIFICADO", map(NAONOTIFICADO, generalParameterMapping));
+    cd.addSearch(
+        "TARV", map(getCurrentlyInARTTreatmentCompositionFinalPeriod(), generalParameterMapping));
+    cd.addSearch(
+        "NAONOTIFICADO",
+        map(
+            genericCohortQueries.generalSql(
+                "NAONOTIFICADO",
+                TXTBQueries.abandonedWithNoNotification(
+                    new AbandonedWithoutNotificationParams()
+                        .programId(artProgram.getProgramId())
+                        .returnVisitDateConceptId(
+                            hivMetadata.getReturnVisitDateConcept().getConceptId())
+                        .returnVisitDateForARVDrugConceptId(
+                            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId())
+                        .pharmacyEncounterTypeId(
+                            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())
+                        .artAdultFollowupEncounterTypeId(
+                            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())
+                        .artPedInicioEncounterTypeId(
+                            hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId())
+                        .transferOutStateId(
+                            hivMetadata
+                                .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                                .getId())
+                        .treatmentSuspensionStateId(
+                            hivMetadata.getSuspendedTreatmentWorkflowState().getId())
+                        .treatmentAbandonedStateId(hivMetadata.getAbandonedWorkflowState().getId())
+                        .deathStateId(hivMetadata.getPatientHasDiedWorkflowState().getId()))),
+            generalParameterMapping));
     cd.setCompositionString("TARV NOT NAONOTIFICADO");
     return cd;
   }
