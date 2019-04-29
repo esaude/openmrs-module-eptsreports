@@ -89,24 +89,27 @@ public class TXTBCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
         "INICIO DE TRATAMENTO ARV - NUM PERIODO: EXCLUI TRANSFERIDOS DE COM DATA DE INICIO CONHECIDA (SQL)");
-
+    addGeneralParameters(cd);
     Program artProgram = hivMetadata.getARTProgram();
-    CohortDefinition TRANSFDEPRG = hivCohortQueries.getPatientsTransferredFromOtherHealthFacility();
-    CohortDefinition INICIO =
-        genericCohortQueries.generalSql(
-            "INICIO",
-            TXTBQueries.arvTreatmentIncludesTransfersFromWithKnownStartData(
-                artProgram.getConcept().getConceptId(),
-                hivMetadata.getStartDrugsConcept().getConceptId(),
-                hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
-                artProgram.getProgramId(),
-                hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
-    addGeneralParameters(TRANSFDEPRG);
-    cd.addSearch("TRANSFDEPRG", map(TRANSFDEPRG, generalParameterMapping));
-    addGeneralParameters(INICIO);
-    cd.addSearch("INICIO", map(INICIO, generalParameterMapping));
+    cd.addSearch(
+        "INICIO",
+        map(
+            genericCohortQueries.generalSql(
+                "INICIO",
+                TXTBQueries.arvTreatmentIncludesTransfersFromWithKnownStartData(
+                    artProgram.getConcept().getConceptId(),
+                    hivMetadata.getStartDrugsConcept().getConceptId(),
+                    hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
+                    artProgram.getProgramId(),
+                    hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId())),
+            generalParameterMapping));
+    cd.addSearch(
+        "TRANSFDEPRG",
+        map(
+            hivCohortQueries.getPatientsTransferredFromOtherHealthFacility(),
+            generalParameterMapping));
     cd.setCompositionString("INICIO NOT TRANSFDEPRG");
     return cd;
   }
