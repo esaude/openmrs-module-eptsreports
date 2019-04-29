@@ -168,28 +168,22 @@ public class TXTBCohortQueries {
    * TB. codes: DATAINICIO
    */
   public CohortDefinition tbTreatmentStartDateWithinReportingDate() {
-    CohortDefinition definition =
-        genericCohortQueries.generalSql(
-            "startedTbTreatment",
-            TXTBQueries.dateObs(
-                tbMetadata.getTBDrugTreatmentStartDate().getConceptId(),
-                Arrays.asList(
-                    hivMetadata.getAdultoSeguimentoEncounterType().getId(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getId()),
-                true));
-    addGeneralParameters(definition);
-    return definition;
+    return genericCohortQueries.generalSql(
+        "startedTbTreatment",
+        TXTBQueries.dateObs(
+            tbMetadata.getTBDrugTreatmentStartDate().getConceptId(),
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType().getId(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType().getId()),
+            true));
   }
 
   /** PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA DE TUBERCULOSE - NUM PERIODO */
   public CohortDefinition getInTBProgram() {
-    CohortDefinition definition =
-        genericCohortQueries.generalSql(
-            "TBPROGRAMA",
-            TXTBQueries.inTBProgramWithinReportingPeriodAtLocation(
-                tbMetadata.getTBProgram().getProgramId()));
-    addGeneralParameters(definition);
-    return definition;
+    return genericCohortQueries.generalSql(
+        "TBPROGRAMA",
+        TXTBQueries.inTBProgramWithinReportingPeriodAtLocation(
+            tbMetadata.getTBProgram().getProgramId()));
   }
 
   /**
@@ -200,13 +194,11 @@ public class TXTBCohortQueries {
   public CohortDefinition getCurrentlyInARTTreatmentCompositionFinalPeriod() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("ACTUALMENTE EM TRATAMENTO ARV (COMPOSICAO) - PERIODO FINAL");
-
-    CohortDefinition SAIDAPROGRAMA = getPatientsWhoCameOutOfARVTreatmentProgram();
-    CohortDefinition ALGUMAVEZTARV = anyTimeARVTreatmentFinalPeriod();
-    addGeneralParameters(SAIDAPROGRAMA);
-    cd.addSearch("SAIDAPROGRAMA", map(SAIDAPROGRAMA, generalParameterMapping));
-    addGeneralParameters(ALGUMAVEZTARV);
-    cd.addSearch("ALGUMAVEZTARV", map(ALGUMAVEZTARV, generalParameterMapping));
+    addGeneralParameters(cd);
+    cd.addSearch(
+        "SAIDAPROGRAMA",
+        map(getPatientsWhoCameOutOfARVTreatmentProgram(), generalParameterMapping));
+    cd.addSearch("ALGUMAVEZTARV", map(anyTimeARVTreatmentFinalPeriod(), generalParameterMapping));
     cd.setCompositionString("ALGUMAVEZTARV NOT SAIDAPROGRAMA");
     return cd;
   }
