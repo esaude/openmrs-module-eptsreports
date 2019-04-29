@@ -274,19 +274,18 @@ public class TXTBCohortQueries {
   public CohortDefinition getNotifiedTBPatientsAtARVService() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("PACIENTES NOTIFICADOS DO TRATAMENTO DE TB NO SERVICO TARV - ACTIVOS EM TARV");
-
-    CohortDefinition ACTIVOSTARV = getPatientsInARTWithoutAbandonedNotification();
-    CohortDefinition NOVOSINICIOS =
-        getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation();
-    CohortDefinition NOTIFICADOSTB = getNotifiedTBTreatmentPatientsOnART();
-    addGeneralParameters(ACTIVOSTARV);
-    cd.addSearch("ACTIVOSTARV", map(ACTIVOSTARV, generalParameterMapping));
-    addGeneralParameters(NOVOSINICIOS);
-    cd.addSearch("NOVOSINICIOS", map(NOVOSINICIOS, generalParameterMapping));
-    addGeneralParameters(NOTIFICADOSTB);
-    cd.addSearch("NOTIFICADOSTB", map(NOTIFICADOSTB, generalParameterMapping));
-    cd.setCompositionString("(ACTIVOSTARV AND NOTIFICADOSTB) NOT NOVOSINICIOS");
     addGeneralParameters(cd);
+    cd.addSearch(
+        "ACTIVOSTARV",
+        map(getPatientsInARTWithoutAbandonedNotification(), generalParameterMapping));
+    cd.addSearch(
+        "NOVOSINICIOS",
+        map(
+            getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation(),
+            generalParameterMapping));
+    cd.addSearch(
+        "NOTIFICADOSTB", map(getNotifiedTBTreatmentPatientsOnART(), generalParameterMapping));
+    cd.setCompositionString("(ACTIVOSTARV AND NOTIFICADOSTB) NOT NOVOSINICIOS");
     return cd;
   }
 
@@ -299,14 +298,14 @@ public class TXTBCohortQueries {
   public CohortDefinition notifiedTbPatientsOnARVNewStarting() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("PACIENTES NOTIFICADOS DO TRATAMENTO DE TB NO SERVICO TARV - NOVOS INICIOS");
-
-    CohortDefinition NOTIFICADOSTB = getNotifiedTBTreatmentPatientsOnART();
-    CohortDefinition NOVOSINICIOS =
-        getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation();
-    addGeneralParameters(NOTIFICADOSTB);
-    cd.addSearch("NOTIFICADOSTB", map(NOTIFICADOSTB, generalParameterMapping));
-    addGeneralParameters(NOVOSINICIOS);
-    cd.addSearch("NOVOSINICIOS", map(NOVOSINICIOS, generalParameterMapping));
+    addGeneralParameters(cd);
+    cd.addSearch(
+        "NOTIFICADOSTB", map(getNotifiedTBTreatmentPatientsOnART(), generalParameterMapping));
+    cd.addSearch(
+        "NOVOSINICIOS",
+        map(
+            getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation(),
+            generalParameterMapping));
     cd.setCompositionString("NOTIFICADOSTB AND NOVOSINICIOS");
     addGeneralParameters(cd);
     return cd;
@@ -321,15 +320,12 @@ public class TXTBCohortQueries {
   public CohortDefinition notifiedTbPatientsOnARTService() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("PACIENTES NOTIFICADOS DO TRATAMENTO DE TB NO SERVICO TARV");
-
-    CohortDefinition ACTIVOSTARV = getNotifiedTBPatientsAtARVService();
-    CohortDefinition NOVOSINICIOS = notifiedTbPatientsOnARVNewStarting();
-    addGeneralParameters(ACTIVOSTARV);
-    cd.addSearch("ACTIVOSTARV", map(ACTIVOSTARV, generalParameterMapping));
-    addGeneralParameters(NOVOSINICIOS);
-    cd.addSearch("NOVOSINICIOS", map(NOVOSINICIOS, generalParameterMapping));
-    cd.setCompositionString("ACTIVOSTARV OR NOVOSINICIOS");
     addGeneralParameters(cd);
+    cd.addSearch("ACTIVOSTARV", map(getNotifiedTBPatientsAtARVService(), generalParameterMapping));
+    cd.addSearch(
+        "NOVOSINICIOS", map(notifiedTbPatientsOnARVNewStarting(), generalParameterMapping));
+    cd.setCompositionString("ACTIVOSTARV OR NOVOSINICIOS");
+
     return cd;
   }
 
