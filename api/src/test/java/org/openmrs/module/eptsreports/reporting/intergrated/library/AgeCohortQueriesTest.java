@@ -58,7 +58,7 @@ public class AgeCohortQueriesTest extends DefinitionsTest {
             .getMemberIds());
     assertEquals(
         new HashSet<>(Arrays.asList(2)),
-        evaluateCohortDefinition(ageCohortQueries.createXtoYAgeCohort("44+", 43, null), parameters)
+        evaluateCohortDefinition(ageCohortQueries.createXtoYAgeCohort("43+", 43, null), parameters)
             .getMemberIds());
     assertEquals(
         new HashSet<>(Arrays.asList(2, 6, 7)),
@@ -71,6 +71,7 @@ public class AgeCohortQueriesTest extends DefinitionsTest {
     assertNull(patientService.getPatient(432).getAge());
     assertNull(patientService.getPatient(8).getAge());
     assertNull(patientService.getPatient(999).getAge());
+    // unknown includes voided patients
     assertEquals(
         new HashSet<>(Arrays.asList(432, 8, 999)),
         evaluateCohortDefinition(ageCohortQueries.createUnknownAgeCohort(), parameters)

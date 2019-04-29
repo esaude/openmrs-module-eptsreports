@@ -1,13 +1,12 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.utils;
 
+import java.util.Date;
 import org.junit.Before;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.test.BaseContextSensitiveTest;
-
-import java.util.Date;
 
 public abstract class DefinitionsFGHLiveTest extends DefinitionsTest {
   /** @see BaseContextSensitiveTest#useInMemoryDatabase() */

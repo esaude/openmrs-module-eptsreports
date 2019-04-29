@@ -1,5 +1,8 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.utils;
 
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -13,10 +16,6 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
 
 public abstract class DefinitionsTest extends BaseModuleContextSensitiveTest {
 
@@ -102,12 +101,14 @@ public abstract class DefinitionsTest extends BaseModuleContextSensitiveTest {
   protected EvaluatedCohort evaluateCohortDefinition(
       CohortDefinition cd, Map<Parameter, Object> parameters) throws EvaluationException {
     EvaluationContext context = new EvaluationContext();
-    Iterator it = parameters.entrySet().iterator();
-    while (it.hasNext()) {
-      Map.Entry p = (Map.Entry) it.next();
-      Parameter parameter = (Parameter) p.getKey();
-      cd.addParameter(parameter);
-      context.addParameterValue(parameter.getName(), p.getValue());
+    if (parameters != null) {
+      Iterator it = parameters.entrySet().iterator();
+      while (it.hasNext()) {
+        Map.Entry p = (Map.Entry) it.next();
+        Parameter parameter = (Parameter) p.getKey();
+        cd.addParameter(parameter);
+        context.addParameterValue(parameter.getName(), p.getValue());
+      }
     }
     return Context.getService(CohortDefinitionService.class).evaluate(cd, context);
   }
