@@ -125,29 +125,22 @@ public class TXTBCohortQueries {
   public CohortDefinition anyTimeARVTreatmentFinalPeriod() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("ALGUMA VEZ ESTEVE EM TRATAMENTO ARV - PERIODO FINAL - REAL (COMPOSICAO)");
-    cd.addParameter(new Parameter("endDate", "EndDate", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
+    addGeneralParameters(cd);
 
     CohortDefinition inARTProgramAtEndDate =
         genericCohortQueries.createInProgram("InARTProgram", hivMetadata.getARTProgram());
-    CohortDefinition CONCEITO1255 = everyTimeARVTreatedFinal();
-
-    CohortDefinition CONCEITODATA =
-        hivCohortQueries.getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate();
-    CohortDefinition FRIDAFILA = arTTreatmentFromPharmacy();
 
     cd.addSearch(
         "inARTProgramAtEndDate",
         EptsReportUtils.map(
             inARTProgramAtEndDate, "onOrBefore=${onOrBefore},locations=${location}"));
-    addGeneralParameters(CONCEITO1255);
-    cd.addSearch("CONCEITO1255", map(CONCEITO1255, codedObsParameterMapping));
-    addGeneralParameters(CONCEITODATA);
+    cd.addSearch("CONCEITO1255", map(everyTimeARVTreatedFinal(), codedObsParameterMapping));
     cd.addSearch(
         "CONCEITODATA",
-        EptsReportUtils.map(CONCEITODATA, "onOrBefore=${onOrBefore},location=${location}"));
-    addGeneralParameters(FRIDAFILA);
-    cd.addSearch("FRIDAFILA", map(FRIDAFILA, generalParameterMapping));
+        EptsReportUtils.map(
+            hivCohortQueries.getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate(),
+            "onOrBefore=${onOrBefore},location=${location}"));
+    cd.addSearch("FRIDAFILA", map(arTTreatmentFromPharmacy(), generalParameterMapping));
     cd.setCompositionString("CONCEITO1255 OR inARTProgramAtEndDate OR CONCEITODATA OR FRIDAFILA");
     return cd;
   }
