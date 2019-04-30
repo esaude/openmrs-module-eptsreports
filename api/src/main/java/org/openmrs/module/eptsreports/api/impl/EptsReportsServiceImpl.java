@@ -20,6 +20,16 @@ import org.openmrs.module.eptsreports.api.dao.EptsReportsDao;
 
 public class EptsReportsServiceImpl extends BaseOpenmrsService implements EptsReportsService {
 
+  private EptsReportsDao dao;
+
   /** Injected in moduleApplicationContext.xml */
-  public void setDao(EptsReportsDao dao) {}
+  public void setDao(EptsReportsDao dao) {
+    this.dao = dao;
+  }
+
+  @Override
+  public void purgeReportDesignIfExists(String uuid) {
+    String serializedObjectUuid = dao.getSerializedObjectByReportDesignUUID(uuid);
+    dao.purgeReportDesign(uuid, serializedObjectUuid);
+  }
 }

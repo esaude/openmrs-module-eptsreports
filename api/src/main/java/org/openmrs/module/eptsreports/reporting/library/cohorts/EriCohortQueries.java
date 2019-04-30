@@ -138,7 +138,7 @@ public class EriCohortQueries {
     cd.addSearch(
         "children",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeOnArtStartDate(0, 14), "location=${location}"));
+            genericCohortQueries.getAgeOnArtStartDate(null, 14), "location=${location}"));
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
@@ -173,7 +173,7 @@ public class EriCohortQueries {
     cd.addSearch(
         "adults",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeOnArtStartDate(15, 200), "location=${location}"));
+            genericCohortQueries.getAgeOnArtStartDate(15, null), "location=${location}"));
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(

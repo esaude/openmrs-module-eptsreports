@@ -60,20 +60,53 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
     Assert.assertEquals(Boolean.FALSE, result.getValue());
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void shouldRaiseExceptionIfMinAgeParameterIsNotSpecified() {
+  @Test
+  public void shouldBeTrueIfPatientWithinMaxAgeWithNoMinAge() {
     Map<String, Object> parameterValues = new HashMap<String, Object>();
     parameterValues.put("maxAge", 14);
-    service.evaluate(
-        Arrays.asList(1777001), getCalculation(), parameterValues, getEvaluationContext());
+    CalculationResultMap results =
+        service.evaluate(
+            Arrays.asList(1777001), getCalculation(), parameterValues, getEvaluationContext());
+    Assert.assertEquals(Boolean.TRUE, results.get(1777001).getValue());
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void shouldRaiseExceptionIfMaxAgeParameterIsNotSpecified() {
+  @Test
+  public void shouldBeFalseIfPatientOutsideMaxAgeWithNoMinAge() {
     Map<String, Object> parameterValues = new HashMap<String, Object>();
-    parameterValues.put("minAge", 11);
-    service.evaluate(
-        Arrays.asList(1777001), getCalculation(), parameterValues, getEvaluationContext());
+    parameterValues.put("maxAge", 8);
+    CalculationResultMap results =
+        service.evaluate(
+            Arrays.asList(1777001), getCalculation(), parameterValues, getEvaluationContext());
+    Assert.assertEquals(Boolean.FALSE, results.get(1777001).getValue());
+  }
+
+  @Test
+  public void shouldBeFalseIfPatientWithinMinAgeWithNoMaxAge() {
+    Map<String, Object> parameterValues = new HashMap<String, Object>();
+    parameterValues.put("minAge", 14);
+    CalculationResultMap results =
+        service.evaluate(
+            Arrays.asList(1777001), getCalculation(), parameterValues, getEvaluationContext());
+    Assert.assertEquals(Boolean.FALSE, results.get(1777001).getValue());
+  }
+
+  @Test
+  public void shouldBeTrueIfPatientOutsideMinAgeWithNoMaxAge() {
+    Map<String, Object> parameterValues = new HashMap<String, Object>();
+    parameterValues.put("minAge", 8);
+    CalculationResultMap results =
+        service.evaluate(
+            Arrays.asList(1777001), getCalculation(), parameterValues, getEvaluationContext());
+    Assert.assertEquals(Boolean.TRUE, results.get(1777001).getValue());
+  }
+
+  @Test
+  public void shouldBeTrueWithNoMinAndMaxAge() {
+    Map<String, Object> parameterValues = new HashMap<String, Object>();
+    CalculationResultMap results =
+        service.evaluate(
+            Arrays.asList(1777001), getCalculation(), parameterValues, getEvaluationContext());
+    Assert.assertEquals(Boolean.TRUE, results.get(1777001).getValue());
   }
 
   @Test

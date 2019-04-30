@@ -33,7 +33,10 @@ public class CalculationCohortDefinition extends BaseCohortDefinition {
   private PatientCalculation calculation;
 
   @ConfigurationProperty(group = "calculation")
-  private Date onDate;
+  private Date onOrAfter;
+
+  @ConfigurationProperty(group = "calculation")
+  private Date onOrBefore;
 
   @ConfigurationProperty(group = "calculation")
   private Object withResult;
@@ -80,22 +83,30 @@ public class CalculationCohortDefinition extends BaseCohortDefinition {
     this.calculation = calculation;
   }
 
+  public Date getOnOrAfter() {
+    return onOrAfter;
+  }
+
+  public void setOnOrAfter(Date onOrAfter) {
+    this.onOrAfter = onOrAfter;
+  }
+
   /**
    * Gets the date for which to calculate
    *
    * @return the date
    */
-  public Date getOnDate() {
-    return onDate;
+  public Date getOnOrBefore() {
+    return onOrBefore;
   }
 
   /**
    * Sets the date for which to calculate
    *
-   * @param onDate the date
+   * @param onOrBefore the date
    */
-  public void setOnDate(Date onDate) {
-    this.onDate = onDate;
+  public void setOnOrBefore(Date onOrBefore) {
+    this.onOrBefore = onOrBefore;
   }
 
   /**
@@ -144,8 +155,9 @@ public class CalculationCohortDefinition extends BaseCohortDefinition {
     if (calculationParameters == null) {
       calculationParameters = new HashMap<String, Object>();
     }
-
-    calculationParameters.put(name, value);
+    if (value != null) {
+      calculationParameters.put(name, value);
+    }
   }
 
   public Location getLocation() {

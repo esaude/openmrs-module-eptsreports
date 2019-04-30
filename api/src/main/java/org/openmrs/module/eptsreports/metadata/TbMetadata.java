@@ -17,34 +17,29 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.springframework.stereotype.Component;
 
 @Component("tbMetadata")
-public class TbMetadata extends CommonMetadata {
+public class TbMetadata extends ProgramsMetadata {
 
   // Concepts
   public Concept getTBTreatmentPlanConcept() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty(
-                EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_PLAN_CONCEPT_UUID);
+            .getGlobalProperty("eptsreports.tuberculosisTreatmentPlanConceptUuid");
     return getConcept(uuid);
   }
 
   public Concept getTBDrugTreatmentStartDate() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty(
-                EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_TREATMENT_STARTDATE_CONCEPT_UUID);
+            .getGlobalProperty("eptsreports.tuberculosisTreatmentStartDateConceptUuid");
     return getConcept(uuid);
   }
 
   // Programs
   public Program getTBProgram() {
-    String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_TB_PROGRAM_UUID);
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.tbProgramUuid");
     return getProgram(uuid);
   }
 
@@ -52,53 +47,46 @@ public class TbMetadata extends CommonMetadata {
   public EncounterType getTBLivroEncounterType() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty(
-                EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_LIVRO_ENCOUNTER_TYPE_UUID);
+            .getGlobalProperty("eptsreports.tbLivroEncounterTypeUuid");
     return getEncounterType(uuid);
   }
 
   public EncounterType getTBProcessoEncounterType() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty(
-                EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_PROCESSO_ENCOUNTER_TYPE_UUID);
+            .getGlobalProperty("eptsreports.tbProcessoEncounterTypeUuid");
     return getEncounterType(uuid);
   }
 
   public EncounterType getTBRastreioEncounterType() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty(
-                EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_RASTREIO_ENCOUNTER_TYPE_UUID);
+            .getGlobalProperty("eptsreports.tbRastreioEncounterTypeUuid");
     return getEncounterType(uuid);
   }
 
   public Concept getTbScreeningConcept() {
     String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty(
-                EptsReportConstants.GLOBAL_PROPERTY_TUBERCULOSIS_SCREENING_CONCEPT_UUID);
+        Context.getAdministrationService().getGlobalProperty("eptsreports.tbScreeningConceptUuid");
     return getConcept(uuid);
   }
 
   public Concept getResearchResultConcept() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_RESEARCH_RESULT_CONCEPT_UUID);
+            .getGlobalProperty("eptsreports.researchResultForTbConceptUuid");
     return getConcept(uuid);
   }
 
   public Concept getPositiveConcept() {
     String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_POSITIVE_CONCEPT_UUID);
+        Context.getAdministrationService().getGlobalProperty("eptsreports.positiveConceptUuid");
     return getConcept(uuid);
   }
 
   public Concept getNegativeConcept() {
     String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty(EptsReportConstants.GLOBAL_PROPERTY_NEGATIVE_CONCEPT_UUID);
+        Context.getAdministrationService().getGlobalProperty("eptsreports.negativeConceptUuid");
     return getConcept(uuid);
   }
 }
