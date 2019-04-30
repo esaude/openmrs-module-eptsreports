@@ -554,12 +554,11 @@ public class TXTBCohortQueries {
    */
   public CohortDefinition positiveOrNegativeInvestigationResult() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition P = positiveInvestigationResult();
-    cd.addSearch("P", map(P, codedObsParameterMapping));
-    CohortDefinition N = negativeInvestigationResult();
-    cd.addSearch("N", map(N, codedObsParameterMapping));
-    cd.setCompositionString("P OR N");
     addGeneralParameters(cd);
+    cd.addSearch("P", map(positiveInvestigationResult(), codedObsParameterMapping));
+    cd.addSearch("N", map(negativeInvestigationResult(), codedObsParameterMapping));
+    cd.setCompositionString("P OR N");
+
     return cd;
   }
 
@@ -569,12 +568,10 @@ public class TXTBCohortQueries {
    */
   public CohortDefinition yesOrNoInvestigationResult() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition S = codedYesTbScreening();
-    cd.addSearch("S", map(S, codedObsParameterMapping));
-    CohortDefinition N = codedNoTbScreening();
-    cd.addSearch("N", map(N, codedObsParameterMapping));
-    cd.setCompositionString("S OR N");
     addGeneralParameters(cd);
+    cd.addSearch("S", map(codedYesTbScreening(), codedObsParameterMapping));
+    cd.addSearch("N", map(codedNoTbScreening(), codedObsParameterMapping));
+    cd.setCompositionString("S OR N");
     return cd;
   }
 
@@ -695,6 +692,7 @@ public class TXTBCohortQueries {
 
   public CohortDefinition positiveScreening() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    addGeneralParameters(cd);
     cd.addSearch("A", EptsReportUtils.map(codedYesTbScreening(), codedObsParameterMapping));
     cd.addSearch(
         "B", EptsReportUtils.map(positiveOrNegativeInvestigationResult(), generalParameterMapping));
@@ -703,7 +701,6 @@ public class TXTBCohortQueries {
         EptsReportUtils.map(tbTreatmentStartDateWithinReportingDate(), generalParameterMapping));
     cd.addSearch("D", EptsReportUtils.map(getInTBProgram(), generalParameterMapping));
     cd.setCompositionString("A OR B OR C OR D");
-    addGeneralParameters(cd);
     return cd;
   }
 
