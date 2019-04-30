@@ -307,7 +307,6 @@ public class TXTBCohortQueries {
             getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation(),
             generalParameterMapping));
     cd.setCompositionString("NOTIFICADOSTB AND NOVOSINICIOS");
-    addGeneralParameters(cd);
     return cd;
   }
 
@@ -373,20 +372,17 @@ public class TXTBCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
         "NUMERO DE PACIENTES ACTUALMENTE EM TARV COM RASTREIO DE TUBERCULOSE NEGATIVO NUM DETERMINADO PERIODO");
-
-    CohortDefinition ACTUALTARV = getPatientsInARTWithoutAbandonedNotification();
-
-    CohortDefinition RASTREIONEGATIVO = codedNoTbScreening();
-    CohortDefinition NOVOSINICIOS =
-        getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation();
-    addGeneralParameters(ACTUALTARV);
-    cd.addSearch("ACTUALTARV", map(ACTUALTARV, generalParameterMapping));
-    addGeneralParameters(RASTREIONEGATIVO);
-    cd.addSearch("RASTREIONEGATIVO", map(RASTREIONEGATIVO, codedObsParameterMapping));
-    addGeneralParameters(NOVOSINICIOS);
-    cd.addSearch("NOVOSINICIOS", map(NOVOSINICIOS, generalParameterMapping));
-    cd.setCompositionString("(ACTUALTARV AND RASTREIONEGATIVO) NOT NOVOSINICIOS");
     addGeneralParameters(cd);
+    cd.addSearch(
+        "ACTUALTARV", map(getPatientsInARTWithoutAbandonedNotification(), generalParameterMapping));
+    cd.addSearch("RASTREIONEGATIVO", map(codedNoTbScreening(), codedObsParameterMapping));
+    cd.addSearch(
+        "NOVOSINICIOS",
+        map(
+            getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation(),
+            generalParameterMapping));
+    cd.setCompositionString("(ACTUALTARV AND RASTREIONEGATIVO) NOT NOVOSINICIOS");
+
     return cd;
   }
 
