@@ -82,6 +82,7 @@ public class StartedArtBeforeDateCalculationTest extends BasePatientCalculationT
   public void shouldRaiseExceptionIfBeforeDateIsNotSpecified() {
     Map<String, Object> parameterValues = new HashMap<String, Object>();
     PatientCalculationContext context = getEvaluationContext();
+    context.removeFromCache("onOrBefore");
     final int patientId = 1777006;
     service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues, context);
   }

@@ -14,6 +14,9 @@
 
 package org.openmrs.module.eptsreports.api.dao;
 
+import java.util.List;
+import org.hibernate.Transaction;
+import org.openmrs.api.db.hibernate.DbSession;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -21,5 +24,42 @@ import org.springframework.stereotype.Repository;
 @Repository("eptsreports.EptsReportsDao")
 public class EptsReportsDao {
 
-  @Autowired DbSessionFactory sessionFactory;
+  @Autowired private DbSessionFactory sessionFactory;
+
+  @SuppressWarnings("unchecked")
+  public String getSerializedObjectByReportDesignUUID(String uuid) {
+    List<String> list =
+        sessionFactory
+            .getCurrentSession()
+            .createSQLQuery(
+                "select concat(report_definition_uuid, '') as uuid from reporting_report_design where reporting_report_design.uuid = ?")
+            .setString(0, uuid)
+            .list();
+    if (!list.isEmpty()) {
+      return list.get(0);
+    }
+    return null;
+  }
+
+  public void purgeReportDesign(String designUuid, String serializedObjectUuid) {
+    final DbSession session = sessionFactory.getCurrentSession();
+    Transaction transaction = session.beginTransaction();
+    session
+        .createSQLQuery(
+            "delete from reporting_report_design_resource "
+                + "where reporting_report_design_resource.report_design_id = ("
+                + "select id from reporting_report_design where reporting_report_design.uuid = ?)")
+        .setString(0, designUuid)
+        .executeUpdate();
+    session
+        .createSQLQuery(
+            "delete from reporting_report_design where reporting_report_design.uuid = ?")
+        .setString(0, designUuid)
+        .executeUpdate();
+    session
+        .createSQLQuery("delete from serialized_object where uuid = ?")
+        .setString(0, serializedObjectUuid)
+        .executeUpdate();
+    transaction.commit();
+  }
 }

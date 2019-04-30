@@ -31,7 +31,7 @@ public class TxCurrCohortQueries {
 
   private static final String HAS_NEXT_APPOINTMENT_QUERY =
       "select distinct obs.person_id from obs "
-          + "where obs.obs_datetime <= :onOrBefore and obs.location_id = :location and obs.concept_id = %s and obs.voided = false "
+          + "where obs.obs_datetime <= :onOrBefore and obs.location_id = :location and obs.concept_id = %s and obs.voided = false and obs.value_datetime is not null "
           + "and obs.obs_datetime = (select max(encounter.encounter_datetime) from encounter "
           + "where encounter.encounter_type in (%s) and encounter.patient_id = obs.person_id and encounter.location_id = obs.location_id and encounter.voided = false and encounter.encounter_datetime <= :onOrBefore) ";
 
