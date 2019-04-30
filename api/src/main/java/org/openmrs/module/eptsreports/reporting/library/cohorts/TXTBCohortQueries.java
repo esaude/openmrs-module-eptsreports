@@ -424,21 +424,19 @@ public class TXTBCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
         "INICIO DE TARV E COM RASTREIO TB POSITIVO - NUM PERIODO: EXCLUI TRANSFERIDOS DE COM DATA DE INICIO CONHECIDA");
-
-    CohortDefinition RASTREIOTBPOS = codedYesTbScreening();
-
-    CohortDefinition INICIOTARV =
-        getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation();
-    addGeneralParameters(RASTREIOTBPOS);
+    addGeneralParameters(cd);
     cd.addSearch(
         "RASTREIOTBPOS",
         map(
-            RASTREIOTBPOS,
+            codedYesTbScreening(),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
-    addGeneralParameters(INICIOTARV);
-    cd.addSearch("INICIOTARV", map(INICIOTARV, generalParameterMapping));
+    cd.addSearch(
+        "INICIOTARV",
+        map(
+            getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation(),
+            generalParameterMapping));
     cd.setCompositionString("RASTREIOTBPOS AND INICIOTARV");
-    addGeneralParameters(cd);
+
     return cd;
   }
 
@@ -450,16 +448,15 @@ public class TXTBCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
         "INICIO DE TARV E COM RASTREIO TB NEGATIVO - NUM PERIODO: EXCLUI TRANSFERIDOS DE COM DATA DE INICIO CONHECIDA");
-
-    CohortDefinition RASTREIOTBNEG = codedNoTbScreening();
-    CohortDefinition INICIOTARVTB =
-        getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation();
-    addGeneralParameters(RASTREIOTBNEG);
-    cd.addSearch("RASTREIOTBNEG", map(RASTREIOTBNEG, codedObsParameterMapping));
-    addGeneralParameters(INICIOTARVTB);
-    cd.addSearch("INICIOTARVTB", map(INICIOTARVTB, generalParameterMapping));
-    cd.setCompositionString("INICIOTARVTB AND RASTREIOTBNEG");
     addGeneralParameters(cd);
+    cd.addSearch("RASTREIOTBNEG", map(codedNoTbScreening(), codedObsParameterMapping));
+    cd.addSearch(
+        "INICIOTARVTB",
+        map(
+            getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation(),
+            generalParameterMapping));
+    cd.setCompositionString("INICIOTARVTB AND RASTREIOTBNEG");
+
     return cd;
   }
 
