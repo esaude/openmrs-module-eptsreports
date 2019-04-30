@@ -416,20 +416,6 @@ public class TXTBCohortQueries {
     return cd;
   }
 
-  public CohortDefinition tbScreening() {
-    CohortDefinition cd =
-        genericCohortQueries.hasCodedObs(
-            tbMetadata.getTbScreeningConcept(),
-            TimeModifier.ANY,
-            SetComparator.IN,
-            Arrays.asList(
-                hivMetadata.getAdultoSeguimentoEncounterType(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType()),
-            null);
-    addGeneralParameters(cd);
-    return cd;
-  }
-
   /**
    * INICIO DE TARV E COM RASTREIO TB POSITIVO - NUM PERIODO: EXCLUI TRANSFERIDOS DE COM DATA DE
    * INICIO CONHECIDA
