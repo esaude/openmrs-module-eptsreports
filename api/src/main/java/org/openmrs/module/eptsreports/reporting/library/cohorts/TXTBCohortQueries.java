@@ -471,18 +471,16 @@ public class TXTBCohortQueries {
   public CohortDefinition patientsTranferredInWithoutARTInitiationDate() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     addGeneralParameters(cd);
-
-    CohortDefinition TRANSFDEPRG = hivCohortQueries.getPatientsTransferredFromOtherHealthFacility();
-    addGeneralParameters(TRANSFDEPRG);
     CalculationCohortDefinition NOARTINIT =
         new CalculationCohortDefinition(
             Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0));
     NOARTINIT.setWithResultFinder(CalculationWithResultFinder.NULL);
-    addGeneralParameters(NOARTINIT);
 
     cd.addSearch(
         "TRANSFDEPRG",
-        map(TRANSFDEPRG, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+        map(
+            hivCohortQueries.getPatientsTransferredFromOtherHealthFacility(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch("NOARTINIT", map(NOARTINIT, generalParameterMapping));
     cd.setCompositionString("TRANSFDEPRG AND NOARTINIT");
     return cd;
@@ -494,26 +492,24 @@ public class TXTBCohortQueries {
    */
   public CohortDefinition patientsTranferredInWithARTInitiationDateOutsideReportingPeriod() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition TRANSFDEPRG = hivCohortQueries.getPatientsTransferredFromOtherHealthFacility();
-    addGeneralParameters(TRANSFDEPRG);
+    addGeneralParameters(cd);
     CalculationCohortDefinition OUTARTINIT =
         new CalculationCohortDefinition(
             Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0));
     OUTARTINIT.setWithResultFinder(CalculationWithResultFinder.DATE_OUTSIDE);
-    addGeneralParameters(OUTARTINIT);
-
     cd.addSearch(
         "TRANSFDEPRG",
-        map(TRANSFDEPRG, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+        map(
+            hivCohortQueries.getPatientsTransferredFromOtherHealthFacility(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch("OUTARTINIT", map(OUTARTINIT, generalParameterMapping));
     cd.setCompositionString("TRANSFDEPRG AND OUTARTINIT");
-    addGeneralParameters(cd);
     return cd;
   }
 
   public CohortDefinition artList() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-
+    addGeneralParameters(cd);
     cd.addSearch(
         "started-by-end-reporting-period",
         EptsReportUtils.map(
@@ -521,7 +517,6 @@ public class TXTBCohortQueries {
             "onOrBefore=${endDate},location=${location}"));
 
     cd.setCompositionString("started-by-end-reporting-period");
-    addGeneralParameters(cd);
     return cd;
   }
 
