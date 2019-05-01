@@ -1,5 +1,9 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.library;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Arrays;
+import java.util.HashSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.PatientService;
@@ -8,11 +12,6 @@ import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsTes
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Arrays;
-import java.util.HashSet;
-
-import static org.junit.Assert.assertEquals;
 
 public class GenderCohortQueriesTest extends DefinitionsTest {
   @Autowired private GenderCohortQueries genderCohortQueries;
