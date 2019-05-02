@@ -12,9 +12,13 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
+import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
+import org.openmrs.module.reporting.indicator.dimension.CohortDimensionResult;
+import org.openmrs.module.reporting.indicator.dimension.service.DimensionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 public abstract class DefinitionsTest extends BaseModuleContextSensitiveTest {
@@ -100,6 +104,11 @@ public abstract class DefinitionsTest extends BaseModuleContextSensitiveTest {
 
   protected EvaluatedCohort evaluateCohortDefinition(
       CohortDefinition cd, Map<Parameter, Object> parameters) throws EvaluationException {
+    EvaluationContext context = getEvaluationContext(cd, parameters);
+    return Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+  }
+
+  private EvaluationContext getEvaluationContext(Definition cd, Map<Parameter, Object> parameters) {
     EvaluationContext context = new EvaluationContext();
     if (parameters != null) {
       Iterator it = parameters.entrySet().iterator();
@@ -110,6 +119,14 @@ public abstract class DefinitionsTest extends BaseModuleContextSensitiveTest {
         context.addParameterValue(parameter.getName(), p.getValue());
       }
     }
-    return Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+    return context;
+  }
+
+  protected CohortDimensionResult evaluateCohortDefinitionDimension(
+      CohortDefinitionDimension cohortDefinitionDimension, Map<Parameter, Object> parameters)
+      throws EvaluationException {
+    EvaluationContext context = getEvaluationContext(cohortDefinitionDimension, parameters);
+    return (CohortDimensionResult)
+        Context.getService(DimensionService.class).evaluate(cohortDefinitionDimension, context);
   }
 }
