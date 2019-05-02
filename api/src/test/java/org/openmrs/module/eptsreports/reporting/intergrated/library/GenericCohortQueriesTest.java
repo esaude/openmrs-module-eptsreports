@@ -1,19 +1,11 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.library;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.LocationService;
-import org.openmrs.api.ObsService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
@@ -25,12 +17,18 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+
 public class GenericCohortQueriesTest extends DefinitionsTest {
   @Autowired private GenericCohortQueries genericCohortQueries;
 
   @Autowired private TestsHelper testsHelper;
-
-  private ObsService obsService;
 
   private ConceptService conceptService;
 
@@ -43,7 +41,6 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
   @Before
   public void init() throws Exception {
     executeDataSet("genericCohortQueriesTest.xml");
-    obsService = Context.getObsService();
     conceptService = Context.getConceptService();
     encounterService = Context.getEncounterService();
     programWorkflowService = Context.getProgramWorkflowService();
@@ -118,7 +115,8 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
     assertEquals(
         new HashSet<>(Arrays.asList(7)),
         evaluateCohortDefinition(
-                genericCohortQueries.createInProgram("inTb", programWorkflowService.getProgram(2)),
+                genericCohortQueries.createInProgram(
+                    "inTbAtLocation", programWorkflowService.getProgram(2)),
                 parameters)
             .getMemberIds());
     parameters.clear();
@@ -128,8 +126,56 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
     assertEquals(
         new HashSet<>(Arrays.asList(7)),
         evaluateCohortDefinition(
-                genericCohortQueries.createInProgram("inTb", programWorkflowService.getProgram(2)),
+                genericCohortQueries.createInProgram(
+                    "inTbOnOrBefore", programWorkflowService.getProgram(2)),
                 parameters)
             .getMemberIds());
+  }
+
+  @Test
+  public void generalSqlShouldMatchAGivenQuery() throws EvaluationException {
+    assertEquals(
+        new HashSet<>(Arrays.asList(2, 6, 7, 8, 999, 432)),
+        evaluateCohortDefinition(
+                genericCohortQueries.generalSql("allPatients", "select patient_id from patient"),
+                null)
+            .getMemberIds());
+    assertEquals(
+        new HashSet<>(Arrays.asList(2, 6, 7, 8)),
+        evaluateCohortDefinition(
+                genericCohortQueries.generalSql(
+                    "nonVoidedPatients", "select patient_id from patient where voided = false"),
+                null)
+            .getMemberIds());
+  }
+
+  @Test
+  public void generalSqlShouldMatchAGivenQueryWithParameters() throws EvaluationException {
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(
+        new Parameter("startDate", "start date", Date.class),
+        testsHelper.getDate("2008-08-18 12:25:00.0"));
+    parameters.put(
+        new Parameter("endDate", "end date", Date.class),
+        testsHelper.getDate("2008-08-18 12:26:00.0"));
+    assertEquals(
+        new HashSet<>(Arrays.asList(6, 7)),
+        evaluateCohortDefinition(
+                genericCohortQueries.generalSql(
+                    "patientsChangedBetween",
+                    "select patient_id from patient where date_changed between :startDate and :endDate"),
+                parameters)
+            .getMemberIds());
+    parameters.put(
+        new Parameter("location", "Facility", Location.class), locationService.getLocation(1));
+    assertEquals(
+        new HashSet<>(Arrays.asList(7)),
+        evaluateCohortDefinition(
+                genericCohortQueries.generalSql(
+                    "enrolledIntoTbAtLocation",
+                    "select patient_id from patient_program where location_id = :location"),
+                parameters)
+            .getMemberIds());
+
   }
 }
