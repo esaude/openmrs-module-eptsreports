@@ -9,8 +9,10 @@ PEPFAR reports for EPTS project in Mozambique
 ## Prerequisites
 
 1.  [Install Java and Maven](https://wiki.openmrs.org/display/docs/OpenMRS+SDK#OpenMRSSDK-Installation)
+
 2.  Install git
     -   `sudo apt-get install git`
+
 3.  To setup the OpenMRS SDK, you just need to open up a terminal/console and enter:
     -   `mvn org.openmrs.maven.plugins:openmrs-sdk-maven-plugin:setup-sdk`
 
