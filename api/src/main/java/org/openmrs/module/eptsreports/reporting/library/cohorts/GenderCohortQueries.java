@@ -25,9 +25,9 @@ public class GenderCohortQueries {
    *
    * @return the cohort definition
    */
-  public CohortDefinition FemaleCohort() {
+  public CohortDefinition femaleCohort() {
     GenderCohortDefinition cohort = new GenderCohortDefinition();
-    cohort.setName("FemaleCohort");
+    cohort.setName("femaleCohort");
     cohort.setFemaleIncluded(true);
     cohort.setMaleIncluded(false);
     return cohort;
@@ -38,9 +38,9 @@ public class GenderCohortQueries {
    *
    * @return the cohort definition
    */
-  public CohortDefinition MaleCohort() {
+  public CohortDefinition maleCohort() {
     GenderCohortDefinition cohort = new GenderCohortDefinition();
-    cohort.setName("MaleCohort");
+    cohort.setName("maleCohort");
     cohort.setMaleIncluded(true);
     cohort.setFemaleIncluded(false);
     return cohort;
