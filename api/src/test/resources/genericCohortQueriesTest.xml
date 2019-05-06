@@ -7,5 +7,43 @@
 	graphic logo is a trademark of OpenMRS Inc. -->
 
 <dataset>
-    <patient_program patient_program_id="10" patient_id="7" program_id="2" date_enrolled="2019-04-30 00:00:00.0" creator="1" date_created="2019-04-30 00:00:00.0" location_id="1" voided="false" uuid="0edf272c-bf05-4208-9f93-2fa213ed0000"/>
+    <person person_id="100" gender="M" birthdate="1996-05-06 00:00:00.0" birthdate_estimated="0" dead="false" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="uu1b19c2-3ed6-4f63-b8c0-f762dc8d7561"/>
+    <person_name person_name_id="100" preferred="true" person_id="2" prefix="Mr." given_name="James" middle_name="Test" family_name="Terio" family_name_suffix="Esq." creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="000e3a7b-6482-487d-94ce-c07bb3ca3cc1"/>
+    <patient patient_id="100" creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason=""/>
+
+    <person person_id="101" gender="M" birthdate="1983-05-06 00:00:00.0" birthdate_estimated="0" dead="false" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="uu1b19c2-3ed6-4f63-b8c0-f762dc8d7562"/>
+    <person_name person_name_id="101" preferred="true" person_id="2" prefix="Mr." given_name="James" middle_name="Test" family_name="Terio" family_name_suffix="Esq." creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="000e3a7b-6482-487d-94ce-c07bb3ca3cc2"/>
+    <patient patient_id="101" creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason=""/>
+
+    <patient_program patient_program_id="10" patient_id="7" program_id="2" date_enrolled="2019-04-30 00:00:00.0" creator="1" date_created="2019-04-30 00:00:00.0" location_id="1" voided="false" uuid="5edf272c-bf05-4208-9f93-2fa213ed0000"/>
+
+    <concept concept_id="777001" retired="false" datatype_id="2" class_id="17" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="aa09ab2c5-878e-4905-b25d-57841777001"/>
+    <concept_name concept_name_id="577001" concept_id="777001" name="hiv care" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6ea77e374-18a1-4ec6-8ed4-4152a577001"/>
+
+    <concept concept_id="777002" retired="false" datatype_id="2" class_id="17" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="aa09ab2c5-878e-4905-b25d-57841777002"/>
+    <concept_name concept_name_id="577002" concept_id="777002" name="ARV" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6ae77e374-18a1-4ec6-8ed4-4152a577002"/>
+
+    <program program_id="10" concept_id="777001" creator="1" date_created="2008-08-15 16:07:11.0" changed_by="1" date_changed="2008-08-15 17:04:50.0" retired="false" name="hiv Care" description="" uuid="aa4a0391-ba62-4fad-ad66-1e3722d16381"/>
+    <program program_id="11" concept_id="777002" creator="1" date_created="2008-08-15 16:07:11.0" changed_by="1" date_changed="2008-08-15 17:04:50.0" retired="false" name="ART" description="" uuid="aa4a0391-ba62-4fad-ad66-1e3722d16382"/>
+
+    <encounter_type encounter_type_id="677004" name="Adult initial" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02ca533ab-b74b-4ee4-b6e5-ffb6d677004"/>
+    <encounter_type encounter_type_id="677005" name="Child initial" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02ca533ab-b74b-4ee4-b6e5-ffb6d677005"/>
+
+    <global_property property="eptsreports.hivCareProgramUuid" property_value="aa4a0391-ba62-4fad-ad66-1e3722d16381" uuid="aa4a0391-ba62-4fad-ad66-1e3722d16381"/>
+    <global_property property="eptsreports.artProgramUuid" property_value="aa4a0391-ba62-4fad-ad66-1e3722d16382" uuid="aa4a0391-ba62-4fad-ad66-1e3722d16382"/>
+    <global_property property="eptsreports.sTarvAdultoInitialAEncounterTypeUuid" property_value="02ca533ab-b74b-4ee4-b6e5-ffb6d677004" uuid="02ca533ab-b74b-4ee4-b6e5-ffb6d677004"/>
+    <global_property property="eptsreports.sTarvPediatriaInicialAEncounterTypeUuid" property_value="02ca533ab-b74b-4ee4-b6e5-ffb6d677005" uuid="02ca533ab-b74b-4ee4-b6e5-ffb6d677005"/>
+
+    <encounter encounter_id="10" encounter_type="677004" patient_id="2" location_id="1" form_id="1" encounter_datetime="2019-02-01 00:00:00.0" creator="1" date_created="2019-02-01 00:00:00.0" voided="false" uuid="0519d653-393b-4118-9c83-a3715b82d4ap"/>
+    <encounter encounter_id="11" encounter_type="677005" patient_id="6" location_id="1" form_id="1" encounter_datetime="2019-02-01 00:00:00.0" creator="1" date_created="2019-02-01 00:00:00.0" voided="false" uuid="1519d653-393b-4118-9c83-a3715b82d4ap"/>
+
+    <patient_program patient_program_id="11" patient_id="7" program_id="10" date_enrolled="2019-04-30 00:00:00.0" creator="1" date_created="2019-04-30 00:00:00.0" location_id="1" voided="false" uuid="5edf272c-bf05-4208-9f93-2fa213ed0002"/>
+
+    <patient_program patient_program_id="12" patient_id="100" program_id="10" date_enrolled="2019-04-30 00:00:00.0" creator="1" date_created="2019-04-30 00:00:00.0" location_id="1" voided="false" uuid="5edf272c-bf05-4208-9f93-2fa213ed0003"/>
+    <program_workflow_state program_workflow_state_id="28" program_workflow_id="1" concept_id="17" initial="true" terminal="false" creator="1" date_created="2019-04-30 17:04:02.0" retired="false" changed_by="1" date_changed="2019-04-30 17:04:50.0" uuid="e938129e-248a-482a-acea-f85127251400"/>
+    <patient_state patient_state_id="10" patient_program_id="12" state="28" start_date="2019-04-30" creator="1" date_created="2019-04-30 12:29:29.0" voided="false" uuid="ua89deaa-23cc-4840-92fe-63d199c37e4e"/>
+
+    <patient_program patient_program_id="13" patient_id="101" program_id="11" date_enrolled="2019-04-30 00:00:00.0" creator="1" date_created="2019-04-30 00:00:00.0" location_id="1" voided="false" uuid="5edf272c-bf05-4208-9f93-2fa213ed0004"/>
+    <program_workflow_state program_workflow_state_id="29" program_workflow_id="1" concept_id="17" initial="true" terminal="false" creator="1" date_created="2019-04-30 17:04:02.0" retired="false" changed_by="1" date_changed="2019-04-30 17:04:50.0" uuid="e938129e-248a-482a-acea-f85127251401"/>
+    <patient_state patient_state_id="10" patient_program_id="13" state="29" start_date="2019-04-30" creator="1" date_created="2019-04-30 12:29:29.0" voided="false" uuid="ua89deaa-23cc-4840-92fe-63d199c37e5e"/>
 </dataset>

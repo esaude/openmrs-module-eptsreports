@@ -1,12 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.library;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
@@ -24,6 +17,14 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+
 public class GenericCohortQueriesTest extends DefinitionsTest {
   @Autowired private GenericCohortQueries genericCohortQueries;
 
@@ -39,7 +40,7 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
 
   @Before
   public void init() throws Exception {
-    executeDataSet("genericCohortQueriesTest.xml");
+    executeLargeDataSet("genericCohortQueriesTest.xml");
     conceptService = Context.getConceptService();
     encounterService = Context.getEncounterService();
     programWorkflowService = Context.getProgramWorkflowService();
@@ -134,13 +135,13 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
   @Test
   public void generalSqlShouldMatchAGivenQuery() throws EvaluationException {
     assertEquals(
-        new HashSet<>(Arrays.asList(2, 6, 7, 8, 999, 432)),
+        new HashSet<>(Arrays.asList(2, 6, 7, 8, 999, 432, 100, 101)),
         evaluateCohortDefinition(
                 genericCohortQueries.generalSql("allPatients", "select patient_id from patient"),
                 null)
             .getMemberIds());
     assertEquals(
-        new HashSet<>(Arrays.asList(2, 6, 7, 8)),
+        new HashSet<>(Arrays.asList(2, 6, 7, 8, 100, 101)),
         evaluateCohortDefinition(
                 genericCohortQueries.generalSql(
                     "nonVoidedPatients", "select patient_id from patient where voided = false"),
@@ -172,8 +173,28 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
         evaluateCohortDefinition(
                 genericCohortQueries.generalSql(
                     "enrolledIntoTbAtLocation",
-                    "select patient_id from patient_program where location_id = :location"),
+                    "select patient_id from patient_program where program_id = 2 and location_id = :location"),
                 parameters)
             .getMemberIds());
+  }
+
+  @Test
+  public void getBaseCohortShouldRetrieveAllMatchingPatients() throws EvaluationException {
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(
+        new Parameter("endDate", "end date", Date.class),
+        testsHelper.getDate("2019-05-06 12:26:00.0"));
+    parameters.put(
+        new Parameter("location", "Facility", Location.class), locationService.getLocation(1));
+
+    assertEquals(
+        new HashSet<>(
+            Arrays.asList(
+                /* with either adult on ped initial encounters: */ 2,
+                6,
+                /* in hiv care program: */ 7,
+                /* in hiv care program at 58 state: */ 100,
+                /* in art program at 29 state: */ 101)),
+        evaluateCohortDefinition(genericCohortQueries.getBaseCohort(), parameters).getMemberIds());
   }
 }
