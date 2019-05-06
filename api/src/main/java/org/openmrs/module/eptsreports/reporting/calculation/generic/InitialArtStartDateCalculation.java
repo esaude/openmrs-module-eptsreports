@@ -124,7 +124,7 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
       }
       Obs startDrugsObs = EptsCalculationUtils.resultForPatient(startDrugMap, pId);
       if (startDrugsObs != null) {
-        enrollmentDates.add(startDrugsObs.getObsDatetime());
+        enrollmentDates.add(startDrugsObs.getEncounter().getEncounterDatetime());
       }
       Obs historicalDateObs = EptsCalculationUtils.resultForPatient(historicalMap, pId);
       if (historicalDateObs != null) {
