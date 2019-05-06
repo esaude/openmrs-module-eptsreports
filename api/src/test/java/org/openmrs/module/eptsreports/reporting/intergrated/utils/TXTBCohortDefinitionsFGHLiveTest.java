@@ -113,13 +113,13 @@ public class TXTBCohortDefinitionsFGHLiveTest extends DefinitionsFGHLiveTest {
     Assert.assertEquals(5, result.size());
   }
 
-  @Test
+  /*@Test
   public void patientsWhoScreenTbNegativeOrPositive() throws EvaluationException {
     EvaluatedCohort result =
         evaluateCohortDefinition(txTbCohortQueries.patientsWhoScreenedTbPositive());
     Assert.assertEquals(342, result.size());
     System.out.println(result.getCommaSeparatedPatientIds());
-  }
+  }*/
 
   @Test
   public void patientsOnARTWhoScreenedTBPositiveForAPeriod() throws EvaluationException {
