@@ -1,11 +1,8 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.utils;
 
-import java.util.Date;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.calculation.CalculationWithResultFinder;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.InitialArtStartDateCalculation;
@@ -13,14 +10,8 @@ import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCoh
 import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TXTBCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.DateUtil;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -29,85 +20,20 @@ import org.springframework.beans.factory.annotation.Autowired;
  * with the same parameter values in here while running in eclipse
  */
 @Ignore
-public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitiveTest {
+public class TXTBCohortDefinitionsFGHLiveTest extends DefinitionsFGHLiveTest {
 
   @Autowired private TXTBCohortQueries txTbCohortQueries;
 
   @Autowired private HivCohortQueries hivCohortQueries;
 
-  /** @see BaseContextSensitiveTest#useInMemoryDatabase() */
   @Override
-  public Boolean useInMemoryDatabase() {
-    /*
-     * ensure ~/.OpenMRS/openmrs-runtime.properties exists with your properties
-     * such as; connection.username=openmrs
-     * connection.url=jdbc:mysql://127.0.0.1:3316/openmrs
-     * connection.password=wTV.Tpp0|Q&c
-     */
-    return false;
+  public String username() {
+    return "admin";
   }
 
-  @Before
-  public void initialize() throws Exception {
-    Context.authenticate("admin", "eSaude123");
-  }
-
-  private void addParameters(CohortDefinition cd) {
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-  }
-
-  private void setParameters(
-      Date startDate, Date endDate, Location location, EvaluationContext context) {
-    context.addParameterValue("startDate", startDate);
-    context.addParameterValue("endDate", endDate);
-    context.addParameterValue("location", location);
-  }
-
-  /** evaluate for location#103 from 06/feb/2013 to 06/mar/2019 */
-  private EvaluatedCohort evaluateCodedObsCohortDefinition(CohortDefinition cd)
-      throws EvaluationException {
-    addParameters(cd);
-    EvaluationContext context = new EvaluationContext();
-    context.addParameterValue("onOrAfter", DateUtil.getDateTime(2013, 02, 06));
-    context.addParameterValue("onOrBefore", DateUtil.getDateTime(2019, 03, 06));
-    context.addParameterValue("locationList", Context.getLocationService().getLocation(103));
-    return Context.getService(CohortDefinitionService.class).evaluate(cd, context);
-  }
-
-  /** evaluate for location#103 from 06/feb/2019 to 06/mar/2019 */
-  private EvaluatedCohort evaluateCalculationCohortDefinition(CohortDefinition cd)
-      throws EvaluationException {
-    addParameters(cd);
-    EvaluationContext context = new EvaluationContext();
-    context.addParameterValue("onOrAfter", DateUtil.getDateTime(2019, 02, 06));
-    context.addParameterValue("onOrBefore", DateUtil.getDateTime(2019, 03, 06));
-    context.addParameterValue("location", Context.getLocationService().getLocation(103));
-    return Context.getService(CohortDefinitionService.class).evaluate(cd, context);
-  }
-
-  /** evaluate for location#103 from 06/feb/2013 to 06/mar/2019 */
-  private EvaluatedCohort evaluateCohortDefinition(CohortDefinition cd) throws EvaluationException {
-    addParameters(cd);
-    EvaluationContext context = new EvaluationContext();
-
-    setParameters(
-        DateUtil.getDateTime(2013, 02, 06),
-        DateUtil.getDateTime(2019, 03, 06),
-        Context.getLocationService().getLocation(103),
-        context);
-    return Context.getService(CohortDefinitionService.class).evaluate(cd, context);
-  }
-
-  private EvaluatedCohort evaluateCohortDefinition(
-      CohortDefinition cd, Date startDate, Date endDate, Location location)
-      throws EvaluationException {
-    addParameters(cd);
-    EvaluationContext context = new EvaluationContext();
-
-    setParameters(startDate, endDate, location, context);
-    return Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+  @Override
+  public String password() {
+    return "eSaude123";
   }
 
   @Test
@@ -190,7 +116,7 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
   @Test
   public void patientsWhoScreenTbNegativeOrPositive() throws EvaluationException {
     EvaluatedCohort result =
-        evaluateCohortDefinition(txTbCohortQueries.patientsWhoScreenTbNegativeOrPositive());
+        evaluateCohortDefinition(txTbCohortQueries.patientsWhoScreenedTbPositive());
     Assert.assertEquals(342, result.size());
     System.out.println(result.getCommaSeparatedPatientIds());
   }
@@ -207,8 +133,8 @@ public class TXTBCohortDefinitionsFGHLiveTest extends BaseModuleContextSensitive
     EvaluatedCohort result =
         evaluateCohortDefinition(
             txTbCohortQueries.patientsOnARTWhoScreenedTBPositiveForAPeriod(),
-            DateUtil.getDateTime(2013, 02, 06),
-            DateUtil.getDateTime(2019, 03, 06),
+            DateUtil.getDateTime(2013, 2, 6),
+            DateUtil.getDateTime(2019, 3, 6),
             Context.getLocationService().getLocation(379));
     Assert.assertEquals(0, result.size());
   }

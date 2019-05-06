@@ -80,7 +80,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
     PatientsOnRoutineEnum criteria = (PatientsOnRoutineEnum) params.get("criteria");
     EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
     EncounterType childFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
-    EncounterType farmacia = hivMetadata.getFarmaciaEncounterType();
+    EncounterType farmacia = hivMetadata.getARVPharmaciaEncounterType();
 
     // lookups
     CalculationResultMap patientHavingVL =
