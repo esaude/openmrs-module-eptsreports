@@ -115,7 +115,9 @@ public abstract class DefinitionsTest extends BaseModuleContextSensitiveTest {
       while (it.hasNext()) {
         Map.Entry p = (Map.Entry) it.next();
         Parameter parameter = (Parameter) p.getKey();
-        cd.addParameter(parameter);
+        if (!cd.getParameters().contains(parameter)) {
+          cd.addParameter(parameter);
+        }
         context.addParameterValue(parameter.getName(), p.getValue());
       }
     }
