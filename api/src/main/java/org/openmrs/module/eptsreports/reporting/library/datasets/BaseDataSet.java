@@ -13,13 +13,14 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class BaseDataSet {
 
@@ -32,7 +33,7 @@ public abstract class BaseDataSet {
    * @param indicator the indicator
    * @param columns the column parameters
    */
-  protected void addRow(
+  public void addRow(
       CohortIndicatorDataSetDefinition cohortDsd,
       String baseName,
       String baseLabel,
