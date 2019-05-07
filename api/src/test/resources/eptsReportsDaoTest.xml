@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public 
+	License, v. 2.0. If a copy of the MPL was not distributed with this file, 
+	You can obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed 
+	under the terms of the Healthcare Disclaimer located at http://openmrs.org/license. 
+	Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS 
+	graphic logo is a trademark of OpenMRS Inc. -->
+
+<dataset>
+    <reporting_report_design id="1" uuid="f4f0045b-3a64-4533-a6b6-9c6c8072fe3f" name="Continuation Report"
+                             description="Relatorio de Reportagem Bimensal que mostra a evolucao no servico TARV."
+                             renderer_type="org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer"
+                             properties="#Mon Jan 17 12:51:48 CAT 2011" creator="1" date_created="2011-01-17 10:56:59"
+                             changed_by="1" date_changed="2011-01-17 12:51:48" retired="0"
+                             report_definition_uuid="d5f02dc5-5b94-449e-b894-6282f5f26414"/>
+
+    <reporting_report_design id="5" uuid="2d3e9fd6-5d27-4821-9003-b97aaf7bf7c3" name="SAPR/APR - ARV"
+                             description="Indicadores de ARV para o relatorio PEPFAR APAPR/SAPR"
+                             renderer_type="org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer"
+                             properties="#Sat Oct 11 13:04:48 CAT 2014" creator="1" date_created="2011-03-23 19:14:14"
+                             changed_by="1" date_changed="2014-10-11 13:04:48" retired="0"
+                             report_definition_uuid="5a79c043-32af-40c5-9dcc-041e30d76e2e"/>
+
+    <reporting_report_design_resource id="3" uuid="f281f360-744a-4cb2-b2be-0177be006f3a"
+                                      name="ARV PEPFAR REPORT OPENMRS FGH TAMPLATE SAPR17_Update" report_design_id="5"
+                                      content_type="application/vnd.ms-excel" extension="xls" creator="1"
+                                      date_created="2011-03-23 19:14:14" changed_by="1"
+                                      date_changed="2017-10-30 15:35:46" retired="0"/>
+
+    <serialized_object serialized_object_id="157" name="SAPR/APR - ARV" description="PEPFAR Report for ARV indicators"
+                       type="org.openmrs.module.reporting.report.definition.ReportDefinition"
+                       subtype="org.openmrs.module.reporting.report.definition.PeriodIndicatorReportDefinition"
+                       serialization_class="org.openmrs.module.reporting.serializer.ReportingSerializer"
+                       date_created="2011-03-23 18:21:25" creator="1" date_changed="2015-10-12 19:22:58" changed_by="1"
+                       retired="0" uuid="5a79c043-32af-40c5-9dcc-041e30d76e2e"/>
+
+</dataset>
