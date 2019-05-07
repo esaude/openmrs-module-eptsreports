@@ -11,6 +11,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsTest;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
@@ -243,5 +244,31 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
         evaluateCohortDefinition(
                 genericCohortQueries.getPatientsBasedOnPatientStatesBeforeDate(11, 29), parameters)
             .getMemberIds());
+  }
+
+  private void testDeathCohort(CohortDefinition cohortDefinition) throws EvaluationException {
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(
+        new Parameter("startDate", "start date", Date.class),
+        testsHelper.getDate("2016-05-06 12:26:00.0"));
+    parameters.put(
+        new Parameter("endDate", "end date", Date.class),
+        testsHelper.getDate("2019-05-06 12:26:00.0"));
+    parameters.put(
+        new Parameter("location", "Location", Location.class), locationService.getLocation(1));
+    assertEquals(
+        new HashSet<>(Arrays.asList(/* person dead: */ 100, /* exited by death */ 101)),
+        evaluateCohortDefinition(cohortDefinition, parameters).getMemberIds());
+  }
+
+  @Test
+  public void getDeceasedPatientsShouldRetrieveAllMatchingPatients() throws EvaluationException {
+    testDeathCohort(genericCohortQueries.getDeceasedPatients());
+  }
+
+  @Test
+  public void getDeceasedPatientsBeforeDateShouldRetrieveAllMatchingPatients()
+      throws EvaluationException {
+    testDeathCohort(genericCohortQueries.getDeceasedPatientsBeforeDate());
   }
 }
