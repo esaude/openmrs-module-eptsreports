@@ -9,8 +9,10 @@
  */
 package org.openmrs.module.eptsreports.api;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -24,9 +26,9 @@ import org.openmrs.module.eptsreports.api.impl.EptsReportsServiceImpl;
  */
 public class EptsReportsServiceTest {
 
-  @InjectMocks EptsReportsServiceImpl basicModuleService;
+  @InjectMocks private EptsReportsServiceImpl basicModuleService;
 
-  @Mock EptsReportsDao dao;
+  @Mock private EptsReportsDao dao;
 
   @Before
   public void setupMocks() {
@@ -34,12 +36,11 @@ public class EptsReportsServiceTest {
   }
 
   @Test
-  @Ignore
-  public void method_shouldDoSomething() {
-    // Given
-
-    // When
-
-    // Then
+  public void purgeReportDesignIfExistsShouldPurgeReportDesign() {
+    String uuid = "bed6c7a3-9506-4c98-be6e-2861c804005e";
+    String serializedObjectUuid = "f0b2ce17-57ff-4f10-867e-0257c7515b2a";
+    when(dao.getSerializedObjectByReportDesignUUID(uuid)).thenReturn(serializedObjectUuid);
+    basicModuleService.purgeReportDesignIfExists(uuid);
+    verify(dao).purgeReportDesign(uuid, serializedObjectUuid);
   }
 }
