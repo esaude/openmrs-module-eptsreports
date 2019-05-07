@@ -24,11 +24,11 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class EptsReportsDaoTest extends BaseModuleContextSensitiveTest {
 
-  @Autowired EptsReportsDao dao;
+  @Autowired private EptsReportsDao dao;
 
   @Test
   @Ignore
-  public void removeReport_UuidExistsAndShouldSucceed() {
+  public void removeReportUuidExistsAndShouldSucceed() {
     assertEquals(true, true);
   }
 }
