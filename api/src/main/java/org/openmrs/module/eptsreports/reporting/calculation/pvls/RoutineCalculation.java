@@ -133,52 +133,50 @@ public class RoutineCalculation extends AbstractPatientCalculation {
         artInitiationDate = (Date) artStartDateResult.getValue();
       }
       // check that this patient should be on ART for more than six months
+      // we do not consider if the patient's last VL obs is not within
+      // window
       if (artInitiationDate != null
           && lastVlObs != null
           && lastVlObs.getObsDatetime() != null
           && criteria != null
-          && onArtForMoreThan3Months.contains(pId)) {
+          && onArtForMoreThan3Months.contains(pId)
+          && lastVlObs.getObsDatetime().after(latestVlLowerDateLimit)
+          && lastVlObs.getObsDatetime().before(onOrBefore)) {
 
-        // we do not consider if the patient's last VL obs is not within
-        // window
-        if (lastVlObs.getObsDatetime().after(latestVlLowerDateLimit)
-            && lastVlObs.getObsDatetime().before(onOrBefore)) {
+        // get all the VL results for each patient in the last 12 months
+        ListResult vlObsResult = (ListResult) patientHavingVL.get(pId);
+        List<Obs> vLoadList = EptsCalculationUtils.extractResultValues(vlObsResult);
+        List<Obs> viralLoadForPatientTakenWithin12Months =
+            getViralLoadForPatientTakenWithin12Months(
+                onOrBefore, latestVlLowerDateLimit, vLoadList);
 
-          // get all the VL results for each patient in the last 12 months
-          ListResult vlObsResult = (ListResult) patientHavingVL.get(pId);
-          List<Obs> vLoadList = EptsCalculationUtils.extractResultValues(vlObsResult);
-          List<Obs> viralLoadForPatientTakenWithin12Months =
-              getViralLoadForPatientTakenWithin12Months(
-                  onOrBefore, latestVlLowerDateLimit, vLoadList);
+        // find out for criteria 1 a
+        // the patients should be 6 to 9 months after ART initiation
+        // get the obs date for this VL and compare that with the
+        // provided dates
+        if (isOnRoutineCriteria1(
+            criteria, artInitiationDate, lastVlObs.getObsDatetime(), vLoadList)) {
+          isOnRoutine = true;
+        }
 
-          // find out for criteria 1 a
-          // the patients should be 6 to 9 months after ART initiation
-          // get the obs date for this VL and compare that with the
-          // provided dates
-          if (isOnRoutineCriteria1(
-              criteria, artInitiationDate, lastVlObs.getObsDatetime(), vLoadList)) {
-            isOnRoutine = true;
-          }
+        // find out criteria 2
+        if (isOnRoutineCriteria2(vLoadList, lastVlObs.getObsDatetime())) {
+          isOnRoutine = true;
+        }
 
-          // find out criteria 2
-          if (isOnRoutineCriteria2(vLoadList, lastVlObs.getObsDatetime())) {
-            isOnRoutine = true;
-          }
-
-          // find out criteria 3
-          if (!isOnRoutine && !viralLoadForPatientTakenWithin12Months.isEmpty()) {
-            // get when a patient switch between lines from first to
-            // second
-            // Date when started on second line will be considered
-            // the changing date
-            isOnRoutine =
-                isOnRoutineCriteria3(
-                    changingRegimenLines,
-                    pId,
-                    vLoadList,
-                    latestVlLowerDateLimit,
-                    lastVlObs.getObsDatetime());
-          }
+        // find out criteria 3
+        if (!isOnRoutine && !viralLoadForPatientTakenWithin12Months.isEmpty()) {
+          // get when a patient switch between lines from first to
+          // second
+          // Date when started on second line will be considered
+          // the changing date
+          isOnRoutine =
+              isOnRoutineCriteria3(
+                  changingRegimenLines,
+                  pId,
+                  vLoadList,
+                  latestVlLowerDateLimit,
+                  lastVlObs.getObsDatetime());
         }
       }
       map.put(pId, new BooleanResult(isOnRoutine, this));
