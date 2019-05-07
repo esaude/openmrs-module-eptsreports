@@ -45,12 +45,7 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
             calculation,
             evaluationContext));
     // initiated ART by historical start date observation
-    map.put(
-        7,
-        new SimpleResult(
-            new Timestamp(testsHelper.getDate("2019-01-18 00:00:00.0").getTime()),
-            calculation,
-            evaluationContext));
+    map.put(7, new SimpleResult(null, calculation, evaluationContext));
     // initiated ART by first phamarcy encounter observation
     map.put(
         8,
@@ -71,7 +66,7 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
     map.put(
         1777005,
         new SimpleResult(
-            new Timestamp(testsHelper.getDate("2018-06-21 00:00:00.0").getTime()),
+            new Timestamp(testsHelper.getDate("2018-01-21 00:00:00.0").getTime()),
             calculation,
             evaluationContext));
     return map;
