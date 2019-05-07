@@ -1,6 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.library;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -262,12 +263,16 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
 
   @Test
   public void getDeceasedPatientsShouldRetrieveAllMatchingPatients() throws EvaluationException {
-    testDeathCohort(genericCohortQueries.getDeceasedPatients());
+    CohortDefinition deceased = genericCohortQueries.getDeceasedPatients();
+    assertNotNull(deceased);
+    testDeathCohort(deceased);
   }
 
   @Test
   public void getDeceasedPatientsBeforeDateShouldRetrieveAllMatchingPatients()
       throws EvaluationException {
-    testDeathCohort(genericCohortQueries.getDeceasedPatientsBeforeDate());
+    CohortDefinition deceased = genericCohortQueries.getDeceasedPatientsBeforeDate();
+    assertNotNull(deceased);
+    testDeathCohort(deceased);
   }
 }

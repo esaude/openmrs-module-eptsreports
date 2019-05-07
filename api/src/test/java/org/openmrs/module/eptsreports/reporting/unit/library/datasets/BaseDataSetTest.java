@@ -1,4 +1,4 @@
-package org.openmrs.module.eptsreports.reporting.unit.datasets;
+package org.openmrs.module.eptsreports.reporting.unit.library.datasets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -15,7 +15,7 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.util.OpenmrsUtil;
 
 public class BaseDataSetTest {
-  class SampleDataset extends BaseDataSet {}
+  private class SampleDataset extends BaseDataSet {}
 
   private BaseDataSet baseDataSet = new SampleDataset();
 
