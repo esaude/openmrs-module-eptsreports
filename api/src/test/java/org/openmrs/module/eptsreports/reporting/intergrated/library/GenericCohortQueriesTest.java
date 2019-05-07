@@ -193,8 +193,55 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
                 /* with either adult on ped initial encounters: */ 2,
                 6,
                 /* in hiv care program: */ 7,
-                /* in hiv care program at 58 state: */ 100,
+                /* in hiv care program at 28 state: */ 100,
                 /* in art program at 29 state: */ 101)),
         evaluateCohortDefinition(genericCohortQueries.getBaseCohort(), parameters).getMemberIds());
+  }
+
+  @Test
+  public void getPatientsBasedOnPatientStatesShouldRetrieveAllMatchingPatients()
+      throws EvaluationException {
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(
+        new Parameter("startDate", "start date", Date.class),
+        testsHelper.getDate("2016-05-06 12:26:00.0"));
+    parameters.put(
+        new Parameter("endDate", "end date", Date.class),
+        testsHelper.getDate("2019-05-06 12:26:00.0"));
+    parameters.put(
+        new Parameter("location", "Location", Location.class), locationService.getLocation(1));
+
+    assertEquals(
+        new HashSet<>(Arrays.asList(100)),
+        evaluateCohortDefinition(
+                genericCohortQueries.getPatientsBasedOnPatientStates(10, 28), parameters)
+            .getMemberIds());
+    assertEquals(
+        new HashSet<>(Arrays.asList(101)),
+        evaluateCohortDefinition(
+                genericCohortQueries.getPatientsBasedOnPatientStates(11, 29), parameters)
+            .getMemberIds());
+  }
+
+  @Test
+  public void getPatientsBasedOnPatientStatesBeforeDateShouldRetrieveAllMatchingPatients()
+      throws EvaluationException {
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(
+        new Parameter("endDate", "end date", Date.class),
+        testsHelper.getDate("2019-05-06 12:26:00.0"));
+    parameters.put(
+        new Parameter("location", "Location", Location.class), locationService.getLocation(1));
+
+    assertEquals(
+        new HashSet<>(Arrays.asList(100)),
+        evaluateCohortDefinition(
+                genericCohortQueries.getPatientsBasedOnPatientStatesBeforeDate(10, 28), parameters)
+            .getMemberIds());
+    assertEquals(
+        new HashSet<>(Arrays.asList(101)),
+        evaluateCohortDefinition(
+                genericCohortQueries.getPatientsBasedOnPatientStatesBeforeDate(11, 29), parameters)
+            .getMemberIds());
   }
 }

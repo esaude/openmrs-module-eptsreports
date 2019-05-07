@@ -40,10 +40,10 @@
     <patient_program patient_program_id="11" patient_id="7" program_id="10" date_enrolled="2019-04-30 00:00:00.0" creator="1" date_created="2019-04-30 00:00:00.0" location_id="1" voided="false" uuid="5edf272c-bf05-4208-9f93-2fa213ed0002"/>
 
     <patient_program patient_program_id="12" patient_id="100" program_id="10" date_enrolled="2019-04-30 00:00:00.0" creator="1" date_created="2019-04-30 00:00:00.0" location_id="1" voided="false" uuid="5edf272c-bf05-4208-9f93-2fa213ed0003"/>
-    <program_workflow_state program_workflow_state_id="28" program_workflow_id="1" concept_id="17" initial="true" terminal="false" creator="1" date_created="2019-04-30 17:04:02.0" retired="false" changed_by="1" date_changed="2019-04-30 17:04:50.0" uuid="e938129e-248a-482a-acea-f85127251400"/>
-    <patient_state patient_state_id="10" patient_program_id="12" state="28" start_date="2019-04-30" creator="1" date_created="2019-04-30 12:29:29.0" voided="false" uuid="ua89deaa-23cc-4840-92fe-63d199c37e4e"/>
+    <program_workflow_state program_workflow_state_id="28" program_workflow_id="1" concept_id="17" initial="true" terminal="false" creator="1" date_created="2019-04-30 17:04:02.0" retired="false" uuid="e938129e-248a-482a-acea-f85127251400"/>
+    <patient_state patient_state_id="10" patient_program_id="12" state="28" start_date="2017-04-30" creator="1" date_created="2017-04-30 12:29:29.0" voided="false" uuid="ua89deaa-23cc-4840-92fe-63d199c37e4e"/>
 
     <patient_program patient_program_id="13" patient_id="101" program_id="11" date_enrolled="2019-04-30 00:00:00.0" creator="1" date_created="2019-04-30 00:00:00.0" location_id="1" voided="false" uuid="5edf272c-bf05-4208-9f93-2fa213ed0004"/>
-    <program_workflow_state program_workflow_state_id="29" program_workflow_id="1" concept_id="17" initial="true" terminal="false" creator="1" date_created="2019-04-30 17:04:02.0" retired="false" changed_by="1" date_changed="2019-04-30 17:04:50.0" uuid="e938129e-248a-482a-acea-f85127251401"/>
-    <patient_state patient_state_id="10" patient_program_id="13" state="29" start_date="2019-04-30" creator="1" date_created="2019-04-30 12:29:29.0" voided="false" uuid="ua89deaa-23cc-4840-92fe-63d199c37e5e"/>
+    <program_workflow_state program_workflow_state_id="29" program_workflow_id="1" concept_id="17" initial="true" terminal="false" creator="1" date_created="2019-04-30 17:04:02.0" retired="false" uuid="e938129e-248a-482a-acea-f85127251401"/>
+    <patient_state patient_state_id="11" patient_program_id="13" state="29" start_date="2017-04-30" creator="1" date_created="2017-04-30 12:29:29.0" voided="false" uuid="ua89deaa-23cc-4840-92fe-63d199c37e5e"/>
 </dataset>
