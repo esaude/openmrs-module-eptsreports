@@ -44,21 +44,18 @@ public class EptsReportsDaoTest extends BaseModuleContextSensitiveTest {
   @Test
   @Ignore
   public void purgeReportDesignShouldPurgeReportDesignResource() {
-    assertTrue(true);
     fail("Not yet implemented");
   }
 
   @Test
   @Ignore
   public void purgeReportDesignShouldPurgeReportDesign() {
-    assertTrue(true);
     fail("Not yet implemented");
   }
 
   @Test
   @Ignore
   public void purgeReportDesignShouldPurgeSerializedObject() {
-    assertTrue(true);
     fail("Not yet implemented");
   }
 }
