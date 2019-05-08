@@ -15,8 +15,6 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.util.OpenmrsUtil;
 
 public class BaseDataSetTest {
-  private class SampleDataset extends BaseDataSet {}
-
   private BaseDataSet baseDataSet = new SampleDataset();
 
   @Test
@@ -55,4 +53,6 @@ public class BaseDataSetTest {
       assertTrue(parameter.getName().matches("startDate|endDate|location"));
     }
   }
+
+  private class SampleDataset extends BaseDataSet {}
 }

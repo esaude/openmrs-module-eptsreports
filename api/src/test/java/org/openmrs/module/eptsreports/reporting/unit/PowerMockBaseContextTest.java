@@ -7,7 +7,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-@PowerMockIgnore({"org.apache.log4j.*", "org.apache.commons.logging.*"})
+@PowerMockIgnore({"org.apache.log4j.*", "org.apache.commons.logging.*", "org.apache.xerces.*"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Context.class})
 public class PowerMockBaseContextTest extends BaseContextMockTest {}
