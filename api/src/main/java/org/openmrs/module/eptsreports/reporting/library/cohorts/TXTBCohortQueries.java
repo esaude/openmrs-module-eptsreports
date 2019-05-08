@@ -575,7 +575,7 @@ public class TXTBCohortQueries {
     return cd;
   }
 
-  public CohortDefinition positiveInvesitionResult() {
+  public CohortDefinition positiveInvestigationResult() {
     CohortDefinition cd =
         genericCohortQueries.hasCodedObs(
             tbMetadata.getResearchResultConcept(),
@@ -589,27 +589,13 @@ public class TXTBCohortQueries {
     return cd;
   }
 
-  public CohortDefinition negativeInvesitionResult() {
-    CohortDefinition cd =
-        genericCohortQueries.hasCodedObs(
-            tbMetadata.getResearchResultConcept(),
-            TimeModifier.ANY,
-            SetComparator.IN,
-            Arrays.asList(
-                hivMetadata.getAdultoSeguimentoEncounterType(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType()),
-            Arrays.asList(tbMetadata.getNegativeConcept()));
-    addGeneralParameters(cd);
-    return cd;
-  }
-
   /**
    * at least one “POS” or “NEG” selected for “Resultado da Investigação para TB de BK e/ou RX?”
    * during the reporting period consultations; ( response 703: POS or 664: NEG for question: 6277)
    */
-  public CohortDefinition positiveInvestigationResult() {
+  public CohortDefinition positiveInvestigationResultComposition() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition P = positiveInvesitionResult();
+    CohortDefinition P = positiveInvestigationResult();
     cd.addSearch("P", map(P, codedObsParameterMapping));
     cd.setCompositionString("P");
     addGeneralParameters(cd);
@@ -620,7 +606,7 @@ public class TXTBCohortQueries {
    * at least one “S” or “N” selected for TB Screening (Rastreio de TB) during the reporting period
    * consultations; (response 1065: YES or 1066: NO for question 6257: SCREENING FOR TB)
    */
-  public CohortDefinition yesOrNoInvesitionResult() {
+  public CohortDefinition yesOrNoInvesitgationResult() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition S = codedYesTbScreening();
     cd.addSearch("S", map(S, codedObsParameterMapping));
@@ -676,9 +662,9 @@ public class TXTBCohortQueries {
   // Filter Art_list to Tb_list
   public CohortDefinition txTbDenominatorA() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition i = yesOrNoInvesitionResult();
+    CohortDefinition i = yesOrNoInvesitgationResult();
     cd.addSearch("i", map(i, generalParameterMapping));
-    CohortDefinition ii = positiveInvestigationResult();
+    CohortDefinition ii = positiveInvestigationResultComposition();
     cd.addSearch("ii", map(ii, generalParameterMapping));
     CohortDefinition iii = tbTreatmentStartDateWithinReportingDate();
     cd.addSearch("iii", map(iii, generalParameterMapping));
@@ -754,7 +740,9 @@ public class TXTBCohortQueries {
   public CohortDefinition positiveScreening() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addSearch("A", EptsReportUtils.map(codedYesTbScreening(), codedObsParameterMapping));
-    cd.addSearch("B", EptsReportUtils.map(positiveInvestigationResult(), generalParameterMapping));
+    cd.addSearch(
+        "B",
+        EptsReportUtils.map(positiveInvestigationResultComposition(), generalParameterMapping));
     cd.addSearch(
         "C",
         EptsReportUtils.map(tbTreatmentStartDateWithinReportingDate(), generalParameterMapping));
@@ -867,10 +855,10 @@ public class TXTBCohortQueries {
             genericCohortQueries.getStartedArtBeforeDate(false),
             "onOrBefore=${endDate},location=${location}"));
     definition.addSearch(
-        "tb-screening", EptsReportUtils.map(yesOrNoInvesitionResult(), generalParameterMapping));
+        "tb-screening", EptsReportUtils.map(yesOrNoInvesitgationResult(), generalParameterMapping));
     definition.addSearch(
         "tb-investigation",
-        EptsReportUtils.map(positiveInvestigationResult(), generalParameterMapping));
+        EptsReportUtils.map(positiveInvestigationResultComposition(), generalParameterMapping));
     definition.addSearch(
         "started-tb-treatment",
         EptsReportUtils.map(tbTreatmentStartDateWithinReportingDate(), generalParameterMapping));
