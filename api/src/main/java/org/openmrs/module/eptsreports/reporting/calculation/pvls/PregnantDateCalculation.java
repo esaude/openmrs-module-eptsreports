@@ -113,49 +113,68 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
 
     for (Integer pId : femaleCohort) {
       Obs lastVlObs = EptsCalculationUtils.resultForPatient(lastVl, pId);
-      Date requiredDate = null;
-
-      if (lastVlObs != null && lastVlObs.getObsDatetime() != null) {
-        Date lastVlDate = lastVlObs.getObsDatetime();
-
-        ListResult pregnantResult = (ListResult) pregnantMap.get(pId);
-        ListResult pregnantByWeeksResullt = (ListResult) markedPregnantByWeeks.get(pId);
-        ListResult pregnantDueDateResult = (ListResult) markedPregnantDueDate.get(pId);
-        ListResult pregnantsInProgramResults = (ListResult) markedPregnantInProgram.get(pId);
-
-        List<Obs> pregnantObsList = EptsCalculationUtils.extractResultValues(pregnantResult);
-        List<Obs> pregnantByWeeksObsList =
-            EptsCalculationUtils.extractResultValues(pregnantByWeeksResullt);
-        List<Obs> pregnantDueDateObsList =
-            EptsCalculationUtils.extractResultValues(pregnantDueDateResult);
-        List<PatientProgram> patientProgams =
-            EptsCalculationUtils.extractResultValues(pregnantsInProgramResults);
-
-        // add a list to contains all the dates that can be sorted and pick the most recent one
-        List<Date> allPregnancyDates =
-            Arrays.asList(
-                isPregnantDate(lastVlDate, pregnantObsList),
-                isPregnantByWeeks(lastVlDate, pregnantByWeeksObsList),
-                isPregnantDueDate(lastVlDate, pregnantDueDateObsList),
-                isPregnantInProgram(lastVlDate, patientProgams, location));
-        // have a resultant list of dates
-        List<Date> resultantList = new ArrayList<>();
-        if (allPregnancyDates.size() > 0) {
-          for (Date eventDate : allPregnancyDates) {
-            if (eventDate != null) {
-              resultantList.add(eventDate);
-            }
-          }
-        }
-        if (resultantList.size() > 0) {
-          Collections.sort(resultantList);
-          // then pick the most recent entry, which is the last one
-          requiredDate = resultantList.get(resultantList.size() - 1);
-        }
-      }
+      Date requiredDate =
+          getRequiredDate(
+              location,
+              pregnantMap,
+              markedPregnantByWeeks,
+              markedPregnantDueDate,
+              markedPregnantInProgram,
+              pId,
+              lastVlObs);
       resultMap.put(pId, new SimpleResult(requiredDate, this));
     }
     return resultMap;
+  }
+
+  private Date getRequiredDate(
+      Location location,
+      CalculationResultMap pregnantMap,
+      CalculationResultMap markedPregnantByWeeks,
+      CalculationResultMap markedPregnantDueDate,
+      CalculationResultMap markedPregnantInProgram,
+      Integer pId,
+      Obs lastVlObs) {
+    Date requiredDate = null;
+    if (lastVlObs != null && lastVlObs.getObsDatetime() != null) {
+      Date lastVlDate = lastVlObs.getObsDatetime();
+
+      ListResult pregnantResult = (ListResult) pregnantMap.get(pId);
+      ListResult pregnantByWeeksResullt = (ListResult) markedPregnantByWeeks.get(pId);
+      ListResult pregnantDueDateResult = (ListResult) markedPregnantDueDate.get(pId);
+      ListResult pregnantsInProgramResults = (ListResult) markedPregnantInProgram.get(pId);
+
+      List<Obs> pregnantObsList = EptsCalculationUtils.extractResultValues(pregnantResult);
+      List<Obs> pregnantByWeeksObsList =
+          EptsCalculationUtils.extractResultValues(pregnantByWeeksResullt);
+      List<Obs> pregnantDueDateObsList =
+          EptsCalculationUtils.extractResultValues(pregnantDueDateResult);
+      List<PatientProgram> patientProgams =
+          EptsCalculationUtils.extractResultValues(pregnantsInProgramResults);
+
+      // add a list to contains all the dates that can be sorted and pick the most recent one
+      List<Date> allPregnancyDates =
+          Arrays.asList(
+              isPregnantDate(lastVlDate, pregnantObsList),
+              isPregnantByWeeks(lastVlDate, pregnantByWeeksObsList),
+              isPregnantDueDate(lastVlDate, pregnantDueDateObsList),
+              isPregnantInProgram(lastVlDate, patientProgams, location));
+      // have a resultant list of dates
+      List<Date> resultantList = new ArrayList<>();
+      if (allPregnancyDates.size() > 0) {
+        for (Date eventDate : allPregnancyDates) {
+          if (eventDate != null) {
+            resultantList.add(eventDate);
+          }
+        }
+      }
+      if (resultantList.size() > 0) {
+        Collections.sort(resultantList);
+        // then pick the most recent entry, which is the last one
+        requiredDate = resultantList.get(resultantList.size() - 1);
+      }
+    }
+    return requiredDate;
   }
 
   private Date isPregnantDate(Date lastVlDate, List<Obs> pregnantObsList) {
