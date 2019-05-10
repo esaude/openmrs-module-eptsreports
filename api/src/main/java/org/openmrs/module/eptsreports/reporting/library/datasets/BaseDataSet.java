@@ -32,7 +32,7 @@ public abstract class BaseDataSet {
    * @param indicator the indicator
    * @param columns the column parameters
    */
-  protected void addRow(
+  public void addRow(
       CohortIndicatorDataSetDefinition cohortDsd,
       String baseName,
       String baseLabel,
