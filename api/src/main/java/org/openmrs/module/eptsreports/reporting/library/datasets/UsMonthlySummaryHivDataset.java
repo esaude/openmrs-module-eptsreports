@@ -38,16 +38,31 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         dataSetDefinition,
         "A1",
         "Nº cumulativo de pacientes registados até o fim do mês anterior",
-        getRegisteredInPreArtBooks1and2(),
+        getRegisteredInPreArtBooks1and2ByEndOfPreviousMonth(),
+        getColumnParameters());
+
+    addRow(
+        dataSetDefinition,
+        "A2",
+        "Nº de pacientes registados durante o mês",
+        getRegisteredInPreArtBooks1and2DuringReportingPeriod(),
         getColumnParameters());
 
     return dataSetDefinition;
   }
 
-  private Mapped<CohortIndicator> getRegisteredInPreArtBooks1and2() {
+  private Mapped<CohortIndicator> getRegisteredInPreArtBooks1and2ByEndOfPreviousMonth() {
     String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV REGISTADOS ATE O FIM DE UM PERIODO";
     CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getRegisteredInPreArtBooks1and2();
     String mappings = "onOrBefore=${startDate-1d},locationList=${location}";
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    return map(indicator, "startDate=${startDate},endDate=${endDate},location=${location}");
+  }
+
+  private Mapped<CohortIndicator> getRegisteredInPreArtBooks1and2DuringReportingPeriod() {
+    String name = "NUMERO DE PACIENTES PRE-TARV REGISTADOS NO LIVRO 1 E 2 NUM PERIODO";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getRegisteredInPreArtBooks1and2();
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
     CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
     return map(indicator, "startDate=${startDate},endDate=${endDate},location=${location}");
   }
