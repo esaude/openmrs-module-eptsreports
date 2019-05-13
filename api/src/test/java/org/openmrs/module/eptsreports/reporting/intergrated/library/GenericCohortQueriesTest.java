@@ -1,13 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.library;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
@@ -19,12 +11,23 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsTest;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class GenericCohortQueriesTest extends DefinitionsTest {
   @Autowired private GenericCohortQueries genericCohortQueries;
@@ -274,5 +277,61 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
     CohortDefinition deceased = genericCohortQueries.getDeceasedPatientsBeforeDate();
     assertNotNull(deceased);
     testDeathCohort(deceased);
+  }
+
+  @Test
+  public void hasNumericObsShouldMatchAllArguments() throws EvaluationException {
+    assertEquals(
+        new HashSet<>(Arrays.asList(7)),
+        evaluateCohortDefinition(
+                genericCohortQueries.hasNumericObs(
+                    conceptService.getConcept(5089),
+                    TimeModifier.ANY,
+                    RangeComparator.GREATER_THAN,
+                    49.0,
+                    null,
+                    null,
+                    Arrays.asList(encounterService.getEncounterType(1))),
+                null)
+            .getMemberIds());
+    assertEquals(
+        new HashSet<>(Arrays.asList()),
+        evaluateCohortDefinition(
+                genericCohortQueries.hasNumericObs(
+                    conceptService.getConcept(5089),
+                    TimeModifier.ANY,
+                    RangeComparator.GREATER_THAN,
+                    62.0,
+                    null,
+                    null,
+                    Arrays.asList(encounterService.getEncounterType(1))),
+                null)
+            .getMemberIds());
+  }
+
+  @Test
+  public void hasNumericObsShouldMatchAllArgumentsAndParameters() throws EvaluationException {
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(
+        new Parameter("onOrAfter", "start date", Date.class),
+        testsHelper.getDate("2007-05-06 12:26:00.0"));
+    parameters.put(
+        new Parameter("onOrBefore", "end date", Date.class),
+        testsHelper.getDate("2019-05-06 12:26:00.0"));
+    parameters.put(
+        new Parameter("locationList", "Location", Location.class), locationService.getLocation(2));
+    assertEquals(
+        new HashSet<>(Arrays.asList(7)),
+        evaluateCohortDefinition(
+                genericCohortQueries.hasNumericObs(
+                    conceptService.getConcept(5089),
+                    TimeModifier.ANY,
+                    RangeComparator.GREATER_THAN,
+                    60.0,
+                    null,
+                    null,
+                    Arrays.asList(encounterService.getEncounterType(1))),
+                parameters)
+            .getMemberIds());
   }
 }

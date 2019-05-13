@@ -105,4 +105,31 @@ public class CommonMetadata extends Metadata {
             .getGlobalProperty("eptsreports.priorDeliveryDateConceptUuid");
     return getConcept(uuid);
   }
+
+  // concept_id=6336
+  public Concept getClassificationOfMalnutritionConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.classificationOfMalnutritionConceptUuid"));
+  }
+
+  // concept_id=6335
+  public Concept getMalnutritionLightConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.malnutritionLightConceptUuid"));
+  }
+
+  // concept_id=68
+  public Concept getMalnutritionConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.malnutritionConceptUuid"));
+  }
+
+  public Concept getChronicMalnutritionConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.chronicMalnutritionConceptUuid"));
+  }
 }

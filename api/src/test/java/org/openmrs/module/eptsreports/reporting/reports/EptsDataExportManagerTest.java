@@ -1,5 +1,10 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -12,12 +17,6 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer;
 import org.openmrs.module.reporting.report.renderer.XlsReportRenderer;
 import org.powermock.api.mockito.PowerMockito;
-
-import java.io.IOException;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 public class EptsDataExportManagerTest extends PowerMockBaseContextTest {
 
