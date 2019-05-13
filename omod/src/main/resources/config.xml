@@ -625,6 +625,22 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.recordPreArtFlowConceptUuid</property>
+		<defaultValue>3c648ee6-1702-4eea-b709-aa007f221f57</defaultValue>
+		<description>
+			UUID for the FLUXO REGISTO PRE-TARV concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.preArtEncounterTypeUuid</property>
+		<defaultValue>bc30cbe1-85b4-459f-acca-cffc4041a3b8</defaultValue>
+		<description>
+			UUID for the S.TARV: LIVRO PRE-TARV encounter type
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 

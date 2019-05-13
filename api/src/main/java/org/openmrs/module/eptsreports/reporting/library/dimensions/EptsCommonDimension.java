@@ -14,6 +14,7 @@ package org.openmrs.module.eptsreports.reporting.library.dimensions;
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri2MonthsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri4MonthsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.EriCohortQueries;
@@ -29,6 +30,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EptsCommonDimension {
+
+  @Autowired private AgeCohortQueries ageCohortQueries;
 
   @Autowired private GenderCohortQueries genderCohortQueries;
 
@@ -256,6 +259,26 @@ public class EptsCommonDimension {
         EptsReportUtils.map(
             tbPrevCohortQueries.getPreviouslyOnArt(),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+    return dim;
+  }
+
+  public CohortDefinitionDimension getUsMonthlySummaryHivAges() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.addParameter(new Parameter("effectiveDate", "age effective date", Date.class));
+    dim.setName("US monthly summary - HIV age dimension");
+
+    dim.addCohortDefinition(
+        "0-14",
+        EptsReportUtils.map(
+            ageCohortQueries.createXtoYAgeCohort("patients with age between 0 and 14 years", 0, 14),
+            "effectiveDate=${effectiveDate}"));
+
+    dim.addCohortDefinition(
+        "15+",
+        EptsReportUtils.map(
+            ageCohortQueries.createXtoYAgeCohort("patients with age over 15 years", 15, null),
+            "effectiveDate=${effectiveDate}"));
+
     return dim;
   }
 }
