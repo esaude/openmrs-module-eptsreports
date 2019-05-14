@@ -139,6 +139,7 @@ public class TXRetCohortQueries {
             TXRetQueries.males1YearLessEnrolledInARTAgeAtRegistration()));
   }
 
+  /** map endDate and location rightly when using this. */
   public CohortDefinition tenToForteenFemalesWhoIncreasedHAARTAtARTStartDate() {
     return cohortDefinition(
         genericCohortQueries.generalSql(
@@ -280,5 +281,75 @@ public class TXRetCohortQueries {
     cd.setCompositionString("ESTADIOIIIIV OR CD4MENOR350");
     addParameters(cd);
     return cd;
+  }
+
+  /** map endDate, location, minAge, maxAge and gender rightly when using this */
+  public CohortDefinition artTargetInitiationXGenderAtXToYAge() {
+    CohortDefinition cd =
+        cohortDefinition(
+            genericCohortQueries.generalSql(
+                "artTargetInitiationXGenderAtXToYAge",
+                TXRetQueries.artTargetInitiationXGenderAtXToYAge()));
+    cd.addParameter(new Parameter("minAge", "Min Age", Integer.class));
+    cd.addParameter(new Parameter("maxAge", "Max Age", Integer.class));
+    cd.addParameter(new Parameter("gender", "Sex", String.class));
+
+    return cd;
+  }
+
+  /** map endDate, location rightly when using this */
+  public CohortDefinition under1YearIncreasedHARTAtARTStartDate() {
+    return cohortDefinition(
+        genericCohortQueries.generalSql(
+            "under1YearIncreasedHARTAtARTStartDate",
+            TXRetQueries.under1YearIncreasedHARTAtARTStartDate()));
+  }
+
+  /** map endDate, location rightly when using this */
+  public CohortDefinition atleast50YearsOldMalesThatIncreasedHAARTAtARTInitiation() {
+    return cohortDefinition(
+        genericCohortQueries.generalSql(
+            "atleast50YearsOldMalesThatIncreasedHAARTAtARTInitiation",
+            TXRetQueries.atleast50YearsOldMalesThatIncreasedHAARTAtARTInitiation()));
+  }
+
+  /** map endDate, location rightly when using this */
+  public CohortDefinition males20To24InitiatedTARTAtStartOfART() {
+    return cohortDefinition(
+        genericCohortQueries.generalSql(
+            "males20To24InitiatedTARTAtStartOfART",
+            TXRetQueries.males20To24InitiatedTARTAtStartOfART()));
+  }
+
+  /** map endDate, location rightly when using this */
+  public CohortDefinition oneTo19WhoStartedTargetAtARTInitiation() {
+    return cohortDefinition(
+        genericCohortQueries.generalSql(
+            "oneTo19WhoStartedTargetAtARTInitiation",
+            TXRetQueries.oneTo19WhoStartedTargetAtARTInitiation()));
+  }
+
+  /** map endDate, location rightly when using this */
+  public CohortDefinition males15To19WhoIncreasedHARTAtARTInitiation() {
+    return cohortDefinition(
+        genericCohortQueries.generalSql(
+            "males15To19WhoIncreasedHARTAtARTInitiation",
+            TXRetQueries.males15To19WhoIncreasedHARTAtARTInitiation()));
+  }
+
+  /** map endDate, location rightly when using this */
+  public CohortDefinition males10To14IncreasedARTAtARTInitiation() {
+    return cohortDefinition(
+        genericCohortQueries.generalSql(
+            "males10To14IncreasedARTAtARTInitiation",
+            TXRetQueries.males10To14IncreasedARTAtARTInitiation()));
+  }
+
+  /** map endDate, location rightly when using this */
+  public CohortDefinition females20To24InitiatedTARTAtStartOfART() {
+    return cohortDefinition(
+        genericCohortQueries.generalSql(
+            "females20To24InitiatedTARTAtStartOfART",
+            TXRetQueries.females20To24InitiatedTARTAtStartOfART()));
   }
 }
