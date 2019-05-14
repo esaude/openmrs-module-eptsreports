@@ -1,6 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.noMappings;
 
 import java.util.Arrays;
@@ -48,7 +49,22 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         getRegisteredInPreArtBooks1and2DuringReportingPeriod(),
         getColumnParameters());
 
+    addRow(
+        dataSetDefinition,
+        "B1",
+        "Nº mensal de novos inscritos",
+        getNewlyEnrolled(),
+        getColumnParameters());
+
     return dataSetDefinition;
+  }
+
+  private Mapped<CohortIndicator> getNewlyEnrolled() {
+    String name = "NUMERO DE NOVOS PACIENTES PRE-TARV REGISTADOS NO LIVRO 1 NUM PERIODO";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getNewlyEnrolled();
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    return mapStraightThrough(indicator);
   }
 
   private Mapped<CohortIndicator> getRegisteredInPreArtBooks1and2ByEndOfPreviousMonth() {
@@ -56,7 +72,7 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
     CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getRegisteredInPreArtBooks1and2();
     String mappings = "onOrBefore=${startDate-1d},locationList=${location}";
     CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
-    return map(indicator, "startDate=${startDate},endDate=${endDate},location=${location}");
+    return mapStraightThrough(indicator);
   }
 
   private Mapped<CohortIndicator> getRegisteredInPreArtBooks1and2DuringReportingPeriod() {
@@ -64,7 +80,7 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
     CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getRegisteredInPreArtBooks1and2();
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
     CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
-    return map(indicator, "startDate=${startDate},endDate=${endDate},location=${location}");
+    return mapStraightThrough(indicator);
   }
 
   private List<ColumnParameters> getColumnParameters() {

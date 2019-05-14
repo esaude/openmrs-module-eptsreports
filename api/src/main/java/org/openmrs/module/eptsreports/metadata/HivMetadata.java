@@ -14,6 +14,7 @@ package org.openmrs.module.eptsreports.metadata;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Program;
+import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.springframework.stereotype.Component;
@@ -289,11 +290,28 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   public ProgramWorkflowState getTransferredFromOtherHealthFacilityWorkflowState() {
+    // TODO Refactor this method, use #getTransferredFromOtherHealthFacilityWorkflowState(Program,
+    // ProgramWorkflow)
     String artProgramUuid = Context.getAdministrationService().getGlobalProperty(gpArtProgramUuid);
     String transferFromOtherUuid =
         Context.getAdministrationService()
             .getGlobalProperty(gpTransferFromOtherFacilityConceptUuid);
     return getProgramWorkflowState(artProgramUuid, "2", transferFromOtherUuid);
+  }
+
+  private ProgramWorkflowState getTransferredFromOtherHealthFacilityWorkflowState(
+      Program program, ProgramWorkflow programWorkflow) {
+    Concept transferFromOtherFacility = getTransferFromOtherFacilityConcept();
+    return getProgramWorkflowState(
+        program.getUuid(), programWorkflow.getUuid(), transferFromOtherFacility.getUuid());
+  }
+
+  public ProgramWorkflowState getArtCareTransferredFromOtherHealthFacilityWorkflowState() {
+    Program hivCareProgram = getHIVCareProgram();
+    ProgramWorkflow workflow = getPreArtWorkflow();
+    ProgramWorkflowState state =
+        getTransferredFromOtherHealthFacilityWorkflowState(hivCareProgram, workflow);
+    return state;
   }
 
   public ProgramWorkflowState getSuspendedTreatmentWorkflowState() {
@@ -398,5 +416,9 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.referredFromPedTreatmentEntryPointConceptUuid"));
+  }
+
+  public ProgramWorkflow getPreArtWorkflow() {
+    return getProgramWorkflow(getHIVCareProgram().getUuid(), "1");
   }
 }
