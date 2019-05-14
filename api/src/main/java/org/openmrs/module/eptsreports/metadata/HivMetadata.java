@@ -320,6 +320,18 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.currentWHOHIVStage1ConceptUuid"));
   }
 
+  public Concept getCurrentWHOHIVStage3Concept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.currentWHOHIVStage3ConceptUuid"));
+  }
+
+  public Concept getCurrentWHOHIVStage4Concept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.currentWHOHIVStage4ConceptUuid"));
+  }
+
   public Concept getCD4CountConcept() {
     return getConcept(
         Context.getAdministrationService().getGlobalProperty("eptsreports.cd4CountConceptUuid"));

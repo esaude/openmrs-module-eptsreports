@@ -1016,6 +1016,66 @@ public class TXRetQueries {
           + "                           9)\n"
           + "  AND e.location_id=:location";
 
+  private static String notEligibleProphylaxiaWithIsoniazideBecauseOfTbTreatmentRecently =
+      "SELECT p.patient_id\n"
+          + "FROM patient p\n"
+          + "INNER JOIN encounter e ON p.patient_id=e.patient_id\n"
+          + "INNER JOIN obs o ON o.encounter_id=e.encounter_id\n"
+          + "WHERE e.voided=0\n"
+          + "  AND p.voided=0\n"
+          + "  AND o.value_datetime BETWEEN date_add(:startDate, interval -1 YEAR) AND :endDate\n"
+          + "  AND o.voided=0\n"
+          + "  AND o.concept_id=6120\n"
+          + "  AND e.encounter_type IN (6,\n"
+          + "                           9)\n"
+          + "  AND e.location_id=:location\n"
+          + "UNION\n"
+          + "SELECT pp.patient_id\n"
+          + "FROM patient p\n"
+          + "INNER JOIN patient_program pp ON p.patient_id=pp.patient_id\n"
+          + "WHERE pp.program_id=5\n"
+          + "  AND pp.voided=0\n"
+          + "  AND p.voided=0\n"
+          + "  AND pp.location_id=:location\n"
+          + "  AND pp.date_completed BETWEEN date_add(:startDate, interval -1 YEAR) AND :endDate\n"
+          + "UNION\n"
+          + "SELECT p.patient_id\n"
+          + "FROM patient p\n"
+          + "INNER JOIN encounter e ON p.patient_id=e.patient_id\n"
+          + "INNER JOIN obs o ON o.encounter_id=e.encounter_id\n"
+          + "WHERE e.voided=0\n"
+          + "  AND p.voided=0\n"
+          + "  AND o.value_datetime BETWEEN date_add(:startDate, interval -2 YEAR) AND :endDate\n"
+          + "  AND o.voided=0\n"
+          + "  AND o.concept_id=1113\n"
+          + "  AND e.encounter_type IN (6,\n"
+          + "                           9)\n"
+          + "  AND e.location_id=:location\n"
+          + "  AND date_add(o.value_datetime, interval 9 MONTH)>=date_add(:startDate, interval -1 YEAR)\n"
+          + "UNION\n"
+          + "SELECT pp.patient_id\n"
+          + "FROM patient p\n"
+          + "INNER JOIN patient_program pp ON p.patient_id=pp.patient_id\n"
+          + "WHERE pp.program_id=5\n"
+          + "  AND pp.voided=0\n"
+          + "  AND pp.location_id=:location\n"
+          + "  AND pp.date_enrolled BETWEEN date_add(:startDate, interval -2 YEAR) AND :endDate\n"
+          + "  AND date_add(date_enrolled, interval 9 MONTH)>=date_add(:startDate, interval -1 YEAR)\n"
+          + "UNION\n"
+          + "SELECT p.patient_id\n"
+          + "FROM patient p\n"
+          + "INNER JOIN encounter e ON p.patient_id=e.patient_id\n"
+          + "INNER JOIN obs o ON o.encounter_id=e.encounter_id\n"
+          + "WHERE e.voided=0\n"
+          + "  AND p.voided=0\n"
+          + "  AND o.value_coded=1065\n"
+          + "  AND e.encounter_datetime BETWEEN date_add(:startDate, interval -1 YEAR) AND :endDate\n"
+          + "  AND o.voided=0\n"
+          + "  AND o.concept_id=1268\n"
+          + "  AND e.encounter_type IN (6,\n"
+          + "                           9)\n"
+          + "  AND e.location_id=:location";
+
   public static String obitoTwelveMonths() {
     return obito;
   }
@@ -1060,5 +1120,9 @@ public class TXRetQueries {
 
   public static String notEligibleProphylaxiaWithIsoniazideBecauseOfTbTreatmentInitiation() {
     return notEligibleProphylaxiaWithIsoniazideBecauseOfTbTreatmentInitiation;
+  }
+
+  public static String notEligibleProphylaxiaWithIsoniazideBecauseOfTbTreatmentRecently() {
+    return notEligibleProphylaxiaWithIsoniazideBecauseOfTbTreatmentRecently;
   }
 }

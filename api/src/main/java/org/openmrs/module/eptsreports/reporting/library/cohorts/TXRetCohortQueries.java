@@ -25,8 +25,6 @@ public class TXRetCohortQueries {
 
   @Autowired private HivMetadata hivMetadata;
 
-  private String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-
   private void addParameters(CohortDefinition cd) {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -62,14 +60,14 @@ public class TXRetCohortQueries {
             cohortDefinition(
                 genericCohortQueries.generalSql(
                     "notificado", TXRetQueries.notificadoTwelveMonths())),
-            mappings));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "NAONOTIFICADO",
         EptsReportUtils.map(
             cohortDefinition(
                 genericCohortQueries.generalSql(
                     "naonotificado", TXRetQueries.naonotificadoTwelveMonths())),
-            mappings));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.setCompositionString("NOTIFICADO OR NAONOTIFICADO");
     addParameters(cd);
     return cd;
@@ -79,13 +77,26 @@ public class TXRetCohortQueries {
   public CohortDefinition inCourtForTwelveMonths() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("inCourt12Months");
-    cd.addSearch("OBITO", EptsReportUtils.map(cohortDefinition(obitoTwelveMonths()), mappings));
     cd.addSearch(
-        "SUSPENSO", EptsReportUtils.map(cohortDefinition(suspensoTwelveMonths()), mappings));
+        "OBITO",
+        EptsReportUtils.map(
+            cohortDefinition(obitoTwelveMonths()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "INICIOTARV", EptsReportUtils.map(cohortDefinition(initiotArvTwelveMonths()), mappings));
+        "SUSPENSO",
+        EptsReportUtils.map(
+            cohortDefinition(suspensoTwelveMonths()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "ABANDONO", EptsReportUtils.map(cohortDefinition(abandonoTwelveMonths()), mappings));
+        "INICIOTARV",
+        EptsReportUtils.map(
+            cohortDefinition(initiotArvTwelveMonths()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "ABANDONO",
+        EptsReportUtils.map(
+            cohortDefinition(abandonoTwelveMonths()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("INICIOTARV NOT (OBITO OR SUSPENSO OR ABANDONO)");
     addParameters(cd);
@@ -99,7 +110,7 @@ public class TXRetCohortQueries {
             "courtNotTransferred", TXRetQueries.courtNotTransferredTwelveMonths()));
   }
 
-  /** map startDate, endDate rightly when using this */
+  /** map startDate, endDate, location rightly when using this */
   public CohortDefinition diagnosedOfModerateMalnutrition() {
     return cohortDefinition(
         genericCohortQueries.hasCodedObs(
@@ -135,7 +146,7 @@ public class TXRetCohortQueries {
             TXRetQueries.tenToForteenFemalesWhoIncreasedHAARTAtARTStartDate()));
   }
 
-  /** map endDate rightly when using this */
+  /** map endDate, location rightly when using this */
   public CohortDefinition withFirstWHOStage1() {
     return cohortDefinition(
         genericCohortQueries.hasCodedObs(
@@ -161,7 +172,7 @@ public class TXRetCohortQueries {
         genericCohortQueries.hasNumericObs(
             hivMetadata.getCD4CountConcept(),
             TimeModifier.FIRST,
-            RangeComparator.GREATER_EQUAL,
+            RangeComparator.GREATER_THAN,
             350.0,
             null,
             null,
@@ -218,5 +229,56 @@ public class TXRetCohortQueries {
                 hivMetadata.getLabSamplesEntryPointConcept(),
                 hivMetadata.getHospitalEntryPointConcept(),
                 hivMetadata.getReferredFromPedTreatmentEntryPointConcept())));
+  }
+
+  public CohortDefinition notEligibleProphylaxiaWithIsoniazideBecauseOfTbTreatmentRecently() {
+    return cohortDefinition(
+        genericCohortQueries.generalSql(
+            "notEligibleProphylaxiaWithIsoniazideBecauseOfTbTreatmentRecently",
+            TXRetQueries.notEligibleProphylaxiaWithIsoniazideBecauseOfTbTreatmentRecently()));
+  }
+
+  /** map startDate, endDate, location rightly when using this */
+  private CohortDefinition withCD4CountLessOrEqual350() {
+    return cohortDefinition(
+        genericCohortQueries.hasNumericObs(
+            hivMetadata.getCD4CountConcept(),
+            TimeModifier.FIRST,
+            RangeComparator.LESS_EQUAL,
+            350.0,
+            null,
+            null,
+            Arrays.asList(hivMetadata.getMisauLaboratorioEncounterType())));
+  }
+
+  /** map startDate, endDate and location rightly when using this */
+  private CohortDefinition withFirstWHOStage3And4() {
+    return cohortDefinition(
+        genericCohortQueries.hasCodedObs(
+            hivMetadata.getCurrentWHOHIVStageConcept(),
+            TimeModifier.FIRST,
+            SetComparator.IN,
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+            Arrays.asList(
+                hivMetadata.getCurrentWHOHIVStage3Concept(),
+                hivMetadata.getCurrentWHOHIVStage4Concept())));
+  }
+
+  private CohortDefinition eligibleOnARTStages3And4AndCD4LessOr350() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("eligibleOnARTStages3And4AndCD4LessOr350");
+    cd.addSearch(
+        "CD4MENOR350", EptsReportUtils.map(cohortDefinition(withCD4CountLessOrEqual350()), ""));
+    cd.addSearch(
+        "ESTADIOIIIIV",
+        EptsReportUtils.map(
+            cohortDefinition(withFirstWHOStage3And4()),
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+
+    cd.setCompositionString("ESTADIOIIIIV OR CD4MENOR350");
+    addParameters(cd);
+    return cd;
   }
 }

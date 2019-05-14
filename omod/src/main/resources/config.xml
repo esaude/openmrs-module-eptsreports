@@ -540,6 +540,20 @@
 			UUID for the WHO STAGE 1 ADULT concept
 		</description>
 	</globalProperty>
+    <globalProperty>
+        <property>eptsreports.currentWHOHIVStage3ConceptUuid</property>
+        <defaultValue>e1d9077a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the WHO STAGE 3 ADULT concept
+        </description>
+    </globalProperty>
+    <globalProperty>
+        <property>eptsreports.currentWHOHIVStage4ConceptUuid</property>
+        <defaultValue>e1d90888-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the WHO STAGE 4 ADULT concept
+        </description>
+    </globalProperty>
 	<globalProperty>
 		<property>eptsreports.cd4CountConceptUuid</property>
 		<defaultValue>e1e68f26-1d5f-11e0-b929-000c29ad1d07</defaultValue>
