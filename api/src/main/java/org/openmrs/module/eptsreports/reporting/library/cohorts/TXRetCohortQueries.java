@@ -110,6 +110,22 @@ public class TXRetCohortQueries {
             "courtNotTransferred", TXRetQueries.courtNotTransferredTwelveMonths()));
   }
 
+  /** map endDate, location rightly when using this */
+  public CohortDefinition under1YearIncreasedHARTAtARTStartDate() {
+    return cohortDefinition(
+        genericCohortQueries.generalSql(
+            "under1YearIncreasedHARTAtARTStartDate",
+            TXRetQueries.under1YearIncreasedHARTAtARTStartDate()));
+  }
+
+  /** map endDate, location rightly when using this */
+  public CohortDefinition oneTo19WhoStartedTargetAtARTInitiation() {
+    return cohortDefinition(
+        genericCohortQueries.generalSql(
+            "oneTo19WhoStartedTargetAtARTInitiation",
+            TXRetQueries.oneTo19WhoStartedTargetAtARTInitiation()));
+  }
+
   /** map startDate, endDate, location rightly when using this */
   public CohortDefinition diagnosedOfModerateMalnutrition() {
     return cohortDefinition(
@@ -298,14 +314,6 @@ public class TXRetCohortQueries {
   }
 
   /** map endDate, location rightly when using this */
-  public CohortDefinition under1YearIncreasedHARTAtARTStartDate() {
-    return cohortDefinition(
-        genericCohortQueries.generalSql(
-            "under1YearIncreasedHARTAtARTStartDate",
-            TXRetQueries.under1YearIncreasedHARTAtARTStartDate()));
-  }
-
-  /** map endDate, location rightly when using this */
   public CohortDefinition atleast50YearsOldMalesThatIncreasedHAARTAtARTInitiation() {
     return cohortDefinition(
         genericCohortQueries.generalSql(
@@ -319,14 +327,6 @@ public class TXRetCohortQueries {
         genericCohortQueries.generalSql(
             "males20To24InitiatedTARTAtStartOfART",
             TXRetQueries.males20To24InitiatedTARTAtStartOfART()));
-  }
-
-  /** map endDate, location rightly when using this */
-  public CohortDefinition oneTo19WhoStartedTargetAtARTInitiation() {
-    return cohortDefinition(
-        genericCohortQueries.generalSql(
-            "oneTo19WhoStartedTargetAtARTInitiation",
-            TXRetQueries.oneTo19WhoStartedTargetAtARTInitiation()));
   }
 
   /** map endDate, location rightly when using this */
