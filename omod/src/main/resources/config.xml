@@ -634,10 +634,26 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>eptsreports.recordArtFlowConceptUuid</property>
+		<defaultValue>20d186bd-9e7f-490f-b5cd-ac3c282cef7e</defaultValue>
+		<description>
+			UUID for the FLUXO REGISTO TARV concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>eptsreports.preArtEncounterTypeUuid</property>
 		<defaultValue>bc30cbe1-85b4-459f-acca-cffc4041a3b8</defaultValue>
 		<description>
 			UUID for the S.TARV: LIVRO PRE-TARV encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.artEncounterTypeUuid</property>
+		<defaultValue>15915fa8-3d94-430b-9adb-14ec806a8ff2</defaultValue>
+		<description>
+			UUID for the S.TARV: LIVRO TARV encounter type
 		</description>
 	</globalProperty>
 

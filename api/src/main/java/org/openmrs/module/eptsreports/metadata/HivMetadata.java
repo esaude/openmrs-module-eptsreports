@@ -82,6 +82,14 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id = 6263
+  public Concept getRecordArtFlowConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.recordArtFlowConceptUuid");
+    return getConcept(uuid);
+  }
+
   // Second line ARV concepts
   // 6328
   public Concept getAzt3tcAbcEfvConcept() {
@@ -261,6 +269,13 @@ public class HivMetadata extends ProgramsMetadata {
   public EncounterType getPreArtEncounterType() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.preArtEncounterTypeUuid");
+    return getEncounterType(uuid);
+  }
+
+  // encounter type 33
+  public EncounterType getArtEncounterType() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.ArtEncounterTypeUuid");
     return getEncounterType(uuid);
   }
 

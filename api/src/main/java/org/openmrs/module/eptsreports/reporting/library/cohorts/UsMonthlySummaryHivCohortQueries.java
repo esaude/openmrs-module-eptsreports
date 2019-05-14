@@ -33,6 +33,15 @@ public class UsMonthlySummaryHivCohortQueries {
         null);
   }
 
+  public CohortDefinition getRegisteredInArt() {
+    return genericCohortQueries.hasCodedObs(
+        hivMetadata.getRecordArtFlowConcept(),
+        BaseObsCohortDefinition.TimeModifier.ANY,
+        SetComparator.IN,
+        Arrays.asList(hivMetadata.getArtEncounterType()),
+        null);
+  }
+
   public CohortDefinition getNewlyEnrolled() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
