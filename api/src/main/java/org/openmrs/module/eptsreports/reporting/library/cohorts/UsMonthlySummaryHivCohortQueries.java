@@ -51,4 +51,23 @@ public class UsMonthlySummaryHivCohortQueries {
 
     return cd;
   }
+
+  public CohortDefinition getEnrolledByTransfer() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
+    cd.addSearch("INSCRITOS", map(getRegisteredInPreArtBooks1and2(), mappings));
+
+    CohortDefinition transferredToArtCare =
+        hivCohortQueries.getPatientsInArtCareTransferredFromOtherHealthFacility();
+    cd.addSearch("TRANSFERIDOS", mapStraightThrough(transferredToArtCare));
+
+    cd.setCompositionString("INSCRITOS AND TRANSFERIDOS");
+
+    return cd;
+  }
 }
