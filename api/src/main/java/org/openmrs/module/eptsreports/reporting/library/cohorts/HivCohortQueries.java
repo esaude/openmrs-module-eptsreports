@@ -137,6 +137,27 @@ public class HivCohortQueries {
     return getPatientsTransferredFromOtherHealthFacility(hivCareProgram, state);
   }
 
+  public CohortDefinition getPatientsInArtCareTransferredOutToAnotherHealthFacility() {
+    Program hivCareProgram = hivMetadata.getHIVCareProgram();
+    ProgramWorkflowState state =
+        hivMetadata.getArtCareTransferredOutToAnotherHealthFacilityWorkflowState();
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("transferredOutToAnotherHealthFacility");
+    String query =
+        "select  pg.patient_id "
+            + "from    patient p "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + "where   pg.voided=0 and ps.voided=0 and p.voided=0 and "
+            + "pg.program_id=%d and ps.state=%d and ps.end_date is null and "
+            + "ps.start_date<=:onOrBefore and location_id=:location";
+    cd.setQuery(
+        String.format(query, hivCareProgram.getProgramId(), state.getProgramWorkflowStateId()));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    return cd;
+  }
+
   private CohortDefinition getPatientsTransferredFromOtherHealthFacility(
       Program program, ProgramWorkflowState state) {
     SqlCohortDefinition cd = new SqlCohortDefinition();

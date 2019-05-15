@@ -48,6 +48,13 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
+  public Concept getTransferOutToAnotherFacilityConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.transferOutToAnotherFacilityConceptUuid");
+    return getConcept(uuid);
+  }
+
   public Concept getHistoricalDrugStartDateConcept() {
     String uuid =
         Context.getAdministrationService()

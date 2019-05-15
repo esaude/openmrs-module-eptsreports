@@ -126,6 +126,14 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>@MODULE_ID@.transferOutToAnotherFacilityConceptUuid</property>
+		<defaultValue>e1de1cf6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TRANSFERIDO PARA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>@MODULE_ID@.tuberculosisTreatmentPlanConceptUuid</property>
 		<defaultValue>e1d9fbda-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>

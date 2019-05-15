@@ -79,4 +79,23 @@ public class UsMonthlySummaryHivCohortQueries {
 
     return cd;
   }
+
+  public CohortDefinition getTransferredOut() {
+    return hivCohortQueries.getPatientsInArtCareTransferredOutToAnotherHealthFacility();
+  }
+
+  public CohortDefinition getEnrolledInPreArtOrArt() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("enrolledInPreArtOrArt");
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    String mappings = "onOrBefore=${onOrBefore},locationList=${location}";
+    cd.addSearch("LIVROPRETARV", map(getRegisteredInPreArtBooks1and2(), mappings));
+    cd.addSearch("LIVROTARV", map(getRegisteredInArt(), mappings));
+
+    cd.setCompositionString("LIVROPRETARV OR LIVROTARV");
+
+    return cd;
+  }
 }

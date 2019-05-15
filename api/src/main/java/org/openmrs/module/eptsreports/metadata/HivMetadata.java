@@ -321,11 +321,26 @@ public class HivMetadata extends ProgramsMetadata {
         program.getUuid(), programWorkflow.getUuid(), transferFromOtherFacility.getUuid());
   }
 
+  private ProgramWorkflowState getTransferredOutToAnotherHealthFacilityWorkflowState(
+      Program program, ProgramWorkflow programWorkflow) {
+    Concept transferOutToAnotherFacility = getTransferOutToAnotherFacilityConcept();
+    return getProgramWorkflowState(
+        program.getUuid(), programWorkflow.getUuid(), transferOutToAnotherFacility.getUuid());
+  }
+
   public ProgramWorkflowState getArtCareTransferredFromOtherHealthFacilityWorkflowState() {
     Program hivCareProgram = getHIVCareProgram();
     ProgramWorkflow workflow = getPreArtWorkflow();
     ProgramWorkflowState state =
         getTransferredFromOtherHealthFacilityWorkflowState(hivCareProgram, workflow);
+    return state;
+  }
+
+  public ProgramWorkflowState getArtCareTransferredOutToAnotherHealthFacilityWorkflowState() {
+    Program hivCareProgram = getHIVCareProgram();
+    ProgramWorkflow workflow = getPreArtWorkflow();
+    ProgramWorkflowState state =
+        getTransferredOutToAnotherHealthFacilityWorkflowState(hivCareProgram, workflow);
     return state;
   }
 
