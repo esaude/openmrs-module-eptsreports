@@ -102,4 +102,8 @@ public class UsMonthlySummaryHivCohortQueries {
   public CohortDefinition getAbandonedPreArt() {
     return hivCohortQueries.getPatientsInArtCareWhoAbandoned();
   }
+
+  public CohortDefinition getDeadDuringPreArt() {
+    return hivCohortQueries.getPatientsInArtCareWhoDied();
+  }
 }

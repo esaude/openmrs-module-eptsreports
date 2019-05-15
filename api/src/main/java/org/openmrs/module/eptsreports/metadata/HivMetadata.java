@@ -202,6 +202,14 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id = 1366
+  public Concept getPatientHasDiedConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.patientHasDiedConceptUuid");
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
@@ -321,20 +329,6 @@ public class HivMetadata extends ProgramsMetadata {
     return getProgramWorkflowState(artProgramUuid, "2", transferFromOtherUuid);
   }
 
-  private ProgramWorkflowState getTransferredFromOtherHealthFacilityWorkflowState(
-      Program program, ProgramWorkflow programWorkflow) {
-    Concept transferFromOtherFacility = getTransferFromOtherFacilityConcept();
-    return getProgramWorkflowState(
-        program.getUuid(), programWorkflow.getUuid(), transferFromOtherFacility.getUuid());
-  }
-
-  private ProgramWorkflowState getTransferredOutToAnotherHealthFacilityWorkflowState(
-      Program program, ProgramWorkflow programWorkflow) {
-    Concept transferOutToAnotherFacility = getTransferOutToAnotherFacilityConcept();
-    return getProgramWorkflowState(
-        program.getUuid(), programWorkflow.getUuid(), transferOutToAnotherFacility.getUuid());
-  }
-
   public ProgramWorkflowState getArtCareTransferredFromOtherHealthFacilityWorkflowState() {
     Program hivCareProgram = getHIVCareProgram();
     ProgramWorkflow workflow = getPreArtWorkflow();
@@ -356,13 +350,6 @@ public class HivMetadata extends ProgramsMetadata {
     ProgramWorkflow workflow = getPreArtWorkflow();
     ProgramWorkflowState state = getAbandonedWorkflowState(hivCareProgram, workflow);
     return state;
-  }
-
-  private ProgramWorkflowState getAbandonedWorkflowState(
-      Program program, ProgramWorkflow programWorkflow) {
-    Concept transferOutToAnotherFacility = getAbandoned();
-    return getProgramWorkflowState(
-        program.getUuid(), programWorkflow.getUuid(), transferOutToAnotherFacility.getUuid());
   }
 
   public ProgramWorkflowState getSuspendedTreatmentWorkflowState() {
@@ -469,7 +456,40 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.referredFromPedTreatmentEntryPointConceptUuid"));
   }
 
+  public ProgramWorkflowState getArtCareDeadWorkflowState() {
+    Program hivCareProgram = getHIVCareProgram();
+    ProgramWorkflow workflow = getPreArtWorkflow();
+    return getDeadWorkflowState(hivCareProgram, workflow);
+  }
+
   public ProgramWorkflow getPreArtWorkflow() {
     return getProgramWorkflow(getHIVCareProgram().getUuid(), "1");
+  }
+
+  private ProgramWorkflowState getAbandonedWorkflowState(
+      Program program, ProgramWorkflow programWorkflow) {
+    Concept abandoned = getAbandoned();
+    return getProgramWorkflowState(
+        program.getUuid(), programWorkflow.getUuid(), abandoned.getUuid());
+  }
+
+  private ProgramWorkflowState getDeadWorkflowState(
+      Program program, ProgramWorkflow programWorkflow) {
+    Concept dead = getPatientHasDiedConcept();
+    return getProgramWorkflowState(program.getUuid(), programWorkflow.getUuid(), dead.getUuid());
+  }
+
+  private ProgramWorkflowState getTransferredOutToAnotherHealthFacilityWorkflowState(
+      Program program, ProgramWorkflow programWorkflow) {
+    Concept transferOutToAnotherFacility = getTransferOutToAnotherFacilityConcept();
+    return getProgramWorkflowState(
+        program.getUuid(), programWorkflow.getUuid(), transferOutToAnotherFacility.getUuid());
+  }
+
+  private ProgramWorkflowState getTransferredFromOtherHealthFacilityWorkflowState(
+      Program program, ProgramWorkflow programWorkflow) {
+    Concept transferFromOtherFacility = getTransferFromOtherFacilityConcept();
+    return getProgramWorkflowState(
+        program.getUuid(), programWorkflow.getUuid(), transferFromOtherFacility.getUuid());
   }
 }
