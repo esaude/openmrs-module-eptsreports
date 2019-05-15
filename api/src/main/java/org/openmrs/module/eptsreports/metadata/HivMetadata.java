@@ -210,6 +210,13 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id = 6259
+  public Concept getPreArtBook1Concept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.preArtBook1ConceptUuid");
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {

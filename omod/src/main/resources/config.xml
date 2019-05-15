@@ -681,6 +681,14 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.preArtBook1ConceptUuid</property>
+		<defaultValue>384750e6-d201-488f-948a-93dc616124b4</defaultValue>
+		<description>
+			UUID for the LIVRO 1 PRE-TARV concept
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 

@@ -6,8 +6,12 @@ import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraig
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import org.openmrs.Concept;
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
@@ -23,6 +27,10 @@ public class UsMonthlySummaryHivCohortQueries {
   @Autowired private GenericCohortQueries genericCohortQueries;
 
   @Autowired private HivCohortQueries hivCohortQueries;
+
+  @Autowired private CommonMetadata commonMetadata;
+
+  @Autowired private TbMetadata tbMetadata;
 
   public CohortDefinition getRegisteredInPreArtBooks1and2() {
     return genericCohortQueries.hasCodedObs(
@@ -75,6 +83,21 @@ public class UsMonthlySummaryHivCohortQueries {
     return cd;
   }
 
+  public CohortDefinition getInPreArtWhoScreenedForTb() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch("INSCRITOS", mapStraightThrough(getNewlyEnrolled(registeredInPreArtBook1())));
+    cd.addSearch("RASTREIO", mapStraightThrough(getTbScreening()));
+
+    cd.setCompositionString("INSCRITOS AND RASTREIO");
+
+    return cd;
+  }
+
   public CohortDefinition getAbandonedPreArt() {
     return hivCohortQueries.getPatientsInArtCareWhoAbandoned();
   }
@@ -117,5 +140,27 @@ public class UsMonthlySummaryHivCohortQueries {
         SetComparator.IN,
         Arrays.asList(hivMetadata.getArtEncounterType()),
         null);
+  }
+
+  private CohortDefinition getTbScreening() {
+    List<Concept> values =
+        Arrays.asList(commonMetadata.getNoConcept(), commonMetadata.getYesConcept());
+    return genericCohortQueries.hasCodedObs(
+        tbMetadata.getTbScreeningConcept(),
+        TimeModifier.ANY,
+        SetComparator.IN,
+        Arrays.asList(
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+        values);
+  }
+
+  private CohortDefinition registeredInPreArtBook1() {
+    return genericCohortQueries.hasCodedObs(
+        hivMetadata.getRecordPreArtFlowConcept(),
+        TimeModifier.ANY,
+        SetComparator.IN,
+        Arrays.asList(hivMetadata.getPreArtEncounterType()),
+        Arrays.asList(hivMetadata.getPreArtBook1Concept()));
   }
 }
