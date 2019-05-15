@@ -207,4 +207,24 @@ public class HivCohortQueries {
         new Parameter("location", "location", Location.class));
     return patientWithHistoricalDrugStartDateObs;
   }
+
+  public CohortDefinition getPatientsInArtCareWhoAbandoned() {
+    Program hivCareProgram = hivMetadata.getHIVCareProgram();
+    ProgramWorkflowState abandoned = hivMetadata.getArtCareAbandonedWorkflowState();
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("transferredOutToAnotherHealthFacility");
+    String query =
+        "select  pg.patient_id "
+            + "from    patient p "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + "where   pg.voided=0 and ps.voided=0 and p.voided=0 and "
+            + "pg.program_id=%d and ps.state=%d and ps.end_date is null and "
+            + "ps.start_date<=:onOrBefore and location_id=:location";
+    cd.setQuery(
+        String.format(query, hivCareProgram.getProgramId(), abandoned.getProgramWorkflowStateId()));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    return cd;
+  }
 }

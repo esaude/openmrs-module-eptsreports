@@ -98,4 +98,8 @@ public class UsMonthlySummaryHivCohortQueries {
 
     return cd;
   }
+
+  public CohortDefinition getAbandonedPreArt() {
+    return hivCohortQueries.getPatientsInArtCareWhoAbandoned();
+  }
 }

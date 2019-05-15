@@ -90,6 +90,13 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id = 1707
+  public Concept getAbandoned() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.abandonedConceptUuid");
+    return getConcept(uuid);
+  }
+
   // Second line ARV concepts
   // 6328
   public Concept getAzt3tcAbcEfvConcept() {
@@ -342,6 +349,20 @@ public class HivMetadata extends ProgramsMetadata {
     ProgramWorkflowState state =
         getTransferredOutToAnotherHealthFacilityWorkflowState(hivCareProgram, workflow);
     return state;
+  }
+
+  public ProgramWorkflowState getArtCareAbandonedWorkflowState() {
+    Program hivCareProgram = getHIVCareProgram();
+    ProgramWorkflow workflow = getPreArtWorkflow();
+    ProgramWorkflowState state = getAbandonedWorkflowState(hivCareProgram, workflow);
+    return state;
+  }
+
+  private ProgramWorkflowState getAbandonedWorkflowState(
+      Program program, ProgramWorkflow programWorkflow) {
+    Concept transferOutToAnotherFacility = getAbandoned();
+    return getProgramWorkflowState(
+        program.getUuid(), programWorkflow.getUuid(), transferOutToAnotherFacility.getUuid());
   }
 
   public ProgramWorkflowState getSuspendedTreatmentWorkflowState() {

@@ -70,7 +70,22 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         getTransferredOut(),
         getColumnParameters());
 
+    addRow(
+        dataSetDefinition,
+        "C2",
+        "Nº cumulativo de abandonos pre-tarv",
+        getAbandoned(),
+        getColumnParameters());
+
     return dataSetDefinition;
+  }
+
+  private Mapped<CohortIndicator> getAbandoned() {
+    String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE ABANDONARAM";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getAbandonedPreArt();
+    String mappings = "onOrBefore=${endDate},location=${location}";
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    return mapStraightThrough(indicator);
   }
 
   private Mapped<CohortIndicator> getTransferredOut() {
