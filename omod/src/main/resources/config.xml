@@ -689,6 +689,14 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.stiScreeningConceptUuid</property>
+		<defaultValue>794ef662-03bc-4e22-90ff-38742b82827a</defaultValue>
+		<description>
+			UUID for the RASTREIO DE ITS concept
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 

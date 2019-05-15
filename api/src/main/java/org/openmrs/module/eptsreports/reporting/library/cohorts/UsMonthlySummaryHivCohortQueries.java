@@ -87,6 +87,10 @@ public class UsMonthlySummaryHivCohortQueries {
     return getInPreArtBook1WhoScreenedFor(getTbScreening());
   }
 
+  public CohortDefinition getInPreArtWhoScreenedForSti() {
+    return getInPreArtBook1WhoScreenedFor(getStiScreening());
+  }
+
   /**
    * @param screening Cohort of screened patients
    * @return Cohort of patients who are registered in pre ART Book 1 and were screened {@code
@@ -156,6 +160,19 @@ public class UsMonthlySummaryHivCohortQueries {
         Arrays.asList(commonMetadata.getNoConcept(), commonMetadata.getYesConcept());
     return genericCohortQueries.hasCodedObs(
         tbMetadata.getTbScreeningConcept(),
+        TimeModifier.ANY,
+        SetComparator.IN,
+        Arrays.asList(
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+        values);
+  }
+
+  private CohortDefinition getStiScreening() {
+    List<Concept> values =
+        Arrays.asList(commonMetadata.getNoConcept(), commonMetadata.getYesConcept());
+    return genericCohortQueries.hasCodedObs(
+        commonMetadata.getStiScreeningConcept(),
         TimeModifier.ANY,
         SetComparator.IN,
         Arrays.asList(

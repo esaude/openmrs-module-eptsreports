@@ -98,7 +98,23 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         getScreenedForTb(),
         getColumnParameters());
 
+    addRow(
+        dataSetDefinition,
+        "E2",
+        "Nº dos novos inscritos mensais no Livro de Registo Nº 1 de Pré-TARV rastreados para ITS",
+        getScreenedForSti(),
+        getColumnParameters());
+
     return dataSetDefinition;
+  }
+
+  private Mapped<CohortIndicator> getScreenedForSti() {
+    String name =
+        "NUMERO DE NOVOS PACIENTES REGISTADOS NO LIVRO 1 PRE-TARV NUM PERIODO E QUE FORAM RASTREADOS PARA ITS NO MESMO PERIODO";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInPreArtWhoScreenedForSti();
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    return mapStraightThrough(indicator);
   }
 
   private Mapped<CohortIndicator> getScreenedForTb() {

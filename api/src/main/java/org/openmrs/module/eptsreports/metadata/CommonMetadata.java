@@ -139,4 +139,11 @@ public class CommonMetadata extends Metadata {
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.chronicMalnutritionConceptUuid"));
   }
+
+  // concept_id=5599
+  public Concept getStiScreeningConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.stiScreeningConceptUuid");
+    return getConcept(uuid);
+  }
 }
