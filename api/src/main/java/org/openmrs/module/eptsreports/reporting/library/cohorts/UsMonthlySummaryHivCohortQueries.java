@@ -1,13 +1,13 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
+import static org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.Arrays;
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
@@ -27,38 +27,14 @@ public class UsMonthlySummaryHivCohortQueries {
   public CohortDefinition getRegisteredInPreArtBooks1and2() {
     return genericCohortQueries.hasCodedObs(
         hivMetadata.getRecordPreArtFlowConcept(),
-        BaseObsCohortDefinition.TimeModifier.ANY,
+        TimeModifier.ANY,
         SetComparator.IN,
         Arrays.asList(hivMetadata.getPreArtEncounterType()),
         null);
   }
 
-  public CohortDefinition getRegisteredInArt() {
-    return genericCohortQueries.hasCodedObs(
-        hivMetadata.getRecordArtFlowConcept(),
-        BaseObsCohortDefinition.TimeModifier.ANY,
-        SetComparator.IN,
-        Arrays.asList(hivMetadata.getArtEncounterType()),
-        null);
-  }
-
-  public CohortDefinition getNewlyEnrolled() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
-    cd.addSearch("LIVRO", map(getRegisteredInPreArtBooks1and2(), mappings));
-
-    CohortDefinition transferredToArtCare =
-        hivCohortQueries.getPatientsInArtCareTransferredFromOtherHealthFacility();
-    cd.addSearch("TRANSFERIDOSDE", mapStraightThrough(transferredToArtCare));
-
-    cd.setCompositionString("LIVRO NOT TRANSFERIDOSDE");
-
-    return cd;
+  public CohortDefinition getNewlyEnrolledInArtBooks1and2() {
+    return getNewlyEnrolled(getRegisteredInPreArtBooks1and2());
   }
 
   public CohortDefinition getEnrolledByTransfer() {
@@ -109,5 +85,37 @@ public class UsMonthlySummaryHivCohortQueries {
 
   public CohortDefinition getInPreArtWhoInitiatedArt() {
     return hivCohortQueries.getPatientsInArtCareWhoInitiatedArt();
+  }
+
+  /**
+   * @param preArtBook A cohort of patients registered in one of the pre ART books
+   * @return Patients enrolled in pre ART excluding those transferred in
+   */
+  private CohortDefinition getNewlyEnrolled(CohortDefinition preArtBook) {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
+    cd.addSearch("LIVRO", map(preArtBook, mappings));
+
+    CohortDefinition transferredToArtCare =
+        hivCohortQueries.getPatientsInArtCareTransferredFromOtherHealthFacility();
+    cd.addSearch("TRANSFERIDOSDE", mapStraightThrough(transferredToArtCare));
+
+    cd.setCompositionString("LIVRO NOT TRANSFERIDOSDE");
+
+    return cd;
+  }
+
+  private CohortDefinition getRegisteredInArt() {
+    return genericCohortQueries.hasCodedObs(
+        hivMetadata.getRecordArtFlowConcept(),
+        TimeModifier.ANY,
+        SetComparator.IN,
+        Arrays.asList(hivMetadata.getArtEncounterType()),
+        null);
   }
 }

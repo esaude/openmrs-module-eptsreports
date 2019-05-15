@@ -137,7 +137,7 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
 
   private Mapped<CohortIndicator> getNewlyEnrolled() {
     String name = "NUMERO DE NOVOS PACIENTES PRE-TARV REGISTADOS NO LIVRO 1 NUM PERIODO";
-    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getNewlyEnrolled();
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getNewlyEnrolledInArtBooks1and2();
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
     CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
     return mapStraightThrough(indicator);
