@@ -106,4 +106,8 @@ public class UsMonthlySummaryHivCohortQueries {
   public CohortDefinition getDeadDuringPreArt() {
     return hivCohortQueries.getPatientsInArtCareWhoDied();
   }
+
+  public CohortDefinition getInPreArtWhoInitiatedArt() {
+    return hivCohortQueries.getPatientsInArtCareWhoInitiatedArt();
+  }
 }
