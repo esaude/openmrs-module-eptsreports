@@ -84,6 +84,15 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   public CohortDefinition getInPreArtWhoScreenedForTb() {
+    return getInPreArtBook1WhoScreenedFor(getTbScreening());
+  }
+
+  /**
+   * @param screening Cohort of screened patients
+   * @return Cohort of patients who are registered in pre ART Book 1 and were screened {@code
+   *     screening}
+   */
+  private CohortDefinition getInPreArtBook1WhoScreenedFor(CohortDefinition screening) {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
@@ -91,7 +100,7 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch("INSCRITOS", mapStraightThrough(getNewlyEnrolled(registeredInPreArtBook1())));
-    cd.addSearch("RASTREIO", mapStraightThrough(getTbScreening()));
+    cd.addSearch("RASTREIO", mapStraightThrough(screening));
 
     cd.setCompositionString("INSCRITOS AND RASTREIO");
 
