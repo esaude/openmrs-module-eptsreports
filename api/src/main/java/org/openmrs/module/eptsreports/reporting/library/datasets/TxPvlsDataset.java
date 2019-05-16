@@ -55,85 +55,13 @@ public class TxPvlsDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
 
-    // Numerator ------------------------------------------------------------
-    // Totals
-    dsd.addColumn(
-        "0N",
-        "Total patients with suppressed Viral load - Numerator",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "suppressed viral load",
-                EptsReportUtils.map(txPvls.getPatientsWithViralLoadSuppression(), mappings)),
-            mappings),
-        "");
+    addNumeratorColumns(dsd, mappings);
+    addDenominatorColumns(dsd, mappings);
 
-    // Breastfeeding & Pregnant
-    dsd.addColumn(
-        "B01",
-        "Breast feeding and on routine Numerator",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "breastfeedingWomenWithViralLoadSuppression routine numerator",
-                EptsReportUtils.map(txPvls.getBreastFeedingWomenOnRoutineNumerator(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "B02",
-        "Breast feeding and NOT documented Numerator",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "breastfeedingWomenWithViralLoadSuppression not documented numerator",
-                EptsReportUtils.map(
-                    txPvls.getBreastFeedingWomenNotDocumentedNumerator(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "B03",
-        "Pregnant and on routine Numerator",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "pregnantWomenWithViralLoadSuppression and on routine",
-                EptsReportUtils.map(txPvls.getPregnantAndOnRoutineNumerator(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "B04",
-        "Pregnant and NOT documented Numerator",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "pregnantWomenWithViralLoadSuppression and NOT documented",
-                EptsReportUtils.map(txPvls.getPregnantAndNotDocumentedNumerator(), mappings)),
-            mappings),
-        "");
+    return dsd;
+  }
 
-    // Adults & children Routine
-    addRow(
-        dsd,
-        "NR",
-        "Children numerator routine",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "viral load suppression on routine adults and children",
-                EptsReportUtils.map(
-                    txPvls.getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren(),
-                    mappings)),
-            mappings),
-        getAdultChildrenColumns());
-
-    // NOT documented Adults & Children
-    addRow(
-        dsd,
-        "NND",
-        "Children numerator NOT documented",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "viral load suppression not documents adults and children",
-                EptsReportUtils.map(
-                    txPvls.getPatientWithViralSuppressionAndNotDocumentedForAdultsAndChildren(),
-                    mappings)),
-            mappings),
-        getAdultChildrenColumns());
-
+  private void addDenominatorColumns(CohortIndicatorDataSetDefinition dsd, String mappings) {
     // Denominator -------------------------------------------------------------
     // Totals
     dsd.addColumn(
@@ -219,8 +147,87 @@ public class TxPvlsDataset extends BaseDataSet {
                     mappings)),
             mappings),
         getAdultChildrenColumns());
+  }
 
-    return dsd;
+  private void addNumeratorColumns(CohortIndicatorDataSetDefinition dsd, String mappings) {
+    // Numerator ------------------------------------------------------------
+    // Totals
+    dsd.addColumn(
+        "0N",
+        "Total patients with suppressed Viral load - Numerator",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "suppressed viral load",
+                EptsReportUtils.map(txPvls.getPatientsWithViralLoadSuppression(), mappings)),
+            mappings),
+        "");
+
+    // Breastfeeding & Pregnant
+    dsd.addColumn(
+        "B01",
+        "Breast feeding and on routine Numerator",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "breastfeedingWomenWithViralLoadSuppression routine numerator",
+                EptsReportUtils.map(txPvls.getBreastFeedingWomenOnRoutineNumerator(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "B02",
+        "Breast feeding and NOT documented Numerator",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "breastfeedingWomenWithViralLoadSuppression not documented numerator",
+                EptsReportUtils.map(
+                    txPvls.getBreastFeedingWomenNotDocumentedNumerator(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "B03",
+        "Pregnant and on routine Numerator",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "pregnantWomenWithViralLoadSuppression and on routine",
+                EptsReportUtils.map(txPvls.getPregnantAndOnRoutineNumerator(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "B04",
+        "Pregnant and NOT documented Numerator",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "pregnantWomenWithViralLoadSuppression and NOT documented",
+                EptsReportUtils.map(txPvls.getPregnantAndNotDocumentedNumerator(), mappings)),
+            mappings),
+        "");
+
+    // Adults & children Routine
+    addRow(
+        dsd,
+        "NR",
+        "Children numerator routine",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "viral load suppression on routine adults and children",
+                EptsReportUtils.map(
+                    txPvls.getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren(),
+                    mappings)),
+            mappings),
+        getAdultChildrenColumns());
+
+    // NOT documented Adults & Children
+    addRow(
+        dsd,
+        "NND",
+        "Children numerator NOT documented",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "viral load suppression not documents adults and children",
+                EptsReportUtils.map(
+                    txPvls.getPatientWithViralSuppressionAndNotDocumentedForAdultsAndChildren(),
+                    mappings)),
+            mappings),
+        getAdultChildrenColumns());
   }
 
   public List<Parameter> getParameters() {
