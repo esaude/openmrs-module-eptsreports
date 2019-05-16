@@ -347,30 +347,6 @@ public class TXTBCohortQueries {
     return cd;
   }
 
-  /** TX_TB Denominator PACIENTES TARV COM RASTREIO DE TUBERCULOSE POSITIVO/NEGATIVO */
-  public CohortDefinition patientsWhoScreenedTbPositive() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("PACIENTES TARV COM RASTREIO DE TUBERCULOSE POSITIVO/NEGATIVO");
-
-    CohortDefinition ACTUALTARV = getPatientsInARTWithoutAbandonedNotification();
-
-    CohortDefinition INICIOTARV =
-        getNonVoidedPatientsAtProgramStateWithinStartAndEndDatesAtLocation();
-
-    // PACIENTES COM RASTREIO DE TUBERCULOSE POSITIVO
-    CohortDefinition RASTREIOTBPOS = codedYesTbScreening();
-
-    addGeneralParameters(ACTUALTARV);
-    cd.addSearch("ACTUALTARV", map(ACTUALTARV, generalParameterMapping));
-    addGeneralParameters(RASTREIOTBPOS);
-    cd.addSearch("RASTREIOTBPOS", map(RASTREIOTBPOS, codedObsParameterMapping));
-    addGeneralParameters(INICIOTARV);
-    cd.addSearch("INICIOTARV", map(INICIOTARV, generalParameterMapping));
-    cd.setCompositionString("(INICIOTARV OR ACTUALTARV) AND RASTREIOTBPOS");
-    addGeneralParameters(cd);
-    return cd;
-  }
-
   /** PACIENTES ACTUALMENTE EM TARV COM RASTREIO DE TUBERCULOSE POSITIVO NUM DETERMINADO PERIODO */
   public CohortDefinition patientsOnARTWhoScreenedTBPositiveForAPeriod() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -445,20 +421,6 @@ public class TXTBCohortQueries {
                 hivMetadata.getAdultoSeguimentoEncounterType(),
                 hivMetadata.getARVPediatriaSeguimentoEncounterType()),
             Arrays.asList(commonMetadata.getYesConcept()));
-    addGeneralParameters(cd);
-    return cd;
-  }
-
-  public CohortDefinition tbScreening() {
-    CohortDefinition cd =
-        genericCohortQueries.hasCodedObs(
-            tbMetadata.getTbScreeningConcept(),
-            TimeModifier.ANY,
-            SetComparator.IN,
-            Arrays.asList(
-                hivMetadata.getAdultoSeguimentoEncounterType(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType()),
-            null);
     addGeneralParameters(cd);
     return cd;
   }
