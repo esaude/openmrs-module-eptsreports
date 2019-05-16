@@ -112,7 +112,24 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         getStartedCotrimoxazoleProphylaxis(),
         getColumnParameters());
 
+    addRow(
+        dataSetDefinition,
+        "F2",
+        "Nº dos novos inscritos mensais no Livro de Registo Nº 1 de Pré-TARV que iniciaram TPC durante o mês",
+        getStartedIsoniazidProphylaxis(),
+        getColumnParameters());
+
     return dataSetDefinition;
+  }
+
+  private Mapped<CohortIndicator> getStartedIsoniazidProphylaxis() {
+    String name =
+        "NUMERO DE NOVOS PACIENTES REGISTADOS NO LIVRO 1 PRE-TARV NUM PERIODO E QUE INICIARAM PROFILAXIA COM INH NO MESMO PERIODO";
+    CohortDefinition cohort =
+        usMonthlySummaryHivCohortQueries.getInPreArtWhoStartedIsoniazidProphylaxis();
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    return mapStraightThrough(indicator);
   }
 
   private Mapped<CohortIndicator> getStartedCotrimoxazoleProphylaxis() {

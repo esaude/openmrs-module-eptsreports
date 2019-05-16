@@ -705,6 +705,14 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.isoniazidProphylaxisStartDateConceptUuid</property>
+		<defaultValue>6fa92ac9-0a96-4372-9e10-dd9683c19135</defaultValue>
+		<description>
+			UUID for the DATA DE INICIO DA PROFILAXIA COM ISONIAZIDA concept
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 

@@ -107,6 +107,12 @@ public class UsMonthlySummaryHivCohortQueries {
     return getInPreArtBook1And(startedProphylaxis);
   }
 
+  public CohortDefinition getInPreArtWhoStartedIsoniazidProphylaxis() {
+    String mappings = "value1=${onOrAfter},value2=${onOrBefore},locationList=${location}";
+    Mapped<CohortDefinition> startedProphylaxis = map(getStartedIsoniazidProphylaxis(), mappings);
+    return getInPreArtBook1And(startedProphylaxis);
+  }
+
   /**
    * @param toCompose Mapped cohort of screened patients. Parameters to map are {@code onOrBefore,
    *     onOrAfter} and {@code location}
@@ -212,6 +218,27 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.setName("startedCotrimoxazoleProphylaxis");
     cd.setQuestion(commonMetadata.getCotrimoxazoleProphylaxisStartDateConcept());
     cd.setTimeModifier(TimeModifier.ANY);
+
+    List<EncounterType> encounterTypes = new ArrayList<>();
+    encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
+    encounterTypes.add(hivMetadata.getARVPediatriaSeguimentoEncounterType());
+    cd.setEncounterTypeList(encounterTypes);
+
+    cd.setOperator1(RangeComparator.GREATER_EQUAL);
+    cd.setOperator2(RangeComparator.LESS_EQUAL);
+
+    cd.addParameter(new Parameter("value1", "After Date", Date.class));
+    cd.addParameter(new Parameter("value2", "Before Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+
+    return cd;
+  }
+
+  private CohortDefinition getStartedIsoniazidProphylaxis() {
+    DateObsCohortDefinition cd = new DateObsCohortDefinition();
+    cd.setName("startedIsoniazidProphylaxis");
+    cd.setQuestion(commonMetadata.getIsoniazidProphylaxisStartDateConcept());
+    cd.setTimeModifier(TimeModifier.FIRST);
 
     List<EncounterType> encounterTypes = new ArrayList<>();
     encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
