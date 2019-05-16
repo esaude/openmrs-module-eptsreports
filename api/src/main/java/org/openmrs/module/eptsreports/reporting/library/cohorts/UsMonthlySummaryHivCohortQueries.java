@@ -46,6 +46,15 @@ public class UsMonthlySummaryHivCohortQueries {
         null);
   }
 
+  public CohortDefinition getRegisteredInArtBooks1and2() {
+    return genericCohortQueries.hasCodedObs(
+        hivMetadata.getRecordArtFlowConcept(),
+        TimeModifier.FIRST,
+        SetComparator.IN,
+        Arrays.asList(hivMetadata.getArtEncounterType()),
+        null);
+  }
+
   public CohortDefinition getNewlyEnrolledInArtBooks1and2() {
     return getNewlyEnrolled(getRegisteredInPreArtBooks1and2());
   }

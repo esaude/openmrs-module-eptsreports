@@ -119,7 +119,23 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         getStartedIsoniazidProphylaxis(),
         getColumnParameters());
 
+    addRow(
+        dataSetDefinition,
+        "G1",
+        "Nº cumulativo de pacientes registados até o fim do mês anterior TARV",
+        getRegisteredInArtBooks1and2ByEndOfPreviousMonth(),
+        getColumnParameters());
+
     return dataSetDefinition;
+  }
+
+  private Mapped<CohortIndicator> getRegisteredInArtBooks1and2ByEndOfPreviousMonth() {
+    String name =
+        "NUMERO CUMULATIVO DE PACIENTES TARV REGISTADOS NOS LIVROS 1 E 2 ATE O FIM DE UM PERIODO";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getRegisteredInArtBooks1and2();
+    String mappings = "onOrBefore=${startDate-1d},locationList=${location}";
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    return mapStraightThrough(indicator);
   }
 
   private Mapped<CohortIndicator> getStartedIsoniazidProphylaxis() {
