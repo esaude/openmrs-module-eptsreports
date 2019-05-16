@@ -24,11 +24,14 @@ public class TXRetCohortQueries {
   @Autowired private CommonMetadata commonMetadata;
 
   @Autowired private HivMetadata hivMetadata;
+  private String mappings =
+      "startDate=${startDate},endDate=${endDate},location=${location},months=${months}";
 
   private void addParameters(CohortDefinition cd) {
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("startDate", "Data Inicial", Date.class));
+    cd.addParameter(new Parameter("endDate", "Data Final", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("months", "Número de Meses (12, 24, 36)", Integer.class));
   }
 
   private CohortDefinition cohortDefinition(CohortDefinition cohortDefinition) {
@@ -60,14 +63,14 @@ public class TXRetCohortQueries {
             cohortDefinition(
                 genericCohortQueries.generalSql(
                     "notificado", TXRetQueries.notificadoTwelveMonths())),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            mappings));
     cd.addSearch(
         "NAONOTIFICADO",
         EptsReportUtils.map(
             cohortDefinition(
                 genericCohortQueries.generalSql(
                     "naonotificado", TXRetQueries.naonotificadoTwelveMonths())),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            mappings));
     cd.setCompositionString("NOTIFICADO OR NAONOTIFICADO");
     addParameters(cd);
     return cd;
@@ -77,26 +80,13 @@ public class TXRetCohortQueries {
   public CohortDefinition inCourtForTwelveMonths() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("inCourt12Months");
+    cd.addSearch("OBITO", EptsReportUtils.map(cohortDefinition(obitoTwelveMonths()), mappings));
     cd.addSearch(
-        "OBITO",
-        EptsReportUtils.map(
-            cohortDefinition(obitoTwelveMonths()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "SUSPENSO", EptsReportUtils.map(cohortDefinition(suspensoTwelveMonths()), mappings));
     cd.addSearch(
-        "SUSPENSO",
-        EptsReportUtils.map(
-            cohortDefinition(suspensoTwelveMonths()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "INICIOTARV", EptsReportUtils.map(cohortDefinition(initiotArvTwelveMonths()), mappings));
     cd.addSearch(
-        "INICIOTARV",
-        EptsReportUtils.map(
-            cohortDefinition(initiotArvTwelveMonths()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "ABANDONO",
-        EptsReportUtils.map(
-            cohortDefinition(abandonoTwelveMonths()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "ABANDONO", EptsReportUtils.map(cohortDefinition(abandonoTwelveMonths()), mappings));
 
     cd.setCompositionString("INICIOTARV NOT (OBITO OR SUSPENSO OR ABANDONO)");
     addParameters(cd);

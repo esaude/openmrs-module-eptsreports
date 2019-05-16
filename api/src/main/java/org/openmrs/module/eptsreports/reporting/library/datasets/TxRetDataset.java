@@ -24,6 +24,7 @@ import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIn
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -44,7 +45,8 @@ public class TxRetDataset extends BaseDataSet {
   @Autowired private TxRetDimensionCohort txRetDimensionCohort;
 
   public DataSetDefinition constructTxRetDataset() {
-    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String mappings =
+        "startDate=${startDate},endDate=${endDate},location=${location},months={$months}";
     CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
     dataSetDefinition.setName("TX_Ret Data Set");
     dataSetDefinition.addParameters(getParameters());
@@ -52,10 +54,12 @@ public class TxRetDataset extends BaseDataSet {
         eptsGeneralIndicator.getIndicator(
             "NUMERATOR",
             EptsReportUtils.map(txRetCohortQueries.inCourtForTwelveMonths(), mappings));
+    numerator.addParameter(new Parameter("months", "Months", Integer.class));
     CohortIndicator denominator =
         eptsGeneralIndicator.getIndicator(
             "DENOMINATOR",
             EptsReportUtils.map(txRetCohortQueries.courtNotTransferredTwelveMonths(), mappings));
+    denominator.addParameter(new Parameter("months", "Months", Integer.class));
     dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dataSetDefinition.addDimension(
         "age",
@@ -66,6 +70,12 @@ public class TxRetDataset extends BaseDataSet {
         EptsReportUtils.map(
             txRetDimensionCohort.startedTargetAtARTInitiation(),
             "endDate=${endDate},location=${location}"));
+    dataSetDefinition.addDimension(
+        "pregnantOrBreastFeeding",
+        EptsReportUtils.map(
+            txRetDimensionCohort.pregnantOrBreastFeeding(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
     dataSetDefinition.addColumn(
         "T04SA-ALL", "TX_RET: Numerator total", EptsReportUtils.map(numerator, mappings), "");
     dataSetDefinition.addColumn(
@@ -80,7 +90,7 @@ public class TxRetDataset extends BaseDataSet {
         dataSetDefinition,
         "T04SI",
         "TX_RET Denominator (courtNotTransferredTwelveMonths)",
-        EptsReportUtils.map(numerator, mappings),
+        EptsReportUtils.map(denominator, mappings),
         dissagregations());
     return dataSetDefinition;
   }
@@ -89,6 +99,9 @@ public class TxRetDataset extends BaseDataSet {
     return Arrays.asList(
         new ColumnParameters("<1", "Children <1 anos", "0009=0001", "0001"),
         new ColumnParameters("1–9", "Children 1-9 anos", "0009=0109", "0109"),
+        new ColumnParameters("pregnant", "Pregnant", "pregnantOrBreastFeeding=pregnant", "PREG"),
+        new ColumnParameters(
+            "breastFeeding", "Breast feeding", "pregnantOrBreastFeeding=breastfeeding", "BRSTFDG"),
         new ColumnParameters("10-14Males", "10-14 anos - Masculino", "gender=M|age=10-14", "1014M"),
         new ColumnParameters(
             "10-14Females", "10-14 anos - Feminino", "gender=F|age=10-14", "1014F"),
