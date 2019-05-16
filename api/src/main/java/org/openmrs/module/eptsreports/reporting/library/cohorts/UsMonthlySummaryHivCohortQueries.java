@@ -4,16 +4,20 @@ import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map
 import static org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
+import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -94,6 +98,13 @@ public class UsMonthlySummaryHivCohortQueries {
     String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
     Mapped<CohortDefinition> screenedForSti = map(getStiScreening(), mappings);
     return getInPreArtBook1And(screenedForSti);
+  }
+
+  public CohortDefinition getInPreArtWhoStartedCotrimoxazoleProphylaxis() {
+    String mappings = "value1=${onOrAfter},value2=${onOrBefore},locationList=${location}";
+    Mapped<CohortDefinition> startedProphylaxis =
+        map(getStartedCotrimoxazoleProphylaxis(), mappings);
+    return getInPreArtBook1And(startedProphylaxis);
   }
 
   /**
@@ -194,5 +205,26 @@ public class UsMonthlySummaryHivCohortQueries {
         SetComparator.IN,
         Arrays.asList(hivMetadata.getPreArtEncounterType()),
         Arrays.asList(hivMetadata.getPreArtBook1Concept()));
+  }
+
+  private CohortDefinition getStartedCotrimoxazoleProphylaxis() {
+    DateObsCohortDefinition cd = new DateObsCohortDefinition();
+    cd.setName("startedCotrimoxazoleProphylaxis");
+    cd.setQuestion(commonMetadata.getCotrimoxazoleProphylaxisStartDateConcept());
+    cd.setTimeModifier(TimeModifier.ANY);
+
+    List<EncounterType> encounterTypes = new ArrayList<>();
+    encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
+    encounterTypes.add(hivMetadata.getARVPediatriaSeguimentoEncounterType());
+    cd.setEncounterTypeList(encounterTypes);
+
+    cd.setOperator1(RangeComparator.GREATER_EQUAL);
+    cd.setOperator2(RangeComparator.LESS_EQUAL);
+
+    cd.addParameter(new Parameter("value1", "After Date", Date.class));
+    cd.addParameter(new Parameter("value2", "Before Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+
+    return cd;
   }
 }

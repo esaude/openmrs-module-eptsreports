@@ -146,4 +146,12 @@ public class CommonMetadata extends Metadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.stiScreeningConceptUuid");
     return getConcept(uuid);
   }
+
+  // concept_id=6126
+  public Concept getCotrimoxazoleProphylaxisStartDateConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.cotrimoxazoleProphylaxisStartDateConceptUuid");
+    return getConcept(uuid);
+  }
 }

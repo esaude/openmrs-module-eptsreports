@@ -697,6 +697,14 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.cotrimoxazoleProphylaxisStartDateConceptUuid</property>
+		<defaultValue>56a0216c-cd4b-45d3-9f2b-258e6c021d32</defaultValue>
+		<description>
+			UUID for the DATA DE INICIO DA PROFILAXIA COM COTRIMOXAZOL concept
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
