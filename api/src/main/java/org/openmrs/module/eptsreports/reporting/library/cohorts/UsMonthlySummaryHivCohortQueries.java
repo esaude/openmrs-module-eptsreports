@@ -56,7 +56,12 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   public CohortDefinition getNewlyEnrolledInArtBooks1and2() {
-    return getNewlyEnrolled(getRegisteredInPreArtBooks1and2());
+    Mapped<CohortDefinition> transferredFrom =
+        mapStraightThrough(
+            hivCohortQueries.getPatientsInArtCareTransferredFromOtherHealthFacility());
+    String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
+    Mapped<CohortDefinition> preArtBooks1And2 = map(getRegisteredInPreArtBooks1and2(), mappings);
+    return getNewlyEnrolledInArtBookExcludingTransfers(preArtBooks1And2, transferredFrom);
   }
 
   public CohortDefinition getEnrolledByTransfer() {
@@ -122,27 +127,6 @@ public class UsMonthlySummaryHivCohortQueries {
     return getInPreArtBook1And(startedProphylaxis);
   }
 
-  /**
-   * @param toCompose Mapped cohort of screened patients. Parameters to map are {@code onOrBefore,
-   *     onOrAfter} and {@code location}
-   * @return Composition cohort of patients who are registered in pre ART Book 1 composed with
-   *     {@code toCompose} param using an 'AND' operator.
-   */
-  private CohortDefinition getInPreArtBook1And(Mapped<CohortDefinition> toCompose) {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    cd.addSearch("INSCRITOS", mapStraightThrough(getNewlyEnrolled(registeredInPreArtBook1())));
-    cd.addSearch("COMPOSE", toCompose);
-
-    cd.setCompositionString("INSCRITOS AND COMPOSE");
-
-    return cd;
-  }
-
   public CohortDefinition getAbandonedPreArt() {
     return hivCohortQueries.getPatientsInArtCareWhoAbandoned();
   }
@@ -156,22 +140,50 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   /**
-   * @param preArtBook A cohort of patients registered in one of the pre ART books
-   * @return Patients enrolled in pre ART excluding those transferred in
+   * @param toCompose Mapped cohort of screened patients. Parameters to map are {@code onOrBefore,
+   *     onOrAfter} and {@code location}
+   * @return Composition cohort of patients who are registered in pre ART Book 1 composed with
+   *     {@code toCompose} param using an 'AND' operator.
    */
-  private CohortDefinition getNewlyEnrolled(CohortDefinition preArtBook) {
+  private CohortDefinition getInPreArtBook1And(Mapped<CohortDefinition> toCompose) {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
-    cd.addSearch("LIVRO", map(preArtBook, mappings));
+    Mapped<CohortDefinition> transferredFrom =
+        mapStraightThrough(
+            hivCohortQueries.getPatientsInArtCareTransferredFromOtherHealthFacility());
 
-    CohortDefinition transferredToArtCare =
-        hivCohortQueries.getPatientsInArtCareTransferredFromOtherHealthFacility();
-    cd.addSearch("TRANSFERIDOSDE", mapStraightThrough(transferredToArtCare));
+    String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
+    Mapped<CohortDefinition> inPreArtBook1 = map(registeredInPreArtBook1(), mappings);
+    CohortDefinition newInPreArt =
+        getNewlyEnrolledInArtBookExcludingTransfers(inPreArtBook1, transferredFrom);
+
+    cd.addSearch("INSCRITOS", mapStraightThrough(newInPreArt));
+    cd.addSearch("COMPOSE", toCompose);
+
+    cd.setCompositionString("INSCRITOS AND COMPOSE");
+
+    return cd;
+  }
+
+  /**
+   * @param artBook Cohort of patients registered in one of the ART books
+   * @param transferredFrom Cohort of patients transferred from another facility
+   * @return Patients enrolled in ART excluding those transferred in
+   */
+  private CohortDefinition getNewlyEnrolledInArtBookExcludingTransfers(
+      Mapped<CohortDefinition> artBook, Mapped<CohortDefinition> transferredFrom) {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch("LIVRO", artBook);
+    cd.addSearch("TRANSFERIDOSDE", transferredFrom);
 
     cd.setCompositionString("LIVRO NOT TRANSFERIDOSDE");
 
