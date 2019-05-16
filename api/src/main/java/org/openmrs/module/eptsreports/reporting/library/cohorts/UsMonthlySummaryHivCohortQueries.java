@@ -15,6 +15,7 @@ import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -84,19 +85,24 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   public CohortDefinition getInPreArtWhoScreenedForTb() {
-    return getInPreArtBook1WhoScreenedFor(getTbScreening());
+    String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
+    Mapped<CohortDefinition> screenedForTb = map(getTbScreening(), mappings);
+    return getInPreArtBook1And(screenedForTb);
   }
 
   public CohortDefinition getInPreArtWhoScreenedForSti() {
-    return getInPreArtBook1WhoScreenedFor(getStiScreening());
+    String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
+    Mapped<CohortDefinition> screenedForSti = map(getStiScreening(), mappings);
+    return getInPreArtBook1And(screenedForSti);
   }
 
   /**
-   * @param screening Cohort of screened patients
-   * @return Cohort of patients who are registered in pre ART Book 1 and were screened {@code
-   *     screening}
+   * @param toCompose Mapped cohort of screened patients. Parameters to map are {@code onOrBefore,
+   *     onOrAfter} and {@code location}
+   * @return Composition cohort of patients who are registered in pre ART Book 1 composed with
+   *     {@code toCompose} param using an 'AND' operator.
    */
-  private CohortDefinition getInPreArtBook1WhoScreenedFor(CohortDefinition screening) {
+  private CohortDefinition getInPreArtBook1And(Mapped<CohortDefinition> toCompose) {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
@@ -104,9 +110,9 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch("INSCRITOS", mapStraightThrough(getNewlyEnrolled(registeredInPreArtBook1())));
-    cd.addSearch("RASTREIO", mapStraightThrough(screening));
+    cd.addSearch("COMPOSE", toCompose);
 
-    cd.setCompositionString("INSCRITOS AND RASTREIO");
+    cd.setCompositionString("INSCRITOS AND COMPOSE");
 
     return cd;
   }
