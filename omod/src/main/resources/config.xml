@@ -713,6 +713,14 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.artBook1ConceptUuid</property>
+		<defaultValue>cf5969f2-ab91-4c88-9d48-81b1970eb741</defaultValue>
+		<description>
+			UUID for the BOOK 1 ART concept
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 

@@ -64,6 +64,14 @@ public class UsMonthlySummaryHivCohortQueries {
     return getNewlyEnrolledInArtBookExcludingTransfers(preArtBooks1And2, transferredFrom);
   }
 
+  public CohortDefinition getNewlyEnrolledInArt() {
+    Mapped<CohortDefinition> transferredFrom =
+        mapStraightThrough(hivCohortQueries.getPatientsTransferredFromOtherHealthFacility());
+    String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
+    Mapped<CohortDefinition> artBook1 = map(registeredInArtBook1(), mappings);
+    return getNewlyEnrolledInArtBookExcludingTransfers(artBook1, transferredFrom);
+  }
+
   public CohortDefinition getEnrolledByTransfer() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
@@ -232,6 +240,15 @@ public class UsMonthlySummaryHivCohortQueries {
         SetComparator.IN,
         Arrays.asList(hivMetadata.getPreArtEncounterType()),
         Arrays.asList(hivMetadata.getPreArtBook1Concept()));
+  }
+
+  private CohortDefinition registeredInArtBook1() {
+    return genericCohortQueries.hasCodedObs(
+        hivMetadata.getRecordArtFlowConcept(),
+        TimeModifier.FIRST,
+        SetComparator.IN,
+        Arrays.asList(hivMetadata.getArtEncounterType()),
+        Arrays.asList(hivMetadata.getArtBook1Concept()));
   }
 
   private CohortDefinition getStartedCotrimoxazoleProphylaxis() {
