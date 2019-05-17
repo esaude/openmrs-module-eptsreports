@@ -115,7 +115,7 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "F2",
-        "Nº dos novos inscritos mensais no Livro de Registo Nº 1 de Pré-TARV que iniciaram TPC durante o mês",
+        "Nº dos novos inscritos mensais no  Livro de Registo Nº 1 de Pré-TARV que iniciaram TPI durante o mês",
         getStartedIsoniazidProphylaxis(),
         getColumnParameters());
 

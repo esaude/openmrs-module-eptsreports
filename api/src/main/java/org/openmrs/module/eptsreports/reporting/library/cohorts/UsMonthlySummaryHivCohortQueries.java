@@ -116,26 +116,34 @@ public class UsMonthlySummaryHivCohortQueries {
   public CohortDefinition getInPreArtWhoScreenedForTb() {
     String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
     Mapped<CohortDefinition> screenedForTb = map(getTbScreening(), mappings);
-    return getInPreArtBook1And(screenedForTb);
+    Mapped<CohortDefinition> inPreArtBook1 = map(registeredInPreArtBook1(), mappings);
+    return getEnrolledInArtBookAnd(inPreArtBook1, screenedForTb);
   }
 
   public CohortDefinition getInPreArtWhoScreenedForSti() {
     String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
     Mapped<CohortDefinition> screenedForSti = map(getStiScreening(), mappings);
-    return getInPreArtBook1And(screenedForSti);
+    Mapped<CohortDefinition> inPreArtBook1 = map(registeredInPreArtBook1(), mappings);
+    return getEnrolledInArtBookAnd(inPreArtBook1, screenedForSti);
   }
 
   public CohortDefinition getInPreArtWhoStartedCotrimoxazoleProphylaxis() {
     String mappings = "value1=${onOrAfter},value2=${onOrBefore},locationList=${location}";
     Mapped<CohortDefinition> startedProphylaxis =
         map(getStartedCotrimoxazoleProphylaxis(), mappings);
-    return getInPreArtBook1And(startedProphylaxis);
+    String artBookMappings =
+        "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
+    Mapped<CohortDefinition> inPreArtBook1 = map(registeredInPreArtBook1(), artBookMappings);
+    return getEnrolledInArtBookAnd(inPreArtBook1, startedProphylaxis);
   }
 
   public CohortDefinition getInPreArtWhoStartedIsoniazidProphylaxis() {
     String mappings = "value1=${onOrAfter},value2=${onOrBefore},locationList=${location}";
     Mapped<CohortDefinition> startedProphylaxis = map(getStartedIsoniazidProphylaxis(), mappings);
-    return getInPreArtBook1And(startedProphylaxis);
+    String artBookMappings =
+        "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
+    Mapped<CohortDefinition> inPreArtBook1 = map(registeredInPreArtBook1(), artBookMappings);
+    return getEnrolledInArtBookAnd(inPreArtBook1, startedProphylaxis);
   }
 
   public CohortDefinition getAbandonedPreArt() {
@@ -179,12 +187,14 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   /**
+   * @param artBook Cohort of patients registered in one of the ART books
    * @param toCompose Mapped cohort of screened patients. Parameters to map are {@code onOrBefore,
    *     onOrAfter} and {@code location}
    * @return Composition cohort of patients who are registered in pre ART Book 1 composed with
    *     {@code toCompose} param using an 'AND' operator.
    */
-  private CohortDefinition getInPreArtBook1And(Mapped<CohortDefinition> toCompose) {
+  private CohortDefinition getEnrolledInArtBookAnd(
+      Mapped<CohortDefinition> artBook, Mapped<CohortDefinition> toCompose) {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
@@ -195,10 +205,8 @@ public class UsMonthlySummaryHivCohortQueries {
         mapStraightThrough(
             hivCohortQueries.getPatientsInArtCareTransferredFromOtherHealthFacility());
 
-    String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
-    Mapped<CohortDefinition> inPreArtBook1 = map(registeredInPreArtBook1(), mappings);
     CohortDefinition newInPreArt =
-        getNewlyEnrolledInArtBookExcludingTransfers(inPreArtBook1, transferredFrom);
+        getNewlyEnrolledInArtBookExcludingTransfers(artBook, transferredFrom);
 
     cd.addSearch("INSCRITOS", mapStraightThrough(newInPreArt));
     cd.addSearch("COMPOSE", toCompose);
