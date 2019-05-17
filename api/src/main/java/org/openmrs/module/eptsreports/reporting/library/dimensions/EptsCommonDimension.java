@@ -30,21 +30,41 @@ import org.springframework.stereotype.Component;
 @Component
 public class EptsCommonDimension {
 
-  @Autowired private GenderCohortQueries genderCohortQueries;
+  private GenderCohortQueries genderCohortQueries;
 
-  @Autowired private TxNewCohortQueries txNewCohortQueries;
+  private TxNewCohortQueries txNewCohortQueries;
 
-  @Autowired private GenericCohortQueries genericCohortQueries;
+  private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private HivMetadata hivMetadata;
+  private HivMetadata hivMetadata;
 
-  @Autowired private Eri4MonthsCohortQueries eri4MonthsCohortQueries;
+  private Eri4MonthsCohortQueries eri4MonthsCohortQueries;
 
-  @Autowired private Eri2MonthsCohortQueries eri2MonthsCohortQueries;
+  private Eri2MonthsCohortQueries eri2MonthsCohortQueries;
 
-  @Autowired private EriCohortQueries eriCohortQueries;
+  private EriCohortQueries eriCohortQueries;
 
-  @Autowired private TbPrevCohortQueries tbPrevCohortQueries;
+  private TbPrevCohortQueries tbPrevCohortQueries;
+
+  @Autowired
+  public EptsCommonDimension(
+      GenderCohortQueries genderCohortQueries,
+      TxNewCohortQueries txNewCohortQueries,
+      GenericCohortQueries genericCohortQueries,
+      HivMetadata hivMetadata,
+      Eri4MonthsCohortQueries eri4MonthsCohortQueries,
+      Eri2MonthsCohortQueries eri2MonthsCohortQueries,
+      EriCohortQueries eriCohortQueries,
+      TbPrevCohortQueries tbPrevCohortQueries) {
+    this.genderCohortQueries = genderCohortQueries;
+    this.txNewCohortQueries = txNewCohortQueries;
+    this.genericCohortQueries = genericCohortQueries;
+    this.hivMetadata = hivMetadata;
+    this.eri4MonthsCohortQueries = eri4MonthsCohortQueries;
+    this.eri2MonthsCohortQueries = eri2MonthsCohortQueries;
+    this.eriCohortQueries = eriCohortQueries;
+    this.tbPrevCohortQueries = tbPrevCohortQueries;
+  }
 
   /**
    * Gender dimension

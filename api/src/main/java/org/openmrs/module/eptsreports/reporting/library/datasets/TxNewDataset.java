@@ -32,15 +32,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class TxNewDataset extends BaseDataSet {
 
-  @Autowired private TxNewCohortQueries txNewCohortQueries;
+  private TxNewCohortQueries txNewCohortQueries;
 
-  @Autowired private EptsCommonDimension eptsCommonDimension;
+  private EptsCommonDimension eptsCommonDimension;
 
-  @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
+  private EptsGeneralIndicator eptsGeneralIndicator;
 
   @Autowired
   @Qualifier("txNewAgeDimensionCohort")
   private AgeDimensionCohortInterface ageDimensionCohort;
+
+  @Autowired
+  public TxNewDataset(
+      TxNewCohortQueries txNewCohortQueries,
+      EptsGeneralIndicator eptsGeneralIndicator,
+      EptsCommonDimension eptsCommonDimension) {
+    this.txNewCohortQueries = txNewCohortQueries;
+    this.eptsGeneralIndicator = eptsGeneralIndicator;
+    this.eptsCommonDimension = eptsCommonDimension;
+  }
 
   public DataSetDefinition constructTxNewDataset() {
 
