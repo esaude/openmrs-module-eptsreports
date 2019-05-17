@@ -88,7 +88,8 @@ public class TXRetCohortQueries {
   public CohortDefinition courtNotTransferredTwelveMonths() {
     return cohortDefinition(
         genericCohortQueries.generalSql(
-            "courtNotTransferred", TXRetQueries.courtNotTransferredTwelveMonths()));
+            "INICIO DE TRATAMENTO ARV - NUM PERIODO: EXCLUI TRANSFERIDOS PARA (SQL)",
+            TXRetQueries.courtNotTransferredTwelveMonths()));
   }
 
   /** map endDate, location rightly when using this */
