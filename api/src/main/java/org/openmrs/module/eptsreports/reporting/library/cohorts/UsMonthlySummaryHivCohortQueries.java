@@ -72,23 +72,15 @@ public class UsMonthlySummaryHivCohortQueries {
     return getNewlyEnrolledInArtBookExcludingTransfers(artBook1, transferredFrom);
   }
 
-  public CohortDefinition getEnrolledByTransfer() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
+  public CohortDefinition getInPreArtEnrolledByTransfer() {
     String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
-    cd.addSearch("INSCRITOS", map(getRegisteredInPreArtBooks1and2(), mappings));
+    Mapped<CohortDefinition> inPreArtBooks = map(getRegisteredInPreArtBooks1and2(), mappings);
 
-    CohortDefinition transferredToArtCare =
+    CohortDefinition transferredFrom =
         hivCohortQueries.getPatientsInArtCareTransferredFromOtherHealthFacility();
-    cd.addSearch("TRANSFERIDOS", mapStraightThrough(transferredToArtCare));
+    Mapped<CohortDefinition> mappedDefinition = mapStraightThrough(transferredFrom);
 
-    cd.setCompositionString("INSCRITOS AND TRANSFERIDOS");
-
-    return cd;
+    return getEnrolledByTransfer(inPreArtBooks, mappedDefinition);
   }
 
   public CohortDefinition getTransferredOut() {
@@ -145,6 +137,22 @@ public class UsMonthlySummaryHivCohortQueries {
 
   public CohortDefinition getInPreArtWhoInitiatedArt() {
     return hivCohortQueries.getPatientsInArtCareWhoInitiatedArt();
+  }
+
+  private CohortDefinition getEnrolledByTransfer(
+      Mapped<CohortDefinition> enrolled, Mapped<CohortDefinition> transferredFrom) {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch("INSCRITOS", enrolled);
+    cd.addSearch("TRANSFERIDOS", transferredFrom);
+
+    cd.setCompositionString("INSCRITOS AND TRANSFERIDOS");
+
+    return cd;
   }
 
   /**

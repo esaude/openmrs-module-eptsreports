@@ -242,7 +242,7 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
   private Mapped<CohortIndicator> getEnrolledByTransfer() {
     String name =
         "NUMERO DE PACIENTES PRE-TARV REGISTADOS NO LIVRO 1 E 2 TRANSFERIDOS DE NUM PERIODO";
-    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getEnrolledByTransfer();
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInPreArtEnrolledByTransfer();
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
     CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
     return mapStraightThrough(indicator);
