@@ -21,8 +21,6 @@ import org.springframework.stereotype.Component;
 @Component("hivMetadata")
 public class HivMetadata extends ProgramsMetadata {
 
-  private String gpSTarvFarmaciaEncounterTypeUuid = "eptsreports.sTarvFarmaciaEncounterTypeUuid";
-
   private String gpArtProgramUuid = "eptsreports.artProgramUuid";
 
   private String gpPtvEtvProgramUuid = "eptsreports.ptvEtvProgramUuid";
@@ -213,6 +211,7 @@ public class HivMetadata extends ProgramsMetadata {
 
   // encounterType_id = 18
   public EncounterType getARVPharmaciaEncounterType() {
+    String gpSTarvFarmaciaEncounterTypeUuid = "eptsreports.sTarvFarmaciaEncounterTypeUuid";
     String uuid =
         Context.getAdministrationService().getGlobalProperty(gpSTarvFarmaciaEncounterTypeUuid);
     return getEncounterType(uuid);
