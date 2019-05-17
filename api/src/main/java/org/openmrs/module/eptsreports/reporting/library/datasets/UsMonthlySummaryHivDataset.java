@@ -140,7 +140,23 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         getNewlyEnrolledInArt(),
         getColumnParameters());
 
+    addRow(
+        dataSetDefinition,
+        "H2",
+        "Nº mensal de transferidos de outras US tarv",
+        getEnrolledInArtByTransfer(),
+        getColumnParameters());
+
     return dataSetDefinition;
+  }
+
+  private Mapped<CohortIndicator> getEnrolledInArtByTransfer() {
+    String name =
+        "NUMERO DE PACIENTES TARV REGISTADOS NO LIVRO 1 E 2 TARV TRANSFERIDOS DE NUM PERIODO";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInArtEnrolledByTransfer();
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    return mapStraightThrough(indicator);
   }
 
   private Mapped<CohortIndicator> getNewlyEnrolledInArt() {

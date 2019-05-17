@@ -83,6 +83,17 @@ public class UsMonthlySummaryHivCohortQueries {
     return getEnrolledByTransfer(inPreArtBooks, mappedDefinition);
   }
 
+  public CohortDefinition getInArtEnrolledByTransfer() {
+    String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
+    Mapped<CohortDefinition> inArtBooks = map(getRegisteredInArtBooks1and2(), mappings);
+
+    CohortDefinition transferredFrom =
+        hivCohortQueries.getPatientsTransferredFromOtherHealthFacility();
+    Mapped<CohortDefinition> mappedDefinition = mapStraightThrough(transferredFrom);
+
+    return getEnrolledByTransfer(inArtBooks, mappedDefinition);
+  }
+
   public CohortDefinition getTransferredOut() {
     return hivCohortQueries.getPatientsInArtCareTransferredOutToAnotherHealthFacility();
   }
