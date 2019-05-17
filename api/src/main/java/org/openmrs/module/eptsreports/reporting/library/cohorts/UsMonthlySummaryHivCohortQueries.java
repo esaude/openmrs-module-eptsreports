@@ -158,6 +158,10 @@ public class UsMonthlySummaryHivCohortQueries {
     return hivCohortQueries.getPatientsInArtTransferredOutToAnotherHealthFacility();
   }
 
+  public CohortDefinition getDeadDuringArt() {
+    return hivCohortQueries.getPatientsInArtWhoDied();
+  }
+
   private CohortDefinition getEnrolledByTransfer(
       Mapped<CohortDefinition> enrolled, Mapped<CohortDefinition> transferredFrom) {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();

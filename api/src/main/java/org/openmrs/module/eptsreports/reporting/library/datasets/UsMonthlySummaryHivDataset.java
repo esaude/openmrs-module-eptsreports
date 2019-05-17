@@ -161,7 +161,22 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         getInArtTransferredOut(),
         getColumnParameters());
 
+    addRow(
+        dataSetDefinition,
+        "I4",
+        "Nº cumulativo de óbitos tarv",
+        getDeadDuringArt(),
+        getColumnParameters());
+
     return dataSetDefinition;
+  }
+
+  private Mapped<CohortIndicator> getDeadDuringArt() {
+    String name = "NUMERO CUMULATIVO DE PACIENTES TARV QUE OBITARAM";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getDeadDuringArt();
+    String mappings = "onOrBefore=${endDate},location=${location}";
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    return mapStraightThrough(indicator);
   }
 
   private Mapped<CohortIndicator> getInArtTransferredOut() {
