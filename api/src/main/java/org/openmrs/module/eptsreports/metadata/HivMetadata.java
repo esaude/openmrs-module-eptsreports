@@ -533,4 +533,12 @@ public class HivMetadata extends ProgramsMetadata {
   private ProgramWorkflow getArtWorkflow() {
     return getProgramWorkflow(getARTProgram().getUuid(), "2");
   }
+
+  public ProgramWorkflowState getArtTransferredOutToAnotherHealthFacilityWorkflowState() {
+    Program artProgram = getARTProgram();
+    ProgramWorkflow workflow = getArtWorkflow();
+    ProgramWorkflowState state =
+        getTransferredOutToAnotherHealthFacilityWorkflowState(artProgram, workflow);
+    return state;
+  }
 }

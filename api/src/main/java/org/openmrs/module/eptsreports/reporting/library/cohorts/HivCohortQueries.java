@@ -204,6 +204,14 @@ public class HivCohortQueries {
         "patientsInArtWhoSuspendedTreatment", artProgram, suspendedTreatment);
   }
 
+  public CohortDefinition getPatientsInArtTransferredOutToAnotherHealthFacility() {
+    Program artProgram = hivMetadata.getARTProgram();
+    ProgramWorkflowState state =
+        hivMetadata.getArtTransferredOutToAnotherHealthFacilityWorkflowState();
+    return getPatientsInProgramWithStateByEndOfPeriod(
+        "transferredOutToAnotherHealthFacility", artProgram, state);
+  }
+
   private CohortDefinition getPatientsInProgramWithStateDuringPeriod(
       String name, ProgramWorkflowState state, Program program) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
