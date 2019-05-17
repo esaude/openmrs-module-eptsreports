@@ -223,6 +223,14 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.artBook1ConceptUuid");
     return getConcept(uuid);
   }
+
+  // concept_id = 1709
+  private Concept getSuspendedTreatmentConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.suspendedTreatmentConceptUuid");
+    return getConcept(uuid);
+  }
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
@@ -512,5 +520,17 @@ public class HivMetadata extends ProgramsMetadata {
     Concept startDrugs = getStartDrugsConcept();
     return getProgramWorkflowState(
         hivCareProgram.getUuid(), workflow.getUuid(), startDrugs.getUuid());
+  }
+
+  public ProgramWorkflowState getArtSuspendedTreatmentWorkflowState() {
+    Program artProgram = getARTProgram();
+    ProgramWorkflow workflow = getArtWorkflow();
+    Concept suspendedTreatment = getSuspendedTreatmentConcept();
+    return getProgramWorkflowState(
+        artProgram.getUuid(), workflow.getUuid(), suspendedTreatment.getUuid());
+  }
+
+  private ProgramWorkflow getArtWorkflow() {
+    return getProgramWorkflow(getARTProgram().getUuid(), "2");
   }
 }

@@ -721,6 +721,14 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.suspendedTreatmentConceptUuid</property>
+		<defaultValue>e1de1fee-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the SUSPENDER TRATAMENTO concept
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
