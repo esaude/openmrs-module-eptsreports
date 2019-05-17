@@ -68,6 +68,10 @@ public class SetupMERQuarterly extends EptsDataExportManager {
     return "MER Quarterly Report";
   }
 
+  public String getMessage() {
+    return "verificacao de versoes";
+  }
+
   @Override
   public ReportDefinition constructReportDefinition() {
     ReportDefinition reportDefinition = new ReportDefinition();
