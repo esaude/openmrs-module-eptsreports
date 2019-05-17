@@ -60,7 +60,7 @@ public class Metadata {
     }
     if (c == null) {
       try {
-        String[] split = lookup.split("\\:");
+        String[] split = lookup.split(":");
         if (split.length == 2) {
           c = Context.getConceptService().getConceptByMapping(split[1], split[0]);
         }

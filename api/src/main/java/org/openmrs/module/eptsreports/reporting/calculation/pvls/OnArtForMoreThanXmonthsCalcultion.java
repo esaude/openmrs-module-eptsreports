@@ -35,9 +35,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculation {
 
-  @Autowired private HivMetadata hivMetadata;
+  private HivMetadata hivMetadata;
 
-  @Autowired private EPTSCalculationService ePTSCalculationService;
+  private EPTSCalculationService ePTSCalculationService;
+
+  @Autowired
+  public OnArtForMoreThanXmonthsCalcultion(
+      HivMetadata hivMetadata, EPTSCalculationService ePTSCalculationService) {
+    this.hivMetadata = hivMetadata;
+    this.ePTSCalculationService = ePTSCalculationService;
+  }
 
   @Override
   public CalculationResultMap evaluate(

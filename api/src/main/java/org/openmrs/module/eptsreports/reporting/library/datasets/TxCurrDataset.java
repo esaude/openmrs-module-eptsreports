@@ -29,15 +29,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class TxCurrDataset extends BaseDataSet {
 
-  @Autowired private TxCurrCohortQueries txCurrCohortQueries;
+  private TxCurrCohortQueries txCurrCohortQueries;
 
-  @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
+  private EptsGeneralIndicator eptsGeneralIndicator;
 
-  @Autowired private EptsCommonDimension eptsCommonDimension;
+  private EptsCommonDimension eptsCommonDimension;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
   private AgeDimensionCohortInterface ageDimensionCohort;
+
+  @Autowired
+  public TxCurrDataset(
+      TxCurrCohortQueries txCurrCohortQueries,
+      EptsGeneralIndicator eptsGeneralIndicator,
+      EptsCommonDimension eptsCommonDimension) {
+    this.txCurrCohortQueries = txCurrCohortQueries;
+    this.eptsGeneralIndicator = eptsGeneralIndicator;
+    this.eptsCommonDimension = eptsCommonDimension;
+  }
 
   public CohortIndicatorDataSetDefinition constructTxCurrDataset(boolean currentSpec) {
 

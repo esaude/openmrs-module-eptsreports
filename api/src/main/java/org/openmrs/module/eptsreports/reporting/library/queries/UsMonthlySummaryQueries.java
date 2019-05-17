@@ -65,7 +65,8 @@ public class UsMonthlySummaryQueries {
    * ABANDONOS NAO NOTIFICADOS EM 4 SEMANAS - REAL (SQL)
    */
   public static String inARTExcludingNotAnsweredAbandonedIn4WeeksUntilEndDate() {
-    String inARTExcludingNotAnsweredAbandonedIn4WeeksUntilEndDateQuery = "-- Encontrar os respectivos pacientes para cada estado  \n"
+    String inARTExcludingNotAnsweredAbandonedIn4WeeksUntilEndDateQuery =
+        "-- Encontrar os respectivos pacientes para cada estado  \n"
             + "SELECT patient_id  \n"
             + "FROM  \n"
             + "-- 1. Aqui determina-se a data que serÃ¡ usada para ser comparada com a data final  \n"

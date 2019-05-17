@@ -29,15 +29,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class TxPvlsDataset extends BaseDataSet {
 
-  @Autowired private EptsCommonDimension eptsCommonDimension;
+  private EptsCommonDimension eptsCommonDimension;
 
-  @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
+  private EptsGeneralIndicator eptsGeneralIndicator;
 
-  @Autowired private TxPvlsCohortQueries txPvls;
+  private TxPvlsCohortQueries txPvls;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
   private AgeDimensionCohortInterface ageDimensionCohort;
+
+  @Autowired
+  public TxPvlsDataset(
+      EptsCommonDimension eptsCommonDimension,
+      EptsGeneralIndicator eptsGeneralIndicator,
+      TxPvlsCohortQueries txPvls) {
+    this.eptsCommonDimension = eptsCommonDimension;
+    this.eptsGeneralIndicator = eptsGeneralIndicator;
+    this.txPvls = txPvls;
+  }
 
   public DataSetDefinition constructTxPvlsDatset() {
 

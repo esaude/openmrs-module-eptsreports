@@ -30,7 +30,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Handler(supports = JembiProgramEnrollmentForPatientDefinition.class, order = 50)
 public class JembiProgramEnrollmentForPatientEvaluator implements PatientDataEvaluator {
 
-  @Autowired private EvaluationService evaluationService;
+  private EvaluationService evaluationService;
+
+  @Autowired
+  public JembiProgramEnrollmentForPatientEvaluator(EvaluationService evaluationService) {
+    this.evaluationService = evaluationService;
+  }
 
   @Override
   public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
