@@ -170,6 +170,15 @@ public class UsMonthlySummaryHivCohortQueries {
     return getEnrolledInArtBookAnd(inArtBook1, startedProphylaxis);
   }
 
+  public CohortDefinition getInArtWhoStartedIsoniazidProphylaxis() {
+    String mappings = "value1=${onOrAfter},value2=${onOrBefore},locationList=${location}";
+    Mapped<CohortDefinition> startedProphylaxis = map(getStartedIsoniazidProphylaxis(), mappings);
+    String artBookMappings =
+        "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
+    Mapped<CohortDefinition> inArtBook1 = map(registeredInArtBook1(), artBookMappings);
+    return getEnrolledInArtBookAnd(inArtBook1, startedProphylaxis);
+  }
+
   public CohortDefinition getAbandonedPreArt() {
     return hivCohortQueries.getPatientsInArtCareWhoAbandoned();
   }
