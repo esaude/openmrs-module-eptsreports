@@ -163,6 +163,13 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
 
     addRow(
         dataSetDefinition,
+        "I3",
+        "Nº cumulativo de abandonos tarv",
+        getAbandonedArt(),
+        getColumnParameters());
+
+    addRow(
+        dataSetDefinition,
         "I4",
         "Nº cumulativo de óbitos tarv",
         getDeadDuringArt(),
@@ -197,6 +204,14 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         getColumnParameters());
 
     return dataSetDefinition;
+  }
+
+  private Mapped<CohortIndicator> getAbandonedArt() {
+    String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE ABANDONARAM";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getAbandonedArt();
+    String mappings = "onOrBefore=${endDate},location=${location}";
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    return mapStraightThrough(indicator);
   }
 
   private Mapped<CohortIndicator> getInArtStartedIsoniazidProphylaxis() {
@@ -402,8 +417,8 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
   private List<ColumnParameters> getColumnParameters() {
     return Arrays.asList(
         new ColumnParameters("Female under 15", "Female under 15", "gender=F|age=0-14", "F014"),
-        new ColumnParameters("Female above 15", "Female above 15", "gender=F|age=15+", "F15"),
+        new ColumnParameters("Female above 15", "Female 15 or above", "gender=F|age=15+", "F15"),
         new ColumnParameters("Male under 15", "Male under 15", "gender=M|age=0-14", "M014"),
-        new ColumnParameters("Male above 15", "Male above 15", "gender=M|age=15+", "M15"));
+        new ColumnParameters("Male above 15", "Male 15 or above", "gender=M|age=15+", "M15"));
   }
 }

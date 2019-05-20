@@ -547,4 +547,11 @@ public class HivMetadata extends ProgramsMetadata {
     ProgramWorkflow workflow = getArtWorkflow();
     return getDeadWorkflowState(artProgram, workflow);
   }
+
+  public ProgramWorkflowState getArtAbandonedWorkflowState() {
+    Program artProgram = getARTProgram();
+    ProgramWorkflow workflow = getArtWorkflow();
+    ProgramWorkflowState state = getAbandonedWorkflowState(artProgram, workflow);
+    return state;
+  }
 }

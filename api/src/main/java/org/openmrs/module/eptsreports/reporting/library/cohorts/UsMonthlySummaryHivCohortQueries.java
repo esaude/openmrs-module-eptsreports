@@ -11,12 +11,15 @@ import java.util.List;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
+import org.openmrs.module.eptsreports.reporting.library.queries.TXTBQueries;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -201,6 +204,54 @@ public class UsMonthlySummaryHivCohortQueries {
 
   public CohortDefinition getDeadDuringArt() {
     return hivCohortQueries.getPatientsInArtWhoDied();
+  }
+
+  public CohortDefinition getAbandonedArt() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch("NOTIFICADO", mapStraightThrough(hivCohortQueries.getPatientsInArtWhoAbandoned()));
+    String noNotifParams = "endDate=${onOrBefore},location=${location}";
+    cd.addSearch(
+        "NAONOTIFICADO", map(getPatientsInArtWhoAbandonedWithNoNotification(), noNotifParams));
+
+    cd.setCompositionString("NOTIFICADO OR NAONOTIFICADO");
+
+    return cd;
+  }
+
+  private CohortDefinition getPatientsInArtWhoAbandonedWithNoNotification() {
+    Concept returnVisitDateForArvDrug = hivMetadata.getReturnVisitDateForArvDrugConcept();
+    EncounterType adultoSeguimento = hivMetadata.getAdultoSeguimentoEncounterType();
+    EncounterType arvPediatriaSeguimento = hivMetadata.getARVPediatriaSeguimentoEncounterType();
+    ProgramWorkflowState transferredOut =
+        hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState();
+
+    TXTBQueries.AbandonedWithoutNotificationParams params =
+        new TXTBQueries.AbandonedWithoutNotificationParams();
+
+    params
+        .programId(hivMetadata.getARTProgram().getProgramId())
+        .returnVisitDateConceptId(hivMetadata.getReturnVisitDateConcept().getConceptId())
+        .returnVisitDateForARVDrugConceptId(returnVisitDateForArvDrug.getConceptId())
+        .pharmacyEncounterTypeId(hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())
+        .artAdultFollowupEncounterTypeId(adultoSeguimento.getEncounterTypeId())
+        .artPedInicioEncounterTypeId(arvPediatriaSeguimento.getEncounterTypeId())
+        .transferOutStateId(transferredOut.getId())
+        .treatmentSuspensionStateId(hivMetadata.getSuspendedTreatmentWorkflowState().getId())
+        .treatmentAbandonedStateId(hivMetadata.getAbandonedWorkflowState().getId())
+        .deathStateId(hivMetadata.getPatientHasDiedWorkflowState().getId());
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("patientsInArtWhoAbandonedWithNoNotification");
+    cd.setQuery(TXTBQueries.abandonedWithNoNotification(params));
+
+    cd.addParameter(new Parameter("endDate", "Before Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    return cd;
   }
 
   private CohortDefinition getEnrolledByTransfer(
