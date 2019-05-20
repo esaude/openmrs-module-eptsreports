@@ -46,7 +46,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class GenericCohortQueries {
 
-  @Autowired private HivMetadata hivMetadata;
+  private HivMetadata hivMetadata;
+
+  @Autowired
+  public GenericCohortQueries(HivMetadata hivMetadata) {
+    this.hivMetadata = hivMetadata;
+  }
 
   /**
    * Generic Coded Observation cohort

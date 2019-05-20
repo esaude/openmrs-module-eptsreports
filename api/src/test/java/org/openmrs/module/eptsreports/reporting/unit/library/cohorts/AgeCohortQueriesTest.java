@@ -4,10 +4,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.AgeCohortQueries;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class AgeCohortQueriesTest {
 
   private AgeCohortQueries ageCohortQueries = new AgeCohortQueries();
+
+  @Autowired
+  public AgeCohortQueriesTest() {}
 
   @Test
   public void createXtoYAgeCohortShouldAgeCohortDefinitionWithMinAndMaxAge() {

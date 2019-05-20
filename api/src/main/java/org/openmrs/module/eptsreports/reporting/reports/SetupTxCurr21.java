@@ -31,9 +31,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class SetupTxCurr21 extends EptsDataExportManager {
 
-  @Autowired private TxCurrDataset txCurrDataset;
+  private TxCurrDataset txCurrDataset;
 
-  @Autowired private GenericCohortQueries genericCohortQueries;
+  private GenericCohortQueries genericCohortQueries;
+
+  @Autowired
+  public SetupTxCurr21(TxCurrDataset txCurrDataset, GenericCohortQueries genericCohortQueries) {
+    this.txCurrDataset = txCurrDataset;
+    this.genericCohortQueries = genericCohortQueries;
+  }
 
   @Override
   public String getVersion() {

@@ -32,7 +32,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class TxPvlsCohortQueries {
 
-  @Autowired private HivCohortQueries hivCohortQueries;
+  private HivCohortQueries hivCohortQueries;
+
+  @Autowired
+  public TxPvlsCohortQueries(HivCohortQueries hivCohortQueries) {
+    this.hivCohortQueries = hivCohortQueries;
+  }
 
   /**
    * Patients who have NOT been on ART for 3 months based on the ART initiation date and date of

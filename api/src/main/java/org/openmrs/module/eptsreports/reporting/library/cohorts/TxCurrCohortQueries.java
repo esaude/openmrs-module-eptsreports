@@ -39,11 +39,21 @@ public class TxCurrCohortQueries {
 
   private static final int CURRENT_SPEC_ABANDONMENT_DAYS = 31;
 
-  @Autowired private HivMetadata hivMetadata;
+  private HivMetadata hivMetadata;
 
-  @Autowired private GenericCohortQueries genericCohortQueries;
+  private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private HivCohortQueries hivCohortQueries;
+  private HivCohortQueries hivCohortQueries;
+
+  @Autowired
+  public TxCurrCohortQueries(
+      HivMetadata hivMetadata,
+      GenericCohortQueries genericCohortQueries,
+      HivCohortQueries hivCohortQueries) {
+    this.hivMetadata = hivMetadata;
+    this.genericCohortQueries = genericCohortQueries;
+    this.hivCohortQueries = hivCohortQueries;
+  }
 
   /**
    * @param cohortName Cohort name

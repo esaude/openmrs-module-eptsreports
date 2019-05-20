@@ -29,9 +29,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class HivCohortQueries {
 
-  @Autowired private HivMetadata hivMetadata;
+  private HivMetadata hivMetadata;
 
-  @Autowired private GenericCohortQueries genericCohortQueires;
+  private GenericCohortQueries genericCohortQueires;
+
+  @Autowired
+  public HivCohortQueries(HivMetadata hivMetadata, GenericCohortQueries genericCohortQueires) {
+    this.hivMetadata = hivMetadata;
+    this.genericCohortQueires = genericCohortQueires;
+  }
 
   /**
    * Adult and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml)

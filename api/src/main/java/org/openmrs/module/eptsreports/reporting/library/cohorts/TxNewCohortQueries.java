@@ -41,15 +41,29 @@ import org.springframework.stereotype.Component;
 @Component
 public class TxNewCohortQueries {
 
-  @Autowired private HivMetadata hivMetadata;
+  private HivMetadata hivMetadata;
 
-  @Autowired private CommonMetadata commonMetadata;
+  private CommonMetadata commonMetadata;
 
-  @Autowired private GenericCohortQueries genericCohorts;
+  private GenericCohortQueries genericCohorts;
 
-  @Autowired private GenderCohortQueries genderCohorts;
+  private GenderCohortQueries genderCohorts;
 
-  @Autowired private HivCohortQueries hivCohortQueries;
+  private HivCohortQueries hivCohortQueries;
+
+  @Autowired
+  public TxNewCohortQueries(
+      HivMetadata hivMetadata,
+      CommonMetadata commonMetadata,
+      GenericCohortQueries genericCohorts,
+      GenderCohortQueries genderCohorts,
+      HivCohortQueries hivCohortQueries) {
+    this.hivMetadata = hivMetadata;
+    this.commonMetadata = commonMetadata;
+    this.genericCohorts = genericCohorts;
+    this.genderCohorts = genderCohorts;
+    this.hivCohortQueries = hivCohortQueries;
+  }
 
   /**
    * PATIENTS WITH UPDATED DATE OF DEPARTURE IN THE ART SERVICE Are patients with date of delivery
