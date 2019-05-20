@@ -255,24 +255,21 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
   private Mapped<CohortIndicator> getDeadDuringArt() {
     String name = "NUMERO CUMULATIVO DE PACIENTES TARV QUE OBITARAM";
     CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getDeadDuringArt();
-    String mappings = "onOrBefore=${endDate},location=${location}";
-    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
     return mapStraightThrough(indicator);
   }
 
   private Mapped<CohortIndicator> getInArtTransferredOut() {
     String name = "NUMERO CUMULATIVO DE PACIENTES TARV TRANSFERIDOS PARA";
     CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInArtTransferredOut();
-    String mappings = "onOrBefore=${endDate},location=${location}";
-    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
     return mapStraightThrough(indicator);
   }
 
   private Mapped<CohortIndicator> getInArtWhoSuspendedTreatment() {
     String name = "NUMERO CUMULATIVO DE PACIENTES TARV QUE SUSPENDERAM TARV";
     CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInArtWhoSuspendedTreatment();
-    String mappings = "onOrBefore=${endDate},location=${location}";
-    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
     return mapStraightThrough(indicator);
   }
 
@@ -352,32 +349,28 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
   private Mapped<CohortIndicator> getInitiatedArt() {
     String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE INICIARAM TARV";
     CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInArtCareWhoInitiatedArt();
-    String mappings = "onOrBefore=${endDate},location=${location}";
-    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
     return mapStraightThrough(indicator);
   }
 
   private Mapped<CohortIndicator> getDeceasedDuringPreArt() {
     String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE OBITARAM";
     CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getDeadDuringArtCare();
-    String mappings = "onOrBefore=${endDate},location=${location}";
-    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
     return mapStraightThrough(indicator);
   }
 
   private Mapped<CohortIndicator> getAbandoned() {
     String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE ABANDONARAM";
     CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getAbandonedArtCare();
-    String mappings = "onOrBefore=${endDate},location=${location}";
-    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
     return mapStraightThrough(indicator);
   }
 
   private Mapped<CohortIndicator> getTransferredOut() {
     String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV TRANSFERIDOS PARA";
     CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getTransferredOut();
-    String mappings = "onOrBefore=${endDate},location=${location}";
-    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
     return mapStraightThrough(indicator);
   }
 

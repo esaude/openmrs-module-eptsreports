@@ -59,9 +59,9 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   public CohortDefinition getNewlyEnrolledInArtBooks1and2() {
+    String mappings1 = "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}";
     Mapped<CohortDefinition> transferredFrom =
-        mapStraightThrough(
-            hivCohortQueries.getPatientsInArtCareTransferredFromOtherHealthFacility());
+        map(hivCohortQueries.getPatientsInArtCareTransferredFromOtherHealthFacility(), mappings1);
     String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
     Mapped<CohortDefinition> preArtBooks1And2 = map(getRegisteredInPreArtBooks1and2(), mappings);
     return getNewlyEnrolledInArtBookExcludingTransfers(preArtBooks1And2, transferredFrom);
@@ -81,7 +81,8 @@ public class UsMonthlySummaryHivCohortQueries {
 
     CohortDefinition transferredFrom =
         hivCohortQueries.getPatientsInArtCareTransferredFromOtherHealthFacility();
-    Mapped<CohortDefinition> mappedDefinition = mapStraightThrough(transferredFrom);
+    String mappings1 = "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}";
+    Mapped<CohortDefinition> mappedDefinition = map(transferredFrom, mappings1);
 
     return getEnrolledByTransfer(inPreArtBooks, mappedDefinition);
   }
@@ -213,10 +214,9 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    cd.addSearch("NOTIFICADO", mapStraightThrough(hivCohortQueries.getPatientsInArtWhoAbandoned()));
-    String noNotifParams = "endDate=${onOrBefore},location=${location}";
-    cd.addSearch(
-        "NAONOTIFICADO", map(getPatientsInArtWhoAbandonedWithNoNotification(), noNotifParams));
+    String mappings = "endDate=${onOrBefore},location=${location}";
+    cd.addSearch("NOTIFICADO", map(hivCohortQueries.getPatientsInArtWhoAbandoned(), mappings));
+    cd.addSearch("NAONOTIFICADO", map(getPatientsInArtWhoAbandonedWithNoNotification(), mappings));
 
     cd.setCompositionString("NOTIFICADO OR NAONOTIFICADO");
 
@@ -288,9 +288,9 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
+    String mappings = "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}";
     Mapped<CohortDefinition> transferredFrom =
-        mapStraightThrough(
-            hivCohortQueries.getPatientsInArtCareTransferredFromOtherHealthFacility());
+        map(hivCohortQueries.getPatientsInArtCareTransferredFromOtherHealthFacility(), mappings);
 
     CohortDefinition newInArtCare =
         getNewlyEnrolledInArtBookExcludingTransfers(artBook, transferredFrom);
