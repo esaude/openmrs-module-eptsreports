@@ -45,11 +45,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 
-  @Autowired private HivMetadata hivMetadata;
+  private HivMetadata hivMetadata;
 
-  @Autowired private CommonMetadata commonMetadata;
+  private CommonMetadata commonMetadata;
 
-  @Autowired private EPTSCalculationService ePTSCalculationService;
+  private EPTSCalculationService ePTSCalculationService;
+
+  @Autowired
+  public InitialArtStartDateCalculation(
+      HivMetadata hivMetadata,
+      CommonMetadata commonMetadata,
+      EPTSCalculationService ePTSCalculationService) {
+    this.hivMetadata = hivMetadata;
+    this.commonMetadata = commonMetadata;
+    this.ePTSCalculationService = ePTSCalculationService;
+  }
 
   /**
    * @should return null for patients who have not started ART

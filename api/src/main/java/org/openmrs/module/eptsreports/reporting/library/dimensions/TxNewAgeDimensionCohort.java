@@ -17,9 +17,14 @@ import org.springframework.stereotype.Component;
 @Component("txNewAgeDimensionCohort")
 public class TxNewAgeDimensionCohort implements AgeDimensionCohortInterface {
 
-  @Autowired private GenericCohortQueries genericCohorts;
+  private GenericCohortQueries genericCohorts;
 
   @Autowired private AgeCohortQueries ageCohortQueries;
+
+  @Autowired
+  public TxNewAgeDimensionCohort(GenericCohortQueries genericCohorts) {
+    this.genericCohorts = genericCohorts;
+  }
 
   @Override
   public Mapped<CohortDefinition> createXtoYAgeCohort(String name, Integer minAge, Integer maxAge) {

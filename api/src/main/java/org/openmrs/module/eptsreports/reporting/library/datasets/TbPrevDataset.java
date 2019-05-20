@@ -29,15 +29,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class TbPrevDataset extends BaseDataSet {
 
-  @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
+  private EptsGeneralIndicator eptsGeneralIndicator;
 
-  @Autowired private TbPrevCohortQueries tbPrevCohortQueries;
+  private TbPrevCohortQueries tbPrevCohortQueries;
 
-  @Autowired private EptsCommonDimension eptsCommonDimension;
+  private EptsCommonDimension eptsCommonDimension;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
   private AgeDimensionCohortInterface ageDimensionCohort;
+
+  @Autowired
+  public TbPrevDataset(
+      EptsGeneralIndicator eptsGeneralIndicator,
+      TbPrevCohortQueries tbPrevCohortQueries,
+      EptsCommonDimension eptsCommonDimension) {
+    this.eptsGeneralIndicator = eptsGeneralIndicator;
+    this.tbPrevCohortQueries = tbPrevCohortQueries;
+    this.eptsCommonDimension = eptsCommonDimension;
+  }
 
   public DataSetDefinition constructDatset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();

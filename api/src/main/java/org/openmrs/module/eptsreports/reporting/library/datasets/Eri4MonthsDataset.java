@@ -27,11 +27,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class Eri4MonthsDataset extends BaseDataSet {
 
-  @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
+  private EptsGeneralIndicator eptsGeneralIndicator;
 
-  @Autowired private EptsCommonDimension eptsCommonDimension;
+  private EptsCommonDimension eptsCommonDimension;
 
-  @Autowired private EriCohortQueries eriCohortQueries;
+  private EriCohortQueries eriCohortQueries;
+
+  @Autowired
+  public Eri4MonthsDataset(
+      EptsGeneralIndicator eptsGeneralIndicator,
+      EptsCommonDimension eptsCommonDimension,
+      EriCohortQueries eriCohortQueries) {
+    this.eptsGeneralIndicator = eptsGeneralIndicator;
+    this.eptsCommonDimension = eptsCommonDimension;
+    this.eriCohortQueries = eriCohortQueries;
+  }
 
   public DataSetDefinition constructEri4MonthsDataset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();

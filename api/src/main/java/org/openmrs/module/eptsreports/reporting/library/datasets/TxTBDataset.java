@@ -30,15 +30,25 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TxTBDataset extends BaseDataSet {
-  @Autowired private EptsCommonDimension eptsCommonDimension;
+  private EptsCommonDimension eptsCommonDimension;
 
-  @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
+  private EptsGeneralIndicator eptsGeneralIndicator;
 
-  @Autowired private TXTBCohortQueries txTbCohortQueries;
+  private TXTBCohortQueries txTbCohortQueries;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
   private AgeDimensionCohortInterface ageDimensionCohort;
+
+  @Autowired
+  public TxTBDataset(
+      EptsCommonDimension eptsCommonDimension,
+      EptsGeneralIndicator eptsGeneralIndicator,
+      TXTBCohortQueries txTbCohortQueries) {
+    this.eptsCommonDimension = eptsCommonDimension;
+    this.eptsGeneralIndicator = eptsGeneralIndicator;
+    this.txTbCohortQueries = txTbCohortQueries;
+  }
 
   public DataSetDefinition constructTxTBDataset() {
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";

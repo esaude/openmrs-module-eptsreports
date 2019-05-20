@@ -16,15 +16,25 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UsMonthlySummaryDataset extends BaseDataSet {
-  @Autowired private EptsCommonDimension eptsCommonDimension;
+  private EptsCommonDimension eptsCommonDimension;
 
-  @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
+  private EptsGeneralIndicator eptsGeneralIndicator;
 
-  @Autowired private UsMonthlySummaryCohortQueries usMonthlySummaryCohortQueries;
+  private UsMonthlySummaryCohortQueries usMonthlySummaryCohortQueries;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
   private AgeDimensionCohortInterface ageDimensionCohort;
+
+  @Autowired
+  public UsMonthlySummaryDataset(
+      EptsCommonDimension eptsCommonDimension,
+      EptsGeneralIndicator eptsGeneralIndicator,
+      UsMonthlySummaryCohortQueries usMonthlySummaryCohortQueries) {
+    this.eptsCommonDimension = eptsCommonDimension;
+    this.eptsGeneralIndicator = eptsGeneralIndicator;
+    this.usMonthlySummaryCohortQueries = usMonthlySummaryCohortQueries;
+  }
 
   private String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 

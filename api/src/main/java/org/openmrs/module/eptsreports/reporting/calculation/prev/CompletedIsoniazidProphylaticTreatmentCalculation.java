@@ -55,9 +55,16 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
 
   private static final String ON_OR_BEFORE = "onOrBefore";
 
-  @Autowired private HivMetadata hivMetadata;
+  private HivMetadata hivMetadata;
 
-  @Autowired private EPTSCalculationService ePTSCalculationService;
+  private EPTSCalculationService ePTSCalculationService;
+
+  @Autowired
+  public CompletedIsoniazidProphylaticTreatmentCalculation(
+      HivMetadata hivMetadata, EPTSCalculationService ePTSCalculationService) {
+    this.hivMetadata = hivMetadata;
+    this.ePTSCalculationService = ePTSCalculationService;
+  }
 
   @Override
   public CalculationResultMap evaluate(

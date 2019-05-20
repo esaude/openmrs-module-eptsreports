@@ -16,15 +16,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class TxMlDataset extends BaseDataSet {
 
-  @Autowired private EptsCommonDimension eptsCommonDimension;
+  private EptsCommonDimension eptsCommonDimension;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
   private AgeDimensionCohortInterface ageDimensionCohort;
 
-  @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
+  private EptsGeneralIndicator eptsGeneralIndicator;
 
-  @Autowired private TxMlCohortQueries txMlCohortQueries;
+  private TxMlCohortQueries txMlCohortQueries;
+
+  @Autowired
+  public TxMlDataset(
+      EptsCommonDimension eptsCommonDimension,
+      EptsGeneralIndicator eptsGeneralIndicator,
+      TxMlCohortQueries txMlCohortQueries) {
+    this.eptsCommonDimension = eptsCommonDimension;
+    this.eptsGeneralIndicator = eptsGeneralIndicator;
+    this.txMlCohortQueries = txMlCohortQueries;
+  }
 
   public DataSetDefinition constructtxMlDataset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
