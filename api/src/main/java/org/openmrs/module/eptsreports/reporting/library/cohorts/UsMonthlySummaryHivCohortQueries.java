@@ -45,7 +45,7 @@ public class UsMonthlySummaryHivCohortQueries {
         hivMetadata.getRecordPreArtFlowConcept(),
         TimeModifier.ANY,
         SetComparator.IN,
-        Arrays.asList(hivMetadata.getPreArtEncounterType()),
+        Arrays.asList(hivMetadata.getPreArtBookEncounterType()),
         null);
   }
 
@@ -54,7 +54,7 @@ public class UsMonthlySummaryHivCohortQueries {
         hivMetadata.getRecordArtFlowConcept(),
         TimeModifier.FIRST,
         SetComparator.IN,
-        Arrays.asList(hivMetadata.getArtEncounterType()),
+        Arrays.asList(hivMetadata.getArtBookEncounterType()),
         null);
   }
 
@@ -75,7 +75,7 @@ public class UsMonthlySummaryHivCohortQueries {
     return getNewlyEnrolledInArtBookExcludingTransfers(artBook1, transferredFrom);
   }
 
-  public CohortDefinition getInPreArtEnrolledByTransfer() {
+  public CohortDefinition getInArtCareEnrolledByTransfer() {
     String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
     Mapped<CohortDefinition> inPreArtBooks = map(getRegisteredInPreArtBooks1and2(), mappings);
 
@@ -101,9 +101,9 @@ public class UsMonthlySummaryHivCohortQueries {
     return hivCohortQueries.getPatientsInArtCareTransferredOutToAnotherHealthFacility();
   }
 
-  public CohortDefinition getEnrolledInPreArtOrArt() {
+  public CohortDefinition getRegisteredInPreArtOrArtBooks() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("enrolledInPreArtOrArt");
+    cd.setName("registeredInPreArtOrArtBooks");
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
@@ -182,15 +182,15 @@ public class UsMonthlySummaryHivCohortQueries {
     return getEnrolledInArtBookAnd(inArtBook1, startedProphylaxis);
   }
 
-  public CohortDefinition getAbandonedPreArt() {
+  public CohortDefinition getAbandonedArtCare() {
     return hivCohortQueries.getPatientsInArtCareWhoAbandoned();
   }
 
-  public CohortDefinition getDeadDuringPreArt() {
+  public CohortDefinition getDeadDuringArtCare() {
     return hivCohortQueries.getPatientsInArtCareWhoDied();
   }
 
-  public CohortDefinition getInPreArtWhoInitiatedArt() {
+  public CohortDefinition getInArtCareWhoInitiatedArt() {
     return hivCohortQueries.getPatientsInArtCareWhoInitiatedArt();
   }
 
@@ -208,6 +208,7 @@ public class UsMonthlySummaryHivCohortQueries {
 
   public CohortDefinition getAbandonedArt() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("abandonedArt");
 
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -257,6 +258,7 @@ public class UsMonthlySummaryHivCohortQueries {
   private CohortDefinition getEnrolledByTransfer(
       Mapped<CohortDefinition> enrolled, Mapped<CohortDefinition> transferredFrom) {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("enrolledByTransfer");
 
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -280,6 +282,7 @@ public class UsMonthlySummaryHivCohortQueries {
   private CohortDefinition getEnrolledInArtBookAnd(
       Mapped<CohortDefinition> artBook, Mapped<CohortDefinition> toCompose) {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("enrolledInArtBookAnd");
 
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -289,10 +292,10 @@ public class UsMonthlySummaryHivCohortQueries {
         mapStraightThrough(
             hivCohortQueries.getPatientsInArtCareTransferredFromOtherHealthFacility());
 
-    CohortDefinition newInPreArt =
+    CohortDefinition newInArtCare =
         getNewlyEnrolledInArtBookExcludingTransfers(artBook, transferredFrom);
 
-    cd.addSearch("INSCRITOS", mapStraightThrough(newInPreArt));
+    cd.addSearch("INSCRITOS", mapStraightThrough(newInArtCare));
     cd.addSearch("COMPOSE", toCompose);
 
     cd.setCompositionString("INSCRITOS AND COMPOSE");
@@ -308,6 +311,7 @@ public class UsMonthlySummaryHivCohortQueries {
   private CohortDefinition getNewlyEnrolledInArtBookExcludingTransfers(
       Mapped<CohortDefinition> artBook, Mapped<CohortDefinition> transferredFrom) {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("newlyEnrolledInArtBookExcludingTransfers");
 
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
@@ -326,7 +330,7 @@ public class UsMonthlySummaryHivCohortQueries {
         hivMetadata.getRecordArtFlowConcept(),
         TimeModifier.ANY,
         SetComparator.IN,
-        Arrays.asList(hivMetadata.getArtEncounterType()),
+        Arrays.asList(hivMetadata.getArtBookEncounterType()),
         null);
   }
 
@@ -361,7 +365,7 @@ public class UsMonthlySummaryHivCohortQueries {
         hivMetadata.getRecordPreArtFlowConcept(),
         TimeModifier.ANY,
         SetComparator.IN,
-        Arrays.asList(hivMetadata.getPreArtEncounterType()),
+        Arrays.asList(hivMetadata.getPreArtBookEncounterType()),
         Arrays.asList(hivMetadata.getPreArtBook1Concept()));
   }
 
@@ -370,7 +374,7 @@ public class UsMonthlySummaryHivCohortQueries {
         hivMetadata.getRecordArtFlowConcept(),
         TimeModifier.FIRST,
         SetComparator.IN,
-        Arrays.asList(hivMetadata.getArtEncounterType()),
+        Arrays.asList(hivMetadata.getArtBookEncounterType()),
         Arrays.asList(hivMetadata.getArtBook1Concept()));
   }
 

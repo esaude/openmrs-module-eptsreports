@@ -52,7 +52,7 @@ public class SetupUSMonthlySummaryHivReport extends EptsDataExportManager {
     rd.setDescription(getDescription());
     rd.setParameters(usMonthlySummaryHivDataset.getParameters());
     CohortDefinition enrolledInPreArtOrArt =
-        usMonthlySummaryHivCohortQueries.getEnrolledInPreArtOrArt();
+        usMonthlySummaryHivCohortQueries.getRegisteredInPreArtOrArtBooks();
     rd.setBaseCohortDefinition(
         map(enrolledInPreArtOrArt, "onOrBefore=${endDate},location=${location}"));
     rd.addDataSetDefinition(

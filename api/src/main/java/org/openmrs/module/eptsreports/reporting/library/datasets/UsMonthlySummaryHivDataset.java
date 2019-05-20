@@ -351,7 +351,7 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
 
   private Mapped<CohortIndicator> getInitiatedArt() {
     String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE INICIARAM TARV";
-    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInPreArtWhoInitiatedArt();
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInArtCareWhoInitiatedArt();
     String mappings = "onOrBefore=${endDate},location=${location}";
     CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
     return mapStraightThrough(indicator);
@@ -359,7 +359,7 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
 
   private Mapped<CohortIndicator> getDeceasedDuringPreArt() {
     String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE OBITARAM";
-    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getDeadDuringPreArt();
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getDeadDuringArtCare();
     String mappings = "onOrBefore=${endDate},location=${location}";
     CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
     return mapStraightThrough(indicator);
@@ -367,7 +367,7 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
 
   private Mapped<CohortIndicator> getAbandoned() {
     String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE ABANDONARAM";
-    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getAbandonedPreArt();
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getAbandonedArtCare();
     String mappings = "onOrBefore=${endDate},location=${location}";
     CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
     return mapStraightThrough(indicator);
@@ -384,7 +384,7 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
   private Mapped<CohortIndicator> getEnrolledByTransfer() {
     String name =
         "NUMERO DE PACIENTES PRE-TARV REGISTADOS NO LIVRO 1 E 2 TRANSFERIDOS DE NUM PERIODO";
-    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInPreArtEnrolledByTransfer();
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInArtCareEnrolledByTransfer();
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
     CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
     return mapStraightThrough(indicator);

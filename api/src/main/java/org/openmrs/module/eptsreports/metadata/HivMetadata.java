@@ -302,14 +302,14 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   // encounter type 32
-  public EncounterType getPreArtEncounterType() {
+  public EncounterType getPreArtBookEncounterType() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.preArtEncounterTypeUuid");
     return getEncounterType(uuid);
   }
 
   // encounter type 33
-  public EncounterType getArtEncounterType() {
+  public EncounterType getArtBookEncounterType() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.ArtEncounterTypeUuid");
     return getEncounterType(uuid);
