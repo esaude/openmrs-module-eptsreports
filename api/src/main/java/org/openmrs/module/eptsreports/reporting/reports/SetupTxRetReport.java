@@ -6,11 +6,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxRetDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ import org.springframework.stereotype.Component;
 public class SetupTxRetReport extends EptsDataExportManager {
 
   @Autowired private TxRetDataset txRetDataset;
+
+  @Autowired private GenericCohortQueries genericCohortQueries;
 
   @Override
   public String getExcelDesignUuid() {
@@ -57,6 +61,10 @@ public class SetupTxRetReport extends EptsDataExportManager {
     rd.addParameter(new Parameter("endDate", "Data Final", Date.class));
     rd.addParameter(new Parameter("location", "Location", Location.class));
     rd.addParameter(new Parameter("months", "Número de Meses (12, 24, 36)", Integer.class));
+    // add a base cohort to the report
+    rd.setBaseCohortDefinition(
+        genericCohortQueries.getBaseCohort(),
+        ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
     rd.addDataSetDefinition("R", Mapped.mapStraightThrough(txRetDataset.constructTxRetDataset()));
 
     return rd;

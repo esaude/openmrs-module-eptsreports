@@ -25,6 +25,7 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,23 +46,21 @@ public class TxRetDataset extends BaseDataSet {
 
   @Autowired private TxRetDimensionCohort txRetDimensionCohort;
 
-  private CohortIndicator cohortIndicator(CohortDefinition cd, String mappings) {
+  private CohortIndicator cohortIndicator(CohortDefinition cd, String mapping) {
     CohortIndicator cohortIndicator =
-        eptsGeneralIndicator.getIndicator("NUMERATOR", EptsReportUtils.map(cd, mappings));
+        eptsGeneralIndicator.getIndicator(cd.getName(), EptsReportUtils.map(cd, mapping));
     cohortIndicator.addParameter(new Parameter("months", "Months", Integer.class));
     return cohortIndicator;
   }
 
   public DataSetDefinition constructTxRetDataset() {
     String mappings =
-        "startDate=${startDate},endDate=${endDate},location=${location},months={$months}";
+        "startDate=${startDate},endDate=${endDate},location=${location},months=${months}";
     String mappings12MonthsBefore =
-        "startDate=${startDate-12m},endDate=${endDate-12m},location=${location},months={$months}";
+        "startDate=${startDate-12m},endDate=${endDate-12m},location=${location},months=${months}";
     CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
     dataSetDefinition.setName("TX_Ret Data Set");
     dataSetDefinition.addParameters(getParameters());
-    CohortDefinition numerator = txRetCohortQueries.inCourtForTwelveMonths();
-    CohortDefinition denominator = txRetCohortQueries.courtNotTransferredTwelveMonths();
     dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dataSetDefinition.addDimension(
         "age",
@@ -78,29 +77,28 @@ public class TxRetDataset extends BaseDataSet {
             txRetDimensionCohort.pregnantOrBreastFeeding(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    dataSetDefinition.addColumn(
-        "T04SA-ALL",
-        "TX_RET: Numerator total",
+    Mapped<CohortIndicator> numerator =
         EptsReportUtils.map(
-            cohortIndicator(numerator, mappings12MonthsBefore), mappings12MonthsBefore),
-        "");
+            cohortIndicator(txRetCohortQueries.inCourtForTwelveMonths(), mappings),
+            mappings12MonthsBefore);
+    dataSetDefinition.addColumn("T04SA-ALL", "TX_RET: Numerator total", numerator, "");
     addRow(
         dataSetDefinition,
         "T04SA",
         "TX_RET Numerator (inCourtForTwelveMonths)",
-        EptsReportUtils.map(cohortIndicator(numerator, mappings), mappings),
+        numerator,
         dissagregations());
-    dataSetDefinition.addColumn(
-        "T04SI-ALL",
-        "TX_RET: Denominator total",
+
+    Mapped<CohortIndicator> denominator =
         EptsReportUtils.map(
-            cohortIndicator(denominator, mappings12MonthsBefore), mappings12MonthsBefore),
-        "");
+            cohortIndicator(txRetCohortQueries.courtNotTransferredTwelveMonths(), mappings),
+            mappings12MonthsBefore);
+    dataSetDefinition.addColumn("T04SI-ALL", "TX_RET: Denominator total", denominator, "");
     addRow(
         dataSetDefinition,
         "T04SI",
         "TX_RET Denominator (courtNotTransferredTwelveMonths)",
-        EptsReportUtils.map(cohortIndicator(denominator, mappings), mappings),
+        denominator,
         dissagregations());
     dataSetDefinition.addParameter(
         new Parameter("months", "Número de Meses (12, 24, 36)", Integer.class));
