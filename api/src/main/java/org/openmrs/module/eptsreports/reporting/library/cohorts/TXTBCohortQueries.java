@@ -26,15 +26,29 @@ import org.springframework.stereotype.Component;
 @Component
 public class TXTBCohortQueries {
 
-  @Autowired private TbMetadata tbMetadata;
+  private TbMetadata tbMetadata;
 
-  @Autowired private HivMetadata hivMetadata;
+  private HivMetadata hivMetadata;
 
-  @Autowired private CommonMetadata commonMetadata;
+  private CommonMetadata commonMetadata;
 
-  @Autowired private GenericCohortQueries genericCohortQueries;
+  private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private HivCohortQueries hivCohortQueries;
+  private HivCohortQueries hivCohortQueries;
+
+  @Autowired
+  public TXTBCohortQueries(
+      TbMetadata tbMetadata,
+      HivMetadata hivMetadata,
+      CommonMetadata commonMetadata,
+      GenericCohortQueries genericCohortQueries,
+      HivCohortQueries hivCohortQueries) {
+    this.tbMetadata = tbMetadata;
+    this.hivMetadata = hivMetadata;
+    this.commonMetadata = commonMetadata;
+    this.genericCohortQueries = genericCohortQueries;
+    this.hivCohortQueries = hivCohortQueries;
+  }
 
   private String generalParameterMapping =
       "startDate=${startDate},endDate=${endDate},location=${location}";

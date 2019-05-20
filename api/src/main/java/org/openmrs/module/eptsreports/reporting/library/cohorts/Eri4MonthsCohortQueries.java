@@ -30,11 +30,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class Eri4MonthsCohortQueries {
 
-  @Autowired private HivMetadata hivMetadata;
+  private HivMetadata hivMetadata;
 
-  @Autowired private GenericCohortQueries genericCohortQueries;
+  private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private EriCohortQueries eriCohortQueries;
+  private EriCohortQueries eriCohortQueries;
+
+  @Autowired
+  public Eri4MonthsCohortQueries(
+      HivMetadata hivMetadata,
+      GenericCohortQueries genericCohortQueries,
+      EriCohortQueries eriCohortQueries) {
+    this.hivMetadata = hivMetadata;
+    this.genericCohortQueries = genericCohortQueries;
+    this.eriCohortQueries = eriCohortQueries;
+  }
 
   /**
    * C Get all patients who initiated treatment and had a drug pick up or had a consultation between

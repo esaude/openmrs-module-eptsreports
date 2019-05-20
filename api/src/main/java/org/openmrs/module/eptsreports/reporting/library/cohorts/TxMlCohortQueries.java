@@ -15,9 +15,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class TxMlCohortQueries {
 
-  @Autowired private HivMetadata hivMetadata;
+  private HivMetadata hivMetadata;
 
-  @Autowired private GenericCohortQueries genericCohortQueries;
+  private GenericCohortQueries genericCohortQueries;
+
+  @Autowired
+  public TxMlCohortQueries(HivMetadata hivMetadata, GenericCohortQueries genericCohortQueries) {
+    this.hivMetadata = hivMetadata;
+    this.genericCohortQueries = genericCohortQueries;
+  }
 
   // a
   public CohortDefinition getAllPatientsWhoMissedNextAppointment() {
