@@ -7,6 +7,7 @@ import static org.openmrs.module.reporting.evaluation.parameter.Mapped.noMapping
 import java.util.Arrays;
 import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.UsMonthlySummaryHivCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -15,6 +16,7 @@ import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,6 +28,10 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
 
   @Autowired private UsMonthlySummaryHivCohortQueries usMonthlySummaryHivCohortQueries;
 
+  @Autowired
+  @Qualifier("commonAgeDimensionCohort")
+  private AgeDimensionCohortInterface ageDimensionCohort;
+
   public DataSetDefinition constructUsMonthlySummaryHivDataset() {
     CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
     dataSetDefinition.setName("US Monthly Summary HIV Data Set");
@@ -33,7 +39,7 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
 
     dataSetDefinition.addDimension("gender", noMappings(eptsCommonDimension.gender()));
     dataSetDefinition.addDimension(
-        "age", map(eptsCommonDimension.getUsMonthlySummaryHivAges(), "effectiveDate=${endDate}"));
+        "age", map(eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
 
     addRow(
         dataSetDefinition,
@@ -409,9 +415,9 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
 
   private List<ColumnParameters> getColumnParameters() {
     return Arrays.asList(
-        new ColumnParameters("Female under 15", "Female under 15", "gender=F|age=0-14", "F014"),
+        new ColumnParameters("Female under 15", "Female under 15", "gender=F|age=<15", "F014"),
         new ColumnParameters("Female above 15", "Female 15 or above", "gender=F|age=15+", "F15"),
-        new ColumnParameters("Male under 15", "Male under 15", "gender=M|age=0-14", "M014"),
+        new ColumnParameters("Male under 15", "Male under 15", "gender=M|age=<15", "M014"),
         new ColumnParameters("Male above 15", "Male 15 or above", "gender=M|age=15+", "M15"));
   }
 }
