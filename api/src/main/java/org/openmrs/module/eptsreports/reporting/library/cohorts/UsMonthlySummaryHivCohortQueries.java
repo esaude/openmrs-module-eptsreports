@@ -40,7 +40,7 @@ public class UsMonthlySummaryHivCohortQueries {
 
   @Autowired private TbMetadata tbMetadata;
 
-  public CohortDefinition getRegisteredInPreArtBooks1and2() {
+  public CohortDefinition getRegisteredInPreArtBooks() {
     return genericCohortQueries.hasCodedObs(
         hivMetadata.getRecordPreArtFlowConcept(),
         TimeModifier.ANY,
@@ -49,7 +49,7 @@ public class UsMonthlySummaryHivCohortQueries {
         null);
   }
 
-  public CohortDefinition getRegisteredInArtBooks1and2() {
+  public CohortDefinition getRegisteredInArtBooks() {
     return genericCohortQueries.hasCodedObs(
         hivMetadata.getRecordArtFlowConcept(),
         TimeModifier.FIRST,
@@ -58,12 +58,12 @@ public class UsMonthlySummaryHivCohortQueries {
         null);
   }
 
-  public CohortDefinition getNewlyEnrolledInArtBooks1and2() {
+  public CohortDefinition getNewlyEnrolledInPreArtBooks() {
     String mappings1 = "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}";
     Mapped<CohortDefinition> transferredFrom =
         map(hivCohortQueries.getPatientsInArtCareTransferredFromOtherHealthFacility(), mappings1);
     String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
-    Mapped<CohortDefinition> preArtBooks1And2 = map(getRegisteredInPreArtBooks1and2(), mappings);
+    Mapped<CohortDefinition> preArtBooks1And2 = map(getRegisteredInPreArtBooks(), mappings);
     return getNewlyEnrolledInArtBookExcludingTransfers(preArtBooks1And2, transferredFrom);
   }
 
@@ -77,7 +77,7 @@ public class UsMonthlySummaryHivCohortQueries {
 
   public CohortDefinition getInArtCareEnrolledByTransfer() {
     String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
-    Mapped<CohortDefinition> inPreArtBooks = map(getRegisteredInPreArtBooks1and2(), mappings);
+    Mapped<CohortDefinition> inPreArtBooks = map(getRegisteredInPreArtBooks(), mappings);
 
     CohortDefinition transferredFrom =
         hivCohortQueries.getPatientsInArtCareTransferredFromOtherHealthFacility();
@@ -89,7 +89,7 @@ public class UsMonthlySummaryHivCohortQueries {
 
   public CohortDefinition getInArtEnrolledByTransfer() {
     String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
-    Mapped<CohortDefinition> inArtBooks = map(getRegisteredInArtBooks1and2(), mappings);
+    Mapped<CohortDefinition> inArtBooks = map(getRegisteredInArtBooks(), mappings);
 
     CohortDefinition transferredFrom =
         hivCohortQueries.getPatientsTransferredFromOtherHealthFacility();
@@ -109,7 +109,7 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     String mappings = "onOrBefore=${onOrBefore},locationList=${location}";
-    cd.addSearch("LIVROPRETARV", map(getRegisteredInPreArtBooks1and2(), mappings));
+    cd.addSearch("LIVROPRETARV", map(getRegisteredInPreArtBooks(), mappings));
     cd.addSearch("LIVROTARV", map(getRegisteredInArt(), mappings));
 
     cd.setCompositionString("LIVROPRETARV OR LIVROTARV");

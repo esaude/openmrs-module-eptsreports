@@ -299,7 +299,7 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
 
   private Mapped<CohortIndicator> getRegisteredInPArtBooks1and2DuringReportingPeriod() {
     String name = "NUMERO DE PACIENTES REGISTADOS NOS LIVROS 1 E 2 TARV NUM PERIODO";
-    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getRegisteredInArtBooks1and2();
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getRegisteredInArtBooks();
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
     CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
     return mapStraightThrough(indicator);
@@ -308,7 +308,7 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
   private Mapped<CohortIndicator> getRegisteredInArtBooks1and2ByEndOfPreviousMonth() {
     String name =
         "NUMERO CUMULATIVO DE PACIENTES TARV REGISTADOS NOS LIVROS 1 E 2 ATE O FIM DE UM PERIODO";
-    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getRegisteredInArtBooks1and2();
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getRegisteredInArtBooks();
     String mappings = "onOrBefore=${startDate-1d},locationList=${location}";
     CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
     return mapStraightThrough(indicator);
@@ -391,7 +391,7 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
 
   private Mapped<CohortIndicator> getNewlyEnrolled() {
     String name = "NUMERO DE NOVOS PACIENTES PRE-TARV REGISTADOS NO LIVRO 1 NUM PERIODO";
-    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getNewlyEnrolledInArtBooks1and2();
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getNewlyEnrolledInPreArtBooks();
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
     CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
     return mapStraightThrough(indicator);
@@ -399,7 +399,7 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
 
   private Mapped<CohortIndicator> getRegisteredInPreArtBooks1and2ByEndOfPreviousMonth() {
     String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV REGISTADOS ATE O FIM DE UM PERIODO";
-    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getRegisteredInPreArtBooks1and2();
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getRegisteredInPreArtBooks();
     String mappings = "onOrBefore=${startDate-1d},locationList=${location}";
     CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
     return mapStraightThrough(indicator);
@@ -407,7 +407,7 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
 
   private Mapped<CohortIndicator> getRegisteredInPreArtBooks1and2DuringReportingPeriod() {
     String name = "NUMERO DE PACIENTES PRE-TARV REGISTADOS NO LIVRO 1 E 2 NUM PERIODO";
-    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getRegisteredInPreArtBooks1and2();
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getRegisteredInPreArtBooks();
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
     CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
     return mapStraightThrough(indicator);

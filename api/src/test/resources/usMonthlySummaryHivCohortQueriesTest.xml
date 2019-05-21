@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+	License, v. 2.0. If a copy of the MPL was not distributed with this file,
+	You can obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed
+	under the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+	Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+	graphic logo is a trademark of OpenMRS Inc. -->
+<dataset>
+
+    <person person_id="1001" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="37ee85cb-3be7-45f8-905d-bfaf085a942e"/>
+
+    <person person_id="1002" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="f5c7f4f0-cb07-45a1-a920-e2eab775f33a"/>
+
+    <patient patient_id="1001" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+    <patient patient_id="1002" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+    <global_property property="eptsreports.recordPreArtFlowConceptUuid"
+                     property_value="3c648ee6-1702-4eea-b709-aa007f221f57"
+                     description="UUID for the FLUXO REGISTO PRE-TARV concept"
+                     uuid="25a9f568-7d4f-4496-b372-939950af7ddc"/>
+
+    <global_property property="eptsreports.preArtEncounterTypeUuid"
+                     property_value="bc30cbe1-85b4-459f-acca-cffc4041a3b8"
+                     description="UUID for the S.TARV: LIVRO PRE-TARV encounter type"
+                     uuid="33761a04-6db9-4d17-a5fa-b0ea2bba81ac"/>
+
+    <global_property property="eptsreports.recordArtFlowConceptUuid"
+                     property_value="20d186bd-9e7f-490f-b5cd-ac3c282cef7e"
+                     description="UUID for the FLUXO REGISTO TARV concept" uuid="623239af-1a54-4a40-bafe-29f9b36375d7"/>
+
+    <global_property property="eptsreports.artEncounterTypeUuid" property_value="15915fa8-3d94-430b-9adb-14ec806a8ff2"
+                     description="UUID for the S.TARV: LIVRO TARV encounter type"
+                     uuid="b2631a2f-a985-4807-be7a-03c8d0942259"/>
+
+    <global_property property="eptsreports.artBook1ConceptUuid" property_value="cf5969f2-ab91-4c88-9d48-81b1970eb741"
+                     description="UUID for the BOOK 1 ART concept" uuid="e353415a-7f73-464d-b8f1-229dcd864333"/>
+
+    <concept concept_id="6263" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1"
+             date_created="2012-02-27 11:30:21" uuid="3c648ee6-1702-4eea-b709-aa007f221f57"/>
+
+    <concept concept_id="6259" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2012-02-27 10:52:59" uuid="384750e6-d201-488f-948a-93dc616124b4"/>
+
+    <concept concept_id="6260" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2012-02-27 10:57:45" uuid="cf95d9c7-74a5-4509-bcee-cdd6f9e852b4"/>
+
+    <concept concept_id="6264" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1"
+             date_created="2012-02-27 11:47:04" uuid="20d186bd-9e7f-490f-b5cd-ac3c282cef7e"/>
+
+    <concept concept_id="6261" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2012-02-27 11:08:20" uuid="cf5969f2-ab91-4c88-9d48-81b1970eb741"/>
+
+    <concept concept_id="6262" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2012-02-27 11:11:45" uuid="2666d4f1-8661-4153-a5a0-b2b0384028f4"/>
+
+    <encounter_type encounter_type_id="32" name="STARV: LIVRO PRE-TARV"
+                    description="Representao livro de registo PRE-TARV" creator="1" date_created="2012-02-29 17:05:14"
+                    retired="0" uuid="bc30cbe1-85b4-459f-acca-cffc4041a3b8"/>
+
+    <encounter_type encounter_type_id="33" name="S.TARV: LIVRO TARV" description="Representa o livro de registo TARV"
+                    creator="1" date_created="2012-02-29 17:05:40" retired="0"
+                    uuid="15915fa8-3d94-430b-9adb-14ec806a8ff2"/>
+
+    <encounter encounter_id="32672" encounter_type="32" patient_id="2" encounter_datetime="2013-06-17 00:00:00"
+               creator="1" date_created="2013-06-19 12:55:48" voided="0"
+               uuid="d012e4e6-05ff-4a1c-8896-7fd705f0e4e1"/>
+
+    <encounter encounter_id="32673" encounter_type="32" patient_id="6" encounter_datetime="2013-06-17 00:00:00"
+               creator="1" date_created="2013-06-19 12:55:48" voided="0"
+               uuid="053c6742-424f-4036-9a2d-1e1f7598a124"/>
+
+    <encounter encounter_id="32674" encounter_type="32" patient_id="7" encounter_datetime="2013-06-17 00:00:00"
+               creator="1" date_created="2013-06-19 12:55:48" voided="0"
+               uuid="cd33857e-c11b-4eb5-8c14-e84a8315958d"/>
+
+    <encounter encounter_id="32884" encounter_type="33" patient_id="1001"
+               encounter_datetime="2012-03-29 00:00:00" creator="1" date_created="2013-06-24 11:45:17" voided="0"
+               uuid="39a5ee29-47cf-4e32-a652-3e61b387fa75"/>
+
+    <encounter encounter_id="32885" encounter_type="33" patient_id="1002"
+               encounter_datetime="2012-03-29 00:00:00" creator="1" date_created="2013-06-24 11:45:17" voided="0"
+               uuid="5b24eb56-4d79-4200-a4b3-99859df1eb14"/>
+
+    <encounter encounter_id="32643" encounter_type="33" patient_id="8"
+               encounter_datetime="2013-05-03 00:00:00" creator="1" date_created="2013-06-19 10:03:01" voided="0"
+               uuid="07330846-d879-4930-84b3-7dc367af0bb3"/>
+
+    <obs obs_id="274087" person_id="2" concept_id="6263" encounter_id="32672" obs_datetime="2013-06-17 00:00:00"
+         value_coded="6259" creator="1" date_created="2013-06-19 12:55:48" voided="0"
+         uuid="71d82d79-429d-4fbd-b05d-2e59e2b255b6"/>
+
+    <obs obs_id="274088" person_id="6" concept_id="6263" encounter_id="32673" obs_datetime="2013-06-17 00:00:00"
+         value_coded="6260" creator="1" date_created="2013-06-19 12:55:48" voided="0"
+         uuid="28297084-dd14-4a4c-9e85-4b0bf149795b"/>
+
+    <obs obs_id="274089" person_id="7" concept_id="6263" encounter_id="32674" obs_datetime="2013-06-17 00:00:00"
+         creator="1" date_created="2013-06-19 12:55:48" voided="0"
+         uuid="20134469-bfe5-46c5-aae3-96a4546c0a8e"/>
+
+    <obs obs_id="276193" person_id="1001" concept_id="6264" encounter_id="32884" obs_datetime="2012-03-29 00:00:00"
+         value_coded="6261" creator="1" date_created="2013-06-24 11:45:17" voided="0"
+         uuid="d49c86e7-6aa3-41a2-b801-a7e1315c3195"/>
+
+    <obs obs_id="273788" person_id="8" concept_id="6264" encounter_id="32643" obs_datetime="2013-05-03 00:00:00"
+         value_coded="6261" creator="1" date_created="2013-06-19 10:03:01" voided="0"
+         uuid="c0a0d917-ea43-443c-8924-31fbd88f2410"/>
+
+    <obs obs_id="276194" person_id="1002" concept_id="6264" encounter_id="32885" obs_datetime="2012-03-29 00:00:00"
+         creator="1" date_created="2013-06-24 11:45:17" voided="0" uuid="827ab8e4-6efd-4f3a-b7fb-db1c96def6e5"/>
+
+
+</dataset>
