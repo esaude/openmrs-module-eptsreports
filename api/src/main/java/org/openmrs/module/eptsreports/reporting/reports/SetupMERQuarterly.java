@@ -104,7 +104,7 @@ public class SetupMERQuarterly extends EptsDataExportManager {
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new ReportDesignConstructionException(e);
     }
 
     return Arrays.asList(reportDesign);

@@ -26,7 +26,7 @@ public class ProgramsMetadata extends CommonMetadata {
       }
     }
     if (program == null) {
-      throw new MetadataLookupException("Unable to find program using key: " + lookup);
+      throw new ConfigurableMetadataLookupException("Unable to find program using key: " + lookup);
     }
 
     return program;

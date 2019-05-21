@@ -474,4 +474,24 @@ public class EptsCalculationUtilsTest extends PowerMockBaseContextTest {
         EptsCalculationUtils.patientsThatPass(
             map, null, CalculationWithResultFinder.DATE_OUTSIDE, null));
   }
+
+  @Test
+  public void daysSinceShouldRightlyEvaluateDaysBetweenTwoDates() {
+    Assert.assertEquals(
+        2,
+        EptsCalculationUtils.daysSince(
+            testsHelper.getDate("2019-02-01 00:00:00.0"),
+            testsHelper.getDate("2019-02-03 00:00:00.0")));
+    Assert.assertEquals(
+        0,
+        EptsCalculationUtils.daysSince(
+            testsHelper.getDate("2019-02-01 00:00:00.0"),
+            testsHelper.getDate("2019-02-01 00:00:00.0")));
+    // order arguments doesn't matter
+    Assert.assertEquals(
+        9,
+        EptsCalculationUtils.daysSince(
+            testsHelper.getDate("2019-02-10 00:00:00.0"),
+            testsHelper.getDate("2019-02-01 00:00:00.0")));
+  }
 }

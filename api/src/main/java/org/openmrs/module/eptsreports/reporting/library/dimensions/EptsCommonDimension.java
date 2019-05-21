@@ -54,8 +54,8 @@ public class EptsCommonDimension {
   public CohortDefinitionDimension gender() {
     CohortDefinitionDimension dim = new CohortDefinitionDimension();
     dim.setName("gender");
-    dim.addCohortDefinition("M", EptsReportUtils.map(genderCohortQueries.MaleCohort(), ""));
-    dim.addCohortDefinition("F", EptsReportUtils.map(genderCohortQueries.FemaleCohort(), ""));
+    dim.addCohortDefinition("M", EptsReportUtils.map(genderCohortQueries.maleCohort(), ""));
+    dim.addCohortDefinition("F", EptsReportUtils.map(genderCohortQueries.femaleCohort(), ""));
     return dim;
   }
 

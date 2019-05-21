@@ -9,8 +9,10 @@ PEPFAR reports for EPTS project in Mozambique
 ## Prerequisites
 
 1.  [Install Java and Maven](https://wiki.openmrs.org/display/docs/OpenMRS+SDK#OpenMRSSDK-Installation)
+
 2.  Install git
     -   `sudo apt-get install git`
+
 3.  To setup the OpenMRS SDK, you just need to open up a terminal/console and enter:
     -   `mvn org.openmrs.maven.plugins:openmrs-sdk-maven-plugin:setup-sdk`
 
@@ -56,7 +58,7 @@ simply restart OpenMRS/tomcat and the module will be loaded and started.
 | _Tx_Pvls_    | Percentage of ART patients with a viral load result documented in the medical record and/or laboratory information systems (LIS) within the past 12 months with a suppressed viral load (&lt;1000 copies/ml). |
 | _Tx_Curr_    | Number of adults and children currently receiving antiretroviral therapy (ART). New spec using 30 day period                                                                                                  |
 | _Tx_Curr2.1_ | Number of adults and children currently receiving antiretroviral therapy (ART). Using old spec using 60 day period                                                                                            |
-| _Tx_New_     | Number of adults and children newly enrolled on antiretroviral therapy (ART).                                                                                                                                 |gi
+| _Tx_New_     | Number of adults and children newly enrolled on antiretroviral therapy (ART).                                                                                                                                 |
 | _IM-ER2_     | Implementation of PEPFAR Early Retention Indicators - 2 months                                                                                                                                                |
 | _IM-ER4_     | Implementation of PEPFAR Early Retention Indicators - 4 months                                                                                                                                                |
 | _TB_PREV_    | Indicator reports the proportion of ART patients who completed a standard course of TB preventive treatment within the semiannual reporting period.                                                           |

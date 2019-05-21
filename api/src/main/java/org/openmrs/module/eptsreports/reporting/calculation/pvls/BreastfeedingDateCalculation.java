@@ -111,50 +111,58 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
             context);
 
     for (Integer pId : femaleCohort) {
-
-      Date resultantDate = null;
-
       Obs lastVlObs = EptsCalculationUtils.resultForPatient(lastVl, pId);
-
-      if (lastVlObs != null && lastVlObs.getObsDatetime() != null) {
-        Date lastVlDate = lastVlObs.getObsDatetime();
-
-        ListResult patientResult = (ListResult) patientStateMap.get(pId);
-
-        Obs lactattingObs = EptsCalculationUtils.resultForPatient(lactatingMap, pId);
-        Obs criteriaHivObs = EptsCalculationUtils.resultForPatient(criteriaHivStartMap, pId);
-        ListResult deliveryDateResult = (ListResult) deliveryDateMap.get(pId);
-        List<Obs> deliveryDateObsList =
-            EptsCalculationUtils.extractResultValues(deliveryDateResult);
-        List<PatientState> patientStateList =
-            EptsCalculationUtils.extractResultValues(patientResult);
-
-        // get a list of all eligible dates
-        List<Date> allEligibleDates =
-            Arrays.asList(
-                this.isLactating(lastVlDate, lactattingObs),
-                this.hasHIVStartDate(lastVlDate, criteriaHivObs),
-                this.hasDeliveryDate(lastVlDate, deliveryDateObsList),
-                this.isInBreastFeedingInProgram(lastVlDate, patientStateList));
-
-        // have a resultant list of dates
-        List<Date> resultantList = new ArrayList<>();
-        if (allEligibleDates.size() > 0) {
-          for (Date breastfeedingDate : allEligibleDates) {
-            if (breastfeedingDate != null) {
-              resultantList.add(breastfeedingDate);
-            }
-          }
-        }
-        if (resultantList.size() > 0) {
-          Collections.sort(resultantList);
-          // then pick the most recent entry, which is the last one
-          resultantDate = resultantList.get(resultantList.size() - 1);
-        }
-      }
+      Date resultantDate =
+          getResultantDate(
+              lactatingMap, criteriaHivStartMap, deliveryDateMap, patientStateMap, pId, lastVlObs);
       resultMap.put(pId, new SimpleResult(resultantDate, this));
     }
     return resultMap;
+  }
+
+  private Date getResultantDate(
+      CalculationResultMap lactatingMap,
+      CalculationResultMap criteriaHivStartMap,
+      CalculationResultMap deliveryDateMap,
+      CalculationResultMap patientStateMap,
+      Integer pId,
+      Obs lastVlObs) {
+    Date resultantDate = null;
+    if (lastVlObs != null && lastVlObs.getObsDatetime() != null) {
+      Date lastVlDate = lastVlObs.getObsDatetime();
+
+      ListResult patientResult = (ListResult) patientStateMap.get(pId);
+
+      Obs lactattingObs = EptsCalculationUtils.resultForPatient(lactatingMap, pId);
+      Obs criteriaHivObs = EptsCalculationUtils.resultForPatient(criteriaHivStartMap, pId);
+      ListResult deliveryDateResult = (ListResult) deliveryDateMap.get(pId);
+      List<Obs> deliveryDateObsList = EptsCalculationUtils.extractResultValues(deliveryDateResult);
+      List<PatientState> patientStateList = EptsCalculationUtils.extractResultValues(patientResult);
+
+      // get a list of all eligible dates
+      List<Date> allEligibleDates =
+          Arrays.asList(
+              this.isLactating(lastVlDate, lactattingObs),
+              this.hasHIVStartDate(lastVlDate, criteriaHivObs),
+              this.hasDeliveryDate(lastVlDate, deliveryDateObsList),
+              this.isInBreastFeedingInProgram(lastVlDate, patientStateList));
+
+      // have a resultant list of dates
+      List<Date> resultantList = new ArrayList<>();
+      if (allEligibleDates.size() > 0) {
+        for (Date breastfeedingDate : allEligibleDates) {
+          if (breastfeedingDate != null) {
+            resultantList.add(breastfeedingDate);
+          }
+        }
+      }
+      if (resultantList.size() > 0) {
+        Collections.sort(resultantList);
+        // then pick the most recent entry, which is the last one
+        resultantDate = resultantList.get(resultantList.size() - 1);
+      }
+    }
+    return resultantDate;
   }
 
   private Date hasDeliveryDate(Date lastVlDate, List<Obs> deliveryDateObsList) {
