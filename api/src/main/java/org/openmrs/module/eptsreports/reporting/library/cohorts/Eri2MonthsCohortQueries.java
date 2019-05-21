@@ -26,11 +26,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class Eri2MonthsCohortQueries {
 
-  @Autowired private HivMetadata hivMetadata;
+  private HivMetadata hivMetadata;
 
-  @Autowired private GenericCohortQueries genericCohortQueries;
+  private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private EriCohortQueries eriCohortQueries;
+  private EriCohortQueries eriCohortQueries;
+
+  @Autowired
+  public Eri2MonthsCohortQueries(
+      HivMetadata hivMetadata,
+      GenericCohortQueries genericCohortQueries,
+      EriCohortQueries eriCohortQueries) {
+    this.hivMetadata = hivMetadata;
+    this.genericCohortQueries = genericCohortQueries;
+    this.eriCohortQueries = eriCohortQueries;
+  }
 
   /**
    * C

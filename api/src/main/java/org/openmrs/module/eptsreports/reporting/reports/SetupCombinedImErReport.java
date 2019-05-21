@@ -21,15 +21,29 @@ import org.springframework.stereotype.Component;
 @Component
 public class SetupCombinedImErReport extends EptsDataExportManager {
 
-  @Autowired private GenericCohortQueries genericCohortQueries;
+  private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private Eri2MonthsDataset eri2MonthsDataset;
+  private Eri2MonthsDataset eri2MonthsDataset;
 
-  @Autowired private Eri4MonthsDataset eri4MonthsDataset;
+  private Eri4MonthsDataset eri4MonthsDataset;
 
-  @Autowired private TxNewDataset txNewDataset;
+  private TxNewDataset txNewDataset;
 
-  @Autowired private TxCurrDataset txCurrDataset;
+  private TxCurrDataset txCurrDataset;
+
+  @Autowired
+  public SetupCombinedImErReport(
+      GenericCohortQueries genericCohortQueries,
+      Eri2MonthsDataset eri2MonthsDataset,
+      Eri4MonthsDataset eri4MonthsDataset,
+      TxNewDataset txNewDataset,
+      TxCurrDataset txCurrDataset) {
+    this.genericCohortQueries = genericCohortQueries;
+    this.eri2MonthsDataset = eri2MonthsDataset;
+    this.eri4MonthsDataset = eri4MonthsDataset;
+    this.txNewDataset = txNewDataset;
+    this.txCurrDataset = txCurrDataset;
+  }
 
   @Override
   public String getExcelDesignUuid() {

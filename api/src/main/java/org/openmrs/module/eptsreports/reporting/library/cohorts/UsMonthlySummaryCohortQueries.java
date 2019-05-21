@@ -12,7 +12,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UsMonthlySummaryCohortQueries {
-  @Autowired private GenericCohortQueries genericCohortQueries;
+  private GenericCohortQueries genericCohortQueries;
+
+  @Autowired
+  public UsMonthlySummaryCohortQueries(GenericCohortQueries genericCohortQueries) {
+    this.genericCohortQueries = genericCohortQueries;
+  }
 
   public CohortDefinition getPdfFormatAssetAtFinalDate() {
     return generatlSql(

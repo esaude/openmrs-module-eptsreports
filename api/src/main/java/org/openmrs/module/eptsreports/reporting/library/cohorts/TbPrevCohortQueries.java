@@ -32,9 +32,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class TbPrevCohortQueries {
 
-  @Autowired private HivMetadata hivMetadata;
+  private HivMetadata hivMetadata;
 
-  @Autowired private GenericCohortQueries genericCohortQueries;
+  private GenericCohortQueries genericCohortQueries;
+
+  @Autowired
+  public TbPrevCohortQueries(HivMetadata hivMetadata, GenericCohortQueries genericCohortQueries) {
+    this.hivMetadata = hivMetadata;
+    this.genericCohortQueries = genericCohortQueries;
+  }
 
   public CohortDefinition getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod() {
     Concept treatmentStartConcept = hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept();

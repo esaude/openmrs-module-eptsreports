@@ -24,11 +24,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class EriCohortQueries {
 
-  @Autowired private TxNewCohortQueries txNewCohortQueries;
+  private TxNewCohortQueries txNewCohortQueries;
 
-  @Autowired private HivMetadata hivMetadata;
+  private HivMetadata hivMetadata;
 
-  @Autowired private GenericCohortQueries genericCohortQueries;
+  private GenericCohortQueries genericCohortQueries;
+
+  @Autowired
+  public EriCohortQueries(
+      HivMetadata hivMetadata,
+      GenericCohortQueries genericCohortQueries,
+      TxNewCohortQueries txNewCohortQueries) {
+    this.hivMetadata = hivMetadata;
+    this.genericCohortQueries = genericCohortQueries;
+    this.txNewCohortQueries = txNewCohortQueries;
+  }
 
   /**
    * Get all patients who initiated ART 2 months from ART initiation less transfer ins return the

@@ -24,7 +24,12 @@ import org.springframework.stereotype.Repository;
 @Repository("eptsreports.EptsReportsDao")
 public class EptsReportsDao {
 
-  @Autowired private DbSessionFactory sessionFactory;
+  private DbSessionFactory sessionFactory;
+
+  @Autowired
+  public EptsReportsDao(DbSessionFactory sessionFactory) {
+    this.sessionFactory = sessionFactory;
+  }
 
   @SuppressWarnings("unchecked")
   public String getSerializedObjectByReportDesignUUID(String uuid) {

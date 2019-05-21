@@ -16,7 +16,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class SetupUSMonthlySummaryPDFReport extends EptsDataExportManager {
 
-  @Autowired private UsMonthlySummaryDataset usMonthlySummaryDataset;
+  private UsMonthlySummaryDataset usMonthlySummaryDataset;
+
+  @Autowired
+  public SetupUSMonthlySummaryPDFReport(UsMonthlySummaryDataset usMonthlySummaryDataset) {
+    this.usMonthlySummaryDataset = usMonthlySummaryDataset;
+  }
 
   @Override
   public String getExcelDesignUuid() {

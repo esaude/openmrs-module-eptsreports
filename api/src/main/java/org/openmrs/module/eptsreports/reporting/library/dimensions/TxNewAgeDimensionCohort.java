@@ -19,11 +19,13 @@ public class TxNewAgeDimensionCohort implements AgeDimensionCohortInterface {
 
   private GenericCohortQueries genericCohorts;
 
-  @Autowired private AgeCohortQueries ageCohortQueries;
+  private AgeCohortQueries ageCohortQueries;
 
   @Autowired
-  public TxNewAgeDimensionCohort(GenericCohortQueries genericCohorts) {
+  public TxNewAgeDimensionCohort(
+      GenericCohortQueries genericCohorts, AgeCohortQueries ageCohortQueries) {
     this.genericCohorts = genericCohorts;
+    this.ageCohortQueries = ageCohortQueries;
   }
 
   @Override

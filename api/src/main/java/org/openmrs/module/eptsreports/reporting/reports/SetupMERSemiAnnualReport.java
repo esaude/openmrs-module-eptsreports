@@ -20,13 +20,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class SetupMERSemiAnnualReport extends EptsDataExportManager {
 
-  @Autowired private TxMlDataset txMlDataset;
+  private TxMlDataset txMlDataset;
 
-  @Autowired private GenericCohortQueries genericCohortQueries;
+  private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private TxTBDataset txTBDataset;
+  private TxTBDataset txTBDataset;
 
-  @Autowired private TbPrevDataset tbPrevDataset;
+  private TbPrevDataset tbPrevDataset;
+
+  @Autowired
+  public SetupMERSemiAnnualReport(
+      TxMlDataset txMlDataset,
+      GenericCohortQueries genericCohortQueries,
+      TxTBDataset txTBDataset,
+      TbPrevDataset tbPrevDataset) {
+    this.txMlDataset = txMlDataset;
+    this.genericCohortQueries = genericCohortQueries;
+    this.txTBDataset = txTBDataset;
+    this.tbPrevDataset = tbPrevDataset;
+  }
 
   @Override
   public String getExcelDesignUuid() {

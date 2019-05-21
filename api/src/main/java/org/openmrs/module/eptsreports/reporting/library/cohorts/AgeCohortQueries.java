@@ -23,7 +23,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class AgeCohortQueries {
 
-  @Autowired private GenericCohortQueries genericCohortQueries;
+  private GenericCohortQueries genericCohortQueries;
+
+  public AgeCohortQueries() {}
+
+  @Autowired
+  public AgeCohortQueries(GenericCohortQueries genericCohortQueries) {
+    this.genericCohortQueries = genericCohortQueries;
+  }
 
   public CohortDefinition createXtoYAgeCohort(String name, Integer minAge, Integer maxAge) {
     AgeCohortDefinition xToYCohort = new AgeCohortDefinition();
