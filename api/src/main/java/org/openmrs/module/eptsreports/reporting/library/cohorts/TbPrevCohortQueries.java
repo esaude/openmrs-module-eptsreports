@@ -56,12 +56,12 @@ public class TbPrevCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     String query =
-        "select distinct obs.person_id from obs "
-            + "join encounter on encounter.encounter_id = obs.encounter_id "
-            + "where obs.concept_id = %s and obs.voided = false "
-            + "  and obs.value_datetime between :onOrAfter and :onOrBefore "
-            + "  and obs.location_id = :location and encounter.encounter_type in (%s) "
-            + "  and encounter.voided = false ";
+        "SELECT distinct obs.person_id FROM obs "
+            + "JOIN encounter ON encounter.encounter_id = obs.encounter_id "
+            + "WHERE obs.concept_id = %s AND obs.voided = false "
+            + "  AND obs.value_datetime IS NOT NULL AND obs.value_datetime BETWEEN :onOrAfter AND :onOrBefore "
+            + "  AND obs.location_id = :location AND encounter.encounter_type IN (%s) "
+            + "  AND encounter.voided = false ";
     cd.setQuery(String.format(query, treatmentStartConcept.getConceptId(), encounterTypesList));
     return cd;
   }
