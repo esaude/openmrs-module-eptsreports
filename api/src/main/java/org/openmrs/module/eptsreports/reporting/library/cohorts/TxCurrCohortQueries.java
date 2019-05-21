@@ -264,7 +264,7 @@ public class TxCurrCohortQueries {
     String query =
         "SELECT patient_id FROM (SELECT p.patient_id,max(encounter_datetime) encounter_datetime FROM patient p INNER JOIN encounter e on e.patient_id=p.patient_id WHERE p.voided=0 AND e.voided=0 AND e.encounter_type=%s"
             + " AND e.location_id=:location AND e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_frida INNER JOIN obs o on o.person_id=max_frida.patient_id WHERE max_frida.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id=%s"
-            + " AND o.location_id=:location AND datediff(:onOrBefore,o.value_datetime)>=:abandonmentDays";
+            + " AND o.location_id=:location AND o.value_datetime IS NOT NULL AND datediff(:onOrBefore,o.value_datetime)>=:abandonmentDays";
     definition.setQuery(
         String.format(
             query,
@@ -292,7 +292,7 @@ public class TxCurrCohortQueries {
             + "AND e.location_id=:location AND e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_mov "
             + "INNER JOIN obs o ON o.person_id=max_mov.patient_id "
             + "WHERE max_mov.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id=%d "
-            + "AND o.location_id=:location AND DATEDIFF(:onOrBefore,o.value_datetime)<:abandonmentDays";
+            + "AND o.location_id=:location AND o.value_datetime IS NOT NULL AND DATEDIFF(:onOrBefore,o.value_datetime)<:abandonmentDays";
     definition.setQuery(
         String.format(
             query,
@@ -319,7 +319,7 @@ public class TxCurrCohortQueries {
             + "AND ps.state=%d "
             + "AND ps.end_date is null AND ps.start_date<=:onOrBefore AND location_id=:location )abandono INNER JOIN ( SELECT max_frida.patient_id,max_frida.encounter_datetime,o.value_datetime FROM ( SELECT p.patient_id,max(encounter_datetime) encounter_datetime FROM patient p INNER JOIN encounter e ON e.patient_id=p.patient_id WHERE p.voided=0 AND e.voided=0 AND e.encounter_type=%d "
             + "AND e.location_id=:location AND e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_frida INNER JOIN obs o ON o.person_id=max_frida.patient_id WHERE max_frida.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id=%d "
-            + "AND o.location_id=:location ) ultimo_fila ON abandono.patient_id=ultimo_fila.patient_id WHERE datediff(:onOrBefore,ultimo_fila.value_datetime)<:abandonmentDays";
+            + "AND o.location_id=:location ) ultimo_fila ON abandono.patient_id=ultimo_fila.patient_id WHERE ultimo_fila.value_datetime IS NOT NULL AND datediff(:onOrBefore,ultimo_fila.value_datetime)<:abandonmentDays";
     definition.setQuery(
         String.format(
             query,
