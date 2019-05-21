@@ -118,7 +118,7 @@ public class Eri4MonthsQueries {
             + "INNER JOIN encounter e ON e.patient_id=p.patient_id WHERE p.voided=0 AND e.voided=0 "
             + "AND e.encounter_type in(%d) AND e.location_id=:location AND e.encounter_datetime<=:endDate GROUP BY p.patient_id ) max_frida "
             + "INNER JOIN obs o ON o.person_id=max_frida.patient_id WHERE max_frida.encounter_datetime=o.obs_datetime AND "
-            + "o.voided=0 AND o.concept_id=%d AND o.location_id=:location AND encounter_datetime BETWEEN "
+            + "o.voided=0 AND o.concept_id=%d AND o.location_id=:location AND o.value_datetime IS NOT NULL AND encounter_datetime BETWEEN "
             + ":startDate and :endDate "
             + ") final WHERE datediff(:endDate,final.value_datetime)>=%d";
     return String.format(
@@ -134,7 +134,7 @@ public class Eri4MonthsQueries {
             + "e.encounter_type in (%d, %d) AND e.location_id=:location AND e.encounter_datetime<=:endDate "
             + "GROUP BY p.patient_id ) max_mov INNER JOIN obs o ON o.person_id=max_mov.patient_id "
             + "WHERE max_mov.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id=%d"
-            + " AND o.location_id=:location "
+            + " AND o.location_id=:location AND o.value_datetime IS NOT NULL "
             + "AND encounter_datetime BETWEEN :startDate and :endDate "
             + ") final WHERE datediff(:endDate,final.value_datetime)>=%d";
     return String.format(

@@ -17,16 +17,16 @@ public class BreastfeedingQueries {
 
   public static String getPatientsWhoGaveBirthWithinReportingPeriod(
       int etvProgram, int patientState) {
-    return "select 	pg.patient_id"
-        + " from patient p"
-        + " inner join patient_program pg on p.patient_id=pg.patient_id"
-        + " inner join patient_state ps on pg.patient_program_id=ps.patient_program_id"
-        + " where pg.voided=0 and ps.voided=0 and p.voided=0 and"
+    return "SELECT 	pg.patient_id"
+        + " FROM patient p"
+        + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
+        + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id"
+        + " WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND"
         + " pg.program_id="
         + etvProgram
-        + " and ps.state="
+        + " AND ps.state="
         + patientState
-        + " and ps.end_date is null and"
-        + " ps.start_date between :startDate and :endDate and location_id=:location";
+        + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL AND"
+        + " ps.start_date BETWEEN :startDate AND :endDate AND location_id=:location";
   }
 }
