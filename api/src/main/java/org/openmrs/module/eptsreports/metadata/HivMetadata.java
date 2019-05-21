@@ -47,6 +47,20 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.returnVisitDateForArvDrugConceptUuid");
     return getConcept(uuid);
   }
+  // concept_id=6123
+  public Concept getDateOfHivDiagnosisConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.dateOfHIVDiagnosis");
+    return getConcept(uuid);
+  }
+
+  // concept_id=1190
+  public Concept getARVStartDate() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.historicalStartDateConceptUuid");
+    return getConcept(uuid);
+  }
 
   public Concept getARVPlanConcept() {
     String uuid =
@@ -177,7 +191,59 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.isoniazidUseConceptUuid");
     return getConcept(uuid);
   }
+  // concept_id=1695
+  public Concept getCD4AbsoluteOBSConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.cd4AbsoluteOBSUuid");
+    return getConcept(uuid);
+  }
 
+  // concept_id=6314
+  public Concept getCoucelingActivityConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.coucelingActivityTypeUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id=5356
+  public Concept getcurrentWhoHivStageConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.currentWhoHivStageUuid");
+    return getConcept(uuid);
+  }
+  // concept_id=1205
+  public Concept getWho2AdultStageConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.who2AdultStageUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id=1206
+  public Concept getWho3AdultStageConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.who3AdultStageUuid");
+    return getConcept(uuid);
+  }
+  // concept_id=1207
+  public Concept getWho4AdultStageConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.who4AdultStageUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id=5488
+  public Concept getAdherenceCoucelingConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.adherenceCounselingUuid");
+    return getConcept(uuid);
+  }
+  // concept_id=5497
+  public Concept getCD4AbsoluteConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.cd4AbsolutoUuid");
+    return getConcept(uuid);
+  }
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
@@ -224,7 +290,7 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.evaluationAndPrepForARTEncounterTypeUuid");
     return getEncounterType(uuid);
   }
-
+  // encounter_type 13
   public EncounterType getMisauLaboratorioEncounterType() {
     String uuid =
         Context.getAdministrationService()
