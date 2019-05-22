@@ -1,5 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Arrays;
+import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -12,9 +14,6 @@ import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.Date;
 
 @Component
 public class TXRetCohortQueries {
@@ -123,11 +122,10 @@ public class TXRetCohortQueries {
   }
 
   /** map startDate, endDate, location rightly when using this */
-  public CohortDefinition notEligibleToProphylaxiaWithIsoniazideForBeingRecentlyOnTbTreatment() {
+  public CohortDefinition pregnancyEnrolledInART() {
     return cohortDefinition(
         genericCohortQueries.generalSql(
-            "PACIENTES NÃO ELEGIVEIS A PROFILAXIA COM ISONIAZIDA POR ESTIVER EM TRATAMENTO DE TB RECENTEMENTE",
-            TXRetQueries.notEligibleToProphylaxiaWithIsoniazideForBeingRecentlyOnTbTreatment()));
+            "GRAVIDAS INSCRITAS NO SERVIÇO TARV", TXRetQueries.pregnancyEnrolledInART()));
   }
 
   /**
@@ -159,10 +157,15 @@ public class TXRetCohortQueries {
                 Arrays.asList(commonMetadata.getBreastfeeding())),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
     cd.addSearch(
+        "GRAVIDAS",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
+    cd.addSearch(
         "LACTANTEPROGRAMA",
         EptsReportUtils.map(
-            txNewCohortQueries.getPatientsWhoGaveBirthWithinReportingPeriod(),
-            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
+            infantsWhoGaveAwardsTwoYearsBehindReferenceDate(),
+            "startDate=${onOrAfter},location=${location}"));
     cd.addSearch("FEMININO", EptsReportUtils.map(genderCohorts.femaleCohort(), ""));
     cd.addSearch(
         "LACTANTE",
@@ -175,14 +178,8 @@ public class TXRetCohortQueries {
                 Arrays.asList(commonMetadata.getYesConcept())),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
 
-    cd.addSearch(
-        "GRAVIDAS",
-        EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
     String compositionString =
         "((DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA  OR LACTANTE) NOT GRAVIDAS) AND FEMININO";
-
     cd.setCompositionString(compositionString);
     return cd;
   }
@@ -295,5 +292,13 @@ public class TXRetCohortQueries {
   public CohortDefinition womenOnArtAbove50() {
     return cohortDefinition(
         genericCohortQueries.generalSql("womenOnArtAbove50", TXRetQueries.genderOnArtAbove50("F")));
+  }
+
+  /** map endDate, location rightly when using this */
+  public CohortDefinition infantsWhoGaveAwardsTwoYearsBehindReferenceDate() {
+    return cohortDefinition(
+        genericCohortQueries.generalSql(
+            "infantsWhoGaveAwardsTwoYearsBehindReferenceDate",
+            TXRetQueries.infantsWhoGaveAwardsTwoYearsBehindReferenceDate()));
   }
 }

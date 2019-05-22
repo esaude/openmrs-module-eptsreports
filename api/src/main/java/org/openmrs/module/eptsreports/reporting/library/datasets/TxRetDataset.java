@@ -14,6 +14,8 @@
 
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
+import java.util.Arrays;
+import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TXRetCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.TxRetDimensionCohort;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
@@ -26,9 +28,6 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Component
 public class TxRetDataset extends BaseDataSet {
@@ -68,17 +67,17 @@ public class TxRetDataset extends BaseDataSet {
         "pregnantOrBreastFeeding",
         EptsReportUtils.map(
             txRetDimensionCohort.pregnantOrBreastFeeding(),
-            "startDate=${startDate-24m+1d},endDate=${endDate-12m},location=${location}"));
+            "startDate=${endDate-24m+1d},endDate=${endDate-12m},location=${location}"));
     dataSetDefinition.addDimension(
         "pregnantOrBreastFeeding24",
         EptsReportUtils.map(
             txRetDimensionCohort.pregnantOrBreastFeeding(),
-            "startDate=${startDate-27m+1d},endDate=${endDate-24m},location=${location}"));
+            "startDate=${endDate-27m+1d},endDate=${endDate-24m},location=${location}"));
     dataSetDefinition.addDimension(
         "pregnantOrBreastFeeding36",
         EptsReportUtils.map(
             txRetDimensionCohort.pregnantOrBreastFeeding(),
-            "startDate=${startDate-39m+1d},endDate=${endDate-36m},location=${location}"));
+            "startDate=${endDate-39m+1d},endDate=${endDate-36m},location=${location}"));
 
     Mapped<CohortIndicator> numerator =
         EptsReportUtils.map(

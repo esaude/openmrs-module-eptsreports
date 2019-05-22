@@ -892,7 +892,7 @@ public class TXRetQueries {
           + "WHERE timestampdiff(YEAR, birthdate, data_inicio)>=1\n"
           + "  AND timestampdiff(YEAR, birthdate, data_inicio)<10";
 
-  private static String notEligibleToProphylaxiaWithIsoniazideForBeingRecentlyOnTbTreatment =
+  private static String pregnancyEnrolledInART =
       "SELECT p.patient_id\n"
           + "FROM patient p\n"
           + "INNER JOIN encounter e ON p.patient_id=e.patient_id\n"
@@ -1077,6 +1077,20 @@ public class TXRetQueries {
           + "WHERE timestampdiff(YEAR, birthdate, data_inicio)>=50\n"
           + "  AND gender='%s'";
 
+  private static String infantsWhoGaveAwardsTwoYearsBehindReferenceDate =
+      "SELECT pg.patient_id\n"
+          + "FROM patient p\n"
+          + "INNER JOIN patient_program pg ON p.patient_id=pg.patient_id\n"
+          + "INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id\n"
+          + "WHERE pg.voided=0\n"
+          + "  AND ps.voided=0\n"
+          + "  AND p.voided=0\n"
+          + "  AND pg.program_id=8\n"
+          + "  AND ps.state=27\n"
+          + "  AND ps.end_date IS NULL\n"
+          + "  AND ps.start_date BETWEEN date_add(:startDate, interval -2 YEAR) AND date_add(:startDate, interval -1 DAY)\n"
+          + "  AND location_id=:location";
+
   public static String obitoTwelveMonths() {
     return obito;
   }
@@ -1111,15 +1125,19 @@ public class TXRetQueries {
     return oneTo19WhoStartedTargetAtARTInitiation;
   }
 
-  public static String notEligibleToProphylaxiaWithIsoniazideForBeingRecentlyOnTbTreatment() {
-    return notEligibleToProphylaxiaWithIsoniazideForBeingRecentlyOnTbTreatment;
+  public static String pregnancyEnrolledInART() {
+    return pregnancyEnrolledInART;
   }
 
-  public static String genderOnArtXToY(String gender, Integer startingAge, Integer beforeAge) {
-    return String.format(genderOnArtXToY, startingAge, beforeAge + 1, gender);
+  public static String genderOnArtXToY(String gender, Integer minAge, Integer maxAge) {
+    return String.format(genderOnArtXToY, minAge, maxAge + 1, gender);
   }
 
   public static String genderOnArtAbove50(String gender) {
     return String.format(genderOnArtAbove50, gender);
+  }
+
+  public static String infantsWhoGaveAwardsTwoYearsBehindReferenceDate() {
+    return infantsWhoGaveAwardsTwoYearsBehindReferenceDate;
   }
 }
