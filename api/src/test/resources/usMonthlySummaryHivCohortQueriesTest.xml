@@ -15,10 +15,17 @@
             creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
             uuid="f5c7f4f0-cb07-45a1-a920-e2eab775f33a"/>
 
+    <person person_id="1003" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="e117f41a-cb35-4a35-b719-cd1e8428c0df"/>
+
     <patient patient_id="1001" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
              date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
 
     <patient patient_id="1002" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+    <patient patient_id="1003" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
              date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
 
     <global_property property="eptsreports.recordPreArtFlowConceptUuid"
@@ -42,6 +49,14 @@
     <global_property property="eptsreports.artBook1ConceptUuid" property_value="cf5969f2-ab91-4c88-9d48-81b1970eb741"
                      description="UUID for the BOOK 1 ART concept" uuid="e353415a-7f73-464d-b8f1-229dcd864333"/>
 
+    <global_property property="eptsreports.hivCareProgramUuid" property_value="7b2e4a0a-d4eb-4df7-be30-78ca4b28ca99"
+                     description="UUID for the Programa de seguimento e cuidado aos pacientes HIV+ program"
+                     uuid="5edc2d50-2fe1-4a4c-8ff0-db7b585dc023"/>
+
+    <global_property property="eptsreports.transferFromOtherFacilityConceptUuid"
+                     property_value="e1da7d3a-1d5f-11e0-b929-000c29ad1d07"
+                     description="UUID for the TRANSFERIDO DE concept" uuid="a03044bc-abc9-4e14-9041-1515f7ea2082"/>
+
     <concept concept_id="6263" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1"
              date_created="2012-02-27 11:30:21" uuid="3c648ee6-1702-4eea-b709-aa007f221f57"/>
 
@@ -60,6 +75,41 @@
     <concept concept_id="6262" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
              date_created="2012-02-27 11:11:45" uuid="2666d4f1-8661-4153-a5a0-b2b0384028f4"/>
 
+    <concept concept_id="1781" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2008-11-05 14:34:43" uuid="e1de7d54-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <concept concept_id="1369" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1"
+             date_created="2008-10-13 05:59:00" uuid="e1da7d3a-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <concept concept_id="6275" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2012-02-29 09:50:50" uuid="44f812e8-c4c0-40cd-aef3-6b1ef76d43e1"/>
+
+    <concept_name concept_id="6275" name="PRE-TARV" locale="pt" creator="1" date_created="2012-02-29 09:50:50"
+                  concept_name_id="7181" voided="0" uuid="11bda988-b5f5-439c-83fe-c8f3fd256878"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept_name concept_id="1369" name="TRANSFERIDO DE" locale="pt" creator="1" date_created="2008-10-25 13:54:23"
+                  concept_name_id="3145" voided="0" uuid="e24e2ffa-1d5f-11e0-b929-000c29ad1d07"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <program program_id="1" concept_id="1781" creator="1" date_created="2012-02-29 09:42:25" retired="0"
+             name="SERVICO TARV - CUIDADO" description="Programa de seguimento e cuidado aos pacientes HIV+"
+             uuid="7b2e4a0a-d4eb-4df7-be30-78ca4b28ca99"/>
+
+    <program_workflow program_workflow_id="1" program_id="1" concept_id="6275" creator="1"
+                      date_created="2012-02-29 10:11:08" retired="0" uuid="beea7be9-cbf5-4a15-923a-ff193eea9d50"/>
+
+    <program_workflow_state program_workflow_state_id="28" program_workflow_id="1" concept_id="1369" initial="1"
+                            terminal="0" creator="1" date_created="2013-07-24 11:45:26" retired="0"
+                            uuid="b227d4ff-2dc3-4c18-9a58-d4de8d077746"/>
+
+    <patient_program patient_program_id="4616" patient_id="1003" program_id="1" date_enrolled="2013-08-01 00:00:00"
+                     creator="1" date_created="2013-09-16 17:53:04" voided="0"
+                     uuid="d1315b84-2b18-4605-9bde-0a845bc35ebc" location_id="1"/>
+
+    <patient_state patient_state_id="6552" patient_program_id="4616" state="28" start_date="2013-08-01" creator="1"
+                   date_created="2013-09-16 17:53:04" voided="0"/>
+
     <encounter_type encounter_type_id="32" name="STARV: LIVRO PRE-TARV"
                     description="Representao livro de registo PRE-TARV" creator="1" date_created="2012-02-29 17:05:14"
                     retired="0" uuid="bc30cbe1-85b4-459f-acca-cffc4041a3b8"/>
@@ -70,50 +120,58 @@
 
     <encounter encounter_id="32672" encounter_type="32" patient_id="2" encounter_datetime="2013-06-17 00:00:00"
                creator="1" date_created="2013-06-19 12:55:48" voided="0"
-               uuid="d012e4e6-05ff-4a1c-8896-7fd705f0e4e1"/>
+               uuid="d012e4e6-05ff-4a1c-8896-7fd705f0e4e1" location_id="1"/>
 
     <encounter encounter_id="32673" encounter_type="32" patient_id="6" encounter_datetime="2013-06-17 00:00:00"
                creator="1" date_created="2013-06-19 12:55:48" voided="0"
-               uuid="053c6742-424f-4036-9a2d-1e1f7598a124"/>
+               uuid="053c6742-424f-4036-9a2d-1e1f7598a124" location_id="1"/>
 
     <encounter encounter_id="32674" encounter_type="32" patient_id="7" encounter_datetime="2013-06-17 00:00:00"
                creator="1" date_created="2013-06-19 12:55:48" voided="0"
-               uuid="cd33857e-c11b-4eb5-8c14-e84a8315958d"/>
+               uuid="cd33857e-c11b-4eb5-8c14-e84a8315958d" location_id="1"/>
 
     <encounter encounter_id="32884" encounter_type="33" patient_id="1001"
                encounter_datetime="2012-03-29 00:00:00" creator="1" date_created="2013-06-24 11:45:17" voided="0"
-               uuid="39a5ee29-47cf-4e32-a652-3e61b387fa75"/>
+               uuid="39a5ee29-47cf-4e32-a652-3e61b387fa75" location_id="1"/>
 
     <encounter encounter_id="32885" encounter_type="33" patient_id="1002"
                encounter_datetime="2012-03-29 00:00:00" creator="1" date_created="2013-06-24 11:45:17" voided="0"
-               uuid="5b24eb56-4d79-4200-a4b3-99859df1eb14"/>
+               uuid="5b24eb56-4d79-4200-a4b3-99859df1eb14" location_id="1"/>
 
     <encounter encounter_id="32643" encounter_type="33" patient_id="8"
                encounter_datetime="2013-05-03 00:00:00" creator="1" date_created="2013-06-19 10:03:01" voided="0"
-               uuid="07330846-d879-4930-84b3-7dc367af0bb3"/>
+               uuid="07330846-d879-4930-84b3-7dc367af0bb3" location_id="1"/>
+
+    <encounter encounter_id="32644" encounter_type="32" patient_id="1003"
+               encounter_datetime="2013-05-03 00:00:00" creator="1" date_created="2013-06-19 10:03:01" voided="0"
+               uuid="0647bce4-11d2-4acc-8872-67471ffcbec8" location_id="1"/>
 
     <obs obs_id="274087" person_id="2" concept_id="6263" encounter_id="32672" obs_datetime="2013-06-17 00:00:00"
          value_coded="6259" creator="1" date_created="2013-06-19 12:55:48" voided="0"
-         uuid="71d82d79-429d-4fbd-b05d-2e59e2b255b6"/>
+         uuid="71d82d79-429d-4fbd-b05d-2e59e2b255b6" location_id="1"/>
 
     <obs obs_id="274088" person_id="6" concept_id="6263" encounter_id="32673" obs_datetime="2013-06-17 00:00:00"
          value_coded="6260" creator="1" date_created="2013-06-19 12:55:48" voided="0"
-         uuid="28297084-dd14-4a4c-9e85-4b0bf149795b"/>
+         uuid="28297084-dd14-4a4c-9e85-4b0bf149795b" location_id="1"/>
 
     <obs obs_id="274089" person_id="7" concept_id="6263" encounter_id="32674" obs_datetime="2013-06-17 00:00:00"
          creator="1" date_created="2013-06-19 12:55:48" voided="0"
-         uuid="20134469-bfe5-46c5-aae3-96a4546c0a8e"/>
+         uuid="20134469-bfe5-46c5-aae3-96a4546c0a8e" location_id="1"/>
 
     <obs obs_id="276193" person_id="1001" concept_id="6264" encounter_id="32884" obs_datetime="2012-03-29 00:00:00"
          value_coded="6261" creator="1" date_created="2013-06-24 11:45:17" voided="0"
-         uuid="d49c86e7-6aa3-41a2-b801-a7e1315c3195"/>
+         uuid="d49c86e7-6aa3-41a2-b801-a7e1315c3195" location_id="1"/>
 
     <obs obs_id="273788" person_id="8" concept_id="6264" encounter_id="32643" obs_datetime="2013-05-03 00:00:00"
          value_coded="6261" creator="1" date_created="2013-06-19 10:03:01" voided="0"
-         uuid="c0a0d917-ea43-443c-8924-31fbd88f2410"/>
+         uuid="c0a0d917-ea43-443c-8924-31fbd88f2410" location_id="1"/>
 
     <obs obs_id="276194" person_id="1002" concept_id="6264" encounter_id="32885" obs_datetime="2012-03-29 00:00:00"
          creator="1" date_created="2013-06-24 11:45:17" voided="0" uuid="827ab8e4-6efd-4f3a-b7fb-db1c96def6e5"/>
+
+    <obs obs_id="276195" person_id="1003" concept_id="6263" encounter_id="32644" obs_datetime="2012-03-29 00:00:00"
+         creator="1" date_created="2013-06-24 11:45:17" voided="0" uuid="6623d085-2d5f-4dbf-b8d2-e9e015c126b9"
+         location_id="1"/>
 
 
 </dataset>
