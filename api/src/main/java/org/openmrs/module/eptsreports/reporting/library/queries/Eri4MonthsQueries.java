@@ -28,7 +28,7 @@ public class Eri4MonthsQueries {
         + " FROM ("
         + " SELECT patient_id,data_inicio"
         + " FROM ("
-        + "SELECT patient_id,min(data_inicio) data_inicio"
+        + "SELECT patient_id,MIN(data_inicio) data_inicio"
         + " FROM ("
         + " SELECT p.patient_id,MIN(e.encounter_datetime) data_inicio"
         + " FROM patient p"
@@ -75,7 +75,7 @@ public class Eri4MonthsQueries {
         + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
         + " WHERE	p.voided=0 AND e.encounter_type="
         + arvPharmaciaEncounter
-        + " AND e.voided=0 AND e.encounter_datetime<=:endDate and e.location_id=:location"
+        + " AND e.voided=0 AND e.encounter_datetime<=:endDate AND e.location_id=:location"
         + " GROUP BY p.patient_id"
         + ") inicio"
         + " GROUP BY patient_id"
@@ -103,7 +103,7 @@ public class Eri4MonthsQueries {
         + " AND ps.state="
         + transferFromStates
         + " AND ps.start_date=pg.date_enrolled AND"
-        + " ps.start_date BETWEEN :startDate AND :endDate and location_id=:location"
+        + " ps.start_date BETWEEN :startDate AND :endDate AND location_id=:location"
         + ")"
         + " GROUP BY inicio_real.patient_id";
   }
@@ -116,10 +116,10 @@ public class Eri4MonthsQueries {
             + "(SELECT patient_id,value_datetime FROM "
             + "( SELECT p.patient_id,MAX(encounter_datetime) AS encounter_datetime FROM patient p "
             + "INNER JOIN encounter e ON e.patient_id=p.patient_id WHERE p.voided=0 AND e.voided=0 "
-            + "AND e.encounter_type in(%d) AND e.location_id=:location AND e.encounter_datetime<=:endDate GROUP BY p.patient_id ) max_frida "
+            + "AND e.encounter_type IN(%d) AND e.location_id=:location AND e.encounter_datetime<=:endDate GROUP BY p.patient_id ) max_frida "
             + "INNER JOIN obs o ON o.person_id=max_frida.patient_id WHERE max_frida.encounter_datetime=o.obs_datetime AND "
             + "o.voided=0 AND o.concept_id=%d AND o.location_id=:location AND o.value_datetime IS NOT NULL AND encounter_datetime BETWEEN "
-            + ":startDate and :endDate "
+            + ":startDate AND :endDate "
             + ") final WHERE datediff(:endDate,final.value_datetime)>=%d";
     return String.format(
         query, arvFarmacyEncounterType, drugPickupReturnVisitDateConcept, daysThreshold);
@@ -131,11 +131,11 @@ public class Eri4MonthsQueries {
         "SELECT patient_id FROM "
             + "(SELECT patient_id, value_datetime FROM( SELECT p.patient_id,MAX(encounter_datetime)AS encounter_datetime "
             + "FROM patient p INNER JOIN encounter e ON e.patient_id=p.patient_id WHERE p.voided=0 AND e.voided=0 AND "
-            + "e.encounter_type in (%d, %d) AND e.location_id=:location AND e.encounter_datetime<=:endDate "
+            + "e.encounter_type IN (%d, %d) AND e.location_id=:location AND e.encounter_datetime<=:endDate "
             + "GROUP BY p.patient_id ) max_mov INNER JOIN obs o ON o.person_id=max_mov.patient_id "
             + "WHERE max_mov.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id=%d"
             + " AND o.location_id=:location AND o.value_datetime IS NOT NULL "
-            + "AND encounter_datetime BETWEEN :startDate and :endDate "
+            + "AND encounter_datetime BETWEEN :startDate AND :endDate "
             + ") final WHERE datediff(:endDate,final.value_datetime)>=%d";
     return String.format(
         query, adultEncounteyType, paedEncounterType, returnVisitConcept, daysThreshold);

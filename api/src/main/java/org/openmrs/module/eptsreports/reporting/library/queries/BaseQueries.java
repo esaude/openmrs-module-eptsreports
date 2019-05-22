@@ -25,16 +25,16 @@ public class BaseQueries {
   // TODO: Query needs to be refactored
   public static String getBaseCohortQuery(Map<String, String> parameters) {
     String query =
-        "select p.patient_id from patient p join encounter e on e.patient_id=p.patient_id "
-            + "where e.voided=0 and p.voided=0 and e.encounter_type in (%s) and e.encounter_datetime<=:endDate and e.location_id = :location "
-            + "union "
-            + "select pg.patient_id from patient p join patient_program pg on p.patient_id=pg.patient_id where pg.voided=0 and p.voided=0 and program_id=%s and date_enrolled<=:endDate and location_id=:location "
-            + "union "
-            + "select pg.patient_id from patient p join patient_program pg on p.patient_id=pg.patient_id join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s and ps.state=28 and ps.start_date=pg.date_enrolled and ps.start_date<=:endDate and location_id=:location "
-            + "union "
-            + "select pg.patient_id from patient p join patient_program pg on p.patient_id=pg.patient_id join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s and ps.state=29 and ps.start_date<=:endDate and location_id=:location ";
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON e.patient_id=p.patient_id "
+            + "WHERE e.voided=0 AND p.voided=0 AND e.encounter_type in (%s) AND e.encounter_datetime<=:endDate AND e.location_id = :location "
+            + "UNION "
+            + "SELECT pg.patient_id FROM patient p JOIN patient_program pg ON p.patient_id=pg.patient_id WHERE pg.voided=0 AND p.voided=0 AND program_id=%s AND date_enrolled<=:endDate AND location_id=:location "
+            + "UNION "
+            + "SELECT pg.patient_id FROM patient p JOIN patient_program pg ON p.patient_id=pg.patient_id JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
+            + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND pg.program_id=%s AND ps.state=28 AND ps.start_date=pg.date_enrolled AND ps.start_date<=:endDate AND location_id=:location "
+            + "UNION "
+            + "SELECT pg.patient_id FROM patient p JOIN patient_program pg ON p.patient_id=pg.patient_id JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
+            + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND pg.program_id=%s AND ps.state=29 AND ps.start_date<=:endDate AND location_id=:location ";
     String encounterTypes =
         StringUtils.join(
             Arrays.asList(
