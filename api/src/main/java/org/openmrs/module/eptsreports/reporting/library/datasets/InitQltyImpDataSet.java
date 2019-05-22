@@ -125,11 +125,14 @@ public class InitQltyImpDataSet extends BaseDataSet {
             EptsReportUtils.map(
                 qualityImprovementCohortQueries
                     .getPragnantPatientsEnrolledInARVThatStartedInInclusionPeriodPregnantSample(),
-                mappingsWitshEvaluate));
-    gravidaInic.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+                "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     dataSetDefinition.addColumn(
-        "GRAVIDASINIC", "gravidas inicial", EptsReportUtils.map(gravidaInic, mappings), "");
+        "GRAVIDASINIC",
+        "gravidas inicial",
+        EptsReportUtils.map(
+            gravidaInic, "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
 
     /* TPINUM1*/
     CohortIndicator tpiNum1 =
@@ -205,13 +208,15 @@ public class InitQltyImpDataSet extends BaseDataSet {
             EptsReportUtils.map(
                 qualityImprovementCohortQueries
                     .getPatientsEnrolledInARVSamplePregantElegibleProphylaxisIsoniazidAndReceived(),
-                mappingsWitshEvaluate));
+                "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}"));
     tpiNum3.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
 
     dataSetDefinition.addColumn(
         "TPINUM3",
         "patientsEnrolledInARVSamplePregantElegibleProphylaxisIsoniazidAndReceived",
-        EptsReportUtils.map(tpiNum3, mappings),
+        EptsReportUtils.map(
+            tpiNum3,
+            "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}"),
         "");
 
     /*TPIDENOM3*/

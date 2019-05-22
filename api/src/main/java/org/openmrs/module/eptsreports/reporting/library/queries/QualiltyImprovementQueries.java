@@ -327,7 +327,7 @@ public class QualiltyImprovementQueries {
       int arvPlan, // concept_id=1255
       int startDrugsConcept, // concept_id=1256
       int artProgram, // program_id=2
-      int historicalDrugStartDateConcept // concept_id=1190
+      int arvStartDate // concept_id=1190
       ) {
 
     String query =
@@ -436,7 +436,7 @@ public class QualiltyImprovementQueries {
             + arvPediatriaSeguimentoEncounterType
             + ") and   "
             + "							o.concept_id="
-            + historicalDrugStartDateConcept
+            + arvStartDate
             + " and o.value_datetime is not null and   "
             + "							o.value_datetime<=:endDate and e.location_id=:location  "
             + "					group by p.patient_id  "
@@ -697,7 +697,7 @@ public class QualiltyImprovementQueries {
       int arvPharmaciaEncounterType, // 18
       int arvPlan, // concept_id=1255
       int startDrugsConcept, // concept_id=1256
-      int historicalDrugStartDateConcept, // concept_id=1190
+      int arvStartDateConcept, // concept_id=1190
       int hivCareProgram, // program_id=1
       int artProgram // program_id=2
       ) {
@@ -746,7 +746,7 @@ public class QualiltyImprovementQueries {
             + arvPediatriaSeguimentoEncounterType
             + ")   "
             + "			and o.concept_id="
-            + historicalDrugStartDateConcept
+            + arvStartDateConcept
             + "   "
             + "			and o.value_datetime is not null   "
             + "			and o.value_datetime<=:endDate   "
@@ -832,7 +832,7 @@ public class QualiltyImprovementQueries {
       int arvPharmaciaEncounterType, // 18
       int arvPlan, // concept_id=1255
       int startDrugsConcept, // concept_id=1256
-      int historicalDrugStartDateConcept, // concept_id=1190
+      int arvStartDateConcept, // concept_id=1190
       int artProgram // program_id=2
       ) {
 
@@ -876,7 +876,7 @@ public class QualiltyImprovementQueries {
             + arvPediatriaSeguimentoEncounterType
             + ") and   "
             + "							o.concept_id="
-            + historicalDrugStartDateConcept
+            + arvStartDateConcept
             + " and o.value_datetime is not null and   "
             + "							o.value_datetime<=:endDate and e.location_id=:location  "
             + "					group by p.patient_id  "
@@ -953,7 +953,7 @@ public class QualiltyImprovementQueries {
       int arvPharmaciaEncounterType, // 18
       int arvPlan, // concept_id=1255
       int startDrugsConcept, // concept_id=1256
-      int historicalDrugStartDateConcept, // concept_id=1190
+      int arvStartDateConcept, // concept_id=1190
       int artProgram // program_id=2
       ) {
 
@@ -997,7 +997,7 @@ public class QualiltyImprovementQueries {
             + adultoSeguimentoEncounterType
             + ") and   "
             + "							o.concept_id="
-            + historicalDrugStartDateConcept
+            + arvStartDateConcept
             + " and o.value_datetime is not null and   "
             + "							o.value_datetime<=:endDate and e.location_id=:location  "
             + "					group by p.patient_id  "
@@ -1066,7 +1066,7 @@ public class QualiltyImprovementQueries {
       int arvPharmaciaEncounterType, // 18
       int arvPlan, // concept_id=1255
       int startDrugsConcept, // concept_id=1256
-      int historicalDrugStartDateConcept, // concept_id=1190
+      int arvStartDateConcept, // concept_id=1190
       int artProgram, // program_id=2
       int coucelingActivityConcept, // concept_id=6314
       int prevencaoPositivaInicialEncounterType, // 34
@@ -1117,7 +1117,7 @@ public class QualiltyImprovementQueries {
             + arvPediatriaSeguimentoEncounterType
             + ")   "
             + "			and o.concept_id="
-            + historicalDrugStartDateConcept
+            + arvStartDateConcept
             + "   "
             + "			and o.value_datetime is not null   "
             + "			and o.value_datetime<=:endDate   "
@@ -1196,7 +1196,7 @@ public class QualiltyImprovementQueries {
       int arvPharmaciaEncounterType, // 18
       int arvPlan, // concept_id=1255
       int startDrugsConcept, // concept_id=1256
-      int historicalDrugStartDateConcept, // concept_id=1190
+      int arvStartDateConcept, // concept_id=1190
       int artProgram // program_id=2
       ) {
 
@@ -1243,7 +1243,7 @@ public class QualiltyImprovementQueries {
             + arvPediatriaSeguimentoEncounterType
             + ") and  "
             + "					o.concept_id="
-            + historicalDrugStartDateConcept
+            + arvStartDateConcept
             + " and o.value_datetime is not null and  "
             + "					o.value_datetime<=:endDate and e.location_id=:location "
             + "					group by p.patient_id "
@@ -1320,7 +1320,7 @@ public class QualiltyImprovementQueries {
       int arvPharmaciaEncounterType, // 18
       int arvPlan, // concept_id=1255
       int startDrugsConcept, // concept_id=1256
-      int historicalDrugStartDateConcept, // concept_id=1190
+      int arvStartDateConcept, // concept_id=1190
       int artProgram, // program_id=2
       int coucelingActivityConcept, // concept_id=6314
       int prevencaoPositivaInicialEncounterType, // 34
@@ -1374,7 +1374,7 @@ public class QualiltyImprovementQueries {
             + arvPediatriaSeguimentoEncounterType
             + ")   "
             + "				and o.concept_id="
-            + historicalDrugStartDateConcept
+            + arvStartDateConcept
             + "   "
             + "				and o.value_datetime is not null   "
             + "				and o.value_datetime<=:endDate  "
@@ -1572,7 +1572,7 @@ public class QualiltyImprovementQueries {
       int arvPharmaciaEncounterType, // 18
       int arvPlan, // concept_id=1255
       int startDrugsConcept, // concept_id=1256
-      int historicalDrugStartDateConcept, // concept_id=1190
+      int arvStartDateConcept, // concept_id=1190
       int artProgram // program_id=2
       ) {
     String query =
@@ -1614,7 +1614,7 @@ public class QualiltyImprovementQueries {
             + arvPediatriaSeguimentoEncounterType
             + ") and   "
             + "					o.concept_id="
-            + historicalDrugStartDateConcept
+            + arvStartDateConcept
             + " and o.value_datetime is not null and   "
             + "					o.value_datetime<=:endDate and e.location_id=:location  "
             + "			group by p.patient_id  "
@@ -1723,7 +1723,9 @@ public class QualiltyImprovementQueries {
             + "					inner join patient_program pg on p.patient_id=pg.patient_id  "
             + "					inner join patient_state ps on pg.patient_program_id=ps.patient_program_id  "
             + "			where 	pg.voided=0 and ps.voided=0 and p.voided=0 and   "
-            + "					pg.program_id=2 and ps.state in (7,8,9,10) and ps.end_date is null and   "
+            + "					pg.program_id="
+            + artProgram
+            + " and ps.state in (7,8,9,10) and ps.end_date is null and   "
             + "					ps.start_date<=:endDate and location_id=:location  "
             + "  "
             + "		) and patient_id not in(  "
@@ -2100,7 +2102,7 @@ public class QualiltyImprovementQueries {
       int arvPharmaciaEncounterType, // 18
       int arvPlan, // concept_id=1255
       int startDrugsConcept, // concept_id=1256
-      int historicalDrugStartDateConcept, // concept_id=1190
+      int arvStartDateConcept, // concept_id=1190
       int artProgram, // program_id=2
       int hivViralLoadConcept // concept_id=856
       ) {
@@ -2145,7 +2147,7 @@ public class QualiltyImprovementQueries {
             + arvPediatriaSeguimentoEncounterType
             + ") and  "
             + "							o.concept_id="
-            + historicalDrugStartDateConcept
+            + arvStartDateConcept
             + " and o.value_datetime is not null and  "
             + "							o.value_datetime<=:endDate and e.location_id=:location "
             + "					group by p.patient_id "
@@ -2196,7 +2198,7 @@ public class QualiltyImprovementQueries {
       int arvPharmaciaEncounterType, // 18
       int arvPlan, // concept_id=1255
       int startDrugsConcept, // concept_id=1256
-      int historicalDrugStartDateConcept, // concept_id=1190
+      int arvStartDateConcept, // concept_id=1190
       int cd4AbsoluteConcept, // concept_id=5497
       int cd4AbsoluteOBSConcept, // concept_id=1695
       int artProgram // program_id=2
@@ -2244,7 +2246,7 @@ public class QualiltyImprovementQueries {
             + arvPediatriaSeguimentoEncounterType
             + ") and  "
             + "					o.concept_id="
-            + historicalDrugStartDateConcept
+            + arvStartDateConcept
             + " and o.value_datetime is not null and  "
             + "					o.value_datetime<=:endDate and e.location_id=:location "
             + "			group by p.patient_id "
@@ -2306,7 +2308,7 @@ public class QualiltyImprovementQueries {
             + arvPediatriaSeguimentoEncounterType
             + ") and  "
             + "					o.concept_id="
-            + historicalDrugStartDateConcept
+            + arvStartDateConcept
             + " and o.value_datetime is not null and  "
             + "					o.value_datetime<=:endDate and e.location_id=:location "
             + "			group by p.patient_id "
@@ -2352,7 +2354,7 @@ public class QualiltyImprovementQueries {
       int arvPharmaciaEncounterType, // 18
       int arvPlan, // concept_id=1255
       int startDrugsConcept, // concept_id=1256
-      int historicalDrugStartDateConcept, // concept_id=1190
+      int arvStartDateConcept, // concept_id=1190
       int cd4AbsoluteConcept, // concept_id=5497
       int cd4AbsoluteOBSConcept, // concept_id=1695
       int artProgram, // program_id=2
@@ -2406,7 +2408,7 @@ public class QualiltyImprovementQueries {
             + arvPediatriaSeguimentoEncounterType
             + ") and  "
             + "					o.concept_id="
-            + historicalDrugStartDateConcept
+            + arvStartDateConcept
             + " and o.value_datetime is not null and  "
             + "					o.value_datetime<=:endDate and e.location_id=:location "
             + "			group by p.patient_id "
@@ -2474,7 +2476,7 @@ public class QualiltyImprovementQueries {
             + arvPediatriaSeguimentoEncounterType
             + ") and  "
             + "					o.concept_id="
-            + historicalDrugStartDateConcept
+            + arvStartDateConcept
             + " and o.value_datetime is not null and  "
             + "					o.value_datetime<=:endDate and e.location_id=:location "
             + "			group by p.patient_id "
