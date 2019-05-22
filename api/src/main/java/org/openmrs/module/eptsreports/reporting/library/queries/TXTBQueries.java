@@ -28,14 +28,14 @@ public class TXTBQueries {
                 artPedFollowupEncounterTypeId),
             ",");
     return String.format(
-        "SELECT patient_id FROM (SELECT patient_id, Min(data_inicio) data_inicio "
-            + "FROM (SELECT p.patient_id, Min(e.encounter_datetime) data_inicio FROM patient p "
+        "SELECT patient_id FROM (SELECT patient_id, MIN(data_inicio) data_inicio "
+            + "FROM (SELECT p.patient_id, MIN(e.encounter_datetime) data_inicio FROM patient p "
             + "INNER JOIN encounter e ON p.patient_id = e.patient_id "
             + "INNER JOIN obs o ON o.encounter_id = e.encounter_id "
             + "WHERE e.voided = 0 AND o.voided = 0 AND p.voided = 0 AND e.encounter_type IN ( %s ) "
             + "AND o.concept_id = %s AND o.value_coded = %s AND e.encounter_datetime <= :endDate "
             + "AND e.location_id = :location GROUP BY p.patient_id "
-            + "UNION SELECT p.patient_id, Min(value_datetime) data_inicio FROM patient p "
+            + "UNION SELECT p.patient_id, MIN(value_datetime) data_inicio FROM patient p "
             + "INNER JOIN encounter e ON p.patient_id = e.patient_id INNER JOIN obs o ON e.encounter_id = o.encounter_id "
             + "WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND e.encounter_type IN ( %s ) "
             + "AND o.concept_id = %s AND o.value_datetime IS NOT NULL AND o.value_datetime <= :endDate AND e.location_id = :location "
@@ -79,7 +79,7 @@ public class TXTBQueries {
                 params.deathStateId),
             ",");
     return String.format(
-        "SELECT patient_id FROM (SELECT p.patient_id, Max(encounter_datetime) encounter_datetime FROM patient p "
+        "SELECT patient_id FROM (SELECT p.patient_id, MAX(encounter_datetime) encounter_datetime FROM patient p "
             + "INNER JOIN encounter e ON e.patient_id = p.patient_id WHERE p.voided = 0 AND e.voided = 0 "
             + "AND e.encounter_type = %s AND e.location_id = :location AND e.encounter_datetime <= :endDate GROUP BY p.patient_id) max_frida "
             + "INNER JOIN obs o ON o.person_id = max_frida.patient_id WHERE max_frida.encounter_datetime = o.obs_datetime AND o.voided = 0 "
@@ -88,7 +88,7 @@ public class TXTBQueries {
             + "INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id WHERE pg.voided = 0 AND ps.voided = 0 "
             + "AND p.voided = 0 AND pg.program_id = %s AND ps.state IN ( %s ) AND ps.end_date IS NULL AND ps.start_date IS NOT NULL AND ps.start_date <= :endDate "
             + "AND location_id = :location) AND patient_id NOT IN(SELECT patient_id FROM "
-            + "(SELECT p.patient_id, Max(encounter_datetime) encounter_datetime FROM patient p "
+            + "(SELECT p.patient_id, MAX(encounter_datetime) encounter_datetime FROM patient p "
             + "INNER JOIN encounter e ON e.patient_id = p.patient_id WHERE p.voided = 0 AND e.voided = 0 "
             + "AND e.encounter_type IN ( %s, %s ) AND e.location_id = :location AND e.encounter_datetime <= :endDate GROUP BY p.patient_id) max_mov "
             + "INNER JOIN obs o ON o.person_id = max_mov.patient_id WHERE max_mov.encounter_datetime = o.obs_datetime AND o.voided = 0 "
@@ -136,9 +136,10 @@ public class TXTBQueries {
                 + "WHERE encounter_type IN(%s)) AND location_id = :location and ",
             questionId, StringUtils.join(encounterTypeIds, ","));
     if (startDate) {
-      sql += "value_datetime >= :startDate and value_datetime <= :endDate and voided=0";
+      sql +=
+          "value_datetime IS NOT NULL AND value_datetime >= :startDate and value_datetime <= :endDate and voided=0";
     } else {
-      sql += "value_datetime <= :endDate and voided=0";
+      sql += "value_datetime IS NOT NULL AND value_datetime <= :endDate and voided=0";
     }
     return sql;
   }
