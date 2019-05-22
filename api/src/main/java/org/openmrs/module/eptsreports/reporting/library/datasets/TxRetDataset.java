@@ -14,11 +14,7 @@
 
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import java.util.Arrays;
-import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TXRetCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
-import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.TxRetDimensionCohort;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -29,20 +25,17 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class TxRetDataset extends BaseDataSet {
-  @Autowired private EptsCommonDimension eptsCommonDimension;
 
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
 
   @Autowired private TXRetCohortQueries txRetCohortQueries;
-
-  @Autowired
-  @Qualifier("commonAgeDimensionCohort")
-  private AgeDimensionCohortInterface ageDimensionCohort;
 
   @Autowired private TxRetDimensionCohort txRetDimensionCohort;
 
@@ -61,11 +54,11 @@ public class TxRetDataset extends BaseDataSet {
     CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
     dataSetDefinition.setName("TX_Ret Data Set");
     dataSetDefinition.addParameters(getParameters());
-    dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dataSetDefinition.addDimension(
-        "age",
+        "onArtByGenderAndAge",
         EptsReportUtils.map(
-            eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
+            txRetDimensionCohort.genderOnArtByAge(), "endDate=${endDate},location=${location}"));
+
     dataSetDefinition.addDimension(
         "0009",
         EptsReportUtils.map(
@@ -75,7 +68,17 @@ public class TxRetDataset extends BaseDataSet {
         "pregnantOrBreastFeeding",
         EptsReportUtils.map(
             txRetDimensionCohort.pregnantOrBreastFeeding(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate-24m+1d},endDate=${endDate-12m},location=${location}"));
+    dataSetDefinition.addDimension(
+        "pregnantOrBreastFeeding24",
+        EptsReportUtils.map(
+            txRetDimensionCohort.pregnantOrBreastFeeding(),
+            "startDate=${startDate-27m+1d},endDate=${endDate-24m},location=${location}"));
+    dataSetDefinition.addDimension(
+        "pregnantOrBreastFeeding36",
+        EptsReportUtils.map(
+            txRetDimensionCohort.pregnantOrBreastFeeding(),
+            "startDate=${startDate-39m+1d},endDate=${endDate-36m},location=${location}"));
 
     Mapped<CohortIndicator> numerator =
         EptsReportUtils.map(
@@ -109,31 +112,47 @@ public class TxRetDataset extends BaseDataSet {
     return Arrays.asList(
         new ColumnParameters("<1", "Children <1 anos", "0009=0001", "0001"),
         new ColumnParameters("1–9", "Children 1-9 anos", "0009=0109", "0109"),
-        new ColumnParameters("pregnant", "Pregnant", "pregnantOrBreastFeeding=pregnant", "PREG"),
+        new ColumnParameters("pregnant", "Pregnant", "pregnantOrBreastFeeding=GRAVIDAS", "PREG"),
         new ColumnParameters(
-            "breastFeeding", "Breast feeding", "pregnantOrBreastFeeding=breastfeeding", "BRSTFDG"),
-        new ColumnParameters("10-14Males", "10-14 anos - Masculino", "gender=M|age=10-14", "1014M"),
+            "pregnant24", "Pregnant", "pregnantOrBreastFeeding24=GRAVIDAS", "PREG24"),
         new ColumnParameters(
-            "10-14Females", "10-14 anos - Feminino", "gender=F|age=10-14", "1014F"),
-        new ColumnParameters("15-19Males", "15-19 anos - Masculino", "gender=M|age=15-19", "1519M"),
+            "pregnant36", "Pregnant", "pregnantOrBreastFeeding36=GRAVIDAS", "PREG36"),
         new ColumnParameters(
-            "15-19Females", "15-19 anos - Feminino", "gender=F|age=15-19", "1519F"),
-        new ColumnParameters("20-24Males", "20-24 anos - Masculino", "gender=M|age=20-24", "2024M"),
+            "breastFeeding", "Breast feeding", "pregnantOrBreastFeeding=LACTANTE", "BRSTFDG"),
         new ColumnParameters(
-            "20-24Females", "20-24 anos - Feminino", "gender=F|age=20-24", "2024F"),
-        new ColumnParameters("25-29Males", "25-29 anos - Masculino", "gender=M|age=25-29", "2529M"),
+            "breastFeeding24", "Breast feeding", "pregnantOrBreastFeeding24=LACTANTE", "BRSTFDG24"),
         new ColumnParameters(
-            "25-29Females", "25-29 anos - Feminino", "gender=F|age=25-29", "2529F"),
-        new ColumnParameters("30-34Males", "30-34 anos - Masculino", "gender=M|age=30-34", "3034M"),
+            "breastFeeding36", "Breast feeding", "pregnantOrBreastFeeding36=LACTANTE", "BRSTFDG36"),
         new ColumnParameters(
-            "30-34Females", "30-34 anos - Feminino", "gender=F|age=30-34", "3034F"),
-        new ColumnParameters("35-39Males", "35-39 anos - Masculino", "gender=M|age=35-39", "3539M"),
+            "10-14Males", "10-14 anos - Masculino", "onArtByGenderAndAge=10-14M", "1014M"),
         new ColumnParameters(
-            "35-39Females", "35-39 anos - Feminino", "gender=F|age=35-39", "3539F"),
-        new ColumnParameters("40-49Males", "40-49 anos - Masculino", "gender=M|age=40-49", "4049M"),
+            "10-14Females", "10-14 anos - Feminino", "onArtByGenderAndAge=10-14F", "1014F"),
         new ColumnParameters(
-            "40-49Females", "40-49 anos - Feminino", "gender=F|age=40-49", "4049F"),
-        new ColumnParameters("50+Males", "50+ anos - Masculino", "gender=M|age=50+", "50M"),
-        new ColumnParameters("50+Females", "50+ anos - Feminino", "gender=F|age=50+", "50F"));
+            "15-19Males", "15-19 anos - Masculino", "onArtByGenderAndAge=15-19M", "1519M"),
+        new ColumnParameters(
+            "15-19Females", "15-19 anos - Feminino", "onArtByGenderAndAge=15-19F", "1519F"),
+        new ColumnParameters(
+            "20-24Males", "20-24 anos - Masculino", "onArtByGenderAndAge=20-24M", "2024M"),
+        new ColumnParameters(
+            "20-24Females", "20-24 anos - Feminino", "onArtByGenderAndAge=20-24F", "2024F"),
+        new ColumnParameters(
+            "25-29Males", "25-29 anos - Masculino", "onArtByGenderAndAge=25-29M", "2529M"),
+        new ColumnParameters(
+            "25-29Females", "25-29 anos - Feminino", "onArtByGenderAndAge=25-29F", "2529F"),
+        new ColumnParameters(
+            "30-34Males", "30-34 anos - Masculino", "onArtByGenderAndAge=30-34M", "3034M"),
+        new ColumnParameters(
+            "30-34Females", "30-34 anos - Feminino", "onArtByGenderAndAge=30-34F", "3034F"),
+        new ColumnParameters(
+            "35-39Males", "35-39 anos - Masculino", "onArtByGenderAndAge=35-39M", "3539M"),
+        new ColumnParameters(
+            "35-39Females", "35-39 anos - Feminino", "onArtByGenderAndAge=35-39F", "3539F"),
+        new ColumnParameters(
+            "40-49Males", "40-49 anos - Masculino", "onArtByGenderAndAge=40-49M", "4049M"),
+        new ColumnParameters(
+            "40-49Females", "40-49 anos - Feminino", "onArtByGenderAndAge=40-49F", "4049F"),
+        new ColumnParameters("50+Males", "50+ anos - Masculino", "onArtByGenderAndAge=50+M", "50M"),
+        new ColumnParameters(
+            "50+Females", "50+ anos - Feminino", "onArtByGenderAndAge=50+F", "50F"));
   }
 }
