@@ -54,10 +54,11 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
     EvaluatedCohort evaluatedCohort =
         evaluateCohortDefinition(usMonthlySummaryHivCohortQueries.getRegisteredInArtBooks());
 
-    assertEquals(3, evaluatedCohort.getMemberIds().size());
+    assertEquals(4, evaluatedCohort.getMemberIds().size());
 
     // Registered in ART BOOK 1
     assertTrue(evaluatedCohort.getMemberIds().contains(8));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1004));
 
     // Registered in ART BOOK 2
     assertTrue(evaluatedCohort.getMemberIds().contains(1001));
@@ -90,5 +91,25 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
 
     // No value coded but transferred from
     assertFalse(evaluatedCohort.getMemberIds().contains(1003));
+  }
+
+  @Test
+  public void getNewlyEnrolledInArtShouldReturnEnrolledInArtBook1ExcludingTransfers()
+      throws EvaluationException {
+
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getNewlyEnrolledInArt();
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("onOrAfter", "", Date.class), getStartDate());
+    parameters.put(new Parameter("onOrBefore", "", Date.class), getEndDate());
+    parameters.put(new Parameter("location", "", Location.class), getLocation());
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, parameters);
+
+    assertEquals(1, evaluatedCohort.getMemberIds().size());
+
+    // Registered in ART BOOK 1
+    assertTrue(evaluatedCohort.getMemberIds().contains(8));
+
+    // Registered in ART BOOK 1 but transferred from
+    assertFalse(evaluatedCohort.getMemberIds().contains(1004));
   }
 }
