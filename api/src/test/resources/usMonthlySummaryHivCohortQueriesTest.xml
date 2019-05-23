@@ -23,6 +23,10 @@
             creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
             uuid="3807fc9d-1c3f-4412-abfd-d8c7c294f1d5"/>
 
+    <person person_id="1005" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="c2f3be00-7160-4606-a0e6-a438a9017193"/>
+
     <patient patient_id="1001" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
              date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
 
@@ -33,6 +37,9 @@
              date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
 
     <patient patient_id="1004" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+    <patient patient_id="1005" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
              date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
 
     <global_property property="eptsreports.recordPreArtFlowConceptUuid"
@@ -68,6 +75,28 @@
                      description="UUID for the SERVICO TARV - TRATAMENTO program"
                      uuid="44ba96fd-55fa-459f-b2f5-c651c6a077aa"/>
 
+    <global_property property="eptsreports.noConceptUuid" property_value="e1d81c70-1d5f-11e0-b929-000c29ad1d07"
+                     description="Concept uuid for NO" uuid="78ccd9a7-0f45-4218-ab89-7a04d899f6cf"/>
+
+    <global_property property="eptsreports.yesConceptUuid" property_value="e1d81b62-1d5f-11e0-b929-000c29ad1d07"
+                     description="UUID for the SIM concept" uuid="05c8573e-8137-4a6a-98d4-c20624d020ec"/>
+
+    <global_property property="eptsreports.tbScreeningConceptUuid" property_value="ea1851dc-151b-4c1e-b763-5df48082159d"
+                     description="Concept uuid for SCREENING FOR TB" uuid="f1e0594f-f022-4d83-b3a1-40558983f48a"/>
+
+    <global_property property="eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid"
+                     property_value="e278f956-1d5f-11e0-b929-000c29ad1d07"
+                     description="UUID for the S.TARV: ADULTO SEGUIMENTO encounter type"
+                     uuid="11cf6a5c-ae4d-40e3-9512-b4e96ac29a4f"/>
+
+    <global_property property="eptsreports.sTarvPediatriaSeguimentoEncounterTypeUuid"
+                     property_value="e278fce4-1d5f-11e0-b929-000c29ad1d07"
+                     description="UUID for the S.TARV: PEDIATRIA SEGUIMENTO encounter type"
+                     uuid="de8c4056-4da5-4f29-b3f0-e9eddab84fc7"/>
+
+    <global_property property="eptsreports.preArtBook1ConceptUuid" property_value="384750e6-d201-488f-948a-93dc616124b4"
+                     description="UUID for the LIVRO 1 PRE-TARV concept" uuid="09971fd7-e16b-4c94-bd9d-d1f7b5428143"/>
+
     <concept concept_id="6263" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1"
              date_created="2012-02-27 11:30:21" uuid="3c648ee6-1702-4eea-b709-aa007f221f57"/>
 
@@ -100,6 +129,18 @@
 
     <concept concept_id="6276" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
              date_created="2012-02-29 10:06:33" uuid="7f3af436-5c3a-447c-9012-42bb314e03db"/>
+
+    <concept concept_id="1066" retired="0" class_id="11" is_set="0" creator="1" date_created="2005-01-06 00:00:00"
+             uuid="e1d81c70-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <concept concept_id="1065" retired="0" class_id="11" is_set="0" creator="1" date_created="2005-01-06 00:00:00"
+             uuid="e1d81b62-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <concept concept_id="6257" retired="0" class_id="7" is_set="0" creator="1" date_created="2012-02-22 14:16:03"
+             uuid="ea1851dc-151b-4c1e-b763-5df48082159d"/>
+
+    <concept concept_id="6259" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2012-02-27 10:52:59" uuid="384750e6-d201-488f-948a-93dc616124b4"/>
 
     <concept_name concept_id="6275" name="PRE-TARV" locale="pt" creator="1" date_created="2012-02-29 09:50:50"
                   concept_name_id="7181" voided="0" uuid="11bda988-b5f5-439c-83fe-c8f3fd256878"
@@ -158,6 +199,14 @@
                     creator="1" date_created="2012-02-29 17:05:40" retired="0"
                     uuid="15915fa8-3d94-430b-9adb-14ec806a8ff2"/>
 
+    <encounter_type encounter_type_id="6" name="S.TARV: ADULTO SEGUIMENTO"
+                    description="seguimento visita do paciente adulto" creator="1" date_created="2008-10-13 04:32:34"
+                    retired="0" uuid="e278f956-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <encounter_type encounter_type_id="9" name="S.TARV: PEDIATRIA SEGUIMENTO"
+                    description="Seguimento visita do paciente pediatria" creator="1" date_created="2008-10-13 11:35:34"
+                    retired="0" uuid="e278fce4-1d5f-11e0-b929-000c29ad1d07"/>
+
     <encounter encounter_id="32672" encounter_type="32" patient_id="2" encounter_datetime="2013-06-17 00:00:00"
                creator="1" date_created="2013-06-19 12:55:48" voided="0"
                uuid="d012e4e6-05ff-4a1c-8896-7fd705f0e4e1" location_id="1"/>
@@ -190,6 +239,14 @@
                encounter_datetime="2013-05-03 00:00:00" creator="1" date_created="2013-06-19 10:03:01" voided="0"
                uuid="80861424-1383-449c-8aba-358223ae9543" location_id="1"/>
 
+    <encounter encounter_id="32646" encounter_type="32" patient_id="1005"
+               encounter_datetime="2013-05-03 00:00:00" creator="1" date_created="2013-06-19 10:03:01" voided="0"
+               uuid="d13d8575-9fb1-4ce9-8b00-096c601c236b" location_id="2"/>
+
+    <encounter encounter_id="32647" encounter_type="6" patient_id="1005"
+               encounter_datetime="2013-05-03 00:00:00" creator="1" date_created="2013-06-19 10:03:01" voided="0"
+               uuid="e9581887-572f-4731-8776-5039e19c2cc4" location_id="2"/>
+
     <obs obs_id="274087" person_id="2" concept_id="6263" encounter_id="32672" obs_datetime="2013-06-17 00:00:00"
          value_coded="6259" creator="1" date_created="2013-06-19 12:55:48" voided="0"
          uuid="71d82d79-429d-4fbd-b05d-2e59e2b255b6" location_id="1"/>
@@ -221,6 +278,14 @@
     <obs obs_id="276196" person_id="1004" concept_id="6264" encounter_id="32645" obs_datetime="2013-05-03 00:00:00"
          value_coded="6261" creator="1" date_created="2013-06-19 10:03:01" voided="0"
          uuid="cf4b26ce-4d92-46a0-9a0b-343130bb892c" location_id="1"/>
+
+    <obs obs_id="276197" person_id="1005" concept_id="6263" encounter_id="32646" obs_datetime="2013-05-03 00:00:00"
+         value_coded="6259" creator="1" date_created="2013-06-19 10:03:01" voided="0"
+         uuid="b56b6b9c-a000-4a0e-acf3-4bdd3ce29820" location_id="2"/>
+
+    <obs obs_id="276198" person_id="1005" concept_id="6257" encounter_id="32647" obs_datetime="2013-05-03 00:00:00"
+         value_coded="1066" creator="1" date_created="2013-06-19 10:03:01" voided="0"
+         uuid="9f3e7d16-6480-4f11-aa25-1103fc78ff4e" location_id="2"/>
 
 
 </dataset>

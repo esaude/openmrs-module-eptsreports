@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
@@ -30,8 +31,12 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
   public void getRegisteredInPreArtBooksShouldReturnRegisteredInPreArtBooks()
       throws EvaluationException {
 
-    EvaluatedCohort evaluatedCohort =
-        evaluateCohortDefinition(usMonthlySummaryHivCohortQueries.getRegisteredInPreArtBooks());
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getRegisteredInPreArtBooks();
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("onOrAfter", "", Date.class), getStartDate());
+    parameters.put(new Parameter("onOrBefore", "", Date.class), getEndDate());
+    parameters.put(new Parameter("locationList", "", Location.class), getLocation());
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, parameters);
 
     assertEquals(4, evaluatedCohort.getMemberIds().size());
 
@@ -178,5 +183,21 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
 
     // No value coded
     assertTrue(evaluatedCohort.getMemberIds().contains(1002));
+  }
+
+  @Test
+  public void getInPreArtWhoScreenedForTbShouldReturnInArtCareWhoWereScreenedForTb()
+      throws EvaluationException {
+
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInPreArtWhoScreenedForTb();
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("onOrAfter", "", Date.class), getStartDate());
+    parameters.put(new Parameter("onOrBefore", "", Date.class), getEndDate());
+    parameters.put(new Parameter("location", "", Location.class), new Location(2));
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, parameters);
+
+    assertEquals(1, evaluatedCohort.getMemberIds().size());
+
+    assertTrue(evaluatedCohort.getMemberIds().contains(1005));
   }
 }
