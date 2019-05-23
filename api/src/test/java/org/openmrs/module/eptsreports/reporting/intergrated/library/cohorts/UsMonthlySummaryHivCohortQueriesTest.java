@@ -146,4 +146,37 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
     // Registered in ART BOOK 1 and transferred from
     assertTrue(evaluatedCohort.getMemberIds().contains(1004));
   }
+
+  @Test
+  public void getRegisteredInPreArtOrArtBooksShouldReturnRegisteredInArtCareOrArt()
+      throws EvaluationException {
+
+    EvaluatedCohort evaluatedCohort =
+        evaluateCohortDefinition(
+            usMonthlySummaryHivCohortQueries.getRegisteredInPreArtOrArtBooks());
+
+    assertEquals(8, evaluatedCohort.getMemberIds().size());
+
+    // Registered in PRE-ART BOOK 1
+    assertTrue(evaluatedCohort.getMemberIds().contains(2));
+
+    // Registered in PRE-ART BOOK 2
+    assertTrue(evaluatedCohort.getMemberIds().contains(6));
+
+    // No value coded
+    assertTrue(evaluatedCohort.getMemberIds().contains(7));
+
+    // No value coded but transferred from
+    assertTrue(evaluatedCohort.getMemberIds().contains(1003));
+
+    // Registered in ART BOOK 1
+    assertTrue(evaluatedCohort.getMemberIds().contains(8));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1004));
+
+    // Registered in ART BOOK 2
+    assertTrue(evaluatedCohort.getMemberIds().contains(1001));
+
+    // No value coded
+    assertTrue(evaluatedCohort.getMemberIds().contains(1002));
+  }
 }

@@ -211,7 +211,8 @@
          uuid="c0a0d917-ea43-443c-8924-31fbd88f2410" location_id="1"/>
 
     <obs obs_id="276194" person_id="1002" concept_id="6264" encounter_id="32885" obs_datetime="2012-03-29 00:00:00"
-         creator="1" date_created="2013-06-24 11:45:17" voided="0" uuid="827ab8e4-6efd-4f3a-b7fb-db1c96def6e5"/>
+         creator="1" date_created="2013-06-24 11:45:17" voided="0" uuid="827ab8e4-6efd-4f3a-b7fb-db1c96def6e5"
+         location_id="1"/>
 
     <obs obs_id="276195" person_id="1003" concept_id="6263" encounter_id="32644" obs_datetime="2012-03-29 00:00:00"
          creator="1" date_created="2013-06-24 11:45:17" voided="0" uuid="6623d085-2d5f-4dbf-b8d2-e9e015c126b9"
