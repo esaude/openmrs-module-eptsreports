@@ -112,4 +112,20 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
     // Registered in ART BOOK 1 but transferred from
     assertFalse(evaluatedCohort.getMemberIds().contains(1004));
   }
+
+  @Test
+  public void getInArtCareEnrolledByTransferShouldReturnInArtCareTransferredFromOtherFacilities()
+      throws EvaluationException {
+
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInArtCareEnrolledByTransfer();
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("onOrAfter", "", Date.class), getStartDate());
+    parameters.put(new Parameter("onOrBefore", "", Date.class), getEndDate());
+    parameters.put(new Parameter("location", "", Location.class), getLocation());
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, parameters);
+
+    assertEquals(1, evaluatedCohort.getMemberIds().size());
+
+    assertTrue(evaluatedCohort.getMemberIds().contains(1003));
+  }
 }
