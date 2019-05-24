@@ -27,6 +27,14 @@
             creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
             uuid="c2f3be00-7160-4606-a0e6-a438a9017193"/>
 
+    <person person_id="1006" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="f7cd330b-e68e-4174-aca9-4fc4fa3a339e"/>
+
+    <person person_id="1007" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="74f9543c-4864-4ae7-b11c-fea81b388b70"/>
+
     <patient patient_id="1001" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
              date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
 
@@ -40,6 +48,12 @@
              date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
 
     <patient patient_id="1005" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+    <patient patient_id="1006" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+    <patient patient_id="1007" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
              date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
 
     <global_property property="eptsreports.recordPreArtFlowConceptUuid"
@@ -97,6 +111,24 @@
     <global_property property="eptsreports.preArtBook1ConceptUuid" property_value="384750e6-d201-488f-948a-93dc616124b4"
                      description="UUID for the LIVRO 1 PRE-TARV concept" uuid="09971fd7-e16b-4c94-bd9d-d1f7b5428143"/>
 
+    <global_property property="eptsreports.abandonedConceptUuid" property_value="e1de1df0-1d5f-11e0-b929-000c29ad1d07"
+                     description="UUID for the ABANDONO encounter type" uuid="0045ef1d-3c0e-4b50-9615-14396639b41c"/>
+
+    <global_property property="eptsreports.returnVisitDateForArvDrugConceptUuid"
+                     property_value="e1e2efd8-1d5f-11e0-b929-000c29ad1d07"
+                     description="UUID for the DATA DO PROXIMO LEVANTAMENTO DE ARV concept"
+                     uuid="8a5e6dc4-cf49-47d6-babe-dd6282010a89"/>
+
+    <global_property property="eptsreports.returnVisitDateConceptConceptUuid"
+                     property_value="e1dae630-1d5f-11e0-b929-000c29ad1d07"
+                     description="UUID for the DATA DE PROXIMA CONSULTA concept"
+                     uuid="9ab51c7c-99ee-4ee6-ad5c-b8a9daf65635"/>
+
+    <global_property property="eptsreports.sTarvFarmaciaEncounterTypeUuid"
+                     property_value="e279133c-1d5f-11e0-b929-000c29ad1d07"
+                     description="UUID for the S.TARV: FARMACIA encounter type"
+                     uuid="a26e3062-ef56-498f-b554-09cf39ddeb13"/>
+
     <concept concept_id="6263" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1"
              date_created="2012-02-27 11:30:21" uuid="3c648ee6-1702-4eea-b709-aa007f221f57"/>
 
@@ -130,17 +162,39 @@
     <concept concept_id="6276" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
              date_created="2012-02-29 10:06:33" uuid="7f3af436-5c3a-447c-9012-42bb314e03db"/>
 
-    <concept concept_id="1066" retired="0" class_id="11" is_set="0" creator="1" date_created="2005-01-06 00:00:00"
+    <concept concept_id="1066" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2005-01-06 00:00:00"
              uuid="e1d81c70-1d5f-11e0-b929-000c29ad1d07"/>
 
-    <concept concept_id="1065" retired="0" class_id="11" is_set="0" creator="1" date_created="2005-01-06 00:00:00"
+    <concept concept_id="1065" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2005-01-06 00:00:00"
              uuid="e1d81b62-1d5f-11e0-b929-000c29ad1d07"/>
 
-    <concept concept_id="6257" retired="0" class_id="7" is_set="0" creator="1" date_created="2012-02-22 14:16:03"
+    <concept concept_id="6257" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1"
+             date_created="2012-02-22 14:16:03"
              uuid="ea1851dc-151b-4c1e-b763-5df48082159d"/>
 
     <concept concept_id="6259" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
              date_created="2012-02-27 10:52:59" uuid="384750e6-d201-488f-948a-93dc616124b4"/>
+
+    <concept concept_id="1707" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2008-10-25 13:17:30"
+             uuid="e1de1df0-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <concept concept_id="5096" retired="0" datatype_id="6" class_id="11" is_set="0" creator="1"
+             date_created="2004-08-12 00:00:00" uuid="e1e2efd8-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <concept concept_id="1410" retired="0" datatype_id="6" class_id="11" is_set="0" creator="1"
+             date_created="2008-10-13 06:40:26" uuid="e1dae630-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <concept concept_id="1709" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2008-10-25 15:59:58" uuid="e1de1fee-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <concept concept_id="1706" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2008-10-25 12:58:24" uuid="e1de1cf6-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <concept concept_id="1366" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2008-10-13 05:58:15" uuid="e1da766e-1d5f-11e0-b929-000c29ad1d07"/>
 
     <concept_name concept_id="6275" name="PRE-TARV" locale="pt" creator="1" date_created="2012-02-29 09:50:50"
                   concept_name_id="7181" voided="0" uuid="11bda988-b5f5-439c-83fe-c8f3fd256878"
@@ -152,6 +206,25 @@
 
     <concept_name concept_id="6276" name="TARV" locale="pt" creator="1" date_created="2012-02-29 10:06:33"
                   concept_name_id="7187" voided="0" uuid="33f1a883-ebd0-4e5b-bb6a-a254d573877c"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept_name concept_id="1707" name="ABANDONO" locale="pt" creator="1" date_created="2008-10-25 13:17:30"
+                  concept_name_id="3141" voided="0" uuid="e24e2c58-1d5f-11e0-b929-000c29ad1d07"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept_name concept_id="1709" name="SUSPEND TREATMENT" locale="en" creator="1" date_created="2008-10-25 15:59:58"
+                  concept_name_id="3148" voided="0" uuid="e24e32ac-1d5f-11e0-b929-000c29ad1d07"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept_name concept_id="1706" name="TRANSFERRED OUT TO ANOTHER FACILITY" locale="en" creator="1"
+                  date_created="2008-10-25 12:58:24" concept_name_id="3139" voided="0"
+                  uuid="e24e2a8c-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept_name concept_id="1707" name="ABANDONED" locale="en" creator="1" date_created="2008-10-25 13:17:30"
+                  concept_name_id="5369" voided="0" uuid="e25e3a80-1d5f-11e0-b929-000c29ad1d07" locale_preferred="0"/>
+
+    <concept_name concept_id="1366" name="PATIENT HAS DIED" locale="en" creator="1" date_created="2008-10-13 05:58:15"
+                  concept_name_id="2462" voided="0" uuid="e249f6c4-1d5f-11e0-b929-000c29ad1d07"
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
     <program program_id="1" concept_id="1781" creator="1" date_created="2012-02-29 09:42:25" retired="0"
@@ -176,6 +249,22 @@
                             terminal="0" creator="1" date_created="2013-07-24 11:45:49" retired="0"
                             uuid="ef06e6df-6026-4d5a-88f9-b2c3e0495dc8"/>
 
+    <program_workflow_state program_workflow_state_id="9" program_workflow_id="2" concept_id="1707" initial="0"
+                            terminal="0" creator="1" date_created="2012-02-29 10:20:45" retired="0"
+                            uuid="06124f77-4a49-49f8-8655-fa1fe5262936"/>
+
+    <program_workflow_state program_workflow_state_id="7" program_workflow_id="2" concept_id="1706" initial="0"
+                            terminal="0" creator="1" date_created="2012-02-29 10:20:45" retired="0"
+                            uuid="9f2f86e9-303c-4b98-a6ae-37e8806a6f47"/>
+
+    <program_workflow_state program_workflow_state_id="8" program_workflow_id="2" concept_id="1709" initial="0"
+                            terminal="0" creator="1" date_created="2012-02-29 10:20:45" retired="0"
+                            uuid="05cf5297-12ed-4f6b-8c21-70d8ae04e09f"/>
+
+    <program_workflow_state program_workflow_state_id="10" program_workflow_id="2" concept_id="1366" initial="0"
+                            terminal="1" creator="1" date_created="2012-02-29 10:20:45" retired="0"
+                            uuid="fcad8a57-2a1a-4abd-84b7-935897e4fe06"/>
+
     <patient_program patient_program_id="4616" patient_id="1003" program_id="1" date_enrolled="2013-08-01 00:00:00"
                      creator="1" date_created="2013-09-16 17:53:04" voided="0"
                      uuid="d1315b84-2b18-4605-9bde-0a845bc35ebc" location_id="1"/>
@@ -184,12 +273,20 @@
                      creator="1" date_created="2013-09-16 00:00:00" voided="0"
                      uuid="e8d3e1f8-1eb3-11e3-99f6-00242122a7a8" location_id="1"/>
 
+    <patient_program patient_program_id="3832" patient_id="1006" program_id="2" date_enrolled="2010-08-05 00:00:00"
+                     creator="1" date_created="2013-09-16 00:00:00" voided="0"
+                     uuid="848a662d-3bdf-4d66-863e-3430d6bc45c2" location_id="3"/>
+
     <patient_state patient_state_id="6552" patient_program_id="4616" state="28" start_date="2013-08-01" creator="1"
                    date_created="2013-09-16 17:53:04" voided="0"/>
 
     <patient_state patient_state_id="5219" patient_program_id="3831" state="29" start_date="2010-08-05"
                    end_date="2011-03-30" creator="1" date_created="2013-09-16 00:00:00" voided="0"
                    uuid="e8dbd667-1eb3-11e3-99f6-00242122a7a8"/>
+
+    <patient_state patient_state_id="5220" patient_program_id="3832" state="9" start_date="2010-08-05"
+                   creator="1" date_created="2013-09-16 00:00:00" voided="0"
+                   uuid="79ef0709-a85a-439d-8915-c0dda474410d"/>
 
     <encounter_type encounter_type_id="32" name="STARV: LIVRO PRE-TARV"
                     description="Representao livro de registo PRE-TARV" creator="1" date_created="2012-02-29 17:05:14"
@@ -206,6 +303,9 @@
     <encounter_type encounter_type_id="9" name="S.TARV: PEDIATRIA SEGUIMENTO"
                     description="Seguimento visita do paciente pediatria" creator="1" date_created="2008-10-13 11:35:34"
                     retired="0" uuid="e278fce4-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <encounter_type encounter_type_id="18" name="S.TARV: FARMACIA" description="Farmacia" creator="1"
+                    date_created="2008-10-25 15:07:04" retired="0" uuid="e279133c-1d5f-11e0-b929-000c29ad1d07"/>
 
     <encounter encounter_id="32672" encounter_type="32" patient_id="2" encounter_datetime="2013-06-17 00:00:00"
                creator="1" date_created="2013-06-19 12:55:48" voided="0"
@@ -247,6 +347,10 @@
                encounter_datetime="2013-05-03 00:00:00" creator="1" date_created="2013-06-19 10:03:01" voided="0"
                uuid="e9581887-572f-4731-8776-5039e19c2cc4" location_id="2"/>
 
+    <encounter encounter_id="11666" encounter_type="6" patient_id="1007" location_id="3"
+               encounter_datetime="2013-01-09 00:00:00" creator="1" date_created="2013-06-15 00:36:54" voided="0"
+               uuid="4218c9c9-6f22-1000-9281-8f1ee524029e"/>
+
     <obs obs_id="274087" person_id="2" concept_id="6263" encounter_id="32672" obs_datetime="2013-06-17 00:00:00"
          value_coded="6259" creator="1" date_created="2013-06-19 12:55:48" voided="0"
          uuid="71d82d79-429d-4fbd-b05d-2e59e2b255b6" location_id="1"/>
@@ -287,5 +391,8 @@
          value_coded="1066" creator="1" date_created="2013-06-19 10:03:01" voided="0"
          uuid="9f3e7d16-6480-4f11-aa25-1103fc78ff4e" location_id="2"/>
 
+    <obs obs_id="161895" person_id="1007" concept_id="1410" encounter_id="11666" obs_datetime="2013-01-09 00:00:00"
+         location_id="3" value_datetime="2013-01-23 00:00:00" creator="1" date_created="2013-06-15 00:36:54" voided="0"
+         uuid="cc1c4b86-5257-4d80-8a4c-909e363055ba"/>
 
 </dataset>

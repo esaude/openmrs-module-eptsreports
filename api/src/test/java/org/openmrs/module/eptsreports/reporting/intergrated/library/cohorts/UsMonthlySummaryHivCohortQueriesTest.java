@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsTest;
@@ -199,5 +200,24 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
     assertEquals(1, evaluatedCohort.getMemberIds().size());
 
     assertTrue(evaluatedCohort.getMemberIds().contains(1005));
+  }
+
+  @Test
+  @Ignore("DATEDIFF syntax used in TXTBQueries#abandonedWithNoNotification is not compatible with H2")
+  public void getAbandonedArtShouldReturnPatientsWhoAbandonedArt() throws EvaluationException {
+
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getAbandonedArt();
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("onOrBefore", "", Date.class), getEndDate());
+    parameters.put(new Parameter("location", "", Location.class), new Location(3));
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, parameters);
+
+    assertEquals(1, evaluatedCohort.getMemberIds().size());
+
+    // Notified abandonment
+    assertTrue(evaluatedCohort.getMemberIds().contains(1006));
+
+    // Abandonment with no notification
+    assertTrue(evaluatedCohort.getMemberIds().contains(1007));
   }
 }
