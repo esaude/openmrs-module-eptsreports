@@ -276,6 +276,13 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.sTarvPediatriaInicialAEncounterTypeUuid");
     return getEncounterType(uuid);
   }
+  // encounterType_id = 3
+  public EncounterType getARVPediatriaInitialBEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.sTarvPediatriaInicialBEncounterTypeUuid");
+    return getEncounterType(uuid);
+  }
 
   // encounterType_id = 18
   public EncounterType getARVPharmaciaEncounterType() {

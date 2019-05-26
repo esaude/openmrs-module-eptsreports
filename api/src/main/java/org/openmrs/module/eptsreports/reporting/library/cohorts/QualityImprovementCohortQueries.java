@@ -68,7 +68,8 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getPtvEtvProgram().getProgramId(),
             commonMetadata.getNumberOfWeeksPregnant().getConceptId(),
-            commonMetadata.getPregnantConcept().getConceptId());
+            commonMetadata.getPregnantConcept().getConceptId(),
+            commonMetadata.getGestationConcept().getConceptId());
 
     sqlCohortDefinition.setQuery(query);
 
@@ -213,7 +214,8 @@ public class QualityImprovementCohortQueries {
                 hivMetadata.getARVPlanConcept().getConceptId(),
                 commonMetadata.getStartDrugsConcept().getConceptId(),
                 hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata.getARVStartDate().getConceptId()));
+                hivMetadata.getARVStartDate().getConceptId(),
+                commonMetadata.getGestationConcept().getConceptId()));
 
     return sqlCohortDefinition;
   }
@@ -255,16 +257,16 @@ public class QualityImprovementCohortQueries {
       List<EncounterType> encounterTypes,
       List<Concept> values) {
     CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-    cd.setName("uses isonazid");
+    cd.setName("uses isoniazid");
     cd.setQuestion(question);
     cd.setOperator(operator);
     cd.setTimeModifier(timeModifier);
     cd.setEncounterTypeList(encounterTypes);
     cd.setValueList(values);
 
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrAfter", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "After Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
     return cd;
   }
@@ -288,9 +290,9 @@ public class QualityImprovementCohortQueries {
     cd.setEncounterTypeList(encounterTypes);
     cd.setValueList(values);
 
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrAfter", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "After Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
     return cd;
   }
@@ -323,7 +325,7 @@ public class QualityImprovementCohortQueries {
     DateObsCohortDefinition cd = new DateObsCohortDefinition();
     cd.setName("patientsWithNotificationDateInForms");
     cd.setQuestion(tbMetadata.getTBDrugTreatmentStartDate());
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
+    cd.setTimeModifier(TimeModifier.ANY);
 
     List<EncounterType> encounterTypes = new ArrayList<EncounterType>();
     encounterTypes.add(tbMetadata.getTBLivroEncounterType());
@@ -336,8 +338,8 @@ public class QualityImprovementCohortQueries {
     cd.setOperator1(RangeComparator.GREATER_EQUAL);
     cd.setOperator2(RangeComparator.LESS_EQUAL);
 
-    cd.addParameter(new Parameter("startDate", "After Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "Before Date", Date.class));
+    cd.addParameter(new Parameter("value1", "After Date", Date.class));
+    cd.addParameter(new Parameter("value2", "Before Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     return cd;
@@ -364,8 +366,8 @@ public class QualityImprovementCohortQueries {
     cd.setEncounterTypeList(encounterTypes);
     cd.setValueList(values);
 
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "Before Date", Date.class));
+    cd.addParameter(new Parameter("OnOrBefore", "After Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     return cd;
@@ -384,12 +386,15 @@ public class QualityImprovementCohortQueries {
 
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
-    //
+    // INICIO DE TRATAMENTO DE TUBERCULOSE DATA NOTIFICADA NAS FICHAS DE: SEGUIMENTO, RASTREIO E
+    // LIVRO TB
     cd.addSearch(
-        "DATAINICIO", EptsReportUtils.map(getPatientsWithNotificationDateInForms(), mappings));
+        "DATAINICIO",
+        EptsReportUtils.map(
+            getPatientsWithNotificationDateInForms(),
+            "value1=${startDate},value2=${endDate},location=${location}"));
 
-    // PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA DE TUBERCULOSE - NUM PERIODO São pacientes
-    // inscritos
+    // PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA DE TUBERCULOSE - NUM PERIODO
     cd.addSearch(
         "TBPROGRAMA",
         EptsReportUtils.map(
@@ -409,7 +414,7 @@ public class QualityImprovementCohortQueries {
                     hivMetadata.getARVPediatriaSeguimentoEncounterType(),
                     tbMetadata.getTBProcessoEncounterType()),
                 Arrays.asList(tbMetadata.getStartDrugsConcept())),
-            "onOrBefore=${startDate},onOrAfter=${endDate},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     cd.setCompositionString("DATAINICIO OR TBPROGRAMA OR INICIOST");
     return cd;
@@ -447,12 +452,12 @@ public class QualityImprovementCohortQueries {
                 BaseObsCohortDefinition.TimeModifier.ANY,
                 SetComparator.IN,
                 Arrays.asList(
-                    hivMetadata.getARVPediatriaInitialEncounterType(),
+                    hivMetadata.getARVPediatriaInitialBEncounterType(),
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getARVPediatriaSeguimentoEncounterType(),
                     tbMetadata.getTBRastreioEncounterType()),
                 Arrays.asList(commonMetadata.getYesConcept())),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            "onOrAfter=${startDate-2y},onOrBefore=${startDate-1d},locationList=${location}"));
 
     cd.addSearch(
         "RASTREIOPOSITIVO",
@@ -465,13 +470,13 @@ public class QualityImprovementCohortQueries {
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getARVPediatriaSeguimentoEncounterType()),
                 Arrays.asList(commonMetadata.getYesConcept())),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${dataFinalAvaliacao},locationList=${location}"));
 
     cd.addSearch(
         "TRATAMENTOTB",
         EptsReportUtils.map(
             getPatientsWhichWhereNotifiedOfTBTreatmentInARV(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate-2y},endDate=${dataFinalAvaliacao},location=${location}"));
 
     cd.setCompositionString("AMOSTRATARV NOT (TRATAMENTOTB OR RASTREIOPOSITIVO OR PROFILAXIATPI)");
     return cd;
@@ -498,9 +503,9 @@ public class QualityImprovementCohortQueries {
     cd.setOperator1(RangeComparator.GREATER_EQUAL);
     cd.setOperator2(RangeComparator.LESS_EQUAL);
 
-    cd.addParameter(new Parameter("startDate", "After Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "Before Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("value1", "After Date", Date.class));
+    cd.addParameter(new Parameter("value2", "Before Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
     return cd;
   }
@@ -525,7 +530,7 @@ public class QualityImprovementCohortQueries {
         "PROFILAXIAINICIO",
         EptsReportUtils.map(
             getPatientsWhoStartedProfilaxiaWithIzoniazida(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "value1=${startDate},value2=${dataFinalAvaliacao},locationList=${location}"));
     cd.addSearch(
         "AMOSTRAELEGIVELTPI",
         EptsReportUtils.map(
@@ -545,8 +550,8 @@ public class QualityImprovementCohortQueries {
    *
    * @return
    */
+  @DocumentedDefinition(value = "patientWhoStartedIsoniazidProphylaxisInInclusioPeriodAndCompleted")
   public CohortDefinition getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriodAndCompleted() {
-
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName(
         "patientWhoStartedIsoniazidProphylaxisInInclusioPeriodAndCompleted");
@@ -662,22 +667,19 @@ public class QualityImprovementCohortQueries {
     cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    String mappings =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
-
     // PACIENTES COM RASTREIO DE TUBERCULOSE POSITIVO
     cd.addSearch(
         "RASTREIOPOSITIVO",
         EptsReportUtils.map(
             tbTracking(
                 tbMetadata.getTbScreeningConcept(),
-                BaseObsCohortDefinition.TimeModifier.LAST,
+                TimeModifier.LAST,
                 SetComparator.IN,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getARVPediatriaSeguimentoEncounterType()),
                 Arrays.asList(commonMetadata.getYesConcept())),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${dataFinalAvaliacao},locationList=${location}"));
 
     // MQ_GRAVIDAS INSCRITAS NO SERVICO TARV E QUE INICIARAM TARV NO PERIODO DE INCLUSAO (AMOSTRA
     // GRAVIDA)
@@ -696,19 +698,19 @@ public class QualityImprovementCohortQueries {
                 BaseObsCohortDefinition.TimeModifier.ANY,
                 SetComparator.IN,
                 Arrays.asList(
-                    hivMetadata.getARVPediatriaInitialEncounterType(),
+                    hivMetadata.getARVPediatriaInitialBEncounterType(),
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getARVPediatriaSeguimentoEncounterType(),
                     tbMetadata.getTBRastreioEncounterType()),
                 Arrays.asList(commonMetadata.getYesConcept())),
-            "onOrAfter=${startDate-2y},onOrBefore=${endDate-1d},location=${location}"));
+            "onOrAfter=${startDate-2y},onOrBefore=${startDate-1d},locationList=${location}"));
 
     // PACIENTES NOTIFICADOS DO TRATAMENTO DE TB NO SERVICO TARV: DIFERENTES FONTES
     cd.addSearch(
         "TRATAMENTOTB",
         EptsReportUtils.map(
             getPatientsWhichWhereNotifiedOfTBTreatmentInARV(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate-2y},endDate=${dataFinalAvaliacao},location=${location}"));
 
     cd.setCompositionString(
         "AMOSTRAGRAVIDA NOT (PROFILAXIAINH OR TRATAMENTOTB OR RASTREIOPOSITIVO)");
@@ -746,19 +748,19 @@ public class QualityImprovementCohortQueries {
                 BaseObsCohortDefinition.TimeModifier.ANY,
                 SetComparator.IN,
                 Arrays.asList(
-                    hivMetadata.getARVPediatriaInitialEncounterType(),
+                    hivMetadata.getARVPediatriaInitialBEncounterType(),
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getARVPediatriaSeguimentoEncounterType(),
                     tbMetadata.getTBRastreioEncounterType()),
                 Arrays.asList(commonMetadata.getYesConcept())),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${dataFinalAvaliacao},locationList=${location}"));
 
     // PACIENTES QUE INICIARAM PROFILAXIA COM ISONIAZIDA
     cd.addSearch(
         "PROFILAXIAINHINICIO",
         EptsReportUtils.map(
             getPatientsWhoStartedProfilaxiaWithIzoniazida(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "value1=${startDate},value2=${dataFinalAvaliacao},locationList=${location}"));
 
     cd.setCompositionString("(PROFILAXIAINH OR PROFILAXIAINHINICIO) AND GRAVIDAELEGINH");
 
@@ -1367,6 +1369,7 @@ public class QualityImprovementCohortQueries {
    * PACIENTES QUE ESTAO HA MAIS DE 6 MESES EM TARV Sao pacientes que iniciaram tarv ha mais de 6
    * meses
    */
+  @DocumentedDefinition(value = "patientsInTARVMoreThan6Months")
   public CohortDefinition getPatientsInTARVMoreThan6Months() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("patientsInTARVMoreThan6Months");
@@ -1485,13 +1488,6 @@ public class QualityImprovementCohortQueries {
 
     String mappings = "endDate=${endDate},location=${location}";
 
-    // ALGUMA VEZ ESTEVE EM TRATAMENTO ARV - PERIODO FINAL
-    cd.addSearch(
-        "CONCEITO1255",
-        EptsReportUtils.map(
-            getPatientWhoWereInARVTreatmentFinalPeriod(),
-            "onOrBefore=${endDate},location=${location}"));
-
     // PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA TRATAMENTO ARV (TARV) - PERIODO FINAL
     cd.addSearch(
         "PROGRAMA", EptsReportUtils.map(getPatientEnrolledARTProgramFinalPeriod(), mappings));
@@ -1501,6 +1497,13 @@ public class QualityImprovementCohortQueries {
         "CONCEITODATA",
         EptsReportUtils.map(
             getPatientsInitializedTARVRegisteredInConceptStartDateInFollowingForm(),
+            "onOrBefore=${endDate},location=${location}"));
+
+    // ALGUMA VEZ ESTEVE EM TRATAMENTO ARV - PERIODO FINAL
+    cd.addSearch(
+        "CONCEITO1255",
+        EptsReportUtils.map(
+            getPatientWhoWereInARVTreatmentFinalPeriod(),
             "onOrBefore=${endDate},location=${location}"));
 
     // ALGUMA VEZ ESTEVE EM TRATAMENTO ARV - PERIODO FINAL - FARMACIA
@@ -1543,7 +1546,7 @@ public class QualityImprovementCohortQueries {
 
     String mappings = "endDate=${endDate},location=${location}";
 
-    // ALGUMA VEZ ESTEVE EM TRATAMENTO ARV -  PERIODO FINAL - REAL (COMPOSICAO)
+    // ALGUMA VEZ ESTEVE EM TRATAMENTO ARV - PERIODO FINAL - REAL (COMPOSICAO)
     cd.addSearch(
         "ALGUMAVEZTARV",
         EptsReportUtils.map(getPatientInTARVFinalPeriodRealComposition(), mappings));
@@ -1655,7 +1658,8 @@ public class QualityImprovementCohortQueries {
             commonMetadata.getNumberOfWeeksPregnant().getConceptId(),
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getPtvEtvProgram().getProgramId()));
+            hivMetadata.getPtvEtvProgram().getProgramId(),
+            commonMetadata.getGestationConcept().getConceptId()));
 
     return sqlCohortDefinition;
   }
@@ -1796,7 +1800,7 @@ public class QualityImprovementCohortQueries {
         "LACTANTE",
         EptsReportUtils.map(
             getInfantPatientsEnrolledInTarvSample(),
-            "startDate=${startDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     // GRAVIDAS INSCRITAS NO SERVIÇO TARV
     cd.addSearch(
@@ -1849,7 +1853,7 @@ public class QualityImprovementCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String mappings = "startDate=${endDate-24m},endDate=${endDate},location=${location}";
 
     // PACIENTES ACTUALMENTE EM TARV E QUE ESTAO HA MAIS DE 6 MESES EM TRATAMENTO
     cd.addSearch(
@@ -1968,12 +1972,12 @@ public class QualityImprovementCohortQueries {
         "ACTUALTARV",
         EptsReportUtils.map(
             getPatientsEnrolledInARTServiceNotIncludingNotNotifiedAbandonment(),
-            "endDate=${endDate},location=${location}"));
+            "endDate=${startDate},location=${location}"));
     // PACIENTES QUE ESTAO HA MAIS DE 6 MESES EM TARV
     cd.addSearch(
         "HA6MESESEMTARV",
         EptsReportUtils.map(
-            getPatientsInTARVMoreThan6Months(), "endDate=${endDate},location=${location}"));
+            getPatientsInTARVMoreThan6Months(), "endDate=${startDate},location=${location}"));
 
     // PACIENTES COM CD4>200 OU CV<1000 NOS ULTIMOS 12 MESES
     cd.addSearch(
@@ -1987,14 +1991,18 @@ public class QualityImprovementCohortQueries {
         "CONSULTA", EptsReportUtils.map(getPatientWithAtLeastOneEncounterInPeriod(), mappings));
 
     // NOTIFICACÃO DE SARCOMA DE KAPOSI
-    cd.addSearch("KAPOSI", EptsReportUtils.map(getPatientsNotifiedSarcomaKaposi(), mappings));
+    cd.addSearch(
+        "KAPOSI",
+        EptsReportUtils.map(
+            getPatientsNotifiedSarcomaKaposi(),
+            "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
 
     // MQ_PACIENTES QUE INICIARAM TRATAMENTO DE TUBERCULOSE E NAO TERMINARAM ATE PERIODO FINAL
     cd.addSearch(
         "TUBERCULOSE",
         EptsReportUtils.map(
             getPatientsStartTuberculoseTreatmentNotComplete(),
-            "endDate=${endDate},location=${location}"));
+            "endDate=${startDate},location=${location}"));
 
     cd.setCompositionString(
         "(ACTUALTARV AND HA6MESESEMTARV AND CVCD4 AND CONSULTA) NOT (KAPOSI OR TUBERCULOSE)");
@@ -2056,10 +2064,11 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Location.class));
+    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String mappings =
+        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
 
     // PACIENTES ACTUALMENTE EM TARV ELEGIVEIS  PARA SEREM  INSCRITOS EM ALGUM MODELO DIFERENCIADO
     cd.addSearch(
@@ -2071,7 +2080,7 @@ public class QualityImprovementCohortQueries {
         "INSCRITOSGAAC",
         EptsReportUtils.map(
             getPatientsEnrolledInGaacInAPeriod(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
 
     // PACIENTES QUE TIVERAM LEVANTAMENTO DE ARVs NOS ULTIMOS 5 MESES E QUE FORAM MARCADOS PARA
     // PROXIMO LEVANTAMENTO PARA 3 MESES
@@ -2079,7 +2088,7 @@ public class QualityImprovementCohortQueries {
         "LEVANTAMENTO3MESES",
         EptsReportUtils.map(
             getPatientsTookARVInLast5MonthAndWereMarkedToNextEncounter(),
-            "endDate=${endDate},location=${location}"));
+            "endDate=${dataFinalAvaliacao},location=${location}"));
 
     // PACIENTES QUE TIVERAM CONSULTA CLINICA NOS ULTIMOS 7 MESES E QUE FORAM MARCADOS PARA CONSULTA
     // SEGUINTE PARA 6 MESES
@@ -2087,7 +2096,7 @@ public class QualityImprovementCohortQueries {
         "CONSULTA6MESES",
         EptsReportUtils.map(
             getPatientsWhoHadEnconterInLast7MonthAndWereMarkedToNextEncounterIn6Months(),
-            "endDate=${endDate},location=${location}"));
+            "endDate=${dataFinalAvaliacao},location=${location}"));
 
     cd.setCompositionString(
         "ELEGIVEIS AND (INSCRITOSGAAC OR LEVANTAMENTO3MESES OR CONSULTA6MESES)");
@@ -2123,7 +2132,7 @@ public class QualityImprovementCohortQueries {
     cd.addSearch(
         "HA6MESESEMTARV",
         EptsReportUtils.map(
-            getPatientsInTARVMoreThan6Months(), "endDate=${endDate},location=${location}"));
+            getPatientsInTARVMoreThan6Months(), "endDate=${startDate},location=${location}"));
 
     // ACTUALMENTE EM TARV ATÉ UM DETERMINADO PERIODO FINAL - SEM INCLUIR ABANDONOS NAO NOTIFICADOS:
     // SEM INCLUIR GRÁVIDAS OU LACTANTES
@@ -2131,7 +2140,7 @@ public class QualityImprovementCohortQueries {
         "ACTUALTARV",
         EptsReportUtils.map(
             getPatientsEnrolledInARTServiceNotIncludingNotNotifiedAbandonment(),
-            "startDate=${startDate},location=${location}"));
+            "endDate=${startDate},location=${location}"));
 
     // PACIENTES COM PELO MENOS UMA CONSULTA CLINICA NUM DETERMINADO PERIODO
     cd.addSearch(
@@ -2142,10 +2151,14 @@ public class QualityImprovementCohortQueries {
         "TUBERCULOSE",
         EptsReportUtils.map(
             getPatientsStartTuberculoseTreatmentNotComplete(),
-            "endDate=${endDate},location=${location}"));
+            "endDate=${startDate},location=${location}"));
 
     // NOTIFICACÃO DE SARCOMA DE KAPOSI
-    cd.addSearch("KAPOSI", EptsReportUtils.map(getPatientsNotifiedSarcomaKaposi(), mappings));
+    cd.addSearch(
+        "KAPOSI",
+        EptsReportUtils.map(
+            getPatientsNotifiedSarcomaKaposi(),
+            "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
 
     cd.setCompositionString(
         "(ACTUALTARV AND HA6MESESEMTARV AND CVCD4 AND CONSULTA) NOT (KAPOSI OR TUBERCULOSE)");
@@ -2334,5 +2347,23 @@ public class QualityImprovementCohortQueries {
 
     cd.setCompositionString("(CLINICAS OR IMUNOLOGICAS) AND TARV");
     return cd;
+  }
+
+  /* PACIENTES INSCRITOS NO SERVICO TARV - PERIODO FINAL (SQL)*/
+  @DocumentedDefinition(value = "baseCohort")
+  public CohortDefinition getBaseCohort() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("baseCohort");
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    sqlCohortDefinition.setQuery(
+        QualiltyImprovementQueries.getPatientsEnrolledInTARVServiceFinalPeriodoSQL(
+            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getHIVCareProgram().getProgramId(),
+            hivMetadata.getARTProgram().getProgramId()));
+
+    return sqlCohortDefinition;
   }
 }

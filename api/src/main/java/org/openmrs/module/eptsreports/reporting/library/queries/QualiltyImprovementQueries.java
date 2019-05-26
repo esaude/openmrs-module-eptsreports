@@ -21,7 +21,8 @@ public class QualiltyImprovementQueries {
       int arvProgram, // program_id=2
       int ptvProgram, // program_id=8
       int numberOfWeekPregnant, // concept_id=1279
-      int pregnantConcept // concept_id=1982
+      int pregnantConcept, // concept_id=1982
+      int pregancyConcept // value_coded=44
       ) {
     String query =
         "select inicio.patient_id "
@@ -38,11 +39,9 @@ public class QualiltyImprovementQueries {
             + adultoSeguimentoEncounterType
             + ","
             + arvPediatriaSeguimentoEncounterType
-            + ") and "
-            + "o.concept_id="
+            + ") and o.concept_id="
             + arvPlan
-            + " and "
-            + "o.value_coded="
+            + " and o.value_coded="
             + startDrugsConcept
             + " and  "
             + "	e.encounter_datetime between :startDate and :endDate and e.location_id=:location "
@@ -123,7 +122,9 @@ public class QualiltyImprovementQueries {
             + "	inner join obs o on e.encounter_id=o.encounter_id "
             + "	where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
             + pregnantConcept
-            + " and value_coded=44 and  "
+            + " and value_coded="
+            + pregancyConcept
+            + " and  "
             + "	e.encounter_type in ("
             + arvAdultInitialEncounterType
             + ","
@@ -327,7 +328,8 @@ public class QualiltyImprovementQueries {
       int arvPlan, // concept_id=1255
       int startDrugsConcept, // concept_id=1256
       int artProgram, // program_id=2
-      int arvStartDate // concept_id=1190
+      int arvStartDate, // concept_id=1190
+      int pregancyConcept // value_coded=44
       ) {
 
     String query =
@@ -341,7 +343,9 @@ public class QualiltyImprovementQueries {
             + "			inner join obs o on e.encounter_id=o.encounter_id  "
             + "	where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
             + pregnantConcept
-            + " and value_coded=44 and   "
+            + " and value_coded="
+            + pregancyConcept
+            + " and   "
             + "			e.encounter_type in ("
             + arvAdultInitialEncounterType
             + ","
@@ -1809,7 +1813,8 @@ public class QualiltyImprovementQueries {
       int numberOfWeekPregnant, // concept_id=1279
       int arvAdultInitialEncounterType, // 5
       int adultoSeguimentoEncounterType, // 6
-      int ptvEtvProgram // program_id=8
+      int ptvEtvProgram, // program_id=8
+      int pregancyConcept // value_coded=44
       ) {
     String query =
         "Select 	p.patient_id  "
@@ -1818,7 +1823,9 @@ public class QualiltyImprovementQueries {
             + "		inner join obs o on e.encounter_id=o.encounter_id  "
             + "where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
             + pregnantConcept
-            + " and value_coded=44 and   "
+            + " and value_coded="
+            + pregancyConcept
+            + " and   "
             + "		e.encounter_type in ("
             + arvAdultInitialEncounterType
             + ","
@@ -2521,6 +2528,57 @@ public class QualiltyImprovementQueries {
             + who4AdultStageConcept
             + ") "
             + "	) and valor_estadio_depois>valor_estadio_antes";
+
+    return query;
+  }
+
+  /*PACIENTES INSCRITOS NO SERVICO TARV - PERIODO FINAL (SQL)*/
+  public static String getPatientsEnrolledInTARVServiceFinalPeriodoSQL(
+      int arvAdultInitialEncounterType, // 5
+      int arvPediatriaInitialEncounterType, // 7
+      int tarvService, // program_id=1
+      int artProgram // program_id=2
+      ) {
+    String query =
+        "select p.patient_id  "
+            + "from patient p inner join encounter e on e.patient_id=p.patient_id  "
+            + "where e.voided=0 and p.voided=0 and e.encounter_type in ("
+            + arvAdultInitialEncounterType
+            + ","
+            + arvPediatriaInitialEncounterType
+            + ") and e.encounter_datetime<=:endDate and e.location_id = :location "
+            + " "
+            + "union "
+            + " "
+            + "select 	pg.patient_id "
+            + "from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "where 	pg.voided=0 and p.voided=0 and program_id="
+            + tarvService
+            + " and date_enrolled<=:endDate and location_id=:location "
+            + " "
+            + "union "
+            + " "
+            + "select 	pg.patient_id "
+            + "from 	patient p  "
+            + "		inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "		inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + "where 	pg.voided=0 and ps.voided=0 and p.voided=0 and  "
+            + "		pg.program_id="
+            + tarvService
+            + " and ps.state=28 and ps.start_date=pg.date_enrolled and  "
+            + "		ps.start_date<=:endDate and location_id=:location "
+            + "		 "
+            + "union "
+            + "		 "
+            + "select 	pg.patient_id "
+            + "from 	patient p  "
+            + "		inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "		inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + "where 	pg.voided=0 and ps.voided=0 and p.voided=0 and  "
+            + "		pg.program_id="
+            + artProgram
+            + " and ps.state=29 and  "
+            + "		ps.start_date<=:endDate and location_id=:location";
 
     return query;
   }

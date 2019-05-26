@@ -230,6 +230,15 @@
 			UUID for the S.TARV: PEDIATRIA INICIAL A encounter type
 		</description>
 	</globalProperty>
+	
+	<globalProperty>
+		<property>@MODULE_ID@.sTarvPediatriaInicialBEncounterTypeUuid
+		</property>
+		<defaultValue>e278f5aa-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: PEDIATRIA INICIAL B encounter type
+		</description>
+	</globalProperty>
 
 	<globalProperty>
 		<property>@MODULE_ID@.hivViralLoadConceptUuid</property>
@@ -287,7 +296,8 @@
 			UUID for the GESTANTE concept
 		</description>
 	</globalProperty>
-
+	
+	
 	<globalProperty>
 		<property>@MODULE_ID@.gestationConceptUuid</property>
 		<defaultValue>e1cdd58a-1d5f-11e0-b929-000c29ad1d07</defaultValue>

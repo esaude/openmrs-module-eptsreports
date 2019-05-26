@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Properties;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.QualityImprovementCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.InitQltyImpDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -23,6 +24,8 @@ public class SetupQualityImprovementReport extends EptsDataExportManager {
   @Autowired protected GenericCohortQueries genericCohortQueries;
 
   @Autowired private InitQltyImpDataSet initQltyImpDataSet;
+
+  @Autowired QualityImprovementCohortQueries qualityImprovementCohortQueries;
 
   @Override
   public String getUuid() {
@@ -62,7 +65,8 @@ public class SetupQualityImprovementReport extends EptsDataExportManager {
     // add a base cohort here to help in calculations running
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
-            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+            qualityImprovementCohortQueries.getBaseCohort(),
+            "endDate=${endDate},location=${location}"));
 
     return reportDefinition;
   }

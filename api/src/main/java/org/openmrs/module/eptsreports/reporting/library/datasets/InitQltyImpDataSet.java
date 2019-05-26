@@ -232,7 +232,9 @@ public class InitQltyImpDataSet extends BaseDataSet {
     dataSetDefinition.addColumn(
         "TPIDENOM3",
         "patientsEnrolledInARVSamplePregantElegibleProphylaxisIsoniazid",
-        EptsReportUtils.map(tpiDeNom3, mappings),
+        EptsReportUtils.map(
+            tpiDeNom3,
+            "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}"),
         "");
 
     /*RASTREIOITS*/
@@ -429,21 +431,24 @@ public class InitQltyImpDataSet extends BaseDataSet {
         getDisagregateAdultsAndChildrenSColumn());
 
     /** MODELODIFDENOM */
+    // getPatientsInARTElegibleToBeEnrolledInSomeDiffModel
     CohortIndicator modeloDifNom =
         eptsGeneralIndicator.getIndicator(
             "patientsInARTElegibleToBeEnrolledInSomeDiffModel",
             EptsReportUtils.map(
                 qualityImprovementCohortQueries
-                    .getPatientsInARTElegibleToBeEnrolledInSomeDiffModel(),
+                    .getPatientInARTElegibleToBeEnrolledInSomeDiffModel(),
                 mappingsWitshEvaluate));
     modeloDifNom.addParameter(
-        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+        new Parameter("dataFinalAvaliacao", "Data Final Avaliacao", Date.class));
 
     addRow(
         dataSetDefinition,
         "MODELODIFDENOM.IDADE",
         "patientsInARTElegibleToBeEnrolledInSomeDiffModel",
-        EptsReportUtils.map(modeloDifNom, mappingsWitshEvaluate),
+        EptsReportUtils.map(
+            modeloDifNom,
+            "startDate=${startDate},endDate=${endDate},location=${location},dataFinalAvaliacao=${dataFinalAvaliacao}"),
         getDisagregateAdultsAndChildrenSColumn());
 
     /*CVNUM*/
