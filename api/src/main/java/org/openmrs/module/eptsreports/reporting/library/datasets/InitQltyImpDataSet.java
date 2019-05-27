@@ -36,9 +36,6 @@ public class InitQltyImpDataSet extends BaseDataSet {
   private String mappingsWitshEvaluate =
       "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
 
-  private String mappings =
-      "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao}";
-
   public DataSetDefinition constructInitQltyImpDataSet() {
     CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
     dataSetDefinition.setName("Quality Improvement DataSet");
@@ -50,10 +47,10 @@ public class InitQltyImpDataSet extends BaseDataSet {
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
 
-    /* initial encounter for Adults & Children */
+    /* CONSULTAINIC */
     CohortIndicator consultanic =
         eptsGeneralIndicator.getIndicator(
-            "patientInARVSampleWithEncounterIn7DaysAfterDianosis",
+            "MQ_PACIENTES NA AMOSTRA TARV E QUE TIVERAM CONSULTA CLINICA DENTRO DE 7 DIAS APOS DIAGNOSTICO",
             EptsReportUtils.map(
                 qualityImprovementCohortQueries
                     .getPatientInARVSampleWithEncounterIn7DaysAfterDianosis(),
@@ -67,10 +64,10 @@ public class InitQltyImpDataSet extends BaseDataSet {
         EptsReportUtils.map(consultanic, mappingsWitshEvaluate),
         getDisagregateAdultsAndChildrenSColumn());
 
-    /* initial ARV period inclusion adult and children */
+    /* COORTEINIC*/
     CohortIndicator coortenic =
         eptsGeneralIndicator.getIndicator(
-            "initialARVInInclusionPeriodWithAtLeastOneEncounter",
+            "MQ_INICIO TARV NO PERIODO DE INCLUSAO (AMOSTRA TARV) - NOVO",
             EptsReportUtils.map(
                 qualityImprovementCohortQueries
                     .getPatientStartedARVInInclusionPeriodWithAtLeastOneEncounter(),
@@ -80,13 +77,13 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "COORTEINIC.IDADE",
-        "initial  ARV period inclusion adult and  children",
+        "MQ_INICIO TARV NO PERIODO DE INCLUSAO (AMOSTRA TARV) - NOVO",
         EptsReportUtils.map(
             coortenic,
             "startDate=${startDate},endDate=${endDate},location=${location},dataFinalAvaliacao=${dataFinalAvaliacao}"),
         getDisagregateAdultsAndChildrenSColumn());
 
-    /* patients In ARV Sample Not In TB Track Encounter */
+    /* RASTREIOTB */
     CohortIndicator reatreioTB =
         eptsGeneralIndicator.getIndicator(
             "patientsInARVSampleNotInTBTrackEncounter",
@@ -102,7 +99,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
         EptsReportUtils.map(reatreioTB, mappingsWitshEvaluate),
         getDisagregateAdultsAndChildrenSColumn());
 
-    /* rastreioGravida */
+    /* RASTREIOTBGRAVIDA */
     CohortIndicator reatreioGravida =
         eptsGeneralIndicator.getIndicator(
             "pregnantPatientsInTBTrackForEachEncounter",
@@ -118,10 +115,10 @@ public class InitQltyImpDataSet extends BaseDataSet {
         EptsReportUtils.map(reatreioGravida, mappingsWitshEvaluate),
         "");
 
-    /* gravidas inic */
+    /* GRAVIDASINIC */
     CohortIndicator gravidaInic =
         eptsGeneralIndicator.getIndicator(
-            "pragnantPatientsEnrolledInARVThatStartedInInclusionPeriodPregnantSample",
+            "MQ_GRAVIDAS INSCRITAS NO SERVICO TARV E QUE INICIARAM TARV NO PERIODO DE INCLUSAO (AMOSTRA GRAVIDA)",
             EptsReportUtils.map(
                 qualityImprovementCohortQueries
                     .getPragnantPatientsEnrolledInARVThatStartedInInclusionPeriodPregnantSample(),
@@ -129,7 +126,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "GRAVIDASINIC",
-        "gravidas inicial",
+        "MQ_GRAVIDAS INSCRITAS NO SERVICO TARV E QUE INICIARAM TARV NO PERIODO DE INCLUSAO (AMOSTRA GRAVIDA)",
         EptsReportUtils.map(
             gravidaInic, "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
@@ -483,7 +480,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
         "patientStartedARVInInclusionPeriodWithAtLeastOneEncounter",
         EptsReportUtils.map(
             cvdenom,
-            "startDate=${startDate},endDate=${endDate},location=${location},dataFinalAvaliacao=${dataFinalAvaliacao}"),
+            "startDate=${dataFinalAvaliacao-12m+1d},endDate=${startDate},location=${location},dataFinalAvaliacao=${dataFinalAvaliacao}"),
         getDisagregateAdultsAndChildrenSColumn());
 
     /*FALENCIANUM*/
