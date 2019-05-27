@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.UsMonthlySummaryHivCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.LocationDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.UsMonthlySummaryHivDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingException;
@@ -57,6 +58,7 @@ public class SetupUSMonthlySummaryHivReport extends EptsDataExportManager {
         map(enrolledInPreArtOrArt, "onOrBefore=${endDate},location=${location}"));
     rd.addDataSetDefinition(
         "S", mapStraightThrough(usMonthlySummaryHivDataset.constructUsMonthlySummaryHivDataset()));
+    rd.addDataSetDefinition("location", mapStraightThrough(new LocationDataSetDefinition()));
     return rd;
   }
 
