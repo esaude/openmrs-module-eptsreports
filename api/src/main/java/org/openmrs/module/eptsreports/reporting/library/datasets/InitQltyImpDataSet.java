@@ -50,7 +50,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     /* CONSULTAINIC */
     CohortIndicator consultanic =
         eptsGeneralIndicator.getIndicator(
-            "MQ_PACIENTES NA AMOSTRA TARV E QUE TIVERAM CONSULTA CLINICA DENTRO DE 7 DIAS APOS DIAGNOSTICO",
+            "patientInARVSampleWithEncounterIn7DaysAfterDianosisO",
             EptsReportUtils.map(
                 qualityImprovementCohortQueries
                     .getPatientInARVSampleWithEncounterIn7DaysAfterDianosis(),
@@ -60,14 +60,14 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "CONSULTAINIC.IDADE",
-        "Adults & Children initital encounter",
+        "MQ_PACIENTES NA AMOSTRA TARV E QUE TIVERAM CONSULTA CLINICA DENTRO DE 7 DIAS APOS DIAGNOSTICO",
         EptsReportUtils.map(consultanic, mappingsWitshEvaluate),
         getDisagregateAdultsAndChildrenSColumn());
 
     /* COORTEINIC*/
     CohortIndicator coortenic =
         eptsGeneralIndicator.getIndicator(
-            "MQ_INICIO TARV NO PERIODO DE INCLUSAO (AMOSTRA TARV) - NOVO",
+            "patientStartedARVInInclusionPeriodWithAtLeastOneEncounter",
             EptsReportUtils.map(
                 qualityImprovementCohortQueries
                     .getPatientStartedARVInInclusionPeriodWithAtLeastOneEncounter(),
@@ -95,7 +95,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "RASTREIOTB.IDADE",
-        "patients In ARV Sample Not In TB Track Encounter",
+        "MQ_PACIENTES NA AMOSTRA TARV E QUE NAO SE ENCONTRAM EM TRATAMENTO DE TB E RASTREIADOS EM CADA CONSULTA",
         EptsReportUtils.map(reatreioTB, mappingsWitshEvaluate),
         getDisagregateAdultsAndChildrenSColumn());
 
@@ -111,14 +111,14 @@ public class InitQltyImpDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "RASTREIOTBGRAVIDA",
-        "rastreio gravidas",
+        "MQ_GRAVIDAS INSCRITAS NO SERVICO TARV (AMOSTRA GRAVIDA) E QUE FORAM RASTREIADAS PARA TUBERCULOSE EM CADA VISITA",
         EptsReportUtils.map(reatreioGravida, mappingsWitshEvaluate),
         "");
 
     /* GRAVIDASINIC */
     CohortIndicator gravidaInic =
         eptsGeneralIndicator.getIndicator(
-            "MQ_GRAVIDAS INSCRITAS NO SERVICO TARV E QUE INICIARAM TARV NO PERIODO DE INCLUSAO (AMOSTRA GRAVIDA)",
+            "pragnantPatientsEnrolledInARVThatStartedInInclusionPeriodPregnantSample",
             EptsReportUtils.map(
                 qualityImprovementCohortQueries
                     .getPragnantPatientsEnrolledInARVThatStartedInInclusionPeriodPregnantSample(),
@@ -144,7 +144,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "TPINUM1.IDADE",
-        "patientsInARVSampleElegibleToProfilaxiaWithIzonzidaTPI",
+        "MQ_PACIENTES NA AMOSTRA TARV ELEGIVEIS A PROFILAXIA COM ISONIAZIDA (TPI) E QUE RECEBERAM",
         EptsReportUtils.map(tpiNum1, mappingsWitshEvaluate),
         getDisagregateAdultsAndChildrenSColumn());
 
@@ -160,7 +160,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "TPIDENOM1.IDADE",
-        "patientsInARVSampleElegibleToProfilaxiaWithIzonzidaInAPeriod",
+        "MQ_PACIENTES NA AMOSTRA TARV ELEGIVEIS A PROFILAXIA COM ISONIAZIDA (TPI) NUM DETERMINADO PERIODO",
         EptsReportUtils.map(tpiDeNom1, mappingsWitshEvaluate),
         getDisagregateAdultsAndChildrenSColumn());
 
@@ -177,7 +177,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "TPINUM2.IDADE",
-        "patientsInARVSampleElegibleToProphilaxisIzoniazidWhomCompleted",
+        "MQ_PACIENTES NA AMOSTRA TARV ELEGIVEIS A PROFILAXIA COM ISONIAZIDA QUE INICIARAM, DEVERIAM TERMINAR E TERMINARAM",
         EptsReportUtils.map(tpiNum2, mappingsWitshEvaluate),
         getDisagregateAdultsAndChildrenSColumn());
 
@@ -194,7 +194,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "TPIDENOM2.IDADE",
-        "patientInARVSampleElegibleToProphylaxisIsoniazisStaredShouldComplete",
+        "MQ_PACIENTES NA AMOSTRA TARV ELEGIVEIS A PROFILAXIA COM ISONIAZIDA, INICIARAM E QUE DEVERIAM TERMINAR",
         EptsReportUtils.map(tpiDeNom2, mappingsWitshEvaluate),
         getDisagregateAdultsAndChildrenSColumn());
 
@@ -210,7 +210,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "TPINUM3",
-        "patientsEnrolledInARVSamplePregantElegibleProphylaxisIsoniazidAndReceived",
+        "MQ_GRAVIDAS INSCRITAS NO SERVICO TARV (AMOSTRA GRAVIDA) ELEGIVEIS A PROFILAXIA COM ISONIAZIDA E QUE RECEBERAM",
         EptsReportUtils.map(
             tpiNum3,
             "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}"),
@@ -228,7 +228,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "TPIDENOM3",
-        "patientsEnrolledInARVSamplePregantElegibleProphylaxisIsoniazid",
+        "MQ_GRAVIDAS INSCRITAS NO SERVICO TARV (AMOSTRA GRAVIDA) ELEGIVEIS A PROFILAXIA COM ISONIAZIDA",
         EptsReportUtils.map(
             tpiDeNom3,
             "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}"),
@@ -247,7 +247,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "RASTREIOITS.IDADE",
-        "pacientsInARVSampleWhichHadScreeningForSTIInEncounterAnalisisPeriod",
+        "MQ_PACIENTES NA AMOSTRA TARV E QUE TIVERAM RASTREIO DE ITS EM CADA VISITA DO PERIODO DE ANALISE",
         EptsReportUtils.map(rastreioITS, mappingsWitshEvaluate),
         getDisagregateAdultsAndChildrenSColumn());
 
@@ -264,7 +264,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "CD4NUM.IDADE",
-        "pacientsInARVWithCD4SampleRegisteredWithin35Days",
+        "MQ_PACIENTES NA AMOSTRA TARV COM CD4 REGISTADO DENTRO DE 35 DIAS APOS A INSCRICAO",
         EptsReportUtils.map(cd4num, mappingsWitshEvaluate),
         getDisagregateAdultsAndChildrenSColumn());
 
@@ -281,7 +281,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "ELEGIBILIDADE.IDADE",
-        "pacientsInARVSampleStartedIn15DaysAfterBeingDeclaredAsElegible",
+        "MQ_PACIENTES NA AMOSTRA TARV E QUE INICIARAM TARV DENTRO DE 15 DIAS DEPOIS DE DECLARADAS ELEGIVEIS",
         EptsReportUtils.map(elegibility, mappingsWitshEvaluate),
         getDisagregateAdultsAndChildrenSColumn());
 
@@ -299,7 +299,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "RETNUM5.IDADE",
-        "pacientsARVInAPeriodWhoReturnedToEncounter33DaysAfterBegining",
+        "MQ_PACIENTES NA AMOSTRA TARV QUE RETORNARAM PARA 2ª CONSULTA CLINICA OU LEVANTAMENTO DE ARV DENTRO DE 33 DIAS APÓS INICIO DO TARV",
         EptsReportUtils.map(retnunm5, mappingsAll),
         getDisagregateAdultsAndChildrenSColumn());
 
@@ -317,7 +317,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "RETNUM1.IDADE",
-        "pacientsARVSampleWhoHadAtLeast3Encounters3MonthsAfterTARVStartNew",
+        "MQ_PACIENTES NA AMOSTRA TARV QUE TIVERAM PELO MENOS 3 CONSULTAS CLINICAS OU LEVANTAMENTO DE ARV DENTRO DE 3 MESES DEPOIS DE INICIO DE TARV - NOVO",
         EptsReportUtils.map(retnum1, mappingsAll),
         getDisagregateAdultsAndChildrenSColumn());
 
@@ -335,7 +335,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "RETNUM2.IDADE",
-        "getPatientInTARVSampleWhoHaddAtLeast3AdherenceEvaluationWithin3MothsARIEL",
+        "MQ_PACIENTES NA AMOSTRA TARV QUE TIVERAM PELO MENOS 3 AVALIAÇÕES DE ADESÃO DENTRO DE 3 MESES DEPOIS DE INICIO DE TARV - NOVO",
         EptsReportUtils.map(retnum2, mappingsAll),
         getDisagregateAdultsAndChildrenSColumn());
 
@@ -352,7 +352,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "RETNUM3.IDADE",
-        "patientInTARVSampleWhomHadMonthEncountersAfterTARVInitialization",
+        "MQ_PACIENTES NA AMOSTRA (INICIO TARV) E QUE TIVERAM CONSULTAS MENSAIS APOS INICIO DE TARV NOVO",
         EptsReportUtils.map(retnum3, mappingsWitshEvaluate),
         getDisagregateAdultsAndChildrenSColumn());
 
@@ -369,7 +369,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "RETNUM7.IDADE",
-        "patientInTARVSampleWhomHadAPSSMonthEncountersAfterTARVInitialization",
+        "MQ_PACIENTES NA AMOSTRA (INICIO TARV) E QUE TIVERAM CONSULTAS MENSAIS DE APSS APOS INICIO DE TARV",
         EptsReportUtils.map(retnum7, mappingsWitshEvaluate),
         getDisagregateAdultsAndChildrenSColumn());
 
@@ -385,7 +385,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "RETNUM6",
-        "pregantPatientInTARVSampleReturnedToSecondEncounterIn33ARVStart",
+        "MQ_GRAVIDAS NA AMOSTRA TARV QUE RETORNARAM PARA 2ª CONSULTA CLINICA OU LEVANTAMENTO DE ARV DENTRO DE 33 DIAS APÓS INICIO DO TARV",
         EptsReportUtils.map(
             retnum6,
             "startDate=${startDate},endDate=${endDate},location=${location},testStart=${testStart}"),
@@ -403,7 +403,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "RETNUM4",
-        "pregantPatientsEnrolledInTARVServiceWhoHas3EncountersInFisrt3MonthsTARVNew",
+        "MQ_GRAVIDAS INSCRITAS NO SERVICO TARV (AMOSTRA GRAVIDA) E QUE TIVERAM 3 CONSULTAS OU 3 LEVANTAMENTOS NOS PRIMEIROS 3 MESES DE TARV - NOVO",
         EptsReportUtils.map(
             retnum4,
             "startDate=${startDate},endDate=${endDate},location=${location},testStart=${testStart}"),
@@ -423,7 +423,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "MODELODIFNUM.IDADE",
-        "patientsElegibleInDiffModelAndAreEnrolledInDiffModel",
+        "PACIENTES ELEGIVEIS A MODELOS DIFERENCIADOS E QUE ESTÃO INSCRITOS EM ALGUM MODELO DIFERENCIADO",
         EptsReportUtils.map(modeloDifNum, mappingsWitshEvaluate),
         getDisagregateAdultsAndChildrenSColumn());
 
@@ -435,14 +435,14 @@ public class InitQltyImpDataSet extends BaseDataSet {
             EptsReportUtils.map(
                 qualityImprovementCohortQueries
                     .getPatientInARTElegibleToBeEnrolledInSomeDiffModel(),
-                mappingsWitshEvaluate));
+                "startDate=${startDate},endDate=${endDate},location=${location},dataFinalAvaliacao=${dataFinalAvaliacao}"));
     modeloDifNom.addParameter(
         new Parameter("dataFinalAvaliacao", "Data Final Avaliacao", Date.class));
 
     addRow(
         dataSetDefinition,
         "MODELODIFDENOM.IDADE",
-        "patientsInARTElegibleToBeEnrolledInSomeDiffModel",
+        "PACIENTES ACTUALMENTE EM TARV ELEGIVEIS PARA SEREM INSCRITOS EM ALGUM MODELO DIFERENCIADO",
         EptsReportUtils.map(
             modeloDifNom,
             "startDate=${startDate},endDate=${endDate},location=${location},dataFinalAvaliacao=${dataFinalAvaliacao}"),
@@ -460,7 +460,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "CVNUM.IDADE",
-        "patientWhoReceivedViralLoadFindingBetween6to9MonthAfterTARVStart",
+        "MQ_PACIENTES QUE RECEBERAM RESULTADO DA CARGA VIRAL ENTRE O SEXTO E NONO MES DEPOIS DE INICIO DE TARV",
         EptsReportUtils.map(cvnum, "endDate=${endDate},location=${location}"),
         getDisagregateAdultsAndChildrenSColumn());
 
@@ -477,7 +477,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "CVDENOM.IDADE",
-        "patientStartedARVInInclusionPeriodWithAtLeastOneEncounter",
+        "MQ_INICIO TARV NO PERIODO DE INCLUSAO (AMOSTRA TARV) - NOVO",
         EptsReportUtils.map(
             cvdenom,
             "startDate=${dataFinalAvaliacao-12m+1d},endDate=${startDate},location=${location},dataFinalAvaliacao=${dataFinalAvaliacao}"),
@@ -495,7 +495,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "FALENCIANUM.IDADE",
-        "patientInTARVInSecondLinheFinalPeriodoNotifiedAbandonmentAndNotNotified",
+        "PACIENTES ACTUALMENTE EM TARV E QUE ESTAO NA SEGUNDA LINHA DE ARV - PERIODO FINAL (ABANDONO RETIRA NOTIFICADO E NAO NOTIFICADO)",
         EptsReportUtils.map(
             falencianum, "startDate=${startDate},endDate=${endDate},location=${location}"),
         getDisagregateAdultsAndChildrenSColumn());
@@ -512,7 +512,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "FALENCIADENOM.IDADE",
-        "patientInTARVWithClinicOrImmunogicsFailtureNotification",
+        "PACIENTES ACTUALMENTE EM TARV E NOTIFICADOS DE FALHAS CLINICAS OU IMUNOLOGICAS",
         EptsReportUtils.map(
             falenciadenom, "startDate=${startDate},endDate=${endDate},location=${location}"),
         getDisagregateAdultsAndChildrenSColumn());
@@ -521,7 +521,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
   }
 
   private List<ColumnParameters> getDisagregateAdultsAndChildrenSColumn() {
-    ColumnParameters ADULTOS = new ColumnParameters("ADULTOS", "Adulos", "age=15+", "ADULTOS");
+    ColumnParameters ADULTOS = new ColumnParameters("ADULTOS", "Adultos", "age=15+", "ADULTOS");
     ColumnParameters CRIANCAS = new ColumnParameters("CRIANCAS", "Criancas", "age=<15", "CRIANCAS");
     return Arrays.asList(ADULTOS, CRIANCAS);
   }
