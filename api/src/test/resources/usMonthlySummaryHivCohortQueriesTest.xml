@@ -7,6 +7,10 @@
 	graphic logo is a trademark of OpenMRS Inc. -->
 <dataset>
 
+    <location location_id="4" name="6 Azure" description="NA" address2="NA" state_province="NA" country="NetBeans"
+              creator="1" date_created="2008-10-13 11:32:52" county_district="NA" address6="NA" retired="0"
+              uuid="e2b32fc2-1d5f-11e0-b929-000c29ad1d07"/>
+
     <person person_id="1001" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
             creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
             uuid="37ee85cb-3be7-45f8-905d-bfaf085a942e"/>
@@ -35,6 +39,10 @@
             creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
             uuid="74f9543c-4864-4ae7-b11c-fea81b388b70"/>
 
+    <person person_id="1008" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="60201781-317c-4643-92de-4af9e019f5e2"/>
+
     <patient patient_id="1001" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
              date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
 
@@ -54,6 +62,9 @@
              date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
 
     <patient patient_id="1007" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+    <patient patient_id="1008" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
              date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
 
     <global_property property="eptsreports.recordPreArtFlowConceptUuid"
@@ -129,6 +140,10 @@
                      description="UUID for the S.TARV: FARMACIA encounter type"
                      uuid="a26e3062-ef56-498f-b554-09cf39ddeb13"/>
 
+    <global_property property="eptsreports.stiScreeningConceptUuid"
+                     property_value="794ef662-03bc-4e22-90ff-38742b82827a"
+                     description="UUID for the RASTREIO DE ITS concept" uuid="331e8d0e-1f30-4ef4-a121-775c8796b48f"/>
+
     <concept concept_id="6263" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1"
              date_created="2012-02-27 11:30:21" uuid="3c648ee6-1702-4eea-b709-aa007f221f57"/>
 
@@ -169,6 +184,9 @@
     <concept concept_id="1065" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
              date_created="2005-01-06 00:00:00"
              uuid="e1d81b62-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <concept concept_id="6258" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1"
+             date_created="2012-02-22 14:26:24" uuid="794ef662-03bc-4e22-90ff-38742b82827a"/>
 
     <concept concept_id="6257" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1"
              date_created="2012-02-22 14:16:03"
@@ -351,6 +369,14 @@
                encounter_datetime="2013-01-09 00:00:00" creator="1" date_created="2013-06-15 00:36:54" voided="0"
                uuid="4218c9c9-6f22-1000-9281-8f1ee524029e"/>
 
+    <encounter encounter_id="11667" encounter_type="32" patient_id="1008" encounter_datetime="2013-06-17 00:00:00"
+               creator="1" date_created="2013-06-19 12:55:48" voided="0"
+               uuid="94f967db-d3eb-4fb7-81dc-63278042f3b4" location_id="4"/>
+
+    <encounter encounter_id="11668" encounter_type="6" patient_id="1008" encounter_datetime="2013-06-17 00:00:00"
+               creator="1" date_created="2013-06-19 12:55:48" voided="0"
+               uuid="081c1d39-c634-4ac5-8b5e-b387871b0179" location_id="4"/>
+
     <obs obs_id="274087" person_id="2" concept_id="6263" encounter_id="32672" obs_datetime="2013-06-17 00:00:00"
          value_coded="6259" creator="1" date_created="2013-06-19 12:55:48" voided="0"
          uuid="71d82d79-429d-4fbd-b05d-2e59e2b255b6" location_id="1"/>
@@ -394,5 +420,13 @@
     <obs obs_id="161895" person_id="1007" concept_id="1410" encounter_id="11666" obs_datetime="2013-01-09 00:00:00"
          location_id="3" value_datetime="2013-01-23 00:00:00" creator="1" date_created="2013-06-15 00:36:54" voided="0"
          uuid="cc1c4b86-5257-4d80-8a4c-909e363055ba"/>
+
+    <obs obs_id="161896" person_id="1008" concept_id="6263" encounter_id="11667" obs_datetime="2013-06-17 00:00:00"
+         value_coded="6259" creator="1" date_created="2013-06-19 12:55:48" voided="0"
+         uuid="b4040973-c522-4269-b98c-91fba616f9dc" location_id="4"/>
+
+    <obs obs_id="161897" person_id="1008" concept_id="6258" encounter_id="11668" obs_datetime="2013-06-17 00:00:00"
+         value_coded="1066" creator="1" date_created="2013-06-19 12:55:48" voided="0"
+         uuid="5d6371cc-45b5-4731-b6c1-8e69cb882cd7" location_id="4"/>
 
 </dataset>

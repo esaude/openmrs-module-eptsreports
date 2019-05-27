@@ -220,4 +220,20 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
     // Abandonment with no notification
     assertTrue(evaluatedCohort.getMemberIds().contains(1007));
   }
+
+  @Test
+  public void getInPreArtWhoScreenedForStiShouldReturnPatientsInArtCareWhoWereScreenedForSti() throws EvaluationException {
+
+      CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInPreArtWhoScreenedForSti();
+      Map<Parameter, Object> parameters = new HashMap<>();
+      parameters.put(new Parameter("onOrAfter", "", Date.class), getStartDate());
+      parameters.put(new Parameter("onOrBefore", "", Date.class), getEndDate());
+      parameters.put(new Parameter("location", "", Location.class), new Location(4));
+      EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, parameters);
+
+      assertEquals(1, evaluatedCohort.getMemberIds().size());
+
+      // NO for STI screening
+      assertTrue(evaluatedCohort.getMemberIds().contains(1008));
+  }
 }
