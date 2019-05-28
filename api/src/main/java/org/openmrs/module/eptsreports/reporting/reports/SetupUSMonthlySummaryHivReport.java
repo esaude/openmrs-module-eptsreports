@@ -37,12 +37,12 @@ public class SetupUSMonthlySummaryHivReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "US Monthly Summary - HIV/AIDS";
+    return "RESUMO MENSAL US - HIV/SIDA - Ficha de Seguimento";
   }
 
   @Override
   public String getDescription() {
-    return "US Monthly Summary HIV/AIDS Report";
+    return "RESUMO MENSAL US - HIV/SIDA - Ficha de Seguimento";
   }
 
   @Override
