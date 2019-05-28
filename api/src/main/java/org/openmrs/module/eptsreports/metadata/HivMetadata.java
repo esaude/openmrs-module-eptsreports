@@ -380,4 +380,32 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty(gpPtvEtvProgramUuid);
     return getProgramWorkflowState(ptvProgramUuid, "5", "GAVE BIRTH");
   }
+
+  public ProgramWorkflowState getPateintActiveArtWorkflowState() {
+    String artProgramUuid = Context.getAdministrationService().getGlobalProperty(gpArtProgramUuid);
+    return getProgramWorkflowState(artProgramUuid, "2", "ACTIVE PRIOR ART");
+  }
+
+  public ProgramWorkflowState getPateintTransferedFromOtherFacilityWorkflowState() {
+    String artProgramUuid = Context.getAdministrationService().getGlobalProperty(gpArtProgramUuid);
+    return getProgramWorkflowState(artProgramUuid, "2", "TRANSFER FROM OTHER FACILITY");
+  }
+
+  public ProgramWorkflowState getPateintPregnantWorkflowState() {
+    String ptvProgramUuid =
+        Context.getAdministrationService().getGlobalProperty(gpPtvEtvProgramUuid);
+    return getProgramWorkflowState(ptvProgramUuid, "5", "PREGNANT");
+  }
+
+  public ProgramWorkflowState getPateintActiveOnHIVCareProgramtWorkflowState() {
+    String hivCareProgramUuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.hivCareProgramUuid");
+    return getProgramWorkflowState(hivCareProgramUuid, "1", "ACTIVE ON PROGRAM");
+  }
+
+  public ProgramWorkflowState getPateintTransferedFromOtherFacilityHIVCareWorkflowState() {
+    String hivCareProgramUuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.hivCareProgramUuid");
+    return getProgramWorkflowState(hivCareProgramUuid, "1", "TRANSFER FROM OTHER FACILITY");
+  }
 }

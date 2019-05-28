@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+	License, v. 2.0. If a copy of the MPL was not distributed with this file,
+	You can obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed
+	under the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+	Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+	graphic logo is a trademark of OpenMRS Inc. -->
+	
+<dataset>
+
+ <person person_id="1" gender="F" dead="false" creator="1" birthdate_estimated="0" date_created="2019-01-01 15:46:47.0"
+ 					 voided="false" uuid="be48cdcb-6a76-47e3-9f2e-263501777001"/>
+ 					 
+ 	 <patient patient_id="1777001" creator="1" date_created="2019-01-01 00:00:00.0" changed_by="1" date_changed="2019-01-01 12:25:57.0" voided="false" void_reason=""/>				 
+	
+	
+	 <program program_id="8" concept_id="7777023" creator="1" date_created="2019-03-02 11:30:33.0" retired="false" name="PTV" description="Programa de representa o estado de gravidez de uma mulher" uuid="06057245-ca21-43ab-a02f-e861d7e54593"/>
+	
+	<patient_program patient_program_id="28075" patient_id="501" program_id="8" 
+		date_enrolled="2018-05-30 00:00:00.0" creator="1" date_created="2019-03-02 10:26:40.0" 
+		voided="false" uuid="c7aa626e-d59f-4ca7-8ca9-dde329b99a62" location_id="1"/>
+  <patient_program patient_program_id="28076" patient_id="90" program_id="8" date_enrolled="2018-08-30 00:00:00.0" 
+  	creator="1" date_created="2019-03-02 10:26:40.0" voided="false" uuid="e690b8c6-363d-11e9-a3d1-1390672f0572" location_id="1"/>
+  <patient_program patient_program_id="28077" patient_id="999" program_id="2"
+   date_enrolled="2018-08-30 00:00:00.0" creator="1" date_created="2019-03-02 10:26:40.0" 
+   voided="false" uuid="2d85effe-3a61-11e9-a179-57315798fd34" location_id="1"/>
+   
+   <concept concept_id="7777029" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1cdd58a-1d5f-11e0-b929-000c29ad1d07"/>
+  	<concept_name concept_name_id="5777029" concept_id="7777029" name="PREGNANCY" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="9d98bd1e-35e6-11e9-98d5-578d0b38d001"/>
+   
+	
+</dataset>

@@ -69,7 +69,15 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getPtvEtvProgram().getProgramId(),
             commonMetadata.getNumberOfWeeksPregnant().getConceptId(),
             commonMetadata.getPregnantConcept().getConceptId(),
-            commonMetadata.getGestationConcept().getConceptId());
+            commonMetadata.getGestationConcept().getConceptId(),
+            hivMetadata.getPateintActiveArtWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata
+                .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId(),
+            hivMetadata
+                .getPateintTransferedFromOtherFacilityWorkflowState()
+                .getProgramWorkflowStateId(),
+            hivMetadata.getPateintPregnantWorkflowState().getProgramWorkflowStateId());
 
     sqlCohortDefinition.setQuery(query);
 
@@ -840,6 +848,9 @@ public class QualityImprovementCohortQueries {
         QualiltyImprovementQueries.getPacientsWithCD4RegisteredIn33Days(
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata
+                .getPateintActiveOnHIVCareProgramtWorkflowState()
+                .getProgramWorkflowStateId(),
             hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getCD4AbsoluteOBSConcept().getConceptId()));
@@ -957,7 +968,10 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getARVPlanConcept().getConceptId(),
             commonMetadata.getStartDrugsConcept().getConceptId(),
             hivMetadata.getARVStartDate().getConceptId(),
-            hivMetadata.getARTProgram().getProgramId()));
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getPateintTransferedFromOtherFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
 
     return sqlCohortDefinition;
   }
@@ -1529,7 +1543,13 @@ public class QualityImprovementCohortQueries {
 
     sqlCohortDefinition.setQuery(
         QualiltyImprovementQueries.getPatientWhoCameOutARTProgramFinalPeriod(
-            hivMetadata.getARTProgram().getProgramId()));
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId(),
+            hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()));
 
     return sqlCohortDefinition;
   }
@@ -1582,7 +1602,13 @@ public class QualityImprovementCohortQueries {
                 hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
                 hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
                 hivMetadata.getARTProgram().getProgramId(),
-                commonMetadata.getReturnVisitDateConcept().getConceptId()));
+                commonMetadata.getReturnVisitDateConcept().getConceptId(),
+                hivMetadata
+                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                    .getProgramWorkflowStateId(),
+                hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId(),
+                hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
+                hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()));
 
     return sqlCohortDefinition;
   }
@@ -1759,7 +1785,8 @@ public class QualityImprovementCohortQueries {
 
     sqlCohortDefinition.setQuery(
         QualiltyImprovementQueries.getPatientWithDeliveryDate2YearsAgoBreatFeeding(
-            hivMetadata.getPtvEtvProgram().getProgramId()));
+            hivMetadata.getPtvEtvProgram().getProgramId(),
+            hivMetadata.getPatientIsBreastfeedingWorkflowState().getProgramWorkflowStateId()));
 
     return sqlCohortDefinition;
   }
@@ -2362,7 +2389,13 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getHIVCareProgram().getProgramId(),
-            hivMetadata.getARTProgram().getProgramId()));
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getPateintTransferedFromOtherFacilityHIVCareWorkflowState()
+                .getProgramWorkflowStateId(),
+            hivMetadata
+                .getPateintTransferedFromOtherFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
 
     return sqlCohortDefinition;
   }

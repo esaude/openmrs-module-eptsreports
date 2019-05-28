@@ -22,7 +22,11 @@ public class QualiltyImprovementQueries {
       int ptvProgram, // program_id=8
       int numberOfWeekPregnant, // concept_id=1279
       int pregnantConcept, // concept_id=1982
-      int pregancyConcept // value_coded=44
+      int pregancyConcept, // value_coded=44
+      int pStateActivePrioART, // ps.state=6
+      int transferredOutToAnotherHealthFacilityWorkflowState, // ps.state=7
+      int pateintTransferedFromOtherFacilityWorkflowState, // ps.state=29
+      int psPregnant // ps.state=25;
       ) {
     String query =
         "select inicio.patient_id "
@@ -74,7 +78,9 @@ public class QualiltyImprovementQueries {
             + arvProgram
             + " and pg.date_enrolled=ps.start_date and ps.voided=0 and  "
             + "	date_enrolled between :startDate and :endDate and  "
-            + "	location_id=:location and ps.state=6 "
+            + "	location_id=:location and ps.state="
+            + pStateActivePrioART
+            + " "
             + " "
             + ") inicio "
             + "inner join "
@@ -100,7 +106,9 @@ public class QualiltyImprovementQueries {
             + "	where pg.voided=0 and ps.voided=0 and p.voided=0 and  "
             + "	pg.program_id="
             + arvProgram
-            + " and ps.state=7  "
+            + " and ps.state="
+            + transferredOutToAnotherHealthFacilityWorkflowState
+            + "  "
             + "        and ps.start_date <=:dataFinalAvaliacao  "
             + "		                       "
             + "	union "
@@ -112,7 +120,9 @@ public class QualiltyImprovementQueries {
             + "	where pg.voided=0 and ps.voided=0 and p.voided=0 and  "
             + "	pg.program_id="
             + arvProgram
-            + " and ps.state=29 and ps.start_date<=:dataFinalAvaliacao  "
+            + " and ps.state="
+            + pateintTransferedFromOtherFacilityWorkflowState
+            + " and ps.start_date<=:dataFinalAvaliacao  "
             + "	                       "
             + "	union "
             + " "
@@ -160,7 +170,9 @@ public class QualiltyImprovementQueries {
             + "	inner join patient_state ps on pp.patient_program_id=ps.patient_program_id "
             + "	where pp.program_id="
             + ptvProgram
-            + " and pp.voided=0 and ps.voided=0 and ps.state=25 and ps.end_date is null and  "
+            + " and pp.voided=0 and ps.voided=0 and ps.state="
+            + psPregnant
+            + " and ps.end_date is null and  "
             + "	ps.start_date<=:dataFinalAvaliacao  "
             + " "
             + " "
@@ -212,7 +224,9 @@ public class QualiltyImprovementQueries {
             + "	where pg.voided=0 and p.voided=0 and program_id="
             + arvProgram
             + " and pg.date_enrolled=ps.start_date and ps.voided=0 and  "
-            + "	date_enrolled<:startDate and ps.state=6 "
+            + "	date_enrolled<:startDate and ps.state="
+            + pStateActivePrioART
+            + " "
             + ")";
 
     return query;
@@ -632,6 +646,7 @@ public class QualiltyImprovementQueries {
   public static String getPacientsWithCD4RegisteredIn33Days(
       int arvAdultInitialEncounterType, // 5
       int adultoSeguimentoEncounterType, // 6
+      int pateintActiveOnHIVCareProgramtWorkflowState, // ps.state=1
       int arvPediatriaInitialEncounterType, // 7
       int arvPediatriaSeguimentoEncounterType, // 9
       int cd4AbsoluteOBSConcept // concept_id=1695
@@ -652,7 +667,7 @@ public class QualiltyImprovementQueries {
             + "					inner join patient_program pg on p.patient_id=pg.patient_id "
             + "					inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
             + "			where 	pg.voided=0 and p.voided=0 and program_id=1 and pg.date_enrolled=ps.start_date and ps.voided=0 and  "
-            + "					date_enrolled <= :endDate and location_id=:location and ps.state=1 "
+            + "					date_enrolled <= :endDate and location_id=:location and ps.state=%d "
             + "			group by pg.patient_id					 "
             + "		) inscricao  "
             + "		inner join  "
@@ -672,6 +687,7 @@ public class QualiltyImprovementQueries {
         query,
         arvAdultInitialEncounterType,
         arvPediatriaInitialEncounterType,
+        pateintActiveOnHIVCareProgramtWorkflowState,
         adultoSeguimentoEncounterType,
         arvPediatriaSeguimentoEncounterType,
         cd4AbsoluteOBSConcept);
@@ -837,7 +853,8 @@ public class QualiltyImprovementQueries {
       int arvPlan, // concept_id=1255
       int startDrugsConcept, // concept_id=1256
       int arvStartDateConcept, // concept_id=1190
-      int artProgram // program_id=2
+      int artProgram, // program_id=2
+      int pateintTransferedFromOtherFacilityWorkflowState // ps.state=29
       ) {
 
     String query =
@@ -928,7 +945,9 @@ public class QualiltyImprovementQueries {
             + "			where 	pg.voided=0 and ps.voided=0 and p.voided=0 and   "
             + "					pg.program_id="
             + artProgram
-            + " and ps.state=29 and ps.start_date=pg.date_enrolled and   "
+            + " and ps.state="
+            + pateintTransferedFromOtherFacilityWorkflowState
+            + " and ps.start_date=pg.date_enrolled and   "
             + "					ps.start_date between :startDate and :endDate and location_id=:location  "
             + "		)  "
             + "group by inicio_real.patient_id  "
@@ -1670,7 +1689,12 @@ public class QualiltyImprovementQueries {
    *
    * @param artProgram
    */
-  public static String getPatientWhoCameOutARTProgramFinalPeriod(int artProgram // program_id=2
+  public static String getPatientWhoCameOutARTProgramFinalPeriod(
+      int artProgram, // program_id=2
+      int transferredOutToAnotherHealthFacilityWorkflowState, // ps.state=7
+      int suspendedTreatmentWorkflowState, // ps.state=8
+      int abandonedWorkflowState, // ps.state=9
+      int patientHasDiedWorkflowState // ps.state=10
       ) {
     String query =
         "select 	pg.patient_id  "
@@ -1678,9 +1702,15 @@ public class QualiltyImprovementQueries {
             + "					inner join patient_program pg on p.patient_id=pg.patient_id  "
             + "					inner join patient_state ps on pg.patient_program_id=ps.patient_program_id  "
             + "			where 	pg.voided=0 and ps.voided=0 and p.voided=0 and   "
-            + "					pg.program_id=%d and ps.state in (7,8,9,10) and ps.end_date is null and   "
+            + "					pg.program_id=%d and ps.state in (%d,%d,%d,%d) and ps.end_date is null and   "
             + "					ps.start_date<=:endDate and location_id=:location";
-    return String.format(query, artProgram);
+    return String.format(
+        query,
+        artProgram,
+        transferredOutToAnotherHealthFacilityWorkflowState,
+        suspendedTreatmentWorkflowState,
+        abandonedWorkflowState,
+        patientHasDiedWorkflowState); // ps.state in (7,8,9,10)
   }
 
   // ABANDONO NÃO NOTIFICADO - TARV
@@ -1703,7 +1733,11 @@ public class QualiltyImprovementQueries {
       int arvPharmaciaEncounterType, // 18
       int returnVisitDateForArvDrugConcept, // concept_id=5096
       int artProgram, // program_id=2
-      int returnVisitDateConcept // concept_id=1410
+      int returnVisitDateConcept, // concept_id=1410
+      int transferredOutToAnotherHealthFacilityWorkflowState, // ps.state=7
+      int suspendedTreatmentWorkflowState, // ps.state=8
+      int abandonedWorkflowState, // ps.state=9
+      int patientHasDiedWorkflowState // ps.state=10
       ) {
     String query =
         "select patient_id  "
@@ -1729,7 +1763,15 @@ public class QualiltyImprovementQueries {
             + "			where 	pg.voided=0 and ps.voided=0 and p.voided=0 and   "
             + "					pg.program_id="
             + artProgram
-            + " and ps.state in (7,8,9,10) and ps.end_date is null and   "
+            + " and ps.state in ("
+            + transferredOutToAnotherHealthFacilityWorkflowState
+            + ","
+            + suspendedTreatmentWorkflowState
+            + ","
+            + abandonedWorkflowState
+            + ","
+            + patientHasDiedWorkflowState
+            + ") and ps.end_date is null and   "
             + "					ps.start_date<=:endDate and location_id=:location  "
             + "  "
             + "		) and patient_id not in(  "
@@ -1765,7 +1807,9 @@ public class QualiltyImprovementQueries {
             + "				where 	pg.voided=0 and ps.voided=0 and p.voided=0 and   "
             + "						pg.program_id="
             + artProgram
-            + " and ps.state=9 and ps.end_date is null and   "
+            + " and ps.state="
+            + abandonedWorkflowState
+            + " and ps.end_date is null and   "
             + "						ps.start_date<=:endDate and location_id=:location  "
             + "			)abandono  "
             + "			inner join 	  "
@@ -1881,7 +1925,8 @@ public class QualiltyImprovementQueries {
    * @param ptvEtvProgram
    */
   public static String getPatientWithDeliveryDate2YearsAgoBreatFeeding(
-      int ptvEtvProgram // program_id=8
+      int ptvEtvProgram, // program_id=8
+      int patientIsBreastfeedingWorkflowState // ps.state=27
       ) {
     String query =
         "select 	pg.patient_id  "
@@ -1889,11 +1934,11 @@ public class QualiltyImprovementQueries {
             + "		inner join patient_program pg on p.patient_id=pg.patient_id  "
             + "		inner join patient_state ps on pg.patient_program_id=ps.patient_program_id  "
             + "where 	pg.voided=0 and ps.voided=0 and p.voided=0 and   "
-            + "		pg.program_id=%d and ps.state=27 and ps.end_date is null and   "
+            + "		pg.program_id=%d and ps.state=%d and ps.end_date is null and   "
             + "		ps.start_date between date_add(:startDate, interval -2 year) "
             + " and date_add(:startDate, interval -1 day) and location_id=:location";
 
-    return String.format(query, ptvEtvProgram);
+    return String.format(query, ptvEtvProgram, patientIsBreastfeedingWorkflowState);
   }
 
   /**
@@ -2537,7 +2582,9 @@ public class QualiltyImprovementQueries {
       int arvAdultInitialEncounterType, // 5
       int arvPediatriaInitialEncounterType, // 7
       int tarvService, // program_id=1
-      int artProgram // program_id=2
+      int artProgram, // program_id=2
+      int pateintTransferedFromOtherFacilityHIVCareWorkflowState, // ps.state=28
+      int pateintTransferedFromOtherFacilityWorkflowState // ps.state=29
       ) {
     String query =
         "select p.patient_id  "
@@ -2565,7 +2612,9 @@ public class QualiltyImprovementQueries {
             + "where 	pg.voided=0 and ps.voided=0 and p.voided=0 and  "
             + "		pg.program_id="
             + tarvService
-            + " and ps.state=28 and ps.start_date=pg.date_enrolled and  "
+            + " and ps.state="
+            + pateintTransferedFromOtherFacilityHIVCareWorkflowState
+            + " and ps.start_date=pg.date_enrolled and  "
             + "		ps.start_date<=:endDate and location_id=:location "
             + "		 "
             + "union "
@@ -2577,7 +2626,9 @@ public class QualiltyImprovementQueries {
             + "where 	pg.voided=0 and ps.voided=0 and p.voided=0 and  "
             + "		pg.program_id="
             + artProgram
-            + " and ps.state=29 and  "
+            + " and ps.state="
+            + pateintTransferedFromOtherFacilityWorkflowState
+            + " and  "
             + "		ps.start_date<=:endDate and location_id=:location";
 
     return query;
