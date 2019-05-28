@@ -14,8 +14,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 
 /**
- * Simple data set of location properties. Currently supported are stateProvince and
- * countyDistrict.
+ * Simple data set of location properties. Currently supported are stateProvince and countyDistrict.
  */
 public class LocationDataSetDefinition extends EvaluatableDataSetDefinition {
 

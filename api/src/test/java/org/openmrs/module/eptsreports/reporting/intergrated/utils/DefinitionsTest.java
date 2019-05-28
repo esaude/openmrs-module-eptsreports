@@ -63,6 +63,12 @@ public abstract class DefinitionsTest extends BaseModuleContextSensitiveTest {
     return Context.getService(DataSetDefinitionService.class).evaluate(cd, context);
   }
 
+  protected DataSet evaluateDatasetDefinition(
+      DataSetDefinition cd, Map<Parameter, Object> parameters) throws EvaluationException {
+    EvaluationContext context = getEvaluationContext(cd, parameters);
+    return Context.getService(DataSetDefinitionService.class).evaluate(cd, context);
+  }
+
   protected EvaluatedCohort evaluateCodedObsCohortDefinition(CohortDefinition cd)
       throws EvaluationException {
     addParameters(cd);
