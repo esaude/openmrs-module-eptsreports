@@ -74,71 +74,71 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   // Second line ARV concepts
-
+  // 6328
   public Concept getAzt3tcAbcEfvConcept() {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.AZT_3TC_ABC_EFV_ConceptUuid");
     return getConcept(uuid);
   }
-
+  // 6327
   public Concept getD4t3tcAbcEfvConcept() {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.D4T_3TC_ABC_EFV_ConceptUuid");
     return getConcept(uuid);
   }
-
+  // 6326
   public Concept getAzt3tcAbcLpvConcept() {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.AZT_3TC_ABC_LPV_ConceptUuid");
     return getConcept(uuid);
   }
-
+  // 6325
   public Concept getD4t3tcAbcLpvConcept() {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.D4T_3TC_ABC_LPV_ConceptUuid");
     return getConcept(uuid);
   }
-
+  // 6109
   public Concept getAztDdiLpvConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.AZT_DDI_LPV_ConceptUuid");
     return getConcept(uuid);
   }
-
+  // 1315
   public Concept getTdf3tcEfvConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.TDF_3TC_EFV_ConceptUuid");
     return getConcept(uuid);
   }
-
+  // 1314
   public Concept getAzt3tcLpvConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.AZT_3TC_LPV_ConceptUuid");
     return getConcept(uuid);
   }
-
+  // 1313
   public Concept getAbc3tcEfvConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.ABC_3TC_EFV_ConceptUuid");
     return getConcept(uuid);
   }
-
+  // 1312
   public Concept getAbc3tcNvpConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.ABC_3TC_NVP_ConceptUuid");
     return getConcept(uuid);
   }
-
+  // 1311
   public Concept getAbc3tcLpvConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.ABC_3TC_LPV_ConceptUuid");
     return getConcept(uuid);
   }
-
+  //
   public Concept getTdf3tcLpvConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.TDF_3TC_LPV_ConceptUuid");
