@@ -92,7 +92,7 @@ public class QualiltyImprovementQueries {
             + ","
             + arvPediatriaSeguimentoEncounterType
             + ") and voided=0 and  "
-            + "	encounter_datetime between :startDate and date_add(:startDate, interval 6 MONTH) and  "
+            + "	encounter_datetime between :startDate and timestampadd(month ,6,:startDate) and  "
             + "	location_id=:location "
             + "	group by patient_id "
             + ") consulta on consulta.patient_id=inicio.patient_id and timestampdiff(day, inicio.data_inicio,consulta.data_consulta)>0 "

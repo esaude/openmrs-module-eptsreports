@@ -27,7 +27,7 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
     executeDataSet("qualityImprovementCohortQueriesTest.xml");
   }
 
-  @Ignore
+  //@Ignore
   @Test
   public void getPatientStartedARVInInclusionPeriodWithAtLeastOneEncounter()
       throws EvaluationException {
@@ -46,6 +46,14 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
 
+    //assertTrue(evaluatedCohort.getMemberIds().contains(1));
+    
+    System.out.println("--------------  "+evaluatedCohort.getMemberIds().size());
+    System.out.println("startdate "+getStartDate());
+    System.out.println("getEndDate "+getEndDate());
+    System.out.println("getDataFinalAvaliacao "+getDataFinalAvaliacao());
+    
+
     assertNotNull(cohortDefinition);
   }
 
@@ -53,6 +61,10 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
     return DateUtil.getDateTime(2019, 5, 26);
   }
 
+  @Override
+  public Date getStartDate() {
+    return DateUtil.getDateTime(2015, 5, 10);
+  }
   @Override
   public Date getEndDate() {
     return DateUtil.getDateTime(2019, 5, 26);
