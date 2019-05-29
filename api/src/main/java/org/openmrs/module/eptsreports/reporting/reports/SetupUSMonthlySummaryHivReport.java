@@ -1,18 +1,16 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
-import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.UsMonthlySummaryHivCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.LocationDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.UsMonthlySummaryHivDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingException;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,7 @@ public class SetupUSMonthlySummaryHivReport extends EptsDataExportManager {
 
   @Autowired private UsMonthlySummaryHivDataset usMonthlySummaryHivDataset;
 
-  @Autowired private UsMonthlySummaryHivCohortQueries usMonthlySummaryHivCohortQueries;
+  @Autowired private GenericCohortQueries genericCohortQueries;
 
   @Override
   public String getExcelDesignUuid() {
@@ -52,10 +50,7 @@ public class SetupUSMonthlySummaryHivReport extends EptsDataExportManager {
     rd.setName(getName());
     rd.setDescription(getDescription());
     rd.setParameters(usMonthlySummaryHivDataset.getParameters());
-    CohortDefinition enrolledInPreArtOrArt =
-        usMonthlySummaryHivCohortQueries.getRegisteredInPreArtOrArtBooks();
-    rd.setBaseCohortDefinition(
-        map(enrolledInPreArtOrArt, "onOrBefore=${endDate},location=${location}"));
+    rd.setBaseCohortDefinition(mapStraightThrough(genericCohortQueries.getBaseCohort()));
     rd.addDataSetDefinition(
         "S", mapStraightThrough(usMonthlySummaryHivDataset.constructUsMonthlySummaryHivDataset()));
     rd.addDataSetDefinition("location", mapStraightThrough(new LocationDataSetDefinition()));
