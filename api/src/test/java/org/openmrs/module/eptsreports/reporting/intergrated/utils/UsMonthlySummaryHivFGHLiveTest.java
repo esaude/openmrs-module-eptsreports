@@ -70,6 +70,12 @@ public class UsMonthlySummaryHivFGHLiveTest extends DefinitionsFGHLiveTest {
     assertThat(ds, hasColumnValue("A3-M014", 143));
     assertThat(ds, hasColumnValue("A3-F15", 2245));
     assertThat(ds, hasColumnValue("A3-M15", 1247));
+
+    // Nº mensal de novos inscritos
+    assertThat(ds, hasColumnValue("B1-F014", 0));
+    assertThat(ds, hasColumnValue("B1-M014", 2));
+    assertThat(ds, hasColumnValue("B1-F15", 25));
+    assertThat(ds, hasColumnValue("B1-M15", 18));
   }
 
   @Override

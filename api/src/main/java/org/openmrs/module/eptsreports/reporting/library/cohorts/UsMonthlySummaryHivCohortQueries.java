@@ -233,7 +233,7 @@ public class UsMonthlySummaryHivCohortQueries {
    * @return Pacientes inscritos no servico tarv em um periodo, sem incluir os transferidos de (TARV
    *     e NAO TARV)
    */
-  private CohortDefinition getEnrolled() {
+  public CohortDefinition getEnrolled() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
         "INSCRITOS NO SERVICO TARV NUM PERIODO (SEM INCLUIR TRANSFERIDOS DE TARV E NAO TARV)");
