@@ -49,11 +49,11 @@ public class UsMonthlySummaryHivCohortQueries {
   @Autowired private TbMetadata tbMetadata;
 
   /**
-   * @return Registar o nº cumulativo de pacientes registados até o fim do mês anterior, contando o
-   *     nº total de linhas preenchidas em todas as páginas de todos os Livros de Registo Nº 1 e Nº
-   *     2 de Pré-TARV até o fim do mês anterior.
+   * @return Pacientes registados até o fim do mês anterior, contando o nº total de linhas
+   *     preenchidas em todas as páginas de todos os Livros de Registo Nº 1 e Nº 2 de Pré-TARV até o
+   *     fim do mês anterior.
    */
-  public CohortDefinition getRegisteredInPreArtBooks() {
+  public CohortDefinition getRegisteredInPreArtByEndOfPreviousMonth() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("RM_CUMULATIVO DE PACIENTES REGISTADOS ATÉ O FIM DO MÊS ANTERIOR (PRE-TARV)");
 
@@ -77,7 +77,7 @@ public class UsMonthlySummaryHivCohortQueries {
     Map<String, Object> mappings1 = new HashMap<>();
     mappings1.put("endDate", DateUtil.getDateTime(2012, 3, 20));
     mappings1.put("location", "${location}");
-    cd.addSearch("ALGUMAVEZTARV", getDefinitionAmyTimeART(), mappings1);
+    cd.addSearch("ALGUMAVEZTARV", getEverOnART(), mappings1);
 
     cd.setCompositionString(
         "INSCRITOS OR ((INSCRITOFINAL NOT ALGUMAVEZTARV) AND CONSULTA) OR TRANSFERIDODE OR ENTRADAPRETARV");
@@ -85,7 +85,45 @@ public class UsMonthlySummaryHivCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getDefinitionAmyTimeART() {
+  /**
+   * @return Pacientes que foram registados durante o mês na coluna 6 em todos os Livros de Registo
+   *     Nº 1 e Nº 2 de Pré-TARV independentemente do estado de permanência do paciente.
+   */
+  public CohortDefinition getRegisteredInPreArtDuringMonth() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("RM_NUMERO DE PACIENTES REGISTADO DURANTE O MES (PRE-TARV)");
+
+    cd.addParameters(getParameters());
+
+    cd.addSearch("INSCRITOPERIODO", mapStraightThrough(getEnrolled()));
+
+    Map<String, Object> mappings = new HashMap<>();
+    mappings.put("onOrBefore", DateUtil.getDateTime(2012, 3, 20));
+    mappings.put("locationList", "${location}");
+    cd.addSearch("INSCRITOATE0312", hasInitialEncounter(), mappings);
+
+    Map<String, Object> everOnArtMappings = new HashMap<>();
+    everOnArtMappings.put("endDate", DateUtil.getDateTime(2012, 3, 20));
+    everOnArtMappings.put("location", "${location}");
+    cd.addSearch("TARVATE0312", getEverOnART(), everOnArtMappings);
+
+    Map<String, Object> followUpMappings = new HashMap<>();
+    followUpMappings.put("startDate", DateUtil.getDateTime(2012, 3, 20));
+    followUpMappings.put("endDate", "${startDate-1d}");
+    followUpMappings.put("location", "${location}");
+    cd.addSearch("CONSULTA0312ATEINICIOPERIODO", hasFollowUpConsultation(), followUpMappings);
+
+    cd.addSearch("CONSULTAPERIODO", mapStraightThrough(hasFollowUpConsultation()));
+    cd.addSearch("TRANSFERIDODEPERIODO", mapStraightThrough(getInArtCareEnrolledByTransfer()));
+    cd.addSearch("ENTRADAPRETARV", mapStraightThrough(hasEntryInPreArt()));
+
+    cd.setCompositionString(
+        "INSCRITOPERIODO OR (((INSCRITOATE0312 NOT TARVATE0312) NOT CONSULTA0312ATEINICIOPERIODO) AND CONSULTAPERIODO) OR TRANSFERIDODEPERIODO OR ENTRADAPRETARV");
+
+    return cd;
+  }
+
+  private CohortDefinition getEverOnART() {
     // TODO use txTbCohortQueries after fix
     // return txTbCohortQueries.anyTimeARVTreatmentFinalPeriod();
     CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
@@ -221,7 +259,8 @@ public class UsMonthlySummaryHivCohortQueries {
     String mappings = "endDate=${onOrBefore},location=${location}";
     Mapped<CohortDefinition> transferredFrom =
         map(hivCohortQueries.getPatientsInArtCareTransferredFromOtherHealthFacility(), mappings);
-    Mapped<CohortDefinition> preArtBooks1And2 = map(getRegisteredInPreArtBooks(), mappings);
+    Mapped<CohortDefinition> preArtBooks1And2 =
+        map(getRegisteredInPreArtByEndOfPreviousMonth(), mappings);
     return getNewlyEnrolledInArtBookExcludingTransfers(preArtBooks1And2, transferredFrom);
   }
 
@@ -311,7 +350,7 @@ public class UsMonthlySummaryHivCohortQueries {
 
     String mappings = "onOrBefore=${onOrBefore},locationList=${location}";
     String mappings1 = "endDate=${onOrBefore},location=${location}";
-    cd.addSearch("LIVROPRETARV", map(getRegisteredInPreArtBooks(), mappings1));
+    cd.addSearch("LIVROPRETARV", map(getRegisteredInPreArtByEndOfPreviousMonth(), mappings1));
     cd.addSearch("LIVROTARV", map(getRegisteredInArt(), mappings));
 
     cd.setCompositionString("LIVROPRETARV OR LIVROTARV");
@@ -436,9 +475,9 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.addParameter(new Parameter("locationList", "", Location.class));
     cd.setName("PACIENTES INSCRITOS NO SERVICO TARV - NUM PERIODO");
     List<EncounterType> encounterTypeList =
-            Arrays.asList(
-                    hivMetadata.getARVAdultInitialEncounterType(),
-                    hivMetadata.getARVPediatriaInitialEncounterType());
+        Arrays.asList(
+            hivMetadata.getARVAdultInitialEncounterType(),
+            hivMetadata.getARVPediatriaInitialEncounterType());
     cd.setTimeQualifier(TimeQualifier.FIRST);
     cd.setEncounterTypeList(encounterTypeList);
     return cd;

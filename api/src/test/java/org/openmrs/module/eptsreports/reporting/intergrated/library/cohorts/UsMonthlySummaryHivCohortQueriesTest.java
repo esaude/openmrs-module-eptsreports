@@ -32,7 +32,8 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
   public void getRegisteredInPreArtBooksShouldReturnRegisteredInPreArtBooks()
       throws EvaluationException {
 
-    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getRegisteredInPreArtBooks();
+    CohortDefinition cohort =
+        usMonthlySummaryHivCohortQueries.getRegisteredInPreArtByEndOfPreviousMonth();
     Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("onOrAfter", "", Date.class), getStartDate());
     parameters.put(new Parameter("onOrBefore", "", Date.class), getEndDate());
