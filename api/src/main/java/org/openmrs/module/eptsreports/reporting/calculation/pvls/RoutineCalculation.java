@@ -80,7 +80,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
     EncounterType farmacia = hivMetadata.getARVPharmaciaEncounterType();
 
     // lookups
-    CalculationResultMap patientHavingVlFromEnrollment =
+    CalculationResultMap patientHavingVlFromEndOfReportingPeriod =
         ePTSCalculationService.getObs(
             viralLoadConcept,
             null,
@@ -126,7 +126,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
               onOrBefore,
               latestVlLowerDateLimit,
               criteria,
-              patientHavingVlFromEnrollment,
+              patientHavingVlFromEndOfReportingPeriod,
               changingRegimenLines,
               arvsInitiationDateMap,
               lastVlIn12MonthsPeriodFromEndOfReportingPeriod,
@@ -164,6 +164,7 @@ public class RoutineCalculation extends AbstractPatientCalculation {
         && lastVlObs.getObsDatetime() != null
         && criteria != null
         && onArtForMoreThan3Months.contains(pId)
+        && lastVlObs.getObsDatetime().after(latestVlLowerDateLimit)
         && lastVlObs.getObsDatetime().before(onOrBefore)) {
 
       // get all the VL results for each patient from enrollment
