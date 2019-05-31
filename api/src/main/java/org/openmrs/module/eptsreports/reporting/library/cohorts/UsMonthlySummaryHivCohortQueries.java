@@ -555,11 +555,33 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   public CohortDefinition getAbandonedArtCare() {
-    return hivCohortQueries.getPatientsInArtCareWhoAbandoned();
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("RM_PACIENTES QUE SAIRAM DO CUIDADO PRE-TARV: ABANDONO - NUM PERIODO");
+
+    cd.addParameters(getParameters());
+
+    cd.addSearch(
+        "CUMULATIVOENTRADAS", mapStraightThrough(getRegisteredInPreArtByEndOfPreviousMonth()));
+    cd.addSearch("ABANDONO", mapStraightThrough(getAbandonedArt()));
+
+    CohortDefinition transferredOut =
+        hivCohortQueries.getPatientsInArtCareTransferredOutToAnotherHealthFacility();
+    cd.addSearch("TRANSFERIDOPARA", mapStraightThrough(transferredOut));
+
+    cd.addSearch("OBITO", mapStraightThrough(getDeadDuringArtCare()));
+    cd.addSearch("INICIO", mapStraightThrough(getInitiatedArt()));
+
+    cd.setCompositionString(
+        "(CUMULATIVOENTRADAS AND ABANDONO) NOT (TRANSFERIDOPARA OR OBITO OR INICIO)");
+
+    return cd;
   }
 
   public CohortDefinition getDeadDuringArtCare() {
-    return hivCohortQueries.getPatientsInArtCareWhoDied();
+    CohortDefinition cd = hivCohortQueries.getPatientsInArtCareWhoDied();
+    cd.setName(
+        "PROGRAMA: PACIENTES QUE SAIRAM DO PROGRAMA DE CUIDADO (PRE-TARV) - OBITO: PERIODO FINAL");
+    return cd;
   }
 
   public CohortDefinition getInArtCareWhoInitiatedArt() {
@@ -579,17 +601,216 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   public CohortDefinition getAbandonedArt() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("abandonedArt");
+    SqlCohortDefinition cd = new SqlCohortDefinition();
 
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setName("PACIENTES PRÉ-TARV QUE ABANDONARAM O CUIDADO: NUM PERÍODO");
 
-    String mappings = "endDate=${onOrBefore},location=${location}";
-    cd.addSearch("NOTIFICADO", map(hivCohortQueries.getPatientsInArtWhoAbandoned(), mappings));
-    cd.addSearch("NAONOTIFICADO", map(getPatientsInArtWhoAbandonedWithNoNotification(), mappings));
+    cd.addParameters(getParameters());
 
-    cd.setCompositionString("NOTIFICADO OR NAONOTIFICADO");
+    String query =
+        "SELECT pg.patient_id "
+            + "FROM   patient p "
+            + "       INNER JOIN patient_program pg "
+            + "               ON p.patient_id = pg.patient_id "
+            + "       INNER JOIN patient_state ps "
+            + "               ON pg.patient_program_id = ps.patient_program_id "
+            + "WHERE  pg.voided = 0 "
+            + "       AND ps.voided = 0 "
+            + "       AND p.voided = 0 "
+            + "       AND pg.program_id = %d "
+            + "       AND ps.state = %d "
+            + "       AND ps.end_date IS NULL "
+            + "       AND ps.start_date >= :startDate "
+            + "       AND ps.start_date <= :endDate "
+            + "       AND location_id = :location "
+            + "UNION "
+            + "SELECT patient_id "
+            + "FROM   (SELECT patient_id, "
+            + "               Max(data_consulta) data_consulta, "
+            + "               Max(data_proxima)  data_proxima "
+            + "        FROM   (SELECT p.patient_id, "
+            + "                       Max(e.encounter_datetime) data_consulta, "
+            + "                       Max(e.encounter_datetime) data_proxima "
+            + "                FROM   patient p "
+            + "                       INNER JOIN encounter e "
+            + "                               ON p.patient_id = e.patient_id "
+            + "                WHERE  p.voided = 0 "
+            + "                       AND e.voided = 0 "
+            + "                       AND e.encounter_datetime >= :startDate "
+            + "                       AND e.encounter_datetime <= :endDate "
+            + "                       AND e.location_id = :location "
+            + "                       AND e.encounter_type IN ( %d, %d, %d, %d, "
+            + "                                                 %d, %d, %d, %d, "
+            + "                                                 %d, %d, %d ) "
+            + "                GROUP  BY p.patient_id "
+            + "                UNION "
+            + "                SELECT max_seguimento.patient_id, "
+            + "                       max_seguimento.encounter_datetime data_consulta, "
+            + "                       o.value_datetime                  data_proxima "
+            + "                FROM   (SELECT p.patient_id, "
+            + "                               Max(encounter_datetime) encounter_datetime "
+            + "                        FROM   patient p "
+            + "                               INNER JOIN encounter e "
+            + "                                       ON e.patient_id = p.patient_id "
+            + "                        WHERE  p.voided = 0 "
+            + "                               AND e.voided = 0 "
+            + "                               AND e.encounter_type IN ( %d, %d ) "
+            + "                               AND e.location_id = :location "
+            + "                               AND e.encounter_datetime >= :startDate "
+            + "                               AND e.encounter_datetime <= :endDate "
+            + "                        GROUP  BY p.patient_id) max_seguimento "
+            + "                       INNER JOIN obs o "
+            + "                               ON o.person_id = max_seguimento.patient_id "
+            + "                WHERE  max_seguimento.encounter_datetime = o.obs_datetime "
+            + "                       AND o.voided = 0 "
+            + "                       AND o.concept_id = %d "
+            + "                       AND o.location_id = :location "
+            + "                UNION "
+            + "                SELECT pg.patient_id, "
+            + "                       date_enrolled data_consulta, "
+            + "                       date_enrolled data_proxima "
+            + "                FROM   patient p "
+            + "                       INNER JOIN patient_program pg "
+            + "                               ON p.patient_id = pg.patient_id "
+            + "                       INNER JOIN patient_state ps "
+            + "                               ON pg.patient_program_id = ps.patient_program_id "
+            + "                WHERE  pg.voided = 0 "
+            + "                       AND p.voided = 0 "
+            + "                       AND program_id = %d "
+            + "                       AND pg.date_enrolled = ps.start_date "
+            + "                       AND ps.voided = 0 "
+            + "                       AND date_enrolled >= :startDate "
+            + "                       AND date_enrolled <= :endDate "
+            + "                       AND location_id = :location "
+            + "                       AND ps.state IN ( %d, %d )) seguimento "
+            + "        GROUP  BY patient_id) ultima_consulta "
+            + "WHERE  patient_id NOT IN (SELECT pg.patient_id "
+            + "                          FROM   patient p "
+            + "                                 INNER JOIN patient_program pg "
+            + "                                         ON p.patient_id = pg.patient_id "
+            + "                                 INNER JOIN patient_state ps "
+            + "                                         ON "
+            + "                                 pg.patient_program_id = ps.patient_program_id "
+            + "                          WHERE  pg.voided = 0 "
+            + "                                 AND ps.voided = 0 "
+            + "                                 AND p.voided = 0 "
+            + "                                 AND pg.program_id = %d "
+            + "                                 AND ps.state IN ( %d, %d, %d ) "
+            + "                                 AND ps.end_date IS NULL "
+            + "                                 AND ps.start_date <= :endDate "
+            + "                                 AND location_id = :location "
+            + "                          UNION "
+            + "                          SELECT p.patient_id "
+            + "                          FROM   patient p "
+            + "                                 INNER JOIN encounter e "
+            + "                                         ON p.patient_id = e.patient_id "
+            + "                                 INNER JOIN obs o "
+            + "                                         ON o.encounter_id = e.encounter_id "
+            + "                          WHERE  e.voided = 0 "
+            + "                                 AND o.voided = 0 "
+            + "                                 AND p.voided = 0 "
+            + "                                 AND e.encounter_type IN ( %d, %d, %d ) "
+            + "                                 AND o.concept_id = %d "
+            + "                                 AND o.value_coded = %d "
+            + "                                 AND e.encounter_datetime <= :endDate "
+            + "                                 AND e.location_id = :location "
+            + "                          UNION "
+            + "                          SELECT p.patient_id "
+            + "                          FROM   patient p "
+            + "                                 INNER JOIN encounter e "
+            + "                                         ON p.patient_id = e.patient_id "
+            + "                          WHERE  e.voided = 0 "
+            + "                                 AND p.voided = 0 "
+            + "                                 AND e.encounter_type = %d "
+            + "                                 AND e.encounter_datetime <= :endDate "
+            + "                                 AND e.location_id = :location "
+            + "                          UNION "
+            + "                          SELECT p.patient_id "
+            + "                          FROM   patient p "
+            + "                                 INNER JOIN encounter e "
+            + "                                         ON p.patient_id = e.patient_id "
+            + "                                 INNER JOIN obs o "
+            + "                                         ON e.encounter_id = o.encounter_id "
+            + "                          WHERE  p.voided = 0 "
+            + "                                 AND e.voided = 0 "
+            + "                                 AND o.voided = 0 "
+            + "                                 AND e.encounter_type IN ( %d, %d, %d ) "
+            + "                                 AND o.concept_id = %d "
+            + "                                 AND o.value_datetime IS NOT NULL "
+            + "                                 AND o.value_datetime <= :endDate "
+            + "                                 AND e.location_id = :location "
+            + "                          UNION "
+            + "                          SELECT pg.patient_id "
+            + "                          FROM   patient p "
+            + "                                 INNER JOIN patient_program pg "
+            + "                                         ON p.patient_id = pg.patient_id "
+            + "                                 INNER JOIN patient_state ps "
+            + "                                         ON "
+            + "                                 pg.patient_program_id = ps.patient_program_id "
+            + "                          WHERE  pg.voided = 0 "
+            + "                                 AND p.voided = 0 "
+            + "                                 AND program_id = %d "
+            + "                                 AND pg.date_enrolled = ps.start_date "
+            + "                                 AND ps.voided = 0 "
+            + "                                 AND date_enrolled <= :endDate "
+            + "                                 AND location_id = :location "
+            + "                                 AND ps.state IN ( %d, %d ) "
+            + "                          UNION "
+            + "                          SELECT person_id "
+            + "                          FROM   patient p "
+            + "                                 INNER JOIN person pe "
+            + "                                         ON pe.person_id = p.patient_id "
+            + "                          WHERE  pe.voided = 0 "
+            + "                                 AND p.voided = 0 "
+            + "                                 AND pe.dead = 1 "
+            + "                                 AND pe.death_date <= :endDate) "
+            + "       AND Datediff(:endDate, data_proxima) > 60; ";
+
+    cd.setQuery(
+        String.format(
+            query,
+            hivMetadata.getHIVCareProgram().getProgramId(),
+            hivMetadata.getArtCareAbandonedWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getARVAdultInitialBEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaInitialBEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtAconselhamentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getEvaluationAndPrepForARTEncounterType().getEncounterTypeId(),
+            hivMetadata.getPrevencaoPositivaInicialEncounterType().getEncounterTypeId(),
+            hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateConcept().getConceptId(),
+            hivMetadata.getHIVCareProgram().getProgramId(),
+            hivMetadata.getArtCareActiveOnProgramWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata
+                .getArtCareTransferredFromOtherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId(),
+            hivMetadata.getHIVCareProgram().getProgramId(),
+            hivMetadata.getArtCareAbandonedWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata
+                .getArtTransferredOutToAnotherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId(),
+            hivMetadata.getArtCareDeadWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPlanConcept().getConceptId(),
+            hivMetadata.getStartDrugsConcept().getConceptId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata.getArtActiveOnProgramWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata
+                .getArtTransferredFromOtherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
 
     return cd;
   }

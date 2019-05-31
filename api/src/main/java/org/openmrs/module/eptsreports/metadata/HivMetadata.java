@@ -232,6 +232,14 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.suspendedTreatmentConceptUuid");
     return getConcept(uuid);
   }
+
+  // concept_id = 6269
+  private Concept getActiveOnProgramConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.activeOnProgramConcept");
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
@@ -316,7 +324,39 @@ public class HivMetadata extends ProgramsMetadata {
     return getEncounterType(uuid);
   }
 
+  // encounter_type_id = 1
+  public EncounterType getARVAdultInitialBEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.adultInitialBEncounterType");
+    return getEncounterType(uuid);
+  }
+
+  // encounter_type_id = 3
+  public EncounterType getARVPediatriaInitialBEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.pediatriaInitialBEncounterType");
+    return getEncounterType(uuid);
+  }
+
+  // encounter_type_id = 19
+  public EncounterType getArtAconselhamentoEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.artAconselhamentoEncounterType");
+    return getEncounterType(uuid);
+  }
+
+  // encounter_type_id = 24
+  public EncounterType getArtAconselhamentoSeguimentoEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.artAconselhamentoSeguimentoEncounterType");
+    return getEncounterType(uuid);
+  }
   // Programs
+
   // program_id=2
   public Program getARTProgram() {
     String uuid = Context.getAdministrationService().getGlobalProperty(gpArtProgramUuid);
@@ -359,9 +399,33 @@ public class HivMetadata extends ProgramsMetadata {
     return state;
   }
 
+  public ProgramWorkflowState getArtTransferredFromOtherHealthFacilityWorkflowState() {
+    Program hivCareProgram = getARTProgram();
+    ProgramWorkflow workflow = getArtWorkflow();
+    ProgramWorkflowState state =
+        getTransferredFromOtherHealthFacilityWorkflowState(hivCareProgram, workflow);
+    return state;
+  }
+
   public ProgramWorkflowState getArtCareTransferredOutToAnotherHealthFacilityWorkflowState() {
     Program hivCareProgram = getHIVCareProgram();
     ProgramWorkflow workflow = getPreArtWorkflow();
+    ProgramWorkflowState state =
+        getTransferredOutToAnotherHealthFacilityWorkflowState(hivCareProgram, workflow);
+    return state;
+  }
+
+  public ProgramWorkflowState getArtCareActiveOnProgramWorkflowState() {
+    Program hivCareProgram = getHIVCareProgram();
+    ProgramWorkflow workflow = getPreArtWorkflow();
+    ProgramWorkflowState state =
+        getTransferredOutToAnotherHealthFacilityWorkflowState(hivCareProgram, workflow);
+    return state;
+  }
+
+  public ProgramWorkflowState getArtActiveOnProgramWorkflowState() {
+    Program hivCareProgram = getARTProgram();
+    ProgramWorkflow workflow = getArtWorkflow();
     ProgramWorkflowState state =
         getTransferredOutToAnotherHealthFacilityWorkflowState(hivCareProgram, workflow);
     return state;
@@ -486,6 +550,13 @@ public class HivMetadata extends ProgramsMetadata {
 
   public ProgramWorkflow getPreArtWorkflow() {
     return getProgramWorkflow(getHIVCareProgram().getUuid(), "1");
+  }
+
+  private ProgramWorkflowState getActiveOnProgramWorkflowState(
+      Program program, ProgramWorkflow programWorkflow) {
+    Concept activeOnProgram = getActiveOnProgramConcept();
+    return getProgramWorkflowState(
+        program.getUuid(), programWorkflow.getUuid(), activeOnProgram.getUuid());
   }
 
   private ProgramWorkflowState getAbandonedWorkflowState(

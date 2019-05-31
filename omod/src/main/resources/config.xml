@@ -359,6 +359,46 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>@MODULE_ID@.adultInitialBEncounterType</property>
+		<defaultValue>e278f1c2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: ADULTO INICIAL B encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.pediatriaInitialBEncounterType</property>
+		<defaultValue>e278f5aa-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: PEDIATRIA INICIAL B encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.artAconselhamentoEncounterType</property>
+		<defaultValue>e2791472-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: ACONSELHAMENTO encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.artAconselhamentoSeguimentoEncounterType</property>
+		<defaultValue>e2791a62-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: ACONSELHAMENTO SEGUIMENTO encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.activeOnProgramConcept</property>
+		<defaultValue>4a7bec6f-8f27-4da5-b78d-40134c30d3ee</defaultValue>
+		<description>
+			UUID for the ACTIVO NO PROGRAMA encounter type
+		</description>
+	</globalProperty>
+
 	<!-- 2nd line ARV Concepts -->
 
 	<globalProperty>

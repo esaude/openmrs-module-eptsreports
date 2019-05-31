@@ -5,12 +5,15 @@ import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraig
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.noMappings;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.UsMonthlySummaryHivCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -82,14 +85,14 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         "Nº cumulativo de transferidos para outras US",
         getTransferredOut(),
         getColumnParameters());
-    //
-    //    addRow(
-    //        dataSetDefinition,
-    //        "C2",
-    //        "Nº cumulativo de abandonos pre-tarv",
-    //        getAbandoned(),
-    //        getColumnParameters());
-    //
+
+    addRow(
+        dataSetDefinition,
+        "C2",
+        "Nº cumulativo de abandonos pre-tarv",
+        getAbandoned(),
+        getColumnParameters());
+
     //    addRow(
     //        dataSetDefinition,
     //        "C3",
@@ -392,15 +395,18 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
   // mapStraightThrough(cohort));
   //    return mapStraightThrough(indicator);
   //  }
-  //
-  //  private Mapped<CohortIndicator> getAbandoned() {
-  //    String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE ABANDONARAM";
-  //    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getAbandonedArtCare();
-  //    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name,
-  // mapStraightThrough(cohort));
-  //    return mapStraightThrough(indicator);
-  //  }
-  //
+
+  private Mapped<CohortIndicator> getAbandoned() {
+    String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE ABANDONARAM";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getAbandonedArtCare();
+    Map<String, Object> mappings = new HashMap<>();
+    mappings.put("startDate", DateUtil.getDateTime(2012, 3, 21));
+    mappings.put("endDate", "${endDate}");
+    mappings.put("location", "${location}");
+    Mapped<CohortDefinition> mappded = new Mapped<>(cohort, mappings);
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mappded);
+    return mapStraightThrough(indicator);
+  }
 
   private Mapped<CohortIndicator> getTransferredOut() {
     String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV TRANSFERIDOS PARA";
