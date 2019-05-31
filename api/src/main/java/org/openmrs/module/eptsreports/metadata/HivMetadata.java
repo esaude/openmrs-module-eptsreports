@@ -240,6 +240,47 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id = 1126
+  public Concept getUrogenitalExamFindingsConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.urogenitalExamFindingsConcept");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 1115
+  public Concept getNormalConcept() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.normalConcept");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 1116
+  public Concept getAbnormalConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.abnormalConcept");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 1399
+  public Concept getSecretionsConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.secretionsConcept");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 1400
+  public Concept getCondylomasConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.condylomasConcept");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 1602
+  public Concept getUlcersConcept() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.ulcersConcept");
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {

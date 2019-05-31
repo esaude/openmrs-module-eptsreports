@@ -113,14 +113,13 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         "Nº dos novos inscritos mensais no Livro de Registo Nº 1 de Pré-TARV rastreados para TB",
         getScreenedForTb(),
         getColumnParameters());
-    //
-    //    addRow(
-    //        dataSetDefinition,
-    //        "E2",
-    //        "Nº dos novos inscritos mensais no Livro de Registo Nº 1 de Pré-TARV rastreados para
-    // ITS",
-    //        getScreenedForSti(),
-    //        getColumnParameters());
+
+    addRow(
+        dataSetDefinition,
+        "E2",
+        "Nº dos novos inscritos mensais no Livro de Registo Nº 1 de Pré-TARV rastreados para ITS",
+        getScreenedForSti(),
+        getColumnParameters());
     //
     //    addRow(
     //        dataSetDefinition,
@@ -358,16 +357,14 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
   //    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
   //    return mapStraightThrough(indicator);
   //  }
-  //
-  //  private Mapped<CohortIndicator> getScreenedForSti() {
-  //    String name =
-  //        "NUMERO DE NOVOS PACIENTES REGISTADOS NO LIVRO 1 PRE-TARV NUM PERIODO E QUE FORAM
-  // RASTREADOS PARA ITS NO MESMO PERIODO";
-  //    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInPreArtWhoScreenedForSti();
-  //    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
-  //    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
-  //    return mapStraightThrough(indicator);
-  //  }
+
+  private Mapped<CohortIndicator> getScreenedForSti() {
+    String name =
+        "NUMERO DE NOVOS PACIENTES REGISTADOS NO LIVRO 1 PRE-TARV NUM PERIODO E QUE FORAM RASTREADOS PARA ITS NO MESMO PERIODO";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInPreArtWhoScreenedForSti();
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
+    return mapStraightThrough(indicator);
+  }
 
   private Mapped<CohortIndicator> getScreenedForTb() {
     String name =

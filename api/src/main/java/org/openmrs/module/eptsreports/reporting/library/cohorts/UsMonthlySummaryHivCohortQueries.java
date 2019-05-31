@@ -20,6 +20,7 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.TXTBQueries;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
@@ -496,10 +497,9 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   public CohortDefinition getInPreArtWhoScreenedForSti() {
-    String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
-    Mapped<CohortDefinition> screenedForSti = map(getStiScreening(), mappings);
-    Mapped<CohortDefinition> inPreArtBook1 = map(registeredInPreArtBook1(), mappings);
-    return getEnrolledInArtBookAnd(inPreArtBook1, screenedForSti);
+    Mapped<CohortDefinition> screenedForSti = mapStraightThrough(getStiScreening());
+    Mapped<CohortDefinition> enrolled = mapStraightThrough(getEnrolled());
+    return getEnrolledInArtBookAnd(enrolled, screenedForSti);
   }
 
   public CohortDefinition getInPreArtWhoStartedCotrimoxazoleProphylaxis() {
@@ -962,16 +962,49 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   private CohortDefinition getStiScreening() {
-    List<Concept> values =
-        Arrays.asList(commonMetadata.getNoConcept(), commonMetadata.getYesConcept());
-    return genericCohortQueries.hasCodedObs(
-        commonMetadata.getStiScreeningConcept(),
-        TimeModifier.ANY,
-        SetComparator.IN,
-        Arrays.asList(
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType()),
-        values);
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("PACIENTES QUE TIVERAM RASTREIO DE ITS – PROCESSO CLINICO E FICHA DE SEGUIMENTO");
+
+    cd.addParameters(getParameters());
+
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
+    cd.addSearch("PROCESSO", map(getStiScreeningFromClinicalProcess(), mappings));
+    cd.addSearch("SEGUIMENTO", map(getStiScreeningFromFollowUp(), mappings));
+
+    cd.setCompositionString("PROCESSO OR SEGUIMENTO");
+
+    return cd;
+  }
+
+  private CohortDefinition getStiScreeningFromFollowUp() {
+    CodedObsCohortDefinition cd =
+        (CodedObsCohortDefinition)
+            genericCohortQueries.hasCodedObs(null, TimeModifier.ANY, SetComparator.IN, null, null);
+
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.addEncounterType(hivMetadata.getARVPediatriaSeguimentoEncounterType());
+    cd.setQuestion(commonMetadata.getStiScreeningConcept());
+    cd.addValue(commonMetadata.getNoConcept());
+    cd.addValue(commonMetadata.getYesConcept());
+
+    return cd;
+  }
+
+  private CohortDefinition getStiScreeningFromClinicalProcess() {
+
+    CodedObsCohortDefinition cd =
+        ((CodedObsCohortDefinition)
+            genericCohortQueries.hasCodedObs(null, TimeModifier.ANY, SetComparator.IN, null, null));
+
+    cd.addEncounterType(hivMetadata.getARVAdultInitialBEncounterType());
+    cd.setQuestion(hivMetadata.getUrogenitalExamFindingsConcept());
+    cd.addValue(hivMetadata.getNormalConcept());
+    cd.addValue(hivMetadata.getAbnormalConcept());
+    cd.addValue(hivMetadata.getSecretionsConcept());
+    cd.addValue(hivMetadata.getCondylomasConcept());
+    cd.addValue(hivMetadata.getUlcersConcept());
+
+    return cd;
   }
 
   private CohortDefinition registeredInPreArtBook1() {

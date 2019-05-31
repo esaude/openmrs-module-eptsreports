@@ -399,6 +399,54 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>@MODULE_ID@.urogenitalExamFindingsConcept</property>
+		<defaultValue>e1d86e14-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the EXAME UROGENITAL encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.normalConcept</property>
+		<defaultValue>e1d85b22-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the NORMAL concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.abnormalConcept</property>
+		<defaultValue>e1d85c26-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the ANORMAL concept
+		</description>
+	</globalProperty>
+<!---->
+	<globalProperty>
+		<property>@MODULE_ID@.secretionsConcept</property>
+		<defaultValue>e1dadb40-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the SECRECOES concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.condylomasConcept</property>
+		<defaultValue>e1dadc3a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the CONDILOMAS concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.ulcersConcept</property>
+		<defaultValue>e1dcaaec-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the ULCERAS concept
+		</description>
+	</globalProperty>
+
 	<!-- 2nd line ARV Concepts -->
 
 	<globalProperty>
