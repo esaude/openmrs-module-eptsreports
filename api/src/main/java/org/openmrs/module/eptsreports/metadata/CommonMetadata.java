@@ -35,6 +35,7 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
+  // concept_id=1256
   public Concept getStartDrugsConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.startDrugsConceptUuid");
@@ -55,6 +56,7 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
+  // concept_id=1190
   public Concept getHistoricalDrugStartDateConcept() {
     String uuid =
         Context.getAdministrationService()

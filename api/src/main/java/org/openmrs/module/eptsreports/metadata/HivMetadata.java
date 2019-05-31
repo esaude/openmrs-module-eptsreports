@@ -49,6 +49,7 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id=1255
   public Concept getARVPlanConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.arvPlanConceptUuid");

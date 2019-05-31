@@ -75,13 +75,13 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         "Nº mensal de transferidos de outras US",
         getEnrolledByTransfer(),
         getColumnParameters());
-    //
-    //    addRow(
-    //        dataSetDefinition,
-    //        "C1",
-    //        "Nº cumulativo de transferidos para outras US",
-    //        getTransferredOut(),
-    //        getColumnParameters());
+
+    addRow(
+        dataSetDefinition,
+        "C1",
+        "Nº cumulativo de transferidos para outras US",
+        getTransferredOut(),
+        getColumnParameters());
     //
     //    addRow(
     //        dataSetDefinition,
@@ -401,14 +401,15 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
   //    return mapStraightThrough(indicator);
   //  }
   //
-  //  private Mapped<CohortIndicator> getTransferredOut() {
-  //    String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV TRANSFERIDOS PARA";
-  //    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getTransferredOut();
-  //    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name,
-  // mapStraightThrough(cohort));
-  //    return mapStraightThrough(indicator);
-  //  }
-  //
+
+  private Mapped<CohortIndicator> getTransferredOut() {
+    String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV TRANSFERIDOS PARA";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getTransferredOut();
+    String mappings = "endDate=${endDate},location=${location}";
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    return mapStraightThrough(indicator);
+  }
+
   private Mapped<CohortIndicator> getEnrolledByTransfer() {
     String name =
         "NUMERO DE PACIENTES PRE-TARV REGISTADOS NO LIVRO 1 E 2 TRANSFERIDOS DE NUM PERIODO";

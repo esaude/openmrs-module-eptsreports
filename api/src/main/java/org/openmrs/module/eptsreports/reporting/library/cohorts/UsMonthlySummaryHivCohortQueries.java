@@ -339,7 +339,137 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   public CohortDefinition getTransferredOut() {
-    return hivCohortQueries.getPatientsInArtCareTransferredOutToAnotherHealthFacility();
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("RM_PACIENTES QUE SAIRAM DO CUIDADO PRE-TARV: TRANSFERIDOS PARA - PERIODO FINAL");
+
+    cd.addParameter(ReportingConstants.END_DATE_PARAMETER);
+    cd.addParameter(ReportingConstants.LOCATION_PARAMETER);
+
+    cd.addSearch(
+        "CUMULATIVOENTRADAS", mapStraightThrough(getRegisteredInPreArtByEndOfPreviousMonth()));
+
+    CohortDefinition transferredOut =
+        hivCohortQueries.getPatientsInArtCareTransferredOutToAnotherHealthFacility();
+    cd.addSearch("TRANSFERIDOPARA", mapStraightThrough(transferredOut));
+
+    Map<String, Object> mappings = new HashMap<>();
+    mappings.put("startDate", DateUtil.getDateTime(2012, 3, 21));
+    mappings.put("endDate", "${endDate}");
+    mappings.put("location", "${location}");
+    cd.addSearch("INICIO", getInitiatedArt(), mappings);
+
+    cd.addSearch("OBITO", mapStraightThrough(getDeadDuringArtCare()));
+
+    cd.setCompositionString("(CUMULATIVOENTRADAS AND TRANSFERIDOPARA) NOT (INICIO OR OBITO)");
+
+    return cd;
+  }
+
+  /**
+   * @return Pacientes que iniciaram tratamento ARV num periodo excluindo os transferidos de com a
+   *     data de inicio conhecida e mesmo que coincida no periodo
+   */
+  private CohortDefinition getInitiatedArt() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName(
+        "INICIO DE TRATAMENTO ARV - NUM PERIODO: EXCLUI TRANSFERIDOS DE COM DATA DE INICIO CONHECIDA (SQL)");
+
+    cd.addParameters(getParameters());
+
+    cd.addSearch("INICIO", mapStraightThrough(getInitiatedIncludingTransfers()));
+    cd.addSearch("TRANSFDEPRG", mapStraightThrough(getInArtEnrolledByTransfer()));
+
+    cd.setCompositionString("INICIO NOT TRANSFDEPRG");
+
+    return cd;
+  }
+
+  /**
+   * @return Pacientes que iniciaram o tratamento ARV (Na unidade sanitaria seleccionada). São
+   *     inclusos os transferidos de com data de inicio conhecida
+   */
+  private CohortDefinition getInitiatedIncludingTransfers() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName(
+        "INICIO DE TRATAMENTO ARV - NUM PERIODO: INCLUI TRANSFERIDOS DE COM DATA DE INICIO CONHECIDA (SQL)");
+    cd.addParameters(getParameters());
+    String query =
+        "SELECT patient_id "
+            + "FROM   (SELECT patient_id, "
+            + "               Min(data_inicio) data_inicio "
+            + "        FROM   (SELECT p.patient_id, "
+            + "                       Min(e.encounter_datetime) data_inicio "
+            + "                FROM   patient p "
+            + "                       INNER JOIN encounter e "
+            + "                               ON p.patient_id = e.patient_id "
+            + "                       INNER JOIN obs o "
+            + "                               ON o.encounter_id = e.encounter_id "
+            + "                WHERE  e.voided = 0 "
+            + "                       AND o.voided = 0 "
+            + "                       AND p.voided = 0 "
+            + "                       AND e.encounter_type IN ( %d, %d, %d ) "
+            + "                       AND o.concept_id = %d "
+            + "                       AND o.value_coded = %d "
+            + "                       AND e.encounter_datetime <= :endDate "
+            + "                       AND e.location_id = :location "
+            + "                GROUP  BY p.patient_id "
+            + "                UNION "
+            + "                SELECT p.patient_id, "
+            + "                       Min(value_datetime) data_inicio "
+            + "                FROM   patient p "
+            + "                       INNER JOIN encounter e "
+            + "                               ON p.patient_id = e.patient_id "
+            + "                       INNER JOIN obs o "
+            + "                               ON e.encounter_id = o.encounter_id "
+            + "                WHERE  p.voided = 0 "
+            + "                       AND e.voided = 0 "
+            + "                       AND o.voided = 0 "
+            + "                       AND e.encounter_type IN ( %d, %d, %d ) "
+            + "                       AND o.concept_id = %d "
+            + "                       AND o.value_datetime IS NOT NULL "
+            + "                       AND o.value_datetime <= :endDate "
+            + "                       AND e.location_id = :location "
+            + "                GROUP  BY p.patient_id "
+            + "                UNION "
+            + "                SELECT pg.patient_id, "
+            + "                       date_enrolled data_inicio "
+            + "                FROM   patient p "
+            + "                       INNER JOIN patient_program pg "
+            + "                               ON p.patient_id = pg.patient_id "
+            + "                WHERE  pg.voided = 0 "
+            + "                       AND p.voided = 0 "
+            + "                       AND program_id = %d "
+            + "                       AND date_enrolled <= :endDate "
+            + "                       AND location_id = :location "
+            + "                UNION "
+            + "                SELECT e.patient_id, "
+            + "                       Min(e.encounter_datetime) AS data_inicio "
+            + "                FROM   patient p "
+            + "                       INNER JOIN encounter e "
+            + "                               ON p.patient_id = e.patient_id "
+            + "                WHERE  p.voided = 0 "
+            + "                       AND e.encounter_type = %d "
+            + "                       AND e.voided = 0 "
+            + "                       AND e.encounter_datetime <= :endDate "
+            + "                       AND e.location_id = :location "
+            + "                GROUP  BY p.patient_id) inicio_real "
+            + "        GROUP  BY patient_id)inicio "
+            + "WHERE  data_inicio BETWEEN :startDate AND :endDate ";
+    cd.setQuery(
+        String.format(
+            query,
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPlanConcept().getConceptId(),
+            hivMetadata.getStartDrugsConcept().getConceptId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
+    return cd;
   }
 
   public CohortDefinition getRegisteredInPreArtOrArtBooks() {
