@@ -585,7 +585,19 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   public CohortDefinition getInArtCareWhoInitiatedArt() {
-    return hivCohortQueries.getPatientsInArtCareWhoInitiatedArt();
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("RM_PACIENTES QUE SAIRAM DO CUIDADO PRE-TARV: INICIO TARV - NUM PERIODO");
+
+    cd.addParameters(getParameters());
+
+    CohortDefinition cohort = getRegisteredInPreArtByEndOfPreviousMonth();
+    cd.addSearch("CUMULATIVOENTRADAS", mapStraightThrough(cohort));
+
+    cd.addSearch("INICIO", mapStraightThrough(getInitiatedArt()));
+
+    cd.setCompositionString("CUMULATIVOENTRADAS AND INICIO");
+
+    return cd;
   }
 
   public CohortDefinition getInArtWhoSuspendedTreatment() {

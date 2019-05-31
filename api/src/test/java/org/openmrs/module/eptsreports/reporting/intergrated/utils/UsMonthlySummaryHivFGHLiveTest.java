@@ -100,6 +100,12 @@ public class UsMonthlySummaryHivFGHLiveTest extends DefinitionsFGHLiveTest {
     assertThat(ds, hasColumnValue("C3-M014", 4));
     assertThat(ds, hasColumnValue("C3-F15", 14));
     assertThat(ds, hasColumnValue("C3-M15", 15));
+
+    // Nº cumulativo que iniciaram TARV
+    assertThat(ds, hasColumnValue("C4-F014", 120));
+    assertThat(ds, hasColumnValue("C4-M014", 116));
+    assertThat(ds, hasColumnValue("C4-F15", 1829));
+    assertThat(ds, hasColumnValue("C4-M15", 877));
   }
 
   @Override

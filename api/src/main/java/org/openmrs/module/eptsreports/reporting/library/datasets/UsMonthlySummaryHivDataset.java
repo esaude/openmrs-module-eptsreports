@@ -100,13 +100,13 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         getDeceasedDuringPreArt(),
         getColumnParameters());
 
-    //    addRow(
-    //        dataSetDefinition,
-    //        "C4",
-    //        "Nº cumulativo que iniciaram TARV",
-    //        getInitiatedArt(),
-    //        getColumnParameters());
-    //
+    addRow(
+        dataSetDefinition,
+        "C4",
+        "Nº cumulativo que iniciaram TARV",
+        getInitiatedArt(),
+        getColumnParameters());
+
     //    addRow(
     //        dataSetDefinition,
     //        "E1",
@@ -379,14 +379,18 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
   //    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
   //    return mapStraightThrough(indicator);
   //  }
-  //
-  //  private Mapped<CohortIndicator> getInitiatedArt() {
-  //    String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE INICIARAM TARV";
-  //    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInArtCareWhoInitiatedArt();
-  //    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name,
-  // mapStraightThrough(cohort));
-  //    return mapStraightThrough(indicator);
-  //  }
+
+  private Mapped<CohortIndicator> getInitiatedArt() {
+    String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE INICIARAM TARV";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInArtCareWhoInitiatedArt();
+    Map<String, Object> mappings = new HashMap<>();
+    mappings.put("startDate", DateUtil.getDateTime(2012, 3, 21));
+    mappings.put("endDate", "${endDate}");
+    mappings.put("location", "${location}");
+    Mapped<CohortDefinition> mapped = new Mapped<>(cohort, mappings);
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapped);
+    return mapStraightThrough(indicator);
+  }
 
   private Mapped<CohortIndicator> getDeceasedDuringPreArt() {
     String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE OBITARAM";
