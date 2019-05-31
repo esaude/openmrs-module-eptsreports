@@ -93,13 +93,13 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         getAbandoned(),
         getColumnParameters());
 
-    //    addRow(
-    //        dataSetDefinition,
-    //        "C3",
-    //        "Nº cumulativo de óbitos pre-tarv",
-    //        getDeceasedDuringPreArt(),
-    //        getColumnParameters());
-    //
+    addRow(
+        dataSetDefinition,
+        "C3",
+        "Nº cumulativo de óbitos pre-tarv",
+        getDeceasedDuringPreArt(),
+        getColumnParameters());
+
     //    addRow(
     //        dataSetDefinition,
     //        "C4",
@@ -387,14 +387,13 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
   // mapStraightThrough(cohort));
   //    return mapStraightThrough(indicator);
   //  }
-  //
-  //  private Mapped<CohortIndicator> getDeceasedDuringPreArt() {
-  //    String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE OBITARAM";
-  //    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getDeadDuringArtCare();
-  //    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name,
-  // mapStraightThrough(cohort));
-  //    return mapStraightThrough(indicator);
-  //  }
+
+  private Mapped<CohortIndicator> getDeceasedDuringPreArt() {
+    String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE OBITARAM";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getDeadDuringArtCare();
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
+    return mapStraightThrough(indicator);
+  }
 
   private Mapped<CohortIndicator> getAbandoned() {
     String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE ABANDONARAM";

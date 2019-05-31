@@ -358,7 +358,7 @@ public class UsMonthlySummaryHivCohortQueries {
     mappings.put("location", "${location}");
     cd.addSearch("INICIO", getInitiatedArt(), mappings);
 
-    cd.addSearch("OBITO", mapStraightThrough(getDeadDuringArtCare()));
+    cd.addSearch("OBITO", mapStraightThrough(getDeadDuringArtCareProgram()));
 
     cd.setCompositionString("(CUMULATIVOENTRADAS AND TRANSFERIDOPARA) NOT (INICIO OR OBITO)");
 
@@ -568,7 +568,7 @@ public class UsMonthlySummaryHivCohortQueries {
         hivCohortQueries.getPatientsInArtCareTransferredOutToAnotherHealthFacility();
     cd.addSearch("TRANSFERIDOPARA", mapStraightThrough(transferredOut));
 
-    cd.addSearch("OBITO", mapStraightThrough(getDeadDuringArtCare()));
+    cd.addSearch("OBITO", mapStraightThrough(getDeadDuringArtCareProgram()));
     cd.addSearch("INICIO", mapStraightThrough(getInitiatedArt()));
 
     cd.setCompositionString(
@@ -577,7 +577,7 @@ public class UsMonthlySummaryHivCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getDeadDuringArtCare() {
+  private CohortDefinition getDeadDuringArtCareProgram() {
     CohortDefinition cd = hivCohortQueries.getPatientsInArtCareWhoDied();
     cd.setName(
         "PROGRAMA: PACIENTES QUE SAIRAM DO PROGRAMA DE CUIDADO (PRE-TARV) - OBITO: PERIODO FINAL");
@@ -1027,6 +1027,28 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.addParameter(new Parameter("value1", "After Date", Date.class));
     cd.addParameter(new Parameter("value2", "Before Date", Date.class));
     cd.addParameter(new Parameter("locationList", "Location", Location.class));
+
+    return cd;
+  }
+
+  public CohortDefinition getDeadDuringArtCare() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("RM_PACIENTES QUE SAIRAM DO CUIDADO PRE-TARV: OBITO - PERIODO FINAL");
+
+    cd.addParameter(ReportingConstants.END_DATE_PARAMETER);
+    cd.addParameter(ReportingConstants.LOCATION_PARAMETER);
+
+    cd.addSearch("OBITO", mapStraightThrough(getDeadDuringArtCareProgram()));
+    cd.addSearch(
+        "CUMULATIVOENTRADAS", mapStraightThrough(getRegisteredInPreArtByEndOfPreviousMonth()));
+
+    Map<String, Object> mappings = new HashMap<>();
+    mappings.put("startDate", DateUtil.getDateTime(2012, 3, 20));
+    mappings.put("endDate", "${endDate}");
+    mappings.put("location", "${location}");
+    cd.addSearch("INICIO", getInitiatedArt(), mappings);
+
+    cd.setCompositionString("(OBITO AND CUMULATIVOENTRADAS) NOT INICIO");
 
     return cd;
   }

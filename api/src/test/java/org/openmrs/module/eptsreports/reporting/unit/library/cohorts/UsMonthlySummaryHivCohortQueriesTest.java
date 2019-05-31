@@ -28,13 +28,6 @@ public class UsMonthlySummaryHivCohortQueriesTest extends BaseContextMockTest {
   }
 
   @Test
-  public void getDeadDuringArtCareShouldCallHivCohortQueries() {
-    when(hivCohortQueries.getPatientsInArtCareWhoDied()).thenReturn(allPatients);
-    usMonthlySummaryHivCohortQueries.getDeadDuringArtCare();
-    verify(hivCohortQueries).getPatientsInArtCareWhoDied();
-  }
-
-  @Test
   public void getInArtWhoSuspendedTreatmentShouldCallHivCohortQueries() {
     when(hivCohortQueries.getPatientsInArtWhoSuspendedTreatment()).thenReturn(allPatients);
     usMonthlySummaryHivCohortQueries.getInArtWhoSuspendedTreatment();
