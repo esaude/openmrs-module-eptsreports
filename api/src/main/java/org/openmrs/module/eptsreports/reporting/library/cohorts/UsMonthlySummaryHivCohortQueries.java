@@ -247,13 +247,139 @@ public class UsMonthlySummaryHivCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getRegisteredInArtBooks() {
-    return genericCohortQueries.hasCodedObs(
-        hivMetadata.getRecordArtFlowConcept(),
-        TimeModifier.FIRST,
-        SetComparator.IN,
-        Arrays.asList(hivMetadata.getArtBookEncounterType()),
-        null);
+  public CohortDefinition getEnrolledInArtByEndOfPreviousMonth() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("RM_CUMULATIVO DE PACIENTES REGISTADOS ATÉ O FIM DO MÊS ANTERIOR (TARV)");
+
+    cd.addParameters(getParameters());
+
+    Map<String, Object> mappings = new HashMap<>();
+    mappings.put("startDate", DateUtil.getDateTime(2012, 3, 21));
+    mappings.put("endDate", "${endDate}");
+    mappings.put("location", "${location}");
+    cd.addSearch("INICIO0312FINAL", getInitiatedIncludingTransfers(), mappings);
+    cd.addSearch("TRANSFERIDODEPERIODO", getInArtEnrolledByTransfer(), mappings);
+    cd.addSearch("CONSULTA0312ATEINICIOPERIODO", hasFollowUpConsultation(), mappings);
+
+    Map<String, Object> m = new HashMap<>();
+    m.put("endDate", DateUtil.getDateTime(2012, 3, 21));
+    m.put("location", "${location}");
+    cd.addSearch("INICIOATE20032012", getStartedArt(), m);
+
+    Map<String, Object> n = new HashMap<>();
+    n.put("onOrAfter", DateUtil.getDateTime(2012, 3, 21));
+    n.put("onOrBefore", "${endDate}");
+    n.put("locationList", "${location}");
+    cd.addSearch("FARMACIA0312ATEINICIOPERIODO", getEverOnARTPharmacy(), n);
+
+    cd.setCompositionString(
+        "INICIO0312FINAL OR TRANSFERIDODEPERIODO OR (INICIOATE20032012 AND (CONSULTA0312ATEINICIOPERIODO OR FARMACIA0312ATEINICIOPERIODO))");
+
+    return cd;
+  }
+
+  /**
+   * @return Pacientes que alguma vez esteve em tratamento ARV, levantou pelo menos uma vez ARV na
+   *     Famacia (tem pelo menos um FRIDA/FILA preenchido) num determinado periodo
+   */
+  private CohortDefinition getEverOnARTPharmacy() {
+    EncounterCohortDefinition cd = new EncounterCohortDefinition();
+
+    cd.setName("ALGUMA VEZ ESTEVE EM TRATAMENTO ARV - NUM PERÍODO - FARMÁCIA");
+
+    cd.addParameter(new Parameter("onOrAfter", "", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "", Date.class));
+    cd.addParameter(new Parameter("locationList", "", Location.class));
+
+    cd.setTimeQualifier(TimeQualifier.ANY);
+    cd.addEncounterType(hivMetadata.getARVPharmaciaEncounterType());
+
+    return cd;
+  }
+
+  /**
+   * @return Paciente que iniciou o tratamento ARV (Na unidade sanitaria seleccionada) até um
+   *     determinado periodo final. São inclusos os transferidos de com data de inicio conhecida
+   */
+  private CohortDefinition getStartedArt() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
+    cd.setName(
+        "INICIO DE TRATAMENTO ARV - PERIODO FINAL: INCLUI TRANSFERIDOS DE COM DATA DE INICIO CONHECIDA (SQL)");
+
+    cd.addParameter(ReportingConstants.END_DATE_PARAMETER);
+    cd.addParameter(ReportingConstants.LOCATION_PARAMETER);
+
+    String query =
+        "SELECT p.patient_id "
+            + "FROM   patient p "
+            + "       INNER JOIN encounter e "
+            + "               ON p.patient_id = e.patient_id "
+            + "       INNER JOIN obs o "
+            + "               ON o.encounter_id = e.encounter_id "
+            + "WHERE  e.voided = 0 "
+            + "       AND o.voided = 0 "
+            + "       AND p.voided = 0 "
+            + "       AND e.encounter_type IN ( %d, %d, %d ) "
+            + "       AND o.concept_id = %d "
+            + "       AND o.value_coded = %d "
+            + "       AND e.encounter_datetime <= :endDate "
+            + "       AND e.location_id = :location "
+            + "GROUP  BY p.patient_id "
+            + "UNION "
+            + "SELECT p.patient_id "
+            + "FROM   patient p "
+            + "       INNER JOIN encounter e "
+            + "               ON p.patient_id = e.patient_id "
+            + "       INNER JOIN obs o "
+            + "               ON e.encounter_id = o.encounter_id "
+            + "WHERE  p.voided = 0 "
+            + "       AND e.voided = 0 "
+            + "       AND o.voided = 0 "
+            + "       AND e.encounter_type IN ( %d, %d, %d ) "
+            + "       AND o.concept_id = %d "
+            + "       AND o.value_datetime IS NOT NULL "
+            + "       AND o.value_datetime <= :endDate "
+            + "       AND e.location_id = :location "
+            + "GROUP  BY p.patient_id "
+            + "UNION "
+            + "SELECT pg.patient_id "
+            + "FROM   patient p "
+            + "       INNER JOIN patient_program pg "
+            + "               ON p.patient_id = pg.patient_id "
+            + "WHERE  pg.voided = 0 "
+            + "       AND p.voided = 0 "
+            + "       AND program_id = %d "
+            + "       AND date_enrolled <= :endDate "
+            + "       AND location_id = :location "
+            + "UNION "
+            + "SELECT p.patient_id "
+            + "FROM   patient p "
+            + "       INNER JOIN encounter e "
+            + "               ON p.patient_id = e.patient_id "
+            + "WHERE  p.voided = 0 "
+            + "       AND e.encounter_type = %d "
+            + "       AND e.voided = 0 "
+            + "       AND e.encounter_datetime <= :endDate "
+            + "       AND e.location_id = :location "
+            + "GROUP  BY p.patient_id ";
+
+    cd.setQuery(
+        String.format(
+            query,
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPlanConcept().getConceptId(),
+            hivMetadata.getStartDrugsConcept().getConceptId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
+
+    return cd;
   }
 
   public CohortDefinition getNewlyEnrolledInPreArtBooks() {
