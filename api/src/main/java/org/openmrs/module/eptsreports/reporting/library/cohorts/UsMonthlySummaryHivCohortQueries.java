@@ -489,10 +489,10 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   public CohortDefinition getInPreArtWhoScreenedForTb() {
-    String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
     Mapped<CohortDefinition> screenedForTb = map(getTbScreening(), mappings);
-    Mapped<CohortDefinition> inPreArtBook1 = map(registeredInPreArtBook1(), mappings);
-    return getEnrolledInArtBookAnd(inPreArtBook1, screenedForTb);
+    Mapped<CohortDefinition> enrolled = mapStraightThrough(getEnrolled());
+    return getEnrolledInArtBookAnd(enrolled, screenedForTb);
   }
 
   public CohortDefinition getInPreArtWhoScreenedForSti() {
@@ -896,29 +896,20 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   /**
-   * @param artBook Cohort of patients registered in one of the ART books
+   * @param enrolled Cohort of patients registered in one of the ART books
    * @param toCompose Mapped cohort of screened patients. Parameters to map are {@code onOrBefore,
    *     onOrAfter} and {@code location}
    * @return Composition cohort of patients who are registered in pre ART Book 1 composed with
    *     {@code toCompose} param using an 'AND' operator.
    */
   private CohortDefinition getEnrolledInArtBookAnd(
-      Mapped<CohortDefinition> artBook, Mapped<CohortDefinition> toCompose) {
+      Mapped<CohortDefinition> enrolled, Mapped<CohortDefinition> toCompose) {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("enrolledInArtBookAnd");
+    cd.setName("enrolledInArtAnd");
 
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameters(getParameters());
 
-    String mappings = "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}";
-    Mapped<CohortDefinition> transferredFrom =
-        map(hivCohortQueries.getPatientsInArtCareTransferredFromOtherHealthFacility(), mappings);
-
-    CohortDefinition newInArtCare =
-        getNewlyEnrolledInArtBookExcludingTransfers(artBook, transferredFrom);
-
-    cd.addSearch("INSCRITOS", mapStraightThrough(newInArtCare));
+    cd.addSearch("INSCRITOS", enrolled);
     cd.addSearch("COMPOSE", toCompose);
 
     cd.setCompositionString("INSCRITOS AND COMPOSE");
