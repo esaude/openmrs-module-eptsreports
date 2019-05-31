@@ -1935,8 +1935,8 @@ public class QualiltyImprovementQueries {
             + "		inner join patient_state ps on pg.patient_program_id=ps.patient_program_id  "
             + "where 	pg.voided=0 and ps.voided=0 and p.voided=0 and   "
             + "		pg.program_id=%d and ps.state=%d and ps.end_date is null and   "
-            + "		ps.start_date between date_add(:startDate, interval -2 year) "
-            + " and date_add(:startDate, interval -1 day) and location_id=:location";
+            + "		ps.start_date between timestampadd(year, -2,:startDate) "
+            + " and timestampadd(day, -1,:startDate) and location_id=:location";
 
     return String.format(query, ptvEtvProgram, patientIsBreastfeedingWorkflowState);
   }
@@ -2096,11 +2096,11 @@ public class QualiltyImprovementQueries {
             + "		from 	patient p  "
             + "				inner join encounter e on p.patient_id=e.patient_id  "
             + "		where 	p.voided=0 and e.voided=0 and e.encounter_type in (%d,%d) and   "
-            + "				e.encounter_datetime between date_add(:endDate, interval -7 MONTH) and :endDate and e.location_id=:location  "
+            + "				e.encounter_datetime between timestampadd(MONTH, -7, :endDate) and :endDate and e.location_id=:location  "
             + "		group by p.patient_id  "
             + "	)ultimaConsulta inner join obs o on o.person_id=ultimaConsulta.patient_id  "
             + "where 	ultimaConsulta.data_consulta=o.obs_datetime and o.concept_id=%d and o.voided=0 and o.location_id=:location and   "
-            + "		datediff(o.value_datetime,ultimaConsulta.data_consulta) between 175 and 190";
+            + "		timestampdiff(day,o.value_datetime,ultimaConsulta.data_consulta) between 175 and 190";
 
     return String.format(
         query,
@@ -2125,11 +2125,11 @@ public class QualiltyImprovementQueries {
             + "		from 	patient p  "
             + "				inner join encounter e on p.patient_id=e.patient_id  "
             + "		where 	p.voided=0 and e.voided=0 and e.encounter_type=%d and   "
-            + "				e.encounter_datetime between date_add(:endDate, interval -5 MONTH) and :endDate and e.location_id=:location  "
+            + "				e.encounter_datetime between timestampadd(month,-5,:endDate) and :endDate and e.location_id=:location  "
             + "		group by p.patient_id  "
             + "	)levantamento inner join obs o on o.person_id=levantamento.patient_id  "
             + "where 	levantamento.data_levantamento=o.obs_datetime and o.concept_id=%d and o.voided=0 and o.location_id=:location and   "
-            + "		datediff(o.value_datetime,levantamento.data_levantamento) between 83 and 97";
+            + "		timestampdiff(day,o.value_datetime,levantamento.data_levantamento) between 83 and 97";
     return String.format(query, arvPharmaciaEncounterType, returnVisitDateForArvDrugConcept);
   }
   /**

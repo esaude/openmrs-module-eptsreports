@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public 
+	License, v. 2.0. If a copy of the MPL was not distributed with this file, 
+	You can obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed 
+	under the terms of the Healthcare Disclaimer located at http://openmrs.org/license. 
+	Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS 
+	graphic logo is a trademark of OpenMRS Inc. -->
+
+<dataset>
+
+	<location location_id="1" name="Alto Ligonha" description="NA"
+		address2="NA" state_province="NA" country="MA" creator="1"
+		date_created="2008-10-13 11:32:52" county_district="NA" address6="NA"
+		retired="0" uuid="e2b32fc2-1d5f-11e0-b929-000c29ad1d07" />
+
+	<!-- person -->
+	<person person_id="1001" gender="F"
+		birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+		creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+		uuid="421875e2-6f22-1000-9281-8f1ee524029e" />
+
+	<person person_id="1002" gender="M"
+		birthdate="1986-03-17 00:00:00.0" birthdate_estimated="0" dead="false"
+		creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+		uuid="421875e6-6f22-1000-9281-8f1ee524029e" />
+
+	<person person_id="1003" gender="F"
+		birthdate="1980-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+		creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+		uuid="f186d27c-7ecf-4ce5-88a6-0d52b4e78447" />
+
+
+	<person person_id="1004" gender="M"
+		birthdate="1986-03-17 00:00:00.0" birthdate_estimated="0" dead="false"
+		creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+		uuid="421875e7-6f22-1000-9281-8f1ee524029e" />
+		
+			<person person_id="1005" gender="M"
+		birthdate="1986-03-17 00:00:00.0" birthdate_estimated="0" dead="false"
+		creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+		uuid="421875f2-6f22-1000-9281-8f1ee524029e" />
+		
+		<person person_id="1006" gender="F"
+		birthdate="1986-03-17 00:00:00.0" birthdate_estimated="0" dead="false"
+		creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+		uuid="421875f6-6f22-1000-9281-8f1ee524029e" />
+
+
+	<!-- patient -->
+	<patient patient_id="1001" creator="1"
+		date_created="2005-09-22 00:00:00.0" changed_by="1"
+		date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+	<patient patient_id="1002" creator="1"
+		date_created="2005-09-22 00:00:00.0" changed_by="1"
+		date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+	<patient patient_id="1003" creator="1"
+		date_created="2005-09-22 00:00:00.0" changed_by="1"
+		date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+	<patient patient_id="1004" creator="1"
+		date_created="2005-09-22 00:00:00.0" changed_by="1"
+		date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+		
+		<patient patient_id="1005" creator="1"
+		date_created="2005-09-22 00:00:00.0" changed_by="1"
+		date_changed="2008-08-18 12:29:59.0" voided="0" void_reason="" />
+		
+			<patient patient_id="1006" creator="1"
+		date_created="2005-09-22 00:00:00.0" changed_by="1"
+		date_changed="2008-08-18 12:29:59.0" voided="0" void_reason="" />
+		
+
+
+</dataset>

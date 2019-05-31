@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public 
+	License, v. 2.0. If a copy of the MPL was not distributed with this file, 
+	You can obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed 
+	under the terms of the Healthcare Disclaimer located at http://openmrs.org/license. 
+	Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS 
+	graphic logo is a trademark of OpenMRS Inc. -->
+
+<dataset>
+
+	<!-- encounter_type -->
+	<encounter_type encounter_type_id="5"
+		name="S.TARV: ADULTO INICIAL A"
+		description="Primeira visita do paciente adulto" creator="1"
+		date_created="2008-10-13 11:35:34" retired="0"
+		uuid="e278f820-1d5f-11e0-b929-000c29ad1d07" />
+
+	<encounter_type encounter_type_id="6"
+		name="S.TARV: ADULTO SEGUIMENTO"
+		description="seguimento visita do paciente adulto" creator="1"
+		date_created="2008-10-13 11:35:34" retired="0"
+		uuid="e278f956-1d5f-11e0-b929-000c29ad1d07" />
+
+	<encounter_type encounter_type_id="9"
+		name="S.TARV: PEDIATRIA SEGUIMENTO"
+		description="Seguimento visita do paciente pediatria" creator="1"
+		date_created="2008-10-13 11:35:34" retired="0"
+		uuid="e278fce4-1d5f-11e0-b929-000c29ad1d07" />
+
+	<encounter_type encounter_type_id="18"
+		name="S.TARV: FARMACIA" description="Farmacia" creator="1"
+		date_created="2008-10-13 11:35:34" retired="0"
+		uuid="e279133c-1d5f-11e0-b929-000c29ad1d07" />
+
+	<!-- encounter -->
+	<encounter encounter_id="9001" encounter_type="6"
+		patient_id="1001" encounter_datetime="2019-04-17 00:00:00" creator="1"
+		date_created="2013-06-19 12:55:48" voided="0"
+		uuid="42189de0-6f22-1000-9281-8f1ee524029e" location_id="1" />
+
+	<encounter encounter_id="9002" encounter_type="18"
+		patient_id="1001" encounter_datetime="2013-06-17 00:00:00" creator="1"
+		date_created="2013-06-19 12:55:48" voided="0"
+		uuid="4218b2f9-6f22-1000-9281-8f1ee524029e" location_id="1" />
+
+	<encounter encounter_id="9003" encounter_type="9"
+		patient_id="1001" encounter_datetime="2013-06-17 00:00:00" creator="1"
+		date_created="2013-06-19 12:55:48" voided="0"
+		uuid="42189c38-6f22-1000-9281-8f1ee524029e" location_id="1" />
+
+	<encounter encounter_id="9004" encounter_type="18"
+		patient_id="1001" encounter_datetime="2013-06-17 00:00:00" creator="1"
+		date_created="2013-06-19 12:55:48" voided="0"
+		uuid="4218d1dc-6f22-1000-9281-8f1ee524029e" location_id="1" />
+
+<encounter encounter_id="9005" encounter_type="18"
+		patient_id="1004" encounter_datetime="2013-06-17 00:00:00" creator="1"
+		date_created="2013-06-19 12:55:48" voided="0"
+		uuid="9481744b-c15e-44b9-af2d-e30c154d16ac" location_id="1" />
+		
+		
+	<encounter encounter_id="9006" encounter_type="6"
+		patient_id="1005" encounter_datetime="2019-02-17 00:00:00" creator="1"
+		date_created="2013-06-19 12:55:48" voided="0"
+		uuid="4218bf65-6f22-1000-9281-8f1ee524029e" location_id="1" />
+		
+			<encounter encounter_id="9007" encounter_type="18"
+		patient_id="1006" encounter_datetime="2019-05-17 00:00:00" creator="1"
+		date_created="2013-06-19 12:55:48" voided="0"
+		uuid="4218bf66-6f22-1000-9281-8f1ee524029e" location_id="1" />
+
+ 
+
+	<!-- obs -->
+	<obs obs_id="100" person_id="1001" concept_id="1255"
+		encounter_id="9001" obs_datetime="2013-06-17 00:00:00"
+		value_coded="1256" creator="1" date_created="2013-06-19 12:55:48"
+		voided="0" uuid="3d6371cc-45b5-4731-b6c1-8e69cb882cd7" location_id="1" />
+
+
+	<obs obs_id="101" person_id="1001" concept_id="1190"
+		encounter_id="9002" obs_datetime="2019-04-19 12:55:48"
+		 creator="1" date_created="2019-04-19 12:55:48"
+		voided="0" value_datetime="2019-04-19 12:55:48" uuid="4d6371cc-45b5-4731-b6c1-8e69cb882cd7" location_id="1" />
+		
+	<obs obs_id="102" person_id="1004" concept_id="1670"
+		encounter_id="9005" obs_datetime="2013-06-17 00:00:00"
+		value_coded="507" creator="1" date_created="2013-06-19 12:55:48"
+		voided="0" uuid="0000210d-956f-4baf-a309-082fea160169" location_id="1" />
+		
+		<obs obs_id="103" person_id="1005" concept_id="1410"
+		encounter_id="9006" obs_datetime="2019-02-17 00:00:00"
+		  creator="1" date_created="2013-06-19 12:55:48"
+		voided="0" uuid="9f78df44-9ff2-4156-b6cf-17d1108a9bcd" location_id="1"
+		value_datetime="2018-08-17 00:00:00"  />
+		
+		
+		<obs obs_id="104" person_id="1006" concept_id="5096"
+		encounter_id="9007" obs_datetime="2019-05-17 00:00:00"
+		  creator="1" date_created="2013-06-19 12:55:48"
+		voided="0" uuid="ad02b3ca-71f0-46c6-8c58-50abd0a2d42b" location_id="1"
+		value_datetime="2019-02-17 00:00:00"  />
+		
+</dataset>
