@@ -658,13 +658,11 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   public CohortDefinition getArtWhoStartedCotrimoxazoleProphylaxis() {
-    String mappings = "value1=${onOrAfter},value2=${onOrBefore},locationList=${location}";
+    String mappings = "value1=${startDate},value2=${endDate},locationList=${location}";
     Mapped<CohortDefinition> startedProphylaxis =
         map(getStartedCotrimoxazoleProphylaxis(), mappings);
-    String artBookMappings =
-        "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
-    Mapped<CohortDefinition> inArtBook1 = map(registeredInArtBook1(), artBookMappings);
-    return getEnrolledInArtBookAnd(inArtBook1, startedProphylaxis);
+    Mapped<CohortDefinition> initiated = mapStraightThrough(getInitiatedArt());
+    return getEnrolledInArtBookAnd(initiated, startedProphylaxis);
   }
 
   public CohortDefinition getInArtWhoStartedIsoniazidProphylaxis() {
@@ -1250,13 +1248,12 @@ public class UsMonthlySummaryHivCohortQueries {
   private CohortDefinition getStartedCotrimoxazoleProphylaxis() {
     DateObsCohortDefinition cd = new DateObsCohortDefinition();
     cd.setName("PACIENTES QUE INICIARAM PROFILAXIA COM COTRIMOXAZOL");
-    cd.setQuestion(commonMetadata.getCotrimoxazoleProphylaxisStartDateConcept());
-    cd.setTimeModifier(TimeModifier.ANY);
 
-    List<EncounterType> encounterTypes = new ArrayList<>();
-    encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
-    encounterTypes.add(hivMetadata.getARVPediatriaSeguimentoEncounterType());
-    cd.setEncounterTypeList(encounterTypes);
+    cd.setTimeModifier(TimeModifier.ANY);
+    cd.setQuestion(commonMetadata.getCotrimoxazoleProphylaxisStartDateConcept());
+
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.addEncounterType(hivMetadata.getARVPediatriaSeguimentoEncounterType());
 
     cd.setOperator1(RangeComparator.GREATER_EQUAL);
     cd.setOperator2(RangeComparator.LESS_EQUAL);

@@ -219,14 +219,13 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         getInArtScreenedForSti(),
         getColumnParameters());
 
-    //    addRow(
-    //        dataSetDefinition,
-    //        "L1",
-    //        "Nº dos novos inícios mensais no Livro de Registo Nº 1 de TARV que  iniciaram CTZ
-    // durante o mês",
-    //        getInArtStartedCotrimoxazoleProphylaxis(),
-    //        getColumnParameters());
-    //
+    addRow(
+        dataSetDefinition,
+        "L1",
+        "Nº dos novos inícios mensais no Livro de Registo Nº 1 de TARV que  iniciaram CTZ durante o mês",
+        getInArtStartedCotrimoxazoleProphylaxis(),
+        getColumnParameters());
+
     //    addRow(
     //        dataSetDefinition,
     //        "L2",
@@ -249,16 +248,14 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
   //    return mapStraightThrough(indicator);
   //  }
   //
-  //  private Mapped<CohortIndicator> getInArtStartedCotrimoxazoleProphylaxis() {
-  //    String name =
-  //        "NUMERO DE NOVOS PACIENTES QUE INICIARAM TARV NUM PERIODO REGISTADOS NO LIVRO 1 TARV E
-  // QUE INICIARAM PROFILAXIA COM CTZ NO MESMO PERIODO";
-  //    CohortDefinition cohort =
-  //        usMonthlySummaryHivCohortQueries.getArtWhoStartedCotrimoxazoleProphylaxis();
-  //    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
-  //    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
-  //    return mapStraightThrough(indicator);
-  //  }
+  private Mapped<CohortIndicator> getInArtStartedCotrimoxazoleProphylaxis() {
+    String name =
+        "NUMERO DE NOVOS PACIENTES QUE INICIARAM TARV NUM PERIODO REGISTADOS NO LIVRO 1 TARV E QUE INICIARAM PROFILAXIA COM CTZ NO MESMO PERIODO";
+    CohortDefinition cohort =
+        usMonthlySummaryHivCohortQueries.getArtWhoStartedCotrimoxazoleProphylaxis();
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
+    return mapStraightThrough(indicator);
+  }
 
   private Mapped<CohortIndicator> getInArtScreenedForSti() {
     String name =

@@ -43,9 +43,6 @@ public class UsMonthlySummaryHivFGHLiveTest extends DefinitionsFGHLiveTest {
     return Context.getLocationService().getLocation(6);
   }
 
-  @Before
-  public void setUp() throws Exception {}
-
   @Test
   public void test() throws EvaluationException {
     DataSetDefinition dataSetDefinition =
@@ -205,6 +202,13 @@ public class UsMonthlySummaryHivFGHLiveTest extends DefinitionsFGHLiveTest {
     assertThat(ds, hasColumnValue("K2-M014", 0));
     assertThat(ds, hasColumnValue("K2-F15", 21));
     assertThat(ds, hasColumnValue("K2-M15", 15));
+
+    // Nº dos novos inícios mensais no Livro de Registo Nº 1 de TARV que  iniciaram CTZ durante o
+    // mês
+    assertThat(ds, hasColumnValue("L1-F014", 0));
+    assertThat(ds, hasColumnValue("L1-M014", 0));
+    assertThat(ds, hasColumnValue("L1-F15", 16));
+    assertThat(ds, hasColumnValue("L1-M15", 7));
   }
 
   @Override
