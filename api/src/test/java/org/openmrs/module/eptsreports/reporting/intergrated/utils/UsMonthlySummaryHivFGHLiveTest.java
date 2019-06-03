@@ -150,6 +150,12 @@ public class UsMonthlySummaryHivFGHLiveTest extends DefinitionsFGHLiveTest {
     assertThat(ds, hasColumnValue("G3-M014", 134));
     assertThat(ds, hasColumnValue("G3-F15", 2134));
     assertThat(ds, hasColumnValue("G3-M15", 1058));
+
+    // Nº mensal de novos inícios tarv
+    assertThat(ds, hasColumnValue("H1-F014", 0));
+    assertThat(ds, hasColumnValue("H1-M014", 1));
+    assertThat(ds, hasColumnValue("H1-F15", 24));
+    assertThat(ds, hasColumnValue("H1-M15", 17));
   }
 
   @Override
@@ -183,7 +189,11 @@ public class UsMonthlySummaryHivFGHLiveTest extends DefinitionsFGHLiveTest {
 
     private Object getValue(MapDataSet dataSet) {
       DataSetColumn column = dataSet.getMetaData().getColumn(columnName);
-      return ((CohortIndicatorAndDimensionResult) dataSet.getData(column)).getValue();
+      if (column == null) {
+        throw new IllegalArgumentException("Column " + columnName + " not found.");
+      }
+      Object data = dataSet.getData(column);
+      return ((CohortIndicatorAndDimensionResult) data).getValue();
     }
 
     @Override

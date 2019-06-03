@@ -156,12 +156,12 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         getRegisteredInArtArtBooksByEndOfMonth(),
         getColumnParameters());
 
-    //    addRow(
-    //        dataSetDefinition,
-    //        "H1",
-    //        "Nº mensal de novos inícios tarv",
-    //        getNewlyEnrolledInArt(),
-    //        getColumnParameters());
+    addRow(
+        dataSetDefinition,
+        "H1",
+        "Nº mensal de novos inícios tarv",
+        getNewlyEnrolledInArt(),
+        getColumnParameters());
     //
     //    addRow(
     //        dataSetDefinition,
@@ -313,15 +313,14 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
   //    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
   //    return mapStraightThrough(indicator);
   //  }
-  //
-  //  private Mapped<CohortIndicator> getNewlyEnrolledInArt() {
-  //    String name =
-  //        "NUMERO DE NOVOS PACIENTES QUE INICIARAM TARV REGISTADOS NO LIVRO 1 TARV NUM PERIODO";
-  //    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getNewlyEnrolledInArt();
-  //    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
-  //    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
-  //    return mapStraightThrough(indicator);
-  //  }
+
+  private Mapped<CohortIndicator> getNewlyEnrolledInArt() {
+    String name =
+        "NUMERO DE NOVOS PACIENTES QUE INICIARAM TARV REGISTADOS NO LIVRO 1 TARV NUM PERIODO";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInitiatedArt();
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
+    return mapStraightThrough(indicator);
+  }
 
   private Mapped<CohortIndicator> getRegisteredInArtArtBooksByEndOfMonth() {
     String name =

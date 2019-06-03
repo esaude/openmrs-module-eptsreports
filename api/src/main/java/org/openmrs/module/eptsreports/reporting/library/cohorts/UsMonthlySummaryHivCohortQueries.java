@@ -496,7 +496,7 @@ public class UsMonthlySummaryHivCohortQueries {
    * @return Pacientes que iniciaram tratamento ARV num periodo excluindo os transferidos de com a
    *     data de inicio conhecida e mesmo que coincida no periodo
    */
-  private CohortDefinition getInitiatedArt() {
+  public CohortDefinition getInitiatedArt() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
         "INICIO DE TRATAMENTO ARV - NUM PERIODO: EXCLUI TRANSFERIDOS DE COM DATA DE INICIO CONHECIDA (SQL)");
