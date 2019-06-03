@@ -226,28 +226,25 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         getInArtStartedCotrimoxazoleProphylaxis(),
         getColumnParameters());
 
-    //    addRow(
-    //        dataSetDefinition,
-    //        "L2",
-    //        "Nº dos novos inícios mensais no Livro de Registo Nº 1 de TARV que  iniciaram INH
-    // durante o mês",
-    //        getInArtStartedIsoniazidProphylaxis(),
-    //        getColumnParameters());
+    addRow(
+        dataSetDefinition,
+        "L2",
+        "Nº dos novos inícios mensais no Livro de Registo Nº 1 de TARV que  iniciaram INH durante o mês",
+        getInArtStartedIsoniazidProphylaxis(),
+        getColumnParameters());
 
     return dataSetDefinition;
   }
 
-  //  private Mapped<CohortIndicator> getInArtStartedIsoniazidProphylaxis() {
-  //    String name =
-  //        "NUMERO DE NOVOS PACIENTES QUE INICIARAM TARV NUM PERIODO REGISTADOS NO LIVRO 1 TARV E
-  // QUE INICIARAM PROFILAXIA COM INH NO MESMO PERIODO";
-  //    CohortDefinition cohort =
-  //        usMonthlySummaryHivCohortQueries.getInArtWhoStartedIsoniazidProphylaxis();
-  //    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
-  //    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
-  //    return mapStraightThrough(indicator);
-  //  }
-  //
+  private Mapped<CohortIndicator> getInArtStartedIsoniazidProphylaxis() {
+    String name =
+        "NUMERO DE NOVOS PACIENTES QUE INICIARAM TARV NUM PERIODO REGISTADOS NO LIVRO 1 TARV E QUE INICIARAM PROFILAXIA COM INH NO MESMO PERIODO";
+    CohortDefinition cohort =
+        usMonthlySummaryHivCohortQueries.getInArtWhoStartedIsoniazidProphylaxis();
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
+    return mapStraightThrough(indicator);
+  }
+
   private Mapped<CohortIndicator> getInArtStartedCotrimoxazoleProphylaxis() {
     String name =
         "NUMERO DE NOVOS PACIENTES QUE INICIARAM TARV NUM PERIODO REGISTADOS NO LIVRO 1 TARV E QUE INICIARAM PROFILAXIA COM CTZ NO MESMO PERIODO";

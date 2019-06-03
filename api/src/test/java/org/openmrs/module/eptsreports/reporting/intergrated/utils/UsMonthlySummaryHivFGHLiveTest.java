@@ -6,7 +6,6 @@ import java.util.Date;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
@@ -209,6 +208,13 @@ public class UsMonthlySummaryHivFGHLiveTest extends DefinitionsFGHLiveTest {
     assertThat(ds, hasColumnValue("L1-M014", 0));
     assertThat(ds, hasColumnValue("L1-F15", 16));
     assertThat(ds, hasColumnValue("L1-M15", 7));
+
+    // Nº dos novos inícios mensais no Livro de Registo Nº 1 de TARV que  iniciaram CTZ durante o
+    // mês
+    assertThat(ds, hasColumnValue("L2-F014", 0));
+    assertThat(ds, hasColumnValue("L2-M014", 0));
+    assertThat(ds, hasColumnValue("L2-F15", 19));
+    assertThat(ds, hasColumnValue("L2-M15", 7));
   }
 
   @Override
