@@ -170,13 +170,13 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         getEnrolledInArtByTransfer(),
         getColumnParameters());
 
-    //    addRow(
-    //        dataSetDefinition,
-    //        "I1",
-    //        "Nº cumulativo de suspensos tarv",
-    //        getInArtWhoSuspendedTreatment(),
-    //        getColumnParameters());
-    //
+    addRow(
+        dataSetDefinition,
+        "I1",
+        "Nº cumulativo de suspensos tarv",
+        getInArtWhoSuspendedTreatment(),
+        getColumnParameters());
+
     //    addRow(
     //        dataSetDefinition,
     //        "I2",
@@ -296,14 +296,13 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
   // mapStraightThrough(cohort));
   //    return mapStraightThrough(indicator);
   //  }
-  //
-  //  private Mapped<CohortIndicator> getInArtWhoSuspendedTreatment() {
-  //    String name = "NUMERO CUMULATIVO DE PACIENTES TARV QUE SUSPENDERAM TARV";
-  //    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInArtWhoSuspendedTreatment();
-  //    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name,
-  // mapStraightThrough(cohort));
-  //    return mapStraightThrough(indicator);
-  //  }
+
+  private Mapped<CohortIndicator> getInArtWhoSuspendedTreatment() {
+    String name = "NUMERO CUMULATIVO DE PACIENTES TARV QUE SUSPENDERAM TARV";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInArtWhoSuspendedTreatment();
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
+    return mapStraightThrough(indicator);
+  }
 
   private Mapped<CohortIndicator> getEnrolledInArtByTransfer() {
     String name =

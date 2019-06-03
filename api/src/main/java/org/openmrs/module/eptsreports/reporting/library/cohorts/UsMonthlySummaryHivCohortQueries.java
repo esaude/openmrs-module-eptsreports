@@ -723,7 +723,41 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   public CohortDefinition getInArtWhoSuspendedTreatment() {
-    return hivCohortQueries.getPatientsInArtWhoSuspendedTreatment();
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("RM_PACIENTES QUE SAIRAM DO TRATAMENTO ARV: SUSPENSO - PERIODO FINAL");
+
+    cd.addParameter(ReportingConstants.END_DATE_PARAMETER);
+    cd.addParameter(ReportingConstants.LOCATION_PARAMETER);
+
+    String mappings = "endDate=${endDate},location=${location}";
+    cd.addSearch("CUMULATIVOENTRADAS", map(getEnrolledInArt(), mappings));
+
+    CohortDefinition suspended = hivCohortQueries.getPatientsInArtWhoSuspendedTreatment();
+    cd.addSearch("SUSPENSO", mapStraightThrough(suspended));
+
+    cd.addSearch("ABANDONO", mapStraightThrough(abandonmentNotifiedAndNotNotified()));
+
+    cd.setCompositionString("(CUMULATIVOENTRADAS AND SUSPENSO) NOT ABANDONO");
+
+    return cd;
+  }
+
+  private CohortDefinition abandonmentNotifiedAndNotNotified() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("ABANDONO AO TRATAMENTO ARV (ABANDONO NOTIFICADO E NAO NOTIFICADO)");
+
+    cd.addParameter(ReportingConstants.END_DATE_PARAMETER);
+    cd.addParameter(ReportingConstants.LOCATION_PARAMETER);
+
+    CohortDefinition notified = hivCohortQueries.getPatientsInArtWhoAbandoned();
+    cd.addSearch("NOTIFICADO", mapStraightThrough(notified));
+
+    CohortDefinition notNotified = getPatientsInArtWhoAbandonedWithNoNotification();
+    cd.addSearch("NAONOTIFICADO", mapStraightThrough(notNotified));
+
+    cd.setCompositionString("NOTIFICADO OR NAONOTIFICADO");
+    return cd;
   }
 
   public CohortDefinition getInArtTransferredOut() {
