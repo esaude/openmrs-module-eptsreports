@@ -644,10 +644,10 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   public CohortDefinition getInArtWhoScreenedForTb() {
-    String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
     Mapped<CohortDefinition> screenedForTb = map(getTbScreening(), mappings);
-    Mapped<CohortDefinition> inArtBook1 = map(registeredInArtBook1(), mappings);
-    return getEnrolledInArtBookAnd(inArtBook1, screenedForTb);
+    Mapped<CohortDefinition> initiated = mapStraightThrough(getInitiatedArt());
+    return getEnrolledInArtBookAnd(initiated, screenedForTb);
   }
 
   public CohortDefinition getInArtWhoScreenedForSti() {
