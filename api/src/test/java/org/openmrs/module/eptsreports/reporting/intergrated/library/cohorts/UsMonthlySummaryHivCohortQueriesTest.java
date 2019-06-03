@@ -59,8 +59,7 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
   public void getRegisteredInArtBooksShouldReturnRegisteredInArtBooks() throws EvaluationException {
 
     EvaluatedCohort evaluatedCohort =
-        evaluateCohortDefinition(
-            usMonthlySummaryHivCohortQueries.getEnrolledInArt());
+        evaluateCohortDefinition(usMonthlySummaryHivCohortQueries.getEnrolledInArt());
 
     assertEquals(4, evaluatedCohort.getMemberIds().size());
 

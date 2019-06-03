@@ -149,6 +149,13 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         getRegisteredInArtDuringReportingPeriod(),
         getColumnParameters());
 
+    addRow(
+        dataSetDefinition,
+        "G3",
+        "Nº cumulativo de pacientes registados nos Livros de Registo de TARV até o fim do mês",
+        getRegisteredInArtArtBooksByEndOfMonth(),
+        getColumnParameters());
+
     //    addRow(
     //        dataSetDefinition,
     //        "H1",
@@ -316,10 +323,17 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
   //    return mapStraightThrough(indicator);
   //  }
 
+  private Mapped<CohortIndicator> getRegisteredInArtArtBooksByEndOfMonth() {
+    String name =
+        "NUMERO CUMULATIVO DE PACIENTES TARV REGISTADOS NOS LIVROS 1 E 2 ATE O FIM DESTE MES";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getEnrolledInArt();
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
+    return mapStraightThrough(indicator);
+  }
+
   private Mapped<CohortIndicator> getRegisteredInArtDuringReportingPeriod() {
     String name = "NUMERO DE PACIENTES REGISTADOS NOS LIVROS 1 E 2 TARV NUM PERIODO";
-    CohortDefinition cohort =
-        usMonthlySummaryHivCohortQueries.getEnrolledInArtDuringMonth();
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getEnrolledInArtDuringMonth();
     CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
     return mapStraightThrough(indicator);
   }
@@ -327,8 +341,7 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
   private Mapped<CohortIndicator> getEnrolledInArtByEndOfPreviousMonth() {
     String name =
         "NUMERO CUMULATIVO DE PACIENTES TARV REGISTADOS NOS LIVROS 1 E 2 ATE O FIM DE UM PERIODO";
-    CohortDefinition cohort =
-        usMonthlySummaryHivCohortQueries.getEnrolledInArt();
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getEnrolledInArt();
     String mappings = "endDate=${startDate-1d},location=${location}";
     CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
     return mapStraightThrough(indicator);

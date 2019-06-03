@@ -1220,18 +1220,18 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.addSearch("INICIOPERIODO", mapStraightThrough(getInitiatedIncludingTransfers()));
     cd.addSearch("TRANSFERIDODEPERIODO", mapStraightThrough(getInArtEnrolledByTransfer()));
     Map<String, Object> mappings = new HashMap<>();
-    mappings.put("endDate", DateUtil.getDateTime(2012,3,20));
+    mappings.put("endDate", DateUtil.getDateTime(2012, 3, 20));
     mappings.put("location", "${location}");
     cd.addSearch("INICIOATE0312", getStartedArt(), mappings);
 
     Map<String, Object> pharmacyMappings = new HashMap<>();
-    pharmacyMappings.put("onOrAfter", DateUtil.getDateTime(2012,3,21));
+    pharmacyMappings.put("onOrAfter", DateUtil.getDateTime(2012, 3, 21));
     pharmacyMappings.put("onOrBefore", "${startDate-1d}");
     pharmacyMappings.put("locationList", "${location}");
     cd.addSearch("FARMACIA0312ATEINICIOPERIODO", getEverOnARTPharmacy(), pharmacyMappings);
 
     Map<String, Object> followUpMappings = new HashMap<>();
-    followUpMappings.put("startDate", DateUtil.getDateTime(2012,3,21));
+    followUpMappings.put("startDate", DateUtil.getDateTime(2012, 3, 21));
     followUpMappings.put("endDate", "${startDate-1d}");
     followUpMappings.put("location", "${location}");
     cd.addSearch("CONSULTA0312ATEINICIOPERIODO", hasFollowUpConsultation(), followUpMappings);
