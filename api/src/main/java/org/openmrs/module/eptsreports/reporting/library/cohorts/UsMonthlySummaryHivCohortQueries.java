@@ -785,7 +785,28 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   public CohortDefinition getDeadDuringArt() {
-    return hivCohortQueries.getPatientsInArtWhoDied();
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("RM_PACIENTES QUE SAIRAM DO TRATAMENTO TARV: OBITO - PERIODO FINAL");
+
+    cd.addParameter(ReportingConstants.END_DATE_PARAMETER);
+    cd.addParameter(ReportingConstants.LOCATION_PARAMETER);
+
+    CohortDefinition died = hivCohortQueries.getPatientsInArtWhoDied();
+    cd.addSearch("OBITO", mapStraightThrough(died));
+
+    cd.addSearch("CUMULATIVOENTRADAS", mapStraightThrough(getEnrolledInArt()));
+    CohortDefinition transferredOut = hivCohortQueries.getPatientsInArtTransferredOutToAnotherHealthFacility();
+
+    cd.addSearch("TRANSFERIDOPARA", mapStraightThrough(transferredOut));
+
+    CohortDefinition suspended = hivCohortQueries.getPatientsInArtWhoSuspendedTreatment();
+    cd.addSearch("SUSPENSO", mapStraightThrough(suspended));
+
+    cd.addSearch("ABANDONO", mapStraightThrough(abandonmentNotifiedAndNotNotified()));
+
+    cd.setCompositionString("(OBITO AND CUMULATIVOENTRADAS) NOT (TRANSFERIDOPARA OR SUSPENSO OR ABANDONO)");
+
+    return cd;
   }
 
   public CohortDefinition getAbandonedArt() {
@@ -1303,4 +1324,21 @@ public class UsMonthlySummaryHivCohortQueries {
 
     return cd;
   }
+
+//  public CohortDefinition getInArtAbandoned() {
+//    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+//    cd.setName("RM_PACIENTES QUE SAIRAM DO TRATAMENTO ARV: ABANDONO - PERIODO FINAL");
+//
+//    cd.addParameter(ReportingConstants.END_DATE_PARAMETER);
+//    cd.addParameter(ReportingConstants.LOCATION_PARAMETER);
+//
+//    String mappings = "endDate=${endDate},location=${location}";
+//    cd.addSearch("CUMULATIVOENTRADAS", map(getEnrolledInArt(), mappings));
+//
+//    cd.addSearch("ABANDONO", mapStraightThrough(abandonmentNotifiedAndNotNotified()));
+//
+//    cd.setCompositionString("CUMULATIVOENTRADAS AND ABANDONO");
+//
+//    return cd;
+//  }
 }

@@ -190,14 +190,14 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
     //        "Nº cumulativo de abandonos tarv",
     //        getAbandonedArt(),
     //        getColumnParameters());
-    //
-    //    addRow(
-    //        dataSetDefinition,
-    //        "I4",
-    //        "Nº cumulativo de óbitos tarv",
-    //        getDeadDuringArt(),
-    //        getColumnParameters());
-    //
+
+    addRow(
+        dataSetDefinition,
+        "I4",
+        "Nº cumulativo de óbitos tarv",
+        getDeadDuringArt(),
+        getColumnParameters());
+
     //    addRow(
     //        dataSetDefinition,
     //        "K1",
@@ -231,14 +231,6 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
     return dataSetDefinition;
   }
 
-  //  private Mapped<CohortIndicator> getAbandonedArt() {
-  //    String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE ABANDONARAM";
-  //    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getAbandonedArt();
-  //    String mappings = "onOrBefore=${endDate},location=${location}";
-  //    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
-  //    return mapStraightThrough(indicator);
-  //  }
-  //
   //  private Mapped<CohortIndicator> getInArtStartedIsoniazidProphylaxis() {
   //    String name =
   //        "NUMERO DE NOVOS PACIENTES QUE INICIARAM TARV NUM PERIODO REGISTADOS NO LIVRO 1 TARV E
@@ -280,14 +272,20 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
   //    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
   //    return mapStraightThrough(indicator);
   //  }
-  //
-  //  private Mapped<CohortIndicator> getDeadDuringArt() {
-  //    String name = "NUMERO CUMULATIVO DE PACIENTES TARV QUE OBITARAM";
-  //    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getDeadDuringArt();
-  //    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name,
-  // mapStraightThrough(cohort));
-  //    return mapStraightThrough(indicator);
-  //  }
+
+  private Mapped<CohortIndicator> getDeadDuringArt() {
+    String name = "NUMERO CUMULATIVO DE PACIENTES TARV QUE OBITARAM";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getDeadDuringArt();
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
+    return mapStraightThrough(indicator);
+  }
+
+//  private Mapped<CohortIndicator> getAbandonedArt() {
+//    String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE ABANDONARAM";
+//    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInArtAbandoned();
+//    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
+//    return mapStraightThrough(indicator);
+//  }
 
   private Mapped<CohortIndicator> getInArtTransferredOut() {
     String name = "NUMERO CUMULATIVO DE PACIENTES TARV TRANSFERIDOS PARA";
