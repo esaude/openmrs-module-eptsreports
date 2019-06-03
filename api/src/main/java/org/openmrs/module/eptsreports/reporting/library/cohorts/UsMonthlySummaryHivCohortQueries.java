@@ -247,7 +247,7 @@ public class UsMonthlySummaryHivCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getEnrolledInArtByEndOfPreviousMonth() {
+  public CohortDefinition getEnrolledInArt() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("RM_CUMULATIVO DE PACIENTES REGISTADOS ATÉ O FIM DO MÊS ANTERIOR (TARV)");
 
@@ -1207,6 +1207,45 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.addSearch("INICIO", getInitiatedArt(), mappings);
 
     cd.setCompositionString("(OBITO AND CUMULATIVOENTRADAS) NOT INICIO");
+
+    return cd;
+  }
+
+  public CohortDefinition getEnrolledInArtDuringMonth() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("RM_NUMERO DE PACIENTES REGISTADO DURANTE O MES (TARV)");
+
+    cd.addParameters(getParameters());
+
+    cd.addSearch("INICIOPERIODO", mapStraightThrough(getInitiatedIncludingTransfers()));
+    cd.addSearch("TRANSFERIDODEPERIODO", mapStraightThrough(getInArtEnrolledByTransfer()));
+    Map<String, Object> mappings = new HashMap<>();
+    mappings.put("endDate", DateUtil.getDateTime(2012,3,20));
+    mappings.put("location", "${location}");
+    cd.addSearch("INICIOATE0312", getStartedArt(), mappings);
+
+    Map<String, Object> pharmacyMappings = new HashMap<>();
+    pharmacyMappings.put("onOrAfter", DateUtil.getDateTime(2012,3,21));
+    pharmacyMappings.put("onOrBefore", "${startDate-1d}");
+    pharmacyMappings.put("locationList", "${location}");
+    cd.addSearch("FARMACIA0312ATEINICIOPERIODO", getEverOnARTPharmacy(), pharmacyMappings);
+
+    Map<String, Object> followUpMappings = new HashMap<>();
+    followUpMappings.put("startDate", DateUtil.getDateTime(2012,3,21));
+    followUpMappings.put("endDate", "${startDate-1d}");
+    followUpMappings.put("location", "${location}");
+    cd.addSearch("CONSULTA0312ATEINICIOPERIODO", hasFollowUpConsultation(), followUpMappings);
+
+    Map<String, Object> artPharmacyMappings = new HashMap<>();
+    artPharmacyMappings.put("onOrAfter", "${startDate}");
+    artPharmacyMappings.put("onOrBefore", "${endDate}");
+    artPharmacyMappings.put("locationList", "${location}");
+    cd.addSearch("FARMACIAPERIODO", getEverOnARTPharmacy(), artPharmacyMappings);
+
+    cd.addSearch("CONSULTAPERIODO", mapStraightThrough(hasFollowUpConsultation()));
+
+    cd.setCompositionString(
+        "INICIOPERIODO OR TRANSFERIDODEPERIODO OR ((INICIOATE0312 NOT (FARMACIA0312ATEINICIOPERIODO OR CONSULTA0312ATEINICIOPERIODO)) AND (FARMACIAPERIODO OR CONSULTAPERIODO))");
 
     return cd;
   }
