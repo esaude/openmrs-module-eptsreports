@@ -761,7 +761,27 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   public CohortDefinition getInArtTransferredOut() {
-    return hivCohortQueries.getPatientsInArtTransferredOutToAnotherHealthFacility();
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("RM_PACIENTES QUE SAIRAM DO TRATAMENTO ARV: TRANSFERIDO PARA - PERIODO FINAL");
+
+    cd.addParameter(ReportingConstants.END_DATE_PARAMETER);
+    cd.addParameter(ReportingConstants.LOCATION_PARAMETER);
+
+    String mappings = "endDate=${endDate},location=${location}";
+    cd.addSearch("CUMULATIVOENTRADAS", map(getEnrolledInArt(), mappings));
+
+    CohortDefinition transferredOut =
+        hivCohortQueries.getPatientsInArtTransferredOutToAnotherHealthFacility();
+    cd.addSearch("TRANSFERIDOPARA", mapStraightThrough(transferredOut));
+
+    CohortDefinition suspendedTreatment = hivCohortQueries.getPatientsInArtWhoSuspendedTreatment();
+    cd.addSearch("SUSPENSO", mapStraightThrough(suspendedTreatment));
+
+    cd.addSearch("ABANDONO", mapStraightThrough(abandonmentNotifiedAndNotNotified()));
+
+    cd.setCompositionString("(CUMULATIVOENTRADAS AND TRANSFERIDOPARA) NOT (SUSPENSO OR ABANDONO)");
+
+    return cd;
   }
 
   public CohortDefinition getDeadDuringArt() {
