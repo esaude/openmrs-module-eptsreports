@@ -199,6 +199,12 @@ public class UsMonthlySummaryHivFGHLiveTest extends DefinitionsFGHLiveTest {
     assertThat(ds, hasColumnValue("K1-M014", 1));
     assertThat(ds, hasColumnValue("K1-F15", 21));
     assertThat(ds, hasColumnValue("K1-M15", 15));
+
+    // Nº dos novos inícios mensais  no Livro de Registo Nº 1 de TARV rastreados para ITS
+    assertThat(ds, hasColumnValue("K2-F014", 0));
+    assertThat(ds, hasColumnValue("K2-M014", 0));
+    assertThat(ds, hasColumnValue("K2-F15", 21));
+    assertThat(ds, hasColumnValue("K2-M15", 15));
   }
 
   @Override

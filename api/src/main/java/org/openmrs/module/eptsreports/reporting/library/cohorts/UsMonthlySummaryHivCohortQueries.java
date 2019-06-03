@@ -651,10 +651,10 @@ public class UsMonthlySummaryHivCohortQueries {
   }
 
   public CohortDefinition getInArtWhoScreenedForSti() {
-    String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
-    Mapped<CohortDefinition> screenedForSti = map(getStiScreening(), mappings);
-    Mapped<CohortDefinition> inArtBook1 = map(registeredInArtBook1(), mappings);
-    return getEnrolledInArtBookAnd(inArtBook1, screenedForSti);
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
+    Mapped<CohortDefinition> screenedForSti = map(getStiScreeningForArt(), mappings);
+    Mapped<CohortDefinition> initiated = mapStraightThrough(getInitiatedArt());
+    return getEnrolledInArtBookAnd(initiated, screenedForSti);
   }
 
   public CohortDefinition getArtWhoStartedCotrimoxazoleProphylaxis() {
@@ -1171,6 +1171,29 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.addSearch("SEGUIMENTO", map(getStiScreeningFromFollowUp(), mappings));
 
     cd.setCompositionString("PROCESSO OR SEGUIMENTO");
+
+    return cd;
+  }
+
+  private CohortDefinition getStiScreeningForArt() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+
+    cd.setName("PACIENTES QUE TIVERAM RASTREIO DE ITS – FICHA DE SEGUIMENTO");
+
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+
+    cd.setQuestion(commonMetadata.getStiScreeningConcept());
+    cd.setTimeModifier(TimeModifier.ANY);
+
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.addEncounterType(hivMetadata.getARVPediatriaSeguimentoEncounterType());
+
+    cd.setOperator(SetComparator.IN);
+
+    cd.addValue(commonMetadata.getNoConcept());
+    cd.addValue(commonMetadata.getYesConcept());
 
     return cd;
   }
