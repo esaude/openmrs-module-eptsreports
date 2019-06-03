@@ -175,17 +175,30 @@ public class UsMonthlySummaryHivFGHLiveTest extends DefinitionsFGHLiveTest {
     assertThat(ds, hasColumnValue("I2-F15", 227));
     assertThat(ds, hasColumnValue("I2-M15", 143));
 
-//    // Nº cumulativo de abandonos tarv
-//    assertThat(ds, hasColumnValue("I3-F014", 59));
-//    assertThat(ds, hasColumnValue("I3-M014", 43));
-//    assertThat(ds, hasColumnValue("I3-F15", 705));
-//    assertThat(ds, hasColumnValue("I3-M15", 374));
+    //    // Nº cumulativo de abandonos tarv
+    //    assertThat(ds, hasColumnValue("I3-F014", 59));
+    //    assertThat(ds, hasColumnValue("I3-M014", 43));
+    //    assertThat(ds, hasColumnValue("I3-F15", 705));
+    //    assertThat(ds, hasColumnValue("I3-M15", 374));
 
     // Nº cumulativo de óbitos tarv
     assertThat(ds, hasColumnValue("I4-F014", 15));
     assertThat(ds, hasColumnValue("I4-M014", 9));
     assertThat(ds, hasColumnValue("I4-F15", 79));
     assertThat(ds, hasColumnValue("I4-M15", 63));
+
+    // Currently in treatment From the beginning that MISAU start TARV services (retira abandonos
+    // notificados e nao notificados em 60 dias)
+    assertThat(ds, hasColumnValue("J-F014", 56));
+    assertThat(ds, hasColumnValue("J-M014", 60));
+    assertThat(ds, hasColumnValue("J-F15", 1087));
+    assertThat(ds, hasColumnValue("J-M15", 458));
+
+    //    // Nº dos novos inícios mensais  no Livro de Registo Nº 1 de TARV rastreados para TB
+    //    assertThat(ds, hasColumnValue("K1-F014", 15));
+    //    assertThat(ds, hasColumnValue("K1-M014", 9));
+    //    assertThat(ds, hasColumnValue("K1-F15", 79));
+    //    assertThat(ds, hasColumnValue("K1-M15", 63));
   }
 
   @Override
