@@ -13,12 +13,10 @@ import java.util.Map;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
-import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
-import org.openmrs.module.eptsreports.reporting.library.queries.TXTBQueries;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -1041,34 +1039,144 @@ public class UsMonthlySummaryHivCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getPatientsInArtWhoAbandonedWithNoNotification() {
-    Concept returnVisitDateForArvDrug = hivMetadata.getReturnVisitDateForArvDrugConcept();
-    EncounterType adultoSeguimento = hivMetadata.getAdultoSeguimentoEncounterType();
-    EncounterType arvPediatriaSeguimento = hivMetadata.getARVPediatriaSeguimentoEncounterType();
-    ProgramWorkflowState transferredOut =
-        hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState();
-
-    TXTBQueries.AbandonedWithoutNotificationParams params =
-        new TXTBQueries.AbandonedWithoutNotificationParams();
-
-    params
-        .programId(hivMetadata.getARTProgram().getProgramId())
-        .returnVisitDateConceptId(hivMetadata.getReturnVisitDateConcept().getConceptId())
-        .returnVisitDateForARVDrugConceptId(returnVisitDateForArvDrug.getConceptId())
-        .pharmacyEncounterTypeId(hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())
-        .artAdultFollowupEncounterTypeId(adultoSeguimento.getEncounterTypeId())
-        .artPedInicioEncounterTypeId(arvPediatriaSeguimento.getEncounterTypeId())
-        .transferOutStateId(transferredOut.getId())
-        .treatmentSuspensionStateId(hivMetadata.getSuspendedTreatmentWorkflowState().getId())
-        .treatmentAbandonedStateId(hivMetadata.getAbandonedWorkflowState().getId())
-        .deathStateId(hivMetadata.getPatientHasDiedWorkflowState().getId());
-
+  // TODO this is supposed to be TXTBQueries#abandonedWithNoNotification but for some reason the
+  // query has been changed
+  public CohortDefinition getPatientsInArtWhoAbandonedWithNoNotification() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("patientsInArtWhoAbandonedWithNoNotification");
-    cd.setQuery(TXTBQueries.abandonedWithNoNotification(params));
 
-    cd.addParameter(new Parameter("endDate", "Before Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setName("ABANDONO NÃO NOTIFICADO - TARV");
+
+    cd.addParameter(ReportingConstants.END_DATE_PARAMETER);
+    cd.addParameter(ReportingConstants.LOCATION_PARAMETER);
+
+    String query =
+        "SELECT patient_id "
+            + "FROM   (SELECT p.patient_id, "
+            + "               Max(encounter_datetime) encounter_datetime "
+            + "        FROM   patient p "
+            + "               INNER JOIN encounter e "
+            + "                       ON e.patient_id = p.patient_id "
+            + "        WHERE  p.voided = 0 "
+            + "               AND e.voided = 0 "
+            + "               AND e.encounter_type = %d "
+            + "               AND e.location_id = :location "
+            + "               AND e.encounter_datetime <= :endDate "
+            + "        GROUP  BY p.patient_id) max_frida "
+            + "       INNER JOIN obs o "
+            + "               ON o.person_id = max_frida.patient_id "
+            + "WHERE  max_frida.encounter_datetime = o.obs_datetime "
+            + "       AND o.voided = 0 "
+            + "       AND o.concept_id = %d "
+            + "       AND o.location_id = :location "
+            + "       AND patient_id NOT IN (SELECT pg.patient_id "
+            + "                              FROM   patient p "
+            + "                                     INNER JOIN patient_program pg "
+            + "                                             ON p.patient_id = pg.patient_id "
+            + "                                     INNER JOIN patient_state ps "
+            + "                                             ON "
+            + "           pg.patient_program_id = ps.patient_program_id "
+            + "                              WHERE  pg.voided = 0 "
+            + "                                     AND ps.voided = 0 "
+            + "                                     AND p.voided = 0 "
+            + "                                     AND pg.program_id = %d "
+            + "                                     AND ps.state IN ( %d, %d, %d, %d ) "
+            + "                                     AND ps.end_date IS NULL "
+            + "                                     AND ps.start_date <= :endDate "
+            + "                                     AND location_id = :location "
+            + "                              UNION "
+            + "                              SELECT person_id "
+            + "                              FROM   person "
+            + "                              WHERE  dead = 1 "
+            + "                                     AND death_date <= :endDate "
+            + "                                     AND voided = 0) "
+            + "       AND patient_id NOT IN(SELECT patient_id "
+            + "                             FROM   (SELECT p.patient_id, "
+            + "                                            Max(encounter_datetime) "
+            + "                                            encounter_datetime "
+            + "                                     FROM   patient p "
+            + "                                            INNER JOIN encounter e "
+            + "                                                    ON "
+            + "                                            e.patient_id = p.patient_id "
+            + "                                     WHERE  p.voided = 0 "
+            + "                                            AND e.voided = 0 "
+            + "                                            AND e.encounter_type IN ( %d, %d ) "
+            + "                                            AND e.location_id = :location "
+            + "                                            AND e.encounter_datetime <= :endDate "
+            + "                                     GROUP  BY p.patient_id) max_mov "
+            + "                                    INNER JOIN obs o "
+            + "                                            ON o.person_id = max_mov.patient_id "
+            + "                             WHERE  max_mov.encounter_datetime = o.obs_datetime "
+            + "                                    AND o.voided = 0 "
+            + "                                    AND o.concept_id = %d "
+            + "                                    AND o.location_id = :location "
+            + "                                    AND "
+            + "                            Datediff(:endDate, o.value_datetime) <= 60) "
+            + "       AND patient_id NOT IN(SELECT abandono.patient_id "
+            + "                             FROM   (SELECT pg.patient_id "
+            + "                                     FROM   patient p "
+            + "                                            INNER JOIN patient_program pg "
+            + "                                                    ON "
+            + "                                            p.patient_id = pg.patient_id "
+            + "                                            INNER JOIN patient_state ps "
+            + "                                                    ON "
+            + "       pg.patient_program_id = ps.patient_program_id "
+            + "       WHERE  pg.voided = 0 "
+            + "       AND ps.voided = 0 "
+            + "       AND p.voided = 0 "
+            + "       AND pg.program_id = %d "
+            + "       AND ps.state = %d "
+            + "       AND ps.end_date IS NULL "
+            + "       AND ps.start_date <= :endDate "
+            + "       AND location_id = :location)abandono "
+            + "       INNER JOIN (SELECT max_frida.patient_id, "
+            + "                  max_frida.encounter_datetime, "
+            + "                  o.value_datetime "
+            + "           FROM   (SELECT p.patient_id, "
+            + "                          Max(encounter_datetime) "
+            + "                          encounter_datetime "
+            + "                   FROM   patient p "
+            + "                          INNER JOIN encounter e "
+            + "                                  ON "
+            + "                          e.patient_id = p.patient_id "
+            + "                   WHERE  p.voided = 0 "
+            + "                          AND e.voided = 0 "
+            + "                          AND e.encounter_type = %d "
+            + "                          AND "
+            + "                  e.location_id = :location "
+            + "                          AND "
+            + "                  e.encounter_datetime <= :endDate "
+            + "                   GROUP  BY p.patient_id) max_frida "
+            + "                  INNER JOIN obs o "
+            + "                          ON o.person_id = "
+            + "                             max_frida.patient_id "
+            + "           WHERE "
+            + "       max_frida.encounter_datetime = o.obs_datetime "
+            + "       AND o.voided = 0 "
+            + "       AND o.concept_id = %d "
+            + "       AND o.location_id = :location) ultimo_fila "
+            + "       ON abandono.patient_id = ultimo_fila.patient_id "
+            + "       WHERE  Datediff(:endDate, ultimo_fila.value_datetime) < 60) "
+            + "       AND Datediff(:endDate, o.value_datetime) >= 60; ";
+
+    cd.setQuery(
+        String.format(
+            query,
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId(),
+            hivMetadata.getArtSuspendedTreatmentWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getArtAbandonedWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateConcept().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
 
     return cd;
   }
@@ -1658,20 +1766,20 @@ public class UsMonthlySummaryHivCohortQueries {
     return cd;
   }
 
-  //  public CohortDefinition getInArtAbandoned() {
-  //    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-  //    cd.setName("RM_PACIENTES QUE SAIRAM DO TRATAMENTO ARV: ABANDONO - PERIODO FINAL");
-  //
-  //    cd.addParameter(ReportingConstants.END_DATE_PARAMETER);
-  //    cd.addParameter(ReportingConstants.LOCATION_PARAMETER);
-  //
-  //    String mappings = "endDate=${endDate},location=${location}";
-  //    cd.addSearch("CUMULATIVOENTRADAS", map(getEnrolledInArt(), mappings));
-  //
-  //    cd.addSearch("ABANDONO", mapStraightThrough(abandonmentNotifiedAndNotNotified()));
-  //
-  //    cd.setCompositionString("CUMULATIVOENTRADAS AND ABANDONO");
-  //
-  //    return cd;
-  //  }
+  public CohortDefinition getInArtAbandoned() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("RM_PACIENTES QUE SAIRAM DO TRATAMENTO ARV: ABANDONO - PERIODO FINAL");
+
+    cd.addParameter(ReportingConstants.END_DATE_PARAMETER);
+    cd.addParameter(ReportingConstants.LOCATION_PARAMETER);
+
+    String mappings = "endDate=${endDate},location=${location}";
+    cd.addSearch("CUMULATIVOENTRADAS", map(getEnrolledInArt(), mappings));
+
+    cd.addSearch("ABANDONO", mapStraightThrough(abandonmentNotifiedAndNotNotified()));
+
+    cd.setCompositionString("CUMULATIVOENTRADAS AND ABANDONO");
+
+    return cd;
+  }
 }

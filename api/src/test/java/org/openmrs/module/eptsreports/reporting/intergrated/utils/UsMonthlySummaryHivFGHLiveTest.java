@@ -171,11 +171,11 @@ public class UsMonthlySummaryHivFGHLiveTest extends DefinitionsFGHLiveTest {
     assertThat(ds, hasColumnValue("I2-F15", 227));
     assertThat(ds, hasColumnValue("I2-M15", 143));
 
-    //    // Nº cumulativo de abandonos tarv
-    //    assertThat(ds, hasColumnValue("I3-F014", 59));
-    //    assertThat(ds, hasColumnValue("I3-M014", 43));
-    //    assertThat(ds, hasColumnValue("I3-F15", 705));
-    //    assertThat(ds, hasColumnValue("I3-M15", 374));
+    // Nº cumulativo de abandonos tarv
+    assertThat(ds, hasColumnValue("I3-F014", 59));
+    assertThat(ds, hasColumnValue("I3-M014", 43));
+    assertThat(ds, hasColumnValue("I3-F15", 705));
+    assertThat(ds, hasColumnValue("I3-M15", 374));
 
     // Nº cumulativo de óbitos tarv
     assertThat(ds, hasColumnValue("I4-F014", 15));

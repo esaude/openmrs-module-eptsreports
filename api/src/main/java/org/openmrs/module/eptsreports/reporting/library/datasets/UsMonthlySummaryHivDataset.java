@@ -184,12 +184,12 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         getInArtTransferredOut(),
         getColumnParameters());
 
-    //    addRow(
-    //        dataSetDefinition,
-    //        "I3",
-    //        "Nº cumulativo de abandonos tarv",
-    //        getAbandonedArt(),
-    //        getColumnParameters());
+    addRow(
+        dataSetDefinition,
+        "I3",
+        "Nº cumulativo de abandonos tarv",
+        getAbandonedArt(),
+        getColumnParameters());
 
     addRow(
         dataSetDefinition,
@@ -338,13 +338,12 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
     return mapStraightThrough(indicator);
   }
 
-  //  private Mapped<CohortIndicator> getAbandonedArt() {
-  //    String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE ABANDONARAM";
-  //    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInArtAbandoned();
-  //    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name,
-  // mapStraightThrough(cohort));
-  //    return mapStraightThrough(indicator);
-  //  }
+  private Mapped<CohortIndicator> getAbandonedArt() {
+    String name = "NUMERO CUMULATIVO DE PACIENTES PRE-TARV QUE ABANDONARAM";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInArtAbandoned();
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
+    return mapStraightThrough(indicator);
+  }
 
   private Mapped<CohortIndicator> getInArtTransferredOut() {
     String name = "NUMERO CUMULATIVO DE PACIENTES TARV TRANSFERIDOS PARA";
