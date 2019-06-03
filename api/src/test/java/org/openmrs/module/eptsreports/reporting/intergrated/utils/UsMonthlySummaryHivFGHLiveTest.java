@@ -215,6 +215,26 @@ public class UsMonthlySummaryHivFGHLiveTest extends DefinitionsFGHLiveTest {
     assertThat(ds, hasColumnValue("L2-M014", 0));
     assertThat(ds, hasColumnValue("L2-F15", 19));
     assertThat(ds, hasColumnValue("L2-M15", 7));
+
+    // Nº de pacientes que entraram nos GAAC no mês
+    assertThat(ds, hasColumnValue("GC1-F014", 0));
+    assertThat(ds, hasColumnValue("GC1-M014", 0));
+    assertThat(ds, hasColumnValue("GC1-F15", 7));
+    assertThat(ds, hasColumnValue("GC1-M15", 3));
+
+    // Nº de pacientes que sairam dos GAAC no mês
+    assertThat(ds, hasColumnValue("GC2-F014", 0));
+    assertThat(ds, hasColumnValue("GC2-M014", 0));
+    assertThat(ds, hasColumnValue("GC2-F15", 0));
+    assertThat(ds, hasColumnValue("GC2-M15", 0));
+
+    // Nº de pacientes activos nos GAAC no fim do mês
+    assertThat(ds, hasColumnValue("GC3-F014", 0));
+    assertThat(ds, hasColumnValue("GC3-M014", 0));
+    assertThat(ds, hasColumnValue("GC3-F15", 286));
+    assertThat(ds, hasColumnValue("GC3-M15", 116));
+
+    assertThat(ds, hasColumnValue("GC4", 9));
   }
 
   @Override

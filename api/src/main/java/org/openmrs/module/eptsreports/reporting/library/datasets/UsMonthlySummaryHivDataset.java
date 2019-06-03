@@ -233,7 +233,60 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
         getInArtStartedIsoniazidProphylaxis(),
         getColumnParameters());
 
+    addRow(
+        dataSetDefinition,
+        "GC1",
+        "Nº de pacientes que entraram nos GAAC no mês",
+        getEnteredInGAAC(),
+        getColumnParameters());
+
+    addRow(
+        dataSetDefinition,
+        "GC2",
+        "Nº de pacientes que sairam dos GAAC no mês",
+        getLeftGAAC(),
+        getColumnParameters());
+
+    addRow(
+        dataSetDefinition,
+        "GC3",
+        "Nº de pacientes activos nos GAAC no fim do mês",
+        getActiveInGAAC(),
+        getColumnParameters());
+
+    dataSetDefinition.addColumn(
+        "GC4", "Nº de grupos GAAC activos no fim do mês", getGAACGroups(), "");
+
     return dataSetDefinition;
+  }
+
+  private Mapped<CohortIndicator> getGAACGroups() {
+    String name = " NUMERO DE NOVOS PACIENTES INSCRITOS NOS GAACs DURANTE UM PERIODO";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getGAACGroups();
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
+    return mapStraightThrough(indicator);
+  }
+
+  private Mapped<CohortIndicator> getActiveInGAAC() {
+    String name = " NUMERO DE NOVOS PACIENTES INSCRITOS NOS GAACs DURANTE UM PERIODO";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getActiveGAAC();
+    String mappings = "endDate=${startDate},location=${location}";
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    return mapStraightThrough(indicator);
+  }
+
+  private Mapped<CohortIndicator> getLeftGAAC() {
+    String name = " NUMERO DE NOVOS PACIENTES INSCRITOS NOS GAACs DURANTE UM PERIODO";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getLeftGAAC();
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
+    return mapStraightThrough(indicator);
+  }
+
+  private Mapped<CohortIndicator> getEnteredInGAAC() {
+    String name = " NUMERO DE NOVOS PACIENTES INSCRITOS NOS GAACs DURANTE UM PERIODO";
+    CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getEnteredInGAAC();
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, mapStraightThrough(cohort));
+    return mapStraightThrough(indicator);
   }
 
   private Mapped<CohortIndicator> getInArtStartedIsoniazidProphylaxis() {

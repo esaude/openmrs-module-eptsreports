@@ -1560,6 +1560,104 @@ public class UsMonthlySummaryHivCohortQueries {
     return cd;
   }
 
+  public CohortDefinition getEnteredInGAAC() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
+    cd.setName("PACIENTES INSCRITOS NO GAAC NUM PERIODO");
+
+    cd.addParameters(getParameters());
+
+    String query =
+        "SELECT gm.member_id "
+            + "FROM   gaac g "
+            + "       INNER JOIN gaac_member gm "
+            + "               ON g.gaac_id = gm.gaac_id "
+            + "WHERE  gm.start_date BETWEEN :startDate AND :endDate "
+            + "       AND gm.voided = 0 "
+            + "       AND g.voided = 0 "
+            + "       AND location_id = :location ";
+
+    cd.setQuery(query);
+
+    return cd;
+  }
+
+  public CohortDefinition getLeftGAAC() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
+    cd.setName("PACIENTES QUE SAIRAM DO GAAC");
+
+    cd.addParameters(getParameters());
+
+    String query =
+        "SELECT gm.member_id "
+            + "FROM   gaac g "
+            + "       INNER JOIN gaac_member gm "
+            + "               ON g.gaac_id = gm.gaac_id "
+            + "WHERE  gm.end_date BETWEEN :startDate AND :endDate "
+            + "       AND gm.leaving = 1 "
+            + "       AND gm.voided = 0 "
+            + "       AND g.voided = 0 "
+            + "       AND location_id = :location "
+            + "       AND reason_leaving_type IN ( 1, 2, 3, 4, "
+            + "                                    5, 6 ); ";
+
+    cd.setQuery(query);
+
+    return cd;
+  }
+
+  public CohortDefinition getActiveGAAC() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
+    cd.setName("PACIENTES QUE SAIRAM DO GAAC");
+
+    cd.addParameter(ReportingConstants.END_DATE_PARAMETER);
+    cd.addParameter(ReportingConstants.LOCATION_PARAMETER);
+
+    String query =
+        "SELECT gm.member_id "
+            + "FROM   gaac g "
+            + "       INNER JOIN gaac_member gm "
+            + "               ON g.gaac_id = gm.gaac_id "
+            + "WHERE  gm.start_date < :endDate "
+            + "       AND gm.voided = 0 "
+            + "       AND g.voided = 0 "
+            + "       AND ( ( leaving IS NULL ) "
+            + "              OR ( leaving = 0 ) "
+            + "              OR ( leaving = 1 "
+            + "                   AND gm.end_date > :endDate ) ) "
+            + "       AND location_id = :location ";
+
+    cd.setQuery(query);
+
+    return cd;
+  }
+
+  public CohortDefinition getGAACGroups() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
+    cd.setName("GAACS FORMADOS E ACTIVOS ATÉ UMA DATA FINAL");
+
+    cd.addParameter(ReportingConstants.END_DATE_PARAMETER);
+    cd.addParameter(ReportingConstants.LOCATION_PARAMETER);
+
+    String query =
+        "SELECT gaac_id "
+            + "FROM   gaac "
+            + "WHERE  start_date <= :endDate "
+            + "       AND voided = 0 "
+            + "       AND ( ( crumbled IS NULL ) "
+            + "              OR ( crumbled = 0 ) "
+            + "              OR ( crumbled = 1 "
+            + "                   AND date_crumbled >= :endDate ) ) "
+            + "       AND location_id = :location ";
+
+    cd.setQuery(query);
+
+    return cd;
+  }
+
   //  public CohortDefinition getInArtAbandoned() {
   //    CompositionCohortDefinition cd = new CompositionCohortDefinition();
   //    cd.setName("RM_PACIENTES QUE SAIRAM DO TRATAMENTO ARV: ABANDONO - PERIODO FINAL");
