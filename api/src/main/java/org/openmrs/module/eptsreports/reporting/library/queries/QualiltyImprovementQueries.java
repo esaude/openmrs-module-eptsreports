@@ -266,7 +266,7 @@ public class QualiltyImprovementQueries {
             + "    e.encounter_datetime between :startDate and :endDate and e.location_id=:location "
             + ") diagnostico "
             + "inner join encounter e on diagnostico.patient_id = e.patient_id "
-            + "where     e.voided=0 and datediff(e.encounter_datetime,diagnostico.data_diagnostico)<=7 and "
+            + "where     e.voided=0 and timestampdiff(day,e.encounter_datetime,diagnostico.data_diagnostico)<=7 and "
             + "e.encounter_type in (%d,%d) and e.location_id=:location";
 
     return String.format(
@@ -278,9 +278,7 @@ public class QualiltyImprovementQueries {
         aRVPediatriaSeguimentoEncounterType);
   }
   /**
-   * PACIENTES QUE TIVERAM RASTREIO DE TUBERCULOSE EM CADA CONSULTA CLINICA
-   *
-   * <p>São pacientes que durante um periodo tiveram consulta clinica e que foram rastreiados para
+   * São pacientes que durante um periodo tiveram consulta clinica e que foram rastreiados para
    * tuberculose em cada visita (Numero de visitas igual ao numero de rastreios)
    *
    * @param adultoSeguimentoEncounterType
@@ -303,7 +301,7 @@ public class QualiltyImprovementQueries {
             + ","
             + arvPediatriaSeguimentoEncounterType
             + ") "
-            + "group by patient_id) consulta "
+            + "group by p.patient_id) consulta "
             + "inner join "
             + "(Select 	p.patient_id,count(*) rastreios "
             + "from 	patient p  "
@@ -317,7 +315,7 @@ public class QualiltyImprovementQueries {
             + ") and o.voided=0 and o.concept_id="
             + tbScreeningConcept
             + " "
-            + "group by patient_id) rastreio on consulta.patient_id=rastreio.patient_id "
+            + "group by p.patient_id) rastreio on consulta.patient_id=rastreio.patient_id "
             + " "
             + "where rastreio.rastreios>=consulta.consultas ";
 
@@ -413,7 +411,7 @@ public class QualiltyImprovementQueries {
             + ","
             + arvPediatriaSeguimentoEncounterType
             + ") and voided=0 and   "
-            + "			encounter_datetime between :startDate and date_add(:endDate, interval 6 MONTH) and   "
+            + "			encounter_datetime between :startDate and timestampadd(month,6,:endDate) and   "
             + "			location_id=:location  "
             + ") consulta on consulta.patient_id=gravida.patient_id  "
             + "inner join   "
@@ -676,12 +674,12 @@ public class QualiltyImprovementQueries {
             + "					inner join encounter e on p.patient_id=e.patient_id "
             + "					inner join obs o on o.encounter_id=e.encounter_id "
             + "			where 	p.voided=0 and e.voided=0 and o.voided=0 and "
-            + "					e.encounter_datetime <= date_add(:endDate, interval 36 DAY) and  "
+            + "					e.encounter_datetime <= timestampadd(day, 36,:endDate) and  "
             + "					e.location_id=:location and e.encounter_type in (%d,%d) and o.concept_id=%d "
             + "			group by p.patient_id "
             + "		) cd4  on inscricao.patient_id=cd4.patient_id "
             + "		 "
-            + "where 	datediff(data_cd4,data_inscricao)<=33 ";
+            + "where 	timestampdiff(day,data_cd4,data_inscricao)<=33 ";
 
     return String.format(
         query,
@@ -827,7 +825,7 @@ public class QualiltyImprovementQueries {
             + "	and date_enrolled<=:endDate   "
             + "	and location_id=:location  "
             + ")inscricao on inicio_real.patient_id=inscricao.patient_id  "
-            + "and datediff(data_inicio,data_inscricao)<=15";
+            + "and timestampdiff(day,data_inicio,data_inscricao)<=15";
 
     return query;
   }
@@ -935,7 +933,7 @@ public class QualiltyImprovementQueries {
             + ","
             + arvPharmaciaEncounterType
             + ") and e.location_id=:location and   "
-            + "		e.encounter_datetime between inicio_real.data_inicio and date_add(inicio_real.data_inicio, interval 33 day) and   "
+            + "		e.encounter_datetime between inicio_real.data_inicio and timestampadd(day,33 ,inicio_real.data_inicio) and   "
             + "		inicio_real.patient_id not in   "
             + "		(  "
             + "			select 	pg.patient_id  "
@@ -1058,7 +1056,7 @@ public class QualiltyImprovementQueries {
             + ","
             + arvPharmaciaEncounterType
             + ") and e.location_id=:location and   "
-            + "		e.encounter_datetime between date_add(inicio_real.data_inicio, interval 1 day) and date_add(inicio_real.data_inicio, interval 99 day)  "
+            + "		e.encounter_datetime between timestampadd(day,1 ,inicio_real.data_inicio) and timestampadd(day,99 ,inicio_real.data_inicio)  "
             + "group by inicio_real.patient_id  "
             + "having count(distinct e.encounter_datetime)>=3";
 
@@ -1191,7 +1189,7 @@ public class QualiltyImprovementQueries {
             + "and o.value_coded="
             + adherenceCounselingConcept
             + "  "
-            + "and e.encounter_datetime between inicio_real.data_inicio and date_add(inicio_real.data_inicio, interval 99 day)   "
+            + "and e.encounter_datetime between inicio_real.data_inicio and timestampadd(day,99,inicio_real.data_inicio)   "
             + "and e.encounter_datetime>inicio_real.data_inicio  "
             + "group by inicio_real.patient_id  "
             + "having if(:testStart='true',count(*)>=4,count(*)>=3)";

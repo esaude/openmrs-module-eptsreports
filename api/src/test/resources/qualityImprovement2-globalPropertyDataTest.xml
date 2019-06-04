@@ -223,11 +223,107 @@
 
 
 	<global_property
-		property="eptsreports.returnVisitDateConceptConceptUuid"
-		property_value="e1dae630-1d5f-11e0-b929-000c29ad1d07"
-		description="UUID for the DATA DE PROXIMA CONSULTA concept"
-		uuid="59d3d3d0-604e-4023-843a-6b84bb019c5d" />
+		property="eptsreports.dateOfHIVDiagnosis"
+		property_value="54b65bbd-a0b0-4dfa-a3b1-de14d41bc314"
+		description="UUID for the DATE OF HIV+ DIAGNOSIS concept"
+		uuid="b99c8684-8f8d-40fc-a430-922cd2d58a3b" />
+
+
+	<global_property
+		property="eptsreports.sTarvPediatriaInicialAEncounterTypeUuid"
+		property_value="e278fa8c-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the S.TARV: PEDIATRIA INICIAL A encounter type"
+		uuid="8ef3ceab-a626-49eb-9e81-4df5e647eb63" />
+
+
+	<global_property
+		property="eptsreports.DataInicioProfilaxiaIsoniazidaConceptUuid"
+		property_value="6fa92ac9-0a96-4372-9e10-dd9683c19135"
+		description="Data de inicio de profilaxia com Isoniazida"
+		uuid="e0f3d78c-b3d1-4589-bea6-ede9cfaf02a5" />
+
+
+	<global_property
+		property="eptsreports.DataFimProfilaxiaIsoniazidaConceptUuid"
+		property_value="9e555978-3a02-4da4-855e-7b1bfc807347"
+		description="Data de finalizacao de profilaxia com Isoniazida"
+		uuid="83ce1b7d-0dfe-484c-908e-5ad8f387799c" />
+
+	<global_property
+		property="eptsreports.tbScreeningConceptUuid"
+		property_value="ea1851dc-151b-4c1e-b763-5df48082159d"
+		description="Concept uuid for SCREENING FOR TB"
+		uuid="1b550ec6-c3af-470d-b9ee-594d4dcc390b" />
+
+
+	<global_property
+		property="eptsreports.isoniazidUseConceptUuid"
+		property_value="be4a76ca-662a-4c39-903b-71983f5f67c9"
+		description="Uso de Isoniazida"
+		uuid="1651aa25-2e39-4661-968d-bac577639b71" />
+
+	<global_property property="eptsreports.yesConceptUuid"
+		property_value="e1d81b62-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the SIM concept"
+		uuid="37e751e2-0170-4d39-808c-6706a8b5f889" />
+
+	<global_property
+		property="eptsreports.tbRastreioEncounterTypeUuid"
+		property_value="e27915a8-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the TUBERCULOSE: RASTREIO encounter typet"
+		uuid="768e687b-d47d-4db6-8984-2172bcd9d176" />
+
+
+<global_property
+		property="eptsreports.sTarvPediatriaInicialBEncounterTypeUuid"
+		property_value="e278f5aa-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the S.TARV: PEDIATRIA INICIAL B encounter type"
+		uuid="9e84a0f5-26e4-431d-a8c9-285e2103fb65" />
+
+
+<global_property
+		property="eptsreports.pregnancyDueDateConceptUuid"
+		property_value="e1dca8ee-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the DATA GRAVIDEZ concept"
+		uuid="fd010886-e32e-45d8-9b62-964e31f97c67" />
+		
+	<global_property
+		property="eptsreports.screeningForSTIIuid"
+		property_value="794ef662-03bc-4e22-90ff-38742b82827a"
+		description="UUID for the SCREENING FOR STI concept"
+		uuid="db5f844b-3fa7-4140-af27-4827fd3b289d" />	
 		
 		
+		<global_property
+		property="eptsreports.cd4AbsoluteOBSUuid"
+		property_value="e1dd5ab4-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the  CD4 ABSOLUTE OBS concept"
+		uuid="c87c2165-cbe9-4261-aa7d-72959524b9e3" />	
+
+
+<global_property
+		property="eptsreports.coucelingActivityTypeUuid"
+		property_value="451b1373-1cb8-4164-b746-907588398c1e"
+		description="UUID for the   COUCELING ACTIVITY TYPE concept"
+		uuid="820c2796-6500-4f78-b02c-cfbe61e46110" />	
+		
+		<global_property
+		property="eptsreports.apssPrevencaoPositivaInicialInicialEncounterTypeUuid"
+		property_value="f0bc6401-4e62-43e5-97e2-6ab027bb0405"
+		description="UUID for the APSS: PREVENÇÃO POSITIVA - INICIAL encounter type"
+		uuid="974ed2ae-91e4-4651-bac2-a640b64a9de7" />	
+		
+		
+		<global_property
+		property="eptsreports.apssPrevencaoPositivaSeguimentoEncounterTypeUuid"
+		property_value="f4aa93fe-8737-4f70-9532-542b768459d7"
+		description="UUUID for the APSS: PREVENÇÃO POSITIVA - SEGUIMENTO encounter type"
+		uuid="3059fd78-4718-420a-864d-e83153c33b82" />	
+		
+			<global_property
+		property="eptsreports.adherenceCounselingUuid"
+		property_value="e1e68562-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the   ADHERENCE COUNSELING  concept"
+		uuid="1185e94c-49d3-465b-a56b-a25ca0fd88d2" />	
 
 </dataset>

@@ -34,16 +34,37 @@
 		birthdate="1986-03-17 00:00:00.0" birthdate_estimated="0" dead="false"
 		creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
 		uuid="421875e7-6f22-1000-9281-8f1ee524029e" />
-		
-			<person person_id="1005" gender="M"
+
+	<person person_id="1005" gender="M"
 		birthdate="1986-03-17 00:00:00.0" birthdate_estimated="0" dead="false"
 		creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
 		uuid="421875f2-6f22-1000-9281-8f1ee524029e" />
-		
-		<person person_id="1006" gender="F"
+
+	<person person_id="1006" gender="F"
 		birthdate="1986-03-17 00:00:00.0" birthdate_estimated="0" dead="false"
 		creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
 		uuid="421875f6-6f22-1000-9281-8f1ee524029e" />
+
+	<person person_id="1007" gender="F"
+		birthdate="1986-03-17 00:00:00.0" birthdate_estimated="0" dead="false"
+		creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+		uuid="421875fa-6f22-1000-9281-8f1ee524029e" />
+		
+		<person person_id="1008" gender="M"
+		birthdate="1986-03-17 00:00:00.0" birthdate_estimated="0" dead="false"
+		creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+		uuid="421875fe-6f22-1000-9281-8f1ee524029e" />
+		
+		<person person_id="1009" gender="F"
+		birthdate="1986-03-17 00:00:00.0" birthdate_estimated="0" dead="false"
+		creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+		uuid="42187602-6f22-1000-9281-8f1ee524029e" />
+
+
+<person person_id="1010" gender="F"
+		birthdate="1986-03-17 00:00:00.0" birthdate_estimated="0" dead="false"
+		creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+		uuid="42187606-6f22-1000-9281-8f1ee524029e" />
 
 
 	<!-- patient -->
@@ -62,15 +83,29 @@
 	<patient patient_id="1004" creator="1"
 		date_created="2005-09-22 00:00:00.0" changed_by="1"
 		date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
-		
-		<patient patient_id="1005" creator="1"
+
+	<patient patient_id="1005" creator="1"
+		date_created="2005-09-22 00:00:00.0" changed_by="1"
+		date_changed="2008-08-18 12:29:59.0" voided="0" void_reason="" />
+
+	<patient patient_id="1006" creator="1"
+		date_created="2005-09-22 00:00:00.0" changed_by="1"
+		date_changed="2008-08-18 12:29:59.0" voided="0" void_reason="" />
+
+	<patient patient_id="1007" creator="1"
+		date_created="2005-09-22 00:00:00.0" changed_by="1"
+		date_changed="2008-08-18 12:29:59.0" voided="0" void_reason="" />
+
+	<patient patient_id="1008" creator="1"
 		date_created="2005-09-22 00:00:00.0" changed_by="1"
 		date_changed="2008-08-18 12:29:59.0" voided="0" void_reason="" />
 		
-			<patient patient_id="1006" creator="1"
+		<patient patient_id="1009" creator="1"
 		date_created="2005-09-22 00:00:00.0" changed_by="1"
 		date_changed="2008-08-18 12:29:59.0" voided="0" void_reason="" />
 		
-
-
+		<patient patient_id="1010" creator="1"
+		date_created="2005-09-22 00:00:00.0" changed_by="1"
+		date_changed="2008-08-18 12:29:59.0" voided="0" void_reason="" />
+	
 </dataset>

@@ -90,6 +90,24 @@
 		class_id="11" is_set="0" creator="1"
 		date_created="2012-02-27 11:30:21"
 		uuid="7f3af436-5c3a-447c-9012-42bb314e03db" />
+		
+		<concept_name concept_id="6275" name="PRIOR TARV"
+		locale="en" creator="1" date_created="2012-02-29 09:50:50"
+		concept_name_id="7180" voided="0"
+		uuid="36db9523-49c6-4958-a999-fcea6a0af2dc"
+		concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+		
+		<concept_name concept_id="6275" name="PRE-TARV"
+		locale="pt" creator="1" date_created="2012-02-29 09:50:50"
+		concept_name_id="7181" voided="0"
+		uuid="11bda988-b5f5-439c-83fe-c8f3fd256878"
+		concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+		
+		<concept_name concept_id="6275" name="HIV - CARE"
+		locale="en" creator="1" date_created="2012-02-29 09:50:50"
+		concept_name_id="7188" voided="0"
+		uuid="5a6372d9-5c28-4d39-b93b-1f25270f23e5"
+		concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
 
 	<!--6276 -->
 	<concept concept_id="6276" retired="0" datatype_id="4"
@@ -113,6 +131,12 @@
 		locale="en" creator="1" date_created="2012-02-29 09:50:50"
 		concept_name_id="7166" voided="0"
 		uuid="c2b28ac9-9c08-44a6-b17d-923fdcd8f9b9"
+		concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+		
+		<concept_name concept_id="6269" name="ACTIVE ON PROGRAM"
+		locale="en" creator="1" date_created="2012-02-29 09:50:50"
+		concept_name_id="7203" voided="0"
+		uuid="1e2abd02-acf0-443b-a85f-004bb98378ee"
 		concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
 
 	<!--1706 -->
@@ -226,8 +250,115 @@
 		date_created="2012-02-27 11:30:21"
 		uuid="e1e2efd8-1d5f-11e0-b929-000c29ad1d07" />
 
-
-
-
-
+	<!--6123 -->
+	<concept concept_id="6123" retired="0" datatype_id="6"
+		class_id="7" is_set="0" creator="1"
+		date_created="2012-02-27 11:30:21"
+		uuid="54b65bbd-a0b0-4dfa-a3b1-de14d41bc314" />
+		
+		<!--1709-->
+	<concept concept_id="1709" retired="0" datatype_id="4"
+		class_id="11" is_set="0" creator="1"
+		date_created="2012-02-27 11:30:21"
+		uuid="e1de1fee-1d5f-11e0-b929-000c29ad1d07" />
+		
+		<concept_name concept_id="1709"
+		name="SUSPEND TREATMENT" locale="en" creator="1"
+		date_created="2012-02-29 09:50:50" concept_name_id="3148" voided="0"
+		uuid="e24e32ac-1d5f-11e0-b929-000c29ad1d07"
+		concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+		
+			e1de1df0-1d5f-11e0-b929-000c29ad1d07
+			
+			
+			<!--1707-->
+	<concept concept_id="1707" retired="0" datatype_id="4"
+		class_id="11" is_set="0" creator="1"
+		date_created="2012-02-27 11:30:21"
+		uuid="e1de1df0-1d5f-11e0-b929-000c29ad1d07" />
+		
+		<concept_name concept_id="1707"
+		name="ABANDONED" locale="en" creator="1"
+		date_created="2012-02-29 09:50:50" concept_name_id="5369" voided="0"
+		uuid="e25e3a80-1d5f-11e0-b929-000c29ad1d07"
+		locale_preferred="0" />
+		
+		
+		<!--1366-->
+	<concept concept_id="1366" retired="0" datatype_id="4"
+		class_id="11" is_set="0" creator="1"
+		date_created="2012-02-27 11:30:21"
+		uuid="e1da766e-1d5f-11e0-b929-000c29ad1d07" />
+		
+		<concept_name concept_id="1366"
+		name="PATIENT HAS DIED" locale="en" creator="1"
+		date_created="2012-02-29 09:50:50" concept_name_id="2462" voided="0"
+		uuid="e249f6c4-1d5f-11e0-b929-000c29ad1d07"
+		locale_preferred="0" />
+		
+	
+	<!-- 6128 -->
+	<concept concept_id="6128" retired="0" datatype_id="6"
+		class_id="7" is_set="0" creator="1"
+		date_created="2012-02-27 11:30:21"
+		uuid="6fa92ac9-0a96-4372-9e10-dd9683c19135" />
+	
+	<!-- 6129 -->
+	<concept concept_id="6129" retired="0" datatype_id="6"
+		class_id="7" is_set="0" creator="1"
+		date_created="2012-02-27 11:30:21"
+		uuid="9e555978-3a02-4da4-855e-7b1bfc807347" />
+		
+		<!-- 6257 -->
+		<concept concept_id="6257" retired="0" datatype_id="2"
+		class_id="7" is_set="0" creator="1"
+		date_created="2012-02-27 11:30:21"
+		uuid="ea1851dc-151b-4c1e-b763-5df48082159d" />
+		
+		
+		<!-- 6122 -->
+				<concept concept_id="6122" retired="0" datatype_id="2"
+		class_id="7" is_set="0" creator="1"
+		date_created="2012-02-27 11:30:21"
+		uuid="be4a76ca-662a-4c39-903b-71983f5f67c9" />
+		
+		
+		<!-- 1065 -->
+		<concept concept_id="1065" retired="0" datatype_id="4"
+		class_id="11" is_set="0" creator="1"
+		date_created="2012-02-27 11:30:21"
+		uuid="e1d81b62-1d5f-11e0-b929-000c29ad1d07" />
+		
+		
+		<!-- 1600 -->
+			<concept concept_id="1600" retired="0" datatype_id="6"
+		class_id="7" is_set="0" creator="1"
+		date_created="2012-02-27 11:30:21"
+		uuid="e1dca8ee-1d5f-11e0-b929-000c29ad1d07" />
+		
+		<!-- 6258 -->
+			<concept concept_id="6258" retired="0" datatype_id="2"
+		class_id="7" is_set="0" creator="1"
+		date_created="2012-02-27 11:30:21"
+		uuid="794ef662-03bc-4e22-90ff-38742b82827a" />
+		
+		<!-- 1695 -->
+		<concept concept_id="1695" retired="0" datatype_id="1"
+		class_id="1" is_set="0" creator="1"
+		date_created="2012-02-27 11:30:21"
+		uuid="e1dd5ab4-1d5f-11e0-b929-000c29ad1d07" />
+		
+		
+		<!-- 6314 -->
+		<concept concept_id="6314" retired="0" datatype_id="2"
+		class_id="7" is_set="0" creator="1"
+		date_created="2012-02-27 11:30:21"
+		uuid="451b1373-1cb8-4164-b746-907588398c1e" />
+		
+		<!-- 5488 -->
+		<concept concept_id="5488" retired="0" datatype_id="1"
+		class_id="1" is_set="0" creator="1"
+		date_created="2012-02-27 11:30:21"
+		uuid="e1e68562-1d5f-11e0-b929-000c29ad1d07" />
+		
 </dataset>

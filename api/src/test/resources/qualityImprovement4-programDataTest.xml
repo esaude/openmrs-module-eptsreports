@@ -7,8 +7,8 @@
 	graphic logo is a trademark of OpenMRS Inc. -->
 
 <dataset>
-	 
-	<!--| program |-->
+
+	<!--| program | -->
 
 	<program program_id="1" concept_id="1781" creator="1"
 		date_created="2012-02-29 09:42:25" retired="0"
@@ -21,10 +21,9 @@
 		name="SERVICO TARV - TRATAMENTO"
 		description="Programa de seguimento e tratamento aos pacientes HIV+"
 		uuid="efe2481f-9e75-4515-8d5a-86bfde2b5ad3" />
-		
-		<program program_id="5" concept_id="1782" creator="1"
-		date_created="2012-02-29 09:42:25" retired="0"
-		name="TUBERCULOSE"
+
+	<program program_id="5" concept_id="1782" creator="1"
+		date_created="2012-02-29 09:42:25" retired="0" name="TUBERCULOSE"
 		description=" Programa de Combate a Tuberculose"
 		uuid="142d23c4-c29f-4799-8047-eb3af911fd21" />
 
@@ -50,16 +49,22 @@
 		program_id="8" concept_id="5272" creator="1"
 		date_created="2012-02-29 10:17:25" retired="0"
 		uuid="38b2c29f-496c-4b3d-b792-e2f7cdc7c8b7" />
-		
-		
-		
+
+
+
 	<program_workflow program_workflow_id="4"
 		program_id="5" concept_id="6281" creator="1"
 		date_created="2012-02-29 10:17:25" retired="0"
 		uuid="8ac84757-6fb0-4b56-ac51-50d5efb004af" />
-		
+
 
 	<!-- | program_workflow_state | -->
+	<program_workflow_state
+		program_workflow_state_id="1" program_workflow_id="1"
+		concept_id="6269" initial="1" terminal="0" creator="1"
+		date_created="2013-07-24 11:45:26" retired="0"
+		uuid="e21bd1bf-13a8-4cb7-8d7b-fb830771f64a" />
+	
 	<program_workflow_state
 		program_workflow_state_id="6" program_workflow_id="2"
 		concept_id="6269" initial="1" terminal="0" creator="1"
@@ -83,19 +88,39 @@
 		concept_id="1982" initial="1" terminal="0" creator="1"
 		date_created="2013-07-24 11:45:26" retired="0"
 		uuid="8e3d2224-b91f-4978-95ba-683929011086" />
-		
+
 	<program_workflow_state
 		program_workflow_state_id="27" program_workflow_id="5"
 		concept_id="6248" initial="1" terminal="0" creator="1"
 		date_created="2012-07-24 11:45:26" retired="0"
 		uuid="1fa545c3-ba8b-4979-b6eb-62a96ad844af" />
 
+	<program_workflow_state
+		program_workflow_state_id="8" program_workflow_id="2"
+		concept_id="1709" initial="1" terminal="0" creator="1"
+		date_created="2012-07-24 11:45:26" retired="0"
+		uuid="05cf5297-12ed-4f6b-8c21-70d8ae04e09f" />
+
+
+
+	<program_workflow_state
+		program_workflow_state_id="9" program_workflow_id="2"
+		concept_id="1707" initial="1" terminal="0" creator="1"
+		date_created="2012-07-24 11:45:26" retired="0"
+		uuid="06124f77-4a49-49f8-8655-fa1fe5262936" />
+
+
+	<program_workflow_state
+		program_workflow_state_id="10" program_workflow_id="2"
+		concept_id="1366" initial="1" terminal="0" creator="1"
+		date_created="2012-07-24 11:45:26" retired="0"
+		uuid="fcad8a57-2a1a-4abd-84b7-935897e4fe06" />
 	<!-- | patient_program | -->
 	<patient_program patient_program_id="4616"
-		patient_id="1001" program_id="2" date_enrolled="2013-08-01 00:00:00"
-		creator="1" date_created="2013-09-16 17:53:04" voided="0"
+		patient_id="1001" program_id="2" date_enrolled="2019-01-26 00:00:00"
+		creator="1" date_created="2019-01-26 00:00:00" voided="0"
 		uuid="d1315b84-2b18-4605-9bde-0a845bc35ebc" location_id="1" />
-		
+
 	<patient_program patient_program_id="4617"
 		patient_id="1002" program_id="5" date_enrolled="2013-08-01 00:00:00"
 		creator="1" date_created="2013-09-16 17:53:04" voided="0"
@@ -105,33 +130,39 @@
 		patient_id="1003" program_id="8" date_enrolled="2013-08-01 00:00:00"
 		creator="1" date_created="2013-09-16 17:53:04" voided="0"
 		uuid="aec50469-11e6-4e09-aa2c-0792ac3rba71" location_id="1" />
-		
-			<patient_program patient_program_id="4619"
+
+	<patient_program patient_program_id="4619"
 		patient_id="1004" program_id="2" date_enrolled="2013-08-01 00:00:00"
 		creator="1" date_created="2013-09-16 17:53:04" voided="0"
 		uuid="ce81e166-ef5e-4371-9dd2-9263956344af" location_id="1" />
-	
-	
-	<!-- | patient_state |  -->
+
+
+	<patient_program patient_program_id="4620"
+		patient_id="1010" program_id="2" date_enrolled="2013-08-01 00:00:00"
+		creator="1" date_created="2013-09-16 17:53:04" voided="0"
+		uuid="0b435cff-3fff-48b3-9ca3-8d156715a927" location_id="1" />
+
+
+	<!-- | patient_state | -->
 	<patient_state patient_state_id="6551"
 		patient_program_id="4616" state="6" start_date="2013-08-01"
 		creator="1" date_created="2013-09-16 17:53:04" voided="0" />
-		
-		<patient_state patient_state_id="6552"
+
+	<patient_state patient_state_id="6552"
 		patient_program_id="4616" state="7" start_date="2013-08-01"
 		creator="1" date_created="2013-09-16 17:53:04" voided="0" />
-		
-		<patient_state patient_state_id="6553"
+
+	<patient_state patient_state_id="6553"
 		patient_program_id="4616" state="29" start_date="2013-08-01"
 		creator="1" date_created="2013-09-16 17:53:04" voided="0" />
-		
-		<patient_state patient_state_id="6554"
+
+	<patient_state patient_state_id="6554"
 		patient_program_id="4616" state="25" start_date="2013-08-01"
 		creator="1" date_created="2013-09-16 17:53:04" voided="0" />
 
 
-		<patient_state patient_state_id="6555"
+	<patient_state patient_state_id="6555"
 		patient_program_id="4618" state="27" start_date="2008-12-01"
-		creator="1" date_created="2013-09-16 17:53:04" voided="0"  />
+		creator="1" date_created="2013-09-16 17:53:04" voided="0" />
 
 </dataset>
