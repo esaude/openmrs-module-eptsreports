@@ -13,7 +13,6 @@ import java.util.Map;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
@@ -24,7 +23,6 @@ import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinitio
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
@@ -840,13 +838,89 @@ public class UsMonthlySummaryHivCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getEverOnART() {
-    // TODO use txTbCohortQueries after fix
-    // return txTbCohortQueries.anyTimeARVTreatmentFinalPeriod();
-    CohortDefinitionService service = Context.getService(CohortDefinitionService.class);
-    CohortDefinition cd =
-        service.getDefinition(
-            "a9043c4d-47f7-4e8d-96c7-4ff8389999e3", CompositionCohortDefinition.class);
+  public CohortDefinition getEverOnART() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("ALGUMA VEZ ESTEVE EM TRATAMENTO ARV - PERIODO FINAL - REAL (COMPOSICAO)");
+
+    cd.addParameter(ReportingConstants.END_DATE_PARAMETER);
+    cd.addParameter(ReportingConstants.LOCATION_PARAMETER);
+
+    String mappings = "onOrBefore=${endDate},locationList=${location}";
+    cd.addSearch("CONCEITO1255", map(getAnyTimeOnART(), mappings));
+
+    cd.addSearch("PROGRAMA", mapStraightThrough(getEnrolledInArtProgram()));
+
+    String startDateMappings = "value2=${endDate},locationList=${location}";
+    cd.addSearch("CONCEITODATA", map(getWithARTStartDate(), startDateMappings));
+
+    String pharmacyMappings = "onOrBefore=${endDate},locationList=${location}";
+    cd.addSearch("FRIDAFILA", map(getEverOnARTPharmacy(), pharmacyMappings));
+
+    cd.setCompositionString("CONCEITO1255 OR PROGRAMA OR CONCEITODATA OR FRIDAFILA");
+    return cd;
+  }
+
+  private CohortDefinition getWithARTStartDate() {
+    DateObsCohortDefinition cd = new DateObsCohortDefinition();
+    cd.setName("INICIO DE TARV USANDO O CONCEITO DE DATA - PERIODO FINAL");
+
+    cd.addParameter(new Parameter("value2", "Before Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+
+    cd.setTimeModifier(TimeModifier.ANY);
+
+    cd.setQuestion(hivMetadata.getHistoricalDrugStartDateConcept());
+
+    cd.addEncounterType(hivMetadata.getARVPharmaciaEncounterType());
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.addEncounterType(hivMetadata.getARVPediatriaSeguimentoEncounterType());
+
+    cd.setOperator2(RangeComparator.LESS_EQUAL);
+
+    return cd;
+  }
+
+  private CohortDefinition getEnrolledInArtProgram() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA TRATAMENTO ARV (TARV) - PERIODO FINAL");
+
+    cd.addParameter(ReportingConstants.END_DATE_PARAMETER);
+    cd.addParameter(ReportingConstants.LOCATION_PARAMETER);
+
+    String query =
+        "SELECT pg.patient_id "
+            + "FROM   patient p "
+            + "       INNER JOIN patient_program pg "
+            + "               ON p.patient_id = pg.patient_id "
+            + "WHERE  pg.voided = 0 "
+            + "       AND p.voided = 0 "
+            + "       AND program_id = %d "
+            + "       AND date_enrolled <= :endDate "
+            + "       AND location_id = :location ";
+
+    cd.setQuery(String.format(query, hivMetadata.getARTProgram().getProgramId()));
+
+    return cd;
+  }
+
+  private CohortDefinition getAnyTimeOnART() {
+    CodedObsCohortDefinition cd =
+        ((CodedObsCohortDefinition)
+            genericCohortQueries.hasCodedObs(hivMetadata.getARVPlanConcept(), null));
+
+    cd.setName("ALGUMA VEZ ESTEVE EM TRATAMENTO ARV - PERIODO FINAL");
+
+    cd.setTimeModifier(TimeModifier.ANY);
+
+    cd.addEncounterType(hivMetadata.getARVPharmaciaEncounterType());
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.addEncounterType(hivMetadata.getARVPediatriaSeguimentoEncounterType());
+
+    cd.setOperator(SetComparator.IN);
+
+    cd.addValue(hivMetadata.getStartDrugsConcept());
+    cd.addValue(hivMetadata.getTransferFromOtherFacilityConcept());
+
     return cd;
   }
 
