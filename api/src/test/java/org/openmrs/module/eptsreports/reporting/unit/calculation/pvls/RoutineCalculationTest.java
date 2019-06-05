@@ -194,8 +194,7 @@ public class RoutineCalculationTest extends PowerMockBaseContextTest {
             regimeChange,
             true,
             PatientsOnRoutineEnum.ADULTCHILDREN);
-
-    Assert.assertEquals(true, resultMap.get(patient.getId()).getValue());
+    Assert.assertEquals(false, resultMap.get(patient.getId()).getValue());
   }
 
   @Test
@@ -292,12 +291,14 @@ public class RoutineCalculationTest extends PowerMockBaseContextTest {
     EncounterType labEncounterType = new EncounterType(13);
     EncounterType adultFollowup = new EncounterType(6);
     EncounterType childFollowup = new EncounterType(9);
+    EncounterType farmacia = new EncounterType(18);
 
     when(hivMetadata.getHivViralLoadConcept()).thenReturn(viralLoadConcept);
     when(hivMetadata.getRegimeConcept()).thenReturn(regimeConcept);
     when(hivMetadata.getMisauLaboratorioEncounterType()).thenReturn(labEncounterType);
     when(hivMetadata.getAdultoSeguimentoEncounterType()).thenReturn(adultFollowup);
     when(hivMetadata.getARVPediatriaSeguimentoEncounterType()).thenReturn(childFollowup);
+    when(hivMetadata.getARVPharmaciaEncounterType()).thenReturn(farmacia);
 
     PatientCalculationContext calculationContext =
         patientCalculationService.createCalculationContext();
