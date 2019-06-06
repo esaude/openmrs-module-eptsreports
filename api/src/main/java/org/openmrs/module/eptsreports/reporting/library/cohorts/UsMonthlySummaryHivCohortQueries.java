@@ -13,6 +13,8 @@ import java.util.Map;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
+import org.openmrs.Program;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
@@ -34,6 +36,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UsMonthlySummaryHivCohortQueries {
+
+  private static final Date NEW_HIV_INSTRUMENTS_DATE = DateUtil.getDateTime(2012, 3, 21);
 
   @Autowired private HivMetadata hivMetadata;
 
@@ -58,7 +62,7 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.addParameter(ReportingConstants.LOCATION_PARAMETER);
 
     Map<String, Object> mappings = new HashMap<>();
-    mappings.put("startDate", DateUtil.getDateTime(2012, 3, 21));
+    mappings.put("startDate", NEW_HIV_INSTRUMENTS_DATE);
     mappings.put("endDate", "${endDate}");
     mappings.put("location", "${location}");
     cd.addSearch("INSCRITOS", getEnrolled(), mappings);
@@ -66,13 +70,14 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.addSearch("TRANSFERIDODE", getInArtCareEnrolledByTransfer(), mappings);
     cd.addSearch("ENTRADAPRETARV", hasEntryInPreArt(), mappings);
 
+    Date newInstrumentsDayBefore = DateUtil.getDateTime(2012, 3, 20);
     Map<String, Object> mappings2 = new HashMap<>();
-    mappings2.put("onOrBefore", DateUtil.getDateTime(2012, 3, 20));
+    mappings2.put("onOrBefore", newInstrumentsDayBefore);
     mappings2.put("locationList", "${location}");
     cd.addSearch("INSCRITOFINAL", hasInitialEncounter(), mappings2);
 
     Map<String, Object> mappings1 = new HashMap<>();
-    mappings1.put("endDate", DateUtil.getDateTime(2012, 3, 20));
+    mappings1.put("endDate", newInstrumentsDayBefore);
     mappings1.put("location", "${location}");
     cd.addSearch("ALGUMAVEZTARV", getEverOnART(), mappings1);
 
@@ -144,7 +149,7 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.addParameters(getParameters());
 
     Map<String, Object> mappings = new HashMap<>();
-    mappings.put("startDate", DateUtil.getDateTime(2012, 3, 21));
+    mappings.put("startDate", NEW_HIV_INSTRUMENTS_DATE);
     mappings.put("endDate", "${endDate}");
     mappings.put("location", "${location}");
     cd.addSearch("INICIO0312FINAL", getInitiatedIncludingTransfers(), mappings);
@@ -152,12 +157,12 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.addSearch("CONSULTA0312ATEINICIOPERIODO", hasFollowUpConsultation(), mappings);
 
     Map<String, Object> m = new HashMap<>();
-    m.put("endDate", DateUtil.getDateTime(2012, 3, 21));
+    m.put("endDate", NEW_HIV_INSTRUMENTS_DATE);
     m.put("location", "${location}");
     cd.addSearch("INICIOATE20032012", getStartedArt(), m);
 
     Map<String, Object> n = new HashMap<>();
-    n.put("onOrAfter", DateUtil.getDateTime(2012, 3, 21));
+    n.put("onOrAfter", NEW_HIV_INSTRUMENTS_DATE);
     n.put("onOrBefore", "${endDate}");
     n.put("locationList", "${location}");
     cd.addSearch("FARMACIA0312ATEINICIOPERIODO", getEverOnARTPharmacy(), n);
@@ -173,65 +178,22 @@ public class UsMonthlySummaryHivCohortQueries {
    *     periodo
    */
   public CohortDefinition getInArtCareEnrolledByTransfer() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.addParameters(getParameters());
-    String query =
-        "SELECT pg.patient_id  "
-            + "FROM   patient p  "
-            + "       INNER JOIN patient_program pg  "
-            + "               ON p.patient_id = pg.patient_id  "
-            + "       INNER JOIN patient_state ps  "
-            + "               ON pg.patient_program_id = ps.patient_program_id  "
-            + "WHERE  pg.voided = 0  "
-            + "       AND ps.voided = 0  "
-            + "       AND p.voided = 0  "
-            + "       AND pg.program_id = %d "
-            + "       AND ps.state = %d "
-            + "       AND ps.start_date = pg.date_enrolled  "
-            + "       AND ps.start_date BETWEEN :startDate AND :endDate  "
-            + "       AND location_id = :location ";
-    cd.setQuery(
-        String.format(
-            query,
-            hivMetadata.getHIVCareProgram().getProgramId(),
-            hivMetadata
-                .getArtCareTransferredFromOtherHealthFacilityWorkflowState()
-                .getProgramWorkflowStateId()));
-    cd.setName(
-        "PROGRAMA: PACIENTES TRANSFERIDOS DE NO PROGRAMA DE CUIDADO (PRE-TARV): NUM PERIODO");
-    return cd;
+    Program program = hivMetadata.getHIVCareProgram();
+    ProgramWorkflowState state =
+        hivMetadata.getArtCareTransferredFromOtherHealthFacilityWorkflowState();
+    String name =
+        "PROGRAMA: PACIENTES TRANSFERIDOS DE NO PROGRAMA DE CUIDADO (PRE-TARV): NUM PERIODO";
+    return getInProgramWithState(program, state, name);
   }
 
   /**
    * @return Pacientes que entraram no programa de tratamento ARV num periodo vindos transferidos de
    */
   public CohortDefinition getInArtEnrolledByTransfer() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.addParameters(getParameters());
-    String query =
-        "SELECT pg.patient_id  "
-            + "FROM   patient p  "
-            + "       INNER JOIN patient_program pg  "
-            + "               ON p.patient_id = pg.patient_id  "
-            + "       INNER JOIN patient_state ps  "
-            + "               ON pg.patient_program_id = ps.patient_program_id  "
-            + "WHERE  pg.voided = 0  "
-            + "       AND ps.voided = 0  "
-            + "       AND p.voided = 0  "
-            + "       AND pg.program_id = %d "
-            + "       AND ps.state = %d "
-            + "       AND ps.start_date = pg.date_enrolled  "
-            + "       AND ps.start_date BETWEEN :startDate AND :endDate  "
-            + "       AND location_id = :location ";
-    cd.setQuery(
-        String.format(
-            query,
-            hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata
-                .getTransferredFromOtherHealthFacilityWorkflowState()
-                .getProgramWorkflowStateId()));
-    cd.setName("PROGRAMA: PACIENTES TRANSFERIDOS DE NO PROGRAMA DE TRATAMENTO ARV: NUM PERIODO");
-    return cd;
+    Program program = hivMetadata.getARTProgram();
+    ProgramWorkflowState state = hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState();
+    String name = "PROGRAMA: PACIENTES TRANSFERIDOS DE NO PROGRAMA DE TRATAMENTO ARV: NUM PERIODO";
+    return getInProgramWithState(program, state, name);
   }
 
   public CohortDefinition getTransferredOut() {
@@ -249,7 +211,7 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.addSearch("TRANSFERIDOPARA", mapStraightThrough(transferredOut));
 
     Map<String, Object> mappings = new HashMap<>();
-    mappings.put("startDate", DateUtil.getDateTime(2012, 3, 21));
+    mappings.put("startDate", NEW_HIV_INSTRUMENTS_DATE);
     mappings.put("endDate", "${endDate}");
     mappings.put("location", "${location}");
     cd.addSearch("INICIO", getInitiatedArt(), mappings);
@@ -483,13 +445,13 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.addSearch("INICIOATE0312", getStartedArt(), mappings);
 
     Map<String, Object> pharmacyMappings = new HashMap<>();
-    pharmacyMappings.put("onOrAfter", DateUtil.getDateTime(2012, 3, 21));
+    pharmacyMappings.put("onOrAfter", NEW_HIV_INSTRUMENTS_DATE);
     pharmacyMappings.put("onOrBefore", "${startDate-1d}");
     pharmacyMappings.put("locationList", "${location}");
     cd.addSearch("FARMACIA0312ATEINICIOPERIODO", getEverOnARTPharmacy(), pharmacyMappings);
 
     Map<String, Object> followUpMappings = new HashMap<>();
-    followUpMappings.put("startDate", DateUtil.getDateTime(2012, 3, 21));
+    followUpMappings.put("startDate", NEW_HIV_INSTRUMENTS_DATE);
     followUpMappings.put("endDate", "${startDate-1d}");
     followUpMappings.put("location", "${location}");
     cd.addSearch("CONSULTA0312ATEINICIOPERIODO", hasFollowUpConsultation(), followUpMappings);
@@ -838,7 +800,7 @@ public class UsMonthlySummaryHivCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getEverOnART() {
+  private CohortDefinition getEverOnART() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("ALGUMA VEZ ESTEVE EM TRATAMENTO ARV - PERIODO FINAL - REAL (COMPOSICAO)");
 
@@ -857,6 +819,34 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.addSearch("FRIDAFILA", map(getEverOnARTPharmacy(), pharmacyMappings));
 
     cd.setCompositionString("CONCEITO1255 OR PROGRAMA OR CONCEITODATA OR FRIDAFILA");
+    return cd;
+  }
+
+  private CohortDefinition getInProgramWithState(
+      Program program, ProgramWorkflowState state, String name) {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName(name);
+
+    cd.addParameters(getParameters());
+
+    String query =
+        "SELECT pg.patient_id  "
+            + "FROM   patient p  "
+            + "       INNER JOIN patient_program pg  "
+            + "               ON p.patient_id = pg.patient_id  "
+            + "       INNER JOIN patient_state ps  "
+            + "               ON pg.patient_program_id = ps.patient_program_id  "
+            + "WHERE  pg.voided = 0  "
+            + "       AND ps.voided = 0  "
+            + "       AND p.voided = 0  "
+            + "       AND pg.program_id = %d "
+            + "       AND ps.state = %d "
+            + "       AND ps.start_date = pg.date_enrolled  "
+            + "       AND ps.start_date BETWEEN :startDate AND :endDate  "
+            + "       AND location_id = :location ";
+
+    cd.setQuery(String.format(query, program.getProgramId(), state.getProgramWorkflowStateId()));
+
     return cd;
   }
 
@@ -1044,6 +1034,7 @@ public class UsMonthlySummaryHivCohortQueries {
    *     determinado periodo final. São inclusos os transferidos de com data de inicio conhecida
    */
   private CohortDefinition getStartedArt() {
+    // TODO use StartedArtBeforeDateCalculation
     SqlCohortDefinition cd = new SqlCohortDefinition();
 
     cd.setName(
@@ -1673,6 +1664,7 @@ public class UsMonthlySummaryHivCohortQueries {
    *     inclusos os transferidos de com data de inicio conhecida
    */
   private CohortDefinition getInitiatedIncludingTransfers() {
+    // TODO use StartedArtOnPeriodCalculation
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName(
         "INICIO DE TRATAMENTO ARV - NUM PERIODO: INCLUI TRANSFERIDOS DE COM DATA DE INICIO CONHECIDA (SQL)");
