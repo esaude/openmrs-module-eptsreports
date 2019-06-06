@@ -2,14 +2,10 @@ package org.openmrs.module.eptsreports.reporting.intergrated.library.cohorts;
 
 import static org.junit.Assert.*;
 
-import java.sql.Connection;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.dbunit.DatabaseUnitException;
-import org.dbunit.database.DatabaseConnection;
-import org.dbunit.database.IDatabaseConnection;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -37,17 +33,6 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
   @Autowired private TbMetadata tbMetadata;
 
   @Autowired private CommonMetadata commonMetadata;
-
-  @Override
-  public Connection getConnection() {
-    // TODO Auto-generated method stub
-    return super.getConnection();
-  }
-
-  private void config() throws DatabaseUnitException {
-    // database connection for dbunit
-    IDatabaseConnection connection = new DatabaseConnection(getConnection());
-  }
 
   @Before
   public void setup() throws Exception {
@@ -87,7 +72,6 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
     assertNotNull(cohortDefinition);
   }
 
-  @Ignore
   @Test
   public void getPacientsEnrolledInTBProgram() throws EvaluationException {
 
@@ -120,7 +104,6 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
     assertTrue(evaluatedCohort.getMemberIds().contains(1003));
   }
 
-  @Ignore
   @Test
   public void getPatientWithAtLeastOneEncounterInPeriod() throws EvaluationException {
 
@@ -137,7 +120,6 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
     assertTrue(evaluatedCohort.getMemberIds().contains(1001));
   }
 
-  @Ignore
   @Test
   public void getPatientsNotifiedSarcomaKaposi() throws EvaluationException {
     CohortDefinition cohortDefinition =
@@ -206,7 +188,6 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
     assertTrue(evaluatedCohort.getMemberIds().contains(1007));
   }
 
-  @Ignore
   @Test
   public void getPatientWhoCameOutARTProgramFinalPeriod() throws EvaluationException {
 
@@ -222,7 +203,6 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
     assertTrue(evaluatedCohort.getMemberIds().contains(1001));
   }
 
-  @Ignore
   @Test
   public void getPatientEnrolledARTProgramFinalPeriod() throws EvaluationException {
     CohortDefinition cohortDefinition =
@@ -253,7 +233,6 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
     assertTrue(evaluatedCohort.getMemberIds().contains(18));
   }
 
-  @Ignore
   @Test
   public void getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriodAndCompleted()
       throws EvaluationException {
