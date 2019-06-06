@@ -348,7 +348,7 @@ public class QualityImprovementCohortQueries {
 
     cd.addParameter(new Parameter("value1", "After Date", Date.class));
     cd.addParameter(new Parameter("value2", "Before Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
     return cd;
   }
@@ -375,7 +375,7 @@ public class QualityImprovementCohortQueries {
     cd.setValueList(values);
 
     cd.addParameter(new Parameter("onOrAfter", "Before Date", Date.class));
-    cd.addParameter(new Parameter("OnOrBefore", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "After Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     return cd;
@@ -400,7 +400,7 @@ public class QualityImprovementCohortQueries {
         "DATAINICIO",
         EptsReportUtils.map(
             getPatientsWithNotificationDateInForms(),
-            "value1=${startDate},value2=${endDate},location=${location}"));
+            "value1=${startDate},value2=${endDate},locationList=${location}"));
 
     // PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA DE TUBERCULOSE - NUM PERIODO
     cd.addSearch(
@@ -1422,8 +1422,8 @@ public class QualityImprovementCohortQueries {
 
     cd.setOperator1(RangeComparator.LESS_EQUAL);
 
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("value1", "Before Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
     return cd;
   }
@@ -1511,7 +1511,7 @@ public class QualityImprovementCohortQueries {
         "CONCEITODATA",
         EptsReportUtils.map(
             getPatientsInitializedTARVRegisteredInConceptStartDateInFollowingForm(),
-            "onOrBefore=${endDate},location=${location}"));
+            "value1=${endDate},locationList=${location}"));
 
     // ALGUMA VEZ ESTEVE EM TRATAMENTO ARV - PERIODO FINAL
     cd.addSearch(
@@ -1712,9 +1712,9 @@ public class QualityImprovementCohortQueries {
     cd.setOperator1(RangeComparator.GREATER_EQUAL);
     cd.setOperator2(RangeComparator.LESS_EQUAL);
 
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "end Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("value1", "Start Date", Date.class));
+    cd.addParameter(new Parameter("value2", "end Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
     return cd;
   }
@@ -1807,7 +1807,7 @@ public class QualityImprovementCohortQueries {
         "DATAPARTO",
         EptsReportUtils.map(
             getPregantPatientWithDueDateUpdateInTARV(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "value1=${startDate},value2=${endDate},locationList=${location}"));
 
     //   INICIO DE TARV POR SER LACTANTE
     cd.addSearch(
@@ -2249,7 +2249,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getAztDdiLpvConcept()));
 
     cd.addParameter(new Parameter("endDate", "After Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
     return cd;
   }
@@ -2275,7 +2275,7 @@ public class QualityImprovementCohortQueries {
     cd.addSearch(
         "SEGUNDALINHA",
         EptsReportUtils.map(
-            getPatientInSecondARVLineFinalPeriod(), "endDate=${endDate},location=${location}"));
+            getPatientInSecondARVLineFinalPeriod(), "endDate=${endDate},locationList=${location}"));
 
     cd.setCompositionString("ACTUALARV AND SEGUNDALINHA");
     return cd;

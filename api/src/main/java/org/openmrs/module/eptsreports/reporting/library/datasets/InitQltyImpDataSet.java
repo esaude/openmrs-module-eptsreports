@@ -139,7 +139,7 @@ public class InitQltyImpDataSet extends BaseDataSet {
                 qualityImprovementCohortQueries
                     .getPatientsInARVSampleElegibleToProfilaxiaWithIzonzidaTPI(),
                 mappingsWitshEvaluate));
-    tpiNum1.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+    tpiNum1.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Avaliacao", Date.class));
 
     addRow(
         dataSetDefinition,
