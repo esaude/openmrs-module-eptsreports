@@ -1449,7 +1449,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getStartDrugsConcept(), hivMetadata.getTransferFromOtherFacilityConcept()));
 
     cd.addParameter(new Parameter("onOrBefore", "On Or Before", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
     return cd;
   }
@@ -1465,8 +1465,9 @@ public class QualityImprovementCohortQueries {
         Arrays.asList(hivMetadata.getARVPharmaciaEncounterType()));
     encounterCohortDefinition.setTimeQualifier(TimeQualifier.ANY);
     encounterCohortDefinition.setReturnInverse(false);
-    encounterCohortDefinition.addParameter(new Parameter("endDate", "After Date", Date.class));
-    encounterCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    encounterCohortDefinition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    encounterCohortDefinition.addParameter(
+        new Parameter("locationList", "Location", Location.class));
 
     return encounterCohortDefinition;
   }
@@ -1518,12 +1519,14 @@ public class QualityImprovementCohortQueries {
         "CONCEITO1255",
         EptsReportUtils.map(
             getPatientWhoWereInARVTreatmentFinalPeriod(),
-            "onOrBefore=${endDate},location=${location}"));
+            "onOrBefore=${endDate},locationList=${location}"));
 
     // ALGUMA VEZ ESTEVE EM TRATAMENTO ARV - PERIODO FINAL - FARMACIA
     cd.addSearch(
         "FRIDAFILA",
-        EptsReportUtils.map(getPatientWhoWereInARVTreatmentFinalPeriodPharmacy(), mappings));
+        EptsReportUtils.map(
+            getPatientWhoWereInARVTreatmentFinalPeriodPharmacy(),
+            "onOrBefore=${endDate},locationList=${location}"));
 
     cd.setCompositionString("CONCEITO1255 OR PROGRAMA OR CONCEITODATA OR FRIDAFILA");
     return cd;
@@ -1731,9 +1734,9 @@ public class QualityImprovementCohortQueries {
     cd.setEncounterTypeList(Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()));
     cd.setValueList(Arrays.asList(commonMetadata.getYesConcept()));
 
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "After Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "After Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
     return cd;
   }
@@ -1754,9 +1757,9 @@ public class QualityImprovementCohortQueries {
     cd.setEncounterTypeList(Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()));
     cd.setValueList(Arrays.asList(commonMetadata.getBreastfeeding()));
 
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "After Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
     return cd;
   }
@@ -1814,7 +1817,7 @@ public class QualityImprovementCohortQueries {
         "INICIOLACTANTE",
         EptsReportUtils.map(
             getPatientsStartTARVBecouseOfBreatFeeding(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
 
     // PROGRAMA: PACIENTES QUE DERAM PARTO HÁ DOIS ANOS ATRÁS DA DATA DE REFERENCIA - LACTANTES
     cd.addSearch(
@@ -1827,7 +1830,7 @@ public class QualityImprovementCohortQueries {
         "LACTANTE",
         EptsReportUtils.map(
             getInfantPatientsEnrolledInTarvSample(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
 
     // GRAVIDAS INSCRITAS NO SERVIÇO TARV
     cd.addSearch(
@@ -2248,7 +2251,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getTdf3tcLpvConcept(),
             hivMetadata.getAztDdiLpvConcept()));
 
-    cd.addParameter(new Parameter("endDate", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "After Date", Date.class));
     cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
     return cd;
@@ -2275,7 +2278,8 @@ public class QualityImprovementCohortQueries {
     cd.addSearch(
         "SEGUNDALINHA",
         EptsReportUtils.map(
-            getPatientInSecondARVLineFinalPeriod(), "endDate=${endDate},locationList=${location}"));
+            getPatientInSecondARVLineFinalPeriod(),
+            "onOrBefore=${endDate},locationList=${location}"));
 
     cd.setCompositionString("ACTUALARV AND SEGUNDALINHA");
     return cd;
