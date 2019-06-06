@@ -27,49 +27,49 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getRegisteredInPreArtBooksShouldReturnRegisteredInPreArtBooks()
+  public void getRegisteredInPreArtByEndOfPreviousMonthShouldReturnRegistered()
       throws EvaluationException {
 
     CohortDefinition cohort =
         usMonthlySummaryHivCohortQueries.getRegisteredInPreArtByEndOfPreviousMonth();
-    Map<Parameter, Object> parameters = new HashMap<>();
-    parameters.put(new Parameter("onOrAfter", "", Date.class), getStartDate());
-    parameters.put(new Parameter("onOrBefore", "", Date.class), getEndDate());
-    parameters.put(new Parameter("locationList", "", Location.class), getLocation());
-    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, parameters);
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort);
 
-    assertEquals(4, evaluatedCohort.getMemberIds().size());
+    assertEquals(5, evaluatedCohort.getMemberIds().size());
 
-    // Registered in PRE-ART BOOK 1
+    // INSCRITOS
     assertTrue(evaluatedCohort.getMemberIds().contains(2));
 
-    // Registered in PRE-ART BOOK 2
+    // (INSCRITOFINAL NOT ALGUMAVEZTARV) AND CONSULTA
     assertTrue(evaluatedCohort.getMemberIds().contains(6));
 
-    // No value coded
-    assertTrue(evaluatedCohort.getMemberIds().contains(7));
+    // ENTRADAPRETARV
+    assertTrue(evaluatedCohort.getMemberIds().contains(1009));
 
-    // No value coded but transferred from
+    // TRANSFERIDODE
     assertTrue(evaluatedCohort.getMemberIds().contains(1003));
   }
 
   @Test
-  public void getRegisteredInArtBooksShouldReturnRegisteredInArtBooks() throws EvaluationException {
+  public void getEnrolledInArtsShouldReturnEnrolledInArt() throws EvaluationException {
 
     EvaluatedCohort evaluatedCohort =
         evaluateCohortDefinition(usMonthlySummaryHivCohortQueries.getEnrolledInArt());
 
-    assertEquals(4, evaluatedCohort.getMemberIds().size());
+    assertEquals(5, evaluatedCohort.getMemberIds().size());
 
-    // Registered in ART BOOK 1
-    assertTrue(evaluatedCohort.getMemberIds().contains(8));
+    // Has S.TARV: ADULTO SEGUIMENTO encounter type
+    assertTrue(evaluatedCohort.getMemberIds().contains(1009));
+
+    // Is enrolled in ART Program
     assertTrue(evaluatedCohort.getMemberIds().contains(1004));
 
-    // Registered in ART BOOK 2
+    // Has S.TARV: FARMACIA
     assertTrue(evaluatedCohort.getMemberIds().contains(1001));
 
-    // No value coded
+    // Started ART before new instruments release date
     assertTrue(evaluatedCohort.getMemberIds().contains(1002));
+
+    assertTrue(evaluatedCohort.getMemberIds().contains(9999));
   }
 
   @Test
@@ -77,15 +77,10 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
       throws EvaluationException {
 
     CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInArtCareEnrolledByTransfer();
-    HashMap<Parameter, Object> parameters = new HashMap<>();
-    parameters.put(new Parameter("onOrAfter", "", Date.class), getStartDate());
-    parameters.put(new Parameter("onOrBefore", "", Date.class), getEndDate());
-    parameters.put(new Parameter("location", "", Location.class), getLocation());
-    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, parameters);
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort);
 
     assertEquals(1, evaluatedCohort.getMemberIds().size());
 
-    // No value coded and transferred from
     assertTrue(evaluatedCohort.getMemberIds().contains(1003));
   }
 
@@ -94,16 +89,11 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
       throws EvaluationException {
 
     CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInArtEnrolledByTransfer();
-    HashMap<Parameter, Object> parameters = new HashMap<>();
-    parameters.put(new Parameter("onOrAfter", "", Date.class), getStartDate());
-    parameters.put(new Parameter("onOrBefore", "", Date.class), getEndDate());
-    parameters.put(new Parameter("location", "", Location.class), getLocation());
-    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, parameters);
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort);
 
     assertEquals(1, evaluatedCohort.getMemberIds().size());
 
-    // Registered in ART BOOK 1 and transferred from
-    assertTrue(evaluatedCohort.getMemberIds().contains(1004));
+    assertTrue(evaluatedCohort.getMemberIds().contains(9999));
   }
 
   @Test
@@ -112,8 +102,8 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
 
     CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInPreArtWhoScreenedForTb();
     HashMap<Parameter, Object> parameters = new HashMap<>();
-    parameters.put(new Parameter("onOrAfter", "", Date.class), getStartDate());
-    parameters.put(new Parameter("onOrBefore", "", Date.class), getEndDate());
+    parameters.put(new Parameter("startDate", "", Date.class), getStartDate());
+    parameters.put(new Parameter("endDate", "", Date.class), getEndDate());
     parameters.put(new Parameter("location", "", Location.class), new Location(2));
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, parameters);
 
@@ -128,8 +118,8 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
 
     CohortDefinition cohort = usMonthlySummaryHivCohortQueries.getInPreArtWhoScreenedForSti();
     Map<Parameter, Object> parameters = new HashMap<>();
-    parameters.put(new Parameter("onOrAfter", "", Date.class), getStartDate());
-    parameters.put(new Parameter("onOrBefore", "", Date.class), getEndDate());
+    parameters.put(new Parameter("startDate", "", Date.class), getStartDate());
+    parameters.put(new Parameter("endDate", "", Date.class), getEndDate());
     parameters.put(new Parameter("location", "", Location.class), new Location(4));
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, parameters);
 
