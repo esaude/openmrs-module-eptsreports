@@ -42,7 +42,7 @@ public class UsMonthlySummaryHivDataset extends BaseDataSet {
 
     dataSetDefinition.addDimension("gender", noMappings(eptsCommonDimension.gender()));
     dataSetDefinition.addDimension(
-        "age", map(eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
+        "age", map(eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${startDate}"));
 
     addRow(
         dataSetDefinition,
