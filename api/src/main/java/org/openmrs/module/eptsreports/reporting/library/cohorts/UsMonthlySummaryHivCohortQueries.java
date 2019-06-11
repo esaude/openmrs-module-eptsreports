@@ -1597,7 +1597,7 @@ public class UsMonthlySummaryHivCohortQueries {
             hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getArtAconselhamentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtAconselhamentoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getEvaluationAndPrepForARTEncounterType().getEncounterTypeId(),
             hivMetadata.getPrevencaoPositivaInicialEncounterType().getEncounterTypeId(),
             hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId(),
@@ -1605,25 +1605,25 @@ public class UsMonthlySummaryHivCohortQueries {
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getHIVCareProgram().getProgramId(),
-            hivMetadata.getArtCareActiveOnProgramWorkflowState().getProgramWorkflowStateId(),
             hivMetadata
                 .getArtCareTransferredFromOtherHealthFacilityWorkflowState()
                 .getProgramWorkflowStateId(),
+            hivMetadata.getArtCareActiveOnProgramWorkflowState().getProgramWorkflowStateId(),
             hivMetadata.getHIVCareProgram().getProgramId(),
             hivMetadata.getArtCareAbandonedWorkflowState().getProgramWorkflowStateId(),
             hivMetadata
-                .getArtTransferredOutToAnotherHealthFacilityWorkflowState()
+                .getArtCareTransferredOutToAnotherHealthFacilityWorkflowState()
                 .getProgramWorkflowStateId(),
             hivMetadata.getArtCareDeadWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             hivMetadata.getStartDrugsConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getArtActiveOnProgramWorkflowState().getProgramWorkflowStateId(),

@@ -321,6 +321,7 @@ public class HivMetadata extends ProgramsMetadata {
     return getEncounterType(uuid);
   }
 
+  // encounter_type_id = 29
   public EncounterType getEvaluationAndPrepForARTEncounterType() {
     String uuid =
         Context.getAdministrationService()
@@ -459,16 +460,14 @@ public class HivMetadata extends ProgramsMetadata {
   public ProgramWorkflowState getArtCareActiveOnProgramWorkflowState() {
     Program hivCareProgram = getHIVCareProgram();
     ProgramWorkflow workflow = getPreArtWorkflow();
-    ProgramWorkflowState state =
-        getTransferredOutToAnotherHealthFacilityWorkflowState(hivCareProgram, workflow);
+    ProgramWorkflowState state = getActiveOnProgramWorkflowState(hivCareProgram, workflow);
     return state;
   }
 
   public ProgramWorkflowState getArtActiveOnProgramWorkflowState() {
     Program hivCareProgram = getARTProgram();
     ProgramWorkflow workflow = getArtWorkflow();
-    ProgramWorkflowState state =
-        getTransferredOutToAnotherHealthFacilityWorkflowState(hivCareProgram, workflow);
+    ProgramWorkflowState state = getActiveOnProgramWorkflowState(hivCareProgram, workflow);
     return state;
   }
 
