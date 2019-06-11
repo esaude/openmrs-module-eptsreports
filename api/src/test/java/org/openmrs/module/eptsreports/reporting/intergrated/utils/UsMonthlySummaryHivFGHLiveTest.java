@@ -46,7 +46,7 @@ public class UsMonthlySummaryHivFGHLiveTest extends DefinitionsFGHLiveTest {
   public void test() throws EvaluationException {
     DataSetDefinition dataSetDefinition =
         usMonthlySummaryHivDataset.constructUsMonthlySummaryHivDataset();
-    EvaluatedCohort baseCohort = evaluateCohortDefinition(genericCohortQueries.getBaseCohort());
+    EvaluatedCohort baseCohort = evaluateCohortDefinition(genericCohortQueries.getOldBaseCohort());
     MapDataSet ds = (MapDataSet) evaluateDatasetDefinition(dataSetDefinition, baseCohort);
 
     // Nº cumulativo de pacientes registados até o fim do mês anterior

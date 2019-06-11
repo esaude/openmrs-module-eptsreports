@@ -50,7 +50,7 @@ public class SetupUSMonthlySummaryHivReport extends EptsDataExportManager {
     rd.setName(getName());
     rd.setDescription(getDescription());
     rd.setParameters(usMonthlySummaryHivDataset.getParameters());
-    rd.setBaseCohortDefinition(mapStraightThrough(genericCohortQueries.getBaseCohort()));
+    rd.setBaseCohortDefinition(mapStraightThrough(genericCohortQueries.getOldBaseCohort()));
     rd.addDataSetDefinition(
         "S", mapStraightThrough(usMonthlySummaryHivDataset.constructUsMonthlySummaryHivDataset()));
     rd.addDataSetDefinition("location", mapStraightThrough(new LocationDataSetDefinition()));
