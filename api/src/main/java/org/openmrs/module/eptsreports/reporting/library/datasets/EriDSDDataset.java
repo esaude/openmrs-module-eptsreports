@@ -15,20 +15,20 @@ public class EriDSDDataset extends BaseDataSet {
 
   public DataSetDefinition constructEriDSDDataset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
-    dsd.setName("ERI DSD");
+    dsd.setName("total");
     dsd.addColumn(
-        "DSD-TOTAL",
-        "DSD Denominator Totals",
+        "DSD-D1-TOTAL",
+        "DSD D1 Total",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Denominator Total",
+                "DSD D1 Total",
                 EptsReportUtils.map(
                     eriDSDCohortQueries.getAllPatientsWhosAgeIsGreaterOrEqualTo2(),
-                    "onOrBefore=${endDate},location=${location}")),
-            ""),
+                    "onOrBefore=${onOrBefore},location=${location}")),
+            mappings),
         "");
-
     return dsd;
   }
 }

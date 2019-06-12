@@ -58,19 +58,20 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
     rd.setDescription(getDescription());
     rd.setParameters(txNewDataset.getParameters());
 
-    rd.addDataSetDefinition("N", Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
+    /*    rd.addDataSetDefinition("N",
+         Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
 
-    rd.addDataSetDefinition(
-        "C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
+            rd.addDataSetDefinition(
+                "C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
 
-    rd.addDataSetDefinition(
-        "ERI2", Mapped.mapStraightThrough(eri2MonthsDataset.constructEri2MonthsDatset()));
+            rd.addDataSetDefinition(
+                "ERI2", Mapped.mapStraightThrough(eri2MonthsDataset.constructEri2MonthsDatset()));
 
+            rd.addDataSetDefinition(
+                "ERI4", Mapped.mapStraightThrough(eri4MonthsDataset.constructEri4MonthsDataset()));
+    */
     rd.addDataSetDefinition(
-        "ERI4", Mapped.mapStraightThrough(eri4MonthsDataset.constructEri4MonthsDataset()));
-
-    rd.addDataSetDefinition(
-        "dsd", Mapped.mapStraightThrough(eriDSDDataset.constructEriDSDDataset()));
+        "ERIDSD", Mapped.mapStraightThrough(eriDSDDataset.constructEriDSDDataset()));
 
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(
@@ -91,7 +92,7 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
     try {
       reportDesign =
           createXlsReportDesign(
-              reportDefinition, "IM_ER_Report1.xls", "ERI-Report", getExcelDesignUuid(), null);
+              reportDefinition, "IM_ER_Report.xls", "ERI-Report", getExcelDesignUuid(), null);
       Properties props = new Properties();
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);

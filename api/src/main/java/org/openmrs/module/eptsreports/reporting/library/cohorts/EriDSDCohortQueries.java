@@ -15,16 +15,16 @@ public class EriDSDCohortQueries {
 
   public CohortDefinition getAllPatientsWhosAgeIsGreaterOrEqualTo2() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    String mappings = "onOrBefore=${onOrBefore},location=${location},locations=${location}";
+    String cohortName = "Number of active, stable, patients on ART";
 
-    cd.setName("Number of active, stable, patients on ART");
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
     cd.addSearch(
         "total",
         EptsReportUtils.map(
-            txCurrCohortQueries.getTxCurrCompositionCohort(cd.getName(), true),
-            "onOrBefore=${onOrBefore},location=${location}"));
+            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true), mappings));
     cd.setCompositionString("total");
     return cd;
   }
