@@ -272,9 +272,9 @@ public class QualityImprovementCohortQueries {
     cd.setEncounterTypeList(encounterTypes);
     cd.setValueList(values);
 
-    cd.addParameter(new Parameter("onOrAfter", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "After Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrAfter", "DE", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "ATE", Date.class));
+    cd.addParameter(new Parameter("locationList", "Unidade Sanitaria", Location.class));
 
     return cd;
   }
@@ -298,9 +298,9 @@ public class QualityImprovementCohortQueries {
     cd.setEncounterTypeList(encounterTypes);
     cd.setValueList(values);
 
-    cd.addParameter(new Parameter("onOrAfter", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "After Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrAfter", "Data Inicial", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Data Final", Date.class));
+    cd.addParameter(new Parameter("locationList", "US", Location.class));
 
     return cd;
   }
@@ -374,9 +374,9 @@ public class QualityImprovementCohortQueries {
     cd.setEncounterTypeList(encounterTypes);
     cd.setValueList(values);
 
-    cd.addParameter(new Parameter("onOrAfter", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "After Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrAfter", "DE", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "ATE", Date.class));
+    cd.addParameter(new Parameter("location", "Unidade Sanitaria", Location.class));
 
     return cd;
   }
@@ -1422,8 +1422,8 @@ public class QualityImprovementCohortQueries {
 
     cd.setOperator1(RangeComparator.LESS_EQUAL);
 
-    cd.addParameter(new Parameter("value1", "Before Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addParameter(new Parameter("value1", "Data Final", Date.class));
+    cd.addParameter(new Parameter("locationList", "Unidade Sanitaria", Location.class));
 
     return cd;
   }
@@ -1448,8 +1448,8 @@ public class QualityImprovementCohortQueries {
         Arrays.asList(
             hivMetadata.getStartDrugsConcept(), hivMetadata.getTransferFromOtherFacilityConcept()));
 
-    cd.addParameter(new Parameter("onOrBefore", "On Or Before", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrBefore", "ATE", Date.class));
+    cd.addParameter(new Parameter("locationList", "Unidade Sanitaria", Location.class));
 
     return cd;
   }
@@ -1703,8 +1703,8 @@ public class QualityImprovementCohortQueries {
     DateObsCohortDefinition cd = new DateObsCohortDefinition();
 
     cd.setName("pregantPatientWithDueDateUpdateInTARV");
-    cd.setQuestion(commonMetadata.getPregnancyDueDate());
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
+    cd.setQuestion(commonMetadata.getPriorDeliveryDateConcept());
+    cd.setTimeModifier(TimeModifier.ANY);
 
     List<EncounterType> encounterTypes = new ArrayList<EncounterType>();
     encounterTypes.add(hivMetadata.getARVAdultInitialEncounterType());
@@ -1715,9 +1715,9 @@ public class QualityImprovementCohortQueries {
     cd.setOperator1(RangeComparator.GREATER_EQUAL);
     cd.setOperator2(RangeComparator.LESS_EQUAL);
 
-    cd.addParameter(new Parameter("value1", "Start Date", Date.class));
-    cd.addParameter(new Parameter("value2", "end Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addParameter(new Parameter("value1", "Data Inicial", Date.class));
+    cd.addParameter(new Parameter("value2", "Data Final", Date.class));
+    cd.addParameter(new Parameter("locationList", "US", Location.class));
 
     return cd;
   }
@@ -1734,9 +1734,9 @@ public class QualityImprovementCohortQueries {
     cd.setEncounterTypeList(Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()));
     cd.setValueList(Arrays.asList(commonMetadata.getYesConcept()));
 
-    cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "After Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrAfter", "Data Inicial", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Data Final", Date.class));
+    cd.addParameter(new Parameter("locationList", "US", Location.class));
 
     return cd;
   }
@@ -1757,9 +1757,9 @@ public class QualityImprovementCohortQueries {
     cd.setEncounterTypeList(Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()));
     cd.setValueList(Arrays.asList(commonMetadata.getBreastfeeding()));
 
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrAfter", "Data Inicial", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Data Final", Date.class));
+    cd.addParameter(new Parameter("locationList", "US", Location.class));
 
     return cd;
   }
@@ -1839,7 +1839,7 @@ public class QualityImprovementCohortQueries {
             getPregnantPatientEnrolledInTARVService(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     // FEMININO
-    cd.addSearch("FEMININO", EptsReportUtils.map(getFemalePatients(), null));
+    cd.addSearch("FEMININO", EptsReportUtils.map(getFemalePatients(), ""));
 
     cd.setCompositionString(
         "((DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA  OR LACTANTE) NOT GRAVIDAS) AND FEMININO");
@@ -1879,7 +1879,6 @@ public class QualityImprovementCohortQueries {
    */
   public CohortDefinition getPatientsEnrolledInARTServiceNotIncludingNotNotifiedAbandonment() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
@@ -2251,7 +2250,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getTdf3tcLpvConcept(),
             hivMetadata.getAztDdiLpvConcept()));
 
-    cd.addParameter(new Parameter("onOrBefore", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Data Final", Date.class));
     cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
     return cd;

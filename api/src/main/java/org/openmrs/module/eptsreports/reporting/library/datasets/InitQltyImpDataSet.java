@@ -428,7 +428,6 @@ public class InitQltyImpDataSet extends BaseDataSet {
         getDisagregateAdultsAndChildrenSColumn());
 
     /** MODELODIFDENOM */
-    // getPatientsInARTElegibleToBeEnrolledInSomeDiffModel
     CohortIndicator modeloDifNom =
         eptsGeneralIndicator.getIndicator(
             "patientsInARTElegibleToBeEnrolledInSomeDiffModel",

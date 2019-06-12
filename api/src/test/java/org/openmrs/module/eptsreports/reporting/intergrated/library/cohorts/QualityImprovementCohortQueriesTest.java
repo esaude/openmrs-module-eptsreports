@@ -36,14 +36,14 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
 
   @Before
   public void setup() throws Exception {
-    // QueryDataSet initialDataSet = new QueryDataSet();
-    // getConnection()
+    // executeDataSet("qualityImprovement0-reqiredDataTest.xml");
     executeDataSet("qualityImprovement1-patientDataTest.xml");
     executeDataSet("qualityImprovement2-globalPropertyDataTest.xml");
     executeDataSet("qualityImprovement3-conceptDataTest.xml");
     executeDataSet("qualityImprovement4-programDataTest.xml");
     executeDataSet("qualityImprovement5-encounterAndObsDataTest.xml");
     // executeDataSet("qualityImprovement6-GaacAndGaacMemberDataTest.xml");
+    // executeDataSet("qualityImprovement7-calculation_registration.xml");
   }
 
   @Ignore
@@ -348,7 +348,7 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
-    //  assertTrue(evaluatedCohort.getMemberIds().contains(1001));
+    // assertTrue(evaluatedCohort.getMemberIds().contains(1001));
     assertNotNull(evaluatedCohort);
   }
 
@@ -404,7 +404,7 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
     assertNotNull(evaluatedCohort);
   }
 
-  @Ignore // because  H2 does not recognize  "having if" syntax
+  @Ignore // because H2 does not recognize "having if" syntax
   // TODO will try with "case when"
   @Test
   public void getPatientWhoAtLeast3JoiningEvaluationWithin3MothsARIEL() throws EvaluationException {
@@ -420,6 +420,68 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
     // assertTrue(evaluatedCohort.getMemberIds().contains(1001));
     assertNotNull(evaluatedCohort);
+  }
+
+  @Test
+  public void getPatientWhoWereInARVTreatmentFinalPeriod() throws EvaluationException {
+
+    CohortDefinition cohortDefinition =
+        qualityImprovementCohortQueries.getPatientWhoWereInARVTreatmentFinalPeriod();
+
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
+
+    assertEquals(1, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1001));
+  }
+
+  @Test
+  public void getInfantPatientsEnrolledInTarvSample() throws EvaluationException {
+
+    CohortDefinition cohortDefinition =
+        qualityImprovementCohortQueries.getInfantPatientsEnrolledInTarvSample();
+
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
+
+    System.out.println(evaluatedCohort.getMemberIds().size());
+  }
+
+  @Test
+  public void getFemalePatients() throws EvaluationException {
+    CohortDefinition cohortDefinition = qualityImprovementCohortQueries.getFemalePatients();
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, null);
+
+    assertEquals(8, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1001));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1003));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1006));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1007));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1009));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1010));
+  }
+
+  @Test
+  public void getPregnantPatientEnrolledInTARVService() throws EvaluationException {
+    CohortDefinition cohortDefinition =
+        qualityImprovementCohortQueries.getPregnantPatientEnrolledInTARVService();
+
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
+
+    assertEquals(1, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1003));
   }
 
   private Date getDataFinalAvaliacao() {

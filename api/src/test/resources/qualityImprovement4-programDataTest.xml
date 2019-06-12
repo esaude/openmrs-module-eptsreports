@@ -115,6 +115,7 @@
 		concept_id="1366" initial="1" terminal="0" creator="1"
 		date_created="2012-07-24 11:45:26" retired="0"
 		uuid="fcad8a57-2a1a-4abd-84b7-935897e4fe06" />
+		
 	<!-- | patient_program | -->
 	<patient_program patient_program_id="4616"
 		patient_id="1001" program_id="2" date_enrolled="2019-01-26 00:00:00"
@@ -141,6 +142,16 @@
 		patient_id="1010" program_id="2" date_enrolled="2013-08-01 00:00:00"
 		creator="1" date_created="2013-09-16 17:53:04" voided="0"
 		uuid="0b435cff-3fff-48b3-9ca3-8d156715a927" location_id="1" />
+		
+		<patient_program patient_program_id="4621"
+		patient_id="1003" program_id="2" date_enrolled="2013-08-01 00:00:00"
+		creator="1" date_created="2013-09-16 17:53:04" voided="0"
+		uuid="30072e09-9e7e-4aae-8cb9-0c540f07834e" location_id="1" />
+		
+		<patient_program patient_program_id="4622"
+		patient_id="1003" program_id="1" date_enrolled="2013-08-01 00:00:00"
+		creator="1" date_created="2013-09-16 17:53:04" voided="0"
+		uuid="30072e00-9e7e-4aae-8cb9-0c540f07834e" location_id="1" />
 
 
 	<!-- | patient_state | -->

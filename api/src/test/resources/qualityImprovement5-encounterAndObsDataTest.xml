@@ -51,21 +51,21 @@
 		name="TUBERCULOSE: RASTREIO" description="TUBURCULOSE: RASTREIO"
 		creator="1" date_created="2008-10-13 11:35:34" retired="0"
 		uuid="e27915a8-1d5f-11e0-b929-000c29ad1d07" />
-		
-		<encounter_type encounter_type_id="13"
-		name="MISAU: LABORATORIO" description="Laboratorio"
-		creator="1" date_created="2008-10-13 11:35:34" retired="0"
+
+	<encounter_type encounter_type_id="13"
+		name="MISAU: LABORATORIO" description="Laboratorio" creator="1"
+		date_created="2008-10-13 11:35:34" retired="0"
 		uuid="e2790f68-1d5f-11e0-b929-000c29ad1d07" />
-		
-		<encounter_type encounter_type_id="34"
-		name="APSS: PREVENÇÃO POSITIVA - INICIAL" 
-		description="Avaliação Psico-Social e Prevenção Positiva"
-		creator="1" date_created="2008-10-13 11:35:34" retired="0"
+
+	<encounter_type encounter_type_id="34"
+		name="APSS: PREVENÇÃO POSITIVA - INICIAL"
+		description="Avaliação Psico-Social e Prevenção Positiva" creator="1"
+		date_created="2008-10-13 11:35:34" retired="0"
 		uuid="f0bc6401-4e62-43e5-97e2-6ab027bb0405" />
-		
-		<encounter_type encounter_type_id="35"
+
+	<encounter_type encounter_type_id="35"
 		name="APSS: PREVENÇÃO POSITIVA - SEGUIMENTO"
-		 description="Ficha de apoio psicossocial e prevenção positiva - Seguimento"
+		description="Ficha de apoio psicossocial e prevenção positiva - Seguimento"
 		creator="1" date_created="2008-10-13 11:35:34" retired="0"
 		uuid="f4aa93fe-8737-4f70-9532-542b768459d7" />
 
@@ -142,12 +142,12 @@
 		patient_id="1010" encounter_datetime="2019-04-17 00:00:00" creator="1"
 		date_created="2013-06-19 12:55:48" voided="0"
 		uuid="4218bf6d-6f22-1000-9281-8f1ee524029e" location_id="1" />
-	
+
 	<encounter encounter_id="9015" encounter_type="6"
 		patient_id="1010" encounter_datetime="2019-04-17 00:00:00" creator="1"
 		date_created="2013-06-19 12:55:48" voided="0"
 		uuid="4218bf6e-6f22-1000-9281-8f1ee524029e" location_id="1" />
-	
+
 	<encounter encounter_id="9016" encounter_type="9"
 		patient_id="1010" encounter_datetime="2019-04-17 00:00:00" creator="1"
 		date_created="2013-06-19 12:55:48" voided="0"
@@ -157,6 +157,11 @@
 		patient_id="1010" encounter_datetime="2019-04-17 00:00:00" creator="1"
 		date_created="2013-06-19 12:55:48" voided="0"
 		uuid="4218bf6g-6f22-1000-9281-8f1ee524029e" location_id="1" />
+
+	<encounter encounter_id="9018" encounter_type="6"
+		patient_id="1003" encounter_datetime="2019-04-17 00:00:00" creator="1"
+		date_created="2013-06-19 12:55:48" voided="0"
+		uuid="4218bf71-6f22-1000-9281-8f1ee524029e" location_id="1" />
 
 
 	<!-- obs -->
@@ -227,7 +232,7 @@
 		encounter_id="9014" obs_datetime="2019-02-17 00:00:00" creator="1"
 		date_created="2019-02-17 12:55:48" voided="0"
 		uuid="41e41995-a18a-48b9-bcf8-d41e0fe6759c" location_id="1"
-		value_datetime="2019-02-17 00:00:00" value_text="SIM"/>
+		value_datetime="2019-02-17 00:00:00" value_text="SIM" />
 
 	<obs obs_id="112" person_id="1010" concept_id="6122"
 		encounter_id="9014" obs_datetime="2019-02-17 00:00:00" creator="1"
@@ -245,6 +250,12 @@
 		encounter_id="9014" obs_datetime="2019-02-17 00:00:00" creator="1"
 		date_created="2019-02-17 12:55:48" voided="0"
 		uuid="4368b584-b412-43e5-acae-dacb55370996" location_id="1"
+		value_datetime="2019-02-17 00:00:00" />
+
+	<obs obs_id="115" person_id="1003" concept_id="6332"
+		encounter_id="9018" obs_datetime="2019-02-17 00:00:00" creator="1"
+		date_created="2019-02-17 12:55:48" voided="0"
+		uuid="ebf50564-fa33-4a78-83a8-9b41e28b8839" location_id="1"
 		value_datetime="2019-02-17 00:00:00" />
 
 

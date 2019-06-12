@@ -274,56 +274,62 @@
 		uuid="768e687b-d47d-4db6-8984-2172bcd9d176" />
 
 
-<global_property
+	<global_property
 		property="eptsreports.sTarvPediatriaInicialBEncounterTypeUuid"
 		property_value="e278f5aa-1d5f-11e0-b929-000c29ad1d07"
 		description="UUID for the S.TARV: PEDIATRIA INICIAL B encounter type"
 		uuid="9e84a0f5-26e4-431d-a8c9-285e2103fb65" />
 
 
-<global_property
+	<global_property
 		property="eptsreports.pregnancyDueDateConceptUuid"
 		property_value="e1dca8ee-1d5f-11e0-b929-000c29ad1d07"
 		description="UUID for the DATA GRAVIDEZ concept"
 		uuid="fd010886-e32e-45d8-9b62-964e31f97c67" />
-		
+
 	<global_property
 		property="eptsreports.screeningForSTIIuid"
 		property_value="794ef662-03bc-4e22-90ff-38742b82827a"
 		description="UUID for the SCREENING FOR STI concept"
-		uuid="db5f844b-3fa7-4140-af27-4827fd3b289d" />	
-		
-		
-		<global_property
+		uuid="db5f844b-3fa7-4140-af27-4827fd3b289d" />
+
+
+	<global_property
 		property="eptsreports.cd4AbsoluteOBSUuid"
 		property_value="e1dd5ab4-1d5f-11e0-b929-000c29ad1d07"
 		description="UUID for the  CD4 ABSOLUTE OBS concept"
-		uuid="c87c2165-cbe9-4261-aa7d-72959524b9e3" />	
+		uuid="c87c2165-cbe9-4261-aa7d-72959524b9e3" />
 
 
-<global_property
+	<global_property
 		property="eptsreports.coucelingActivityTypeUuid"
 		property_value="451b1373-1cb8-4164-b746-907588398c1e"
 		description="UUID for the   COUCELING ACTIVITY TYPE concept"
-		uuid="820c2796-6500-4f78-b02c-cfbe61e46110" />	
-		
-		<global_property
+		uuid="820c2796-6500-4f78-b02c-cfbe61e46110" />
+
+	<global_property
 		property="eptsreports.apssPrevencaoPositivaInicialInicialEncounterTypeUuid"
 		property_value="f0bc6401-4e62-43e5-97e2-6ab027bb0405"
 		description="UUID for the APSS: PREVENÇÃO POSITIVA - INICIAL encounter type"
-		uuid="974ed2ae-91e4-4651-bac2-a640b64a9de7" />	
-		
-		
-		<global_property
+		uuid="974ed2ae-91e4-4651-bac2-a640b64a9de7" />
+
+
+	<global_property
 		property="eptsreports.apssPrevencaoPositivaSeguimentoEncounterTypeUuid"
 		property_value="f4aa93fe-8737-4f70-9532-542b768459d7"
 		description="UUUID for the APSS: PREVENÇÃO POSITIVA - SEGUIMENTO encounter type"
-		uuid="3059fd78-4718-420a-864d-e83153c33b82" />	
-		
-			<global_property
+		uuid="3059fd78-4718-420a-864d-e83153c33b82" />
+
+	<global_property
 		property="eptsreports.adherenceCounselingUuid"
 		property_value="e1e68562-1d5f-11e0-b929-000c29ad1d07"
 		description="UUID for the   ADHERENCE COUNSELING  concept"
-		uuid="1185e94c-49d3-465b-a56b-a25ca0fd88d2" />	
+		uuid="1185e94c-49d3-465b-a56b-a25ca0fd88d2" />
+
+	<global_property
+		property="eptsreports.breastfeedingConceptUuid"
+		property_value="bc4fe755-fc8f-49b8-9956-baf2477e8313"
+		description="UUID for the BREASTFEEDING concept"
+		uuid="7c9da4b5-5325-40ec-88e6-ee426146a3f7" />
 
 </dataset>

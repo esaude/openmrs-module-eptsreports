@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public 
+	License, v. 2.0. If a copy of the MPL was not distributed with this file, 
+	You can obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed 
+	under the terms of the Healthcare Disclaimer located at http://openmrs.org/license. 
+	Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS 
+	graphic logo is a trademark of OpenMRS Inc. -->
+
+<dataset>
+	<!-- person -->
+	<person person_id="1" gender="M"
+		birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+		date_created="2005-01-01 00:00:00.0" voided="false"
+		uuid="e2bc25aa-1d5f-11e0-b929-000c29ad1d07" />
+
+	<!-- user -->
+	<users user_id="1" system_id="admin" creator="1"
+		date_created="2008-10-13 11:32:52" person_id="1" retired="0"
+		uuid="1c3db49d-440a-11e6-a65c-00e04c680037" />
+
+	<!-- role -->
+	<role role="System Developer"
+		description="Developers of the OpenMRS .. have additional access to change fundamental structure of the database model."
+		uuid="8d94f852-c2cc-11de-8d13-0010c6dffd0f" />
+
+	<role role="Authenticated CDaccess"
+		description="For Concept Dictionary Synchronization only"
+		uuid="e2f0a906-1d5f-11e0-b929-000c29ad1d07" />
+
+	<role role="Anonymous"
+		description="Privileges for non-authenticated users."
+		uuid="774b2af3-6437-4e5a-a310-547554c7c65c" />
+
+	<role role="Provider"
+		description="General privileges held by all providers"
+		uuid="8d94f280-c2cc-11de-8d13-0010c6dffd0f" />
+ 
+
+
+<role role="Authenticated"
+		description="Privileges gained once authentication has been established."
+		uuid="f7fd42ef-880e-40c5-972d-e4ae7c990de2" />
+
+	<!-- role_role -->
+	<role_role parent_role="System Developer"
+		child_role="Authenticated CDaccess" />
+
+	<!-- user_role -->
+	<user_role user_id="1" role="System Developer" />
+	<user_role user_id="1" role="Provider" />
+
+
+	<!-- privilege -->
+	<privilege privilege="Get Patients"
+		description="Able to get patients"
+		uuid="d05118c6-2490-4d78-a41a-390e3596a244" />
+
+	<privilege privilege="Get Encounter Roles"
+		description="Able to get encounter roles"
+		uuid="d05118c6-2490-4d78-a41a-390e3596a210" />
+
+	<privilege privilege="Get Encounters"
+		description="Able to get patient encounters"
+		uuid="d05118c6-2490-4d78-a41a-390e3596a248" />
+
+
+	<privilege privilege="Get Observations"
+		description="Able to get patient observations"
+		uuid="d05118c6-2490-4d78-a41a-390e3596a245" />
+
+	<privilege privilege="Get Patient Identifiers"
+		description=" Able to get patient identifiers"
+		uuid="d05118c6-2490-4d78-a41a-390e3596a243" />
+
+	<privilege privilege="Get People"
+		description="Able to get person objects"
+		uuid="d05118c6-2490-4d78-a41a-390e3596a224" />
+
+	<privilege privilege="Get Providers"
+		description="Able to get Providers"
+		uuid="d05118c6-2490-4d78-a41a-390e3596a211" />
+
+	<privilege privilege="Get Visits"
+		description="Able to get visits"
+		uuid="d05118c6-2490-4d78-a41a-390e3596a214" />
+
+
+	<privilege privilege="View Concepts"
+		description="Able to view concept entries"
+		uuid="e2ea04c0-1d5f-11e0-b929-000c29ad1d07" />
+
+	<privilege privilege="View Encounters"
+		description="Able to view patient encounters"
+		uuid="e2ea0722-1d5f-11e0-b929-000c29ad1d07" />
+
+	<privilege privilege="View Observations"
+		description="Able to view patient observations"
+		uuid="e2ea1c26-1d5f-11e0-b929-000c29ad1d07" />
+
+
+	<privilege privilege="View Patient Identifiers"
+		description="Able to view patient identifiers"
+		uuid="e2ea1f5a-1d5f-11e0-b929-000c29ad1d07" />
+
+	<privilege privilege="View Patients"
+		description="Able to view patients"
+		uuid="e2ea20f4-1d5f-11e0-b929-000c29ad1d07" />
+
+	<privilege privilege="View People"
+		description="Able to view person objects"
+		uuid="e2ea21bc-1d5f-11e0-b929-000c29ad1d07" />
+
+	<privilege privilege="Get Concepts"
+		description="Able to get concept entries"
+		uuid="d05118c6-2490-4d78-a41a-390e3596a251" />
+
+
+
+
+
+	<!-- role_privilege -->
+	<role_privilege role="Provider" privilege="Get Patients" />
+	<role_privilege role="Provider" privilege="Get Concepts" />
+	<role_privilege role="Provider"
+		privilege="Get Encounter Roles" />
+	<role_privilege role="Provider"
+		privilege="Get Encounters" />
+	<role_privilege role="Provider"
+		privilege="Get Observations" />
+	<role_privilege role="Provider"
+		privilege="Get Patient Identifiers" />
+	<role_privilege role="Provider" privilege="Get People" />
+	<role_privilege role="Provider"
+		privilege="Get Providers" />
+	<role_privilege role="Provider" privilege="Get Visits" />
+	<role_privilege role="Provider"
+		privilege="View Concepts" />
+	<role_privilege role="Provider"
+		privilege="View Observations" />
+	<role_privilege role="Provider"
+		privilege="View Patient Identifiers" />
+	<role_privilege role="Provider"
+		privilege="View Patients" />
+	<role_privilege role="Provider" privilege="View People" />
+
+
+
+
+	<!-- user_property -->
+	<user_property user_id="1" property="loginAttempts"
+		property_value="0" />
+
+
+
+</dataset>
