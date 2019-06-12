@@ -45,7 +45,7 @@ public class Metadata {
       }
     }
     if (pit == null) {
-      throw new RuntimeException("Unable to find Patient Identifier using key: " + lookup);
+      throw new MetadataLookupException("Unable to find Patient Identifier using key: " + lookup);
     }
     return pit;
   }
@@ -74,7 +74,7 @@ public class Metadata {
       }
     }
     if (c == null) {
-      throw new MetadataLookupException("Unable to find Concept using key: " + lookup);
+      throw new ConfigurableMetadataLookupException("Unable to find Concept using key: " + lookup);
     }
     return c;
   }
@@ -178,7 +178,8 @@ public class Metadata {
       }
     }
     if (et == null) {
-      throw new MetadataLookupException("Unable to find EncounterType using key: " + lookup);
+      throw new ConfigurableMetadataLookupException(
+          "Unable to find EncounterType using key: " + lookup);
     }
 
     return et;

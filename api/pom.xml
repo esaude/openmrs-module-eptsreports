@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>eptsreports</artifactId>
-		<version>1.3.3-SNAPSHOT</version>
+		<version>1.3.4-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>eptsreports-api</artifactId>
@@ -15,6 +15,14 @@
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>reporting-api</artifactId>
+			<version>${reportingVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>reporting-api-2.0</artifactId>
+			<version>${reportingVersion}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>

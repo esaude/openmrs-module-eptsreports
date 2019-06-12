@@ -10,7 +10,9 @@
 package org.openmrs.module.eptsreports.api.dao;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -24,11 +26,35 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class EptsReportsDaoTest extends BaseModuleContextSensitiveTest {
 
-  @Autowired EptsReportsDao dao;
+  @Autowired private EptsReportsDao dao;
+
+  @Before
+  public void setUp() throws Exception {
+    executeDataSet("eptsReportsDaoTest.xml");
+  }
+
+  @Test
+  public void getSerializedObjectByReportDesignUUIDShouldReturnSerializedObjectUuid() {
+    String serializedObjectUuid = "d5f02dc5-5b94-449e-b894-6282f5f26414";
+    String reportDesignUuid = "f4f0045b-3a64-4533-a6b6-9c6c8072fe3f";
+    assertEquals(serializedObjectUuid, dao.getSerializedObjectByReportDesignUUID(reportDesignUuid));
+  }
 
   @Test
   @Ignore
-  public void removeReport_UuidExistsAndShouldSucceed() {
-    assertEquals(true, true);
+  public void purgeReportDesignShouldPurgeReportDesignResource() {
+    fail("Not yet implemented");
+  }
+
+  @Test
+  @Ignore
+  public void purgeReportDesignShouldPurgeReportDesign() {
+    fail("Not yet implemented");
+  }
+
+  @Test
+  @Ignore
+  public void purgeReportDesignShouldPurgeSerializedObject() {
+    fail("Not yet implemented");
   }
 }

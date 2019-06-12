@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import org.apache.poi.util.IOUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.api.EptsReportsService;
@@ -28,7 +27,6 @@ import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.manager.ReportManagerUtil;
 import org.openmrs.module.reporting.report.renderer.ExcelTemplateRenderer;
-import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.util.OpenmrsClassLoader;
 
 /** Excel Data Export Manager for EPTS reports */
@@ -44,21 +42,6 @@ public abstract class EptsDataExportManager extends EptsReportManager {
         ReportManagerUtil.createExcelDesign(getExcelDesignUuid(), reportDefinition);
     l.add(excelDesign);
     return l;
-  }
-
-  protected ReportDesign createExcelTemplateDesign(
-      String reportDesignUuid, ReportDefinition reportDefinition, String templatePath) {
-    String resourcePath = ReportUtil.getPackageAsPath(getClass()) + "/" + templatePath;
-    return ReportManagerUtil.createExcelTemplateDesign(
-        reportDesignUuid, reportDefinition, resourcePath);
-  }
-
-  /** @return a new ReportDesign for a standard Excel output */
-  public ReportDesign createExcelDesignWithProperties(
-      String reportDesignUuid, ReportDefinition reportDefinition, Properties props) {
-    ReportDesign design = ReportManagerUtil.createExcelDesign(reportDesignUuid, reportDefinition);
-    design.setProperties(props);
-    return design;
   }
 
   /**

@@ -143,25 +143,6 @@ public class TXTBQueries {
     return sql;
   }
 
-  public static String codedObsBeforeStartDate(
-      Integer questionId, List<Integer> encounterTypeIds, List<Integer> answerIds) {
-    String sql =
-        String.format(
-            "select person_id from obs where concept_id = %s and encounter_id in(select distinct encounter_id from encounter where encounter_type in(%s)) and location_id = :location and obs_datetime < :startDate and voided=0 and value_coded in (%s)",
-            questionId, StringUtils.join(encounterTypeIds, ","), StringUtils.join(answerIds, ","));
-
-    return sql;
-  }
-
-  public static String dateObsBeforeStartDate(Integer questionId, List<Integer> encounterTypeIds) {
-    String sql =
-        String.format(
-            "select person_id from obs where concept_id = %s and encounter_id in(select distinct encounter_id from encounter where encounter_type in(%s)) and location_id = :location and value_datetime < :startDate and voided=0",
-            questionId, StringUtils.join(encounterTypeIds, ","));
-
-    return sql;
-  }
-
   public static String dateObsWithinXMonthsBeforeStartDate(
       Integer questionId, List<Integer> encounterTypeIds, Integer xMonths) {
     return String.format(
@@ -188,15 +169,6 @@ public class TXTBQueries {
             + "FROM patient p "
             + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "WHERE p.voided=0 AND e.encounter_type=%s AND e.voided=0 AND e.encounter_datetime>=:startDate AND e.encounter_datetime<=:endDate AND e.location_id=:location GROUP BY p.patient_id",
-        encounterTypeId);
-  }
-
-  public static String patientWithFirstDrugPickupEncounterBeforeStartDate(Integer encounterTypeId) {
-    return String.format(
-        "SELECT p.patient_id "
-            + "FROM patient p "
-            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
-            + "WHERE p.voided=0 AND e.encounter_type=%s AND e.voided=0 AND e.encounter_datetime<:startDate AND e.location_id=:location GROUP BY p.patient_id",
         encounterTypeId);
   }
 

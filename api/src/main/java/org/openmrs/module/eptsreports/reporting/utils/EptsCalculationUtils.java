@@ -101,7 +101,8 @@ public class EptsCalculationUtils {
                 .evaluate((PatientDataDefinition) dataDefinition, reportingContext);
         data = result.getData();
       } else {
-        throw new RuntimeException("Unknown DataDefinition type: " + dataDefinition.getClass());
+        throw new IllegalArgumentException(
+            "Unknown DataDefinition type: " + dataDefinition.getClass());
       }
 
       CalculationResultMap ret = new CalculationResultMap();

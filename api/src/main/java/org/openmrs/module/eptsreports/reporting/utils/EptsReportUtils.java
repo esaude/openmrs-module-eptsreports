@@ -87,10 +87,8 @@ public class EptsReportUtils {
     if (parameterizable == null) {
       throw new IllegalArgumentException("Parameterizable cannot be null");
     }
-    if (mappings == null) {
-      mappings = ""; // probably not necessary, just to be safe
-    }
-    return new Mapped<T>(parameterizable, ParameterizableUtil.createParameterMappings(mappings));
+    String m = mappings != null ? mappings : ""; // probably not necessary, just to be safe
+    return new Mapped<T>(parameterizable, ParameterizableUtil.createParameterMappings(m));
   }
 
   public static String mergeParameterMappings(String... parameters) {

@@ -297,7 +297,7 @@ public class EPTSCalculationService {
       Collection<Integer> cohort,
       PatientCalculationContext context) {
     ObsForPersonDataDefinition definition = new ObsForPersonDataDefinition();
-    definition.setName("last obs");
+    definition.setName("all obs");
     definition.setEncounterTypeList(encounterTypes);
     definition.setQuestion(question);
     definition.setValueCodedList(Arrays.asList(answer));

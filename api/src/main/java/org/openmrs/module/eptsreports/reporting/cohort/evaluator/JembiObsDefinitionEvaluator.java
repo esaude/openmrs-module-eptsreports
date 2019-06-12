@@ -44,6 +44,31 @@ public class JembiObsDefinitionEvaluator implements PatientDataEvaluator {
       return c;
     }
 
+    HqlQueryBuilder q = getHqlQuery(context, def);
+
+    List<Object[]> queryResult = evaluationService.evaluateToList(q, context);
+
+    ListMap<Integer, Obs> patientToObs = new ListMap<Integer, Obs>();
+    for (Object[] row : queryResult) {
+      patientToObs.putInList((Integer) row[0], (Obs) row[1]);
+    }
+
+    for (Integer pId : patientToObs.keySet()) {
+      List<Obs> observations = patientToObs.get(pId);
+      Obs obs;
+      if (def.isFirst()) {
+        obs = observations.get(0);
+      } else {
+        // last
+        obs = observations.get(observations.size() - 1);
+      }
+      c.addData(pId, obs);
+    }
+
+    return c;
+  }
+
+  private HqlQueryBuilder getHqlQuery(EvaluationContext context, JembiObsDefinition def) {
     HqlQueryBuilder q = new HqlQueryBuilder();
     q.select("obs.person.personId", "obs");
     q.from(Obs.class, "obs");
@@ -70,26 +95,6 @@ public class JembiObsDefinitionEvaluator implements PatientDataEvaluator {
     } else {
       q.orderAsc("obs.valueDatetime");
     }
-
-    List<Object[]> queryResult = evaluationService.evaluateToList(q, context);
-
-    ListMap<Integer, Obs> patientToObs = new ListMap<Integer, Obs>();
-    for (Object[] row : queryResult) {
-      patientToObs.putInList((Integer) row[0], (Obs) row[1]);
-    }
-
-    for (Integer pId : patientToObs.keySet()) {
-      List<Obs> observations = patientToObs.get(pId);
-      Obs obs;
-      if (def.isFirst()) {
-        obs = observations.get(0);
-      } else {
-        // last
-        obs = observations.get(observations.size() - 1);
-      }
-      c.addData(pId, obs);
-    }
-
-    return c;
+    return q;
   }
 }

@@ -14,7 +14,6 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -24,9 +23,7 @@ import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxPvlsDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
-import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +71,7 @@ public class SetupMERQuarterly extends EptsDataExportManager {
     reportDefinition.setUuid(getUuid());
     reportDefinition.setName(getName());
     reportDefinition.setDescription(getDescription());
-    reportDefinition.setParameters(getParameters());
+    reportDefinition.setParameters(txPvlsDataset.getParameters());
     reportDefinition.addDataSetDefinition(
         "N", Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
     reportDefinition.addDataSetDefinition(
@@ -104,18 +101,9 @@ public class SetupMERQuarterly extends EptsDataExportManager {
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new ReportDesignConstructionException(e);
     }
 
     return Arrays.asList(reportDesign);
-  }
-
-  @Override
-  public List<Parameter> getParameters() {
-    List<Parameter> parameters = new ArrayList<Parameter>();
-    parameters.add(ReportingConstants.START_DATE_PARAMETER);
-    parameters.add(ReportingConstants.END_DATE_PARAMETER);
-    parameters.add(ReportingConstants.LOCATION_PARAMETER);
-    return parameters;
   }
 }
