@@ -37,7 +37,7 @@ public class AgeCohortQueriesTest extends DefinitionsTest {
   @Test
   public void createXtoYAgeCohortShouldReturnRightlyAgedPatients() throws EvaluationException {
     assertEquals(44, patientService.getPatient(2).getAge().intValue());
-    assertEquals(12, patientService.getPatient(6).getAge().intValue());
+    assertEquals(11, patientService.getPatient(6).getAge().intValue());
     assertEquals(42, patientService.getPatient(7).getAge().intValue());
     assertEquals(
         new HashSet<>(Arrays.asList(2, 6, 7)),
