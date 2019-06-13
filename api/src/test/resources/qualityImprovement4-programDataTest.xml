@@ -116,6 +116,12 @@
 		date_created="2012-07-24 11:45:26" retired="0"
 		uuid="fcad8a57-2a1a-4abd-84b7-935897e4fe06" />
 		
+		<program_workflow_state
+		program_workflow_state_id="28" program_workflow_id="1"
+		concept_id="1369" initial="1" terminal="0" creator="1"
+		date_created="2012-07-24 11:45:26" retired="0"
+		uuid="a42ec725-0635-462d-ac1a-6c34235099f2" />
+		
 	<!-- | patient_program | -->
 	<patient_program patient_program_id="4616"
 		patient_id="1001" program_id="2" date_enrolled="2019-01-26 00:00:00"
@@ -174,6 +180,10 @@
 
 	<patient_state patient_state_id="6555"
 		patient_program_id="4618" state="27" start_date="2008-12-01"
+		creator="1" date_created="2013-09-16 17:53:04" voided="0" />
+		
+		<patient_state patient_state_id="6556"
+		patient_program_id="4618" state="28" start_date="2008-12-01"
 		creator="1" date_created="2013-09-16 17:53:04" voided="0" />
 
 </dataset>
