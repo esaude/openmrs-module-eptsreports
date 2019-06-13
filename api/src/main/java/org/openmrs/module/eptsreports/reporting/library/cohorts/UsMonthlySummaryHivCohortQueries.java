@@ -71,15 +71,15 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.addSearch("ENTRADAPRETARV", hasEntryInPreArt(), mappings);
 
     Date newInstrumentsDayBefore = DateUtil.getDateTime(2012, 3, 20);
-    Map<String, Object> mappings2 = new HashMap<>();
-    mappings2.put("onOrBefore", newInstrumentsDayBefore);
-    mappings2.put("locationList", "${location}");
-    cd.addSearch("INSCRITOFINAL", hasInitialEncounter(), mappings2);
+    Map<String, Object> initialEncounterMappings = new HashMap<>();
+    initialEncounterMappings.put("onOrBefore", newInstrumentsDayBefore);
+    initialEncounterMappings.put("locationList", "${location}");
+    cd.addSearch("INSCRITOFINAL", hasInitialEncounter(), initialEncounterMappings);
 
-    Map<String, Object> mappings1 = new HashMap<>();
-    mappings1.put("endDate", newInstrumentsDayBefore);
-    mappings1.put("location", "${location}");
-    cd.addSearch("ALGUMAVEZTARV", getEverOnART(), mappings1);
+    Map<String, Object> everOnArtMappings = new HashMap<>();
+    everOnArtMappings.put("endDate", newInstrumentsDayBefore);
+    everOnArtMappings.put("location", "${location}");
+    cd.addSearch("ALGUMAVEZTARV", getEverOnART(), everOnArtMappings);
 
     cd.setCompositionString(
         "INSCRITOS OR ((INSCRITOFINAL NOT ALGUMAVEZTARV) AND CONSULTA) OR TRANSFERIDODE OR ENTRADAPRETARV");
