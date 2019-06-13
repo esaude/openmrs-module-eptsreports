@@ -8,7 +8,6 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
- 
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsTest;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.QualityImprovementCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -20,200 +19,204 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
 
-	@Autowired
-	private QualityImprovementCohortQueries qualityImprovementCohortQueries;
+  @Autowired private QualityImprovementCohortQueries qualityImprovementCohortQueries;
 
-	 
+  @Before
+  public void setup() throws Exception {
+    executeDataSet("qualityImprovement1-patientDataTest.xml");
+    executeDataSet("qualityImprovement2-globalPropertyDataTest.xml");
+    executeDataSet("qualityImprovement3-conceptDataTest.xml");
+    executeDataSet("qualityImprovement4-programDataTest.xml");
+    executeDataSet("qualityImprovement5-encounterAndObsDataTest.xml");
+  }
 
-	@Before
-	public void setup() throws Exception {
-		executeDataSet("qualityImprovement1-patientDataTest.xml");
-		executeDataSet("qualityImprovement2-globalPropertyDataTest.xml");
-		executeDataSet("qualityImprovement3-conceptDataTest.xml");
-		executeDataSet("qualityImprovement4-programDataTest.xml");
-		executeDataSet("qualityImprovement5-encounterAndObsDataTest.xml");
+  @Test
+  public void getPacientsEnrolledInTBProgram() throws EvaluationException {
 
-	}
+    CohortDefinition cohortDefinition =
+        qualityImprovementCohortQueries.getPacientsEnrolledInTBProgram();
 
-	@Test
-	public void getPacientsEnrolledInTBProgram() throws EvaluationException {
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
-		CohortDefinition cohortDefinition = qualityImprovementCohortQueries.getPacientsEnrolledInTBProgram();
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
 
-		Map<Parameter, Object> parameters = new HashMap<>();
-		parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
-		parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
-		parameters.put(new Parameter("location", "Location", Location.class), getLocation());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1002));
+  }
 
-		EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
+  @Test
+  public void getPatientWithAtLeastOneEncounterInPeriod() throws EvaluationException {
 
-		assertTrue(evaluatedCohort.getMemberIds().contains(1002));
-	}
+    CohortDefinition cohortDefinition =
+        qualityImprovementCohortQueries.getPatientWithAtLeastOneEncounterInPeriod();
 
-	@Test
-	public void getPatientWithAtLeastOneEncounterInPeriod() throws EvaluationException {
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
-		CohortDefinition cohortDefinition = qualityImprovementCohortQueries.getPatientWithAtLeastOneEncounterInPeriod();
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
 
-		Map<Parameter, Object> parameters = new HashMap<>();
-		parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
-		parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
-		parameters.put(new Parameter("location", "Location", Location.class), getLocation());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1001));
+  }
 
-		EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
+  @Test
+  public void getPatientsNotifiedSarcomaKaposi() throws EvaluationException {
+    CohortDefinition cohortDefinition =
+        qualityImprovementCohortQueries.getPatientsNotifiedSarcomaKaposi();
 
-		assertTrue(evaluatedCohort.getMemberIds().contains(1001));
-	}
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
-	@Test
-	public void getPatientsNotifiedSarcomaKaposi() throws EvaluationException {
-		CohortDefinition cohortDefinition = qualityImprovementCohortQueries.getPatientsNotifiedSarcomaKaposi();
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
 
-		Map<Parameter, Object> parameters = new HashMap<>();
-		parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
-		parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
-		parameters.put(new Parameter("location", "Location", Location.class), getLocation());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1004));
+  }
 
-		EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
+  @Test
+  public void getPatientWhoCameOutARTProgramFinalPeriod() throws EvaluationException {
 
-		assertTrue(evaluatedCohort.getMemberIds().contains(1004));
-	}
+    CohortDefinition cohortDefinition =
+        qualityImprovementCohortQueries.getPatientWhoCameOutARTProgramFinalPeriod();
 
-	@Test
-	public void getPatientWhoCameOutARTProgramFinalPeriod() throws EvaluationException {
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
-		CohortDefinition cohortDefinition = qualityImprovementCohortQueries.getPatientWhoCameOutARTProgramFinalPeriod();
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
 
-		Map<Parameter, Object> parameters = new HashMap<>();
-		parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
-		parameters.put(new Parameter("location", "Location", Location.class), getLocation());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1001));
+  }
 
-		EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
+  @Test
+  public void getPatientEnrolledARTProgramFinalPeriod() throws EvaluationException {
+    CohortDefinition cohortDefinition =
+        qualityImprovementCohortQueries.getPatientEnrolledARTProgramFinalPeriod();
 
-		assertTrue(evaluatedCohort.getMemberIds().contains(1001));
-	}
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
-	@Test
-	public void getPatientEnrolledARTProgramFinalPeriod() throws EvaluationException {
-		CohortDefinition cohortDefinition = qualityImprovementCohortQueries.getPatientEnrolledARTProgramFinalPeriod();
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
 
-		Map<Parameter, Object> parameters = new HashMap<>();
-		parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
-		parameters.put(new Parameter("location", "Location", Location.class), getLocation());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1001));
+  }
 
-		EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
+  @Test
+  public void getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriodAndCompleted()
+      throws EvaluationException {
+    CohortDefinition cohortDefinition =
+        qualityImprovementCohortQueries
+            .getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriodAndCompleted();
 
-		assertTrue(evaluatedCohort.getMemberIds().contains(1001));
-	}
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(
+        new Parameter("startDate", "Start Date", Date.class), DateUtil.getDateTime(2019, 01, 10));
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), getLocation());
+    parameters.put(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class),
+        getDataFinalAvaliacao());
 
-	@Test
-	public void getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriodAndCompleted() throws EvaluationException {
-		CohortDefinition cohortDefinition = qualityImprovementCohortQueries
-				.getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriodAndCompleted();
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
 
-		Map<Parameter, Object> parameters = new HashMap<>();
-		parameters.put(new Parameter("startDate", "Start Date", Date.class), DateUtil.getDateTime(2019, 01, 10));
-		parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
-		parameters.put(new Parameter("location", "Location", Location.class), getLocation());
-		parameters.put(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class), getDataFinalAvaliacao());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1008));
+  }
 
-		EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
+  @Test
+  public void getPatientWhoWereInARVTreatmentFinalPeriod() throws EvaluationException {
 
-		assertTrue(evaluatedCohort.getMemberIds().contains(1008));
-	}
+    CohortDefinition cohortDefinition =
+        qualityImprovementCohortQueries.getPatientWhoWereInARVTreatmentFinalPeriod();
 
-	@Test
-	public void getPatientWhoWereInARVTreatmentFinalPeriod() throws EvaluationException {
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
-		CohortDefinition cohortDefinition = qualityImprovementCohortQueries
-				.getPatientWhoWereInARVTreatmentFinalPeriod();
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
 
-		Map<Parameter, Object> parameters = new HashMap<>();
-		parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
-		parameters.put(new Parameter("location", "Location", Location.class), getLocation());
+    assertEquals(1, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1001));
+  }
 
-		EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
+  @Test
+  public void getInfantPatientsEnrolledInTarvSample() throws EvaluationException {
 
-		assertEquals(1, evaluatedCohort.getMemberIds().size());
-		assertTrue(evaluatedCohort.getMemberIds().contains(1001));
-	}
+    CohortDefinition cohortDefinition =
+        qualityImprovementCohortQueries.getInfantPatientsEnrolledInTarvSample();
 
-	@Test
-	public void getInfantPatientsEnrolledInTarvSample() throws EvaluationException {
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("onOrAfter", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("onOrBefore", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("locationList", "Location", Location.class), getLocation());
 
-		CohortDefinition cohortDefinition = qualityImprovementCohortQueries.getInfantPatientsEnrolledInTarvSample();
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
 
-		Map<Parameter, Object> parameters = new HashMap<>();
-		parameters.put(new Parameter("onOrAfter", "Start Date", Date.class), this.getStartDate());
-		parameters.put(new Parameter("onOrBefore", "End Date", Date.class), this.getEndDate());
-		parameters.put(new Parameter("locationList", "Location", Location.class), getLocation());
+    assertNotNull(evaluatedCohort.getMemberIds());
+  }
 
-		EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
+  @Test
+  public void getFemalePatients() throws EvaluationException {
+    CohortDefinition cohortDefinition = qualityImprovementCohortQueries.getFemalePatients();
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, null);
 
-		 assertNotNull(evaluatedCohort.getMemberIds());
-	}
+    assertEquals(8, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1001));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1003));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1006));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1007));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1009));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1010));
+  }
 
-	@Test
-	public void getFemalePatients() throws EvaluationException {
-		CohortDefinition cohortDefinition = qualityImprovementCohortQueries.getFemalePatients();
-		EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, null);
+  @Test
+  public void getPregnantPatientEnrolledInTARVService() throws EvaluationException {
+    CohortDefinition cohortDefinition =
+        qualityImprovementCohortQueries.getPregnantPatientEnrolledInTARVService();
 
-		assertEquals(8, evaluatedCohort.getMemberIds().size());
-		assertTrue(evaluatedCohort.getMemberIds().contains(1001));
-		assertTrue(evaluatedCohort.getMemberIds().contains(1003));
-		assertTrue(evaluatedCohort.getMemberIds().contains(1006));
-		assertTrue(evaluatedCohort.getMemberIds().contains(1007));
-		assertTrue(evaluatedCohort.getMemberIds().contains(1009));
-		assertTrue(evaluatedCohort.getMemberIds().contains(1010));
-	}
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
-	@Test
-	public void getPregnantPatientEnrolledInTARVService() throws EvaluationException {
-		CohortDefinition cohortDefinition = qualityImprovementCohortQueries.getPregnantPatientEnrolledInTARVService();
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
 
-		Map<Parameter, Object> parameters = new HashMap<>();
-		parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
-		parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
-		parameters.put(new Parameter("location", "Location", Location.class), getLocation());
+    assertEquals(1, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1003));
+  }
 
-		EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
+  @Test
+  public void getBaseCohort() throws EvaluationException {
+    CohortDefinition cohortDefinition = qualityImprovementCohortQueries.getBaseCohort();
 
-		assertEquals(1, evaluatedCohort.getMemberIds().size());
-		assertTrue(evaluatedCohort.getMemberIds().contains(1003));
-	}
-	
-	@Test
-	public void getBaseCohort() throws EvaluationException {
-		CohortDefinition cohortDefinition = qualityImprovementCohortQueries
-				.getBaseCohort();
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
-		Map<Parameter, Object> parameters = new HashMap<>();
-		parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
-		parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
-		parameters.put(new Parameter("location", "Location", Location.class), getLocation());
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
 
-		EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
+    assertEquals(3, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1001));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1003));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1007));
+  }
 
-		assertEquals(3, evaluatedCohort.getMemberIds().size());
-		assertTrue(evaluatedCohort.getMemberIds().contains(1001));
-		assertTrue(evaluatedCohort.getMemberIds().contains(1003));
-		assertTrue(evaluatedCohort.getMemberIds().contains(1007));
- 		
-	}
-	
-	  
-	private Date getDataFinalAvaliacao() {
-		return DateUtil.getDateTime(2019, 5, 26);
-	}
- 
+  private Date getDataFinalAvaliacao() {
+    return DateUtil.getDateTime(2019, 5, 26);
+  }
 
-	@Override
-	public Date getStartDate() {
-		return DateUtil.getDateTime(2010, 5, 10);
-	}
+  @Override
+  public Date getStartDate() {
+    return DateUtil.getDateTime(2010, 5, 10);
+  }
 
-	@Override
-	public Date getEndDate() {
-		return DateUtil.getDateTime(2019, 5, 26);
-	}
+  @Override
+  public Date getEndDate() {
+    return DateUtil.getDateTime(2019, 5, 26);
+  }
 }

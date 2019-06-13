@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-public class InitQltyImpDataSet extends BaseDataSet {
+public class QualityImprovementDataSet extends BaseDataSet {
 
   @Autowired private EptsCommonDimension eptsCommonDimension;
 

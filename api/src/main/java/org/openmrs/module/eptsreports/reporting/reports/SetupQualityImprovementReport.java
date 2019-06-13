@@ -8,7 +8,7 @@ import java.util.Properties;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.QualityImprovementCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.InitQltyImpDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.QualityImprovementDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -23,7 +23,7 @@ public class SetupQualityImprovementReport extends EptsDataExportManager {
 
   @Autowired protected GenericCohortQueries genericCohortQueries;
 
-  @Autowired private InitQltyImpDataSet initQltyImpDataSet;
+  @Autowired private QualityImprovementDataSet initQltyImpDataSet;
 
   @Autowired QualityImprovementCohortQueries qualityImprovementCohortQueries;
 
