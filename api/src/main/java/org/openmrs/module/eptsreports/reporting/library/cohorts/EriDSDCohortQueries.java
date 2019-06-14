@@ -49,14 +49,30 @@ public class EriDSDCohortQueries {
     cd.setCompositionString("5");
     return cd;
   }
-
+  // 5 (a, b, c ,d, e, f)
   private CohortDefinition getPatientsWhoAreStable() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("Patients who are stable");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch("5A", EptsReportUtils.map(getPatientsWhoAreStableA(), "onOrBefore=${endDate}"));
+
+    return cd;
+  }
+
+  // 5 a
+  private CohortDefinition getPatientsWhoAreStableA() {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
-            "onArtAtleastMoths",
+            "onArtAtleastXmonths",
             Context.getRegisteredComponents(OnArtForAtleastXmonthsCalculation.class).get(0));
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 
     return cd;
   }
+  // 5 b
+
 }
