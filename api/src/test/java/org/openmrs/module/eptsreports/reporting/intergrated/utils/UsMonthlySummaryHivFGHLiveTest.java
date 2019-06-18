@@ -46,14 +46,14 @@ public class UsMonthlySummaryHivFGHLiveTest extends DefinitionsFGHLiveTest {
   public void test() throws EvaluationException {
     DataSetDefinition dataSetDefinition =
         usMonthlySummaryHivDataset.constructUsMonthlySummaryHivDataset();
-    EvaluatedCohort baseCohort = evaluateCohortDefinition(genericCohortQueries.getOldBaseCohort());
+    EvaluatedCohort baseCohort = evaluateCohortDefinition(genericCohortQueries.getBaseCohort());
     MapDataSet ds = (MapDataSet) evaluateDatasetDefinition(dataSetDefinition, baseCohort);
 
     // Nº cumulativo de pacientes registados até o fim do mês anterior
     assertThat(ds, hasColumnValue("A1-F014", 135));
     assertThat(ds, hasColumnValue("A1-M014", 141));
-    assertThat(ds, hasColumnValue("A1-F15", 2220));
-    assertThat(ds, hasColumnValue("A1-M15", 1229));
+    assertThat(ds, hasColumnValue("A1-F15", 2223));
+    assertThat(ds, hasColumnValue("A1-M15", 1230));
 
     // Nº de pacientes registados durante o mês
     assertThat(ds, hasColumnValue("A2-F014", 0));
@@ -64,8 +64,8 @@ public class UsMonthlySummaryHivFGHLiveTest extends DefinitionsFGHLiveTest {
     // Nr cumulativo de pacientes registados nos Livros de Registo de Pré-TARV até o fim do mês
     assertThat(ds, hasColumnValue("A3-F014", 135));
     assertThat(ds, hasColumnValue("A3-M014", 143));
-    assertThat(ds, hasColumnValue("A3-F15", 2245));
-    assertThat(ds, hasColumnValue("A3-M15", 1247));
+    assertThat(ds, hasColumnValue("A3-F15", 2248));
+    assertThat(ds, hasColumnValue("A3-M15", 1248));
 
     // Nº mensal de novos inscritos
     assertThat(ds, hasColumnValue("B1-F014", 0));
@@ -100,8 +100,8 @@ public class UsMonthlySummaryHivFGHLiveTest extends DefinitionsFGHLiveTest {
     // Nº cumulativo que iniciaram TARV
     assertThat(ds, hasColumnValue("C4-F014", 120));
     assertThat(ds, hasColumnValue("C4-M014", 116));
-    assertThat(ds, hasColumnValue("C4-F15", 1829));
-    assertThat(ds, hasColumnValue("C4-M15", 877));
+    assertThat(ds, hasColumnValue("C4-F15", 1832));
+    assertThat(ds, hasColumnValue("C4-M15", 878));
 
     // Nº dos novos inscritos mensais no Livro de Registo Nº 1 de Pré-TARV rastreados para TB
     assertThat(ds, hasColumnValue("E1-F014", 0));
@@ -132,26 +132,26 @@ public class UsMonthlySummaryHivFGHLiveTest extends DefinitionsFGHLiveTest {
     // Nº cumulativo de pacientes registados até o fim do mês anterior TARV
     assertThat(ds, hasColumnValue("G1-F014", 146));
     assertThat(ds, hasColumnValue("G1-M014", 133));
-    assertThat(ds, hasColumnValue("G1-F15", 2106));
-    assertThat(ds, hasColumnValue("G1-M15", 1039));
+    assertThat(ds, hasColumnValue("G1-F15", 2124));
+    assertThat(ds, hasColumnValue("G1-M15", 1046));
 
     // Nº de pacientes registados durante o mês TARV
     assertThat(ds, hasColumnValue("G2-F014", 0));
     assertThat(ds, hasColumnValue("G2-M014", 1));
     assertThat(ds, hasColumnValue("G2-F15", 29));
-    assertThat(ds, hasColumnValue("G2-M15", 20));
+    assertThat(ds, hasColumnValue("G2-M15", 21));
 
     // Nº cumulativo de pacientes registados nos Livros de Registo de TARV até o fim do mês
     assertThat(ds, hasColumnValue("G3-F014", 146));
     assertThat(ds, hasColumnValue("G3-M014", 134));
-    assertThat(ds, hasColumnValue("G3-F15", 2134));
-    assertThat(ds, hasColumnValue("G3-M15", 1058));
+    assertThat(ds, hasColumnValue("G3-F15", 2152));
+    assertThat(ds, hasColumnValue("G3-M15", 1066));
 
     // Nº mensal de novos inícios tarv
     assertThat(ds, hasColumnValue("H1-F014", 0));
     assertThat(ds, hasColumnValue("H1-M014", 1));
     assertThat(ds, hasColumnValue("H1-F15", 24));
-    assertThat(ds, hasColumnValue("H1-M15", 17));
+    assertThat(ds, hasColumnValue("H1-M15", 18));
 
     // Nº mensal de transferidos de outras US tarv
     assertThat(ds, hasColumnValue("H2-F014", 0));
@@ -168,14 +168,14 @@ public class UsMonthlySummaryHivFGHLiveTest extends DefinitionsFGHLiveTest {
     // Nº mensal de transferidos de outras US tarv
     assertThat(ds, hasColumnValue("I2-F014", 15));
     assertThat(ds, hasColumnValue("I2-M014", 19));
-    assertThat(ds, hasColumnValue("I2-F15", 227));
-    assertThat(ds, hasColumnValue("I2-M15", 143));
+    assertThat(ds, hasColumnValue("I2-F15", 228));
+    assertThat(ds, hasColumnValue("I2-M15", 144));
 
     // Nº cumulativo de abandonos tarv
     assertThat(ds, hasColumnValue("I3-F014", 59));
     assertThat(ds, hasColumnValue("I3-M014", 43));
-    assertThat(ds, hasColumnValue("I3-F15", 705));
-    assertThat(ds, hasColumnValue("I3-M15", 374));
+    assertThat(ds, hasColumnValue("I3-F15", 708));
+    assertThat(ds, hasColumnValue("I3-M15", 376));
 
     // Nº cumulativo de óbitos tarv
     assertThat(ds, hasColumnValue("I4-F014", 15));
@@ -187,7 +187,7 @@ public class UsMonthlySummaryHivFGHLiveTest extends DefinitionsFGHLiveTest {
     // notificados e nao notificados em 60 dias)
     assertThat(ds, hasColumnValue("J-F014", 56));
     assertThat(ds, hasColumnValue("J-M014", 60));
-    assertThat(ds, hasColumnValue("J-F15", 1087));
+    assertThat(ds, hasColumnValue("J-F15", 1088));
     assertThat(ds, hasColumnValue("J-M15", 458));
 
     // Nº dos novos inícios mensais  no Livro de Registo Nº 1 de TARV rastreados para TB

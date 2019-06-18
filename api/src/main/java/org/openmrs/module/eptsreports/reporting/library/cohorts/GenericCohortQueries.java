@@ -144,55 +144,6 @@ public class GenericCohortQueries {
     return generalSql("baseCohort", BaseQueries.getBaseCohortQuery(parameters));
   }
 
-  @Deprecated
-  public CohortDefinition getOldBaseCohort() {
-    String query =
-        "SELECT p.patient_id "
-            + "FROM   patient p "
-            + "       INNER JOIN encounter e "
-            + "               ON e.patient_id = p.patient_id "
-            + "WHERE  e.voided = 0 "
-            + "       AND p.voided = 0 "
-            + "       AND e.encounter_type IN ( %d, %d ) "
-            + "       AND e.encounter_datetime <= :endDate "
-            + "       AND e.location_id = :location "
-            + "UNION "
-            + "SELECT pg.patient_id "
-            + "FROM   patient p "
-            + "       INNER JOIN patient_program pg "
-            + "               ON p.patient_id = pg.patient_id "
-            + "WHERE  pg.voided = 0 "
-            + "       AND p.voided = 0 "
-            + "       AND program_id = %d "
-            + "       AND date_enrolled <= :endDate "
-            + "       AND location_id = :location "
-            + "UNION "
-            + "SELECT pg.patient_id "
-            + "FROM   patient p "
-            + "       INNER JOIN patient_program pg "
-            + "               ON p.patient_id = pg.patient_id "
-            + "       INNER JOIN patient_state ps "
-            + "               ON pg.patient_program_id = ps.patient_program_id "
-            + "WHERE  pg.voided = 0 "
-            + "       AND ps.voided = 0 "
-            + "       AND p.voided = 0 "
-            + "       AND pg.program_id = %d "
-            + "       AND ps.state = %d "
-            + "       AND ps.start_date <= :endDate "
-            + "       AND location_id = :location ";
-    return generalSql(
-        "oldBaseCohort",
-        String.format(
-            query,
-            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
-            hivMetadata.getHIVCareProgram().getProgramId(),
-            hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata
-                .getTransferredFromOtherHealthFacilityWorkflowState()
-                .getProgramWorkflowStateId()));
-  }
-
   /**
    * Get patients states based on program, state and end of reporting period
    *
