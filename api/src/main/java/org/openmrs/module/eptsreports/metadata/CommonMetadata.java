@@ -157,7 +157,7 @@ public class CommonMetadata extends Metadata {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.kaposiSarcomaUuid");
     return getConcept(uuid);
-
+  }
   // concept_id=6336
   public Concept getClassificationOfMalnutritionConcept() {
     return getConcept(
