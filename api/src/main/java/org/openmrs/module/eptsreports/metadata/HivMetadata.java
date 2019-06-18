@@ -407,7 +407,7 @@ public class HivMetadata extends ProgramsMetadata {
     String hivCareProgramUuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.hivCareProgramUuid");
     return getProgramWorkflowState(hivCareProgramUuid, "1", "TRANSFER FROM OTHER FACILITY");
-
+  }
   public Concept getCurrentWHOHIVStageConcept() {
     return getConcept(
         Context.getAdministrationService()
