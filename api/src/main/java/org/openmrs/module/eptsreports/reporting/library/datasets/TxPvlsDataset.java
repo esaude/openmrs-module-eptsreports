@@ -18,10 +18,8 @@ import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionC
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
-import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -228,13 +226,6 @@ public class TxPvlsDataset extends BaseDataSet {
                     mappings)),
             mappings),
         getAdultChildrenColumns());
-  }
-
-  public List<Parameter> getParameters() {
-    return Arrays.asList(
-        ReportingConstants.START_DATE_PARAMETER,
-        ReportingConstants.END_DATE_PARAMETER,
-        ReportingConstants.LOCATION_PARAMETER);
   }
 
   private List<ColumnParameters> getAdultChildrenColumns() {

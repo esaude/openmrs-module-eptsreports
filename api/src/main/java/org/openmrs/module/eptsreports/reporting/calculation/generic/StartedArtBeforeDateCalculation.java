@@ -60,12 +60,4 @@ public class StartedArtBeforeDateCalculation extends AbstractPatientCalculation 
       throw new IllegalArgumentException(String.format("Parameter %s must be set", ON_OR_BEFORE));
     }
   }
-
-  public static boolean isStartedArt(Integer patientId, CalculationResultMap calculationResultMap) {
-    BooleanResult result = (BooleanResult) calculationResultMap.get(patientId);
-    if (result != null) {
-      return result.getValue().equals(Boolean.TRUE);
-    }
-    return false;
-  }
 }

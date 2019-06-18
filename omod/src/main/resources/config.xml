@@ -516,11 +516,130 @@
 		</description>
 	</globalProperty>
 	
+		<globalProperty>
+			<property>eptsreports.evaluationAndPrepForARTEncounterTypeUuid</property>
+			<defaultValue>f69df47f-44a2-4cca-9819-a536bd47d927</defaultValue>
+			<description>
+				UUID for the S.TARV: AVALIACAO E PREPARACAO DO CANDIDATO TARV encounter type
+			</description>
+		</globalProperty>
 	<globalProperty>
-		<property>eptsreports.evaluationAndPrepForARTEncounterTypeUuid</property>
-		<defaultValue>f69df47f-44a2-4cca-9819-a536bd47d927</defaultValue>
+		<property>eptsreports.classificationOfMalnutritionConceptUuid</property>
+		<defaultValue>0b1a2c8c-55d2-42a8-a3d6-62828f52d49a</defaultValue>
 		<description>
-			UUID for the S.TARV: AVALIACAO E PREPARACAO DO CANDIDATO TARV encounter type
+			UUID for the CLASSIFICATION OF MALNUTRITION concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.malnutritionLightConceptUuid</property>
+		<defaultValue>aa84f34d-11f7-4466-b784-0fdda716ace2</defaultValue>
+		<description>
+			UUID for the MALNUTRITION LIGHT concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.malnutritionConceptUuid</property>
+		<defaultValue>e1cf1422-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the MALNUTRITION concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.currentWHOHIVStageConceptUuid</property>
+		<defaultValue>e1e53c02-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the CURRENT WHO HIV STAGE concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.currentWHOHIVStage1ConceptUuid</property>
+		<defaultValue>e1d9055e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the WHO STAGE 1 ADULT concept
+		</description>
+	</globalProperty>
+    <globalProperty>
+        <property>eptsreports.currentWHOHIVStage3ConceptUuid</property>
+        <defaultValue>e1d9077a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the WHO STAGE 3 ADULT concept
+        </description>
+    </globalProperty>
+    <globalProperty>
+        <property>eptsreports.currentWHOHIVStage4ConceptUuid</property>
+        <defaultValue>e1d90888-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the WHO STAGE 4 ADULT concept
+        </description>
+    </globalProperty>
+	<globalProperty>
+		<property>eptsreports.cd4CountConceptUuid</property>
+		<defaultValue>e1e68f26-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the WHO STAGE 1 ADULT concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.chronicMalnutritionConceptUuid</property>
+		<defaultValue>e1dec764-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the CHRONIC MALNUTRITION concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.hivCareEntryPointConceptUuid</property>
+		<defaultValue>e1dca2ea-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the ENTRY POINT INTO HIV CARE, REFERAL TYPE concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.mobileClinicEntryPointConceptUuid</property>
+		<defaultValue>e1daca74-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the MOBILE CLINIC concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.providerBasedServiceEntryPointConceptUuid</property>
+		<defaultValue>adfe6645-9165-483e-a022-4c443de1344a</defaultValue>
+		<description>
+			UUID for the PROVIDER BASED SERVICE concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.medicalInPatientEntryPointConceptUuid</property>
+		<defaultValue>e1dca3ee-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the MEDICAL INPATIENT concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.externalConsultationEntryPointConceptUuid</property>
+		<defaultValue>e1dca4e8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the EXTERNAL CONSULTATION concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.labSamplesEntryPointConceptUuid</property>
+		<defaultValue>e1dacb78-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Lab samples concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.hospitalEntryPointConceptUuid</property>
+		<defaultValue>e1dc10c8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the HOSPITAL/CLINIC concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.referredFromPedTreatmentEntryPointConceptUuid</property>
+		<defaultValue>e1d8051e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REFERRED FROM PEDIATRIC TREATMENT concept
 		</description>
 	</globalProperty>
 	<!-- RASTREIO DE ITS  / SCREENING FOR STI -->

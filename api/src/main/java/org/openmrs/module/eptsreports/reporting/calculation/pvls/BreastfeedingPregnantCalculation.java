@@ -3,13 +3,11 @@ package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
-import java.util.Set;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
-import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PregnantOrBreastfeedingWomen;
 import org.springframework.stereotype.Component;
 
@@ -33,14 +31,10 @@ public class BreastfeedingPregnantCalculation extends AbstractPatientCalculation
     PregnantOrBreastfeedingWomen state =
         (PregnantOrBreastfeedingWomen) parameterValues.get("state");
 
-    // get female patients only
-    Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);
-
-    CalculationResultMap pregnantDateMap =
-        calculate(pregnantDateCalculation, femaleCohort, context);
+    CalculationResultMap pregnantDateMap = calculate(pregnantDateCalculation, cohort, context);
     CalculationResultMap breastfeedingDateMap =
-        calculate(breastfeedingDateCalculation, femaleCohort, context);
-    for (Integer ptId : femaleCohort) {
+        calculate(breastfeedingDateCalculation, cohort, context);
+    for (Integer ptId : cohort) {
       boolean isCandidate = false;
       Date pregnancyDate = (Date) pregnantDateMap.get(ptId).getValue();
       Date breastfeedingDate = (Date) breastfeedingDateMap.get(ptId).getValue();

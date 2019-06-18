@@ -88,71 +88,71 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   // Second line ARV concepts
-
+  // 6328
   public Concept getAzt3tcAbcEfvConcept() {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.AZT_3TC_ABC_EFV_ConceptUuid");
     return getConcept(uuid);
   }
-
+  // 6327
   public Concept getD4t3tcAbcEfvConcept() {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.D4T_3TC_ABC_EFV_ConceptUuid");
     return getConcept(uuid);
   }
-
+  // 6326
   public Concept getAzt3tcAbcLpvConcept() {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.AZT_3TC_ABC_LPV_ConceptUuid");
     return getConcept(uuid);
   }
-
+  // 6325
   public Concept getD4t3tcAbcLpvConcept() {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.D4T_3TC_ABC_LPV_ConceptUuid");
     return getConcept(uuid);
   }
-
+  // 6109
   public Concept getAztDdiLpvConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.AZT_DDI_LPV_ConceptUuid");
     return getConcept(uuid);
   }
-
+  // 1315
   public Concept getTdf3tcEfvConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.TDF_3TC_EFV_ConceptUuid");
     return getConcept(uuid);
   }
-
+  // 1314
   public Concept getAzt3tcLpvConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.AZT_3TC_LPV_ConceptUuid");
     return getConcept(uuid);
   }
-
+  // 1313
   public Concept getAbc3tcEfvConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.ABC_3TC_EFV_ConceptUuid");
     return getConcept(uuid);
   }
-
+  // 1312
   public Concept getAbc3tcNvpConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.ABC_3TC_NVP_ConceptUuid");
     return getConcept(uuid);
   }
-
+  // 1311
   public Concept getAbc3tcLpvConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.ABC_3TC_LPV_ConceptUuid");
     return getConcept(uuid);
   }
-
+  //
   public Concept getTdf3tcLpvConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.TDF_3TC_LPV_ConceptUuid");
@@ -407,5 +407,81 @@ public class HivMetadata extends ProgramsMetadata {
     String hivCareProgramUuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.hivCareProgramUuid");
     return getProgramWorkflowState(hivCareProgramUuid, "1", "TRANSFER FROM OTHER FACILITY");
+
+  public Concept getCurrentWHOHIVStageConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.currentWHOHIVStageConceptUuid"));
+  }
+
+  public Concept getCurrentWHOHIVStage1Concept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.currentWHOHIVStage1ConceptUuid"));
+  }
+
+  public Concept getCurrentWHOHIVStage3Concept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.currentWHOHIVStage3ConceptUuid"));
+  }
+
+  public Concept getCurrentWHOHIVStage4Concept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.currentWHOHIVStage4ConceptUuid"));
+  }
+
+  public Concept getCD4CountConcept() {
+    return getConcept(
+        Context.getAdministrationService().getGlobalProperty("eptsreports.cd4CountConceptUuid"));
+  }
+
+  public Concept getHivCareEntryPointConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.hivCareEntryPointConceptUuid"));
+  }
+
+  public Concept getMobileClinicEntryPointConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.mobileClinicEntryPointConceptUuid"));
+  }
+
+  public Concept getProviderBasedServiceEntryPointConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.providerBasedServiceEntryPointConceptUuid"));
+  }
+
+  public Concept getMedicalInPatientEntryPointConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.medicalInPatientEntryPointConceptUuid"));
+  }
+
+  public Concept getExternalConsultationEntryPointConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.externalConsultationEntryPointConceptUuid"));
+  }
+
+  public Concept getLabSamplesEntryPointConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.labSamplesEntryPointConceptUuid"));
+  }
+
+  public Concept getHospitalEntryPointConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.hospitalEntryPointConceptUuid"));
+  }
+
+  public Concept getReferredFromPedTreatmentEntryPointConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.referredFromPedTreatmentEntryPointConceptUuid"));
   }
 }
