@@ -383,7 +383,7 @@ public class HivMetadata extends ProgramsMetadata {
 
   public ProgramWorkflowState getPateintActiveArtWorkflowState() {
     String artProgramUuid = Context.getAdministrationService().getGlobalProperty(gpArtProgramUuid);
-    return getProgramWorkflowState(artProgramUuid, "2", "ACTIVE PRIOR ART");
+    return getProgramWorkflowState(artProgramUuid, "2", "c50d6bdc-8a79-43ae-ab45-abbaa6b45e7d");
   }
 
   public ProgramWorkflowState getPateintTransferedFromOtherFacilityWorkflowState() {
