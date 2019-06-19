@@ -66,7 +66,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
             cohort,
             Arrays.asList(location),
             Arrays.asList(yes),
-            TimeQualifier.LAST,
+            TimeQualifier.ANY,
             null,
             context);
 
@@ -129,7 +129,8 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
 
       ListResult patientResult = (ListResult) patientStateMap.get(pId);
 
-      Obs lactattingObs = EptsCalculationUtils.resultForPatient(lactatingMap, pId);
+      ListResult lactatingResults = (ListResult) lactatingMap.get(pId);
+      List<Obs> lactatingObs = EptsCalculationUtils.extractResultValues(lactatingResults);
       Obs criteriaHivObs = EptsCalculationUtils.resultForPatient(criteriaHivStartMap, pId);
       ListResult deliveryDateResult = (ListResult) deliveryDateMap.get(pId);
       List<Obs> deliveryDateObsList = EptsCalculationUtils.extractResultValues(deliveryDateResult);
@@ -138,7 +139,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
       // get a list of all eligible dates
       List<Date> allEligibleDates =
           Arrays.asList(
-              this.isLactating(lastVlDate, lactattingObs),
+              this.isLactating(lastVlDate, lactatingObs),
               this.hasHIVStartDate(lastVlDate, criteriaHivObs),
               this.hasDeliveryDate(lastVlDate, deliveryDateObsList),
               this.isInBreastFeedingInProgram(lastVlDate, patientStateList));
@@ -172,12 +173,14 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     return deliveryDate;
   }
 
-  private Date isLactating(Date lastVlDate, Obs lactantObs) {
+  private Date isLactating(Date lastVlDate, List<Obs> lactantObsList) {
     Date lactatingDate = null;
-    if (lactantObs != null
-        && this.isInBreastFeedingViralLoadRange(
-            lastVlDate, lactantObs.getEncounter().getEncounterDatetime())) {
-      lactatingDate = lactantObs.getEncounter().getEncounterDatetime();
+    for (Obs lactantObs : lactantObsList) {
+      if (lactantObs.getObsDatetime() != null
+          && this.isInBreastFeedingViralLoadRange(
+              lastVlDate, lactantObs.getEncounter().getEncounterDatetime())) {
+        lactatingDate = lactantObs.getEncounter().getEncounterDatetime();
+      }
     }
     return lactatingDate;
   }
