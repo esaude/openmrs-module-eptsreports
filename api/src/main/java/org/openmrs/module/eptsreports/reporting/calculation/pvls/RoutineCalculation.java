@@ -268,8 +268,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
           && allVls.getValueNumeric() != null
           && allVls.getValueNumeric() < 1000) {
         if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)
-            && allVls.getObsDatetime().compareTo(twelveMonths) < 0
-            && allVls.getObsDatetime().compareTo(fifteenMonths) > 0) {
+            && allVls.getObsDatetime().compareTo(twelveMonths) <= 0
+            && allVls.getObsDatetime().compareTo(fifteenMonths) >= 0) {
           return true;
         } else if (criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)
             && allVls.getObsDatetime().before(lastViralLoadDate)) {
