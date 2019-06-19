@@ -2379,6 +2379,7 @@ public class QualityImprovementCohortQueries {
     return cd;
   }
 
+  @Deprecated
   /* PACIENTES INSCRITOS NO SERVICO TARV - PERIODO FINAL (SQL)*/
   @DocumentedDefinition(value = "baseCohort")
   public CohortDefinition getBaseCohort() {
