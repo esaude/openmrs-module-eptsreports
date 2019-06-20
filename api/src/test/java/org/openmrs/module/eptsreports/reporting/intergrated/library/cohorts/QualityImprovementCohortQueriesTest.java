@@ -159,19 +159,7 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
     assertNotNull(evaluatedCohort.getMemberIds());
   }
 
-  @Test
-  public void getFemalePatients() throws EvaluationException {
-    CohortDefinition cohortDefinition = qualityImprovementCohortQueries.getFemalePatients();
-    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, null);
-
-    assertEquals(8, evaluatedCohort.getMemberIds().size());
-    assertTrue(evaluatedCohort.getMemberIds().contains(1001));
-    assertTrue(evaluatedCohort.getMemberIds().contains(1003));
-    assertTrue(evaluatedCohort.getMemberIds().contains(1006));
-    assertTrue(evaluatedCohort.getMemberIds().contains(1007));
-    assertTrue(evaluatedCohort.getMemberIds().contains(1009));
-    assertTrue(evaluatedCohort.getMemberIds().contains(1010));
-  }
+ 
 
   @Test
   public void getPregnantPatientEnrolledInTARVService() throws EvaluationException {

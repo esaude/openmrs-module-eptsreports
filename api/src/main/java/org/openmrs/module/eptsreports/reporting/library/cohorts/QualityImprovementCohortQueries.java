@@ -1765,15 +1765,7 @@ public class QualityImprovementCohortQueries {
 
     return cd;
   }
-  /** FEMININO Pacientes do sexo feminino */
-  public CohortDefinition getFemalePatients() {
-    GenderCohortDefinition gender = new GenderCohortDefinition();
-    gender.setFemaleIncluded(true);
-    gender.setMaleIncluded(false);
-    gender.setUnknownGenderIncluded(false);
 
-    return gender;
-  }
 
   /**
    * PROGRAMA: PACIENTES QUE DERAM PARTO HÁ DOIS ANOS ATRÁS DA DATA DE REFERENCIA - LACTANTES São
