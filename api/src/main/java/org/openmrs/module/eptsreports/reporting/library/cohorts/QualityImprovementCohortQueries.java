@@ -35,8 +35,10 @@ public class QualityImprovementCohortQueries {
   @Autowired private HivMetadata hivMetadata;
 
   @Autowired private CommonMetadata commonMetadata;
-
+ 
   @Autowired private TbMetadata tbMetadata;
+  
+  @Autowired GenderCohortQueries genderCohortQueries;
 
   /**
    * MQ_INICIO TARV NO PERIODO DE INCLUSAO (AMOSTRA TARV) - NOVO
@@ -1839,7 +1841,7 @@ public class QualityImprovementCohortQueries {
             getPregnantPatientEnrolledInTARVService(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     // FEMININO
-    cd.addSearch("FEMININO", EptsReportUtils.map(getFemalePatients(), ""));
+    cd.addSearch("FEMININO", EptsReportUtils.map(genderCohortQueries.femaleCohort(), ""));
 
     cd.setCompositionString(
         "((DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA  OR LACTANTE) NOT GRAVIDAS) AND FEMININO");
