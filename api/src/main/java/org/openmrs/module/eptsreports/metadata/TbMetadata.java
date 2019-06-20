@@ -89,4 +89,11 @@ public class TbMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.negativeConceptUuid");
     return getConcept(uuid);
   }
+
+  public Concept gettbDgrusTreatmentEndDateConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.tbDgrusTreatmentEndDateUuid");
+    return getConcept(uuid);
+  }
 }
