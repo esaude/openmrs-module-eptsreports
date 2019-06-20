@@ -93,7 +93,7 @@ public class QualityImprovementCohortQueries {
    * @return CohortDefinition
    */
   @DocumentedDefinition(value = "encontersWithinSevenDaysAfterDiagnosis")
-  public CohortDefinition getPatientWithEncontersWithinSevenDaysAfterDiagnostic() {
+  private CohortDefinition getPatientWithEncontersWithinSevenDaysAfterDiagnostic() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("encontersWithinSevenDaysAfterDiagnosis");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -150,7 +150,7 @@ public class QualityImprovementCohortQueries {
    * @return String
    */
   @DocumentedDefinition(value = "patientWithTrackInEachTBEncounter")
-  public CohortDefinition getPatientWithTrackInEachTBEncounter() {
+  private CohortDefinition getPatientWithTrackInEachTBEncounter() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("patientWithTrackInEachTBEncounter");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -258,7 +258,7 @@ public class QualityImprovementCohortQueries {
    *
    * @return
    */
-  public CohortDefinition usesIsoniazida(
+  private CohortDefinition usesIsoniazida(
       Concept question,
       TimeModifier timeModifier,
       SetComparator operator,
@@ -284,7 +284,7 @@ public class QualityImprovementCohortQueries {
    *
    * @return
    */
-  public CohortDefinition tbTracking(
+  private CohortDefinition tbTracking(
       Concept question,
       TimeModifier timeModifier,
       SetComparator operator,
@@ -329,7 +329,7 @@ public class QualityImprovementCohortQueries {
    * TB Pacientes que iniciram TB no com a data de inicio de tratamento de TB notificada nas fichas
    * de seguimento adulto e pediatria, rastreio de tuberculose e livro de TB
    */
-  public CohortDefinition getPatientsWithNotificationDateInForms() {
+  private CohortDefinition getPatientsWithNotificationDateInForms() {
     DateObsCohortDefinition cd = new DateObsCohortDefinition();
     cd.setName("patientsWithNotificationDateInForms");
     cd.setQuestion(tbMetadata.getTBDrugTreatmentStartDate());
@@ -360,7 +360,7 @@ public class QualityImprovementCohortQueries {
    *
    * @return
    */
-  public CohortDefinition tbTreatment(
+  private CohortDefinition tbTreatment(
       Concept question,
       TimeModifier timeModifier,
       SetComparator operator,
@@ -386,7 +386,7 @@ public class QualityImprovementCohortQueries {
    * notificados do tratamento de tuberculose notificados em diferentes fontes: Antecedentes
    * clinicos adulto e pediatria, seguimento, rastreio de tb, livro de TB.
    */
-  public CohortDefinition getPatientsWhichWhereNotifiedOfTBTreatmentInARV() {
+  private CohortDefinition getPatientsWhichWhereNotifiedOfTBTreatmentInARV() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -496,7 +496,7 @@ public class QualityImprovementCohortQueries {
    * <p>Pacientes que iniciaram profilaxia com Isoniazida num periodo. Repare que e diferente de
    * pacientes que receberam profilaxia
    */
-  public CohortDefinition getPatientsWhoStartedProfilaxiaWithIzoniazida() {
+  private CohortDefinition getPatientsWhoStartedProfilaxiaWithIzoniazida() {
     DateObsCohortDefinition cd = new DateObsCohortDefinition();
     cd.setName("patientsWhoStartedProfilaxiaWithIzoniazida");
     cd.setQuestion(hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept());
@@ -617,7 +617,7 @@ public class QualityImprovementCohortQueries {
    * @return
    */
   @DocumentedDefinition(value = "patientWhoStartedIsoniazidProphylaxisInInclusioPeriod")
-  public CohortDefinition getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriod() {
+  private CohortDefinition getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriod() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("patientWhoStartedIsoniazidProphylaxisInInclusioPeriod");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -783,7 +783,7 @@ public class QualityImprovementCohortQueries {
    * consulta
    */
   @DocumentedDefinition(value = "patientsWithEnconterInPeriodAndHadScreeningForSTI")
-  public CohortDefinition getPatientsWithEnconterInPeriodAndHadScreeningForSTI() {
+  private CohortDefinition getPatientsWithEnconterInPeriodAndHadScreeningForSTI() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("patientsWithEnconterInPeriodAndHadScreeningForSTI");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -836,7 +836,7 @@ public class QualityImprovementCohortQueries {
    * processo (inscritos) e que tiveram CD4 registado dentro de 33 dias após a inscrição
    */
   @DocumentedDefinition(value = "pacientsWithCD4RegisteredIn33Days")
-  public CohortDefinition getPacientsWithCD4RegisteredIn33Days() {
+  private CohortDefinition getPacientsWithCD4RegisteredIn33Days() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("pacientsWithCD4RegisteredIn33Days");
 
@@ -893,7 +893,7 @@ public class QualityImprovementCohortQueries {
    * tratamento
    */
   @DocumentedDefinition(value = "patientsWhomStartedARVIn15Days")
-  public CohortDefinition getPatientsWhomStartedARVIn15Days() {
+  private CohortDefinition getPatientsWhomStartedARVIn15Days() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("patientsWhomStartedARVIn15Days");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -953,7 +953,7 @@ public class QualityImprovementCohortQueries {
    * de TARV
    */
   @DocumentedDefinition(value = "pacientsStartedARVInAPeriodAndHadEncounter33DaysAfterBegining")
-  public CohortDefinition getPacientsStartedARVInAPeriodAndHadEncounter33DaysAfterBegining() {
+  private CohortDefinition getPacientsStartedARVInAPeriodAndHadEncounter33DaysAfterBegining() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("pacientsStartedARVInAPeriodAndHadEncounter33DaysAfterBegining");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1019,7 +1019,7 @@ public class QualityImprovementCohortQueries {
    * tolerância é de 9 dias. A consulta que coincide com a data de inicio de tarv não é contada.
    */
   @DocumentedDefinition(value = "patientsWhoHadAtLeast3EncountersIn3MonthsAfterBeginingART")
-  public CohortDefinition getPatientsWhoHadAtLeast3EncountersIn3MonthsAfterBeginingART() {
+  private CohortDefinition getPatientsWhoHadAtLeast3EncountersIn3MonthsAfterBeginingART() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("patientsWhoHadAtLeast3EncountersIn3MonthsAfterBeginingART");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1084,7 +1084,7 @@ public class QualityImprovementCohortQueries {
    * avaliação de adesão feita no mesmo dia de inicio de TARV não é contada.
    */
   @DocumentedDefinition(value = "patientWhoAtLeast3AdherenceEvaluationWithin3MothsARIEL")
-  public CohortDefinition getPatientWhoAtLeast3AdherenceEvaluationWithin3MothsARIEL() {
+  private CohortDefinition getPatientWhoAtLeast3AdherenceEvaluationWithin3MothsARIEL() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("patientWhoAtLeast3AdherenceEvaluationWithin3MothsARIEL");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1151,7 +1151,7 @@ public class QualityImprovementCohortQueries {
    * é: O numero de consultas no periodo deve ser superior ou igual ao numero de meses desse periodo
    */
   @DocumentedDefinition(value = "pacientesWithMonthEncountersAfterInitialization")
-  public CohortDefinition getPacientesWithMonthEncountersAfterInitialization() {
+  private CohortDefinition getPacientesWithMonthEncountersAfterInitialization() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("pacientesWithMonthEncountersAfterInitialization");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1212,7 +1212,7 @@ public class QualityImprovementCohortQueries {
    * meses após início TARV.
    */
   @DocumentedDefinition(value = "patientsWithAPSSMonthEncountersAfterTARVInitialization")
-  public CohortDefinition getPatientsWithAPSSMonthEncountersAfterTARVInitialization() {
+  private CohortDefinition getPatientsWithAPSSMonthEncountersAfterTARVInitialization() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("patientsWithAPSSMonthEncountersAfterTARVInitialization");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1346,7 +1346,7 @@ public class QualityImprovementCohortQueries {
    * durante um determinado periodo
    */
   @DocumentedDefinition(value = "patientsEnrolledInGaacInAPeriod")
-  public CohortDefinition getPatientsEnrolledInGaacInAPeriod() {
+  private CohortDefinition getPatientsEnrolledInGaacInAPeriod() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("patientsEnrolledInGaacInAPeriod");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1363,7 +1363,7 @@ public class QualityImprovementCohortQueries {
    * última carga viral<1000 nos últimos 12 meses
    */
   @DocumentedDefinition(value = "patientsWithCD4GreterThan200ORCVLessThan1000InLast12Months")
-  public CohortDefinition getPatientsWithCD4GreterThan200ORCVLessThan1000InLast12Months() {
+  private CohortDefinition getPatientsWithCD4GreterThan200ORCVLessThan1000InLast12Months() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("patientsWithCD4GreterThan200ORCVLessThan1000InLast12Months");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1384,7 +1384,7 @@ public class QualityImprovementCohortQueries {
    * meses
    */
   @DocumentedDefinition(value = "patientsInTARVMoreThan6Months")
-  public CohortDefinition getPatientsInTARVMoreThan6Months() {
+  private CohortDefinition getPatientsInTARVMoreThan6Months() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("patientsInTARVMoreThan6Months");
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1407,7 +1407,7 @@ public class QualityImprovementCohortQueries {
    * INICIO DE TARV USANDO O CONCEITO DE DATA - PERIODO FINAL São pacientes que iniciaram TARV
    * registado no conceito 'Data de Inicio de TARV' na ficha de seguimento
    */
-  public CohortDefinition getPatientsInitializedTARVRegisteredInConceptStartDateInFollowingForm() {
+  private CohortDefinition getPatientsInitializedTARVRegisteredInConceptStartDateInFollowingForm() {
     DateObsCohortDefinition cd = new DateObsCohortDefinition();
     cd.setName("patientsInitializedTARVRegisteredInConceptStartDateInFollowingForm");
     cd.setQuestion(hivMetadata.getARVStartDate());
@@ -1458,7 +1458,7 @@ public class QualityImprovementCohortQueries {
    * em tratamento ARV, levantou pelo menos uma vez ARV na Famacia (tem pelo menos um FRIDA/FILA
    * preenchido) até um determinado periodo final
    */
-  public CohortDefinition getPatientWhoWereInARVTreatmentFinalPeriodPharmacy() {
+  private CohortDefinition getPatientWhoWereInARVTreatmentFinalPeriodPharmacy() {
     EncounterCohortDefinition encounterCohortDefinition = new EncounterCohortDefinition();
     encounterCohortDefinition.setName("patientWhoWereInARVTreatmentFinalPeriodPharmacy");
     encounterCohortDefinition.setEncounterTypeList(
@@ -1496,7 +1496,7 @@ public class QualityImprovementCohortQueries {
    * preenchido 3) Paciente com data de inicio preenchido na ficha de seguimento 4) Paciente com
    * inicio registado atraves do conceito 1255 - Gestão de TARV e a resposta é 1256 - Inicio
    */
-  public CohortDefinition getPatientInTARVFinalPeriodRealComposition() {
+  private CohortDefinition getPatientInTARVFinalPeriodRealComposition() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -1562,7 +1562,7 @@ public class QualityImprovementCohortQueries {
    * tratamento ARV. Construido atraves de Alguma vez esteve em tratamento menos os que sairam de
    * tratamento
    */
-  public CohortDefinition getPatientInARTTreatmentCompositionFinalPeriod() {
+  private CohortDefinition getPatientInARTTreatmentCompositionFinalPeriod() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -1589,7 +1589,7 @@ public class QualityImprovementCohortQueries {
    */
   @DocumentedDefinition(
       value = "patientWhichMoreThan60DaysPassedWithoutReturnAndNotNitifiedAsAbandonment")
-  public CohortDefinition
+  private CohortDefinition
       getPatientWhichMoreThan60DaysPassedWithoutReturnAndNotNitifiedAsAbandonment() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName(
@@ -1620,7 +1620,7 @@ public class QualityImprovementCohortQueries {
    * ACTUALMENTE EM TARV ATÉ UM DETERMINADO PERIODO FINAL - SEM INCLUIR ABANDONOS NAO NOTIFICADOS
    * Sao pacientes que actualmente estao em TARV sem incluir abandonos nao notificados
    */
-  public CohortDefinition
+  private CohortDefinition
       getPatientInARTTreatmentTillSpecificFinalPeriodWithoutAbandonmentNotNotified() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1647,7 +1647,7 @@ public class QualityImprovementCohortQueries {
    * PACIENTES ACTUALMENTE EM TARV E QUE ESTAO HA MAIS DE 6 MESES EM TRATAMENTO Sao pacientes
    * actualmente em TARV e que estão há mais de 6 meses em tratamento ARV
    */
-  public CohortDefinition getPatientInARTTreatmentWithMoreThan6Months() {
+  private CohortDefinition getPatientInARTTreatmentWithMoreThan6Months() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -1698,7 +1698,7 @@ public class QualityImprovementCohortQueries {
    * actualizado no servico tarv. Repare que os parametros 'Data Inicial' e 'Data Final' refere-se a
    * data de parto e nao data de registo (actualizacao)
    */
-  public CohortDefinition getPregantPatientWithDueDateUpdateInTARV() {
+  private CohortDefinition getPregantPatientWithDueDateUpdateInTARV() {
 
     DateObsCohortDefinition cd = new DateObsCohortDefinition();
 
@@ -1747,7 +1747,7 @@ public class QualityImprovementCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getPatientsStartTARVBecouseOfBreatFeeding() {
+  private CohortDefinition getPatientsStartTARVBecouseOfBreatFeeding() {
 
     CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
     cd.setName("infantPatientsEnrolledInTarvSample");
@@ -1779,7 +1779,7 @@ public class QualityImprovementCohortQueries {
    * anos atrás da data de referencia
    */
   @DocumentedDefinition(value = "patientWithDeliveryDate2YearsAgoBreatFeeding")
-  public CohortDefinition getPatientWithDeliveryDate2YearsAgoBreatFeeding() {
+  private CohortDefinition getPatientWithDeliveryDate2YearsAgoBreatFeeding() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("patientWithDeliveryDate2YearsAgoBreatFeeding");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1799,7 +1799,7 @@ public class QualityImprovementCohortQueries {
    * pacientes puerpueras ou lactantes registadas. O registo pode ser na ficha de seguimento ou no
    * processo clinico durante a abertura de processo
    */
-  public CohortDefinition getPatientInBreastFeedingEnrolledClinicProcess() {
+  private CohortDefinition getPatientInBreastFeedingEnrolledClinicProcess() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1851,7 +1851,7 @@ public class QualityImprovementCohortQueries {
    *
    * <p>Sao gravidas inscritas no servico TARV num periodo incluindo puerpueras do mesmo periodo
    */
-  public CohortDefinition getPregnantPatientsEnrolledInARTServiceIncludingPuerPueras() {
+  private CohortDefinition getPregnantPatientsEnrolledInARTServiceIncludingPuerPueras() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1877,7 +1877,7 @@ public class QualityImprovementCohortQueries {
    * SEM INCLUIR GRÁVIDAS OU LACTANTES São pacientes actualmente em TARV sem incluir Gravidas ou
    * lactantes
    */
-  public CohortDefinition getPatientsEnrolledInARTServiceNotIncludingNotNotifiedAbandonment() {
+  private CohortDefinition getPatientsEnrolledInARTServiceNotIncludingNotNotifiedAbandonment() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -1930,7 +1930,7 @@ public class QualityImprovementCohortQueries {
    * revisão
    */
   @DocumentedDefinition(value = "patientsStartTuberculoseTreatmentNotComplete")
-  public CohortDefinition getPatientsStartTuberculoseTreatmentNotComplete() {
+  private CohortDefinition getPatientsStartTuberculoseTreatmentNotComplete() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("patientsStartTuberculoseTreatmentNotComplete");
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -2046,7 +2046,7 @@ public class QualityImprovementCohortQueries {
    */
   @DocumentedDefinition(
       value = "patientsWhoHadEnconterInLast7MonthAndWereMarkedToNextEncounterIn6Months")
-  public CohortDefinition
+  private CohortDefinition
       getPatientsWhoHadEnconterInLast7MonthAndWereMarkedToNextEncounterIn6Months() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName(
@@ -2069,7 +2069,7 @@ public class QualityImprovementCohortQueries {
    * meses e que foram marcados para proximo levantamento entre 83-97 dias depois
    */
   @DocumentedDefinition(value = "patientsTookARVInLast5MonthAndWereMarkedToNextEncounter")
-  public CohortDefinition getPatientsTookARVInLast5MonthAndWereMarkedToNextEncounter() {
+  private CohortDefinition getPatientsTookARVInLast5MonthAndWereMarkedToNextEncounter() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("patientsTookARVInLast5MonthAndWereMarkedToNextEncounter");
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -2228,7 +2228,7 @@ public class QualityImprovementCohortQueries {
     return sqlCohortDefinition;
   }
   /** PACIENTES QUE ESTAO NA SEGUNDA LINHA DE ARV - PERIODO FINAL */
-  public CohortDefinition getPatientInSecondARVLineFinalPeriod() {
+  private CohortDefinition getPatientInSecondARVLineFinalPeriod() {
 
     CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
     cd.setName("patientInSecondARVLineFinalPeriod");
@@ -2286,7 +2286,7 @@ public class QualityImprovementCohortQueries {
 
   /** FALHAS IMUNOLOGICAS - SQL */
   @DocumentedDefinition(value = "patientsWithImmunologicFailture")
-  public CohortDefinition getPatientsWithImmunologicFailture() {
+  private CohortDefinition getPatientsWithImmunologicFailture() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("patientsWithImmunologicFailture");
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -2315,7 +2315,7 @@ public class QualityImprovementCohortQueries {
 
   /** FALHAS CLINICAS - SQL */
   @DocumentedDefinition(value = "patientWithClinicFailtures")
-  public CohortDefinition getPatientWithClinicFailtures() {
+  private CohortDefinition getPatientWithClinicFailtures() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("patientWithClinicFailtures");
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
