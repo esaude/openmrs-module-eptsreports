@@ -2373,28 +2373,5 @@ public class QualityImprovementCohortQueries {
     return cd;
   }
 
-  @Deprecated
-  /* PACIENTES INSCRITOS NO SERVICO TARV - PERIODO FINAL (SQL)*/
-  @DocumentedDefinition(value = "baseCohort")
-  public CohortDefinition getBaseCohort() {
-    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("baseCohort");
-    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
-
-    sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientsEnrolledInTARVServiceFinalPeriodoSQL(
-            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
-            hivMetadata.getHIVCareProgram().getProgramId(),
-            hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata
-                .getPateintTransferedFromOtherFacilityHIVCareWorkflowState()
-                .getProgramWorkflowStateId(),
-            hivMetadata
-                .getPateintTransferedFromOtherFacilityWorkflowState()
-                .getProgramWorkflowStateId()));
-
-    return sqlCohortDefinition;
-  }
+  
 }
