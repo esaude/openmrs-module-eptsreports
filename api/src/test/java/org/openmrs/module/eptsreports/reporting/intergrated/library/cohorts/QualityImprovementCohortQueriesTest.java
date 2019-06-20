@@ -177,22 +177,7 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
     assertTrue(evaluatedCohort.getMemberIds().contains(1003));
   }
 
-  @Test
-  public void getBaseCohort() throws EvaluationException {
-    CohortDefinition cohortDefinition = qualityImprovementCohortQueries.getBaseCohort();
 
-    Map<Parameter, Object> parameters = new HashMap<>();
-    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
-    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
-    parameters.put(new Parameter("location", "Location", Location.class), getLocation());
-
-    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
-
-    assertEquals(3, evaluatedCohort.getMemberIds().size());
-    assertTrue(evaluatedCohort.getMemberIds().contains(1001));
-    assertTrue(evaluatedCohort.getMemberIds().contains(1003));
-    assertTrue(evaluatedCohort.getMemberIds().contains(1007));
-  }
 
   private Date getDataFinalAvaliacao() {
     return DateUtil.getDateTime(2019, 5, 26);
