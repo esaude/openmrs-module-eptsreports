@@ -19,7 +19,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
- import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -34,9 +34,9 @@ public class QualityImprovementCohortQueries {
   @Autowired private HivMetadata hivMetadata;
 
   @Autowired private CommonMetadata commonMetadata;
- 
+
   @Autowired private TbMetadata tbMetadata;
-  
+
   @Autowired GenderCohortQueries genderCohortQueries;
 
   /**
@@ -393,7 +393,6 @@ public class QualityImprovementCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
- 
     // INICIO DE TRATAMENTO DE TUBERCULOSE DATA NOTIFICADA NAS FICHAS DE: SEGUIMENTO, RASTREIO E
     // LIVRO TB
     cd.addSearch(
@@ -1764,7 +1763,6 @@ public class QualityImprovementCohortQueries {
     return cd;
   }
 
-
   /**
    * PROGRAMA: PACIENTES QUE DERAM PARTO HÁ DOIS ANOS ATRÁS DA DATA DE REFERENCIA - LACTANTES São
    * pacientes inscritos no programa de PTV e que foram actualizados como parto num periodo de 2
@@ -1933,13 +1931,11 @@ public class QualityImprovementCohortQueries {
         QualiltyImprovementQueries.getPatientsStartTuberculoseTreatmentNotComplete(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            tbMetadata.getTBLivroEncounterType().getEncounterTypeId(),  
-            tbMetadata.getTBRastreioEncounterType().getEncounterTypeId(),  
-            tbMetadata.getTBDrugTreatmentStartDate().getConceptId(),  
-            tbMetadata
-                .gettbDgrusTreatmentEndDateConcept()
-                .getConceptId(),  
-            tbMetadata.getTBProgram().getProgramId()));  
+            tbMetadata.getTBLivroEncounterType().getEncounterTypeId(),
+            tbMetadata.getTBRastreioEncounterType().getEncounterTypeId(),
+            tbMetadata.getTBDrugTreatmentStartDate().getConceptId(),
+            tbMetadata.gettbDgrusTreatmentEndDateConcept().getConceptId(),
+            tbMetadata.getTBProgram().getProgramId()));
 
     return sqlCohortDefinition;
   }
@@ -2051,7 +2047,7 @@ public class QualityImprovementCohortQueries {
             .getPatientsWhoHadEnconterInLast7MonthAndWereMarkedToNextEncounterIn6Months(
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                 hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getReturnVisitDateConcept().getConceptId()));  
+                hivMetadata.getReturnVisitDateConcept().getConceptId()));
 
     return sqlCohortDefinition;
   }
@@ -2202,20 +2198,14 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.setQuery(
         QualiltyImprovementQueries
             .getPatientWhoReceivedViralLoadFindingBetween6to9MonthAfterTARVStart(
-                hivMetadata
-                    .getAdultoSeguimentoEncounterType()
-                    .getEncounterTypeId(),  
-                hivMetadata
-                    .getARVPediatriaSeguimentoEncounterType()
-                    .getEncounterTypeId(),  
-                hivMetadata
-                    .getARVPharmaciaEncounterType()
-                    .getEncounterTypeId(),  
-                hivMetadata.getARVPlanConcept().getConceptId(),  
-                commonMetadata.getStartDrugsConcept().getConceptId(),  
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+                hivMetadata.getARVPlanConcept().getConceptId(),
+                commonMetadata.getStartDrugsConcept().getConceptId(),
                 hivMetadata.getARVStartDate().getConceptId(),
-                hivMetadata.getARTProgram().getProgramId(),  
-                hivMetadata.getHivViralLoadConcept().getConceptId()));  
+                hivMetadata.getARTProgram().getProgramId(),
+                hivMetadata.getHivViralLoadConcept().getConceptId()));
 
     return sqlCohortDefinition;
   }
@@ -2286,21 +2276,15 @@ public class QualityImprovementCohortQueries {
 
     sqlCohortDefinition.setQuery(
         QualiltyImprovementQueries.getPatientsWithImmunologicFailture(
-            hivMetadata
-                .getAdultoSeguimentoEncounterType()
-                .getEncounterTypeId(),  
-            hivMetadata
-                .getARVPediatriaSeguimentoEncounterType()
-                .getEncounterTypeId(),  
-            hivMetadata
-                .getARVPharmaciaEncounterType()
-                .getEncounterTypeId(),  
-            hivMetadata.getARVPlanConcept().getConceptId(),  
-            hivMetadata.getStartDrugsConcept().getConceptId(),  
-            hivMetadata.getARVStartDate().getConceptId(),  
-            hivMetadata.getCD4AbsoluteConcept().getConceptId(),  
-            hivMetadata.getCD4AbsoluteOBSConcept().getConceptId(),  
-            hivMetadata.getARTProgram().getProgramId()));  
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPlanConcept().getConceptId(),
+            hivMetadata.getStartDrugsConcept().getConceptId(),
+            hivMetadata.getARVStartDate().getConceptId(),
+            hivMetadata.getCD4AbsoluteConcept().getConceptId(),
+            hivMetadata.getCD4AbsoluteOBSConcept().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId()));
 
     return sqlCohortDefinition;
   }
@@ -2315,28 +2299,22 @@ public class QualityImprovementCohortQueries {
 
     sqlCohortDefinition.setQuery(
         QualiltyImprovementQueries.getPatientWithClinicFailtures(
-            hivMetadata
-                .getAdultoSeguimentoEncounterType()
-                .getEncounterTypeId(),  
-            hivMetadata
-                .getARVPediatriaSeguimentoEncounterType()
-                .getEncounterTypeId(),  
-            hivMetadata
-                .getARVPharmaciaEncounterType()
-                .getEncounterTypeId(),  
-            hivMetadata.getARVPlanConcept().getConceptId(), 
-            hivMetadata.getStartDrugsConcept().getConceptId(),  
-            hivMetadata.getARVStartDate().getConceptId(), 
-            hivMetadata.getCD4AbsoluteConcept().getConceptId(), 
-            hivMetadata.getCD4AbsoluteOBSConcept().getConceptId(),  
-            hivMetadata.getARTProgram().getProgramId(), 
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPlanConcept().getConceptId(),
+            hivMetadata.getStartDrugsConcept().getConceptId(),
+            hivMetadata.getARVStartDate().getConceptId(),
+            hivMetadata.getCD4AbsoluteConcept().getConceptId(),
+            hivMetadata.getCD4AbsoluteOBSConcept().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId(),
             hivMetadata
                 .getTransferredFromOtherHealthFacilityWorkflowState()
-                .getProgramWorkflowStateId(),  
-            hivMetadata.getcurrentWhoHivStageConcept().getConceptId(),  
-            hivMetadata.getWho2AdultStageConcept().getConceptId(),  
-            hivMetadata.getWho3AdultStageConcept().getConceptId(),  
-            hivMetadata.getWho4AdultStageConcept().getConceptId()));  
+                .getProgramWorkflowStateId(),
+            hivMetadata.getcurrentWhoHivStageConcept().getConceptId(),
+            hivMetadata.getWho2AdultStageConcept().getConceptId(),
+            hivMetadata.getWho3AdultStageConcept().getConceptId(),
+            hivMetadata.getWho4AdultStageConcept().getConceptId()));
 
     return sqlCohortDefinition;
   }
@@ -2370,6 +2348,4 @@ public class QualityImprovementCohortQueries {
     cd.setCompositionString("(CLINICAS OR IMUNOLOGICAS) AND TARV");
     return cd;
   }
-
-  
 }

@@ -143,6 +143,7 @@ public class TXTBQueries {
     }
     return sql;
   }
+
   public static String dateObsWithinXMonthsBeforeStartDate(
       Integer questionId, List<Integer> encounterTypeIds, Integer xMonths) {
     return String.format(
