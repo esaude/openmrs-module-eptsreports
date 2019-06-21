@@ -292,10 +292,10 @@ public class RoutineCalculation extends AbstractPatientCalculation {
       Date nineMonths = EptsCalculationUtils.addMonths(artInitiationDate, 9);
 
       boolean withinAdultLimits =
-          lastViralLoadDate.compareTo(sixMonths) > 0
+          lastViralLoadDate.compareTo(sixMonths) >= 0
               && lastViralLoadDate.compareTo(nineMonths) <= 0;
       boolean withinBreastfeedingLimits =
-          lastViralLoadDate.compareTo(threeMonths) > 0
+          lastViralLoadDate.compareTo(threeMonths) >= 0
               && lastViralLoadDate.compareTo(sixMonths) <= 0;
 
       if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN) && withinAdultLimits) {
