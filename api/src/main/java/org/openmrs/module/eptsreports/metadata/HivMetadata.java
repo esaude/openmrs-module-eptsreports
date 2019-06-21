@@ -48,6 +48,20 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.returnVisitDateForArvDrugConceptUuid");
     return getConcept(uuid);
   }
+  // concept_id=6123
+  public Concept getDateOfHivDiagnosisConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.dateOfHIVDiagnosis");
+    return getConcept(uuid);
+  }
+
+  // concept_id=1190
+  public Concept getARVStartDate() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.historicalStartDateConceptUuid");
+    return getConcept(uuid);
+  }
 
   // concept_id=1255
   public Concept getARVPlanConcept() {
@@ -179,6 +193,46 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.isoniazidUseConceptUuid");
     return getConcept(uuid);
   }
+  // concept_id=1695
+  public Concept getCD4AbsoluteOBSConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.cd4AbsoluteOBSUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id=6314
+  public Concept getCoucelingActivityConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.coucelingActivityTypeUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id=5356
+  public Concept getcurrentWhoHivStageConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.currentWhoHivStageUuid");
+    return getConcept(uuid);
+  }
+  // concept_id=1205
+  public Concept getWho2AdultStageConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.who2AdultStageUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id=1206
+  public Concept getWho3AdultStageConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.who3AdultStageUuid");
+    return getConcept(uuid);
+  }
+  // concept_id=1207
+  public Concept getWho4AdultStageConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.who4AdultStageUuid");
+    return getConcept(uuid);
+  }
 
   // concept_id = 1366
   public Concept getPatientHasDiedConcept() {
@@ -244,6 +298,18 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id=5488
+  public Concept getAdherenceCoucelingConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.adherenceCounselingUuid");
+    return getConcept(uuid);
+  }
+  // concept_id=5497
+  public Concept getCD4AbsoluteConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.cd4AbsolutoUuid");
+    return getConcept(uuid);
+  }
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
@@ -291,7 +357,7 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.evaluationAndPrepForARTEncounterTypeUuid");
     return getEncounterType(uuid);
   }
-
+  // encounter_type 13
   public EncounterType getMisauLaboratorioEncounterType() {
     String uuid =
         Context.getAdministrationService()
@@ -454,6 +520,39 @@ public class HivMetadata extends ProgramsMetadata {
     return getDeadWorkflowState(hivCareProgram, workflow);
   }
 
+  public ProgramWorkflowState getPateintActiveArtWorkflowState() {
+    String artProgramUuid = Context.getAdministrationService().getGlobalProperty(gpArtProgramUuid);
+    return getProgramWorkflowState(artProgramUuid, "2", "c50d6bdc-8a79-43ae-ab45-abbaa6b45e7d");
+  }
+
+  public ProgramWorkflowState getPateintTransferedFromOtherFacilityWorkflowState() {
+     String artProgramUuid = Context.getAdministrationService().getGlobalProperty(gpArtProgramUuid);
+    return getProgramWorkflowState(artProgramUuid, "2", "TRANSFER FROM OTHER FACILITY");
+  }
+
+  public ProgramWorkflowState getPateintPregnantWorkflowState() {
+    String ptvProgramUuid =
+        Context.getAdministrationService().getGlobalProperty(gpPtvEtvProgramUuid);
+    return getProgramWorkflowState(ptvProgramUuid, "5", "PREGNANT");
+  }
+
+  public ProgramWorkflowState getPateintActiveOnHIVCareProgramtWorkflowState() {
+    String hivCareProgramUuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.hivCareProgramUuid");
+    return getProgramWorkflowState(hivCareProgramUuid, "1", "ACTIVE ON PROGRAM");
+  }
+
+  public ProgramWorkflowState getPateintTransferedFromOtherFacilityHIVCareWorkflowState() {
+    String hivCareProgramUuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.hivCareProgramUuid");
+    return getProgramWorkflowState(hivCareProgramUuid, "1", "TRANSFER FROM OTHER FACILITY");
+  }
+
+  public Concept getCurrentWHOHIVStageConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.currentWHOHIVStageConceptUuid"));
+}
   public ProgramWorkflow getPreArtWorkflow() {
     return getProgramWorkflow(getHIVCareProgram().getUuid(), "1");
   }

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public 
+	License, v. 2.0. If a copy of the MPL was not distributed with this file, 
+	You can obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed 
+	under the terms of the Healthcare Disclaimer located at http://openmrs.org/license. 
+	Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS 
+	graphic logo is a trademark of OpenMRS Inc. -->
+
+<dataset>
+
+	<!--| program | -->
+
+	<program program_id="1" concept_id="1781" creator="1"
+		date_created="2012-02-29 09:42:25" retired="0"
+		name="SERVICO TARV - CUIDADO"
+		description="Programa de seguimento e cuidado aos pacientes HIV+"
+		uuid="7b2e4a0a-d4eb-4df7-be30-78ca4b28ca99" />
+
+	<program program_id="2" concept_id="6274" creator="1"
+		date_created="2012-02-29 09:42:25" retired="0"
+		name="SERVICO TARV - TRATAMENTO"
+		description="Programa de seguimento e tratamento aos pacientes HIV+"
+		uuid="efe2481f-9e75-4515-8d5a-86bfde2b5ad3" />
+
+	<program program_id="5" concept_id="1782" creator="1"
+		date_created="2012-02-29 09:42:25" retired="0" name="TUBERCULOSE"
+		description=" Programa de Combate a Tuberculose"
+		uuid="142d23c4-c29f-4799-8047-eb3af911fd21" />
+
+	<program program_id="8" concept_id="1598" creator="1"
+		date_created="2012-02-29 09:42:25" retired="0" name="PTV"
+		description="Programa de representa o estado de gravidez de uma mulher"
+		uuid="06057245-ca21-43ab-a02f-e861d7e54593" />
+
+
+	<!-- | program_workflow | -->
+	<program_workflow program_workflow_id="1"
+		program_id="1" concept_id="6275" creator="1"
+		date_created="2012-02-29 10:17:25" retired="0"
+		uuid="beea7be9-cbf5-4a15-923a-ff193eea9d50" />
+
+
+	<program_workflow program_workflow_id="2"
+		program_id="2" concept_id="6276" creator="1"
+		date_created="2012-02-29 10:17:25" retired="0"
+		uuid="a59bd818-d2f0-4a9a-a2f2-0a54af4ce04e" />
+
+	<program_workflow program_workflow_id="5"
+		program_id="8" concept_id="5272" creator="1"
+		date_created="2012-02-29 10:17:25" retired="0"
+		uuid="38b2c29f-496c-4b3d-b792-e2f7cdc7c8b7" />
+
+
+
+	<program_workflow program_workflow_id="4"
+		program_id="5" concept_id="6281" creator="1"
+		date_created="2012-02-29 10:17:25" retired="0"
+		uuid="8ac84757-6fb0-4b56-ac51-50d5efb004af" />
+
+
+	<!-- | program_workflow_state | -->
+	<program_workflow_state
+		program_workflow_state_id="1" program_workflow_id="1"
+		concept_id="6269" initial="1" terminal="0" creator="1"
+		date_created="2013-07-24 11:45:26" retired="0"
+		uuid="e21bd1bf-13a8-4cb7-8d7b-fb830771f64a" />
+	
+	<program_workflow_state
+		program_workflow_state_id="6" program_workflow_id="2"
+		concept_id="6269" initial="1" terminal="0" creator="1"
+		date_created="2013-07-24 11:45:26" retired="0"
+		uuid="c50d6bdc-8a79-43ae-ab45-abbaa6b45e7d" />
+
+	<program_workflow_state
+		program_workflow_state_id="7" program_workflow_id="2"
+		concept_id="1706" initial="1" terminal="0" creator="1"
+		date_created="2013-07-24 11:45:26" retired="0"
+		uuid="9f2f86e9-303c-4b98-a6ae-37e8806a6f47" />
+
+	<program_workflow_state
+		program_workflow_state_id="29" program_workflow_id="2"
+		concept_id="1369" initial="1" terminal="0" creator="1"
+		date_created="2013-07-24 11:45:26" retired="0"
+		uuid="ef06e6df-6026-4d5a-88f9-b2c3e0495dc8" />
+
+	<program_workflow_state
+		program_workflow_state_id="25" program_workflow_id="5"
+		concept_id="1982" initial="1" terminal="0" creator="1"
+		date_created="2013-07-24 11:45:26" retired="0"
+		uuid="8e3d2224-b91f-4978-95ba-683929011086" />
+
+	<program_workflow_state
+		program_workflow_state_id="27" program_workflow_id="5"
+		concept_id="6248" initial="1" terminal="0" creator="1"
+		date_created="2012-07-24 11:45:26" retired="0"
+		uuid="1fa545c3-ba8b-4979-b6eb-62a96ad844af" />
+
+	<program_workflow_state
+		program_workflow_state_id="8" program_workflow_id="2"
+		concept_id="1709" initial="1" terminal="0" creator="1"
+		date_created="2012-07-24 11:45:26" retired="0"
+		uuid="05cf5297-12ed-4f6b-8c21-70d8ae04e09f" />
+
+
+
+	<program_workflow_state
+		program_workflow_state_id="9" program_workflow_id="2"
+		concept_id="1707" initial="1" terminal="0" creator="1"
+		date_created="2012-07-24 11:45:26" retired="0"
+		uuid="06124f77-4a49-49f8-8655-fa1fe5262936" />
+
+
+	<program_workflow_state
+		program_workflow_state_id="10" program_workflow_id="2"
+		concept_id="1366" initial="1" terminal="0" creator="1"
+		date_created="2012-07-24 11:45:26" retired="0"
+		uuid="fcad8a57-2a1a-4abd-84b7-935897e4fe06" />
+		
+		<program_workflow_state
+		program_workflow_state_id="28" program_workflow_id="1"
+		concept_id="1369" initial="1" terminal="0" creator="1"
+		date_created="2012-07-24 11:45:26" retired="0"
+		uuid="a42ec725-0635-462d-ac1a-6c34235099f2" />
+		
+	<!-- | patient_program | -->
+	<patient_program patient_program_id="4616"
+		patient_id="1001" program_id="2" date_enrolled="2019-01-26 00:00:00"
+		creator="1" date_created="2019-01-26 00:00:00" voided="0"
+		uuid="d1315b84-2b18-4605-9bde-0a845bc35ebc" location_id="1" />
+
+	<patient_program patient_program_id="4617"
+		patient_id="1002" program_id="5" date_enrolled="2013-08-01 00:00:00"
+		creator="1" date_created="2013-09-16 17:53:04" voided="0"
+		uuid="aec50469-11e6-4e09-aa2c-0792ac3cba71" location_id="1" />
+
+	<patient_program patient_program_id="4618"
+		patient_id="1003" program_id="8" date_enrolled="2013-08-01 00:00:00"
+		creator="1" date_created="2013-09-16 17:53:04" voided="0"
+		uuid="aec50469-11e6-4e09-aa2c-0792ac3rba71" location_id="1" />
+
+	<patient_program patient_program_id="4619"
+		patient_id="1004" program_id="2" date_enrolled="2013-08-01 00:00:00"
+		creator="1" date_created="2013-09-16 17:53:04" voided="0"
+		uuid="ce81e166-ef5e-4371-9dd2-9263956344af" location_id="1" />
+
+
+	<patient_program patient_program_id="4620"
+		patient_id="1010" program_id="2" date_enrolled="2013-08-01 00:00:00"
+		creator="1" date_created="2013-09-16 17:53:04" voided="0"
+		uuid="0b435cff-3fff-48b3-9ca3-8d156715a927" location_id="1" />
+		
+		<patient_program patient_program_id="4621"
+		patient_id="1003" program_id="2" date_enrolled="2013-08-01 00:00:00"
+		creator="1" date_created="2013-09-16 17:53:04" voided="0"
+		uuid="30072e09-9e7e-4aae-8cb9-0c540f07834e" location_id="1" />
+		
+		<patient_program patient_program_id="4622"
+		patient_id="1003" program_id="1" date_enrolled="2013-08-01 00:00:00"
+		creator="1" date_created="2013-09-16 17:53:04" voided="0"
+		uuid="30072e00-9e7e-4aae-8cb9-0c540f07834e" location_id="1" />
+
+
+	<!-- | patient_state | -->
+	<patient_state patient_state_id="6551"
+		patient_program_id="4616" state="6" start_date="2013-08-01"
+		creator="1" date_created="2013-09-16 17:53:04" voided="0" />
+
+	<patient_state patient_state_id="6552"
+		patient_program_id="4616" state="7" start_date="2013-08-01"
+		creator="1" date_created="2013-09-16 17:53:04" voided="0" />
+
+	<patient_state patient_state_id="6553"
+		patient_program_id="4616" state="29" start_date="2013-08-01"
+		creator="1" date_created="2013-09-16 17:53:04" voided="0" />
+
+	<patient_state patient_state_id="6554"
+		patient_program_id="4616" state="25" start_date="2013-08-01"
+		creator="1" date_created="2013-09-16 17:53:04" voided="0" />
+
+
+	<patient_state patient_state_id="6555"
+		patient_program_id="4618" state="27" start_date="2008-12-01"
+		creator="1" date_created="2013-09-16 17:53:04" voided="0" />
+		
+		<patient_state patient_state_id="6556"
+		patient_program_id="4618" state="28" start_date="2008-12-01"
+		creator="1" date_created="2013-09-16 17:53:04" voided="0" />
+
+</dataset>
