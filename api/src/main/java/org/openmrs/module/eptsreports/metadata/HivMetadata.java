@@ -526,7 +526,7 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   public ProgramWorkflowState getPateintTransferedFromOtherFacilityWorkflowState() {
-     String artProgramUuid = Context.getAdministrationService().getGlobalProperty(gpArtProgramUuid);
+    String artProgramUuid = Context.getAdministrationService().getGlobalProperty(gpArtProgramUuid);
     return getProgramWorkflowState(artProgramUuid, "2", "TRANSFER FROM OTHER FACILITY");
   }
 
@@ -552,7 +552,8 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.currentWHOHIVStageConceptUuid"));
-}
+  }
+
   public ProgramWorkflow getPreArtWorkflow() {
     return getProgramWorkflow(getHIVCareProgram().getUuid(), "1");
   }
