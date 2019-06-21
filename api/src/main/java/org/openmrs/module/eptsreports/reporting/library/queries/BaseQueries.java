@@ -24,28 +24,20 @@ public class BaseQueries {
   // they map to concept_id=1369 - TRANSFER FROM OTHER FACILITY
   // TODO: Query needs to be refactored
   public static String getBaseCohortQuery(Map<String, String> parameters) {
-    String query =
-        "SELECT p.patient_id FROM patient p JOIN encounter e ON e.patient_id=p.patient_id "
-            + "WHERE e.voided=0 AND p.voided=0 AND e.encounter_type in (%s) AND e.encounter_datetime<=:endDate AND e.location_id = :location "
-            + "UNION "
-            + "SELECT pg.patient_id FROM patient p JOIN patient_program pg ON p.patient_id=pg.patient_id WHERE pg.voided=0 AND p.voided=0 AND program_id=%s AND date_enrolled<=:endDate AND location_id=:location "
-            + "UNION "
-            + "SELECT pg.patient_id FROM patient p JOIN patient_program pg ON p.patient_id=pg.patient_id JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
-            + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND pg.program_id=%s AND ps.state=28 AND ps.start_date=pg.date_enrolled AND ps.start_date<=:endDate AND location_id=:location "
-            + "UNION "
-            + "SELECT pg.patient_id FROM patient p JOIN patient_program pg ON p.patient_id=pg.patient_id JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
-            + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND pg.program_id=%s AND ps.state=29 AND ps.start_date<=:endDate AND location_id=:location ";
-    String encounterTypes =
-        StringUtils.join(
-            Arrays.asList(
-                parameters.get("arvAdultInitialEncounterTypeId"),
-                parameters.get("arvPediatriaInitialEncounterTypeId")),
-            ',');
-    return String.format(
-        query,
-        encounterTypes,
-        parameters.get("hivCareProgramId"),
-        parameters.get("hivCareProgramId"),
-        parameters.get("artProgramId"));
+      String query =
+              "SELECT p.patient_id FROM patient p JOIN encounter e ON e.patient_id=p.patient_id "
+                      + "WHERE e.voided=0 AND p.voided=0 AND e.encounter_type IN (%s) AND e.encounter_datetime<=:endDate AND e.location_id = :location "
+                      + "UNION "
+                      + "SELECT pg.patient_id FROM patient p JOIN patient_program pg ON p.patient_id=pg.patient_id WHERE pg.voided=0 AND p.voided=0 AND program_id IN (%s) AND date_enrolled<=:endDate AND location_id=:location ";
+      String encounterTypes =
+              StringUtils.join(
+                      Arrays.asList(
+                              parameters.get("arvAdultInitialEncounterTypeId"),
+                              parameters.get("arvPediatriaInitialEncounterTypeId")),
+                      ',');
+      String programs =
+              StringUtils.join(
+                      Arrays.asList(parameters.get("hivCareProgramId"), parameters.get("artProgramId")), ',');
+      return String.format(query, encounterTypes, programs);
   }
 }

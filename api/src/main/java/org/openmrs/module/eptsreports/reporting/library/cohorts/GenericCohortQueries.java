@@ -36,7 +36,9 @@ import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -295,6 +297,32 @@ public class GenericCohortQueries {
     cd.addCalculationParameter("considerTransferredIn", considerTransferredIn);
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    return cd;
+  }
+
+  public CohortDefinition hasNumericObs(
+      Concept question,
+      TimeModifier timeModifier,
+      RangeComparator operator1,
+      Double value1,
+      RangeComparator operator2,
+      Double value2,
+      List<EncounterType> encounterTypes) {
+
+    NumericObsCohortDefinition cd = new NumericObsCohortDefinition();
+    cd.setTimeModifier(timeModifier);
+    cd.setQuestion(question);
+    cd.setName("has obs with numeric value ranges");
+    cd.setEncounterTypeList(encounterTypes);
+    cd.setOperator1(operator1);
+    cd.setValue1(value1);
+    cd.setOperator2(operator2);
+    cd.setValue2(value2);
+
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+
     return cd;
   }
 }

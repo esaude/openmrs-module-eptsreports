@@ -143,16 +143,6 @@ public class TXTBQueries {
     }
     return sql;
   }
-
-  public static String dateObsBeforeStartDate(Integer questionId, List<Integer> encounterTypeIds) {
-    String sql =
-        String.format(
-            "SELECT person_id FROM obs WHERE concept_id = %s AND encounter_id IN(SELECT DISTINCT encounter_id FROM encounter WHERE encounter_type IN(%s)) AND location_id = :location AND value_datetime IS NOT NULL AND value_datetime < :startDate AND voided=0",
-            questionId, StringUtils.join(encounterTypeIds, ","));
-
-    return sql;
-  }
-
   public static String dateObsWithinXMonthsBeforeStartDate(
       Integer questionId, List<Integer> encounterTypeIds, Integer xMonths) {
     return String.format(

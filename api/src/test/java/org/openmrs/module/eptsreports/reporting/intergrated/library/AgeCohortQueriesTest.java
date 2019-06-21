@@ -26,19 +26,19 @@ public class AgeCohortQueriesTest extends DefinitionsTest {
 
   private PatientService patientService;
 
+  private Date now = DateUtil.getDateTime(2019, 4, 8);
+
   @Before
   public void init() {
-    parameters.put(
-        new Parameter("effectiveDate", "Effective Date", Date.class),
-        DateUtil.getDateTime(2019, 4, 8));
+    parameters.put(new Parameter("effectiveDate", "Effective Date", Date.class), now);
     patientService = Context.getPatientService();
   }
 
   @Test
   public void createXtoYAgeCohortShouldReturnRightlyAgedPatients() throws EvaluationException {
-    assertEquals(44, patientService.getPatient(2).getAge().intValue());
-    assertEquals(11, patientService.getPatient(6).getAge().intValue());
-    assertEquals(42, patientService.getPatient(7).getAge().intValue());
+    assertEquals(44, patientService.getPatient(2).getAge(now).intValue());
+    assertEquals(11, patientService.getPatient(6).getAge(now).intValue());
+    assertEquals(42, patientService.getPatient(7).getAge(now).intValue());
     assertEquals(
         new HashSet<>(Arrays.asList(2, 6, 7)),
         evaluateCohortDefinition(
@@ -68,9 +68,9 @@ public class AgeCohortQueriesTest extends DefinitionsTest {
 
   @Test
   public void createUnknownAgeCohortShouldReturnPatientsWithoutAge() throws EvaluationException {
-    assertNull(patientService.getPatient(432).getAge());
-    assertNull(patientService.getPatient(8).getAge());
-    assertNull(patientService.getPatient(999).getAge());
+    assertNull(patientService.getPatient(432).getAge(now));
+    assertNull(patientService.getPatient(8).getAge(now));
+    assertNull(patientService.getPatient(999).getAge(now));
     // unknown includes voided patients
     assertEquals(
         new HashSet<>(Arrays.asList(432, 8, 999)),

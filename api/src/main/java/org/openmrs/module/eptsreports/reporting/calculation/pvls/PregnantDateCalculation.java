@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
@@ -62,14 +61,11 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     Program ptv = hivMetadata.getPtvEtvProgram();
     Concept gestation = hivMetadata.getGestationConcept();
 
-    // get female patients only
-    Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);
-
     CalculationResultMap pregnantMap =
         ePTSCalculationService.getObs(
             pregnant,
             null,
-            femaleCohort,
+            cohort,
             Arrays.asList(location),
             Arrays.asList(gestation),
             TimeQualifier.ANY,
@@ -80,7 +76,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
         ePTSCalculationService.getObs(
             pregnantBasedOnWeeks,
             null,
-            femaleCohort,
+            cohort,
             Arrays.asList(location),
             null,
             TimeQualifier.ANY,
@@ -91,7 +87,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
         ePTSCalculationService.getObs(
             pregnancyDueDate,
             null,
-            femaleCohort,
+            cohort,
             Arrays.asList(location),
             null,
             TimeQualifier.ANY,
@@ -99,7 +95,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
             context);
 
     CalculationResultMap markedPregnantInProgram =
-        ePTSCalculationService.allProgramEnrollment(ptv, femaleCohort, context);
+        ePTSCalculationService.allProgramEnrollment(ptv, cohort, context);
 
     CalculationResultMap lastVl =
         ePTSCalculationService.lastObs(
@@ -108,10 +104,10 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
             location,
             oneYearBefore,
             onOrBefore,
-            femaleCohort,
+            cohort,
             context);
 
-    for (Integer pId : femaleCohort) {
+    for (Integer pId : cohort) {
       Obs lastVlObs = EptsCalculationUtils.resultForPatient(lastVl, pId);
       Date requiredDate =
           getRequiredDate(
