@@ -34,6 +34,8 @@ import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculati
 import org.openmrs.module.eptsreports.reporting.calculation.generic.InitialArtStartDateCalculation;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PatientsOnRoutineEnum;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.stereotype.Component;
 
@@ -297,10 +299,10 @@ public class RoutineCalculation extends AbstractPatientCalculation {
       boolean withinBreastfeedingLimits =
           lastViralLoadDate.compareTo(threeMonths) >= 0
               && lastViralLoadDate.compareTo(sixMonths) <= 0;
-
+      Date sixMonthsLess1Day = DateUtil.adjustDate(sixMonths, -1, DurationUnit.DAYS);
       if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN) && withinAdultLimits) {
         return !EptsCalculationUtils.anyObsBetween(
-            allViralLoadForPatient, artInitiationDate, sixMonths);
+            allViralLoadForPatient, artInitiationDate, sixMonthsLess1Day);
       } else if (criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)
           && withinBreastfeedingLimits) {
         return !EptsCalculationUtils.anyObsBetween(
