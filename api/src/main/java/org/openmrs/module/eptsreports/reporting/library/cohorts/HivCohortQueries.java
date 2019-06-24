@@ -16,6 +16,8 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Collections;
 import java.util.Date;
 import org.openmrs.Location;
+import org.openmrs.Program;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -99,6 +101,8 @@ public class HivCohortQueries {
    */
   @DocumentedDefinition(value = "transferredFromOtherHealthFacility")
   public CohortDefinition getPatientsTransferredFromOtherHealthFacility() {
+    // TODO refactor this method, use #getPatientsInProgramWithStateDuringPeriod(Program,
+    // ProgramWorkflowState)
     SqlCohortDefinition transferredFromOtherHealthFacility = new SqlCohortDefinition();
     transferredFromOtherHealthFacility.setName("transferredFromOtherHealthFacility");
     String query =
@@ -124,6 +128,22 @@ public class HivCohortQueries {
     transferredFromOtherHealthFacility.addParameter(
         new Parameter("location", "location", Location.class));
     return transferredFromOtherHealthFacility;
+  }
+
+  public CohortDefinition getPatientsInArtCareTransferredFromOtherHealthFacility() {
+    Program hivCareProgram = hivMetadata.getHIVCareProgram();
+    ProgramWorkflowState transferredFrom =
+        hivMetadata.getArtCareTransferredFromOtherHealthFacilityWorkflowState();
+    return genericCohortQueires.getPatientsBasedOnPatientStates(
+        hivCareProgram.getProgramId(), transferredFrom.getProgramWorkflowStateId());
+  }
+
+  public CohortDefinition getPatientsInArtCareTransferredOutToAnotherHealthFacility() {
+    Program hivCareProgram = hivMetadata.getHIVCareProgram();
+    ProgramWorkflowState state =
+        hivMetadata.getArtCareTransferredOutToAnotherHealthFacilityWorkflowState();
+    return genericCohortQueires.getPatientsBasedOnPatientStatesBeforeDate(
+        hivCareProgram.getProgramId(), state.getProgramWorkflowStateId());
   }
 
   /**
@@ -154,5 +174,55 @@ public class HivCohortQueries {
     patientWithHistoricalDrugStartDateObs.addParameter(
         new Parameter("location", "location", Location.class));
     return patientWithHistoricalDrugStartDateObs;
+  }
+
+  public CohortDefinition getPatientsInArtCareWhoAbandoned() {
+    Program hivCareProgram = hivMetadata.getHIVCareProgram();
+    ProgramWorkflowState abandoned = hivMetadata.getArtCareAbandonedWorkflowState();
+    return genericCohortQueires.getPatientsBasedOnPatientStatesBeforeDate(
+        hivCareProgram.getProgramId(), abandoned.getProgramWorkflowStateId());
+  }
+
+  public CohortDefinition getPatientsInArtCareWhoDied() {
+    Program hivCareProgram = hivMetadata.getHIVCareProgram();
+    ProgramWorkflowState dead = hivMetadata.getArtCareDeadWorkflowState();
+    return genericCohortQueires.getPatientsBasedOnPatientStatesBeforeDate(
+        hivCareProgram.getProgramId(), dead.getProgramWorkflowStateId());
+  }
+
+  public CohortDefinition getPatientsInArtCareWhoInitiatedArt() {
+    Program hivCareProgram = hivMetadata.getHIVCareProgram();
+    ProgramWorkflowState initiatedArt = hivMetadata.getArtCareInitiatedWorkflowState();
+    return genericCohortQueires.getPatientsBasedOnPatientStatesBeforeDate(
+        hivCareProgram.getProgramId(), initiatedArt.getProgramWorkflowStateId());
+  }
+
+  public CohortDefinition getPatientsInArtWhoSuspendedTreatment() {
+    ProgramWorkflowState suspendedTreatment = hivMetadata.getArtSuspendedTreatmentWorkflowState();
+    Program artProgram = hivMetadata.getARTProgram();
+    return genericCohortQueires.getPatientsBasedOnPatientStatesBeforeDate(
+        artProgram.getProgramId(), suspendedTreatment.getProgramWorkflowStateId());
+  }
+
+  public CohortDefinition getPatientsInArtTransferredOutToAnotherHealthFacility() {
+    Program artProgram = hivMetadata.getARTProgram();
+    ProgramWorkflowState state =
+        hivMetadata.getArtTransferredOutToAnotherHealthFacilityWorkflowState();
+    return genericCohortQueires.getPatientsBasedOnPatientStatesBeforeDate(
+        artProgram.getProgramId(), state.getProgramWorkflowStateId());
+  }
+
+  public CohortDefinition getPatientsInArtWhoDied() {
+    Program artProgram = hivMetadata.getARTProgram();
+    ProgramWorkflowState dead = hivMetadata.getArtDeadWorkflowState();
+    return genericCohortQueires.getPatientsBasedOnPatientStatesBeforeDate(
+        artProgram.getProgramId(), dead.getProgramWorkflowStateId());
+  }
+
+  public CohortDefinition getPatientsInArtWhoAbandoned() {
+    Program artProgram = hivMetadata.getARTProgram();
+    ProgramWorkflowState state = hivMetadata.getArtAbandonedWorkflowState();
+    return genericCohortQueires.getPatientsBasedOnPatientStatesBeforeDate(
+        artProgram.getProgramId(), state.getProgramWorkflowStateId());
   }
 }

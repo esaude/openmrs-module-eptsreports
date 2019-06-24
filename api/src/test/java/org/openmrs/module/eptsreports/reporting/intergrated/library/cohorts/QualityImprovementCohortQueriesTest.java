@@ -159,8 +159,6 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
     assertNotNull(evaluatedCohort.getMemberIds());
   }
 
- 
-
   @Test
   public void getPregnantPatientEnrolledInTARVService() throws EvaluationException {
     CohortDefinition cohortDefinition =
@@ -176,8 +174,6 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
     assertEquals(1, evaluatedCohort.getMemberIds().size());
     assertTrue(evaluatedCohort.getMemberIds().contains(1003));
   }
-
-
 
   private Date getDataFinalAvaliacao() {
     return DateUtil.getDateTime(2019, 5, 26);

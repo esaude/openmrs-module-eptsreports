@@ -35,6 +35,7 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
+  // concept_id=1256
   public Concept getStartDrugsConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.startDrugsConceptUuid");
@@ -48,6 +49,14 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
+  public Concept getTransferOutToAnotherFacilityConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.transferOutToAnotherFacilityConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id=1190
   public Concept getHistoricalDrugStartDateConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -183,5 +192,28 @@ public class CommonMetadata extends Metadata {
     return getConcept(
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.chronicMalnutritionConceptUuid"));
+  }
+
+  // concept_id=5599
+  public Concept getStiScreeningConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.stiScreeningConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id=6126
+  public Concept getCotrimoxazoleProphylaxisStartDateConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.cotrimoxazoleProphylaxisStartDateConceptUuid");
+    return getConcept(uuid);
+  }
+
+  //  concept_id=6128
+  public Concept getIsoniazidProphylaxisStartDateConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.isoniazidProphylaxisStartDateConceptUuid");
+    return getConcept(uuid);
   }
 }

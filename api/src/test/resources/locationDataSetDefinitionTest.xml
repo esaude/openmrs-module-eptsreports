@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+	License, v. 2.0. If a copy of the MPL was not distributed with this file,
+	You can obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed
+	under the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+	Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+	graphic logo is a trademark of OpenMRS Inc. -->
+<dataset>
+    <location location_id="207" name="CS Mavudzi Ponte" description="Centro de Saude  Mavudzi Ponte"
+              state_province="Tete" country="Moçambique" creator="1" date_created="2013-12-12 16:03:40"
+              county_district="Chiuta" retired="0" uuid="26a7c167-832c-4627-af69-d30ce4716ae5"/>
+</dataset>

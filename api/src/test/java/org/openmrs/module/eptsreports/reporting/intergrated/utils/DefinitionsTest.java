@@ -3,6 +3,7 @@ package org.openmrs.module.eptsreports.reporting.intergrated.utils;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
+import org.openmrs.Cohort;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -54,12 +55,29 @@ public abstract class DefinitionsTest extends BaseModuleContextSensitiveTest {
     return Context.getLocationService().getLocation(1);
   }
 
+  protected DataSet evaluateDatasetDefinition(DataSetDefinition cd, Cohort baseCohort)
+      throws EvaluationException {
+    EvaluationContext context = new EvaluationContext();
+    context.addParameterValue("startDate", getStartDate());
+    context.addParameterValue("endDate", getEndDate());
+    context.addParameterValue("location", getLocation());
+    context.setBaseCohort(baseCohort);
+    addParameters(cd);
+    return Context.getService(DataSetDefinitionService.class).evaluate(cd, context);
+  }
+
   protected DataSet evaluateDatasetDefinition(DataSetDefinition cd) throws EvaluationException {
     EvaluationContext context = new EvaluationContext();
     context.addParameterValue("startDate", getStartDate());
     context.addParameterValue("endDate", getEndDate());
     context.addParameterValue("location", getLocation());
     addParameters(cd);
+    return Context.getService(DataSetDefinitionService.class).evaluate(cd, context);
+  }
+
+  protected DataSet evaluateDatasetDefinition(
+      DataSetDefinition cd, Map<Parameter, Object> parameters) throws EvaluationException {
+    EvaluationContext context = getEvaluationContext(cd, parameters);
     return Context.getService(DataSetDefinitionService.class).evaluate(cd, context);
   }
 

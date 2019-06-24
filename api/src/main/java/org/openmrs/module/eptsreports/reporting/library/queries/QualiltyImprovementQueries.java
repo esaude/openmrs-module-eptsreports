@@ -11,23 +11,22 @@ public class QualiltyImprovementQueries {
    * @return
    */
   public static String getPatientStartedTarvInInclusionPeriodWithAtLeastOneEncounter(
-      int arvAdultInitialEncounterType,  
-      int adultoSeguimentoEncounterType,  
-      int arvPediatriaSeguimentoEncounterType,  
-      int arvPharmaciaEncounterType,  
-      int arvPlan,  
-      int startDrugsConcept,  
-      int arvStartDate,  
-      int arvProgram,  
-      int ptvProgram,  
-      int numberOfWeekPregnant,  
-      int pregnantConcept, 
-      int pregancyConcept,  
-      int pStateActivePrioART,  
-      int transferredOutToAnotherHealthFacilityWorkflowState, 
-      int pateintTransferedFromOtherFacilityWorkflowState,  
-      int psPregnant  
-      ) {
+      int arvAdultInitialEncounterType,
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int arvPharmaciaEncounterType,
+      int arvPlan,
+      int startDrugsConcept,
+      int arvStartDate,
+      int arvProgram,
+      int ptvProgram,
+      int numberOfWeekPregnant,
+      int pregnantConcept,
+      int pregancyConcept,
+      int pStateActivePrioART,
+      int transferredOutToAnotherHealthFacilityWorkflowState,
+      int pateintTransferedFromOtherFacilityWorkflowState,
+      int psPregnant) {
     String query =
         "select inicio.patient_id "
             + "from "
@@ -287,9 +286,9 @@ public class QualiltyImprovementQueries {
    * @return String
    */
   public static String getPatientWithTrackInEachTBEncounter(
-      int adultoSeguimentoEncounterType,  
-      int arvPediatriaSeguimentoEncounterType,  
-      int tbScreeningConcept) {  
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int tbScreeningConcept) {
     String query =
         "select consulta.patient_id "
             + "from "
@@ -329,20 +328,19 @@ public class QualiltyImprovementQueries {
    * @return
    */
   public static String getPragnantPatientsEnrolledInARVThatStartedInInclusionPeriodPregnantSample(
-      int arvAdultInitialEncounterType, 
-      int adultoSeguimentoEncounterType,  
-      int arvPediatriaSeguimentoEncounterType,  
-      int arvPharmaciaEncounterType,  
-      int pregnantConcept,  
-      int numberOfWeekPregnant,  
-      int pregnancyDueDateConcept,  
-      int ptvEtvProgram, 
-      int arvPlan,  
-      int startDrugsConcept,  
-      int artProgram, 
-      int arvStartDate, 
-      int pregancyConcept  
-      ) {
+      int arvAdultInitialEncounterType,
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int arvPharmaciaEncounterType,
+      int pregnantConcept,
+      int numberOfWeekPregnant,
+      int pregnancyDueDateConcept,
+      int ptvEtvProgram,
+      int arvPlan,
+      int startDrugsConcept,
+      int artProgram,
+      int arvStartDate,
+      int pregancyConcept) {
 
     String query =
         "select gravida.patient_id  "
@@ -511,11 +509,10 @@ public class QualiltyImprovementQueries {
    * @return
    */
   public static String getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriodAndCompleted(
-      int isoniazidProphylaxisStartDate, 
-      int isoniazidProphylaxisEndDate,  
-      int adultoSeguimentoEncounterType, 
-      int arvPediatriaSeguimentoEncounterType  
-      ) {
+      int isoniazidProphylaxisStartDate,
+      int isoniazidProphylaxisEndDate,
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaSeguimentoEncounterType) {
     String query =
         "select inicio.patient_id  "
             + "from  "
@@ -565,10 +562,9 @@ public class QualiltyImprovementQueries {
    * @return
    */
   public static String getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriod(
-      int adultoSeguimentoEncounterType,  
-      int arvPediatriaSeguimentoEncounterType,  
-      int isoniazidProphylaxisStartDate  
-      ) {
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int isoniazidProphylaxisStartDate) {
 
     String query =
         "select p.patient_id  "
@@ -601,10 +597,9 @@ public class QualiltyImprovementQueries {
    * @return
    */
   public static String getPatientsWithEnconterInPeriodAndHadScreeningForSTI(
-      int adultoSeguimentoEncounterType,  
-      int arvPediatriaSeguimentoEncounterType,  
-      int screeningForSTIConcept  
-      ) {
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int screeningForSTIConcept) {
     String query =
         "select consulta.patient_id "
             + "from "
@@ -642,13 +637,12 @@ public class QualiltyImprovementQueries {
    * processo (inscritos) e que tiveram CD4 registado dentro de 33 dias após a inscrição
    */
   public static String getPacientsWithCD4RegisteredIn33Days(
-      int arvAdultInitialEncounterType, 
-      int adultoSeguimentoEncounterType,  
-      int pateintActiveOnHIVCareProgramtWorkflowState,  
-      int arvPediatriaInitialEncounterType, 
-      int arvPediatriaSeguimentoEncounterType,  
-      int cd4AbsoluteOBSConcept  
-      ) {
+      int arvAdultInitialEncounterType,
+      int adultoSeguimentoEncounterType,
+      int pateintActiveOnHIVCareProgramtWorkflowState,
+      int arvPediatriaInitialEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int cd4AbsoluteOBSConcept) {
     String query =
         "Select 	inscricao.patient_id "
             + "from 	(	Select 	p.patient_id,min(encounter_datetime) as data_inscricao "
@@ -708,17 +702,16 @@ public class QualiltyImprovementQueries {
    * @return
    */
   public static String getPatientsWhomStartedARVIn15Days(
-      int arvAdultInitialEncounterType,   
-      int adultoSeguimentoEncounterType,  
-      int arvPediatriaInitialEncounterType, 
-      int arvPediatriaSeguimentoEncounterType, 
-      int arvPharmaciaEncounterType,  
-      int arvPlan,  
-      int startDrugsConcept,  
-      int arvStartDateConcept,  
-      int hivCareProgram,  
-      int artProgram 
-      ) {
+      int arvAdultInitialEncounterType,
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaInitialEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int arvPharmaciaEncounterType,
+      int arvPlan,
+      int startDrugsConcept,
+      int arvStartDateConcept,
+      int hivCareProgram,
+      int artProgram) {
 
     String query =
         "select inicio_real.patient_id  "
@@ -845,15 +838,14 @@ public class QualiltyImprovementQueries {
    * @return String
    */
   public static String getPacientsStartedARVInAPeriodAndHadEncounter33DaysAfterBegining(
-      int adultoSeguimentoEncounterType,  
-      int arvPediatriaSeguimentoEncounterType, 
-      int arvPharmaciaEncounterType,  
-      int arvPlan,  
-      int startDrugsConcept,  
-      int arvStartDateConcept,  
-      int artProgram,  
-      int pateintTransferedFromOtherFacilityWorkflowState 
-      ) {
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int arvPharmaciaEncounterType,
+      int arvPlan,
+      int startDrugsConcept,
+      int arvStartDateConcept,
+      int artProgram,
+      int pateintTransferedFromOtherFacilityWorkflowState) {
 
     String query =
         "select inicio_real.patient_id  "
@@ -969,14 +961,13 @@ public class QualiltyImprovementQueries {
    * @return
    */
   public static String getPatientsWhoHadAtLeast3EncountersIn3MonthsAfterBeginingART(
-      int adultoSeguimentoEncounterType,  
-      int arvPediatriaSeguimentoEncounterType, 
-      int arvPharmaciaEncounterType,  
-      int arvPlan,  
-      int startDrugsConcept,  
-      int arvStartDateConcept,  
-      int artProgram  
-      ) {
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int arvPharmaciaEncounterType,
+      int arvPlan,
+      int startDrugsConcept,
+      int arvStartDateConcept,
+      int artProgram) {
 
     String query =
         "select inicio_real.patient_id  "
@@ -1082,18 +1073,17 @@ public class QualiltyImprovementQueries {
    * @return
    */
   public static String getPatientWhoAtLeast3JoiningEvaluationWithin3MothsARIEL(
-      int adultoSeguimentoEncounterType,  
-      int arvPediatriaSeguimentoEncounterType,  
-      int arvPharmaciaEncounterType,  
-      int arvPlan, 
-      int startDrugsConcept,  
-      int arvStartDateConcept,  
-      int artProgram, 
-      int coucelingActivityConcept,  
-      int prevencaoPositivaInicialEncounterType,  
-      int prevencaoPositivaSeguimentoEncounterType,  
-      int adherenceCounselingConcept  
-      ) {
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int arvPharmaciaEncounterType,
+      int arvPlan,
+      int startDrugsConcept,
+      int arvStartDateConcept,
+      int artProgram,
+      int coucelingActivityConcept,
+      int prevencaoPositivaInicialEncounterType,
+      int prevencaoPositivaSeguimentoEncounterType,
+      int adherenceCounselingConcept) {
     String query =
         "select inicio_real.patient_id  "
             + "from  "
@@ -1212,14 +1202,13 @@ public class QualiltyImprovementQueries {
    * @return String
    */
   public static String getPacientesWithMonthEncountersAfterInitialization(
-      int adultoSeguimentoEncounterType,  
-      int arvPediatriaSeguimentoEncounterType,  
-      int arvPharmaciaEncounterType,  
-      int arvPlan,  
-      int startDrugsConcept,  
-      int arvStartDateConcept,  
-      int artProgram  
-      ) {
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int arvPharmaciaEncounterType,
+      int arvPlan,
+      int startDrugsConcept,
+      int arvStartDateConcept,
+      int artProgram) {
 
     String query =
         "select domain.patient_id "
@@ -1336,18 +1325,17 @@ public class QualiltyImprovementQueries {
    * @return
    */
   public static String getPatientsWithAPSSMonthEncountersAfterTARVInitialization(
-      int adultoSeguimentoEncounterType,  
-      int arvPediatriaSeguimentoEncounterType, 
-      int arvPharmaciaEncounterType, 
-      int arvPlan,  
-      int startDrugsConcept,  
-      int arvStartDateConcept,  
-      int artProgram,  
-      int coucelingActivityConcept, 
-      int prevencaoPositivaInicialEncounterType,  
-      int prevencaoPositivaSeguimentoEncounterType, 
-      int adherenceCounselingConcept  
-      ) {
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int arvPharmaciaEncounterType,
+      int arvPlan,
+      int startDrugsConcept,
+      int arvStartDateConcept,
+      int artProgram,
+      int coucelingActivityConcept,
+      int prevencaoPositivaInicialEncounterType,
+      int prevencaoPositivaSeguimentoEncounterType,
+      int adherenceCounselingConcept) {
 
     String query =
         "select patient_id  "
@@ -1510,13 +1498,12 @@ public class QualiltyImprovementQueries {
    * @return query
    */
   public static String getPatientsWithCD4GreterThan200ORCVLessThan1000InLast12Months(
-      int adultoSeguimentoEncounterType,  
-      int arvPediatriaSeguimentoEncounterType,  
-      int misauLaboratorioEncounterType,  
-      int cd4AbsoluteConcept,  
-      int cd4AbsoluteOBSConcept,  
-      int hivViralLoadConcept  
-      ) {
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int misauLaboratorioEncounterType,
+      int cd4AbsoluteConcept,
+      int cd4AbsoluteOBSConcept,
+      int hivViralLoadConcept) {
     String query =
         "Select ultima_carga.patient_id "
             + "from "
@@ -1588,14 +1575,13 @@ public class QualiltyImprovementQueries {
    * @return query
    */
   public static String getPatientsInTARVMoreThan6Months(
-      int adultoSeguimentoEncounterType,  
-      int arvPediatriaSeguimentoEncounterType,  
-      int arvPharmaciaEncounterType, 
-      int arvPlan,  
-      int startDrugsConcept,  
-      int arvStartDateConcept,  
-      int artProgram  
-      ) {
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int arvPharmaciaEncounterType,
+      int arvPlan,
+      int startDrugsConcept,
+      int arvStartDateConcept,
+      int artProgram) {
     String query =
         "select patient_id  "
             + "from  "
@@ -1672,8 +1658,7 @@ public class QualiltyImprovementQueries {
    * @param artProgram
    * @return query
    */
-  public static String getPatientEnrolledARTProgramFinalPeriod(int artProgram  
-      ) {
+  public static String getPatientEnrolledARTProgramFinalPeriod(int artProgram) {
     String query =
         "select 	pg.patient_id  "
             + "from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id  "
@@ -1688,12 +1673,11 @@ public class QualiltyImprovementQueries {
    * @param artProgram
    */
   public static String getPatientWhoCameOutARTProgramFinalPeriod(
-      int artProgram,  
-      int transferredOutToAnotherHealthFacilityWorkflowState,  
-      int suspendedTreatmentWorkflowState, 
-      int abandonedWorkflowState,  
-      int patientHasDiedWorkflowState  
-      ) {
+      int artProgram,
+      int transferredOutToAnotherHealthFacilityWorkflowState,
+      int suspendedTreatmentWorkflowState,
+      int abandonedWorkflowState,
+      int patientHasDiedWorkflowState) {
     String query =
         "select 	pg.patient_id  "
             + "			from 	patient p   "
@@ -1708,10 +1692,9 @@ public class QualiltyImprovementQueries {
         transferredOutToAnotherHealthFacilityWorkflowState,
         suspendedTreatmentWorkflowState,
         abandonedWorkflowState,
-        patientHasDiedWorkflowState);  
+        patientHasDiedWorkflowState);
   }
 
- 
   /**
    * ABANDONO NÃO NOTIFICADO - TARV São pacientes que desde a ultima data marcada para levantamento
    * até a data final passam mais de 60 dias sem voltar e que ainda não foram notificados como
@@ -1727,15 +1710,14 @@ public class QualiltyImprovementQueries {
   public static String getPatientWhichMoreThan60DaysPassedWithoutReturnAndNotNitifiedAsAbandonment(
       int adultoSeguimentoEncounterType,
       int arvPediatriaSeguimentoEncounterType,
-      int arvPharmaciaEncounterType, 
+      int arvPharmaciaEncounterType,
       int returnVisitDateForArvDrugConcept,
       int artProgram,
-      int returnVisitDateConcept, 
-      int transferredOutToAnotherHealthFacilityWorkflowState, 
-      int suspendedTreatmentWorkflowState, 
-      int abandonedWorkflowState, 
-      int patientHasDiedWorkflowState 
-      ) {
+      int returnVisitDateConcept,
+      int transferredOutToAnotherHealthFacilityWorkflowState,
+      int suspendedTreatmentWorkflowState,
+      int abandonedWorkflowState,
+      int patientHasDiedWorkflowState) {
     String query =
         "select patient_id  "
             + "from  "
@@ -1849,14 +1831,13 @@ public class QualiltyImprovementQueries {
    * @return
    */
   public static String getPregnantPatientEnrolledInTARVService(
-      int pregnantConcept, 
-      int pregnancyDueDateConcept, 
-      int numberOfWeekPregnant, 
+      int pregnantConcept,
+      int pregnancyDueDateConcept,
+      int numberOfWeekPregnant,
       int arvAdultInitialEncounterType,
-      int adultoSeguimentoEncounterType, 
-      int ptvEtvProgram, 
-      int pregancyConcept 
-      ) {
+      int adultoSeguimentoEncounterType,
+      int ptvEtvProgram,
+      int pregancyConcept) {
     String query =
         "Select 	p.patient_id  "
             + "from 	patient p   "
@@ -1922,9 +1903,7 @@ public class QualiltyImprovementQueries {
    * @param ptvEtvProgram
    */
   public static String getPatientWithDeliveryDate2YearsAgoBreatFeeding(
-      int ptvEtvProgram, 
-      int patientIsBreastfeedingWorkflowState 
-      ) {
+      int ptvEtvProgram, int patientIsBreastfeedingWorkflowState) {
     String query =
         "select 	pg.patient_id  "
             + "from 	patient p   "
@@ -1947,9 +1926,7 @@ public class QualiltyImprovementQueries {
    * @return
    */
   public static String getPatientWithAtLeastOneEncounterInPeriod(
-      int adultoSeguimentoEncounterType, 
-      int arvPediatriaSeguimentoEncounterType
-      ) {
+      int adultoSeguimentoEncounterType, int arvPediatriaSeguimentoEncounterType) {
     String query =
         "Select 	e.patient_id  "
             + "from 	patient p   "
@@ -1967,14 +1944,13 @@ public class QualiltyImprovementQueries {
    * revisão
    */
   public static String getPatientsStartTuberculoseTreatmentNotComplete(
-      int adultoSeguimentoEncounterType, 
-      int arvPediatriaSeguimentoEncounterType, 
-      int tbLivroEncounterType, 
-      int tbRastreioEncounterType, 
-      int tbDrugTreatmentStartDate, 
-      int tbDgrusTreatmentEndDateConcept, 
-      int tbProgram 
-      ) {
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int tbLivroEncounterType,
+      int tbRastreioEncounterType,
+      int tbDrugTreatmentStartDate,
+      int tbDgrusTreatmentEndDateConcept,
+      int tbProgram) {
     String query =
         "select inicio_tb.patient_id  "
             + "from  "
@@ -2048,13 +2024,12 @@ public class QualiltyImprovementQueries {
    * o periodo de reportagem
    */
   public static String getPatientsNotifiedSarcomaKaposi(
-      int stage4PediatricMozambique, 
+      int stage4PediatricMozambique,
       int adultClinicalHistoryUuid,
       int skimExamFindingsConcept,
-      int extremityExamFindingsConcept, 
-      int stateAdultMozambiqueConcept, 
-      int kaposiSarcomaConcept 
-      ) {
+      int extremityExamFindingsConcept,
+      int stateAdultMozambiqueConcept,
+      int kaposiSarcomaConcept) {
 
     String query =
         "select  p.patient_id  "
@@ -2082,10 +2057,9 @@ public class QualiltyImprovementQueries {
    * data marcada está entre 175 a 190 dias
    */
   public static String getPatientsWhoHadEnconterInLast7MonthAndWereMarkedToNextEncounterIn6Months(
-      int adultoSeguimentoEncounterType, 
-      int arvPediatriaSeguimentoEncounterType, 
-      int returnVisitDateConcept 
-      ) {
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int returnVisitDateConcept) {
     String query =
         "select ultimaConsulta.patient_id  "
             + "from  "
@@ -2112,9 +2086,7 @@ public class QualiltyImprovementQueries {
    * meses e que foram marcados para proximo levantamento entre 83-97 dias depois
    */
   public static String getPatientsTookARVInLast5MonthAndWereMarkedToNextEncounter(
-      int arvPharmaciaEncounterType, 
-      int returnVisitDateForArvDrugConcept 
-      ) {
+      int arvPharmaciaEncounterType, int returnVisitDateForArvDrugConcept) {
     String query =
         "select levantamento.patient_id  "
             + "from  "
@@ -2146,15 +2118,14 @@ public class QualiltyImprovementQueries {
    * @return query
    */
   public static String getPatientWhoReceivedViralLoadFindingBetween6to9MonthAfterTARVStart(
-      int adultoSeguimentoEncounterType, 
-      int arvPediatriaSeguimentoEncounterType, 
-      int arvPharmaciaEncounterType, 
-      int arvPlan, 
-      int startDrugsConcept, 
-      int arvStartDateConcept, 
-      int artProgram, 
-      int hivViralLoadConcept 
-      ) {
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int arvPharmaciaEncounterType,
+      int arvPlan,
+      int startDrugsConcept,
+      int arvStartDateConcept,
+      int artProgram,
+      int hivViralLoadConcept) {
 
     String query =
         "select inicio_real.patient_id "
@@ -2242,16 +2213,15 @@ public class QualiltyImprovementQueries {
 
   /** FALHAS IMUNOLOGICAS - SQL */
   public static String getPatientsWithImmunologicFailture(
-      int adultoSeguimentoEncounterType,  
-      int arvPediatriaSeguimentoEncounterType,  
-      int arvPharmaciaEncounterType,  
-      int arvPlan,  
-      int startDrugsConcept,  
-      int arvStartDateConcept, 
-      int cd4AbsoluteConcept, 
-      int cd4AbsoluteOBSConcept, 
-      int artProgram  
-      ) {
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int arvPharmaciaEncounterType,
+      int arvPlan,
+      int startDrugsConcept,
+      int arvStartDateConcept,
+      int cd4AbsoluteConcept,
+      int cd4AbsoluteOBSConcept,
+      int artProgram) {
     String query =
         "Select CD41.patient_id "
             + "from "
@@ -2398,21 +2368,20 @@ public class QualiltyImprovementQueries {
   }
   /** FALHAS CLINICAS - SQL */
   public static String getPatientWithClinicFailtures(
-      int adultoSeguimentoEncounterType,  
-      int arvPediatriaSeguimentoEncounterType,  
-      int arvPharmaciaEncounterType,  
-      int arvPlan,  
-      int startDrugsConcept,  
-      int arvStartDateConcept,  
-      int cd4AbsoluteConcept,  
-      int cd4AbsoluteOBSConcept,  
-      int artProgram,  
-      int transferredFromOtherHealthFacilityWorkflowState,  
-      int currentWhoHivStageConcept, 
-      int who2AdultStageConcept,  
-      int who3AdultStageConcept, 
-      int who4AdultStageConcept  
-      ) {
+      int adultoSeguimentoEncounterType,
+      int arvPediatriaSeguimentoEncounterType,
+      int arvPharmaciaEncounterType,
+      int arvPlan,
+      int startDrugsConcept,
+      int arvStartDateConcept,
+      int cd4AbsoluteConcept,
+      int cd4AbsoluteOBSConcept,
+      int artProgram,
+      int transferredFromOtherHealthFacilityWorkflowState,
+      int currentWhoHivStageConcept,
+      int who2AdultStageConcept,
+      int who3AdultStageConcept,
+      int who4AdultStageConcept) {
     String query =
         "Select ESTADIO1.patient_id "
             + "from "
@@ -2576,13 +2545,12 @@ public class QualiltyImprovementQueries {
 
   /*PACIENTES INSCRITOS NO SERVICO TARV - PERIODO FINAL (SQL)*/
   public static String getPatientsEnrolledInTARVServiceFinalPeriodoSQL(
-      int arvAdultInitialEncounterType, 
-      int arvPediatriaInitialEncounterType,  
-      int tarvService, 
-      int artProgram, 
-      int pateintTransferedFromOtherFacilityHIVCareWorkflowState,  
-      int pateintTransferedFromOtherFacilityWorkflowState  
-      ) {
+      int arvAdultInitialEncounterType,
+      int arvPediatriaInitialEncounterType,
+      int tarvService,
+      int artProgram,
+      int pateintTransferedFromOtherFacilityHIVCareWorkflowState,
+      int pateintTransferedFromOtherFacilityWorkflowState) {
     String query =
         "select p.patient_id  "
             + "from patient p inner join encounter e on e.patient_id=p.patient_id  "

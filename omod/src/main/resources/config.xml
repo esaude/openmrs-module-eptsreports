@@ -134,6 +134,14 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>@MODULE_ID@.transferOutToAnotherFacilityConceptUuid</property>
+		<defaultValue>e1de1cf6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TRANSFERIDO PARA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>@MODULE_ID@.tuberculosisTreatmentPlanConceptUuid</property>
 		<defaultValue>e1d9fbda-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
@@ -228,15 +236,6 @@
 		<defaultValue>e278fa8c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
 			UUID for the S.TARV: PEDIATRIA INICIAL A encounter type
-		</description>
-	</globalProperty>
-	
-	<globalProperty>
-		<property>@MODULE_ID@.sTarvPediatriaInicialBEncounterTypeUuid
-		</property>
-		<defaultValue>e278f5aa-1d5f-11e0-b929-000c29ad1d07</defaultValue>
-		<description>
-			UUID for the S.TARV: PEDIATRIA INICIAL B encounter type
 		</description>
 	</globalProperty>
 
@@ -366,6 +365,94 @@
 		<defaultValue>e1de1bfc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
 			UUID for the REINICIAR concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.adultInitialBEncounterType</property>
+		<defaultValue>e278f1c2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: ADULTO INICIAL B encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.pediatriaInitialBEncounterType</property>
+		<defaultValue>e278f5aa-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: PEDIATRIA INICIAL B encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.artAconselhamentoEncounterType</property>
+		<defaultValue>e2791472-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: ACONSELHAMENTO encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.artAconselhamentoSeguimentoEncounterType</property>
+		<defaultValue>e2791a62-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: ACONSELHAMENTO SEGUIMENTO encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.activeOnProgramConcept</property>
+		<defaultValue>4a7bec6f-8f27-4da5-b78d-40134c30d3ee</defaultValue>
+		<description>
+			UUID for the ACTIVO NO PROGRAMA encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.urogenitalExamFindingsConcept</property>
+		<defaultValue>e1d86e14-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the EXAME UROGENITAL encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.normalConcept</property>
+		<defaultValue>e1d85b22-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the NORMAL concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.abnormalConcept</property>
+		<defaultValue>e1d85c26-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the ANORMAL concept
+		</description>
+	</globalProperty>
+<!---->
+	<globalProperty>
+		<property>@MODULE_ID@.secretionsConcept</property>
+		<defaultValue>e1dadb40-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the SECRECOES concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.condylomasConcept</property>
+		<defaultValue>e1dadc3a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the CONDILOMAS concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.ulcersConcept</property>
+		<defaultValue>e1dcaaec-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the ULCERAS concept
 		</description>
 	</globalProperty>
 
@@ -787,6 +874,102 @@
 		<defaultValue>e1d90888-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
 			UUID for the     WHO STAGE 4 ADULT  concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.recordPreArtFlowConceptUuid</property>
+		<defaultValue>3c648ee6-1702-4eea-b709-aa007f221f57</defaultValue>
+		<description>
+			UUID for the FLUXO REGISTO PRE-TARV concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.recordArtFlowConceptUuid</property>
+		<defaultValue>20d186bd-9e7f-490f-b5cd-ac3c282cef7e</defaultValue>
+		<description>
+			UUID for the FLUXO REGISTO TARV concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.preArtEncounterTypeUuid</property>
+		<defaultValue>bc30cbe1-85b4-459f-acca-cffc4041a3b8</defaultValue>
+		<description>
+			UUID for the S.TARV: LIVRO PRE-TARV encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.artEncounterTypeUuid</property>
+		<defaultValue>15915fa8-3d94-430b-9adb-14ec806a8ff2</defaultValue>
+		<description>
+			UUID for the S.TARV: LIVRO TARV encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.abandonedConceptUuid</property>
+		<defaultValue>e1de1df0-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the ABANDONO concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.patientHasDiedConceptUuid</property>
+		<defaultValue>e1da766e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the OBITOU concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.preArtBook1ConceptUuid</property>
+		<defaultValue>384750e6-d201-488f-948a-93dc616124b4</defaultValue>
+		<description>
+			UUID for the LIVRO 1 PRE-TARV concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.stiScreeningConceptUuid</property>
+		<defaultValue>794ef662-03bc-4e22-90ff-38742b82827a</defaultValue>
+		<description>
+			UUID for the RASTREIO DE ITS concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.cotrimoxazoleProphylaxisStartDateConceptUuid</property>
+		<defaultValue>56a0216c-cd4b-45d3-9f2b-258e6c021d32</defaultValue>
+		<description>
+			UUID for the DATA DE INICIO DA PROFILAXIA COM COTRIMOXAZOL concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.isoniazidProphylaxisStartDateConceptUuid</property>
+		<defaultValue>6fa92ac9-0a96-4372-9e10-dd9683c19135</defaultValue>
+		<description>
+			UUID for the DATA DE INICIO DA PROFILAXIA COM ISONIAZIDA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.artBook1ConceptUuid</property>
+		<defaultValue>cf5969f2-ab91-4c88-9d48-81b1970eb741</defaultValue>
+		<description>
+			UUID for the BOOK 1 ART concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.suspendedTreatmentConceptUuid</property>
+		<defaultValue>e1de1fee-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the SUSPENDER TRATAMENTO concept
 		</description>
 	</globalProperty>
 
