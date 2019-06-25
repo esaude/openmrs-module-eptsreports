@@ -166,8 +166,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
         && lastVlObs.getObsDatetime() != null
         && criteria != null
         && onArtForMoreThan3Months.contains(pId)
-        && lastVlObs.getObsDatetime().after(latestVlLowerDateLimit)
-        && lastVlObs.getObsDatetime().before(onOrBefore)) {
+        && lastVlObs.getObsDatetime().compareTo(latestVlLowerDateLimit) >= 0
+        && lastVlObs.getObsDatetime().compareTo(onOrBefore) <= 0) {
 
       // get all the VL results for each patient from enrollment
       ListResult vlObsResultFromEndOfReportingPeriod =
@@ -318,8 +318,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
     // populate viralLoadForPatientTakenWithin12Months with obs which fall within the 12month window
     for (Obs obs : vLoadList) {
       if (obs != null
-          && obs.getObsDatetime().after(latestVlLowerDateLimit)
-          && obs.getObsDatetime().before(onOrBefore)) {
+          && obs.getObsDatetime().compareTo(latestVlLowerDateLimit) >= 0
+          && obs.getObsDatetime().compareTo(onOrBefore) <= 0) {
         viralLoadForPatientTakenWithin12Months.add(obs);
       }
     }
