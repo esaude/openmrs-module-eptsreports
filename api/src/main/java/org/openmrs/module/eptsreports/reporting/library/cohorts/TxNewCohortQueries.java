@@ -195,16 +195,11 @@ public class TxNewCohortQueries {
         Mapped.map(
             hivCohortQueries.getPatientsTransferredFromOtherHealthFacility(),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}");
-    Mapped<CohortDefinition> restartedTreatment =
-        Mapped.map(
-            hivCohortQueries.getPatientsWhoRestartedTreatment(),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}");
 
     txNewComposition.getSearches().put("startedART", startedART);
     txNewComposition.getSearches().put("transferredIn", transferredIn);
-    txNewComposition.getSearches().put("restartedTreatment", restartedTreatment);
 
-    txNewComposition.setCompositionString("startedART NOT (transferredIn OR restartedTreatment)");
+    txNewComposition.setCompositionString("startedART NOT transferredIn");
     return txNewComposition;
   }
 }
