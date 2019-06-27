@@ -385,8 +385,8 @@ public class EptsCalculationUtils {
   public static boolean anyObsBetween(List<Obs> vlObsList, Date startDate, Date endDate) {
     for (Obs obs : vlObsList) {
       if (obs.getObsDatetime() != null
-          && obs.getObsDatetime().after(startDate)
-          && obs.getObsDatetime().before(endDate)) {
+          && obs.getObsDatetime().compareTo(startDate) >= 0
+          && obs.getObsDatetime().compareTo(endDate) <= 0) {
         return true;
       }
     }

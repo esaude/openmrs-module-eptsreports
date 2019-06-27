@@ -157,7 +157,6 @@ public class TxNewCohortQueries {
         EptsReportUtils.map(
             getPatientsWhoGaveBirthWithinReportingPeriod(),
             "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
-    cd.addSearch("FEMININO", EptsReportUtils.map(genderCohorts.femaleCohort(), ""));
     cd.addSearch(
         "LACTANTE",
         EptsReportUtils.map(
@@ -169,8 +168,7 @@ public class TxNewCohortQueries {
                 Arrays.asList(commonMetadata.getYesConcept())),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
 
-    String compositionString =
-        "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE) AND FEMININO";
+    String compositionString = "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE)";
 
     cd.setCompositionString(compositionString);
     return cd;
@@ -197,16 +195,11 @@ public class TxNewCohortQueries {
         Mapped.map(
             hivCohortQueries.getPatientsTransferredFromOtherHealthFacility(),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}");
-    Mapped<CohortDefinition> restartedTreatment =
-        Mapped.map(
-            hivCohortQueries.getPatientsWhoRestartedTreatment(),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}");
 
     txNewComposition.getSearches().put("startedART", startedART);
     txNewComposition.getSearches().put("transferredIn", transferredIn);
-    txNewComposition.getSearches().put("restartedTreatment", restartedTreatment);
 
-    txNewComposition.setCompositionString("startedART NOT (transferredIn OR restartedTreatment)");
+    txNewComposition.setCompositionString("startedART NOT transferredIn");
     return txNewComposition;
   }
 }
