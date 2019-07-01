@@ -4,13 +4,30 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.DataQualityOverallDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SetupDataQualityReport extends EptsDataExportManager {
+
+  private GenericCohortQueries genericCohortQueries;
+
+  private DataQualityOverallDataset dataQualityOveralDataset;
+
+  @Autowired
+  public SetupDataQualityReport(
+      GenericCohortQueries genericCohortQueries,
+      DataQualityOverallDataset dataQualityOveralDataset) {
+    this.genericCohortQueries = genericCohortQueries;
+    this.dataQualityOveralDataset = dataQualityOveralDataset;
+  }
 
   @Override
   public String getExcelDesignUuid() {
@@ -38,6 +55,17 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
+    rd.addParameters(dataQualityOveralDataset.getParameters());
+
+    // add a base cohort here to help in calculations running
+    rd.setBaseCohortDefinition(
+        EptsReportUtils.map(
+            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+    // adding respective data sets
+    rd.addDataSetDefinition(
+        "A",
+        Mapped.mapStraightThrough(dataQualityOveralDataset.constructOveralDataQualityDatset()));
+
     return rd;
   }
 
