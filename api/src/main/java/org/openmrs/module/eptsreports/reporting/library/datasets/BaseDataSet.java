@@ -15,6 +15,8 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.openmrs.Location;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -51,6 +53,15 @@ public abstract class BaseDataSet {
     parameters.add(ReportingConstants.START_DATE_PARAMETER);
     parameters.add(ReportingConstants.END_DATE_PARAMETER);
     parameters.add(ReportingConstants.LOCATION_PARAMETER);
+    return parameters;
+  }
+
+  public List<Parameter> getDataQualityParameters() {
+    List<Parameter> parameters = new ArrayList<Parameter>();
+    parameters.add(ReportingConstants.START_DATE_PARAMETER);
+    parameters.add(ReportingConstants.END_DATE_PARAMETER);
+    parameters.add(new Parameter("locationList", "Facilities", Location.class, List.class, null));
+    parameters.add(new Parameter("states", "States", ProgramWorkflowState.class, List.class, null));
     return parameters;
   }
 

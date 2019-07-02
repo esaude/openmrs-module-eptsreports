@@ -1,7 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
-import java.util.Arrays;
-import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.DataQualityOverallCohorts;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
@@ -16,7 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DataQualityOverallDataset extends BaseDataSet {
+public class SummaryDataQualityDataset extends BaseDataSet {
 
   private EptsCommonDimension eptsCommonDimension;
 
@@ -31,7 +29,7 @@ public class DataQualityOverallDataset extends BaseDataSet {
   private AgeDimensionCohortInterface ageDimensionCohort;
 
   @Autowired
-  public DataQualityOverallDataset(
+  public SummaryDataQualityDataset(
       EptsCommonDimension eptsCommonDimension,
       EptsGeneralIndicator eptsGeneralIndicator,
       DataQualityOverallCohorts DataQualityOverallCohorts,
@@ -46,85 +44,32 @@ public class DataQualityOverallDataset extends BaseDataSet {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     dsd.setName("Data Quality Overall Dataset");
-    dsd.addParameters(getParameters());
+    dsd.addParameters(getDataQualityParameters());
 
-    dsd.addDimension(
-        "age",
-        EptsReportUtils.map(
-            eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
-
-    // adding columns
-    dsd.addColumn(
-        "All",
-        "Total patients",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Total Patients",
-                EptsReportUtils.map(DataQualityOverallCohorts.getAllPatients(), mappings)),
-            mappings),
-        "");
-
-    addRow(
-        dsd,
-        "NPNB1",
-        "Non-pregnant and Non-Breastfeeding Adults (>=15)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Non-pregnant and Non-Breastfeeding Adults (>=15)",
-                EptsReportUtils.map(
-                    DataQualityOverallCohorts.getNonPreganatAndNonBreastfeedingPatients(),
-                    mappings)),
-            mappings),
-        getAdultColumns());
-
-    addRow(
-        dsd,
-        "NPNB2",
-        "Non-pregnant and Non-Breastfeeding Children",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Non-pregnant and Non-Breastfeeding Children",
-                EptsReportUtils.map(
-                    DataQualityOverallCohorts.getNonPreganatAndNonBreastfeedingPatients(),
-                    mappings)),
-            mappings),
-        getChildrenColumns());
+    dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
 
     dsd.addColumn(
-        "Breastfeeding",
-        "Breastfeeding (exclude pregnant)",
+        "EC1",
+        "The patient’s sex is male and the patient is pregnant",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Breastfeeding (exclude pregnant)",
+                "The patient’s sex is male and the patient is pregnant",
+                EptsReportUtils.map(
+                    txNewCohortQueries.getPatientsPregnantEnrolledOnART(), mappings)),
+            mappings),
+        "gender=M");
+    dsd.addColumn(
+        "EC2",
+        "The patient’s sex is male and the patient is breastfeeding",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "The patient’s sex is male and the patient is breastfeeding",
                 EptsReportUtils.map(
                     txNewCohortQueries.getTxNewBreastfeedingComposition(),
                     "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
             mappings),
-        "");
-
-    dsd.addColumn(
-        "Pregnant",
-        "Pregnant (include breastfeeding)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Pregnant (include breastfeeding)",
-                EptsReportUtils.map(
-                    txNewCohortQueries.getPatientsPregnantEnrolledOnART(), mappings)),
-            mappings),
-        "");
+        "gender=M");
 
     return dsd;
-  }
-
-  private List<ColumnParameters> getChildrenColumns() {
-    ColumnParameters twoTo4 = new ColumnParameters("twoTo4", "2 - 4 years", "age=2-4", "01");
-    ColumnParameters fiveTo9 = new ColumnParameters("fiveTo9", "5 - 9 years", "age=5-9", "02");
-    ColumnParameters tenTo14 = new ColumnParameters("tenTo14", "10 - 14 years", "age=10-14", "03");
-
-    return Arrays.asList(twoTo4, fiveTo9, tenTo14);
-  }
-
-  private List<ColumnParameters> getAdultColumns() {
-    return Arrays.asList(new ColumnParameters("15Plus", "15+ years", "age=50+", "01"));
   }
 }
