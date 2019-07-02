@@ -31,7 +31,9 @@ public class SummaryDataQualityCohorts {
 
   /** Get all the patients in the system */
   public CohortDefinition getAllPatients() {
-    return genericCohortQueries.generalSql("All", "SELECT patient_id FROM patient");
+    CohortDefinition cd = genericCohortQueries.generalSql("All", "SELECT patient_id FROM patient");
+    cd.addParameter(new Parameter("state", "States", ProgramWorkflowState.class, List.class, null));
+    return cd;
   }
 
   /**

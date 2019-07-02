@@ -66,7 +66,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
             summaryDataQualityCohorts.getQualityDataReportBaseCohort(),
-            "startDate=${startDate},endDate=${endDate},location=${location},state=${states}"));
+            "startDate=${startDate},endDate=${endDate},location=${location},state=${state}"));
     // adding respective data sets
     rd.addDataSetDefinition(
         "S",
