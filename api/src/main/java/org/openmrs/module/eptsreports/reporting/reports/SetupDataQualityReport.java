@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.SummaryDataQualityDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -19,14 +20,18 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   private GenericCohortQueries genericCohortQueries;
 
-  private SummaryDataQualityDataset dataQualityOveralDataset;
+  private SummaryDataQualityDataset summaryDataQualityDataset;
+
+  private SummaryDataQualityCohorts summaryDataQualityCohorts;
 
   @Autowired
   public SetupDataQualityReport(
       GenericCohortQueries genericCohortQueries,
-      SummaryDataQualityDataset dataQualityOveralDataset) {
+      SummaryDataQualityDataset summaryDataQualityDataset,
+      SummaryDataQualityCohorts summaryDataQualityCohorts) {
     this.genericCohortQueries = genericCohortQueries;
-    this.dataQualityOveralDataset = dataQualityOveralDataset;
+    this.summaryDataQualityDataset = summaryDataQualityDataset;
+    this.summaryDataQualityCohorts = summaryDataQualityCohorts;
   }
 
   @Override
@@ -55,16 +60,17 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
-    rd.addParameters(dataQualityOveralDataset.getDataQualityParameters());
+    rd.addParameters(summaryDataQualityDataset.getDataQualityParameters());
 
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
-            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${locationList}"));
+            summaryDataQualityCohorts.getQualityDataReportBaseCohort(),
+            "startDate=${startDate},endDate=${endDate},location=${location},state=${states}"));
     // adding respective data sets
     rd.addDataSetDefinition(
         "S",
-        Mapped.mapStraightThrough(dataQualityOveralDataset.constructOveralDataQualityDatset()));
+        Mapped.mapStraightThrough(summaryDataQualityDataset.constructSummaryDataQualityDatset()));
 
     return rd;
   }

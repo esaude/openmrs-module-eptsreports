@@ -40,4 +40,14 @@ public class BaseQueries {
             Arrays.asList(parameters.get("hivCareProgramId"), parameters.get("artProgramId")), ',');
     return String.format(query, encounterTypes, programs);
   }
+
+  /**
+   * Find patients who qualifies to be in a set of facilities and state work flows
+   *
+   * @retrun String
+   */
+  public static String getBaseQueryForDataQuality() {
+    return "SELECT p.patient_id from patient p JOIN patient_program pg ON p.patient_id=pg.patient_id JOIN patient_state ps on pg.patient_program_id=ps.patient_program_id "
+        + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0  AND ps.state IN(:state) AND pg.location_id IN(:location) AND p.date_created BETWEEN :startDate AND :endDate";
+  }
 }

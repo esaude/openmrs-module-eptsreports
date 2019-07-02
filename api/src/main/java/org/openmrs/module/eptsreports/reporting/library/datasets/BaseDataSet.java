@@ -60,8 +60,8 @@ public abstract class BaseDataSet {
     List<Parameter> parameters = new ArrayList<Parameter>();
     parameters.add(ReportingConstants.START_DATE_PARAMETER);
     parameters.add(ReportingConstants.END_DATE_PARAMETER);
-    parameters.add(new Parameter("locationList", "Facilities", Location.class, List.class, null));
-    parameters.add(new Parameter("states", "States", ProgramWorkflowState.class, List.class, null));
+    parameters.add(new Parameter("location", "Facilities", Location.class, List.class, null));
+    parameters.add(new Parameter("state", "States", ProgramWorkflowState.class, List.class, null));
     return parameters;
   }
 

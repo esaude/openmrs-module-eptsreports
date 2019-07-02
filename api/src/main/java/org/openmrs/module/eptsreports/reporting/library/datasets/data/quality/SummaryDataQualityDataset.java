@@ -1,16 +1,14 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.DataQualityOverallCohorts;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
-import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,19 +18,15 @@ public class SummaryDataQualityDataset extends BaseDataSet {
 
   private EptsGeneralIndicator eptsGeneralIndicator;
 
-  private DataQualityOverallCohorts DataQualityOverallCohorts;
+  private SummaryDataQualityCohorts DataQualityOverallCohorts;
 
   private TxNewCohortQueries txNewCohortQueries;
-
-  @Autowired
-  @Qualifier("commonAgeDimensionCohort")
-  private AgeDimensionCohortInterface ageDimensionCohort;
 
   @Autowired
   public SummaryDataQualityDataset(
       EptsCommonDimension eptsCommonDimension,
       EptsGeneralIndicator eptsGeneralIndicator,
-      DataQualityOverallCohorts DataQualityOverallCohorts,
+      SummaryDataQualityCohorts DataQualityOverallCohorts,
       TxNewCohortQueries txNewCohortQueries) {
     this.eptsCommonDimension = eptsCommonDimension;
     this.eptsGeneralIndicator = eptsGeneralIndicator;
@@ -40,9 +34,10 @@ public class SummaryDataQualityDataset extends BaseDataSet {
     this.txNewCohortQueries = txNewCohortQueries;
   }
 
-  public DataSetDefinition constructOveralDataQualityDatset() {
+  public DataSetDefinition constructSummaryDataQualityDatset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String mappings =
+        "startDate=${startDate},endDate=${endDate},location=${locationList},states=${states}";
     dsd.setName("Data Quality Overall Dataset");
     dsd.addParameters(getDataQualityParameters());
 
