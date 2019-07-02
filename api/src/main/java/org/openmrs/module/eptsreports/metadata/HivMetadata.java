@@ -310,6 +310,12 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.cd4AbsolutoUuid");
     return getConcept(uuid);
   }
+  // concept_id=730
+  public Concept getCD4PercentConcept() {
+    String uuid =
+            Context.getAdministrationService().getGlobalProperty("eptsreports.cd4PercentUuid");
+    return getConcept(uuid);
+  }
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
