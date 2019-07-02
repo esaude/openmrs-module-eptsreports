@@ -6,14 +6,13 @@ import java.util.Date;
 
 import org.openmrs.Concept;
 import org.openmrs.Location;
+import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.OnArtForAtleastXmonthsCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +26,9 @@ public class EriDSDCohortQueries {
   @Autowired private HivCohortQueries hivCohortQueries;
   @Autowired private HivMetadata hivMetadata;
 
+  /**
+   * D1: Number of active, stable, patients on ART
+   */
   public CohortDefinition getAllPatientsWhosAgeIsGreaterOrEqualTo2() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     String cohortName = "Number of active, stable, patients on ART";
@@ -61,6 +63,11 @@ public class EriDSDCohortQueries {
     cd.setCompositionString("5");
     return cd;
   }
+
+  /**
+   * Filter patients (from 4) who are considered stable according to criteria a,b,c,d,e,f
+   * @return
+   */
   // 5 (a, b, c ,d, e, f)
   private CohortDefinition getPatientsWhoAreStable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -72,14 +79,16 @@ public class EriDSDCohortQueries {
 
     cd.addSearch("5A", EptsReportUtils.map(getPatientsWhoAreStableA(), "onOrBefore=${endDate}"));
     cd.addSearch("5B", EptsReportUtils.map(hivCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(), "onOrBefore=${endDate}"));
-    cd.addSearch("5C", EptsReportUtils.map(getPatientsWhoAreStableC(), "onOrBefore=${endDate}"));
-    cd.addSearch("5D", EptsReportUtils.map(getPatientsWhoAreStableD(), "onOrBefore=${endDate}"));
-    cd.addSearch("5E", EptsReportUtils.map(getPatientsWhoAreStableE(), "onOrBefore=${endDate}"));
+    cd.addSearch("5D", EptsReportUtils.map(getValueCoded(hivMetadata.getCurrentWHOHIVStageConcept(), BaseObsCohortDefinition.TimeModifier.LAST, hivMetadata.getWho3AdultStageConcept(), hivMetadata.getWho4AdultStageConcept()),"onOrAfter=${endDate},onOrBefore=${endDate},locationList=${location}"));
 
     return cd;
   }
 
-  // 5 a
+  /**
+   * 5A
+   * Patients who are on ART for at least 12 months (if patients age >=2 and <=9) or On ART for at least 6 months (if patients age >=10)
+   * @return
+   */
   private CohortDefinition getPatientsWhoAreStableA() {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
@@ -90,26 +99,12 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  //5c
-  private  CohortDefinition getPatientsWhoAreStableC(){
-    return  null;
-  }
-
-  //5d
-  private CohortDefinition getPatientsWhoAreStableD(){
-    return null;
-  }
-
-  //5e
-  private CohortDefinition getPatientsWhoAreStableE(){
-    return null;
-  }
-
-  //5f
-  private CohortDefinition getPatientsWhoAreStableF(){
-    return null;
-  }
-
+  /**
+   * 5C
+   * One CD4 Lab result > 750 cels/mm3 or > 15% in last ART year (if patients age >=2 and <=4) or
+   * One CD4 result > 200 cels/mm3 in last ART year (if patients age >=5 and <=9)
+   * @return
+   */
   private CohortDefinition getCD4CountAndCD4PercentCombined(){
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
@@ -127,17 +122,11 @@ public class EriDSDCohortQueries {
 
   }
 
-  private  CohortDefinition getValueNumeric(Concept concept, Double value){
-    NumericObsCohortDefinition cd =new NumericObsCohortDefinition();
-    cd.setName("Numeric value based on "+ concept);
-    cd.setOperator1(RangeComparator.GREATER_THAN);
-    cd.setValue1(value);
-    cd.setQuestion(concept);
-    cd.setEncounterTypeList(Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType(),hivMetadata.getARVPediatriaSeguimentoEncounterType(),hivMetadata.getMisauLaboratorioEncounterType()));
-
-    return cd;
-  }
-
+  /**
+   *5C (i)
+   * One CD4 Lab result > 750 cels/mm3 or > 15% in last ART year (if patients age >=2 and <=4)
+   * @return
+   */
   private CohortDefinition getCD4CountAndCD4Percent1(){
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
@@ -155,6 +144,11 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
+  /**
+   * 5C (ii)
+   * One CD4 result > 200 cels/mm3 in last ART year (if patients age >=5 and <=9)
+   * @return
+   */
   private CohortDefinition getCD4CountAndCD4Percent2(){
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
@@ -168,6 +162,48 @@ public class EriDSDCohortQueries {
     cd.setCompositionString("(CD4Abs AND Age)");
 
     return cd;
+  }
+
+  /**
+   * 5C
+   * Generic method to find patients with CD4 Count greater than a given value
+   * @param concept
+   * @param value
+   * @return
+   */
+  private  CohortDefinition getValueNumeric(Concept concept, Double value){
+    NumericObsCohortDefinition cd =new NumericObsCohortDefinition();
+    cd.setName("Numeric value based on "+ concept);
+    cd.setOperator1(RangeComparator.GREATER_THAN);
+    cd.setValue1(value);
+    cd.setQuestion(concept);
+    cd.setEncounterTypeList(Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType(), hivMetadata.getARVPediatriaSeguimentoEncounterType(), hivMetadata.getMisauLaboratorioEncounterType()));
+
+    return cd;
+  }
+
+  /**
+   * 5D
+   * Generic method to find patients with active clinical  condition of WHO stages
+   * @param concept
+   * @param timeModifier
+   * @param answers
+   * @return
+   */
+  private CohortDefinition getValueCoded(Concept concept, BaseObsCohortDefinition.TimeModifier timeModifier, Concept ... answers){
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+
+    cd.setName("Coded Values for "+ concept.getName());
+    cd.setQuestion(concept);
+    if(answers.length>0){
+      cd.setValueList(Arrays.asList(answers));
+    }
+
+    cd.setEncounterTypeList(Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType(), hivMetadata.getARVPediatriaSeguimentoEncounterType()));
+    cd.setTimeModifier(timeModifier);
+
+    return cd;
+
   }
 
 
