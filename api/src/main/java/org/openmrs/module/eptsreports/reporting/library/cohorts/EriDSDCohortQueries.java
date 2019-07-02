@@ -1,6 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.Date;
 
 import org.openmrs.Concept;
@@ -108,6 +109,24 @@ public class EriDSDCohortQueries {
   private CohortDefinition getPatientsWhoAreStableF(){
     return null;
   }
+
+  private CohortDefinition getCD4CountAndCD4PercentCombined(){
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("Only if VL does not exist");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch("5CI", EptsReportUtils.map(getCD4CountAndCD4Percent1(), ""));
+    cd.addSearch("5CII", EptsReportUtils.map(getCD4CountAndCD4Percent2(), ""));
+
+    cd.setCompositionString("(5CI OR 5CII)");
+
+    return cd;
+
+  }
+
   private  CohortDefinition getValueNumeric(Concept concept, Double value){
     NumericObsCohortDefinition cd =new NumericObsCohortDefinition();
     cd.setName("Numeric value based on "+ concept);
@@ -119,7 +138,7 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getCD4CountAndCD4Percent(){
+  private CohortDefinition getCD4CountAndCD4Percent1(){
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -135,5 +154,23 @@ public class EriDSDCohortQueries {
 
     return cd;
   }
+
+  private CohortDefinition getCD4CountAndCD4Percent2(){
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch("CD4Abs", EptsReportUtils.map(getValueNumeric(hivMetadata.getCD4AbsoluteOBSConcept(), 200.0),"onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch("Age", EptsReportUtils.map(ageCohortQueries.createXtoYAgeCohort("5-9", 5, 9), "effectiveDate=${endDate}"));
+
+    cd.setCompositionString("(CD4Abs AND Age)");
+
+    return cd;
+  }
+
+
+
 
 }
