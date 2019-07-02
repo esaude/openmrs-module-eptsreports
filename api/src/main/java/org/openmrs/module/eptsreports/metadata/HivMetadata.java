@@ -14,6 +14,7 @@ package org.openmrs.module.eptsreports.metadata;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Program;
+import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.springframework.stereotype.Component;
@@ -47,17 +48,25 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.returnVisitDateForArvDrugConceptUuid");
     return getConcept(uuid);
   }
-
-  public Concept getARVPlanConcept() {
+  // concept_id=6123
+  public Concept getDateOfHivDiagnosisConcept() {
     String uuid =
-        Context.getAdministrationService().getGlobalProperty("eptsreports.arvPlanConceptUuid");
+        Context.getAdministrationService().getGlobalProperty("eptsreports.dateOfHIVDiagnosis");
     return getConcept(uuid);
   }
 
-  // concept_id=21148
-  public Concept getChangeToArtSecondLine() {
+  // concept_id=1190
+  public Concept getARVStartDate() {
     String uuid =
-        Context.getAdministrationService().getGlobalProperty("eptsreports.artSecondLineSwitchUuid");
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.historicalStartDateConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id=1255
+  public Concept getARVPlanConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.arvPlanConceptUuid");
     return getConcept(uuid);
   }
 
@@ -70,6 +79,13 @@ public class HivMetadata extends ProgramsMetadata {
   public Concept getRestartConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.restartConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 1707
+  public Concept getAbandoned() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.abandonedConceptUuid");
     return getConcept(uuid);
   }
 
@@ -177,7 +193,123 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.isoniazidUseConceptUuid");
     return getConcept(uuid);
   }
+  // concept_id=1695
+  public Concept getCD4AbsoluteOBSConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.cd4AbsoluteOBSUuid");
+    return getConcept(uuid);
+  }
 
+  // concept_id=6314
+  public Concept getCoucelingActivityConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.coucelingActivityTypeUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id=5356
+  public Concept getcurrentWhoHivStageConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.currentWhoHivStageUuid");
+    return getConcept(uuid);
+  }
+  // concept_id=1205
+  public Concept getWho2AdultStageConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.who2AdultStageUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id=1206
+  public Concept getWho3AdultStageConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.who3AdultStageUuid");
+    return getConcept(uuid);
+  }
+  // concept_id=1207
+  public Concept getWho4AdultStageConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.who4AdultStageUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 1366
+  public Concept getPatientHasDiedConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.patientHasDiedConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 1709
+  private Concept getSuspendedTreatmentConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.suspendedTreatmentConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 6269
+  private Concept getActiveOnProgramConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.activeOnProgramConcept");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 1126
+  public Concept getUrogenitalExamFindingsConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.urogenitalExamFindingsConcept");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 1115
+  public Concept getNormalConcept() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.normalConcept");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 1116
+  public Concept getAbnormalConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.abnormalConcept");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 1399
+  public Concept getSecretionsConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.secretionsConcept");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 1400
+  public Concept getCondylomasConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.condylomasConcept");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 1602
+  public Concept getUlcersConcept() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.ulcersConcept");
+    return getConcept(uuid);
+  }
+
+  // concept_id=5488
+  public Concept getAdherenceCoucelingConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.adherenceCounselingUuid");
+    return getConcept(uuid);
+  }
+  // concept_id=5497
+  public Concept getCD4AbsoluteConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.cd4AbsolutoUuid");
+    return getConcept(uuid);
+  }
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
@@ -218,13 +350,14 @@ public class HivMetadata extends ProgramsMetadata {
     return getEncounterType(uuid);
   }
 
+  // encounter_type_id = 29
   public EncounterType getEvaluationAndPrepForARTEncounterType() {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.evaluationAndPrepForARTEncounterTypeUuid");
     return getEncounterType(uuid);
   }
-
+  // encounter_type 13
   public EncounterType getMisauLaboratorioEncounterType() {
     String uuid =
         Context.getAdministrationService()
@@ -248,7 +381,39 @@ public class HivMetadata extends ProgramsMetadata {
     return getEncounterType(uuid);
   }
 
+  // encounter_type_id = 1
+  public EncounterType getARVAdultInitialBEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.adultInitialBEncounterType");
+    return getEncounterType(uuid);
+  }
+
+  // encounter_type_id = 3
+  public EncounterType getARVPediatriaInitialBEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.pediatriaInitialBEncounterType");
+    return getEncounterType(uuid);
+  }
+
+  // encounter_type_id = 19
+  public EncounterType getArtAconselhamentoEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.artAconselhamentoEncounterType");
+    return getEncounterType(uuid);
+  }
+
+  // encounter_type_id = 24
+  public EncounterType getArtAconselhamentoSeguimentoEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.artAconselhamentoSeguimentoEncounterType");
+    return getEncounterType(uuid);
+  }
   // Programs
+
   // program_id=2
   public Program getARTProgram() {
     String uuid = Context.getAdministrationService().getGlobalProperty(gpArtProgramUuid);
@@ -274,11 +439,58 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   public ProgramWorkflowState getTransferredFromOtherHealthFacilityWorkflowState() {
+    // TODO Refactor this method, use #getTransferredFromOtherHealthFacilityWorkflowState(Program,
+    // ProgramWorkflow)
     String artProgramUuid = Context.getAdministrationService().getGlobalProperty(gpArtProgramUuid);
     String transferFromOtherUuid =
         Context.getAdministrationService()
             .getGlobalProperty(gpTransferFromOtherFacilityConceptUuid);
     return getProgramWorkflowState(artProgramUuid, "2", transferFromOtherUuid);
+  }
+
+  public ProgramWorkflowState getArtCareTransferredFromOtherHealthFacilityWorkflowState() {
+    Program hivCareProgram = getHIVCareProgram();
+    ProgramWorkflow workflow = getPreArtWorkflow();
+    ProgramWorkflowState state =
+        getTransferredFromOtherHealthFacilityWorkflowState(hivCareProgram, workflow);
+    return state;
+  }
+
+  public ProgramWorkflowState getArtTransferredFromOtherHealthFacilityWorkflowState() {
+    Program hivCareProgram = getARTProgram();
+    ProgramWorkflow workflow = getArtWorkflow();
+    ProgramWorkflowState state =
+        getTransferredFromOtherHealthFacilityWorkflowState(hivCareProgram, workflow);
+    return state;
+  }
+
+  public ProgramWorkflowState getArtCareTransferredOutToAnotherHealthFacilityWorkflowState() {
+    Program hivCareProgram = getHIVCareProgram();
+    ProgramWorkflow workflow = getPreArtWorkflow();
+    ProgramWorkflowState state =
+        getTransferredOutToAnotherHealthFacilityWorkflowState(hivCareProgram, workflow);
+    return state;
+  }
+
+  public ProgramWorkflowState getArtCareActiveOnProgramWorkflowState() {
+    Program hivCareProgram = getHIVCareProgram();
+    ProgramWorkflow workflow = getPreArtWorkflow();
+    ProgramWorkflowState state = getActiveOnProgramWorkflowState(hivCareProgram, workflow);
+    return state;
+  }
+
+  public ProgramWorkflowState getArtActiveOnProgramWorkflowState() {
+    Program hivCareProgram = getARTProgram();
+    ProgramWorkflow workflow = getArtWorkflow();
+    ProgramWorkflowState state = getActiveOnProgramWorkflowState(hivCareProgram, workflow);
+    return state;
+  }
+
+  public ProgramWorkflowState getArtCareAbandonedWorkflowState() {
+    Program hivCareProgram = getHIVCareProgram();
+    ProgramWorkflow workflow = getPreArtWorkflow();
+    ProgramWorkflowState state = getAbandonedWorkflowState(hivCareProgram, workflow);
+    return state;
   }
 
   public ProgramWorkflowState getSuspendedTreatmentWorkflowState() {
@@ -296,15 +508,128 @@ public class HivMetadata extends ProgramsMetadata {
     return getProgramWorkflowState(artProgramUuid, "2", "PATIENT HAS DIED");
   }
 
-  public ProgramWorkflowState getPatientIsPregnantWorkflowState() {
+  public ProgramWorkflowState getPatientIsBreastfeedingWorkflowState() {
+    String ptvProgramUuid =
+        Context.getAdministrationService().getGlobalProperty(gpPtvEtvProgramUuid);
+    return getProgramWorkflowState(ptvProgramUuid, "5", "GAVE BIRTH");
+  }
+
+  public ProgramWorkflowState getArtCareDeadWorkflowState() {
+    Program hivCareProgram = getHIVCareProgram();
+    ProgramWorkflow workflow = getPreArtWorkflow();
+    return getDeadWorkflowState(hivCareProgram, workflow);
+  }
+
+  public ProgramWorkflowState getPateintActiveArtWorkflowState() {
+    String artProgramUuid = Context.getAdministrationService().getGlobalProperty(gpArtProgramUuid);
+    return getProgramWorkflowState(artProgramUuid, "2", "c50d6bdc-8a79-43ae-ab45-abbaa6b45e7d");
+  }
+
+  public ProgramWorkflowState getPateintTransferedFromOtherFacilityWorkflowState() {
+    String artProgramUuid = Context.getAdministrationService().getGlobalProperty(gpArtProgramUuid);
+    return getProgramWorkflowState(artProgramUuid, "2", "TRANSFER FROM OTHER FACILITY");
+  }
+
+  public ProgramWorkflowState getPateintPregnantWorkflowState() {
     String ptvProgramUuid =
         Context.getAdministrationService().getGlobalProperty(gpPtvEtvProgramUuid);
     return getProgramWorkflowState(ptvProgramUuid, "5", "PREGNANT");
   }
 
-  public ProgramWorkflowState getPatientIsBreastfeedingWorkflowState() {
-    String ptvProgramUuid =
-        Context.getAdministrationService().getGlobalProperty(gpPtvEtvProgramUuid);
-    return getProgramWorkflowState(ptvProgramUuid, "5", "GAVE BIRTH");
+  public ProgramWorkflowState getPateintActiveOnHIVCareProgramtWorkflowState() {
+    String hivCareProgramUuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.hivCareProgramUuid");
+    return getProgramWorkflowState(hivCareProgramUuid, "1", "ACTIVE ON PROGRAM");
+  }
+
+  public ProgramWorkflowState getPateintTransferedFromOtherFacilityHIVCareWorkflowState() {
+    String hivCareProgramUuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.hivCareProgramUuid");
+    return getProgramWorkflowState(hivCareProgramUuid, "1", "TRANSFER FROM OTHER FACILITY");
+  }
+
+  public Concept getCurrentWHOHIVStageConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.currentWHOHIVStageConceptUuid"));
+  }
+
+  public ProgramWorkflow getPreArtWorkflow() {
+    return getProgramWorkflow(getHIVCareProgram().getUuid(), "1");
+  }
+
+  private ProgramWorkflowState getActiveOnProgramWorkflowState(
+      Program program, ProgramWorkflow programWorkflow) {
+    Concept activeOnProgram = getActiveOnProgramConcept();
+    return getProgramWorkflowState(
+        program.getUuid(), programWorkflow.getUuid(), activeOnProgram.getUuid());
+  }
+
+  private ProgramWorkflowState getAbandonedWorkflowState(
+      Program program, ProgramWorkflow programWorkflow) {
+    Concept abandoned = getAbandoned();
+    return getProgramWorkflowState(
+        program.getUuid(), programWorkflow.getUuid(), abandoned.getUuid());
+  }
+
+  private ProgramWorkflowState getDeadWorkflowState(
+      Program program, ProgramWorkflow programWorkflow) {
+    Concept dead = getPatientHasDiedConcept();
+    return getProgramWorkflowState(program.getUuid(), programWorkflow.getUuid(), dead.getUuid());
+  }
+
+  private ProgramWorkflowState getTransferredOutToAnotherHealthFacilityWorkflowState(
+      Program program, ProgramWorkflow programWorkflow) {
+    Concept transferOutToAnotherFacility = getTransferOutToAnotherFacilityConcept();
+    return getProgramWorkflowState(
+        program.getUuid(), programWorkflow.getUuid(), transferOutToAnotherFacility.getUuid());
+  }
+
+  private ProgramWorkflowState getTransferredFromOtherHealthFacilityWorkflowState(
+      Program program, ProgramWorkflow programWorkflow) {
+    Concept transferFromOtherFacility = getTransferFromOtherFacilityConcept();
+    return getProgramWorkflowState(
+        program.getUuid(), programWorkflow.getUuid(), transferFromOtherFacility.getUuid());
+  }
+
+  public ProgramWorkflowState getArtCareInitiatedWorkflowState() {
+    Program hivCareProgram = getHIVCareProgram();
+    ProgramWorkflow workflow = getPreArtWorkflow();
+    Concept startDrugs = getStartDrugsConcept();
+    return getProgramWorkflowState(
+        hivCareProgram.getUuid(), workflow.getUuid(), startDrugs.getUuid());
+  }
+
+  public ProgramWorkflowState getArtSuspendedTreatmentWorkflowState() {
+    Program artProgram = getARTProgram();
+    ProgramWorkflow workflow = getArtWorkflow();
+    Concept suspendedTreatment = getSuspendedTreatmentConcept();
+    return getProgramWorkflowState(
+        artProgram.getUuid(), workflow.getUuid(), suspendedTreatment.getUuid());
+  }
+
+  private ProgramWorkflow getArtWorkflow() {
+    return getProgramWorkflow(getARTProgram().getUuid(), "2");
+  }
+
+  public ProgramWorkflowState getArtTransferredOutToAnotherHealthFacilityWorkflowState() {
+    Program artProgram = getARTProgram();
+    ProgramWorkflow workflow = getArtWorkflow();
+    ProgramWorkflowState state =
+        getTransferredOutToAnotherHealthFacilityWorkflowState(artProgram, workflow);
+    return state;
+  }
+
+  public ProgramWorkflowState getArtDeadWorkflowState() {
+    Program artProgram = getARTProgram();
+    ProgramWorkflow workflow = getArtWorkflow();
+    return getDeadWorkflowState(artProgram, workflow);
+  }
+
+  public ProgramWorkflowState getArtAbandonedWorkflowState() {
+    Program artProgram = getARTProgram();
+    ProgramWorkflow workflow = getArtWorkflow();
+    ProgramWorkflowState state = getAbandonedWorkflowState(artProgram, workflow);
+    return state;
   }
 }

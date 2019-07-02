@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public 
+	License, v. 2.0. If a copy of the MPL was not distributed with this file, 
+	You can obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed 
+	under the terms of the Healthcare Disclaimer located at http://openmrs.org/license. 
+	Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS 
+	graphic logo is a trademark of OpenMRS Inc. -->
+
+<dataset>
+
+
+	<!-- global_property -->
+	<global_property
+		property="eptsreports.recordPreArtFlowConceptUuid"
+		property_value="3c648ee6-1702-4eea-b709-aa007f221f57"
+		description="UUID for the FLUXO REGISTO PRE-TARV concept"
+		uuid="25a9f568-7d4f-4496-b372-939950af7ddc" />
+
+
+	<global_property
+		property="eptsreports.recordPreArtFlowConceptUuid"
+		property_value="3c648ee6-1702-4eea-b709-aa007f221f57"
+		description="UUID for the FLUXO REGISTO PRE-TARV concept"
+		uuid="25a9f568-7d4f-4496-b372-939950af7ddc" />
+
+	<global_property
+		property="eptsreports.preArtEncounterTypeUuid"
+		property_value="bc30cbe1-85b4-459f-acca-cffc4041a3b8"
+		description="UUID for the S.TARV: LIVRO PRE-TARV encounter type"
+		uuid="33761a04-6db9-4d17-a5fa-b0ea2bba81ac" />
+
+	<global_property
+		property="eptsreports.recordArtFlowConceptUuid"
+		property_value="20d186bd-9e7f-490f-b5cd-ac3c282cef7e"
+		description="UUID for the FLUXO REGISTO TARV concept"
+		uuid="623239af-1a54-4a40-bafe-29f9b36375d7" />
+
+	<global_property
+		property="eptsreports.artEncounterTypeUuid"
+		property_value="15915fa8-3d94-430b-9adb-14ec806a8ff2"
+		description="UUID for the S.TARV: LIVRO TARV encounter type"
+		uuid="b2631a2f-a985-4807-be7a-03c8d0942259" />
+
+	<global_property
+		property="eptsreports.artBook1ConceptUuid"
+		property_value="cf5969f2-ab91-4c88-9d48-81b1970eb741"
+		description="UUID for the BOOK 1 ART concept"
+		uuid="e353415a-7f73-464d-b8f1-229dcd864333" />
+
+	<global_property
+		property="eptsreports.hivCareProgramUuid"
+		property_value="7b2e4a0a-d4eb-4df7-be30-78ca4b28ca99"
+		description="UUID for the Programa de seguimento e cuidado aos pacientes HIV+ program"
+		uuid="5edc2d50-2fe1-4a4c-8ff0-db7b585dc023" />
+
+	<global_property
+		property="eptsreports.transferFromOtherFacilityConceptUuid"
+		property_value="e1da7d3a-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the TRANSFERIDO DE concept"
+		uuid="a03044bc-abc9-4e14-9041-1515f7ea2082" />
+
+	<global_property property="eptsreports.artProgramUuid"
+		property_value="efe2481f-9e75-4515-8d5a-86bfde2b5ad3"
+		description="UUID for the SERVICO TARV - TRATAMENTO program"
+		uuid="44ba96fd-55fa-459f-b2f5-c651c6a077aa" />
+
+
+
+	<global_property property="eptsreports.yesConceptUuid"
+		property_value="e1d81b62-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the SIM concept"
+		uuid="05c8573e-8137-4a6a-98d4-c20624d020ec" />
+
+	<global_property
+		property="eptsreports.tbScreeningConceptUuid"
+		property_value="ea1851dc-151b-4c1e-b763-5df48082159d"
+		description="Concept uuid for SCREENING FOR TB"
+		uuid="f1e0594f-f022-4d83-b3a1-40558983f48a" />
+
+	<global_property
+		property="eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid"
+		property_value="e278f956-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the S.TARV: ADULTO SEGUIMENTO encounter type"
+		uuid="11cf6a5c-ae4d-40e3-9512-b4e96ac29a4f" />
+
+	<global_property
+		property="eptsreports.sTarvPediatriaSeguimentoEncounterTypeUuid"
+		property_value="e278fce4-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the S.TARV: PEDIATRIA SEGUIMENTO encounter type"
+		uuid="de8c4056-4da5-4f29-b3f0-e9eddab84fc7" />
+
+	<global_property
+		property="eptsreports.preArtBook1ConceptUuid"
+		property_value="384750e6-d201-488f-948a-93dc616124b4"
+		description="UUID for the LIVRO 1 PRE-TARV concept"
+		uuid="09971fd7-e16b-4c94-bd9d-d1f7b5428143" />
+
+	<global_property
+		property="eptsreports.abandonedConceptUuid"
+		property_value="e1de1df0-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the ABANDONO encounter type"
+		uuid="0045ef1d-3c0e-4b50-9615-14396639b41c" />
+
+	<global_property
+		property="eptsreports.returnVisitDateForArvDrugConceptUuid"
+		property_value="e1e2efd8-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the DATA DO PROXIMO LEVANTAMENTO DE ARV concept"
+		uuid="8a5e6dc4-cf49-47d6-babe-dd6282010a89" />
+
+	<global_property
+		property="eptsreports.returnVisitDateConceptConceptUuid"
+		property_value="e1dae630-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the DATA DE PROXIMA CONSULTA concept"
+		uuid="9ab51c7c-99ee-4ee6-ad5c-b8a9daf65635" />
+
+	<global_property
+		property="eptsreports.sTarvFarmaciaEncounterTypeUuid"
+		property_value="e279133c-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the S.TARV: FARMACIA encounter type"
+		uuid="a26e3062-ef56-498f-b554-09cf39ddeb13" />
+
+
+	<global_property
+		property="eptsreports.sTarvAdultoInitialAEncounterTypeUuid"
+		property_value="e278f820-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the S.TARV: ADULTO INICIAL A encounter type"
+		uuid="e2f1bb99-41ab-45b1-ae31-d6114e78bf11" />
+
+	<global_property
+		property="eptsreports.stiScreeningConceptUuid"
+		property_value="794ef662-03bc-4e22-90ff-38742b82827a"
+		description="UUID for the RASTREIO DE ITS concept"
+		uuid="331e8d0e-1f30-4ef4-a121-775c8796b48f" />
+
+	<global_property
+		property="eptsreports.arvPlanConceptUuid"
+		property_value="e1d9ee10-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the GESTÃO DE TARV concept"
+		uuid="97ae480c-4a2c-4805-b55d-fbf1a19b4dc5" />
+
+	<global_property
+		property="eptsreports.startDrugsConceptUuid"
+		property_value="e1d9ef28-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the INICIAR concept"
+		uuid="9f2b3008-6ff5-44cd-b3b8-9409c823ecb7" />
+
+	<global_property
+		property="eptsreports.historicalStartDateConceptUuid"
+		property_value="e1d8f690-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the DATA DE INICIO DO TARV concept"
+		uuid="d0383547-ee80-4b29-a015-b88d81417225" />
+
+	<global_property
+		property="eptsreports.ptvEtvProgramUuid"
+		property_value="06057245-ca21-43ab-a02f-e861d7e54593"
+		description="UUID for the PTV program"
+		uuid="c02b97b9-722a-4739-a07f-0c1b113ad64a" />
+
+
+	<global_property
+		property="eptsreports.numberOfWeeksPregnantConceptUuid"
+		property_value="e1da0788-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the SEMANAS DE GESTAÇÃO concept"
+		uuid="42c042c7-7c9e-4ba4-a0aa-2ca2d1d89d43" />
+
+
+	<global_property
+		property="eptsreports.pregnantConceptUuid"
+		property_value="e1e056a6-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the GESTANTE concept"
+		uuid="2c5bd76c-305b-49f6-aceb-4ef30e32c658" />
+
+	<global_property
+		property="eptsreports.gestationConceptUuid"
+		property_value="e1cdd58a-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the GESTANTE concept"
+		uuid="81c2b4a8-48b2-43a4-b1a3-a386b135dd5a" />
+
+	<global_property property="eptsreports.tbProgramUuid"
+		property_value="142d23c4-c29f-4799-8047-eb3af911fd21"
+		description="UUID for the Programa de Combate a Tuberculose"
+		uuid="c3a82b0f-1ec4-497e-be07-fe290cc6f381" />
+
+	<global_property
+		property="eptsreports.stage4PediatricMozambiqueUuid"
+		property_value="e1e0c10e-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the STAGE 4 PEDIATRIC, MOZAMBIQUE     concept "
+		uuid="876173bb-e4a4-4db2-be4f-d0a1ba25c910" />
+
+	<global_property
+		property="eptsreports.adultClinicalHistoryUuid"
+		property_value="e1dd41dc-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the ADULT CLINICAL HISTORY concept"
+		uuid="fea14b89-fc79-4ba7-a36e-5001f9627ed1" />
+
+	<global_property
+		property="eptsreports.skimExamFindingsUuid"
+		property_value="e1d8602c-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the SKIN EXAM FINDINGS   concept"
+		uuid="e284989c-1724-4f49-92d1-fadb7dc3095c" />
+
+
+
+	<global_property
+		property="eptsreports.extremityExamFindingsUuid"
+		property_value="e1d86f18-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the EXTREMITY EXAM FINDINGS    concept"
+		uuid="fd7addd8-c30b-4fd3-91ed-79e63707bb6c" />
+
+
+	<global_property
+		property="eptsreports.stateAdultMozambiqueUuid"
+		property_value="e1dc89c2-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the  STAGE 4 ADULT, MOZAMBIQUE     concept"
+		uuid="17098708-3aa5-4eca-b4a0-77147ca0e002" />
+
+
+	<global_property
+		property="eptsreports.kaposiSarcomaUuid"
+		property_value="e1d2984a-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the   KAPOSI'S SARCOMA  concept"
+		uuid="d9e371db-6ab4-4a90-b1fb-31cddcaae2d6" />
+
+
+	<global_property
+		property="eptsreports.dateOfHIVDiagnosis"
+		property_value="54b65bbd-a0b0-4dfa-a3b1-de14d41bc314"
+		description="UUID for the DATE OF HIV+ DIAGNOSIS concept"
+		uuid="b99c8684-8f8d-40fc-a430-922cd2d58a3b" />
+
+
+	<global_property
+		property="eptsreports.sTarvPediatriaInicialAEncounterTypeUuid"
+		property_value="e278fa8c-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the S.TARV: PEDIATRIA INICIAL A encounter type"
+		uuid="8ef3ceab-a626-49eb-9e81-4df5e647eb63" />
+
+
+	<global_property
+		property="eptsreports.DataInicioProfilaxiaIsoniazidaConceptUuid"
+		property_value="6fa92ac9-0a96-4372-9e10-dd9683c19135"
+		description="Data de inicio de profilaxia com Isoniazida"
+		uuid="e0f3d78c-b3d1-4589-bea6-ede9cfaf02a5" />
+
+
+	<global_property
+		property="eptsreports.DataFimProfilaxiaIsoniazidaConceptUuid"
+		property_value="9e555978-3a02-4da4-855e-7b1bfc807347"
+		description="Data de finalizacao de profilaxia com Isoniazida"
+		uuid="83ce1b7d-0dfe-484c-908e-5ad8f387799c" />
+
+	<global_property
+		property="eptsreports.tbScreeningConceptUuid"
+		property_value="ea1851dc-151b-4c1e-b763-5df48082159d"
+		description="Concept uuid for SCREENING FOR TB"
+		uuid="1b550ec6-c3af-470d-b9ee-594d4dcc390b" />
+
+
+	<global_property
+		property="eptsreports.isoniazidUseConceptUuid"
+		property_value="be4a76ca-662a-4c39-903b-71983f5f67c9"
+		description="Uso de Isoniazida"
+		uuid="1651aa25-2e39-4661-968d-bac577639b71" />
+
+	<global_property property="eptsreports.yesConceptUuid"
+		property_value="e1d81b62-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the SIM concept"
+		uuid="37e751e2-0170-4d39-808c-6706a8b5f889" />
+
+	<global_property
+		property="eptsreports.tbRastreioEncounterTypeUuid"
+		property_value="e27915a8-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the TUBERCULOSE: RASTREIO encounter typet"
+		uuid="768e687b-d47d-4db6-8984-2172bcd9d176" />
+
+
+	<global_property
+		property="eptsreports.sTarvPediatriaInicialBEncounterTypeUuid"
+		property_value="e278f5aa-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the S.TARV: PEDIATRIA INICIAL B encounter type"
+		uuid="9e84a0f5-26e4-431d-a8c9-285e2103fb65" />
+
+
+	<global_property
+		property="eptsreports.pregnancyDueDateConceptUuid"
+		property_value="e1dca8ee-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the DATA GRAVIDEZ concept"
+		uuid="fd010886-e32e-45d8-9b62-964e31f97c67" />
+
+	<global_property
+		property="eptsreports.screeningForSTIIuid"
+		property_value="794ef662-03bc-4e22-90ff-38742b82827a"
+		description="UUID for the SCREENING FOR STI concept"
+		uuid="db5f844b-3fa7-4140-af27-4827fd3b289d" />
+
+
+	<global_property
+		property="eptsreports.cd4AbsoluteOBSUuid"
+		property_value="e1dd5ab4-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the  CD4 ABSOLUTE OBS concept"
+		uuid="c87c2165-cbe9-4261-aa7d-72959524b9e3" />
+
+
+	<global_property
+		property="eptsreports.coucelingActivityTypeUuid"
+		property_value="451b1373-1cb8-4164-b746-907588398c1e"
+		description="UUID for the   COUCELING ACTIVITY TYPE concept"
+		uuid="820c2796-6500-4f78-b02c-cfbe61e46110" />
+
+	<global_property
+		property="eptsreports.apssPrevencaoPositivaInicialInicialEncounterTypeUuid"
+		property_value="f0bc6401-4e62-43e5-97e2-6ab027bb0405"
+		description="UUID for the APSS: PREVENÇÃO POSITIVA - INICIAL encounter type"
+		uuid="974ed2ae-91e4-4651-bac2-a640b64a9de7" />
+
+
+	<global_property
+		property="eptsreports.apssPrevencaoPositivaSeguimentoEncounterTypeUuid"
+		property_value="f4aa93fe-8737-4f70-9532-542b768459d7"
+		description="UUUID for the APSS: PREVENÇÃO POSITIVA - SEGUIMENTO encounter type"
+		uuid="3059fd78-4718-420a-864d-e83153c33b82" />
+
+	<global_property
+		property="eptsreports.adherenceCounselingUuid"
+		property_value="e1e68562-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the   ADHERENCE COUNSELING  concept"
+		uuid="1185e94c-49d3-465b-a56b-a25ca0fd88d2" />
+
+	<global_property
+		property="eptsreports.breastfeedingConceptUuid"
+		property_value="bc4fe755-fc8f-49b8-9956-baf2477e8313"
+		description="UUID for the BREASTFEEDING concept"
+		uuid="7c9da4b5-5325-40ec-88e6-ee426146a3f7" />
+
+</dataset>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public 
+	License, v. 2.0. If a copy of the MPL was not distributed with this file, 
+	You can obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed 
+	under the terms of the Healthcare Disclaimer located at http://openmrs.org/license. 
+	Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS 
+	graphic logo is a trademark of OpenMRS Inc. -->
+
+<dataset>
+
+	<!-- gaac -->
+ <schema.gaac  gaac_id="18" name="VIDA Alto Ligonha "
+    start_date="2014-06-13" creator="1"
+    date_created="2014-07-17 13:43:17" voided="0"
+    uuid="2cd0d744-7676-4c63-9d48-cac22f1ba882" location_id="1" />
+
+	<!-- gaac_member -->
+	<gaac_member gaac_member_id="49" gaac_id="18"
+		member_id="2605" start_date="2014-06-13" creator="1"
+		date_created="2014-07-17 13:48:56" voided="0"
+		uuid="c51b6c51-b908-4976-b064-61a598eeab79" />
+
+
+
+	<gaac_member gaac_member_id="50" gaac_id="18"
+		member_id="1932" start_date="2014-06-13" creator="1"
+		date_created="2014-07-17 13:48:56" voided="0"
+		uuid="f6ebe68e-e918-42c8-8072-669b1e223471" />
+</dataset>

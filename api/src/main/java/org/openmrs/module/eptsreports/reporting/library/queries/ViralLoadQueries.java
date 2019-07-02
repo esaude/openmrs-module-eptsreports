@@ -38,7 +38,7 @@ public class ViralLoadQueries {
         + " AND  o.concept_id="
         + vlConceptQuestion
         + " AND o.value_numeric IS NOT NULL AND"
-        + " e.encounter_datetime BETWEEN date_add(:endDate, interval -12 MONTH) and :endDate AND"
+        + " e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate AND"
         + " e.location_id=:location GROUP BY p.patient_id"
         + ") ultima_carga"
         + " INNER JOIN obs ON obs.person_id=ultima_carga.patient_id AND obs.obs_datetime="
@@ -69,7 +69,7 @@ public class ViralLoadQueries {
         + ") AND o.concept_id="
         + vlConceptQuestion
         + " AND o.value_numeric IS NOT NULL AND"
-        + " e.encounter_datetime BETWEEN date_add(:endDate, interval -12 MONTH) AND :endDate AND"
+        + " e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate AND"
         + " e.location_id=:location";
   }
 }

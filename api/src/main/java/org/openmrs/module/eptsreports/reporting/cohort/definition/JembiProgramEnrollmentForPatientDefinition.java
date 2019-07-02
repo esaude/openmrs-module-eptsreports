@@ -23,6 +23,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
+/** Definition for Program Enrollment that considers location */
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.JembiProgramEnrollmentForPatientDefinition")
 public class JembiProgramEnrollmentForPatientDefinition extends BaseDataDefinition

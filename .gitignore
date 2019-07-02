@@ -34,3 +34,6 @@ hs_err_pid*
 
 
 api/.scalastyle
+
+omod/maven-eclipse.xml
+omod/.externalToolBuilders/Maven_Ant_Builder.launch

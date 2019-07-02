@@ -34,6 +34,8 @@ import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculati
 import org.openmrs.module.eptsreports.reporting.calculation.generic.InitialArtStartDateCalculation;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PatientsOnRoutineEnum;
+import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.stereotype.Component;
 
@@ -164,8 +166,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
         && lastVlObs.getObsDatetime() != null
         && criteria != null
         && onArtForMoreThan3Months.contains(pId)
-        && lastVlObs.getObsDatetime().after(latestVlLowerDateLimit)
-        && lastVlObs.getObsDatetime().before(onOrBefore)) {
+        && lastVlObs.getObsDatetime().compareTo(latestVlLowerDateLimit) >= 0
+        && lastVlObs.getObsDatetime().compareTo(onOrBefore) <= 0) {
 
       // get all the VL results for each patient from enrollment
       ListResult vlObsResultFromEndOfReportingPeriod =
@@ -268,8 +270,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
           && allVls.getValueNumeric() != null
           && allVls.getValueNumeric() < 1000) {
         if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN)
-            && allVls.getObsDatetime().compareTo(twelveMonths) < 0
-            && allVls.getObsDatetime().compareTo(fifteenMonths) > 0) {
+            && allVls.getObsDatetime().compareTo(twelveMonths) <= 0
+            && allVls.getObsDatetime().compareTo(fifteenMonths) >= 0) {
           return true;
         } else if (criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)
             && allVls.getObsDatetime().before(lastViralLoadDate)) {
@@ -292,15 +294,15 @@ public class RoutineCalculation extends AbstractPatientCalculation {
       Date nineMonths = EptsCalculationUtils.addMonths(artInitiationDate, 9);
 
       boolean withinAdultLimits =
-          lastViralLoadDate.compareTo(sixMonths) > 0
+          lastViralLoadDate.compareTo(sixMonths) >= 0
               && lastViralLoadDate.compareTo(nineMonths) <= 0;
       boolean withinBreastfeedingLimits =
-          lastViralLoadDate.compareTo(threeMonths) > 0
+          lastViralLoadDate.compareTo(threeMonths) >= 0
               && lastViralLoadDate.compareTo(sixMonths) <= 0;
-
+      Date sixMonthsLess1Day = DateUtil.adjustDate(sixMonths, -1, DurationUnit.DAYS);
       if (criteria.equals(PatientsOnRoutineEnum.ADULTCHILDREN) && withinAdultLimits) {
         return !EptsCalculationUtils.anyObsBetween(
-            allViralLoadForPatient, artInitiationDate, sixMonths);
+            allViralLoadForPatient, artInitiationDate, sixMonthsLess1Day);
       } else if (criteria.equals(PatientsOnRoutineEnum.BREASTFEEDINGPREGNANT)
           && withinBreastfeedingLimits) {
         return !EptsCalculationUtils.anyObsBetween(
@@ -316,8 +318,8 @@ public class RoutineCalculation extends AbstractPatientCalculation {
     // populate viralLoadForPatientTakenWithin12Months with obs which fall within the 12month window
     for (Obs obs : vLoadList) {
       if (obs != null
-          && obs.getObsDatetime().after(latestVlLowerDateLimit)
-          && obs.getObsDatetime().before(onOrBefore)) {
+          && obs.getObsDatetime().compareTo(latestVlLowerDateLimit) >= 0
+          && obs.getObsDatetime().compareTo(onOrBefore) <= 0) {
         viralLoadForPatientTakenWithin12Months.add(obs);
       }
     }
