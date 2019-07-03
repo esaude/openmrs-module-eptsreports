@@ -328,59 +328,64 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.adverseReactionUuid");
     return getConcept(uuid);
   }
-  //Concept 6292
-  public  Concept getNeutropenia(){
+  // Concept 6292
+  public Concept getNeutropenia() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.neutropenia");
     return getConcept(uuid);
   }
-  //Concept 6293
-  public  Concept getPancreatitis(){
+  // Concept 6293
+  public Concept getPancreatitis() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.pancreatitis");
     return getConcept(uuid);
   }
-  //Concept 6294
-  public  Concept getHepatotoxicity(){
-    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.hepatotoxicity");
+  // Concept 6294
+  public Concept getHepatotoxicity() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.hepatotoxicity");
     return getConcept(uuid);
   }
-  //Concept 6295
-  public  Concept getPsychologicalChanges(){
-    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.psychologicalChanges");
+  // Concept 6295
+  public Concept getPsychologicalChanges() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.psychologicalChanges");
     return getConcept(uuid);
   }
-  //Concept 6296
-  public  Concept getMyopathy(){
+  // Concept 6296
+  public Concept getMyopathy() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.myopathy");
     return getConcept(uuid);
   }
-  //Concept 6297
-  public  Concept getSkinAllergy(){
+  // Concept 6297
+  public Concept getSkinAllergy() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.skinAllergy");
     return getConcept(uuid);
   }
-  //Concept 6298
-  public  Concept getLipodystrophy(){
+  // Concept 6298
+  public Concept getLipodystrophy() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.lipodystrophy");
     return getConcept(uuid);
   }
-  //Concept 6299
-  public  Concept getLacticAcidosis(){
-    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.lacticAcidosis");
+  // Concept 6299
+  public Concept getLacticAcidosis() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.lacticAcidosis");
     return getConcept(uuid);
   }
-  //Concept 821
-  public  Concept getPeripheralNeuropathy(){
-    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.peripheralNeuropathy");
+  // Concept 821
+  public Concept getPeripheralNeuropathy() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.peripheralNeuropathy");
     return getConcept(uuid);
   }
-  //Concept 16
-  public  Concept getDiarrhea(){
+  // Concept 16
+  public Concept getDiarrhea() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.diarrhea");
     return getConcept(uuid);
   }
-  //Concept 1406
-  public  Concept getOtherDiagnosis(){
-    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.otherDiagnosis");
+  // Concept 1406
+  public Concept getOtherDiagnosis() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.otherDiagnosis");
     return getConcept(uuid);
   }
 

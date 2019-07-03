@@ -172,7 +172,7 @@ public class EPTSCalculationService {
     }
     return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
   }
-/**
+  /**
    * Evaluates all encounters of a given type of each patient
    *
    * @param encounterTypes

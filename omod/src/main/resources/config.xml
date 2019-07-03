@@ -972,6 +972,105 @@
 			UUID for the SUSPENDER TRATAMENTO concept
 		</description>
 	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.cd4PercentUuid</property>
+		<defaultValue>e1d48fba-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the CD4% concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.poorAdherenceUuid</property>
+		<defaultValue>e1de2b9c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the ADHERENCE concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.adverseReactionUuid</property>
+		<defaultValue>e1e07ece-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT DOES NOT LIKE ARV TREATMENT SIDE EFFECTS concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.neutropenia</property>
+		<defaultValue>9badccfc-4032-4337-b3bb-03f4346578a5</defaultValue>
+		<description>
+			UUID for the NEUTROPENIA concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.pancreatitis</property>
+		<defaultValue>20627f0d-858e-4465-a1e1-04f83a962224</defaultValue>
+		<description>
+			UUID for the PANCREATITIS concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.hepatotoxicity</property>
+		<defaultValue>d416c7b6-6775-4d17-aa99-fb0eb0e128c1</defaultValue>
+		<description>
+			UUID for the HEPATOTOXICITY concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.psychologicalChanges</property>
+		<defaultValue>48328d2d-350b-432a-9621-7f91a7325575</defaultValue>
+		<description>
+			UUID for the PSYCHOLOGICAL CHANGES concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.myopathy</property>
+		<defaultValue>e96ef010-d3a6-486c-94fa-383ee5be5642</defaultValue>
+		<description>
+			UUID for the MYOPATHY concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.skinAllergy</property>
+		<defaultValue>ee90cf97-afff-473e-b1a2-a2bf1c40dc75</defaultValue>
+		<description>
+			UUID for the SKIN ALLERGY concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.lipodystrophy</property>
+		<defaultValue>06637aa6-aeda-4b15-b86c-bd555f69c9af</defaultValue>
+		<description>
+			UUID for the LIPODYSTROPHY concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.lacticAcidosis</property>
+		<defaultValue>4c7089026-9135-4cd8-af18-596e14e4c512</defaultValue>
+		<description>
+			UUID for the LACTIC ACIDOSIS concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.peripheralNeuropathy</property>
+		<defaultValue>e1d5f8be-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PERIPHERAL NEUROPATHY concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.diarrhea</property>
+		<defaultValue>e1cdb97e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the DIARRHEA concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.otherDiagnosis</property>
+		<defaultValue>e1dae234-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the OTHER DIAGNOSIS concept
+		</description>
+	</globalProperty>
+
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
