@@ -32,7 +32,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
     dsd.addParameters(getDataQualityParameters());
 
     dsd.addColumn(
-        "Pregnant",
+        "EC1",
         "Total Male Patients who are pregnant",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicatorsForDataQuality(
@@ -43,7 +43,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
         "");
 
     dsd.addColumn(
-        "Breastfeeding",
+        "EC2",
         "Total Male Patients who are breastfeeding",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicatorsForDataQuality(

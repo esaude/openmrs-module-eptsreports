@@ -67,10 +67,10 @@ public class SummaryDataQualityCohorts {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Pregnant patients recorded in the system and are male");
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addSearch("Male", EptsReportUtils.map(genderCohortQueries.maleCohort(), ""));
-    cd.addSearch("Pregnant", EptsReportUtils.map(pCd, "location=${location}"));
+    cd.addSearch("male", EptsReportUtils.map(genderCohortQueries.maleCohort(), ""));
+    cd.addSearch("pregnant", EptsReportUtils.map(pCd, "location=${location}"));
 
-    cd.setCompositionString("Pregnant AND Male");
+    cd.setCompositionString("pregnant AND male");
     return cd;
   }
 
@@ -84,12 +84,12 @@ public class SummaryDataQualityCohorts {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Breastfeeding patients recorded in the system");
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addSearch("Male", EptsReportUtils.map(genderCohortQueries.maleCohort(), ""));
+    cd.addSearch("male", EptsReportUtils.map(genderCohortQueries.maleCohort(), ""));
     cd.addSearch(
-        "Breastfeeding",
+        "breastfeeding",
         EptsReportUtils.map(getBreastfeedingPatientsComposition(), "location=${location}"));
 
-    cd.setCompositionString("Breastfeeding AND Male");
+    cd.setCompositionString("breastfeeding AND male");
     return cd;
   }
 
