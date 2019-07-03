@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Map;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
@@ -12,6 +13,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.InitialArtStartDateCalculation;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.Age;
+import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.springframework.stereotype.Component;
 
@@ -35,9 +37,17 @@ public class OnArtForAtleastXmonthsCalculation extends AbstractPatientCalculatio
 
     for (Integer ptId : cohort) {
       boolean onArtAtleastMoths = false;
+      Date patientBirthdate = null;
       SimpleResult artStartDateResult = (SimpleResult) arvsInitiationDateMap.get(ptId);
-      Date patientBirthdate = (Date) birthDates.get(ptId);
-      if (artStartDateResult != null) {
+      CalculationResult patientBirthDateResult = birthDates.get(ptId);
+      if (patientBirthDateResult != null) {
+        Birthdate birthdate = (Birthdate) patientBirthDateResult.getValue();
+        if (birthdate != null) {
+          patientBirthdate = birthdate.getBirthdate();
+        }
+      }
+
+      if (artStartDateResult != null && patientBirthdate != null) {
         Date artStartDate = (Date) artStartDateResult.getValue();
         if (artStartDate != null && onOrBefore != null && patientBirthdate != null) {
           Date onArt12Months = EptsCalculationUtils.addMonths(artStartDate, 12);

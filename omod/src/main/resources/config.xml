@@ -1044,7 +1044,7 @@
 	</globalProperty>
 	<globalProperty>
 		<property>eptsreports.lacticAcidosis</property>
-		<defaultValue>4c7089026-9135-4cd8-af18-596e14e4c512</defaultValue>
+		<defaultValue>c7089026-9135-4cd8-af18-596e14e4c512</defaultValue>
 		<description>
 			UUID for the LACTIC ACIDOSIS concept
 		</description>

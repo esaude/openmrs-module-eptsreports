@@ -52,9 +52,9 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             txNewCohortQueries.getTxNewBreastfeedingComposition(),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch("5", EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate}"));
+    cd.addSearch("55", EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate}"));
 
-    cd.setCompositionString("((1 AND 2) AND NOT (3 OR 4)) AND 5");
+    cd.setCompositionString("(1 AND 2) AND NOT (3 OR 4) AND 55");
 
     return cd;
   }
@@ -72,19 +72,19 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    cd.addSearch("5A", EptsReportUtils.map(getPatientsWhoAreStableA(), "onOrBefore=${endDate}"));
+    cd.addSearch("A", EptsReportUtils.map(getPatientsWhoAreStableA(), "onOrBefore=${endDate}"));
     cd.addSearch(
-        "5B",
+        "B",
         EptsReportUtils.map(
             hivCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(),
-            "onOrBefore=${endDate}"));
+            "endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "5C",
+        "C",
         EptsReportUtils.map(
             getCD4CountAndCD4PercentCombined(),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
-        "5D",
+        "D",
         EptsReportUtils.map(
             getValueCoded(
                 hivMetadata.getCurrentWHOHIVStageConcept(),
@@ -93,11 +93,11 @@ public class EriDSDCohortQueries {
                 hivMetadata.getWho4AdultStageConcept()),
             "onOrAfter=${endDate},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
-        "5E",
+        "E",
         EptsReportUtils.map(
             getPoorAdherenceInLast3Visits(), "onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
-        "5F",
+        "F",
         EptsReportUtils.map(
             getValueCoded(
                 hivMetadata.getAdverseReaction(),
@@ -115,7 +115,7 @@ public class EriDSDCohortQueries {
                 hivMetadata.getOtherDiagnosis()),
             "onOrAfter=${endDate},onOrBefore=${endDate},locationList=${location}"));
 
-    cd.setCompositionString("(5A OR 5B OR 5C OR 5D OR 5E)");
+    cd.setCompositionString("(A OR B OR C OR D OR E OR F)");
 
     return cd;
   }
@@ -151,17 +151,17 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "5CI",
+        "CI",
         EptsReportUtils.map(
             getCD4CountAndCD4Percent1(),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
-        "5CII",
+        "CII",
         EptsReportUtils.map(
             getCD4CountAndCD4Percent2(),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
 
-    cd.setCompositionString("(5CI OR 5CII)");
+    cd.setCompositionString("(CI OR CII)");
 
     return cd;
   }
