@@ -1,16 +1,22 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.ProgramWorkflowState;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.DqQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,44 +28,112 @@ public class SummaryDataQualityCohorts {
 
   private TxNewCohortQueries txNewCohortQueries;
 
+  private GenderCohortQueries genderCohortQueries;
+
+  private HivMetadata hivMetadata;
+
   @Autowired
   public SummaryDataQualityCohorts(
-      GenericCohortQueries genericCohortQueries, TxNewCohortQueries txNewCohortQueries) {
+      GenericCohortQueries genericCohortQueries,
+      TxNewCohortQueries txNewCohortQueries,
+      GenderCohortQueries genderCohortQueries,
+      HivMetadata hivMetadata) {
     this.genericCohortQueries = genericCohortQueries;
     this.txNewCohortQueries = txNewCohortQueries;
+    this.genderCohortQueries = genderCohortQueries;
+    this.hivMetadata = hivMetadata;
   }
 
-  /** Get all the patients in the system */
-  public CohortDefinition getAllPatients() {
-    CohortDefinition cd = genericCohortQueries.generalSql("All", "SELECT patient_id FROM patient");
-    cd.addParameter(new Parameter("state", "States", ProgramWorkflowState.class, List.class, null));
+  /**
+   * Get pregnant male patients
+   *
+   * @return Cohort Definition
+   */
+  public CohortDefinition getPregnantMalePatients() {
+
+    SqlCohortDefinition pCd = new SqlCohortDefinition();
+    pCd.setName("Patients patients ");
+    pCd.addParameter(new Parameter("location", "Location", Location.class));
+    pCd.setQuery(
+        DqQueries.getPregnantPatients(
+            hivMetadata.getPregnantConcept().getConceptId(),
+            hivMetadata.getGestationConcept().getConceptId(),
+            hivMetadata.getNumberOfWeeksPregnant().getConceptId(),
+            hivMetadata.getPregnancyDueDate().getConceptId(),
+            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPtvEtvProgram().getProgramId()));
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Pregnant patients recorded in the system and are male");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch("Male", EptsReportUtils.map(genderCohortQueries.maleCohort(), ""));
+    cd.addSearch("Pregnant", EptsReportUtils.map(pCd, "location=${location}"));
+
+    cd.setCompositionString("Pregnant AND Male");
     return cd;
   }
 
   /**
-   * Non pregnant and non breastfeeding patients
+   * Get Breastfeeding male patients
    *
    * @return Cohort Definition
    */
-  public CohortDefinition getNonPreganatAndNonBreastfeedingPatients() {
+  public CohortDefinition getBreastfeedingMalePatients() {
 
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("Non pregnant and non breastfeeding patients");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.setName("Breastfeeding patients recorded in the system");
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addSearch("All", EptsReportUtils.map(getAllPatients(), ""));
-    cd.addSearch(
-        "Pregnant",
-        EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch("Male", EptsReportUtils.map(genderCohortQueries.maleCohort(), ""));
     cd.addSearch(
         "Breastfeeding",
+        EptsReportUtils.map(getBreastfeedingPatientsComposition(), "location=${location}"));
+
+    cd.setCompositionString("Breastfeeding AND Male");
+    return cd;
+  }
+
+  public CohortDefinition getBreastfeedingPatientsComposition() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setDescription("breastfeeding Patients Composition");
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    cd.addSearch(
+        "DATAPARTO",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.setCompositionString("All AND NOT(Pregnant OR Breastfeeding)");
+            txNewCohortQueries.getPatientsWithUpdatedDepartureInART(), "locationList=${location}"));
+    cd.addSearch(
+        "INICIOLACTANTE",
+        EptsReportUtils.map(
+            genericCohortQueries.hasCodedObs(
+                hivMetadata.getCriteriaForArtStart(),
+                BaseObsCohortDefinition.TimeModifier.ANY,
+                SetComparator.IN,
+                Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
+                Arrays.asList(hivMetadata.getBreastfeeding())),
+            "locationList=${location}"));
+    cd.addSearch(
+        "LACTANTEPROGRAMA",
+        EptsReportUtils.map(
+            genericCohortQueries.generalSql(
+                "LACTANTEPROGRAMA",
+                DqQueries.getPatientsWhoGaveBirth(
+                    hivMetadata.getPtvEtvProgram().getProgramId(), 27)),
+            "location=${location}"));
+    cd.addSearch(
+        "LACTANTE",
+        EptsReportUtils.map(
+            genericCohortQueries.hasCodedObs(
+                hivMetadata.getBreastfeeding(),
+                BaseObsCohortDefinition.TimeModifier.ANY,
+                SetComparator.IN,
+                Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
+                Arrays.asList(hivMetadata.getYesConcept())),
+            "locationList=${location}"));
+
+    String compositionString = "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE)";
+
+    cd.setCompositionString(compositionString);
     return cd;
   }
 

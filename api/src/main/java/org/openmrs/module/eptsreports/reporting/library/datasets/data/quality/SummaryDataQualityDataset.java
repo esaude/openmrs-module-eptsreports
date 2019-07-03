@@ -28,17 +28,30 @@ public class SummaryDataQualityDataset extends BaseDataSet {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     String mappings =
         "startDate=${startDate},endDate=${endDate},location=${location},state=${state}";
-    dsd.setName("Data Quality Overall Dataset");
+    dsd.setName("Data Quality Summary Dataset");
     dsd.addParameters(getDataQualityParameters());
 
     dsd.addColumn(
-        "Total",
-        "Total Patients",
+        "Pregnant",
+        "Total Male Patients who are pregnant",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicatorsForDataQuality(
-                "Total Patients",
-                EptsReportUtils.map(summaryDataQualityCohorts.getAllPatients(), mappings)),
-            mappings),
+                "Total Male Patients who are pregnant",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getPregnantMalePatients(), "location=${location}")),
+            "location=${location}"),
+        "");
+
+    dsd.addColumn(
+        "Breastfeeding",
+        "Total Male Patients who are breastfeeding",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicatorsForDataQuality(
+                "Total Male Patients who are breastfeeding",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getBreastfeedingMalePatients(),
+                    "location=${location}")),
+            "location=${location}"),
         "");
 
     return dsd;
