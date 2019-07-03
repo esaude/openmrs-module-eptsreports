@@ -8,6 +8,7 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.OnArtForAtleastXmonthsCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.dsd.PoorAdherenceInLastXClinicalCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.*;
@@ -60,8 +61,9 @@ public class EriDSDCohortQueries {
                         txNewCohortQueries.getTxNewBreastfeedingComposition(),
                         "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
         cd.addSearch("5", EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate}"));
-        // ((1 AND 2) AND NOT (3 OR 4)) AND
-        cd.setCompositionString("5");
+
+        cd.setCompositionString("((1 AND 2) AND NOT (3 OR 4)) AND 5");
+
         return cd;
     }
 
@@ -70,7 +72,6 @@ public class EriDSDCohortQueries {
      *
      * @return
      */
-    // 5 (a, b, c ,d, e, f)
     private CohortDefinition getPatientsWhoAreStable() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
@@ -85,6 +86,7 @@ public class EriDSDCohortQueries {
                 EptsReportUtils.map(
                         hivCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(),
                         "onOrBefore=${endDate}"));
+        cd.addSearch("5C", EptsReportUtils.map(getCD4CountAndCD4PercentCombined(), "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
         cd.addSearch(
                 "5D",
                 EptsReportUtils.map(
@@ -94,9 +96,8 @@ public class EriDSDCohortQueries {
                                 hivMetadata.getWho3AdultStageConcept(),
                                 hivMetadata.getWho4AdultStageConcept()),
                         "onOrAfter=${endDate},onOrBefore=${endDate},locationList=${location}"));
-        //    cd.addSearch("5E", EptsReportUtils.map(getValueCoded(hivMetadata.getPoorAdherence(),
-        // BaseObsCohortDefinition.TimeModifier.LAST, hivMetadata.getNoConcept()),
-        // "onOrAfter=${endDate},onOrBefore=${endDate},locationList=${location}"));
+        cd.addSearch("5E", EptsReportUtils.map(getPoorAdherenceInLast3Visits(),
+                "onOrBefore=${endDate},locationList=${location}"));
         cd.addSearch(
                 "5F",
                 EptsReportUtils.map(
@@ -104,6 +105,9 @@ public class EriDSDCohortQueries {
                                 hivMetadata.getAdverseReaction(),
                                 BaseObsCohortDefinition.TimeModifier.ANY,
                                 hivMetadata.getNeutropenia(), hivMetadata.getPancreatitis(), hivMetadata.getHepatotoxicity(), hivMetadata.getPsychologicalChanges(), hivMetadata.getMyopathy(), hivMetadata.getSkinAllergy(), hivMetadata.getLipodystrophy(), hivMetadata.getLacticAcidosis(), hivMetadata.getPeripheralNeuropathy(), hivMetadata.getDiarrhea(), hivMetadata.getOtherDiagnosis()), "onOrAfter=${endDate},onOrBefore=${endDate},locationList=${location}"));
+
+        cd.setCompositionString("(5A OR 5B OR 5C OR 5D OR 5E)");
+
         return cd;
     }
 
@@ -137,8 +141,8 @@ public class EriDSDCohortQueries {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addParameter(new Parameter("location", "Location", Location.class));
 
-        cd.addSearch("5CI", EptsReportUtils.map(getCD4CountAndCD4Percent1(), ""));
-        cd.addSearch("5CII", EptsReportUtils.map(getCD4CountAndCD4Percent2(), ""));
+        cd.addSearch("5CI", EptsReportUtils.map(getCD4CountAndCD4Percent1(), "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
+        cd.addSearch("5CII", EptsReportUtils.map(getCD4CountAndCD4Percent2(), "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
 
         cd.setCompositionString("(5CI OR 5CII)");
 
@@ -257,5 +261,20 @@ public class EriDSDCohortQueries {
         cd.setTimeModifier(timeModifier);
 
         return cd;
+    }
+
+    /**
+     * 5E Returns patient with poor adherence in the last 3 visits
+     * @return
+     */
+    private CohortDefinition getPoorAdherenceInLast3Visits(){
+        CalculationCohortDefinition cd =
+                new CalculationCohortDefinition(
+                        "Poor Adherence In Last 3 Visits",
+                        Context.getRegisteredComponents(PoorAdherenceInLastXClinicalCalculation.class).get(0));
+        cd.addParameter(new Parameter("onOrBefore", "On or before Date", Date.class));
+        cd.addParameter(new Parameter("location", "Location", Location.class));
+
+        return  cd;
     }
 }
