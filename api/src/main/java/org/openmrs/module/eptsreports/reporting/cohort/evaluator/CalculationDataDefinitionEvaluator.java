@@ -36,7 +36,7 @@ public class CalculationDataDefinitionEvaluator implements PatientDataEvaluator 
     }
 
     // Use date from cohort definition, or from ${date} or ${endDate} or now
-    Date onOrBefore = def.getonOrBefore();
+    Date onOrBefore = def.getOnOrBefore();
     if (onOrBefore == null) {
       onOrBefore = (Date) context.getParameterValue("date");
       if (onOrBefore == null) {

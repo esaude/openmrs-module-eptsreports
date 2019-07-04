@@ -23,11 +23,11 @@ public class CalculationDataDefinition extends BaseDataDefinition implements Pat
   @ConfigurationProperty(group = "calculation")
   private Map<String, Object> calculationParameters;
 
-  public Date getonOrBefore() {
+  public Date getOnOrBefore() {
     return onOrBefore;
   }
 
-  public void setonOrBefore(Date onOrBefore) {
+  public void setOnOrBefore(Date onOrBefore) {
     this.onOrBefore = onOrBefore;
   }
 
