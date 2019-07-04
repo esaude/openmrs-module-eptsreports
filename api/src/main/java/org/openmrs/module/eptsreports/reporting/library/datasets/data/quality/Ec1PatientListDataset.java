@@ -3,6 +3,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.calculation.data.quality.BirthDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.data.quality.PatientDemographicsCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationDataDefinition;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.converter.CalculationResultDataConverter;
@@ -62,6 +63,16 @@ public class Ec1PatientListDataset extends BaseDataSet {
         new BirthdateConverter("dd-MM-yyyy"));
     dsd.addColumn("Estimated", getBirthDateStatus(), "", new CalculationResultDataConverter());
     dsd.addColumn("Sex", new GenderDataDefinition(), "", new GenderConverter());
+    dsd.addColumn(
+        "First Entry Date",
+        getPatientDemographics("First Entry Date"),
+        "",
+        new CalculationResultDataConverter("F"));
+    dsd.addColumn(
+        "Last Updated",
+        getPatientDemographics("Last Updated"),
+        "",
+        new CalculationResultDataConverter("L"));
 
     return dsd;
   }
@@ -69,5 +80,10 @@ public class Ec1PatientListDataset extends BaseDataSet {
   private DataDefinition getBirthDateStatus() {
     return new CalculationDataDefinition(
         "estimated", Context.getRegisteredComponents(BirthDateCalculation.class).get(0));
+  }
+
+  private DataDefinition getPatientDemographics(String name) {
+    return new CalculationDataDefinition(
+        name, Context.getRegisteredComponents(PatientDemographicsCalculation.class).get(0));
   }
 }

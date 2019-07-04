@@ -5,12 +5,29 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.openmrs.Concept;
 import org.openmrs.Location;
+import org.openmrs.Patient;
 import org.openmrs.PersonAttribute;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 
 public class CalculationResultDataConverter implements DataConverter {
+
+  private String what;
+
+  public String getWhat() {
+    return what;
+  }
+
+  public void setWhat(String what) {
+    this.what = what;
+  }
+
+  public CalculationResultDataConverter() {}
+
+  public CalculationResultDataConverter(String what) {
+    this.what = what;
+  }
 
   @Override
   public Object convert(Object obj) {
@@ -40,6 +57,12 @@ public class CalculationResultDataConverter implements DataConverter {
       return ((SimpleResult) value).getValue();
     } else if (value instanceof PersonAttribute) {
       return ((PersonAttribute) value).getValue();
+    } else if (value instanceof Patient) {
+      if (what.equals("F")) {
+        return formatDateTime(((Patient) value).getDateCreated());
+      } else if (what.equals("L")) {
+        return formatDateTime(((Patient) value).getDateChanged());
+      }
     }
 
     return null;
@@ -57,6 +80,11 @@ public class CalculationResultDataConverter implements DataConverter {
 
   private String formatDate(Date date) {
     DateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
+    return date == null ? "" : dateFormatter.format(date);
+  }
+
+  private String formatDateTime(Date date) {
+    DateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
     return date == null ? "" : dateFormatter.format(date);
   }
 }
