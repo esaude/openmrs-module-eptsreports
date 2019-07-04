@@ -12,6 +12,7 @@ import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCoh
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.RangeComparator;
+import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -52,15 +53,15 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             txNewCohortQueries.getTxNewBreastfeedingComposition(),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch("55", EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate}"));
+    cd.addSearch("5", EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate}"));
 
-    cd.setCompositionString("(1 AND 2) AND NOT (3 OR 4) AND 55");
+    cd.setCompositionString("(1 AND 2) AND NOT (3 OR 4) AND 5");
 
     return cd;
   }
 
   /**
-   * Filter patients (from 4) who are considered stable according to criteria a,b,c,d,e,f
+   * Filter patients (from 4) who are considered stable according to criteria 5: a,b,c,d,e,f
    *
    * @return
    */
@@ -82,7 +83,7 @@ public class EriDSDCohortQueries {
         "C",
         EptsReportUtils.map(
             getCD4CountAndCD4PercentCombined(),
-            "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
+            "startDate=${endDate-12m},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "D",
         EptsReportUtils.map(
@@ -95,7 +96,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "E",
         EptsReportUtils.map(
-            getPoorAdherenceInLast3Visits(), "onOrBefore=${endDate},locationList=${location}"));
+            getPoorAdherenceInLast3Visits(), "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "F",
         EptsReportUtils.map(
@@ -138,7 +139,7 @@ public class EriDSDCohortQueries {
 
   /**
    * 5C One CD4 Lab result > 750 cels/mm3 or > 15% in last ART year (if patients age >=2 and <=4) or
-   * One CD4 result > 200 cels/mm3 in last ART year (if patients age >=5 and <=9)
+   * One CD4 result > 200 cels/mm3 in last ART year (if patients age >=5 and <=9) 5C (i) 5C (ii)
    *
    * @return
    */
@@ -154,12 +155,12 @@ public class EriDSDCohortQueries {
         "CI",
         EptsReportUtils.map(
             getCD4CountAndCD4Percent1(),
-            "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
+            "startDate=${endDate-12m},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "CII",
         EptsReportUtils.map(
             getCD4CountAndCD4Percent2(),
-            "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
+            "startDate=${endDate-12m},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("(CI OR CII)");
 
@@ -240,6 +241,11 @@ public class EriDSDCohortQueries {
    */
   private CohortDefinition getValueNumeric(Concept concept, Double value) {
     NumericObsCohortDefinition cd = new NumericObsCohortDefinition();
+
+    cd.addParameter(new Parameter("onOrBefore", "Start Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "End Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+
     cd.setName("Numeric value based on " + concept);
     cd.setOperator1(RangeComparator.GREATER_THAN);
     cd.setValue1(value);
@@ -265,7 +271,11 @@ public class EriDSDCohortQueries {
       Concept concept, BaseObsCohortDefinition.TimeModifier timeModifier, Concept... answers) {
     CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
 
-    cd.setName("Coded Values for " + concept.getName());
+    cd.addParameter(new Parameter("onOrBefore", "Start Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "End Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+
+    cd.setName("Coded Values for " + concept);
     cd.setQuestion(concept);
     if (answers.length > 0) {
       cd.setValueList(Arrays.asList(answers));
@@ -276,6 +286,7 @@ public class EriDSDCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType()));
     cd.setTimeModifier(timeModifier);
+    cd.setOperator(SetComparator.IN);
 
     return cd;
   }
