@@ -52,7 +52,8 @@ public class Ec1PatientListDataset extends BaseDataSet {
     dsd.addColumn("Patient Id", new PatientIdDataDefinition(), "");
     dsd.addColumn("Patient NID", identifierDef, "");
     dsd.addColumn("Patient Name", new PreferredNameDataDefinition(), (String) null);
-    dsd.addColumn("Patient Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter());
+    dsd.addColumn(
+        "Patient Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter());
     dsd.addColumn("Sex", new GenderDataDefinition(), "", new GenderConverter());
 
     return dsd;
