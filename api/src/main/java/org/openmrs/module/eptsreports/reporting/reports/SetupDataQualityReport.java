@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec1PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.SummaryDataQualityDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -18,20 +18,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class SetupDataQualityReport extends EptsDataExportManager {
 
-  private GenericCohortQueries genericCohortQueries;
-
   private SummaryDataQualityDataset summaryDataQualityDataset;
 
   private SummaryDataQualityCohorts summaryDataQualityCohorts;
 
+  private Ec1PatientListDataset ec1PatientListDataset;
+
   @Autowired
   public SetupDataQualityReport(
-      GenericCohortQueries genericCohortQueries,
       SummaryDataQualityDataset summaryDataQualityDataset,
-      SummaryDataQualityCohorts summaryDataQualityCohorts) {
-    this.genericCohortQueries = genericCohortQueries;
+      SummaryDataQualityCohorts summaryDataQualityCohorts,
+      Ec1PatientListDataset ec1PatientListDataset) {
     this.summaryDataQualityDataset = summaryDataQualityDataset;
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
+    this.ec1PatientListDataset = ec1PatientListDataset;
   }
 
   @Override
@@ -71,6 +71,8 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     rd.addDataSetDefinition(
         "S",
         Mapped.mapStraightThrough(summaryDataQualityDataset.constructSummaryDataQualityDatset()));
+    rd.addDataSetDefinition(
+        "EC1", Mapped.mapStraightThrough(ec1PatientListDataset.ec1DataSetDefinition()));
 
     return rd;
   }
