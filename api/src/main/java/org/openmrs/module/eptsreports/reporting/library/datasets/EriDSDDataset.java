@@ -42,7 +42,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "DSD D1 Total",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getAllPatientsWhosAgeIsGreaterOrEqualTo2(),
+                    eriDSDCohortQueries.getAllPatientsWhoAreActiveAndStable(),
                     "endDate=${endDate},location=${location}")),
             mappings),
         "");
@@ -53,7 +53,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "D1NPNB",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getAllPatientsWhosAgeIsGreaterOrEqualTo2(),
+                    eriDSDCohortQueries.getAllPatientsWhoAreActiveAndStable(),
                     "endDate=${endDate},location=${location}")),
             mappings),
         "age=15+");
@@ -63,17 +63,72 @@ public class EriDSDDataset extends BaseDataSet {
         "Non-pregnant and Non-Breastfeeding Children By age",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "D1NPNB",
+                "D1NPNBC",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getAllPatientsWhosAgeIsGreaterOrEqualTo2(),
+                    eriDSDCohortQueries.getAllPatientsWhoAreActiveAndStable(),
                     "endDate=${endDate},location=${location}")),
             mappings),
-        getChildrenColumns());
-
+        getChildrenColumn());
+    dsd.addColumn(
+        "D2T",
+        "DSD D2 Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "DSD D2 Total",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreActiveAndUnstable(),
+                    "endDate=${endDate},location=${location}")),
+            mappings),
+        "");
+    dsd.addColumn(
+        "D2NPNB",
+        "Non-pregnant and Non-Breastfeeding Adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "D2NPNB",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreActiveAndUnstable(),
+                    "endDate=${endDate},location=${location}")),
+            mappings),
+        "age=15+");
+    addRow(
+        dsd,
+        "D2NPNBC",
+        "Non-pregnant and Non-Breastfeeding Children  By age",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "D2NPNBC",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreActiveAndUnstable(),
+                    "endDate=${endDate},location=${location}")),
+            mappings),
+        getChildrenColumn());
+    dsd.addColumn(
+        "BNP",
+        "Breastfeeding (exclude pregnant)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "BNP",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreBreastFeedingAndNotPregnant(),
+                    "endDate=${endDate},location=${location}")),
+            mappings),
+        "");
+    dsd.addColumn(
+        "PNB",
+        "Pregnant (exclude breastfeeding)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "PNB",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoArePregnantAndNotBreastFeeding(),
+                    "endDate=${endDate},location=${location}")),
+            mappings),
+        "");
     return dsd;
   }
 
-  private List<ColumnParameters> getChildrenColumns() {
+  private List<ColumnParameters> getChildrenColumn() {
     ColumnParameters twoTo4 = new ColumnParameters("twoTo4", "2-4", "age=2-4", "01");
     ColumnParameters fiveTo9 = new ColumnParameters("fiveTo9", "5-9", "age=5-9", "02");
     ColumnParameters tenTo14 = new ColumnParameters("tenTo14", "10-14", "age=10-14", "03");

@@ -26,7 +26,7 @@ public class EriDSDCohortQueries {
   @Autowired private HivMetadata hivMetadata;
 
   /** D1: Number of active, stable, patients on ART. Combinantion of Criteria 1,2,3,4,5 */
-  public CohortDefinition getAllPatientsWhosAgeIsGreaterOrEqualTo2() {
+  public CohortDefinition getAllPatientsWhoAreActiveAndStable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     String cohortName = "Number of active, stable, patients on ART";
 
@@ -303,6 +303,108 @@ public class EriDSDCohortQueries {
             Context.getRegisteredComponents(PoorAdherenceInLastXClinicalCalculation.class).get(0));
     cd.addParameter(new Parameter("onOrBefore", "On or before Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    return cd;
+  }
+
+  /**
+   * D2: Number of active, unstable, patients on ART
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWhoAreActiveAndUnstable() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    String cohortName =
+        "All  patients  (adults  and  children)  currently  receiving  treatment (TxCurr)";
+
+    cd.setName("Patients who are unstable");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "allPatientsTxCurr",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
+            "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "activeAndStablePatients",
+        EptsReportUtils.map(
+            getAllPatientsWhoAreActiveAndStable(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("allPatientsTxCurr AND NOT activeAndStablePatients");
+
+    return cd;
+  }
+
+  /**
+   * Get patients who are breastfeeding and not pregnant
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWhoAreBreastFeedingAndNotPregnant() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    String cohortName = "All patients on ART (TxCurr)";
+
+    cd.setName(
+        "Patients who are breastfeeding: includes all breastfeeding patients excluding pregnant patients");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "breastfeeding",
+        EptsReportUtils.map(
+            txNewCohortQueries.getTxNewBreastfeedingComposition(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "pregnant",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "TxCurr",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
+            "onOrBefore=${endDate},location=${location}"));
+
+    cd.setCompositionString("TxCurr AND (breastfeeding AND NOT pregnant)");
+
+    return cd;
+  }
+
+  /**
+   * Get Patients who are pregnant and not breastfeeding
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWhoArePregnantAndNotBreastFeeding() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    String cohortName = "All patients on ART (TxCurr)";
+
+    cd.setName("Pregnant: includes all pregnant patients");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "pregnant",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "breastfeeding",
+        EptsReportUtils.map(
+            txNewCohortQueries.getTxNewBreastfeedingComposition(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "TxCurr",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
+            "onOrBefore=${endDate},location=${location}"));
+
+    cd.setCompositionString("TxCurr AND (pregnant AND NOT breastfeeding)");
 
     return cd;
   }
