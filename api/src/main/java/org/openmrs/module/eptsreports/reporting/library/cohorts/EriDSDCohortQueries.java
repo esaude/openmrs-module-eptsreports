@@ -408,4 +408,75 @@ public class EriDSDCohortQueries {
 
     return cd;
   }
+
+  /**
+   * N1: Get the number of active patients on ART who participate in >=1 measured DSD model
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWhoAreActiveAndParticipateInDsdModel() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    String cohortName = "All patients (Adult and Children) included in TxCurr";
+
+    cd.setName("N1: Number of active patients on ART who participate in >=1 measured DSD model");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "allPatientsTxCurrDsdModel",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
+            "onOrBefore=${endDate},location=${location}"));
+
+    cd.setCompositionString("allPatientsTxCurrDsdModel");
+
+    return cd;
+  }
+
+  /**
+   * N1: Get all patients who are active and participating in DSD model stable
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWhoAreActiveAndParticipateInDsdModelStable() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "allPatientsTxCurrStable",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveAndParticipateInDsdModel(),
+            "endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("allPatientsTxCurrStable");
+
+    return cd;
+  }
+
+  /**
+   * N1: Get all patients who are active and participating in DSD model unstable
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWhoAreActiveAndParticipateInDsdModelUnstable() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "allPatientsTxCurrUnstable",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveAndParticipateInDsdModel(),
+            "endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("allPatientsTxCurrUnstable");
+
+    return cd;
+  }
 }
