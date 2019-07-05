@@ -3,6 +3,8 @@ package org.openmrs.module.eptsreports.reporting.library.converter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
 import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.Patient;
@@ -37,7 +39,6 @@ public class CalculationResultDataConverter implements DataConverter {
     }
 
     Object value = ((CalculationResult) obj).getValue();
-
     if (value instanceof Boolean) {
       return (Boolean) value ? "Yes" : "No";
     } else if (value instanceof Date) {
@@ -63,6 +64,15 @@ public class CalculationResultDataConverter implements DataConverter {
       } else if (what.equals("L")) {
         return formatDateTime(((Patient) value).getDateChanged());
       }
+    } else if (value instanceof TreeMap) {
+      Map.Entry<Date, String> lastEntry = ((TreeMap) value).lastEntry();
+      String entry = "";
+      if (lastEntry != null && what.equals("PC")) {
+        entry = lastEntry.getValue();
+      } else if (lastEntry != null && what.equals("PD")) {
+        entry = formatDate(lastEntry.getKey());
+      }
+      return entry;
     }
 
     return null;

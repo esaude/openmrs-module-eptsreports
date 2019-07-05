@@ -1,9 +1,11 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
+import org.openmrs.Location;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.calculation.data.quality.BirthDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.data.quality.PatientDemographicsCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.data.quality.PregnantCriteriaCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationDataDefinition;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.converter.CalculationResultDataConverter;
@@ -21,6 +23,7 @@ import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -73,6 +76,16 @@ public class Ec1PatientListDataset extends BaseDataSet {
         getPatientDemographics("Last Updated"),
         "",
         new CalculationResultDataConverter("L"));
+    dsd.addColumn(
+        "Pregnant Criteria",
+        getPregnantCriteria(),
+        "location=${location}",
+        new CalculationResultDataConverter("PC"));
+    dsd.addColumn(
+        "Encounter Date Pregnant Criteria",
+        getPregnantCriteria(),
+        "location=${location}",
+        new CalculationResultDataConverter("PD"));
 
     return dsd;
   }
@@ -85,5 +98,14 @@ public class Ec1PatientListDataset extends BaseDataSet {
   private DataDefinition getPatientDemographics(String name) {
     return new CalculationDataDefinition(
         name, Context.getRegisteredComponents(PatientDemographicsCalculation.class).get(0));
+  }
+
+  private DataDefinition getPregnantCriteria() {
+    CalculationDataDefinition pCriteria =
+        new CalculationDataDefinition(
+            "Pregnant Criteria",
+            Context.getRegisteredComponents(PregnantCriteriaCalculation.class).get(0));
+    pCriteria.addParameter(new Parameter("location", "Location", Location.class));
+    return pCriteria;
   }
 }

@@ -46,10 +46,13 @@ public class CalculationDataDefinitionEvaluator implements PatientDataEvaluator 
         }
       }
     }
+    // add the location in the cache
+
     // evaluate the calculation
     PatientCalculationService service = Context.getService(PatientCalculationService.class);
     PatientCalculationContext calcContext = service.createCalculationContext();
     calcContext.setNow(onOrBefore);
+    calcContext.addToCache("location", def.getLocation());
     CalculationResultMap resultMap =
         service.evaluate(
             context.getBaseCohort().getMemberIds(),
