@@ -29,6 +29,9 @@ public class EriDSDDataset extends BaseDataSet {
   public DataSetDefinition constructEriDSDDataset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    dsd.setName("DSD Data Set");
+    dsd.addParameters(getParameters());
     dsd.addDimension(
         "age",
         EptsReportUtils.map(
