@@ -1,6 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.cohort.evaluator;
 
-import java.util.Date;
 import java.util.Map;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -35,24 +34,12 @@ public class CalculationDataDefinitionEvaluator implements PatientDataEvaluator 
       return c;
     }
 
-    // Use date from cohort definition, or from ${date} or ${endDate} or now
-    Date onOrBefore = def.getOnOrBefore();
-    if (onOrBefore == null) {
-      onOrBefore = (Date) context.getParameterValue("date");
-      if (onOrBefore == null) {
-        onOrBefore = (Date) context.getParameterValue("endDate");
-        if (onOrBefore == null) {
-          onOrBefore = new Date();
-        }
-      }
-    }
-    // add the location in the cache
-
     // evaluate the calculation
     PatientCalculationService service = Context.getService(PatientCalculationService.class);
     PatientCalculationContext calcContext = service.createCalculationContext();
-    calcContext.setNow(onOrBefore);
+    calcContext.setNow(def.getOnOrBefore());
     calcContext.addToCache("location", def.getLocation());
+    calcContext.addToCache("onOrBefore", def.getOnOrBefore());
     CalculationResultMap resultMap =
         service.evaluate(
             context.getBaseCohort().getMemberIds(),

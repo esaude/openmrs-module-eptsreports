@@ -1,11 +1,13 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
+import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.calculation.data.quality.BirthDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.data.quality.PatientDemographicsCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.data.quality.PregnantCriteriaCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.data.quality.PregnantEnrollmentStatusCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationDataDefinition;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.converter.CalculationResultDataConverter;
@@ -86,6 +88,16 @@ public class Ec1PatientListDataset extends BaseDataSet {
         getPregnantCriteria(),
         "location=${location}",
         new CalculationResultDataConverter("PD"));
+    dsd.addColumn(
+        "PTV/ETC Enrollment Date",
+        getPregnantCriteria(),
+        "location=${location}",
+        new CalculationResultDataConverter("PTVD"));
+    dsd.addColumn(
+        "PTV/ETC Enrollment Status",
+        getPregnancyStatus(),
+        "location=${location}",
+        new CalculationResultDataConverter("State"));
 
     return dsd;
   }
@@ -106,6 +118,17 @@ public class Ec1PatientListDataset extends BaseDataSet {
             "Pregnant Criteria",
             Context.getRegisteredComponents(PregnantCriteriaCalculation.class).get(0));
     pCriteria.addParameter(new Parameter("location", "Location", Location.class));
+    pCriteria.addParameter(new Parameter("onOrBefore", "Before date", Date.class));
     return pCriteria;
+  }
+
+  private DataDefinition getPregnancyStatus() {
+    CalculationDataDefinition pStatus =
+        new CalculationDataDefinition(
+            "Pregnant Status",
+            Context.getRegisteredComponents(PregnantEnrollmentStatusCalculation.class).get(0));
+    pStatus.addParameter(new Parameter("location", "Location", Location.class));
+    pStatus.addParameter(new Parameter("onOrBefore", "Before date", Date.class));
+    return pStatus;
   }
 }

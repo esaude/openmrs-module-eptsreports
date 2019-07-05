@@ -3,11 +3,13 @@ package org.openmrs.module.eptsreports.reporting.library.converter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.Patient;
+import org.openmrs.PatientState;
 import org.openmrs.PersonAttribute;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.SimpleResult;
@@ -72,7 +74,22 @@ public class CalculationResultDataConverter implements DataConverter {
       } else if (lastEntry != null && what.equals("PD")) {
         entry = formatDate(lastEntry.getKey());
       }
+      Map<Date, String> hashedResults =
+          new HashMap<Date, String>((Map<? extends Date, ? extends String>) value);
+      if (hashedResults.size() > 0) {
+        // loop through and get the PTV/ETV program enrollment
+        for (Map.Entry<Date, String> outResults : hashedResults.entrySet()) {
+          if (outResults.getValue().equals("PC4") && what.equals("PTVD")) {
+            entry = formatDate(outResults.getKey());
+            break;
+          }
+        }
+      }
       return entry;
+    } else if (value instanceof PatientState) {
+      if (what.equals("State")) {
+        return ((PatientState) value).getState().getConcept();
+      }
     }
 
     return null;

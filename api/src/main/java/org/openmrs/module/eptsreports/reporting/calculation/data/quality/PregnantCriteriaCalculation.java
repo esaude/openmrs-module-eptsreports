@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import org.openmrs.Concept;
-import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.PatientProgram;
@@ -38,8 +37,6 @@ public class PregnantCriteriaCalculation extends AbstractPatientCalculation {
     EPTSCalculationService ePTSCalculationService =
         Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
 
-    EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
-
     Concept pregnant = hivMetadata.getPregnantConcept();
     Concept pregnantBasedOnWeeks = hivMetadata.getNumberOfWeeksPregnant();
     Concept pregnancyDueDate = hivMetadata.getPregnancyDueDate();
@@ -51,7 +48,7 @@ public class PregnantCriteriaCalculation extends AbstractPatientCalculation {
     CalculationResultMap pregnantMap =
         ePTSCalculationService.getObs(
             pregnant,
-            Arrays.asList(adultFollowup),
+            null,
             cohort,
             Arrays.asList(location),
             Arrays.asList(gestation),
@@ -62,7 +59,7 @@ public class PregnantCriteriaCalculation extends AbstractPatientCalculation {
     CalculationResultMap markedPregnantByWeeksMap =
         ePTSCalculationService.getObs(
             pregnantBasedOnWeeks,
-            Arrays.asList(adultFollowup),
+            null,
             cohort,
             Arrays.asList(location),
             null,
@@ -73,7 +70,7 @@ public class PregnantCriteriaCalculation extends AbstractPatientCalculation {
     CalculationResultMap markedPregnantDueDateMap =
         ePTSCalculationService.getObs(
             pregnancyDueDate,
-            Arrays.asList(adultFollowup),
+            null,
             cohort,
             Arrays.asList(location),
             null,
