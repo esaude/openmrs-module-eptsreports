@@ -364,12 +364,12 @@ public class EriDSDCohortQueries {
             txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "TxCurr",
+        "activeAndUnstable",
         EptsReportUtils.map(
-            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
-            "onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreActiveAndUnstable(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("TxCurr AND (breastfeeding AND NOT pregnant)");
+    cd.setCompositionString("activeAndUnstable AND (breastfeeding AND NOT pregnant)");
 
     return cd;
   }
@@ -399,12 +399,12 @@ public class EriDSDCohortQueries {
             txNewCohortQueries.getTxNewBreastfeedingComposition(),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
-        "TxCurr",
+        "activeAndUnstable",
         EptsReportUtils.map(
-            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
-            "onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreActiveAndUnstable(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("TxCurr AND (pregnant AND NOT breastfeeding)");
+    cd.setCompositionString("activeAndUnstable AND (pregnant AND NOT breastfeeding)");
 
     return cd;
   }
