@@ -231,6 +231,17 @@ public class EriDSDDataset extends BaseDataSet {
                     "endDate=${endDate},location=${location}")),
             mappings),
         "");
+    dsd.addColumn(
+        "N2T",
+        "DSD N2 Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N2T",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreActiveWithNextPickupAs3Months(),
+                    "endDate=${endDate},location=${location}")),
+            mappings),
+        "");
 
     return dsd;
   }

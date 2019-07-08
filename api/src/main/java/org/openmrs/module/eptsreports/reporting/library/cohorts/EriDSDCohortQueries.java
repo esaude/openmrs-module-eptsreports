@@ -6,6 +6,7 @@ import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.calculation.dsd.LastPickupDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.OnArtForAtleastXmonthsCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.PoorAdherenceInLastXClinicalCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
@@ -433,7 +434,7 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * N1: Get all patients who are active and participating in DSD model stable
+   * N1 STABLE: Get all patients who are active and participating in DSD model
    *
    * @return
    */
@@ -445,18 +446,21 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "allPatientsTxCurrStable",
+        "allPatientsInDsdModel",
         EptsReportUtils.map(
             getPatientsWhoAreActiveAndParticipateInDsdModel(),
             "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "patientsWhoAreStable",
+        EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("allPatientsTxCurrStable");
+    cd.setCompositionString("allPatientsInDsdModel AND patientsWhoAreStable");
 
     return cd;
   }
 
   /**
-   * N1: Get all patients who are active and participating in DSD model unstable
+   * N1 UNSTABLE: Get all patients who are active and participating in DSD model
    *
    * @return
    */
@@ -468,12 +472,17 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "allPatientsTxCurrUnstable",
+        "PatientsInDsdModel",
         EptsReportUtils.map(
             getPatientsWhoAreActiveAndParticipateInDsdModel(),
             "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "stablePatientsDsdModel",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveAndParticipateInDsdModelStable(),
+            "endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("allPatientsTxCurrUnstable");
+    cd.setCompositionString("allPatientsInDsdModel AND NOT stablePatientsDsdModel");
 
     return cd;
   }
@@ -545,6 +554,104 @@ public class EriDSDCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("activeAndUnstable AND (pregnant AND NOT breastfeeding)");
+
+    return cd;
+  }
+
+  /**
+   * N2: Number of active on ART whose next ART pick-up is schedule for 83-97 days after the date of
+   * their last ART drug pick-up
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWhoAreActiveWithNextPickupAs3Months() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    String cohortName = "N2: Number of active, stable, patients on ART";
+
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "TxCurr",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
+            "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch("scheduled", EptsReportUtils.map(getPatientsScheduled(), "location=${location}"));
+
+    cd.setCompositionString("TxCurr AND scheduled");
+
+    return cd;
+  }
+
+  /**
+   * N2: Get all patients who are scheduled for the next pickup.
+   *
+   * @return
+   */
+  private CohortDefinition getPatientsScheduled() {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            "scheduledPatients",
+            Context.getRegisteredComponents(LastPickupDateCalculation.class).get(0));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    return cd;
+  }
+
+  /**
+   * N2 STABLE: Get number of active on ART whose next ART pick-up is schedule for 83-97 days after
+   * the date of their last ART drug pick-up
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWhoAreActiveWithNextPickupAs3MonthsAndStable() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "patientsWithNextPickupAs3Months",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveWithNextPickupAs3Months(),
+            "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "patientsWhoAreStable",
+        EptsReportUtils.map(
+            getPatientsWhoAreStable(), "onOrBefore=${endDate},location=${location}"));
+
+    cd.setCompositionString("patientsWithNextPickupAs3Months AND patientsWhoAreStable");
+
+    return cd;
+  }
+
+  /**
+   * N2 UNSTABLE: Get number of active on ART whose next ART pick-up is schedule for 83-97 days
+   * after the date of their last ART drug pick-up
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWhoAreActiveWithNextPickupAs3MonthsAndUnstable() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "patientsWithNextPickupDate",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveWithNextPickupAs3Months(),
+            "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "patientsWhoAreStable",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveWithNextPickupAs3MonthsAndStable(),
+            "onOrBefore=${endDate},location=${location}"));
+
+    cd.setCompositionString("patientsWithNextPickupAs3Months AND NOT patientsWhoAreStable");
 
     return cd;
   }
