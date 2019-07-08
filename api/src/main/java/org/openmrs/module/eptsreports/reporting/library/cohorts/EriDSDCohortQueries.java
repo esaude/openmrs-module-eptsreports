@@ -339,13 +339,12 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * Get patients who are breastfeeding and not pregnant
+   * D2: Get patients who are breastfeeding and not pregnant
    *
    * @return
    */
   public CohortDefinition getPatientsWhoAreBreastFeedingAndNotPregnant() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    String cohortName = "All patients on ART (TxCurr)";
 
     cd.setName(
         "Patients who are breastfeeding: includes all breastfeeding patients excluding pregnant patients");
@@ -375,13 +374,12 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * Get Patients who are pregnant and not breastfeeding
+   * D2: Get Patients who are pregnant and not breastfeeding
    *
    * @return
    */
   public CohortDefinition getPatientsWhoArePregnantAndNotBreastFeeding() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    String cohortName = "All patients on ART (TxCurr)";
 
     cd.setName("Pregnant: includes all pregnant patients");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -476,6 +474,77 @@ public class EriDSDCohortQueries {
             "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("allPatientsTxCurrUnstable");
+
+    return cd;
+  }
+
+  /**
+   * N1: Get patients who are breastfeeding and not pregnant
+   *
+   * @return
+   */
+  public CohortDefinition
+      getPatientsWhoAreBreastFeedingAndNotPregnantAndParticipateInDsdModelUnstable() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName(
+        "N1 Patients who are breastfeeding: includes all breastfeeding patients excluding pregnant patients");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "breastfeeding",
+        EptsReportUtils.map(
+            txNewCohortQueries.getTxNewBreastfeedingComposition(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "pregnant",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "activeAndUnstable",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveAndParticipateInDsdModelUnstable(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("activeAndUnstable AND (breastfeeding AND NOT pregnant)");
+
+    return cd;
+  }
+
+  /**
+   * N1: Get Patients who are pregnant and not breastfeeding
+   *
+   * @return
+   */
+  public CohortDefinition
+      getPatientsWhoArePregnantAndNotBreastFeedingAndParticipateInDsdModelUnstable() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("N1: Pregnant: includes all pregnant patients");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "pregnant",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "breastfeeding",
+        EptsReportUtils.map(
+            txNewCohortQueries.getTxNewBreastfeedingComposition(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "activeAndUnstable",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveAndParticipateInDsdModelUnstable(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("activeAndUnstable AND (pregnant AND NOT breastfeeding)");
 
     return cd;
   }

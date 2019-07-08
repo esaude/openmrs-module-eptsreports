@@ -207,6 +207,30 @@ public class EriDSDDataset extends BaseDataSet {
                     "endDate=${endDate},location=${location}")),
             mappings),
         getChildrenColumn());
+    dsd.addColumn(
+        "N1UBNP",
+        "N1 Unstable Breastfeeding (exclude pregnant)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N1UBNP",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getPatientsWhoAreBreastFeedingAndNotPregnantAndParticipateInDsdModelUnstable(),
+                    "endDate=${endDate},location=${location}")),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N1UPNB",
+        "N1 Unstable Pregnant (include breastfeeding)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N1UPNB",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getPatientsWhoArePregnantAndNotBreastFeedingAndParticipateInDsdModelUnstable(),
+                    "endDate=${endDate},location=${location}")),
+            mappings),
+        "");
 
     return dsd;
   }
