@@ -5,7 +5,7 @@ import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonColumns.a
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.eptsreports.reporting.calculation.data.quality.PregnantCriteriaCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.data.quality.BreastfeedingCriteriaCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.data.quality.PregnantEnrollmentStatusCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationDataDefinition;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
@@ -18,37 +18,43 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/** A dataset to display list of patients who are pregnant and male */
+/**
+ * Display men who are breastfeeding based on patient states
+ *
+ * @return DataSet
+ */
 @Component
-public class Ec1PatientListDataset extends BaseDataSet {
+public class Ec2PatientListDataset extends BaseDataSet {
 
   private SummaryDataQualityCohorts summaryDataQualityCohorts;
 
   @Autowired
-  public Ec1PatientListDataset(SummaryDataQualityCohorts summaryDataQualityCohorts) {
+  public Ec2PatientListDataset(SummaryDataQualityCohorts summaryDataQualityCohorts) {
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
   }
 
-  public DataSetDefinition ec1DataSetDefinition() {
+  public DataSetDefinition ec2DataSetDefinition() {
     PatientDataSetDefinition dsd = new PatientDataSetDefinition();
-    dsd.setName("EC1");
+    dsd.setName("EC2");
     dsd.addParameters(getDataQualityParameters());
-    dsd.addRowFilter(summaryDataQualityCohorts.getPregnantMalePatients(), "location=${location}");
+    dsd.addRowFilter(
+        summaryDataQualityCohorts.getBreastfeedingMalePatients(), "location=${location}");
 
+    // identifier
     addStandardColumns(dsd);
     dsd.addColumn(
-        "Pregnant Criteria",
-        getPregnantCriteria(),
+        "Breastfeeding Criteria",
+        getBreastfeedingCriteria(),
         "location=${location}",
         new CalculationResultDataConverter("PC"));
     dsd.addColumn(
-        "Encounter Date Pregnant Criteria",
-        getPregnantCriteria(),
+        "Encounter Date Breastfeeding Criteria",
+        getBreastfeedingCriteria(),
         "location=${location}",
         new CalculationResultDataConverter("PD"));
     dsd.addColumn(
         "PTV/ETC Enrollment Date",
-        getPregnantCriteria(),
+        getBreastfeedingCriteria(),
         "location=${location}",
         new CalculationResultDataConverter("PTVD"));
     dsd.addColumn(
@@ -60,11 +66,11 @@ public class Ec1PatientListDataset extends BaseDataSet {
     return dsd;
   }
 
-  private DataDefinition getPregnantCriteria() {
+  private DataDefinition getBreastfeedingCriteria() {
     CalculationDataDefinition pCriteria =
         new CalculationDataDefinition(
-            "Pregnant Criteria",
-            Context.getRegisteredComponents(PregnantCriteriaCalculation.class).get(0));
+            "Breastfeeding Criteria",
+            Context.getRegisteredComponents(BreastfeedingCriteriaCalculation.class).get(0));
     pCriteria.addParameter(new Parameter("location", "Location", Location.class));
     pCriteria.addParameter(new Parameter("onOrBefore", "Before date", Date.class));
     return pCriteria;
@@ -73,7 +79,7 @@ public class Ec1PatientListDataset extends BaseDataSet {
   private DataDefinition getPregnancyStatus() {
     CalculationDataDefinition pStatus =
         new CalculationDataDefinition(
-            "Pregnant Status",
+            "Breastfeeding Status",
             Context.getRegisteredComponents(PregnantEnrollmentStatusCalculation.class).get(0));
     pStatus.addParameter(new Parameter("location", "Location", Location.class));
     pStatus.addParameter(new Parameter("onOrBefore", "Before date", Date.class));

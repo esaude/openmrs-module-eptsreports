@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec1PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec2PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.SummaryDataQualityDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -24,14 +25,18 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   private Ec1PatientListDataset ec1PatientListDataset;
 
+  private Ec2PatientListDataset ec2PatientListDataset;
+
   @Autowired
   public SetupDataQualityReport(
       SummaryDataQualityDataset summaryDataQualityDataset,
       SummaryDataQualityCohorts summaryDataQualityCohorts,
-      Ec1PatientListDataset ec1PatientListDataset) {
+      Ec1PatientListDataset ec1PatientListDataset,
+      Ec2PatientListDataset ec2PatientListDataset) {
     this.summaryDataQualityDataset = summaryDataQualityDataset;
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
     this.ec1PatientListDataset = ec1PatientListDataset;
+    this.ec2PatientListDataset = ec2PatientListDataset;
   }
 
   @Override
@@ -73,6 +78,8 @@ public class SetupDataQualityReport extends EptsDataExportManager {
         Mapped.mapStraightThrough(summaryDataQualityDataset.constructSummaryDataQualityDatset()));
     rd.addDataSetDefinition(
         "EC1", Mapped.mapStraightThrough(ec1PatientListDataset.ec1DataSetDefinition()));
+    rd.addDataSetDefinition(
+        "EC2", Mapped.mapStraightThrough(ec2PatientListDataset.ec2DataSetDefinition()));
 
     return rd;
   }
@@ -94,7 +101,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
-      props.put("repeatingSections", "sheet:2,row:7,dataset:EC1 | sheet:3,row:7,dataset:EC1");
+      props.put("repeatingSections", "sheet:2,row:7,dataset:EC1 | sheet:3,row:7,dataset:EC2");
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {
