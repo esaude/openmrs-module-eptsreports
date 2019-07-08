@@ -40,7 +40,7 @@ public class Ec2PatientListDataset extends BaseDataSet {
     dsd.addRowFilter(
         summaryDataQualityCohorts.getBreastfeedingMalePatients(), "location=${location}");
 
-    // identifier
+    // add standard column
     addStandardColumns(dsd);
     dsd.addColumn(
         "Breastfeeding Criteria",
