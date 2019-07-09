@@ -1,5 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+import java.util.List;
+
 public class DqQueries {
 
   /** GRAVIDAS INSCRITAS NO SERVIÇO TARV */
@@ -76,16 +78,28 @@ public class DqQueries {
         + " location_id IN(:location)";
   }
 
-  public static String getDeadPatientsWhoHaveDrugPickupAfterDeath(int program, int state) {
+  /**
+   * Get patients who have a given state before an encounter
+   *
+   * @return CohortDefinition
+   */
+  public static String getPatientsWithStateThatIsBeforeAnEncounter(
+      int programId, int stateId, List<Integer> encounterList) {
+    String str1 = String.valueOf(encounterList).replaceAll("\\[", "");
+    String str2 = str1.replaceAll("]", "");
     String query =
-        "SELECT pg.patient_id"
-            + " FROM patient p"
-            + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
-            + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
-            + " WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND"
-            + " pg.program_id=%d"
-            + " AND ps.state=%d"
-            + " AND pg.location_id=:location AND ps.end_date is null";
-    return String.format(query, program, state);
+        "SELECT states.patient_id FROM "
+            + "((SELECT pg.patient_id AS patient_id, ps.start_date AS start_date "
+            + "FROM patient p "
+            + "INNER JOIN patient_program pg ON p.patient_id=pg.patient_id "
+            + "INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
+            + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND pg.program_id IN (%s) "
+            + " AND ps.state IN (%s) "
+            + " AND pg.location_id=:location AND ps.end_date is null GROUP BY pg.patient_id) states INNER JOIN "
+            + "(SELECT p.patient_id AS patient_id, MAX(e.encounter_datetime) AS encounter_date FROM "
+            + "patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided = 0 and e.voided=0 "
+            + "AND e.encounter_type IN (%s) AND e.location_id=:location GROUP BY p.patient_id"
+            + ") encounter ON states.patient_id=encounter.patient_id) WHERE encounter.encounter_date > states.start_date";
+    return String.format(query, programId, stateId, str2);
   }
 }

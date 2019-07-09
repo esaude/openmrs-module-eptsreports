@@ -154,19 +154,17 @@ public class SummaryDataQualityCohorts {
   }
 
   /**
-   * EC3 cohort definition The patient’s vital status is dead and the patient has an ART pick up
-   * date after the date of death or death notification
+   * Get patients with states and a list of encounters
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getDeadAndHaveArtPickupAfterDeath() {
+  public CohortDefinition getPatientsWithStatesAndEncounters(
+      int programId, int stateId, List<Integer> encounterList) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Get dead patients with ART pick up date after death date");
+    cd.setName("Patients who have state that is before an encounter");
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setQuery(
-        DqQueries.getDeadPatientsWhoHaveDrugPickupAfterDeath(
-            hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()));
+        DqQueries.getPatientsWithStateThatIsBeforeAnEncounter(programId, stateId, encounterList));
     return cd;
   }
 }

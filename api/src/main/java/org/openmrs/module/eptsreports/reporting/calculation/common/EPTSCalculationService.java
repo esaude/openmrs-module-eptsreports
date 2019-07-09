@@ -174,6 +174,32 @@ public class EPTSCalculationService {
   }
 
   /**
+   * Evaluates all encounters of a given type of each patient
+   *
+   * @param encounterTypes
+   * @param cohort
+   * @param location
+   * @param context
+   * @return first encounter for the patient
+   */
+  public CalculationResultMap allEncounters(
+      List<EncounterType> encounterTypes,
+      Collection<Integer> cohort,
+      Location location,
+      PatientCalculationContext context) {
+    EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition();
+    def.setWhich(TimeQualifier.ANY);
+    def.setLocationList(Arrays.asList(location));
+    if (encounterTypes != null) {
+      def.setName("All encounters ");
+      def.setTypes(encounterTypes);
+    } else {
+      def.setName("All encounter types");
+    }
+    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
+  }
+
+  /**
    * Evaluates the first Obs for a given question and answer
    *
    * @param question

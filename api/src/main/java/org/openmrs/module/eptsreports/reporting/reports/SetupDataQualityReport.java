@@ -8,6 +8,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.Sum
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec1PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec2PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec3PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec4PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.SummaryDataQualityDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -30,18 +31,22 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   private Ec3PatientListDataset ec3PatientListDataset;
 
+  private Ec4PatientListDataset ec4PatientListDataset;
+
   @Autowired
   public SetupDataQualityReport(
       SummaryDataQualityDataset summaryDataQualityDataset,
       SummaryDataQualityCohorts summaryDataQualityCohorts,
       Ec1PatientListDataset ec1PatientListDataset,
       Ec2PatientListDataset ec2PatientListDataset,
-      Ec3PatientListDataset ec3PatientListDataset) {
+      Ec3PatientListDataset ec3PatientListDataset,
+      Ec4PatientListDataset ec4PatientListDataset) {
     this.summaryDataQualityDataset = summaryDataQualityDataset;
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
     this.ec1PatientListDataset = ec1PatientListDataset;
     this.ec2PatientListDataset = ec2PatientListDataset;
     this.ec3PatientListDataset = ec3PatientListDataset;
+    this.ec4PatientListDataset = ec4PatientListDataset;
   }
 
   @Override
@@ -87,6 +92,8 @@ public class SetupDataQualityReport extends EptsDataExportManager {
         "EC2", Mapped.mapStraightThrough(ec2PatientListDataset.ec2DataSetDefinition()));
     rd.addDataSetDefinition(
         "EC3", Mapped.mapStraightThrough(ec3PatientListDataset.ec3PatientListDataset()));
+    rd.addDataSetDefinition(
+        "EC4", Mapped.mapStraightThrough(ec4PatientListDataset.ec4PatientListDataset()));
 
     return rd;
   }
@@ -110,7 +117,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       Properties props = new Properties();
       props.put(
           "repeatingSections",
-          "sheet:2,row:7,dataset:EC1 | sheet:3,row:7,dataset:EC2 | sheet:4,row:7,dataset:EC3");
+          "sheet:2,row:7,dataset:EC1 | sheet:3,row:7,dataset:EC2 | sheet:4,row:7,dataset:EC3 | sheet:5,row:7,dataset:EC4");
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {

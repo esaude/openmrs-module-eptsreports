@@ -12,28 +12,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Ec3PatientListDataset extends BaseDataSet {
+public class Ec4PatientListDataset extends BaseDataSet {
 
   private SummaryDataQualityCohorts summaryDataQualityCohorts;
 
   private HivMetadata hivMetadata;
 
   @Autowired
-  public Ec3PatientListDataset(
+  public Ec4PatientListDataset(
       SummaryDataQualityCohorts summaryDataQualityCohorts, HivMetadata hivMetadata) {
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
     this.hivMetadata = hivMetadata;
   }
 
-  public DataSetDefinition ec3PatientListDataset() {
+  public DataSetDefinition ec4PatientListDataset() {
     PatientDataSetDefinition dsd = new PatientDataSetDefinition();
-    dsd.setName("EC3");
+    dsd.setName("EC4");
     dsd.addParameters(getDataQualityParameters());
     dsd.addRowFilter(
         summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
-            Arrays.asList(hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
+            Arrays.asList(
+                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
         "location=${location}");
 
     // add standard column
