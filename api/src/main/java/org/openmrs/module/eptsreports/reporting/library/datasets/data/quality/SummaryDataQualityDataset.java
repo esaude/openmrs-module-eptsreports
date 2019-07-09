@@ -95,6 +95,40 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             "location=${location}"),
         "");
 
+    dsd.addColumn(
+        "EC5",
+        "he patient’s vital status is dead and the patient has a laboratory result (specimen collection date or test order date) after the date of death  or death notification / entry into EPTS.",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicatorsForDataQuality(
+                "he patient’s vital status is dead and the patient has a laboratory result (specimen collection date or test order date) after the date of death  or death notification / entry into EPTS.",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
+                        hivMetadata.getARTProgram().getProgramId(),
+                        hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
+                        Arrays.asList(
+                            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId())),
+                    "location=${location}")),
+            "location=${location}"),
+        "");
+
+    dsd.addColumn(
+        "EC6",
+        "The patient has been identified as transferred out but has an ART pick up date after the transfer out date",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicatorsForDataQuality(
+                "The patient has been identified as transferred out but has an ART pick up date after the transfer out date",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
+                        hivMetadata.getARTProgram().getProgramId(),
+                        hivMetadata
+                            .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                            .getProgramWorkflowStateId(),
+                        Arrays.asList(
+                            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
+                    "location=${location}")),
+            "location=${location}"),
+        "");
+
     return dsd;
   }
 }

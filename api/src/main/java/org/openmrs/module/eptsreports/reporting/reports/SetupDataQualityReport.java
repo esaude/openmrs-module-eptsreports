@@ -9,6 +9,8 @@ import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec2PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec3PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec4PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec5PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec6PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.SummaryDataQualityDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -33,6 +35,10 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   private Ec4PatientListDataset ec4PatientListDataset;
 
+  private Ec5PatientListDataset ec5PatientListDataset;
+
+  private Ec6PatientListDataset ec6PatientListDataset;
+
   @Autowired
   public SetupDataQualityReport(
       SummaryDataQualityDataset summaryDataQualityDataset,
@@ -40,13 +46,17 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       Ec1PatientListDataset ec1PatientListDataset,
       Ec2PatientListDataset ec2PatientListDataset,
       Ec3PatientListDataset ec3PatientListDataset,
-      Ec4PatientListDataset ec4PatientListDataset) {
+      Ec4PatientListDataset ec4PatientListDataset,
+      Ec5PatientListDataset ec5PatientListDataset,
+      Ec6PatientListDataset ec6PatientListDataset) {
     this.summaryDataQualityDataset = summaryDataQualityDataset;
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
     this.ec1PatientListDataset = ec1PatientListDataset;
     this.ec2PatientListDataset = ec2PatientListDataset;
     this.ec3PatientListDataset = ec3PatientListDataset;
     this.ec4PatientListDataset = ec4PatientListDataset;
+    this.ec5PatientListDataset = ec5PatientListDataset;
+    this.ec6PatientListDataset = ec6PatientListDataset;
   }
 
   @Override
@@ -94,6 +104,10 @@ public class SetupDataQualityReport extends EptsDataExportManager {
         "EC3", Mapped.mapStraightThrough(ec3PatientListDataset.ec3PatientListDataset()));
     rd.addDataSetDefinition(
         "EC4", Mapped.mapStraightThrough(ec4PatientListDataset.ec4PatientListDataset()));
+    rd.addDataSetDefinition(
+        "EC5", Mapped.mapStraightThrough(ec5PatientListDataset.ec5PatientListDataset()));
+    rd.addDataSetDefinition(
+        "EC6", Mapped.mapStraightThrough(ec6PatientListDataset.ec6PatientListDataset()));
 
     return rd;
   }
@@ -117,7 +131,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       Properties props = new Properties();
       props.put(
           "repeatingSections",
-          "sheet:2,row:7,dataset:EC1 | sheet:3,row:7,dataset:EC2 | sheet:4,row:7,dataset:EC3 | sheet:5,row:7,dataset:EC4");
+          "sheet:2,row:7,dataset:EC1 | sheet:3,row:7,dataset:EC2 | sheet:4,row:7,dataset:EC3 | sheet:5,row:7,dataset:EC4 | sheet:6,row:7,dataset:EC5 | sheet:7,row:7,dataset:EC6");
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {
