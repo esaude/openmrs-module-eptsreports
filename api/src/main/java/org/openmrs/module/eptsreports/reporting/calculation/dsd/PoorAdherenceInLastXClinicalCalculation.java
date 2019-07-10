@@ -29,6 +29,7 @@ public class PoorAdherenceInLastXClinicalCalculation extends AbstractPatientCalc
     HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
     Location location = (Location) context.getFromCache("location");
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
+    context.setNow(onOrBefore);
 
     List<Encounter> resultantList = new ArrayList<>();
     List<Encounter> requiredThreeList = new ArrayList<>();

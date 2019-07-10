@@ -49,29 +49,33 @@ public class LastPickupDateCalculation extends AbstractPatientCalculation {
       ListResult results = (ListResult) allObs.get(pId);
 
       List<Obs> obsList = EptsCalculationUtils.extractResultValues(results);
-      if (obsList.size() >= 2) {
-        Obs lastObs = obsList.get(obsList.size());
-        Obs prevObs = obsList.get(obsList.size() - 1);
+      if (results != null && obsList.size() >= 2) {
+        Obs lastObs = obsList.get(obsList.size() - 1);
+        Obs prevObs = obsList.get(obsList.size() - 2);
 
-        if (lastObs.getValueDatetime() != null) {
+        if (lastObs != null && lastObs.getValueDatetime() != null) {
           nextAppointmentDate = lastObs.getObsDatetime();
         }
-        if (prevObs.getValueDatetime() != null) {
+        if (prevObs != null && prevObs.getValueDatetime() != null) {
           previousAppointmentDate = prevObs.getObsDatetime();
         }
+        Date previousPlus83Days = null;
+        Date previousPlus97Days = null;
 
         if (nextAppointmentDate != null && previousAppointmentDate != null) {
-          Date previousPlus83Days = EptsCalculationUtils.addDays(previousAppointmentDate, 83);
-          Date previousPlus97Days = EptsCalculationUtils.addDays(previousAppointmentDate, 97);
 
-          if (nextAppointmentDate.compareTo(previousPlus83Days) >= 0
-              && nextAppointmentDate.compareTo(previousPlus97Days) <= 0) {
-            scheduled = true;
-          }
+          previousPlus83Days = EptsCalculationUtils.addDays(previousAppointmentDate, 83);
+          previousPlus97Days = EptsCalculationUtils.addDays(previousAppointmentDate, 97);
+        }
+        if (nextAppointmentDate != null
+            && previousPlus83Days != null
+            && nextAppointmentDate.compareTo(previousPlus83Days) >= 0
+            && nextAppointmentDate.compareTo(previousPlus97Days) <= 0) {
+          scheduled = true;
         }
       }
       map.put(pId, new BooleanResult(scheduled, this));
     }
-    return null;
+    return map;
   }
 }
