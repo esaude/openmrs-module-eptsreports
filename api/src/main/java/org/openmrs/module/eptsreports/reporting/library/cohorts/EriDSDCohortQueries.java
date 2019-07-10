@@ -777,9 +777,9 @@ public class EriDSDCohortQueries {
    */
   public CohortDefinition getPatientsWithNextConsultationScheduled175To190DaysStable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    String cohortName =
-        "N3 STABLE: Number of active patients on ART whose next clinical consultation is scheduled 175-190 days after the date of the last clinical consultation";
 
+    cd.setName(
+        "N3 STABLE: Number of active patients on ART whose next clinical consultation is scheduled 175-190 days after the date of the last clinical consultation");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -805,9 +805,9 @@ public class EriDSDCohortQueries {
    */
   public CohortDefinition getPatientsWithNextConsultationScheduled175To190DaysUnstable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    String cohortName =
-        "N3 UNSTABLE: Number of active patients on ART whose next clinical consultation is scheduled 175-190 days after the date of the last clinical consultation";
 
+    cd.setName(
+        "N3 UNSTABLE: Number of active patients on ART whose next clinical consultation is scheduled 175-190 days after the date of the last clinical consultation");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -893,6 +893,161 @@ public class EriDSDCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("activeAndUnstableN3 AND (pregnantN3 AND NOT breastfeedingN3)");
+
+    return cd;
+  }
+
+  /**
+   * N4: Get number of active patients on ART that are participating in GAAC at the end of the month
+   * prior to month of results submission deadline.
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWhoAreActiveAndParticpatingInGaac() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    String cohortName = "N4: Patients who are active and participating in GAAC";
+
+    cd.setName(
+        "N4: Number of active patients on ART that are participating in GAAC at the end of the month prior to month of results submission deadline.");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "TxCurr",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
+            "onOrBefore=${endDate},location=${location}"));
+    cd.setCompositionString("TxCurr");
+
+    return cd;
+  }
+
+  /**
+   * N4 STABLE: Get number of active patients on ART that are participating in GAAC at the end of
+   * the month prior to month of results submission deadline.
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWhoAreActiveAndParticpatingInGaacStable() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName(
+        "N4 STABLE: Number of active patients on ART that are participating in GAAC at the end of the month prior to month of results submission deadline.");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "allPatientsN4Stable",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveAndParticpatingInGaac(),
+            "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "stablePatientsN4Stable",
+        EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate}"));
+
+    cd.setCompositionString("allPatientsN4Stable AND stablePatientsN4Stable");
+
+    return cd;
+  }
+
+  /**
+   * N4 UNSTABLE: Get number of active patients on ART that are participating in GAAC at the end of
+   * the month prior to month of results submission deadline.
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWhoAreActiveAndParticpatingInGaacUnstable() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName(
+        "N4 UNSTABLE: Number of active patients on ART that are participating in GAAC at the end of the month prior to month of results submission deadline.");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "allPatientsN4Unstable",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveAndParticpatingInGaac(),
+            "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "stablePatientsN4Unstable",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveAndParticpatingInGaacStable(),
+            "endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("allPatientsN4Unstable AND NOT stablePatientsN4Unstable");
+
+    return cd;
+  }
+
+  /**
+   * N4 UNSTABLE: Get Patients who are breastfeeding and not pregnant
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWhoAreBreastfeedingAndNotPregnantN4Unstable() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName(
+        "N4 Patients who are breastfeeding: includes all breastfeeding patients excluding pregnant patients");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "breastfeedingN4",
+        EptsReportUtils.map(
+            txNewCohortQueries.getTxNewBreastfeedingComposition(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "pregnantN4",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "activeAndUnstableN4",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveAndParticpatingInGaacUnstable(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("activeAndUnstableN4 AND (breastfeedingN4 AND NOT pregnantN4)");
+
+    return cd;
+  }
+
+  /**
+   * N4 UNSTABLE: Get Patient who are pregnant and not breastfeeding
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWhoArePregnantAndNotBreastfeedingN4Unstable() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("N4: Pregnant: includes all pregnant patients");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "pregnantN4",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "breastfeedingN4",
+        EptsReportUtils.map(
+            txNewCohortQueries.getTxNewBreastfeedingComposition(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "activeAndUnstableN4",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveAndParticpatingInGaacUnstable(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("activeAndUnstableN4 AND (pregnantN4 AND NOT breastfeedingN4)");
 
     return cd;
   }

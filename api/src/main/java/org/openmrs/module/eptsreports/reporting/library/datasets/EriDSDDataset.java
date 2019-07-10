@@ -439,6 +439,107 @@ public class EriDSDDataset extends BaseDataSet {
                     "endDate=${endDate},location=${location}")),
             mappings),
         "");
+    dsd.addColumn(
+        "N4T",
+        "DSD N4 Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4T",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticpatingInGaac(),
+                    "endDate=${endDate},location=${location}")),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N4SST",
+        "DSD N4 Stable subtotal",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4SST",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticpatingInGaacStable(),
+                    "endDate=${endDate},location=${location}")),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N4SNPNBA",
+        "DSD N4 Stable Non-pregnant and Non-Breastfeeding Adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4SNPNBA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticpatingInGaacStable(),
+                    "endDate=${endDate},location=${location}")),
+            mappings),
+        "age=15+");
+    addRow(
+        dsd,
+        "N4SNPNBC",
+        " DSD N4 Stable Non-pregnant and Non-Breastfeeding Children (2-4, 5-9, 10-14)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4SNPNBC",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticpatingInGaacStable(),
+                    "endDate=${endDate},location=${location}")),
+            mappings),
+        getChildrenColumn());
+    dsd.addColumn(
+        "N4UST",
+        "DSD N4 Unstable subtotal",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4UST",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticpatingInGaacUnstable(),
+                    "endDate=${endDate},location=${location}")),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N4UNPNBA",
+        "DSD N4 Unstable Non-pregnant and Non-Breastfeeding Adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4UNPNBA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticpatingInGaacUnstable(),
+                    "endDate=${endDate},location=${location}")),
+            mappings),
+        "age=15+");
+    addRow(
+        dsd,
+        "N4UNPNBC",
+        " DSD N4 Unstable Non-pregnant and Non-Breastfeeding Children (2-4, 5-9, 10-14)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4UNPNBC",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticpatingInGaacUnstable(),
+                    "endDate=${endDate},location=${location}")),
+            mappings),
+        getChildrenColumn());
+    dsd.addColumn(
+        "N4UBNP",
+        "N4 Patients who are breastfeeding excluding pregnant patients",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4UBNP",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN4Unstable(),
+                    "endDate=${endDate},location=${location}")),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N4UPNB",
+        "N4: Pregnant: includes all pregnant patients",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4UPNB",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoArePregnantAndNotBreastfeedingN4Unstable(),
+                    "endDate=${endDate},location=${location}")),
+            mappings),
+        "");
 
     return dsd;
   }
