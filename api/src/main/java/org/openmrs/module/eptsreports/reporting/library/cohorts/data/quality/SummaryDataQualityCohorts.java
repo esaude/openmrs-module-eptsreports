@@ -167,4 +167,56 @@ public class SummaryDataQualityCohorts {
         DqQueries.getPatientsWithStateThatIsBeforeAnEncounter(programId, stateId, encounterList));
     return cd;
   }
+
+  /**
+   * Patients with a birth date that is before 1920 The patient’s date of birth, estimated date of
+   * birth or entered age indicate the patient was born before 1920
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoseBirthdateIsBeforeYear(int year) {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients with a birth date that is before " + year);
+    cd.setQuery(DqQueries.getPatientsWhoseYearOfBirthIsBeforeYear(year));
+    return cd;
+  }
+
+  /**
+   * The patients date of birth, estimated date of birth or age is negative
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWithNegativeAge() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("The patients date of birth, estimated date of birth or age is negative");
+    cd.setQuery(DqQueries.getPatientsWithNegativeBirthDates());
+    return cd;
+  }
+
+  /**
+   * The patients birth, estimated date of birth or age indicates they are > years of age
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWithAgeHigherThanXyears(int years) {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("The patients birth, estimated date of birth or age indicates they are > " + years);
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.setQuery(DqQueries.getPatientsWithMoreThanXyears(years));
+    return cd;
+  }
+
+  /**
+   * The patient’s date of birth is after any drug pick up date
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoseBirthDatesAreAfterDrugPickUp() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("The patient’s date of birth is after any drug pick up date");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.setQuery(DqQueries.getPatientsWhoseBirthdateIsAfterDrugPickup());
+    return cd;
+  }
 }

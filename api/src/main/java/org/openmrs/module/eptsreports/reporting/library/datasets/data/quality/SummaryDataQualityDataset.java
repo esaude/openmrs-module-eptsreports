@@ -32,8 +32,6 @@ public class SummaryDataQualityDataset extends BaseDataSet {
 
   public DataSetDefinition constructSummaryDataQualityDatset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-    String mappings =
-        "startDate=${startDate},endDate=${endDate},location=${location},state=${state}";
     dsd.setName("Data Quality Summary Dataset");
     dsd.addParameters(getDataQualityParameters());
 
@@ -127,6 +125,160 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
                     "location=${location}")),
             "location=${location}"),
+        "");
+
+    dsd.addColumn(
+        "EC7",
+        "The patient has been identified as transferred out but has an clinical consultation date after the transfer out date",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicatorsForDataQuality(
+                "The patient has been identified as transferred out but has an clinical consultation date after the transfer out date",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
+                        hivMetadata.getARTProgram().getProgramId(),
+                        hivMetadata
+                            .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                            .getProgramWorkflowStateId(),
+                        Arrays.asList(
+                            hivMetadata
+                                .getARVPediatriaSeguimentoEncounterType()
+                                .getEncounterTypeId(),
+                            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
+                    "location=${location}")),
+            "location=${location}"),
+        "");
+
+    dsd.addColumn(
+        "EC8",
+        "The patient has been identified as transferred out but has an laboratory results(specimen collection date or report date) after the transfer out date",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicatorsForDataQuality(
+                "The patient has been identified as transferred out but has an laboratory results(specimen collection date or report date) after the transfer out date",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
+                        hivMetadata.getARTProgram().getProgramId(),
+                        hivMetadata
+                            .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                            .getProgramWorkflowStateId(),
+                        Arrays.asList(
+                            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId())),
+                    "location=${location}")),
+            "location=${location}"),
+        "");
+
+    dsd.addColumn(
+        "EC9",
+        "The patient has been identified as abandoned  but has an ART pick up date after the abandoned date",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicatorsForDataQuality(
+                "The patient has been identified as abandoned  but has an ART pick up date after the abandoned date",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
+                        hivMetadata.getARTProgram().getProgramId(),
+                        hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
+                        Arrays.asList(
+                            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
+                    "location=${location}")),
+            "location=${location}"),
+        "");
+
+    dsd.addColumn(
+        "EC10",
+        "The patient has been identified as abandoned but has an clinical consultation date after the abandoned date",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicatorsForDataQuality(
+                "The patient has been identified as abandoned but has an clinical consultation date after the abandoned date",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
+                        hivMetadata.getARTProgram().getProgramId(),
+                        hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
+                        Arrays.asList(
+                            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                            hivMetadata
+                                .getARVPediatriaSeguimentoEncounterType()
+                                .getEncounterTypeId())),
+                    "location=${location}")),
+            "location=${location}"),
+        "");
+
+    dsd.addColumn(
+        "EC10",
+        "The patient has been identified as abandoned but has an clinical consultation date after the abandoned date",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicatorsForDataQuality(
+                "The patient has been identified as abandoned but has an clinical consultation date after the abandoned date",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
+                        hivMetadata.getARTProgram().getProgramId(),
+                        hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
+                        Arrays.asList(
+                            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                            hivMetadata
+                                .getARVPediatriaSeguimentoEncounterType()
+                                .getEncounterTypeId())),
+                    "location=${location}")),
+            "location=${location}"),
+        "");
+
+    dsd.addColumn(
+        "EC11",
+        "The patient has been identified as abandoned but has an laboratory results(specimen collection date or report date) after the abandoned date",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicatorsForDataQuality(
+                "The patient has been identified as abandoned but has an laboratory results(specimen collection date or report date) after the abandoned date",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
+                        hivMetadata.getARTProgram().getProgramId(),
+                        hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
+                        Arrays.asList(
+                            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId())),
+                    "location=${location}")),
+            "location=${location}"),
+        "");
+
+    dsd.addColumn(
+        "EC12",
+        "The patient’s date of birth, estimated date of birth or entered age indicate the patient was born before 1920",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicatorsForDataQuality(
+                "The patient’s date of birth, estimated date of birth or entered age indicate the patient was born before 1920",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getPatientsWhoseBirthdateIsBeforeYear(1920), "")),
+            ""),
+        "");
+
+    dsd.addColumn(
+        "EC13",
+        "The patients date of birth, estimated date of birth or age is negative",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicatorsForDataQuality(
+                "The patients date of birth, estimated date of birth or age is negative ",
+                EptsReportUtils.map(summaryDataQualityCohorts.getPatientsWithNegativeAge(), "")),
+            ""),
+        "");
+
+    dsd.addColumn(
+        "EC14",
+        "The patients birth, estimated date of birth or age indicates they are > 100 years of age",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicatorsForDataQuality(
+                "The patients birth, estimated date of birth or age indicates they are > 100 years of age",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getPatientsWithAgeHigherThanXyears(100),
+                    "endDate=${endDate}")),
+            "endDate=${endDate}"),
+        "");
+
+    dsd.addColumn(
+        "EC15",
+        "The patient’s date of birth is after any drug pick up date",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicatorsForDataQuality(
+                "The patient’s date of birth is after any drug pick up date",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getPatientsWhoseBirthDatesAreAfterDrugPickUp(),
+                    "location=${location},endDate=${endDate}")),
+            "location=${location},endDate=${endDate}"),
         "");
 
     return dsd;

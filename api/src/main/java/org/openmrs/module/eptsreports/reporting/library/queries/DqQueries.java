@@ -94,7 +94,7 @@ public class DqQueries {
   /**
    * Get patients who have a given state before an encounter
    *
-   * @return CohortDefinition
+   * @return String
    */
   public static String getPatientsWithStateThatIsBeforeAnEncounter(
       int programId, int stateId, List<Integer> encounterList) {
@@ -112,7 +112,52 @@ public class DqQueries {
             + "(SELECT p.patient_id AS patient_id, MAX(e.encounter_datetime) AS encounter_date FROM "
             + "patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided = 0 and e.voided=0 "
             + "AND e.encounter_type IN (%s) AND e.location_id=:location GROUP BY p.patient_id"
-            + ") encounter ON states.patient_id=encounter.patient_id) WHERE encounter.encounter_date > states.start_date";
+            + ") encounter ON states.patient_id=encounter.patient_id) WHERE encounter.encounter_date >= states.start_date";
     return String.format(query, programId, stateId, str2);
+  }
+
+  /**
+   * Get patients whose year of birth is before 1920
+   *
+   * @return String
+   */
+  public static String getPatientsWhoseYearOfBirthIsBeforeYear(int year) {
+    ;
+    return "SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id WHERE pe.birthdate IS NOT NULL AND YEAR(pe.birthdate) <"
+        + year;
+  }
+
+  /**
+   * Get patients whose date of birth, estimated date of birth or age is negative
+   *
+   * @return String
+   */
+  public static String getPatientsWithNegativeBirthDates() {
+    return "SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id WHERE pe.birthdate IS NULL OR STR_TO_DATE(pe.birthdate, '%Y-%b-%b') IS NULL";
+  }
+
+  /**
+   * The patients birth, estimated date of birth or age indicates they are > 100 years of age
+   *
+   * @return String
+   */
+  public static String getPatientsWithMoreThanXyears(int years) {
+    return "SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id WHERE pe.birthdate IS NOT NULL AND TIMESTAMPDIFF(YEAR, pe.birthdate, :endDate) >"
+        + years;
+  }
+
+  /**
+   * The patient’s date of birth is after any drug pick up date
+   *
+   * @return String
+   */
+  public static String getPatientsWhoseBirthdateIsAfterDrugPickup() {
+    return "SELECT birth_date.patient_id FROM "
+        + "((SELECT pa.patient_id, pe.birthdate AS birthdate FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id WHERE pe.birthdate IS NOT NULL) birth_date "
+        + "INNER JOIN "
+        + "(SELECT p.patient_id AS patient_id, MAX(e.encounter_datetime) AS encounter_date FROM "
+        + "patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided = 0 and e.voided=0 "
+        + "AND e.encounter_type IN (%s) AND e.location_id=:location GROUP BY p.patient_id "
+        + ") encounter ON birth_date.patient_id=encounter.patient_id) WHERE birth_date.birthdate >= encounter.encounter_date";
   }
 }

@@ -41,7 +41,7 @@ public class Ec12PatientListDataset extends BaseDataSet {
     PatientDataSetDefinition dsd = new PatientDataSetDefinition();
     dsd.setName("EC12");
     dsd.addParameters(getDataQualityParameters());
-    // dsd.addRowFilter();
+    dsd.addRowFilter(summaryDataQualityCohorts.getPatientsWhoseBirthdateIsBeforeYear(1920), "");
 
     // add standard column
     addStandardColumns(dsd);

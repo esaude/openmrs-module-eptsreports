@@ -41,7 +41,8 @@ public class Ec14PatientListDataset extends BaseDataSet {
     PatientDataSetDefinition dsd = new PatientDataSetDefinition();
     dsd.setName("EC14");
     dsd.addParameters(getDataQualityParameters());
-    // dsd.addRowFilter();
+    dsd.addRowFilter(
+        summaryDataQualityCohorts.getPatientsWithAgeHigherThanXyears(100), "endDate=${endDate}");
 
     // add standard column
     addStandardColumns(dsd);

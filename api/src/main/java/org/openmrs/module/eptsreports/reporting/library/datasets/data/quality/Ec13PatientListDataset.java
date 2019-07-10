@@ -41,7 +41,7 @@ public class Ec13PatientListDataset extends BaseDataSet {
     PatientDataSetDefinition dsd = new PatientDataSetDefinition();
     dsd.setName("EC13");
     dsd.addParameters(getDataQualityParameters());
-    // dsd.addRowFilter();
+    dsd.addRowFilter(summaryDataQualityCohorts.getPatientsWithNegativeAge(), "");
 
     // add standard column
     addStandardColumns(dsd);

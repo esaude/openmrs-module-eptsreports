@@ -41,7 +41,9 @@ public class Ec15PatientListDataset extends BaseDataSet {
     PatientDataSetDefinition dsd = new PatientDataSetDefinition();
     dsd.setName("EC15");
     dsd.addParameters(getDataQualityParameters());
-    // dsd.addRowFilter();
+    dsd.addRowFilter(
+        summaryDataQualityCohorts.getPatientsWhoseBirthDatesAreAfterDrugPickUp(),
+        "location=${location},endDate=${endDate}");
 
     // add standard column
     addStandardColumns(dsd);
