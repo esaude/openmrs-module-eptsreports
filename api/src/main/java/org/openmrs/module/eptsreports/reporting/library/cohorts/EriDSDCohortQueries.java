@@ -2,11 +2,13 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.calculation.dsd.LastPickupDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.dsd.NextAndPrevDatesCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.OnArtForAtleastXmonthsCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.PoorAdherenceInLastXClinicalCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
@@ -577,7 +579,13 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
             "onOrBefore=${endDate},location=${location}"));
-    cd.addSearch("scheduled", EptsReportUtils.map(getPatientsScheduled(), "location=${location}"));
+    cd.addSearch(
+        "scheduled",
+        EptsReportUtils.map(
+            getPatientsScheduled(
+                hivMetadata.getReturnVisitDateForArvDrugConcept(),
+                Arrays.asList(hivMetadata.getARVPharmaciaEncounterType())),
+            "location=${location}"));
 
     cd.setCompositionString("TxCurr AND scheduled");
 
@@ -589,12 +597,15 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
-  private CohortDefinition getPatientsScheduled() {
+  private CohortDefinition getPatientsScheduled(
+      Concept conceptId, List<EncounterType> encounterTypes) {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
             "scheduledPatients",
-            Context.getRegisteredComponents(LastPickupDateCalculation.class).get(0));
+            Context.getRegisteredComponents(NextAndPrevDatesCalculation.class).get(0));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addCalculationParameter("conceptId", conceptId);
+    cd.addCalculationParameter("encounterTypes", encounterTypes);
 
     return cd;
   }
@@ -744,7 +755,16 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
             "onOrBefore=${endDate},location=${location}"));
-    cd.setCompositionString("TxCurr");
+    cd.addSearch(
+        "scheduledN3",
+        EptsReportUtils.map(
+            getPatientsScheduled(
+                hivMetadata.getReturnVisitDateConcept(),
+                Arrays.asList(
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getAdultoSeguimentoEncounterType())),
+            "location=${location}"));
+    cd.setCompositionString("TxCurr AND scheduledN3");
 
     return cd;
   }

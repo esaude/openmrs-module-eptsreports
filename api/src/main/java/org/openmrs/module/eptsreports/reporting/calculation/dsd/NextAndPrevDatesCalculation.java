@@ -1,6 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.calculation.dsd;
 
 import java.util.*;
+import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Obs;
@@ -17,7 +18,7 @@ import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LastPickupDateCalculation extends AbstractPatientCalculation {
+public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
   @Override
   public CalculationResultMap evaluate(
       Collection<Integer> cohort,
@@ -26,14 +27,17 @@ public class LastPickupDateCalculation extends AbstractPatientCalculation {
     EPTSCalculationService ePTSCalculationService =
         Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
     HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
-    EncounterType phamarcyEncounterType = hivMetadata.getARVPharmaciaEncounterType();
     Location location = (Location) context.getFromCache("location");
     CalculationResultMap map = new CalculationResultMap();
 
+    Concept concept = (Concept) parameterValues.get("conceptId");
+    List<EncounterType> encounterTypes =
+        (List<EncounterType>) parameterValues.get("encounterTypes");
+
     CalculationResultMap allObs =
         ePTSCalculationService.getObs(
-            hivMetadata.getReturnVisitDateForArvDrugConcept(),
-            Arrays.asList(phamarcyEncounterType),
+            concept,
+            encounterTypes,
             cohort,
             Arrays.asList(location),
             null,
