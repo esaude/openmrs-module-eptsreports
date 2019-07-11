@@ -527,7 +527,7 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * N1: Get Patients who are pregnant and not breastfeeding
+   * N1: Get Patients who are pregnant and also breastfeeding
    *
    * @return
    */
@@ -556,7 +556,7 @@ public class EriDSDCohortQueries {
             getPatientsWhoAreActiveAndParticipateInDsdModelUnstable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("activeAndUnstable AND (pregnant AND NOT breastfeeding)");
+    cd.setCompositionString("activeAndUnstable AND (pregnant OR breastfeeding)");
 
     return cd;
   }
@@ -703,7 +703,7 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * N2 UNSTABLE: Get Patient who are pregnant and not breastfeeding
+   * N2 UNSTABLE: Get Patient who are pregnant and including breastfeeding
    *
    * @return
    */
@@ -731,7 +731,7 @@ public class EriDSDCohortQueries {
             getPatientsWhoAreActiveWithNextPickupAs3MonthsAndUnstable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("activeAndUnstableN2 AND (pregnantN2 AND NOT breastfeedingN2)");
+    cd.setCompositionString("activeAndUnstableN2 AND (pregnantN2 OR breastfeedingN2)");
 
     return cd;
   }
@@ -865,7 +865,7 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * N3 UNSTABLE: Get Patient who are pregnant and not breastfeeding
+   * N3 UNSTABLE: Get Patient who are pregnant and includes breastfeeding
    *
    * @return
    */
@@ -893,7 +893,7 @@ public class EriDSDCohortQueries {
             getPatientsWithNextConsultationScheduled175To190DaysUnstable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("activeAndUnstableN3 AND (pregnantN3 AND NOT breastfeedingN3)");
+    cd.setCompositionString("activeAndUnstableN3 AND (pregnantN3 OR breastfeedingN3)");
 
     return cd;
   }
@@ -1025,7 +1025,7 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * N4 UNSTABLE: Get Patient who are pregnant and not breastfeeding
+   * N4 UNSTABLE: Get Patient who are pregnant and including breastfeeding
    *
    * @return
    */
@@ -1053,13 +1053,14 @@ public class EriDSDCohortQueries {
             getPatientsWhoAreActiveAndParticpatingInGaacUnstable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("activeAndUnstableN4 AND (pregnantN4 AND NOT breastfeedingN4)");
+    cd.setCompositionString("activeAndUnstableN4 AND (pregnantN4 OR breastfeedingN4)");
 
     return cd;
   }
 
   /**
-   *  Get All patients who have been enrolled in the GAAC program
+   * Get All patients who have been enrolled in the GAAC program
+   *
    * @return
    */
   private CohortDefinition getAllPatientsEnrolledOnGaac() {
