@@ -133,7 +133,9 @@ public class DqQueries {
    * @return String
    */
   public static String getPatientsWithNegativeBirthDates() {
-    return "SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id WHERE pe.birthdate IS NULL OR STR_TO_DATE(pe.birthdate, '%Y-%b-%b') IS NULL";
+    return "SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id WHERE pe.birthdate IS NULL"
+        + " UNION "
+        + "SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id WHERE pe.birthdate IS NOT NULL AND pe.birthdate > pe.date_created";
   }
 
   /**
@@ -151,13 +153,17 @@ public class DqQueries {
    *
    * @return String
    */
-  public static String getPatientsWhoseBirthdateIsAfterDrugPickup() {
-    return "SELECT birth_date.patient_id FROM "
-        + "((SELECT pa.patient_id, pe.birthdate AS birthdate FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id WHERE pe.birthdate IS NOT NULL) birth_date "
-        + "INNER JOIN "
-        + "(SELECT p.patient_id AS patient_id, MAX(e.encounter_datetime) AS encounter_date FROM "
-        + "patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided = 0 and e.voided=0 "
-        + "AND e.encounter_type IN (%s) AND e.location_id=:location GROUP BY p.patient_id "
-        + ") encounter ON birth_date.patient_id=encounter.patient_id) WHERE birth_date.birthdate >= encounter.encounter_date";
+  public static String getPatientsWhoseBirthdateIsAfterDrugPickup(List<Integer> encounterList) {
+    String str1 = String.valueOf(encounterList).replaceAll("\\[", "");
+    String str2 = str1.replaceAll("]", "");
+    String query =
+        "SELECT birth_date.patient_id FROM "
+            + "((SELECT pa.patient_id, pe.birthdate AS birthdate FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id WHERE pe.birthdate IS NOT NULL) birth_date "
+            + "INNER JOIN "
+            + "(SELECT p.patient_id AS patient_id, MAX(e.encounter_datetime) AS encounter_date FROM "
+            + "patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided = 0 and e.voided=0 "
+            + "AND e.encounter_type IN (%s) AND e.location_id=:location GROUP BY p.patient_id "
+            + ") encounter ON birth_date.patient_id=encounter.patient_id) WHERE birth_date.birthdate >= encounter.encounter_date";
+    return String.format(query, str2);
   }
 }

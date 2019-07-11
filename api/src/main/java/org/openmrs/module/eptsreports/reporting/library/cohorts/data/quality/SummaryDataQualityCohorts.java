@@ -211,12 +211,13 @@ public class SummaryDataQualityCohorts {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getPatientsWhoseBirthDatesAreAfterDrugPickUp() {
+  public CohortDefinition getPatientsWhoseBirthDatesAreAfterDrugPickUp(
+      List<Integer> encounterList) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("The patient’s date of birth is after any drug pick up date");
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.setQuery(DqQueries.getPatientsWhoseBirthdateIsAfterDrugPickup());
+    cd.setQuery(DqQueries.getPatientsWhoseBirthdateIsAfterDrugPickup(encounterList));
     return cd;
   }
 }

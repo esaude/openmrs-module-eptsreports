@@ -276,7 +276,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicatorsForDataQuality(
                 "The patient’s date of birth is after any drug pick up date",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsWhoseBirthDatesAreAfterDrugPickUp(),
+                    summaryDataQualityCohorts.getPatientsWhoseBirthDatesAreAfterDrugPickUp(
+                        Arrays.asList(
+                            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
                     "location=${location},endDate=${endDate}")),
             "location=${location},endDate=${endDate}"),
         "");

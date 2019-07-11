@@ -15,6 +15,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
 import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonColumns.addStandardColumns;
 
+import java.util.Arrays;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
@@ -42,7 +43,8 @@ public class Ec15PatientListDataset extends BaseDataSet {
     dsd.setName("EC15");
     dsd.addParameters(getDataQualityParameters());
     dsd.addRowFilter(
-        summaryDataQualityCohorts.getPatientsWhoseBirthDatesAreAfterDrugPickUp(),
+        summaryDataQualityCohorts.getPatientsWhoseBirthDatesAreAfterDrugPickUp(
+            Arrays.asList(hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
         "location=${location},endDate=${endDate}");
 
     // add standard column
