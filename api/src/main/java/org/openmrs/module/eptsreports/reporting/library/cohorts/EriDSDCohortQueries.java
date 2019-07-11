@@ -12,6 +12,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.dsd.NextAndPrevDates
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.OnArtForAtleastXmonthsCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.PoorAdherenceInLastXClinicalCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
+import org.openmrs.module.eptsreports.reporting.library.queries.DsdQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.RangeComparator;
@@ -918,7 +919,12 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
             "onOrBefore=${endDate},location=${location}"));
-    cd.setCompositionString("TxCurr");
+    cd.addSearch(
+        "patientsEnrolledOnGaac",
+        EptsReportUtils.map(
+            getAllPatientsEnrolledOnGaac(), "endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("TxCurr AND patientsEnrolledOnGaac");
 
     return cd;
   }
@@ -1049,6 +1055,22 @@ public class EriDSDCohortQueries {
 
     cd.setCompositionString("activeAndUnstableN4 AND (pregnantN4 AND NOT breastfeedingN4)");
 
+    return cd;
+  }
+
+  /**
+   *  Get All patients who have been enrolled in the GAAC program
+   * @return
+   */
+  private CohortDefinition getAllPatientsEnrolledOnGaac() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
+    cd.setName("All Patients Enrolled On GAAC");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.setQuery(DsdQueries.getPatientsEnrolledOnGAAC());
     return cd;
   }
 }
