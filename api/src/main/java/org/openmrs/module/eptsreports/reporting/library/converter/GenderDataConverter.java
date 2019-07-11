@@ -4,11 +4,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 
-public class GenderConverter implements DataConverter {
+public class GenderDataConverter implements DataConverter {
 
   private Log log = LogFactory.getLog(getClass());
 
-  public GenderConverter() {}
+  public GenderDataConverter() {}
 
   /** @should return a blank string if valueNumeric is null */
   @Override

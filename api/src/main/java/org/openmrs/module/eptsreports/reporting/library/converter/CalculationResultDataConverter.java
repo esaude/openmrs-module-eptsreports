@@ -1,7 +1,8 @@
 package org.openmrs.module.eptsreports.reporting.library.converter;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.formatDate;
+import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.formatDateTime;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,6 +66,8 @@ public class CalculationResultDataConverter implements DataConverter {
         return formatDateTime(((Patient) value).getDateCreated());
       } else if (what.equals("L")) {
         return formatDateTime(((Patient) value).getDateChanged());
+      } else if (what.equals("deathDate") && ((Patient) value).getDeathDate() != null) {
+        return formatDateTime(((Patient) value).getDeathDate());
       }
     } else if (value instanceof TreeMap) {
       Map.Entry<Date, String> lastEntry = ((TreeMap) value).lastEntry();
@@ -103,15 +106,5 @@ public class CalculationResultDataConverter implements DataConverter {
   @Override
   public Class<?> getDataType() {
     return String.class;
-  }
-
-  private String formatDate(Date date) {
-    DateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
-    return date == null ? "" : dateFormatter.format(date);
-  }
-
-  private String formatDateTime(Date date) {
-    DateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-    return date == null ? "" : dateFormatter.format(date);
   }
 }

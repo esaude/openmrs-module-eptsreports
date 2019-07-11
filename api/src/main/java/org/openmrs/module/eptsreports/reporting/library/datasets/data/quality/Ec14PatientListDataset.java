@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
-import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonColumns.addStandardColumns;
+import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.addStandardColumns;
 
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
