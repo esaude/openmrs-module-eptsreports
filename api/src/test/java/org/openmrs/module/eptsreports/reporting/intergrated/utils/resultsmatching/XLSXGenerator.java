@@ -22,9 +22,10 @@ import java.util.List;
 public class XLSXGenerator {
   private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-  public static void creatResultsMatchingResultsXlsx(List<RunResult> results, String eptsReportsResultsMatchingOutPut) throws IOException {
-    for(RunResult result : results) {
-      Workbook workbook = new XSSFWorkbook();
+  public static void creatResultsMatchingResultsXlsx(
+      List<RunResult> results, String eptsReportsResultsMatchingOutPut) throws IOException {
+    Workbook workbook = new XSSFWorkbook();
+    for (RunResult result : results) {
       Sheet sheet = workbook.createSheet(result.getCurrentReport());
       sheet.autoSizeColumn(14);
       Font headerFont = workbook.createFont();
@@ -69,7 +70,8 @@ public class XLSXGenerator {
       Cell paramsValueCell3 = paramsValue.createCell(3);
       paramsValueCell3.setCellValue(result.getMasterReportEvaluationTime());
       Cell paramsValueCell4 = paramsValue.createCell(4);
-      paramsValueCell4.setCellValue(sdf.format((Date) result.getParameterValues().get("startDate")));
+      paramsValueCell4.setCellValue(
+          sdf.format((Date) result.getParameterValues().get("startDate")));
       Cell paramsValueCell5 = paramsValue.createCell(5);
       paramsValueCell5.setCellValue(sdf.format((Date) result.getParameterValues().get("endDate")));
       Cell paramsValueCell6 = paramsValue.createCell(6);
@@ -82,7 +84,7 @@ public class XLSXGenerator {
       Row masterData = sheet.createRow(7);
       Row currentOffSetData = sheet.createRow(8);
       Row masterOffSetData = sheet.createRow(9);
-      for(int i = 0; i < result.getMatches().size(); i++) {
+      for (int i = 0; i < result.getMatches().size(); i++) {
         Match match = result.getMatches().get(i);
         Cell indicatorHeaderValue = indicatorHeader.createCell(i);
         indicatorHeaderValue.setCellValue(match.getMapping());
@@ -94,34 +96,47 @@ public class XLSXGenerator {
         Cell currentOffSetDataValue = currentOffSetData.createCell(i);
         currentOffSetDataValue.setCellValue(currentOffSet);
         // currentOffSet or miss-matches set to cell as a comment
-        if(currentOffSet > 0) {
-          currentOffSetDataValue.setCellComment(generateCellComment(sheet, workbook.getCreationHelper(), currentOffSetData, currentOffSetDataValue, match.getCurrentOffSetPatientIds().toString()));
+        if (currentOffSet > 0) {
+          currentOffSetDataValue.setCellComment(
+              generateCellComment(
+                  sheet,
+                  workbook.getCreationHelper(),
+                  currentOffSetData,
+                  currentOffSetDataValue,
+                  match.getCurrentOffSetPatientIds().toString()));
         }
         Integer masterOffSet = match.getMasterOffSet();
         Cell masterOffSetDataValue = masterOffSetData.createCell(i);
         masterOffSetDataValue.setCellValue(masterOffSet);
         // masterOffSet or miss-matches set to cell as a comment
-        if(masterOffSet > 0) {
-          masterOffSetDataValue.setCellComment(generateCellComment(sheet, workbook.getCreationHelper(), masterOffSetData, masterOffSetDataValue, match.getMasterOffSetPatientIds().toString()));
+        if (masterOffSet > 0) {
+          masterOffSetDataValue.setCellComment(
+              generateCellComment(
+                  sheet,
+                  workbook.getCreationHelper(),
+                  masterOffSetData,
+                  masterOffSetDataValue,
+                  match.getMasterOffSetPatientIds().toString()));
         }
       }
-
-      // Write the output to a results file
-      FileOutputStream fileOut = new FileOutputStream(eptsReportsResultsMatchingOutPut);
-      workbook.write(fileOut);
-      fileOut.close();
     }
+
+    // Write the output to a results file
+    FileOutputStream fileOut = new FileOutputStream(eptsReportsResultsMatchingOutPut);
+    workbook.write(fileOut);
+    fileOut.close();
   }
 
-  private static Comment generateCellComment(Sheet sheet, CreationHelper factory, Row row, Cell cell, String message) {
+  private static Comment generateCellComment(
+      Sheet sheet, CreationHelper factory, Row row, Cell cell, String message) {
     Drawing drawing = ((Sheet) sheet).createDrawingPatriarch();
 
     // When the comment box is visible, have it show in a 1x3 space
     ClientAnchor anchor = factory.createClientAnchor();
     anchor.setCol1(cell.getColumnIndex());
-    anchor.setCol2(cell.getColumnIndex()+1);
+    anchor.setCol2(cell.getColumnIndex() + 1);
     anchor.setRow1(row.getRowNum());
-    anchor.setRow2(row.getRowNum()+3);
+    anchor.setRow2(row.getRowNum() + 3);
 
     // Create the comment and set the text+author
     Comment comment = drawing.createCellComment(anchor);
@@ -129,5 +144,4 @@ public class XLSXGenerator {
     comment.setAuthor(System.getProperty("user.name"));
     return comment;
   }
-
 }

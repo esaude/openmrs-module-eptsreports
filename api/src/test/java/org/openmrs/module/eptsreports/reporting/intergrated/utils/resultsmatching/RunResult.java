@@ -3,9 +3,7 @@ package org.openmrs.module.eptsreports.reporting.intergrated.utils.resultsmatchi
 import java.util.List;
 import java.util.Map;
 
-/**
- * This contains a detailed reports result matching result
- */
+/** This contains a detailed reports result matching result */
 public class RunResult {
   // milli seconds taken to run current report
   private long currentReportEvaluationTime;
@@ -44,7 +42,13 @@ public class RunResult {
     return matches;
   }
 
-  public RunResult(long currentReportEvaluationTime, long masterReportEvaluationTime, String currentReport, String masterReport, Map<String, Object> parameterValues, List<Match> matches) {
+  public RunResult(
+      long currentReportEvaluationTime,
+      long masterReportEvaluationTime,
+      String currentReport,
+      String masterReport,
+      Map<String, Object> parameterValues,
+      List<Match> matches) {
     this.currentReportEvaluationTime = currentReportEvaluationTime;
     this.masterReportEvaluationTime = masterReportEvaluationTime;
     this.currentReport = currentReport;

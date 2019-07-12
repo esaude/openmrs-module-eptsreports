@@ -54,9 +54,11 @@ public class Match {
     this.mapping = mapping;
     this.currentValue = currentValue;
     this.masterValue = masterValue;
-    if(currentValue != null && masterValue != null) {
-      this.currentOffSet = currentValue - masterValue > 0 ? currentValue - masterValue : currentOffSet;
-      this.masterOffSet = masterValue - currentValue > 0 ? masterValue - currentValue : masterOffSet;
+    if (currentValue != null && masterValue != null) {
+      this.currentOffSet =
+          currentValue - masterValue > 0 ? currentValue - masterValue : currentOffSet;
+      this.masterOffSet =
+          masterValue - currentValue > 0 ? masterValue - currentValue : masterOffSet;
     }
   }
 }
