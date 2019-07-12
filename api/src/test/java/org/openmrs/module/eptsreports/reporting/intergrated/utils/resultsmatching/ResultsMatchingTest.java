@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -22,11 +21,11 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StopWatch;
 
 import java.io.File;
 import java.io.FileReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -38,9 +37,11 @@ import java.util.Set;
 @Ignore
 public class ResultsMatchingTest extends BaseModuleContextSensitiveTest {
 
-  @Autowired protected TestsHelper testsHelper;
+  public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
   private static String INDICATOR_MAPPINGS_FILE_NAME = "eptsReportsResultsMatchingConfig.json";
+
+  private static String XLSX_OUTPUT_NAME = "jembiAgainstFGHMatches.xlsx";
 
   private File eptsReportsResultsMatching;
 
@@ -106,9 +107,9 @@ public class ResultsMatchingTest extends BaseModuleContextSensitiveTest {
       JSONObject parameterValues = (JSONObject) mappingsObject.get("parameterValues");
       EvaluationContext context = new EvaluationContext();
       context.addParameterValue(
-          "startDate", testsHelper.getDate((String) parameterValues.get("startDate")));
+          "startDate", DATE_FORMAT.parse((String) parameterValues.get("startDate")));
       context.addParameterValue(
-          "endDate", testsHelper.getDate((String) parameterValues.get("endDate")));
+          "endDate", DATE_FORMAT.parse((String) parameterValues.get("endDate")));
       context.addParameterValue(
           "location",
           Context.getLocationService()
@@ -176,9 +177,7 @@ public class ResultsMatchingTest extends BaseModuleContextSensitiveTest {
     // log results to file and fail if there are any offSets
     XLSXGenerator.creatResultsMatchingResultsXlsx(
         eptsReportTestResults,
-        eptsReportsResultsMatching.getAbsolutePath()
-            + File.separator
-            + "jembiAgainstFGHMatches.xlsx");
+        eptsReportsResultsMatching.getAbsolutePath() + File.separator + XLSX_OUTPUT_NAME);
     Assert.assertFalse(missMatch);
   }
 
@@ -215,9 +214,7 @@ public class ResultsMatchingTest extends BaseModuleContextSensitiveTest {
   private Set<Integer> symmetricDifference(Set<Integer> a, Set<Integer> b) {
     Set<Integer> aClone = new HashSet<>(a);
     Set<Integer> bClone = new HashSet<>(b);
-    if (aClone.removeAll(bClone) || b.size() == 0) {
-      return aClone;
-    }
-    return new HashSet<>();
+    aClone.removeAll(bClone);
+    return aClone;
   }
 }

@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.utils.resultsmatching;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class Match {
@@ -7,12 +8,10 @@ public class Match {
   private String mapping;
   private Integer currentValue;
   private Integer masterValue;
-  private Integer currentOffSet = 0;
-  private Integer masterOffSet = 0;
   // in current not in master
-  private Set<Integer> currentOffSetPatientIds;
+  private Set<Integer> currentOffSetPatientIds = new HashSet<>();
   // in master not in current
-  private Set<Integer> masterOffSetPatientIds;
+  private Set<Integer> masterOffSetPatientIds = new HashSet<>();
 
   public String getMapping() {
     return mapping;
@@ -24,14 +23,6 @@ public class Match {
 
   public Integer getMasterValue() {
     return masterValue;
-  }
-
-  public Integer getCurrentOffSet() {
-    return currentOffSet;
-  }
-
-  public Integer getMasterOffSet() {
-    return masterOffSet;
   }
 
   public Set<Integer> getCurrentOffSetPatientIds() {
@@ -54,11 +45,5 @@ public class Match {
     this.mapping = mapping;
     this.currentValue = currentValue;
     this.masterValue = masterValue;
-    if (currentValue != null && masterValue != null) {
-      this.currentOffSet =
-          currentValue - masterValue > 0 ? currentValue - masterValue : currentOffSet;
-      this.masterOffSet =
-          masterValue - currentValue > 0 ? masterValue - currentValue : masterOffSet;
-    }
   }
 }

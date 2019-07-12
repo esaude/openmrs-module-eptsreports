@@ -8,8 +8,8 @@
       "6febad76-472b-11e9-a41e-db8c77c788cd":{
         "masterReport":"0ccad317-aa2c-4805-9935-ad05fdc1d029",
         "parameterValues":{
-          "startDate":"2018-09-20 00:00:00.0",
-          "endDate":"2019-06-01 00:00:00.0",
+          "startDate":"2018-09-20",
+          "endDate":"2019-06-01",
           "locationId":"215"
         },
         "dataSetKeyAppender":  "\\.",

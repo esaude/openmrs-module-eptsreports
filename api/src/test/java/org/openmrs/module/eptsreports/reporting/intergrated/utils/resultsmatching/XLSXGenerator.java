@@ -7,6 +7,7 @@ import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -15,25 +16,30 @@ import org.openmrs.Location;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 public class XLSXGenerator {
-  private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
   public static void creatResultsMatchingResultsXlsx(
       List<RunResult> results, String eptsReportsResultsMatchingOutPut) throws IOException {
     Workbook workbook = new XSSFWorkbook();
+
+    Font headerFont = workbook.createFont();
+    headerFont.setBold(true);
+    headerFont.setFontHeightInPoints((short) 14);
+    CellStyle headerCellStyle = workbook.createCellStyle();
+    headerCellStyle.setFont(headerFont);
+
+    CellStyle matchedStyle = workbook.createCellStyle();
+    matchedStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+    matchedStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+    CellStyle missMatchedStyle = workbook.createCellStyle();
+    missMatchedStyle.setFillForegroundColor(IndexedColors.RED.getIndex());
+    missMatchedStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+
     for (RunResult result : results) {
       Sheet sheet = workbook.createSheet(result.getCurrentReport());
-      sheet.autoSizeColumn(14);
-      Font headerFont = workbook.createFont();
-      headerFont.setBold(true);
-      headerFont.setFontHeightInPoints((short) 14);
-
-      CellStyle headerCellStyle = workbook.createCellStyle();
-      headerCellStyle.setFont(headerFont);
 
       // create header row for params, skip the first row
       Row paramsHeader = sheet.createRow(1);
@@ -71,9 +77,12 @@ public class XLSXGenerator {
       paramsValueCell3.setCellValue(result.getMasterReportEvaluationTime());
       Cell paramsValueCell4 = paramsValue.createCell(4);
       paramsValueCell4.setCellValue(
-          sdf.format((Date) result.getParameterValues().get("startDate")));
+          ResultsMatchingTest.DATE_FORMAT.format(
+              (Date) result.getParameterValues().get("startDate")));
       Cell paramsValueCell5 = paramsValue.createCell(5);
-      paramsValueCell5.setCellValue(sdf.format((Date) result.getParameterValues().get("endDate")));
+      paramsValueCell5.setCellValue(
+          ResultsMatchingTest.DATE_FORMAT.format(
+              (Date) result.getParameterValues().get("endDate")));
       Cell paramsValueCell6 = paramsValue.createCell(6);
       Location location = (Location) result.getParameterValues().get("location");
       paramsValueCell6.setCellValue(location.getName() + "#" + location.getLocationId());
@@ -84,32 +93,49 @@ public class XLSXGenerator {
       Row masterData = sheet.createRow(7);
       Row currentOffSetData = sheet.createRow(8);
       Row masterOffSetData = sheet.createRow(9);
+      Cell indicatorHeaderText = indicatorHeader.createCell(0);
+      indicatorHeaderText.setCellValue("Indicator Mapping");
+      indicatorHeaderText.setCellStyle(headerCellStyle);
+      Cell currentDataText = currentData.createCell(0);
+      currentDataText.setCellValue("Jembi");
+      currentDataText.setCellStyle(headerCellStyle);
+      Cell masterDataText = masterData.createCell(0);
+      masterDataText.setCellValue("FGH");
+      masterDataText.setCellStyle(headerCellStyle);
+      Cell currentOffSetDataText = currentOffSetData.createCell(0);
+      currentOffSetDataText.setCellValue("Jembi Difference");
+      currentOffSetDataText.setCellStyle(headerCellStyle);
+      Cell masterOffSetDataText = masterOffSetData.createCell(0);
+      masterOffSetDataText.setCellValue("FGH Difference");
+      masterOffSetDataText.setCellStyle(headerCellStyle);
       for (int i = 0; i < result.getMatches().size(); i++) {
         Match match = result.getMatches().get(i);
-        Cell indicatorHeaderValue = indicatorHeader.createCell(i);
+        Cell indicatorHeaderValue = indicatorHeader.createCell(i + 1);
         indicatorHeaderValue.setCellValue(match.getMapping());
-        Cell currentDataValue = currentData.createCell(i);
+        Cell currentDataValue = currentData.createCell(i + 1);
         currentDataValue.setCellValue(match.getCurrentValue());
-        Cell masterDataValue = masterData.createCell(i);
+        Cell masterDataValue = masterData.createCell(i + 1);
         masterDataValue.setCellValue(match.getMasterValue());
-        Integer currentOffSet = match.getCurrentOffSet();
-        Cell currentOffSetDataValue = currentOffSetData.createCell(i);
-        currentOffSetDataValue.setCellValue(currentOffSet);
+        Cell currentOffSetDataValue = currentOffSetData.createCell(i + 1);
+        currentOffSetDataValue.setCellValue(match.getCurrentOffSetPatientIds().size());
         // currentOffSet or miss-matches set to cell as a comment
-        if (currentOffSet > 0) {
+        if (!match.getCurrentOffSetPatientIds().isEmpty()) {
+          currentOffSetDataValue.setCellStyle(missMatchedStyle);
           currentOffSetDataValue.setCellComment(
               generateCellComment(
                   sheet,
                   workbook.getCreationHelper(),
                   currentOffSetData,
                   currentOffSetDataValue,
-                  match.getCurrentOffSetPatientIds().toString()));
+                  "Missing Patient Ids: " + match.getCurrentOffSetPatientIds().toString()));
+        } else {
+          currentOffSetDataValue.setCellStyle(matchedStyle);
         }
-        Integer masterOffSet = match.getMasterOffSet();
-        Cell masterOffSetDataValue = masterOffSetData.createCell(i);
-        masterOffSetDataValue.setCellValue(masterOffSet);
+        Cell masterOffSetDataValue = masterOffSetData.createCell(i + 1);
+        masterOffSetDataValue.setCellValue(match.getMasterOffSetPatientIds().size());
         // masterOffSet or miss-matches set to cell as a comment
-        if (masterOffSet > 0) {
+        if (!match.getMasterOffSetPatientIds().isEmpty()) {
+          masterOffSetDataValue.setCellStyle(missMatchedStyle);
           masterOffSetDataValue.setCellComment(
               generateCellComment(
                   sheet,
@@ -117,6 +143,8 @@ public class XLSXGenerator {
                   masterOffSetData,
                   masterOffSetDataValue,
                   match.getMasterOffSetPatientIds().toString()));
+        } else {
+          masterOffSetDataValue.setCellStyle(matchedStyle);
         }
       }
     }
