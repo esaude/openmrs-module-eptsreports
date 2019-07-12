@@ -14,10 +14,14 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
 import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.addStandardColumns;
+import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.getEncounterForPatient;
+import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.getPatientProgramEnrollment;
 
 import java.util.Arrays;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
+import org.openmrs.module.eptsreports.reporting.library.converter.EncounterDataConverter;
+import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
@@ -53,6 +57,38 @@ public class Ec10PatientListDataset extends BaseDataSet {
 
     // add standard column
     addStandardColumns(dsd);
+    dsd.addColumn(
+        "Patient Enrollment Date in TARV",
+        getPatientProgramEnrollment(hivMetadata.getARTProgram()),
+        "enrolledOnOrBefore=${endDate}",
+        new PatientProgramDataConverter("date"));
+    dsd.addColumn(
+        "Last Patient Status in Prog Enrollment",
+        getPatientProgramEnrollment(hivMetadata.getARTProgram()),
+        "enrolledOnOrBefore=${endDate}",
+        new PatientProgramDataConverter("lastStatus"));
+    dsd.addColumn(
+        "Date of Last Patient Status in Prog Enrollment",
+        getPatientProgramEnrollment(hivMetadata.getARTProgram()),
+        "enrolledOnOrBefore=${endDate}",
+        new PatientProgramDataConverter("lastStatusDate"));
+    dsd.addColumn(
+        "Clinical Consultation Date",
+        getEncounterForPatient(
+            Arrays.asList(
+                hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                hivMetadata.getAdultoSeguimentoEncounterType())),
+        "",
+        new EncounterDataConverter("encounterDate"));
+
+    dsd.addColumn(
+        "Clinical Consultation Registration Date",
+        getEncounterForPatient(
+            Arrays.asList(
+                hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                hivMetadata.getAdultoSeguimentoEncounterType())),
+        "",
+        new EncounterDataConverter("encounterCreatedDate"));
 
     return dsd;
   }
