@@ -48,15 +48,15 @@ public class Ec12PatientListDataset extends BaseDataSet {
     // add standard column
     addStandardColumns(dsd);
     dsd.addColumn(
-            "ART Program Enrollment Date",
-            getPatientProgramEnrollment(hivMetadata.getARTProgram()),
-            "enrolledOnOrBefore=${endDate}",
-            new PatientProgramDataConverter("date"));
+        "ART Program Enrollment Date",
+        getPatientProgramEnrollment(hivMetadata.getARTProgram()),
+        "enrolledOnOrBefore=${endDate}",
+        new PatientProgramDataConverter("date"));
     dsd.addColumn(
-            "ART Program Enrollment Status",
-            getPatientProgramEnrollment(hivMetadata.getARTProgram()),
-            "enrolledOnOrBefore=${endDate}",
-            new PatientProgramDataConverter("lastStatus"));
+        "ART Program Enrollment Status",
+        getPatientProgramEnrollment(hivMetadata.getARTProgram()),
+        "enrolledOnOrBefore=${endDate}",
+        new PatientProgramDataConverter("lastStatus"));
 
     return dsd;
   }

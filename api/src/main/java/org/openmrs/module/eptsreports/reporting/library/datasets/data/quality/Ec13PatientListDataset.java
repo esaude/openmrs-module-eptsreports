@@ -14,9 +14,11 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
 import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.addStandardColumns;
+import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.getPatientProgramEnrollment;
 
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
+import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
@@ -45,7 +47,16 @@ public class Ec13PatientListDataset extends BaseDataSet {
 
     // add standard column
     addStandardColumns(dsd);
-
+    dsd.addColumn(
+        "ART Program Enrollment Date",
+        getPatientProgramEnrollment(hivMetadata.getARTProgram()),
+        "enrolledOnOrBefore=${endDate}",
+        new PatientProgramDataConverter("date"));
+    dsd.addColumn(
+        "ART Program Enrollment Status",
+        getPatientProgramEnrollment(hivMetadata.getARTProgram()),
+        "enrolledOnOrBefore=${endDate}",
+        new PatientProgramDataConverter("lastStatus"));
     return dsd;
   }
 }
