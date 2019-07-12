@@ -1,5 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.utils;
 
+import java.util.Date;
+import java.util.List;
 import org.openmrs.EncounterType;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.Program;
@@ -23,9 +25,6 @@ import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-
-import java.util.Date;
-import java.util.List;
 
 public class EptsCommonUtils {
 
