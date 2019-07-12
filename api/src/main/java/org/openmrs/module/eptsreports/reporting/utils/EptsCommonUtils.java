@@ -1,19 +1,16 @@
 package org.openmrs.module.eptsreports.reporting.utils;
 
-import java.util.Date;
-import java.util.List;
 import org.openmrs.EncounterType;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.eptsreports.reporting.calculation.data.quality.BirthDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.data.quality.PatientDemographicsCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationDataDefinition;
+import org.openmrs.module.eptsreports.reporting.library.converter.BirthDateConverter;
 import org.openmrs.module.eptsreports.reporting.library.converter.CalculationResultDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.converter.GenderDataConverter;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
-import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
@@ -26,6 +23,9 @@ import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+
+import java.util.Date;
+import java.util.List;
 
 public class EptsCommonUtils {
 
@@ -53,8 +53,8 @@ public class EptsCommonUtils {
         "Patient Date of Birth",
         new BirthdateDataDefinition(),
         "",
-        new BirthdateConverter("dd-MM-yyyy"));
-    dsd.addColumn("Estimated", getBirthDateStatus(), "", new CalculationResultDataConverter());
+        new BirthDateConverter("birthDate"));
+    dsd.addColumn("Estimated", new BirthdateDataDefinition(), "", new BirthDateConverter("state"));
     dsd.addColumn("Sex", new GenderDataDefinition(), "", new GenderDataConverter());
     dsd.addColumn(
         "First Entry Date",
@@ -66,11 +66,6 @@ public class EptsCommonUtils {
         getPatientDemographics("Last Updated"),
         "",
         new CalculationResultDataConverter("L"));
-  }
-
-  private static DataDefinition getBirthDateStatus() {
-    return new CalculationDataDefinition(
-        "estimated", Context.getRegisteredComponents(BirthDateCalculation.class).get(0));
   }
 
   public static DataDefinition getPatientDemographics(String name) {
