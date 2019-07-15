@@ -23,6 +23,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.Sum
 import org.openmrs.module.eptsreports.reporting.library.converter.EncounterDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,17 +58,17 @@ public class Ec11PatientListDataset extends BaseDataSet {
     addStandardColumns(dsd);
     dsd.addColumn(
         "Patient Enrollment Date in TARV",
-        getPatientProgramEnrollment(hivMetadata.getARTProgram()),
+        getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
         "enrolledOnOrBefore=${endDate}",
         new PatientProgramDataConverter("date"));
     dsd.addColumn(
         "Last Patient Status in Prog Enrollment",
-        getPatientProgramEnrollment(hivMetadata.getARTProgram()),
+        getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
         "enrolledOnOrBefore=${endDate}",
         new PatientProgramDataConverter("lastStatus"));
     dsd.addColumn(
         "Date of Last Patient Status in Prog Enrollment",
-        getPatientProgramEnrollment(hivMetadata.getARTProgram()),
+        getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
         "enrolledOnOrBefore=${endDate}",
         new PatientProgramDataConverter("lastStatusDate"));
     dsd.addColumn(

@@ -20,6 +20,7 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,12 +51,12 @@ public class Ec14PatientListDataset extends BaseDataSet {
     addStandardColumns(dsd);
     dsd.addColumn(
         "ART Program Enrollment Date",
-        getPatientProgramEnrollment(hivMetadata.getARTProgram()),
+        getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
         "enrolledOnOrBefore=${endDate}",
         new PatientProgramDataConverter("date"));
     dsd.addColumn(
         "ART Program Enrollment Status",
-        getPatientProgramEnrollment(hivMetadata.getARTProgram()),
+        getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
         "enrolledOnOrBefore=${endDate}",
         new PatientProgramDataConverter("lastStatus"));
 

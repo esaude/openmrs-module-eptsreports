@@ -72,13 +72,14 @@ public class EptsCommonUtils {
         name, Context.getRegisteredComponents(PatientDemographicsCalculation.class).get(0));
   }
 
-  public static DataDefinition getPatientProgramEnrollment(Program program) {
+  public static DataDefinition getPatientProgramEnrollment(
+      Program program, TimeQualifier timeQualifier) {
     ProgramEnrollmentsForPatientDataDefinition cd =
         new ProgramEnrollmentsForPatientDataDefinition();
     cd.setName("The program the patient is enrolled in");
     cd.setProgram(program);
     cd.addParameter(new Parameter("enrolledOnOrBefore", "Before date", Date.class));
-    cd.setWhichEnrollment(TimeQualifier.FIRST);
+    cd.setWhichEnrollment(timeQualifier);
     return cd;
   }
 

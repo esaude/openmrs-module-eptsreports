@@ -14,16 +14,19 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
 import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.addStandardColumns;
+import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.getPatientProgramEnrollment;
 
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.data.quality.PregnantCriteriaCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.data.quality.PregnantEnrollmentStatusCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationDataDefinition;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.converter.CalculationResultDataConverter;
+import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
@@ -37,9 +40,13 @@ public class Ec1PatientListDataset extends BaseDataSet {
 
   private SummaryDataQualityCohorts summaryDataQualityCohorts;
 
+  private HivMetadata hivMetadata;
+
   @Autowired
-  public Ec1PatientListDataset(SummaryDataQualityCohorts summaryDataQualityCohorts) {
+  public Ec1PatientListDataset(
+      SummaryDataQualityCohorts summaryDataQualityCohorts, HivMetadata hivMetadata) {
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
+    this.hivMetadata = hivMetadata;
   }
 
   public DataSetDefinition ec1DataSetDefinition() {
@@ -66,9 +73,9 @@ public class Ec1PatientListDataset extends BaseDataSet {
         new CalculationResultDataConverter("PTVD"));
     dsd.addColumn(
         "PTV/ETC Enrollment Status",
-        getPregnancyStatus(),
-        "location=${location}",
-        new CalculationResultDataConverter("State"));
+        getPatientProgramEnrollment(hivMetadata.getPtvEtvProgram(), TimeQualifier.LAST),
+        "enrolledOnOrBefore=${endDate}",
+        new PatientProgramDataConverter("lastStatus"));
 
     return dsd;
   }
@@ -81,15 +88,5 @@ public class Ec1PatientListDataset extends BaseDataSet {
     pCriteria.addParameter(new Parameter("location", "Location", Location.class));
     pCriteria.addParameter(new Parameter("onOrBefore", "Before date", Date.class));
     return pCriteria;
-  }
-
-  private DataDefinition getPregnancyStatus() {
-    CalculationDataDefinition pStatus =
-        new CalculationDataDefinition(
-            "Pregnant Status",
-            Context.getRegisteredComponents(PregnantEnrollmentStatusCalculation.class).get(0));
-    pStatus.addParameter(new Parameter("location", "Location", Location.class));
-    pStatus.addParameter(new Parameter("onOrBefore", "Before date", Date.class));
-    return pStatus;
   }
 }
