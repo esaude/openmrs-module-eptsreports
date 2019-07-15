@@ -220,4 +220,30 @@ public class SummaryDataQualityCohorts {
     cd.setQuery(DqQueries.getPatientsWhoseBirthdateIsAfterDrugPickup(encounterList));
     return cd;
   }
+
+  /**
+   * The patients who are marked as dead in the patient states or those marked as deceased in the
+   * person object
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getDeadOrDeceasedPatientsHavingEncountersAfter(
+      int programId, int stateId, List<Integer> encounterList) {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("Deceased and have encounters after deceased date");
+    sql.addParameter(new Parameter("location", "Location", Location.class));
+    sql.setQuery(DqQueries.getPatientsMarkedAsDeceasedAndHaveAnEncounter(encounterList));
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Dead or deceased patients");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            getPatientsWithStatesAndEncounters(programId, stateId, encounterList),
+            "location=${location}"));
+    cd.addSearch("deceased", EptsReportUtils.map(sql, "location=${location}"));
+    cd.setCompositionString("dead OR deceased");
+    return cd;
+  }
 }

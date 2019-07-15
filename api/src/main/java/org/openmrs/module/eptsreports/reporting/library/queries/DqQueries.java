@@ -166,4 +166,25 @@ public class DqQueries {
             + ") encounter ON birth_date.patient_id=encounter.patient_id) WHERE birth_date.birthdate >= encounter.encounter_date";
     return String.format(query, str2);
   }
+
+  /**
+   * Get patients who are marked as deceased and have a consultation after deceased date
+   *
+   * @return String
+   */
+  public static String getPatientsMarkedAsDeceasedAndHaveAnEncounter(List<Integer> encounterList) {
+    String str1 = String.valueOf(encounterList).replaceAll("\\[", "");
+    String encounters = str1.replaceAll("]", "");
+    String query =
+        "SELECT demo.patient_id FROM "
+            + "((SELECT p.patient_id AS patient_id, pe.death_date AS death_date "
+            + "FROM patient p "
+            + "INNER JOIN person pe ON p.patient_id=pe.person_id "
+            + "WHERE pe.death_date IS NOT NULL GROUP BY p.patient_id) demo INNER JOIN "
+            + "(SELECT p.patient_id AS patient_id, MAX(e.encounter_datetime) AS encounter_date FROM "
+            + "patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided = 0 and e.voided=0 "
+            + "AND e.encounter_type IN (%s) AND e.location_id=:location GROUP BY p.patient_id"
+            + ") encounter ON demo.patient_id=encounter.patient_id) WHERE encounter.encounter_date >= demo.death_date";
+    return String.format(query, encounters);
+  }
 }

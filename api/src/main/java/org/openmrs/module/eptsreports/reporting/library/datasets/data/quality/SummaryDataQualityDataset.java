@@ -65,7 +65,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicatorsForDataQuality(
                 "The patient’s vital status is dead and the patient has an ART pick up date after the date of death or death notification",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
+                    summaryDataQualityCohorts.getDeadOrDeceasedPatientsHavingEncountersAfter(
                         hivMetadata.getARTProgram().getProgramId(),
                         hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
                         Arrays.asList(
@@ -81,7 +81,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicatorsForDataQuality(
                 "The patient’s vital status is dead and the patient has a clinical consultation after date of death or death notification",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
+                    summaryDataQualityCohorts.getDeadOrDeceasedPatientsHavingEncountersAfter(
                         hivMetadata.getARTProgram().getProgramId(),
                         hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
                         Arrays.asList(
@@ -100,7 +100,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicatorsForDataQuality(
                 "he patient’s vital status is dead and the patient has a laboratory result (specimen collection date or test order date) after the date of death  or death notification / entry into EPTS.",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
+                    summaryDataQualityCohorts.getDeadOrDeceasedPatientsHavingEncountersAfter(
                         hivMetadata.getARTProgram().getProgramId(),
                         hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
                         Arrays.asList(
