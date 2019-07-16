@@ -2,7 +2,7 @@
 > `ResultsMatchingTest.java` is an openmrs module sensitive context junit test that accesses an OpenMRS database and runs and matches results of an FGH report against its respective configured Jembi report in `eptsReportsResultsMatchingConfig.json`
 
 ### Setup
-> - Disable @Ignore off `ResultsMatchingTest.java`
+  - Disable @Ignore off `ResultsMatchingTest.java`
   - Ensure your Mysql server with your openmrs database is running!
   - Setup Mysql connection details in `~/.OpenMRS/openmrs-runtime.properties` or its equivalent, see sample below;
   ```
@@ -36,12 +36,14 @@
     {
       "6febad76-472b-11e9-a41e-db8c77c788cd":{ // the jembi report uuid
         "masterReport":"0ccad317-aa2c-4805-9935-ad05fdc1d029", // its equivalent FGH report uuid
+        "currentReportLabel": "Jembi", // current report label/name
+        "masterReportLabel": "FGH", // master report label or name
         "parameterValues":{
-          "startDate":"2018-09-20", // startDate to run the 2 reports with
-          "endDate":"2019-06-01", // endDate to run the 2 reports with
+          "startDate":"2018-09-20", // startDate(yyyy-MM-dd) to run the 2 reports with
+          "endDate":"2019-06-01", // endDate(yyyy-MM-dd) to run the 2 reports with
           "locationId":"215" // Location to run the 2 reports with
         },
-        "dataSetKeyAppender":  "\\.", // Our Jembi report indicators have keys of names (<dataSetKey.indicatorKey>), this field helps us configure the separator incase we ever change it or set to "" for reports without this kind of indicator namings, this separator must be in each mapping currentCode. '\\' are escape characters. This is not used for master/fgh indicators
+        "dataSetKeyAppender":  "\\.", // Our Jembi report indicators have keys of names (<dataSetKey.indicatorKey>), this field helps us configure the separator incase we ever change it or set to "" for reports without this kind of indicator namings, '\\' are escape characters. This is not used for master/fgh indicators
         "mappings":[ // this is where the indicators from the Jembi report are matched against the FGH report
           {
             "masterCode":"TBSC_ALL", // FGH indicator code

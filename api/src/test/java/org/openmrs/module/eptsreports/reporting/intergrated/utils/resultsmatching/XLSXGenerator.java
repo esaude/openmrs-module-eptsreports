@@ -1,9 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.utils.resultsmatching;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.ClientAnchor;
@@ -17,6 +13,11 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openmrs.Location;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 public class XLSXGenerator {
 
@@ -96,16 +97,16 @@ public class XLSXGenerator {
       indicatorHeaderText.setCellValue("Indicator Mapping");
       indicatorHeaderText.setCellStyle(headerCellStyle);
       Cell currentDataText = currentData.createCell(0);
-      currentDataText.setCellValue("Jembi");
+      currentDataText.setCellValue(result.getCurrentReportLabel());
       currentDataText.setCellStyle(headerCellStyle);
       Cell masterDataText = masterData.createCell(0);
-      masterDataText.setCellValue("FGH");
+      masterDataText.setCellValue(result.getMasterReportLabel());
       masterDataText.setCellStyle(headerCellStyle);
       Cell currentOffSetDataText = currentOffSetData.createCell(0);
-      currentOffSetDataText.setCellValue("Jembi Difference");
+      currentOffSetDataText.setCellValue(result.getCurrentReportLabel() + " Difference");
       currentOffSetDataText.setCellStyle(headerCellStyle);
       Cell masterOffSetDataText = masterOffSetData.createCell(0);
-      masterOffSetDataText.setCellValue("FGH Difference");
+      masterOffSetDataText.setCellValue(result.getMasterReportLabel() + " Difference");
       masterOffSetDataText.setCellStyle(headerCellStyle);
       for (int i = 0; i < result.getMatches().size(); i++) {
         Match match = result.getMatches().get(i);
@@ -141,7 +142,7 @@ public class XLSXGenerator {
                   workbook.getCreationHelper(),
                   masterOffSetData,
                   masterOffSetDataValue,
-                  match.getMasterOffSetPatientIds().toString()));
+                      "Missing Patient Ids: " + match.getMasterOffSetPatientIds().toString()));
         } else {
           masterOffSetDataValue.setCellStyle(matchedStyle);
         }

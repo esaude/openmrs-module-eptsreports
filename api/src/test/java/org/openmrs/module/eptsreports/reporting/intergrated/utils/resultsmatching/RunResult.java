@@ -9,6 +9,8 @@ public class RunResult {
   private long currentReportEvaluationTime;
   // milli seconds taken to run master report
   private long masterReportEvaluationTime;
+  private String currentReportLabel;
+  private String masterReportLabel;
   // name#uuid
   private String currentReport;
   // name#uuid
@@ -34,6 +36,14 @@ public class RunResult {
     return masterReport;
   }
 
+  public String getCurrentReportLabel() {
+    return currentReportLabel;
+  }
+
+  public String getMasterReportLabel() {
+    return masterReportLabel;
+  }
+
   public Map<String, Object> getParameterValues() {
     return parameterValues;
   }
@@ -47,12 +57,16 @@ public class RunResult {
       long masterReportEvaluationTime,
       String currentReport,
       String masterReport,
+      String currentReportLabel,
+      String masterReportLabel,
       Map<String, Object> parameterValues,
       List<Match> matches) {
     this.currentReportEvaluationTime = currentReportEvaluationTime;
     this.masterReportEvaluationTime = masterReportEvaluationTime;
     this.currentReport = currentReport;
     this.masterReport = masterReport;
+    this.currentReportLabel = currentReportLabel;
+    this.masterReportLabel = masterReportLabel;
     this.parameterValues = parameterValues;
     this.matches = matches;
   }

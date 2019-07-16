@@ -1,22 +1,11 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.utils.resultsmatching;
 
-import java.io.File;
-import java.io.FileReader;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
@@ -33,7 +22,17 @@ import org.openmrs.module.reporting.report.util.ReportUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.util.StopWatch;
 
-@Ignore
+import java.io.File;
+import java.io.FileReader;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class ResultsMatchingTest extends BaseModuleContextSensitiveTest {
 
   public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -141,7 +140,7 @@ public class ResultsMatchingTest extends BaseModuleContextSensitiveTest {
             getResultFromReportDataByKey(currentCode, currentData, dataSetKeyAppender);
         CohortIndicatorAndDimensionResult masterResult =
             getResultFromReportDataByKey(masterCode, masterData, null);
-        if (StringUtils.isBlank(name)) {
+        if (StringUtils.isBlank(name) && masterResult.getDefinition() != null) {
           name =
               currentResult.getDefinition().getName()
                   + "="
@@ -168,7 +167,7 @@ public class ResultsMatchingTest extends BaseModuleContextSensitiveTest {
               stopWatch1.getTotalTimeMillis(),
               stopWatch2.getTotalTimeMillis(),
               currentReportDefinition.getName() + "#" + currentReportDefinition.getUuid(),
-              masterReportDefinition.getName() + "#" + masterReportDefinition.getUuid(),
+              masterReportDefinition.getName() + "#" + masterReportDefinition.getUuid(), (String) mappingsObject.get("currentReportLabel"), (String) mappingsObject.get("masterReportLabel"),
               context.getParameterValues(),
               matches));
     }
@@ -185,7 +184,7 @@ public class ResultsMatchingTest extends BaseModuleContextSensitiveTest {
     for (Map.Entry<String, DataSet> entry : reportData.getDataSets().entrySet()) {
       MapDataSet dataSet = (MapDataSet) entry.getValue();
 
-      if (StringUtils.isNotBlank(dataSetKeyAppender)) {
+      if (StringUtils.isNotBlank(dataSetKeyAppender) && key.split(dataSetKeyAppender).length == 2) {
         String[] keys = key.split(dataSetKeyAppender);
         if (entry.getKey().equals(keys[0])) {
           return (CohortIndicatorAndDimensionResult) getKeyValueFromDataset(keys[1], dataSet);
