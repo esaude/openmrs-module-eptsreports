@@ -178,18 +178,18 @@ public class EriDSDCohortQueries {
 
     cd.addSearch(
         "Cd4Abs",
-        EptsReportUtils.map(
-            getValueNumeric(hivMetadata.getCD4AbsoluteOBSConcept(), 750.0),
+        EptsReportUtils.map(genericCohortQueries.hasNumericObs(hivMetadata.getCD4AbsoluteOBSConcept(), BaseObsCohortDefinition.TimeModifier.ANY,RangeComparator.GREATER_THAN,750.0,null,null,Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType(),hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "Cd4Lab",
-        EptsReportUtils.map(
-            getValueNumeric(hivMetadata.getCD4AbsoluteConcept(), 750.0),
+        EptsReportUtils.map(genericCohortQueries.hasNumericObs(hivMetadata.getCD4AbsoluteConcept(), BaseObsCohortDefinition.TimeModifier.ANY,RangeComparator.GREATER_THAN,750.0,null,null,Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType(),hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "Cd4Percent",
-        EptsReportUtils.map(
-            getValueNumeric(hivMetadata.getCD4PercentConcept(), 15.0),
+        EptsReportUtils.map(genericCohortQueries.hasNumericObs(hivMetadata.getCD4PercentConcept(), BaseObsCohortDefinition.TimeModifier.ANY,RangeComparator.GREATER_THAN,15.0,null,null,Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType(),hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "Age",
@@ -215,8 +215,8 @@ public class EriDSDCohortQueries {
 
     cd.addSearch(
         "CD4Abs",
-        EptsReportUtils.map(
-            getValueNumeric(hivMetadata.getCD4AbsoluteOBSConcept(), 200.0),
+        EptsReportUtils.map(genericCohortQueries.hasNumericObs(hivMetadata.getCD4AbsoluteOBSConcept(), BaseObsCohortDefinition.TimeModifier.ANY,RangeComparator.GREATER_THAN,200.0,null,null,Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType(),hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "Age",
@@ -224,33 +224,6 @@ public class EriDSDCohortQueries {
             ageCohortQueries.createXtoYAgeCohort("5-9", 5, 9), "effectiveDate=${endDate}"));
 
     cd.setCompositionString("(CD4Abs AND Age)");
-
-    return cd;
-  }
-
-  /**
-   * 5C Generic method to find patients with CD4 Count greater than a given value
-   *
-   * @param concept
-   * @param value
-   * @return
-   */
-  private CohortDefinition getValueNumeric(Concept concept, Double value) {
-    NumericObsCohortDefinition cd = new NumericObsCohortDefinition();
-
-    cd.addParameter(new Parameter("onOrBefore", "Start Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "End Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-
-    cd.setName("Numeric value based on " + concept);
-    cd.setOperator1(RangeComparator.GREATER_THAN);
-    cd.setValue1(value);
-    cd.setQuestion(concept);
-    cd.setEncounterTypeList(
-        Arrays.asList(
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType(),
-            hivMetadata.getMisauLaboratorioEncounterType()));
 
     return cd;
   }
