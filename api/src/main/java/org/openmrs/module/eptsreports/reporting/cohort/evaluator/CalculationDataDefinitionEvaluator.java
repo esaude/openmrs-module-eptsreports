@@ -38,7 +38,7 @@ public class CalculationDataDefinitionEvaluator implements PatientDataEvaluator 
     PatientCalculationService service = Context.getService(PatientCalculationService.class);
     PatientCalculationContext calcContext = service.createCalculationContext();
     calcContext.setNow(def.getOnOrBefore());
-    calcContext.addToCache("location", def.getLocation());
+    calcContext.addToCache("location", def.getLocationList());
     calcContext.addToCache("onOrBefore", def.getOnOrBefore());
     CalculationResultMap resultMap =
         service.evaluate(

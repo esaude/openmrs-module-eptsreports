@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.calculation.data.quality;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -36,7 +37,7 @@ public class BreastfeedingCriteriaCalculation extends AbstractPatientCalculation
     EPTSCalculationService ePTSCalculationService =
         Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
 
-    Location location = (Location) context.getFromCache("location");
+    List<Location> location = new ArrayList<>();
 
     Concept breastfeedingConcept = hivMetadata.getBreastfeeding();
     Concept yes = hivMetadata.getYesConcept();
@@ -48,7 +49,7 @@ public class BreastfeedingCriteriaCalculation extends AbstractPatientCalculation
             breastfeedingConcept,
             null,
             cohort,
-            Arrays.asList(location),
+            location,
             Arrays.asList(yes),
             TimeQualifier.ANY,
             null,
@@ -59,7 +60,7 @@ public class BreastfeedingCriteriaCalculation extends AbstractPatientCalculation
             criteriaForHivStart,
             null,
             cohort,
-            Arrays.asList(location),
+            location,
             Arrays.asList(breastfeedingConcept),
             TimeQualifier.FIRST,
             null,
@@ -67,18 +68,11 @@ public class BreastfeedingCriteriaCalculation extends AbstractPatientCalculation
 
     CalculationResultMap deliveryDateMap =
         ePTSCalculationService.getObs(
-            priorDeliveryDate,
-            null,
-            cohort,
-            Arrays.asList(location),
-            null,
-            TimeQualifier.ANY,
-            null,
-            context);
+            priorDeliveryDate, null, cohort, location, null, TimeQualifier.ANY, null, context);
 
     CalculationResultMap patientStateMap =
         ePTSCalculationService.allPatientStates(
-            cohort, location, hivMetadata.getPatientIsBreastfeedingWorkflowState(), context);
+            cohort, null, hivMetadata.getPatientIsBreastfeedingWorkflowState(), context);
 
     for (Integer ptId : cohort) {
       Map<Date, String> values = new HashMap<Date, String>();

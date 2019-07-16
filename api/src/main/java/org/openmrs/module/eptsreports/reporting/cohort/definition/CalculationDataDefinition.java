@@ -2,6 +2,7 @@ package org.openmrs.module.eptsreports.reporting.cohort.definition;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.openmrs.Location;
 import org.openmrs.calculation.patient.PatientCalculation;
@@ -35,16 +36,16 @@ public class CalculationDataDefinition extends BaseDataDefinition implements Pat
   @ConfigurationProperty(group = "calculation")
   private Date onOrBefore;
 
-  public Location getLocation() {
-    return location;
+  public List<Location> getLocationList() {
+    return locationList;
   }
 
-  public void setLocation(Location location) {
-    this.location = location;
+  public void setLocationList(List<Location> locationList) {
+    this.locationList = locationList;
   }
 
   @ConfigurationProperty(group = "calculation")
-  private Location location;
+  private List<Location> locationList;
 
   /** Default Constructor */
   public CalculationDataDefinition() {

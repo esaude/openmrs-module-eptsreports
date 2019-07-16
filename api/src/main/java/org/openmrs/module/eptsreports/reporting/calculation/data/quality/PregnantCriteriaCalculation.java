@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.calculation.data.quality;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -43,14 +44,14 @@ public class PregnantCriteriaCalculation extends AbstractPatientCalculation {
     Program ptv = hivMetadata.getPtvEtvProgram();
     Concept gestation = hivMetadata.getGestationConcept();
 
-    Location location = (Location) context.getFromCache("location");
+    List<Location> location = new ArrayList<>();
 
     CalculationResultMap pregnantMap =
         ePTSCalculationService.getObs(
             pregnant,
             null,
             cohort,
-            Arrays.asList(location),
+            location,
             Arrays.asList(gestation),
             TimeQualifier.ANY,
             null,
@@ -58,25 +59,11 @@ public class PregnantCriteriaCalculation extends AbstractPatientCalculation {
 
     CalculationResultMap markedPregnantByWeeksMap =
         ePTSCalculationService.getObs(
-            pregnantBasedOnWeeks,
-            null,
-            cohort,
-            Arrays.asList(location),
-            null,
-            TimeQualifier.ANY,
-            null,
-            context);
+            pregnantBasedOnWeeks, null, cohort, location, null, TimeQualifier.ANY, null, context);
 
     CalculationResultMap markedPregnantDueDateMap =
         ePTSCalculationService.getObs(
-            pregnancyDueDate,
-            null,
-            cohort,
-            Arrays.asList(location),
-            null,
-            TimeQualifier.ANY,
-            null,
-            context);
+            pregnancyDueDate, null, cohort, location, null, TimeQualifier.ANY, null, context);
 
     CalculationResultMap markedPregnantInProgramMap =
         ePTSCalculationService.allProgramEnrollment(ptv, cohort, context);
