@@ -28,6 +28,7 @@ public class EriDSDCohortQueries {
   @Autowired private TxNewCohortQueries txNewCohortQueries;
   @Autowired private HivCohortQueries hivCohortQueries;
   @Autowired private HivMetadata hivMetadata;
+  @Autowired private GenericCohortQueries genericCohortQueries;
 
   /** D1: Number of active, stable, patients on ART. Combinantion of Criteria 1,2,3,4,5 */
   public CohortDefinition getAllPatientsWhoAreActiveAndStable() {
@@ -90,12 +91,7 @@ public class EriDSDCohortQueries {
             "startDate=${endDate-12m},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "D",
-        EptsReportUtils.map(
-            getValueCoded(
-                hivMetadata.getCurrentWHOHIVStageConcept(),
-                BaseObsCohortDefinition.TimeModifier.LAST,
-                hivMetadata.getWho3AdultStageConcept(),
-                hivMetadata.getWho4AdultStageConcept()),
+        EptsReportUtils.map(genericCohortQueries.hasCodedObs(hivMetadata.getCurrentWHOHIVStageConcept(), BaseObsCohortDefinition.TimeModifier.LAST, SetComparator.IN, null, Arrays.asList(hivMetadata.getWho3AdultStageConcept(),hivMetadata.getWho4AdultStageConcept())),
             "onOrAfter=${endDate},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "E",
@@ -103,11 +99,7 @@ public class EriDSDCohortQueries {
             getPoorAdherenceInLast3Visits(), "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "F",
-        EptsReportUtils.map(
-            getValueCoded(
-                hivMetadata.getAdverseReaction(),
-                BaseObsCohortDefinition.TimeModifier.ANY,
-                hivMetadata.getNeutropenia(),
+        EptsReportUtils.map(genericCohortQueries.hasCodedObs(hivMetadata.getAdverseReaction(),Arrays.asList(hivMetadata.getNeutropenia(),
                 hivMetadata.getPancreatitis(),
                 hivMetadata.getHepatotoxicity(),
                 hivMetadata.getPsychologicalChanges(),
@@ -117,7 +109,7 @@ public class EriDSDCohortQueries {
                 hivMetadata.getLacticAcidosis(),
                 hivMetadata.getPeripheralNeuropathy(),
                 hivMetadata.getDiarrhea(),
-                hivMetadata.getOtherDiagnosis()),
+                hivMetadata.getOtherDiagnosis())),
             "onOrAfter=${endDate},onOrBefore=${endDate},locationList=${location}"));
 
     cd.setCompositionString("(A OR B OR C OR D OR E OR F)");
@@ -259,38 +251,6 @@ public class EriDSDCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType(),
             hivMetadata.getMisauLaboratorioEncounterType()));
-
-    return cd;
-  }
-
-  /**
-   * 5D Generic method to find patients with active clinical condition of WHO stages
-   *
-   * @param concept
-   * @param timeModifier
-   * @param answers
-   * @return
-   */
-  private CohortDefinition getValueCoded(
-      Concept concept, BaseObsCohortDefinition.TimeModifier timeModifier, Concept... answers) {
-    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-
-    cd.addParameter(new Parameter("onOrBefore", "Start Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "End Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-
-    cd.setName("Coded Values for " + concept);
-    cd.setQuestion(concept);
-    if (answers.length > 0) {
-      cd.setValueList(Arrays.asList(answers));
-    }
-
-    cd.setEncounterTypeList(
-        Arrays.asList(
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType()));
-    cd.setTimeModifier(timeModifier);
-    cd.setOperator(SetComparator.IN);
 
     return cd;
   }
