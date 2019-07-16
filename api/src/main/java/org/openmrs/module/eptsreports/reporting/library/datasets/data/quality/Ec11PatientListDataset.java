@@ -72,6 +72,16 @@ public class Ec11PatientListDataset extends BaseDataSet {
         "enrolledOnOrBefore=${endDate}",
         new PatientProgramDataConverter("lastStatusDate"));
     dsd.addColumn(
+        "Laboratory Form Date",
+        getEncounterForPatient(Arrays.asList(hivMetadata.getMisauLaboratorioEncounterType())),
+        "",
+        new EncounterDataConverter("encounterDate"));
+    dsd.addColumn(
+        "Lab Form Registration Date",
+        getEncounterForPatient(Arrays.asList(hivMetadata.getMisauLaboratorioEncounterType())),
+        "",
+        new EncounterDataConverter("encounterCreatedDate"));
+    dsd.addColumn(
         "Clinical Consultation Date",
         getEncounterForPatient(
             Arrays.asList(

@@ -50,7 +50,7 @@ public class Ec3PatientListDataset extends BaseDataSet {
     dsd.setName("EC3");
     dsd.addParameters(getDataQualityParameters());
     dsd.addRowFilter(
-        summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
+        summaryDataQualityCohorts.getDeadOrDeceasedPatientsHavingEncountersAfter(
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
             Arrays.asList(hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),

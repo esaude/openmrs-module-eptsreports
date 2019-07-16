@@ -57,19 +57,16 @@ public class Ec1PatientListDataset extends BaseDataSet {
 
     addStandardColumns(dsd);
     dsd.addColumn(
-        "Pregnant Criteria",
-        getPregnantCriteria(),
-        "location=${location}",
-        new CalculationResultDataConverter("PC"));
+        "Pregnant Criteria", getPregnantCriteria(), "", new CalculationResultDataConverter("PC"));
     dsd.addColumn(
         "Encounter Date Pregnant Criteria",
         getPregnantCriteria(),
-        "location=${location}",
+        "",
         new CalculationResultDataConverter("PD"));
     dsd.addColumn(
         "PTV/ETC Enrollment Date",
         getPregnantCriteria(),
-        "location=${location}",
+        "",
         new CalculationResultDataConverter("PTVD"));
     dsd.addColumn(
         "PTV/ETC Enrollment Status",

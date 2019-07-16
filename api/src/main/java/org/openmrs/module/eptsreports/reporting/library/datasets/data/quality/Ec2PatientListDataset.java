@@ -65,17 +65,17 @@ public class Ec2PatientListDataset extends BaseDataSet {
     dsd.addColumn(
         "Breastfeeding Criteria",
         getBreastfeedingCriteria(),
-        "location=${location}",
+        "",
         new CalculationResultDataConverter("PC"));
     dsd.addColumn(
         "Encounter Date Breastfeeding Criteria",
         getBreastfeedingCriteria(),
-        "location=${location}",
+        "",
         new CalculationResultDataConverter("PD"));
     dsd.addColumn(
         "PTV/ETC Enrollment Date",
         getBreastfeedingCriteria(),
-        "location=${location}",
+        "",
         new CalculationResultDataConverter("PTVD"));
     dsd.addColumn(
         "PTV/ETC Enrollment Status",

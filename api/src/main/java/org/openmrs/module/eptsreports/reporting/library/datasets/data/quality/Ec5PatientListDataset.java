@@ -50,7 +50,7 @@ public class Ec5PatientListDataset extends BaseDataSet {
     dsd.setName("EC5");
     dsd.addParameters(getDataQualityParameters());
     dsd.addRowFilter(
-        summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
+        summaryDataQualityCohorts.getDeadOrDeceasedPatientsHavingEncountersAfter(
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
             Arrays.asList(
