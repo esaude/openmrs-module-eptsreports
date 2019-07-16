@@ -16,14 +16,16 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 import java.util.ArrayList;
 import java.util.List;
 import org.openmrs.Location;
-import org.openmrs.ProgramWorkflowState;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class BaseDataSet {
+  @Autowired private GenericCohortQueries genericCohortQueries;
 
   /**
    * Adds a row to a dataset based on an indicator and a list of column parameters
@@ -61,7 +63,7 @@ public abstract class BaseDataSet {
     parameters.add(ReportingConstants.START_DATE_PARAMETER);
     parameters.add(ReportingConstants.END_DATE_PARAMETER);
     parameters.add(new Parameter("location", "Facilities", Location.class, List.class, null));
-    parameters.add(new Parameter("state", "States", ProgramWorkflowState.class, List.class, null));
+    parameters.add(genericCohortQueries.getArtProgramConfigurableParameter());
     return parameters;
   }
 

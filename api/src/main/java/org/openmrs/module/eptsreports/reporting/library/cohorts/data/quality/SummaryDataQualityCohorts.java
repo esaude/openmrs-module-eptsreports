@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.openmrs.Location;
-import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
@@ -148,7 +147,7 @@ public class SummaryDataQualityCohorts {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Facilities", Location.class, List.class, null));
-    cd.addParameter(new Parameter("state", "States", ProgramWorkflowState.class, List.class, null));
+    cd.addParameter(genericCohortQueries.getArtProgramConfigurableParameter());
     cd.setQuery(BaseQueries.getBaseQueryForDataQuality());
     return cd;
   }
