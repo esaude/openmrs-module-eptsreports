@@ -185,10 +185,12 @@ public class EPTSCalculationService {
       List<EncounterType> encounterTypes,
       Collection<Integer> cohort,
       Location location,
+      Date onOrBefore,
       PatientCalculationContext context) {
     EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition();
     def.setWhich(TimeQualifier.ANY);
     def.setLocationList(Arrays.asList(location));
+    def.setOnOrBefore(onOrBefore);
     if (encounterTypes != null) {
       def.setName("all encounters ");
       def.setTypes(encounterTypes);

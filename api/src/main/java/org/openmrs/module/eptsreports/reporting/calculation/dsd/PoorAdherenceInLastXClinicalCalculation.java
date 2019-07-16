@@ -29,7 +29,6 @@ public class PoorAdherenceInLastXClinicalCalculation extends AbstractPatientCalc
     HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
     Location location = (Location) context.getFromCache("location");
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
-    context.setNow(onOrBefore);
 
     List<Encounter> resultantList = new ArrayList<>();
     List<Encounter> requiredThreeList = new ArrayList<>();
@@ -40,7 +39,7 @@ public class PoorAdherenceInLastXClinicalCalculation extends AbstractPatientCalc
 
     CalculationResultMap allEncountersMap =
         ePTSCalculationService.allEncounters(
-            Arrays.asList(adultFollowup, childFollowup), cohort, location, context);
+            Arrays.asList(adultFollowup, childFollowup), cohort, location, onOrBefore, context);
 
     for (Integer pId : cohort) {
       boolean hasNoOption = false;

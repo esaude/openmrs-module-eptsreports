@@ -430,8 +430,10 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
             "onOrBefore=${endDate},location=${location}"));
+        cd.addSearch("patientsParticipatingInDsdModel",
+     EptsReportUtils.map(getAllPatientsParticipatingInDsdModel(),"endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("allPatientsTxCurrDsdModel");
+    cd.setCompositionString("allPatientsTxCurrDsdModel ");
 
     return cd;
   }
@@ -453,9 +455,9 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             getPatientsWhoAreActiveAndParticipateInDsdModel(),
             "endDate=${endDate},location=${location}"));
-    cd.addSearch(
+    /*cd.addSearch(
         "patientsWhoAreStable",
-        EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate}"));
+        EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate}"));*/
 
     cd.setCompositionString("allPatientsInDsdModel AND patientsWhoAreStable");
 
@@ -557,6 +559,37 @@ public class EriDSDCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("activeAndUnstable AND (pregnant OR breastfeeding)");
+
+    return cd;
+  }
+
+  /**
+   * N1 Get All patients that are participating in DSD Model
+   *
+   * @return
+   */
+  private CohortDefinition getAllPatientsParticipatingInDsdModel() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
+    cd.setName("All Patients participating in >=1 measured DSD model");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.setQuery(
+        DsdQueries.getPatientsParticipatingInDsdModel(
+            hivMetadata.getPrevencaoPositivaInicialEncounterType().getEncounterTypeId(),
+            hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId(),
+            23724,
+            23725,
+            23726,
+            23727,
+            23729,
+            23730,
+            23731,
+            23732,
+            1256,
+            1257));
 
     return cd;
   }
