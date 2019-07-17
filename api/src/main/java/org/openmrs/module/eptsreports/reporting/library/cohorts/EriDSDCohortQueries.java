@@ -91,7 +91,15 @@ public class EriDSDCohortQueries {
             "startDate=${endDate-12m},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "D",
-        EptsReportUtils.map(genericCohortQueries.hasCodedObs(hivMetadata.getCurrentWHOHIVStageConcept(), BaseObsCohortDefinition.TimeModifier.LAST, SetComparator.IN, null, Arrays.asList(hivMetadata.getWho3AdultStageConcept(),hivMetadata.getWho4AdultStageConcept())),
+        EptsReportUtils.map(
+            genericCohortQueries.hasCodedObs(
+                hivMetadata.getCurrentWHOHIVStageConcept(),
+                BaseObsCohortDefinition.TimeModifier.LAST,
+                SetComparator.IN,
+                null,
+                Arrays.asList(
+                    hivMetadata.getWho3AdultStageConcept(),
+                    hivMetadata.getWho4AdultStageConcept())),
             "onOrAfter=${endDate},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "E",
@@ -99,17 +107,21 @@ public class EriDSDCohortQueries {
             getPoorAdherenceInLast3Visits(), "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "F",
-        EptsReportUtils.map(genericCohortQueries.hasCodedObs(hivMetadata.getAdverseReaction(),Arrays.asList(hivMetadata.getNeutropenia(),
-                hivMetadata.getPancreatitis(),
-                hivMetadata.getHepatotoxicity(),
-                hivMetadata.getPsychologicalChanges(),
-                hivMetadata.getMyopathy(),
-                hivMetadata.getSkinAllergy(),
-                hivMetadata.getLipodystrophy(),
-                hivMetadata.getLacticAcidosis(),
-                hivMetadata.getPeripheralNeuropathy(),
-                hivMetadata.getDiarrhea(),
-                hivMetadata.getOtherDiagnosis())),
+        EptsReportUtils.map(
+            genericCohortQueries.hasCodedObs(
+                hivMetadata.getAdverseReaction(),
+                Arrays.asList(
+                    hivMetadata.getNeutropenia(),
+                    hivMetadata.getPancreatitis(),
+                    hivMetadata.getHepatotoxicity(),
+                    hivMetadata.getPsychologicalChanges(),
+                    hivMetadata.getMyopathy(),
+                    hivMetadata.getSkinAllergy(),
+                    hivMetadata.getLipodystrophy(),
+                    hivMetadata.getLacticAcidosis(),
+                    hivMetadata.getPeripheralNeuropathy(),
+                    hivMetadata.getDiarrhea(),
+                    hivMetadata.getOtherDiagnosis())),
             "onOrAfter=${endDate},onOrBefore=${endDate},locationList=${location}"));
 
     cd.setCompositionString("(A OR B OR C OR D OR E OR F)");
@@ -178,25 +190,55 @@ public class EriDSDCohortQueries {
 
     cd.addSearch(
         "Cd4Abs",
-        EptsReportUtils.map(genericCohortQueries.hasNumericObs(hivMetadata.getCD4AbsoluteOBSConcept(), BaseObsCohortDefinition.TimeModifier.ANY,RangeComparator.GREATER_THAN,750.0,null,null,Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType(),hivMetadata.getARVPediatriaSeguimentoEncounterType(),
-                hivMetadata.getMisauLaboratorioEncounterType())),
+        EptsReportUtils.map(
+            genericCohortQueries.hasNumericObs(
+                hivMetadata.getCD4AbsoluteOBSConcept(),
+                BaseObsCohortDefinition.TimeModifier.ANY,
+                RangeComparator.GREATER_THAN,
+                750.0,
+                null,
+                null,
+                Arrays.asList(
+                    hivMetadata.getAdultoSeguimentoEncounterType(),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "Cd4Lab",
-        EptsReportUtils.map(genericCohortQueries.hasNumericObs(hivMetadata.getCD4AbsoluteConcept(), BaseObsCohortDefinition.TimeModifier.ANY,RangeComparator.GREATER_THAN,750.0,null,null,Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType(),hivMetadata.getARVPediatriaSeguimentoEncounterType(),
-                hivMetadata.getMisauLaboratorioEncounterType())),
+        EptsReportUtils.map(
+            genericCohortQueries.hasNumericObs(
+                hivMetadata.getCD4AbsoluteConcept(),
+                BaseObsCohortDefinition.TimeModifier.ANY,
+                RangeComparator.GREATER_THAN,
+                750.0,
+                null,
+                null,
+                Arrays.asList(
+                    hivMetadata.getAdultoSeguimentoEncounterType(),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "Cd4Percent",
-        EptsReportUtils.map(genericCohortQueries.hasNumericObs(hivMetadata.getCD4PercentConcept(), BaseObsCohortDefinition.TimeModifier.ANY,RangeComparator.GREATER_THAN,15.0,null,null,Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType(),hivMetadata.getARVPediatriaSeguimentoEncounterType(),
-                hivMetadata.getMisauLaboratorioEncounterType())),
+        EptsReportUtils.map(
+            genericCohortQueries.hasNumericObs(
+                hivMetadata.getCD4PercentConcept(),
+                BaseObsCohortDefinition.TimeModifier.ANY,
+                RangeComparator.GREATER_THAN,
+                15.0,
+                null,
+                null,
+                Arrays.asList(
+                    hivMetadata.getAdultoSeguimentoEncounterType(),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "Age",
         EptsReportUtils.map(
             ageCohortQueries.createXtoYAgeCohort("2-4", 2, 4), "effectiveDate=${endDate}"));
 
-    cd.setCompositionString("(Cd4Abs OR Cd4Lab) OR (Cd4Percent AND Age)");
+    cd.setCompositionString("((Cd4Abs OR Cd4Lab) AND Age) OR (Cd4Percent AND Age)");
 
     return cd;
   }
@@ -215,8 +257,18 @@ public class EriDSDCohortQueries {
 
     cd.addSearch(
         "CD4Abs",
-        EptsReportUtils.map(genericCohortQueries.hasNumericObs(hivMetadata.getCD4AbsoluteOBSConcept(), BaseObsCohortDefinition.TimeModifier.ANY,RangeComparator.GREATER_THAN,200.0,null,null,Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType(),hivMetadata.getARVPediatriaSeguimentoEncounterType(),
-                hivMetadata.getMisauLaboratorioEncounterType())),
+        EptsReportUtils.map(
+            genericCohortQueries.hasNumericObs(
+                hivMetadata.getCD4AbsoluteOBSConcept(),
+                BaseObsCohortDefinition.TimeModifier.ANY,
+                RangeComparator.GREATER_THAN,
+                200.0,
+                null,
+                null,
+                Arrays.asList(
+                    hivMetadata.getAdultoSeguimentoEncounterType(),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "Age",
@@ -311,11 +363,11 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * D2: Get Patients who are pregnant and not breastfeeding
+   * D2: Get Patients who are pregnant including those that are pregnant and breastfeeding
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoArePregnantAndNotBreastFeeding() {
+  public CohortDefinition getPatientsWhoArePregnant() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("Pregnant: includes all pregnant patients");
@@ -339,7 +391,7 @@ public class EriDSDCohortQueries {
             getPatientsWhoAreActiveAndUnstable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("activeAndUnstable AND (pregnant AND NOT breastfeeding)");
+    cd.setCompositionString("activeAndUnstable AND pregnant");
 
     return cd;
   }
@@ -363,10 +415,12 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
             "onOrBefore=${endDate},location=${location}"));
-        cd.addSearch("patientsParticipatingInDsdModel",
-     EptsReportUtils.map(getAllPatientsParticipatingInDsdModel(),"endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "patientsParticipatingInDsdModel",
+        EptsReportUtils.map(
+            getAllPatientsParticipatingInDsdModel(), "endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("allPatientsTxCurrDsdModel ");
+    cd.setCompositionString("allPatientsTxCurrDsdModel");
 
     return cd;
   }
@@ -388,11 +442,11 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             getPatientsWhoAreActiveAndParticipateInDsdModel(),
             "endDate=${endDate},location=${location}"));
-    /*cd.addSearch(
+    cd.addSearch(
         "patientsWhoAreStable",
-        EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate}"));*/
+        EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate}"));
 
-    cd.setCompositionString("allPatientsInDsdModel AND patientsWhoAreStable");
+    cd.setCompositionString("allPatientsInDsdModel");
 
     return cd;
   }

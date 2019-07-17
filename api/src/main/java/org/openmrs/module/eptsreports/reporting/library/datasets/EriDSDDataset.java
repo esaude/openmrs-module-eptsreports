@@ -124,7 +124,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "D2PNB",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoArePregnantAndNotBreastFeeding(),
+                    eriDSDCohortQueries.getPatientsWhoArePregnant(),
                     "endDate=${endDate},location=${location}")),
             mappings),
         "");
