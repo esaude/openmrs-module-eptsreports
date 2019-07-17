@@ -187,4 +187,31 @@ public class DqQueries {
             + ") encounter ON demo.patient_id=encounter.patient_id) WHERE encounter.encounter_date >= demo.death_date";
     return String.format(query, encounters);
   }
+
+  /**
+   * Get the date when the patient was created in the system
+   *
+   * @return String
+   */
+  public static String getPatientDateCreated() {
+    return "SELECT patient_id, DATE_FORMAT(date_created, '%d-%m-%Y') FROM patient";
+  }
+
+  /**
+   * Get the date when the patient was changed
+   *
+   * @return String
+   */
+  public static String getPatientDateChanged() {
+    return "SELECT patient_id, DATE_FORMAT(date_changed, '%d-%m-%Y') FROM patient";
+  }
+
+  /**
+   * Get the date when the patient died
+   *
+   * @return String
+   */
+  public static String getPatientDeathDate() {
+    return "SELECT pa.patient_id, DATE_FORMAT(pe.death_date, '%d-%m-%Y') FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id";
+  }
 }

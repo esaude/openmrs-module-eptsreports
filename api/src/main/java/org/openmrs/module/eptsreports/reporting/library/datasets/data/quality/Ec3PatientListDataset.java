@@ -17,10 +17,10 @@ import java.util.Arrays;
 import java.util.List;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
-import org.openmrs.module.eptsreports.reporting.library.converter.CalculationResultDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.converter.EncounterDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
+import org.openmrs.module.eptsreports.reporting.library.queries.DqQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -81,9 +81,9 @@ public class Ec3PatientListDataset extends BaseDataSet {
         new PatientProgramDataConverter("lastStatusDate"));
     dsd.addColumn(
         "Date of Death in Demographics",
-        eptsCommonUtils.getPatientDemographics("Date of Death in Demographics"),
-        "",
-        new CalculationResultDataConverter("deathDate"));
+        eptsCommonUtils.getPatientDetails(
+            "Date of Death in Demographics", DqQueries.getPatientDeathDate()),
+        "");
 
     dsd.addColumn(
         "Pharmacy Encounter Date",

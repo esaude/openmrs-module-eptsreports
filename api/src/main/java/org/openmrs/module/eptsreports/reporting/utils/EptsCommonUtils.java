@@ -5,11 +5,8 @@ import java.util.List;
 import org.openmrs.EncounterType;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.Program;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.calculation.data.quality.PatientDemographicsCalculation;
-import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationDataDefinition;
-import org.openmrs.module.eptsreports.reporting.library.converter.CalculationResultDataConverter;
+import org.openmrs.module.eptsreports.reporting.library.queries.DqQueries;
 import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -24,6 +21,7 @@ import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinit
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PersonToPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
@@ -67,19 +65,10 @@ public class EptsCommonUtils {
     dsd.addColumn("Sex", new PersonToPatientDataDefinition(new GenderDataDefinition()), "");
     dsd.addColumn(
         "First Entry Date",
-        getPatientDemographics("First Entry Date"),
-        "",
-        new CalculationResultDataConverter("F"));
+        getPatientDetails("First Entry Date", DqQueries.getPatientDateCreated()),
+        "");
     dsd.addColumn(
-        "Last Updated",
-        getPatientDemographics("Last Updated"),
-        "",
-        new CalculationResultDataConverter("L"));
-  }
-
-  public DataDefinition getPatientDemographics(String name) {
-    return new CalculationDataDefinition(
-        name, Context.getRegisteredComponents(PatientDemographicsCalculation.class).get(0));
+        "Last Updated", getPatientDetails("Last Updated", DqQueries.getPatientDateChanged()), "");
   }
 
   public DataDefinition getPatientProgramEnrollment(Program program, TimeQualifier timeQualifier) {
@@ -111,5 +100,12 @@ public class EptsCommonUtils {
 
   private PatientDataDefinition getBirthdateConverted(DataConverter... converters) {
     return convert(new BirthdateDataDefinition(), converters);
+  }
+
+  public DataDefinition getPatientDetails(String name, String sql) {
+    SqlPatientDataDefinition sqlPatientDataDefinition = new SqlPatientDataDefinition();
+    sqlPatientDataDefinition.setName(name);
+    sqlPatientDataDefinition.setSql(sql);
+    return sqlPatientDataDefinition;
   }
 }
