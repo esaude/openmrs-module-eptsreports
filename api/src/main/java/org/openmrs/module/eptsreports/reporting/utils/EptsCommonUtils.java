@@ -8,20 +8,24 @@ import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.calculation.data.quality.PatientDemographicsCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationDataDefinition;
-import org.openmrs.module.eptsreports.reporting.library.converter.BirthDateConverter;
 import org.openmrs.module.eptsreports.reporting.library.converter.CalculationResultDataConverter;
+import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
+import org.openmrs.module.reporting.data.converter.PropertyConverter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PersonToPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -50,10 +54,12 @@ public class EptsCommonUtils {
     dsd.addColumn("Patient Name", new PreferredNameDataDefinition(), (String) null);
     dsd.addColumn(
         "Patient Date of Birth",
-        new BirthdateDataDefinition(),
-        "",
-        new BirthDateConverter("birthDate"));
-    dsd.addColumn("Estimated", new BirthdateDataDefinition(), "", new BirthDateConverter("state"));
+        convert(getBirthdateConverted(), new BirthdateConverter("dd-MM-yyyy")),
+        "");
+    dsd.addColumn(
+        "Estimated",
+        convert(getBirthdateConverted(), new PropertyConverter(Birthdate.class, "estimated")),
+        "");
     dsd.addColumn("Sex", new PersonToPatientDataDefinition(new GenderDataDefinition()), "");
     dsd.addColumn(
         "First Entry Date",
@@ -90,5 +96,19 @@ public class EptsCommonUtils {
     encounterDataDefinition.setTypes(encounterType);
     encounterDataDefinition.setWhich(TimeQualifier.LAST);
     return encounterDataDefinition;
+  }
+
+  private static PatientDataDefinition convert(
+      PatientDataDefinition pdd, DataConverter... converters) {
+    return new ConvertedPatientDataDefinition(pdd, converters);
+  }
+
+  private static PatientDataDefinition convert(
+      PersonDataDefinition pdd, DataConverter... converters) {
+    return new ConvertedPatientDataDefinition(new PersonToPatientDataDefinition(pdd), converters);
+  }
+
+  private static PatientDataDefinition getBirthdateConverted(DataConverter... converters) {
+    return convert(new BirthdateDataDefinition(), converters);
   }
 }
