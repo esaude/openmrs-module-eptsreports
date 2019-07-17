@@ -7,6 +7,7 @@ import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.*;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -58,7 +59,7 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
     rd.setDescription(getDescription());
     rd.setParameters(txNewDataset.getParameters());
 
-    /* rd.addDataSetDefinition("N",
+     rd.addDataSetDefinition("N",
      Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
 
     rd.addDataSetDefinition(
@@ -68,14 +69,14 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
         "ERI2", Mapped.mapStraightThrough(eri2MonthsDataset.constructEri2MonthsDatset()));
 
     rd.addDataSetDefinition(
-        "ERI4", Mapped.mapStraightThrough(eri4MonthsDataset.constructEri4MonthsDataset()));*/
+        "ERI4", Mapped.mapStraightThrough(eri4MonthsDataset.constructEri4MonthsDataset()));
     rd.addDataSetDefinition(
         "ERIDSD", Mapped.mapStraightThrough(eriDSDDataset.constructEriDSDDataset()));
 
     // add a base cohort here to help in calculations running
-    //    rd.setBaseCohortDefinition(
-    //        EptsReportUtils.map(
-    //            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+        rd.setBaseCohortDefinition(
+            EptsReportUtils.map(
+                genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
 
     return rd;
   }
