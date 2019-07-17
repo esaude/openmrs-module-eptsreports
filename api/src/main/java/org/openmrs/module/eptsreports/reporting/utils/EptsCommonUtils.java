@@ -7,24 +7,16 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.Program;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.DqQueries;
-import org.openmrs.module.reporting.common.Birthdate;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
-import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
-import org.openmrs.module.reporting.data.converter.PropertyConverter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
-import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
-import org.openmrs.module.reporting.data.patient.definition.PersonToPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -56,13 +48,13 @@ public class EptsCommonUtils {
     dsd.addColumn("Patient Name", new PreferredNameDataDefinition(), (String) null);
     dsd.addColumn(
         "Patient Date of Birth",
-        convert(getBirthdateConverted(), new BirthdateConverter("dd-MM-yyyy")),
+        getPatientDetails("Patient Date of Birth", DqQueries.getPatientBirthDate()),
         "");
     dsd.addColumn(
         "Estimated",
-        convert(getBirthdateConverted(), new PropertyConverter(Birthdate.class, "estimated")),
+        getPatientDetails("Estimated", DqQueries.getExactOrEstimatedDateOfBirth()),
         "");
-    dsd.addColumn("Sex", new PersonToPatientDataDefinition(new GenderDataDefinition()), "");
+    dsd.addColumn("Sex", getPatientDetails("Sex", DqQueries.getPatientGender()), "");
     dsd.addColumn(
         "First Entry Date",
         getPatientDetails("First Entry Date", DqQueries.getPatientDateCreated()),
@@ -88,18 +80,6 @@ public class EptsCommonUtils {
     encounterDataDefinition.setTypes(encounterType);
     encounterDataDefinition.setWhich(TimeQualifier.LAST);
     return encounterDataDefinition;
-  }
-
-  private PatientDataDefinition convert(PatientDataDefinition pdd, DataConverter... converters) {
-    return new ConvertedPatientDataDefinition(pdd, converters);
-  }
-
-  private PatientDataDefinition convert(PersonDataDefinition pdd, DataConverter... converters) {
-    return new ConvertedPatientDataDefinition(new PersonToPatientDataDefinition(pdd), converters);
-  }
-
-  private PatientDataDefinition getBirthdateConverted(DataConverter... converters) {
-    return convert(new BirthdateDataDefinition(), converters);
   }
 
   public DataDefinition getPatientDetails(String name, String sql) {

@@ -214,4 +214,31 @@ public class DqQueries {
   public static String getPatientDeathDate() {
     return "SELECT pa.patient_id, DATE_FORMAT(pe.death_date, '%d-%m-%Y') FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id";
   }
+
+  /**
+   * Get patient date of birth
+   *
+   * @return String
+   */
+  public static String getPatientBirthDate() {
+    return "SELECT pa.patient_id, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id";
+  }
+
+  /**
+   * Get patient gender
+   *
+   * @return String
+   */
+  public static String getPatientGender() {
+    return "SELECT pa.patient_id, pe.gender FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id";
+  }
+
+  /**
+   * Get whether the patient date of birth is exact or estimated
+   *
+   * @return String
+   */
+  public static String getExactOrEstimatedDateOfBirth() {
+    return "SELECT pa.patient_id, pe.birthdate_estimated FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id";
+  }
 }
