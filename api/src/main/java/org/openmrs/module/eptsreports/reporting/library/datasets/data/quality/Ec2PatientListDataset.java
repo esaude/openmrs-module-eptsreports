@@ -17,6 +17,7 @@ import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.add
 import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.getPatientProgramEnrollment;
 
 import java.util.Date;
+import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -25,6 +26,7 @@ import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationDat
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.converter.CalculationResultDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
+import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -39,7 +41,7 @@ import org.springframework.stereotype.Component;
  * @return DataSet
  */
 @Component
-public class Ec2PatientListDataset extends DataQualityBaseDataset {
+public class Ec2PatientListDataset extends BaseDataSet {
 
   private SummaryDataQualityCohorts summaryDataQualityCohorts;
 
@@ -52,10 +54,10 @@ public class Ec2PatientListDataset extends DataQualityBaseDataset {
     this.hivMetadata = hivMetadata;
   }
 
-  public DataSetDefinition ec2DataSetDefinition() {
+  public DataSetDefinition ec2DataSetDefinition(List<Parameter> parameterList) {
     PatientDataSetDefinition dsd = new PatientDataSetDefinition();
     dsd.setName("EC2");
-    dsd.addParameters(getDataQualityParameters());
+    dsd.addParameters(parameterList);
     dsd.addRowFilter(
         summaryDataQualityCohorts.getBreastfeedingMalePatients(), "location=${location}");
 

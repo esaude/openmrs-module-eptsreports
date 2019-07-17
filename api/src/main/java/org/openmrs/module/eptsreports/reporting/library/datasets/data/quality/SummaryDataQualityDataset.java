@@ -1,18 +1,21 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
 import java.util.Arrays;
+import java.util.List;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
+import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SummaryDataQualityDataset extends DataQualityBaseDataset {
+public class SummaryDataQualityDataset extends BaseDataSet {
 
   private EptsGeneralIndicator eptsGeneralIndicator;
 
@@ -34,10 +37,10 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
     this.genericCohortQueries = genericCohortQueries;
   }
 
-  public DataSetDefinition constructSummaryDataQualityDatset() {
+  public DataSetDefinition constructSummaryDataQualityDatset(List<Parameter> parameterList) {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     dsd.setName("Data Quality Summary Dataset");
-    dsd.addParameters(getDataQualityParameters());
+    dsd.addParameters(parameterList);
 
     dsd.addColumn(
         "EC1",

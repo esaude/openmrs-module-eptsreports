@@ -17,6 +17,7 @@ import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.add
 import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.getPatientProgramEnrollment;
 
 import java.util.Date;
+import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -25,6 +26,7 @@ import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationDat
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.converter.CalculationResultDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
+import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -35,7 +37,7 @@ import org.springframework.stereotype.Component;
 
 /** A dataset to display list of patients who are pregnant and male */
 @Component
-public class Ec1PatientListDataset extends DataQualityBaseDataset {
+public class Ec1PatientListDataset extends BaseDataSet {
 
   private SummaryDataQualityCohorts summaryDataQualityCohorts;
 
@@ -48,10 +50,10 @@ public class Ec1PatientListDataset extends DataQualityBaseDataset {
     this.hivMetadata = hivMetadata;
   }
 
-  public DataSetDefinition ec1DataSetDefinition() {
+  public DataSetDefinition ec1DataSetDefinition(List<Parameter> parameterList) {
     PatientDataSetDefinition dsd = new PatientDataSetDefinition();
     dsd.setName("EC1");
-    dsd.addParameters(getDataQualityParameters());
+    dsd.addParameters(parameterList);
     dsd.addRowFilter(summaryDataQualityCohorts.getPregnantMalePatients(), "location=${location}");
 
     addStandardColumns(dsd);

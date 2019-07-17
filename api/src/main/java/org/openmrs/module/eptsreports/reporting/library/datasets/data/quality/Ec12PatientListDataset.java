@@ -16,17 +16,20 @@ package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.addStandardColumns;
 import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.getPatientProgramEnrollment;
 
+import java.util.List;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
+import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Ec12PatientListDataset extends DataQualityBaseDataset {
+public class Ec12PatientListDataset extends BaseDataSet {
 
   private SummaryDataQualityCohorts summaryDataQualityCohorts;
 
@@ -39,10 +42,10 @@ public class Ec12PatientListDataset extends DataQualityBaseDataset {
     this.hivMetadata = hivMetadata;
   }
 
-  public DataSetDefinition ec12PatientListDataset() {
+  public DataSetDefinition ec12PatientListDataset(List<Parameter> parameterList) {
     PatientDataSetDefinition dsd = new PatientDataSetDefinition();
     dsd.setName("EC12");
-    dsd.addParameters(getDataQualityParameters());
+    dsd.addParameters(parameterList);
     dsd.addRowFilter(summaryDataQualityCohorts.getPatientsWhoseBirthdateIsBeforeYear(1920), "");
 
     // add standard column

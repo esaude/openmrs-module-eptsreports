@@ -14,9 +14,12 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import org.openmrs.Location;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec10PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec11PatientListDataset;
@@ -36,7 +39,9 @@ import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.SummaryDataQualityDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +84,8 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   private Ec15PatientListDataset ec15PatientListDataset;
 
+  private GenericCohortQueries genericCohortQueries;
+
   @Autowired
   public SetupDataQualityReport(
       SummaryDataQualityDataset summaryDataQualityDataset,
@@ -97,7 +104,8 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       Ec12PatientListDataset ec12PatientListDataset,
       Ec13PatientListDataset ec13PatientListDataset,
       Ec14PatientListDataset ec14PatientListDataset,
-      Ec15PatientListDataset ec15PatientListDataset) {
+      Ec15PatientListDataset ec15PatientListDataset,
+      GenericCohortQueries genericCohortQueries) {
     this.summaryDataQualityDataset = summaryDataQualityDataset;
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
     this.ec1PatientListDataset = ec1PatientListDataset;
@@ -115,6 +123,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     this.ec13PatientListDataset = ec13PatientListDataset;
     this.ec14PatientListDataset = ec14PatientListDataset;
     this.ec15PatientListDataset = ec15PatientListDataset;
+    this.genericCohortQueries = genericCohortQueries;
   }
 
   @Override
@@ -143,7 +152,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
-    rd.addParameters(summaryDataQualityDataset.getDataQualityParameters());
+    rd.addParameters(getDataParameters());
 
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(
@@ -153,37 +162,66 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     // adding respective data sets
     rd.addDataSetDefinition(
         "S",
-        Mapped.mapStraightThrough(summaryDataQualityDataset.constructSummaryDataQualityDatset()));
+        Mapped.mapStraightThrough(
+            summaryDataQualityDataset.constructSummaryDataQualityDatset(getDataParameters())));
     rd.addDataSetDefinition(
-        "EC1", Mapped.mapStraightThrough(ec1PatientListDataset.ec1DataSetDefinition()));
+        "EC1",
+        Mapped.mapStraightThrough(ec1PatientListDataset.ec1DataSetDefinition(getDataParameters())));
     rd.addDataSetDefinition(
-        "EC2", Mapped.mapStraightThrough(ec2PatientListDataset.ec2DataSetDefinition()));
+        "EC2",
+        Mapped.mapStraightThrough(ec2PatientListDataset.ec2DataSetDefinition(getDataParameters())));
     rd.addDataSetDefinition(
-        "EC3", Mapped.mapStraightThrough(ec3PatientListDataset.ec3PatientListDataset()));
+        "EC3",
+        Mapped.mapStraightThrough(
+            ec3PatientListDataset.ec3PatientListDataset(getDataParameters())));
     rd.addDataSetDefinition(
-        "EC4", Mapped.mapStraightThrough(ec4PatientListDataset.ec4PatientListDataset()));
+        "EC4",
+        Mapped.mapStraightThrough(
+            ec4PatientListDataset.ec4PatientListDataset(getDataParameters())));
     rd.addDataSetDefinition(
-        "EC5", Mapped.mapStraightThrough(ec5PatientListDataset.ec5PatientListDataset()));
+        "EC5",
+        Mapped.mapStraightThrough(
+            ec5PatientListDataset.ec5PatientListDataset(getDataParameters())));
     rd.addDataSetDefinition(
-        "EC6", Mapped.mapStraightThrough(ec6PatientListDataset.ec6PatientListDataset()));
+        "EC6",
+        Mapped.mapStraightThrough(
+            ec6PatientListDataset.ec6PatientListDataset(getDataParameters())));
     rd.addDataSetDefinition(
-        "EC7", Mapped.mapStraightThrough(ec7PatientListDataset.ec7PatientListDataset()));
+        "EC7",
+        Mapped.mapStraightThrough(
+            ec7PatientListDataset.ec7PatientListDataset(getDataParameters())));
     rd.addDataSetDefinition(
-        "EC8", Mapped.mapStraightThrough(ec8PatientListDataset.ec8PatientListDataset()));
+        "EC8",
+        Mapped.mapStraightThrough(
+            ec8PatientListDataset.ec8PatientListDataset(getDataParameters())));
     rd.addDataSetDefinition(
-        "EC9", Mapped.mapStraightThrough(ec9PatientListDataset.ec9PatientListDataset()));
+        "EC9",
+        Mapped.mapStraightThrough(
+            ec9PatientListDataset.ec9PatientListDataset(getDataParameters())));
     rd.addDataSetDefinition(
-        "EC10", Mapped.mapStraightThrough(ec10PatientListDataset.ec10PatientListDataset()));
+        "EC10",
+        Mapped.mapStraightThrough(
+            ec10PatientListDataset.ec10PatientListDataset(getDataParameters())));
     rd.addDataSetDefinition(
-        "EC11", Mapped.mapStraightThrough(ec11PatientListDataset.ec11PatientListDataset()));
+        "EC11",
+        Mapped.mapStraightThrough(
+            ec11PatientListDataset.ec11PatientListDataset(getDataParameters())));
     rd.addDataSetDefinition(
-        "EC12", Mapped.mapStraightThrough(ec12PatientListDataset.ec12PatientListDataset()));
+        "EC12",
+        Mapped.mapStraightThrough(
+            ec12PatientListDataset.ec12PatientListDataset(getDataParameters())));
     rd.addDataSetDefinition(
-        "EC13", Mapped.mapStraightThrough(ec13PatientListDataset.ec13PatientListDataset()));
+        "EC13",
+        Mapped.mapStraightThrough(
+            ec13PatientListDataset.ec13PatientListDataset(getDataParameters())));
     rd.addDataSetDefinition(
-        "EC14", Mapped.mapStraightThrough(ec14PatientListDataset.ec14PatientListDataset()));
+        "EC14",
+        Mapped.mapStraightThrough(
+            ec14PatientListDataset.ec14PatientListDataset(getDataParameters())));
     rd.addDataSetDefinition(
-        "EC15", Mapped.mapStraightThrough(ec15PatientListDataset.ec15PatientListDataset()));
+        "EC15",
+        Mapped.mapStraightThrough(
+            ec15PatientListDataset.ec15PatientListDataset(getDataParameters())));
 
     return rd;
   }
@@ -215,5 +253,14 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     }
 
     return Arrays.asList(reportDesign);
+  }
+
+  public List<Parameter> getDataParameters() {
+    List<Parameter> parameters = new ArrayList<Parameter>();
+    parameters.add(ReportingConstants.START_DATE_PARAMETER);
+    parameters.add(ReportingConstants.END_DATE_PARAMETER);
+    parameters.add(new Parameter("location", "Facilities", Location.class, List.class, null));
+    parameters.add(genericCohortQueries.getArtProgramConfigurableParameter());
+    return parameters;
   }
 }

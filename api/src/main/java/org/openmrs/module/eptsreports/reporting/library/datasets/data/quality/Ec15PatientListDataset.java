@@ -16,15 +16,18 @@ package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.addStandardColumns;
 
 import java.util.Arrays;
+import java.util.List;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
+import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Ec15PatientListDataset extends DataQualityBaseDataset {
+public class Ec15PatientListDataset extends BaseDataSet {
 
   private SummaryDataQualityCohorts summaryDataQualityCohorts;
 
@@ -37,10 +40,10 @@ public class Ec15PatientListDataset extends DataQualityBaseDataset {
     this.hivMetadata = hivMetadata;
   }
 
-  public DataSetDefinition ec15PatientListDataset() {
+  public DataSetDefinition ec15PatientListDataset(List<Parameter> parameterList) {
     PatientDataSetDefinition dsd = new PatientDataSetDefinition();
     dsd.setName("EC15");
-    dsd.addParameters(getDataQualityParameters());
+    dsd.addParameters(parameterList);
     dsd.addRowFilter(
         summaryDataQualityCohorts.getPatientsWhoseBirthDatesAreAfterDrugPickUp(
             Arrays.asList(hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
