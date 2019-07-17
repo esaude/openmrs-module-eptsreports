@@ -420,7 +420,7 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             getAllPatientsParticipatingInDsdModel(), "endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("allPatientsTxCurrDsdModel");
+    cd.setCompositionString("allPatientsTxCurrDsdModel AND patientsParticipatingInDsdModel");
 
     return cd;
   }
@@ -446,7 +446,7 @@ public class EriDSDCohortQueries {
         "patientsWhoAreStable",
         EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate}"));
 
-    cd.setCompositionString("allPatientsInDsdModel");
+    cd.setCompositionString("allPatientsInDsdModel AND patientsWhoAreStable");
 
     return cd;
   }
@@ -567,17 +567,16 @@ public class EriDSDCohortQueries {
         DsdQueries.getPatientsParticipatingInDsdModel(
             hivMetadata.getPrevencaoPositivaInicialEncounterType().getEncounterTypeId(),
             hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId(),
-            23724,
-            23725,
-            23726,
-            23727,
-            23729,
-            23730,
-            23731,
-            23732,
-            1256,
-            1257));
-
+            hivMetadata.getGaac().getConceptId(),
+            hivMetadata.getFamilyApproach().getConceptId(),
+            hivMetadata.getAccessionClubs().getConceptId(),
+            hivMetadata.getSingleStop().getConceptId(),
+            hivMetadata.getRapidFlow().getConceptId(),
+            hivMetadata.getQuarterlyDispensation().getConceptId(),
+            hivMetadata.getCommunityDispensation().getConceptId(),
+            hivMetadata.getAnotherModel().getConceptId(),
+            hivMetadata.getStartDrugs().getConceptId(),
+            hivMetadata.getContinueRegimen().getConceptId()));
     return cd;
   }
 

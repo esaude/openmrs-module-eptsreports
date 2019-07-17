@@ -1126,6 +1126,20 @@
 			UUID for the ANOTHER MODEL concept
 		</description>
 	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.startDrugs</property>
+		<defaultValue>e1d9ef28-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the START DRUGS concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.continueRegimen</property>
+		<defaultValue>e1d9f036-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the CONTINUE REGIMEN concept
+		</description>
+	</globalProperty>
 
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 

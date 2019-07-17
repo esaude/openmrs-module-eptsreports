@@ -395,12 +395,14 @@ public class HivMetadata extends ProgramsMetadata {
   }
   // Concept 23725 AF
   public Concept getFamilyApproach() {
-    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.familyApproach");
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.familyApproach");
     return getConcept(uuid);
   }
   // Concept 23726 CA
   public Concept getAccessionClubs() {
-    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.accessionClubs");
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.accessionClubs");
     return getConcept(uuid);
   }
   // Concept 23727 PU
@@ -415,17 +417,30 @@ public class HivMetadata extends ProgramsMetadata {
   }
   // Concept 23730 DT
   public Concept getQuarterlyDispensation() {
-    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.quarterlyDispensation");
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.quarterlyDispensation");
     return getConcept(uuid);
   }
   // Concept 23731 DC
   public Concept getCommunityDispensation() {
-    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.communityDispensation");
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.communityDispensation");
     return getConcept(uuid);
   }
   // Concept 23732 Other Model
   public Concept getAnotherModel() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.anotherModel");
+    return getConcept(uuid);
+  }
+  // Concept 1256 Start Drugs
+  public Concept getStartDrugs() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.startDrugs");
+    return getConcept(uuid);
+  }
+  // Concept 1257 Continue Regimen
+  public Concept getContinueRegimen() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.continueRegimen");
     return getConcept(uuid);
   }
 

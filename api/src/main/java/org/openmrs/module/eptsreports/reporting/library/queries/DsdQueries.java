@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+
 public class DsdQueries {
 
   public static String getPatientsEnrolledOnGAAC() {
@@ -13,16 +14,16 @@ public class DsdQueries {
   public static String getPatientsParticipatingInDsdModel(
       int prevencaoPositivaInicialEncounterType,
       int prevencaoPositivaSeguimentoEncounterType,
-      int gaac,
-      int af,
-      int ca,
-      int pu,
-      int fr,
-      int dt,
-      int dc,
-      int otherModel,
-      int valueCoded1,
-      int valueCoded2) {
+      Integer gaac,
+      Integer af,
+      Integer ca,
+      Integer pu,
+      Integer fr,
+      Integer dt,
+      Integer dc,
+      Integer otherModel,
+      Integer valueCoded1,
+      Integer valueCoded2) {
 
     String query =
         "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id "
