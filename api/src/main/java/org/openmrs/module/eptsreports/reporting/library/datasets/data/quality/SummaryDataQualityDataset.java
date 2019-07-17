@@ -2,6 +2,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
 import java.util.Arrays;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -19,14 +20,18 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
 
   private HivMetadata hivMetadata;
 
+  private GenericCohortQueries genericCohortQueries;
+
   @Autowired
   public SummaryDataQualityDataset(
       EptsGeneralIndicator eptsGeneralIndicator,
       SummaryDataQualityCohorts summaryDataQualityCohorts,
-      HivMetadata hivMetadata) {
+      HivMetadata hivMetadata,
+      GenericCohortQueries genericCohortQueries) {
     this.eptsGeneralIndicator = eptsGeneralIndicator;
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
     this.hivMetadata = hivMetadata;
+    this.genericCohortQueries = genericCohortQueries;
   }
 
   public DataSetDefinition constructSummaryDataQualityDatset() {
@@ -38,10 +43,11 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
         "EC1",
         "Total Male Patients who are pregnant",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicatorsForDataQuality(
+            eptsGeneralIndicator.getIndicator(
                 "Total Male Patients who are pregnant",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPregnantMalePatients(), "location=${location}")),
+                    summaryDataQualityCohorts.getPregnantMalePatients(), "location=${location}"),
+                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
             "location=${location}"),
         "");
 
@@ -49,11 +55,12 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
         "EC2",
         "Total Male Patients who are breastfeeding",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicatorsForDataQuality(
+            eptsGeneralIndicator.getIndicator(
                 "Total Male Patients who are breastfeeding",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getBreastfeedingMalePatients(),
-                    "location=${location}")),
+                    "location=${location}"),
+                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
             "location=${location}"),
         "");
 
@@ -61,7 +68,7 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
         "EC3",
         "The patient’s vital status is dead and the patient has an ART pick up date after the date of death or death notification",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicatorsForDataQuality(
+            eptsGeneralIndicator.getIndicator(
                 "The patient’s vital status is dead and the patient has an ART pick up date after the date of death or death notification",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getDeadOrDeceasedPatientsHavingEncountersAfter(
@@ -69,7 +76,8 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
                         hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
                         Arrays.asList(
                             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
-                    "location=${location}")),
+                    "location=${location}"),
+                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
             "location=${location}"),
         "");
 
@@ -77,7 +85,7 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
         "EC4",
         "The patient’s vital status is dead and the patient has a clinical consultation after date of death or death notification",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicatorsForDataQuality(
+            eptsGeneralIndicator.getIndicator(
                 "The patient’s vital status is dead and the patient has a clinical consultation after date of death or death notification",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getDeadOrDeceasedPatientsHavingEncountersAfter(
@@ -88,7 +96,8 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
                             hivMetadata
                                 .getARVPediatriaSeguimentoEncounterType()
                                 .getEncounterTypeId())),
-                    "location=${location}")),
+                    "location=${location}"),
+                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
             "location=${location}"),
         "");
 
@@ -96,7 +105,7 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
         "EC5",
         "he patient’s vital status is dead and the patient has a laboratory result (specimen collection date or test order date) after the date of death  or death notification / entry into EPTS.",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicatorsForDataQuality(
+            eptsGeneralIndicator.getIndicator(
                 "he patient’s vital status is dead and the patient has a laboratory result (specimen collection date or test order date) after the date of death  or death notification / entry into EPTS.",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getDeadOrDeceasedPatientsHavingEncountersAfter(
@@ -104,7 +113,8 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
                         hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
                         Arrays.asList(
                             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId())),
-                    "location=${location}")),
+                    "location=${location}"),
+                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
             "location=${location}"),
         "");
 
@@ -112,7 +122,7 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
         "EC6",
         "The patient has been identified as transferred out but has an ART pick up date after the transfer out date",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicatorsForDataQuality(
+            eptsGeneralIndicator.getIndicator(
                 "The patient has been identified as transferred out but has an ART pick up date after the transfer out date",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
@@ -122,7 +132,8 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
                             .getProgramWorkflowStateId(),
                         Arrays.asList(
                             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
-                    "location=${location}")),
+                    "location=${location}"),
+                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
             "location=${location}"),
         "");
 
@@ -130,7 +141,7 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
         "EC7",
         "The patient has been identified as transferred out but has an clinical consultation date after the transfer out date",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicatorsForDataQuality(
+            eptsGeneralIndicator.getIndicator(
                 "The patient has been identified as transferred out but has an clinical consultation date after the transfer out date",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
@@ -143,7 +154,8 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
                                 .getARVPediatriaSeguimentoEncounterType()
                                 .getEncounterTypeId(),
                             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
-                    "location=${location}")),
+                    "location=${location}"),
+                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
             "location=${location}"),
         "");
 
@@ -151,7 +163,7 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
         "EC8",
         "The patient has been identified as transferred out but has an laboratory results(specimen collection date or report date) after the transfer out date",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicatorsForDataQuality(
+            eptsGeneralIndicator.getIndicator(
                 "The patient has been identified as transferred out but has an laboratory results(specimen collection date or report date) after the transfer out date",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
@@ -161,7 +173,8 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
                             .getProgramWorkflowStateId(),
                         Arrays.asList(
                             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId())),
-                    "location=${location}")),
+                    "location=${location}"),
+                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
             "location=${location}"),
         "");
 
@@ -169,7 +182,7 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
         "EC9",
         "The patient has been identified as abandoned  but has an ART pick up date after the abandoned date",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicatorsForDataQuality(
+            eptsGeneralIndicator.getIndicator(
                 "The patient has been identified as abandoned  but has an ART pick up date after the abandoned date",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
@@ -177,7 +190,8 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
                         hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
                         Arrays.asList(
                             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
-                    "location=${location}")),
+                    "location=${location}"),
+                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
             "location=${location}"),
         "");
 
@@ -185,7 +199,7 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
         "EC10",
         "The patient has been identified as abandoned but has an clinical consultation date after the abandoned date",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicatorsForDataQuality(
+            eptsGeneralIndicator.getIndicator(
                 "The patient has been identified as abandoned but has an clinical consultation date after the abandoned date",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
@@ -196,7 +210,8 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
                             hivMetadata
                                 .getARVPediatriaSeguimentoEncounterType()
                                 .getEncounterTypeId())),
-                    "location=${location}")),
+                    "location=${location}"),
+                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
             "location=${location}"),
         "");
 
@@ -204,7 +219,7 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
         "EC10",
         "The patient has been identified as abandoned but has an clinical consultation date after the abandoned date",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicatorsForDataQuality(
+            eptsGeneralIndicator.getIndicator(
                 "The patient has been identified as abandoned but has an clinical consultation date after the abandoned date",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
@@ -215,7 +230,8 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
                             hivMetadata
                                 .getARVPediatriaSeguimentoEncounterType()
                                 .getEncounterTypeId())),
-                    "location=${location}")),
+                    "location=${location}"),
+                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
             "location=${location}"),
         "");
 
@@ -223,7 +239,7 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
         "EC11",
         "The patient has been identified as abandoned but has an laboratory results(specimen collection date or report date) after the abandoned date",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicatorsForDataQuality(
+            eptsGeneralIndicator.getIndicator(
                 "The patient has been identified as abandoned but has an laboratory results(specimen collection date or report date) after the abandoned date",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
@@ -231,7 +247,8 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
                         hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
                         Arrays.asList(
                             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId())),
-                    "location=${location}")),
+                    "location=${location}"),
+                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
             "location=${location}"),
         "");
 
@@ -239,10 +256,11 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
         "EC12",
         "The patient’s date of birth, estimated date of birth or entered age indicate the patient was born before 1920",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicatorsForDataQuality(
+            eptsGeneralIndicator.getIndicator(
                 "The patient’s date of birth, estimated date of birth or entered age indicate the patient was born before 1920",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsWhoseBirthdateIsBeforeYear(1920), "")),
+                    summaryDataQualityCohorts.getPatientsWhoseBirthdateIsBeforeYear(1920), ""),
+                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
             ""),
         "");
 
@@ -250,9 +268,10 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
         "EC13",
         "The patients date of birth, estimated date of birth or age is negative",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicatorsForDataQuality(
+            eptsGeneralIndicator.getIndicator(
                 "The patients date of birth, estimated date of birth or age is negative ",
-                EptsReportUtils.map(summaryDataQualityCohorts.getPatientsWithNegativeAge(), "")),
+                EptsReportUtils.map(summaryDataQualityCohorts.getPatientsWithNegativeAge(), ""),
+                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
             ""),
         "");
 
@@ -260,11 +279,12 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
         "EC14",
         "The patients birth, estimated date of birth or age indicates they are > 100 years of age",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicatorsForDataQuality(
+            eptsGeneralIndicator.getIndicator(
                 "The patients birth, estimated date of birth or age indicates they are > 100 years of age",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getPatientsWithAgeHigherThanXyears(100),
-                    "endDate=${endDate}")),
+                    "endDate=${endDate}"),
+                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
             "endDate=${endDate}"),
         "");
 
@@ -272,13 +292,14 @@ public class SummaryDataQualityDataset extends DataQualityBaseDataset {
         "EC15",
         "The patient’s date of birth is after any drug pick up date",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicatorsForDataQuality(
+            eptsGeneralIndicator.getIndicator(
                 "The patient’s date of birth is after any drug pick up date",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getPatientsWhoseBirthDatesAreAfterDrugPickUp(
                         Arrays.asList(
                             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
-                    "location=${location},endDate=${endDate}")),
+                    "location=${location},endDate=${endDate}"),
+                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
             "location=${location},endDate=${endDate}"),
         "");
 

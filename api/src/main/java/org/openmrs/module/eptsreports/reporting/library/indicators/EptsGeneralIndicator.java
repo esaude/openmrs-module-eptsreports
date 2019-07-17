@@ -14,16 +14,15 @@
 
 package org.openmrs.module.eptsreports.reporting.library.indicators;
 
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import java.util.List;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EptsGeneralIndicator extends BaseIndicators {
-  @Autowired private GenericCohortQueries genericCohortQueries;
 
   /**
    * Methods that takes a cohort definition and return and indicator definition for reuse
@@ -39,9 +38,10 @@ public class EptsGeneralIndicator extends BaseIndicators {
    *
    * @return CohortIndicator
    */
-  public CohortIndicator getIndicatorsForDataQuality(String name, Mapped<CohortDefinition> cd) {
+  public CohortIndicator getIndicator(
+      String name, Mapped<CohortDefinition> cd, List<Parameter> parameters) {
     CohortIndicator cI = getIndicator(name, cd);
-    cI.addParameter(genericCohortQueries.getArtProgramConfigurableParameter());
+    cI.addParameters(parameters);
     return cI;
   }
 }
