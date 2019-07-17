@@ -10,7 +10,6 @@ import org.openmrs.module.eptsreports.reporting.calculation.data.quality.Patient
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationDataDefinition;
 import org.openmrs.module.eptsreports.reporting.library.converter.BirthDateConverter;
 import org.openmrs.module.eptsreports.reporting.library.converter.CalculationResultDataConverter;
-import org.openmrs.module.eptsreports.reporting.library.converter.GenderDataConverter;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
@@ -19,6 +18,7 @@ import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientData
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PersonToPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
@@ -54,7 +54,7 @@ public class EptsCommonUtils {
         "",
         new BirthDateConverter("birthDate"));
     dsd.addColumn("Estimated", new BirthdateDataDefinition(), "", new BirthDateConverter("state"));
-    dsd.addColumn("Sex", new GenderDataDefinition(), "", new GenderDataConverter());
+    dsd.addColumn("Sex", new PersonToPatientDataDefinition(new GenderDataDefinition()), "");
     dsd.addColumn(
         "First Entry Date",
         getPatientDemographics("First Entry Date"),
