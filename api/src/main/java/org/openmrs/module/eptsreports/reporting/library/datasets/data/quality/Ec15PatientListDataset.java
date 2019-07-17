@@ -13,13 +13,12 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
-import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.addStandardColumns;
-
 import java.util.Arrays;
 import java.util.List;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
+import org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -33,11 +32,16 @@ public class Ec15PatientListDataset extends BaseDataSet {
 
   private HivMetadata hivMetadata;
 
+  private EptsCommonUtils eptsCommonUtils;
+
   @Autowired
   public Ec15PatientListDataset(
-      SummaryDataQualityCohorts summaryDataQualityCohorts, HivMetadata hivMetadata) {
+      SummaryDataQualityCohorts summaryDataQualityCohorts,
+      HivMetadata hivMetadata,
+      EptsCommonUtils eptsCommonUtils) {
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
     this.hivMetadata = hivMetadata;
+    this.eptsCommonUtils = eptsCommonUtils;
   }
 
   public DataSetDefinition ec15PatientListDataset(List<Parameter> parameterList) {
@@ -50,7 +54,7 @@ public class Ec15PatientListDataset extends BaseDataSet {
         "location=${location},endDate=${endDate}");
 
     // add standard column
-    addStandardColumns(dsd);
+    eptsCommonUtils.addStandardColumns(dsd);
 
     return dsd;
   }

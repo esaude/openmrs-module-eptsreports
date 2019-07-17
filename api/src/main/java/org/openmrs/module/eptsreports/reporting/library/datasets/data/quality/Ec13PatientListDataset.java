@@ -13,14 +13,12 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
-import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.addStandardColumns;
-import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.getPatientProgramEnrollment;
-
 import java.util.List;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
+import org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
@@ -35,11 +33,16 @@ public class Ec13PatientListDataset extends BaseDataSet {
 
   private HivMetadata hivMetadata;
 
+  private EptsCommonUtils eptsCommonUtils;
+
   @Autowired
   public Ec13PatientListDataset(
-      SummaryDataQualityCohorts summaryDataQualityCohorts, HivMetadata hivMetadata) {
+      SummaryDataQualityCohorts summaryDataQualityCohorts,
+      HivMetadata hivMetadata,
+      EptsCommonUtils eptsCommonUtils) {
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
     this.hivMetadata = hivMetadata;
+    this.eptsCommonUtils = eptsCommonUtils;
   }
 
   public DataSetDefinition ec13PatientListDataset(List<Parameter> parameterList) {
@@ -49,15 +52,17 @@ public class Ec13PatientListDataset extends BaseDataSet {
     dsd.addRowFilter(summaryDataQualityCohorts.getPatientsWithNegativeAge(), "");
 
     // add standard column
-    addStandardColumns(dsd);
+    eptsCommonUtils.addStandardColumns(dsd);
     dsd.addColumn(
         "ART Program Enrollment Date",
-        getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
+        eptsCommonUtils.getPatientProgramEnrollment(
+            hivMetadata.getARTProgram(), TimeQualifier.FIRST),
         "enrolledOnOrBefore=${endDate}",
         new PatientProgramDataConverter("date"));
     dsd.addColumn(
         "ART Program Enrollment Status",
-        getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
+        eptsCommonUtils.getPatientProgramEnrollment(
+            hivMetadata.getARTProgram(), TimeQualifier.FIRST),
         "enrolledOnOrBefore=${endDate}",
         new PatientProgramDataConverter("lastStatus"));
     return dsd;

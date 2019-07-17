@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
-import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.addStandardColumns;
-import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.getPatientProgramEnrollment;
-
 import java.util.Date;
 import java.util.List;
 import org.openmrs.Location;
@@ -27,6 +24,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.Sum
 import org.openmrs.module.eptsreports.reporting.library.converter.CalculationResultDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
+import org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -43,11 +41,16 @@ public class Ec1PatientListDataset extends BaseDataSet {
 
   private HivMetadata hivMetadata;
 
+  private EptsCommonUtils eptsCommonUtils;
+
   @Autowired
   public Ec1PatientListDataset(
-      SummaryDataQualityCohorts summaryDataQualityCohorts, HivMetadata hivMetadata) {
+      SummaryDataQualityCohorts summaryDataQualityCohorts,
+      HivMetadata hivMetadata,
+      EptsCommonUtils eptsCommonUtils) {
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
     this.hivMetadata = hivMetadata;
+    this.eptsCommonUtils = eptsCommonUtils;
   }
 
   public DataSetDefinition ec1DataSetDefinition(List<Parameter> parameterList) {
@@ -56,7 +59,7 @@ public class Ec1PatientListDataset extends BaseDataSet {
     dsd.addParameters(parameterList);
     dsd.addRowFilter(summaryDataQualityCohorts.getPregnantMalePatients(), "location=${location}");
 
-    addStandardColumns(dsd);
+    eptsCommonUtils.addStandardColumns(dsd);
     dsd.addColumn(
         "Pregnant Criteria", getPregnantCriteria(), "", new CalculationResultDataConverter("PC"));
     dsd.addColumn(
@@ -71,7 +74,8 @@ public class Ec1PatientListDataset extends BaseDataSet {
         new CalculationResultDataConverter("PTVD"));
     dsd.addColumn(
         "PTV/ETC Enrollment Status",
-        getPatientProgramEnrollment(hivMetadata.getPtvEtvProgram(), TimeQualifier.LAST),
+        eptsCommonUtils.getPatientProgramEnrollment(
+            hivMetadata.getPtvEtvProgram(), TimeQualifier.LAST),
         "enrolledOnOrBefore=${endDate}",
         new PatientProgramDataConverter("lastStatus"));
 

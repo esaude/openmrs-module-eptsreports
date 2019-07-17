@@ -13,6 +13,7 @@ package org.openmrs.module.eptsreports.metadata;
 
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
+import org.openmrs.PatientIdentifierType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
@@ -430,6 +431,13 @@ public class HivMetadata extends ProgramsMetadata {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.hivCareProgramUuid");
     return getProgram(uuid);
+  }
+
+  // Identifier types
+  public PatientIdentifierType getNidServiceTarvIdentifierType() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.nidServicoTarvUuid");
+    return getPatientIdentifierType(uuid);
   }
 
   // Program Workflow States

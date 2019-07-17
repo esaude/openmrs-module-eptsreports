@@ -6,6 +6,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.data.quality.PatientDemographicsCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationDataDefinition;
 import org.openmrs.module.eptsreports.reporting.library.converter.CalculationResultDataConverter;
@@ -29,24 +30,27 @@ import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class EptsCommonUtils {
 
+  @Autowired private HivMetadata hivMetadata;
   /**
    * Adds the standard patient list columns
    *
    * @param dsd the data set definition
    */
-  public static void addStandardColumns(PatientDataSetDefinition dsd) {
+  public void addStandardColumns(PatientDataSetDefinition dsd) {
     // identifier
-    PatientIdentifierType preARTNo =
-        Context.getPatientService()
-            .getPatientIdentifierTypeByUuid("e2b966d0-1d5f-11e0-b929-000c29ad1d07");
+    PatientIdentifierType artNo = hivMetadata.getNidServiceTarvIdentifierType();
+
     DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
     DataDefinition identifierDef =
         new ConvertedPatientDataDefinition(
             "identifier",
-            new PatientIdentifierDataDefinition(preARTNo.getName(), preARTNo),
+            new PatientIdentifierDataDefinition(artNo.getName(), artNo),
             identifierFormatter);
 
     dsd.addColumn("Patient Id", new PatientIdDataDefinition(), "");
@@ -73,13 +77,12 @@ public class EptsCommonUtils {
         new CalculationResultDataConverter("L"));
   }
 
-  public static DataDefinition getPatientDemographics(String name) {
+  public DataDefinition getPatientDemographics(String name) {
     return new CalculationDataDefinition(
         name, Context.getRegisteredComponents(PatientDemographicsCalculation.class).get(0));
   }
 
-  public static DataDefinition getPatientProgramEnrollment(
-      Program program, TimeQualifier timeQualifier) {
+  public DataDefinition getPatientProgramEnrollment(Program program, TimeQualifier timeQualifier) {
     ProgramEnrollmentsForPatientDataDefinition cd =
         new ProgramEnrollmentsForPatientDataDefinition();
     cd.setName("The program the patient is enrolled in");
@@ -89,7 +92,7 @@ public class EptsCommonUtils {
     return cd;
   }
 
-  public static DataDefinition getEncounterForPatient(List<EncounterType> encounterType) {
+  public DataDefinition getEncounterForPatient(List<EncounterType> encounterType) {
     EncountersForPatientDataDefinition encounterDataDefinition =
         new EncountersForPatientDataDefinition();
     encounterDataDefinition.setName("Patient encounters");
@@ -98,17 +101,15 @@ public class EptsCommonUtils {
     return encounterDataDefinition;
   }
 
-  private static PatientDataDefinition convert(
-      PatientDataDefinition pdd, DataConverter... converters) {
+  private PatientDataDefinition convert(PatientDataDefinition pdd, DataConverter... converters) {
     return new ConvertedPatientDataDefinition(pdd, converters);
   }
 
-  private static PatientDataDefinition convert(
-      PersonDataDefinition pdd, DataConverter... converters) {
+  private PatientDataDefinition convert(PersonDataDefinition pdd, DataConverter... converters) {
     return new ConvertedPatientDataDefinition(new PersonToPatientDataDefinition(pdd), converters);
   }
 
-  private static PatientDataDefinition getBirthdateConverted(DataConverter... converters) {
+  private PatientDataDefinition getBirthdateConverted(DataConverter... converters) {
     return convert(new BirthdateDataDefinition(), converters);
   }
 }

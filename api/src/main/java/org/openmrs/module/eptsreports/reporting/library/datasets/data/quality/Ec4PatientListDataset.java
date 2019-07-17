@@ -13,11 +13,6 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
-import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.addStandardColumns;
-import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.getEncounterForPatient;
-import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.getPatientDemographics;
-import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.getPatientProgramEnrollment;
-
 import java.util.Arrays;
 import java.util.List;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -26,6 +21,7 @@ import org.openmrs.module.eptsreports.reporting.library.converter.CalculationRes
 import org.openmrs.module.eptsreports.reporting.library.converter.EncounterDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
+import org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
@@ -40,11 +36,16 @@ public class Ec4PatientListDataset extends BaseDataSet {
 
   private HivMetadata hivMetadata;
 
+  private EptsCommonUtils eptsCommonUtils;
+
   @Autowired
   public Ec4PatientListDataset(
-      SummaryDataQualityCohorts summaryDataQualityCohorts, HivMetadata hivMetadata) {
+      SummaryDataQualityCohorts summaryDataQualityCohorts,
+      HivMetadata hivMetadata,
+      EptsCommonUtils eptsCommonUtils) {
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
     this.hivMetadata = hivMetadata;
+    this.eptsCommonUtils = eptsCommonUtils;
   }
 
   public DataSetDefinition ec4PatientListDataset(List<Parameter> parameterList) {
@@ -61,30 +62,33 @@ public class Ec4PatientListDataset extends BaseDataSet {
         "location=${location}");
 
     // add standard column
-    addStandardColumns(dsd);
+    eptsCommonUtils.addStandardColumns(dsd);
     dsd.addColumn(
         "Patient Enrollment Date in TARV",
-        getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
+        eptsCommonUtils.getPatientProgramEnrollment(
+            hivMetadata.getARTProgram(), TimeQualifier.FIRST),
         "enrolledOnOrBefore=${endDate}",
         new PatientProgramDataConverter("date"));
     dsd.addColumn(
         "Last Patient Status in Prog Enrollment",
-        getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
+        eptsCommonUtils.getPatientProgramEnrollment(
+            hivMetadata.getARTProgram(), TimeQualifier.FIRST),
         "enrolledOnOrBefore=${endDate}",
         new PatientProgramDataConverter("lastStatus"));
     dsd.addColumn(
         "Date of Last Patient Status in Prog Enrollment",
-        getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
+        eptsCommonUtils.getPatientProgramEnrollment(
+            hivMetadata.getARTProgram(), TimeQualifier.FIRST),
         "enrolledOnOrBefore=${endDate}",
         new PatientProgramDataConverter("lastStatusDate"));
     dsd.addColumn(
         "Date of Death in Demographics",
-        getPatientDemographics("Date of Death in Demographics"),
+        eptsCommonUtils.getPatientDemographics("Date of Death in Demographics"),
         "",
         new CalculationResultDataConverter("deathDate"));
     dsd.addColumn(
         "Clinical Consultation Date",
-        getEncounterForPatient(
+        eptsCommonUtils.getEncounterForPatient(
             Arrays.asList(
                 hivMetadata.getARVPediatriaSeguimentoEncounterType(),
                 hivMetadata.getAdultoSeguimentoEncounterType())),
@@ -92,7 +96,7 @@ public class Ec4PatientListDataset extends BaseDataSet {
         new EncounterDataConverter("encounterDate"));
     dsd.addColumn(
         "Clinical Consultation Registration Date",
-        getEncounterForPatient(
+        eptsCommonUtils.getEncounterForPatient(
             Arrays.asList(
                 hivMetadata.getARVPediatriaSeguimentoEncounterType(),
                 hivMetadata.getAdultoSeguimentoEncounterType())),

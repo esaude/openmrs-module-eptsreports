@@ -973,6 +973,15 @@
 		</description>
 	</globalProperty>
 
+	<!--Patient identifier types-->
+	<globalProperty>
+		<property>eptsreports.nidServicoTarvUuid</property>
+		<defaultValue>e2b966d0-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			Numero de Identificaçao de Doente, serviço TARV
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
