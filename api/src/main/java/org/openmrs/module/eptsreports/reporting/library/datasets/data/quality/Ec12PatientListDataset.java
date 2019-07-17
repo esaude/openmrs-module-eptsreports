@@ -17,6 +17,7 @@ import java.util.List;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
+import org.openmrs.module.eptsreports.reporting.library.data.definition.DataDefinitions;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -35,14 +36,18 @@ public class Ec12PatientListDataset extends BaseDataSet {
 
   private EptsCommonUtils eptsCommonUtils;
 
+  private DataDefinitions definitions;
+
   @Autowired
   public Ec12PatientListDataset(
       SummaryDataQualityCohorts summaryDataQualityCohorts,
       HivMetadata hivMetadata,
-      EptsCommonUtils eptsCommonUtils) {
+      EptsCommonUtils eptsCommonUtils,
+      DataDefinitions definitions) {
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
     this.hivMetadata = hivMetadata;
     this.eptsCommonUtils = eptsCommonUtils;
+    this.definitions = definitions;
   }
 
   public DataSetDefinition ec12PatientListDataset(List<Parameter> parameterList) {
@@ -55,14 +60,12 @@ public class Ec12PatientListDataset extends BaseDataSet {
     eptsCommonUtils.addStandardColumns(dsd);
     dsd.addColumn(
         "ART Program Enrollment Date",
-        eptsCommonUtils.getPatientProgramEnrollment(
-            hivMetadata.getARTProgram(), TimeQualifier.FIRST),
+        definitions.getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
         "enrolledOnOrBefore=${endDate}",
         new PatientProgramDataConverter("date"));
     dsd.addColumn(
         "ART Program Enrollment Status",
-        eptsCommonUtils.getPatientProgramEnrollment(
-            hivMetadata.getARTProgram(), TimeQualifier.FIRST),
+        definitions.getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
         "enrolledOnOrBefore=${endDate}",
         new PatientProgramDataConverter("lastStatus"));
 

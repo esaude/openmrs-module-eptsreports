@@ -19,6 +19,7 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.converter.EncounterDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
+import org.openmrs.module.eptsreports.reporting.library.data.definition.DataDefinitions;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -37,14 +38,18 @@ public class Ec10PatientListDataset extends BaseDataSet {
 
   private EptsCommonUtils eptsCommonUtils;
 
+  private DataDefinitions definitions;
+
   @Autowired
   public Ec10PatientListDataset(
       SummaryDataQualityCohorts summaryDataQualityCohorts,
       HivMetadata hivMetadata,
-      EptsCommonUtils eptsCommonUtils) {
+      EptsCommonUtils eptsCommonUtils,
+      DataDefinitions definitions) {
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
     this.hivMetadata = hivMetadata;
     this.eptsCommonUtils = eptsCommonUtils;
+    this.definitions = definitions;
   }
 
   public DataSetDefinition ec10PatientListDataset(List<Parameter> parameterList) {
@@ -64,25 +69,22 @@ public class Ec10PatientListDataset extends BaseDataSet {
     eptsCommonUtils.addStandardColumns(dsd);
     dsd.addColumn(
         "Patient Enrollment Date in TARV",
-        eptsCommonUtils.getPatientProgramEnrollment(
-            hivMetadata.getARTProgram(), TimeQualifier.FIRST),
+        definitions.getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
         "enrolledOnOrBefore=${endDate}",
         new PatientProgramDataConverter("date"));
     dsd.addColumn(
         "Last Patient Status in Prog Enrollment",
-        eptsCommonUtils.getPatientProgramEnrollment(
-            hivMetadata.getARTProgram(), TimeQualifier.FIRST),
+        definitions.getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
         "enrolledOnOrBefore=${endDate}",
         new PatientProgramDataConverter("lastStatus"));
     dsd.addColumn(
         "Date of Last Patient Status in Prog Enrollment",
-        eptsCommonUtils.getPatientProgramEnrollment(
-            hivMetadata.getARTProgram(), TimeQualifier.FIRST),
+        definitions.getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
         "enrolledOnOrBefore=${endDate}",
         new PatientProgramDataConverter("lastStatusDate"));
     dsd.addColumn(
         "Clinical Consultation Date",
-        eptsCommonUtils.getEncounterForPatient(
+        definitions.getEncounterForPatient(
             Arrays.asList(
                 hivMetadata.getARVPediatriaSeguimentoEncounterType(),
                 hivMetadata.getAdultoSeguimentoEncounterType())),
@@ -91,7 +93,7 @@ public class Ec10PatientListDataset extends BaseDataSet {
 
     dsd.addColumn(
         "Clinical Consultation Registration Date",
-        eptsCommonUtils.getEncounterForPatient(
+        definitions.getEncounterForPatient(
             Arrays.asList(
                 hivMetadata.getARVPediatriaSeguimentoEncounterType(),
                 hivMetadata.getAdultoSeguimentoEncounterType())),

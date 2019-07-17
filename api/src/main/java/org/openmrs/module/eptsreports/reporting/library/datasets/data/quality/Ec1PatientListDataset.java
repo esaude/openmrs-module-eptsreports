@@ -23,6 +23,7 @@ import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationDat
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.converter.CalculationResultDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
+import org.openmrs.module.eptsreports.reporting.library.data.definition.DataDefinitions;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -43,14 +44,18 @@ public class Ec1PatientListDataset extends BaseDataSet {
 
   private EptsCommonUtils eptsCommonUtils;
 
+  private DataDefinitions definitions;
+
   @Autowired
   public Ec1PatientListDataset(
       SummaryDataQualityCohorts summaryDataQualityCohorts,
       HivMetadata hivMetadata,
-      EptsCommonUtils eptsCommonUtils) {
+      EptsCommonUtils eptsCommonUtils,
+      DataDefinitions definitions) {
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
     this.hivMetadata = hivMetadata;
     this.eptsCommonUtils = eptsCommonUtils;
+    this.definitions = definitions;
   }
 
   public DataSetDefinition ec1DataSetDefinition(List<Parameter> parameterList) {
@@ -74,8 +79,7 @@ public class Ec1PatientListDataset extends BaseDataSet {
         new CalculationResultDataConverter("PTVD"));
     dsd.addColumn(
         "PTV/ETC Enrollment Status",
-        eptsCommonUtils.getPatientProgramEnrollment(
-            hivMetadata.getPtvEtvProgram(), TimeQualifier.LAST),
+        definitions.getPatientProgramEnrollment(hivMetadata.getPtvEtvProgram(), TimeQualifier.LAST),
         "enrolledOnOrBefore=${endDate}",
         new PatientProgramDataConverter("lastStatus"));
 
