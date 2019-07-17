@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec10PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec11PatientListDataset;
@@ -84,7 +84,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   private Ec15PatientListDataset ec15PatientListDataset;
 
-  private GenericCohortQueries genericCohortQueries;
+  private HivMetadata hivMetadata;
 
   @Autowired
   public SetupDataQualityReport(
@@ -105,7 +105,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       Ec13PatientListDataset ec13PatientListDataset,
       Ec14PatientListDataset ec14PatientListDataset,
       Ec15PatientListDataset ec15PatientListDataset,
-      GenericCohortQueries genericCohortQueries) {
+      HivMetadata hivMetadata) {
     this.summaryDataQualityDataset = summaryDataQualityDataset;
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
     this.ec1PatientListDataset = ec1PatientListDataset;
@@ -123,7 +123,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     this.ec13PatientListDataset = ec13PatientListDataset;
     this.ec14PatientListDataset = ec14PatientListDataset;
     this.ec15PatientListDataset = ec15PatientListDataset;
-    this.genericCohortQueries = genericCohortQueries;
+    this.hivMetadata = hivMetadata;
   }
 
   @Override
@@ -260,7 +260,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     parameters.add(ReportingConstants.START_DATE_PARAMETER);
     parameters.add(ReportingConstants.END_DATE_PARAMETER);
     parameters.add(new Parameter("location", "Facilities", Location.class, List.class, null));
-    parameters.add(genericCohortQueries.getArtProgramConfigurableParameter());
+    parameters.add(EptsReportUtils.getArtProgramConfigurableParameter(hivMetadata.getARTProgram()));
     return parameters;
   }
 }

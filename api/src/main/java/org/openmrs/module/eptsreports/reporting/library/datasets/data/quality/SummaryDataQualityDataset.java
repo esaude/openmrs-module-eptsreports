@@ -3,7 +3,6 @@ package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 import java.util.Arrays;
 import java.util.List;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
@@ -23,18 +22,14 @@ public class SummaryDataQualityDataset extends BaseDataSet {
 
   private HivMetadata hivMetadata;
 
-  private GenericCohortQueries genericCohortQueries;
-
   @Autowired
   public SummaryDataQualityDataset(
       EptsGeneralIndicator eptsGeneralIndicator,
       SummaryDataQualityCohorts summaryDataQualityCohorts,
-      HivMetadata hivMetadata,
-      GenericCohortQueries genericCohortQueries) {
+      HivMetadata hivMetadata) {
     this.eptsGeneralIndicator = eptsGeneralIndicator;
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
     this.hivMetadata = hivMetadata;
-    this.genericCohortQueries = genericCohortQueries;
   }
 
   public DataSetDefinition constructSummaryDataQualityDatset(List<Parameter> parameterList) {
@@ -50,7 +45,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                 "Total Male Patients who are pregnant",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getPregnantMalePatients(), "location=${location}"),
-                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
+                Arrays.asList(
+                    EptsReportUtils.getArtProgramConfigurableParameter(
+                        hivMetadata.getARTProgram()))),
             "location=${location}"),
         "");
 
@@ -63,7 +60,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getBreastfeedingMalePatients(),
                     "location=${location}"),
-                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
+                Arrays.asList(
+                    EptsReportUtils.getArtProgramConfigurableParameter(
+                        hivMetadata.getARTProgram()))),
             "location=${location}"),
         "");
 
@@ -80,7 +79,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                         Arrays.asList(
                             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
                     "location=${location}"),
-                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
+                Arrays.asList(
+                    EptsReportUtils.getArtProgramConfigurableParameter(
+                        hivMetadata.getARTProgram()))),
             "location=${location}"),
         "");
 
@@ -100,7 +101,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                                 .getARVPediatriaSeguimentoEncounterType()
                                 .getEncounterTypeId())),
                     "location=${location}"),
-                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
+                Arrays.asList(
+                    EptsReportUtils.getArtProgramConfigurableParameter(
+                        hivMetadata.getARTProgram()))),
             "location=${location}"),
         "");
 
@@ -117,7 +120,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                         Arrays.asList(
                             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId())),
                     "location=${location}"),
-                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
+                Arrays.asList(
+                    EptsReportUtils.getArtProgramConfigurableParameter(
+                        hivMetadata.getARTProgram()))),
             "location=${location}"),
         "");
 
@@ -136,7 +141,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                         Arrays.asList(
                             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
                     "location=${location}"),
-                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
+                Arrays.asList(
+                    EptsReportUtils.getArtProgramConfigurableParameter(
+                        hivMetadata.getARTProgram()))),
             "location=${location}"),
         "");
 
@@ -158,7 +165,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                                 .getEncounterTypeId(),
                             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
                     "location=${location}"),
-                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
+                Arrays.asList(
+                    EptsReportUtils.getArtProgramConfigurableParameter(
+                        hivMetadata.getARTProgram()))),
             "location=${location}"),
         "");
 
@@ -177,7 +186,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                         Arrays.asList(
                             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId())),
                     "location=${location}"),
-                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
+                Arrays.asList(
+                    EptsReportUtils.getArtProgramConfigurableParameter(
+                        hivMetadata.getARTProgram()))),
             "location=${location}"),
         "");
 
@@ -194,7 +205,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                         Arrays.asList(
                             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
                     "location=${location}"),
-                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
+                Arrays.asList(
+                    EptsReportUtils.getArtProgramConfigurableParameter(
+                        hivMetadata.getARTProgram()))),
             "location=${location}"),
         "");
 
@@ -214,7 +227,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                                 .getARVPediatriaSeguimentoEncounterType()
                                 .getEncounterTypeId())),
                     "location=${location}"),
-                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
+                Arrays.asList(
+                    EptsReportUtils.getArtProgramConfigurableParameter(
+                        hivMetadata.getARTProgram()))),
             "location=${location}"),
         "");
 
@@ -234,7 +249,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                                 .getARVPediatriaSeguimentoEncounterType()
                                 .getEncounterTypeId())),
                     "location=${location}"),
-                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
+                Arrays.asList(
+                    EptsReportUtils.getArtProgramConfigurableParameter(
+                        hivMetadata.getARTProgram()))),
             "location=${location}"),
         "");
 
@@ -251,7 +268,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                         Arrays.asList(
                             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId())),
                     "location=${location}"),
-                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
+                Arrays.asList(
+                    EptsReportUtils.getArtProgramConfigurableParameter(
+                        hivMetadata.getARTProgram()))),
             "location=${location}"),
         "");
 
@@ -263,7 +282,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                 "The patient’s date of birth, estimated date of birth or entered age indicate the patient was born before 1920",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getPatientsWhoseBirthdateIsBeforeYear(1920), ""),
-                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
+                Arrays.asList(
+                    EptsReportUtils.getArtProgramConfigurableParameter(
+                        hivMetadata.getARTProgram()))),
             ""),
         "");
 
@@ -274,7 +295,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "The patients date of birth, estimated date of birth or age is negative ",
                 EptsReportUtils.map(summaryDataQualityCohorts.getPatientsWithNegativeAge(), ""),
-                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
+                Arrays.asList(
+                    EptsReportUtils.getArtProgramConfigurableParameter(
+                        hivMetadata.getARTProgram()))),
             ""),
         "");
 
@@ -287,7 +310,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getPatientsWithAgeHigherThanXyears(100),
                     "endDate=${endDate}"),
-                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
+                Arrays.asList(
+                    EptsReportUtils.getArtProgramConfigurableParameter(
+                        hivMetadata.getARTProgram()))),
             "endDate=${endDate}"),
         "");
 
@@ -302,7 +327,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                         Arrays.asList(
                             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
                     "location=${location},endDate=${endDate}"),
-                Arrays.asList(genericCohortQueries.getArtProgramConfigurableParameter())),
+                Arrays.asList(
+                    EptsReportUtils.getArtProgramConfigurableParameter(
+                        hivMetadata.getARTProgram()))),
             "location=${location},endDate=${endDate}"),
         "");
 

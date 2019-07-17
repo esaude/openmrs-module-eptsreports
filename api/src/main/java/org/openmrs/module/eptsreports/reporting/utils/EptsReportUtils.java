@@ -20,8 +20,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.GlobalProperty;
+import org.openmrs.Program;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -133,5 +137,26 @@ public class EptsReportUtils {
   public static String formatDateTime(Date date) {
     DateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
     return date == null ? "" : dateFormatter.format(date);
+  }
+
+  /**
+   * Get the configurable widget parameter to be passed on the reporting UI
+   *
+   * @return
+   */
+  public static Parameter getArtProgramConfigurableParameter(Program program) {
+    Parameter parameter = new Parameter();
+    parameter.setName("state");
+    parameter.setLabel("States");
+    parameter.setType(ProgramWorkflowState.class);
+    parameter.setCollectionType(List.class);
+    parameter.setWidgetConfiguration(getProgramProperties(program));
+    return parameter;
+  }
+
+  private static Properties getProgramProperties(Program program) {
+    Properties properties = new Properties();
+    properties.put("Program", program.getName());
+    return properties;
   }
 }

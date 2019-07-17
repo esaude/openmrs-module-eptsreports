@@ -18,12 +18,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Program;
-import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.AgeOnArtStartDateCalculation;
@@ -321,26 +319,5 @@ public class GenericCohortQueries {
     cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
     return cd;
-  }
-
-  /**
-   * Get the configurable widget parameter to be passed on the reporting UI
-   *
-   * @return
-   */
-  public Parameter getArtProgramConfigurableParameter() {
-    Parameter parameter = new Parameter();
-    parameter.setName("state");
-    parameter.setLabel("States");
-    parameter.setType(ProgramWorkflowState.class);
-    parameter.setCollectionType(List.class);
-    parameter.setWidgetConfiguration(getProgramProperties(hivMetadata.getARTProgram()));
-    return parameter;
-  }
-
-  private Properties getProgramProperties(Program program) {
-    Properties properties = new Properties();
-    properties.put("Program", program.getName());
-    return properties;
   }
 }
