@@ -25,7 +25,6 @@ import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationDat
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.converter.CalculationResultDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
-import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -40,7 +39,7 @@ import org.springframework.stereotype.Component;
  * @return DataSet
  */
 @Component
-public class Ec2PatientListDataset extends BaseDataSet {
+public class Ec2PatientListDataset extends DataQualityBaseDataset {
 
   private SummaryDataQualityCohorts summaryDataQualityCohorts;
 

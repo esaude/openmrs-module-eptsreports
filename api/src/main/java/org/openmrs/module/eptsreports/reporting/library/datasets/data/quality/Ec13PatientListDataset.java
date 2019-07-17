@@ -19,7 +19,6 @@ import static org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils.get
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
-import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
@@ -27,7 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Ec13PatientListDataset extends BaseDataSet {
+public class Ec13PatientListDataset extends DataQualityBaseDataset {
 
   private SummaryDataQualityCohorts summaryDataQualityCohorts;
 

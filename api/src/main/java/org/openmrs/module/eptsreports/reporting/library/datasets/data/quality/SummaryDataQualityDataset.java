@@ -3,7 +3,6 @@ package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 import java.util.Arrays;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
-import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -12,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SummaryDataQualityDataset extends BaseDataSet {
+public class SummaryDataQualityDataset extends DataQualityBaseDataset {
 
   private EptsGeneralIndicator eptsGeneralIndicator;
 

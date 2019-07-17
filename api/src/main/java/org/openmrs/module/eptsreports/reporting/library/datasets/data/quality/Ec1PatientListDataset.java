@@ -25,7 +25,6 @@ import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationDat
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.converter.CalculationResultDataConverter;
 import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
-import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -36,7 +35,7 @@ import org.springframework.stereotype.Component;
 
 /** A dataset to display list of patients who are pregnant and male */
 @Component
-public class Ec1PatientListDataset extends BaseDataSet {
+public class Ec1PatientListDataset extends DataQualityBaseDataset {
 
   private SummaryDataQualityCohorts summaryDataQualityCohorts;
 
