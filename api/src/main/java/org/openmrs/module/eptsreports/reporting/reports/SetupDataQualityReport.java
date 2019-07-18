@@ -164,7 +164,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
         "S",
         Mapped.mapStraightThrough(
             summaryDataQualityDataset.constructSummaryDataQualityDatset(getDataParameters())));
-    /*rd.addDataSetDefinition(
+    rd.addDataSetDefinition(
         "EC1",
         Mapped.mapStraightThrough(ec1PatientListDataset.ec1DataSetDefinition(getDataParameters())));
     rd.addDataSetDefinition(
@@ -201,7 +201,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     rd.addDataSetDefinition(
         "EC10",
         Mapped.mapStraightThrough(
-            ec10PatientListDataset.ec10PatientListDataset(getDataParameters())));*/
+            ec10PatientListDataset.ec10PatientListDataset(getDataParameters())));
     rd.addDataSetDefinition(
         "EC11",
         Mapped.mapStraightThrough(
