@@ -234,28 +234,6 @@ public class SummaryDataQualityDataset extends BaseDataSet {
         "");
 
     dsd.addColumn(
-        "EC10",
-        "The patient has been identified as abandoned but has an clinical consultation date after the abandoned date",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "The patient has been identified as abandoned but has an clinical consultation date after the abandoned date",
-                EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
-                        hivMetadata.getARTProgram().getProgramId(),
-                        hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
-                        Arrays.asList(
-                            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                            hivMetadata
-                                .getARVPediatriaSeguimentoEncounterType()
-                                .getEncounterTypeId())),
-                    "location=${location}"),
-                Arrays.asList(
-                    EptsReportUtils.getArtProgramConfigurableParameter(
-                        hivMetadata.getARTProgram()))),
-            "location=${location}"),
-        "");
-
-    dsd.addColumn(
         "EC11",
         "The patient has been identified as abandoned but has an laboratory results(specimen collection date or report date) after the abandoned date",
         EptsReportUtils.map(
