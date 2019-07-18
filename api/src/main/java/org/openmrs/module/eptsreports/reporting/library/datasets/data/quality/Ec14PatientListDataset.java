@@ -15,14 +15,10 @@ package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
 import java.util.List;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
-import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
-import org.openmrs.module.eptsreports.reporting.library.data.definition.DataDefinitions;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
-import org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils;
-import org.openmrs.module.reporting.common.TimeQualifier;
+import org.openmrs.module.eptsreports.reporting.library.queries.DqQueries;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,46 +26,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class Ec14PatientListDataset extends BaseDataSet {
 
-  private SummaryDataQualityCohorts summaryDataQualityCohorts;
-
   private HivMetadata hivMetadata;
 
-  private EptsCommonUtils eptsCommonUtils;
-
-  private DataDefinitions definitions;
-
   @Autowired
-  public Ec14PatientListDataset(
-      SummaryDataQualityCohorts summaryDataQualityCohorts,
-      HivMetadata hivMetadata,
-      EptsCommonUtils eptsCommonUtils,
-      DataDefinitions definitions) {
-    this.summaryDataQualityCohorts = summaryDataQualityCohorts;
+  public Ec14PatientListDataset(HivMetadata hivMetadata) {
+
     this.hivMetadata = hivMetadata;
-    this.eptsCommonUtils = eptsCommonUtils;
-    this.definitions = definitions;
   }
 
   public DataSetDefinition ec14PatientListDataset(List<Parameter> parameterList) {
-    PatientDataSetDefinition dsd = new PatientDataSetDefinition();
+    SqlDataSetDefinition dsd = new SqlDataSetDefinition();
     dsd.setName("EC14");
     dsd.addParameters(parameterList);
-    dsd.addRowFilter(
-        summaryDataQualityCohorts.getPatientsWithAgeHigherThanXyears(100), "endDate=${endDate}");
-
-    // add standard column
-    eptsCommonUtils.addStandardColumns(dsd);
-    dsd.addColumn(
-        "ART Program Enrollment Date",
-        definitions.getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
-        "enrolledOnOrBefore=${endDate}",
-        new PatientProgramDataConverter("date"));
-    dsd.addColumn(
-        "ART Program Enrollment Status",
-        definitions.getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
-        "enrolledOnOrBefore=${endDate}",
-        new PatientProgramDataConverter("lastStatus"));
-
+    dsd.setSqlQuery(
+        DqQueries.getEc14CombinedQuery(hivMetadata.getARTProgram().getProgramId(), 100));
     return dsd;
   }
 }

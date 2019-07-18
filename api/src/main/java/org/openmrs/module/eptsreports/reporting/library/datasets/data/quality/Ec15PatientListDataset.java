@@ -13,14 +13,12 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
-import java.util.Arrays;
 import java.util.List;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
-import org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils;
+import org.openmrs.module.eptsreports.reporting.library.queries.DqQueries;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,33 +26,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class Ec15PatientListDataset extends BaseDataSet {
 
-  private SummaryDataQualityCohorts summaryDataQualityCohorts;
-
   private HivMetadata hivMetadata;
 
-  private EptsCommonUtils eptsCommonUtils;
-
   @Autowired
-  public Ec15PatientListDataset(
-      SummaryDataQualityCohorts summaryDataQualityCohorts,
-      HivMetadata hivMetadata,
-      EptsCommonUtils eptsCommonUtils) {
-    this.summaryDataQualityCohorts = summaryDataQualityCohorts;
+  public Ec15PatientListDataset(HivMetadata hivMetadata) {
     this.hivMetadata = hivMetadata;
-    this.eptsCommonUtils = eptsCommonUtils;
   }
 
   public DataSetDefinition ec15PatientListDataset(List<Parameter> parameterList) {
-    PatientDataSetDefinition dsd = new PatientDataSetDefinition();
+    SqlDataSetDefinition dsd = new SqlDataSetDefinition();
     dsd.setName("EC15");
     dsd.addParameters(parameterList);
-    dsd.addRowFilter(
-        summaryDataQualityCohorts.getPatientsWhoseBirthDatesAreAfterDrugPickUp(
-            Arrays.asList(hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
-        "location=${location},endDate=${endDate}");
-
-    // add standard column
-    eptsCommonUtils.addStandardColumns(dsd);
+    dsd.setSqlQuery(
+        DqQueries.getEc15CombinedQuery(
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
 
     return dsd;
   }

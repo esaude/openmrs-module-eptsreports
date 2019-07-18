@@ -163,7 +163,7 @@ public class DqQueries {
             + "(SELECT p.patient_id AS patient_id, MAX(e.encounter_datetime) AS encounter_date FROM "
             + "patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided = 0 and e.voided=0 "
             + "AND e.encounter_type IN (%s) AND e.location_id IN(:location) GROUP BY p.patient_id "
-            + ") encounter ON birth_date.patient_id=encounter.patient_id) WHERE birth_date.birthdate >= encounter.encounter_date";
+            + ") encounter ON birth_date.patient_id=encounter.patient_id) WHERE birth_date.birthdate > encounter.encounter_date";
     return String.format(query, str2);
   }
 
@@ -240,5 +240,87 @@ public class DqQueries {
    */
   public static String getExactOrEstimatedDateOfBirth() {
     return "SELECT pa.patient_id, pe.birthdate_estimated FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id";
+  }
+
+  /**
+   * Get the query to be used to display the EC11 patient listing
+   *
+   * @return String
+   */
+  public static String getEc11CombinedQuery(
+      int identifierType, int programId, int stateId, int encounterType) {
+    String query =
+        "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS Birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS EstimatedDob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y') AS FirstEntryDate, DATE_FORMAT(pa.date_changed, '%d-%m-%Y') AS LastUpdated FROM patient pa "
+            + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
+            + " INNER JOIN person pe ON pa.patient_id=pe.person_id"
+            + " INNER JOIN patient_program pg ON pa.patient_id=pg.patient_id "
+            + " INNER JOIN person_name pn ON pa.patient_id=pn.person_id "
+            + " INNER JOIN encounter e ON pa.patient_id=e.patient_id "
+            + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
+            + " WHERE pi.identifier_type="
+            + identifierType
+            + " AND pg.program_id="
+            + programId
+            + " AND ps.state="
+            + stateId
+            + " AND e.encounter_type="
+            + encounterType;
+    return query;
+  }
+
+  /**
+   * Get the query for EC15 patient listing
+   *
+   * @return String
+   */
+  public static String getEc15CombinedQuery(int programId, int encounterType) {
+    String query =
+        "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(e.encounter_datetime, '%d-%m-%Y %H:%i:%s') AS encounter_date FROM patient pa "
+            + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
+            + " INNER JOIN person pe ON pa.patient_id=pe.person_id"
+            + " INNER JOIN person_name pn ON pa.patient_id=pn.person_id "
+            + " INNER JOIN patient_program pg ON pa.patient_id=pg.patient_id "
+            + " INNER JOIN encounter e ON pa.patient_id=e.patient_id "
+            + "WHERE "
+            + " pg.program_id="
+            + programId
+            + " AND e.encounter_type="
+            + encounterType
+            + " AND pa.patient_id IN("
+            + "SELECT birth_date.patient_id FROM "
+            + "((SELECT pa.patient_id, pe.birthdate AS birthdate FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id WHERE pe.birthdate IS NOT NULL) birth_date "
+            + "INNER JOIN "
+            + "(SELECT p.patient_id AS patient_id, MAX(e.encounter_datetime) AS encounter_date FROM "
+            + "patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided = 0 and e.voided=0 "
+            + "AND e.encounter_type="
+            + encounterType
+            + " AND e.location_id IN(:location) GROUP BY p.patient_id "
+            + ") encounter ON birth_date.patient_id=encounter.patient_id) WHERE birth_date.birthdate > encounter.encounter_date)";
+    return query;
+  }
+
+  /**
+   * Get the query for EC14 patient listing
+   *
+   * @return String
+   */
+  public static String getEc14CombinedQuery(int programId, int years) {
+    String query =
+        "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y %H:%i:%s') AS date_enrolled, ps.state AS state FROM patient pa "
+            + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
+            + " INNER JOIN person pe ON pa.patient_id=pe.person_id"
+            + " INNER JOIN person_name pn ON pa.patient_id=pn.person_id "
+            + " INNER JOIN patient_program pg ON pa.patient_id=pg.patient_id "
+            + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
+            + " WHERE "
+            + " pg.program_id="
+            + programId
+            + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
+            + " AND pa.patient_id IN("
+            + " SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id "
+            + " WHERE pe.birthdate IS NOT NULL AND TIMESTAMPDIFF(YEAR, pe.birthdate, :endDate) >"
+            + years
+            + ")";
+    return query;
   }
 }
