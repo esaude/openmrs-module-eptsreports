@@ -42,7 +42,9 @@ public class Ec11PatientListDataset extends BaseDataSet {
         DqQueries.getEc11CombinedQuery(
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
-            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId()));
+            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
 
     return dsd;
   }
