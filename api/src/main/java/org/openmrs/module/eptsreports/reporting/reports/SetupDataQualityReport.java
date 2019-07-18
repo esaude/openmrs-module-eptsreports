@@ -206,10 +206,10 @@ public class SetupDataQualityReport extends EptsDataExportManager {
         "EC11",
         Mapped.mapStraightThrough(
             ec11PatientListDataset.ec11PatientListDataset(getDataParameters())));
-    /*rd.addDataSetDefinition(
-    "EC12",
-    Mapped.mapStraightThrough(
-        ec12PatientListDataset.ec12PatientListDataset(getDataParameters())));*/
+    rd.addDataSetDefinition(
+        "EC12",
+        Mapped.mapStraightThrough(
+            ec12PatientListDataset.ec12PatientListDataset(getDataParameters())));
     rd.addDataSetDefinition(
         "EC13",
         Mapped.mapStraightThrough(
