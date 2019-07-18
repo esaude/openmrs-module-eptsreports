@@ -323,4 +323,30 @@ public class DqQueries {
             + ")";
     return query;
   }
+
+  /**
+   * Get the query for EC13 patient listing
+   *
+   * @return String
+   */
+  public static String getEc13CombinedQuery(int programId) {
+    String query =
+        "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y %H:%i:%s') AS date_enrolled, ps.state AS state FROM patient pa "
+            + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
+            + " INNER JOIN person pe ON pa.patient_id=pe.person_id"
+            + " INNER JOIN person_name pn ON pa.patient_id=pn.person_id "
+            + " INNER JOIN patient_program pg ON pa.patient_id=pg.patient_id "
+            + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
+            + " WHERE "
+            + " pg.program_id="
+            + programId
+            + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
+            + " AND pa.patient_id IN("
+            + " SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id "
+            + " WHERE pe.birthdate IS NULL "
+            + " UNION "
+            + " SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id "
+            + " WHERE pe.birthdate IS NOT NULL AND pe.birthdate > pe.date_created)";
+    return query;
+  }
 }
