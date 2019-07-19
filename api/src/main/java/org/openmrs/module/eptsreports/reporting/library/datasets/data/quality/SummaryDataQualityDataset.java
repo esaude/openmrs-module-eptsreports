@@ -184,7 +184,11 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                             .getTransferredOutToAnotherHealthFacilityWorkflowState()
                             .getProgramWorkflowStateId(),
                         Arrays.asList(
-                            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId())),
+                            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+                            hivMetadata
+                                .getARVPediatriaSeguimentoEncounterType()
+                                .getEncounterTypeId(),
+                            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
                     "location=${location}"),
                 Arrays.asList(
                     EptsReportUtils.getArtProgramConfigurableParameter(
