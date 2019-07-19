@@ -7,13 +7,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import org.openmrs.Concept;
-import org.openmrs.Location;
 import org.openmrs.Patient;
-import org.openmrs.PatientState;
-import org.openmrs.PersonAttribute;
 import org.openmrs.calculation.result.CalculationResult;
-import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 
 public class CalculationResultDataConverter implements DataConverter {
@@ -42,26 +37,7 @@ public class CalculationResultDataConverter implements DataConverter {
     }
 
     Object value = ((CalculationResult) obj).getValue();
-    if (value instanceof Boolean) {
-      return (Boolean) value ? "Yes" : "No";
-    } else if (value instanceof Date) {
-      return formatDate((Date) value);
-    } else if (value instanceof Concept) {
-
-      return ((Concept) value).getName();
-    } else if (value instanceof String) {
-      return value.toString();
-    } else if (value instanceof Double) {
-      return ((Double) value);
-    } else if (value instanceof Integer) {
-      return ((Integer) value);
-    } else if (value instanceof Location) {
-      return ((Location) value).getName();
-    } else if (value instanceof SimpleResult) {
-      return ((SimpleResult) value).getValue();
-    } else if (value instanceof PersonAttribute) {
-      return ((PersonAttribute) value).getValue();
-    } else if (value instanceof Patient) {
+    if (value instanceof Patient) {
       if (what.equals("F")) {
         return formatDateTime(((Patient) value).getDateCreated());
       } else if (what.equals("L")) {
@@ -89,10 +65,6 @@ public class CalculationResultDataConverter implements DataConverter {
         }
       }
       return entry;
-    } else if (value instanceof PatientState) {
-      if (what.equals("State")) {
-        return ((PatientState) value).getState().getConcept();
-      }
     }
 
     return null;

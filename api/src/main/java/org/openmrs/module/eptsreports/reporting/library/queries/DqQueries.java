@@ -205,16 +205,6 @@ public class DqQueries {
   public static String getPatientDateChanged() {
     return "SELECT patient_id, DATE_FORMAT(date_changed, '%d-%m-%Y') FROM patient";
   }
-
-  /**
-   * Get the date when the patient died
-   *
-   * @return String
-   */
-  public static String getPatientDeathDate() {
-    return "SELECT pa.patient_id, DATE_FORMAT(pe.death_date, '%d-%m-%Y') FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id";
-  }
-
   /**
    * Get patient date of birth
    *
