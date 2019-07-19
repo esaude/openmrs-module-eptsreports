@@ -13,23 +13,12 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
-import java.util.Date;
 import java.util.List;
-import org.openmrs.Location;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.calculation.data.quality.BreastfeedingCriteriaCalculation;
-import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationDataDefinition;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
-import org.openmrs.module.eptsreports.reporting.library.converter.CalculationResultDataConverter;
-import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
-import org.openmrs.module.eptsreports.reporting.library.data.definition.DataDefinitions;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
-import org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils;
-import org.openmrs.module.reporting.common.TimeQualifier;
-import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.eptsreports.reporting.library.queries.DqQueries;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,66 +31,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class Ec2PatientListDataset extends BaseDataSet {
 
-  private SummaryDataQualityCohorts summaryDataQualityCohorts;
-
   private HivMetadata hivMetadata;
 
-  private EptsCommonUtils eptsCommonUtils;
-
-  private DataDefinitions definitions;
-
   @Autowired
-  public Ec2PatientListDataset(
-      SummaryDataQualityCohorts summaryDataQualityCohorts,
-      HivMetadata hivMetadata,
-      EptsCommonUtils eptsCommonUtils,
-      DataDefinitions definitions) {
-    this.summaryDataQualityCohorts = summaryDataQualityCohorts;
+  public Ec2PatientListDataset(HivMetadata hivMetadata) {
     this.hivMetadata = hivMetadata;
-    this.eptsCommonUtils = eptsCommonUtils;
-    this.definitions = definitions;
   }
 
   public DataSetDefinition ec2DataSetDefinition(List<Parameter> parameterList) {
-    PatientDataSetDefinition dsd = new PatientDataSetDefinition();
+    SqlDataSetDefinition dsd = new SqlDataSetDefinition();
     dsd.setName("EC2");
     dsd.addParameters(parameterList);
-    dsd.addRowFilter(
-        summaryDataQualityCohorts.getBreastfeedingMalePatients(), "location=${location}");
-
-    // add standard column
-    eptsCommonUtils.addStandardColumns(dsd);
-    dsd.addColumn(
-        "Breastfeeding Criteria",
-        getBreastfeedingCriteria(),
-        "",
-        new CalculationResultDataConverter("PC"));
-    dsd.addColumn(
-        "Encounter Date Breastfeeding Criteria",
-        getBreastfeedingCriteria(),
-        "",
-        new CalculationResultDataConverter("PD"));
-    dsd.addColumn(
-        "PTV/ETC Enrollment Date",
-        getBreastfeedingCriteria(),
-        "",
-        new CalculationResultDataConverter("PTVD"));
-    dsd.addColumn(
-        "PTV/ETC Enrollment Status",
-        definitions.getPatientProgramEnrollment(hivMetadata.getPtvEtvProgram(), TimeQualifier.LAST),
-        "enrolledOnOrBefore=${endDate}",
-        new PatientProgramDataConverter("lastStatus"));
-
+    dsd.setSqlQuery(
+        DqQueries.getEc2CombinedQuery(
+            hivMetadata.getNidServiceTarvIdentifierType().getPatientIdentifierTypeId(),
+            hivMetadata.getARTProgram().getProgramId()));
     return dsd;
-  }
-
-  private DataDefinition getBreastfeedingCriteria() {
-    CalculationDataDefinition pCriteria =
-        new CalculationDataDefinition(
-            "Breastfeeding Criteria",
-            Context.getRegisteredComponents(BreastfeedingCriteriaCalculation.class).get(0));
-    pCriteria.addParameter(new Parameter("location", "Location", Location.class));
-    pCriteria.addParameter(new Parameter("onOrBefore", "Before date", Date.class));
-    return pCriteria;
   }
 }

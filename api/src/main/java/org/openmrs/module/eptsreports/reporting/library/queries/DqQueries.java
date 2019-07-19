@@ -819,4 +819,14 @@ public class DqQueries {
             + ") encounter ON states.patient_id=encounter.patient_id) WHERE encounter.encounter_date > states.start_date)";
     return query;
   }
+
+  /** Get the combined query for EC1 patient listing */
+  public static String getEc1CombinedQuery(int identifierType, int programId) {
+    return "";
+  }
+
+  /** Get the combined query for EC2 patient listing */
+  public static String getEc2CombinedQuery(int identifierType, int programId) {
+    return "";
+  }
 }
