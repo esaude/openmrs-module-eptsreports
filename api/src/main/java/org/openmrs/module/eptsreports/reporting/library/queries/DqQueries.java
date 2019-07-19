@@ -255,6 +255,7 @@ public class DqQueries {
             + " WHERE "
             + " pg.program_id="
             + programId
+            + " AND e.voided=0 "
             + " AND pi.identifier_type="
             + identifierType
             + " AND e.encounter_datetime > ps.start_date"
@@ -308,6 +309,7 @@ public class DqQueries {
             + "WHERE "
             + " pg.program_id="
             + programId
+            + " AND e.voided=0 "
             + " AND pi.identifier_type="
             + identifierType
             + " AND e.encounter_type="
@@ -425,6 +427,7 @@ public class DqQueries {
             + " WHERE "
             + " pg.program_id="
             + programId
+            + " AND e.voided=0 "
             + " AND pi.identifier_type="
             + identifierType
             + " AND e.encounter_type IN("
@@ -476,6 +479,7 @@ public class DqQueries {
             + " WHERE "
             + " pg.program_id="
             + programId
+            + " AND e.voided=0 "
             + " AND pi.identifier_type="
             + identifierType
             + " AND e.encounter_type="
@@ -524,6 +528,7 @@ public class DqQueries {
             + " WHERE "
             + " pg.program_id="
             + programId
+            + " AND e.voided=0 "
             + " AND pi.identifier_type="
             + identifierType
             + " AND e.encounter_datetime > ps.start_date"
@@ -579,6 +584,7 @@ public class DqQueries {
             + " WHERE "
             + " pg.program_id="
             + programId
+            + " AND e.voided=0 "
             + " AND pi.identifier_type="
             + identifierType
             + " AND e.encounter_type IN("
@@ -630,6 +636,7 @@ public class DqQueries {
             + " WHERE "
             + " pg.program_id="
             + programId
+            + " AND e.voided=0 "
             + " AND pi.identifier_type="
             + identifierType
             + " AND e.encounter_type="
@@ -678,8 +685,10 @@ public class DqQueries {
             + " WHERE "
             + " pg.program_id="
             + programId
+            + " AND e.voided=0 "
             + " AND pi.identifier_type="
             + identifierType
+            + " AND e.voided=0 "
             + " AND e.encounter_datetime > ps.start_date"
             + " AND e.encounter_type IN("
             + labencounterType
@@ -733,6 +742,7 @@ public class DqQueries {
             + " WHERE "
             + " pg.program_id="
             + programId
+            + " AND e.voided=0 "
             + " AND pi.identifier_type="
             + identifierType
             + " AND e.encounter_type IN("
@@ -786,6 +796,7 @@ public class DqQueries {
             + programId
             + " AND pi.identifier_type="
             + identifierType
+            + " AND e.voided=0 "
             + " AND e.encounter_type="
             + encounterType
             + " AND e.encounter_datetime > ps.start_date"
