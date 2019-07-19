@@ -13,18 +13,12 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
-import java.util.Arrays;
 import java.util.List;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
-import org.openmrs.module.eptsreports.reporting.library.converter.EncounterDataConverter;
-import org.openmrs.module.eptsreports.reporting.library.converter.PatientProgramDataConverter;
-import org.openmrs.module.eptsreports.reporting.library.data.definition.DataDefinitions;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
-import org.openmrs.module.eptsreports.reporting.utils.EptsCommonUtils;
-import org.openmrs.module.reporting.common.TimeQualifier;
+import org.openmrs.module.eptsreports.reporting.library.queries.DqQueries;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,75 +26,26 @@ import org.springframework.stereotype.Component;
 @Component
 public class Ec7PatientListDataset extends BaseDataSet {
 
-  private SummaryDataQualityCohorts summaryDataQualityCohorts;
-
   private HivMetadata hivMetadata;
 
-  private EptsCommonUtils eptsCommonUtils;
-
-  private DataDefinitions definitions;
-
   @Autowired
-  public Ec7PatientListDataset(
-      SummaryDataQualityCohorts summaryDataQualityCohorts,
-      HivMetadata hivMetadata,
-      EptsCommonUtils eptsCommonUtils,
-      DataDefinitions definitions) {
-    this.summaryDataQualityCohorts = summaryDataQualityCohorts;
+  public Ec7PatientListDataset(HivMetadata hivMetadata) {
     this.hivMetadata = hivMetadata;
-    this.eptsCommonUtils = eptsCommonUtils;
-    this.definitions = definitions;
   }
 
   public DataSetDefinition ec7PatientListDataset(List<Parameter> parameterList) {
-    PatientDataSetDefinition dsd = new PatientDataSetDefinition();
+    SqlDataSetDefinition dsd = new SqlDataSetDefinition();
     dsd.setName("EC7");
     dsd.addParameters(parameterList);
-    dsd.addRowFilter(
-        summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
+    dsd.setSqlQuery(
+        DqQueries.getEc7CombinedQuery(
+            hivMetadata.getNidServiceTarvIdentifierType().getPatientIdentifierTypeId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata
                 .getTransferredOutToAnotherHealthFacilityWorkflowState()
                 .getProgramWorkflowStateId(),
-            Arrays.asList(
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
-        "location=${location}");
-
-    // add standard column
-    eptsCommonUtils.addStandardColumns(dsd);
-    dsd.addColumn(
-        "Patient Enrollment Date in TARV",
-        definitions.getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
-        "enrolledOnOrBefore=${endDate}",
-        new PatientProgramDataConverter("date"));
-    dsd.addColumn(
-        "Last Patient Status in Prog Enrollment",
-        definitions.getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
-        "enrolledOnOrBefore=${endDate}",
-        new PatientProgramDataConverter("lastStatus"));
-    dsd.addColumn(
-        "Date of Last Patient Status in Prog Enrollment",
-        definitions.getPatientProgramEnrollment(hivMetadata.getARTProgram(), TimeQualifier.FIRST),
-        "enrolledOnOrBefore=${endDate}",
-        new PatientProgramDataConverter("lastStatusDate"));
-    dsd.addColumn(
-        "Clinical Consultation Date",
-        definitions.getEncounterForPatient(
-            Arrays.asList(
-                hivMetadata.getARVPediatriaSeguimentoEncounterType(),
-                hivMetadata.getAdultoSeguimentoEncounterType())),
-        "",
-        new EncounterDataConverter("encounterDate"));
-
-    dsd.addColumn(
-        "Clinical Consultation Registration Date",
-        definitions.getEncounterForPatient(
-            Arrays.asList(
-                hivMetadata.getARVPediatriaSeguimentoEncounterType(),
-                hivMetadata.getAdultoSeguimentoEncounterType())),
-        "",
-        new EncounterDataConverter("encounterCreatedDate"));
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
 
     return dsd;
   }
