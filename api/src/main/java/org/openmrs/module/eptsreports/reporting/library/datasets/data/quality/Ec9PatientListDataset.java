@@ -40,6 +40,7 @@ public class Ec9PatientListDataset extends BaseDataSet {
     dsd.addParameters(parameterList);
     dsd.setSqlQuery(
         DqQueries.getEc9CombinedQuery(
+            hivMetadata.getNidServiceTarvIdentifierType().getPatientIdentifierTypeId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));

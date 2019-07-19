@@ -238,7 +238,12 @@ public class DqQueries {
    * @return String
    */
   public static String getEc11CombinedQuery(
-      int programId, int stateId, int labencounterType, int adultFollowUp, int childFollowUp) {
+      int identifierType,
+      int programId,
+      int stateId,
+      int labencounterType,
+      int adultFollowUp,
+      int childFollowUp) {
     String query =
         "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, ps.state AS state, DATE_FORMAT(ps.start_date, '%d-%m-%Y') AS state_date, IF(e.encounter_type = '13', DATE_FORMAT(e.encounter_datetime, '%d-%m-%Y'), ' ') AS lab_form_date, IF(e.encounter_type = '13', DATE_FORMAT(e.date_created, '%d-%m-%Y %H:%i:%s'), ' ') AS lab_form_date_created, IF(e.encounter_type != '13', DATE_FORMAT(e.encounter_datetime, '%d-%m-%Y'), ' ') AS clinical_form_date, IF(e.encounter_type != '13', DATE_FORMAT(e.date_created, '%d-%m-%Y %H:%i:%s'), ' ') AS clinical_form_date_created FROM patient pa "
             + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
@@ -250,6 +255,8 @@ public class DqQueries {
             + " WHERE "
             + " pg.program_id="
             + programId
+            + " AND pi.identifier_type="
+            + identifierType
             + " AND e.encounter_datetime > ps.start_date"
             + " AND e.encounter_type IN("
             + labencounterType
@@ -290,7 +297,7 @@ public class DqQueries {
    *
    * @return String
    */
-  public static String getEc15CombinedQuery(int programId, int encounterType) {
+  public static String getEc15CombinedQuery(int identifierType, int programId, int encounterType) {
     String query =
         "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(e.encounter_datetime, '%d-%m-%Y %H:%i:%s') AS encounter_date FROM patient pa "
             + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
@@ -301,6 +308,8 @@ public class DqQueries {
             + "WHERE "
             + " pg.program_id="
             + programId
+            + " AND pi.identifier_type="
+            + identifierType
             + " AND e.encounter_type="
             + encounterType
             + " AND pa.patient_id IN("
@@ -321,7 +330,7 @@ public class DqQueries {
    *
    * @return String
    */
-  public static String getEc14CombinedQuery(int programId, int years) {
+  public static String getEc14CombinedQuery(int identifierType, int programId, int years) {
     String query =
         "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, ps.state AS state FROM patient pa "
             + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
@@ -332,6 +341,8 @@ public class DqQueries {
             + " WHERE "
             + " pg.program_id="
             + programId
+            + " AND pi.identifier_type="
+            + identifierType
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
             + " AND pa.patient_id IN("
             + " SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id "
@@ -346,7 +357,7 @@ public class DqQueries {
    *
    * @return String
    */
-  public static String getEc13CombinedQuery(int programId) {
+  public static String getEc13CombinedQuery(int identifierType, int programId) {
     String query =
         "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, ps.state AS state FROM patient pa "
             + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
@@ -357,6 +368,8 @@ public class DqQueries {
             + " WHERE "
             + " pg.program_id="
             + programId
+            + " AND pi.identifier_type="
+            + identifierType
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
             + " AND pa.patient_id IN("
             + " SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id "
@@ -372,7 +385,7 @@ public class DqQueries {
    *
    * @return String
    */
-  public static String getEc12CombinedQuery(int programId, int year) {
+  public static String getEc12CombinedQuery(int identifierType, int programId, int year) {
     String query =
         "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, ps.state AS state FROM patient pa "
             + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
@@ -383,6 +396,8 @@ public class DqQueries {
             + " WHERE "
             + " pg.program_id="
             + programId
+            + " AND pi.identifier_type="
+            + identifierType
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
             + " AND pa.patient_id IN("
             + " SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id "
@@ -398,7 +413,7 @@ public class DqQueries {
    * @return String
    */
   public static String getEc10CombinedQuery(
-      int programId, int stateId, int adultFollowUp, int childFollowUp) {
+      int identifierType, int programId, int stateId, int adultFollowUp, int childFollowUp) {
     String query =
         "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, ps.state AS state, DATE_FORMAT(ps.start_date, '%d-%m-%Y') AS state_date, DATE_FORMAT(e.encounter_datetime, '%d-%m-%Y') AS encounter_date, DATE_FORMAT(e.date_created, '%d-%m-%Y %H:%i:%s') AS encounter_date_created FROM patient pa "
             + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
@@ -410,6 +425,8 @@ public class DqQueries {
             + " WHERE "
             + " pg.program_id="
             + programId
+            + " AND pi.identifier_type="
+            + identifierType
             + " AND e.encounter_type IN("
             + adultFollowUp
             + ","
@@ -446,7 +463,8 @@ public class DqQueries {
    *
    * @return String
    */
-  public static String getEc9CombinedQuery(int programId, int stateId, int encounterType) {
+  public static String getEc9CombinedQuery(
+      int identifierType, int programId, int stateId, int encounterType) {
     String query =
         "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, ps.state AS state, DATE_FORMAT(ps.start_date, '%d-%m-%Y') AS state_date, DATE_FORMAT(e.encounter_datetime, '%d-%m-%Y') AS encounter_date, DATE_FORMAT(e.date_created, '%d-%m-%Y %H:%i:%s') AS encounter_date_created FROM patient pa "
             + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
@@ -458,6 +476,8 @@ public class DqQueries {
             + " WHERE "
             + " pg.program_id="
             + programId
+            + " AND pi.identifier_type="
+            + identifierType
             + " AND e.encounter_type="
             + encounterType
             + " AND e.encounter_datetime > ps.start_date"

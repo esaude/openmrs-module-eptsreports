@@ -37,7 +37,10 @@ public class Ec13PatientListDataset extends BaseDataSet {
     SqlDataSetDefinition dsd = new SqlDataSetDefinition();
     dsd.setName("EC13");
     dsd.addParameters(parameterList);
-    dsd.setSqlQuery(DqQueries.getEc13CombinedQuery(hivMetadata.getARTProgram().getProgramId()));
+    dsd.setSqlQuery(
+        DqQueries.getEc13CombinedQuery(
+            hivMetadata.getNidServiceTarvIdentifierType().getPatientIdentifierTypeId(),
+            hivMetadata.getARTProgram().getProgramId()));
     return dsd;
   }
 }

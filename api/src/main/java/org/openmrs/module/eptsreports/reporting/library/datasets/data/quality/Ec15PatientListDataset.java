@@ -39,6 +39,7 @@ public class Ec15PatientListDataset extends BaseDataSet {
     dsd.addParameters(parameterList);
     dsd.setSqlQuery(
         DqQueries.getEc15CombinedQuery(
+            hivMetadata.getNidServiceTarvIdentifierType().getPatientIdentifierTypeId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
 
