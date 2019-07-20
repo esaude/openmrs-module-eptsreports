@@ -51,7 +51,7 @@ public class SummaryDataQualityCohorts {
   public CohortDefinition getPregnantMalePatients() {
 
     SqlCohortDefinition pCd = new SqlCohortDefinition();
-    pCd.setName("Patients patients ");
+    pCd.setName("Pregnant patients recorded in the system and are male ");
     pCd.addParameter(new Parameter("location", "Location", Location.class));
     pCd.setQuery(
         DqQueries.getPregnantPatients(
@@ -62,15 +62,7 @@ public class SummaryDataQualityCohorts {
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getPtvEtvProgram().getProgramId()));
-
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("Pregnant patients recorded in the system and are male");
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addSearch("male", EptsReportUtils.map(genderCohortQueries.maleCohort(), ""));
-    cd.addSearch("pregnant", EptsReportUtils.map(pCd, "location=${location}"));
-
-    cd.setCompositionString("pregnant AND male");
-    return cd;
+    return pCd;
   }
 
   /**
