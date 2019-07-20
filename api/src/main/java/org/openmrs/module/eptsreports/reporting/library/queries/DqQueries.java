@@ -790,14 +790,14 @@ public class DqQueries {
       int adultSegEncounter,
       int etvProgram) {
     String query =
-        "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, case when ps.state = 25 then 'PREGNANT' when ps.state = 26 then 'PREGNANCY TERMINATION' when ps.state = 27 then 'DELIVERY' end AS state FROM patient pa "
+        "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, preg.criteria AS pregnant_criteria, DATE_FORMAT(MAX(preg.encounter_date), '%d-%m-%Y') AS encounter_date, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, case when ps.state = 25 then 'PREGNANT' when ps.state = 26 then 'PREGNANCY TERMINATION' when ps.state = 27 then 'DELIVERY' end AS state FROM patient pa "
             + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
             + " INNER JOIN person pe ON pa.patient_id=pe.person_id"
             + " INNER JOIN person_name pn ON pa.patient_id=pn.person_id "
             + " INNER JOIN patient_program pg ON pa.patient_id=pg.patient_id "
             + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
             + " INNER JOIN "
-            + " (SELECT  p.patient_id AS patient_id "
+            + " (SELECT  p.patient_id AS patient_id, e.encounter_datetime AS encounter_date, 'PC1' AS criteria "
             + " FROM patient p "
             + " INNER JOIN person pe ON p.patient_id=pe.person_id "
             + " INNER JOIN encounter e ON p.patient_id=e.patient_id "
@@ -813,7 +813,7 @@ public class DqQueries {
             + ") AND e.location_id IN(:location) "
             + " AND pe.gender ='M'"
             + " UNION "
-            + " SELECT p.patient_id AS patient_id "
+            + " SELECT p.patient_id AS patient_id, e.encounter_datetime AS encounter_date, 'PC2' AS criteria "
             + " FROM patient p "
             + " INNER JOIN person pe ON p.patient_id=pe.person_id "
             + " INNER JOIN encounter e ON p.patient_id=e.patient_id "
@@ -828,7 +828,7 @@ public class DqQueries {
             + ") AND e.location_id IN(:location) "
             + " AND pe.gender ='M'"
             + " UNION "
-            + " SELECT p.patient_id AS patient_id "
+            + " SELECT p.patient_id AS patient_id, e.encounter_datetime AS encounter_date, 'PC3' AS criteria "
             + " FROM patient p "
             + " INNER JOIN person pe ON p.patient_id=pe.person_id "
             + " INNER JOIN encounter e ON p.patient_id=e.patient_id "
@@ -843,7 +843,7 @@ public class DqQueries {
             + ") AND e.location_id IN(:location) "
             + " AND pe.gender ='M'"
             + " UNION "
-            + " SELECT pp.patient_id AS patient_id FROM patient_program pp "
+            + " SELECT pp.patient_id AS patient_id, pp.date_enrolled AS encounter_date, 'PC4' AS criteria FROM patient_program pp "
             + " INNER JOIN person pe ON pp.patient_id=pe.person_id "
             + " WHERE pp.program_id= "
             + etvProgram
@@ -854,7 +854,7 @@ public class DqQueries {
             + identifierType
             + " AND pg.program_id="
             + etvProgram
-            + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL ";
+            + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL GROUP BY pa.patient_id";
 
     return query;
   }
