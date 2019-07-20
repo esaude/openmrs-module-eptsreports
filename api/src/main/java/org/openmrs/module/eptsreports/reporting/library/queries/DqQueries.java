@@ -187,51 +187,6 @@ public class DqQueries {
             + ") encounter ON demo.patient_id=encounter.patient_id) WHERE encounter.encounter_date >= demo.death_date";
     return String.format(query, encounters);
   }
-
-  /**
-   * Get the date when the patient was created in the system
-   *
-   * @return String
-   */
-  public static String getPatientDateCreated() {
-    return "SELECT patient_id, DATE_FORMAT(date_created, '%d-%m-%Y') FROM patient";
-  }
-
-  /**
-   * Get the date when the patient was changed
-   *
-   * @return String
-   */
-  public static String getPatientDateChanged() {
-    return "SELECT patient_id, DATE_FORMAT(date_changed, '%d-%m-%Y') FROM patient";
-  }
-  /**
-   * Get patient date of birth
-   *
-   * @return String
-   */
-  public static String getPatientBirthDate() {
-    return "SELECT pa.patient_id, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id";
-  }
-
-  /**
-   * Get patient gender
-   *
-   * @return String
-   */
-  public static String getPatientGender() {
-    return "SELECT pa.patient_id, pe.gender FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id";
-  }
-
-  /**
-   * Get whether the patient date of birth is exact or estimated
-   *
-   * @return String
-   */
-  public static String getExactOrEstimatedDateOfBirth() {
-    return "SELECT pa.patient_id, pe.birthdate_estimated FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id";
-  }
-
   /**
    * Get the query to be used to display the EC11 patient listing
    *
