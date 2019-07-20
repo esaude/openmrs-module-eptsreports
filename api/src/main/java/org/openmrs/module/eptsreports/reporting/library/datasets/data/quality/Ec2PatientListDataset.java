@@ -45,7 +45,7 @@ public class Ec2PatientListDataset extends BaseDataSet {
     dsd.setSqlQuery(
         DqQueries.getEc2CombinedQuery(
             hivMetadata.getNidServiceTarvIdentifierType().getPatientIdentifierTypeId(),
-            hivMetadata.getARTProgram().getProgramId()));
+            hivMetadata.getPtvEtvProgram().getProgramId()));
     return dsd;
   }
 }

@@ -822,11 +822,39 @@ public class DqQueries {
 
   /** Get the combined query for EC1 patient listing */
   public static String getEc1CombinedQuery(int identifierType, int programId) {
-    return "";
+    String query =
+        "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, case when ps.state = 25 then 'PREGNANT' when ps.state = 26 then 'PREGNANCY TERMINATION' when ps.state = 27 then 'DELIVERY' end AS state FROM patient pa "
+            + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
+            + " INNER JOIN person pe ON pa.patient_id=pe.person_id"
+            + " INNER JOIN person_name pn ON pa.patient_id=pn.person_id "
+            + " INNER JOIN patient_program pg ON pa.patient_id=pg.patient_id "
+            + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
+            + " WHERE "
+            + " pi.identifier_type="
+            + identifierType
+            + " AND pg.program_id="
+            + programId
+            + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL ";
+
+    return query;
   }
 
   /** Get the combined query for EC2 patient listing */
   public static String getEc2CombinedQuery(int identifierType, int programId) {
-    return "";
+    String query =
+        "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, case when ps.state = 25 then 'PREGNANT' when ps.state = 26 then 'PREGNANCY TERMINATION' when ps.state = 27 then 'DELIVERY' end AS state FROM patient pa "
+            + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
+            + " INNER JOIN person pe ON pa.patient_id=pe.person_id"
+            + " INNER JOIN person_name pn ON pa.patient_id=pn.person_id "
+            + " INNER JOIN patient_program pg ON pa.patient_id=pg.patient_id "
+            + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
+            + " WHERE "
+            + " pi.identifier_type="
+            + identifierType
+            + " AND pg.program_id="
+            + programId
+            + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL ";
+
+    return query;
   }
 }
