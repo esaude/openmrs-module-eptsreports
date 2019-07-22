@@ -261,7 +261,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     parameters.add(ReportingConstants.START_DATE_PARAMETER);
     parameters.add(ReportingConstants.END_DATE_PARAMETER);
     parameters.add(new Parameter("location", "Facilities", Location.class, List.class, null));
-    parameters.add(EptsReportUtils.getArtProgramConfigurableParameter(hivMetadata.getARTProgram()));
+    parameters.add(EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()));
     return parameters;
   }
 }

@@ -140,7 +140,7 @@ public class SummaryDataQualityCohorts {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Facilities", Location.class, List.class, null));
     cd.addParameter(
-        EptsReportUtils.getArtProgramConfigurableParameter(hivMetadata.getARTProgram()));
+        EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()));
     cd.setQuery(BaseQueries.getBaseQueryForDataQuality());
     return cd;
   }
