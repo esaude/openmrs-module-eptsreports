@@ -128,7 +128,7 @@ public class EriDSDDataset extends BaseDataSet {
                     "endDate=${endDate},location=${location}")),
             mappings),
         "");
-    dsd.addColumn(
+    /*dsd.addColumn(
         "N1T",
         "DSD N1 Total",
         EptsReportUtils.map(
@@ -230,7 +230,7 @@ public class EriDSDDataset extends BaseDataSet {
                         .getPatientsWhoArePregnantAndNotBreastFeedingAndParticipateInDsdModelUnstable(),
                     "endDate=${endDate},location=${location}")),
             mappings),
-        "");
+        "");*/
     dsd.addColumn(
         "N2T",
         "DSD N2 Total",

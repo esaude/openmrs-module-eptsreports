@@ -397,12 +397,12 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * N1: Get the number of active patients on ART who participate in >=1 measured DSD model
-   * The indicator has been commented out in this release.
+   * N1: Get the number of active patients on ART who participate in >=1 measured DSD model The
+   * indicator has been commented out in this release.
    *
    * @return
    */
- /* public CohortDefinition getPatientsWhoAreActiveAndParticipateInDsdModel() {
+  /* public CohortDefinition getPatientsWhoAreActiveAndParticipateInDsdModel() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     String cohortName = "All patients (Adult and Children) included in TxCurr";
 
@@ -431,7 +431,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
- /* public CohortDefinition getPatientsWhoAreActiveAndParticipateInDsdModelStable() {
+  /* public CohortDefinition getPatientsWhoAreActiveAndParticipateInDsdModelStable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -457,7 +457,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
- /* public CohortDefinition getPatientsWhoAreActiveAndParticipateInDsdModelUnstable() {
+  /* public CohortDefinition getPatientsWhoAreActiveAndParticipateInDsdModelUnstable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -485,7 +485,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
- /* public CohortDefinition
+  /* public CohortDefinition
       getPatientsWhoAreBreastFeedingAndNotPregnantAndParticipateInDsdModelUnstable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
@@ -556,7 +556,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
- /* private CohortDefinition getAllPatientsParticipatingInDsdModel() {
+  /* private CohortDefinition getAllPatientsParticipatingInDsdModel() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
 
     cd.setName("All Patients participating in >=1 measured DSD model");

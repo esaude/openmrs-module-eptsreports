@@ -56,8 +56,7 @@ public class NextAndPrevDatesCalculationTest extends PowerMockBaseContextTest {
     obs1.setObsId(1);
     Obs obs2 = new Obs(person, concept, nextDrugsPickupDate, location);
     obs2.setObsId(2);
-    List<Obs> obsList = Arrays.asList(obs1,obs2);
-
+    List<Obs> obsList = Arrays.asList(obs1, obs2);
   }
 
   private CalculationResultMap getResultMap(Patient patient, Location location, List<Obs> obsList) {
