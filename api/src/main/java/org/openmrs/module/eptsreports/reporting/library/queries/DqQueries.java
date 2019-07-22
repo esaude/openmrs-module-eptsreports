@@ -713,7 +713,8 @@ public class DqQueries {
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
             + " AND pa.patient_id IN("
             + " SELECT states.patient_id FROM "
-            + " ((SELECT pg.patient_id AS patient_id, ps.start_date AS start_date "
+            + " ("
+            + "(SELECT pg.patient_id AS patient_id, ps.start_date AS start_date "
             + " FROM patient p "
             + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id "
             + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
@@ -721,7 +722,9 @@ public class DqQueries {
             + programId
             + " AND ps.state="
             + stateId
-            + " AND pg.location_id IN(:location) AND ps.end_date is null GROUP BY pg.patient_id) states INNER JOIN "
+            + " AND pg.location_id IN(:location) AND ps.end_date is null GROUP BY pg.patient_id"
+            + ") states "
+            + "INNER JOIN "
             + " (SELECT p.patient_id AS patient_id, MAX(e.encounter_datetime) AS encounter_date FROM "
             + " patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided = 0 and e.voided=0 "
             + " AND e.encounter_type IN("
@@ -730,7 +733,26 @@ public class DqQueries {
             + childFollowUp
             + ")"
             + " AND e.location_id IN(:location) GROUP BY p.patient_id "
-            + ") encounter ON states.patient_id=encounter.patient_id) WHERE encounter.encounter_date > states.start_date "
+            + ") encounter "
+            + "ON states.patient_id=encounter.patient_id "
+            + ") WHERE encounter.encounter_date > states.start_date "
+            + " UNION "
+            + " SELECT patient_id FROM ("
+            + " (SELECT p.patient_id AS patient_id, pe.death_date AS death_date "
+            + " FROM patient p "
+            + " INNER JOIN person pe ON p.patient_id=pe.person_id "
+            + " WHERE pe.death_date IS NOT NULL GROUP BY p.patient_id) demo "
+            + " INNER JOIN "
+            + " (SELECT p.patient_id AS patientId, MAX(e.encounter_datetime) AS encounter_date FROM "
+            + " patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided = 0 and e.voided=0 "
+            + " AND e.encounter_type IN("
+            + adultFollowUp
+            + ","
+            + childFollowUp
+            + ")"
+            + " AND e.location_id IN(:location) GROUP BY p.patient_id) encounter "
+            + " ON demo.patient_id=encounter.patientId "
+            + ") WHERE encounter.encounter_date > demo.death_date GROUP BY patient_id "
             + ") GROUP BY pa.patient_id";
     return query;
   }
