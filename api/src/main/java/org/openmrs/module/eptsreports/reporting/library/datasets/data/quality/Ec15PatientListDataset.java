@@ -16,7 +16,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 import java.util.List;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
-import org.openmrs.module.eptsreports.reporting.library.queries.DqQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.data.quality.Ec15Queries;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -38,7 +38,7 @@ public class Ec15PatientListDataset extends BaseDataSet {
     dsd.setName("EC15");
     dsd.addParameters(parameterList);
     dsd.setSqlQuery(
-        DqQueries.getEc15CombinedQuery(
+        Ec15Queries.getEc15CombinedQuery(
             hivMetadata.getNidServiceTarvIdentifierType().getPatientIdentifierTypeId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));

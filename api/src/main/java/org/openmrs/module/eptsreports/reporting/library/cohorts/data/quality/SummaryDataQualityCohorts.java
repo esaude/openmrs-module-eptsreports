@@ -5,7 +5,7 @@ import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
-import org.openmrs.module.eptsreports.reporting.library.queries.DqQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.data.quality.SummaryQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -35,7 +35,7 @@ public class SummaryDataQualityCohorts {
     pCd.setName("Pregnant patients recorded in the system and are male ");
     pCd.addParameter(new Parameter("location", "Location", Location.class));
     pCd.setQuery(
-        DqQueries.getPregnantPatients(
+        SummaryQueries.getPregnantPatients(
             hivMetadata.getPregnantConcept().getConceptId(),
             hivMetadata.getGestationConcept().getConceptId(),
             hivMetadata.getNumberOfWeeksPregnant().getConceptId(),
@@ -56,7 +56,7 @@ public class SummaryDataQualityCohorts {
     cd.setName("Get male breastfeeding patients recorded in the system");
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setQuery(
-        DqQueries.getBreastfeedingMalePatients(
+        SummaryQueries.getBreastfeedingMalePatients(
             hivMetadata.getPriorDeliveryDateConcept().getConceptId(),
             hivMetadata.getCriteriaForArtStart().getConceptId(),
             hivMetadata.getBreastfeeding().getConceptId(),
@@ -97,7 +97,8 @@ public class SummaryDataQualityCohorts {
     cd.setName("Patients who have state that is before an encounter");
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setQuery(
-        DqQueries.getPatientsWithStateThatIsBeforeAnEncounter(programId, stateId, encounterList));
+        SummaryQueries.getPatientsWithStateThatIsBeforeAnEncounter(
+            programId, stateId, encounterList));
     return cd;
   }
 
@@ -110,7 +111,7 @@ public class SummaryDataQualityCohorts {
   public CohortDefinition getPatientsWhoseBirthdateIsBeforeYear(int year) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Patients with a birth date that is before " + year);
-    cd.setQuery(DqQueries.getPatientsWhoseYearOfBirthIsBeforeYear(year));
+    cd.setQuery(SummaryQueries.getPatientsWhoseYearOfBirthIsBeforeYear(year));
     return cd;
   }
 
@@ -122,7 +123,7 @@ public class SummaryDataQualityCohorts {
   public CohortDefinition getPatientsWithNegativeAge() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("The patients date of birth, estimated date of birth or age is negative");
-    cd.setQuery(DqQueries.getPatientsWithNegativeBirthDates());
+    cd.setQuery(SummaryQueries.getPatientsWithNegativeBirthDates());
     return cd;
   }
 
@@ -135,7 +136,7 @@ public class SummaryDataQualityCohorts {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("The patients birth, estimated date of birth or age indicates they are > " + years);
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.setQuery(DqQueries.getPatientsWithMoreThanXyears(years));
+    cd.setQuery(SummaryQueries.getPatientsWithMoreThanXyears(years));
     return cd;
   }
 
@@ -150,7 +151,7 @@ public class SummaryDataQualityCohorts {
     cd.setName("The patient’s date of birth is after any drug pick up date");
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.setQuery(DqQueries.getPatientsWhoseBirthdateIsAfterDrugPickup(encounterList));
+    cd.setQuery(SummaryQueries.getPatientsWhoseBirthdateIsAfterDrugPickup(encounterList));
     return cd;
   }
 
@@ -165,7 +166,7 @@ public class SummaryDataQualityCohorts {
     SqlCohortDefinition sql = new SqlCohortDefinition();
     sql.setName("Deceased and have encounters after deceased date");
     sql.addParameter(new Parameter("location", "Location", Location.class));
-    sql.setQuery(DqQueries.getPatientsMarkedAsDeceasedAndHaveAnEncounter(encounterList));
+    sql.setQuery(SummaryQueries.getPatientsMarkedAsDeceasedAndHaveAnEncounter(encounterList));
 
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Dead or deceased patients");

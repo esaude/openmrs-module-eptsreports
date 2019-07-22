@@ -16,7 +16,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 import java.util.List;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
-import org.openmrs.module.eptsreports.reporting.library.queries.DqQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.data.quality.Ec1Queries;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -40,7 +40,7 @@ public class Ec1PatientListDataset extends BaseDataSet {
     dsd.setName("EC1");
     dsd.addParameters(parameterList);
     dsd.setSqlQuery(
-        DqQueries.getEc1CombinedQuery(
+        Ec1Queries.getEc1CombinedQuery(
             hivMetadata.getNidServiceTarvIdentifierType().getPatientIdentifierTypeId(),
             hivMetadata.getPregnantConcept().getConceptId(),
             hivMetadata.getGestationConcept().getConceptId(),
