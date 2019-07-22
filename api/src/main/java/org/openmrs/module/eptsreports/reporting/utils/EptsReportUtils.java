@@ -131,7 +131,7 @@ public class EptsReportUtils {
    *
    * @return
    */
-  public static Parameter getArtProgramConfigurableParameter(Program program) {
+  public static Parameter getProgramConfigurableParameter(Program program) {
     Parameter parameter = new Parameter();
     parameter.setName("state");
     parameter.setLabel("States");

@@ -40,6 +40,7 @@ import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Su
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -249,7 +250,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {
-      throw new ReportDesignConstructionException(e);
+      throw new ReportingException(e.toString());
     }
 
     return Arrays.asList(reportDesign);
@@ -260,7 +261,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     parameters.add(ReportingConstants.START_DATE_PARAMETER);
     parameters.add(ReportingConstants.END_DATE_PARAMETER);
     parameters.add(new Parameter("location", "Facilities", Location.class, List.class, null));
-    parameters.add(EptsReportUtils.getArtProgramConfigurableParameter(hivMetadata.getARTProgram()));
+    parameters.add(EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()));
     return parameters;
   }
 }
