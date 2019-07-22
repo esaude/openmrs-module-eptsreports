@@ -1,6 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
-
 public class DsdQueries {
 
   public static String getPatientsEnrolledOnGAAC() {

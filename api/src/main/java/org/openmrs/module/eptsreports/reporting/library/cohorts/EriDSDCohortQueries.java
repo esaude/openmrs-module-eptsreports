@@ -398,10 +398,11 @@ public class EriDSDCohortQueries {
 
   /**
    * N1: Get the number of active patients on ART who participate in >=1 measured DSD model
+   * The indicator has been commented out in this release.
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoAreActiveAndParticipateInDsdModel() {
+ /* public CohortDefinition getPatientsWhoAreActiveAndParticipateInDsdModel() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     String cohortName = "All patients (Adult and Children) included in TxCurr";
 
@@ -423,14 +424,14 @@ public class EriDSDCohortQueries {
     cd.setCompositionString("allPatientsTxCurrDsdModel AND patientsParticipatingInDsdModel");
 
     return cd;
-  }
+  }*/
 
   /**
    * N1 STABLE: Get all patients who are active and participating in DSD model
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoAreActiveAndParticipateInDsdModelStable() {
+ /* public CohortDefinition getPatientsWhoAreActiveAndParticipateInDsdModelStable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -449,14 +450,14 @@ public class EriDSDCohortQueries {
     cd.setCompositionString("allPatientsInDsdModel AND patientsWhoAreStable");
 
     return cd;
-  }
+  }*/
 
   /**
    * N1 UNSTABLE: Get all patients who are active and participating in DSD model
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoAreActiveAndParticipateInDsdModelUnstable() {
+ /* public CohortDefinition getPatientsWhoAreActiveAndParticipateInDsdModelUnstable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -477,14 +478,14 @@ public class EriDSDCohortQueries {
     cd.setCompositionString("patientsInDsdModel AND NOT stablePatientsDsdModel");
 
     return cd;
-  }
+  }*/
 
   /**
    * N1: Get patients who are breastfeeding and not pregnant
    *
    * @return
    */
-  public CohortDefinition
+ /* public CohortDefinition
       getPatientsWhoAreBreastFeedingAndNotPregnantAndParticipateInDsdModelUnstable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
@@ -513,14 +514,14 @@ public class EriDSDCohortQueries {
     cd.setCompositionString("activeAndUnstable AND (breastfeeding AND NOT pregnant)");
 
     return cd;
-  }
+  }*/
 
   /**
    * N1: Get Patients who are pregnant and also breastfeeding
    *
    * @return
    */
-  public CohortDefinition
+  /*public CohortDefinition
       getPatientsWhoArePregnantAndNotBreastFeedingAndParticipateInDsdModelUnstable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
@@ -548,14 +549,14 @@ public class EriDSDCohortQueries {
     cd.setCompositionString("activeAndUnstable AND (pregnant OR breastfeeding)");
 
     return cd;
-  }
+  }*/
 
   /**
    * N1 Get All patients that are participating in DSD Model
    *
    * @return
    */
-  private CohortDefinition getAllPatientsParticipatingInDsdModel() {
+ /* private CohortDefinition getAllPatientsParticipatingInDsdModel() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
 
     cd.setName("All Patients participating in >=1 measured DSD model");
@@ -578,7 +579,7 @@ public class EriDSDCohortQueries {
             hivMetadata.getStartDrugs().getConceptId(),
             hivMetadata.getContinueRegimen().getConceptId()));
     return cd;
-  }
+  }*/
 
   /**
    * N2: Number of active on ART whose next ART pick-up is schedule for 83-97 days after the date of

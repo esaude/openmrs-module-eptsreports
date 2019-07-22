@@ -9,7 +9,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
@@ -24,12 +23,13 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
       Collection<Integer> cohort,
       Map<String, Object> parameterValues,
       PatientCalculationContext context) {
+
     EPTSCalculationService ePTSCalculationService =
         Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
-    HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
+    //    HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
+
     Location location = (Location) context.getFromCache("location");
     CalculationResultMap map = new CalculationResultMap();
-
     Concept concept = (Concept) parameterValues.get("conceptId");
     List<EncounterType> encounterTypes =
         (List<EncounterType>) parameterValues.get("encounterTypes");
