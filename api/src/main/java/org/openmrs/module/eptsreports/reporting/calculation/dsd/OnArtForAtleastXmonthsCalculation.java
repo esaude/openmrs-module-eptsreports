@@ -36,7 +36,7 @@ public class OnArtForAtleastXmonthsCalculation extends AbstractPatientCalculatio
             new BirthdateDataDefinition(), cohort, null, null, context);
 
     for (Integer ptId : cohort) {
-      boolean onArtAtleastMoths = false;
+      boolean onArtAtleastMonths = false;
       Date patientBirthdate = null;
       SimpleResult artStartDateResult = (SimpleResult) arvsInitiationDateMap.get(ptId);
       CalculationResult patientBirthDateResult = birthDates.get(ptId);
@@ -57,11 +57,11 @@ public class OnArtForAtleastXmonthsCalculation extends AbstractPatientCalculatio
 
           if ((onArt12Months.compareTo(onOrBefore) >= 0 && ageInYears >= 2 && ageInYears <= 9)
               || (onArt6Months.compareTo(onOrBefore) >= 0 && ageInYears >= 10)) {
-            onArtAtleastMoths = true;
+            onArtAtleastMonths = true;
           }
         }
       }
-      map.put(ptId, new BooleanResult(onArtAtleastMoths, this));
+      map.put(ptId, new BooleanResult(onArtAtleastMonths, this));
     }
     return map;
   }

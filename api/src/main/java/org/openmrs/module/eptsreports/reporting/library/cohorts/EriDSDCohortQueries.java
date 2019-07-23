@@ -100,7 +100,7 @@ public class EriDSDCohortQueries {
                 Arrays.asList(
                     hivMetadata.getWho3AdultStageConcept(),
                     hivMetadata.getWho4AdultStageConcept())),
-            "onOrAfter=${endDate},onOrBefore=${endDate},locationList=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "E",
         EptsReportUtils.map(
@@ -122,9 +122,14 @@ public class EriDSDCohortQueries {
                     hivMetadata.getPeripheralNeuropathy(),
                     hivMetadata.getDiarrhea(),
                     hivMetadata.getOtherDiagnosis())),
-            "onOrAfter=${endDate},onOrBefore=${endDate},locationList=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch(
+        "patientsWithViralLoad",
+        EptsReportUtils.map(
+            hivCohortQueries.getPatientsViralLoadWithin12Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(A OR B OR C OR D OR E OR F)");
+    cd.setCompositionString("(A AND B AND (NOT patientsWithViralLoad AND C ) D AND E AND F)");
 
     return cd;
   }
