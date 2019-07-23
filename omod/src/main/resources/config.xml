@@ -1140,8 +1140,6 @@
 			UUID for the CONTINUE REGIMEN concept
 		</description>
 	</globalProperty>
-
-
 	<!--Patient identifier types-->
 	<globalProperty>
 		<property>eptsreports.nidServicoTarvUuid</property>

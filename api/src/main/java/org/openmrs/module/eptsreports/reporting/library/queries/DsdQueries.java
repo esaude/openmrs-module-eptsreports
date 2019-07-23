@@ -116,4 +116,83 @@ public class DsdQueries {
         + etvProgram
         + " AND pp.voided=0 AND pp.date_enrolled BETWEEN date_add(date_add(:endDate, interval -9 MONTH) AND :endDate AND pp.location_id=:location ";
   }
+
+  /**
+   * Get the raw sql query for breastfeeding patients with period as 18 months from the endDate
+   * @param deliveryDateConcept
+   * @param arvInitiationConcept
+   * @param lactationConcept
+   * @param registeredBreastfeedingConcept
+   * @param yesConcept
+   * @param ptvProgram
+   * @param gaveBirthState
+   * @param adultInitialEncounter
+   * @param adultSegEncounter
+   * @return
+   */
+  public static String getBreastfeedingPatientsDsd(
+          int deliveryDateConcept,
+          int arvInitiationConcept,
+          int lactationConcept,
+          int registeredBreastfeedingConcept,
+          int yesConcept,
+          int ptvProgram,
+          int gaveBirthState,
+          int adultInitialEncounter,
+          int adultSegEncounter) {
+
+    return " SELECT p.patient_id"
+            + " FROM patient p"
+            + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
+            + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -18 MONTH) AND :endDate AND concept_id="
+            + deliveryDateConcept
+            + " AND"
+            + " e.encounter_type in ("
+            + adultInitialEncounter
+            + ","
+            + adultSegEncounter
+            + ") AND e.location_id IN(:location) "
+            + " UNION "
+            + "SELECT  p.patient_id"
+            + " FROM patient p"
+            + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
+            + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -18 MONTH) AND :endDate AND concept_id="
+            + arvInitiationConcept
+            + " AND value_coded="
+            + lactationConcept
+            + " AND e.encounter_type IN ("
+            + adultInitialEncounter
+            + ","
+            + adultSegEncounter
+            + ") AND e.location_id IN(:location)"
+            + " UNION "
+            + " SELECT p.patient_id"
+            + " FROM patient p"
+            + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
+            + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -18 MONTH) AND :endDate AND concept_id="
+            + registeredBreastfeedingConcept
+            + " AND value_coded="
+            + yesConcept
+            + " AND"
+            + " e.encounter_type IN ("
+            + adultInitialEncounter
+            + ","
+            + adultSegEncounter
+            + ") AND e.location_id IN(:location) "
+            + "UNION "
+            + "SELECT 	pg.patient_id"
+            + " FROM patient p"
+            + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
+            + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id"
+            + " WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND ps.start_date BETWEEN date_add(date_add(:endDate, interval -18 MONTH) AND :endDate AND"
+            + " pg.program_id="
+            + ptvProgram
+            + " AND ps.state="
+            + gaveBirthState
+            + " AND ps.end_date IS NULL AND"
+            + " location_id IN(:location)";
+  }
 }
