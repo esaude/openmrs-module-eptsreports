@@ -311,6 +311,140 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.cd4AbsolutoUuid");
     return getConcept(uuid);
   }
+  // concept_id=730
+  public Concept getCD4PercentConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.cd4PercentUuid");
+    return getConcept(uuid);
+  }
+  // concept_id=1714
+  public Concept getAdherence() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.poorAdherenceUuid");
+    return getConcept(uuid);
+  }
+  // concept_id=2015
+  public Concept getAdverseReaction() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.adverseReactionUuid");
+    return getConcept(uuid);
+  }
+  // Concept 6292
+  public Concept getNeutropenia() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.neutropenia");
+    return getConcept(uuid);
+  }
+  // Concept 6293
+  public Concept getPancreatitis() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.pancreatitis");
+    return getConcept(uuid);
+  }
+  // Concept 6294
+  public Concept getHepatotoxicity() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.hepatotoxicity");
+    return getConcept(uuid);
+  }
+  // Concept 6295
+  public Concept getPsychologicalChanges() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.psychologicalChanges");
+    return getConcept(uuid);
+  }
+  // Concept 6296
+  public Concept getMyopathy() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.myopathy");
+    return getConcept(uuid);
+  }
+  // Concept 6297
+  public Concept getSkinAllergy() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.skinAllergy");
+    return getConcept(uuid);
+  }
+  // Concept 6298
+  public Concept getLipodystrophy() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.lipodystrophy");
+    return getConcept(uuid);
+  }
+  // Concept 6299
+  public Concept getLacticAcidosis() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.lacticAcidosis");
+    return getConcept(uuid);
+  }
+  // Concept 821
+  public Concept getPeripheralNeuropathy() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.peripheralNeuropathy");
+    return getConcept(uuid);
+  }
+  // Concept 16
+  public Concept getDiarrhea() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.diarrhea");
+    return getConcept(uuid);
+  }
+  // Concept 1406
+  public Concept getOtherDiagnosis() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.otherDiagnosis");
+    return getConcept(uuid);
+  }
+  // Concept 23724 GAAC
+  public Concept getGaac() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.gaac");
+    return getConcept(uuid);
+  }
+  // Concept 23725 AF
+  public Concept getFamilyApproach() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.familyApproach");
+    return getConcept(uuid);
+  }
+  // Concept 23726 CA
+  public Concept getAccessionClubs() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.accessionClubs");
+    return getConcept(uuid);
+  }
+  // Concept 23727 PU
+  public Concept getSingleStop() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.singleStop");
+    return getConcept(uuid);
+  }
+  // Concept 23729 FR
+  public Concept getRapidFlow() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.rapidFlow");
+    return getConcept(uuid);
+  }
+  // Concept 23730 DT
+  public Concept getQuarterlyDispensation() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.quarterlyDispensation");
+    return getConcept(uuid);
+  }
+  // Concept 23731 DC
+  public Concept getCommunityDispensation() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.communityDispensation");
+    return getConcept(uuid);
+  }
+  // Concept 23732 Other Model
+  public Concept getAnotherModel() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.anotherModel");
+    return getConcept(uuid);
+  }
+  // Concept 1256 Start Drugs
+  public Concept getStartDrugs() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.startDrugs");
+    return getConcept(uuid);
+  }
+  // Concept 1257 Continue Regimen
+  public Concept getContinueRegimen() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.continueRegimen");
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
