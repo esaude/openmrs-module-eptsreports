@@ -45,4 +45,75 @@ public class DsdQueries {
         valueCoded1,
         valueCoded2);
   }
+
+  /**
+   * Fetch patients who are pregnant based on DSD criteria: check in last 9 months from endDate
+   *
+   * @param pregnantConcept
+   * @param gestationConcept
+   * @param weeksPregnantConcept
+   * @param eddConcept
+   * @param adultInitailEncounter
+   * @param adultSegEncounter
+   * @param etvProgram
+   * @return
+   */
+  public static String getPregnantWhileOnArtDsd(
+      int pregnantConcept,
+      int gestationConcept,
+      int weeksPregnantConcept,
+      int eddConcept,
+      int adultInitailEncounter,
+      int adultSegEncounter,
+      int etvProgram) {
+
+    return "SELECT  p.patient_id"
+        + " FROM patient p"
+        + " INNER JOIN person pe ON p.patient_id=pe.person_id"
+        + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
+        + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
+        + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id="
+        + pregnantConcept
+        + " AND value_coded="
+        + gestationConcept
+        + " AND e.encounter_type in ("
+        + adultInitailEncounter
+        + ","
+        + adultSegEncounter
+        + ") AND e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -9 MONTH) AND :endDate AND e.location_id=:location "
+        + " union"
+        + " SELECT p.patient_id"
+        + " FROM patient p"
+        + " INNER JOIN person pe ON p.patient_id=pe.person_id"
+        + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
+        + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
+        + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id="
+        + weeksPregnantConcept
+        + " AND"
+        + " e.encounter_type in ("
+        + adultInitailEncounter
+        + ","
+        + adultSegEncounter
+        + ") AND e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -9 MONTH) AND :endDate AND e.location_id=:location "
+        + " UNION"
+        + " SELECT p.patient_id"
+        + " FROM patient p"
+        + " INNER JOIN person pe ON p.patient_id=pe.person_id"
+        + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
+        + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
+        + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id="
+        + eddConcept
+        + " AND"
+        + " e.encounter_type in ("
+        + adultInitailEncounter
+        + ","
+        + adultSegEncounter
+        + ") AND e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -9 MONTH) AND :endDate AND e.location_id=:location "
+        + " UNION"
+        + " SELECT pp.patient_id FROM patient_program pp"
+        + " INNER JOIN person pe ON pp.patient_id=pe.person_id"
+        + " WHERE pp.program_id="
+        + etvProgram
+        + " AND pp.voided=0 AND pp.date_enrolled BETWEEN date_add(date_add(:endDate, interval -9 MONTH) AND :endDate AND pp.location_id=:location ";
+  }
 }
