@@ -58,8 +58,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "4",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreBreastfeedingInLast18Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch("5", EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate}"));
 
     cd.setCompositionString("(1 AND 2) AND NOT (3 OR 4) AND 5");
@@ -351,8 +351,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreBreastfeedingInLast18Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
@@ -390,8 +390,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreBreastfeedingInLast18Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "activeAndUnstable",
         EptsReportUtils.map(
@@ -505,8 +505,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreBreastfeedingInLast18Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
@@ -545,8 +545,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreBreastfeedingInLast18Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "activeAndUnstable",
         EptsReportUtils.map(
@@ -711,8 +711,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "breastfeedingN2",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreBreastfeedingInLast18Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "pregnantN2",
         EptsReportUtils.map(
@@ -750,8 +750,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "breastfeedingN2",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreBreastfeedingInLast18Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "activeAndUnstableN2",
         EptsReportUtils.map(
@@ -873,8 +873,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "breastfeedingN3",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreBreastfeedingInLast18Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "pregnantN3",
         EptsReportUtils.map(
@@ -912,8 +912,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "breastfeedingN3",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreBreastfeedingInLast18Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "activeAndUnstableN3",
         EptsReportUtils.map(
@@ -1033,8 +1033,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "breastfeedingN4",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreBreastfeedingInLast18Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "pregnantN4",
         EptsReportUtils.map(
@@ -1072,8 +1072,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "breastfeedingN4",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreBreastfeedingInLast18Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "activeAndUnstableN4",
         EptsReportUtils.map(
@@ -1124,6 +1124,29 @@ public class EriDSDCohortQueries {
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getPtvEtvProgram().getProgramId()));
+
+    return cd;
+  }
+
+  private CohortDefinition getPatientsWhoAreBreastfeedingInLast18Months() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
+    cd.setName("All Patients Who Are Breastfeeding in the Last 18 Months");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.setQuery(
+        DsdQueries.getBreastfeedingPatientsDsd(
+            hivMetadata.getPriorDeliveryDateConcept().getConceptId(),
+            hivMetadata.getCriteriaForArtStart().getConceptId(),
+            hivMetadata.getBreastfeeding().getConceptId(),
+            hivMetadata.getBreastfeeding().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getPtvEtvProgram().getProgramId(),
+            hivMetadata.getPatientIsBreastfeedingWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
 
     return cd;
   }
