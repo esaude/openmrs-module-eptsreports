@@ -14,6 +14,7 @@
 
 package org.openmrs.module.eptsreports.reporting.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -127,17 +128,24 @@ public class EptsReportUtils {
   }
 
   /**
-   * Get the configurable widget parameter to be passed on the reporting UI
+   * Get the configurable widget parameter to be passed on the reporting UI TODO: redesign this to
+   * be more configurable
    *
    * @return
    */
   public static Parameter getProgramConfigurableParameter(Program program) {
+    List<ProgramWorkflowState> defaultStates = new ArrayList<>();
+    for (ProgramWorkflowState p : program.getAllWorkflows().iterator().next().getStates()) {
+      defaultStates.add(p);
+    }
+
     Parameter parameter = new Parameter();
     parameter.setName("state");
     parameter.setLabel("States");
     parameter.setType(ProgramWorkflowState.class);
     parameter.setCollectionType(List.class);
     parameter.setWidgetConfiguration(getProgramProperties(program));
+    parameter.setDefaultValue(defaultStates);
     return parameter;
   }
 
