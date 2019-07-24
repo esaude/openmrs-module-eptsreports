@@ -52,7 +52,7 @@ public class Ec3Queries {
             + " AND ps.state="
             + stateId
             + " AND pg.location_id IN(:location) AND ps.end_date IS NULL GROUP BY pg.patient_id) states INNER JOIN "
-            + " (SELECT p.patient_id AS patient_id, MAX(e.encounter_datetime) AS encounter_date FROM "
+            + " (SELECT p.patient_id AS patient_id, e.encounter_datetime AS encounter_date FROM "
             + " patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided = 0 and e.voided=0 "
             + " AND e.encounter_type="
             + encounterType
@@ -68,7 +68,7 @@ public class Ec3Queries {
             + " INNER JOIN person pe ON p.patient_id=pe.person_id "
             + " WHERE pe.death_date IS NOT NULL GROUP BY p.patient_id) demo "
             + " INNER JOIN "
-            + " (SELECT p.patient_id AS patientId, MAX(e.encounter_datetime) AS encounter_date FROM "
+            + " (SELECT p.patient_id AS patientId, e.encounter_datetime AS encounter_date FROM "
             + " patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided = 0 and e.voided=0 "
             + " AND e.encounter_type="
             + encounterType

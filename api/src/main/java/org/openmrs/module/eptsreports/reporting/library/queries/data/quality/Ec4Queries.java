@@ -23,7 +23,7 @@ public class Ec4Queries {
   public static String getEc4CombinedQuery(
       int identifierType, int programId, int stateId, int adultFollowUp, int childFollowUp) {
     String query =
-        "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, case when ps.state = 9 then 'DROPPED FROM TREATMENT' when ps.state = 6 then 'ACTIVE ON PROGRAM' when ps.state = 10 then 'PATIENT HAS DIED' when ps.state = 8 then 'SUSPENDED TREATMENT' when ps.state = 7 then 'TRANSFERED OUT TO ANOTHER FACILITY' when ps.state = 29 then 'TRANSFERRED FROM OTHER FACILTY' end AS state, DATE_FORMAT(ps.start_date, '%d-%m-%Y') AS state_date, DATE_FORMAT(pe.death_date,'%d-%m-%Y') As death_date, DATE_FORMAT(MAX(e.encounter_datetime), '%d-%m-%Y') AS encounter_date, DATE_FORMAT(e.date_created, '%d-%m-%Y %H:%i:%s') AS encounter_date_created FROM patient pa "
+        "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, case when ps.state = 9 then 'DROPPED FROM TREATMENT' when ps.state = 6 then 'ACTIVE ON PROGRAM' when ps.state = 10 then 'PATIENT HAS DIED' when ps.state = 8 then 'SUSPENDED TREATMENT' when ps.state = 7 then 'TRANSFERED OUT TO ANOTHER FACILITY' when ps.state = 29 then 'TRANSFERRED FROM OTHER FACILTY' end AS state, DATE_FORMAT(ps.start_date, '%d-%m-%Y') AS state_date, DATE_FORMAT(pe.death_date,'%d-%m-%Y') As death_date, DATE_FORMAT(e.encounter_datetime, '%d-%m-%Y') AS encounter_date, DATE_FORMAT(e.date_created, '%d-%m-%Y %H:%i:%s') AS encounter_date_created FROM patient pa "
             + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
             + " INNER JOIN person pe ON pa.patient_id=pe.person_id"
             + " INNER JOIN person_name pn ON pa.patient_id=pn.person_id "
@@ -57,7 +57,7 @@ public class Ec4Queries {
             + " AND pg.location_id IN(:location) AND ps.end_date is null GROUP BY pg.patient_id"
             + ") states "
             + "INNER JOIN "
-            + " (SELECT p.patient_id AS patient_id, MAX(e.encounter_datetime) AS encounter_date FROM "
+            + " (SELECT p.patient_id AS patient_id, e.encounter_datetime AS encounter_date FROM "
             + " patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided = 0 and e.voided=0 "
             + " AND e.encounter_type IN("
             + adultFollowUp
@@ -75,7 +75,7 @@ public class Ec4Queries {
             + " INNER JOIN person pe ON p.patient_id=pe.person_id "
             + " WHERE pe.death_date IS NOT NULL GROUP BY p.patient_id) demo "
             + " INNER JOIN "
-            + " (SELECT p.patient_id AS patientId, MAX(e.encounter_datetime) AS encounter_date FROM "
+            + " (SELECT p.patient_id AS patientId, e.encounter_datetime AS encounter_date FROM "
             + " patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided = 0 and e.voided=0 "
             + " AND e.encounter_type IN("
             + adultFollowUp
