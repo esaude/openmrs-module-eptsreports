@@ -167,9 +167,9 @@ public class SummaryQueries {
    * @return String
    */
   public static String getPatientsWhoseYearOfBirthIsBeforeYear(int year) {
-    ;
-    return "SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id WHERE pe.birthdate IS NOT NULL AND YEAR(pe.birthdate) <"
-        + year;
+    String query =
+        "SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id WHERE pe.birthdate IS NOT NULL AND YEAR(pe.birthdate) < %d ";
+    return String.format(query, year);
   }
 
   /**
@@ -189,8 +189,9 @@ public class SummaryQueries {
    * @return String
    */
   public static String getPatientsWithMoreThanXyears(int years) {
-    return "SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id WHERE pe.birthdate IS NOT NULL AND TIMESTAMPDIFF(YEAR, pe.birthdate, :endDate) >"
-        + years;
+    String query =
+        "SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id WHERE pe.birthdate IS NOT NULL AND TIMESTAMPDIFF(YEAR, pe.birthdate, :endDate) > %d";
+    return String.format(query, years);
   }
 
   /**
