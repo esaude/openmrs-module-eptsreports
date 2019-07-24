@@ -129,7 +129,7 @@ public class SummaryQueries {
             + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id=%d"
             + " AND value_coded=%d"
             + " AND"
-            + " e.encounter_type IN (%d, %d) "
+            + " e.encounter_type IN (%d) "
             + " AND e.location_id IN(:location) "
             + " AND pe.gender ='M'"
             + "UNION "
@@ -155,7 +155,6 @@ public class SummaryQueries {
         adultSegEncounter,
         registeredBreastfeedingConcept,
         yesConcept,
-        adultInitialEncounter,
         adultSegEncounter,
         ptvProgram,
         gaveBirthState);

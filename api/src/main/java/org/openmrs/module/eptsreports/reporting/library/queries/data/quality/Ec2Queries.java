@@ -70,8 +70,6 @@ public class Ec2Queries {
             + yesConcept
             + " AND "
             + "e.encounter_type IN ("
-            + adultInitialEncounter
-            + ","
             + adultSegEncounter
             + ") AND e.location_id IN(:location) "
             + " AND pe.gender ='M'"
