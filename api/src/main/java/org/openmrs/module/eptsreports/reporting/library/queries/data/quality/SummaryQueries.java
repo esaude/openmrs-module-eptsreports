@@ -98,67 +98,67 @@ public class SummaryQueries {
       int adultInitialEncounter,
       int adultSegEncounter) {
 
-    return " SELECT p.patient_id"
-        + " FROM patient p"
-        + " INNER JOIN person pe ON p.patient_id=pe.person_id"
-        + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
-        + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
-        + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id="
-        + deliveryDateConcept
-        + " AND"
-        + " e.encounter_type in ("
-        + adultInitialEncounter
-        + ","
-        + adultSegEncounter
-        + ") AND e.location_id IN(:location) "
-        + " AND pe.gender ='M'"
-        + " UNION "
-        + "SELECT  p.patient_id"
-        + " FROM patient p"
-        + " INNER JOIN person pe ON p.patient_id=pe.person_id"
-        + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
-        + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
-        + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id="
-        + arvInitiationConcept
-        + " AND value_coded="
-        + lactationConcept
-        + " AND e.encounter_type IN ("
-        + adultInitialEncounter
-        + ","
-        + adultSegEncounter
-        + ") AND e.location_id IN(:location)"
-        + " AND pe.gender ='M'"
-        + " UNION "
-        + " SELECT p.patient_id"
-        + " FROM patient p"
-        + " INNER JOIN person pe ON p.patient_id=pe.person_id"
-        + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
-        + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
-        + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id="
-        + registeredBreastfeedingConcept
-        + " AND value_coded="
-        + yesConcept
-        + " AND"
-        + " e.encounter_type IN ("
-        + adultInitialEncounter
-        + ","
-        + adultSegEncounter
-        + ") AND e.location_id IN(:location) "
-        + " AND pe.gender ='M'"
-        + "UNION "
-        + "SELECT 	pg.patient_id"
-        + " FROM patient p"
-        + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
-        + " INNER JOIN person pe ON pg.patient_id=pe.person_id"
-        + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id"
-        + " WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND"
-        + " pg.program_id="
-        + ptvProgram
-        + " AND ps.state="
-        + gaveBirthState
-        + " AND ps.end_date IS NULL AND"
-        + " location_id IN(:location)"
-        + " AND pe.gender ='M'";
+    String query =
+        " SELECT p.patient_id"
+            + " FROM patient p"
+            + " INNER JOIN person pe ON p.patient_id=pe.person_id"
+            + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
+            + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id=%d"
+            + " AND"
+            + " e.encounter_type in (%d, %d)"
+            + " AND e.location_id IN(:location) "
+            + " AND pe.gender ='M'"
+            + " UNION "
+            + "SELECT  p.patient_id"
+            + " FROM patient p"
+            + " INNER JOIN person pe ON p.patient_id=pe.person_id"
+            + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
+            + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id=%d"
+            + " AND value_coded=%d"
+            + " AND e.encounter_type IN (%d, %d)"
+            + " AND e.location_id IN(:location)"
+            + " AND pe.gender ='M'"
+            + " UNION "
+            + " SELECT p.patient_id"
+            + " FROM patient p"
+            + " INNER JOIN person pe ON p.patient_id=pe.person_id"
+            + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
+            + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id=%d"
+            + " AND value_coded=%d"
+            + " AND"
+            + " e.encounter_type IN (%d, %d) "
+            + " AND e.location_id IN(:location) "
+            + " AND pe.gender ='M'"
+            + "UNION "
+            + "SELECT 	pg.patient_id"
+            + " FROM patient p"
+            + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
+            + " INNER JOIN person pe ON pg.patient_id=pe.person_id"
+            + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id"
+            + " WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND"
+            + " pg.program_id=%d"
+            + " AND ps.state=%d"
+            + " AND ps.end_date IS NULL AND"
+            + " location_id IN(:location)"
+            + " AND pe.gender ='M'";
+    return String.format(
+        query,
+        deliveryDateConcept,
+        adultInitialEncounter,
+        adultSegEncounter,
+        arvInitiationConcept,
+        lactationConcept,
+        adultInitialEncounter,
+        adultSegEncounter,
+        registeredBreastfeedingConcept,
+        yesConcept,
+        adultInitialEncounter,
+        adultSegEncounter,
+        ptvProgram,
+        gaveBirthState);
   }
 
   /**
