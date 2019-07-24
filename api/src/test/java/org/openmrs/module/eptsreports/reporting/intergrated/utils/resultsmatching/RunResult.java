@@ -5,10 +5,10 @@ import java.util.Map;
 
 /** This contains a detailed reports result matching result */
 public class RunResult {
-  // milli seconds taken to run current report
-  private long currentReportEvaluationTime;
-  // milli seconds taken to run master report
-  private long masterReportEvaluationTime;
+  // time(hh:mm:ss) taken to run current report
+  private String currentReportEvaluationTime;
+  // time(hh:mm:ss) taken to run master report
+  private String masterReportEvaluationTime;
   private String currentReportLabel;
   private String masterReportLabel;
   // name#uuid
@@ -20,11 +20,11 @@ public class RunResult {
 
   private List<Match> matches;
 
-  public long getCurrentReportEvaluationTime() {
+  public String getCurrentReportEvaluationTime() {
     return currentReportEvaluationTime;
   }
 
-  public long getMasterReportEvaluationTime() {
+  public String getMasterReportEvaluationTime() {
     return masterReportEvaluationTime;
   }
 
@@ -53,8 +53,8 @@ public class RunResult {
   }
 
   public RunResult(
-      long currentReportEvaluationTime,
-      long masterReportEvaluationTime,
+      String currentReportEvaluationTime,
+      String masterReportEvaluationTime,
       String currentReport,
       String masterReport,
       String currentReportLabel,

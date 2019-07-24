@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.ClientAnchor;
@@ -116,35 +117,29 @@ public class XLSXGenerator {
         Cell masterDataValue = masterData.createCell(i + 1);
         masterDataValue.setCellValue(match.getMasterValue());
         Cell currentOffSetDataValue = currentOffSetData.createCell(i + 1);
-        currentOffSetDataValue.setCellValue(match.getCurrentOffSetPatientIds().size());
+        Set<Integer> currentOffSetPatientIds = match.getCurrentOffSetPatientIds();
+        currentOffSetDataValue.setCellValue(currentOffSetPatientIds.size());
         // currentOffSet or miss-matches set to cell as a comment
-        if (!match.getCurrentOffSetPatientIds().isEmpty()) {
-          currentOffSetDataValue.setCellStyle(missMatchedStyle);
-          currentOffSetDataValue.setCellComment(
-              generateCellComment(
-                  sheet,
-                  workbook.getCreationHelper(),
-                  currentOffSetData,
-                  currentOffSetDataValue,
-                  "Missing Patient Ids: " + match.getCurrentOffSetPatientIds().toString()));
-        } else {
-          currentOffSetDataValue.setCellStyle(matchedStyle);
-        }
+        setCommentAndStyleCommentCell(
+            workbook,
+            matchedStyle,
+            missMatchedStyle,
+            sheet,
+            currentOffSetData,
+            currentOffSetDataValue,
+            currentOffSetPatientIds);
         Cell masterOffSetDataValue = masterOffSetData.createCell(i + 1);
-        masterOffSetDataValue.setCellValue(match.getMasterOffSetPatientIds().size());
+        Set<Integer> masterOffSetPatientIds = match.getMasterOffSetPatientIds();
+        masterOffSetDataValue.setCellValue(masterOffSetPatientIds.size());
         // masterOffSet or miss-matches set to cell as a comment
-        if (!match.getMasterOffSetPatientIds().isEmpty()) {
-          masterOffSetDataValue.setCellStyle(missMatchedStyle);
-          masterOffSetDataValue.setCellComment(
-              generateCellComment(
-                  sheet,
-                  workbook.getCreationHelper(),
-                  masterOffSetData,
-                  masterOffSetDataValue,
-                  "Missing Patient Ids: " + match.getMasterOffSetPatientIds().toString()));
-        } else {
-          masterOffSetDataValue.setCellStyle(matchedStyle);
-        }
+        setCommentAndStyleCommentCell(
+            workbook,
+            matchedStyle,
+            missMatchedStyle,
+            sheet,
+            masterOffSetData,
+            masterOffSetDataValue,
+            masterOffSetPatientIds);
       }
     }
 
@@ -152,6 +147,28 @@ public class XLSXGenerator {
     FileOutputStream fileOut = new FileOutputStream(eptsReportsResultsMatchingOutPut);
     workbook.write(fileOut);
     fileOut.close();
+  }
+
+  private static void setCommentAndStyleCommentCell(
+      Workbook workbook,
+      CellStyle matchedStyle,
+      CellStyle missMatchedStyle,
+      Sheet sheet,
+      Row offSetData,
+      Cell offSetDataValue,
+      Set<Integer> offSetPatientIds) {
+    if (!offSetPatientIds.isEmpty()) {
+      offSetDataValue.setCellStyle(missMatchedStyle);
+      offSetDataValue.setCellComment(
+          generateCellComment(
+              sheet,
+              workbook.getCreationHelper(),
+              offSetData,
+              offSetDataValue,
+              "Missing Patient Ids: " + offSetPatientIds.toString()));
+    } else {
+      offSetDataValue.setCellStyle(matchedStyle);
+    }
   }
 
   private static Comment generateCellComment(

@@ -3,14 +3,20 @@ package org.openmrs.module.eptsreports.reporting.intergrated.utils.resultsmatchi
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * This object represents an individual match between a master and respective current report
+ * indicator value
+ */
 public class Match {
   // current=master[name]
   private String mapping;
+  // current report indicator value
   private Integer currentValue;
+  // master report indicator value
   private Integer masterValue;
-  // in current not in master
+  // patient ids in current not in master
   private Set<Integer> currentOffSetPatientIds = new HashSet<>();
-  // in master not in current
+  // patient ids in master not in current
   private Set<Integer> masterOffSetPatientIds = new HashSet<>();
 
   public String getMapping() {
