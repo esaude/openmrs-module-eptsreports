@@ -56,7 +56,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "D1SNPNB",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getAllPatientsWhoAreActiveAndStable(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingD1(),
                     "endDate=${endDate},location=${location}")),
             mappings),
         "age=15+");
@@ -68,7 +68,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "D1SNPNBC",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getAllPatientsWhoAreActiveAndStable(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingD1(),
                     "endDate=${endDate},location=${location}")),
             mappings),
         getChildrenColumn());
@@ -90,7 +90,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "D2NPNB",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveAndUnstable(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingD2(),
                     "endDate=${endDate},location=${location}")),
             mappings),
         "age=15+");
@@ -102,7 +102,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "D2NPNBC",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveAndUnstable(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingD2(),
                     "endDate=${endDate},location=${location}")),
             mappings),
         getChildrenColumn());
@@ -249,7 +249,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N1SST",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveWithNextPickupAs3MonthsAndStable(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1(),
                     "endDate=${endDate},location=${location}")),
             mappings),
         "");
@@ -260,7 +260,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N1SNPNBA",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveWithNextPickupAs3MonthsAndStable(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1(),
                     "endDate=${endDate},location=${location}")),
             mappings),
         "age=15+");
@@ -362,8 +362,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N2SNPNBA",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries
-                        .getPatientsWithNextConsultationScheduled175To190DaysStable(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN2(),
                     "endDate=${endDate},location=${location}")),
             mappings),
         "age=15+");
@@ -375,8 +374,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N2SNPNBC",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries
-                        .getPatientsWithNextConsultationScheduled175To190DaysStable(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN2(),
                     "endDate=${endDate},location=${location}")),
             mappings),
         getChildrenColumn());
@@ -468,7 +466,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N3SNPNBA",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticpatingInGaacStable(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN3(),
                     "endDate=${endDate},location=${location}")),
             mappings),
         "age=15+");
@@ -480,7 +478,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N3SNPNBC",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticpatingInGaacStable(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN3(),
                     "endDate=${endDate},location=${location}")),
             mappings),
         getChildrenColumn());
