@@ -46,7 +46,7 @@ public class Ec15Queries {
             + " WHERE pe.birthdate IS NOT NULL AND e.encounter_type="
             + encounterType
             + " AND e.location_id IN(:location) AND pa.voided = 0 and e.voided=0 "
-            + " AND pe.birthdate > e.encounter_datetime) ec15))f_ec15";
+            + " AND pe.birthdate > e.encounter_datetime) ec15))f_ec15 GROUP BY f_ec15.patient_id";
     return query;
   }
 }
