@@ -335,6 +335,40 @@ public class EriDSDCohortQueries {
   }
 
   /**
+   * D2: Patients who are  Non-pregnant and Non-Breastfeeding
+   * @return
+   */
+  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeeding(){
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName(
+            "Patients who are breastfeeding: includes all breastfeeding patients excluding pregnant patients");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+            "breastfeeding",
+            EptsReportUtils.map(
+                    getPatientsWhoAreBreastfeedingInLast18Months(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "pregnant",
+            EptsReportUtils.map(
+                    getPatientsWhoArePregnantInLast9Months(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "activeAndUnstable",
+            EptsReportUtils.map(
+                    getPatientsWhoAreActiveAndUnstable(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("activeAndUnstable AND NOT pregnant AND NOT breastfeeding");
+
+    return cd;
+  }
+
+  /**
    * D2: Get patients who are breastfeeding and not pregnant
    *
    * @return
