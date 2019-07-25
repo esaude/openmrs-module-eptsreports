@@ -23,7 +23,8 @@ public class Ec3Queries {
   public static String getEc3CombinedQuery(
       int identifierType, int programId, int stateId, int encounterType) {
     String query =
-        "SELECT pa.patient_id, pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, case when ps.state = 9 then 'DROPPED FROM TREATMENT' when ps.state = 6 then 'ACTIVE ON PROGRAM' when ps.state = 10 then 'PATIENT HAS DIED' when ps.state = 8 then 'SUSPENDED TREATMENT' when ps.state = 7 then 'TRANSFERED OUT TO ANOTHER FACILITY' when ps.state = 29 then 'TRANSFERRED FROM OTHER FACILTY' end AS state, DATE_FORMAT(pe.death_date,'%d-%m-%Y') As death_date, DATE_FORMAT(ps.start_date, '%d-%m-%Y') AS state_date, DATE_FORMAT(e.encounter_datetime, '%d-%m-%Y') AS encounter_date, DATE_FORMAT(e.date_created, '%d-%m-%Y %H:%i:%s') AS encounter_date_created FROM patient pa "
+        "SELECT patient_id, NID, Name, birthdate, Estimated_dob, Sex, First_entry_date, Last_updated, date_enrolled, state, death_date, state_date, MIN(encounter_date) AS encounter_date, encounter_date_created FROM("
+            + "SELECT pa.patient_id, pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, case when ps.state = 9 then 'DROPPED FROM TREATMENT' when ps.state = 6 then 'ACTIVE ON PROGRAM' when ps.state = 10 then 'PATIENT HAS DIED' when ps.state = 8 then 'SUSPENDED TREATMENT' when ps.state = 7 then 'TRANSFERED OUT TO ANOTHER FACILITY' when ps.state = 29 then 'TRANSFERRED FROM OTHER FACILTY' end AS state, DATE_FORMAT(pe.death_date,'%d-%m-%Y') As death_date, DATE_FORMAT(ps.start_date, '%d-%m-%Y') AS state_date, DATE_FORMAT(e.encounter_datetime, '%d-%m-%Y') AS encounter_date, DATE_FORMAT(e.date_created, '%d-%m-%Y %H:%i:%s') AS encounter_date_created FROM patient pa "
             + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
             + " INNER JOIN person pe ON pa.patient_id=pe.person_id"
             + " INNER JOIN person_name pn ON pa.patient_id=pn.person_id "
@@ -38,7 +39,6 @@ public class Ec3Queries {
             + " AND e.voided=0 "
             + " AND e.encounter_type="
             + encounterType
-            + " AND e.encounter_datetime > ps.start_date"
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
             + " AND pa.patient_id IN("
             + "SELECT states.patient_id FROM( "
@@ -75,7 +75,8 @@ public class Ec3Queries {
             + " AND e.location_id IN(:location) GROUP BY p.patient_id) encounter "
             + " ON demo.patient_id=encounter.patientId "
             + ") WHERE encounter.encounter_date > demo.death_date GROUP BY patient_id "
-            + ")";
+            + ")"
+            + ") ec3 GROUP BY ec3.patient_id";
     return query;
   }
 }
