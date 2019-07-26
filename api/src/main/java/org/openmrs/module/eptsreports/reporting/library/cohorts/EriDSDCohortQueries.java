@@ -11,7 +11,6 @@ import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.NextAndPrevDatesCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.OnArtForAtleastXmonthsCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.dsd.PoorAdherenceInLastXClinicalCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.DsdQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -26,7 +25,6 @@ import org.springframework.stereotype.Component;
 public class EriDSDCohortQueries {
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
   @Autowired private AgeCohortQueries ageCohortQueries;
-  @Autowired private TxNewCohortQueries txNewCohortQueries;
   @Autowired private HivCohortQueries hivCohortQueries;
   @Autowired private HivMetadata hivMetadata;
   @Autowired private GenericCohortQueries genericCohortQueries;
@@ -103,7 +101,9 @@ public class EriDSDCohortQueries {
                 hivMetadata.getCurrentWHOHIVStageConcept(),
                 BaseObsCohortDefinition.TimeModifier.LAST,
                 SetComparator.IN,
-                null,
+                Arrays.asList(
+                    hivMetadata.getAdultoSeguimentoEncounterType(),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType()),
                 Arrays.asList(
                     hivMetadata.getWho3AdultStageConcept(),
                     hivMetadata.getWho4AdultStageConcept())),
@@ -113,6 +113,11 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             genericCohortQueries.hasCodedObs(
                 hivMetadata.getAdverseReaction(),
+                BaseObsCohortDefinition.TimeModifier.ANY,
+                SetComparator.IN,
+                Arrays.asList(
+                    hivMetadata.getAdultoSeguimentoEncounterType(),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType()),
                 Arrays.asList(
                     hivMetadata.getNeutropenia(),
                     hivMetadata.getPancreatitis(),
@@ -132,7 +137,7 @@ public class EriDSDCohortQueries {
             hivCohortQueries.getPatientsViralLoadWithin12Months(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("A AND B AND (NOT patientsWithViralLoad AND C ) AND D AND F");
+    cd.setCompositionString("A AND (B OR (NOT patientsWithViralLoad AND C)) AND NOT D AND NOT F");
 
     return cd;
   }
@@ -286,22 +291,6 @@ public class EriDSDCohortQueries {
             "effectiveDate=${endDate}"));
 
     cd.setCompositionString("(CD4Abs AND Age)");
-
-    return cd;
-  }
-
-  /**
-   * 5E Returns patient with poor adherence in the last 3 visits
-   *
-   * @return
-   */
-  private CohortDefinition getPoorAdherenceInLast3Visits() {
-    CalculationCohortDefinition cd =
-        new CalculationCohortDefinition(
-            "Poor Adherence In Last 3 Visits",
-            Context.getRegisteredComponents(PoorAdherenceInLastXClinicalCalculation.class).get(0));
-    cd.addParameter(new Parameter("onOrBefore", "On or before Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
 
     return cd;
   }

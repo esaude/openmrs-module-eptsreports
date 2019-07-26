@@ -690,6 +690,7 @@ public class HivMetadata extends ProgramsMetadata {
     return getProgramWorkflowState(hivCareProgramUuid, "1", "TRANSFER FROM OTHER FACILITY");
   }
 
+  // Concept 5356
   public Concept getCurrentWHOHIVStageConcept() {
     return getConcept(
         Context.getAdministrationService()
