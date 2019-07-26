@@ -87,7 +87,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "B",
         EptsReportUtils.map(
-            hivCohortQueries.getPatientsWithSuppressedViralLoadWithin12Months(),
+            getPatientsWithViralLoadLessThan1000Within12Months(),
             "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "C",
@@ -327,6 +327,21 @@ public class EriDSDCohortQueries {
     cd.setCompositionString("activeAndStable AND NOT pregnant AND NOT breastfeeding");
 
     return cd;
+  }
+
+  public CohortDefinition getPatientsWithViralLoadLessThan1000Within12Months() {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("Viral Load Less Than 1000 Within 12Months");
+    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sql.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sql.addParameter(new Parameter("location", "Location", Location.class));
+    sql.setQuery(
+        DsdQueries.patientsWithViralLoadLessThan1000(
+            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getHivViralLoadConcept().getConceptId()));
+    return sql;
   }
 
   /**

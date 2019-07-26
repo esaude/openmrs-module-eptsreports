@@ -196,4 +196,32 @@ public class DsdQueries {
         + " AND ps.end_date IS NULL AND"
         + " location_id IN(:location)";
   }
+
+  public static String patientsWithViralLoadLessThan1000(
+      int labEncounter,
+      int adultSeguimentoEncounter,
+      int pediatriaSeguimentoEncounter,
+      int vlConceptQuestion) {
+    String query =
+        "SELECT p.patient_id "
+            + " FROM patient p"
+            + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
+            + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type IN ("
+            + labEncounter
+            + ","
+            + adultSeguimentoEncounter
+            + ","
+            + pediatriaSeguimentoEncounter
+            + ")"
+            + " AND  o.concept_id="
+            + vlConceptQuestion
+            + " AND o.value_numeric IS NOT NULL AND"
+            + " e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
+            + " AND e.location_id=:location "
+            + " AND o.value_numeric < 1000"
+            + " GROUP BY p.patient_id";
+
+    return query;
+  }
 }

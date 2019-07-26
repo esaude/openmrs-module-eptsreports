@@ -29,7 +29,7 @@ public class HivMetadata extends ProgramsMetadata {
 
   private String gpPtvEtvProgramUuid = "eptsreports.ptvEtvProgramUuid";
 
-  // Concepts
+  // Concepts Id = 856
   public Concept getHivViralLoadConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.hivViralLoadConceptUuid");
