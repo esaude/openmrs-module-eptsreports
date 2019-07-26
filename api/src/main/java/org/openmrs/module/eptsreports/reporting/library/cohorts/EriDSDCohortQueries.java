@@ -252,7 +252,7 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             ageCohortQueries.createXtoYAgeCohort("2-4", 2, 4), "effectiveDate=${endDate}"));
 
-    cd.setCompositionString("((Cd4Abs OR Cd4Lab) AND Age) OR (Cd4Percent AND Age)");
+    cd.setCompositionString("(Cd4Abs OR Cd4Lab OR Cd4Percent) AND Age");
 
     return cd;
   }
