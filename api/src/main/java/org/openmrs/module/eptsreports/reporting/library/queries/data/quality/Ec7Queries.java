@@ -42,29 +42,26 @@ public class Ec7Queries {
             + ","
             + childFollowUp
             + ")"
-            + " AND e.encounter_datetime > ps.start_date"
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
             + " AND pa.patient_id IN("
-            + " SELECT states.patient_id FROM "
-            + " ((SELECT pg.patient_id AS patient_id, ps.start_date AS start_date "
+            + " SELECT pg.patient_id AS patient_id "
             + " FROM patient p "
-            + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id "
-            + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
-            + " WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND pg.program_id="
+            + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id AND pg.voided=0 "
+            + " INNER JOIN encounter e ON p.patient_id=e.patient_id AND e.location_id IN(:location) AND e.voided=0 "
+            + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id AND ps.voided=0 "
+            + " WHERE p.voided=0 AND pg.program_id="
             + programId
             + " AND ps.state="
             + stateId
-            + " AND pg.location_id IN(:location) AND ps.end_date is null GROUP BY pg.patient_id) states INNER JOIN "
-            + " (SELECT p.patient_id AS patient_id, e.encounter_datetime AS encounter_date FROM "
-            + " patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided = 0 and e.voided=0 "
             + " AND e.encounter_type IN("
             + adultFollowUp
             + ","
             + childFollowUp
-            + ")"
-            + " AND e.location_id IN(:location) GROUP BY p.patient_id "
-            + ") encounter ON states.patient_id=encounter.patient_id) WHERE encounter.encounter_date > states.start_date "
-            + ") GROUP BY pa.patient_id) ec7 GROUP BY ec7.patient_id";
+            + ") "
+            + " AND pg.location_id IN(:location) "
+            + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
+            + " AND e.encounter_datetime >= ps.start_date "
+            + " GROUP BY pg.patient_id )) ec7 GROUP BY ec7.patient_id";
     return query;
   }
 }
