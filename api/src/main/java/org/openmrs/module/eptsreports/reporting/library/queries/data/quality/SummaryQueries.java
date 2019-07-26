@@ -202,13 +202,13 @@ public class SummaryQueries {
     String str1 = String.valueOf(encounterList).replaceAll("\\[", "");
     String str2 = str1.replaceAll("]", "");
     String query =
-        "SELECT birth_date.patient_id FROM "
-            + "((SELECT pa.patient_id, pe.birthdate AS birthdate FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id WHERE pe.birthdate IS NOT NULL) birth_date "
-            + "INNER JOIN "
-            + "(SELECT p.patient_id AS patient_id, e.encounter_datetime AS encounter_date FROM "
-            + "patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided = 0 and e.voided=0 "
-            + "AND e.encounter_type IN (%s) AND e.location_id IN(:location) GROUP BY p.patient_id "
-            + ") encounter ON birth_date.patient_id=encounter.patient_id) WHERE birth_date.birthdate > encounter.encounter_date";
+        "SELECT patient_id FROM("
+            + " SELECT pa.patient_id AS patient_id, pe.birthdate AS birthdate, e.encounter_datetime AS encounter_date FROM patient pa "
+            + " INNER JOIN person pe ON pa.patient_id=pe.person_id "
+            + " INNER JOIN encounter e ON pa.patient_id=e.patient_id "
+            + " WHERE pe.birthdate IS NOT NULL AND e.encounter_type IN(%s) "
+            + " AND e.location_id IN(:location) AND pa.voided = 0 and e.voided=0 "
+            + " AND pe.birthdate > e.encounter_datetime) ec15 ";
     return String.format(query, str2);
   }
 
@@ -222,18 +222,18 @@ public class SummaryQueries {
     String str1 = String.valueOf(encounterList).replaceAll("\\[", "");
     String str2 = str1.replaceAll("]", "");
     String query =
-        "SELECT states.patient_id FROM "
-            + "((SELECT pg.patient_id AS patient_id, ps.start_date AS start_date "
-            + "FROM patient p "
-            + "INNER JOIN patient_program pg ON p.patient_id=pg.patient_id "
-            + "INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
-            + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND pg.program_id IN (%s) "
-            + " AND ps.state IN (%s) "
-            + " AND pg.location_id IN(:location) AND ps.end_date IS NULL GROUP BY pg.patient_id) states INNER JOIN "
-            + "(SELECT p.patient_id AS patient_id, e.encounter_datetime AS encounter_date FROM "
-            + "patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided = 0 and e.voided=0 "
-            + "AND e.encounter_type IN (%s) AND e.location_id IN(:location) GROUP BY p.patient_id"
-            + ") encounter ON states.patient_id=encounter.patient_id) WHERE encounter.encounter_date > states.start_date";
+        " SELECT pg.patient_id AS patient_id "
+            + " FROM patient p "
+            + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id AND pg.voided=0 "
+            + " INNER JOIN encounter e ON p.patient_id=e.patient_id AND e.location_id IN(:location) AND e.voided=0 "
+            + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id AND ps.voided=0 "
+            + " WHERE p.voided=0 AND pg.program_id=%d"
+            + " AND ps.state=%d"
+            + " AND e.encounter_type IN(%s) "
+            + " AND pg.location_id IN(:location) "
+            + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
+            + " AND e.encounter_datetime >= ps.start_date "
+            + " GROUP BY pg.patient_id ";
     return String.format(query, programId, stateId, str2);
   }
 
@@ -246,15 +246,15 @@ public class SummaryQueries {
     String str1 = String.valueOf(encounterList).replaceAll("\\[", "");
     String encounters = str1.replaceAll("]", "");
     String query =
-        "SELECT demo.patient_id FROM "
-            + "((SELECT p.patient_id AS patient_id, pe.death_date AS death_date "
-            + "FROM patient p "
-            + "INNER JOIN person pe ON p.patient_id=pe.person_id "
-            + "WHERE pe.death_date IS NOT NULL GROUP BY p.patient_id) demo INNER JOIN "
-            + "(SELECT p.patient_id AS patient_id, e.encounter_datetime AS encounter_date FROM "
-            + "patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided = 0 and e.voided=0 "
-            + "AND e.encounter_type IN (%s) AND e.location_id IN(:location) GROUP BY p.patient_id"
-            + ") encounter ON demo.patient_id=encounter.patient_id) WHERE encounter.encounter_date > demo.death_date";
+        " SELECT p.patient_id AS patientId "
+            + " FROM patient p "
+            + " INNER JOIN encounter e ON p.patient_id=e.patient_id AND e.location_id IN(:location) AND e.voided=0 "
+            + " INNER JOIN person pe ON p.patient_id=pe.person_id AND pe.voided=0 "
+            + " WHERE p.voided = 0 "
+            + " AND e.encounter_type IN(%s) "
+            + " AND pe.death_date IS NOT NULL "
+            + " AND e.encounter_datetime >= pe.death_date "
+            + " GROUP BY p.patient_id ";
     return String.format(query, encounters);
   }
 }
