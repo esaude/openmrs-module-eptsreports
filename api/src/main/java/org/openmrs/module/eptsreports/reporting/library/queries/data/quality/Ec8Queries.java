@@ -21,15 +21,10 @@ public class Ec8Queries {
    * @return String
    */
   public static String getEc8CombinedQuery(
-      int identifierType,
-      int programId,
-      int stateId,
-      int labEncounterType,
-      int adultFollowUp,
-      int childFollowUp) {
+      int identifierType, int programId, int stateId, int labEncounterType) {
     String query =
-        "SELECT patient_id, NID,Name,birthdate,Estimated_dob,Sex,First_entry_date,Last_updated,date_enrolled,state,state_date,lab_form_date,lab_form_date_created,MIN(clinical_form_date) AS clinical_form_date,clinical_form_date_created FROM("
-            + " SELECT pa.patient_id, pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, case when ps.state = 9 then 'DROPPED FROM TREATMENT' when ps.state = 6 then 'ACTIVE ON PROGRAM' when ps.state = 10 then 'PATIENT HAS DIED' when ps.state = 8 then 'SUSPENDED TREATMENT' when ps.state = 7 then 'TRANSFERED OUT TO ANOTHER FACILITY' when ps.state = 29 then 'TRANSFERRED FROM OTHER FACILTY' end AS state, DATE_FORMAT(ps.start_date, '%d-%m-%Y') AS state_date, IF(e.encounter_type = '13', DATE_FORMAT(e.encounter_datetime, '%d-%m-%Y'), ' ') AS lab_form_date, IF(e.encounter_type = '13', DATE_FORMAT(e.date_created, '%d-%m-%Y %H:%i:%s'), ' ') AS lab_form_date_created, IF(e.encounter_type != '13', DATE_FORMAT(e.encounter_datetime, '%d-%m-%Y'), ' ') AS clinical_form_date, IF(e.encounter_type != '13', DATE_FORMAT(e.date_created, '%d-%m-%Y %H:%i:%s'), ' ') AS clinical_form_date_created FROM patient pa "
+        "SELECT patient_id, NID,Name,birthdate,Estimated_dob,Sex,First_entry_date,Last_updated,date_enrolled,state,state_date,MIN(lab_form_date) AS lab_form_date,lab_form_date_created FROM("
+            + " SELECT pa.patient_id, pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, case when ps.state = 9 then 'DROPPED FROM TREATMENT' when ps.state = 6 then 'ACTIVE ON PROGRAM' when ps.state = 10 then 'PATIENT HAS DIED' when ps.state = 8 then 'SUSPENDED TREATMENT' when ps.state = 7 then 'TRANSFERED OUT TO ANOTHER FACILITY' when ps.state = 29 then 'TRANSFERRED FROM OTHER FACILTY' end AS state, DATE_FORMAT(ps.start_date, '%d-%m-%Y') AS state_date, DATE_FORMAT(e.encounter_datetime, '%d-%m-%Y') AS lab_form_date, DATE_FORMAT(e.date_created, '%d-%m-%Y %H:%i:%s') AS lab_form_date_created FROM patient pa "
             + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
             + " INNER JOIN person pe ON pa.patient_id=pe.person_id"
             + " INNER JOIN person_name pn ON pa.patient_id=pn.person_id "
@@ -44,10 +39,6 @@ public class Ec8Queries {
             + identifierType
             + " AND e.encounter_type IN("
             + labEncounterType
-            + ","
-            + adultFollowUp
-            + ","
-            + childFollowUp
             + ")"
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
             + " AND pa.patient_id IN("
@@ -62,10 +53,6 @@ public class Ec8Queries {
             + stateId
             + " AND e.encounter_type IN("
             + labEncounterType
-            + ","
-            + adultFollowUp
-            + ","
-            + childFollowUp
             + ") "
             + " AND pg.location_id IN(:location) "
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "

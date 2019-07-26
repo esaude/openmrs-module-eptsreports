@@ -44,9 +44,7 @@ public class Ec8PatientListDataset extends BaseDataSet {
             hivMetadata
                 .getTransferredOutToAnotherHealthFacilityWorkflowState()
                 .getProgramWorkflowStateId(),
-            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
+            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId()));
     return dsd;
   }
 }
