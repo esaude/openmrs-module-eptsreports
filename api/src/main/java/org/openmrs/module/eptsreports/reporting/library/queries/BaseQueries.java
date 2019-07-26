@@ -46,8 +46,10 @@ public class BaseQueries {
    *
    * @retrun String
    */
-  public static String getBaseQueryForDataQuality() {
+  public static String getBaseQueryForDataQuality(int programId) {
     return "SELECT p.patient_id from patient p JOIN patient_program pg ON p.patient_id=pg.patient_id JOIN patient_state ps on pg.patient_program_id=ps.patient_program_id "
-        + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0  AND ps.state IN(:state) AND pg.location_id IN(:location) AND p.date_created BETWEEN :startDate AND :endDate";
+        + "WHERE pg.program_id="
+        + programId
+        + " AND pg.voided=0 AND ps.voided=0 AND p.voided=0  AND ps.state IN(:state) AND pg.location_id IN(:location) AND p.date_created BETWEEN :startDate AND :endDate";
   }
 }

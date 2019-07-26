@@ -38,6 +38,7 @@ public class Ec6Queries {
             + identifierType
             + " AND e.encounter_type="
             + drugPickupEncounterType
+            + " AND e.encounter_datetime >= ps.start_date"
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
             + " AND pa.patient_id IN("
             + " SELECT pg.patient_id AS patient_id "
