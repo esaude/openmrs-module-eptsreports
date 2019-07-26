@@ -132,9 +132,7 @@ public class EriDSDCohortQueries {
             hivCohortQueries.getPatientsViralLoadWithin12Months(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(A AND B)");
-    // A AND B AND (NOT patientsWithViralLoad AND C ) AND D AND F
-    //    cd.setCompositionString("(F)");
+    cd.setCompositionString("A AND B AND (NOT patientsWithViralLoad AND C ) AND D AND F");
 
     return cd;
   }
