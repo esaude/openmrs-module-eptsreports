@@ -23,7 +23,8 @@ public class OnArtForAtleastXmonthsCalculation extends AbstractPatientCalculatio
   public CalculationResultMap evaluate(
       Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
 
-    Date onOrBefore = context.getNow(); // (Date) context.getFromCache("onOrBefore");
+    //    Date onOrBefore = context.getNow(); //
+    Date onOrBefore = (Date) context.getFromCache("onOrBefore");
     CalculationResultMap map = new CalculationResultMap();
 
     CalculationResultMap arvsInitiationDateMap =
@@ -55,8 +56,8 @@ public class OnArtForAtleastXmonthsCalculation extends AbstractPatientCalculatio
 
           Integer ageInYears = ageInYearsAtDate(patientBirthdate, onOrBefore);
 
-          if ((onArt12Months.compareTo(onOrBefore) >= 0 && ageInYears >= 2 && ageInYears <= 9)
-              || (onArt6Months.compareTo(onOrBefore) >= 0 && ageInYears >= 10)) {
+          if ((onArt12Months.compareTo(onOrBefore) <= 0 && ageInYears >= 2 && ageInYears <= 9)
+              || (onArt6Months.compareTo(onOrBefore) <= 0 && ageInYears >= 10)) {
             onArtAtleastMonths = true;
           }
         }

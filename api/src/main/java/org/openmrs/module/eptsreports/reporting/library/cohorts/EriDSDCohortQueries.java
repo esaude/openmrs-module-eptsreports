@@ -67,7 +67,7 @@ public class EriDSDCohortQueries {
             getPatientsWhoAreStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(1 AND 2) AND (NOT (3 OR 4)) AND 5");
+    cd.setCompositionString("(5)");
 
     return cd;
   }
@@ -132,7 +132,9 @@ public class EriDSDCohortQueries {
             hivCohortQueries.getPatientsViralLoadWithin12Months(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(A AND B AND (NOT patientsWithViralLoad AND C ) D AND F)");
+    cd.setCompositionString("(A AND B)");
+    // A AND B AND (NOT patientsWithViralLoad AND C ) AND D AND F
+    //    cd.setCompositionString("(F)");
 
     return cd;
   }
