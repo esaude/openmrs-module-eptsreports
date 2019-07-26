@@ -16,38 +16,33 @@ package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 import java.util.List;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
-import org.openmrs.module.eptsreports.reporting.library.queries.data.quality.Ec1Queries;
+import org.openmrs.module.eptsreports.reporting.library.queries.data.quality.ConfigQueries;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/** A dataset to display list of patients who are pregnant and male */
+/**
+ * This dataset will conatin all the configuration setting needed by the data quality report This
+ * will include the time the report was runned, the correct date range date format The names
+ * associated with the work flow states
+ */
 @Component
-public class Ec1PatientListDataset extends BaseDataSet {
+public class DqualityConfigDataset extends BaseDataSet {
 
   private HivMetadata hivMetadata;
 
   @Autowired
-  public Ec1PatientListDataset(HivMetadata hivMetadata) {
+  public DqualityConfigDataset(HivMetadata hivMetadata) {
     this.hivMetadata = hivMetadata;
   }
 
-  public DataSetDefinition ec1DataSetDefinition(List<Parameter> parameterList) {
+  public DataSetDefinition configDataSetDefinition(List<Parameter> parameterList) {
     SqlDataSetDefinition dsd = new SqlDataSetDefinition();
-    dsd.setName("EC1");
+    dsd.setName("Config");
     dsd.addParameters(parameterList);
-    dsd.setSqlQuery(
-        Ec1Queries.getEc1CombinedQuery(
-            hivMetadata.getNidServiceTarvIdentifierType().getPatientIdentifierTypeId(),
-            hivMetadata.getPregnantConcept().getConceptId(),
-            hivMetadata.getGestationConcept().getConceptId(),
-            hivMetadata.getNumberOfWeeksPregnant().getConceptId(),
-            hivMetadata.getPregnancyDueDate().getConceptId(),
-            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getPtvEtvProgram().getProgramId()));
+    dsd.setSqlQuery(ConfigQueries.getConfigurations(hivMetadata.getARTProgram().getProgramId()));
     return dsd;
   }
 }

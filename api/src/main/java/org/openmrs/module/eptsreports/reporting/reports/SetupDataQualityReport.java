@@ -21,6 +21,7 @@ import java.util.Properties;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.DqualityConfigDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec10PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec11PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec12PatientListDataset;
@@ -85,6 +86,8 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   private Ec15PatientListDataset ec15PatientListDataset;
 
+  private DqualityConfigDataset dqualityConfigDataset;
+
   private HivMetadata hivMetadata;
 
   @Autowired
@@ -106,6 +109,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       Ec13PatientListDataset ec13PatientListDataset,
       Ec14PatientListDataset ec14PatientListDataset,
       Ec15PatientListDataset ec15PatientListDataset,
+      DqualityConfigDataset dqualityConfigDataset,
       HivMetadata hivMetadata) {
     this.summaryDataQualityDataset = summaryDataQualityDataset;
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
@@ -125,6 +129,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     this.ec14PatientListDataset = ec14PatientListDataset;
     this.ec15PatientListDataset = ec15PatientListDataset;
     this.hivMetadata = hivMetadata;
+    this.dqualityConfigDataset = dqualityConfigDataset;
   }
 
   @Override
@@ -160,7 +165,8 @@ public class SetupDataQualityReport extends EptsDataExportManager {
         EptsReportUtils.map(
             summaryDataQualityCohorts.getQualityDataReportBaseCohort(),
             "startDate=${startDate},endDate=${endDate},location=${location},state=${state}"));
-    // adding respective data sets
+    // adding a data set to help us get configuration parameters
+    // adding respective data sets for the reports
     rd.addDataSetDefinition(
         "S",
         Mapped.mapStraightThrough(
@@ -223,6 +229,11 @@ public class SetupDataQualityReport extends EptsDataExportManager {
         "EC15",
         Mapped.mapStraightThrough(
             ec15PatientListDataset.ec15PatientListDataset(getDataParameters())));
+
+    rd.addDataSetDefinition(
+        "config",
+        Mapped.mapStraightThrough(
+            dqualityConfigDataset.configDataSetDefinition(getDataParameters())));
 
     return rd;
   }
