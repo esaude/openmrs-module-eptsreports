@@ -49,7 +49,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "2",
         EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("moreThanOrEqual2Years", 2, 200), ""));
+            ageCohortQueries.createXtoYAgeCohort("moreThanOrEqual2Years", 2, 200),
+            "effectiveDate=${endDate}"));
     cd.addSearch(
         "3",
         EptsReportUtils.map(
@@ -60,9 +61,13 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             getPatientsWhoAreBreastfeedingInLast18Months(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch("5", EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate}"));
+    cd.addSearch(
+        "5",
+        EptsReportUtils.map(
+            getPatientsWhoAreStable(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(1 AND 2) AND NOT (3 OR 4) AND 5");
+    cd.setCompositionString("(1 AND 2) AND (NOT (3 OR 4)) AND 5");
 
     return cd;
   }
@@ -104,10 +109,6 @@ public class EriDSDCohortQueries {
                     hivMetadata.getWho4AdultStageConcept())),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
-        "E",
-        EptsReportUtils.map(
-            getPoorAdherenceInLast3Visits(), "onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
         "F",
         EptsReportUtils.map(
             genericCohortQueries.hasCodedObs(
@@ -131,7 +132,7 @@ public class EriDSDCohortQueries {
             hivCohortQueries.getPatientsViralLoadWithin12Months(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(A AND B AND (NOT patientsWithViralLoad AND C ) D AND E AND F)");
+    cd.setCompositionString("(A AND B AND (NOT patientsWithViralLoad AND C ) D AND F)");
 
     return cd;
   }
@@ -148,6 +149,7 @@ public class EriDSDCohortQueries {
             "onArtAtleastXmonths",
             Context.getRegisteredComponents(OnArtForAtleastXmonthsCalculation.class).get(0));
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
 
     return cd;
   }
@@ -251,7 +253,7 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * 5C (ii) One CD4 result > 200 cels/mm3 in last ART year (if patients age >=5 and <=9)
+   * 5C (ii) One CD4 result > 200 cels/mm3 in last ART year (if patients age >=5 years)
    *
    * @return
    */
@@ -280,7 +282,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "Age",
         EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("5-9", 5, 9), "effectiveDate=${endDate}"));
+            ageCohortQueries.createXtoYAgeCohort("greaterThan5", 5, 900),
+            "effectiveDate=${endDate}"));
 
     cd.setCompositionString("(CD4Abs AND Age)");
 
