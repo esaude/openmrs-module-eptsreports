@@ -82,7 +82,7 @@ public class SummaryDataQualityCohorts {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Facilities", Location.class, List.class, null));
     cd.addParameter(EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()));
-    cd.setQuery(BaseQueries.getBaseQueryForDataQuality());
+    cd.setQuery(BaseQueries.getBaseQueryForDataQuality(hivMetadata.getARTProgram().getProgramId()));
     return cd;
   }
 

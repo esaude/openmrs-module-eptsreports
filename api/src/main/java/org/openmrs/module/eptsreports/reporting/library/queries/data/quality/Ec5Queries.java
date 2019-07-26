@@ -38,6 +38,7 @@ public class Ec5Queries {
             + programId
             + " AND pi.identifier_type="
             + identifierType
+            + " AND e.encounter_datetime >= ps.start_date"
             + " AND pa.patient_id IN("
             + " SELECT pg.patient_id AS patient_id "
             + " FROM patient p "
