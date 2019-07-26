@@ -261,7 +261,7 @@ public class DsdQueries {
             + ","
             + pediatriaSeguimentoEncounter
             + ")"
-            + " AND e.encounter_datetime <='20-07-2018'"
+            + " AND e.encounter_datetime <= :endDate"
             + " AND e.location_id=6"
             + " GROUP BY e.encounter_id"
             + " ) encounters"
