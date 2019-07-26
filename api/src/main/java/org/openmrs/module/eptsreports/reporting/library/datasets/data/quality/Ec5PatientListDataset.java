@@ -42,9 +42,7 @@ public class Ec5PatientListDataset extends BaseDataSet {
             hivMetadata.getNidServiceTarvIdentifierType().getPatientIdentifierTypeId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
-            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
+            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId()));
     return dsd;
   }
 }

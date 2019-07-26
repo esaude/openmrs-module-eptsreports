@@ -114,11 +114,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                         hivMetadata.getARTProgram().getProgramId(),
                         hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
                         Arrays.asList(
-                            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
-                            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                            hivMetadata
-                                .getARVPediatriaSeguimentoEncounterType()
-                                .getEncounterTypeId())),
+                            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId())),
                     "location=${location}"),
                 Arrays.asList(
                     EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
@@ -181,11 +177,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                             .getTransferredOutToAnotherHealthFacilityWorkflowState()
                             .getProgramWorkflowStateId(),
                         Arrays.asList(
-                            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
-                            hivMetadata
-                                .getARVPediatriaSeguimentoEncounterType()
-                                .getEncounterTypeId(),
-                            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
+                            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId())),
                     "location=${location}"),
                 Arrays.asList(
                     EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
@@ -242,11 +234,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                         hivMetadata.getARTProgram().getProgramId(),
                         hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
                         Arrays.asList(
-                            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
-                            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                            hivMetadata
-                                .getARVPediatriaSeguimentoEncounterType()
-                                .getEncounterTypeId())),
+                            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId())),
                     "location=${location}"),
                 Arrays.asList(
                     EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
