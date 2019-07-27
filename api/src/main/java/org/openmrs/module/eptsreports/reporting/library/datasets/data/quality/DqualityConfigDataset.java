@@ -40,7 +40,7 @@ public class DqualityConfigDataset extends BaseDataSet {
 
   public DataSetDefinition configDataSetDefinition(List<Parameter> parameterList) {
     SqlDataSetDefinition dsd = new SqlDataSetDefinition();
-    dsd.setName("config");
+    dsd.setName("EC0");
     dsd.addParameters(parameterList);
     dsd.setSqlQuery(ConfigQueries.getConfigurations(hivMetadata.getARTProgram().getProgramId()));
     return dsd;

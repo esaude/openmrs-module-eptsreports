@@ -37,16 +37,10 @@ public class Ec15Queries {
             + identifierType
             + " AND e.encounter_type="
             + encounterType
-            + " AND pe.birthdate > e.encounter_datetime"
-            + " AND pa.patient_id IN("
-            + " SELECT ec15.patient_id FROM("
-            + " SELECT pa.patient_id AS patient_id, pe.birthdate AS birthdate, e.encounter_datetime AS encounter_date FROM patient pa "
-            + " INNER JOIN person pe ON pa.patient_id=pe.person_id "
-            + " INNER JOIN encounter e ON pa.patient_id=e.patient_id "
-            + " WHERE pe.birthdate IS NOT NULL AND e.encounter_type="
-            + encounterType
+            + " AND pe.birthdate IS NOT NULL"
             + " AND e.location_id IN(:location) AND pa.voided = 0 and e.voided=0 "
-            + " AND pe.birthdate > e.encounter_datetime) ec15))f_ec15 GROUP BY f_ec15.patient_id";
+            + " AND pe.birthdate > e.encounter_datetime"
+            + ")f_ec15 GROUP BY f_ec15.patient_id";
     return query;
   }
 }
