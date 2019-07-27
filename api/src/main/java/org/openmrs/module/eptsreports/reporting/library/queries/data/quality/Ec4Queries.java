@@ -47,11 +47,13 @@ public class Ec4Queries {
             + " AND pa.patient_id IN("
             + " SELECT pg.patient_id AS patient_id "
             + " FROM patient p "
-            + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id AND pg.voided=0 "
-            + " INNER JOIN encounter e ON p.patient_id=e.patient_id AND e.location_id IN(:location) AND e.voided=0 "
-            + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id AND ps.voided=0 "
+            + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id "
+            + " INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id  "
             + " WHERE p.voided=0 AND pg.program_id="
             + programId
+            + " AND pg.voided=0 "
+            + " AND ps.voided=0 "
             + " AND ps.state="
             + stateId
             + " AND e.encounter_type IN("
@@ -60,6 +62,7 @@ public class Ec4Queries {
             + childFollowUp
             + ") "
             + " AND pg.location_id IN(:location) "
+            + " AND e.location_id IN(:location) AND e.voided=0 "
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
             + " AND e.encounter_datetime >= ps.start_date "
             + " GROUP BY pg.patient_id "
