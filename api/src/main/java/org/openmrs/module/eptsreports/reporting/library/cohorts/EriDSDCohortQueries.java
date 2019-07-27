@@ -65,7 +65,7 @@ public class EriDSDCohortQueries {
             getPatientsWhoAreStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(5)");
+    cd.setCompositionString("(1 AND 2 AND NOT (3 OR 4) AND 5)");
 
     return cd;
   }
@@ -97,17 +97,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D",
         EptsReportUtils.map(
-            genericCohortQueries.hasCodedObs(
-                hivMetadata.getCurrentWHOHIVStageConcept(),
-                BaseObsCohortDefinition.TimeModifier.LAST,
-                SetComparator.IN,
-                Arrays.asList(
-                    hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType()),
-                Arrays.asList(
-                    hivMetadata.getWho3AdultStageConcept(),
-                    hivMetadata.getWho4AdultStageConcept())),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+            getPatientsWhoAreOnWhoStage3Or4InLastEncounter(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "F",
         EptsReportUtils.map(
@@ -223,7 +214,7 @@ public class EriDSDCohortQueries {
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4AbsoluteConcept(),
                 BaseObsCohortDefinition.TimeModifier.ANY,
-                RangeComparator.GREATER_THAN,
+                RangeComparator.GREATER_EQUAL,
                 750.0,
                 null,
                 null,
@@ -238,7 +229,7 @@ public class EriDSDCohortQueries {
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4PercentConcept(),
                 BaseObsCohortDefinition.TimeModifier.ANY,
-                RangeComparator.GREATER_THAN,
+                RangeComparator.GREATER_EQUAL,
                 15.0,
                 null,
                 null,
@@ -275,7 +266,7 @@ public class EriDSDCohortQueries {
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4AbsoluteOBSConcept(),
                 BaseObsCohortDefinition.TimeModifier.ANY,
-                RangeComparator.GREATER_THAN,
+                RangeComparator.GREATER_EQUAL,
                 200.0,
                 null,
                 null,
@@ -329,7 +320,12 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getPatientsWithViralLoadLessThan1000Within12Months() {
+  /**
+   * Get Patients with Viral Load less than 1000 in the last 12 months.
+   *
+   * @return
+   */
+  private CohortDefinition getPatientsWithViralLoadLessThan1000Within12Months() {
     SqlCohortDefinition sql = new SqlCohortDefinition();
     sql.setName("Viral Load Less Than 1000 Within 12Months");
     sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -341,6 +337,30 @@ public class EriDSDCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId()));
+    return sql;
+  }
+
+  /**
+   * Get Patients which WHO Stage 3 or 4 In the last clinical encounter
+   *
+   * @return
+   */
+  private CohortDefinition getPatientsWhoAreOnWhoStage3Or4InLastEncounter() {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("Patients who are on WHO stage 3 or 4 in the last encounter");
+
+    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sql.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sql.addParameter(new Parameter("location", "Location", Location.class));
+
+    sql.setQuery(
+        DsdQueries.getPatientsWithWHOStage3Or4(
+            hivMetadata.getCurrentWHOHIVStageConcept().getConceptId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getWho3AdultStageConcept().getConceptId(),
+            hivMetadata.getWho4AdultStageConcept().getConceptId()));
+
     return sql;
   }
 

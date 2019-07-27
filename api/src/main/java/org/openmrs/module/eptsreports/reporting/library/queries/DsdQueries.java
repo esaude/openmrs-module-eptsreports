@@ -197,6 +197,15 @@ public class DsdQueries {
         + " location_id IN(:location)";
   }
 
+  /**
+   * Get Patients with Viral Load less than 1000 in the last 12 Months for DSD criteria 5B
+   *
+   * @param labEncounter
+   * @param adultSeguimentoEncounter
+   * @param pediatriaSeguimentoEncounter
+   * @param vlConceptQuestion
+   * @return
+   */
   public static String patientsWithViralLoadLessThan1000(
       int labEncounter,
       int adultSeguimentoEncounter,
@@ -221,6 +230,50 @@ public class DsdQueries {
             + " AND e.location_id=:location "
             + " AND o.value_numeric < 1000"
             + " GROUP BY p.patient_id";
+
+    return query;
+  }
+
+  /**
+   * @param adultSeguimentoEncounter
+   * @param pediatriaSeguimentoEncounter
+   * @param whoStage3
+   * @param whoStage4
+   * @return
+   */
+  public static String getPatientsWithWHOStage3Or4(
+      int currentWHOHIVStageConcept,
+      int adultSeguimentoEncounter,
+      int pediatriaSeguimentoEncounter,
+      int whoStage3,
+      int whoStage4) {
+
+    String query =
+        " SELECT encounters.patient_id"
+            + " FROM ("
+            + " SELECT p.patient_id, e.encounter_id, MAX(e.encounter_datetime) e_datetime"
+            + " FROM patient p"
+            + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
+            + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 "
+            + " AND e.encounter_type IN ("
+            + adultSeguimentoEncounter
+            + ","
+            + pediatriaSeguimentoEncounter
+            + ")"
+            + " AND e.encounter_datetime <='20-07-2018'"
+            + " AND e.location_id=6"
+            + " GROUP BY e.encounter_id"
+            + " ) encounters"
+            + " INNER JOIN obs o ON encounters.encounter_id=o.encounter_id"
+            + " WHERE o.voided=0 "
+            + " AND o.concept_id="
+            + currentWHOHIVStageConcept
+            + " AND o.value_coded IN ("
+            + whoStage3
+            + ","
+            + whoStage4
+            + ") GROUP BY encounters.patient_id ";
 
     return query;
   }
