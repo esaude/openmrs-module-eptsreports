@@ -21,7 +21,6 @@ import java.util.Properties;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.DqualityConfigDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec10PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec11PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec12PatientListDataset;
@@ -37,6 +36,7 @@ import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec7PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec8PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec9PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.GetCustomConfigurationDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.SummaryDataQualityDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -86,7 +86,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   private Ec15PatientListDataset ec15PatientListDataset;
 
-  private DqualityConfigDataset dqualityConfigDataset;
+  private GetCustomConfigurationDataset getCustomConfigurationDataset;
 
   private HivMetadata hivMetadata;
 
@@ -109,7 +109,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       Ec13PatientListDataset ec13PatientListDataset,
       Ec14PatientListDataset ec14PatientListDataset,
       Ec15PatientListDataset ec15PatientListDataset,
-      DqualityConfigDataset dqualityConfigDataset,
+      GetCustomConfigurationDataset getCustomConfigurationDataset,
       HivMetadata hivMetadata) {
     this.summaryDataQualityDataset = summaryDataQualityDataset;
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
@@ -129,7 +129,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     this.ec14PatientListDataset = ec14PatientListDataset;
     this.ec15PatientListDataset = ec15PatientListDataset;
     this.hivMetadata = hivMetadata;
-    this.dqualityConfigDataset = dqualityConfigDataset;
+    this.getCustomConfigurationDataset = getCustomConfigurationDataset;
   }
 
   @Override
@@ -231,9 +231,9 @@ public class SetupDataQualityReport extends EptsDataExportManager {
             ec15PatientListDataset.ec15PatientListDataset(getDataParameters())));
 
     rd.addDataSetDefinition(
-        "EC0",
+        "EC01",
         Mapped.mapStraightThrough(
-            dqualityConfigDataset.configDataSetDefinition(getDataParameters())));
+            getCustomConfigurationDataset.configDataSetDefinition(getDataParameters())));
 
     return rd;
   }
