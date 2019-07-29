@@ -88,7 +88,7 @@ public class EriDSDCohortQueries {
         "B",
         EptsReportUtils.map(
             getPatientsWithViralLoadLessThan1000Within12Months(),
-            "endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "C",
         EptsReportUtils.map(
@@ -199,7 +199,7 @@ public class EriDSDCohortQueries {
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4AbsoluteOBSConcept(),
                 BaseObsCohortDefinition.TimeModifier.ANY,
-                RangeComparator.GREATER_EQUAL,
+                RangeComparator.GREATER_THAN,
                 750.0,
                 null,
                 null,
@@ -214,7 +214,7 @@ public class EriDSDCohortQueries {
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4AbsoluteConcept(),
                 BaseObsCohortDefinition.TimeModifier.ANY,
-                RangeComparator.GREATER_EQUAL,
+                RangeComparator.GREATER_THAN,
                 750.0,
                 null,
                 null,
@@ -229,7 +229,7 @@ public class EriDSDCohortQueries {
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4PercentConcept(),
                 BaseObsCohortDefinition.TimeModifier.ANY,
-                RangeComparator.GREATER_EQUAL,
+                RangeComparator.GREATER_THAN,
                 15.0,
                 null,
                 null,
@@ -266,7 +266,7 @@ public class EriDSDCohortQueries {
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4AbsoluteOBSConcept(),
                 BaseObsCohortDefinition.TimeModifier.ANY,
-                RangeComparator.GREATER_EQUAL,
+                RangeComparator.GREATER_THAN,
                 200.0,
                 null,
                 null,
@@ -281,7 +281,7 @@ public class EriDSDCohortQueries {
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4AbsoluteConcept(),
                 BaseObsCohortDefinition.TimeModifier.ANY,
-                RangeComparator.GREATER_EQUAL,
+                RangeComparator.GREATER_THAN,
                 200.0,
                 null,
                 null,
