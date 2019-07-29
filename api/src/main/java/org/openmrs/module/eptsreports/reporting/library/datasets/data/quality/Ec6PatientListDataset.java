@@ -39,7 +39,6 @@ public class Ec6PatientListDataset extends BaseDataSet {
     dsd.addParameters(parameterList);
     dsd.setSqlQuery(
         Ec6Queries.getEc6CombinedQuery(
-            hivMetadata.getNidServiceTarvIdentifierType().getPatientIdentifierTypeId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata
                 .getTransferredOutToAnotherHealthFacilityWorkflowState()

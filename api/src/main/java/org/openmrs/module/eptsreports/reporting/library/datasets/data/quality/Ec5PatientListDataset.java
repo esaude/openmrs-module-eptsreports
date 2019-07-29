@@ -39,7 +39,6 @@ public class Ec5PatientListDataset extends BaseDataSet {
     dsd.addParameters(parameterList);
     dsd.setSqlQuery(
         Ec5Queries.getEc5CombinedQuery(
-            hivMetadata.getNidServiceTarvIdentifierType().getPatientIdentifierTypeId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId()));

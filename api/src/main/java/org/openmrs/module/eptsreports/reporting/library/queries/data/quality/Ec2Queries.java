@@ -16,7 +16,6 @@ package org.openmrs.module.eptsreports.reporting.library.queries.data.quality;
 public class Ec2Queries {
   /** Get the combined query for EC2 patient listing */
   public static String getEc2CombinedQuery(
-      int identifierType,
       int deliveryDateConcept,
       int arvInitiationConcept,
       int lactationConcept,
@@ -91,8 +90,6 @@ public class Ec2Queries {
             + " INNER JOIN patient_identifier pi ON brest_final.patient_id=pi.patient_id "
             + " INNER JOIN person_name pn ON brest_final.patient_id=pn.person_id "
             + " INNER JOIN person pe ON brest_final.patient_id=pe.person_id "
-            + " WHERE pi.identifier_type="
-            + identifierType
             + ") breastfeeding "
             + " LEFT JOIN "
             + " (SELECT pa.patient_id AS patientId, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled,"

@@ -44,7 +44,6 @@ public class Ec2PatientListDataset extends BaseDataSet {
     dsd.addParameters(parameterList);
     dsd.setSqlQuery(
         Ec2Queries.getEc2CombinedQuery(
-            hivMetadata.getNidServiceTarvIdentifierType().getPatientIdentifierTypeId(),
             hivMetadata.getPriorDeliveryDateConcept().getConceptId(),
             hivMetadata.getCriteriaForArtStart().getConceptId(),
             hivMetadata.getBreastfeeding().getConceptId(),

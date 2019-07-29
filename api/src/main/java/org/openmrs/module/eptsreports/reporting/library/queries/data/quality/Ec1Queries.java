@@ -17,7 +17,6 @@ public class Ec1Queries {
 
   /** Get the combined query for EC1 patient listing */
   public static String getEc1CombinedQuery(
-      int identifierType,
       int pregnantConcept,
       int gestationConcept,
       int weeksPregnantConcept,
@@ -44,8 +43,6 @@ public class Ec1Queries {
             + ","
             + adultSegEncounter
             + ") "
-            + " AND pi.identifier_type="
-            + identifierType
             + " AND e.location_id IN(:location)"
             + " AND pe.gender ='M'"
             + " UNION "
@@ -64,8 +61,6 @@ public class Ec1Queries {
             + ","
             + adultSegEncounter
             + ")"
-            + " AND pi.identifier_type="
-            + identifierType
             + " AND e.location_id IN(:location)"
             + " AND pe.gender ='M'"
             + " UNION "
@@ -84,8 +79,6 @@ public class Ec1Queries {
             + ","
             + adultSegEncounter
             + ") "
-            + " AND pi.identifier_type="
-            + identifierType
             + " AND e.location_id IN(:location) "
             + " AND pe.gender ='M'"
             + " UNION "
@@ -95,8 +88,6 @@ public class Ec1Queries {
             + " INNER JOIN person_name pn ON pp.patient_id=pn.person_id "
             + " WHERE pp.program_id= "
             + etvProgram
-            + " AND pi.identifier_type="
-            + identifierType
             + " AND pp.voided=0 AND pp.location_id IN(:location) "
             + " AND pe.gender ='M') preg GROUP BY preg.patient_id) preg_final "
             + " LEFT JOIN ("
