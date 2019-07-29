@@ -231,7 +231,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
             ec15PatientListDataset.ec15PatientListDataset(getDataParameters())));
 
     rd.addDataSetDefinition(
-        "config",
+        "EC0",
         Mapped.mapStraightThrough(
             dqualityConfigDataset.configDataSetDefinition(getDataParameters())));
 
