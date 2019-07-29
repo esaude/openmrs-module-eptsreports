@@ -83,7 +83,10 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    cd.addSearch("A", EptsReportUtils.map(getPatientsWhoAreStableA(), "onOrBefore=${endDate}"));
+    cd.addSearch(
+        "A",
+        EptsReportUtils.map(
+            getPatientsWhoAreStableA(), "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "B",
         EptsReportUtils.map(
