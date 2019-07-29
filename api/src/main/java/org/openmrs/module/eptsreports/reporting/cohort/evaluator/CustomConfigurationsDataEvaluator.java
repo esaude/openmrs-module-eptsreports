@@ -1,7 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.cohort.evaluator;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CustomConfigurationsDataDefinition;
@@ -24,15 +24,30 @@ public class CustomConfigurationsDataEvaluator implements DataSetEvaluator {
 
     CustomConfigurationsDataDefinition dsd = (CustomConfigurationsDataDefinition) dataSetDefinition;
 
-    Set<ProgramWorkflowState> programWorkflowStateSet = dsd.getWorkflowStates();
-
     SimpleDataSet dataSet = new SimpleDataSet(dataSetDefinition, context);
 
     DataSetRow row = new DataSetRow();
     row.addColumnValue(
         new DataSetColumn("report_time", "Report time", String.class),
         EptsReportUtils.formatDateWithTime(new Date()));
+    row.addColumnValue(
+        new DataSetColumn("states", "States", String.class), getWorkflowStates(context));
     dataSet.addRow(row);
     return dataSet;
+  }
+
+  private String getWorkflowStates(EvaluationContext context) {
+    List<ProgramWorkflowState> workflowStateList =
+        (List<ProgramWorkflowState>) context.getParameterValue("state");
+    StringBuilder statesAsString = new StringBuilder();
+    String value = "";
+    for (ProgramWorkflowState workflowState : workflowStateList) {
+      value = workflowState.getConcept().getDisplayString();
+      statesAsString =
+          statesAsString.length() > 0
+              ? statesAsString.append(",").append(value)
+              : statesAsString.append(value);
+    }
+    return statesAsString.toString();
   }
 }
