@@ -34,11 +34,10 @@ public class Ec12Queries {
             + " AND pi.identifier_type="
             + identifierType
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
-            + " AND pa.patient_id IN("
-            + " SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id "
-            + " WHERE pe.birthdate IS NOT NULL AND YEAR(pe.birthdate) < "
-            + year
-            + ")";
+            + " AND pe.birthdate IS NOT NULL "
+            + " AND YEAR(pe.birthdate) < "
+            + year;
+
     return query;
   }
 }

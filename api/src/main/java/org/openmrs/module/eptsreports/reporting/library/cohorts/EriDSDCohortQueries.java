@@ -199,7 +199,7 @@ public class EriDSDCohortQueries {
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4AbsoluteOBSConcept(),
                 BaseObsCohortDefinition.TimeModifier.ANY,
-                RangeComparator.GREATER_THAN,
+                RangeComparator.GREATER_EQUAL,
                 750.0,
                 null,
                 null,
@@ -276,12 +276,27 @@ public class EriDSDCohortQueries {
                     hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
+        "Cd4Lab",
+        EptsReportUtils.map(
+            genericCohortQueries.hasNumericObs(
+                hivMetadata.getCD4AbsoluteConcept(),
+                BaseObsCohortDefinition.TimeModifier.ANY,
+                RangeComparator.GREATER_EQUAL,
+                200.0,
+                null,
+                null,
+                Arrays.asList(
+                    hivMetadata.getAdultoSeguimentoEncounterType(),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getMisauLaboratorioEncounterType())),
+            "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch(
         "Age",
         EptsReportUtils.map(
             ageCohortQueries.createXtoYAgeCohort("greaterThan5", 5, 900),
             "effectiveDate=${endDate}"));
 
-    cd.setCompositionString("(CD4Abs AND Age)");
+    cd.setCompositionString("((CD4Abs OR Cd4Lab) AND Age)");
 
     return cd;
   }
