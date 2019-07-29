@@ -20,7 +20,7 @@ public class Ec12Queries {
    *
    * @return String
    */
-  public static String getEc12CombinedQuery(int identifierType, int programId, int year) {
+  public static String getEc12CombinedQuery(int programId, int year) {
     String query =
         "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, case when ps.state = 9 then 'DROPPED FROM TREATMENT' when ps.state = 6 then 'ACTIVE ON PROGRAM' when ps.state = 10 then 'PATIENT HAS DIED' when ps.state = 8 then 'SUSPENDED TREATMENT' when ps.state = 7 then 'TRANSFERED OUT TO ANOTHER FACILITY' when ps.state = 29 then 'TRANSFERRED FROM OTHER FACILTY' end AS state FROM patient pa "
             + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
@@ -31,8 +31,6 @@ public class Ec12Queries {
             + " WHERE "
             + " pg.program_id="
             + programId
-            + " AND pi.identifier_type="
-            + identifierType
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
             + " AND pe.birthdate IS NOT NULL "
             + " AND YEAR(pe.birthdate) < "
