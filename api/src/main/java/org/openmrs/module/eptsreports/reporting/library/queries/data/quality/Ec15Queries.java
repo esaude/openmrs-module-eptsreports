@@ -20,7 +20,7 @@ public class Ec15Queries {
    *
    * @return String
    */
-  public static String getEc15CombinedQuery(int identifierType, int programId, int encounterType) {
+  public static String getEc15CombinedQuery(int programId, int encounterType) {
     String query =
         "SELECT patient_id, NID, Name, birthdate, Estimated_dob, Sex, First_entry_date, Last_updated, MIN(encounter_date) AS encounter_date, encounter_date_created FROM("
             + " SELECT pa.patient_id, pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(e.encounter_datetime, '%d-%m-%Y %H:%i:%s') AS encounter_date, DATE_FORMAT(e.date_created, '%d-%m-%Y %H:%i:%s') AS encounter_date_created FROM patient pa "
@@ -33,8 +33,6 @@ public class Ec15Queries {
             + " pg.program_id="
             + programId
             + " AND e.voided=0 "
-            + " AND pi.identifier_type="
-            + identifierType
             + " AND e.encounter_type="
             + encounterType
             + " AND pe.birthdate IS NOT NULL"

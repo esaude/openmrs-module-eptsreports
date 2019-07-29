@@ -39,10 +39,7 @@ public class Ec12PatientListDataset extends BaseDataSet {
     dsd.setName("EC12");
     dsd.addParameters(parameterList);
     dsd.setSqlQuery(
-        Ec12Queries.getEc12CombinedQuery(
-            hivMetadata.getNidServiceTarvIdentifierType().getPatientIdentifierTypeId(),
-            hivMetadata.getARTProgram().getProgramId(),
-            1920));
+        Ec12Queries.getEc12CombinedQuery(hivMetadata.getARTProgram().getProgramId(), 1920));
 
     return dsd;
   }
