@@ -1,5 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.cohort.evaluator;
 
+import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.formatDate;
+
 import java.util.Date;
 import java.util.List;
 import org.openmrs.ProgramWorkflowState;
@@ -32,6 +34,8 @@ public class CustomConfigurationsDataEvaluator implements DataSetEvaluator {
         EptsReportUtils.formatDateWithTime(new Date()));
     row.addColumnValue(
         new DataSetColumn("states", "States", String.class), getWorkflowStates(context));
+    row.addColumnValue(
+        new DataSetColumn("period", "Period", String.class), getReportingPeriodRange(context));
     dataSet.addRow(row);
     return dataSet;
   }
@@ -49,5 +53,11 @@ public class CustomConfigurationsDataEvaluator implements DataSetEvaluator {
               : statesAsString.append(value);
     }
     return statesAsString.toString();
+  }
+
+  private String getReportingPeriodRange(EvaluationContext context) {
+    Date startDate = (Date) context.getParameterValue("startDate");
+    Date endDate = (Date) context.getParameterValue("endDate");
+    return formatDate(startDate) + " to " + formatDate(endDate);
   }
 }
