@@ -249,31 +249,35 @@ public class DsdQueries {
       int whoStage4) {
 
     String query =
-        " SELECT encounters.patient_id"
-            + " FROM ("
-            + " SELECT p.patient_id, e.encounter_id, MAX(e.encounter_datetime) e_datetime"
-            + " FROM patient p"
-            + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
-            + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
-            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 "
-            + " AND e.encounter_type IN ("
+        "SELECT encounters.patient_id "
+            + "FROM ("
+            + "SELECT ordered.patient_id, ordered.encounter_id, MAX(ordered.encounter_datetime) AS encounter_datetime "
+            + "FROM ("
+            + "SELECT e.patient_id, e.encounter_id, e.encounter_datetime "
+            + "FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "WHERE p.voided=0 AND e.voided=0 AND o.voided=0 "
+            + "AND e.encounter_type IN ("
             + adultSeguimentoEncounter
             + ","
             + pediatriaSeguimentoEncounter
-            + ")"
-            + " AND e.encounter_datetime <='20-07-2018'"
-            + " AND e.location_id=6"
-            + " GROUP BY e.encounter_id"
-            + " ) encounters"
-            + " INNER JOIN obs o ON encounters.encounter_id=o.encounter_id"
-            + " WHERE o.voided=0 "
-            + " AND o.concept_id="
+            + ")AND e.encounter_datetime <= :endDate "
+            + "AND e.location_id= :location "
+            + "GROUP BY e.patient_id, e.encounter_id "
+            + "ORDER BY e.encounter_datetime DESC "
+            + ") ordered "
+            + "GROUP BY ordered.patient_id "
+            + ") encounters "
+            + "INNER JOIN obs o ON encounters.encounter_id=o.encounter_id "
+            + "WHERE o.voided=0 "
+            + "AND o.concept_id="
             + currentWHOHIVStageConcept
             + " AND o.value_coded IN ("
             + whoStage3
             + ","
             + whoStage4
-            + ") GROUP BY encounters.patient_id ";
+            + ") GROUP BY patient_id";
 
     return query;
   }
