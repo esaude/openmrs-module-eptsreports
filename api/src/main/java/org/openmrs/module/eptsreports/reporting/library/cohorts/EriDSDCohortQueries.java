@@ -528,7 +528,7 @@ public class EriDSDCohortQueries {
         "TxCurr",
         EptsReportUtils.map(
             txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
-            "onOrBefore=${endDate},location=${location},locations=${location}"));
+            "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "scheduled",
         EptsReportUtils.map(
