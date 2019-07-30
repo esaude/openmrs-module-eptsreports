@@ -14,8 +14,11 @@
 
 package org.openmrs.module.eptsreports.reporting.utils;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -153,5 +156,19 @@ public class EptsReportUtils {
     Properties properties = new Properties();
     properties.put("Program", program.getName());
     return properties;
+  }
+
+  public static String formatDateWithTime(Date date) {
+
+    Format formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+
+    return formatter.format(date);
+  }
+
+  public static String formatDate(Date date) {
+
+    Format formatter = new SimpleDateFormat("dd-MM-yyyy");
+
+    return formatter.format(date);
   }
 }
