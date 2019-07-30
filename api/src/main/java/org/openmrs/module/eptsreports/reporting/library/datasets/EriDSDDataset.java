@@ -244,7 +244,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N1SST",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1Stable(),
                     mappings)),
             mappings),
         "");
@@ -255,7 +255,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N1SNPNBA",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1Stable(),
                     mappings)),
             mappings),
         "age=15+");
@@ -267,7 +267,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N1SNPNBC",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1Stable(),
                     mappings)),
             mappings),
         getChildrenColumn());
@@ -289,7 +289,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N1UNPNBA",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN1Unstable(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1Unstable(),
                     mappings)),
             mappings),
         "age=15+");
@@ -301,7 +301,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N1UNPNBC",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN1Unstable(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1Unstable(),
                     mappings)),
             mappings),
         getChildrenColumn());
@@ -345,7 +345,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N2SST",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN2(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN2Stable(),
                     mappings)),
             mappings),
         "");
@@ -356,7 +356,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N2SNPNBA",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN2(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN2Stable(),
                     mappings)),
             mappings),
         "age=15+");
@@ -368,7 +368,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N2SNPNBC",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN2(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN2Stable(),
                     mappings)),
             mappings),
         getChildrenColumn());
@@ -391,7 +391,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N2UNPNBA",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN2(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN2Unstable(),
                     mappings)),
             mappings),
         "age=15+");
@@ -403,7 +403,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N2UNPNBC",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN2(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN2Unstable(),
                     mappings)),
             mappings),
         getChildrenColumn());
@@ -446,7 +446,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N3SST",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN3(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN3Stable(),
                     mappings)),
             mappings),
         "");
@@ -457,7 +457,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N3SNPNBA",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN3(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN3Stable(),
                     mappings)),
             mappings),
         "age=15+");
@@ -469,7 +469,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N3SNPNBC",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN3(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN3Stable(),
                     mappings)),
             mappings),
         getChildrenColumn());
@@ -491,7 +491,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N3UNPNBA",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN3Unstable(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN3Unstable(),
                     mappings)),
             mappings),
         "age=15+");
@@ -503,7 +503,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N3UNPNBC",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN3Unstable(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN3Unstable(),
                     mappings)),
             mappings),
         getChildrenColumn());
@@ -525,7 +525,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N3UPB",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoArePregnantAndNotBreastfeedingN3Unstable(),
+                    eriDSDCohortQueries.getPatientsWhoArePregnantAndBreastfeedingN3Unstable(),
                     mappings)),
             mappings),
         "");
