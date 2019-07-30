@@ -535,7 +535,9 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             getPatientsScheduled(
                 hivMetadata.getReturnVisitDateForArvDrugConcept(),
-                Arrays.asList(hivMetadata.getARVPharmaciaEncounterType())),
+                Arrays.asList(hivMetadata.getARVPharmaciaEncounterType()),
+                97,
+                83),
             "location=${location}"));
 
     cd.setCompositionString("TxCurr AND scheduled");
@@ -549,7 +551,10 @@ public class EriDSDCohortQueries {
    * @return
    */
   private CohortDefinition getPatientsScheduled(
-      Concept conceptId, List<EncounterType> encounterTypes) {
+      Concept conceptId,
+      List<EncounterType> encounterTypes,
+      Integer upperBound,
+      Integer lowerBound) {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
             "scheduledPatients",
@@ -557,6 +562,8 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addCalculationParameter("conceptId", conceptId);
     cd.addCalculationParameter("encounterTypes", encounterTypes);
+    cd.addCalculationParameter("upperBound", upperBound);
+    cd.addCalculationParameter("lowerBound", lowerBound);
 
     return cd;
   }
@@ -747,7 +754,9 @@ public class EriDSDCohortQueries {
                 hivMetadata.getReturnVisitDateConcept(),
                 Arrays.asList(
                     hivMetadata.getARVPediatriaSeguimentoEncounterType(),
-                    hivMetadata.getAdultoSeguimentoEncounterType())),
+                    hivMetadata.getAdultoSeguimentoEncounterType()),
+                190,
+                175),
             "location=${location}"));
     cd.setCompositionString("TxCurr AND scheduledN2");
 
