@@ -535,8 +535,8 @@ public class EriDSDCohortQueries {
             getPatientsScheduled(
                 hivMetadata.getReturnVisitDateForArvDrugConcept(),
                 Arrays.asList(hivMetadata.getARVPharmaciaEncounterType()),
-                83,
-                97),
+                97,
+                83),
             "location=${location}"));
 
     cd.setCompositionString("TxCurr AND scheduled");
@@ -754,8 +754,8 @@ public class EriDSDCohortQueries {
                 Arrays.asList(
                     hivMetadata.getARVPediatriaSeguimentoEncounterType(),
                     hivMetadata.getAdultoSeguimentoEncounterType()),
-                175,
-                190),
+                190,
+                175),
             "location=${location}"));
     cd.setCompositionString("TxCurr AND scheduledN2");
 
