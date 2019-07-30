@@ -5,7 +5,6 @@ import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
@@ -52,16 +51,8 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
 
     for (Integer pId : cohort) {
       boolean scheduled = false;
-      ListResult lastReturnVisitResults = (ListResult) lastReturnVisitObs.get(pId);
-      List<Obs> lastReturnVisitList =
-          EptsCalculationUtils.extractResultValues(lastReturnVisitResults);
-
-      ListResult lastEncounterResults = (ListResult) lastEncounterMap.get(pId);
-      List<Encounter> lastEncounterList =
-          EptsCalculationUtils.extractResultValues(lastEncounterResults);
-
-      Obs lastReturnVisit = lastReturnVisitList.get(0);
-      Encounter lastEncounter = lastEncounterList.get(0);
+      Obs lastReturnVisit = EptsCalculationUtils.resultForPatient(lastReturnVisitObs, pId);
+      Encounter lastEncounter = EptsCalculationUtils.resultForPatient(lastEncounterMap, pId);
 
       // Step 3: compare against boundaries
       if (lastEncounter != null && lastReturnVisit != null) {
