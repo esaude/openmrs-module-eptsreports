@@ -434,7 +434,7 @@ public class EriDSDCohortQueries {
         "pregnant",
         EptsReportUtils.map(
             txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "activeAndUnstable",
         EptsReportUtils.map(
