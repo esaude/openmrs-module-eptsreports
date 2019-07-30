@@ -1,10 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.calculation.dsd;
 
 import java.util.*;
-import org.openmrs.Concept;
-import org.openmrs.EncounterType;
-import org.openmrs.Location;
-import org.openmrs.Obs;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -27,61 +24,59 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
     EPTSCalculationService ePTSCalculationService =
         Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
 
+    Date onOrBefore = (Date) context.getFromCache("onOrBefore");
     Location location = (Location) context.getFromCache("location");
     CalculationResultMap map = new CalculationResultMap();
     Concept concept = (Concept) parameterValues.get("conceptId");
     Integer lowerBound = (Integer) parameterValues.get("lowerBound");
     Integer upperBound = (Integer) parameterValues.get("upperBound");
-
     List<EncounterType> encounterTypes =
         (List<EncounterType>) parameterValues.get("encounterTypes");
 
-    CalculationResultMap allObs =
+    // Step 1: Search for next drug pick up from list of allObs
+    CalculationResultMap lastEncounterMap =
+        ePTSCalculationService.getEncounter(
+            encounterTypes, TimeQualifier.LAST, cohort, location, onOrBefore, context);
+
+    // Step 2: Search for last drug pick from list of allObs
+    CalculationResultMap lastReturnVisitObs =
         ePTSCalculationService.getObs(
             concept,
             encounterTypes,
             cohort,
             Arrays.asList(location),
             null,
-            TimeQualifier.ANY,
+            TimeQualifier.LAST,
             null,
             context);
 
     for (Integer pId : cohort) {
-      Date nextAppointmentDate = null;
-      Date previousAppointmentDate = null;
       boolean scheduled = false;
+      ListResult lastReturnVisitResults = (ListResult) lastReturnVisitObs.get(pId);
+      List<Obs> lastReturnVisitList =
+          EptsCalculationUtils.extractResultValues(lastReturnVisitResults);
 
-      ListResult results = (ListResult) allObs.get(pId);
+      ListResult lastEncounterResults = (ListResult) lastEncounterMap.get(pId);
+      List<Encounter> lastEncounterList =
+          EptsCalculationUtils.extractResultValues(lastEncounterResults);
 
-      List<Obs> obsList = EptsCalculationUtils.extractResultValues(results);
-      if (results != null && obsList.size() >= 2) {
-        Obs lastObs = obsList.get(obsList.size() - 1);
-        Obs prevObs = obsList.get(obsList.size() - 2);
+      Obs lastReturnVisit = lastReturnVisitList.get(0);
+      Encounter lastEncounter = lastEncounterList.get(0);
 
-        if (lastObs != null && lastObs.getValueDatetime() != null) {
-          nextAppointmentDate = lastObs.getObsDatetime();
-        }
-        if (prevObs != null && prevObs.getValueDatetime() != null) {
-          previousAppointmentDate = prevObs.getObsDatetime();
-        }
-        Date previousPlusLowerBoundDays = null;
-        Date previousPlusUpperBoundDays = null;
+      // Step 3: compare against boundaries
+      if (lastEncounter != null && lastReturnVisit != null) {
 
-        if (nextAppointmentDate != null && previousAppointmentDate != null) {
+        Date lowerBoundary =
+            EptsCalculationUtils.addDays(lastEncounter.getEncounterDatetime(), lowerBound);
+        Date upperBoundary =
+            EptsCalculationUtils.addDays(lastEncounter.getEncounterDatetime(), upperBound);
 
-          previousPlusLowerBoundDays =
-              EptsCalculationUtils.addDays(previousAppointmentDate, lowerBound);
-          previousPlusUpperBoundDays =
-              EptsCalculationUtils.addDays(previousAppointmentDate, upperBound);
-        }
-        if (nextAppointmentDate != null
-            && previousPlusLowerBoundDays != null
-            && nextAppointmentDate.compareTo(previousPlusLowerBoundDays) >= 0
-            && nextAppointmentDate.compareTo(previousPlusUpperBoundDays) <= 0) {
+        if (lastReturnVisit.getValueDate().compareTo(lowerBoundary) >= 0
+            && lastReturnVisit.getValueDate().compareTo(upperBoundary) <= 0) {
           scheduled = true;
         }
       }
+
       map.put(pId, new BooleanResult(scheduled, this));
     }
     return map;

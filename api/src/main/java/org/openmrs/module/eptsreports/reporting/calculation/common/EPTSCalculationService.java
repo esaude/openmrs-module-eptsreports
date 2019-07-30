@@ -148,6 +148,39 @@ public class EPTSCalculationService {
   }
 
   /**
+   * Evaluates the encounter of a given type of each patient for specified qualifier
+   *
+   * @param encounterTypes
+   * @param qualifier
+   * @param location
+   * @param context
+   * @return
+   */
+  public CalculationResultMap getEncounter(
+      List<EncounterType> encounterTypes,
+      TimeQualifier qualifier,
+      Collection<Integer> cohort,
+      Location location,
+      Date onOrBefore,
+      PatientCalculationContext context) {
+    EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition();
+    if (qualifier != null) {
+      def.setWhich(qualifier);
+    } else {
+      def.setWhich(TimeQualifier.ANY);
+    }
+    def.setOnOrBefore(onOrBefore);
+    def.setLocationList(Arrays.asList(location));
+    if (encounterTypes != null) {
+      def.setName("first encounter ");
+      def.setTypes(encounterTypes);
+    } else {
+      def.setName("first encounter of any type");
+    }
+    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
+  }
+
+  /**
    * Evaluates the first encounter of a given type of each patient
    *
    * @param encounterTypes

@@ -537,7 +537,7 @@ public class EriDSDCohortQueries {
                 Arrays.asList(hivMetadata.getARVPharmaciaEncounterType()),
                 97,
                 83),
-            "location=${location}"));
+            "onOrBefore=${endDate},location=${location}"));
 
     cd.setCompositionString("TxCurr AND scheduled");
 
@@ -559,6 +559,7 @@ public class EriDSDCohortQueries {
             "scheduledPatients",
             Context.getRegisteredComponents(NextAndPrevDatesCalculation.class).get(0));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Location.class));
     cd.addCalculationParameter("conceptId", conceptId);
     cd.addCalculationParameter("encounterTypes", encounterTypes);
     cd.addCalculationParameter("upperBound", upperBound);
@@ -756,7 +757,7 @@ public class EriDSDCohortQueries {
                     hivMetadata.getAdultoSeguimentoEncounterType()),
                 190,
                 175),
-            "location=${location}"));
+            "onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("TxCurr AND scheduledN2");
 
     return cd;
