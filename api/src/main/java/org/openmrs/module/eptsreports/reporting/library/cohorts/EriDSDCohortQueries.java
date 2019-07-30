@@ -648,12 +648,12 @@ public class EriDSDCohortQueries {
             txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
             "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "activeAndUnstableN1",
+        "activeAndStableN1",
         EptsReportUtils.map(
-            getPatientsWhoAreActiveWithNextPickupAs3MonthsAndUnstable(),
+            getPatientsWhoAreActiveWithNextPickupAs3MonthsAndStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("activeAndUnstableN1 AND NOT pregnant AND NOT breastfeeding");
+    cd.setCompositionString("activeAndStableN1 AND NOT pregnant AND NOT breastfeeding");
 
     return cd;
   }
@@ -846,12 +846,12 @@ public class EriDSDCohortQueries {
             txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
             "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "activeAndUnstableN2",
+        "activeAndStableN2",
         EptsReportUtils.map(
             getPatientsWithNextConsultationScheduled175To190DaysUnstable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("activeAndUnstableN2 AND NOT pregnant AND NOT breastfeeding");
+    cd.setCompositionString("activeAndStableN2 AND NOT pregnant AND NOT breastfeeding");
 
     return cd;
   }
@@ -896,7 +896,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoArePregnantAndNotBreastfeedingN2Unstable() {
+  public CohortDefinition getPatientsWhoArePregnantAndBreastfeedingN2Unstable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("N2: Pregnant: includes all pregnant patients");
@@ -1040,12 +1040,12 @@ public class EriDSDCohortQueries {
             txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
             "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "activeAndUnstableN3",
+        "activeAndStableN3",
         EptsReportUtils.map(
-            getPatientsWhoAreActiveAndParticpatingInGaacUnstable(),
+            getPatientsWhoAreActiveAndParticpatingInGaacStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("activeAndUnstableN3 AND NOT pregnant AND NOT breastfeeding");
+    cd.setCompositionString("activeAndStableN3 AND NOT pregnant AND NOT breastfeeding");
 
     return cd;
   }
