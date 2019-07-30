@@ -26,7 +26,6 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
 
     EPTSCalculationService ePTSCalculationService =
         Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
-    //    HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
 
     Location location = (Location) context.getFromCache("location");
     CalculationResultMap map = new CalculationResultMap();
