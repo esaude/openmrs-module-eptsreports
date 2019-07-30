@@ -31,6 +31,9 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
     Location location = (Location) context.getFromCache("location");
     CalculationResultMap map = new CalculationResultMap();
     Concept concept = (Concept) parameterValues.get("conceptId");
+    Integer lowerBound = (Integer) parameterValues.get("lowerBound");
+    Integer upperBound = (Integer) parameterValues.get("upperBound");
+
     List<EncounterType> encounterTypes =
         (List<EncounterType>) parameterValues.get("encounterTypes");
 
@@ -63,18 +66,20 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
         if (prevObs != null && prevObs.getValueDatetime() != null) {
           previousAppointmentDate = prevObs.getObsDatetime();
         }
-        Date previousPlus83Days = null;
-        Date previousPlus97Days = null;
+        Date previousPlusLowerBoundDays = null;
+        Date previousPlusUpperBoundDays = null;
 
         if (nextAppointmentDate != null && previousAppointmentDate != null) {
 
-          previousPlus83Days = EptsCalculationUtils.addDays(previousAppointmentDate, 83);
-          previousPlus97Days = EptsCalculationUtils.addDays(previousAppointmentDate, 97);
+          previousPlusLowerBoundDays =
+              EptsCalculationUtils.addDays(previousAppointmentDate, lowerBound);
+          previousPlusUpperBoundDays =
+              EptsCalculationUtils.addDays(previousAppointmentDate, upperBound);
         }
         if (nextAppointmentDate != null
-            && previousPlus83Days != null
-            && nextAppointmentDate.compareTo(previousPlus83Days) >= 0
-            && nextAppointmentDate.compareTo(previousPlus97Days) <= 0) {
+            && previousPlusLowerBoundDays != null
+            && nextAppointmentDate.compareTo(previousPlusLowerBoundDays) >= 0
+            && nextAppointmentDate.compareTo(previousPlusUpperBoundDays) <= 0) {
           scheduled = true;
         }
       }
