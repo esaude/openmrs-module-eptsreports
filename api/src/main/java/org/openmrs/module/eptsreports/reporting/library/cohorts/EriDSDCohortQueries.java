@@ -619,7 +619,7 @@ public class EriDSDCohortQueries {
         "patientsWhoAreStable",
         EptsReportUtils.map(
             getPatientsWhoAreActiveWithNextPickupAs3MonthsAndStable(),
-            "endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("patientsWithNextPickupDate AND NOT patientsWhoAreStable");
 
@@ -1022,7 +1022,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "patientsEnrolledOnGaac",
         EptsReportUtils.map(
-            getAllPatientsEnrolledOnGaac(), "endDate=${endDate},location=${location}"));
+            getAllPatientsEnrolledOnGaac(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("TxCurr AND patientsEnrolledOnGaac");
 
@@ -1048,7 +1049,7 @@ public class EriDSDCohortQueries {
         "allPatientsN3Stable",
         EptsReportUtils.map(
             getPatientsWhoAreActiveAndParticpatingInGaac(),
-            "endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "stablePatientsN3Stable",
         EptsReportUtils.map(
@@ -1076,17 +1077,17 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "allPatientsN3Unstable",
+        "allPatientsN3InGaac",
         EptsReportUtils.map(
             getPatientsWhoAreActiveAndParticpatingInGaac(),
-            "endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "stablePatientsN3Stable",
         EptsReportUtils.map(
             getPatientsWhoAreStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("allPatientsN3Unstable AND NOT stablePatientsN3Stable");
+    cd.setCompositionString("allPatientsN3InGaac AND NOT stablePatientsN3Stable");
 
     return cd;
   }
