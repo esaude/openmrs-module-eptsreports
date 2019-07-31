@@ -514,7 +514,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N3UBNP",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN3Unstable(),
+                    eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN3(),
                     mappings)),
             mappings),
         "");
@@ -525,8 +525,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N3UPB",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoArePregnantAndBreastfeedingN3Unstable(),
-                    mappings)),
+                    eriDSDCohortQueries.getPatientsWhoArePregnantAndBreastfeedingN3(), mappings)),
             mappings),
         "");
 

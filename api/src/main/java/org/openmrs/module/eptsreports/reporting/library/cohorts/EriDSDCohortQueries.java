@@ -1164,7 +1164,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoAreBreastfeedingAndNotPregnantN3Unstable() {
+  public CohortDefinition getPatientsWhoAreBreastfeedingAndNotPregnantN3() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName(
@@ -1184,12 +1184,12 @@ public class EriDSDCohortQueries {
             txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
             "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "activeAndUnstableN3",
+        "activeOnGAACN3",
         EptsReportUtils.map(
-            getPatientsWhoAreActiveAndParticpatingInGaacUnstable(),
+            getPatientsWhoAreActiveAndParticpatingInGaac(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("activeAndUnstableN3 AND (breastfeedingN3 AND NOT pregnantN3)");
+    cd.setCompositionString("activeOnGAACN3 AND (breastfeedingN3 AND NOT pregnantN3)");
 
     return cd;
   }
@@ -1199,7 +1199,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoArePregnantAndBreastfeedingN3Unstable() {
+  public CohortDefinition getPatientsWhoArePregnantAndBreastfeedingN3() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("N3: Pregnant: includes all pregnant patients");
@@ -1213,17 +1213,12 @@ public class EriDSDCohortQueries {
             txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
             "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "breastfeedingN3",
+        "activeOnGAACN3",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "activeAndUnstableN3",
-        EptsReportUtils.map(
-            getPatientsWhoAreActiveAndParticpatingInGaacUnstable(),
+            getPatientsWhoAreActiveAndParticpatingInGaac(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("activeAndUnstableN3 AND (pregnantN3 OR breastfeedingN3)");
+    cd.setCompositionString("activeOnGAACN3 AND pregnantN3");
 
     return cd;
   }
