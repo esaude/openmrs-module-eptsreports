@@ -346,7 +346,7 @@ public class EriDSDDataset extends BaseDataSet {
                 "N2SST",
                 EptsReportUtils.map(
                     eriDSDCohortQueries
-                        .getPatientsWithNextConsultationScheduled175To190DaysStable(),
+                        .getPatientsWhoAreNotPregnantAndNotBreastfeedingN2Stable(),
                     mappings)),
             mappings),
         "");
