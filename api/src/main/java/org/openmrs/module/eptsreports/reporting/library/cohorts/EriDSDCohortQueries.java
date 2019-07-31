@@ -913,7 +913,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "activeAndStableN2",
         EptsReportUtils.map(
-            getPatientsWithNextConsultationScheduled175To190DaysUnstable(),
+            getPatientsWithNextConsultationScheduled175To190DaysStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("activeAndStableN2 AND NOT pregnant AND NOT breastfeeding");
