@@ -758,7 +758,7 @@ public class EriDSDCohortQueries {
             getPatientsWhoAreActiveWithNextPickupAs3MonthsAndUnstable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("activeAndUnstableN1 AND (pregnantN1 OR breastfeedingN1)");
+    cd.setCompositionString("activeAndUnstableN1 AND pregnantN1");
 
     return cd;
   }
@@ -993,7 +993,7 @@ public class EriDSDCohortQueries {
             getPatientsWithNextConsultationScheduled175To190DaysUnstable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("activeAndUnstableN2 AND (pregnantN2 OR breastfeedingN2)");
+    cd.setCompositionString("activeAndUnstableN2 AND pregnantN2");
 
     return cd;
   }
@@ -1224,7 +1224,7 @@ public class EriDSDCohortQueries {
             getPatientsWhoAreActiveAndParticpatingInGaacUnstable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("activeAndUnstableN3 AND (pregnantN3 OR breastfeedingN3)");
+    cd.setCompositionString("activeAndUnstableN3 AND pregnantN3");
 
     return cd;
   }
