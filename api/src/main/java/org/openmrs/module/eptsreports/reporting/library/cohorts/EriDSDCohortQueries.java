@@ -818,7 +818,8 @@ public class EriDSDCohortQueries {
             getPatientsWithNextConsultationScheduled175To190Days(),
             "endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "stablePatients", EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate}"));
+        "stablePatients",
+        EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("allPatients AND stablePatients");
 
@@ -846,7 +847,8 @@ public class EriDSDCohortQueries {
             getPatientsWithNextConsultationScheduled175To190Days(),
             "endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "stablePatients", EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate}"));
+        "stablePatients",
+        EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("allPatients AND NOT stablePatients");
 
@@ -1043,7 +1045,7 @@ public class EriDSDCohortQueries {
             "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "stablePatientsN3Stable",
-        EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate}"));
+        EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("allPatientsN3Stable AND stablePatientsN3Stable");
 
@@ -1072,7 +1074,7 @@ public class EriDSDCohortQueries {
             "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "stablePatientsN3Stable",
-        EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate}"));
+        EptsReportUtils.map(getPatientsWhoAreStable(), "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("allPatientsN3Unstable AND NOT stablePatientsN3Stable");
 
