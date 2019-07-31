@@ -312,7 +312,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N1UBNP",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN1Unstable(),
+                    eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN1(),
                     mappings)),
             mappings),
         "");
@@ -323,7 +323,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N1UPB",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoArePregnantAndNotBreastfeedingN1Unstable(),
+                    eriDSDCohortQueries.getPatientsWhoArePregnantAndNotBreastfeedingN1(),
                     mappings)),
             mappings),
         "");
@@ -414,7 +414,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N2UBNP",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN2Unstable(),
+                    eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN2(),
                     mappings)),
             mappings),
         "");
@@ -425,8 +425,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N2UPB",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoArePregnantAndBreastfeedingN2Unstable(),
-                    mappings)),
+                    eriDSDCohortQueries.getPatientsWhoArePregnantAndBreastfeedingN2(), mappings)),
             mappings),
         "");
     dsd.addColumn(
