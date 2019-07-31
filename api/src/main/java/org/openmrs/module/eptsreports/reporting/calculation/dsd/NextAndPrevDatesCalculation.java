@@ -82,7 +82,9 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
       }
 
       // Step 3: compare against boundaries
-      if (lastEncounter != null && lastReturnVisitObs != null && lastReturnVisitObs.getValueDate() != null) {
+      if (lastEncounter != null
+          && lastReturnVisitObs != null
+          && lastReturnVisitObs.getValueDate() != null) {
 
         Date lowerBoundary =
             EptsCalculationUtils.addDays(lastEncounter.getEncounterDatetime(), lowerBound);
