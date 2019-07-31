@@ -5,6 +5,7 @@ import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
@@ -32,38 +33,64 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
     List<EncounterType> encounterTypes =
         (List<EncounterType>) parameterValues.get("encounterTypes");
 
-    // Step 1: Search for next drug pick up from list of allObs
+    // Step 1: Search for last encounter visit for this patient
     CalculationResultMap lastEncounterMap =
         ePTSCalculationService.getEncounter(
             encounterTypes, TimeQualifier.LAST, cohort, location, onOrBefore, context);
 
-    // Step 2: Search for last drug pick from list of allObs
-    CalculationResultMap lastReturnVisitObs =
+    // Step 2.1: Search for next return drug pick/appointment for patient
+    CalculationResultMap lastReturnVisitObsMap =
         ePTSCalculationService.getObs(
             concept,
             encounterTypes,
             cohort,
             Arrays.asList(location),
             null,
-            TimeQualifier.LAST,
+            TimeQualifier.ANY,
             null,
             context);
 
     for (Integer pId : cohort) {
       boolean scheduled = false;
-      Obs lastReturnVisit = EptsCalculationUtils.resultForPatient(lastReturnVisitObs, pId);
+      ListResult returnVisitObsResult = (ListResult) lastReturnVisitObsMap.get(pId);
+      List<Obs> returnVisitList = EptsCalculationUtils.extractResultValues(returnVisitObsResult);
       Encounter lastEncounter = EptsCalculationUtils.resultForPatient(lastEncounterMap, pId);
+      Obs lastReturnVisitObs = null;
+
+      // Step 2.2: identify last return visit obs record
+      Iterator<Obs> iterator = returnVisitList.iterator();
+      while (iterator.hasNext()) {
+        Obs obs = iterator.next();
+        if (obs.getVoided()
+            || obs.getEncounter() == null
+            || (obs.getEncounter() != null
+                && (obs.getEncounter().getEncounterId() != lastEncounter.getEncounterId()))) {
+          iterator.remove();
+        }
+      }
+      Collections.sort(
+          returnVisitList,
+          new Comparator<Obs>() {
+            @Override
+            public int compare(Obs obs, Obs t1) {
+              return t1.getValueDate().compareTo(obs.getValueDatetime());
+            }
+          });
+
+      if (returnVisitList.size() > 0) {
+        lastReturnVisitObs = returnVisitList.get(returnVisitList.size() - 1);
+      }
 
       // Step 3: compare against boundaries
-      if (lastEncounter != null && lastReturnVisit != null) {
+      if (lastEncounter != null && lastReturnVisitObs != null) {
 
         Date lowerBoundary =
             EptsCalculationUtils.addDays(lastEncounter.getEncounterDatetime(), lowerBound);
         Date upperBoundary =
             EptsCalculationUtils.addDays(lastEncounter.getEncounterDatetime(), upperBound);
 
-        if (lastReturnVisit.getValueDate().compareTo(lowerBoundary) >= 0
-            && lastReturnVisit.getValueDate().compareTo(upperBoundary) <= 0) {
+        if (lastReturnVisitObs.getValueDate().compareTo(lowerBoundary) >= 0
+            && lastReturnVisitObs.getValueDate().compareTo(upperBoundary) <= 0) {
           scheduled = true;
         }
       }
