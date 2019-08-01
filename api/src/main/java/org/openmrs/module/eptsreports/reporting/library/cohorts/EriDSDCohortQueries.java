@@ -1309,13 +1309,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "INICIOLACTANTE",
         EptsReportUtils.map(
-            genericCohortQueries.hasCodedObs(
-                hivMetadata.getCriteriaForArtStart(),
-                BaseObsCohortDefinition.TimeModifier.FIRST,
-                SetComparator.IN,
-                Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
-                Arrays.asList(commonMetadata.getBreastfeeding())),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
+            getBreastfeedingPatientsStartingART(),
+            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
     cd.addSearch(
         "LACTANTEPROGRAMA",
         EptsReportUtils.map(
@@ -1348,6 +1343,26 @@ public class EriDSDCohortQueries {
         BreastfeedingQueries.getLactatingPatients(
             commonMetadata.getBreastfeeding().getConceptId(),
             commonMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
+    return cd;
+  }
+
+  /**
+   * Custom implementation of INICIOLACTANTE query to correctly pick breastfeeding patients starting
+   * ARV treatement
+   *
+   * @return CohortDefinitions
+   */
+  public CohortDefinition getBreastfeedingPatientsStartingART() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("breastfeedingPatients");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        BreastfeedingQueries.getLactatingPatientsStartingART(
+            hivMetadata.getCriteriaForArtStart().getConceptId(),
+            commonMetadata.getBreastfeeding().getConceptId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
     return cd;
   }
