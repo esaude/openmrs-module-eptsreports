@@ -29,4 +29,42 @@ public class BreastfeedingQueries {
         + " and ps.end_date is null and"
         + " ps.start_date between :startDate and :endDate and location_id=:location";
   }
+
+  public static String getLactatingPatients(
+      int breastFeedingConcept, int yesValueConcept, int adultFollowupEncounterType) {
+    String qry =
+        "select max_visit.person_id "
+            + "from ("
+            + "select person_id, MAX(encounter_datetime) as edt "
+            + "from obs "
+            + "inner join encounter on obs.encounter_id = encounter.encounter_id "
+            + "where obs.voided = false and obs.concept_id = %s  and obs.value_coded = %s "
+            + "and encounter.encounter_type = %s "
+            + "and obs.location_id in (:location) "
+            + "and encounter.encounter_datetime >= :startDate "
+            + "and encounter.encounter_datetime <= :endDate "
+            + "group by person_id "
+            + ") max_visit";
+
+    return String.format(qry, breastFeedingConcept, yesValueConcept, adultFollowupEncounterType);
+  }
+
+  public static String getLactatingPatientsStartingART(
+      int artStartConcept, int breastFeedingConcept, int adultFollowupEncounterType) {
+    String qry =
+        "select max_visit.person_id "
+            + "from ("
+            + "select person_id, MIN(encounter_datetime) as edt "
+            + "from obs "
+            + "inner join encounter on obs.encounter_id = encounter.encounter_id "
+            + "where obs.voided = false and obs.concept_id = %s  and obs.value_coded = %s "
+            + "and encounter.encounter_type = %s "
+            + "and obs.location_id in (:location) "
+            + "and encounter.encounter_datetime >= :startDate "
+            + "and encounter.encounter_datetime <= :endDate "
+            + "group by person_id "
+            + ") max_visit";
+
+    return String.format(qry, artStartConcept, breastFeedingConcept, adultFollowupEncounterType);
+  }
 }

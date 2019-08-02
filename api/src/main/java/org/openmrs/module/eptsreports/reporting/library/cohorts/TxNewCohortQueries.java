@@ -47,8 +47,6 @@ public class TxNewCohortQueries {
 
   @Autowired private GenericCohortQueries genericCohorts;
 
-  @Autowired private GenderCohortQueries genderCohorts;
-
   @Autowired private HivCohortQueries hivCohortQueries;
 
   /**

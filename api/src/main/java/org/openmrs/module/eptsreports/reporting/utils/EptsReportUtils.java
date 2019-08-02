@@ -14,11 +14,19 @@
 
 package org.openmrs.module.eptsreports.reporting.utils;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.GlobalProperty;
+import org.openmrs.Program;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -120,5 +128,47 @@ public class EptsReportUtils {
       }
     }
     return StringUtils.join(existingMappingsSet, ",");
+  }
+
+  /**
+   * Get the configurable widget parameter to be passed on the reporting UI TODO: redesign this to
+   * be more configurable
+   *
+   * @return
+   */
+  public static Parameter getProgramConfigurableParameter(Program program) {
+    List<ProgramWorkflowState> defaultStates = new ArrayList<>();
+    for (ProgramWorkflowState p : program.getAllWorkflows().iterator().next().getStates()) {
+      defaultStates.add(p);
+    }
+
+    Parameter parameter = new Parameter();
+    parameter.setName("state");
+    parameter.setLabel("States");
+    parameter.setType(ProgramWorkflowState.class);
+    parameter.setCollectionType(List.class);
+    parameter.setWidgetConfiguration(getProgramProperties(program));
+    parameter.setDefaultValue(defaultStates);
+    return parameter;
+  }
+
+  private static Properties getProgramProperties(Program program) {
+    Properties properties = new Properties();
+    properties.put("Program", program.getName());
+    return properties;
+  }
+
+  public static String formatDateWithTime(Date date) {
+
+    Format formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+
+    return formatter.format(date);
+  }
+
+  public static String formatDate(Date date) {
+
+    Format formatter = new SimpleDateFormat("dd-MM-yyyy");
+
+    return formatter.format(date);
   }
 }

@@ -148,6 +148,39 @@ public class EPTSCalculationService {
   }
 
   /**
+   * Evaluates the encounter of a given type of each patient for specified qualifier
+   *
+   * @param encounterTypes
+   * @param qualifier
+   * @param location
+   * @param context
+   * @return
+   */
+  public CalculationResultMap getEncounter(
+      List<EncounterType> encounterTypes,
+      TimeQualifier qualifier,
+      Collection<Integer> cohort,
+      Location location,
+      Date onOrBefore,
+      PatientCalculationContext context) {
+    EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition();
+    if (qualifier != null) {
+      def.setWhich(qualifier);
+    } else {
+      def.setWhich(TimeQualifier.ANY);
+    }
+    def.setOnOrBefore(onOrBefore);
+    def.setLocationList(Arrays.asList(location));
+    if (encounterTypes != null) {
+      def.setName("first encounter ");
+      def.setTypes(encounterTypes);
+    } else {
+      def.setName("first encounter of any type");
+    }
+    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
+  }
+
+  /**
    * Evaluates the first encounter of a given type of each patient
    *
    * @param encounterTypes
@@ -169,6 +202,33 @@ public class EPTSCalculationService {
       def.setTypes(encounterTypes);
     } else {
       def.setName("first encounter of any type");
+    }
+    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
+  }
+  /**
+   * Evaluates all encounters of a given type of each patient
+   *
+   * @param encounterTypes
+   * @param cohort
+   * @param location
+   * @param context
+   * @return all encounters for the patients
+   */
+  public CalculationResultMap allEncounters(
+      List<EncounterType> encounterTypes,
+      Collection<Integer> cohort,
+      Location location,
+      Date onOrBefore,
+      PatientCalculationContext context) {
+    EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition();
+    def.setWhich(TimeQualifier.ANY);
+    def.setLocationList(Arrays.asList(location));
+    def.setOnOrBefore(onOrBefore);
+    if (encounterTypes != null) {
+      def.setName("all encounters ");
+      def.setTypes(encounterTypes);
+    } else {
+      def.setName("all encounters of any type");
     }
     return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
   }
