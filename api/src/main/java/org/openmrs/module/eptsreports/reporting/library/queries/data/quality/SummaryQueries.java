@@ -250,10 +250,12 @@ public class SummaryQueries {
     String query =
         " SELECT p.patient_id AS patientId "
             + " FROM patient p "
-            + " INNER JOIN encounter e ON p.patient_id=e.patient_id AND e.location_id IN(:location) AND e.voided=0 "
-            + " INNER JOIN person pe ON p.patient_id=pe.person_id AND pe.voided=0 "
+            + " INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + " INNER JOIN person pe ON p.patient_id=pe.person_id "
             + " WHERE p.voided = 0 "
             + " AND e.encounter_type IN(%s) "
+            + " AND e.location_id IN(:location) AND e.voided=0 "
+            + " AND pe.voided=0 "
             + " AND pe.death_date IS NOT NULL "
             + " AND e.encounter_datetime >= pe.death_date "
             + " GROUP BY p.patient_id ";
