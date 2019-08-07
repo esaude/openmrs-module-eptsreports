@@ -39,6 +39,7 @@ public class Ec5Queries {
             + " AND pg.location_id IN(:location) "
             + " AND e.location_id IN(:location) AND e.voided=0 "
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
+            + " AND e.encounter_datetime >= ps.start_date "
             + " UNION "
             + " SELECT p.patient_id AS patient_id, pe.death_date AS death_date "
             + " FROM patient p "
@@ -48,6 +49,7 @@ public class Ec5Queries {
             + " AND e.encounter_type= "
             + labEncounterType
             + " AND pe.death_date IS NOT NULL "
+            + " AND e.encounter_datetime >= pe.death_date "
             + ") dd "
             + " INNER JOIN patient_identifier pi ON dd.patient_id=pi.patient_id "
             + " INNER JOIN person pe ON dd.patient_id=pe.person_id "
