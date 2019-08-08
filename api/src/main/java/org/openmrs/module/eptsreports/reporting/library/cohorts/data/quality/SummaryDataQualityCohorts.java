@@ -180,4 +180,21 @@ public class SummaryDataQualityCohorts {
     cd.setCompositionString("dead OR deceased");
     return cd;
   }
+
+  /**
+   * The patients whose date of drug pick up is before 1985
+   *
+   * @param encounterList
+   * @return
+   */
+  public CohortDefinition getPatientsWhoseDrugPickupIsBefore1985(List<Integer> encounterList) {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("patients whose date of drug pick up is before 1985");
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.setQuery(
+        SummaryQueries.getPatientsWhoseDrugPickupIsBefore1985(encounterList));
+
+    return sqlCohortDefinition;
+  }
 }

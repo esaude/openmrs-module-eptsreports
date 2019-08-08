@@ -72,6 +72,8 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   private Ec16PatientListDataset ec16PatientListDataset;
 
+  private Ec17PatientListDataset ec17PatientListDataset;
+
   private GetCustomConfigurationDataset getCustomConfigurationDataset;
 
   private HivMetadata hivMetadata;
@@ -96,6 +98,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       Ec14PatientListDataset ec14PatientListDataset,
       Ec15PatientListDataset ec15PatientListDataset,
       Ec16PatientListDataset ec16PatientListDataset,
+      Ec17PatientListDataset ec17PatientListDataset,
       GetCustomConfigurationDataset getCustomConfigurationDataset,
       HivMetadata hivMetadata) {
     this.summaryDataQualityDataset = summaryDataQualityDataset;
@@ -116,6 +119,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     this.ec14PatientListDataset = ec14PatientListDataset;
     this.ec15PatientListDataset = ec15PatientListDataset;
     this.ec16PatientListDataset = ec16PatientListDataset;
+    this.ec17PatientListDataset = ec17PatientListDataset;
     this.hivMetadata = hivMetadata;
     this.getCustomConfigurationDataset = getCustomConfigurationDataset;
   }
@@ -221,6 +225,10 @@ public class SetupDataQualityReport extends EptsDataExportManager {
         "EC16",
         Mapped.mapStraightThrough(
             ec16PatientListDataset.ec16PatientListDataset(getDataParameters())));
+    rd.addDataSetDefinition(
+        "EC17",
+        Mapped.mapStraightThrough(
+            ec17PatientListDataset.ec17PatientListDataset(getDataParameters())));
 
     rd.addDataSetDefinition(
         "EC01",
@@ -249,7 +257,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       Properties props = new Properties();
       props.put(
           "repeatingSections",
-          "sheet:2,row:7,dataset:EC1 | sheet:3,row:7,dataset:EC2 | sheet:4,row:7,dataset:EC3 | sheet:5,row:7,dataset:EC4 | sheet:6,row:7,dataset:EC5 | sheet:7,row:7,dataset:EC6 | sheet:8,row:7,dataset:EC7 | sheet:9,row:7,dataset:EC8 | sheet:10,row:7,dataset:EC9 | sheet:11,row:7,dataset:EC10 | sheet:12,row:7,dataset:EC11 | sheet:13,row:7,dataset:EC12 | sheet:14,row:7,dataset:EC13 | sheet:15,row:7,dataset:EC14 | sheet:16,row:7,dataset:EC15 | sheet:17,row:7,dataset:EC16");
+          "sheet:2,row:7,dataset:EC1 | sheet:3,row:7,dataset:EC2 | sheet:4,row:7,dataset:EC3 | sheet:5,row:7,dataset:EC4 | sheet:6,row:7,dataset:EC5 | sheet:7,row:7,dataset:EC6 | sheet:8,row:7,dataset:EC7 | sheet:9,row:7,dataset:EC8 | sheet:10,row:7,dataset:EC9 | sheet:11,row:7,dataset:EC10 | sheet:12,row:7,dataset:EC11 | sheet:13,row:7,dataset:EC12 | sheet:14,row:7,dataset:EC13 | sheet:15,row:7,dataset:EC14 | sheet:16,row:7,dataset:EC15 | sheet:17,row:7,dataset:EC16 | sheet:18,row:7,dataset:EC17");
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {

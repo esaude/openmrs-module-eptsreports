@@ -315,6 +315,22 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             "location=${location},endDate=${endDate}"),
         "");
 
+    dsd.addColumn(
+        "EC17",
+        "The patients whose date of drug pick up is before 1985",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "The patients whose date of drug pick up is before 1985",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getPatientsWhoseDrugPickupIsBefore1985(
+                        Arrays.asList(
+                            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
+                    "location=${location},endDate=${endDate}"),
+                Arrays.asList(
+                    EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
+            "location=${location},endDate=${endDate}"),
+        "");
+
     return dsd;
   }
 }
