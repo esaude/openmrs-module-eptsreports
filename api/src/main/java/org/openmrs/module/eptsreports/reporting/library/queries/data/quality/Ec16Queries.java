@@ -1,7 +1,15 @@
 package org.openmrs.module.eptsreports.reporting.library.queries.data.quality;
 
 public class Ec16Queries {
-  public static String getEc16CombinedQuery(
+
+    /**
+     * Get the query for EC16 patient listing
+     * @param programId
+     * @param arvPediatriaSeguimentoEncounterType
+     * @param adultoSeguimentoEncounterType
+     * @return
+     */
+    public static String getEc16CombinedQuery(
       int programId, int arvPediatriaSeguimentoEncounterType, int adultoSeguimentoEncounterType) {
     String query =
         "SELECT patient_id, NID, Name, birthdate, Estimated_dob, Sex, First_entry_date, Last_updated, MIN(encounter_date) AS encounter_date, encounter_date_created FROM("

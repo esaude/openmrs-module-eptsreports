@@ -19,6 +19,11 @@ public class Ec16PatientListDataset extends BaseDataSet {
     this.hivMetadata = hivMetadata;
   }
 
+    /**
+     * EC16 Patient Listing Dataset Definition
+     * @param parameterList
+     * @return
+     */
   public DataSetDefinition ec16PatientListDataset(List<Parameter> parameterList) {
     SqlDataSetDefinition sqlDataSetDefinition = new SqlDataSetDefinition();
     sqlDataSetDefinition.setName("EC16");
