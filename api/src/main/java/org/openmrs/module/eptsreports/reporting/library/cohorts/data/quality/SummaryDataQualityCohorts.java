@@ -145,7 +145,7 @@ public class SummaryDataQualityCohorts {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getPatientsWhoseBirthDatesAreAfterDrugPickUp(
+  public CohortDefinition getPatientsWhoseBirthDatesAreAfterEncounterDate(
       List<Integer> encounterList) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("The patient’s date of birth is after any drug pick up date");

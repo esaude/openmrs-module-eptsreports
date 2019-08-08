@@ -287,9 +287,28 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "The patient’s date of birth is after any drug pick up date",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsWhoseBirthDatesAreAfterDrugPickUp(
+                    summaryDataQualityCohorts.getPatientsWhoseBirthDatesAreAfterEncounterDate(
                         Arrays.asList(
                             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
+                    "location=${location},endDate=${endDate}"),
+                Arrays.asList(
+                    EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
+            "location=${location},endDate=${endDate}"),
+        "");
+
+    dsd.addColumn(
+        "EC16",
+        "The patients date of birth is after any clinical consultation date",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "The patients date of birth is after any clinical consultation date",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getPatientsWhoseBirthDatesAreAfterEncounterDate(
+                        Arrays.asList(
+                            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                            hivMetadata
+                                .getARVPediatriaSeguimentoEncounterType()
+                                .getEncounterTypeId())),
                     "location=${location},endDate=${endDate}"),
                 Arrays.asList(
                     EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
