@@ -322,9 +322,28 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "The patients whose date of drug pick up is before 1985",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsWhoseDrugPickupIsBefore1985(
+                    summaryDataQualityCohorts.getPatientsWhoseEncounterIsBefore1985(
                         Arrays.asList(
                             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
+                    "location=${location},endDate=${endDate}"),
+                Arrays.asList(
+                    EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
+            "location=${location},endDate=${endDate}"),
+        "");
+
+    dsd.addColumn(
+        "EC18",
+        "The date of clinical consultation is before 1985",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "The date of clinical consultation is before 1985",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getPatientsWhoseEncounterIsBefore1985(
+                        Arrays.asList(
+                            hivMetadata
+                                .getARVPediatriaSeguimentoEncounterType()
+                                .getEncounterTypeId(),
+                            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
                     "location=${location},endDate=${endDate}"),
                 Arrays.asList(
                     EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),

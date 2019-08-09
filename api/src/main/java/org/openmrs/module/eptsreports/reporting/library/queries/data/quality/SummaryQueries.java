@@ -263,11 +263,11 @@ public class SummaryQueries {
   }
 
   /**
-   * The patients whose date of drug pick up is before 1985
+   * The patients whose date of Encounter is before 1985
    *
    * @return String
    */
-  public static String getPatientsWhoseDrugPickupIsBefore1985(List<Integer> encounterList) {
+  public static String getPatientsWhoseEncounterIsBefore1985(List<Integer> encounterList) {
     String str1 = String.valueOf(encounterList).replaceAll("\\[", "");
     String str2 = str1.replaceAll("]", "");
     String query =
