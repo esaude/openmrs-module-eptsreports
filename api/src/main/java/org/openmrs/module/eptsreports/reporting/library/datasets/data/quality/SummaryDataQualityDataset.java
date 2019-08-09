@@ -333,10 +333,10 @@ public class SummaryDataQualityDataset extends BaseDataSet {
 
     dsd.addColumn(
         "EC18",
-        "The date of clinical consultation is before 1985",
+        "The patients' whose date of clinical consultation is before 1985",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "The date of clinical consultation is before 1985",
+                "The patients' whose date of clinical consultation is before 1985",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getPatientsWhoseEncounterIsBefore1985(
                         Arrays.asList(
@@ -344,6 +344,22 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                                 .getARVPediatriaSeguimentoEncounterType()
                                 .getEncounterTypeId(),
                             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
+                    "location=${location},endDate=${endDate}"),
+                Arrays.asList(
+                    EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
+            "location=${location},endDate=${endDate}"),
+        "");
+
+    dsd.addColumn(
+        "EC19",
+        "The patients' whose date of laboratory test specimen collection date or results report date is before 1985",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "The patients' whose date of laboratory test specimen collection date or results report date is before 1985",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getPatientsWhoseEncounterIsBefore1985(
+                        Arrays.asList(
+                            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId())),
                     "location=${location},endDate=${endDate}"),
                 Arrays.asList(
                     EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
