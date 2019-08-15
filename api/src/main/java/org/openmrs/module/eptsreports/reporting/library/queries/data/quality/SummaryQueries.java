@@ -292,17 +292,14 @@ public class SummaryQueries {
     return String.format(query, str2);
   }
 
-  public static String getPatientsEnrolledOnTARV(List<Integer> encounterList, int programId) {
-    String str1 = String.valueOf(encounterList).replaceAll("\\[", "");
-    String str2 = str1.replaceAll("]", "");
+  public static String getPatientsEnrolledOnTARV(int programId) {
     String query =
         " SELECT pa.patient_id FROM patient pa "
             + " INNER JOIN person pe ON pa.patient_id=pe.person_id "
             + " INNER JOIN encounter e ON pa.patient_id=e.patient_id "
             + " INNER JOIN patient_program pg ON pa.patient_id=pg.patient_id"
-            + " WHERE pe.birthdate IS NOT NULL AND e.encounter_type IN(%s) AND pg.program_id="
-            + programId
+            + " WHERE pe.birthdate IS NOT NULL  AND pg.program_id=%d"
             + " AND e.location_id IN(:location) AND pa.voided = 0 and e.voided=0 ";
-    return String.format(query, str2);
+    return String.format(query, programId);
   }
 }

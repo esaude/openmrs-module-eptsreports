@@ -366,27 +366,6 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             "location=${location},endDate=${endDate}"),
         "");
 
-    dsd.addColumn(
-        "EC20",
-        "The patients who are not enrolled on TARV",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "The patients who are not enrolled on TARV",
-                EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsNotEnrolledOnTARV(
-                        Arrays.asList(
-                            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-                            hivMetadata
-                                .getARVPediatriaSeguimentoEncounterType()
-                                .getEncounterTypeId(),
-                            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()),
-                        hivMetadata.getARTProgram().getProgramId()),
-                    "location=${location},endDate=${endDate}"),
-                Arrays.asList(
-                    EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
-            "location=${location},endDate=${endDate}"),
-        "");
-
     return dsd;
   }
 }
