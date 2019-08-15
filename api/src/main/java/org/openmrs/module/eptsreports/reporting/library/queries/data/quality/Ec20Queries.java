@@ -31,8 +31,9 @@ public class Ec20Queries {
             + " INNER JOIN person_name pn ON pa.patient_id=pn.person_id"
             + " INNER JOIN patient_program pg ON pa.patient_id=pg.patient_id"
             + " INNER JOIN encounter e ON pa.patient_id=e.patient_id"
-            + " WHERE pg.program_id!="
+            + " WHERE pg.patient_id NOT IN(SELECT patient_id FROM patient_program WHERE program_id="
             + programId
+            + " )"
             + " AND e.voided=0  AND e.encounter_type IN ("
             + arvPediatriaSeguimentoEncounterType
             + ","

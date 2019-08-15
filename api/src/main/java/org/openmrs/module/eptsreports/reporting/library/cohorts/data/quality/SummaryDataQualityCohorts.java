@@ -198,4 +198,64 @@ public class SummaryDataQualityCohorts {
 
     return sqlCohortDefinition;
   }
+
+  /**
+   * Get Patients who are not enrolled in TARV, program ID 2
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsNotEnrolledOnTARV(List<Integer> encounterList, int programId) {
+    CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
+    compositionCohortDefinition.setName("Patients not enrolled on TARV");
+    compositionCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addSearch(
+        "enrolledOnTARV",
+        EptsReportUtils.map(
+            getPatientsEnrolledOnTARV(encounterList, programId),
+            "location=${location},endDate=${endDate}"));
+    compositionCohortDefinition.addSearch(
+        "allPatients",
+        EptsReportUtils.map(
+            getPatientsWithGivenEncounterList(encounterList),
+            "location=${location},endDate=${endDate}"));
+
+    compositionCohortDefinition.setCompositionString("allPatients AND NOT enrolledOnTARV");
+
+    return compositionCohortDefinition;
+  }
+
+  /**
+   * Get patients with given encounter list
+   *
+   * @param encounterList
+   * @return
+   */
+  public CohortDefinition getPatientsWithGivenEncounterList(List<Integer> encounterList) {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("patients with given encounter list");
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.setQuery(SummaryQueries.getPatientsWithGivenEncounterList(encounterList));
+
+    return sqlCohortDefinition;
+  }
+
+  /**
+   * Get patients enrolled on TARV, program ID 2
+   *
+   * @param encounterList
+   * @param programId
+   * @return
+   */
+  public CohortDefinition getPatientsEnrolledOnTARV(List<Integer> encounterList, int programId) {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("patients enrolled on TARV, program ID 2");
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.setQuery(
+        SummaryQueries.getPatientsEnrolledOnTARV(encounterList, programId));
+
+    return sqlCohortDefinition;
+  }
 }
