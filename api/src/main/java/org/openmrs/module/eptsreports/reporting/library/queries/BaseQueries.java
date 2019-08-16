@@ -59,7 +59,6 @@ public class BaseQueries {
    * @return
    */
   public static String getBaseQueryForEc20DataQuality() {
-    return "SELECT p.patient_id from patient p JOIN patient_program pg ON p.patient_id=pg.patient_id JOIN patient_state ps on pg.patient_program_id=ps.patient_program_id "
-        + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0  AND pg.location_id IN(:location) AND p.date_created BETWEEN :startDate AND :endDate";
+    return "SELECT p.patient_id from patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided=0  AND e.location_id IN(:location) AND p.date_created BETWEEN :startDate AND :endDate AND e.encounter_type IN(6,9,18)";
   }
 }
