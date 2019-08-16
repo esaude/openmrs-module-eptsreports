@@ -17,14 +17,24 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import org.openmrs.module.eptsreports.reporting.library.datasets.ResumoMensalDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SetupResumoMensalReport extends EptsDataExportManager {
+
+  private ResumoMensalDataSetDefinition resumoMensalDataSetDefinition;
+
+  @Autowired
+  public SetupResumoMensalReport(ResumoMensalDataSetDefinition resumoMensalDataSetDefinition) {
+    this.resumoMensalDataSetDefinition = resumoMensalDataSetDefinition;
+  }
+
   @Override
   public String getExcelDesignUuid() {
     return "9c4519ee-c015-11e9-b491-4b7b38012980";
@@ -51,7 +61,7 @@ public class SetupResumoMensalReport extends EptsDataExportManager {
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
-    rd.addParameters(getParameters());
+    rd.addParameters(resumoMensalDataSetDefinition.getParameters());
     return rd;
   }
 
