@@ -52,4 +52,14 @@ public class BaseQueries {
         + programId
         + " AND pg.voided=0 AND ps.voided=0 AND p.voided=0  AND ps.state IN(:state) AND pg.location_id IN(:location) AND p.date_created BETWEEN :startDate AND :endDate";
   }
+
+  /**
+   * Find patients who qualifies to be in the EC20 workflow.
+   *
+   * @return
+   */
+  public static String getBaseQueryForEc20DataQuality() {
+    return "SELECT p.patient_id from patient p JOIN patient_program pg ON p.patient_id=pg.patient_id JOIN patient_state ps on pg.patient_program_id=ps.patient_program_id "
+        + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0  AND pg.location_id IN(:location) AND p.date_created BETWEEN :startDate AND :endDate";
+  }
 }

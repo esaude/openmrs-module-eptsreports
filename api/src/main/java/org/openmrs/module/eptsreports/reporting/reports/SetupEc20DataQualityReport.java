@@ -11,6 +11,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.Sum
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec20PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.SummaryEc20DataQualityDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -71,6 +72,10 @@ public class SetupEc20DataQualityReport extends EptsDataExportManager {
     rd.setDescription(getDescription());
     rd.addParameters(getDataParameters());
 
+    rd.setBaseCohortDefinition(
+        EptsReportUtils.map(
+            summaryEc20DataQualityCohorts.getEc20DataQualityReportBaseCohort(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     rd.addDataSetDefinition(
         "S20",
         Mapped.mapStraightThrough(
