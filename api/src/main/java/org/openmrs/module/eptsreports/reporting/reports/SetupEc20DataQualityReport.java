@@ -101,7 +101,7 @@ public class SetupEc20DataQualityReport extends EptsDataExportManager {
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
-      props.put("repeatingSections", "sheet:21,row:7,dataset:EC20");
+      props.put("repeatingSections", "sheet:2,row:7,dataset:EC20");
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {
