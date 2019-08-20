@@ -17,9 +17,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import org.openmrs.module.eptsreports.reporting.library.datasets.ResumoMensalDataSetDefinition;
+import org.openmrs.module.eptsreports.reporting.library.datasets.resumo.ResumoMensalDataSetDefinition;
+import org.openmrs.module.eptsreports.reporting.library.datasets.resumo.ResumoMensalHeaderDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingException;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +31,14 @@ import org.springframework.stereotype.Component;
 public class SetupResumoMensalReport extends EptsDataExportManager {
 
   private ResumoMensalDataSetDefinition resumoMensalDataSetDefinition;
+  private ResumoMensalHeaderDataSet resumoMensalHeaderDataSet;
 
   @Autowired
-  public SetupResumoMensalReport(ResumoMensalDataSetDefinition resumoMensalDataSetDefinition) {
+  public SetupResumoMensalReport(
+      ResumoMensalDataSetDefinition resumoMensalDataSetDefinition,
+      ResumoMensalHeaderDataSet resumoMensalHeaderDataSet) {
     this.resumoMensalDataSetDefinition = resumoMensalDataSetDefinition;
+    this.resumoMensalHeaderDataSet = resumoMensalHeaderDataSet;
   }
 
   @Override
@@ -62,6 +68,11 @@ public class SetupResumoMensalReport extends EptsDataExportManager {
     rd.setName(getName());
     rd.setDescription(getDescription());
     rd.addParameters(resumoMensalDataSetDefinition.getParameters());
+    rd.addDataSetDefinition(
+        "HF", Mapped.mapStraightThrough(resumoMensalHeaderDataSet.getHeaderAndFooterInformation()));
+    rd.addDataSetDefinition(
+        "R",
+        Mapped.mapStraightThrough(resumoMensalDataSetDefinition.constructResumoMensalDatset()));
     return rd;
   }
 

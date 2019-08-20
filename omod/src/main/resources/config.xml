@@ -1148,6 +1148,14 @@
 			Numero de Identificaçao de Doente, serviço TARV
 		</description>
 	</globalProperty>
+	<!-- Location attribute type for unique code for the facility -->
+	<globalProperty>
+		<property>eptsreports.masterFacilityCode</property>
+		<defaultValue>Health Facility Code</defaultValue>
+		<description>
+			Unique facility code allocated by the Ministry of Health
+		</description>
+	</globalProperty>
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 

@@ -14,6 +14,7 @@
 package org.openmrs.module.eptsreports.metadata;
 
 import org.openmrs.Concept;
+import org.openmrs.LocationAttributeType;
 import org.openmrs.api.context.Context;
 import org.springframework.stereotype.Component;
 
@@ -215,5 +216,12 @@ public class CommonMetadata extends Metadata {
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.isoniazidProphylaxisStartDateConceptUuid");
     return getConcept(uuid);
+  }
+
+  // Location attribute representing unique health facility code
+  public LocationAttributeType getLocationAttributeType() {
+    String attributeName =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.masterFacilityCode");
+    return getLocationAttributeTyepe(attributeName);
   }
 }
