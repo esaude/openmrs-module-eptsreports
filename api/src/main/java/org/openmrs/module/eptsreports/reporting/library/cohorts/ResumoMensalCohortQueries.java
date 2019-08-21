@@ -37,7 +37,7 @@ public class ResumoMensalCohortQueries {
   }
 
   /** A1 Number of patients who initiated Pre-TARV at this HF by end of previous month */
-  public CohortDefinition getNumberOfPatientsWhoIntiatedPreTarvByEndOfPreviousMonth() {
+  public CohortDefinition getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1() {
 
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Number of patients who initiated Pre-TARV at this HF by end of previous month");
@@ -46,6 +46,7 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("A1i");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
@@ -54,11 +55,64 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getPreArtStartDate().getConceptId()));
 
+    SqlCohortDefinition sqlCohortDefinitionExclude = new SqlCohortDefinition();
+    sqlCohortDefinitionExclude.setName("A1ii");
+    sqlCohortDefinitionExclude.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinitionExclude.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinitionExclude.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinitionExclude.setQuery(
+        ResumoMensalQueries.getPatientsTransferredFromOtherHealthFacility(
+            hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getNoConcept().getConceptId()));
     cd.addSearch(
-        "A1i",
+        "A1I",
         EptsReportUtils.map(sqlCohortDefinition, "startDate=${startDate},location=${location}"));
+    cd.addSearch("A1II", EptsReportUtils.map(sqlCohortDefinitionExclude, "location=${location}"));
 
-    cd.setCompositionString("A1i");
+    cd.setCompositionString("A1I AND NOT A1II");
+
+    return cd;
+  }
+
+  /**
+   * A2 Number of patients who initiated Pre-TARV at this HF during the current month
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Number of patients who initiated Pre-TARV at this HF during the current month");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("A2i");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinition.setQuery(
+        ResumoMensalQueries.getAllPatientsWithPreArtStartDateWithBoundaries(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getPreArtStartDate().getConceptId()));
+
+    SqlCohortDefinition sqlCohortDefinitionExclude = new SqlCohortDefinition();
+    sqlCohortDefinitionExclude.setName("A2ii");
+    sqlCohortDefinitionExclude.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinitionExclude.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinitionExclude.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinitionExclude.setQuery(
+        ResumoMensalQueries.getPatientsTransferredFromOtherHealthFacility(
+            hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getNoConcept().getConceptId()));
+
+    cd.addSearch(
+        "A2I",
+        EptsReportUtils.map(
+            sqlCohortDefinition, "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch("A2II", EptsReportUtils.map(sqlCohortDefinitionExclude, "location=${location}"));
+
+    cd.setCompositionString("A2I AND NOT A2II");
 
     return cd;
   }
