@@ -23,6 +23,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -30,6 +31,7 @@ public class ResumoMensalCohortQueries {
 
   private HivMetadata hivMetadata;
 
+  @Autowired
   public ResumoMensalCohortQueries(HivMetadata hivMetadata) {
     this.hivMetadata = hivMetadata;
   }
