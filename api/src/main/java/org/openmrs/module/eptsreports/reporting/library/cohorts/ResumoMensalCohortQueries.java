@@ -16,6 +16,7 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -26,6 +27,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ResumoMensalCohortQueries {
+
+  private HivMetadata hivMetadata;
+
+  public ResumoMensalCohortQueries(HivMetadata hivMetadata) {
+    this.hivMetadata = hivMetadata;
+  }
 
   /** A1 Number of patients who initiated Pre-TARV at this HF by end of previous month */
   public CohortDefinition getNumberOfPatientsWhoIntiatedPreTarvByEndOfPreviousMonth() {
@@ -41,7 +48,9 @@ public class ResumoMensalCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
     sqlCohortDefinition.setQuery(
-        ResumoMensalQueries.getAllPatientsWithPreArtStartDateLessThanReportingStartDate());
+        ResumoMensalQueries.getAllPatientsWithPreArtStartDateLessThanReportingStartDate(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getPreArtStartDate().getConceptId()));
 
     cd.addSearch(
         "A1i",

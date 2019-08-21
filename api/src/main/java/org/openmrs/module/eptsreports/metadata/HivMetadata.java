@@ -444,6 +444,12 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.continueRegimen");
     return getConcept(uuid);
   }
+  // Concept 23808 Pre-ART Start Date
+  public Concept getPreArtStartDate() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.preArtStartDate");
+    return getConcept(uuid);
+  }
 
   // Encounter types
   // encounterType_id = 6
@@ -545,6 +551,12 @@ public class HivMetadata extends ProgramsMetadata {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.artAconselhamentoSeguimentoEncounterType");
+    return getEncounterType(uuid);
+  }
+  // encounter_type = 53
+  public EncounterType getMasterCardEncounterType() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.masterCardEncounterType");
     return getEncounterType(uuid);
   }
   // Programs

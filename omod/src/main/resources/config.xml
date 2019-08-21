@@ -1156,6 +1156,22 @@
 			Unique facility code allocated by the Ministry of Health
 		</description>
 	</globalProperty>
+	<!--Master card encounter type-->
+	<globalProperty>
+		<property>@MODULE_ID@.masterCardEncounterType</property>
+		<defaultValue>e422ecf9-75dd-4367-b21e-54bccabc4763</defaultValue>
+		<description>
+			UUID for the Master Card - Ficha Resumo encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.preArtStartDate</property>
+		<defaultValue>f69b1fe0-a657-4225-a996-20b599132508</defaultValue>
+		<description>
+			UUID for the PRE-ART START DATE concept
+		</description>
+	</globalProperty>
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
