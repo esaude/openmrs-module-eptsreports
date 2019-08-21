@@ -14,7 +14,41 @@
 
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Date;
+import org.openmrs.Location;
+import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ResumoMensalCohortQueries {}
+public class ResumoMensalCohortQueries {
+
+  /** A1 Number of patients who initiated Pre-TARV at this HF by end of previous month */
+  public CohortDefinition getNumberOfPatientsWhoIntiatedPreTarvByEndOfPreviousMonth() {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Number of patients who initiated Pre-TARV at this HF by end of previous month");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinition.setQuery(
+        ResumoMensalQueries.getAllPatientsWithPreArtStartDateLessThanReportingStartDate());
+
+    cd.addSearch(
+        "A1i",
+        EptsReportUtils.map(sqlCohortDefinition, "startDate=${startDate},location=${location}"));
+
+    cd.setCompositionString("A1i");
+
+    return cd;
+  }
+}

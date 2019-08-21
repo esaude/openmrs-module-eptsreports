@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import org.openmrs.module.eptsreports.reporting.library.datasets.resumo.ResumoMensalDataSetDefinition;
+import org.openmrs.module.eptsreports.reporting.library.datasets.resumo.ResumoMensalAdataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.resumo.ResumoMensalHeaderDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingException;
@@ -30,12 +30,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class SetupResumoMensalReport extends EptsDataExportManager {
 
-  private ResumoMensalDataSetDefinition resumoMensalDataSetDefinition;
+  private ResumoMensalAdataSetDefinition resumoMensalDataSetDefinition;
   private ResumoMensalHeaderDataSet resumoMensalHeaderDataSet;
 
   @Autowired
   public SetupResumoMensalReport(
-      ResumoMensalDataSetDefinition resumoMensalDataSetDefinition,
+      ResumoMensalAdataSetDefinition resumoMensalDataSetDefinition,
       ResumoMensalHeaderDataSet resumoMensalHeaderDataSet) {
     this.resumoMensalDataSetDefinition = resumoMensalDataSetDefinition;
     this.resumoMensalHeaderDataSet = resumoMensalHeaderDataSet;
