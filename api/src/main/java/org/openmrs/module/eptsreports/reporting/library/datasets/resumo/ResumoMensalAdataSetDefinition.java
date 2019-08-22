@@ -186,10 +186,7 @@ public class ResumoMensalAdataSetDefinition extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Patients under 15 years",
-                EptsReportUtils.map(
-                    resumoMensalCohortQueries
-                        .getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(),
-                    mappings)),
+                EptsReportUtils.map(resumoMensalCohortQueries.getSumOfA1AndA2(), mappings)),
             mappings),
         resumoMensalAandBdisaggregations.getUnder14YearsColumns());
 
@@ -200,10 +197,7 @@ public class ResumoMensalAdataSetDefinition extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Patients over 15 years - adults",
-                EptsReportUtils.map(
-                    resumoMensalCohortQueries
-                        .getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(),
-                    mappings)),
+                EptsReportUtils.map(resumoMensalCohortQueries.getSumOfA1AndA2(), mappings)),
             mappings),
         resumoMensalAandBdisaggregations.getAdultPatients());
 
@@ -213,10 +207,7 @@ public class ResumoMensalAdataSetDefinition extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Total patients - Total Geral",
-                EptsReportUtils.map(
-                    resumoMensalCohortQueries
-                        .getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(),
-                    mappings)),
+                EptsReportUtils.map(resumoMensalCohortQueries.getSumOfA1AndA2(), mappings)),
             mappings),
         "");
 
@@ -227,10 +218,7 @@ public class ResumoMensalAdataSetDefinition extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Adolescentes patients",
-                EptsReportUtils.map(
-                    resumoMensalCohortQueries
-                        .getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(),
-                    mappings)),
+                EptsReportUtils.map(resumoMensalCohortQueries.getSumOfA1AndA2(), mappings)),
             mappings),
         resumoMensalAandBdisaggregations.getAdolescentesColumns());
 
