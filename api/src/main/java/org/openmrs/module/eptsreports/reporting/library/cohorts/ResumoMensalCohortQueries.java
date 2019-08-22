@@ -116,4 +116,28 @@ public class ResumoMensalCohortQueries {
 
     return cd;
   }
+  /**
+   * A3 = A.1 + A.2
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getSumOfA1AndA2() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Sum of A1 and A2");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "A1",
+        EptsReportUtils.map(
+            getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1(),
+            "startDate=${startDate},location=${location}"));
+    cd.addSearch(
+        "A2",
+        EptsReportUtils.map(
+            getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("A1 OR A2");
+    return cd;
+  }
 }
