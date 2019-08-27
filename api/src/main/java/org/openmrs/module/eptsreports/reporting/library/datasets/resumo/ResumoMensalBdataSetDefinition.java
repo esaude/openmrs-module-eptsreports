@@ -120,6 +120,117 @@ public class ResumoMensalBdataSetDefinition extends BaseDataSet {
                     mappings)),
             mappings),
         resumoMensalAandBdisaggregations.getAdolescentesColumns());
+    // B2 indicators start here
+    addRow(
+        dsd,
+        "2TC",
+        "Patients under 15 years",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Patients under 15 years",
+                EptsReportUtils.map(
+                    resumoMensalCohortQueries
+                        .getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2(),
+                    mappings)),
+            mappings),
+        resumoMensalAandBdisaggregations.getUnder14YearsColumns());
+
+    addRow(
+        dsd,
+        "2TA",
+        "Patients over 15 years - adults",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Patients over 15 years - adults",
+                EptsReportUtils.map(
+                    resumoMensalCohortQueries
+                        .getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2(),
+                    mappings)),
+            mappings),
+        resumoMensalAandBdisaggregations.getAdultPatients());
+
+    dsd.addColumn(
+        "2TP",
+        "Total patients - Total Geral",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Total patients - Total Geral",
+                EptsReportUtils.map(
+                    resumoMensalCohortQueries
+                        .getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2(),
+                    mappings)),
+            mappings),
+        "");
+
+    addRow(
+        dsd,
+        "2TAD",
+        "Adolescentes patients",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Adolescentes patients",
+                EptsReportUtils.map(
+                    resumoMensalCohortQueries
+                        .getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2(),
+                    mappings)),
+            mappings),
+        resumoMensalAandBdisaggregations.getAdolescentesColumns());
+    // B3 indicators
+    addRow(
+        dsd,
+        "3TC",
+        "Patients under 15 years",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Patients under 15 years",
+                EptsReportUtils.map(
+                    resumoMensalCohortQueries
+                        .getPatientsWhoRestartedTreatmentDuringCurrentMonthB3(),
+                    mappings)),
+            mappings),
+        resumoMensalAandBdisaggregations.getUnder14YearsColumns());
+
+    addRow(
+        dsd,
+        "3TA",
+        "Patients over 15 years - adults",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Patients over 15 years - adults",
+                EptsReportUtils.map(
+                    resumoMensalCohortQueries
+                        .getPatientsWhoRestartedTreatmentDuringCurrentMonthB3(),
+                    mappings)),
+            mappings),
+        resumoMensalAandBdisaggregations.getAdultPatients());
+
+    dsd.addColumn(
+        "3TP",
+        "Total patients - Total Geral",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Total patients - Total Geral",
+                EptsReportUtils.map(
+                    resumoMensalCohortQueries
+                        .getPatientsWhoRestartedTreatmentDuringCurrentMonthB3(),
+                    mappings)),
+            mappings),
+        "");
+
+    addRow(
+        dsd,
+        "3TAD",
+        "Adolescentes patients",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Adolescentes patients",
+                EptsReportUtils.map(
+                    resumoMensalCohortQueries
+                        .getPatientsWhoRestartedTreatmentDuringCurrentMonthB3(),
+                    mappings)),
+            mappings),
+        resumoMensalAandBdisaggregations.getAdolescentesColumns());
+
     return dsd;
   }
 }

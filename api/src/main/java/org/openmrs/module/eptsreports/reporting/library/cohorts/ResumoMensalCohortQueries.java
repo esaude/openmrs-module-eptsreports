@@ -229,4 +229,37 @@ public class ResumoMensalCohortQueries {
             qtnConceptId, ansConceptId, encounterType));
     return sql;
   }
+
+  /**
+   * B.2: Number of patients transferred-in from another HFs during the current month
+   *
+   * @return Cohort
+   * @return CohortDefinition
+   */
+  public CohortDefinition
+      getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2() {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Number of patients transferred-in from another HFs during the current month");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    return cd;
+  }
+
+  /**
+   * Number of patients who restarted the treatment during the current month
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoRestartedTreatmentDuringCurrentMonthB3() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Number of patients who restarted the treatment during the current month");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    return cd;
+  }
 }
