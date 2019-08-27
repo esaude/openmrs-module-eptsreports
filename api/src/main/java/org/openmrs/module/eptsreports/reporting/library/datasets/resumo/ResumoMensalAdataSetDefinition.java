@@ -68,7 +68,7 @@ public class ResumoMensalAdataSetDefinition extends BaseDataSet {
     // indicators for section A1
     addRow(
         dsd,
-        "A1TC",
+        "1TC",
         "Patients under 15 years",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -82,7 +82,7 @@ public class ResumoMensalAdataSetDefinition extends BaseDataSet {
 
     addRow(
         dsd,
-        "A1TA",
+        "1TA",
         "Patients over 15 years - adults",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -95,7 +95,7 @@ public class ResumoMensalAdataSetDefinition extends BaseDataSet {
         resumoMensalAandBdisaggregations.getAdultPatients());
 
     dsd.addColumn(
-        "A1TP",
+        "1TP",
         "Total patients - Total Geral",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -109,7 +109,7 @@ public class ResumoMensalAdataSetDefinition extends BaseDataSet {
 
     addRow(
         dsd,
-        "A1TAD",
+        "1TAD",
         "Adolescentes patients",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -125,7 +125,7 @@ public class ResumoMensalAdataSetDefinition extends BaseDataSet {
 
     addRow(
         dsd,
-        "A2TC",
+        "2TC",
         "Patients under 15 years",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -139,7 +139,7 @@ public class ResumoMensalAdataSetDefinition extends BaseDataSet {
 
     addRow(
         dsd,
-        "A2TA",
+        "2TA",
         "Patients over 15 years - adults",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -152,7 +152,7 @@ public class ResumoMensalAdataSetDefinition extends BaseDataSet {
         resumoMensalAandBdisaggregations.getAdultPatients());
 
     dsd.addColumn(
-        "A2TP",
+        "2TP",
         "Total patients - Total Geral",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -166,7 +166,7 @@ public class ResumoMensalAdataSetDefinition extends BaseDataSet {
 
     addRow(
         dsd,
-        "A2TAD",
+        "2TAD",
         "Adolescentes patients",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -181,7 +181,7 @@ public class ResumoMensalAdataSetDefinition extends BaseDataSet {
     // Indicators for A3
     addRow(
         dsd,
-        "A3TC",
+        "3TC",
         "Patients under 15 years",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -192,7 +192,7 @@ public class ResumoMensalAdataSetDefinition extends BaseDataSet {
 
     addRow(
         dsd,
-        "A3TA",
+        "3TA",
         "Patients over 15 years - adults",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -202,7 +202,7 @@ public class ResumoMensalAdataSetDefinition extends BaseDataSet {
         resumoMensalAandBdisaggregations.getAdultPatients());
 
     dsd.addColumn(
-        "A3TP",
+        "3TP",
         "Total patients - Total Geral",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -213,7 +213,7 @@ public class ResumoMensalAdataSetDefinition extends BaseDataSet {
 
     addRow(
         dsd,
-        "A3TAD",
+        "3TAD",
         "Adolescentes patients",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
