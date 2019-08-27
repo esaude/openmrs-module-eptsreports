@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.datasets.resumo.ResumoMensalAdataSetDefinition;
+import org.openmrs.module.eptsreports.reporting.library.datasets.resumo.ResumoMensalBdataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.resumo.ResumoMensalHeaderDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingException;
@@ -32,13 +33,16 @@ public class SetupResumoMensalReport extends EptsDataExportManager {
 
   private ResumoMensalAdataSetDefinition resumoMensalDataSetDefinition;
   private ResumoMensalHeaderDataSet resumoMensalHeaderDataSet;
+  private ResumoMensalBdataSetDefinition resumoMensalBdataSetDefinition;
 
   @Autowired
   public SetupResumoMensalReport(
       ResumoMensalAdataSetDefinition resumoMensalDataSetDefinition,
-      ResumoMensalHeaderDataSet resumoMensalHeaderDataSet) {
-    this.resumoMensalDataSetDefinition = resumoMensalDataSetDefinition;
+      ResumoMensalHeaderDataSet resumoMensalHeaderDataSet,
+      ResumoMensalBdataSetDefinition resumoMensalBdataSetDefinition) {
     this.resumoMensalHeaderDataSet = resumoMensalHeaderDataSet;
+    this.resumoMensalBdataSetDefinition = resumoMensalBdataSetDefinition;
+    this.resumoMensalDataSetDefinition = resumoMensalDataSetDefinition;
   }
 
   @Override
@@ -67,12 +71,15 @@ public class SetupResumoMensalReport extends EptsDataExportManager {
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
-    rd.addParameters(resumoMensalDataSetDefinition.getParameters());
+    rd.addParameters(resumoMensalBdataSetDefinition.getParameters());
     rd.addDataSetDefinition(
         "HF", Mapped.mapStraightThrough(resumoMensalHeaderDataSet.getHeaderAndFooterInformation()));
     rd.addDataSetDefinition(
-        "R",
-        Mapped.mapStraightThrough(resumoMensalDataSetDefinition.constructResumoMensalDatset()));
+        "RA",
+        Mapped.mapStraightThrough(resumoMensalDataSetDefinition.constructResumoAMensalDatset()));
+    rd.addDataSetDefinition(
+        "RB",
+        Mapped.mapStraightThrough(resumoMensalBdataSetDefinition.constructResumoBMensalDatset()));
     return rd;
   }
 

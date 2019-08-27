@@ -451,6 +451,27 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // Concept 23866 Date of ART Pickup
+  public Concept getArtDatePickup() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.preArtPickupDate");
+    return getConcept(uuid);
+  }
+
+  // Concept 6300 Date of ART Pickup
+  public Concept getTypeOfPatientTransferredFrom() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.typeOfPatientTransferredFrom");
+    return getConcept(uuid);
+  }
+
+  // Concept 6276 Date of ART Pickup
+  public Concept getArtStatus() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.art");
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {

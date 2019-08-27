@@ -45,11 +45,11 @@ public class ResumoMensalQueries {
    * @return String
    */
   public static String getPatientsTransferredFromOtherHealthFacility(
-      int qtnConceptId, int ansConceptId) {
+      int qtnConceptId, int ansConceptId, int encounterType) {
 
     String query =
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location AND o.concept_id=%d AND o.value_coded=%d";
-    return String.format(query, qtnConceptId, ansConceptId);
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location AND o.concept_id=%d AND o.value_coded=%d AND e.encounter_type=%d";
+    return String.format(query, qtnConceptId, ansConceptId, encounterType);
   }
 
   /**
@@ -63,5 +63,29 @@ public class ResumoMensalQueries {
     String query =
         "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND o.value_datetime IS NOT NULL  AND o.value_datetime BETWEEN :startDate AND :endDate AND o.concept_id=%d";
     return String.format(query, encounterType, conceptId);
+  }
+
+  /**
+   * Patients who had a drug pick, i.e. at least one encounter “Levantamento de ARV Master Card
+   *
+   * @return String
+   */
+  public static String getPatientsWhoHadDrugPickUpInMasterCard(
+      int qtnConceptId, int encounterType) {
+    String query =
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location AND o.concept_id=%d AND e.encounter_type=%d AND o.value_datetime IS NOT NULL  AND o.value_datetime BETWEEN :startDate AND :endDate";
+    return String.format(query, qtnConceptId, encounterType);
+  }
+
+  /**
+   * Type of Patient Transferred From
+   *
+   * @return String
+   */
+  public static String getTypeOfPatientTransferredFrom(
+      int qtnConceptId, int ansConceptId, int encounterType) {
+    String query =
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location AND o.concept_id=%d AND o.value_coded=%d AND e.encounter_type=%d";
+    return String.format(query, qtnConceptId, ansConceptId, encounterType);
   }
 }

@@ -55,19 +55,17 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getPreArtStartDate().getConceptId()));
 
-    SqlCohortDefinition sqlCohortDefinitionExclude = new SqlCohortDefinition();
-    sqlCohortDefinitionExclude.setName("A1ii");
-    sqlCohortDefinitionExclude.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    sqlCohortDefinitionExclude.addParameter(new Parameter("endDate", "End Date", Date.class));
-    sqlCohortDefinitionExclude.addParameter(new Parameter("location", "Location", Location.class));
-    sqlCohortDefinitionExclude.setQuery(
-        ResumoMensalQueries.getPatientsTransferredFromOtherHealthFacility(
-            hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
-            hivMetadata.getNoConcept().getConceptId()));
     cd.addSearch(
         "A1I",
         EptsReportUtils.map(sqlCohortDefinition, "startDate=${startDate},location=${location}"));
-    cd.addSearch("A1II", EptsReportUtils.map(sqlCohortDefinitionExclude, "location=${location}"));
+    cd.addSearch(
+        "A1II",
+        EptsReportUtils.map(
+            getPatientsTransferredFromOtherHealthFacilities(
+                hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+                hivMetadata.getNoConcept().getConceptId(),
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId()),
+            "location=${location}"));
 
     cd.setCompositionString("A1I AND NOT A1II");
 
@@ -96,21 +94,18 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getPreArtStartDate().getConceptId()));
 
-    SqlCohortDefinition sqlCohortDefinitionExclude = new SqlCohortDefinition();
-    sqlCohortDefinitionExclude.setName("A2ii");
-    sqlCohortDefinitionExclude.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    sqlCohortDefinitionExclude.addParameter(new Parameter("endDate", "End Date", Date.class));
-    sqlCohortDefinitionExclude.addParameter(new Parameter("location", "Location", Location.class));
-    sqlCohortDefinitionExclude.setQuery(
-        ResumoMensalQueries.getPatientsTransferredFromOtherHealthFacility(
-            hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
-            hivMetadata.getNoConcept().getConceptId()));
-
     cd.addSearch(
         "A2I",
         EptsReportUtils.map(
             sqlCohortDefinition, "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch("A2II", EptsReportUtils.map(sqlCohortDefinitionExclude, "location=${location}"));
+    cd.addSearch(
+        "A2II",
+        EptsReportUtils.map(
+            getPatientsTransferredFromOtherHealthFacilities(
+                hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+                hivMetadata.getNoConcept().getConceptId(),
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId()),
+            "location=${location}"));
 
     cd.setCompositionString("A2I AND NOT A2II");
 
@@ -139,5 +134,99 @@ public class ResumoMensalCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.setCompositionString("A1 OR A2");
     return cd;
+  }
+
+  // Start of the B queries
+  /**
+   * B1 Number of patientes who initiated TARV at this HF during the current month
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Number of patientes who initiated TARV at this HF during the current month");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "B1i",
+        EptsReportUtils.map(
+            getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "B1ii",
+        EptsReportUtils.map(
+            getPatientsWithMasterCardDrugPickUpDate(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "B1iii",
+        EptsReportUtils.map(
+            getPatientsTransferredFromOtherHealthFacilities(
+                hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+                hivMetadata.getNoConcept().getConceptId(),
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId()),
+            "location=${location}"));
+    cd.addSearch(
+        "B1iv",
+        EptsReportUtils.map(
+            getTypeOfPatientTransferredFrom(
+                hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+                hivMetadata.getArtStatus().getConceptId(),
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId()),
+            "location=${location}"));
+
+    cd.setCompositionString("(B1i AND B1ii) AND NOT (B1iii OR B1iv)");
+    return cd;
+  }
+
+  /**
+   * Patients with master card drug pickup date
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getPatientsWithMasterCardDrugPickUpDate() {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("Patients with master card drug pickup date");
+    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sql.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sql.addParameter(new Parameter("location", "Location", Location.class));
+    sql.setQuery(
+        ResumoMensalQueries.getPatientsWhoHadDrugPickUpInMasterCard(
+            hivMetadata.getArtDatePickup().getConceptId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId()));
+    return sql;
+  }
+
+  /**
+   * Patients who have been transferred from other health facility to this one
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getPatientsTransferredFromOtherHealthFacilities(
+      int qtnConceptId, int ansConceptId, int encounterType) {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("Patients with master card and have been marked as transfer ins");
+    sql.addParameter(new Parameter("location", "Location", Location.class));
+    sql.setQuery(
+        ResumoMensalQueries.getPatientsTransferredFromOtherHealthFacility(
+            qtnConceptId, ansConceptId, encounterType));
+    return sql;
+  }
+
+  /**
+   * Get number of patients transferred from other health facility marked in master card
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getTypeOfPatientTransferredFrom(
+      int qtnConceptId, int ansConceptId, int encounterType) {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("Patients transferred from other health facility marked in master card");
+    sql.addParameter(new Parameter("location", "Location", Location.class));
+    sql.setQuery(
+        ResumoMensalQueries.getTypeOfPatientTransferredFrom(
+            qtnConceptId, ansConceptId, encounterType));
+    return sql;
   }
 }

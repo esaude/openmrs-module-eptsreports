@@ -1172,6 +1172,34 @@
 			UUID for the PRE-ART START DATE concept
 		</description>
 	</globalProperty>
+	<!--23866-->
+	<globalProperty>
+		<property>eptsreports.preArtPickupDate</property>
+		<defaultValue>74f6c17f-9819-41da-ba34-5910f67d24d0</defaultValue>
+		<description>
+			UUID for the Date of ART Pickup concept
+		</description>
+	</globalProperty>
+
+	<!--6300-->
+	<globalProperty>
+		<property>eptsreports.typeOfPatientTransferredFrom</property>
+		<defaultValue>4f139c0a-9843-4dc4-b3e5-5aa00812e605</defaultValue>
+		<description>
+			UUID for the TYPE OF PATIENT TRANSFERED FROM concept
+		</description>
+	</globalProperty>
+
+	<!--6276-->
+	<globalProperty>
+		<property>eptsreports.art</property>
+		<defaultValue>7f3af436-5c3a-447c-9012-42bb314e03db</defaultValue>
+		<description>
+			UUID for the ART concept
+		</description>
+	</globalProperty>
+
+
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
