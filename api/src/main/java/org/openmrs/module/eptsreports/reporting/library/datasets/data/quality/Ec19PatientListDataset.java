@@ -26,7 +26,8 @@ public class Ec19PatientListDataset extends BaseDataSet {
     sqlDataSetDefinition.setSqlQuery(
         Ec19Queries.getEc19CombinedQuery(
             hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId()));
+            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+            1985));
     return sqlDataSetDefinition;
   }
 }

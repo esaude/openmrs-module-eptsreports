@@ -11,7 +11,10 @@ public class Ec18Queries {
    * @return
    */
   public static String getEc18CombinedQuery(
-      int programId, int arvPediatriaSeguimentoEncounterType, int adultoSeguimentoEncounterType) {
+      int programId,
+      int arvPediatriaSeguimentoEncounterType,
+      int adultoSeguimentoEncounterType,
+      int year) {
     String query =
         "SELECT patient_id, NID, Name, birthdate, Estimated_dob, Sex, First_entry_date, Last_updated, date_enrolled,  MIN(encounter_date) AS encounter_date, encounter_date_created, state FROM("
             + " SELECT pa.patient_id, pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y %H:%i:%s') AS date_enrolled, DATE_FORMAT(e.encounter_datetime, '%d-%m-%Y %H:%i:%s') AS encounter_date, DATE_FORMAT(e.date_created, '%d-%m-%Y %H:%i:%s') AS encounter_date_created,case when ps.state = 9 then 'DROPPED FROM TREATMENT' when ps.state = 6 then 'ACTIVE ON PROGRAM' when ps.state = 10 then 'PATIENT HAS DIED' when ps.state = 8 then 'SUSPENDED TREATMENT' when ps.state = 7 then 'TRANSFERED OUT TO ANOTHER FACILITY' when ps.state = 29 then 'TRANSFERRED FROM OTHER FACILTY' end AS state FROM patient pa "
@@ -32,7 +35,8 @@ public class Ec18Queries {
             + ")"
             + " AND pe.birthdate IS NOT NULL"
             + " AND e.location_id IN(:location) AND pa.voided = 0 and e.voided=0 "
-            + " AND e.encounter_datetime < '1985-01-01'"
+            + " AND YEAR(e.encounter_datetime) < "
+            + year
             + ")f_ec16 GROUP BY f_ec16.patient_id";
     return query;
   }

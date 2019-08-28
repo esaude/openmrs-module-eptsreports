@@ -26,7 +26,8 @@ public class Ec17PatientListDataset extends BaseDataSet {
     sqlDataSetDefinition.setSqlQuery(
         Ec17Queries.getEc17CombinedQuery(
             hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            1985));
     return sqlDataSetDefinition;
   }
 }
