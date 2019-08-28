@@ -149,7 +149,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "Data Quality Report v1";
+    return "Data Quality Report v2";
   }
 
   @Override

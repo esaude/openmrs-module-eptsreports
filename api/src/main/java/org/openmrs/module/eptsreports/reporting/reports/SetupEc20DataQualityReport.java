@@ -56,7 +56,7 @@ public class SetupEc20DataQualityReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "EC20 Data Quality Report v1";
+    return "EC20 Data Quality Report v2";
   }
 
   @Override
