@@ -35,7 +35,7 @@ public class ResumoMensalQueries {
   public static String getAllPatientsWithPreArtStartDateLessThanReportingStartDate(
       int encounterType, int conceptId) {
     String query =
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND o.value_datetime IS NOT NULL AND o.concept_id=%d AND o.value_datetime<:startDate";
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND o.value_datetime IS NOT NULL AND o.concept_id=%d AND o.value_datetime <:startDate";
     return String.format(query, encounterType, conceptId);
   }
   /**
@@ -87,5 +87,43 @@ public class ResumoMensalQueries {
     String query =
         "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location AND o.concept_id=%d AND o.value_coded=%d AND e.encounter_type=%d";
     return String.format(query, qtnConceptId, ansConceptId, encounterType);
+  }
+
+  /**
+   * Number of patients transferred-in from another HFs during the current month
+   *
+   * @return String
+   */
+  public static String getPatientsTransferredFromAnotherHealthFacilityDuringTheCurrentMonth(
+      int masterCardEncounter,
+      int transferFromConcept,
+      int yesConcept,
+      int typeOfPantientConcept,
+      int tarvConcept,
+      int dateTransferredConcept) {
+
+    String query =
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location "
+            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate AND o.concept_id=%d AND o.value_coded=%d "
+            + " UNION "
+            + " SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location "
+            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate AND o.concept_id=%d AND o.value_coded=%d "
+            + " UNION "
+            + " SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location "
+            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate AND o.concept_id=%d ";
+
+    return String.format(
+        query,
+        masterCardEncounter,
+        transferFromConcept,
+        yesConcept,
+        masterCardEncounter,
+        typeOfPantientConcept,
+        tarvConcept,
+        masterCardEncounter,
+        dateTransferredConcept);
   }
 }

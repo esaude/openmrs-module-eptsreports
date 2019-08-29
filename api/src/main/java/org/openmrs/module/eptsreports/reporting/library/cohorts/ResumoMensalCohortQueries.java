@@ -239,17 +239,25 @@ public class ResumoMensalCohortQueries {
   public CohortDefinition
       getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2() {
 
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients transferred-in from another HFs during the current month");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        ResumoMensalQueries.getPatientsTransferredFromAnotherHealthFacilityDuringTheCurrentMonth(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId(),
+            hivMetadata.getTransferFromOtherFacilityConcept().getConceptId()));
 
     return cd;
   }
 
   /**
-   * Number of patients who restarted the treatment during the current month
+   * B.3 Number of patients who restarted the treatment during the current month
    *
    * @return CohortDefinition
    */
