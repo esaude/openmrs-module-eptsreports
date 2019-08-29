@@ -79,8 +79,6 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   private Ec19PatientListDataset ec19PatientListDataset;
 
-  private Ec20PatientListDataset ec20PatientListDataset;
-
   private GetCustomConfigurationDataset getCustomConfigurationDataset;
 
   private HivMetadata hivMetadata;
@@ -108,7 +106,6 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       Ec17PatientListDataset ec17PatientListDataset,
       Ec18PatientListDataset ec18PatientListDataset,
       Ec19PatientListDataset ec19PatientListDataset,
-      Ec20PatientListDataset ec20PatientListDataset,
       GetCustomConfigurationDataset getCustomConfigurationDataset,
       HivMetadata hivMetadata) {
     this.summaryDataQualityDataset = summaryDataQualityDataset;
@@ -132,7 +129,6 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     this.ec17PatientListDataset = ec17PatientListDataset;
     this.ec18PatientListDataset = ec18PatientListDataset;
     this.ec19PatientListDataset = ec19PatientListDataset;
-    this.ec20PatientListDataset = ec20PatientListDataset;
     this.hivMetadata = hivMetadata;
     this.getCustomConfigurationDataset = getCustomConfigurationDataset;
   }
@@ -250,7 +246,6 @@ public class SetupDataQualityReport extends EptsDataExportManager {
         "EC19",
         Mapped.mapStraightThrough(
             ec19PatientListDataset.ec19PatientListDataset(getDataParameters())));
-
     rd.addDataSetDefinition(
         "EC01",
         Mapped.mapStraightThrough(
