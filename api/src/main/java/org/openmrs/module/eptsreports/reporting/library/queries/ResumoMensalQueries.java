@@ -126,4 +126,16 @@ public class ResumoMensalQueries {
         masterCardEncounter,
         dateTransferredConcept);
   }
+
+  /**
+   * B.3: Number of patients who restarted the treatment during the current month
+   *
+   * @return String
+   */
+  public static String getPatientsWhoRestartedTreatmentDuringCurrentMonth(
+      int adultSegEncounter, int patientStateConcept, int startDrugsConcept) {
+    String query = "";
+
+    return String.format(query, adultSegEncounter, patientStateConcept, startDrugsConcept);
+  }
 }

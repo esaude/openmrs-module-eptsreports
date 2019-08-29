@@ -262,11 +262,16 @@ public class ResumoMensalCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getPatientsWhoRestartedTreatmentDuringCurrentMonthB3() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients who restarted the treatment during the current month");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        ResumoMensalQueries.getPatientsWhoRestartedTreatmentDuringCurrentMonth(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
+            hivMetadata.getStartDrugs().getConceptId()));
 
     return cd;
   }

@@ -1199,6 +1199,15 @@
 		</description>
 	</globalProperty>
 
+	<!--6273-->
+	<globalProperty>
+		<property>eptsreports.stateOfStayArtPatient</property>
+		<defaultValue>a7d3b5c9-8b8e-4f29-b332-8db47466fed3</defaultValue>
+		<description>
+			UUID for the STATE OF STAY ART PATIENT concept
+		</description>
+	</globalProperty>
+
 
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 

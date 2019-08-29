@@ -466,6 +466,13 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // Concept 6273 patient state
+  public Concept getStateOfStayOfArtPatient() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.stateOfStayArtPatient");
+    return getConcept(uuid);
+  }
+
   // Concept 6276 Date of ART Pickup
   public Concept getArtStatus() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.art");
