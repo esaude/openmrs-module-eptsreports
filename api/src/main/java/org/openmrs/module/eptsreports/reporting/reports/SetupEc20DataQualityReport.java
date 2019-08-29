@@ -101,7 +101,7 @@ public class SetupEc20DataQualityReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "EC20_Data_Quality_Report.xls",
+              "EC20_Data_Quality_Report_v2.xls",
               "EC20 Data Quality Report",
               getExcelDesignUuid(),
               null);
