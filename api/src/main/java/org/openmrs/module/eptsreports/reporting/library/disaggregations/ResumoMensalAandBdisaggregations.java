@@ -32,12 +32,12 @@ public class ResumoMensalAandBdisaggregations {
     ColumnParameters tenTo14yearsFemale =
         new ColumnParameters(
             "tenTo14yearsFemale", "10 to  14 years female patients", "gender=F|age=10-15", "04");
-    ColumnParameters under54yearsTotal =
+    ColumnParameters under14yearsTotal =
         new ColumnParameters(
-            "under54yearsTotal", "Under 15 years patients - Totals", "age=0-15", "05");
+            "under14yearsTotal", "Under 15 years patients - Totals", "age=0-15", "05");
 
     return Arrays.asList(
-        under4years, fiveTo9years, tenTo14yearsMale, tenTo14yearsFemale, under54yearsTotal);
+        under4years, fiveTo9years, tenTo14yearsMale, tenTo14yearsFemale, under14yearsTotal);
   }
 
   public List<ColumnParameters> getAdultPatients() {
