@@ -479,6 +479,13 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // Concept 1706 TRANSFERRED OUT TO ANOTHER FACILITY
+  public Concept getTransferredOutConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.transferOutToAnotherFacilityConceptUuid");
+    return getConcept(uuid);
+  }
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {

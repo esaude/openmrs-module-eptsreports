@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets.resumo;
 
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
+
 import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
@@ -20,8 +22,11 @@ import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDim
 import org.openmrs.module.eptsreports.reporting.library.disaggregations.ResumoMensalAandBdisaggregations;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -231,6 +236,38 @@ public class ResumoMensalBdataSetDefinition extends BaseDataSet {
             mappings),
         resumoMensalAandBdisaggregations.getAdolescentesColumns());
 
+    addRow(
+        dsd,
+        "5TC",
+        "Patients under 15 years",
+        getPatientsTransferredOutDuringCurrentMonth(),
+        resumoMensalAandBdisaggregations.getUnder14YearsColumns());
+
+    addRow(
+        dsd,
+        "5TA",
+        "Patients over 15 years - adults",
+        getPatientsTransferredOutDuringCurrentMonth(),
+        resumoMensalAandBdisaggregations.getAdultPatients());
+
+    dsd.addColumn(
+        "5TP", "Total patients - Total Geral", getPatientsTransferredOutDuringCurrentMonth(), "");
+
+    addRow(
+        dsd,
+        "5TAD",
+        "Adolescentes patients",
+        getPatientsTransferredOutDuringCurrentMonth(),
+        resumoMensalAandBdisaggregations.getAdolescentesColumns());
+
     return dsd;
+  }
+
+  private Mapped<CohortIndicator> getPatientsTransferredOutDuringCurrentMonth() {
+    String name = "Patients transferred out during the current month";
+    Mapped<CohortDefinition> cohort =
+        mapStraightThrough(
+            resumoMensalCohortQueries.getNumberOfPatientsTransferredOutDuringCurrentMonthB5());
+    return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
   }
 }
