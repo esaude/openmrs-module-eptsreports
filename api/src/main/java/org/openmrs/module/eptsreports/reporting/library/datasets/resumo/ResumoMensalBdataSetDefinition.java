@@ -260,6 +260,33 @@ public class ResumoMensalBdataSetDefinition extends BaseDataSet {
         getPatientsTransferredOutDuringCurrentMonth(),
         resumoMensalAandBdisaggregations.getAdolescentesColumns());
 
+    addRow(
+        dsd,
+        "6TC",
+        "Patients under 15 years",
+        getPatientsWithArtSuspensionDuringCurrentMonth(),
+        resumoMensalAandBdisaggregations.getUnder14YearsColumns());
+
+    addRow(
+        dsd,
+        "6TA",
+        "Patients over 15 years - adults",
+        getPatientsWithArtSuspensionDuringCurrentMonth(),
+        resumoMensalAandBdisaggregations.getAdultPatients());
+
+    dsd.addColumn(
+        "6TP",
+        "Total patients - Total Geral",
+        getPatientsWithArtSuspensionDuringCurrentMonth(),
+        "");
+
+    addRow(
+        dsd,
+        "6TAD",
+        "Adolescentes patients",
+        getPatientsWithArtSuspensionDuringCurrentMonth(),
+        resumoMensalAandBdisaggregations.getAdolescentesColumns());
+
     return dsd;
   }
 
@@ -268,6 +295,14 @@ public class ResumoMensalBdataSetDefinition extends BaseDataSet {
     Mapped<CohortDefinition> cohort =
         mapStraightThrough(
             resumoMensalCohortQueries.getNumberOfPatientsTransferredOutDuringCurrentMonthB5());
+    return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
+  }
+
+  private Mapped<CohortIndicator> getPatientsWithArtSuspensionDuringCurrentMonth() {
+    String name = "Patients with ART suspension during the current month";
+    Mapped<CohortDefinition> cohort =
+        mapStraightThrough(
+            resumoMensalCohortQueries.getNumberOfPatientsWithArtSuspensionDuringCurrentMonthB6());
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
   }
 }

@@ -160,4 +160,24 @@ public class ResumoMensalQueries {
             + "       AND e.encounter_datetime BETWEEN :startDate and :endDate";
     return String.format(query, adultSegEncounter, stateOfStayConcept, transferredOutConcept);
   }
+
+  public static String getPatientsWithArtSuspensionDuringCurrentMonth(
+      int adultSegEncounter, int stateOfStayConcept, int suspendTreatmentConcept) {
+    String query =
+        "SELECT pa.patient_id "
+            + "FROM   patient pa "
+            + "       INNER JOIN encounter e "
+            + "               ON pa.patient_id = e.patient_id "
+            + "       INNER JOIN obs o "
+            + "               ON e.encounter_id = o.encounter_id "
+            + "WHERE  e.encounter_id = %d "
+            + "       AND o.concept_id = %d "
+            + "       AND o.value_coded = %d "
+            + "       AND pa.voided = 0 "
+            + "       AND e.voided = 0 "
+            + "       AND o.voided = 0 "
+            + "       AND e.location_id = :location "
+            + "       AND e.encounter_datetime BETWEEN :startDate and :endDate";
+    return String.format(query, adultSegEncounter, stateOfStayConcept, suspendTreatmentConcept);
+  }
 }
