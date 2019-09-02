@@ -134,7 +134,9 @@ public class ResumoMensalQueries {
    */
   public static String getPatientsWhoRestartedTreatmentDuringCurrentMonth(
       int adultSegEncounter, int patientStateConcept, int startDrugsConcept) {
-    String query = "";
+    String query =
+        "SELECT pa.patient_id FROM patient pa INNER JOIN encounter e ON pa.patient_id=e.patient_id INNER JOIN obs o ON e.encounter_id=o.encounter_id WHERE "
+            + " e.encounter_id=%d AND o.concept_id=%d AND o.value_coded=%d AND pa.voided=0 AND e.voided=o AND o.voided=0 AND e.location_id=location";
 
     return String.format(query, adultSegEncounter, patientStateConcept, startDrugsConcept);
   }
