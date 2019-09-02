@@ -544,7 +544,7 @@ public class EriDSDCohortQueries {
                 83),
             "onOrBefore=${endDate},location=${location}"));
 
-    cd.setCompositionString("TxCurr AND scheduled");
+    cd.setCompositionString("scheduled");
 
     return cd;
   }
