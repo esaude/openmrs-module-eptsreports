@@ -35,7 +35,11 @@ public class SummaryEc20DataQualityCohorts {
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(
         new Parameter("location", "Facilities", Location.class, List.class, null));
-    sqlCohortDefinition.setQuery(BaseQueries.getBaseQueryForEc20DataQuality());
+    sqlCohortDefinition.setQuery(
+        BaseQueries.getBaseQueryForEc20DataQuality(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
     return sqlCohortDefinition;
   }
 

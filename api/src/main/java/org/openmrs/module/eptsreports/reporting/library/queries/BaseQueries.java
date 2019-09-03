@@ -58,7 +58,16 @@ public class BaseQueries {
    *
    * @return
    */
-  public static String getBaseQueryForEc20DataQuality() {
-    return "SELECT p.patient_id from patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided=0  AND e.location_id IN(:location) AND p.date_created BETWEEN :startDate AND :endDate AND e.encounter_type IN(6,9,18)";
+  public static String getBaseQueryForEc20DataQuality(
+      int adultoSeguimentoEncounterTypeId,
+      int arvPediatriaInitialEncounterTypeId,
+      int arvPharmaciaEncounterTypeId) {
+    return "SELECT p.patient_id from patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided=0  AND e.location_id IN(:location) AND p.date_created BETWEEN :startDate AND :endDate AND e.encounter_type IN("
+        + adultoSeguimentoEncounterTypeId
+        + ","
+        + arvPediatriaInitialEncounterTypeId
+        + ","
+        + arvPharmaciaEncounterTypeId
+        + " )";
   }
 }
