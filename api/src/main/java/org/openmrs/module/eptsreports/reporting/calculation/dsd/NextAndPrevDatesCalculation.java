@@ -97,7 +97,6 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
           scheduled = true;
         }
       }
-      scheduled = true;
 
       map.put(pId, new BooleanResult(scheduled, this));
     }
