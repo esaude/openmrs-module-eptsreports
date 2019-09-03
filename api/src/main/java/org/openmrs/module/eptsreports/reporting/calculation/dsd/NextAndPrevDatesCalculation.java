@@ -68,15 +68,19 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
           iterator.remove();
         }
       }
+
       Collections.sort(
           returnVisitList,
           new Comparator<Obs>() {
             @Override
             public int compare(Obs obs, Obs t1) {
-              return t1.getValueDate().compareTo(obs.getValueDatetime());
+              int comparisonValue = 1;
+              if (t1.getValueDate() != null && obs.getValueDatetime() != null) {
+                comparisonValue = t1.getValueDate().compareTo(obs.getValueDatetime());
+              }
+              return comparisonValue;
             }
           });
-
       if (returnVisitList.size() > 0) {
         lastReturnVisitObs = returnVisitList.get(returnVisitList.size() - 1);
       }
@@ -96,6 +100,7 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
           scheduled = true;
         }
       }
+      scheduled = true;
 
       map.put(pId, new BooleanResult(scheduled, this));
     }
