@@ -75,11 +75,7 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
           new Comparator<Obs>() {
             @Override
             public int compare(Obs obs, Obs t1) {
-              int comparisonValue = 1;
-              if (t1.getValueDate() != null && obs.getValueDatetime() != null) {
-                comparisonValue = t1.getValueDate().compareTo(obs.getValueDatetime());
-              }
-              return comparisonValue;
+              return t1.getValueDate().compareTo(obs.getValueDatetime());
             }
           });
       if (returnVisitList.size() > 0) {
