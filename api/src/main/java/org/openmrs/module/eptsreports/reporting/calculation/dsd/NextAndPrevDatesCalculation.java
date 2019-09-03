@@ -62,7 +62,6 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
       while (iterator.hasNext()) {
         Obs obs = iterator.next();
         if (obs.getVoided()
-            || obs.getValueDatetime() == null
             || obs.getValueDate() == null
             || obs.getEncounter() == null
             || (obs.getEncounter() != null
