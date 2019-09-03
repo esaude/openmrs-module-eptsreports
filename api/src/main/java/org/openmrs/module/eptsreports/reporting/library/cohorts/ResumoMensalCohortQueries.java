@@ -292,7 +292,7 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  /** @return B6: Number of patientes with ART suspension during the current month */
+  /** @return B6: Number of patients with ART suspension during the current month */
   public CohortDefinition getNumberOfPatientsWithArtSuspensionDuringCurrentMonthB6() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients transferred out during the current month");
@@ -304,6 +304,21 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
             hivMetadata.getTransferredOutConcept().getConceptId()));
+
+    return cd;
+  }
+
+  /** @return B7: Number of patients who abandoned the ART during the current month */
+  public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthB7() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Number of patients transferred out during the current month");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        ResumoMensalQueries.getPatientsWhoAbandonedArtDuringCurrentMonth(
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickup().getConceptId()));
 
     return cd;
   }

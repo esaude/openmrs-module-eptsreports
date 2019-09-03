@@ -236,6 +236,7 @@ public class ResumoMensalBdataSetDefinition extends BaseDataSet {
             mappings),
         resumoMensalAandBdisaggregations.getAdolescentesColumns());
 
+    // B5 indicators
     addRow(
         dsd,
         "5TC",
@@ -260,6 +261,7 @@ public class ResumoMensalBdataSetDefinition extends BaseDataSet {
         getPatientsTransferredOutDuringCurrentMonth(),
         resumoMensalAandBdisaggregations.getAdolescentesColumns());
 
+    // B6 indicators
     addRow(
         dsd,
         "6TC",
@@ -287,6 +289,31 @@ public class ResumoMensalBdataSetDefinition extends BaseDataSet {
         getPatientsWithArtSuspensionDuringCurrentMonth(),
         resumoMensalAandBdisaggregations.getAdolescentesColumns());
 
+    // B7 indicators
+    addRow(
+        dsd,
+        "7TC",
+        "Patients under 15 years",
+        getPatientsWhoAbandonedArtDuringCurrentMonth(),
+        resumoMensalAandBdisaggregations.getUnder14YearsColumns());
+
+    addRow(
+        dsd,
+        "7TA",
+        "Patients over 15 years - adults",
+        getPatientsWhoAbandonedArtDuringCurrentMonth(),
+        resumoMensalAandBdisaggregations.getAdultPatients());
+
+    dsd.addColumn(
+        "7TP", "Total patients - Total Geral", getPatientsWhoAbandonedArtDuringCurrentMonth(), "");
+
+    addRow(
+        dsd,
+        "7TAD",
+        "Adolescentes patients",
+        getPatientsWhoAbandonedArtDuringCurrentMonth(),
+        resumoMensalAandBdisaggregations.getAdolescentesColumns());
+
     return dsd;
   }
 
@@ -303,6 +330,14 @@ public class ResumoMensalBdataSetDefinition extends BaseDataSet {
     Mapped<CohortDefinition> cohort =
         mapStraightThrough(
             resumoMensalCohortQueries.getNumberOfPatientsWithArtSuspensionDuringCurrentMonthB6());
+    return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
+  }
+
+  private Mapped<CohortIndicator> getPatientsWhoAbandonedArtDuringCurrentMonth() {
+    String name = "Patients who abandoned the ART during the current month";
+    Mapped<CohortDefinition> cohort =
+        mapStraightThrough(
+            resumoMensalCohortQueries.getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthB7());
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
   }
 }

@@ -588,6 +588,15 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.artAconselhamentoSeguimentoEncounterType");
     return getEncounterType(uuid);
   }
+
+  // encounter_type = 52
+  public EncounterType getMasterCardDrugPickupEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.masterCardDrugPickupEncounterTypeUuid");
+    return getEncounterType(uuid);
+  }
+
   // encounter_type = 53
   public EncounterType getMasterCardEncounterType() {
     String uuid =

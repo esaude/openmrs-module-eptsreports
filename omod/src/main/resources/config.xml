@@ -1166,6 +1166,14 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>@MODULE_ID@.masterCardDrugPickupEncounterTypeUuid</property>
+		<defaultValue>cce7b2ec-4fc0-4f9e-806d-b1c4ee9577db</defaultValue>
+		<description>
+			UUID for the Levantamento de ARV Master Card encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>eptsreports.preArtStartDate</property>
 		<defaultValue>f69b1fe0-a657-4225-a996-20b599132508</defaultValue>
 		<description>
