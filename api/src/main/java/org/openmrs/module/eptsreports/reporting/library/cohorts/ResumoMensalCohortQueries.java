@@ -322,4 +322,20 @@ public class ResumoMensalCohortQueries {
 
     return cd;
   }
+
+  /** @return B8: Number of died patients during the current month */
+  public CohortDefinition getNumberOfPatientsWhoDiedDuringCurrentMonthB8() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Number of patients transferred out during the current month");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        ResumoMensalQueries.getPatientsWhoDiedDuringCurrentMonth(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
+            hivMetadata.getPatientHasDiedConcept().getConceptId()));
+
+    return cd;
+  }
 }
