@@ -181,56 +181,6 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * Patients with master card drug pickup date
-   *
-   * @return CohortDefinition
-   */
-  private CohortDefinition getPatientsWithMasterCardDrugPickUpDate() {
-    SqlCohortDefinition sql = new SqlCohortDefinition();
-    sql.setName("Patients with master card drug pickup date");
-    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    sql.addParameter(new Parameter("endDate", "End Date", Date.class));
-    sql.addParameter(new Parameter("location", "Location", Location.class));
-    sql.setQuery(
-        ResumoMensalQueries.getPatientsWhoHadDrugPickUpInMasterCard(
-            hivMetadata.getArtDatePickup().getConceptId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId()));
-    return sql;
-  }
-
-  /**
-   * Patients who have been transferred from other health facility to this one
-   *
-   * @return CohortDefinition
-   */
-  private CohortDefinition getPatientsTransferredFromOtherHealthFacilities(
-      int qtnConceptId, int ansConceptId, int encounterType) {
-    SqlCohortDefinition sql = new SqlCohortDefinition();
-    sql.setName("Patients with master card and have been marked as transfer ins");
-    sql.addParameter(new Parameter("location", "Location", Location.class));
-    sql.setQuery(
-        ResumoMensalQueries.getPatientsTransferredFromOtherHealthFacility(
-            qtnConceptId, ansConceptId, encounterType));
-    return sql;
-  }
-
-  /**
-   * Get number of patients transferred from other health facility marked in master card
-   *
-   * @return CohortDefinition
-   */
-  private CohortDefinition getTypeOfPatientTransferredFrom(
-      int qtnConceptId, int ansConceptId, int encounterType) {
-    SqlCohortDefinition sql = new SqlCohortDefinition();
-    sql.setName("Patients transferred from other health facility marked in master card");
-    sql.addParameter(new Parameter("location", "Location", Location.class));
-    sql.setQuery(
-        ResumoMensalQueries.getTypeOfPatientTransferredFrom(
-            qtnConceptId, ansConceptId, encounterType));
-    return sql;
-  }
-
-  /**
    * B.2: Number of patients transferred-in from another HFs during the current month
    *
    * @return Cohort
@@ -337,5 +287,55 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getPatientHasDiedConcept().getConceptId()));
 
     return cd;
+  }
+
+  /**
+   * Patients with master card drug pickup date
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getPatientsWithMasterCardDrugPickUpDate() {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("Patients with master card drug pickup date");
+    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sql.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sql.addParameter(new Parameter("location", "Location", Location.class));
+    sql.setQuery(
+        ResumoMensalQueries.getPatientsWhoHadDrugPickUpInMasterCard(
+            hivMetadata.getArtDatePickup().getConceptId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId()));
+    return sql;
+  }
+
+  /**
+   * Get number of patients transferred from other health facility marked in master card
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getTypeOfPatientTransferredFrom(
+      int qtnConceptId, int ansConceptId, int encounterType) {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("Patients transferred from other health facility marked in master card");
+    sql.addParameter(new Parameter("location", "Location", Location.class));
+    sql.setQuery(
+        ResumoMensalQueries.getTypeOfPatientTransferredFrom(
+            qtnConceptId, ansConceptId, encounterType));
+    return sql;
+  }
+
+  /**
+   * Patients who have been transferred from other health facility to this one
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getPatientsTransferredFromOtherHealthFacilities(
+      int qtnConceptId, int ansConceptId, int encounterType) {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("Patients with master card and have been marked as transfer ins");
+    sql.addParameter(new Parameter("location", "Location", Location.class));
+    sql.setQuery(
+        ResumoMensalQueries.getPatientsTransferredFromOtherHealthFacility(
+            qtnConceptId, ansConceptId, encounterType));
+    return sql;
   }
 }
