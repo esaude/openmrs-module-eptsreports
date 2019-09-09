@@ -152,7 +152,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B1i",
         EptsReportUtils.map(
-            getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(),
+            getPatientsWhoInitiatedTarvAtAfacilityDuringCurrentMonth(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "B1ii",
@@ -303,7 +303,7 @@ public class ResumoMensalCohortQueries {
     sql.setQuery(
         ResumoMensalQueries.getPatientsWhoHadDrugPickUpInMasterCard(
             hivMetadata.getArtDatePickup().getConceptId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId()));
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
     return sql;
   }
 
@@ -337,5 +337,18 @@ public class ResumoMensalCohortQueries {
         ResumoMensalQueries.getPatientsTransferredFromOtherHealthFacility(
             qtnConceptId, ansConceptId, encounterType));
     return sql;
+  }
+
+  private CohortDefinition getPatientsWhoInitiatedTarvAtAfacilityDuringCurrentMonth() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Number of patients who initiated TARV at this HF during the current month");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        ResumoMensalQueries.getAllPatientsWithArtStartDateWithBoundaries(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVStartDate().getConceptId()));
+    return cd;
   }
 }
