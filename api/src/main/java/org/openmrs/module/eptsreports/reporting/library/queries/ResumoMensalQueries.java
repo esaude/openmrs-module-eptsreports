@@ -224,7 +224,7 @@ public class ResumoMensalQueries {
             + "               ON pa.patient_id = e.patient_id "
             + "       INNER JOIN obs o "
             + "               ON e.encounter_id = o.encounter_id "
-            + "WHERE  e.encounter_id = %d "
+            + "WHERE  e.encounter_type = %d "
             + "       AND o.concept_id = %d "
             + "       AND o.value_coded = %d "
             + "       AND pa.voided = 0 "
