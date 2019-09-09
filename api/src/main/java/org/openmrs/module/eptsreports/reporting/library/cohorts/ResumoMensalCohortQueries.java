@@ -235,7 +235,7 @@ public class ResumoMensalCohortQueries {
         ResumoMensalQueries.getPatientsWithArtSuspensionDuringCurrentMonth(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
-            hivMetadata.getTransferredOutConcept().getConceptId()));
+            hivMetadata.getSuspendedTreatmentConcept().getConceptId()));
 
     return cd;
   }

@@ -244,7 +244,7 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   // concept_id = 1709
-  private Concept getSuspendedTreatmentConcept() {
+  public Concept getSuspendedTreatmentConcept() {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.suspendedTreatmentConceptUuid");
