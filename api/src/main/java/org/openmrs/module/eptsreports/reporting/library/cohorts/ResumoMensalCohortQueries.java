@@ -61,11 +61,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "A1II",
         EptsReportUtils.map(
-            getPatientsTransferredFromOtherHealthFacilities(
-                hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
-                hivMetadata.getNoConcept().getConceptId(),
-                hivMetadata.getMasterCardEncounterType().getEncounterTypeId()),
-            "location=${location}"));
+            getPatientsTransferredFromOtherHealthFacilities(), "location=${location}"));
 
     cd.setCompositionString("A1I AND NOT A1II");
 
@@ -101,11 +97,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "A2II",
         EptsReportUtils.map(
-            getPatientsTransferredFromOtherHealthFacilities(
-                hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
-                hivMetadata.getNoConcept().getConceptId(),
-                hivMetadata.getMasterCardEncounterType().getEncounterTypeId()),
-            "location=${location}"));
+            getPatientsTransferredFromOtherHealthFacilities(), "location=${location}"));
 
     cd.setCompositionString("A2I AND NOT A2II");
 
@@ -162,19 +154,9 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B1iii",
         EptsReportUtils.map(
-            getPatientsTransferredFromOtherHealthFacilities(
-                hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
-                hivMetadata.getNoConcept().getConceptId(),
-                hivMetadata.getMasterCardEncounterType().getEncounterTypeId()),
-            "location=${location}"));
+            getPatientsTransferredFromOtherHealthFacilities(), "location=${location}"));
     cd.addSearch(
-        "B1iv",
-        EptsReportUtils.map(
-            getTypeOfPatientTransferredFrom(
-                hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
-                hivMetadata.getArtStatus().getConceptId(),
-                hivMetadata.getMasterCardEncounterType().getEncounterTypeId()),
-            "location=${location}"));
+        "B1iv", EptsReportUtils.map(getTypeOfPatientTransferredFrom(), "location=${location}"));
 
     cd.setCompositionString("(B1i AND B1ii) AND NOT (B1iii OR B1iv)");
     return cd;
@@ -312,14 +294,15 @@ public class ResumoMensalCohortQueries {
    *
    * @return CohortDefinition
    */
-  private CohortDefinition getTypeOfPatientTransferredFrom(
-      int qtnConceptId, int ansConceptId, int encounterType) {
+  private CohortDefinition getTypeOfPatientTransferredFrom() {
     SqlCohortDefinition sql = new SqlCohortDefinition();
     sql.setName("Patients transferred from other health facility marked in master card");
     sql.addParameter(new Parameter("location", "Location", Location.class));
     sql.setQuery(
         ResumoMensalQueries.getTypeOfPatientTransferredFrom(
-            qtnConceptId, ansConceptId, encounterType));
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId()));
     return sql;
   }
 
@@ -328,14 +311,15 @@ public class ResumoMensalCohortQueries {
    *
    * @return CohortDefinition
    */
-  private CohortDefinition getPatientsTransferredFromOtherHealthFacilities(
-      int qtnConceptId, int ansConceptId, int encounterType) {
+  private CohortDefinition getPatientsTransferredFromOtherHealthFacilities() {
     SqlCohortDefinition sql = new SqlCohortDefinition();
     sql.setName("Patients with master card and have been marked as transfer ins");
     sql.addParameter(new Parameter("location", "Location", Location.class));
     sql.setQuery(
         ResumoMensalQueries.getPatientsTransferredFromOtherHealthFacility(
-            qtnConceptId, ansConceptId, encounterType));
+                hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+                hivMetadata.getNoConcept().getConceptId(),
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId()));
     return sql;
   }
 
