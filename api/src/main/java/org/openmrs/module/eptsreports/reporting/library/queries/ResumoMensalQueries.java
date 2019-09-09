@@ -142,9 +142,9 @@ public class ResumoMensalQueries {
             + "               ON pa.patient_id = e.patient_id "
             + "       INNER JOIN obs o "
             + "               ON e.encounter_id = o.encounter_id "
-            + "WHERE  e.encounter_type =% d "
-            + "       AND o.concept_id =% d "
-            + "       AND o.value_coded =% d "
+            + "WHERE  e.encounter_type =%d "
+            + "       AND o.concept_id =%d "
+            + "       AND o.value_coded =%d "
             + "       AND pa.voided = 0 "
             + "       AND e.voided = 0 "
             + "       AND o.voided = 0 "
@@ -247,11 +247,11 @@ public class ResumoMensalQueries {
             + "WHERE  p.voided = 0 "
             + "       AND e.voided = 0 "
             + "       AND o.voided = 0 "
-            + "       AND e.encounter_type =% d "
+            + "       AND e.encounter_type =%d "
             + "       AND e.location_id = :location "
             + "       AND o.value_datetime IS NOT NULL "
             + "       AND o.value_datetime BETWEEN :startDate AND :endDate "
-            + "       AND o.concept_id =% d";
+            + "       AND o.concept_id =%d";
     return String.format(query, masterCardEncounterType, artStartDateConceptId);
   }
 }
