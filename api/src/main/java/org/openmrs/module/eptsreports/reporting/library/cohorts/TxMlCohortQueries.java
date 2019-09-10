@@ -20,8 +20,6 @@ public class TxMlCohortQueries {
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private TxMlQueries txMlQueries;
-
   // a
   public CohortDefinition getAllPatientsWhoMissedNextAppointment() {
     return genericCohortQueries.generalSql(
@@ -108,12 +106,17 @@ public class TxMlCohortQueries {
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatientsBeforeDate(),
             "endDate=${endDate},location=${location}"));
-    cd.setCompositionString("missedAppointmentLessTransfers AND dead");
+    cd.addSearch(
+        "homeVisitCardDead",
+        EptsReportUtils.map(
+            getPatientsMarkedAsDeadInHomeVisitCard(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("missedAppointmentLessTransfers AND (dead OR homeVisitCardDead)");
     return cd;
   }
 
-  //All Patients marked as dead in Patient Home Visit Card
-  public CohortDefinition getPatientsMarkedAsDeadInHomeVisitCard(){
+  // All Patients marked as dead in Patient Home Visit Card
+  public CohortDefinition getPatientsMarkedAsDeadInHomeVisitCard() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("Get patients marked as dead in Patient Home Visit Card");
@@ -121,12 +124,17 @@ public class TxMlCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    cd.addSearch("deadHomeVisitCard",EptsReportUtils.map(getPatientsMarkedAsDeadInHomeVisitCardQuery(),"startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "deadHomeVisitCard",
+        EptsReportUtils.map(
+            getPatientsMarkedAsDeadInHomeVisitCardQuery(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("deadHomeVisitCard");
 
     return cd;
   }
 
-  public CohortDefinition getPatientsMarkedAsDeadInHomeVisitCardQuery(){
+  public CohortDefinition getPatientsMarkedAsDeadInHomeVisitCardQuery() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
 
     sqlCohortDefinition.setName("Get patients marked as dead in Patient Home Visit Card Query");
@@ -134,7 +142,11 @@ public class TxMlCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
-    sqlCohortDefinition.setQuery(TxMlQueries.getPatientsMarkedDeadInHomeVisitCard(hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),hivMetadata.getReasonPatientNotFound().getConceptId(),hivMetadata.getPatientIsDead().getConceptId()));
+    sqlCohortDefinition.setQuery(
+        TxMlQueries.getPatientsMarkedDeadInHomeVisitCard(
+            hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+            hivMetadata.getReasonPatientNotFound().getConceptId(),
+            hivMetadata.getPatientIsDead().getConceptId()));
 
     return sqlCohortDefinition;
   }

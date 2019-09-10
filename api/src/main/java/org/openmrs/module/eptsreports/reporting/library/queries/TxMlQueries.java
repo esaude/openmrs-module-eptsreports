@@ -69,16 +69,20 @@ public class TxMlQueries {
     return String.format(query, program, state);
   }
 
-  //All Patients marked as Dead in the patient home visit card
-  public static String getPatientsMarkedDeadInHomeVisitCard( int homeVisitCard, int busca, int dead){
-    String query = " SELECT pa.patient_id FROM patient pa" +
-            " INNER JOIN encounter e ON pa.patient_id=e.patient_id " +
-            " INNER JOIN obs o ON pa.patient_id=o.person_id " +
-            " WHERE e.encounter_type IN ("+
-            homeVisitCard +
-            " ) AND o.concept_id="+ busca + " AND o.value_coded = " + dead ;
+  // All Patients marked as Dead in the patient home visit card
+  public static String getPatientsMarkedDeadInHomeVisitCard(
+      int homeVisitCard, int busca, int dead) {
+    String query =
+        " SELECT pa.patient_id FROM patient pa"
+            + " INNER JOIN encounter e ON pa.patient_id=e.patient_id "
+            + " INNER JOIN obs o ON pa.patient_id=o.person_id "
+            + " WHERE e.encounter_type IN ("
+            + homeVisitCard
+            + " ) AND o.concept_id="
+            + busca
+            + " AND o.value_coded = "
+            + dead;
 
     return query;
-
   }
 }

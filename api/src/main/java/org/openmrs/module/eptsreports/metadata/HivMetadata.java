@@ -445,18 +445,18 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  //Concept 2031 REASON PATIENT NOT FOUND BY ACTIVIST
-  public Concept getReasonPatientNotFound(){
-    String uuid= Context.getAdministrationService().getGlobalProperty("eptsreports.reasonPatientNotFound");
-    return  getConcept(uuid);
+  // Concept 2031 REASON PATIENT NOT FOUND BY ACTIVIST
+  public Concept getReasonPatientNotFound() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.reasonPatientNotFound");
+    return getConcept(uuid);
   }
 
-  //Concept 2027 PATIENT IS DEAD
-  public Concept getPatientIsDead(){
-    String uuid= Context.getAdministrationService().getGlobalProperty("eptsreports.patientIsdead");
-    return  getConcept(uuid);
+  // Concept 2027 PATIENT IS DEAD
+  public Concept getPatientIsDead() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.patientIsdead");
+    return getConcept(uuid);
   }
-
 
   // Encounter types
   // encounterType_id = 6
@@ -476,9 +476,11 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   // encounterType_id= 21
-  public EncounterType getBuscaActivaEncounterType(){
-    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.buscaActivaEncounterTypeUuid");
-    return  getEncounterType(uuid);
+  public EncounterType getBuscaActivaEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.buscaActivaEncounterTypeUuid");
+    return getEncounterType(uuid);
   }
 
   // encounterType_id = 5
