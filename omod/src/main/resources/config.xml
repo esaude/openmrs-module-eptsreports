@@ -401,6 +401,30 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>@MODULE_ID@.buscaActivaEncounterTypeUuid</property>
+		<defaultValue>e27916d4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: BUSCA ACTIVA encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.reasonPatientNotFound</property>
+		<defaultValue>e1e09396-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REASON PATIENT NOT FOUND BY ACTIVIST concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.patientIsdead</property>
+		<defaultValue>e1e08f7c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT IS DEAD concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>@MODULE_ID@.activeOnProgramConcept</property>
 		<defaultValue>4a7bec6f-8f27-4da5-b78d-40134c30d3ee</defaultValue>
 		<description>

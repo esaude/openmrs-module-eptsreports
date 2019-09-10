@@ -7,6 +7,7 @@ import org.openmrs.module.eptsreports.reporting.library.queries.TxMlQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,8 @@ public class TxMlCohortQueries {
   @Autowired private HivMetadata hivMetadata;
 
   @Autowired private GenericCohortQueries genericCohortQueries;
+
+  @Autowired private TxMlQueries txMlQueries;
 
   // a
   public CohortDefinition getAllPatientsWhoMissedNextAppointment() {
@@ -107,6 +110,33 @@ public class TxMlCohortQueries {
             "endDate=${endDate},location=${location}"));
     cd.setCompositionString("missedAppointmentLessTransfers AND dead");
     return cd;
+  }
+
+  //All Patients marked as dead in Patient Home Visit Card
+  public CohortDefinition getPatientsMarkedAsDeadInHomeVisitCard(){
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("Get patients marked as dead in Patient Home Visit Card");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch("deadHomeVisitCard",EptsReportUtils.map(getPatientsMarkedAsDeadInHomeVisitCardQuery(),"startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    return cd;
+  }
+
+  public CohortDefinition getPatientsMarkedAsDeadInHomeVisitCardQuery(){
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+
+    sqlCohortDefinition.setName("Get patients marked as dead in Patient Home Visit Card Query");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    sqlCohortDefinition.setQuery(TxMlQueries.getPatientsMarkedDeadInHomeVisitCard(hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),hivMetadata.getReasonPatientNotFound().getConceptId(),hivMetadata.getPatientIsDead().getConceptId()));
+
+    return sqlCohortDefinition;
   }
 
   // a and b and Not consistent
