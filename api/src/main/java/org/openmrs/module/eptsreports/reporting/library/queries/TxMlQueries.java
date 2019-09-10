@@ -81,7 +81,8 @@ public class TxMlQueries {
             + " ) AND o.concept_id="
             + busca
             + " AND o.value_coded = "
-            + dead;
+            + dead +
+            " AND e.location_id=:location AND o.obs_datetime <=:endDate";
 
     return query;
   }
