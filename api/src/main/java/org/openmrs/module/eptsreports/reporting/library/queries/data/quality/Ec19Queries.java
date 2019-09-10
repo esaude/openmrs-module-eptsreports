@@ -28,7 +28,7 @@ public class Ec19Queries {
             + labEncounterType
             + " AND pe.birthdate IS NOT NULL"
             + " AND e.location_id IN(:location) AND pa.voided = 0 and e.voided=0 "
-            + " AND e.encounter_datetime < "
+            + " AND YEAR(e.encounter_datetime) < "
             + year
             + ")f_ec16 GROUP BY f_ec16.patient_id";
     return query;

@@ -276,7 +276,7 @@ public class SummaryQueries {
             + " INNER JOIN encounter e ON pa.patient_id=e.patient_id "
             + " WHERE pe.birthdate IS NOT NULL AND e.encounter_type IN(%s) "
             + " AND e.location_id IN(:location) AND pa.voided = 0 and e.voided=0 "
-            + " AND e.encounter_datetime < '1985-01-01' ";
+            + " AND YEAR(e.encounter_datetime) < 1985 ";
     return String.format(query, str2);
   }
 
