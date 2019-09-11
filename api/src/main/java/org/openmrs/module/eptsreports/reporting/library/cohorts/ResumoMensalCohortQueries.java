@@ -318,7 +318,7 @@ public class ResumoMensalCohortQueries {
     sql.setQuery(
         ResumoMensalQueries.getPatientsTransferredFromOtherHealthFacility(
             hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
-            hivMetadata.getNoConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId()));
     return sql;
   }
