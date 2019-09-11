@@ -451,7 +451,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
   }
 
   private Mapped<CohortIndicator> getPatientsWhoStartedArtByEndOfPreviousMonth() {
-    String name = "Patients who died during the current month";
+    String name = "Patients who started ART by end of current month";
     Mapped<CohortDefinition> cohort =
         mapStraightThrough(
             resumoMensalCohortQueries.getPatientsWhoStartedArtByEndOfPreviousMonthB10());

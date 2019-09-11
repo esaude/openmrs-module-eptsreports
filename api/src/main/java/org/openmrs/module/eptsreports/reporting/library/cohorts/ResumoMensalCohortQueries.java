@@ -282,6 +282,9 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getARVStartDate().getConceptId()));
 
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Number of cumulative patients who started ART by end of previous month");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "artStartDate",
         map(patientsWithArtStartDate, "onOrBefore=${startDate},location=${location}"));
