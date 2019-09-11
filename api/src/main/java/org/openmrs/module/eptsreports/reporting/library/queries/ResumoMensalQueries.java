@@ -254,4 +254,44 @@ public class ResumoMensalQueries {
             + "       AND o.concept_id =%d";
     return String.format(query, masterCardEncounterType, artStartDateConceptId);
   }
+
+  public static String getAllPatientsWithArtStartDateBeforeDate(
+      int masterCardEncounterType, int artStartDateConceptId) {
+    String query =
+        "SELECT p.patient_id "
+            + "FROM   patient p "
+            + "       INNER JOIN encounter e "
+            + "               ON p.patient_id = e.patient_id "
+            + "       INNER JOIN obs o "
+            + "               ON o.encounter_id = e.encounter_id "
+            + "WHERE  p.voided = 0 "
+            + "       AND e.voided = 0 "
+            + "       AND o.voided = 0 "
+            + "       AND e.encounter_type =%d "
+            + "       AND e.location_id = :location "
+            + "       AND o.value_datetime IS NOT NULL "
+            + "       AND o.value_datetime < :onOrBefore "
+            + "       AND o.concept_id =%d";
+    return String.format(query, masterCardEncounterType, artStartDateConceptId);
+  }
+
+  public static String getPatientsWhoHadDrugPickUpBeforeDate(
+      int masterCardEncounterType, int drugPickupDateConceptId) {
+    String query =
+        "SELECT p.patient_id "
+            + "FROM   patient p "
+            + "       INNER JOIN encounter e "
+            + "               ON p.patient_id = e.patient_id "
+            + "       INNER JOIN obs o "
+            + "               ON o.encounter_id = e.encounter_id "
+            + "WHERE  p.voided = 0 "
+            + "       AND e.voided = 0 "
+            + "       AND o.voided = 0 "
+            + "       AND e.encounter_type =%d "
+            + "       AND e.location_id = :location "
+            + "       AND o.value_datetime IS NOT NULL "
+            + "       AND o.value_datetime < :onOrBefore "
+            + "       AND o.concept_id =%d";
+    return String.format(query, masterCardEncounterType, drugPickupDateConceptId);
+  }
 }

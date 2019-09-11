@@ -335,6 +335,34 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
         getPatientsWhoDiedDuringCurrentMonth(),
         resumoMensalAandBdisaggregations.getAdolescentesColumns());
 
+    // B10 indicators
+    addRow(
+        dsd,
+        "B10TC",
+        "Patients under 15 years",
+        getPatientsWhoStartedArtByEndOfPreviousMonth(),
+        resumoMensalAandBdisaggregations.getUnder14YearsColumns());
+
+    addRow(
+        dsd,
+        "B10TA",
+        "Patients over 15 years - adults",
+        getPatientsWhoStartedArtByEndOfPreviousMonth(),
+        resumoMensalAandBdisaggregations.getAdultPatients());
+
+    dsd.addColumn(
+        "B10TP",
+        "Total patients - Total Geral",
+        getPatientsWhoStartedArtByEndOfPreviousMonth(),
+        "");
+
+    addRow(
+        dsd,
+        "B10TAD",
+        "Adolescentes patients",
+        getPatientsWhoStartedArtByEndOfPreviousMonth(),
+        resumoMensalAandBdisaggregations.getAdolescentesColumns());
+
     return dsd;
   }
 
@@ -419,6 +447,14 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
     Mapped<CohortDefinition> cohort =
         mapStraightThrough(
             resumoMensalCohortQueries.getNumberOfPatientsWhoDiedDuringCurrentMonthB8());
+    return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
+  }
+
+  private Mapped<CohortIndicator> getPatientsWhoStartedArtByEndOfPreviousMonth() {
+    String name = "Patients who died during the current month";
+    Mapped<CohortDefinition> cohort =
+        mapStraightThrough(
+            resumoMensalCohortQueries.getPatientsWhoStartedArtByEndOfPreviousMonthB10());
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
   }
 }

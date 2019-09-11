@@ -263,6 +263,38 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /** @return Number of cumulative patients who started ART by end of previous month */
+  public CohortDefinition getPatientsWhoStartedArtByEndOfPreviousMonthB10() {
+    SqlCohortDefinition patientsWithArtStartDate = new SqlCohortDefinition();
+    patientsWithArtStartDate.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    patientsWithArtStartDate.addParameter(new Parameter("location", "location", Location.class));
+    patientsWithArtStartDate.setQuery(
+        ResumoMensalQueries.getAllPatientsWithArtStartDateBeforeDate(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVStartDate().getConceptId()));
+
+    SqlCohortDefinition patientsWithDrugPickup = new SqlCohortDefinition();
+    patientsWithDrugPickup.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    patientsWithDrugPickup.addParameter(new Parameter("location", "location", Location.class));
+    patientsWithDrugPickup.setQuery(
+        ResumoMensalQueries.getPatientsWhoHadDrugPickUpBeforeDate(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVStartDate().getConceptId()));
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addSearch(
+        "artStartDate",
+        map(patientsWithArtStartDate, "onOrBefore=${startDate},location=${location}"));
+    cd.addSearch(
+        "drugPickup", map(patientsWithDrugPickup, "onOrBefore=${startDate},location=${location}"));
+    cd.addSearch(
+        "transferredIn", mapStraightThrough(getPatientsTransferredFromOtherHealthFacilities()));
+
+    cd.setCompositionString("artStartDate AND drugPickup NOT transferredIn");
+
+    return cd;
+  }
+
   /**
    * Patients with master card drug pickup date
    *
