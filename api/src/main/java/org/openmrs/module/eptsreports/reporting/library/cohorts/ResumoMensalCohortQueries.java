@@ -14,11 +14,13 @@
 
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
+
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -55,13 +57,9 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getPreArtStartDate().getConceptId()));
 
+    cd.addSearch("A1I", map(sqlCohortDefinition, "startDate=${startDate},location=${location}"));
     cd.addSearch(
-        "A1I",
-        EptsReportUtils.map(sqlCohortDefinition, "startDate=${startDate},location=${location}"));
-    cd.addSearch(
-        "A1II",
-        EptsReportUtils.map(
-            getPatientsTransferredFromOtherHealthFacilities(), "location=${location}"));
+        "A1II", map(getPatientsTransferredFromOtherHealthFacilities(), "location=${location}"));
 
     cd.setCompositionString("A1I AND NOT A1II");
 
@@ -92,12 +90,9 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch(
         "A2I",
-        EptsReportUtils.map(
-            sqlCohortDefinition, "startDate=${startDate},endDate=${endDate},location=${location}"));
+        map(sqlCohortDefinition, "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "A2II",
-        EptsReportUtils.map(
-            getPatientsTransferredFromOtherHealthFacilities(), "location=${location}"));
+        "A2II", map(getPatientsTransferredFromOtherHealthFacilities(), "location=${location}"));
 
     cd.setCompositionString("A2I AND NOT A2II");
 
@@ -116,12 +111,12 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "A1",
-        EptsReportUtils.map(
+        map(
             getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1(),
             "startDate=${startDate},location=${location}"));
     cd.addSearch(
         "A2",
-        EptsReportUtils.map(
+        map(
             getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.setCompositionString("A1 OR A2");
@@ -143,20 +138,17 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch(
         "B1i",
-        EptsReportUtils.map(
+        map(
             getPatientsWhoInitiatedTarvAtAfacilityDuringCurrentMonth(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "B1ii",
-        EptsReportUtils.map(
+        map(
             getPatientsWithMasterCardDrugPickUpDate(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "B1iii",
-        EptsReportUtils.map(
-            getPatientsTransferredFromOtherHealthFacilities(), "location=${location}"));
-    cd.addSearch(
-        "B1iv", EptsReportUtils.map(getTypeOfPatientTransferredFrom(), "location=${location}"));
+        "B1iii", map(getPatientsTransferredFromOtherHealthFacilities(), "location=${location}"));
+    cd.addSearch("B1iv", map(getTypeOfPatientTransferredFrom(), "location=${location}"));
 
     cd.setCompositionString("(B1i AND B1ii) AND NOT (B1iii OR B1iv)");
     return cd;
