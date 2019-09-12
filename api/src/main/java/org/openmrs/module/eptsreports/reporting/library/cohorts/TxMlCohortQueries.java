@@ -116,7 +116,7 @@ public class TxMlCohortQueries {
   }
 
   // All Patients marked as dead in Patient Home Visit Card
-  public CohortDefinition getPatientsMarkedAsDeadInHomeVisitCard() {
+  private CohortDefinition getPatientsMarkedAsDeadInHomeVisitCard() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("Get patients marked as dead in Patient Home Visit Card");
@@ -134,7 +134,7 @@ public class TxMlCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getPatientsMarkedAsDeadInHomeVisitCardQuery() {
+  private CohortDefinition getPatientsMarkedAsDeadInHomeVisitCardQuery() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
 
     sqlCohortDefinition.setName("Get patients marked as dead in Patient Home Visit Card Query");
@@ -151,6 +151,10 @@ public class TxMlCohortQueries {
     return sqlCohortDefinition;
   }
 
+  //Patients Traced (Unable to locate)
+private  CohortDefinition getPatientsTracedQuery(){
+
+}
   // a and b and Not consistent
   public CohortDefinition
       getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndNotConsistentDuringReportingPeriod() {
