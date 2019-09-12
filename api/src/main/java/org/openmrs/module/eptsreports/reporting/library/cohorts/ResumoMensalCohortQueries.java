@@ -174,8 +174,7 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
-            hivMetadata.getArtStatus().getConceptId(),
-            hivMetadata.getTransferFromOtherFacilityConcept().getConceptId()));
+            hivMetadata.getArtStatus().getConceptId()));
 
     return cd;
   }

@@ -99,33 +99,37 @@ public class ResumoMensalQueries {
       int transferFromConcept,
       int yesConcept,
       int typeOfPantientConcept,
-      int tarvConcept,
-      int dateTransferredConcept) {
+      int tarvConcept) {
 
     String query =
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id "
-            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location "
-            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate AND o.concept_id=%d AND o.value_coded=%d "
-            + " UNION "
-            + " SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id "
-            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location "
-            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate AND o.concept_id=%d AND o.value_coded=%d "
-            + " UNION "
-            + " SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id "
-            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location "
-            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate AND o.concept_id=%d "
-            + " AND o.obs_datetime BETWEEN :startDate AND :endDate";
+        "SELECT p.patient_id "
+            + "FROM   patient p "
+            + "       JOIN encounter e "
+            + "         ON p.patient_id = e.patient_id "
+            + "       JOIN obs transf "
+            + "         ON transf.encounter_id = e.encounter_id "
+            + "       JOIN obs type "
+            + "         ON type.encounter_id = e.encounter_id "
+            + "WHERE  p.voided = 0 "
+            + "       AND e.voided = 0 "
+            + "       AND e.encounter_type = %d "
+            + "       AND e.location_id = :location "
+            + "       AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "       AND transf.voided = 0 "
+            + "       AND transf.concept_id = %d "
+            + "       AND transf.value_coded = %d "
+            + "       AND transf.obs_datetime BETWEEN :startDate AND :endDate "
+            + "       AND type.voided = 0 "
+            + "       AND type.concept_id = %d "
+            + "       AND type.value_coded = %d";
 
     return String.format(
         query,
         masterCardEncounter,
         transferFromConcept,
         yesConcept,
-        masterCardEncounter,
         typeOfPantientConcept,
-        tarvConcept,
-        masterCardEncounter,
-        dateTransferredConcept);
+        tarvConcept);
   }
 
   /**
