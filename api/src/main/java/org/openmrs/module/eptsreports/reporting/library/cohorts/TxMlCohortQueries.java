@@ -154,11 +154,36 @@ public class TxMlCohortQueries {
     return cd;
   }
 
-  // Patients Traced (Unable to locate)
-  private CohortDefinition getPatientsTraced() {
+  // Patients Traced Not Found
+  private CohortDefinition getPatientsTracedAndNotFound() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
 
-    sqlCohortDefinition.setName("Get patients traced (Unable to locate)");
+    sqlCohortDefinition.setName("Get patients traced (Unable to locate) and Not Found");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    sqlCohortDefinition.setQuery(
+        TxMlQueries.getPatientsTracedUnableToLocate(
+            hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+            hivMetadata.getReturnVisitDateConcept().getConceptId(),
+            hivMetadata.getTypeOfVisitConcept().getConceptId(),
+            hivMetadata.getPatientFoundConcept().getConceptId(),
+            hivMetadata.getBuscaConcept().getConceptId(),
+            hivMetadata.getNoConcept().getConceptId()));
+
+    return sqlCohortDefinition;
+  }
+
+  // Patients Traced and Found.
+  private CohortDefinition getPatientTracedAndFound() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+
+    sqlCohortDefinition.setName("Get patients traced (Unable to locate) and Found");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
@@ -195,11 +220,18 @@ public class TxMlCohortQueries {
             getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "traced",
+        "patientsNotFound",
         EptsReportUtils.map(
-            getPatientsTraced(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+            getPatientsTracedAndNotFound(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "patientsFound",
+        EptsReportUtils.map(
+            getPatientTracedAndFound(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("missedAppointmentLessTransfers AND traced");
+    cd.setCompositionString(
+        "missedAppointmentLessTransfers AND (patientsNotFound AND NOT patientsFound )");
 
     return cd;
   }

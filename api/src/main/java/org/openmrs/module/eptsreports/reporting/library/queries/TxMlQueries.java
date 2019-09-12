@@ -98,7 +98,7 @@ public class TxMlQueries {
       int typeOfVisitConcept,
       int patientFoundConcept,
       int buscaConcept,
-      int yesConcept) {
+      int patientFoundAnswerConcept) {
     String query =
         " SELECT pa.patient_id FROM patient pa "
             + " INNER JOIN encounter e ON pa.patient_id=e.patient_id "
@@ -133,7 +133,7 @@ public class TxMlQueries {
             + " AND o.value_coded IN ( "
             + buscaConcept
             + " , "
-            + yesConcept
+            + patientFoundAnswerConcept
             + " ) "
             + " AND e.location_id=:location "
             + " AND o.obs_datetime <= :endDate "
