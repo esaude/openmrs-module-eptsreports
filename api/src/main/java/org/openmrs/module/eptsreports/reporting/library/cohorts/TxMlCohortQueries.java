@@ -117,27 +117,9 @@ public class TxMlCohortQueries {
 
   // All Patients marked as dead in Patient Home Visit Card
   private CohortDefinition getPatientsMarkedAsDeadInHomeVisitCard() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-
-    cd.setName("Get patients marked as dead in Patient Home Visit Card");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    cd.addSearch(
-        "deadHomeVisitCard",
-        EptsReportUtils.map(
-            getPatientsMarkedAsDeadInHomeVisitCardQuery(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.setCompositionString("deadHomeVisitCard");
-
-    return cd;
-  }
-
-  private CohortDefinition getPatientsMarkedAsDeadInHomeVisitCardQuery() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
 
-    sqlCohortDefinition.setName("Get patients marked as dead in Patient Home Visit Card Query");
+    sqlCohortDefinition.setName("Get patients marked as dead in Patient Home Visit Card");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
@@ -151,10 +133,6 @@ public class TxMlCohortQueries {
     return sqlCohortDefinition;
   }
 
-  //Patients Traced (Unable to locate)
-private  CohortDefinition getPatientsTracedQuery(){
-
-}
   // a and b and Not consistent
   public CohortDefinition
       getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndNotConsistentDuringReportingPeriod() {
@@ -173,6 +151,56 @@ private  CohortDefinition getPatientsTracedQuery(){
         "notConsistent",
         EptsReportUtils.map(getNonConsistentPatients(), "endDate=${endDate},location=${location}"));
     cd.setCompositionString("missedAppointmentLessTransfers AND notConsistent");
+    return cd;
+  }
+
+  // Patients Traced (Unable to locate)
+  private CohortDefinition getPatientsTraced() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+
+    sqlCohortDefinition.setName("Get patients traced (Unable to locate)");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    sqlCohortDefinition.setQuery(
+        TxMlQueries.getPatientsTracedUnableToLocate(
+            hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+            hivMetadata.getReturnVisitDateConcept().getConceptId(),
+            hivMetadata.getTypeOfVisitConcept().getConceptId(),
+            hivMetadata.getPatientFoundConcept().getConceptId(),
+            hivMetadata.getBuscaConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId()));
+
+    return sqlCohortDefinition;
+  }
+
+  // a and b and Traced (Unable to locate)
+  public CohortDefinition getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndTraced() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName(
+        "Get patients who missed next appointment, not transferred out and traced (Unable to locate)");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "missedAppointmentLessTransfers",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "traced",
+        EptsReportUtils.map(
+            getPatientsTraced(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("missedAppointmentLessTransfers AND traced");
+
     return cd;
   }
 }

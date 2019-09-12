@@ -92,6 +92,21 @@ public class TxMlDataset extends BaseDataSet {
                     mappings)),
             mappings),
         getColumnsForAgeAndGender());
+
+    // Traced (Unable to locate)
+    addRow(
+        dsd,
+        "M5",
+        "Traced (Unable to locate)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Traced (Unable to locate)",
+                EptsReportUtils.map(
+                    txMlCohortQueries
+                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndTraced(),
+                    mappings)),
+            mappings),
+        getColumnsForAgeAndGender());
     return dsd;
   }
 

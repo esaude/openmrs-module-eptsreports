@@ -425,6 +425,38 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>@MODULE_ID@.typeOfVisit</property>
+		<defaultValue>e1e055a2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TYPE OF VISIT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.patientFound</property>
+		<defaultValue>e1e072c6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the ACTIVIST LOCATED MISSING PATIENT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.patientFoundYes</property>
+		<defaultValue>e1d81b62-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the YES concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.busca</property>
+		<defaultValue>e1e20e4c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the BUSCA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>@MODULE_ID@.activeOnProgramConcept</property>
 		<defaultValue>4a7bec6f-8f27-4da5-b78d-40134c30d3ee</defaultValue>
 		<description>
