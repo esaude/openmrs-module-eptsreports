@@ -139,7 +139,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
         getSumOfA1AndA2(),
         resumoMensalAandBdisaggregations.getAdultPatients());
 
-    dsd.addColumn("3TP", "Total patients - Total Geral", getSumOfA1AndA2(), "");
+    dsd.addColumn("A3TP", "Total patients - Total Geral", getSumOfA1AndA2(), "");
 
     addRow(
         dsd,
