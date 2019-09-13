@@ -456,10 +456,10 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
 
   private Mapped<CohortIndicator> getPatientsWithArtSuspensionDuringCurrentMonth() {
     String name = "Patients with ART suspension during the current month";
-    Mapped<CohortDefinition> cohort =
-        mapStraightThrough(
-            resumoMensalCohortQueries.getNumberOfPatientsWithArtSuspensionDuringCurrentMonthB6());
-    return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
+    CohortDefinition cohort =
+        resumoMensalCohortQueries.getNumberOfPatientsWithArtSuspensionDuringCurrentMonthB6();
+    return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, map(cohort, mappings)));
   }
 
   private Mapped<CohortIndicator> getPatientsWhoAbandonedArtDuringCurrentMonth() {
