@@ -299,7 +299,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
         resumoMensalAandBdisaggregations.getAdultPatients());
 
     dsd.addColumn(
-        "7TP", "Total patients - Total Geral", getPatientsWhoAbandonedArtDuringCurrentMonth(), "");
+        "B7TP", "Total patients - Total Geral", getPatientsWhoAbandonedArtDuringCurrentMonth(), "");
 
     addRow(
         dsd,
