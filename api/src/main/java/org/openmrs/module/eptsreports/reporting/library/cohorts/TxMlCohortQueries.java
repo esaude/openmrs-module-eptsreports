@@ -236,8 +236,44 @@ public class TxMlCohortQueries {
     return cd;
   }
 
-  //Patients without Visit Card but with a set of observations
-  public CohortDefinition getPatientsWithoutVisitCardAndWithObs(){
+  /*
+   a and b and Untraced Patients
+  */
+  public CohortDefinition getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndUntraced() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("Get patients who missed next appointment, not transferred out and untraced");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "missedAppointmentLessTransfers",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "withoutVisitCard",
+        EptsReportUtils.map(
+            getAllPatientsWithoutVisitCardRegisteredBtwnLastScheduledAppointmentOrDrugpickupAndEnddate(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "withoutVisistCardAndWithObs",
+        EptsReportUtils.map(
+            getPatientsWithoutVisitCardRegisteredBtwnLastScheduledAppointmentOrDrugpickupAndEnddateAndWithObs(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+        "missedAppointmentLessTransfers AND (withoutVisitCard OR withoutVisistCardAndWithObs)");
+
+    return cd;
+  }
+
+  /*
+   Untraced Patients Criteria 2
+   Patients without Visit Card but with a set of observations
+  */
+  public CohortDefinition getPatientsWithoutVisitCardAndWithObs() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
 
     sqlCohortDefinition.setName("Get patients without Visit Card but with a set of observations");
@@ -245,7 +281,8 @@ public class TxMlCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
-    sqlCohortDefinition.setQuery(TxMlQueries.getPatientsWithoutVisitCardAndWithObs(
+    sqlCohortDefinition.setQuery(
+        TxMlQueries.getPatientsWithoutVisitCardAndWithObs(
             hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
             hivMetadata.getTypeOfVisitConcept().getConceptId(),
             hivMetadata.getBuscaConcept().getConceptId(),
@@ -264,46 +301,58 @@ public class TxMlCohortQueries {
   }
 
   /*
+    Untraced Patients Criteria 2
     All Patients without “Patient Visit Card” registered between the last scheduled appointment or
     drugs pick up (the most recent one) by reporting end date and the reporting end date
   */
-  public CohortDefinition getAllPatientsWithoutVisitCardRegisteredBtwnLastScheduledAppointmentOrDrugpickupAndEnddate(){
+  public CohortDefinition
+      getAllPatientsWithoutVisitCardRegisteredBtwnLastScheduledAppointmentOrDrugpickupAndEnddate() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
 
-    sqlCohortDefinition.setName("Get patients without Visit Card registered between the last scheduled appointment or drugs pick up by reporting end date and the reporting end date");
+    sqlCohortDefinition.setName(
+        "Get patients without Visit Card registered between the last scheduled appointment or drugs pick up by reporting end date and the reporting end date");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
-    sqlCohortDefinition.setQuery(TxMlQueries.getAllPatientsWithoutVisitCardRegisteredBtwnLastScheduledAppointmentOrDrugpickupAndEnddate(
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
-            hivMetadata.getReturnVisitDateConcept().getConceptId(),
-            hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId()
-    ));
+    sqlCohortDefinition.setQuery(
+        TxMlQueries
+            .getAllPatientsWithoutVisitCardRegisteredBtwnLastScheduledAppointmentOrDrugpickupAndEnddate(
+                hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+                hivMetadata.getReturnVisitDateConcept().getConceptId(),
+                hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId()));
 
     return sqlCohortDefinition;
   }
 
-
-
- /*
-   Patients without Visit Card  registered between the last scheduled appointment or
-   drugs pick up (the most recent one) by reporting end date and the reporting end date  with a set of observations
- */
-  public CohortDefinition getPatientsWithoutVisitCardRegisteredBtwnLastScheduledAppointmentOrDrugpickupAndEnddateAndWithObs(){
+  /*
+    Untraced Patients Criteria 2
+    Patients without Visit Card  registered between the last scheduled appointment or
+    drugs pick up (the most recent one) by reporting end date and the reporting end date  with a set of observations
+  */
+  public CohortDefinition
+      getPatientsWithoutVisitCardRegisteredBtwnLastScheduledAppointmentOrDrugpickupAndEnddateAndWithObs() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName(
-            "Get patients who missed appointment without Visit Card but with a set of observations");
+        "Get patients who missed appointment without Visit Card but with a set of observations");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    cd.addSearch("registered",EptsReportUtils.map(getAllPatientsWithoutVisitCardRegisteredBtwnLastScheduledAppointmentOrDrugpickupAndEnddate(),"startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch("patientsWithObs",EptsReportUtils.map(getPatientsWithoutVisitCardAndWithObs(),"startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "registered",
+        EptsReportUtils.map(
+            getAllPatientsWithoutVisitCardRegisteredBtwnLastScheduledAppointmentOrDrugpickupAndEnddate(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "patientsWithObs",
+        EptsReportUtils.map(
+            getPatientsWithoutVisitCardAndWithObs(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("registered AND patientsWithObs");
 
