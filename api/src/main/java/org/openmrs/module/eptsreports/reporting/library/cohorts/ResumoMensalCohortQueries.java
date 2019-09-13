@@ -216,7 +216,7 @@ public class ResumoMensalCohortQueries {
   /** @return B6: Number of patients with ART suspension during the current month */
   public CohortDefinition getNumberOfPatientsWithArtSuspensionDuringCurrentMonthB6() {
     EncounterWithCodedObsCohortDefinition cd = new EncounterWithCodedObsCohortDefinition();
-    cd.setName("Number of patients transferred out during the current month");
+    cd.setName("Number of patients with ART suspension during the current month");
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("locationList", "location", Location.class));
@@ -242,10 +242,10 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  /** @return B8: Number of died patients during the current month */
+  /** @return B8: Number of dead patients during the current month */
   public CohortDefinition getNumberOfPatientsWhoDiedDuringCurrentMonthB8() {
     EncounterWithCodedObsCohortDefinition cd = new EncounterWithCodedObsCohortDefinition();
-    cd.setName("Number of patients transferred out during the current month");
+    cd.setName("Number of dead patients during the current month");
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("locationList", "location", Location.class));
