@@ -21,9 +21,12 @@ import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -233,16 +236,17 @@ public class ResumoMensalCohortQueries {
 
   /** @return B7: Number of patients who abandoned the ART during the current month */
   public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthB7() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Number of patients transferred out during the current month");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.setQuery(
-        ResumoMensalQueries.getPatientsWhoAbandonedArtDuringCurrentMonth(
-            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-            hivMetadata.getArtDatePickup().getConceptId()));
-
+    DateObsCohortDefinition cd = new DateObsCohortDefinition();
+    cd.setName("Number of patientes who Abandoned the ART during the current month");
+    cd.addParameter(new Parameter("value1", "Value 1", Date.class));
+    cd.addParameter(new Parameter("value2", "Value 1", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getMasterCardDrugPickupEncounterType());
+    cd.setQuestion(hivMetadata.getArtDatePickup());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setOperator1(RangeComparator.GREATER_EQUAL);
+    cd.setOperator2(RangeComparator.LESS_EQUAL);
     return cd;
   }
 

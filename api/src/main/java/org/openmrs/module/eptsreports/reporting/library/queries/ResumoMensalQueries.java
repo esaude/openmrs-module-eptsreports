@@ -198,27 +198,6 @@ public class ResumoMensalQueries {
     return String.format(query, adultSegEncounter, stateOfStayConcept, suspendTreatmentConcept);
   }
 
-  public static String getPatientsWhoAbandonedArtDuringCurrentMonth(
-      int drugPickupEncounterType, int artPickupDate) {
-    String query =
-        "SELECT patient_id "
-            + "FROM   (SELECT patient_id, "
-            + "               Max(encounter_datetime) encounter_datetime "
-            + "        FROM   encounter "
-            + "        WHERE  encounter_type = %d "
-            + "               AND encounter_datetime <= :endDate "
-            + "               AND location_id = :location"
-            + "        GROUP  BY patient_id) last_pickup "
-            + "       JOIN obs o "
-            + "         ON o.person_id = last_pickup.patient_id "
-            + "WHERE  o.obs_datetime = last_pickup.encounter_datetime "
-            + "       AND o.voided = 0 "
-            + "       AND o.concept_id =%d "
-            + "       AND location_id = :location"
-            + "       AND TIMESTAMPDIFF(day, o.value_datetime, :endDate) >= 90 ";
-    return String.format(query, drugPickupEncounterType, artPickupDate);
-  }
-
   public static String getPatientsWhoDiedDuringCurrentMonth(
       int adultSegEncounter, int stateOfStayConcept, int patientHasDiedConcept) {
     String query =

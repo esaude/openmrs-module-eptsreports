@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets.resumo;
 
+import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalCohortQueries;
@@ -437,8 +438,9 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
   private Mapped<CohortIndicator> getPatientsWhoAbandonedArtDuringCurrentMonth() {
     String name = "Patients who abandoned the ART during the current month";
     Mapped<CohortDefinition> cohort =
-        mapStraightThrough(
-            resumoMensalCohortQueries.getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthB7());
+        map(
+            resumoMensalCohortQueries.getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthB7(),
+            "value1=${endDate-90d},value2={endDate},onOrBefore=${endDate},locationList=${location}");
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
   }
 
