@@ -418,11 +418,12 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
   }
 
   private Mapped<CohortIndicator> getPatientsWhoRestartedTreatmentDuringCurrentMonthB3() {
-    return mapStraightThrough(
-        eptsGeneralIndicator.getIndicator(
-            "Patients under 15 years",
-            mapStraightThrough(
-                resumoMensalCohortQueries.getPatientsWhoRestartedTreatmentDuringCurrentMonthB3())));
+    String name = "Patients under 15 years";
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
+    CohortDefinition cohort =
+        resumoMensalCohortQueries.getPatientsWhoRestartedTreatmentDuringCurrentMonthB3();
+    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
+    return mapStraightThrough(indicator);
   }
 
   private Mapped<CohortIndicator>
