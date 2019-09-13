@@ -262,4 +262,27 @@ public class TxMlCohortQueries {
 
     return sqlCohortDefinition;
   }
+
+  /*
+    All Patients without “Patient Visit Card” registered between the last scheduled appointment or
+    drugs pick up (the most recent one) by reporting end date and the reporting end date
+  */
+
+
+
+ /*
+   Patients without Visit Card  registered between the last scheduled appointment or
+   drugs pick up (the most recent one) by reporting end date and the reporting end date  with a set of observations
+ */
+  public CohortDefinition getPatientsWhoMissedAppointmentAndWithoutVisistCardAndWithObs(){
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName(
+            "Get patients who missed appointment without Visit Card but with a set of observations");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    return cd;
+  }
 }

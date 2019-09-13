@@ -171,4 +171,47 @@ public class TxMlQueries {
 
     return query;
   }
+
+  /*
+    All Patients without “Patient Visit Card” (Encounter type 21 or 36 or 37) registered between the last scheduled appointment or
+    drugs pick up (the most recent one) by reporting end date and the reporting end date
+   */
+  public static String getAllPatientsWithoutVisitCardRegisteredBtwnLastScheduledAppointmentOrDrugpickupAndEnddate(
+          int pharmacyEncounterTypeId,
+          int adultoSequimentoEncounterTypeId,
+          int arvPediatriaSeguimentoEncounterTypeId,
+          int returnVisitDateForDrugsConcept,
+          int returnVisitDateConcept,
+          int homeVisitCardEncounterTypeId
+  ){
+    String query = " SELECT pa.patient_id FROM patient pa " +
+            " INNER JOIN encounter e ON e.patient_id = pa.patient_id " +
+            " INNER JOIN obs o ON o.encounter_id = e.encounter_id " +
+            " INNER JOIN ( " +
+            " SELECT p.patient_id,MAX(o.value_datetime) return_date FROM patient p " +
+            " INNER JOIN encounter e ON e.patient_id = p.patient_id AND e.encounter_datetime <=:endDate AND e.location_id=:location " +
+            " INNER JOIN obs o ON o.encounter_id = e.encounter_id AND o.obs_datetime <=:endDate AND o.location_id=:location " +
+            " WHERE p.voided = 0 AND e.voided = 0 AND o.voided=0 "
+            + " AND e.encounter_type IN ( "
+            + pharmacyEncounterTypeId
+            + " , "
+            + adultoSequimentoEncounterTypeId
+            + " , "
+            + arvPediatriaSeguimentoEncounterTypeId
+            + " ) "
+            + " AND o.concept_id IN ( "
+            + returnVisitDateForDrugsConcept
+            + " , "
+            + returnVisitDateConcept
+            + " ) " +
+            " AND e.location_id =:location " +
+            " GROUP BY p.patient_id " +
+            " )la ON la.patient_id=pa.patient_id " +
+            " WHERE (o.obs_datetime BETWEEN la.return_date AND :endDate) " +
+            " AND e.encounter_type NOT IN ( " + homeVisitCardEncounterTypeId + " ) " +
+            " AND e.location_id=:location " +
+            " AND o.obs_datetime <=:endDate  " +
+            " GROUP BY pa.patient_id ";
+    return  query;
+  }
 }
