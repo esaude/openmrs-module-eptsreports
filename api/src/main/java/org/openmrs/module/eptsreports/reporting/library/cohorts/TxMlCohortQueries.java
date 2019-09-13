@@ -267,6 +267,25 @@ public class TxMlCohortQueries {
     All Patients without “Patient Visit Card” registered between the last scheduled appointment or
     drugs pick up (the most recent one) by reporting end date and the reporting end date
   */
+  public CohortDefinition getAllPatientsWithoutVisitCardRegisteredBtwnLastScheduledAppointmentOrDrugpickupAndEnddate(){
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+
+    sqlCohortDefinition.setName("Get patients without Visit Card registered between the last scheduled appointment or drugs pick up by reporting end date and the reporting end date");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    sqlCohortDefinition.setQuery(TxMlQueries.getAllPatientsWithoutVisitCardRegisteredBtwnLastScheduledAppointmentOrDrugpickupAndEnddate(
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+            hivMetadata.getReturnVisitDateConcept().getConceptId(),
+            hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId()
+    ));
+
+    return sqlCohortDefinition;
+  }
 
 
 
@@ -274,7 +293,7 @@ public class TxMlCohortQueries {
    Patients without Visit Card  registered between the last scheduled appointment or
    drugs pick up (the most recent one) by reporting end date and the reporting end date  with a set of observations
  */
-  public CohortDefinition getPatientsWhoMissedAppointmentAndWithoutVisistCardAndWithObs(){
+  public CohortDefinition getPatientsWithoutVisitCardRegisteredBtwnLastScheduledAppointmentOrDrugpickupAndEnddateAndWithObs(){
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName(
@@ -282,6 +301,11 @@ public class TxMlCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch("registered",EptsReportUtils.map(getAllPatientsWithoutVisitCardRegisteredBtwnLastScheduledAppointmentOrDrugpickupAndEnddate(),"startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch("patientsWithObs",EptsReportUtils.map(getPatientsWithoutVisitCardAndWithObs(),"startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("registered AND patientsWithObs");
 
     return cd;
   }
