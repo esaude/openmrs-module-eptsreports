@@ -465,7 +465,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
     Mapped<CohortDefinition> cohort =
         map(
             resumoMensalCohortQueries.getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthB7(),
-            "value1=${endDate-90d},value2={endDate},onOrBefore=${endDate},locationList=${location}");
+            "value1=${endDate-90d},value2=${endDate},onOrBefore=${endDate},locationList=${location}");
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
   }
 
