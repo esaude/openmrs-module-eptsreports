@@ -235,4 +235,31 @@ public class TxMlCohortQueries {
 
     return cd;
   }
+
+  //Patients without Visit Card but with a set of observations
+  public CohortDefinition getPatientsWithoutVisitCardAndWithObs(){
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+
+    sqlCohortDefinition.setName("Get patients without Visit Card but with a set of observations");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    sqlCohortDefinition.setQuery(TxMlQueries.getPatientsWithoutVisitCardAndWithObs(
+            hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+            hivMetadata.getTypeOfVisitConcept().getConceptId(),
+            hivMetadata.getBuscaConcept().getConceptId(),
+            4,
+            5,
+            hivMetadata.getPatientFoundConcept().getConceptId(),
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13));
+
+    return sqlCohortDefinition;
+  }
 }

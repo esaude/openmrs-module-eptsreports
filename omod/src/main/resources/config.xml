@@ -457,6 +457,70 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>@MODULE_ID@.secondAttempt</property>
+		<defaultValue>c0c63fbc-bff0-4f5f-920b-442e7ed6577a</defaultValue>
+		<description>
+			UUID for the DATE OF SECOND OUTREACH ATTEMPT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.thirdAttempt</property>
+		<defaultValue>38f911e7-ff0a-47c6-9209-b24579bf9082</defaultValue>
+		<description>
+			UUID for the DATE OF THIRD OUTREACH ATTEMPT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.defaultingMotive</property>
+		<defaultValue>e1e07fc8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REASON PATIENT MISSED VISIT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.reportOfVisitSupport</property>
+		<defaultValue>e1e20be0-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REPORT OF THE VISIT SUPPORT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.patientHadDifficulty</property>
+		<defaultValue>e1e20ae6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the THE PATIENT HAD DIFFICULTY concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.patientFoundForwarded</property>
+		<defaultValue>e1da001c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REFERRALS ORDERED concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.whoGaveInformation</property>
+		<defaultValue>e1e09d8c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REASON PATIENT NOT FOUND PROVIDED BY concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.cardDeliveryDate</property>
+		<defaultValue>e1e22850-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the DELIVERY DATE OF THE CARD HOME VISIT THE HEALTH UNIT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>@MODULE_ID@.activeOnProgramConcept</property>
 		<defaultValue>4a7bec6f-8f27-4da5-b78d-40134c30d3ee</defaultValue>
 		<description>
