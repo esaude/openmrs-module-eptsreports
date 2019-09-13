@@ -107,6 +107,21 @@ public class TxMlDataset extends BaseDataSet {
                     mappings)),
             mappings),
         getColumnsForAgeAndGender());
+
+    // Untraced Patients
+    addRow(
+        dsd,
+        "M6",
+        "Untraced patients",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Untraced Patients",
+                EptsReportUtils.map(
+                    txMlCohortQueries
+                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndUntraced(),
+                    mappings)),
+            mappings),
+        getColumnsForAgeAndGender());
     return dsd;
   }
 
