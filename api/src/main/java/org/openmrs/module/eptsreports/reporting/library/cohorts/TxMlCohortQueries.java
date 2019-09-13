@@ -249,16 +249,16 @@ public class TxMlCohortQueries {
             hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
             hivMetadata.getTypeOfVisitConcept().getConceptId(),
             hivMetadata.getBuscaConcept().getConceptId(),
-            4,
-            5,
+            hivMetadata.getSecondAttemptConcept().getConceptId(),
+            hivMetadata.getThirdAttemptConcept().getConceptId(),
             hivMetadata.getPatientFoundConcept().getConceptId(),
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13));
+            hivMetadata.getDefaultingMotiveConcept().getConceptId(),
+            hivMetadata.getReportOfVisitSupportConcept().getConceptId(),
+            hivMetadata.getPatientHadDifficultyConcept().getConceptId(),
+            hivMetadata.getPatientFoundForwardedConcept().getConceptId(),
+            hivMetadata.getReasonPatientNotFound().getConceptId(),
+            hivMetadata.getWhoGaveInformationConcept().getConceptId(),
+            hivMetadata.getCardDeliveryDateConcept().getConceptId()));
 
     return sqlCohortDefinition;
   }
