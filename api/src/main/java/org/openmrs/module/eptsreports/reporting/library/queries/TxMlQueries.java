@@ -141,4 +141,34 @@ public class TxMlQueries {
 
     return query;
   }
+
+  //Patients without Patient Visit Card with a set of observations
+  public static String getPatientsWithoutVisitCardAndWithObs(
+          int homeVisitCardEncounterTypeId,
+          int typeOfVisitConcept,
+          int buscaConcept,
+          int secondAttemptConcept,
+          int thirdAttemptConcept,
+          int patientFoundConcept,
+          int defaultingMotiveConcept,
+          int reportVisitConcept1,
+          int reportVisitConcept2,
+          int patientFoundForwardedConcept,
+          int reasonForNotFindingConcept,
+          int whoGaveInformationConcept,
+          int cardDeliveryDate
+  ){
+    String query = "SELECT pa.patient_id FROM patient pa " +
+            " INNER JOIN encounter e ON e.patient_id = pa.patient_id " +
+            " INNER JOIN obs o ON o.encounter_id = e.encounter_id " +
+            " WHERE e.encounter_type NOT IN ( " + homeVisitCardEncounterTypeId + " ) " +
+            " AND o.concept_id= " + typeOfVisitConcept + " AND o.value_coded= " + buscaConcept +
+            " AND o.concept_id IN ( " + secondAttemptConcept + "," + thirdAttemptConcept + "," + patientFoundConcept + "," + defaultingMotiveConcept + "," + reportVisitConcept1 + "," +
+             reportVisitConcept2 + "," + patientFoundForwardedConcept + "," + reasonForNotFindingConcept + "," + whoGaveInformationConcept + "," + cardDeliveryDate + " ) " +
+            " AND e.location_id=:location  " +
+            " AND o.obs_datetime <=:endDate  " +
+            " GROUP BY pa.patient_id;";
+
+    return query;
+  }
 }
