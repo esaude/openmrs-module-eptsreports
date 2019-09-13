@@ -282,8 +282,8 @@ public class ResumoMensalCohortQueries {
     patientsWithDrugPickup.addParameter(new Parameter("location", "location", Location.class));
     patientsWithDrugPickup.setQuery(
         ResumoMensalQueries.getPatientsWhoHadDrugPickUpBeforeDate(
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVStartDate().getConceptId()));
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickup().getConceptId()));
 
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Number of cumulative patients who started ART by end of previous month");
