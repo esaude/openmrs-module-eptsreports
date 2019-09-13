@@ -22,7 +22,6 @@ import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionC
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.disaggregations.ResumoMensalAandBdisaggregations;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -64,11 +63,9 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
     dsd.setName("Resumo Mensal Data set B");
     dsd.addParameters(getParameters());
 
-    dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
+    dsd.addDimension("gender", map(eptsCommonDimension.gender(), ""));
     dsd.addDimension(
-        "age",
-        EptsReportUtils.map(
-            eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
+        "age", map(eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
 
     // indicators for section A1
     addRow(
