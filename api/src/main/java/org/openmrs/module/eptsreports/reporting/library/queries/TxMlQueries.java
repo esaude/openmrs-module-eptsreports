@@ -258,7 +258,7 @@ public class TxMlQueries {
             + "                   GROUP  BY p.patient_id)la "
             + "               ON la.patient_id = pa.patient_id "
             + "WHERE  ( o.obs_datetime BETWEEN la.return_date AND :endDate ) "
-            + "       AND e.encounter_type NOT IN ( %d ) "
+            + "       AND e.encounter_type NOT IN ( %d, %d, %d ) "
             + "       AND e.location_id = :location "
             + "       AND o.obs_datetime <= :endDate "
             + "GROUP  BY pa.patient_id ";
