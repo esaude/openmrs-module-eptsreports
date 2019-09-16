@@ -145,7 +145,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "Data Quality Report v2";
+    return "Data Quality Report";
   }
 
   @Override
@@ -266,7 +266,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "Data_Quality_Report_v2.xls",
+              "Data_Quality_Report.xls",
               "Data Quality Report",
               getExcelDesignUuid(),
               null);

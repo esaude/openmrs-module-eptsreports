@@ -61,7 +61,7 @@ public class SetupEc20DataQualityReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "EC20 Data Quality Report v2";
+    return "EC20 Data Quality Report";
   }
 
   @Override
@@ -110,7 +110,7 @@ public class SetupEc20DataQualityReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "EC20_Data_Quality_Report_v2.xls",
+              "EC20_Data_Quality_Report.xls",
               "EC20 Data Quality Report",
               getExcelDesignUuid(),
               null);
