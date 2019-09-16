@@ -127,6 +127,8 @@ public class TxMlCohortQueries {
     sqlCohortDefinition.setQuery(
         TxMlQueries.getPatientsMarkedDeadInHomeVisitCard(
             hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+            hivMetadata.getResgistrationEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdmissionEncounterType().getEncounterTypeId(),
             hivMetadata.getReasonPatientNotFound().getConceptId(),
             hivMetadata.getPatientIsDead().getConceptId()));
 
@@ -166,6 +168,8 @@ public class TxMlCohortQueries {
     sqlCohortDefinition.setQuery(
         TxMlQueries.getPatientsTracedUnableToLocate(
             hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+            hivMetadata.getResgistrationEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdmissionEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
@@ -191,6 +195,8 @@ public class TxMlCohortQueries {
     sqlCohortDefinition.setQuery(
         TxMlQueries.getPatientsTracedUnableToLocate(
             hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+            hivMetadata.getResgistrationEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdmissionEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
@@ -323,7 +329,9 @@ public class TxMlCohortQueries {
                 hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
                 hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
                 hivMetadata.getReturnVisitDateConcept().getConceptId(),
-                hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId()));
+                hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+                hivMetadata.getResgistrationEncounterType().getEncounterTypeId(),
+                hivMetadata.getAdmissionEncounterType().getEncounterTypeId()));
 
     return sqlCohortDefinition;
   }

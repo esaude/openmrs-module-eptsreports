@@ -608,6 +608,22 @@ public class HivMetadata extends ProgramsMetadata {
     return getEncounterType(uuid);
   }
 
+  // encounter type 36
+  public EncounterType getResgistrationEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.registrationEncounterTypeUuid");
+    return getEncounterType(uuid);
+  }
+
+  // encounter type 37
+  public EncounterType getAdmissionEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.admissionEncounterTypeUuid");
+    return getEncounterType(uuid);
+  }
+
   // encounter_type_id = 1
   public EncounterType getARVAdultInitialBEncounterType() {
     String uuid =

@@ -71,7 +71,11 @@ public class TxMlQueries {
 
   // All Patients marked as Dead in the patient home visit card
   public static String getPatientsMarkedDeadInHomeVisitCard(
-      int homeVisitCardEncounterTypeId, int busca, int dead) {
+      int homeVisitCardEncounterTypeId,
+      int registrationEncounterTypeId,
+      int admissionEncounterTypeId,
+      int busca,
+      int dead) {
     String query =
         " SELECT     pa.patient_id "
             + "FROM       patient pa "
@@ -79,18 +83,26 @@ public class TxMlQueries {
             + "ON         pa.patient_id=e.patient_id "
             + "INNER JOIN obs o "
             + "ON         pa.patient_id=o.person_id "
-            + "WHERE      e.encounter_type IN (%d) "
-            + "AND        o.concept_id= "
-            + "AND        o.value_coded = "
+            + "WHERE      e.encounter_type IN (%d, %d, %d) "
+            + "AND        o.concept_id= %d "
+            + "AND        o.value_coded = %d "
             + "AND        e.location_id=:location "
             + "AND        o.obs_datetime <=:endDate";
 
-    return String.format(query, homeVisitCardEncounterTypeId, busca, dead);
+    return String.format(
+        query,
+        homeVisitCardEncounterTypeId,
+        registrationEncounterTypeId,
+        admissionEncounterTypeId,
+        busca,
+        dead);
   }
 
   // Traced patients (Unable to locate)
   public static String getPatientsTracedUnableToLocate(
       int homeVisitCardEncounterTypeId,
+      int registrationEncounterTypeId,
+      int admissionEncounterTypeId,
       int pharmacyEncounterTypeId,
       int adultoSequimentoEncounterTypeId,
       int arvPediatriaSeguimentoEncounterTypeId,
@@ -127,7 +139,7 @@ public class TxMlQueries {
             + "                   GROUP  BY p.patient_id)lp "
             + "               ON pa.patient_id = lp.patient_id "
             + "WHERE  e.encounter_datetime >= lp.return_date "
-            + "       AND e.encounter_type IN ( %d ) "
+            + "       AND e.encounter_type IN ( %d, %d, %d ) "
             + "       AND o.concept_id = %d "
             + "       AND o.value_coded = %d "
             + "       AND o.concept_id = %d "
@@ -144,6 +156,8 @@ public class TxMlQueries {
         returnVisitDateForDrugsConcept,
         returnVisitDateConcept,
         homeVisitCardEncounterTypeId,
+        registrationEncounterTypeId,
+        admissionEncounterTypeId,
         typeOfVisitConcept,
         buscaConcept,
         patientFoundConcept,
@@ -214,7 +228,9 @@ public class TxMlQueries {
           int arvPediatriaSeguimentoEncounterTypeId,
           int returnVisitDateForDrugsConcept,
           int returnVisitDateConcept,
-          int homeVisitCardEncounterTypeId) {
+          int homeVisitCardEncounterTypeId,
+          int registrationEncounterTypeId,
+          int admissionEncounterTypeId) {
     String query =
         "SELECT pa.patient_id "
             + "FROM   patient pa "
@@ -253,6 +269,8 @@ public class TxMlQueries {
         arvPediatriaSeguimentoEncounterTypeId,
         returnVisitDateForDrugsConcept,
         returnVisitDateConcept,
-        homeVisitCardEncounterTypeId);
+        homeVisitCardEncounterTypeId,
+        registrationEncounterTypeId,
+        admissionEncounterTypeId);
   }
 }

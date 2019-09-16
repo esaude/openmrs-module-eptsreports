@@ -1260,6 +1260,20 @@
 			UUID for the CONTINUE REGIMEN concept
 		</description>
 	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.registrationEncounterTypeUuid</property>
+		<defaultValue>5362bbf3-10e7-11e5-9009-0242ac110012</defaultValue>
+		<description>
+			UUID for the REG encounter type
+		</description>
+		<globalProperty>
+			<property>@MODULE_ID@.admissionEncounterTypeUuid</property>
+			<defaultValue>9cf2aabe-10e8-11e5-9009-0242ac110012</defaultValue>
+			<description>
+				UUID for the ADMISSION encounter type
+			</description>
+		</globalProperty>
+	</globalProperty>
 	<!--Patient identifier types-->
 	<globalProperty>
 		<property>eptsreports.nidServicoTarvUuid</property>
