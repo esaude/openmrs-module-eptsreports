@@ -164,17 +164,31 @@ public class TxMlCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        TxMlQueries.getPatientsTracedUnableToLocate(
+        TxMlQueries.getPatientsFoundOrNotFoundHomeVisitCard(
             hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
-            hivMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getTypeOfVisitConcept().getConceptId(),
             hivMetadata.getPatientFoundConcept().getConceptId(),
             hivMetadata.getBuscaConcept().getConceptId(),
             hivMetadata.getNoConcept().getConceptId()));
+
+    return sqlCohortDefinition;
+  }
+   //Scheduled Patients based on Last Appointment or Drug pick up
+  private CohortDefinition getPatientsLastScheduledAppointmentOrDrugPickup(){
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+
+    sqlCohortDefinition.setName("Get Patients with last scheduled appointment or drugs pick up (the most recent one) by reporting end date and <= the reporting end date");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    sqlCohortDefinition.setQuery(TxMlQueries.getPatientsLastScheduledAppointmentOrDrugPickup(
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+            hivMetadata.getReturnVisitDateConcept().getConceptId()
+    ));
 
     return sqlCohortDefinition;
   }
@@ -189,13 +203,8 @@ public class TxMlCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        TxMlQueries.getPatientsTracedUnableToLocate(
+        TxMlQueries.getPatientsFoundOrNotFoundHomeVisitCard(
             hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
-            hivMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getTypeOfVisitConcept().getConceptId(),
             hivMetadata.getPatientFoundConcept().getConceptId(),
             hivMetadata.getBuscaConcept().getConceptId(),

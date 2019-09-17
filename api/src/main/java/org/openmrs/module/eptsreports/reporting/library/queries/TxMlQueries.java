@@ -243,4 +243,68 @@ public class TxMlQueries {
             + " GROUP BY pa.patient_id ";
     return query;
   }
+
+  /*
+     Patients with last scheduled appointment or drugs pick up (the most recent one) by reporting end date and <= the reporting end date
+  */
+  public static String getPatientsLastScheduledAppointmentOrDrugPickup(
+      int pharmacyEncounterTypeId,
+      int adultoSequimentoEncounterTypeId,
+      int arvPediatriaSeguimentoEncounterTypeId,
+      int returnVisitDateForDrugsConcept,
+      int returnVisitDateConcept) {
+    String query =
+        " SELECT patient_id FROM ( "
+            + "  SELECT p.patient_id,max(e.encounter_datetime) encounter_datetime FROM patient p "
+            + " INNER JOIN encounter e on e.patient_id=p.patient_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND e.encounter_type IN ( "
+            + pharmacyEncounterTypeId
+            + " , "
+            + adultoSequimentoEncounterTypeId
+            + " , "
+            + arvPediatriaSeguimentoEncounterTypeId
+            + " ) "
+            + " AND e.location_id=:location AND e.encounter_datetime<=:endDate group by p.patient_id "
+            + " ) max_frida "
+            + " INNER JOIN obs o on o.person_id=max_frida.patient_id "
+            + " WHERE max_frida.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id IN ( "
+            + returnVisitDateForDrugsConcept
+            + " , "
+            + returnVisitDateConcept
+            + " ) "
+            + " AND o.location_id=:location AND datediff(:endDate,o.value_datetime)<=:endDate";
+
+    return query;
+  }
+
+  /**
+   * Patient Found and Not Found: Traced Patient (Unable to locate)
+   */
+  public static String getPatientsFoundOrNotFoundHomeVisitCard(
+          int homeVisitCardEncounterTypeId,
+          int typeOfVisitConcept,
+          int patientFoundConcept,
+          int buscaConcept,
+          int patientFoundAnswerConcept) {
+    String query =
+            " SELECT pa.patient_id FROM patient pa "
+                    + " INNER JOIN encounter e ON pa.patient_id=e.patient_id "
+                    + " INNER JOIN obs o ON pa.patient_id=o.person_id "
+                    + " WHERE e.encounter_type IN ( "
+                    + homeVisitCardEncounterTypeId
+                    + " ) "
+                    + " AND o.concept_id = "
+                    + typeOfVisitConcept
+                    + " AND o.value_coded= "
+                    + buscaConcept
+                    + " AND o.concept_id= "
+                    + patientFoundConcept
+                    + " AND o.value_coded = "
+                    + patientFoundAnswerConcept
+                    + " AND e.location_id=:location "
+                    + " AND o.obs_datetime <=:endDate "
+                    + " GROUP BY pa.patient_id";
+
+    return query;
+  }
 }
