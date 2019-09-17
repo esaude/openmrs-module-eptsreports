@@ -392,8 +392,15 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
     // C1 indicators
     dsd.addColumn(
         "C1TC",
-        "Patients under 15 years",
+        "Patients who initiated Pre-TARV during the current month and was screened for TB",
         getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTB(),
+        "");
+
+    // C2 indicators
+    dsd.addColumn(
+        "C2TC",
+        "Patients who initiated Pre-TARV during the current month and started TPI",
+        getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTPI(),
         "");
 
     return dsd;
@@ -499,11 +506,21 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
   }
 
   private Mapped<CohortIndicator> getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTB() {
-    String name = "Patients active in ART by end of previous month";
+    String name =
+        "Patients who initiated Pre-TARV during the current month and was screened for TB";
     Mapped<CohortDefinition> cohort =
         mapStraightThrough(
             resumoMensalCohortQueries
                 .getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTB());
+    return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
+  }
+
+  private Mapped<CohortIndicator> getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTPI() {
+    String name = "Patients who initiated Pre-TARV during the current month and started TPI";
+    Mapped<CohortDefinition> cohort =
+        mapStraightThrough(
+            resumoMensalCohortQueries
+                .getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTPI());
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
   }
 }

@@ -309,8 +309,46 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /** @return Patients who initiated Pre-TARV during the current month and started TPI. */
+  public CohortDefinition getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTPI() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Patients who initiated Pre-TARV during the current month and started TPI");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition a2 = getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2();
+    CohortDefinition tpi = getPatientsWhoStartedTPI();
+
+    String mappings = "onOrAfter=${startDate},locationList=${location}";
+    cd.addSearch("A2", mapStraightThrough(a2));
+    cd.addSearch("TPI", map(tpi, mappings));
+
+    cd.setCompositionString("A2 AND TPI");
+
+    return cd;
+  }
+
   /**
-   * @return Patients with Has TB Symptoms = Yes in their FIRST S.TARV – Adulto Seguimento encounter
+   * @return Patients that have ISONIAZID USE = START DRUGS in their FIRST or SECOND S.TARV – Adulto
+   *     Seguimento encounter
+   */
+  private CohortDefinition getPatientsWhoStartedTPI() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("locationList", "location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    // TODO should be first or second encounter
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.FIRST);
+    cd.setQuestion(hivMetadata.getIsoniazidUsageConcept());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getStartDrugs());
+    return cd;
+  }
+
+  /**
+   * @return Patients that have TB Symptoms = Yes in their FIRST S.TARV – Adulto Seguimento
+   *     encounter
    */
   private CohortDefinition getPatientScreenedForTb() {
     CodedObsCohortDefinition cd = new CodedObsCohortDefinition();

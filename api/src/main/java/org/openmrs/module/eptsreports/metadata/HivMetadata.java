@@ -189,6 +189,7 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id=6122
   public Concept getIsoniazidUsageConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.isoniazidUseConceptUuid");
