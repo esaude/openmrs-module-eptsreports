@@ -1216,6 +1216,16 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.hasTbSymptomsConceptUuid</property>
+		<defaultValue>2eab4e55-d0d0-4fa8-8d23-b40eaaee44c8</defaultValue>
+		<description>
+			UUID for the SINTOMAS DE TUBERCULOSE concept
+		</description>
+	</globalProperty>
+
+
+
 
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 

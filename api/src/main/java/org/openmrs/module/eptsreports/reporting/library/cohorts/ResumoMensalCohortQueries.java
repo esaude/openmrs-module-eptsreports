@@ -20,14 +20,17 @@ import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraig
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterWithCodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
+import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,10 +39,12 @@ import org.springframework.stereotype.Component;
 public class ResumoMensalCohortQueries {
 
   private HivMetadata hivMetadata;
+  private TbMetadata tbMetadata;
 
   @Autowired
-  public ResumoMensalCohortQueries(HivMetadata hivMetadata) {
+  public ResumoMensalCohortQueries(HivMetadata hivMetadata, TbMetadata tbMetadata) {
     this.hivMetadata = hivMetadata;
+    this.tbMetadata = tbMetadata;
   }
 
   /** A1 Number of patients who initiated Pre-TARV at this HF by end of previous month */
@@ -281,6 +286,41 @@ public class ResumoMensalCohortQueries {
 
     cd.setCompositionString("B10 OR B2A OR B3A AND NOT (B5A OR B6A OR B7A OR B8A)");
 
+    return cd;
+  }
+
+  /** @return Patients who initiated Pre-TARV during the current month and was screened for TB. */
+  public CohortDefinition getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTB() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Patients who initiated Pre-TARV during the current month and was screened for TB.");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition a2 = getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2();
+    CohortDefinition tb = getPatientScreenedForTb();
+
+    String mappings = "onOrAfter=${startDate},locationList=${location}";
+    cd.addSearch("A2", mapStraightThrough(a2));
+    cd.addSearch("TB", map(tb, mappings));
+
+    cd.setCompositionString("TB");
+
+    return cd;
+  }
+
+  /**
+   * @return Patients with Has TB Symptoms = Yes in their FIRST S.TARV – Adulto Seguimento encounter
+   */
+  private CohortDefinition getPatientScreenedForTb() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("locationList", "location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.FIRST);
+    cd.setQuestion(tbMetadata.getHasTbSymptomsConcept());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getYesConcept());
     return cd;
   }
 
