@@ -11,15 +11,17 @@ public class TxMlQueries {
       int adultoSequimento,
       int arvPediatriaSeguimento) {
     String query =
-        " SELECT patient_id FROM ( "
-            + "  SELECT p.patient_id,max(e.encounter_datetime) encounter_datetime FROM patient p "
-            + " INNER JOIN encounter e on e.patient_id=p.patient_id "
-            + " WHERE p.voided=0 AND e.voided=0 AND e.encounter_type IN ( %d, %d, %d ) "
-            + " AND e.location_id=:location AND e.encounter_datetime<=:endDate group by p.patient_id "
-            + " ) max_frida "
-            + " INNER JOIN obs o on o.person_id=max_frida.patient_id "
-            + " WHERE max_frida.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id IN ( %d, %d) "
-            + " AND o.location_id=:location AND DATEDIFF(:endDate,o.value_datetime)>=%d AND DATEDIFF(:endDate,o.value_datetime)<=%d";
+        "SELECT patient_id FROM "
+            + "(SELECT p.patient_id,MAX(o.value_datetime) return_date "
+            + "FROM patient p "
+            + "INNER JOIN encounter e ON e.patient_id = p.patient_id AND e.encounter_datetime <=:endDate AND e.location_id=:location "
+            + "INNER JOIN obs o ON o.encounter_id = e.encounter_id AND o.obs_datetime <=:endDate AND o.location_id=:location "
+            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided=0 "
+            + "AND e.encounter_type IN (%d, %d, %d) "
+            + "AND o.concept_id in (%d, %d) "
+            + "AND e.location_id =:location "
+            + "GROUP BY p.patient_id "
+            + ")lost_patients WHERE DATEDIFF(:endDate,lost_patients.return_date)>=%d AND DATEDIFF(:endDate,lost_patients.return_date)<=%d";
     return String.format(
         query,
         pharmacyEncounterType,
