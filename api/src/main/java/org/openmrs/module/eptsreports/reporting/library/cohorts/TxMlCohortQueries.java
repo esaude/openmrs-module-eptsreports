@@ -238,9 +238,11 @@ public class TxMlCohortQueries {
         EptsReportUtils.map(
             getPatientTracedAndFound(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch("scheduledLastAppointment",
+            EptsReportUtils.map(getPatientsLastScheduledAppointmentOrDrugPickup(),"startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "missedAppointmentLessTransfers AND (patientsNotFound AND NOT patientsFound )");
+        "missedAppointmentLessTransfers AND ((patientsNotFound AND scheduledLastAppointment) AND NOT (patientsFound AND scheduledLastAppointment))");
 
     return cd;
   }
