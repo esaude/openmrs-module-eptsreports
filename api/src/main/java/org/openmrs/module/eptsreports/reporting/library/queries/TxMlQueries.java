@@ -71,20 +71,31 @@ public class TxMlQueries {
 
   // All Patients marked as Dead in the patient home visit card
   public static String getPatientsMarkedDeadInHomeVisitCard(
-      int homeVisitCardEncounterTypeId, int busca, int dead) {
+      int homeVisitCardEncounterTypeId,
+      int registrationEncounterTypeId,
+      int admissionEncounterTypeId,
+      int busca,
+      int dead) {
     String query =
-        " SELECT pa.patient_id FROM patient pa"
-            + " INNER JOIN encounter e ON pa.patient_id=e.patient_id "
-            + " INNER JOIN obs o ON pa.patient_id=o.person_id "
-            + " WHERE e.encounter_type IN ("
-            + homeVisitCardEncounterTypeId
-            + " ) AND o.concept_id="
-            + busca
-            + " AND o.value_coded = "
-            + dead
-            + " AND e.location_id=:location AND o.obs_datetime <=:endDate";
+        " SELECT     pa.patient_id "
+            + "FROM       patient pa "
+            + "INNER JOIN encounter e "
+            + "ON         pa.patient_id=e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON         pa.patient_id=o.person_id "
+            + "WHERE      e.encounter_type IN (%d, %d, %d) "
+            + "AND        o.concept_id= %d "
+            + "AND        o.value_coded = %d "
+            + "AND        e.location_id=:location "
+            + "AND        o.obs_datetime <=:endDate";
 
-    return query;
+    return String.format(
+        query,
+        homeVisitCardEncounterTypeId,
+        registrationEncounterTypeId,
+        admissionEncounterTypeId,
+        busca,
+        dead);
   }
 
   /*
@@ -106,42 +117,37 @@ public class TxMlQueries {
       int whoGaveInformationConcept,
       int cardDeliveryDate) {
     String query =
-        "SELECT pa.patient_id FROM patient pa "
-            + " INNER JOIN encounter e ON e.patient_id = pa.patient_id "
-            + " INNER JOIN obs o ON o.encounter_id = e.encounter_id "
-            + " WHERE e.encounter_type NOT IN ( "
-            + homeVisitCardEncounterTypeId
-            + " ) "
-            + " AND o.concept_id= "
-            + typeOfVisitConcept
-            + " AND o.value_coded= "
-            + buscaConcept
-            + " AND o.concept_id IN ( "
-            + secondAttemptConcept
-            + ","
-            + thirdAttemptConcept
-            + ","
-            + patientFoundConcept
-            + ","
-            + defaultingMotiveConcept
-            + ","
-            + reportVisitConcept1
-            + ","
-            + reportVisitConcept2
-            + ","
-            + patientFoundForwardedConcept
-            + ","
-            + reasonForNotFindingConcept
-            + ","
-            + whoGaveInformationConcept
-            + ","
-            + cardDeliveryDate
-            + " ) "
-            + " AND e.location_id=:location  "
-            + " AND o.obs_datetime <=:endDate  "
-            + " GROUP BY pa.patient_id;";
+        "SELECT pa.patient_id "
+            + "FROM   patient pa "
+            + "       inner join encounter e "
+            + "               ON e.patient_id = pa.patient_id "
+            + "       inner join obs o "
+            + "               ON o.encounter_id = e.encounter_id "
+            + "WHERE  e.encounter_type NOT IN ( %d ) "
+            + "       AND o.concept_id = %d "
+            + "       AND o.value_coded = %d "
+            + "       AND o.concept_id IN ( %d, %d, %d, %d, "
+            + "                             %d, %d, %d, %d, "
+            + "                             %d, %d ) "
+            + "       AND e.location_id = :location "
+            + "       AND o.obs_datetime <= :endDate "
+            + "GROUP  BY pa.patient_id; ";
 
-    return query;
+    return String.format(
+        query,
+        homeVisitCardEncounterTypeId,
+        typeOfVisitConcept,
+        buscaConcept,
+        secondAttemptConcept,
+        thirdAttemptConcept,
+        patientFoundConcept,
+        defaultingMotiveConcept,
+        reportVisitConcept1,
+        reportVisitConcept2,
+        patientFoundForwardedConcept,
+        reasonForNotFindingConcept,
+        whoGaveInformationConcept,
+        cardDeliveryDate);
   }
 
   /*

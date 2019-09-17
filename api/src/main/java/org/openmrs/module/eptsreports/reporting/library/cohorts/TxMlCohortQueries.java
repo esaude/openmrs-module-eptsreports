@@ -127,6 +127,8 @@ public class TxMlCohortQueries {
     sqlCohortDefinition.setQuery(
         TxMlQueries.getPatientsMarkedDeadInHomeVisitCard(
             hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+            hivMetadata.getResgistrationEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdmissionEncounterType().getEncounterTypeId(),
             hivMetadata.getReasonPatientNotFound().getConceptId(),
             hivMetadata.getPatientIsDead().getConceptId()));
 
