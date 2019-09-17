@@ -304,7 +304,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch("A2", mapStraightThrough(a2));
     cd.addSearch("TB", map(tb, mappings));
 
-    cd.setCompositionString("TB");
+    cd.setCompositionString("A2 AND TB");
 
     return cd;
   }
