@@ -196,6 +196,8 @@ public class TxMlQueries {
       int returnVisitDateForDrugsConcept,
       int returnVisitDateConcept,
       int homeVisitCardEncounterTypeId,
+      int registrationEncounterTypeId,
+      int admissionEncounterTypeId,
       int typeOfVisitConcept,
       int buscaConcept,
       int patientFoundConcept,
@@ -213,7 +215,7 @@ public class TxMlQueries {
             + " AND e.location_id =:location "
             + " GROUP BY p.patient_id)lp ON pa.patient_id=lp.patient_id "
             + "    WHERE e.encounter_datetime >= lp.return_date AND e.encounter_datetime<=:endDate"
-            + "    AND e.encounter_type IN (%d) "
+            + "    AND e.encounter_type IN (%d,%d,%d) "
             + "    AND o.concept_id =%d AND o.value_coded=%d "
             + "    AND o.concept_id=%d AND o.value_coded =%d "
             + "    AND e.location_id=:location "
@@ -227,6 +229,8 @@ public class TxMlQueries {
         returnVisitDateConcept,
         returnVisitDateForDrugsConcept,
         homeVisitCardEncounterTypeId,
+        registrationEncounterTypeId,
+        admissionEncounterTypeId,
         typeOfVisitConcept,
         buscaConcept,
         patientFoundConcept,
