@@ -101,8 +101,15 @@ public class TxMlQueries {
    Untraced Patients Criteria 2
    Patients without Patient Visit Card with a set of observations
   */
-  public static String getPatientsWithoutVisitCardAndWithObs(
+  public static String getPatientsWithVisitCardAndWithObs(
+      int pharmacyEncounterTypeId,
+      int adultoSequimentoEncounterTypeId,
+      int arvPediatriaSeguimentoEncounterTypeId,
+      int returnVisitDateForDrugsConcept,
+      int returnVisitDateConcept,
       int homeVisitCardEncounterTypeId,
+      int registrationEncounterTypeId,
+      int admissionEncounterTypeId,
       int typeOfVisitConcept,
       int buscaConcept,
       int secondAttemptConcept,
@@ -118,22 +125,42 @@ public class TxMlQueries {
     String query =
         "SELECT pa.patient_id "
             + "FROM   patient pa "
-            + "       inner join encounter e "
-            + "               ON e.patient_id = pa.patient_id "
-            + "       inner join obs o "
-            + "               ON o.encounter_id = e.encounter_id "
-            + "       WHERE o.concept_id = %d "
-            + "       AND o.value_coded = %d "
-            + "       AND o.concept_id IN ( %d, %d, %d, %d, "
-            + "                             %d, %d, %d, %d, "
-            + "                             %d, %d ) "
-            + "       AND e.location_id = :location "
-            + "       AND o.obs_datetime <= :endDate "
+            + " INNER JOIN ("
+            + "      SELECT pa.patient_id,e.encounter_id FROM patient pa "
+            + "       INNER JOIN encounter e ON pa.patient_id=e.patient_id "
+            + "       INNER JOIN obs o ON pa.patient_id=o.person_id "
+            + "       INNER JOIN ("
+            + "          SELECT p.patient_id,MAX(e.encounter_datetime) return_date FROM patient p "
+            + "             INNER JOIN encounter e ON e.patient_id = p.patient_id AND e.encounter_datetime <=:endDate AND e.location_id=:location "
+            + "             INNER JOIN obs o ON o.encounter_id = e.encounter_id  AND o.location_id=:location  "
+            + "          WHERE p.voided = 0 AND e.voided = 0 AND o.voided=0 "
+            + "            AND e.encounter_type IN (%d,%d,%d) "
+            + "            AND o.concept_id IN (%d, %d) "
+            + "            AND e.location_id =:location "
+            + "          GROUP BY p.patient_id)lp ON pa.patient_id=lp.patient_id "
+            + "      WHERE e.encounter_datetime >= lp.return_date AND e.encounter_datetime<=:endDate "
+            + "       AND e.encounter_type IN (%d, %d, %d) "
+            + "       AND e.location_id=:location  "
+            + "      GROUP BY pa.patient_id) visitCard on visitCard.patient_id = pa.patient_id "
+            + "    INNER JOIN encounter e ON e.patient_id = pa.patient_id AND visitCard.encounter_id = e.encounter_id "
+            + "    INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "   WHERE o.concept_id = %d "
+            + "    AND o.value_coded = %d "
+            + "    AND o.concept_id IN ( %d, %d, %d, %d, %d, %d, %d, %d, %d, %d ) "
+            + "    AND e.location_id = :location "
+            + "    AND o.obs_datetime <= :endDate "
             + "GROUP  BY pa.patient_id; ";
 
     return String.format(
         query,
+        pharmacyEncounterTypeId,
+        adultoSequimentoEncounterTypeId,
+        arvPediatriaSeguimentoEncounterTypeId,
+        returnVisitDateConcept,
+        returnVisitDateForDrugsConcept,
         homeVisitCardEncounterTypeId,
+        registrationEncounterTypeId,
+        admissionEncounterTypeId,
         typeOfVisitConcept,
         buscaConcept,
         secondAttemptConcept,
@@ -159,7 +186,9 @@ public class TxMlQueries {
           int arvPediatriaSeguimentoEncounterTypeId,
           int returnVisitDateForDrugsConcept,
           int returnVisitDateConcept,
-          int homeVisitCardEncounterTypeId) {
+          int homeVisitCardEncounterTypeId,
+          int registrationEncounterTypeId,
+          int admissionEncounterTypeId) {
 
     String query =
         " SELECT pa.patient_id FROM patient pa "
@@ -174,7 +203,7 @@ public class TxMlQueries {
             + "  AND e.location_id =:location "
             + "  GROUP BY p.patient_id)lp ON pa.patient_id=lp.patient_id "
             + "  WHERE e.encounter_datetime >= lp.return_date AND e.encounter_datetime<=:endDate"
-            + "  AND e.encounter_type NOT IN (%d) "
+            + "  AND e.encounter_type NOT IN (%d, %d, %d) "
             + "  AND e.location_id=:location  "
             + "  GROUP BY pa.patient_id";
 
@@ -185,7 +214,9 @@ public class TxMlQueries {
         arvPediatriaSeguimentoEncounterTypeId,
         returnVisitDateConcept,
         returnVisitDateForDrugsConcept,
-        homeVisitCardEncounterTypeId);
+        homeVisitCardEncounterTypeId,
+        registrationEncounterTypeId,
+        admissionEncounterTypeId);
   }
 
   // Traced Patients (Unable to locate)

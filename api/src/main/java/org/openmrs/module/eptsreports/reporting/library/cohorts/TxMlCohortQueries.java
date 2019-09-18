@@ -70,6 +70,7 @@ public class TxMlCohortQueries {
     cd.setCompositionString("nonConsistent AND NOT dead");
     return cd;
   }
+
   // a and b
   public CohortDefinition getPatientsWhoMissedNextAppointmentAndNotTransferredOut() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -87,6 +88,7 @@ public class TxMlCohortQueries {
     cd.setCompositionString("missedAppointment AND NOT transferOut");
     return cd;
   }
+
   // a and b and died
   public CohortDefinition
       getPatientsWhoMissedNextAppointmentAndNotTransferredOutButDiedDuringReportingPeriod() {
@@ -182,27 +184,6 @@ public class TxMlCohortQueries {
 
     return sqlCohortDefinition;
   }
-  // Scheduled Patients based on Last Appointment or Drug pick up
-  //  private CohortDefinition getPatientsLastScheduledAppointmentOrDrugPickup() {
-  //    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-  //
-  //    sqlCohortDefinition.setName(
-  //        "Get Patients with last scheduled appointment or drugs pick up (the most recent one) by
-  // reporting end date and <= the reporting end date");
-  //    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-  //    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
-  //    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
-  //
-  //    sqlCohortDefinition.setQuery(
-  //        TxMlQueries.getPatientsLastScheduledAppointmentOrDrugPickup(
-  //            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-  //            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-  //            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-  //            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
-  //            hivMetadata.getReturnVisitDateConcept().getConceptId()));
-  //
-  //    return sqlCohortDefinition;
-  //  }
 
   // Patients Traced and Found.
   private CohortDefinition getPatientTracedAndFound() {
@@ -258,14 +239,14 @@ public class TxMlCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "missedAppointmentLessTransfers AND (patientsNotFound  AND NOT patientsFound )");
+        "missedAppointmentLessTransfers AND (patientsNotFound AND NOT patientsFound)");
 
     return cd;
   }
 
   /*
-   a and b and Untraced Patients
-  */
+   * a and b and Untraced Patients
+   */
   public CohortDefinition getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndUntraced() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
@@ -285,22 +266,21 @@ public class TxMlCohortQueries {
             getPatientsWithoutVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "patientsWithObs",
+        "withVisitCardandWithoutObs",
         EptsReportUtils.map(
-            getPatientsWithoutVisitCardAndWithObs(),
+            getPatientsWithVisitCardAndWithObs(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "missedAppointmentLessTransfers AND (withoutVisitCard  OR (withoutVisitCard AND patientsWithObs))");
+        "missedAppointmentLessTransfers AND (withoutVisitCard OR NOT withVisitCardandWithObs)");
 
     return cd;
   }
 
   /*
-   Untraced Patients Criteria 2
-   Patients with a set of observations
-  */
-  public CohortDefinition getPatientsWithoutVisitCardAndWithObs() {
+   * Untraced Patients Criteria 2 Patients with a set of observations
+   */
+  public CohortDefinition getPatientsWithVisitCardAndWithObs() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
 
     sqlCohortDefinition.setName("Get patients without Visit Card but with a set of observations");
@@ -309,8 +289,15 @@ public class TxMlCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        TxMlQueries.getPatientsWithoutVisitCardAndWithObs(
+        TxMlQueries.getPatientsWithVisitCardAndWithObs(
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+            hivMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+            hivMetadata.getResgistrationEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdmissionEncounterType().getEncounterTypeId(),
             hivMetadata.getTypeOfVisitConcept().getConceptId(),
             hivMetadata.getBuscaConcept().getConceptId(),
             hivMetadata.getSecondAttemptConcept().getConceptId(),
@@ -328,9 +315,10 @@ public class TxMlCohortQueries {
   }
 
   /*
-    Untraced Patients Criteria 2
-    All Patients without “Patient Visit Card” registered between the last scheduled appointment or drugs pick up by reporting end date and the reporting end date
-  */
+   * Untraced Patients Criteria 2 All Patients without “Patient Visit Card”
+   * registered between the last scheduled appointment or drugs pick up by
+   * reporting end date and the reporting end date
+   */
   public CohortDefinition
       getPatientsWithoutVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
@@ -348,7 +336,9 @@ public class TxMlCohortQueries {
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
-            hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId()));
+            hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+            hivMetadata.getResgistrationEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdmissionEncounterType().getEncounterTypeId()));
 
     return sqlCohortDefinition;
   }
