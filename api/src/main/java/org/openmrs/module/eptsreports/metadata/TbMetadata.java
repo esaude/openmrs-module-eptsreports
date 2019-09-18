@@ -37,6 +37,12 @@ public class TbMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  public Concept getActiveTBConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.activeTBConceptUuid");
+    return getConcept(uuid);
+  }
+
   // Programs
   public Program getTBProgram() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.tbProgramUuid");

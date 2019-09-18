@@ -1140,6 +1140,13 @@
 			UUID for the CONTINUE REGIMEN concept
 		</description>
 	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.activeTBConceptUuid</property>
+		<defaultValue>63b15479-5a05-4bdc-a6e5-eab175743122</defaultValue>
+		<description>
+			UUID for the TUBERCULOSE ACTIVO concept
+		</description>
+	</globalProperty>
 	<!--Patient identifier types-->
 	<globalProperty>
 		<property>eptsreports.nidServicoTarvUuid</property>

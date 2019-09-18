@@ -81,7 +81,7 @@ public class CodedObsOnFirstOrSecondEncounterCalculation extends AbstractPatient
       encounters.add((Encounter) result.getValue());
     }
     sortByDatetime(encounters);
-    return encounters.size() > 1 ? encounters.subList(0, 1) : encounters;
+    return encounters.size() > 1 ? encounters.subList(0, 2) : encounters;
   }
 
   private void sortByDatetime(List<Encounter> encounters) {

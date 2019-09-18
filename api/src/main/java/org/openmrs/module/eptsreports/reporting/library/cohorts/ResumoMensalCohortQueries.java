@@ -333,14 +333,51 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
+   * @return Patientes who initiated Pre-TARV during the current month and was diagnosed for active
+   *     TB
+   */
+  public CohortDefinition
+      getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTB() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Patients who initiated Pre-TARV during the current month and started TPI");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition a2 = getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2();
+    CohortDefinition tb = getPatientsDiagnosedForActiveTB();
+
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+    cd.addSearch("A2", mapStraightThrough(a2));
+    cd.addSearch("TB", map(tb, mappings));
+
+    cd.setCompositionString("A2 AND TB");
+    return cd;
+  }
+
+  /**
+   * @return Patients that have ACTIVE TB = YES in their FIRST or SECOND S.TARV – Adulto *
+   *     Seguimento encounter
+   */
+  private CohortDefinition getPatientsDiagnosedForActiveTB() {
+    CodedObsOnFirstOrSecondEncounterCalculation calculation =
+        Context.getRegisteredComponents(CodedObsOnFirstOrSecondEncounterCalculation.class).get(0);
+    CalculationCohortDefinition cd = new CalculationCohortDefinition(calculation);
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.addCalculationParameter("concept", tbMetadata.getActiveTBConcept());
+    cd.addCalculationParameter("valueCoded", hivMetadata.getYesConcept());
+    return cd;
+  }
+
+  /**
    * @return Patients that have ISONIAZID USE = START DRUGS in their FIRST or SECOND S.TARV – Adulto
    *     Seguimento encounter
    */
   private CohortDefinition getPatientsWhoStartedTPI() {
     CodedObsOnFirstOrSecondEncounterCalculation calculation =
-        Context.getRegisteredComponents(
-                CodedObsOnFirstOrSecondEncounterCalculation.class)
-            .get(0);
+        Context.getRegisteredComponents(CodedObsOnFirstOrSecondEncounterCalculation.class).get(0);
     CalculationCohortDefinition cd = new CalculationCohortDefinition(calculation);
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));

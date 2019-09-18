@@ -403,6 +403,13 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
         getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTPI(),
         "");
 
+    // C3 indicators
+    dsd.addColumn(
+        "C3TC",
+        "Patientes who initiated Pre-TARV during the current month and were diagnosed for active TB",
+        getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTB(),
+        "");
+
     return dsd;
   }
 
@@ -521,6 +528,17 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
         mapStraightThrough(
             resumoMensalCohortQueries
                 .getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTPI());
+    return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
+  }
+
+  private Mapped<CohortIndicator>
+      getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTB() {
+    String name =
+        "Patientes who initiated Pre-TARV during the current month and were diagnosed for active TB";
+    Mapped<CohortDefinition> cohort =
+        mapStraightThrough(
+            resumoMensalCohortQueries
+                .getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTB());
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
   }
 }
