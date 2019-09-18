@@ -19,8 +19,11 @@ import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraig
 
 import java.util.Date;
 import org.openmrs.Location;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
+import org.openmrs.module.eptsreports.reporting.calculation.IsoniazidProphylaxisOnFirstOrSecondEncounterCalculation;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
@@ -320,7 +323,7 @@ public class ResumoMensalCohortQueries {
     CohortDefinition a2 = getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2();
     CohortDefinition tpi = getPatientsWhoStartedTPI();
 
-    String mappings = "onOrAfter=${startDate},locationList=${location}";
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
     cd.addSearch("A2", mapStraightThrough(a2));
     cd.addSearch("TPI", map(tpi, mappings));
 
@@ -334,15 +337,14 @@ public class ResumoMensalCohortQueries {
    *     Seguimento encounter
    */
   private CohortDefinition getPatientsWhoStartedTPI() {
-    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    IsoniazidProphylaxisOnFirstOrSecondEncounterCalculation calculation =
+        Context.getRegisteredComponents(
+                IsoniazidProphylaxisOnFirstOrSecondEncounterCalculation.class)
+            .get(0);
+    CalculationCohortDefinition cd = new CalculationCohortDefinition(calculation);
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("locationList", "location", Location.class));
-    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    // TODO should be first or second encounter
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.FIRST);
-    cd.setQuestion(hivMetadata.getIsoniazidUsageConcept());
-    cd.setOperator(SetComparator.IN);
-    cd.addValue(hivMetadata.getStartDrugs());
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
     return cd;
   }
 
