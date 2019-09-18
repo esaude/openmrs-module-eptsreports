@@ -211,6 +211,7 @@ public class EPTSCalculationService {
    * @param encounterTypes
    * @param cohort
    * @param location
+   * @param onOrAfter
    * @param context
    * @return all encounters for the patients
    */
@@ -218,11 +219,15 @@ public class EPTSCalculationService {
       List<EncounterType> encounterTypes,
       Collection<Integer> cohort,
       Location location,
+      Date onOrAfter,
       Date onOrBefore,
       PatientCalculationContext context) {
     EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition();
     def.setWhich(TimeQualifier.ANY);
     def.setLocationList(Arrays.asList(location));
+    if (onOrAfter != null) {
+      def.setOnOrAfter(onOrAfter);
+    }
     def.setOnOrBefore(onOrBefore);
     if (encounterTypes != null) {
       def.setName("all encounters ");
