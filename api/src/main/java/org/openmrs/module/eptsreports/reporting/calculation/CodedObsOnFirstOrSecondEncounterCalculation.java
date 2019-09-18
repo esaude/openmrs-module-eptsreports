@@ -23,15 +23,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IsoniazidProphylaxisOnFirstOrSecondEncounterCalculation
-    extends AbstractPatientCalculation {
+public class CodedObsOnFirstOrSecondEncounterCalculation extends AbstractPatientCalculation {
 
   private EPTSCalculationService eptsCalculationService;
 
   private HivMetadata hivMetadata;
 
   @Autowired
-  public IsoniazidProphylaxisOnFirstOrSecondEncounterCalculation(
+  public CodedObsOnFirstOrSecondEncounterCalculation(
       EPTSCalculationService eptsCalculationService, HivMetadata hivMetadata) {
     this.eptsCalculationService = eptsCalculationService;
     this.hivMetadata = hivMetadata;
@@ -48,6 +47,8 @@ public class IsoniazidProphylaxisOnFirstOrSecondEncounterCalculation
     Location location = (Location) context.getFromCache("location");
     Date onOrAfter = (Date) context.getFromCache("onOrAfter");
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
+    Concept concept = (Concept) parameterValues.get("concept");
+    Concept valueCoded = (Concept) parameterValues.get("valueCoded");
 
     CalculationResultMap adultSegEncounters =
         eptsCalculationService.allEncounters(
@@ -56,14 +57,14 @@ public class IsoniazidProphylaxisOnFirstOrSecondEncounterCalculation
     CalculationResultMap map = new CalculationResultMap();
     for (Integer pId : cohort) {
       List<Encounter> encounters = getFirstTwoEncounters(adultSegEncounters, pId);
-      boolean prophylaxis = false;
+      boolean codedObs = false;
       for (Encounter e : encounters) {
-        if (hasIsoniazidProphylaxis(e)) {
-          prophylaxis = true;
+        if (hasCodedObs(e, concept, valueCoded)) {
+          codedObs = true;
           break;
         }
       }
-      map.put(pId, new BooleanResult(prophylaxis, this));
+      map.put(pId, new BooleanResult(codedObs, this));
     }
 
     return map;
@@ -94,12 +95,10 @@ public class IsoniazidProphylaxisOnFirstOrSecondEncounterCalculation
         });
   }
 
-  private boolean hasIsoniazidProphylaxis(Encounter encounter) {
-    Concept isoniazidUsageConcept = hivMetadata.getIsoniazidUsageConcept();
-    Concept startDrugs = hivMetadata.getStartDrugs();
+  private boolean hasCodedObs(Encounter encounter, Concept concept, Concept valueCoded) {
     for (Obs o : encounter.getObs()) {
-      if (isoniazidUsageConcept.equals(o.getConcept())) {
-        return startDrugs.equals(o.getValueCoded());
+      if (concept.equals(o.getConcept())) {
+        return valueCoded.equals(o.getValueCoded());
       }
     }
     return false;

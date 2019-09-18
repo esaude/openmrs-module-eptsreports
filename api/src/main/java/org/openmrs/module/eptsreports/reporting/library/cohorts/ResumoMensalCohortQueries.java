@@ -22,7 +22,7 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
-import org.openmrs.module.eptsreports.reporting.calculation.IsoniazidProphylaxisOnFirstOrSecondEncounterCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.CodedObsOnFirstOrSecondEncounterCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
@@ -337,14 +337,16 @@ public class ResumoMensalCohortQueries {
    *     Seguimento encounter
    */
   private CohortDefinition getPatientsWhoStartedTPI() {
-    IsoniazidProphylaxisOnFirstOrSecondEncounterCalculation calculation =
+    CodedObsOnFirstOrSecondEncounterCalculation calculation =
         Context.getRegisteredComponents(
-                IsoniazidProphylaxisOnFirstOrSecondEncounterCalculation.class)
+                CodedObsOnFirstOrSecondEncounterCalculation.class)
             .get(0);
     CalculationCohortDefinition cd = new CalculationCohortDefinition(calculation);
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.addCalculationParameter("concept", hivMetadata.getIsoniazidUsageConcept());
+    cd.addCalculationParameter("valueCoded", hivMetadata.getStartDrugs());
     return cd;
   }
 
