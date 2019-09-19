@@ -33,7 +33,7 @@ public class TxMlQueries {
         max);
   }
 
-  public static String getNonConsistentPatients(
+  public static String getNonConsentedPatients(
       int prevencaoPositivaInicial,
       int prevencaoPositivaSeguimento,
       int acceptContactConcept,

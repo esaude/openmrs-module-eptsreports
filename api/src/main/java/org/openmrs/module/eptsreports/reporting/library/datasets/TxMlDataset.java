@@ -78,17 +78,17 @@ public class TxMlDataset extends BaseDataSet {
             mappings),
         getColumnsForAgeAndGender());
 
-    // Not consented
+    // Not Consented
     addRow(
         dsd,
         "M4",
-        "Not consistent",
+        "Not Consented",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Not consistent",
+                "Not Consented",
                 EptsReportUtils.map(
                     txMlCohortQueries
-                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndNotConsistentDuringReportingPeriod(),
+                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndNotConsentedDuringReportingPeriod(),
                     mappings)),
             mappings),
         getColumnsForAgeAndGender());

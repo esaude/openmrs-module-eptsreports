@@ -44,19 +44,19 @@ public class TxMlCohortQueries {
                 .getProgramWorkflowStateId()));
   }
 
-  public CohortDefinition getNonConsistentPatients() {
+  public CohortDefinition getNonConsentedPatients() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("Not Consistent and Not dead");
+    cd.setName("Not Consented and Not dead");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "nonConsistent",
+        "nonConsented",
         EptsReportUtils.map(
             genericCohortQueries.generalSql(
-                "Non consistent patients",
-                TxMlQueries.getNonConsistentPatients(
+                "Non Consented patients",
+                TxMlQueries.getNonConsentedPatients(
                     hivMetadata.getPrevencaoPositivaInicialEncounterType().getEncounterTypeId(),
                     hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId(),
                     hivMetadata.getAcceptContactConcept().getConceptId(),
@@ -67,7 +67,12 @@ public class TxMlCohortQueries {
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatientsBeforeDate(),
             "endDate=${endDate},location=${location}"));
-    cd.setCompositionString("nonConsistent AND NOT dead");
+    cd.addSearch(
+        "homeVisitCardDead",
+        EptsReportUtils.map(
+            getPatientsMarkedAsDeadInHomeVisitCard(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("nonConsented AND NOT (dead OR homeVisitCardDead)");
     return cd;
   }
 
@@ -137,12 +142,12 @@ public class TxMlCohortQueries {
     return sqlCohortDefinition;
   }
 
-  // a and b and Not consistent
+  // a and b and Not Consented
   public CohortDefinition
-      getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndNotConsistentDuringReportingPeriod() {
+      getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndNotConsentedDuringReportingPeriod() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
-        "Get patients who missed appointment and are NOT transferred out, and NOT consistent during reporting period");
+        "Get patients who missed appointment and are NOT transferred out, and NOT Consented during reporting period");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -152,8 +157,8 @@ public class TxMlCohortQueries {
             getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "notConsistent",
-        EptsReportUtils.map(getNonConsistentPatients(), "endDate=${endDate},location=${location}"));
+        "notConsented",
+        EptsReportUtils.map(getNonConsentedPatients(), "endDate=${endDate},location=${location}"));
     cd.setCompositionString("missedAppointmentLessTransfers AND notConsistent");
     return cd;
   }
@@ -237,9 +242,19 @@ public class TxMlCohortQueries {
         EptsReportUtils.map(
             getPatientTracedAndFound(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            genericCohortQueries.getDeceasedPatientsBeforeDate(),
+            "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "homeVisitCardDead",
+        EptsReportUtils.map(
+            getPatientsMarkedAsDeadInHomeVisitCard(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "missedAppointmentLessTransfers AND (patientsNotFound AND NOT patientsFound)");
+        "missedAppointmentLessTransfers AND (patientsNotFound AND NOT patientsFound) AND NOT (dead OR homeVisitCardDead)");
 
     return cd;
   }
@@ -275,9 +290,14 @@ public class TxMlCohortQueries {
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatientsBeforeDate(),
             "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "homeVisitCardDead",
+        EptsReportUtils.map(
+            getPatientsMarkedAsDeadInHomeVisitCard(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "missedAppointmentLessTransfers AND (withoutVisitCard OR NOT withVisitCardandWithObs) AND NOT dead");
+        "missedAppointmentLessTransfers AND (withoutVisitCard OR NOT withVisitCardandWithObs) AND NOT (dead OR homeVisitCardDead)");
 
     return cd;
   }
