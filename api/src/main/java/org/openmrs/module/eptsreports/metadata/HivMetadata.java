@@ -189,6 +189,7 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id=6122
   public Concept getIsoniazidUsageConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.isoniazidUseConceptUuid");
@@ -244,7 +245,7 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   // concept_id = 1709
-  private Concept getSuspendedTreatmentConcept() {
+  public Concept getSuspendedTreatmentConcept() {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.suspendedTreatmentConceptUuid");
@@ -444,7 +445,48 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.continueRegimen");
     return getConcept(uuid);
   }
+  // Concept 23808 Pre-ART Start Date
+  public Concept getPreArtStartDate() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.preArtStartDate");
+    return getConcept(uuid);
+  }
 
+  // Concept 23866 Date of ART Pickup
+  public Concept getArtDatePickup() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.preArtPickupDate");
+    return getConcept(uuid);
+  }
+
+  // Concept 6300 Date of ART Pickup
+  public Concept getTypeOfPatientTransferredFrom() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.typeOfPatientTransferredFrom");
+    return getConcept(uuid);
+  }
+
+  // Concept 6273 patient state
+  public Concept getStateOfStayOfArtPatient() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.stateOfStayArtPatient");
+    return getConcept(uuid);
+  }
+
+  // Concept 6276 Date of ART Pickup
+  public Concept getArtStatus() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.art");
+    return getConcept(uuid);
+  }
+
+  // Concept 1706 TRANSFERRED OUT TO ANOTHER FACILITY
+  public Concept getTransferredOutConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.transferOutToAnotherFacilityConceptUuid");
+    return getConcept(uuid);
+  }
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
@@ -545,6 +587,21 @@ public class HivMetadata extends ProgramsMetadata {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.artAconselhamentoSeguimentoEncounterType");
+    return getEncounterType(uuid);
+  }
+
+  // encounter_type = 52
+  public EncounterType getMasterCardDrugPickupEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.masterCardDrugPickupEncounterTypeUuid");
+    return getEncounterType(uuid);
+  }
+
+  // encounter_type = 53
+  public EncounterType getMasterCardEncounterType() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.masterCardEncounterType");
     return getEncounterType(uuid);
   }
   // Programs
