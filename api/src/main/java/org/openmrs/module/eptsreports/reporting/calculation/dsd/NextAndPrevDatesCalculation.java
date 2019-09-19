@@ -69,6 +69,7 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
           iterator.remove();
         }
       }
+
       Collections.sort(
           returnVisitList,
           new Comparator<Obs>() {
@@ -77,7 +78,6 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
               return t1.getValueDate().compareTo(obs.getValueDatetime());
             }
           });
-
       if (returnVisitList.size() > 0) {
         lastReturnVisitObs = returnVisitList.get(returnVisitList.size() - 1);
       }

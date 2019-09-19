@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.io.IOException;
@@ -21,23 +22,7 @@ import java.util.Properties;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec10PatientListDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec11PatientListDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec12PatientListDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec13PatientListDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec14PatientListDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec15PatientListDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec1PatientListDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec2PatientListDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec3PatientListDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec4PatientListDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec5PatientListDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec6PatientListDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec7PatientListDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec8PatientListDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec9PatientListDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.GetCustomConfigurationDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.SummaryDataQualityDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.*;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
@@ -86,6 +71,14 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   private Ec15PatientListDataset ec15PatientListDataset;
 
+  private Ec16PatientListDataset ec16PatientListDataset;
+
+  private Ec17PatientListDataset ec17PatientListDataset;
+
+  private Ec18PatientListDataset ec18PatientListDataset;
+
+  private Ec19PatientListDataset ec19PatientListDataset;
+
   private GetCustomConfigurationDataset getCustomConfigurationDataset;
 
   private HivMetadata hivMetadata;
@@ -109,6 +102,10 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       Ec13PatientListDataset ec13PatientListDataset,
       Ec14PatientListDataset ec14PatientListDataset,
       Ec15PatientListDataset ec15PatientListDataset,
+      Ec16PatientListDataset ec16PatientListDataset,
+      Ec17PatientListDataset ec17PatientListDataset,
+      Ec18PatientListDataset ec18PatientListDataset,
+      Ec19PatientListDataset ec19PatientListDataset,
       GetCustomConfigurationDataset getCustomConfigurationDataset,
       HivMetadata hivMetadata) {
     this.summaryDataQualityDataset = summaryDataQualityDataset;
@@ -128,6 +125,10 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     this.ec13PatientListDataset = ec13PatientListDataset;
     this.ec14PatientListDataset = ec14PatientListDataset;
     this.ec15PatientListDataset = ec15PatientListDataset;
+    this.ec16PatientListDataset = ec16PatientListDataset;
+    this.ec17PatientListDataset = ec17PatientListDataset;
+    this.ec18PatientListDataset = ec18PatientListDataset;
+    this.ec19PatientListDataset = ec19PatientListDataset;
     this.hivMetadata = hivMetadata;
     this.getCustomConfigurationDataset = getCustomConfigurationDataset;
   }
@@ -144,7 +145,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "Data Quality Report v1";
+    return "Data Quality Report";
   }
 
   @Override
@@ -229,7 +230,22 @@ public class SetupDataQualityReport extends EptsDataExportManager {
         "EC15",
         Mapped.mapStraightThrough(
             ec15PatientListDataset.ec15PatientListDataset(getDataParameters())));
-
+    rd.addDataSetDefinition(
+        "EC16",
+        Mapped.mapStraightThrough(
+            ec16PatientListDataset.ec16PatientListDataset(getDataParameters())));
+    rd.addDataSetDefinition(
+        "EC17",
+        Mapped.mapStraightThrough(
+            ec17PatientListDataset.ec17PatientListDataset(getDataParameters())));
+    rd.addDataSetDefinition(
+        "EC18",
+        Mapped.mapStraightThrough(
+            ec18PatientListDataset.ec18PatientListDataset(getDataParameters())));
+    rd.addDataSetDefinition(
+        "EC19",
+        Mapped.mapStraightThrough(
+            ec19PatientListDataset.ec19PatientListDataset(getDataParameters())));
     rd.addDataSetDefinition(
         "EC01",
         Mapped.mapStraightThrough(
@@ -257,7 +273,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       Properties props = new Properties();
       props.put(
           "repeatingSections",
-          "sheet:2,row:7,dataset:EC1 | sheet:3,row:7,dataset:EC2 | sheet:4,row:7,dataset:EC3 | sheet:5,row:7,dataset:EC4 | sheet:6,row:7,dataset:EC5 | sheet:7,row:7,dataset:EC6 | sheet:8,row:7,dataset:EC7 | sheet:9,row:7,dataset:EC8 | sheet:10,row:7,dataset:EC9 | sheet:11,row:7,dataset:EC10 | sheet:12,row:7,dataset:EC11 | sheet:13,row:7,dataset:EC12 | sheet:14,row:7,dataset:EC13 | sheet:15,row:7,dataset:EC14 | sheet:16,row:7,dataset:EC15");
+          "sheet:2,row:7,dataset:EC1 | sheet:3,row:7,dataset:EC2 | sheet:4,row:7,dataset:EC3 | sheet:5,row:7,dataset:EC4 | sheet:6,row:7,dataset:EC5 | sheet:7,row:7,dataset:EC6 | sheet:8,row:7,dataset:EC7 | sheet:9,row:7,dataset:EC8 | sheet:10,row:7,dataset:EC9 | sheet:11,row:7,dataset:EC10 | sheet:12,row:7,dataset:EC11 | sheet:13,row:7,dataset:EC12 | sheet:14,row:7,dataset:EC13 | sheet:15,row:7,dataset:EC14 | sheet:16,row:7,dataset:EC15 | sheet:17,row:7,dataset:EC16 | sheet:18,row:7,dataset:EC17 | sheet:19,row:7,dataset:EC18 | sheet:20,row:7,dataset:EC19");
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {
@@ -267,7 +283,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     return Arrays.asList(reportDesign);
   }
 
-  public List<Parameter> getDataParameters() {
+  private List<Parameter> getDataParameters() {
     List<Parameter> parameters = new ArrayList<Parameter>();
     parameters.add(ReportingConstants.START_DATE_PARAMETER);
     parameters.add(ReportingConstants.END_DATE_PARAMETER);
