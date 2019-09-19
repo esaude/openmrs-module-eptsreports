@@ -159,7 +159,7 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "notConsented",
         EptsReportUtils.map(getNonConsentedPatients(), "endDate=${endDate},location=${location}"));
-    cd.setCompositionString("missedAppointmentLessTransfers AND notConsistent");
+    cd.setCompositionString("missedAppointmentLessTransfers AND notConsented");
     return cd;
   }
 
