@@ -14,7 +14,8 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 
 /**
- * Simple data set of location properties. Currently supported are stateProvince and countyDistrict.
+ * Simple data set of location properties. Currently supported are name, stateProvince and
+ * countyDistrict.
  */
 public class LocationDataSetDefinition extends EvaluatableDataSetDefinition {
 
@@ -27,7 +28,7 @@ public class LocationDataSetDefinition extends EvaluatableDataSetDefinition {
     SimpleDataSet dataSet = new SimpleDataSet(this, context);
     SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
     String sqlQuery =
-        "SELECT state_province as stateProvince, county_district as countyDistrict "
+        "SELECT name, state_province as stateProvince, county_district as countyDistrict, DATE_FORMAT(now(), '%d-%m-%Y %H:%i:%s') AS dateTime "
             + "FROM location "
             + "WHERE location_id=:location";
     queryBuilder.append(sqlQuery);
