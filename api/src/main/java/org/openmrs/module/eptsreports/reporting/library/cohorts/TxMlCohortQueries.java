@@ -270,9 +270,14 @@ public class TxMlCohortQueries {
         EptsReportUtils.map(
             getPatientsWithVisitCardAndWithObs(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            genericCohortQueries.getDeceasedPatientsBeforeDate(),
+            "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "missedAppointmentLessTransfers AND (withoutVisitCard OR NOT withVisitCardandWithObs)");
+        "missedAppointmentLessTransfers AND (withoutVisitCard OR NOT withVisitCardandWithObs) AND NOT dead");
 
     return cd;
   }
