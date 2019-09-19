@@ -608,19 +608,27 @@ public class HivMetadata extends ProgramsMetadata {
     return getEncounterType(uuid);
   }
 
-  // encounter type 36
-  public EncounterType getResgistrationEncounterType() {
+  /**
+   * encounter type 36 Coming from ICAP
+   *
+   * @return encounter type
+   */
+  public EncounterType getVisitaApoioReintegracaoParteAEncounterType() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty("eptsreports.registrationEncounterTypeUuid");
+            .getGlobalProperty("eptsreports.visitaApoioReintegracaoParteA");
     return getEncounterType(uuid);
   }
 
-  // encounter type 37
-  public EncounterType getAdmissionEncounterType() {
+  /**
+   * encounter type 37 Coming from ICAP
+   *
+   * @return encounter type
+   */
+  public EncounterType getVisitaApoioReintegracaoParteBEncounterType() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty("eptsreports.admissionEncounterTypeUuid");
+            .getGlobalProperty("eptsreports.visitaApoioReintegracaoParteB");
     return getEncounterType(uuid);
   }
 

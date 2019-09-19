@@ -71,8 +71,8 @@ public class TxMlQueries {
   // All Patients marked as Dead in the patient home visit card
   public static String getPatientsMarkedDeadInHomeVisitCard(
       int homeVisitCardEncounterTypeId,
-      int registrationEncounterTypeId,
-      int admissionEncounterTypeId,
+      int apoioReintegracaoParteAEncounterTypeId,
+      int apoioReintegracaoParteBEncounterTypeId,
       int busca,
       int dead) {
     String query =
@@ -91,8 +91,8 @@ public class TxMlQueries {
     return String.format(
         query,
         homeVisitCardEncounterTypeId,
-        registrationEncounterTypeId,
-        admissionEncounterTypeId,
+        apoioReintegracaoParteAEncounterTypeId,
+        apoioReintegracaoParteBEncounterTypeId,
         busca,
         dead);
   }
@@ -108,8 +108,8 @@ public class TxMlQueries {
       int returnVisitDateForDrugsConcept,
       int returnVisitDateConcept,
       int homeVisitCardEncounterTypeId,
-      int registrationEncounterTypeId,
-      int admissionEncounterTypeId,
+      int apoioReintegracaoParteAEncounterTypeId,
+      int apoioReintegracaoParteBEncounterTypeId,
       int typeOfVisitConcept,
       int buscaConcept,
       int secondAttemptConcept,
@@ -166,8 +166,8 @@ public class TxMlQueries {
         returnVisitDateConcept,
         returnVisitDateForDrugsConcept,
         homeVisitCardEncounterTypeId,
-        registrationEncounterTypeId,
-        admissionEncounterTypeId,
+        apoioReintegracaoParteAEncounterTypeId,
+        apoioReintegracaoParteBEncounterTypeId,
         typeOfVisitConcept,
         buscaConcept,
         secondAttemptConcept,
@@ -194,8 +194,8 @@ public class TxMlQueries {
           int returnVisitDateForDrugsConcept,
           int returnVisitDateConcept,
           int homeVisitCardEncounterTypeId,
-          int registrationEncounterTypeId,
-          int admissionEncounterTypeId) {
+          int apoioReintegracaoParteAEncounterTypeId,
+          int apoioReintegracaoParteBEncounterTypeId) {
 
     String query =
         " SELECT pa.patient_id FROM patient pa "
@@ -223,8 +223,8 @@ public class TxMlQueries {
         returnVisitDateConcept,
         returnVisitDateForDrugsConcept,
         homeVisitCardEncounterTypeId,
-        registrationEncounterTypeId,
-        admissionEncounterTypeId);
+        apoioReintegracaoParteAEncounterTypeId,
+        apoioReintegracaoParteBEncounterTypeId);
   }
 
   // Traced Patients (Unable to locate)
@@ -235,8 +235,8 @@ public class TxMlQueries {
       int returnVisitDateForDrugsConcept,
       int returnVisitDateConcept,
       int homeVisitCardEncounterTypeId,
-      int registrationEncounterTypeId,
-      int admissionEncounterTypeId,
+      int apoioReintegracaoParteAEncounterTypeId,
+      int apoioReintegracaoParteBEncounterTypeId,
       int typeOfVisitConcept,
       int buscaConcept,
       int patientFoundConcept,
@@ -277,8 +277,8 @@ public class TxMlQueries {
         returnVisitDateConcept,
         returnVisitDateForDrugsConcept,
         homeVisitCardEncounterTypeId,
-        registrationEncounterTypeId,
-        admissionEncounterTypeId,
+        apoioReintegracaoParteAEncounterTypeId,
+        apoioReintegracaoParteBEncounterTypeId,
         typeOfVisitConcept,
         buscaConcept,
         patientFoundConcept,
