@@ -1253,17 +1253,17 @@
 		</description>
 	</globalProperty>
 	<globalProperty>
-		<property>@MODULE_ID@.registrationEncounterTypeUuid</property>
-		<defaultValue>5362bbf3-10e7-11e5-9009-0242ac110012</defaultValue>
+		<property>@MODULE_ID@.visitaApoioReintegracaoParteA</property>
+		<defaultValue>e27916d4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
-			UUID for the REG encounter type
+			UUID for the Visita de apoio e reintegracao parte A
 		</description>
 	</globalProperty>
 	<globalProperty>
-		<property>@MODULE_ID@.admissionEncounterTypeUuid</property>
-		<defaultValue>9cf2aabe-10e8-11e5-9009-0242ac110012</defaultValue>
+		<property>@MODULE_ID@.visitaApoioReintegracaoParteB</property>
+		<defaultValue>e27916d4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
-			UUID for the ADMISSION encounter type
+			UUID for the Visita de apoio e reintegracao parte B
 		</description>
 	</globalProperty>
 	<!--Patient identifier types-->
