@@ -37,6 +37,12 @@ public class TbMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  public Concept getActiveTBConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.activeTBConceptUuid");
+    return getConcept(uuid);
+  }
+
   // Programs
   public Program getTBProgram() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.tbProgramUuid");
@@ -94,6 +100,14 @@ public class TbMetadata extends ProgramsMetadata {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.tbDgrusTreatmentEndDateUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id=23758
+  public Concept getHasTbSymptomsConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.hasTbSymptomsConceptUuid");
     return getConcept(uuid);
   }
 }

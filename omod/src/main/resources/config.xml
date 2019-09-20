@@ -1266,6 +1266,13 @@
 			UUID for the Visita de apoio e reintegracao parte B
 		</description>
 	</globalProperty>
+	<globalProperty>
+	<property>eptsreports.activeTBConceptUuid</property>
+		<defaultValue>63b15479-5a05-4bdc-a6e5-eab175743122</defaultValue>
+		<description>
+			UUID for the TUBERCULOSE ACTIVO concept
+		</description>
+	</globalProperty>
 	<!--Patient identifier types-->
 	<globalProperty>
 		<property>eptsreports.nidServicoTarvUuid</property>
@@ -1274,6 +1281,77 @@
 			Numero de Identificaçao de Doente, serviço TARV
 		</description>
 	</globalProperty>
+	<!--Master card encounter type-->
+	<globalProperty>
+		<property>@MODULE_ID@.masterCardEncounterType</property>
+		<defaultValue>e422ecf9-75dd-4367-b21e-54bccabc4763</defaultValue>
+		<description>
+			UUID for the Master Card - Ficha Resumo encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.masterCardDrugPickupEncounterTypeUuid</property>
+		<defaultValue>cce7b2ec-4fc0-4f9e-806d-b1c4ee9577db</defaultValue>
+		<description>
+			UUID for the Levantamento de ARV Master Card encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.preArtStartDate</property>
+		<defaultValue>f69b1fe0-a657-4225-a996-20b599132508</defaultValue>
+		<description>
+			UUID for the PRE-ART START DATE concept
+		</description>
+	</globalProperty>
+	<!--23866-->
+	<globalProperty>
+		<property>eptsreports.preArtPickupDate</property>
+		<defaultValue>74f6c17f-9819-41da-ba34-5910f67d24d0</defaultValue>
+		<description>
+			UUID for the Date of ART Pickup concept
+		</description>
+	</globalProperty>
+
+	<!--6300-->
+	<globalProperty>
+		<property>eptsreports.typeOfPatientTransferredFrom</property>
+		<defaultValue>4f139c0a-9843-4dc4-b3e5-5aa00812e605</defaultValue>
+		<description>
+			UUID for the TYPE OF PATIENT TRANSFERED FROM concept
+		</description>
+	</globalProperty>
+
+	<!--6276-->
+	<globalProperty>
+		<property>eptsreports.art</property>
+		<defaultValue>7f3af436-5c3a-447c-9012-42bb314e03db</defaultValue>
+		<description>
+			UUID for the ART concept
+		</description>
+	</globalProperty>
+
+	<!--6273-->
+	<globalProperty>
+		<property>eptsreports.stateOfStayArtPatient</property>
+		<defaultValue>a7d3b5c9-8b8e-4f29-b332-8db47466fed3</defaultValue>
+		<description>
+			UUID for the STATE OF STAY ART PATIENT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.hasTbSymptomsConceptUuid</property>
+		<defaultValue>2eab4e55-d0d0-4fa8-8d23-b40eaaee44c8</defaultValue>
+		<description>
+			UUID for the SINTOMAS DE TUBERCULOSE concept
+		</description>
+	</globalProperty>
+
+
+
+
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
