@@ -401,6 +401,118 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>@MODULE_ID@.buscaActivaEncounterTypeUuid</property>
+		<defaultValue>e27916d4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: BUSCA ACTIVA encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.reasonPatientNotFound</property>
+		<defaultValue>e1e09396-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REASON PATIENT NOT FOUND BY ACTIVIST concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.patientIsdead</property>
+		<defaultValue>e1e08f7c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT IS DEAD concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.typeOfVisit</property>
+		<defaultValue>e1e055a2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TYPE OF VISIT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.patientFound</property>
+		<defaultValue>e1e072c6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the ACTIVIST LOCATED MISSING PATIENT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.busca</property>
+		<defaultValue>e1e20e4c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the BUSCA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.secondAttempt</property>
+		<defaultValue>c0c63fbc-bff0-4f5f-920b-442e7ed6577a</defaultValue>
+		<description>
+			UUID for the DATE OF SECOND OUTREACH ATTEMPT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.thirdAttempt</property>
+		<defaultValue>38f911e7-ff0a-47c6-9209-b24579bf9082</defaultValue>
+		<description>
+			UUID for the DATE OF THIRD OUTREACH ATTEMPT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.defaultingMotive</property>
+		<defaultValue>e1e07fc8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REASON PATIENT MISSED VISIT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.reportOfVisitSupport</property>
+		<defaultValue>e1e20be0-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REPORT OF THE VISIT SUPPORT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.patientHadDifficulty</property>
+		<defaultValue>e1e20ae6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the THE PATIENT HAD DIFFICULTY concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.patientFoundForwarded</property>
+		<defaultValue>e1da001c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REFERRALS ORDERED concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.whoGaveInformation</property>
+		<defaultValue>e1e09d8c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REASON PATIENT NOT FOUND PROVIDED BY concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.cardDeliveryDate</property>
+		<defaultValue>e1e22850-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the DELIVERY DATE OF THE CARD HOME VISIT THE HEALTH UNIT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>@MODULE_ID@.activeOnProgramConcept</property>
 		<defaultValue>4a7bec6f-8f27-4da5-b78d-40134c30d3ee</defaultValue>
 		<description>
@@ -1141,7 +1253,21 @@
 		</description>
 	</globalProperty>
 	<globalProperty>
-		<property>eptsreports.activeTBConceptUuid</property>
+		<property>@MODULE_ID@.visitaApoioReintegracaoParteA</property>
+		<defaultValue>e27916d4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Visita de apoio e reintegracao parte A
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.visitaApoioReintegracaoParteB</property>
+		<defaultValue>e27916d4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Visita de apoio e reintegracao parte B
+		</description>
+	</globalProperty>
+	<globalProperty>
+	<property>eptsreports.activeTBConceptUuid</property>
 		<defaultValue>63b15479-5a05-4bdc-a6e5-eab175743122</defaultValue>
 		<description>
 			UUID for the TUBERCULOSE ACTIVO concept
