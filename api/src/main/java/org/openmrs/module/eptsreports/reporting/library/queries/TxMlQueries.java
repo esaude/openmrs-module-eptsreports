@@ -99,9 +99,9 @@ public class TxMlQueries {
 
   /*
    Untraced Patients Criteria 2
-   Patients without Patient Visit Card with a set of observations
+   Patients without Patient Visit Card without a set of observations
   */
-  public static String getPatientsWithVisitCardAndWithObs(
+  public static String getPatientsWithVisitCardAndWithoutObs(
       int pharmacyEncounterTypeId,
       int adultoSequimentoEncounterTypeId,
       int arvPediatriaSeguimentoEncounterTypeId,
@@ -142,20 +142,16 @@ public class TxMlQueries {
             + "         AND e.encounter_type IN (%d, %d, %d) "
             + "         AND e.location_id=:location  "
             + "      GROUP BY pa.patient_id) visitCard on visitCard.patient_id = pa.patient_id "
-            + "    INNER JOIN encounter e ON "
-            + "        e.patient_id = pa.patient_id AND "
-            + "        visitCard.encounter_id = e.encounter_id AND "
-            + "        e.location_id = :location "
-            + "    INNER JOIN obs visitType ON "
-            + "        visitType.encounter_id = e.encounter_id AND "
+            + "    LEFT JOIN obs visitType ON "
+            + "        visitType.encounter_id = visitCard.encounter_id AND "
             + "        visitType.concept_id = %d AND "
             + "        visitType.value_coded = %d AND "
             + "        visitType.obs_datetime <= :endDate "
             + "    LEFT JOIN obs o ON "
-            + "        o.encounter_id = e.encounter_id AND "
+            + "        o.encounter_id = visitCard.encounter_id AND "
             + "        o.concept_id IN (%d, %d, %d, %d, %d, %d, %d, %d, %d, %d) AND "
             + "        o.obs_datetime <= :endDate "
-            + "   WHERE o.obs_id IS NOT NULL "
+            + "   WHERE o.obs_id IS NULL OR visitType.obs_id IS NULL "
             + "GROUP  BY pa.patient_id ";
 
     return String.format(
@@ -186,16 +182,15 @@ public class TxMlQueries {
        ◦ the last scheduled appointment or drugs pick up (the most recent one) by reporting end date and
        ◦ the reporting end date
   */
-  public static String
-      getPatientsWithoutVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(
-          int pharmacyEncounterTypeId,
-          int adultoSequimentoEncounterTypeId,
-          int arvPediatriaSeguimentoEncounterTypeId,
-          int returnVisitDateForDrugsConcept,
-          int returnVisitDateConcept,
-          int homeVisitCardEncounterTypeId,
-          int apoioReintegracaoParteAEncounterTypeId,
-          int apoioReintegracaoParteBEncounterTypeId) {
+  public static String getPatientsWithVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(
+      int pharmacyEncounterTypeId,
+      int adultoSequimentoEncounterTypeId,
+      int arvPediatriaSeguimentoEncounterTypeId,
+      int returnVisitDateForDrugsConcept,
+      int returnVisitDateConcept,
+      int homeVisitCardEncounterTypeId,
+      int apoioReintegracaoParteAEncounterTypeId,
+      int apoioReintegracaoParteBEncounterTypeId) {
 
     String query =
         " SELECT pa.patient_id FROM patient pa "
@@ -211,7 +206,7 @@ public class TxMlQueries {
             + "      AND e.location_id =:location "
             + "    GROUP BY p.patient_id)lp ON pa.patient_id=lp.patient_id "
             + "  WHERE e.encounter_datetime >= lp.return_date AND e.encounter_datetime<=:endDate"
-            + "  AND e.encounter_type NOT IN (%d, %d, %d) "
+            + "  AND e.encounter_type IN (%d, %d, %d) "
             + "  AND e.location_id=:location  "
             + "  GROUP BY pa.patient_id";
 
