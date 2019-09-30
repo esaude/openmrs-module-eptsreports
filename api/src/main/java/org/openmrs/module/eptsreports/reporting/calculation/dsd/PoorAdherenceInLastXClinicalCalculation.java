@@ -39,7 +39,12 @@ public class PoorAdherenceInLastXClinicalCalculation extends AbstractPatientCalc
 
     CalculationResultMap allEncountersMap =
         ePTSCalculationService.allEncounters(
-            Arrays.asList(adultFollowup, childFollowup), cohort, location, onOrBefore, context);
+            Arrays.asList(adultFollowup, childFollowup),
+            cohort,
+            location,
+            null,
+            onOrBefore,
+            context);
 
     for (Integer pId : cohort) {
       boolean hasNoOption = false;

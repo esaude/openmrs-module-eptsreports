@@ -22,6 +22,7 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Location;
+import org.openmrs.LocationAttributeType;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.RelationshipType;
@@ -275,5 +276,29 @@ public class Metadata {
     }
 
     return et;
+  }
+
+  /**
+   * Get the location attribute used to represent unique code for the health facility
+   *
+   * @return LocationAttributeType
+   */
+  public static LocationAttributeType getLocationAttributeTyepe(String lookup) {
+    LocationAttributeType lat = Context.getLocationService().getLocationAttributeTypeByUuid(lookup);
+    if (lat == null) {
+      lat = Context.getLocationService().getLocationAttributeTypeByName(lookup);
+    }
+    if (lat == null) {
+      try {
+        lat = Context.getLocationService().getLocationAttributeType(Integer.parseInt(lookup));
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    if (lat == null) {
+      throw new MetadataLookupException(
+          "Unable to find Location attribute type using key: " + lookup);
+    }
+    return lat;
   }
 }
