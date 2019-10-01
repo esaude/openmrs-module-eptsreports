@@ -12,6 +12,11 @@
 
 package org.openmrs.module.eptsreports.reporting.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.openmrs.Program;
+import org.openmrs.ProgramWorkflowState;
+
 public final class EptsReportConstants {
 
   // Enumeration
@@ -23,5 +28,13 @@ public final class EptsReportConstants {
   public enum PregnantOrBreastfeedingWomen {
     PREGNANTWOMEN,
     BREASTFEEDINGWOMEN
+  }
+
+  public static List<Integer> getProgramWorkflowStateIds(Program program) {
+    List<Integer> defaultStateIds = new ArrayList<>();
+    for (ProgramWorkflowState p : program.getAllWorkflows().iterator().next().getStates()) {
+      defaultStateIds.add(p.getProgramWorkflowStateId());
+    }
+    return defaultStateIds;
   }
 }
