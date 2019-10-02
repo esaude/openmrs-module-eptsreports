@@ -78,17 +78,47 @@ public class TxMlDataset extends BaseDataSet {
             mappings),
         getColumnsForAgeAndGender());
 
-    // Not consented
+    // Not Consented
     addRow(
         dsd,
         "M4",
-        "Not consistent",
+        "Not Consented",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Not consistent",
+                "Not Consented",
                 EptsReportUtils.map(
                     txMlCohortQueries
-                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndNotConsistentDuringReportingPeriod(),
+                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndNotConsentedDuringReportingPeriod(),
+                    mappings)),
+            mappings),
+        getColumnsForAgeAndGender());
+
+    // Traced (Unable to locate)
+    addRow(
+        dsd,
+        "M5",
+        "Traced (Unable to locate)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Traced (Unable to locate)",
+                EptsReportUtils.map(
+                    txMlCohortQueries
+                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndTraced(),
+                    mappings)),
+            mappings),
+        getColumnsForAgeAndGender());
+
+    // Untraced Patients
+    addRow(
+        dsd,
+        "M6",
+        "Untraced patients",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Untraced Patients",
+                EptsReportUtils.map(
+                    txMlCohortQueries
+                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndUntraced(),
                     mappings)),
             mappings),
         getColumnsForAgeAndGender());
