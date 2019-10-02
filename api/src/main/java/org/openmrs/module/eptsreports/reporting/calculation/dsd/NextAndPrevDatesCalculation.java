@@ -62,54 +62,40 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
       while (iterator.hasNext()) {
         Obs obs = iterator.next();
         if (obs.getVoided()
+            || obs.getValueDate() == null
             || obs.getEncounter() == null
             || (obs.getEncounter() != null
-                && lastEncounter != null
-                && (obs.getEncounter().equals(lastEncounter)))) {
+                && (obs.getEncounter().getEncounterId() != lastEncounter.getEncounterId()))) {
           iterator.remove();
         }
       }
+
       Collections.sort(
           returnVisitList,
           new Comparator<Obs>() {
             @Override
             public int compare(Obs obs, Obs t1) {
-              return t1.getValueDatetime().compareTo(obs.getValueDatetime());
+              return t1.getValueDate().compareTo(obs.getValueDatetime());
             }
           });
-
       if (returnVisitList.size() > 0) {
         lastReturnVisitObs = returnVisitList.get(returnVisitList.size() - 1);
       }
 
       // Step 3: compare against boundaries
-      Date lowerBoundary = null;
-      Date upperBoundary = null;
       if (lastEncounter != null
-          && lastEncounter.getEncounterDatetime() != null
           && lastReturnVisitObs != null
-          && lastReturnVisitObs.getValueDatetime() != null
-          && lowerBound != null
-          && upperBound != null) {
+          && lastReturnVisitObs.getValueDate() != null) {
 
-        lowerBoundary =
+        Date lowerBoundary =
             EptsCalculationUtils.addDays(lastEncounter.getEncounterDatetime(), lowerBound);
-        upperBoundary =
+        Date upperBoundary =
             EptsCalculationUtils.addDays(lastEncounter.getEncounterDatetime(), upperBound);
-      }
-      if (lowerBoundary != null
-          && upperBoundary != null
-          && lastReturnVisitObs.getValueDatetime() != null
-          && lastReturnVisitObs.getValueDatetime().compareTo(lowerBoundary) >= 0
-          && lastReturnVisitObs.getValueDatetime().compareTo(upperBoundary) <= 0) {
-        System.out.println(
-            "Patient>>"
-                + pId
-                + " has lower of >>>"
-                + lowerBoundary
-                + " and upper bound of >>"
-                + upperBoundary);
-        scheduled = true;
+
+        if (lastReturnVisitObs.getValueDate().compareTo(lowerBoundary) >= 0
+            && lastReturnVisitObs.getValueDate().compareTo(upperBoundary) <= 0) {
+          scheduled = true;
+        }
       }
 
       map.put(pId, new BooleanResult(scheduled, this));
