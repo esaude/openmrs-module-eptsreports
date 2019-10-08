@@ -17,6 +17,7 @@ import java.util.List;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.data.quality.Ec14Queries;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -39,7 +40,10 @@ public class Ec14PatientListDataset extends BaseDataSet {
     dsd.setName("EC14");
     dsd.addParameters(parameterList);
     dsd.setSqlQuery(
-        Ec14Queries.getEc14CombinedQuery(hivMetadata.getARTProgram().getProgramId(), 100));
+        Ec14Queries.getEc14CombinedQuery(
+            hivMetadata.getARTProgram().getProgramId(),
+            100,
+            EptsReportConstants.getProgramWorkflowStateIds(hivMetadata.getARTProgram())));
     return dsd;
   }
 }

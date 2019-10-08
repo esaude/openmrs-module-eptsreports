@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.queries.data.quality;
 
+import java.util.List;
+
 public class Ec4Queries {
 
   /**
@@ -21,7 +23,8 @@ public class Ec4Queries {
    * @return String
    */
   public static String getEc4CombinedQuery(
-      int programId, int stateId, int adultFollowUp, int childFollowUp) {
+      int programId, int stateId, int adultFollowUp, int childFollowUp, List<Integer> stateIds) {
+    String states = (String.valueOf(stateIds).replaceAll("\\[", "")).replaceAll("]", "");
     String query =
         "SELECT dd.patient_id As patient_id, pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pe.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pe.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, case when ps.state = 9 then 'DROPPED FROM TREATMENT' when ps.state = 6 then 'ACTIVE ON PROGRAM' when ps.state = 10 then 'PATIENT HAS DIED' when ps.state = 8 then 'SUSPENDED TREATMENT' when ps.state = 7 then 'TRANSFERED OUT TO ANOTHER FACILITY' when ps.state = 29 then 'TRANSFERRED FROM OTHER FACILTY' end AS state, DATE_FORMAT(ps.start_date, '%d-%m-%Y') AS state_date, DATE_FORMAT(pe.death_date,'%d-%m-%Y') As death_date, MIN(DATE_FORMAT(e.encounter_datetime, '%d-%m-%Y')) AS encounter_date, DATE_FORMAT(e.date_created, '%d-%m-%Y %H:%i:%s') AS encounter_date_created, dd.location_name AS location_name FROM ("
             + " SELECT pg.patient_id AS patient_id, ps.start_date As death_date, l.name AS location_name "
@@ -77,6 +80,9 @@ public class Ec4Queries {
             + ") "
             + " AND pg.location_id IN(:location)"
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
+            + " AND ps.state IN("
+            + states
+            + ") "
             + " AND e.encounter_datetime >= dd.death_date "
             + " GROUP BY dd.patient_id";
     return query;
