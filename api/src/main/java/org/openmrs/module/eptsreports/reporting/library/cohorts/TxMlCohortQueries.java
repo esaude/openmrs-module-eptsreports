@@ -281,7 +281,7 @@ public class TxMlCohortQueries {
             getPatientsWithVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "withVisitCardandWithoutObs",
+        "withVisitCardandWithObs",
         EptsReportUtils.map(
             getPatientsWithVisitCardAndWithObs(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
