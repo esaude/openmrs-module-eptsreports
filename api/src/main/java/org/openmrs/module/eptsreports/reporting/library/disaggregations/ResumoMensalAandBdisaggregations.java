@@ -76,4 +76,16 @@ public class ResumoMensalAandBdisaggregations {
     return Arrays.asList(
         tenTo14Male, tenTo14Female, fifteenTo19Female, fifteenTo19Male, adolescentTotals);
   }
+
+  /**
+   * Get teh disaggregations for the patients under 14 years and those above 14 yeara
+   *
+   * @return List of ColumnParameters
+   */
+  public List<ColumnParameters> disAggForE1() {
+    ColumnParameters under14Years =
+        new ColumnParameters("under14", "Under 14 years", "age=0-14", "01");
+    ColumnParameters over14Years = new ColumnParameters("over14", "15+ years", "age=15+", "02");
+    return Arrays.asList(under14Years, over14Years);
+  }
 }

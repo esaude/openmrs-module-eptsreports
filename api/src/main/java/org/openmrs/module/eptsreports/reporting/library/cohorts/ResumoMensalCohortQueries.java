@@ -479,4 +479,86 @@ public class ResumoMensalCohortQueries {
     cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
     return cd;
   }
+
+  /**
+   * Number of active patients in ART at the end of current month who performed Viral Load Test
+   * (Annual Notification) B12 OR (B1 OR B2 OR B3) AND NOT (B5 OR B6 OR B7 OR B8)
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getNumberOfActivePatientsInArtAtEndOfCurrentMonthWithVlPerformed() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName(
+        "Number of active patients in ART at the end of current month who performed Viral Load Test (Annual Notification)");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "B12",
+        map(
+            getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTB(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "B1",
+        map(
+            getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "B2",
+        map(
+            getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "B3",
+        map(
+            getPatientsWithStartDrugs(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+
+    cd.addSearch(
+        "B5",
+        map(
+            getPatientsTransferredOut(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch(
+        "B6",
+        map(
+            getPatientsWhoSuspendedTreatment(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch(
+        "B7",
+        map(
+            getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthB7(),
+            "onOrBefore=${endDate},locationList=${location},value1=${endDate-90d},value2=${endDate}"));
+    cd.addSearch(
+        "B8",
+        map(
+            getPatientsWhoDied(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch(
+        "F",
+        map(
+            getPatientsWithLabHavingViralLoad(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+
+    cd.setCompositionString("(B12 OR (B1 OR B2 OR B3) AND NOT (B5 OR B6 OR B7 OR B8)) AND F");
+    return cd;
+  }
+
+  /** */
+  private CohortDefinition getPatientsWithLabHavingViralLoad() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.setName(
+        "Patients with lab request having question(23722) and answer as VL(856) - encounter date within boundaries");
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
+    cd.setQuestion(hivMetadata.getApplicationForLaboratoryResearch());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getHivViralLoadConcept());
+
+    return cd;
+  }
 }

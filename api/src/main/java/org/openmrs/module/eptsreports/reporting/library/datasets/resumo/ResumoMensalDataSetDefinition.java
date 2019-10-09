@@ -60,6 +60,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
 
   public DataSetDefinition constructResumoMensalDataset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     dsd.setName("Resumo Mensal Data set B");
     dsd.addParameters(getParameters());
 
@@ -410,6 +411,21 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
         getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTB(),
         "");
 
+    // E1 indicators
+
+    addRow(
+        dsd,
+        "E1",
+        "Annual Notification",
+        map(
+            eptsGeneralIndicator.getIndicator(
+                "E1",
+                map(
+                    resumoMensalCohortQueries
+                        .getNumberOfActivePatientsInArtAtEndOfCurrentMonthWithVlPerformed(),
+                    mappings)),
+            mappings),
+        resumoMensalAandBdisaggregations.disAggForE1());
     return dsd;
   }
 
