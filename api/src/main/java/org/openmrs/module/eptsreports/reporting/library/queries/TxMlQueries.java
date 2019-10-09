@@ -99,9 +99,9 @@ public class TxMlQueries {
 
   /*
    Untraced Patients Criteria 2
-   Patients without Patient Visit Card without a set of observations
+   Patients without Patient Visit Card of type busca and with a set of observations
   */
-  public static String getPatientsWithVisitCardAndWithoutObs(
+  public static String getPatientsWithVisitCardAndWithObs(
       int pharmacyEncounterTypeId,
       int adultoSequimentoEncounterTypeId,
       int arvPediatriaSeguimentoEncounterTypeId,
@@ -142,16 +142,15 @@ public class TxMlQueries {
             + "         AND e.encounter_type IN (%d, %d, %d) "
             + "         AND e.location_id=:location  "
             + "      GROUP BY pa.patient_id) visitCard on visitCard.patient_id = pa.patient_id "
-            + "    LEFT JOIN obs visitType ON "
+            + "    INNER JOIN obs visitType ON "
             + "        visitType.encounter_id = visitCard.encounter_id AND "
             + "        visitType.concept_id = %d AND "
             + "        visitType.value_coded = %d AND "
             + "        visitType.obs_datetime <= :endDate "
-            + "    LEFT JOIN obs o ON "
+            + "    INNER JOIN obs o ON "
             + "        o.encounter_id = visitCard.encounter_id AND "
             + "        o.concept_id IN (%d, %d, %d, %d, %d, %d, %d, %d, %d, %d) AND "
             + "        o.obs_datetime <= :endDate "
-            + "   WHERE o.obs_id IS NULL OR visitType.obs_id IS NULL "
             + "GROUP  BY pa.patient_id ";
 
     return String.format(

@@ -283,7 +283,7 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "withVisitCardandWithoutObs",
         EptsReportUtils.map(
-            getPatientsWithVisitCardAndWithoutObs(),
+            getPatientsWithVisitCardAndWithObs(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "dead",
@@ -297,15 +297,15 @@ public class TxMlCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "missedAppointmentLessTransfers AND (NOT withVisitCard OR withVisitCardandWithoutObs) AND NOT (dead OR homeVisitCardDead)");
+        "missedAppointmentLessTransfers AND (NOT withVisitCard OR NOT withVisitCardandWithObs) AND NOT (dead OR homeVisitCardDead)");
 
     return cd;
   }
 
   /*
-   * Untraced Patients Criteria 2 Patients with a set of observations
+   * Untraced Patients Criteria 2 Patients with a visit card of type busca with certain set of observations
    */
-  public CohortDefinition getPatientsWithVisitCardAndWithoutObs() {
+  public CohortDefinition getPatientsWithVisitCardAndWithObs() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
 
     sqlCohortDefinition.setName("Get patients without Visit Card but with a set of observations");
@@ -314,7 +314,7 @@ public class TxMlCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        TxMlQueries.getPatientsWithVisitCardAndWithoutObs(
+        TxMlQueries.getPatientsWithVisitCardAndWithObs(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
