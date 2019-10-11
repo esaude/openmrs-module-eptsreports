@@ -425,7 +425,21 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
                         .getNumberOfActivePatientsInArtAtEndOfCurrentMonthWithVlPerformed(),
                     mappings)),
             mappings),
-        resumoMensalAandBdisaggregations.disAggForE1());
+        resumoMensalAandBdisaggregations.disAggForE());
+    // E2
+    addRow(
+        dsd,
+        "E2",
+        "Annual Notification",
+        map(
+            eptsGeneralIndicator.getIndicator(
+                "E2",
+                map(
+                    resumoMensalCohortQueries
+                        .getNumberOfActivePatientsInArtAtTheEndOfTheCurrentMonthHavingVlTestResults(),
+                    mappings)),
+            mappings),
+        resumoMensalAandBdisaggregations.disAggForE());
     return dsd;
   }
 

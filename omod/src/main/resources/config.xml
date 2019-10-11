@@ -1358,6 +1358,15 @@
 		</description>
 	</globalProperty>
 
+	<!--1305-->
+	<globalProperty>
+		<property>eptsreports.viralLoadQualitativeConceptUuid</property>
+		<defaultValue>e1da2704-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Viral load qualitative  concept
+		</description>
+	</globalProperty>
+
 
 
 

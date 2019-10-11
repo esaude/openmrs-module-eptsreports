@@ -82,7 +82,7 @@ public class ResumoMensalAandBdisaggregations {
    *
    * @return List of ColumnParameters
    */
-  public List<ColumnParameters> disAggForE1() {
+  public List<ColumnParameters> disAggForE() {
     ColumnParameters under14Years =
         new ColumnParameters("under14", "Under 14 years", "age=0-14", "01");
     ColumnParameters over14Years = new ColumnParameters("over14", "15+ years", "age=15+", "02");

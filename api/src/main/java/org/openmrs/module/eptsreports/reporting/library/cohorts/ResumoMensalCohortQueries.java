@@ -32,6 +32,7 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterWithCodedObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
@@ -568,7 +569,7 @@ public class ResumoMensalCohortQueries {
   }
 
   /** Filter only those patients */
-  private CodedObsCohortDefinition getPatientsWithLabHavingViralLoadFiltered() {
+  private CohortDefinition getPatientsWithLabHavingViralLoadFiltered() {
     CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
     cd.setName(
         "Patients with lab request having question(23722) and answer as VL(856) - encounter date within boundaries");
@@ -594,6 +595,84 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
+    return cd;
+  }
+
+  /** */
+  private CohortDefinition getViralLoadTestDone() {
+    NumericObsCohortDefinition cd = new NumericObsCohortDefinition();
+    cd.setName("Viral load test");
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.setQuestion(hivMetadata.getHivViralLoadConcept());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    return cd;
+  }
+
+  private CohortDefinition gePatientsWithtViralLoadQualitativeDone() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.setName("Patients with Viral load qualitative done");
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.setQuestion(hivMetadata.getHivViralLoadQualitative());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
+    cd.setOperator(SetComparator.IN);
+    return cd;
+  }
+
+  /**
+   * Combine the viral load and viral load qualitative
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getViralLoadOrQualitative() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Combined viral load and its qualitative patients");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "VL",
+        map(
+            getViralLoadTestDone(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch(
+        "VLQ",
+        map(
+            gePatientsWithtViralLoadQualitativeDone(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+    cd.setCompositionString("VL OR VLQ");
+    return cd;
+  }
+
+  /**
+   * E2 Get the combinations together E2: Number of active patients in ART at the end of current
+   * month who received a Viral Load Test Result (Annual Notification
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition
+      getNumberOfActivePatientsInArtAtTheEndOfTheCurrentMonthHavingVlTestResults() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName(
+        "E2: Number of active patients in ART at the end of current month who received a Viral Load Test Result (Annual Notification");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "C",
+        map(
+            getStandardDefinitionForEcolumns(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "VL",
+        map(
+            getViralLoadOrQualitative(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("C AND VL");
     return cd;
   }
 }
