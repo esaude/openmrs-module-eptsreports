@@ -496,6 +496,34 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
+        "common",
+        map(
+            getStandardDefinitionForEcolumns(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "F",
+        map(
+            getPatientsWithLabHavingViralLoadFiltered(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch(
+        "EX",
+        map(
+            getPatientsWithLabHavingViralLoadExclude(),
+            "onOrAfter=${startDate},location=${location}"));
+
+    cd.setCompositionString("(common AND F) AND NOT EX");
+    return cd;
+  }
+
+  public CohortDefinition getStandardDefinitionForEcolumns() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Standard columns for E1, E2 and E3");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
         "B12",
         map(
             getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTB(),
@@ -515,7 +543,6 @@ public class ResumoMensalCohortQueries {
         map(
             getPatientsWithStartDrugs(),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
-
     cd.addSearch(
         "B5",
         map(
@@ -536,19 +563,7 @@ public class ResumoMensalCohortQueries {
         map(
             getPatientsWhoDied(),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
-    cd.addSearch(
-        "F",
-        map(
-            getPatientsWithLabHavingViralLoadFiltered(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
-    cd.addSearch(
-        "EX",
-        map(
-            getPatientsWithLabHavingViralLoadExclude(),
-            "onOrAfter=${startDate},location=${location}"));
-
-    cd.setCompositionString(
-        "((B12 OR (B1 OR B2 OR B3) AND NOT (B5 OR B6 OR B7 OR B8)) AND F) AND NOT EX");
+    cd.setCompositionString("B12 OR (B1 OR B2 OR B3) AND NOT (B5 OR B6 OR B7 OR B8)");
     return cd;
   }
 
