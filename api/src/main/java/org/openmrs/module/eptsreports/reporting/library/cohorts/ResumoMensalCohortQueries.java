@@ -23,6 +23,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.CodedObsOnFirstOrSecondEncounterCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.resumo.ExcludeCriteriaForE1Calculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
@@ -538,15 +539,21 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "F",
         map(
-            getPatientsWithLabHavingViralLoad(),
+            getPatientsWithLabHavingViralLoadFiltered(),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch(
+        "EX",
+        map(
+            getPatientsWithLabHavingViralLoadExclude(),
+            "onOrAfter=${startDate},location=${location}"));
 
-    cd.setCompositionString("(B12 OR (B1 OR B2 OR B3) AND NOT (B5 OR B6 OR B7 OR B8)) AND F");
+    cd.setCompositionString(
+        "((B12 OR (B1 OR B2 OR B3) AND NOT (B5 OR B6 OR B7 OR B8)) AND F) AND NOT EX");
     return cd;
   }
 
-  /** */
-  private CohortDefinition getPatientsWithLabHavingViralLoad() {
+  /** Filter only those patients */
+  private CodedObsCohortDefinition getPatientsWithLabHavingViralLoadFiltered() {
     CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
     cd.setName(
         "Patients with lab request having question(23722) and answer as VL(856) - encounter date within boundaries");
@@ -558,6 +565,19 @@ public class ResumoMensalCohortQueries {
     cd.setQuestion(hivMetadata.getApplicationForLaboratoryResearch());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getHivViralLoadConcept());
+
+    return cd;
+  }
+
+  /** Patients to be excluded from the entire combination */
+  private CohortDefinition getPatientsWithLabHavingViralLoadExclude() {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            "E1 exclusions",
+            Context.getRegisteredComponents(ExcludeCriteriaForE1Calculation.class).get(0));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
 
     return cd;
   }
