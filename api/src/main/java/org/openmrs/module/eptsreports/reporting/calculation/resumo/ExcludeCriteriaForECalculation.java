@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
@@ -21,7 +23,7 @@ import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ExcludeCriteriaForE1Calculation extends AbstractPatientCalculation {
+public class ExcludeCriteriaForECalculation extends AbstractPatientCalculation {
 
   @Override
   public CalculationResultMap evaluate(
@@ -31,9 +33,8 @@ public class ExcludeCriteriaForE1Calculation extends AbstractPatientCalculation 
 
     Location location = (Location) context.getFromCache("location");
     Date startDate = (Date) context.getFromCache("onOrAfter");
-    Date endtDate = (Date) context.getFromCache("onOrBefore");
 
-    Date requiredDate = null;
+    Date requiredDate;
 
     CalculationResultMap map = new CalculationResultMap();
     // External Dependencies
@@ -45,32 +46,47 @@ public class ExcludeCriteriaForE1Calculation extends AbstractPatientCalculation 
     calendar.setTime(startDate);
 
     int day = calendar.get(Calendar.DAY_OF_MONTH);
-    int month = calendar.get(Calendar.DAY_OF_MONTH);
+    int month = calendar.get(Calendar.MONTH);
+    Concept concept = (Concept) parameterValues.get("concept");
+    EncounterType encounterType = (EncounterType) parameterValues.get("encounterType");
+    String type = (String) parameterValues.get("type");
 
     if (!(day == 21 && month == 11)) {
       requiredDate = EptsCalculationUtils.addMonths(startDate, -12);
+    } else {
+      requiredDate = startDate;
     }
-
     CalculationResultMap calculationResultMap =
         ePTSCalculationService.getObs(
-            hivMetadata.getApplicationForLaboratoryResearch(),
-            Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
+            concept,
+            Arrays.asList(encounterType),
             cohort,
             Arrays.asList(location),
-            Arrays.asList(hivMetadata.getHivViralLoadConcept()),
+            null,
             TimeQualifier.ANY,
             requiredDate,
             context);
     for (Integer pId : cohort) {
       boolean toExclude = false;
+
       ListResult listResult = (ListResult) calculationResultMap.get(pId);
       List<Obs> obsList = EptsCalculationUtils.extractResultValues(listResult);
       for (Obs obs : obsList) {
-        if (obs.getEncounter() != null
-            && obs.getEncounter().getEncounterDatetime() != null
-            && obs.getEncounter().getEncounterDatetime().compareTo(endtDate) <= 0) {
+        if (type.equals("CODED")
+            && obs.getValueCoded() != null
+            && obs.getValueCoded().equals(hivMetadata.getHivViralLoadConcept())) {
           toExclude = true;
+          break;
+        } else if (type.equals("CODED") && obs.getValueCoded() != null) {
+          toExclude = true;
+          break;
+        } else if (type.equals("NUMERIC") && obs.getValueNumeric() != null) {
+          toExclude = true;
+          break;
         }
+      }
+      if (calculationResultMap.containsKey(pId)) {
+        toExclude = true;
       }
       map.put(pId, new BooleanResult(toExclude, this));
     }

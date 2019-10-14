@@ -18,12 +18,14 @@ import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.Date;
+import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.CodedObsOnFirstOrSecondEncounterCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.resumo.ExcludeCriteriaForE1Calculation;
+import org.openmrs.module.eptsreports.reporting.calculation.resumo.ExcludeCriteriaForECalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
@@ -510,7 +512,10 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "EX",
         map(
-            getPatientsWithLabHavingViralLoadExclude(),
+            getPatientsWithLabHavingViralLoadExclude(
+                hivMetadata.getApplicationForLaboratoryResearch(),
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                "CODED"),
             "onOrAfter=${startDate},location=${location}"));
 
     cd.setCompositionString("(common AND F) AND NOT EX");
@@ -586,14 +591,18 @@ public class ResumoMensalCohortQueries {
   }
 
   /** Patients to be excluded from the entire combination */
-  private CohortDefinition getPatientsWithLabHavingViralLoadExclude() {
+  private CohortDefinition getPatientsWithLabHavingViralLoadExclude(
+      Concept concept, EncounterType encounterType, String type) {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
             "E1 exclusions",
-            Context.getRegisteredComponents(ExcludeCriteriaForE1Calculation.class).get(0));
+            Context.getRegisteredComponents(ExcludeCriteriaForECalculation.class).get(0));
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addCalculationParameter("concept", concept);
+    cd.addCalculationParameter("encounterType", encounterType);
+    cd.addCalculationParameter("type", type);
 
     return cd;
   }
@@ -672,7 +681,23 @@ public class ResumoMensalCohortQueries {
         map(
             getViralLoadOrQualitative(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.setCompositionString("C AND VL");
+    cd.addSearch(
+        "VLX",
+        map(
+            getPatientsWithLabHavingViralLoadExclude(
+                hivMetadata.getHivViralLoadConcept(),
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                "NUMERIC"),
+            "onOrAfter=${startDate},location=${location}"));
+    cd.addSearch(
+        "VLQ",
+        map(
+            getPatientsWithLabHavingViralLoadExclude(
+                hivMetadata.getHivViralLoadQualitative(),
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                "CODED"),
+            "onOrAfter=${startDate},location=${location}"));
+    cd.setCompositionString("(C AND VL) AND NOT (VLX OR VLQ)");
     return cd;
   }
 }
