@@ -276,9 +276,9 @@ public class TxMlCohortQueries {
             getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "withVisitCard",
+        "withoutVisitCard",
         EptsReportUtils.map(
-            getPatientsWithVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(),
+            getPatientsWithoutVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "withVisitCardandWithObs",
@@ -297,7 +297,7 @@ public class TxMlCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "missedAppointmentLessTransfers AND (NOT withVisitCard OR NOT withVisitCardandWithObs) AND NOT (dead OR homeVisitCardDead)");
+        "missedAppointmentLessTransfers AND (withoutVisitCard OR NOT withVisitCardandWithObs) AND NOT (dead OR homeVisitCardDead)");
 
     return cd;
   }
@@ -345,7 +345,7 @@ public class TxMlCohortQueries {
    * reporting end date and the reporting end date
    */
   public CohortDefinition
-      getPatientsWithVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate() {
+      getPatientsWithoutVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
 
     sqlCohortDefinition.setName(
@@ -355,7 +355,7 @@ public class TxMlCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        TxMlQueries.getPatientsWithVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(
+        TxMlQueries.getPatientsWithoutVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),

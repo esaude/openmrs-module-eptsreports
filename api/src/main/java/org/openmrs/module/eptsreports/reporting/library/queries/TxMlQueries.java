@@ -181,18 +181,23 @@ public class TxMlQueries {
        ◦ the last scheduled appointment or drugs pick up (the most recent one) by reporting end date and
        ◦ the reporting end date
   */
-  public static String getPatientsWithVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(
-      int pharmacyEncounterTypeId,
-      int adultoSequimentoEncounterTypeId,
-      int arvPediatriaSeguimentoEncounterTypeId,
-      int returnVisitDateForDrugsConcept,
-      int returnVisitDateConcept,
-      int homeVisitCardEncounterTypeId,
-      int apoioReintegracaoParteAEncounterTypeId,
-      int apoioReintegracaoParteBEncounterTypeId) {
+  public static String
+      getPatientsWithoutVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(
+          int pharmacyEncounterTypeId,
+          int adultoSequimentoEncounterTypeId,
+          int arvPediatriaSeguimentoEncounterTypeId,
+          int returnVisitDateForDrugsConcept,
+          int returnVisitDateConcept,
+          int homeVisitCardEncounterTypeId,
+          int apoioReintegracaoParteAEncounterTypeId,
+          int apoioReintegracaoParteBEncounterTypeId) {
 
     String query =
         " SELECT pa.patient_id FROM patient pa "
+            + " INNER JOIN encounter e ON e.patient_id = pa.patient_id "
+            + " LEFT JOIN ("
+            + "  SELECT pa.patient_id, e.encounter_id "
+            + "  FROM patient pa"
             + "  INNER JOIN encounter e ON pa.patient_id=e.patient_id "
             + "  INNER JOIN obs o ON pa.patient_id=o.person_id "
             + "  INNER JOIN ("
@@ -207,7 +212,10 @@ public class TxMlQueries {
             + "  WHERE e.encounter_datetime >= lp.return_date AND e.encounter_datetime<=:endDate"
             + "  AND e.encounter_type IN (%d, %d, %d) "
             + "  AND e.location_id=:location  "
-            + "  GROUP BY pa.patient_id";
+            + "  GROUP BY pa.patient_id"
+            + ") visitCard ON e.encounter_id = visitCard.encounter_id "
+            + " WHERE visitCard.encounter_id IS NULL"
+            + " GROUP BY pa.patient_id";
 
     return String.format(
         query,
