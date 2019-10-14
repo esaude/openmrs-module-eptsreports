@@ -82,7 +82,7 @@ public class TxMlQueries {
             + "ON         pa.patient_id=e.patient_id "
             + "INNER JOIN obs o "
             + "ON         pa.patient_id=o.person_id "
-            + "WHERE      e.encounter_type IN (%d) "
+            + "WHERE      e.encounter_type IN (%d, %d, %d) "
             + "AND        o.concept_id= %d "
             + "AND        o.value_coded = %d "
             + "AND        e.location_id=:location "
