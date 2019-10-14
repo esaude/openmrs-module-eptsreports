@@ -50,6 +50,7 @@ public class ExcludeCriteriaForECalculation extends AbstractPatientCalculation {
     Concept concept = (Concept) parameterValues.get("concept");
     EncounterType encounterType = (EncounterType) parameterValues.get("encounterType");
     String type = (String) parameterValues.get("type");
+    String limit = (String) parameterValues.get("limit");
 
     if (!(day == 21 && month == 11)) {
       requiredDate = EptsCalculationUtils.addMonths(startDate, -12);
@@ -78,6 +79,12 @@ public class ExcludeCriteriaForECalculation extends AbstractPatientCalculation {
           toExclude = true;
           break;
         } else if (type.equals("CODED") && obs.getValueCoded() != null) {
+          toExclude = true;
+          break;
+        } else if (type.equals("NUMERIC")
+            && obs.getValueNumeric() != null
+            && limit.equals("YES")
+            && obs.getValueNumeric() < 1000) {
           toExclude = true;
           break;
         } else if (type.equals("NUMERIC") && obs.getValueNumeric() != null) {

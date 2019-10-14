@@ -440,6 +440,22 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
                     mappings)),
             mappings),
         resumoMensalAandBdisaggregations.disAggForE());
+
+    // E3
+    addRow(
+        dsd,
+        "E3",
+        "Annual Notification",
+        map(
+            eptsGeneralIndicator.getIndicator(
+                "E3",
+                map(
+                    resumoMensalCohortQueries
+                        .getActivePatientsOnArtWhoRecieveVldSuppressionResults(),
+                    mappings)),
+            mappings),
+        resumoMensalAandBdisaggregations.disAggForE());
+
     return dsd;
   }
 

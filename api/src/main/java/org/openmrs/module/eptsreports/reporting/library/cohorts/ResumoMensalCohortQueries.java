@@ -515,7 +515,8 @@ public class ResumoMensalCohortQueries {
             getPatientsWithLabHavingViralLoadExclude(
                 hivMetadata.getApplicationForLaboratoryResearch(),
                 hivMetadata.getAdultoSeguimentoEncounterType(),
-                "CODED"),
+                "CODED",
+                "NO"),
             "onOrAfter=${startDate},location=${location}"));
 
     cd.setCompositionString("(common AND F) AND NOT EX");
@@ -592,7 +593,7 @@ public class ResumoMensalCohortQueries {
 
   /** Patients to be excluded from the entire combination */
   private CohortDefinition getPatientsWithLabHavingViralLoadExclude(
-      Concept concept, EncounterType encounterType, String type) {
+      Concept concept, EncounterType encounterType, String type, String limit) {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
             "E1 exclusions",
@@ -603,6 +604,7 @@ public class ResumoMensalCohortQueries {
     cd.addCalculationParameter("concept", concept);
     cd.addCalculationParameter("encounterType", encounterType);
     cd.addCalculationParameter("type", type);
+    cd.addCalculationParameter("limit", limit);
 
     return cd;
   }
@@ -687,7 +689,8 @@ public class ResumoMensalCohortQueries {
             getPatientsWithLabHavingViralLoadExclude(
                 hivMetadata.getHivViralLoadConcept(),
                 hivMetadata.getAdultoSeguimentoEncounterType(),
-                "NUMERIC"),
+                "NUMERIC",
+                "NO"),
             "onOrAfter=${startDate},location=${location}"));
     cd.addSearch(
         "VLQ",
@@ -695,9 +698,74 @@ public class ResumoMensalCohortQueries {
             getPatientsWithLabHavingViralLoadExclude(
                 hivMetadata.getHivViralLoadQualitative(),
                 hivMetadata.getAdultoSeguimentoEncounterType(),
-                "CODED"),
+                "CODED",
+                "NO"),
             "onOrAfter=${startDate},location=${location}"));
     cd.setCompositionString("(C AND VL) AND NOT (VLX OR VLQ)");
+    return cd;
+  }
+
+  /**
+   * E3: Number of active patients in ART at the end of current month who received supressed Viral
+   * Load Result (Annual Notification)
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getActivePatientsOnArtWhoRecieveVldSuppressionResults() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName(
+        "Number of active patients in ART at the end of current month who received supressed Viral Load Result (Annual Notification)");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "C",
+        map(
+            getStandardDefinitionForEcolumns(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "SUPP",
+        map(
+            getViralLoadSuppression(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch(
+        "QUAL",
+        map(
+            gePatientsWithtViralLoadQualitativeDone(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch(
+        "Ex1",
+        map(
+            getPatientsWithLabHavingViralLoadExclude(
+                hivMetadata.getHivViralLoadConcept(),
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                "NUMERIC",
+                "YES"),
+            "onOrAfter=${startDate},location=${location}"));
+    cd.addSearch(
+        "Ex2",
+        map(
+            getPatientsWithLabHavingViralLoadExclude(
+                hivMetadata.getHivViralLoadQualitative(),
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                "CODED",
+                "NO"),
+            "onOrAfter=${startDate},location=${location}"));
+    cd.setCompositionString("(C AND (SUPP OR QUAL)) AND NOT(Ex1 OR Ex2)");
+    return cd;
+  }
+
+  private CohortDefinition getViralLoadSuppression() {
+    NumericObsCohortDefinition cd = new NumericObsCohortDefinition();
+    cd.setName("Viral load suppression");
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.setQuestion(hivMetadata.getHivViralLoadConcept());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setValue1(1000.0);
+    cd.setOperator1(RangeComparator.LESS_THAN);
     return cd;
   }
 }
