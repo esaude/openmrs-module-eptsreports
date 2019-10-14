@@ -425,6 +425,14 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>@MODULE_ID@.patientIsdeadIncorrect</property>
+		<defaultValue>e1dac772-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT IS DEAD concept - Incorrectly used
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>@MODULE_ID@.typeOfVisit</property>
 		<defaultValue>e1e055a2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
