@@ -33,11 +33,13 @@ import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterWithCodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -766,6 +768,22 @@ public class ResumoMensalCohortQueries {
     cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
     cd.setValue1(1000.0);
     cd.setOperator1(RangeComparator.LESS_THAN);
+    return cd;
+  }
+
+  /**
+   * F1: Number of patients who had clinical appointment during the reporting month
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonth() {
+    EncounterCohortDefinition cd = new EncounterCohortDefinition();
+    cd.setName("F1: Number of patients who had clinical appointment during the reporting month");
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeQualifier(TimeQualifier.ANY);
     return cd;
   }
 }
