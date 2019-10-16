@@ -133,7 +133,7 @@ public class ResumoMensalQueries {
             + " AND e.voided = 0 "
             + " AND e.encounter_type = %d "
             + " AND e.location_id = :location "
-            + " AND e.encounter_datetime =:endDate "
+            + " AND e.encounter_datetime = :endDate "
             + " AND o.voided = 0 "
             + " AND o.concept_id = %d ";
     return String.format(query, encounterType, conceptId);

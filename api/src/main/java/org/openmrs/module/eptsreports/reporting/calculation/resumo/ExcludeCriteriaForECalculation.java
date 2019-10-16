@@ -33,6 +33,7 @@ public class ExcludeCriteriaForECalculation extends AbstractPatientCalculation {
 
     Location location = (Location) context.getFromCache("location");
     Date startDate = (Date) context.getFromCache("onOrAfter");
+    Date endDate = (Date) context.getFromCache("onOrBefore");
 
     Date requiredDate;
 
@@ -51,6 +52,7 @@ public class ExcludeCriteriaForECalculation extends AbstractPatientCalculation {
     EncounterType encounterType = (EncounterType) parameterValues.get("encounterType");
     String type = (String) parameterValues.get("type");
     String limit = (String) parameterValues.get("limit");
+    String option = (String) parameterValues.get("option");
 
     if (!(day == 21 && month == 11)) {
       requiredDate = EptsCalculationUtils.addMonths(startDate, -12);
@@ -67,29 +69,42 @@ public class ExcludeCriteriaForECalculation extends AbstractPatientCalculation {
             TimeQualifier.ANY,
             requiredDate,
             context);
+    CalculationResultMap encountersMap =
+        ePTSCalculationService.allEncounters(
+            Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
+            cohort,
+            location,
+            requiredDate,
+            endDate,
+            context);
     for (Integer pId : cohort) {
       boolean toExclude = false;
 
       ListResult listResult = (ListResult) calculationResultMap.get(pId);
       List<Obs> obsList = EptsCalculationUtils.extractResultValues(listResult);
-      for (Obs obs : obsList) {
-        if (type.equals("CODED")
-            && obs.getValueCoded() != null
-            && obs.getValueCoded().equals(hivMetadata.getHivViralLoadConcept())) {
-          toExclude = true;
-          break;
-        } else if (type.equals("CODED") && obs.getValueCoded() != null) {
-          toExclude = true;
-          break;
-        } else if (type.equals("NUMERIC")
-            && obs.getValueNumeric() != null
-            && limit.equals("YES")
-            && obs.getValueNumeric() < 1000) {
-          toExclude = true;
-          break;
-        } else if (type.equals("NUMERIC") && obs.getValueNumeric() != null) {
-          toExclude = true;
-          break;
+      if (option.equals("encounter") && encountersMap.containsKey(pId)) {
+        toExclude = true;
+
+      } else if (option.equals("obs")) {
+        for (Obs obs : obsList) {
+          if (type.equals("CODED")
+              && obs.getValueCoded() != null
+              && obs.getValueCoded().equals(hivMetadata.getHivViralLoadConcept())) {
+            toExclude = true;
+            break;
+          } else if (type.equals("CODED") && obs.getValueCoded() != null) {
+            toExclude = true;
+            break;
+          } else if (type.equals("NUMERIC")
+              && obs.getValueNumeric() != null
+              && limit.equals("YES")
+              && obs.getValueNumeric() < 1000) {
+            toExclude = true;
+            break;
+          } else if (type.equals("NUMERIC") && obs.getValueNumeric() != null) {
+            toExclude = true;
+            break;
+          }
         }
       }
       if (calculationResultMap.containsKey(pId)) {

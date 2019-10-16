@@ -482,6 +482,19 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
                     mappings)),
             mappings),
         "");
+    // F3
+    dsd.addColumn(
+        "F3",
+        "Number of patients who had at least one clinical appointment during the year",
+        map(
+            eptsGeneralIndicator.getIndicator(
+                "F3",
+                map(
+                    resumoMensalCohortQueries
+                        .getNumberOfPatientsWithAtLeastOneClinicalAppointmentDuringTheYear(),
+                    mappings)),
+            mappings),
+        "");
 
     return dsd;
   }

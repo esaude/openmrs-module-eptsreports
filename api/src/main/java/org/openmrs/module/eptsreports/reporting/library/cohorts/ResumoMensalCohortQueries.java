@@ -516,11 +516,12 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "EX",
         map(
-            getPatientsWithLabHavingViralLoadExclude(
+            getPatientsToExclude(
                 hivMetadata.getApplicationForLaboratoryResearch(),
                 hivMetadata.getAdultoSeguimentoEncounterType(),
                 "CODED",
-                "NO"),
+                "NO",
+                "obs"),
             "onOrAfter=${startDate},location=${location}"));
 
     cd.setCompositionString("(common AND F) AND NOT EX");
@@ -596,11 +597,11 @@ public class ResumoMensalCohortQueries {
   }
 
   /** Patients to be excluded from the entire combination */
-  private CohortDefinition getPatientsWithLabHavingViralLoadExclude(
-      Concept concept, EncounterType encounterType, String type, String limit) {
+  private CohortDefinition getPatientsToExclude(
+      Concept concept, EncounterType encounterType, String type, String limit, String option) {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
-            "E1 exclusions",
+            "Exclusions",
             Context.getRegisteredComponents(ExcludeCriteriaForECalculation.class).get(0));
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
@@ -609,6 +610,7 @@ public class ResumoMensalCohortQueries {
     cd.addCalculationParameter("encounterType", encounterType);
     cd.addCalculationParameter("type", type);
     cd.addCalculationParameter("limit", limit);
+    cd.addCalculationParameter("option", option);
 
     return cd;
   }
@@ -690,20 +692,22 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "VLX",
         map(
-            getPatientsWithLabHavingViralLoadExclude(
+            getPatientsToExclude(
                 hivMetadata.getHivViralLoadConcept(),
                 hivMetadata.getAdultoSeguimentoEncounterType(),
                 "NUMERIC",
-                "NO"),
+                "NO",
+                "obs"),
             "onOrAfter=${startDate},location=${location}"));
     cd.addSearch(
         "VLQ",
         map(
-            getPatientsWithLabHavingViralLoadExclude(
+            getPatientsToExclude(
                 hivMetadata.getHivViralLoadQualitative(),
                 hivMetadata.getAdultoSeguimentoEncounterType(),
                 "CODED",
-                "NO"),
+                "NO",
+                "obs"),
             "onOrAfter=${startDate},location=${location}"));
     cd.setCompositionString("(C AND VL) AND NOT (VLX OR VLQ)");
     return cd;
@@ -740,20 +744,22 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "Ex1",
         map(
-            getPatientsWithLabHavingViralLoadExclude(
+            getPatientsToExclude(
                 hivMetadata.getHivViralLoadConcept(),
                 hivMetadata.getAdultoSeguimentoEncounterType(),
                 "NUMERIC",
-                "YES"),
+                "YES",
+                "obs"),
             "onOrAfter=${startDate},location=${location}"));
     cd.addSearch(
         "Ex2",
         map(
-            getPatientsWithLabHavingViralLoadExclude(
+            getPatientsToExclude(
                 hivMetadata.getHivViralLoadQualitative(),
                 hivMetadata.getAdultoSeguimentoEncounterType(),
                 "CODED",
-                "NO"),
+                "NO",
+                "obs"),
             "onOrAfter=${startDate},location=${location}"));
     cd.setCompositionString("(C AND (SUPP OR QUAL)) AND NOT(Ex1 OR Ex2)");
     return cd;
@@ -826,6 +832,32 @@ public class ResumoMensalCohortQueries {
     cd.addSearch("Ex", map(sqlCohortDefinition, "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("(F1 AND F2F) AND NOT Ex");
+    return cd;
+  }
+
+  /**
+   * Number of patients who had at least one clinical appointment during the year
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getNumberOfPatientsWithAtLeastOneClinicalAppointmentDuringTheYear() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Number of patients who had at least one clinical appointment during the year");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "F1",
+        map(
+            getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonth(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch(
+        "Ex",
+        map(
+            getPatientsToExclude(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.setCompositionString("F1 AND NOT Ex");
     return cd;
   }
 }
