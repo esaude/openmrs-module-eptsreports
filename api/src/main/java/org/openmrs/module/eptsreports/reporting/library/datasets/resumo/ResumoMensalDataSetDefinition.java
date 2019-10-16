@@ -469,6 +469,19 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
                     "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}")),
             mappings),
         "");
+    // F2
+    dsd.addColumn(
+        "F2",
+        "Number of patients who had clinical appointment during the reporting month and were screened for TB",
+        map(
+            eptsGeneralIndicator.getIndicator(
+                "F2",
+                map(
+                    resumoMensalCohortQueries
+                        .getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthAndScreenedFoTb(),
+                    mappings)),
+            mappings),
+        "");
 
     return dsd;
   }

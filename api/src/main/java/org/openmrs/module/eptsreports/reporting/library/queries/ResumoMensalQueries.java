@@ -120,4 +120,22 @@ public class ResumoMensalQueries {
         typeOfPantientConcept,
         tarvConcept);
   }
+
+  public static String getPatientsForF2ForExclusionFromMainQuery(int encounterType, int conceptId) {
+    String query =
+        "SELECT p.patient_id "
+            + "FROM   patient p "
+            + " JOIN encounter e "
+            + " ON p.patient_id = e.patient_id "
+            + " JOIN obs o "
+            + " ON o.encounter_id = e.encounter_id "
+            + " WHERE  p.voided = 0 "
+            + " AND e.voided = 0 "
+            + " AND e.encounter_type = %d "
+            + " AND e.location_id = :location "
+            + " AND e.encounter_datetime =:endDate "
+            + " AND o.voided = 0 "
+            + " AND o.concept_id = %d ";
+    return String.format(query, encounterType, conceptId);
+  }
 }

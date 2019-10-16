@@ -509,7 +509,9 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "F",
         map(
-            getPatientsWithLabHavingViralLoadFiltered(),
+            getPatientsWithCodedObsAndAnswers(
+                hivMetadata.getApplicationForLaboratoryResearch(),
+                hivMetadata.getHivViralLoadConcept()),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "EX",
@@ -577,7 +579,7 @@ public class ResumoMensalCohortQueries {
   }
 
   /** Filter only those patients */
-  private CohortDefinition getPatientsWithLabHavingViralLoadFiltered() {
+  private CohortDefinition getPatientsWithCodedObsAndAnswers(Concept question, Concept answer) {
     CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
     cd.setName(
         "Patients with lab request having question(23722) and answer as VL(856) - encounter date within boundaries");
@@ -586,9 +588,9 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("locationList", "location", Location.class));
     cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
     cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
-    cd.setQuestion(hivMetadata.getApplicationForLaboratoryResearch());
+    cd.setQuestion(question);
     cd.setOperator(SetComparator.IN);
-    cd.addValue(hivMetadata.getHivViralLoadConcept());
+    cd.addValue(answer);
 
     return cd;
   }
@@ -624,13 +626,13 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  private CohortDefinition gePatientsWithtViralLoadQualitativeDone() {
+  private CohortDefinition gePatientsWithCodedObs(Concept question) {
     CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
     cd.setName("Patients with Viral load qualitative done");
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.setQuestion(hivMetadata.getHivViralLoadQualitative());
+    cd.setQuestion(question);
     cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
     cd.setOperator(SetComparator.IN);
     return cd;
@@ -655,7 +657,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "VLQ",
         map(
-            gePatientsWithtViralLoadQualitativeDone(),
+            gePatientsWithCodedObs(hivMetadata.getHivViralLoadQualitative()),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
     cd.setCompositionString("VL OR VLQ");
     return cd;
@@ -733,7 +735,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "QUAL",
         map(
-            gePatientsWithtViralLoadQualitativeDone(),
+            gePatientsWithCodedObs(hivMetadata.getHivViralLoadQualitative()),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "Ex1",
@@ -784,6 +786,46 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("locationList", "Location", Location.class));
     cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
     cd.setTimeQualifier(TimeQualifier.ANY);
+    return cd;
+  }
+
+  /**
+   * Number of patients who had clinical appointment during the reporting month and were screened
+   * for TB
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition
+      getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthAndScreenedFoTb() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("Exclusions");
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinition.setQuery(
+        ResumoMensalQueries.getPatientsForF2ForExclusionFromMainQuery(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            tbMetadata.getTBTreatmentPlanConcept().getConceptId()));
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName(
+        "Number of patients who had clinical appointment during the reporting month and were screened for TB");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "F1",
+        map(
+            getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonth(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch(
+        "F2F",
+        map(
+            getPatientsWithCodedObsAndAnswers(
+                tbMetadata.getHasTbSymptomsConcept(), hivMetadata.getYesConcept()),
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch("Ex", map(sqlCohortDefinition, "endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("(F1 AND F2F) AND NOT Ex");
     return cd;
   }
 }
