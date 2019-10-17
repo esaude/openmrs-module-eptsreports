@@ -106,9 +106,10 @@ public class ExcludeCriteriaForECalculation extends AbstractPatientCalculation {
             break;
           }
         }
-      }
-      if (calculationResultMap.containsKey(pId)) {
-        toExclude = true;
+
+        if (calculationResultMap.containsKey(pId)) {
+          toExclude = true;
+        }
       }
       map.put(pId, new BooleanResult(toExclude, this));
     }

@@ -719,7 +719,7 @@ public class ResumoMensalCohortQueries {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getActivePatientsOnArtWhoRecieveVldSuppressionResults() {
+  public CohortDefinition getActivePatientsOnArtWhoRecievedVldSuppressionResults() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
         "Number of active patients in ART at the end of current month who received supressed Viral Load Result (Annual Notification)");
@@ -855,7 +855,12 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "Ex",
         map(
-            getPatientsToExclude(),
+            getPatientsToExclude(
+                hivMetadata.getApplicationForLaboratoryResearch(),
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                "ENC",
+                "NO",
+                "encounter"),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("F1 AND NOT Ex");
     return cd;
