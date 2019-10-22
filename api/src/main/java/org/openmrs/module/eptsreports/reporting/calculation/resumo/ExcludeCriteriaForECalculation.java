@@ -123,7 +123,27 @@ public class ExcludeCriteriaForECalculation extends AbstractPatientCalculation {
         toInclude = true;
 
       } else if (option.equals("obs") && obsList.size() > 0) {
-        System.out.println("The patient found is >>>" + pId);
+        for (Obs obs : obsList) {
+          if (type.equals("CODED")
+              && obs.getValueCoded() != null
+              && obs.getValueCoded().equals(hivMetadata.getHivViralLoadConcept())) {
+            toInclude = true;
+            break;
+          } else if (type.equals("CODED") && obs.getValueCoded() != null) {
+            toInclude = true;
+            break;
+          } else if (type.equals("NUMERIC")
+              && obs.getValueNumeric() != null
+              && limit.equals("YES")
+              && obs.getValueNumeric() < 1000) {
+            toInclude = true;
+            break;
+
+          } else if (type.equals("NUMERIC") && obs.getValueNumeric() != null) {
+            toInclude = true;
+            break;
+          }
+        }
       }
 
       map.put(pId, new BooleanResult(toInclude, this));
