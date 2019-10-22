@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Obs;
@@ -78,51 +79,54 @@ public class ExcludeCriteriaForECalculation extends AbstractPatientCalculation {
             Arrays.asList(location),
             null,
             TimeQualifier.ANY,
-            requiredDate,
+            null,
             context);
     CalculationResultMap encountersMap =
         ePTSCalculationService.allEncounters(
             Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
             cohort,
             location,
-            requiredDate,
+            null,
             endDate,
             context);
     for (Integer pId : cohort) {
-      boolean toExclude = false;
+      boolean toInclude = false;
 
-      ListResult listResult = (ListResult) calculationResultMap.get(pId);
-      List<Obs> obsList = EptsCalculationUtils.extractResultValues(listResult);
-      if (option.equals("encounter") && encountersMap.containsKey(pId)) {
-        toExclude = true;
+      ListResult listResultObs = (ListResult) calculationResultMap.get(pId);
+      ListResult listResultsEncounters = (ListResult) encountersMap.get(pId);
 
-      } else if (option.equals("obs")) {
-        for (Obs obs : obsList) {
-          if (type.equals("CODED")
-              && obs.getValueCoded() != null
-              && obs.getValueCoded().equals(hivMetadata.getHivViralLoadConcept())) {
-            toExclude = true;
-            break;
-          } else if (type.equals("CODED") && obs.getValueCoded() != null) {
-            toExclude = true;
-            break;
-          } else if (type.equals("NUMERIC")
-              && obs.getValueNumeric() != null
-              && limit.equals("YES")
-              && obs.getValueNumeric() < 1000) {
-            toExclude = true;
-            break;
-          } else if (type.equals("NUMERIC") && obs.getValueNumeric() != null) {
-            toExclude = true;
-            break;
+      List<Obs> obsList = EptsCalculationUtils.extractResultValues(listResultObs);
+      List<Encounter> encounterList =
+          EptsCalculationUtils.extractResultValues(listResultsEncounters);
+
+      if (option.equals("encounter")) {
+        for (Encounter encounter : encounterList) {
+          if (encounter.getEncounterDatetime() != null
+              && encounter.getEncounterDatetime().compareTo(requiredDate) >= 0
+              && encounter.getEncounterDatetime().compareTo(endDate) <= 0) {
+            encounterList.remove(encounter);
           }
         }
 
-        if (calculationResultMap.containsKey(pId)) {
-          toExclude = true;
+      } else if (option.equals("obs")) {
+        for (Obs obs : obsList) {
+          if (obs.getEncounter().getEncounterDatetime() != null
+              && obs.getEncounter().getEncounterDatetime().compareTo(requiredDate) >= 0
+              && obs.getEncounter().getEncounterDatetime().compareTo(endDate) <= 0) {
+            obsList.remove(obs);
+          }
         }
       }
-      map.put(pId, new BooleanResult(toExclude, this));
+      // check the list of encounters if they contains any values, if yes, consider those patients
+      // to be active
+      if (option.equals("encounter") && encounterList.size() > 0) {
+        toInclude = true;
+
+      } else if (option.equals("obs") && obsList.size() > 0) {
+        System.out.println("The patient found is >>>" + pId);
+      }
+
+      map.put(pId, new BooleanResult(toInclude, this));
     }
     return map;
   }

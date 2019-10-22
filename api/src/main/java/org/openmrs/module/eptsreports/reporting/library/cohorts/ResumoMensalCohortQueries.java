@@ -522,7 +522,7 @@ public class ResumoMensalCohortQueries {
                 "CODED",
                 "NO",
                 "obs"),
-            "onOrAfter=${startDate},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     cd.setCompositionString("(common AND F) AND NOT EX");
     return cd;
@@ -698,7 +698,7 @@ public class ResumoMensalCohortQueries {
                 "NUMERIC",
                 "NO",
                 "obs"),
-            "onOrAfter=${startDate},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "VLQ",
         map(
@@ -708,7 +708,7 @@ public class ResumoMensalCohortQueries {
                 "CODED",
                 "NO",
                 "obs"),
-            "onOrAfter=${startDate},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("(C AND VL) AND NOT (VLX OR VLQ)");
     return cd;
   }
@@ -750,7 +750,7 @@ public class ResumoMensalCohortQueries {
                 "NUMERIC",
                 "YES",
                 "obs"),
-            "onOrAfter=${startDate},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "Ex2",
         map(
@@ -760,7 +760,7 @@ public class ResumoMensalCohortQueries {
                 "CODED",
                 "NO",
                 "obs"),
-            "onOrAfter=${startDate},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("(C AND (SUPP OR QUAL)) AND NOT(Ex1 OR Ex2)");
     return cd;
   }
