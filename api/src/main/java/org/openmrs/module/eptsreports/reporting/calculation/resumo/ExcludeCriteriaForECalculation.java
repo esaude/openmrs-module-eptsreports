@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.openmrs.Concept;
@@ -100,20 +101,22 @@ public class ExcludeCriteriaForECalculation extends AbstractPatientCalculation {
           EptsCalculationUtils.extractResultValues(listResultsEncounters);
 
       if (option.equals("encounter")) {
-        for (Encounter encounter : encounterList) {
+        for (Iterator<Encounter> it = encounterList.iterator(); it.hasNext(); ) {
+          Encounter encounter = it.next();
           if (encounter.getEncounterDatetime() != null
               && encounter.getEncounterDatetime().compareTo(requiredDate) >= 0
               && encounter.getEncounterDatetime().compareTo(endDate) <= 0) {
-            encounterList.remove(encounter);
+            it.remove();
           }
         }
 
       } else if (option.equals("obs")) {
-        for (Obs obs : obsList) {
+        for (Iterator<Obs> it = obsList.iterator(); it.hasNext(); ) {
+          Obs obs = it.next();
           if (obs.getEncounter().getEncounterDatetime() != null
               && obs.getEncounter().getEncounterDatetime().compareTo(requiredDate) >= 0
               && obs.getEncounter().getEncounterDatetime().compareTo(endDate) <= 0) {
-            obsList.remove(obs);
+            it.remove();
           }
         }
       }
