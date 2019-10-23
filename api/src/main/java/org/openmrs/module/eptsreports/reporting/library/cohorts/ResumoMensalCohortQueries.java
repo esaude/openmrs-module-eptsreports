@@ -46,11 +46,14 @@ public class ResumoMensalCohortQueries {
 
   private HivMetadata hivMetadata;
   private TbMetadata tbMetadata;
+  private GenericCohortQueries genericCohortQueries;
 
   @Autowired
-  public ResumoMensalCohortQueries(HivMetadata hivMetadata, TbMetadata tbMetadata) {
+  public ResumoMensalCohortQueries(
+      HivMetadata hivMetadata, TbMetadata tbMetadata, GenericCohortQueries genericCohortQueries) {
     this.hivMetadata = hivMetadata;
     this.tbMetadata = tbMetadata;
+    this.genericCohortQueries = genericCohortQueries;
   }
 
   /** A1 Number of patients who initiated Pre-TARV at this HF by end of previous month */
@@ -513,13 +516,13 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "EX",
         map(
-            getPatientsToExclude(
-                hivMetadata.getApplicationForLaboratoryResearch(),
-                hivMetadata.getAdultoSeguimentoEncounterType(),
-                "CODED",
-                "NO",
-                "obs"),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            genericCohortQueries.generalSql(
+                "E1exclusion",
+                ResumoMensalQueries.getE1ExclusionCriteria(
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
+                    hivMetadata.getHivViralLoadConcept().getConceptId())),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("(common AND F) AND NOT EX");
     return cd;

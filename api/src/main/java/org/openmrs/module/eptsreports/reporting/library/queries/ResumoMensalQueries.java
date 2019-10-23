@@ -215,4 +215,36 @@ public class ResumoMensalQueries {
             + " AND o.concept_id=%d ";
     return String.format(query, encounterType, conceptId);
   }
+
+  /**
+   * E1 exclusions
+   *
+   * @return String
+   */
+  public static String getE1ExclusionCriteria(
+      int encounterType, int questionConceptId, int answerConceptId) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + " AND e.location_id = :location AND e.encounter_datetime BETWEEN "
+            + getRequiredDate(":startDate")
+            + " AND :endDate AND e.encounter_type=%d "
+            + " AND o.concept_id=%d AND o.value_coded=%d";
+    return String.format(query, encounterType, questionConceptId, answerConceptId);
+  }
+
+  static String getRequiredDate(String startDate) {
+    // startDate will be in the format yyyy-mm-dd for example 2000-01-21
+
+    // int day = Integer.parseInt(datePart.split("-")[2]);
+    // int month = Integer.parseInt(datePart.split("-")[1]);
+    // if (!(day == 21 && month == 12)) {
+
+    // } else {
+    // requiredDate = startDate;
+    // }
+    // return day + " and " + month;
+
+    return "Nicholas" + startDate;
+  }
 }
