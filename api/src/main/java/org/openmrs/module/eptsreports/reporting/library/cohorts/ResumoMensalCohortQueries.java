@@ -521,7 +521,7 @@ public class ResumoMensalCohortQueries {
                 "obs"),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
-    cd.setCompositionString("(common AND F) AND EX");
+    cd.setCompositionString("(common AND F) AND NOT EX");
     return cd;
   }
 
@@ -707,7 +707,7 @@ public class ResumoMensalCohortQueries {
                 "NO",
                 "obs"),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.setCompositionString("(C AND VL) AND (VLX OR VLQ)");
+    cd.setCompositionString("(C AND VL) AND NOT (VLX OR VLQ)");
     return cd;
   }
 
@@ -759,7 +759,7 @@ public class ResumoMensalCohortQueries {
                 "NO",
                 "obs"),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.setCompositionString("(C AND (SUPP OR QUAL)) AND (Ex1 OR Ex2)");
+    cd.setCompositionString("(C AND (SUPP OR QUAL)) AND NOT (Ex1 OR Ex2)");
     return cd;
   }
 
@@ -860,7 +860,7 @@ public class ResumoMensalCohortQueries {
                 "NO",
                 "encounter"),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.setCompositionString("F1 AND Ex");
+    cd.setCompositionString("F1 AND NOT Ex");
     return cd;
   }
 }

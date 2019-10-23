@@ -466,7 +466,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
                 map(
                     resumoMensalCohortQueries
                         .getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonth(),
-                    "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}")),
+                    mappings)),
             mappings),
         "");
     // F2
