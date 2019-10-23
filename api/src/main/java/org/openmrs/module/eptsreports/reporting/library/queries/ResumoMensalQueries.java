@@ -138,4 +138,81 @@ public class ResumoMensalQueries {
             + " AND o.concept_id = %d ";
     return String.format(query, encounterType, conceptId);
   }
+
+  /**
+   * Get patients with encounters within start and end date F1: Number of patients who had clinical
+   * appointment during the reporting month
+   *
+   * @return String
+   */
+  public static String getPatientsWithGivenEncounterType(int encounterType) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id "
+            + " WHERE e.encounter_type=%d AND e.location_id=:location "
+            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate AND p.voided=0 AND e.voided=0 ";
+    return String.format(query, encounterType);
+  }
+
+  /**
+   * Get patients with viral load suppression
+   *
+   * @return String
+   */
+  public static String getPatientsHavingViralLoadSuppression(
+      int viralLoadConcept, int encounterType) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location "
+            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + " AND o.value_numeric IS NOT NULL "
+            + " AND o.concept_id=%d "
+            + " AND e.encounter_type=%d "
+            + " AND o.value_numeric < 1000";
+    return String.format(query, viralLoadConcept, encounterType);
+  }
+
+  /**
+   * getPatientsWithCodedObsAndAnswers
+   *
+   * @return String
+   */
+  public static String getPatientsWithCodedObsAndAnswers(
+      int encounterType, int questionConceptId, int answerConceptId) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + " AND e.location_id = :location AND e.encounter_datetime BETWEEN :startDate AND :endDate AND e.encounter_type=%d "
+            + " AND o.concept_id=%d AND o.value_coded=%d";
+    return String.format(query, encounterType, questionConceptId, answerConceptId);
+  }
+
+  /**
+   * Get patients with viral load suppression
+   *
+   * @return String
+   */
+  public static String getPatientsHavingViralLoadResults(int viralLoadConcept, int encounterType) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location "
+            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + " AND o.value_numeric IS NOT NULL "
+            + " AND o.concept_id=%d "
+            + " AND e.encounter_type=%d ";
+    return String.format(query, viralLoadConcept, encounterType);
+  }
+
+  /**
+   * Get patients with any coded obs value
+   *
+   * @return String
+   */
+  public static String gePatientsWithCodedObs(int encounterType, int conceptId) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + " AND e.location_id = :location AND e.encounter_datetime BETWEEN :startDate AND :endDate AND e.encounter_type=%d "
+            + " AND o.concept_id=%d ";
+    return String.format(query, encounterType, conceptId);
+  }
 }

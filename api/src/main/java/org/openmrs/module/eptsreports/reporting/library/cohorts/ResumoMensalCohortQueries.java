@@ -33,13 +33,10 @@ import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterWithCodedObsCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -512,7 +509,7 @@ public class ResumoMensalCohortQueries {
             getPatientsWithCodedObsAndAnswers(
                 hivMetadata.getApplicationForLaboratoryResearch(),
                 hivMetadata.getHivViralLoadConcept()),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "EX",
         map(
@@ -581,18 +578,17 @@ public class ResumoMensalCohortQueries {
 
   /** Filter only those patients */
   private CohortDefinition getPatientsWithCodedObsAndAnswers(Concept question, Concept answer) {
-    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName(
-        "Patients with lab request having question(23722) and answer as VL(856) - encounter date within boundaries");
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "location", Location.class));
-    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
-    cd.setQuestion(question);
-    cd.setOperator(SetComparator.IN);
-    cd.addValue(answer);
-
+        "Patients with lab request having question and answer - encounter date within boundaries");
+    cd.addParameter(new Parameter("startDate", "After Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "Before Date", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.setQuery(
+        ResumoMensalQueries.getPatientsWithCodedObsAndAnswers(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            question.getConceptId(),
+            answer.getConceptId()));
     return cd;
   }
 
@@ -617,26 +613,28 @@ public class ResumoMensalCohortQueries {
 
   /** */
   private CohortDefinition getViralLoadTestDone() {
-    NumericObsCohortDefinition cd = new NumericObsCohortDefinition();
+    SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Viral load test");
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.setQuestion(hivMetadata.getHivViralLoadConcept());
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
-    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.addParameter(new Parameter("startDate", "After Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "Before Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        ResumoMensalQueries.getPatientsHavingViralLoadResults(
+            hivMetadata.getHivViralLoadConcept().getConceptId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
     return cd;
   }
 
   private CohortDefinition gePatientsWithCodedObs(Concept question) {
-    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Patients with Viral load qualitative done");
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.setQuestion(question);
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
-    cd.setOperator(SetComparator.IN);
+    cd.addParameter(new Parameter("startDate", "After Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "Before Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        ResumoMensalQueries.gePatientsWithCodedObs(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            question.getConceptId()));
     return cd;
   }
 
@@ -655,12 +653,12 @@ public class ResumoMensalCohortQueries {
         "VL",
         map(
             getViralLoadTestDone(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "VLQ",
         map(
             gePatientsWithCodedObs(hivMetadata.getHivViralLoadQualitative()),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.setCompositionString("VL OR VLQ");
     return cd;
   }
@@ -735,12 +733,12 @@ public class ResumoMensalCohortQueries {
         "SUPP",
         map(
             getViralLoadSuppression(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "QUAL",
         map(
             gePatientsWithCodedObs(hivMetadata.getHivViralLoadQualitative()),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "Ex1",
         map(
@@ -766,16 +764,15 @@ public class ResumoMensalCohortQueries {
   }
 
   private CohortDefinition getViralLoadSuppression() {
-    NumericObsCohortDefinition cd = new NumericObsCohortDefinition();
+    SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Viral load suppression");
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.setQuestion(hivMetadata.getHivViralLoadConcept());
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
-    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.setValue1(1000.0);
-    cd.setOperator1(RangeComparator.LESS_THAN);
+    cd.addParameter(new Parameter("startDate", "After Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "Before Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        ResumoMensalQueries.getPatientsHavingViralLoadSuppression(
+            hivMetadata.getHivViralLoadConcept().getConceptId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
     return cd;
   }
 
@@ -785,13 +782,14 @@ public class ResumoMensalCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonth() {
-    EncounterCohortDefinition cd = new EncounterCohortDefinition();
+    SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("F1: Number of patients who had clinical appointment during the reporting month");
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.setTimeQualifier(TimeQualifier.ANY);
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        ResumoMensalQueries.getPatientsWithGivenEncounterType(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
     return cd;
   }
 
@@ -822,13 +820,13 @@ public class ResumoMensalCohortQueries {
         "F1",
         map(
             getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonth(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "F2F",
         map(
             getPatientsWithCodedObsAndAnswers(
                 tbMetadata.getHasTbSymptomsConcept(), hivMetadata.getYesConcept()),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch("Ex", map(sqlCohortDefinition, "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("(F1 AND F2F) AND NOT Ex");
@@ -851,7 +849,7 @@ public class ResumoMensalCohortQueries {
         "F1",
         map(
             getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonth(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "Ex",
         map(
