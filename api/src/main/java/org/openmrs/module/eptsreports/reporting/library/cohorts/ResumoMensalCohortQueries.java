@@ -25,7 +25,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.CodedObsOnFirstOrSecondEncounterCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.resumo.ExcludeCriteriaForECalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.resumo.ExcludeCriteriaForEandFCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
@@ -602,7 +602,7 @@ public class ResumoMensalCohortQueries {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
             "Exclusions",
-            Context.getRegisteredComponents(ExcludeCriteriaForECalculation.class).get(0));
+            Context.getRegisteredComponents(ExcludeCriteriaForEandFCalculation.class).get(0));
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));

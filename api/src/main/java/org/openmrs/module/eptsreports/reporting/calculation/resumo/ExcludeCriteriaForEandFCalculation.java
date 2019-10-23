@@ -32,11 +32,12 @@ import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalcu
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ExcludeCriteriaForECalculation extends AbstractPatientCalculation {
+public class ExcludeCriteriaForEandFCalculation extends AbstractPatientCalculation {
 
   @Override
   public CalculationResultMap evaluate(
@@ -68,7 +69,9 @@ public class ExcludeCriteriaForECalculation extends AbstractPatientCalculation {
     String option = (String) parameterValues.get("option");
 
     if (!(day == 21 && month == 11)) {
-      requiredDate = EptsCalculationUtils.addMonths(startDate, -12);
+      // take 21/12/yyyy-1
+      Date d = DateUtil.getDateTime(calendar.get(Calendar.YEAR), 12, 21);
+      requiredDate = EptsCalculationUtils.addMonths(d, -12);
     } else {
       requiredDate = startDate;
     }
