@@ -233,9 +233,85 @@ public class ResumoMensalQueries {
     return String.format(query, encounterType, questionConceptId, answerConceptId);
   }
 
-  static String getRequiredDate(String startDate) {
-    // startDate will be in the format yyyy-mm-dd for example 2000-01-21
+  /**
+   * E2 exclusions
+   *
+   * @param viralLoadConcept
+   * @param encounterType
+   * @param qualitativeConcept
+   * @return String
+   */
+  public static String getE2ExclusionCriteria(
+      int viralLoadConcept, int encounterType, int qualitativeConcept) {
 
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location "
+            + " AND e.encounter_datetime BETWEEN "
+            + getRequiredDate(":startDate")
+            + " AND :endDate "
+            + " AND o.value_numeric IS NOT NULL "
+            + " AND o.concept_id=%d "
+            + " AND e.encounter_type=%d "
+            + " UNION "
+            + " SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + " AND e.location_id = :location AND e.encounter_datetime BETWEEN "
+            + getRequiredDate(":startDate")
+            + " AND :endDate AND e.encounter_type=%d "
+            + " AND o.concept_id=%d ";
+    return String.format(query, viralLoadConcept, encounterType, encounterType, qualitativeConcept);
+  }
+
+  /**
+   * E3 exclusion
+   *
+   * @param viralLoadConcept
+   * @param encounterType
+   * @param qualitativeConcept
+   * @return
+   */
+  public static String getE3ExclusionCriteria(
+      int viralLoadConcept, int encounterType, int qualitativeConcept) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location "
+            + " AND e.encounter_datetime BETWEEN "
+            + getRequiredDate(":startDate")
+            + " AND :endDate "
+            + " AND o.value_numeric IS NOT NULL "
+            + " AND o.concept_id=%d "
+            + " AND e.encounter_type=%d "
+            + " AND o.value_numeric < 1000"
+            + " UNION "
+            + " SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + " AND e.location_id = :location AND e.encounter_datetime BETWEEN "
+            + getRequiredDate(":startDate")
+            + " AND e.encounter_type=%d "
+            + " AND o.concept_id=%d ";
+
+    return String.format(query, viralLoadConcept, encounterType, encounterType, qualitativeConcept);
+  }
+
+  /**
+   * F3 exclusions
+   *
+   * @param encounterType
+   * @return
+   */
+  public static String getF3Exclusion(int encounterType) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id "
+            + " WHERE e.encounter_type=%d AND e.location_id=:location "
+            + " AND e.encounter_datetime BETWEEN "
+            + getRequiredDate(":startDate")
+            + " AND :endDate AND p.voided=0 AND e.voided=0 ";
+    return String.format(query, encounterType);
+  }
+
+  static String getRequiredDate(String startDate) {
+    // startDate will be in the format yyyy-mm-dd for example 2000-01-01 00:00:00
     // int day = Integer.parseInt(datePart.split("-")[2]);
     // int month = Integer.parseInt(datePart.split("-")[1]);
     // if (!(day == 21 && month == 12)) {
@@ -245,6 +321,6 @@ public class ResumoMensalQueries {
     // }
     // return day + " and " + month;
 
-    return "Nicholas" + startDate;
+    return startDate;
   }
 }

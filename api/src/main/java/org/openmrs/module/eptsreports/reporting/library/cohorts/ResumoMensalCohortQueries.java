@@ -691,26 +691,17 @@ public class ResumoMensalCohortQueries {
             getViralLoadOrQualitative(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "VLX",
+        "Ex2",
         map(
-            getPatientsToExclude(
-                hivMetadata.getHivViralLoadConcept(),
-                hivMetadata.getAdultoSeguimentoEncounterType(),
-                "NUMERIC",
-                "NO",
-                "obs"),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "VLQ",
-        map(
-            getPatientsToExclude(
-                hivMetadata.getHivViralLoadQualitative(),
-                hivMetadata.getAdultoSeguimentoEncounterType(),
-                "CODED",
-                "NO",
-                "obs"),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.setCompositionString("(C AND VL) AND NOT (VLX OR VLQ)");
+            genericCohortQueries.generalSql(
+                "Ex2",
+                ResumoMensalQueries.getE2ExclusionCriteria(
+                    hivMetadata.getHivViralLoadConcept().getConceptId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("(C AND VL) AND NOT Ex2");
     return cd;
   }
 
@@ -742,27 +733,19 @@ public class ResumoMensalCohortQueries {
         map(
             gePatientsWithCodedObs(hivMetadata.getHivViralLoadQualitative()),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
+
     cd.addSearch(
-        "Ex1",
+        "Ex3",
         map(
-            getPatientsToExclude(
-                hivMetadata.getHivViralLoadConcept(),
-                hivMetadata.getAdultoSeguimentoEncounterType(),
-                "NUMERIC",
-                "YES",
-                "obs"),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "Ex2",
-        map(
-            getPatientsToExclude(
-                hivMetadata.getHivViralLoadQualitative(),
-                hivMetadata.getAdultoSeguimentoEncounterType(),
-                "CODED",
-                "NO",
-                "obs"),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.setCompositionString("(C AND (SUPP OR QUAL)) AND NOT (Ex1 OR Ex2)");
+            genericCohortQueries.generalSql(
+                "Ex3",
+                ResumoMensalQueries.getE3ExclusionCriteria(
+                    hivMetadata.getHivViralLoadConcept().getConceptId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("(C AND (SUPP OR QUAL)) AND NOT Ex3");
     return cd;
   }
 
@@ -854,16 +837,14 @@ public class ResumoMensalCohortQueries {
             getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonth(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "Ex",
+        "Fx3",
         map(
-            getPatientsToExclude(
-                hivMetadata.getApplicationForLaboratoryResearch(),
-                hivMetadata.getAdultoSeguimentoEncounterType(),
-                "ENC",
-                "NO",
-                "encounter"),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.setCompositionString("F1 AND NOT Ex");
+            genericCohortQueries.generalSql(
+                "Ex3",
+                ResumoMensalQueries.getF3Exclusion(
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("F1 AND NOT Fx3");
     return cd;
   }
 }
