@@ -227,7 +227,7 @@ public class ResumoMensalQueries {
         "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
             + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
             + " AND e.location_id = :location AND e.encounter_datetime BETWEEN "
-            + getRequiredDate(":startDate")
+            + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
             + " AND :endDate AND e.encounter_type=%d "
             + " AND o.concept_id=%d AND o.value_coded=%d";
     return String.format(query, encounterType, questionConceptId, answerConceptId);
@@ -248,7 +248,7 @@ public class ResumoMensalQueries {
         "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
             + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location "
             + " AND e.encounter_datetime BETWEEN "
-            + getRequiredDate(":startDate")
+            + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
             + " AND :endDate "
             + " AND o.value_numeric IS NOT NULL "
             + " AND o.concept_id=%d "
@@ -257,7 +257,7 @@ public class ResumoMensalQueries {
             + " SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
             + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
             + " AND e.location_id = :location AND e.encounter_datetime BETWEEN "
-            + getRequiredDate(":startDate")
+            + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
             + " AND :endDate AND e.encounter_type=%d "
             + " AND o.concept_id=%d ";
     return String.format(query, viralLoadConcept, encounterType, encounterType, qualitativeConcept);
@@ -277,7 +277,7 @@ public class ResumoMensalQueries {
         "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
             + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location "
             + " AND e.encounter_datetime BETWEEN "
-            + getRequiredDate(":startDate")
+            + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
             + " AND :endDate "
             + " AND o.value_numeric IS NOT NULL "
             + " AND o.concept_id=%d "
@@ -287,7 +287,7 @@ public class ResumoMensalQueries {
             + " SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
             + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
             + " AND e.location_id = :location AND e.encounter_datetime BETWEEN "
-            + getRequiredDate(":startDate")
+            + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
             + " AND e.encounter_type=%d "
             + " AND o.concept_id=%d ";
 
@@ -305,13 +305,21 @@ public class ResumoMensalQueries {
         "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id "
             + " WHERE e.encounter_type=%d AND e.location_id=:location "
             + " AND e.encounter_datetime BETWEEN "
-            + getRequiredDate(":startDate")
+            + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
             + " AND :endDate AND p.voided=0 AND e.voided=0 ";
     return String.format(query, encounterType);
   }
 
+  /**
+   * If startDate=”21-Dez-yyyy” where “yyyy” is any year, then newStartDate = startDateElse
+   * newStartDate = “21-Dez-(yyyy-1) where “yyyy” is the year from startDate
+   *
+   * @param startDate
+   * @return
+   */
   static String getRequiredDate(String startDate) {
     // startDate will be in the format yyyy-mm-dd for example 2000-01-01 00:00:00
+    String formattedString = startDate.replaceAll("\'", "");
     // int day = Integer.parseInt(datePart.split("-")[2]);
     // int month = Integer.parseInt(datePart.split("-")[1]);
     // if (!(day == 21 && month == 12)) {
@@ -321,6 +329,6 @@ public class ResumoMensalQueries {
     // }
     // return day + " and " + month;
 
-    return startDate;
+    return "Test " + formattedString + "Test2";
   }
 }
