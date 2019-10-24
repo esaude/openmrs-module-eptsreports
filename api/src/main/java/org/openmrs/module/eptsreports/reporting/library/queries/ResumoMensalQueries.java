@@ -309,26 +309,4 @@ public class ResumoMensalQueries {
             + " AND :endDate AND p.voided=0 AND e.voided=0 ";
     return String.format(query, encounterType);
   }
-
-  /**
-   * If startDate=”21-Dez-yyyy” where “yyyy” is any year, then newStartDate = startDateElse
-   * newStartDate = “21-Dez-(yyyy-1) where “yyyy” is the year from startDate
-   *
-   * @param startDate
-   * @return
-   */
-  static String getRequiredDate(String startDate) {
-    // startDate will be in the format yyyy-mm-dd for example 2000-01-01 00:00:00
-    String formattedString = startDate.replaceAll("\'", "");
-    // int day = Integer.parseInt(datePart.split("-")[2]);
-    // int month = Integer.parseInt(datePart.split("-")[1]);
-    // if (!(day == 21 && month == 12)) {
-
-    // } else {
-    // requiredDate = startDate;
-    // }
-    // return day + " and " + month;
-
-    return "Test " + formattedString + "Test2";
-  }
 }

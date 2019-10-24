@@ -19,13 +19,11 @@ import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraig
 
 import java.util.Date;
 import org.openmrs.Concept;
-import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.CodedObsOnFirstOrSecondEncounterCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.resumo.ExcludeCriteriaForEandFCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
@@ -595,26 +593,11 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  /** Patients to be excluded from the entire combination */
-  private CohortDefinition getPatientsToExclude(
-      Concept concept, EncounterType encounterType, String type, String limit, String option) {
-    CalculationCohortDefinition cd =
-        new CalculationCohortDefinition(
-            "Exclusions",
-            Context.getRegisteredComponents(ExcludeCriteriaForEandFCalculation.class).get(0));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addCalculationParameter("concept", concept);
-    cd.addCalculationParameter("encounterType", encounterType);
-    cd.addCalculationParameter("type", type);
-    cd.addCalculationParameter("limit", limit);
-    cd.addCalculationParameter("option", option);
-
-    return cd;
-  }
-
-  /** */
+  /**
+   * get patients who have viral load test done
+   *
+   * @return CohortDefinition
+   */
   private CohortDefinition getViralLoadTestDone() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Viral load test");
@@ -628,6 +611,12 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /**
+   * Get patients with coded observation
+   *
+   * @param question
+   * @return
+   */
   private CohortDefinition gePatientsWithCodedObs(Concept question) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Patients with Viral load qualitative done");
