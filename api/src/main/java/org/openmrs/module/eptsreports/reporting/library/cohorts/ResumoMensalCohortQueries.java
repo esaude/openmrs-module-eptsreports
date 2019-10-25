@@ -485,7 +485,7 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * Number of active patients in ART at the end of current month who performed Viral Load Test
+   * E1: Number of active patients in ART at the end of current month who performed Viral Load Test
    * (Annual Notification) B12 OR (B1 OR B2 OR B3) AND NOT (B5 OR B6 OR B7 OR B8)
    *
    * @return CohortDefinition
@@ -573,7 +573,7 @@ public class ResumoMensalCohortQueries {
         map(
             getPatientsWhoDied(),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
-    cd.setCompositionString("B12 OR (B1 OR B2 OR B3) AND NOT (B5 OR B6 OR B7 OR B8)");
+    cd.setCompositionString("(B12 OR (B1 OR B2 OR B3)) AND NOT (B5 OR B6 OR B7 OR B8)");
     return cd;
   }
 
@@ -769,8 +769,8 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * Number of patients who had clinical appointment during the reporting month and were screened
-   * for TB
+   * F2: Number of patients who had clinical appointment during the reporting month and were
+   * screened for TB
    *
    * @return CohortDefinition
    */
@@ -809,7 +809,7 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * Number of patients who had at least one clinical appointment during the year
+   * F3: Number of patients who had at least one clinical appointment during the year
    *
    * @return CohortDefinition
    */
