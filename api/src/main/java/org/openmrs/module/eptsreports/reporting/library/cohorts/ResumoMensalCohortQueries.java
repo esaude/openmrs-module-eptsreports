@@ -829,7 +829,7 @@ public class ResumoMensalCohortQueries {
         "Fx3",
         map(
             genericCohortQueries.generalSql(
-                "Ex3",
+                "Fx3",
                 ResumoMensalQueries.getF3Exclusion(
                     hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
             "startDate=${startDate},endDate=${endDate},location=${location}"));

@@ -242,7 +242,7 @@ public class ResumoMensalQueries {
    * @return String
    */
   public static String getE2ExclusionCriteria(
-      int viralLoadConcept, int encounterType, int qualitativeConcept) {
+      int viralLoadConcept, int qualitativeConcept, int encounterType) {
 
     String query =
         "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
@@ -250,17 +250,9 @@ public class ResumoMensalQueries {
             + " AND e.encounter_datetime BETWEEN "
             + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
             + " AND :endDate "
-            + " AND o.value_numeric IS NOT NULL "
-            + " AND o.concept_id=%d "
-            + " AND e.encounter_type=%d "
-            + " UNION "
-            + " SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
-            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
-            + " AND e.location_id = :location AND e.encounter_datetime BETWEEN "
-            + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
-            + " AND :endDate AND e.encounter_type=%d "
-            + " AND o.concept_id=%d ";
-    return String.format(query, viralLoadConcept, encounterType, encounterType, qualitativeConcept);
+            + " AND o.concept_id IN(%d, %d) "
+            + " AND e.encounter_type=%d ";
+    return String.format(query, viralLoadConcept, qualitativeConcept, encounterType);
   }
 
   /**
