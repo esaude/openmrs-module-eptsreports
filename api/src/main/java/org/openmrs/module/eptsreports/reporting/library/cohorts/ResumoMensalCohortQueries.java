@@ -512,17 +512,17 @@ public class ResumoMensalCohortQueries {
                 hivMetadata.getHivViralLoadConcept()),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "EX",
+        "E1x",
         map(
             genericCohortQueries.generalSql(
-                "E1exclusion",
+                "E1x",
                 ResumoMensalQueries.getE1ExclusionCriteria(
                     hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                     hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
                     hivMetadata.getHivViralLoadConcept().getConceptId())),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(common AND F) AND NOT EX");
+    cd.setCompositionString("(common AND F) AND NOT E1x");
     return cd;
   }
 
