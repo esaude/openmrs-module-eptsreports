@@ -778,11 +778,14 @@ public class ResumoMensalCohortQueries {
       getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthAndScreenedFoTb() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("Exclusions");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
     sqlCohortDefinition.setQuery(
         ResumoMensalQueries.getPatientsForF2ForExclusionFromMainQuery(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            tbMetadata.getHasTbSymptomsConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
             tbMetadata.getTBTreatmentPlanConcept().getConceptId()));
 
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -792,19 +795,16 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
-        "F1",
-        map(
-            getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonth(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
         "F2F",
         map(
             getPatientsWithCodedObsAndAnswers(
                 tbMetadata.getHasTbSymptomsConcept(), hivMetadata.getYesConcept()),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch("Ex", map(sqlCohortDefinition, "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "F2x",
+        map(sqlCohortDefinition, "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(F1 AND F2F) AND NOT Ex");
+    cd.setCompositionString("F2F AND NOT F2x");
     return cd;
   }
 
