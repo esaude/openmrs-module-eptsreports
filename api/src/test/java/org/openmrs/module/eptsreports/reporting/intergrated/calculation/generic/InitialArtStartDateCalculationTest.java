@@ -41,7 +41,7 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
     map.put(
         6,
         new SimpleResult(
-            new Timestamp(testsHelper.getDate("2018-06-21 00:00:00.0").getTime()),
+            new Timestamp(testsHelper.getDate("1998-09-01 00:00:00.0").getTime()),
             calculation,
             evaluationContext));
     // initiated ART by historical start date observation
