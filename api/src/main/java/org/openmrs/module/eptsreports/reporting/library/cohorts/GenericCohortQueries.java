@@ -139,9 +139,6 @@ public class GenericCohortQueries {
         "arvPediatriaInitialEncounterTypeId",
         String.valueOf(hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId()));
     parameters.put(
-        "masterCardResumoMensalEncounterTypeId",
-        String.valueOf(hivMetadata.getMasterCardEncounterType().getEncounterTypeId()));
-    parameters.put(
         "hivCareProgramId", String.valueOf(hivMetadata.getHIVCareProgram().getProgramId()));
     parameters.put("artProgramId", String.valueOf(hivMetadata.getARTProgram().getProgramId()));
     return generalSql("baseCohort", BaseQueries.getBaseCohortQuery(parameters));

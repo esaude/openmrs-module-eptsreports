@@ -22,6 +22,7 @@ public class BaseQueries {
   // State ids are left as hard coded for now because all reference same
   // concept
   // they map to concept_id=1369 - TRANSFER FROM OTHER FACILITY
+  // TODO: Query needs to be refactored
   public static String getBaseCohortQuery(Map<String, String> parameters) {
     String query =
         "SELECT p.patient_id FROM patient p JOIN encounter e ON e.patient_id=p.patient_id "
@@ -32,8 +33,7 @@ public class BaseQueries {
         StringUtils.join(
             Arrays.asList(
                 parameters.get("arvAdultInitialEncounterTypeId"),
-                parameters.get("arvPediatriaInitialEncounterTypeId"),
-                parameters.get("masterCardResumoMensalEncounterTypeId")),
+                parameters.get("arvPediatriaInitialEncounterTypeId")),
             ',');
     String programs =
         StringUtils.join(
