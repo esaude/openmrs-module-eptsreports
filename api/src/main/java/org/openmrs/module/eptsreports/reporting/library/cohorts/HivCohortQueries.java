@@ -159,7 +159,7 @@ public class HivCohortQueries {
     String query =
         "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
-            + "WHERE p.voided=0 and e.voided=0 AND o.voided=0 AND e.encounter_type IN (%d, %d, %d) "
+            + "WHERE p.voided=0 and e.voided=0 AND o.voided=0 AND e.encounter_type IN (%d, %d, %d,%d) "
             + "AND o.concept_id=%d "
             + "AND o.value_datetime IS NOT NULL AND o.value_datetime <= :onOrBefore AND e.location_id=:location GROUP BY p.patient_id";
     patientWithHistoricalDrugStartDateObs.setQuery(
@@ -168,6 +168,7 @@ public class HivCohortQueries {
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHistoricalDrugStartDateConcept().getConceptId()));
     patientWithHistoricalDrugStartDateObs.addParameter(
         new Parameter("onOrBefore", "onOrBefore", Date.class));
