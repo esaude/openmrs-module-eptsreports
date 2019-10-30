@@ -23,8 +23,10 @@ import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
@@ -36,6 +38,9 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.map;
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 /** Defines all of the TxNew Cohort Definition instances we want to expose for EPTS */
 @Component
@@ -185,19 +190,81 @@ public class TxNewCohortQueries {
     txNewComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     txNewComposition.addParameter(new Parameter("location", "location", Location.class));
 
-    Mapped<CohortDefinition> startedART =
-        Mapped.map(
-            genericCohorts.getStartedArtOnPeriod(false, true),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}");
-    Mapped<CohortDefinition> transferredIn =
-        Mapped.map(
-            hivCohortQueries.getPatientsTransferredFromOtherHealthFacility(),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}");
+    CohortDefinition startedART = genericCohorts.getStartedArtOnPeriod(false, true);
+    CohortDefinition transferredIn = getPatientsTransferredFromOtherHealthFacility();
 
-    txNewComposition.getSearches().put("startedART", startedART);
-    txNewComposition.getSearches().put("transferredIn", transferredIn);
+    txNewComposition.getSearches().put("startedART", mapStraightThrough(startedART));
+    txNewComposition.getSearches().put("transferredIn", mapStraightThrough(transferredIn));
 
     txNewComposition.setCompositionString("startedART NOT transferredIn");
     return txNewComposition;
+  }
+
+  /**
+   * Looks for patients enrolled on ART program (program 2=SERVICO TARV - TRATAMENTO), transferred
+   * from other health facility (program workflow state is 29=TRANSFER FROM OTHER FACILITY) or
+   * marked as transferred in via mastercard between start date and end date
+   *
+   * @return CohortDefinition
+   */
+  @DocumentedDefinition(value = "transferredFromOtherHealthFacility")
+  private CohortDefinition getPatientsTransferredFromOtherHealthFacility() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("transferredFromOtherHealthFacility");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    CohortDefinition transferredInViaProgram = getTransferredInViaProgram();
+    CohortDefinition mastercard = getTransferredInViaMastercard();
+
+    cd.addSearch("program", mapStraightThrough(transferredInViaProgram));
+    cd.addSearch("mastercard", mapStraightThrough(mastercard));
+
+    cd.setCompositionString("program or mastercard");
+
+    return cd;
+  }
+
+  private CohortDefinition getTransferredInViaProgram() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("transferredFromOtherHealthFacility");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    String query =
+        "select p.patient_id from patient p "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%d"
+            + " and ps.state=%d"
+            + " and ps.start_date=pg.date_enrolled"
+            + " and ps.start_date between :onOrAfter and :onOrBefore and location_id=:location "
+            + "group by p.patient_id";
+
+    cd.setQuery(
+        String.format(
+            query,
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getTransferredFromOtherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
+
+    return cd;
+  }
+
+  private CohortDefinition getTransferredInViaMastercard() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.setQuery(
+        ResumoMensalQueries.getPatientsTransferredFromAnotherHealthFacilityByEndOfPreviousMonth(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId()));
+    return cd;
   }
 }
