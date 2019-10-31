@@ -882,7 +882,7 @@ public class HivMetadata extends ProgramsMetadata {
     return getProgramWorkflowState(artProgramUuid, "2", "PATIENT HAS DIED");
   }
 
-  public ProgramWorkflowState getPatientIsBreastfeedingWorkflowState() {
+  public ProgramWorkflowState getPatientGaveBirthWorkflowState() {
     String ptvProgramUuid =
         Context.getAdministrationService().getGlobalProperty(gpPtvEtvProgramUuid);
     return getProgramWorkflowState(ptvProgramUuid, "5", "GAVE BIRTH");

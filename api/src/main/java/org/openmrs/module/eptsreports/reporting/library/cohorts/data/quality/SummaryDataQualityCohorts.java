@@ -63,7 +63,7 @@ public class SummaryDataQualityCohorts {
             hivMetadata.getBreastfeeding().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getPtvEtvProgram().getProgramId(),
-            hivMetadata.getPatientIsBreastfeedingWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getPatientGaveBirthWorkflowState().getProgramWorkflowStateId(),
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
 
