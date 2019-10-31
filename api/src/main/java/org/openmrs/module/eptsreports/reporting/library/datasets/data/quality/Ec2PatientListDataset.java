@@ -49,7 +49,7 @@ public class Ec2PatientListDataset extends BaseDataSet {
             hivMetadata.getBreastfeeding().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getPtvEtvProgram().getProgramId(),
-            hivMetadata.getPatientIsBreastfeedingWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getPatientGaveBirthWorkflowState().getProgramWorkflowStateId(),
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
     return dsd;
