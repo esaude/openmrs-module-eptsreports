@@ -126,6 +126,10 @@
  	<program program_id="8" concept_id="7777023" creator="1" date_created="2019-03-02 11:30:33.0" retired="false" name="PTV" description="Programa de representa o estado de gravidez de uma mulher" uuid="06057245-ca21-43ab-a02f-e861d7e54593"/>
 	<program program_id="9" concept_id="7777030" creator="1" date_created="2012-02-29 09:46:38.0" changed_by="1" date_changed="2013-07-24 11:45:49.0" retired="false" name="SERVICO TARV - TRATAMENTO" description="Programa de seguimento e tratamento aos pacientes HIV+" uuid="efe2481f-9e75-4515-8d5a-86bfde2b5ad3"/>
 
+	<program_workflow program_workflow_id="5" program_id="8" concept_id="7777024" creator="1" date_created="2012-06-26 11:39:12" retired="0" changed_by="1" date_changed="2013-07-24 07:56:14" />
+
+	<program_workflow_state program_workflow_state_id="27" program_workflow_id="5" concept_id="7777028" initial="0" terminal="1" creator="1" date_created="2012-06-26 11:40:22" retired="0" changed_by="1" date_changed="2013-07-24 07:56:14" />
+
 	<encounter_type encounter_type_id="6777001" name="Child Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777001"/>
   	<encounter_type encounter_type_id="6777002" name="Adult Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777002"/>
   	<encounter_type encounter_type_id="6777003" name="ARV Pharmacia" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777003"/>
