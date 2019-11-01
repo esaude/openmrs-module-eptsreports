@@ -650,6 +650,29 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // Concept 23722 APPLICATION FOR LABORATORY RESEARCH
+  public Concept getApplicationForLaboratoryResearch() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.applicationForLaboratoryResearch");
+    return getConcept(uuid);
+  }
+  // Concept 1305 HIV VIRAL LOAD, QUALITATIVE
+  public Concept getHivViralLoadQualitative() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.viralLoadQualitativeConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept  1465
+  public Concept getDateOfLastMenstruationConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.dateOfLastMenstruationConcept");
+    return getConcept(uuid);
+  }
+
   public Concept getKeyPopulationConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -678,29 +701,6 @@ public class HivMetadata extends ProgramsMetadata {
   public Concept getSexWorkerConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.sexWorkerConceptUuid");
-    return getConcept(uuid);
-  }
-
-  // Concept 23722 APPLICATION FOR LABORATORY RESEARCH
-  public Concept getApplicationForLaboratoryResearch() {
-    String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty("eptsreports.applicationForLaboratoryResearch");
-    return getConcept(uuid);
-  }
-  // Concept 1305 HIV VIRAL LOAD, QUALITATIVE
-  public Concept getHivViralLoadQualitative() {
-    String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty("eptsreports.viralLoadQualitativeConceptUuid");
-    return getConcept(uuid);
-  }
-
-  // Concept  1465
-  public Concept getDateOfLastMenstruationConcept() {
-    String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty("eptsreports.dateOfLastMenstruationConcept");
     return getConcept(uuid);
   }
 
