@@ -91,12 +91,7 @@ public class TxNewBreastfeedingDateCalculation extends AbstractPatientCalculatio
       allEligibleDates.add(mastercardBreastfeedingObs.getEncounter().getEncounterDatetime());
     }
 
-    Iterator<Date> i = allEligibleDates.iterator();
-    while (i.hasNext()) {
-      if (i.next() == null) {
-        i.remove();
-      }
-    }
+    allEligibleDates.removeAll(Collections.singleton(null));
 
     Date resultantDate = null;
     if (allEligibleDates.size() > 0) {
