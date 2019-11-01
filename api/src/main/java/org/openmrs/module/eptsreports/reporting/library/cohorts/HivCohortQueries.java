@@ -20,8 +20,10 @@ import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -186,5 +188,49 @@ public class HivCohortQueries {
     ProgramWorkflowState state = hivMetadata.getArtAbandonedWorkflowState();
     return genericCohortQueires.getPatientsBasedOnPatientStatesBeforeDate(
         artProgram.getProgramId(), state.getProgramWorkflowStateId());
+  }
+
+  public CohortDefinition getHomosexualKeyPopCohort() {
+    CodedObsCohortDefinition cd = (CodedObsCohortDefinition) getKeyPopulationCohort();
+    cd.setName("Men who have sex with men");
+    cd.setValueList(Collections.singletonList(hivMetadata.getHomosexualConcept()));
+    return cd;
+  }
+
+  public CohortDefinition getDrugUserKeyPopCohort() {
+    CodedObsCohortDefinition cd = (CodedObsCohortDefinition) getKeyPopulationCohort();
+    cd.setName("People who inject drugs");
+    cd.setValueList(Collections.singletonList(hivMetadata.getDrugUseConcept()));
+    return cd;
+  }
+
+  public CohortDefinition getImprisonmentKeyPopCohort() {
+    CodedObsCohortDefinition cd = (CodedObsCohortDefinition) getKeyPopulationCohort();
+    cd.setName("People in prison and other closed settings");
+    cd.setValueList(Collections.singletonList(hivMetadata.getImprisonmentConcept()));
+    return cd;
+  }
+
+  public CohortDefinition getSexWorkerKeyPopCohort() {
+    CodedObsCohortDefinition cd = (CodedObsCohortDefinition) getKeyPopulationCohort();
+    cd.setName("Female sex workers");
+    cd.setValueList(Collections.singletonList(hivMetadata.getSexWorkerConcept()));
+    return cd;
+  }
+
+  private CohortDefinition getKeyPopulationCohort() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.setName("Key population");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("locationList", "location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setQuestion(hivMetadata.getKeyPopulationConcept());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getHomosexualConcept());
+    cd.addValue(hivMetadata.getDrugUseConcept());
+    cd.addValue(hivMetadata.getImprisonmentConcept());
+    cd.addValue(hivMetadata.getSexWorkerConcept());
+    return cd;
   }
 }

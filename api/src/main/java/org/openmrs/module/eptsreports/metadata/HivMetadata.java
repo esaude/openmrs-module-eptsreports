@@ -628,6 +628,37 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  public Concept getKeyPopulationConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.keyPopulationConceptUuid");
+    return getConcept(uuid);
+  }
+
+  public Concept getHomosexualConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.homosexualConceptUuid");
+    return getConcept(uuid);
+  }
+
+  public Concept getDrugUseConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.drugUseConceptUuid");
+    return getConcept(uuid);
+  }
+
+  public Concept getImprisonmentConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.imprisonmentConceptUuid");
+    return getConcept(uuid);
+  }
+
+  public Concept getSexWorkerConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.sexWorkerConceptUuid");
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
