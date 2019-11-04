@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -35,13 +36,9 @@ public class TxCurrCohortQueries {
           + "and obs.obs_datetime = (select max(encounter.encounter_datetime) from encounter "
           + "where encounter.encounter_type in (%s) and encounter.patient_id = obs.person_id and encounter.location_id = obs.location_id and encounter.voided = false and encounter.encounter_datetime <= :onOrBefore) ";
 
-  private static final int OLD_SPEC_ABANDONMENT_DAYS = 60;
-
-  private static final int CURRENT_SPEC_ABANDONMENT_DAYS = 31;
-
   @Autowired private HivMetadata hivMetadata;
 
-  @Autowired private GenericCohortQueries genericCohortQueries;
+  @Autowired private CommonMetadata commonMetadata;
 
   @Autowired private HivCohortQueries hivCohortQueries;
 
@@ -53,97 +50,121 @@ public class TxCurrCohortQueries {
   @DocumentedDefinition(value = "getTxCurrCompositionCohort")
   public CohortDefinition getTxCurrCompositionCohort(String cohortName, boolean currentSpec) {
 
-    final int abandonmentDays =
-        currentSpec ? CURRENT_SPEC_ABANDONMENT_DAYS : OLD_SPEC_ABANDONMENT_DAYS;
     CompositionCohortDefinition txCurrComposition = new CompositionCohortDefinition();
     txCurrComposition.setName(cohortName);
 
     txCurrComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     txCurrComposition.addParameter(new Parameter("location", "location", Location.class));
-    txCurrComposition.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
     txCurrComposition.addParameter(new Parameter("locations", "location", Location.class));
 
-    CohortDefinition inARTProgramAtEndDate =
-        genericCohortQueries.createInProgram("InARTProgram", hivMetadata.getARTProgram());
     txCurrComposition
         .getSearches()
         .put(
-            "1",
-            EptsReportUtils.map(
-                inARTProgramAtEndDate, "onOrBefore=${onOrBefore},locations=${location}"));
-    txCurrComposition
-        .getSearches()
-        .put(
-            "2",
+            "1.a",
             EptsReportUtils.map(
                 getPatientWithSTARTDRUGSObsBeforeOrOnEndDate(),
-                "onOrBefore=${onOrBefore},location=${location}"));
+                "onOrBefore=${onOrBefore},locations=${location}"));
+
     txCurrComposition
         .getSearches()
         .put(
-            "3",
+            "1.b",
             EptsReportUtils.map(
                 hivCohortQueries.getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate(),
-                "onOrBefore=${onOrBefore},location=${location}"));
+                "onOrBefore=${onOrBefore},locations=${location}"));
     txCurrComposition
         .getSearches()
         .put(
-            "4",
+            "1.c",
+            EptsReportUtils.map(
+                getPatientEnrolledInArtProgramByEndReportingPeriod(),
+                "onOrBefore=${onOrBefore},locations=${location}"));
+
+    txCurrComposition
+        .getSearches()
+        .put(
+            "1.d",
             EptsReportUtils.map(
                 getPatientWithFirstDrugPickupEncounterBeforeOrOnEndDate(),
-                "onOrBefore=${onOrBefore},location=${location}"));
+                "onOrBefore=${onOrBefore},locations=${location}"));
+
     txCurrComposition
         .getSearches()
         .put(
-            "5",
+            "1.e",
             EptsReportUtils.map(
-                getPatientsWhoLeftARTProgramBeforeOrOnEndDate(),
-                "onOrBefore=${onOrBefore},location=${location}"));
+                getPatientsWhoHavePickedUpDrugsMasterCardByEndReporingPeriod(),
+                "onOrBefore=${onOrBefore},locations=${location}"));
+
     txCurrComposition
         .getSearches()
         .put(
-            "6",
+            "2.1",
             EptsReportUtils.map(
-                getPatientsThatMissedNexPickup(),
-                String.format(
-                    "onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s",
-                    abandonmentDays)));
+                getPatientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate(),
+                "onOrBefore=${onOrBefore},locations=${location}"));
     txCurrComposition
         .getSearches()
         .put(
-            "7",
+            "2.2",
             EptsReportUtils.map(
-                getPatientsThatDidNotMissNextConsultation(),
-                String.format(
-                    "onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s",
-                    abandonmentDays)));
+                getDeadPatientsInDemographiscByReportingEndDate(),
+                "onOrBefore=${onOrBefore},locations=${location}"));
     txCurrComposition
         .getSearches()
         .put(
-            "8",
+            "2.3",
             EptsReportUtils.map(
-                getPatientsReportedAsAbandonmentButStillInPeriod(),
-                String.format(
-                    "onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s",
-                    abandonmentDays)));
+                getPatientDeathRegisteredInLastHomeVisitCardByReportingEndDate(),
+                "onOrBefore=${onOrBefore},locations=${location}"));
     txCurrComposition
         .getSearches()
         .put(
-            "11",
+            "2.4",
             EptsReportUtils.map(
-                getPatientsWithNextPickupDate(), "onOrBefore=${onOrBefore},location=${location}"));
+                getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(),
+                "onOrBefore=${onOrBefore},locations=${location}"));
     txCurrComposition
         .getSearches()
         .put(
-            "12",
+            "2.5",
             EptsReportUtils.map(
-                getPatientsWithNextConsultationDate(),
-                "onOrBefore=${onOrBefore},location=${location}"));
+                getTransferredOutPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(),
+                "onOrBefore=${onOrBefore},locations=${location}"));
+    txCurrComposition
+        .getSearches()
+        .put(
+            "2.6",
+            EptsReportUtils.map(
+                getPatientSuspendedInFichaResumeAndClinicaOfMasterCardByReportEndDate(),
+                "onOrBefore=${onOrBefore},locations=${location}"));
+    txCurrComposition
+        .getSearches()
+        .put(
+            "2.7",
+            EptsReportUtils.map(
+                getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultation(),
+                "locations=${location}"));
+    txCurrComposition
+        .getSearches()
+        .put(
+            "3.1",
+            EptsReportUtils.map(
+                getPatientHavingLastScheduledDrugPickupDate(),
+                "onOrBefore=${onOrBefore},locations=${location}"));
+    txCurrComposition
+        .getSearches()
+        .put(
+            "3.2",
+            EptsReportUtils.map(
+                getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(),
+                "locations=${location}"));
 
     String compositionString;
     if (currentSpec) {
       compositionString =
-          "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR ((6 OR (NOT 11)) AND (NOT (7 OR 8))))) AND (11 OR 12)";
+          " (1.a or 1.b or 1.c or 1.d or 1.e) AND NOT ((2.1 OR 2.2 OR 2.3 OR 2.4 OR 2.5 OR 2.6) AND NOT 2.7 ) AND NOT (3.1 OR 3.2)";
+
     } else {
       compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND (NOT (7 OR 8)))))";
     }
@@ -153,6 +174,8 @@ public class TxCurrCohortQueries {
   }
 
   /**
+   * 1.d
+   *
    * @return Cohort of patients with first drug pickup (encounter type 18=S.TARV: FARMACIA) before
    *     or on end date
    */
@@ -182,14 +205,14 @@ public class TxCurrCohortQueries {
    *     9=S.TARV: PEDIATRIA SEGUIMENTO) before or on end date
    */
   @DocumentedDefinition(value = "patientWithSTARTDRUGSObs")
-  private CohortDefinition getPatientWithSTARTDRUGSObsBeforeOrOnEndDate() {
+  public CohortDefinition getPatientWithSTARTDRUGSObsBeforeOrOnEndDate() {
     SqlCohortDefinition patientWithSTARTDRUGSObs = new SqlCohortDefinition();
     patientWithSTARTDRUGSObs.setName("patientWithSTARTDRUGSObs");
     String query =
         "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "INNER JOIN obs o ON o.encounter_id=e.encounter_id "
             + "WHERE e.voided=0 AND o.voided=0 AND p.voided=0 AND e.encounter_type in (%d, %d, %d) "
-            + "AND o.concept_id=%d AND o.value_coded in (%d, %d) "
+            + "AND o.concept_id=%d AND o.value_coded in (%d) "
             + "AND e.encounter_datetime <= :onOrBefore AND e.location_id=:location GROUP BY p.patient_id";
     patientWithSTARTDRUGSObs.setQuery(
         String.format(
@@ -198,8 +221,7 @@ public class TxCurrCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
-            hivMetadata.getStartDrugsConcept().getConceptId(),
-            hivMetadata.getTransferFromOtherFacilityConcept().getConceptId()));
+            hivMetadata.getStartDrugsConcept().getConceptId()));
     patientWithSTARTDRUGSObs.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     patientWithSTARTDRUGSObs.addParameter(new Parameter("location", "location", Location.class));
     return patientWithSTARTDRUGSObs;
@@ -367,6 +389,434 @@ public class TxCurrCohortQueries {
             encounterTypes));
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
+    return definition;
+  }
+
+  /**
+   * 1.e All patients who have picked up drugs (Recepção Levantou ARV) – Master Card by end of
+   * reporting period Encounter Type Ids = 52 The earliest “Data de Levantamento” (Concept Id 23866
+   * value_datetime) <= endDate
+   *
+   * @return
+   */
+  @DocumentedDefinition(value = "patientsWhoHavePickedUpDrugsMasterCardByEndReporingPeriod")
+  public CohortDefinition getPatientsWhoHavePickedUpDrugsMasterCardByEndReporingPeriod() {
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("patientsWhoHavePickedUpDrugsMasterCardByEndReporingPeriod");
+
+    String query =
+        " select p.patient_id "
+            + " from patient p "
+            + " inner join encounter e on  e.patient_id=p.patient_id "
+            + " inner join obs o on  o.encounter_id=e.encounter_id "
+            + " where  e.encounter_type = %s and o.concept_id = %s "
+            + " and e.encounter_datetime <= :onOrBefore and e.location_id = :location "
+            + " and p.voided =0 and e.voided=0  and o.voided = 0 group by p.patient_id";
+
+    definition.setQuery(
+        String.format(
+            query,
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickup().getConceptId()));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
+  }
+
+  /**
+   * 2.1 All deaths, Transferred-out and Suspensions registered in Patient Program State by
+   * reporting end date Patient_program.program_id =2 = SERVICO TARV-TRATAMENTO and
+   * Patient_State.state = 10 (Died) or Patient_State.state = 7 (Transferred-out) or
+   * Patient_State.state = 8 (Suspended) and Patient_State.start_date <= endDate
+   * Patient_state.end_date is null
+   */
+  @DocumentedDefinition(
+      value = "patientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate")
+  private CohortDefinition
+      getPatientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate() {
+
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("patientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate");
+
+    String states =
+        StringUtils.join(
+            Arrays.asList(
+                hivMetadata
+                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                    .getProgramWorkflowStateId(),
+                hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId(),
+                hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId()),
+            ',');
+
+    String query =
+        " select p.patient_id from patient p "
+            + " inner join patient_program pg on p.patient_id=pg.patient_id "
+            + " inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + " where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s "
+            + " and ps.state in (%s) and ps.end_date is null and ps.start_date<=:onOrBefore "
+            + "and pg.location_id=:location group by p.patient_id  ";
+
+    definition.setQuery(String.format(query, hivMetadata.getARTProgram().getProgramId(), states));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
+  }
+
+  /**
+   * 2.2 All deaths registered in Patient Demographics by reporting end date Person.Dead=1 and
+   * death_date <= :endDate
+   */
+  @DocumentedDefinition(value = "deadPatientsInDemographiscByReportingEndDate")
+  public CohortDefinition getDeadPatientsInDemographiscByReportingEndDate() {
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("deadPatientsInDemographiscByReportingEndDate");
+    String query =
+        "select p.patient_id  "
+            + " from patient p "
+            + " inner join person prs on prs.person_id=p.patient_id "
+            + " inner join  encounter e on  e.patient_id=p.patient_id "
+            + " where prs.dead=1 and prs.death_date <= :onOrBefore and p.voided=0 and prs.voided=0 "
+            + " and e.location_id = :location group by p.patient_id ";
+
+    definition.setQuery(query);
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
+  }
+
+  /**
+   * 2.3 All deaths registered in Last Home Visit Card by reporting end date Last Home Visit Card
+   * (Encounter Type 21, 36, 37) Patient not found (Concept ID 2003) = NO (Concept ID 1066) Reason
+   * of Not Finding (Concept ID 2031) = Died (COncpet Id 1383) Last Encounter_datetime <= endDate
+   *
+   * @return
+   */
+  @DocumentedDefinition(value = "patientDeathRegisteredInLastHomeVisitCardByReportingEndDate")
+  public CohortDefinition getPatientDeathRegisteredInLastHomeVisitCardByReportingEndDate() {
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("patientDeathRegisteredInLastHomeVisitCardByReportingEndDate");
+
+    String encounterTypes =
+        StringUtils.join(
+            Arrays.asList(
+                hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+                hivMetadata.getVisitaApoioReintegracaoParteAEncounterType().getEncounterTypeId(),
+                hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId()),
+            ',');
+
+    String query =
+        "select  p.patient_id"
+            + " from patient p "
+            + " inner join encounter e on e.patient_id=p.patient_id "
+            + " inner join obs o  on o.encounter_id=e.encounter_id "
+            + " where  p.voided=0  and e.voided=0 and o.voided=0 "
+            + " and e.encounter_type in (%s) and o.concept_id in (%s,%s) and o.value_coded in (%s,%s) "
+            + " and e.encounter_datetime <= :onOrBefore and  e.location_id = :location group by p.patient_id ";
+
+    definition.setQuery(
+        String.format(
+            query,
+            encounterTypes,
+            hivMetadata.getPatientFoundConcept().getConceptId(),
+            hivMetadata.getReasonPatientNotFound().getConceptId(),
+            hivMetadata.getNoConcept().getConceptId(),
+            hivMetadata.getPatientIsDead().getConceptId()));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
+  }
+
+  /**
+   * 2.4 All deaths registered in Ficha Resumo and Ficha Clinica of Master Card by reporting end
+   * date Encounter Type ID= 6 or 53 Estado de Permanencia (Concept Id 6272) = Dead (Concept ID
+   * 1366) Encounter_datetime <= endDate
+   */
+  @DocumentedDefinition(value = "deadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate")
+  public CohortDefinition getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate() {
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("deadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate");
+
+    String query =
+        "select  p.patient_id "
+            + "from patient p "
+            + "inner join encounter e on e.patient_id=p.patient_id "
+            + "inner join obs o on o.encounter_id=e.encounter_id "
+            + "where e.encounter_type in (%s,%s) and p.voided=0  and e.voided=0 and o.voided=0 "
+            + "and o.concept_id=%s and   o.value_coded=%s "
+            + "and e.location_id = :location and e.encounter_datetime <= :onOrBefore "
+            + "group by p.patient_id";
+
+    definition.setQuery(
+        String.format(
+            query,
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getStateOfStayPriorArtPatientConcept().getConceptId(),
+            hivMetadata.getPatientHasDiedConcept().getConceptId()));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
+  }
+
+  /**
+   * 2.5 All tranferred-outs registered in Ficha Resumo and Ficha Clinica of Master Card by
+   * reporting end date Encounter Type ID= 6 or 53 Estado de Permanencia (Concept Id 6272) =
+   * Transferred-out (Concept ID 1706) Encounter_datetime <= endDate
+   */
+  @DocumentedDefinition(
+      value = "transferredOutPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate")
+  public CohortDefinition
+      getTransferredOutPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate() {
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("transferredOutPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate");
+
+    String query =
+        "select  p.patient_id "
+            + "from patient p "
+            + "inner join encounter e on e.patient_id=p.patient_id "
+            + "inner join obs o on o.encounter_id=e.encounter_id "
+            + "where e.encounter_type in (%s,%s) and p.voided=0  and e.voided=0 and o.voided=0 "
+            + "and o.concept_id=%s and   o.value_coded=%s "
+            + "and e.location_id = :location and e.encounter_datetime <= :onOrBefore "
+            + "group by p.patient_id ";
+
+    definition.setQuery(
+        String.format(
+            query,
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getStateOfStayPriorArtPatientConcept().getConceptId(),
+            hivMetadata.getTransferredOutConcept().getConceptId()));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
+  }
+
+  /**
+   * 2.6 All suspensions registered in Ficha Resumo and Ficha Clinica of Master Card by reporting
+   * end date Encounter Type ID= 6 or 53 Estado de Permanencia (Concept Id 6272) = Suspended
+   * (Concept ID 1709) Encounter_datetime <= endDate
+   */
+  @DocumentedDefinition(
+      value = "patientSuspendedInFichaResumeAndClinicaOfMasterCardByReportEndDate")
+  public CohortDefinition getPatientSuspendedInFichaResumeAndClinicaOfMasterCardByReportEndDate() {
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("patientSuspendedInFichaResumeAndClinicaOfMasterCardByReportEndDate");
+
+    String query =
+        "select  p.patient_id "
+            + "from patient p "
+            + "inner join encounter e on e.patient_id=p.patient_id "
+            + "inner join obs o on o.encounter_id=e.encounter_id "
+            + "where e.encounter_type in (%s,%s) and p.voided=0  and e.voided=0 and o.voided=0 "
+            + "and o.concept_id=%s and   o.value_coded=%s "
+            + "and e.location_id = :location and e.encounter_datetime <= :onOrBefore "
+            + "group by p.patient_id ";
+
+    definition.setQuery(
+        String.format(
+            query,
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getStateOfStayPriorArtPatientConcept().getConceptId(),
+            hivMetadata.getSuspendedTreatmentConcept().getConceptId()));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
+  }
+
+  /**
+   * 2.7 Except all patients who after the most recent date from 2.1 to 2.6, have a drugs pick up or
+   * consultation: Encounter Type ID= 6, 9, 18 and encounter_datetime> the most recent date or
+   * Encounter Type ID = 52 and “Data de Levantamento” (Concept Id 23866 value_datetime) > the most
+   * recent date.
+   */
+  @DocumentedDefinition(value = "patientWhoAfterMostRecentDateHaveDrusPickupOrConsultation")
+  public CohortDefinition getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultation() {
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientWhoAfterMostRecentDateHaveDrusPickupOrConsultation");
+
+    String query =
+        " select p.patient_id "
+            + " from patient p "
+            + " inner join encounter e on  e.patient_id = p.patient_id "
+            + " where  p.voided=0  and e.voided=0 "
+            + " and e.encounter_type in (%s,%s,%s)  "
+            + " and e.encounter_datetime = (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id) "
+            + " and e.location_id= :location group by p.patient_id "
+            + " union "
+            + " select p.patient_id "
+            + " from patient p "
+            + " inner join encounter e on e.patient_id=p.patient_id "
+            + " inner join obs o on o.encounter_id=e.encounter_id "
+            + " where e.encounter_type = %s and p.voided=0  and e.voided=0 and o.voided=0 "
+            + " and o.concept_id=%s  "
+            + " and e.encounter_datetime = (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id) "
+            + " and e.location_id= 6 group by p.patient_id ";
+
+    definition.setQuery(
+        String.format(
+            query,
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickup().getConceptId()));
+
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
+  }
+
+  /**
+   * 3.1.All patients having the most recent date between last scheduled drug pickup date (Fila) or
+   * last scheduled consultation date (Ficha Seguimento or Ficha Clínica) or 30 days after last ART
+   * pickup date (Recepção – Levantou ARV) and adding 30 days and this date being less than
+   * reporting end Date. (For more clarifications refer to scenario Table 1)
+   */
+  @DocumentedDefinition(value = "patientHavingLastScheduledDrugPickupDate")
+  public CohortDefinition getPatientHavingLastScheduledDrugPickupDate() {
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientHavingLastScheduledDrugPickupDate");
+
+    String query =
+        "select p.patient_id   "
+            + "from patient p "
+            + "inner join encounter e on e.patient_id=p.patient_id "
+            + "inner join obs o on o.encounter_id=e.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 "
+            + "and e.encounter_type= %s and o.value_datetime is not null "
+            + "and o.concept_id= %s  "
+            + "and e.encounter_datetime = (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id)   "
+            + "and e.encounter_datetime <  date_add(:onOrBefore, interval 30 day) and e.location_id = :location "
+            + "union  "
+            + "select p.patient_id   "
+            + "from patient p "
+            + "inner join encounter e on e.patient_id=p.patient_id "
+            + "inner join obs o on o.encounter_id=e.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 "
+            + "and e.encounter_type in (%s,%s) and o.concept_id= %s  "
+            + "and e.encounter_datetime = (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id) "
+            + "and e.encounter_datetime <  date_add(:onOrBefore, interval 30 day) and e.location_id = :location "
+            + "union "
+            + "select p.patient_id   "
+            + "from patient p "
+            + "inner join encounter e on e.patient_id=p.patient_id "
+            + "inner join obs o on o.encounter_id=e.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 "
+            + "and o.concept_id=%s and o.value_datetime is not null and e.encounter_type = %s "
+            + "and e.encounter_datetime = (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id) "
+            + "and e.encounter_datetime <  date_add(:onOrBefore, interval 30 day) and e.location_id = :location";
+
+    definition.setQuery(
+        String.format(
+            query,
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            commonMetadata.getReturnVisitDateConcept().getConceptId(),
+            hivMetadata.getArtDatePickup().getConceptId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
+  }
+  /**
+   * 3.2 All patients who do not have the next scheduled drug pick up date (Fila) and next scheduled
+   * consultation date (Ficha de Seguimento or Ficha Clinica – Master Card) and ART Pickup date
+   * (Recepção – Levantou ARV).
+   *
+   * @return
+   */
+  @DocumentedDefinition(value = "patientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup")
+  public CohortDefinition getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup() {
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("patientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup");
+    String query =
+        "select p.patient_id   "
+            + "from patient p "
+            + "inner join encounter e on e.patient_id=p.patient_id "
+            + "inner join obs o on o.encounter_id=e.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 "
+            + "and e.encounter_type not in (%s,%s,%s,%s)  "
+            + "and  e.location_id= :location "
+            + "group by p.patient_id "
+            + "union "
+            + "select p.patient_id   "
+            + "from patient p "
+            + "inner join encounter e on e.patient_id=p.patient_id "
+            + "inner join obs o on o.encounter_id=e.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 "
+            + "and  e.encounter_datetime =  (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id) "
+            + "and e.encounter_type in (%s,%s,%s)    "
+            + "and (o.concept_id not in (%s, %s) or o.encounter_id is  null) "
+            + "and  e.location_id= :location "
+            + "group by p.patient_id";
+
+    definition.setQuery(
+        String.format(
+            query,
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateConcept().getConceptId(),
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
+
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
+  }
+  /**
+   * 1.c.All patients enrolled in ART Program by end of reporting period. (3) Table: patient_program
+   * Criterias: program_id=2, patient_state_id=29 and date_enrolled <= endDate
+   */
+  @DocumentedDefinition(value = "patientEnrolledInArtProgramByEndReportingPeriod")
+  public CohortDefinition getPatientEnrolledInArtProgramByEndReportingPeriod() {
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("patientEnrolledInArtProgramByEndReportingPeriod");
+
+    String query =
+        "select p.patient_id  "
+            + "from patient p "
+            + "inner join patient_program pg on pg.patient_id=p.patient_id "
+            + "inner  join patient_state ps on ps.patient_program_id=pg.patient_program_id "
+            + "where p.voided=0 and  pg.voided=0  and ps.voided=0 "
+            + "and pg.program_id=%s and  ps.state=%s and pg.date_enrolled <= :onOrBefore  "
+            + "and pg.location_id= :location group by p.patient_id ";
+
+    definition.setQuery(
+        String.format(
+            query,
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getArtTransferredFromOtherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
     return definition;
   }
 }

@@ -627,6 +627,13 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.transferOutToAnotherFacilityConceptUuid");
     return getConcept(uuid);
   }
+  // Concept 6272  STATE OF STAY PRIOR ART PATIENT
+  public Concept getStateOfStayPriorArtPatientConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.stateOfStayPriorArtPatientConceptUuid");
+    return getConcept(uuid);
+  }
 
   // Encounter types
   // encounterType_id = 6
