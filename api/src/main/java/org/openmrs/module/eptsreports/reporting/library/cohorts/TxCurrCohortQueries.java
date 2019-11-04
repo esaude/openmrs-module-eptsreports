@@ -162,46 +162,15 @@ public class TxCurrCohortQueries {
 
     String compositionString =
         "(1 OR 2 OR 3 OR 4 OR 5) AND NOT ((6 OR 7 OR 8 OR 9 OR 10 OR 11) AND NOT 12) AND NOT (13 OR 14)";
-    //    if (currentSpec) {
-    //      compositionString =
-    //          "(1.a OR 1.b OR 1.c OR 1.d OR 1.e) AND NOT ((2.1 OR 2.2 OR 2.3 OR 2.4 OR 2.5 OR 2.6)
-    // AND NOT 2.7 ) AND NOT (3.1 OR 3.2)";
-    //
-    //    } else {
-    //      compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND (NOT (7 OR 8)))))";
-    //    }
+   
 
     txCurrComposition.setCompositionString(compositionString);
     return txCurrComposition;
   }
-
+  
   /**
-   * 1.d
-   *
-   * @return Cohort of patients with first drug pickup (encounter type 18=S.TARV: FARMACIA) before
-   *     or on end date
-   */
-  @DocumentedDefinition(value = "patientWithFirstDrugPickupEncounter")
-  private CohortDefinition getPatientWithFirstDrugPickupEncounterBeforeOrOnEndDate() {
-    SqlCohortDefinition patientWithFirstDrugPickupEncounter = new SqlCohortDefinition();
-    patientWithFirstDrugPickupEncounter.setName("patientWithFirstDrugPickupEncounter");
-    String query =
-        "SELECT p.patient_id "
-            + "FROM patient p "
-            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
-            + "WHERE p.voided=0 AND e.encounter_type=%d "
-            + "AND e.voided=0 AND e.encounter_datetime <= :onOrBefore AND e.location_id=:location GROUP BY p.patient_id";
-    patientWithFirstDrugPickupEncounter.setQuery(
-        String.format(query, hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
-    patientWithFirstDrugPickupEncounter.addParameter(
-        new Parameter("onOrBefore", "onOrBefore", Date.class));
-    patientWithFirstDrugPickupEncounter.addParameter(
-        new Parameter("location", "location", Location.class));
-    return patientWithFirstDrugPickupEncounter;
-  }
-
-  /**
-   * @return Cohort of patients registered as START DRUGS (answer to question 1255 = ARV PLAN is
+   * 
+   *  1. Cohort of patients registered as START DRUGS (answer to question 1255 = ARV PLAN is
    *     1256 = START DRUGS) in the first drug pickup (encounter type 18=S.TARV: FARMACIA) or follow
    *     up consultation for adults and children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and
    *     9=S.TARV: PEDIATRIA SEGUIMENTO) before or on end date
@@ -228,174 +197,72 @@ public class TxCurrCohortQueries {
     patientWithSTARTDRUGSObs.addParameter(new Parameter("location", "location", Location.class));
     return patientWithSTARTDRUGSObs;
   }
-
+  
   /**
-   * @return Cohort of patients who left ART program before or on end date(4). Includes: dead,
-   *     transferred to, stopped and abandoned (patient state 10, 7, 8 or 9)
+   * 3.All patients enrolled in ART Program by end of reporting period. (3) Table: patient_program
+   * Criterias: program_id=2, patient_state_id=29 and date_enrolled <= endDate
    */
-  @DocumentedDefinition(value = "leftARTProgramBeforeOrOnEndDate")
-  private CohortDefinition getPatientsWhoLeftARTProgramBeforeOrOnEndDate() {
-    SqlCohortDefinition leftARTProgramBeforeOrOnEndDate = new SqlCohortDefinition();
-    leftARTProgramBeforeOrOnEndDate.setName("leftARTProgramBeforeOrOnEndDate");
-
-    String leftARTProgramQueryString =
-        "select p.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s"
-            + " and ps.state in (%s) and ps.end_date is null and ps.start_date<=:onOrBefore and pg.location_id=:location group by p.patient_id";
-
-    String abandonStates =
-        StringUtils.join(
-            Arrays.asList(
-                hivMetadata
-                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId(),
-                hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId(),
-                hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId(),
-                hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId()),
-            ',');
-
-    leftARTProgramBeforeOrOnEndDate.setQuery(
-        String.format(
-            leftARTProgramQueryString, hivMetadata.getARTProgram().getProgramId(), abandonStates));
-
-    leftARTProgramBeforeOrOnEndDate.addParameter(
-        new Parameter("onOrBefore", "onOrBefore", Date.class));
-    leftARTProgramBeforeOrOnEndDate.addParameter(
-        new Parameter("location", "location", Location.class));
-    return leftARTProgramBeforeOrOnEndDate;
-  }
-
-  /**
-   * @return Cohort of patients that from the date scheduled for next drug pickup (concept
-   *     5096=RETURN VISIT DATE FOR ARV DRUG) until end date have completed 28 days and have not
-   *     returned
-   */
-  @DocumentedDefinition(value = "patientsThatMissedNexPickup")
-  private CohortDefinition getPatientsThatMissedNexPickup() {
+  @DocumentedDefinition(value = "patientEnrolledInArtProgramByEndReportingPeriod")
+  public CohortDefinition getPatientEnrolledInArtProgramByEndReportingPeriod() {
     SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("patientsThatMissedNexPickup");
-    String query =
-        "SELECT patient_id FROM (SELECT p.patient_id,max(encounter_datetime) encounter_datetime FROM patient p INNER JOIN encounter e on e.patient_id=p.patient_id WHERE p.voided=0 AND e.voided=0 AND e.encounter_type=%s"
-            + " AND e.location_id=:location AND e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_frida INNER JOIN obs o on o.person_id=max_frida.patient_id WHERE max_frida.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id=%s"
-            + " AND o.location_id=:location AND datediff(:onOrBefore,o.value_datetime)>=:abandonmentDays";
-    definition.setQuery(
-        String.format(
-            query,
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
-    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-    definition.addParameter(new Parameter("abandonmentDays", "abandonmentDays", Integer.class));
-    return definition;
-  }
+    definition.setName("patientEnrolledInArtProgramByEndReportingPeriod");
 
-  /**
-   * @return Cohort of patients that from the date scheduled for next follow up consultation
-   *     (concept 1410=RETURN VISIT DATE) until the end date have not completed 28 days
-   */
-  @DocumentedDefinition(value = "patientsThatDidNotMissNextConsultation")
-  private CohortDefinition getPatientsThatDidNotMissNextConsultation() {
-    SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("patientsThatDidNotMissNextConsultation");
     String query =
-        "SELECT patient_id FROM "
-            + "(SELECT p.patient_id,max(encounter_datetime) encounter_datetime "
-            + "FROM patient p INNER JOIN encounter e ON e.patient_id=p.patient_id "
-            + "WHERE p.voided=0 AND e.voided=0 AND e.encounter_type in (%d, %d) "
-            + "AND e.location_id=:location AND e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_mov "
-            + "INNER JOIN obs o ON o.person_id=max_mov.patient_id "
-            + "WHERE max_mov.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id=%d "
-            + "AND o.location_id=:location AND DATEDIFF(:onOrBefore,o.value_datetime)<:abandonmentDays";
-    definition.setQuery(
-        String.format(
-            query,
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getReturnVisitDateConcept().getConceptId()));
-    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-    definition.addParameter(new Parameter("abandonmentDays", "abandonmentDays", Integer.class));
-    return definition;
-  }
+        "select p.patient_id  "
+            + "from patient p "
+            + "inner join patient_program pg on pg.patient_id=p.patient_id "
+            + "inner  join patient_state ps on ps.patient_program_id=pg.patient_program_id "
+            + "where p.voided=0 and  pg.voided=0  and ps.voided=0 "
+            + "and pg.program_id=%s and  ps.state=%s and pg.date_enrolled <= :onOrBefore  "
+            + "and pg.location_id= :location group by p.patient_id ";
 
-  /**
-   * @return Cohort of patients that were registered as abandonment (program workflow state is
-   *     9=ABANDONED) but from the date scheduled for next drug pick up (concept 5096=RETURN VISIT
-   *     DATE FOR ARV DRUG) until the end date have not completed 28 days
-   */
-  @DocumentedDefinition(value = "patientsReportedAsAbandonmentButStillInPeriod")
-  private CohortDefinition getPatientsReportedAsAbandonmentButStillInPeriod() {
-    SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("patientsReportedAsAbandonmentButStillInPeriod");
-    String query =
-        "SELECT abandono.patient_id FROM (SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id=pg.patient_id INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND pg.program_id=%d "
-            + "AND ps.state=%d "
-            + "AND ps.end_date is null AND ps.start_date<=:onOrBefore AND location_id=:location )abandono INNER JOIN ( SELECT max_frida.patient_id,max_frida.encounter_datetime,o.value_datetime FROM ( SELECT p.patient_id,max(encounter_datetime) encounter_datetime FROM patient p INNER JOIN encounter e ON e.patient_id=p.patient_id WHERE p.voided=0 AND e.voided=0 AND e.encounter_type=%d "
-            + "AND e.location_id=:location AND e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_frida INNER JOIN obs o ON o.person_id=max_frida.patient_id WHERE max_frida.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id=%d "
-            + "AND o.location_id=:location ) ultimo_fila ON abandono.patient_id=ultimo_fila.patient_id WHERE datediff(:onOrBefore,ultimo_fila.value_datetime)<:abandonmentDays";
     definition.setQuery(
         String.format(
             query,
             hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
+            hivMetadata
+                .getArtTransferredFromOtherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
+
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
-    definition.addParameter(new Parameter("abandonmentDays", "abandonmentDays", Integer.class));
+
     return definition;
   }
 
   /**
-   * Patients that have next pickup date set on their most recent encounter
+   * 4.
    *
-   * @return
+   * @return Cohort of patients with first drug pickup (encounter type 18=S.TARV: FARMACIA) before
+   *     or on end date
    */
-  @DocumentedDefinition(value = "patientsWithNextPickupDate")
-  private CohortDefinition getPatientsWithNextPickupDate() {
-    SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("patientsWithNextPickupDate");
-    String encounterTypes =
-        StringUtils.join(
-            Arrays.asList(hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()), ',');
-    definition.setQuery(
-        String.format(
-            HAS_NEXT_APPOINTMENT_QUERY,
-            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
-            encounterTypes));
-    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-    return definition;
+  @DocumentedDefinition(value = "patientWithFirstDrugPickupEncounter")
+  private CohortDefinition getPatientWithFirstDrugPickupEncounterBeforeOrOnEndDate() {
+    SqlCohortDefinition patientWithFirstDrugPickupEncounter = new SqlCohortDefinition();
+    patientWithFirstDrugPickupEncounter.setName("patientWithFirstDrugPickupEncounter");
+    String query =
+        "SELECT p.patient_id "
+            + "FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "WHERE p.voided=0 AND e.encounter_type=%d "
+            + "AND e.voided=0 AND e.encounter_datetime <= :onOrBefore AND e.location_id=:location GROUP BY p.patient_id";
+    patientWithFirstDrugPickupEncounter.setQuery(
+        String.format(query, hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
+    patientWithFirstDrugPickupEncounter.addParameter(
+        new Parameter("onOrBefore", "onOrBefore", Date.class));
+    patientWithFirstDrugPickupEncounter.addParameter(
+        new Parameter("location", "location", Location.class));
+    return patientWithFirstDrugPickupEncounter;
   }
 
-  /**
-   * Patients that have next consultation date set on their most recent encounter
-   *
-   * @return
-   */
-  @DocumentedDefinition(value = "patientsWithNextConsultationDate")
-  private CohortDefinition getPatientsWithNextConsultationDate() {
-    SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("patientsWithNextConsultationDate");
-    String encounterTypes =
-        StringUtils.join(
-            Arrays.asList(
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()),
-            ',');
-    definition.setQuery(
-        String.format(
-            HAS_NEXT_APPOINTMENT_QUERY,
-            hivMetadata.getReturnVisitDateConcept().getConceptId(),
-            encounterTypes));
-    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-    return definition;
-  }
+ 
+ 
 
+ 
+
+  
   /**
-   * 1.e All patients who have picked up drugs (Recepção Levantou ARV) – Master Card by end of
+   * 5. All patients who have picked up drugs (Recepção Levantou ARV) – Master Card by end of
    * reporting period Encounter Type Ids = 52 The earliest “Data de Levantamento” (Concept Id 23866
    * value_datetime) <= endDate
    *
@@ -428,7 +295,7 @@ public class TxCurrCohortQueries {
   }
 
   /**
-   * 2.1 All deaths, Transferred-out and Suspensions registered in Patient Program State by
+   * 6. All deaths, Transferred-out and Suspensions registered in Patient Program State by
    * reporting end date Patient_program.program_id =2 = SERVICO TARV-TRATAMENTO and
    * Patient_State.state = 10 (Died) or Patient_State.state = 7 (Transferred-out) or
    * Patient_State.state = 8 (Suspended) and Patient_State.start_date <= endDate
@@ -469,7 +336,7 @@ public class TxCurrCohortQueries {
   }
 
   /**
-   * 2.2 All deaths registered in Patient Demographics by reporting end date Person.Dead=1 and
+   * 7. All deaths registered in Patient Demographics by reporting end date Person.Dead=1 and
    * death_date <= :endDate
    */
   @DocumentedDefinition(value = "deadPatientsInDemographiscByReportingEndDate")
@@ -492,7 +359,7 @@ public class TxCurrCohortQueries {
   }
 
   /**
-   * 2.3 All deaths registered in Last Home Visit Card by reporting end date Last Home Visit Card
+   * 8. All deaths registered in Last Home Visit Card by reporting end date Last Home Visit Card
    * (Encounter Type 21, 36, 37) Patient not found (Concept ID 2003) = NO (Concept ID 1066) Reason
    * of Not Finding (Concept ID 2031) = Died (COncpet Id 1383) Last Encounter_datetime <= endDate
    *
@@ -536,7 +403,7 @@ public class TxCurrCohortQueries {
   }
 
   /**
-   * 2.4 All deaths registered in Ficha Resumo and Ficha Clinica of Master Card by reporting end
+   * 9. All deaths registered in Ficha Resumo and Ficha Clinica of Master Card by reporting end
    * date Encounter Type ID= 6 or 53 Estado de Permanencia (Concept Id 6272) = Dead (Concept ID
    * 1366) Encounter_datetime <= endDate
    */
@@ -570,7 +437,7 @@ public class TxCurrCohortQueries {
   }
 
   /**
-   * 2.5 All tranferred-outs registered in Ficha Resumo and Ficha Clinica of Master Card by
+   * 10. All tranferred-outs registered in Ficha Resumo and Ficha Clinica of Master Card by
    * reporting end date Encounter Type ID= 6 or 53 Estado de Permanencia (Concept Id 6272) =
    * Transferred-out (Concept ID 1706) Encounter_datetime <= endDate
    */
@@ -606,7 +473,7 @@ public class TxCurrCohortQueries {
   }
 
   /**
-   * 2.6 All suspensions registered in Ficha Resumo and Ficha Clinica of Master Card by reporting
+   * 11. All suspensions registered in Ficha Resumo and Ficha Clinica of Master Card by reporting
    * end date Encounter Type ID= 6 or 53 Estado de Permanencia (Concept Id 6272) = Suspended
    * (Concept ID 1709) Encounter_datetime <= endDate
    */
@@ -641,7 +508,7 @@ public class TxCurrCohortQueries {
   }
 
   /**
-   * 2.7 Except all patients who after the most recent date from 2.1 to 2.6, have a drugs pick up or
+   * 12. Except all patients who after the most recent date from 2.1 to 2.6, have a drugs pick up or
    * consultation: Encounter Type ID= 6, 9, 18 and encounter_datetime> the most recent date or
    * Encounter Type ID = 52 and “Data de Levantamento” (Concept Id 23866 value_datetime) > the most
    * recent date.
@@ -685,7 +552,7 @@ public class TxCurrCohortQueries {
   }
 
   /**
-   * 3.1.All patients having the most recent date between last scheduled drug pickup date (Fila) or
+   * 13..All patients having the most recent date between last scheduled drug pickup date (Fila) or
    * last scheduled consultation date (Ficha Seguimento or Ficha Clínica) or 30 days after last ART
    * pickup date (Recepção – Levantou ARV) and adding 30 days and this date being less than
    * reporting end Date. (For more clarifications refer to scenario Table 1)
@@ -742,7 +609,7 @@ public class TxCurrCohortQueries {
     return definition;
   }
   /**
-   * 3.2 All patients who do not have the next scheduled drug pick up date (Fila) and next scheduled
+   * 14. All patients who do not have the next scheduled drug pick up date (Fila) and next scheduled
    * consultation date (Ficha de Seguimento or Ficha Clinica – Master Card) and ART Pickup date
    * (Recepção – Levantou ARV).
    *
@@ -790,35 +657,5 @@ public class TxCurrCohortQueries {
 
     return definition;
   }
-  /**
-   * 1.c.All patients enrolled in ART Program by end of reporting period. (3) Table: patient_program
-   * Criterias: program_id=2, patient_state_id=29 and date_enrolled <= endDate
-   */
-  @DocumentedDefinition(value = "patientEnrolledInArtProgramByEndReportingPeriod")
-  public CohortDefinition getPatientEnrolledInArtProgramByEndReportingPeriod() {
-    SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("patientEnrolledInArtProgramByEndReportingPeriod");
-
-    String query =
-        "select p.patient_id  "
-            + "from patient p "
-            + "inner join patient_program pg on pg.patient_id=p.patient_id "
-            + "inner  join patient_state ps on ps.patient_program_id=pg.patient_program_id "
-            + "where p.voided=0 and  pg.voided=0  and ps.voided=0 "
-            + "and pg.program_id=%s and  ps.state=%s and pg.date_enrolled <= :onOrBefore  "
-            + "and pg.location_id= :location group by p.patient_id ";
-
-    definition.setQuery(
-        String.format(
-            query,
-            hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata
-                .getArtTransferredFromOtherHealthFacilityWorkflowState()
-                .getProgramWorkflowStateId()));
-
-    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-
-    return definition;
-  }
+ 
 }
