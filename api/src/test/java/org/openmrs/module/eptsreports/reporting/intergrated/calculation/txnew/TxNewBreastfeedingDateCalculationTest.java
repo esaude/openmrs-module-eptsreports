@@ -1,5 +1,8 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.calculation.txnew;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
 import org.junit.Before;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
@@ -8,10 +11,6 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.txnew.TxNewBreastfeedingDateCalculation;
 import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
 
 public class TxNewBreastfeedingDateCalculationTest extends BasePatientCalculationTest {
 

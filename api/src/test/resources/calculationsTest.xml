@@ -110,6 +110,12 @@
 	<concept concept_id="7777034" retired="0" class_id="7" is_set="0" creator="1" date_created="2019-07-09 13:00:20" changed_by="1" date_changed="2019-07-09 13:00:20" uuid="74f6c17f-9819-41da-ba34-5910f67d24d0"/>
 	<concept_name concept_id="7777034" name="Date of ART Pickup" locale="en" creator="1" date_created="2019-07-09 13:00:20" concept_name_id="33690" voided="0" uuid="58316739-bdba-4f65-9661-ddd04e089f49" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
 
+	<concept concept_id="6276" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2012-02-29 10:06:33" uuid="7f3af436-5c3a-447c-9012-42bb314e03db"/>
+	<concept_name concept_id="6276" name="ART" locale="en" creator="1" date_created="2012-02-29 10:06:33" concept_name_id="7185" voided="0" uuid="7ca92681-a65c-4e6f-a038-8ad2d3a8aad5" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+	<concept concept_id="6300" retired="0" datatype_id="2" class_id="11" is_set="0" creator="1" date_created="2012-05-31 11:58:42" uuid="4f139c0a-9843-4dc4-b3e5-5aa00812e605"/>
+	<concept_name concept_id="6300" name="TYPE OF PATIENT TRANSFERED FROM" locale="en" creator="1" date_created="2012-05-31 11:58:42" concept_name_id="7266" voided="0" uuid="be0ab68a-26ba-44cb-906a-c7c465aa3ae7" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
   	<concept_set concept_set_id="8777008" concept_id="7777008" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777008"/>
   	<concept_set concept_set_id="8777009" concept_id="7777009" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777009"/>
   	<concept_set concept_set_id="8777010" concept_id="7777010" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777010"/>
@@ -127,8 +133,10 @@
 	<program program_id="9" concept_id="7777030" creator="1" date_created="2012-02-29 09:46:38.0" changed_by="1" date_changed="2013-07-24 11:45:49.0" retired="false" name="SERVICO TARV - TRATAMENTO" description="Programa de seguimento e tratamento aos pacientes HIV+" uuid="efe2481f-9e75-4515-8d5a-86bfde2b5ad3"/>
 
 	<program_workflow program_workflow_id="5" program_id="8" concept_id="7777024" creator="1" date_created="2012-06-26 11:39:12" retired="0" changed_by="1" date_changed="2013-07-24 07:56:14" />
+	<program_workflow program_workflow_id="2" program_id="9" concept_id="6276" creator="1" date_created="2012-02-29 10:17:25" retired="0"  />
 
 	<program_workflow_state program_workflow_state_id="27" program_workflow_id="5" concept_id="7777028" initial="0" terminal="1" creator="1" date_created="2012-06-26 11:40:22" retired="0" changed_by="1" date_changed="2013-07-24 07:56:14" />
+	<program_workflow_state program_workflow_state_id="29" program_workflow_id="2" concept_id="7777004" initial="1" terminal="0" creator="1" date_created="2013-07-24 11:45:49" retired="0" />
 
 	<encounter_type encounter_type_id="6777001" name="Child Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777001"/>
   	<encounter_type encounter_type_id="6777002" name="Adult Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777002"/>
@@ -178,4 +186,6 @@
 	<global_property property="eptsreports.masterCardEncounterType" property_value="26e4f8a9-618d-4283-a7c7-62378e325aee" description="Uso de Isoniazida" uuid="789af6ab-faf9-4984-8a3b-72aed5653a43"/>
 	<global_property property="eptsreports.preArtPickupDate" property_value="74f6c17f-9819-41da-ba34-5910f67d24d0" description="UUID for the Date of ART Pickup concept" uuid="238a5273-a6f7-40fd-a8ba-895b38e8514c"/>
     <global_property property="eptsreports.masterCardDrugPickupEncounterTypeUuid" property_value="cce7b2ec-4fc0-4f9e-806d-b1c4ee9577db" description="UUID for the Levantamento de ARV Master Card encounter type" uuid="923bb4f9-41f4-4141-bb6e-51ea7ac68c6b"/>
+	<global_property property="eptsreports.art" property_value="7f3af436-5c3a-447c-9012-42bb314e03db" description="UUID for the ART concept" />
+	<global_property property="eptsreports.typeOfPatientTransferredFrom" property_value="4f139c0a-9843-4dc4-b3e5-5aa00812e605" description="UUID for the TYPE OF PATIENT TRANSFERED FROM concept" />
 </dataset>
