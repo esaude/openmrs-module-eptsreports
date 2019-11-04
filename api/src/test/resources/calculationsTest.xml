@@ -116,6 +116,21 @@
 	<concept concept_id="6300" retired="0" datatype_id="2" class_id="11" is_set="0" creator="1" date_created="2012-05-31 11:58:42" uuid="4f139c0a-9843-4dc4-b3e5-5aa00812e605"/>
 	<concept_name concept_id="6300" name="TYPE OF PATIENT TRANSFERED FROM" locale="en" creator="1" date_created="2012-05-31 11:58:42" concept_name_id="7266" voided="0" uuid="be0ab68a-26ba-44cb-906a-c7c465aa3ae7" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
 
+	<concept concept_id="23703" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2018-10-19 15:24:55" changed_by="1" date_changed="2019-01-07 23:01:13" uuid="c7c0b430-bbc1-4042-a365-ad78a13aef56"/>
+	<concept_name concept_id="23703" name="KEY POPULATION" locale="en" creator="1" date_created="2018-10-19 15:24:55" concept_name_id="33146" voided="0" uuid="a1e8d1c0-a818-44d8-b8b2-7cd7a503a483" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+	<concept concept_id="20426" retired="0" datatype_id="4" class_id="4" is_set="0" creator="1" date_created="2016-10-12 00:00:00" date_changed="2018-11-13 09:43:02" uuid="58021703-908a-11e6-a98e-000c29db4475" />
+	<concept_name concept_id="20426" name="PRISÃO OU ENCARCERAMENTO" locale="pt" creator="1" date_created="2016-10-12 00:00:00" concept_name_id="26831" voided="0" uuid="5805f202-908a-11e6-a98e-000c29db4475" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+	<concept concept_id="20454" retired="0" datatype_id="4" class_id="4" is_set="0" creator="1" date_created="2016-10-12 00:00:00" changed_by="1" date_changed="2018-11-13 09:41:39" uuid="5bdb7ec1-908a-11e6-a98e-000c29db4475"/>
+	<concept_name concept_id="20454" name="USO DE DROGA" locale="pt" creator="1" date_created="2016-10-12 00:00:00" concept_name_id="26864" voided="0" uuid="5bdf53b1-908a-11e6-a98e-000c29db4475" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
+
+	<concept concept_id="1377" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2008-10-13 06:07:35" changed_by="1" date_changed="2018-10-08 12:48:46" uuid="e1daa454-1d5f-11e0-b929-000c29ad1d07" />
+	<concept_name concept_id="1377" name="HOMOSEXUAL" locale="en" creator="1" date_created="2008-10-13 06:07:35" concept_name_id="2474" voided="0" uuid="e24a0394-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
+
+	<concept concept_id="1901" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2008-11-21 14:46:34" changed_by="1" date_changed="2019-01-07 23:01:51" uuid="e1df1296-1d5f-11e0-b929-000c29ad1d07"/>
+	<concept_name concept_id="1901" name="SEX WORKER" locale="en" creator="1" date_created="2008-11-21 14:46:34" concept_name_id="3632" voided="0" uuid="e25165bc-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
+
   	<concept_set concept_set_id="8777008" concept_id="7777008" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777008"/>
   	<concept_set concept_set_id="8777009" concept_id="7777009" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777009"/>
   	<concept_set concept_set_id="8777010" concept_id="7777010" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777010"/>
@@ -188,4 +203,9 @@
     <global_property property="eptsreports.masterCardDrugPickupEncounterTypeUuid" property_value="cce7b2ec-4fc0-4f9e-806d-b1c4ee9577db" description="UUID for the Levantamento de ARV Master Card encounter type" uuid="923bb4f9-41f4-4141-bb6e-51ea7ac68c6b"/>
 	<global_property property="eptsreports.art" property_value="7f3af436-5c3a-447c-9012-42bb314e03db" description="UUID for the ART concept" />
 	<global_property property="eptsreports.typeOfPatientTransferredFrom" property_value="4f139c0a-9843-4dc4-b3e5-5aa00812e605" description="UUID for the TYPE OF PATIENT TRANSFERED FROM concept" />
+	<global_property property="eptsreports.keyPopulationConceptUuid" property_value="c7c0b430-bbc1-4042-a365-ad78a13aef56" description="UUID for the POPULACAO CHAVE concept" />
+	<global_property property="eptsreports.homosexualConceptUuid" property_value="e1daa454-1d5f-11e0-b929-000c29ad1d07" description="UUID for the HOMOSEXUAL concept" />
+	<global_property property="eptsreports.drugUseConceptUuid" property_value="5bdb7ec1-908a-11e6-a98e-000c29db4475" description="UUID for the USO DE DROGA concept" />
+	<global_property property="eptsreports.imprisonmentConceptUuid" property_value="58021703-908a-11e6-a98e-000c29db4475" description="UUID for the PRISÃO OU ENCARCERAMENTO concept" />
+	<global_property property="eptsreports.sexWorkerConceptUuid" property_value="e1df1296-1d5f-11e0-b929-000c29ad1d07" description="UUID for the TRABALHADOR DE SEXO concept" />
 </dataset>
