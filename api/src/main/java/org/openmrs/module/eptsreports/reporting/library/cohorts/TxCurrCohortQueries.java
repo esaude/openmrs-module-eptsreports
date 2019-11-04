@@ -55,119 +55,121 @@ public class TxCurrCohortQueries {
 
     txCurrComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     txCurrComposition.addParameter(new Parameter("location", "location", Location.class));
-    txCurrComposition.addParameter(new Parameter("locations", "location", Location.class));
 
     txCurrComposition
         .getSearches()
         .put(
-            "1.a",
+            "1",
             EptsReportUtils.map(
                 getPatientWithSTARTDRUGSObsBeforeOrOnEndDate(),
-                "onOrBefore=${onOrBefore},locations=${location}"));
+                "onOrBefore=${onOrBefore},location=${location}"));
 
     txCurrComposition
         .getSearches()
         .put(
-            "1.b",
+            "2",
             EptsReportUtils.map(
                 hivCohortQueries.getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate(),
-                "onOrBefore=${onOrBefore},locations=${location}"));
+                "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
         .put(
-            "1.c",
+            "3",
             EptsReportUtils.map(
                 getPatientEnrolledInArtProgramByEndReportingPeriod(),
-                "onOrBefore=${onOrBefore},locations=${location}"));
+                "onOrBefore=${onOrBefore},location=${location}"));
 
     txCurrComposition
         .getSearches()
         .put(
-            "1.d",
+            "4",
             EptsReportUtils.map(
                 getPatientWithFirstDrugPickupEncounterBeforeOrOnEndDate(),
-                "onOrBefore=${onOrBefore},locations=${location}"));
+                "onOrBefore=${onOrBefore},location=${location}"));
 
     txCurrComposition
         .getSearches()
         .put(
-            "1.e",
+            "5",
             EptsReportUtils.map(
                 getPatientsWhoHavePickedUpDrugsMasterCardByEndReporingPeriod(),
-                "onOrBefore=${onOrBefore},locations=${location}"));
-
+                "onOrBefore=${onOrBefore},location=${location}"));
+    // section 2
     txCurrComposition
         .getSearches()
         .put(
-            "2.1",
+            "6",
             EptsReportUtils.map(
                 getPatientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate(),
-                "onOrBefore=${onOrBefore},locations=${location}"));
+                "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
         .put(
-            "2.2",
+            "7",
             EptsReportUtils.map(
                 getDeadPatientsInDemographiscByReportingEndDate(),
-                "onOrBefore=${onOrBefore},locations=${location}"));
+                "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
         .put(
-            "2.3",
+            "8",
             EptsReportUtils.map(
                 getPatientDeathRegisteredInLastHomeVisitCardByReportingEndDate(),
-                "onOrBefore=${onOrBefore},locations=${location}"));
+                "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
         .put(
-            "2.4",
+            "9",
             EptsReportUtils.map(
                 getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(),
-                "onOrBefore=${onOrBefore},locations=${location}"));
+                "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
         .put(
-            "2.5",
+            "10",
             EptsReportUtils.map(
                 getTransferredOutPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(),
-                "onOrBefore=${onOrBefore},locations=${location}"));
+                "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
         .put(
-            "2.6",
+            "11",
             EptsReportUtils.map(
                 getPatientSuspendedInFichaResumeAndClinicaOfMasterCardByReportEndDate(),
-                "onOrBefore=${onOrBefore},locations=${location}"));
+                "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
         .put(
-            "2.7",
+            "12",
             EptsReportUtils.map(
                 getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultation(),
-                "locations=${location}"));
+                "location=${location}"));
+    // section 3
     txCurrComposition
         .getSearches()
         .put(
-            "3.1",
+            "13",
             EptsReportUtils.map(
                 getPatientHavingLastScheduledDrugPickupDate(),
-                "onOrBefore=${onOrBefore},locations=${location}"));
+                "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
         .put(
-            "3.2",
+            "14",
             EptsReportUtils.map(
                 getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(),
-                "locations=${location}"));
+                "location=${location}"));
 
-    String compositionString;
-    if (currentSpec) {
-      compositionString =
-          " (1.a or 1.b or 1.c or 1.d or 1.e) AND NOT ((2.1 OR 2.2 OR 2.3 OR 2.4 OR 2.5 OR 2.6) AND NOT 2.7 ) AND NOT (3.1 OR 3.2)";
-
-    } else {
-      compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND (NOT (7 OR 8)))))";
-    }
+    String compositionString =
+        "(1 OR 2 OR 3 OR 4 OR 5) AND NOT ((6 OR 7 OR 8 OR 9 OR 10 OR 11) AND NOT 12) AND NOT (13 OR 14)";
+    //    if (currentSpec) {
+    //      compositionString =
+    //          "(1.a OR 1.b OR 1.c OR 1.d OR 1.e) AND NOT ((2.1 OR 2.2 OR 2.3 OR 2.4 OR 2.5 OR 2.6)
+    // AND NOT 2.7 ) AND NOT (3.1 OR 3.2)";
+    //
+    //    } else {
+    //      compositionString = "(1 OR 2 OR 3 OR 4) AND (NOT (5 OR (6 AND (NOT (7 OR 8)))))";
+    //    }
 
     txCurrComposition.setCompositionString(compositionString);
     return txCurrComposition;
