@@ -1,10 +1,12 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.library.cohorts;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
@@ -39,6 +41,8 @@ public class TxCurrCohortQueriesTest extends DefinitionsTest {
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
 
     assertEquals(1, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains( new Integer(1001)));
+
   }
 
   @Test
@@ -53,6 +57,87 @@ public class TxCurrCohortQueriesTest extends DefinitionsTest {
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
 
     assertEquals(1, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(new Integer(1001)));
+
+  }
+  @Test
+  public void testGetPatientWithFirstDrugPickupEncounterBeforeOrOnEndDate() throws EvaluationException {
+	  CohortDefinition cd = txCurrCohortQueries.getPatientWithFirstDrugPickupEncounterBeforeOrOnEndDate();
+  
+
+	    Map<Parameter, Object> parameters = new HashMap<>();
+
+	    parameters.put(new Parameter("onOrBefore", "onOrBefore", Date.class), this.getEndDate());
+	    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+	    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+	    
+	    assertEquals(1, evaluatedCohort.getMemberIds().size());
+	    assertTrue(evaluatedCohort.getMemberIds().contains(new Integer(1002)));
+
+  }
+  @Test
+  public void testGetPatientsWhoHavePickedUpDrugsMasterCardByEndReporingPeriod() throws EvaluationException {
+	  CohortDefinition cd = txCurrCohortQueries.getPatientsWhoHavePickedUpDrugsMasterCardByEndReporingPeriod();
+	    Map<Parameter, Object> parameters = new HashMap<>();
+
+	  parameters.put(new Parameter("onOrBefore", "onOrBefore", Date.class), this.getEndDate());
+	    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+	    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+	   
+	    assertEquals(1, evaluatedCohort.getMemberIds().size());
+	    assertTrue(evaluatedCohort.getMemberIds().contains(new Integer(1002)));
+	    
+	    
+
+  }
+  @Test
+  public  void testGetPatientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate() throws EvaluationException {
+	  CohortDefinition cd = txCurrCohortQueries.getPatientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate();
+	  
+	   Map<Parameter, Object> parameters = new HashMap<>();
+
+		  parameters.put(new Parameter("onOrBefore", "onOrBefore", Date.class), this.getEndDate());
+		    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+		    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+		    
+		    assertEquals(1, evaluatedCohort.getMemberIds().size());
+		    assertTrue(evaluatedCohort.getMemberIds().contains(new Integer(1003)));
+
+  }
+  
+  @Test
+  public void  testGetDeadPatientsInDemographiscByReportingEndDate() throws EvaluationException {
+	  CohortDefinition cd = txCurrCohortQueries.getDeadPatientsInDemographiscByReportingEndDate();
+	  
+	   Map<Parameter, Object> parameters = new HashMap<>();
+
+	  parameters.put(new Parameter("onOrBefore", "onOrBefore", Date.class), this.getEndDate());
+	    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+	    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+	    
+	    assertEquals(1, evaluatedCohort.getMemberIds().size());
+	    assertTrue(evaluatedCohort.getMemberIds().contains(new Integer(1004)));
+	  
+  }
+  @Test
+  public void testGetPatientDeathRegisteredInLastHomeVisitCardByReportingEndDate() throws EvaluationException {
+	  CohortDefinition cd = txCurrCohortQueries.getPatientDeathRegisteredInLastHomeVisitCardByReportingEndDate();
+	  
+	  Map<Parameter, Object> parameters = new HashMap<>();
+
+	  parameters.put(new Parameter("onOrBefore", "onOrBefore", Date.class), this.getEndDate());
+	    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+	    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+	    
+	    assertEquals(1, evaluatedCohort.getMemberIds().size());
+	    assertTrue(evaluatedCohort.getMemberIds().contains(new Integer(1005)));
+	  
+	  
   }
 
   @Override
