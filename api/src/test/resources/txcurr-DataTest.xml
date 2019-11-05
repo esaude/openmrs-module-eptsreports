@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public 
+	License, v. 2.0. If a copy of the MPL was not distributed with this file, 
+	You can obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed 
+	under the terms of the Healthcare Disclaimer located at http://openmrs.org/license. 
+	Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS 
+	graphic logo is a trademark of OpenMRS Inc. -->
+
+<dataset>
+
+    <!-- location -->
+	<location location_id="6" name="Gile" description="NA"
+		address2="NA" state_province="NA" country="MA" 
+		date_created="2008-10-13 11:32:52" county_district="NA" address6="NA"
+		retired="0" uuid="e2b32fc2-1d5f-11e0-b929-000c29ad1d07" />
+
+	<!-- person -->
+	<person person_id="1001" gender="F"  creator="1"
+		birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+		  date_created="2005-01-01 00:00:00.0" voided="false"
+		uuid="421875e2-6f22-1000-9281-8f1ee524029e" />
+ 
+
+	<!-- patient -->
+	<patient patient_id="1001"   creator="1"
+		date_created="2005-09-22 00:00:00.0"  
+		date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+		
+		
+		<!-- global_property -->
+		<global_property
+		property="eptsreports.arvPlanConceptUuid"
+		property_value="e1d9ee10-1d5f-11e0-b929-000c29ad1d07"
+		description=" UUID for the GESTÃO DE TARV concept"
+		uuid="e8acf75e-6242-417c-9ab4-c18b6b18f089" />
+		
+		<global_property
+		property="eptsreports.startDrugsConceptUuid"
+		property_value="e1d9ef28-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the INICIAR concept"
+		uuid="4511e330-f99c-48ca-8c26-ec9d18f07db5" />
+		
+		<global_property
+		property="eptsreports.art"
+		property_value="7f3af436-5c3a-447c-9012-42bb314e03db"
+		description="UUID for the ART concept"
+		uuid="9e59231d-fd09-48c8-82fd-da4411403816" />
+		
+		<global_property
+		property="eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid"
+		property_value="e278f956-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the S.TARV: ADULTO SEGUIMENTO encounter type"
+		uuid="6e0aa915-22ba-4353-87e5-569326c57078" />
+		
+		<global_property
+		property="eptsreports.sTarvPediatriaSeguimentoEncounterTypeUuid"
+		property_value="e278fce4-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the S.TARV: PEDIATRIA SEGUIMENTO encounter type"
+		uuid="24b0e193-e567-465f-8d18-ddddd536fe30" />
+		
+		<global_property
+		property="eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid"
+		property_value="e278f956-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the S.TARV: ADULTO SEGUIMENTO encounter type"
+		uuid="6e0aa915-22ba-4353-87e5-569326c57078" />
+		
+		<global_property
+		property="eptsreports.sTarvFarmaciaEncounterTypeUuid"
+		property_value="e279133c-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the S.TARV: FARMACIA encounter type"
+		uuid="677642f5-f3a1-45fe-9773-b31129d7d89d" />
+		
+
+		
+		<global_property
+		property="eptsreports.transferFromOtherFacilityConceptUuid"
+		property_value="e1da7d3a-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the TRANSFERIDO DE concept"
+		uuid="9f34c740-6c83-4024-97e5-94190ecbc57d" />
+		
+		<global_property
+		property="eptsreports.artProgramUuid"
+		property_value="efe2481f-9e75-4515-8d5a-86bfde2b5ad3"
+		description="UUID for the SERVICO TARV - TRATAMENTO program"
+		uuid="69d4c803-3714-42fc-adf7-10c40688fba0" />
+		
+		<!-- concept -->
+		<concept concept_id="6276" retired="0"   creator="1"
+		  is_set="0"  class_id="11" datatype_id="4"
+		date_created="2012-02-27 11:30:21"
+		uuid="7f3af436-5c3a-447c-9012-42bb314e03db" />
+		
+		<concept_name concept_id="6276"
+		name="ART" locale="en"  
+		date_created="2012-02-29 09:50:50" concept_name_id="7185" voided="0"
+		uuid="7ca92681-a65c-4e6f-a038-8ad2d3a8aad5" creator="1"
+		concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+		
+		<concept concept_id="6274" retired="0"   creator="1"
+		  is_set="0"  class_id="11" datatype_id="4"
+		date_created="2012-02-27 11:30:21"
+		uuid="be53ec04-d2ae-485e-9a6c-e167deef9a95" />
+		
+	<concept concept_id="1255" retired="0" class_id="7" datatype_id="2"
+		  is_set="0"   date_created="2012-02-27 11:30:21"  creator="1"
+		uuid="e1d9ee10-1d5f-11e0-b929-000c29ad1d07" />
+		
+		 
+	<concept concept_id="1256" retired="0" 
+		  is_set="0"   class_id="15" datatype_id="4"
+		date_created="2005-02-22 18:42:15" creator="1"
+		uuid="e1d9ef28-1d5f-11e0-b929-000c29ad1d07" />
+		
+		<concept concept_id="1369" retired="0" 
+		  is_set="0"   class_id="13" datatype_id="7"
+		date_created="2008-10-13 05:59:00" creator="1"
+		uuid="e1da7d3a-1d5f-11e0-b929-000c29ad1d07" />
+		
+		<concept_name concept_id="1369"
+		name="TRANSFER FROM OTHER FACILITY" locale="en"  
+		date_created="2012-02-29 09:50:50" concept_name_id="2465" voided="0"
+		uuid="e249fb4c-1d5f-11e0-b929-000c29ad1d07" creator="1"
+		concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+	
+		
+		
+		<!--  program-->
+	<program program_id="2" concept_id="6274" creator="1"
+		date_created="2012-02-29 09:42:25" retired="0"
+		name="SERVICO TARV - TRATAMENTO"
+		description="Programa de seguimento e tratamento aos pacientes HIV+"
+		uuid="efe2481f-9e75-4515-8d5a-86bfde2b5ad3" />
+		
+		<!--  program_workflow  -->
+		<program_workflow program_workflow_id="2"
+		program_id="2" concept_id="6276" creator="1"
+		date_created="2012-02-29 10:17:25" retired="0"
+		uuid="a59bd818-d2f0-4a9a-a2f2-0a54af4ce04e" />
+		
+	<program_workflow_state
+		program_workflow_state_id="29" program_workflow_id="2"
+		concept_id="1369" initial="1" terminal="0" creator="1"
+		date_created="2013-07-24 11:45:26" retired="0"
+		uuid="ef06e6df-6026-4d5a-88f9-b2c3e0495dc8" />
+		
+		<!--  patient_program  -->
+		<patient_program patient_program_id="1"
+		patient_id="1001" program_id="2" date_enrolled="2018-07-19 00:00:00"
+		creator="1" date_created="2018-01-26 00:00:00" voided="0"
+		uuid="d1315b84-2b18-4605-9bde-0a845bc35ebc" location_id="6" />
+		
+		<!--  patient_state  -->
+	<patient_state patient_state_id="1"
+		patient_program_id="1" state="29" start_date="2013-08-01"
+		creator="1" date_created="2013-09-16 17:53:04" voided="0" />
+		
+		
+ <!-- encounter_type -->
+	<encounter_type encounter_type_id="6"
+		name="S.TARV: ADULTO SEGUIMENTO"
+		description="seguimento visita do paciente adulto" creator="1"
+		date_created="2008-10-13 11:35:34" retired="0"
+		uuid="e278f956-1d5f-11e0-b929-000c29ad1d07" />
+		
+		
+		
+	<encounter_type encounter_type_id="9"
+		name="S.TARV: PEDIATRIA SEGUIMENTO"
+		description="Seguimento visita do paciente pediatria" creator="1"
+		date_created="2008-10-13 11:35:34" retired="0"
+		uuid="e278fce4-1d5f-11e0-b929-000c29ad1d07" />
+              
+	<encounter_type encounter_type_id="18"
+		name="S.TARV: FARMACIA" description="Farmacia" creator="1"
+		date_created="2008-10-13 11:35:34" retired="0"
+		uuid="e279133c-1d5f-11e0-b929-000c29ad1d07" />
+		
+		 <!-- encounter -->
+	<encounter encounter_id="9001" encounter_type="6"
+		patient_id="1001" encounter_datetime="2018-07-08 00:00:00" creator="1"
+		date_created="2018-06-20 12:55:48" voided="0"
+		uuid="42189de0-6f22-1000-9281-8f1ee524029e" location_id="6" />
+		
+		
+	<!-- obs -->
+	<obs obs_id="100" person_id="1001" concept_id="1255"
+		encounter_id="9001" obs_datetime="2018-07-08 00:00:00"
+		value_coded="1256" creator="1" date_created="2018-07-08 12:55:48"
+		voided="0" uuid="3d6371cc-45b5-4731-b6c1-8e69cb882cd7" location_id="6" />
+		
+	
+</dataset>
