@@ -52,7 +52,11 @@ public class Eri2MonthsCohortQueries {
             hivMetadata.getARVPlanConcept().getConceptId(),
             hivMetadata.getStartDrugsConcept().getConceptId(),
             hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
-            hivMetadata.getARTProgram().getProgramId()));
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata.getArtPickupConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getArtDatePickup().getConceptId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
     return cd;
   }
 
