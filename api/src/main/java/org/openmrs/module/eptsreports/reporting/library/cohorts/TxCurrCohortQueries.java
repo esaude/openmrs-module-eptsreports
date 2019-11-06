@@ -16,6 +16,7 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.library.queries.TxCurrQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -51,11 +52,12 @@ public class TxCurrCohortQueries {
    * @return TxCurr composition cohort definition
    */
   @DocumentedDefinition(value = "getTxCurrCompositionCohort")
-  public CohortDefinition getTxCurrCompositionCohort(String cohortName, boolean currentSpec) {
+  public CohortDefinition getTxCurrCompositionCohort(
+      final String cohortName, final boolean currentSpec) {
 
     final int abandonmentDays =
         currentSpec ? CURRENT_SPEC_ABANDONMENT_DAYS : OLD_SPEC_ABANDONMENT_DAYS;
-    CompositionCohortDefinition txCurrComposition = new CompositionCohortDefinition();
+    final CompositionCohortDefinition txCurrComposition = new CompositionCohortDefinition();
     txCurrComposition.setName(cohortName);
 
     txCurrComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
@@ -63,8 +65,8 @@ public class TxCurrCohortQueries {
     txCurrComposition.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
     txCurrComposition.addParameter(new Parameter("locations", "location", Location.class));
 
-    CohortDefinition inARTProgramAtEndDate =
-        genericCohortQueries.createInProgram("InARTProgram", hivMetadata.getARTProgram());
+    final CohortDefinition inARTProgramAtEndDate =
+        this.genericCohortQueries.createInProgram("InARTProgram", this.hivMetadata.getARTProgram());
     txCurrComposition
         .getSearches()
         .put(
@@ -76,35 +78,35 @@ public class TxCurrCohortQueries {
         .put(
             "2",
             EptsReportUtils.map(
-                getPatientWithSTARTDRUGSObsBeforeOrOnEndDate(),
+                this.getPatientWithSTARTDRUGSObsBeforeOrOnEndDate(),
                 "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
         .put(
             "3",
             EptsReportUtils.map(
-                hivCohortQueries.getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate(),
+                this.hivCohortQueries.getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate(),
                 "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
         .put(
             "4",
             EptsReportUtils.map(
-                getPatientWithFirstDrugPickupEncounterBeforeOrOnEndDate(),
+                this.getPatientWithFirstDrugPickupEncounterBeforeOrOnEndDate(),
                 "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
         .put(
             "5",
             EptsReportUtils.map(
-                getPatientsWhoLeftARTProgramBeforeOrOnEndDate(),
+                this.getPatientsWhoLeftARTProgramBeforeOrOnEndDate(),
                 "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
         .put(
             "6",
             EptsReportUtils.map(
-                getPatientsThatMissedNexPickup(),
+                this.getPatientsThatMissedNexPickup(),
                 String.format(
                     "onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s",
                     abandonmentDays)));
@@ -113,7 +115,7 @@ public class TxCurrCohortQueries {
         .put(
             "7",
             EptsReportUtils.map(
-                getPatientsThatDidNotMissNextConsultation(),
+                this.getPatientsThatDidNotMissNextConsultation(),
                 String.format(
                     "onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s",
                     abandonmentDays)));
@@ -122,7 +124,7 @@ public class TxCurrCohortQueries {
         .put(
             "8",
             EptsReportUtils.map(
-                getPatientsReportedAsAbandonmentButStillInPeriod(),
+                this.getPatientsReportedAsAbandonmentButStillInPeriod(),
                 String.format(
                     "onOrBefore=${onOrBefore},location=${location},abandonmentDays=%s",
                     abandonmentDays)));
@@ -131,13 +133,14 @@ public class TxCurrCohortQueries {
         .put(
             "11",
             EptsReportUtils.map(
-                getPatientsWithNextPickupDate(), "onOrBefore=${onOrBefore},location=${location}"));
+                this.getPatientsWithNextPickupDate(),
+                "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
         .put(
             "12",
             EptsReportUtils.map(
-                getPatientsWithNextConsultationDate(),
+                this.getPatientsWithNextConsultationDate(),
                 "onOrBefore=${onOrBefore},location=${location}"));
 
     String compositionString;
@@ -158,16 +161,16 @@ public class TxCurrCohortQueries {
    */
   @DocumentedDefinition(value = "patientWithFirstDrugPickupEncounter")
   private CohortDefinition getPatientWithFirstDrugPickupEncounterBeforeOrOnEndDate() {
-    SqlCohortDefinition patientWithFirstDrugPickupEncounter = new SqlCohortDefinition();
+    final SqlCohortDefinition patientWithFirstDrugPickupEncounter = new SqlCohortDefinition();
     patientWithFirstDrugPickupEncounter.setName("patientWithFirstDrugPickupEncounter");
-    String query =
+    final String query =
         "SELECT p.patient_id "
             + "FROM patient p "
             + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "WHERE p.voided=0 AND e.encounter_type=%d "
             + "AND e.voided=0 AND e.encounter_datetime <= :onOrBefore AND e.location_id=:location GROUP BY p.patient_id";
     patientWithFirstDrugPickupEncounter.setQuery(
-        String.format(query, hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
+        String.format(query, this.hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
     patientWithFirstDrugPickupEncounter.addParameter(
         new Parameter("onOrBefore", "onOrBefore", Date.class));
     patientWithFirstDrugPickupEncounter.addParameter(
@@ -183,9 +186,9 @@ public class TxCurrCohortQueries {
    */
   @DocumentedDefinition(value = "patientWithSTARTDRUGSObs")
   private CohortDefinition getPatientWithSTARTDRUGSObsBeforeOrOnEndDate() {
-    SqlCohortDefinition patientWithSTARTDRUGSObs = new SqlCohortDefinition();
+    final SqlCohortDefinition patientWithSTARTDRUGSObs = new SqlCohortDefinition();
     patientWithSTARTDRUGSObs.setName("patientWithSTARTDRUGSObs");
-    String query =
+    final String query =
         "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "INNER JOIN obs o ON o.encounter_id=e.encounter_id "
             + "WHERE e.voided=0 AND o.voided=0 AND p.voided=0 AND e.encounter_type in (%d, %d, %d) "
@@ -194,12 +197,12 @@ public class TxCurrCohortQueries {
     patientWithSTARTDRUGSObs.setQuery(
         String.format(
             query,
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPlanConcept().getConceptId(),
-            hivMetadata.getStartDrugsConcept().getConceptId(),
-            hivMetadata.getTransferFromOtherFacilityConcept().getConceptId()));
+            this.hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            this.hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            this.hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            this.hivMetadata.getARVPlanConcept().getConceptId(),
+            this.hivMetadata.getStartDrugsConcept().getConceptId(),
+            this.hivMetadata.getTransferFromOtherFacilityConcept().getConceptId()));
     patientWithSTARTDRUGSObs.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     patientWithSTARTDRUGSObs.addParameter(new Parameter("location", "location", Location.class));
     return patientWithSTARTDRUGSObs;
@@ -211,29 +214,31 @@ public class TxCurrCohortQueries {
    */
   @DocumentedDefinition(value = "leftARTProgramBeforeOrOnEndDate")
   private CohortDefinition getPatientsWhoLeftARTProgramBeforeOrOnEndDate() {
-    SqlCohortDefinition leftARTProgramBeforeOrOnEndDate = new SqlCohortDefinition();
+    final SqlCohortDefinition leftARTProgramBeforeOrOnEndDate = new SqlCohortDefinition();
     leftARTProgramBeforeOrOnEndDate.setName("leftARTProgramBeforeOrOnEndDate");
 
-    String leftARTProgramQueryString =
+    final String leftARTProgramQueryString =
         "select p.patient_id from patient p inner join patient_program pg on p.patient_id=pg.patient_id "
             + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
             + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s"
             + " and ps.state in (%s) and ps.end_date is null and ps.start_date<=:onOrBefore and pg.location_id=:location group by p.patient_id";
 
-    String abandonStates =
+    final String abandonStates =
         StringUtils.join(
             Arrays.asList(
-                hivMetadata
+                this.hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId(),
-                hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId(),
-                hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId(),
-                hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId()),
+                this.hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId(),
+                this.hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId(),
+                this.hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId()),
             ',');
 
     leftARTProgramBeforeOrOnEndDate.setQuery(
         String.format(
-            leftARTProgramQueryString, hivMetadata.getARTProgram().getProgramId(), abandonStates));
+            leftARTProgramQueryString,
+            this.hivMetadata.getARTProgram().getProgramId(),
+            abandonStates));
 
     leftARTProgramBeforeOrOnEndDate.addParameter(
         new Parameter("onOrBefore", "onOrBefore", Date.class));
@@ -249,17 +254,17 @@ public class TxCurrCohortQueries {
    */
   @DocumentedDefinition(value = "patientsThatMissedNexPickup")
   private CohortDefinition getPatientsThatMissedNexPickup() {
-    SqlCohortDefinition definition = new SqlCohortDefinition();
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("patientsThatMissedNexPickup");
-    String query =
+    final String query =
         "SELECT patient_id FROM (SELECT p.patient_id,max(encounter_datetime) encounter_datetime FROM patient p INNER JOIN encounter e on e.patient_id=p.patient_id WHERE p.voided=0 AND e.voided=0 AND e.encounter_type=%s"
             + " AND e.location_id=:location AND e.encounter_datetime<=:onOrBefore group by p.patient_id ) max_frida INNER JOIN obs o on o.person_id=max_frida.patient_id WHERE max_frida.encounter_datetime=o.obs_datetime AND o.voided=0 AND o.concept_id=%s"
             + " AND o.location_id=:location AND datediff(:onOrBefore,o.value_datetime)>=:abandonmentDays";
     definition.setQuery(
         String.format(
             query,
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
+            this.hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            this.hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
     definition.addParameter(new Parameter("abandonmentDays", "abandonmentDays", Integer.class));
@@ -272,9 +277,9 @@ public class TxCurrCohortQueries {
    */
   @DocumentedDefinition(value = "patientsThatDidNotMissNextConsultation")
   private CohortDefinition getPatientsThatDidNotMissNextConsultation() {
-    SqlCohortDefinition definition = new SqlCohortDefinition();
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("patientsThatDidNotMissNextConsultation");
-    String query =
+    final String query =
         "SELECT patient_id FROM "
             + "(SELECT p.patient_id,max(encounter_datetime) encounter_datetime "
             + "FROM patient p INNER JOIN encounter e ON e.patient_id=p.patient_id "
@@ -286,9 +291,9 @@ public class TxCurrCohortQueries {
     definition.setQuery(
         String.format(
             query,
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getReturnVisitDateConcept().getConceptId()));
+            this.hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            this.hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            this.hivMetadata.getReturnVisitDateConcept().getConceptId()));
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
     definition.addParameter(new Parameter("abandonmentDays", "abandonmentDays", Integer.class));
@@ -302,9 +307,9 @@ public class TxCurrCohortQueries {
    */
   @DocumentedDefinition(value = "patientsReportedAsAbandonmentButStillInPeriod")
   private CohortDefinition getPatientsReportedAsAbandonmentButStillInPeriod() {
-    SqlCohortDefinition definition = new SqlCohortDefinition();
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("patientsReportedAsAbandonmentButStillInPeriod");
-    String query =
+    final String query =
         "SELECT abandono.patient_id FROM (SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id=pg.patient_id INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND pg.program_id=%d "
             + "AND ps.state=%d "
             + "AND ps.end_date is null AND ps.start_date<=:onOrBefore AND location_id=:location )abandono INNER JOIN ( SELECT max_frida.patient_id,max_frida.encounter_datetime,o.value_datetime FROM ( SELECT p.patient_id,max(encounter_datetime) encounter_datetime FROM patient p INNER JOIN encounter e ON e.patient_id=p.patient_id WHERE p.voided=0 AND e.voided=0 AND e.encounter_type=%d "
@@ -313,10 +318,10 @@ public class TxCurrCohortQueries {
     definition.setQuery(
         String.format(
             query,
-            hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
+            this.hivMetadata.getARTProgram().getProgramId(),
+            this.hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
+            this.hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            this.hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
     definition.addParameter(new Parameter("abandonmentDays", "abandonmentDays", Integer.class));
@@ -330,15 +335,16 @@ public class TxCurrCohortQueries {
    */
   @DocumentedDefinition(value = "patientsWithNextPickupDate")
   private CohortDefinition getPatientsWithNextPickupDate() {
-    SqlCohortDefinition definition = new SqlCohortDefinition();
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("patientsWithNextPickupDate");
-    String encounterTypes =
+    final String encounterTypes =
         StringUtils.join(
-            Arrays.asList(hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()), ',');
+            Arrays.asList(this.hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()),
+            ',');
     definition.setQuery(
         String.format(
             HAS_NEXT_APPOINTMENT_QUERY,
-            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+            this.hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             encounterTypes));
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -352,21 +358,34 @@ public class TxCurrCohortQueries {
    */
   @DocumentedDefinition(value = "patientsWithNextConsultationDate")
   private CohortDefinition getPatientsWithNextConsultationDate() {
-    SqlCohortDefinition definition = new SqlCohortDefinition();
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("patientsWithNextConsultationDate");
-    String encounterTypes =
+    final String encounterTypes =
         StringUtils.join(
             Arrays.asList(
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()),
+                this.hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                this.hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()),
             ',');
     definition.setQuery(
         String.format(
             HAS_NEXT_APPOINTMENT_QUERY,
-            hivMetadata.getReturnVisitDateConcept().getConceptId(),
+            this.hivMetadata.getReturnVisitDateConcept().getConceptId(),
             encounterTypes));
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "patientsWhoAreActiveOnART")
+  public CohortDefinition findPatientsWhoAreActiveOnART() {
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsWhoAreActiveOnART");
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    definition.setQuery(TxCurrQueries.QUERY.findPatientsWhoAreCurrentlyEnrolledOnART);
+
     return definition;
   }
 }

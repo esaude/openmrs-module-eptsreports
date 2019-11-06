@@ -5,7 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.*;
+import org.openmrs.module.eptsreports.reporting.library.datasets.Eri2MonthsDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.Eri4MonthsDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.EriDSDDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
+import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
@@ -52,30 +57,37 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
 
   @Override
   public ReportDefinition constructReportDefinition() {
-    ReportDefinition rd = new ReportDefinition();
+    final ReportDefinition rd = new ReportDefinition();
 
-    rd.setUuid(getUuid());
-    rd.setName(getName());
-    rd.setDescription(getDescription());
-    rd.setParameters(txNewDataset.getParameters());
-
-    rd.addDataSetDefinition("N", Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
+    rd.setUuid(this.getUuid());
+    rd.setName(this.getName());
+    rd.setDescription(this.getDescription());
+    rd.setParameters(this.txNewDataset.getParameters());
 
     rd.addDataSetDefinition(
-        "C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
+        "N", Mapped.mapStraightThrough(this.txNewDataset.constructTxNewDataset()));
 
     rd.addDataSetDefinition(
-        "ERI2", Mapped.mapStraightThrough(eri2MonthsDataset.constructEri2MonthsDatset()));
+        "C", Mapped.mapStraightThrough(this.txCurrDataset.constructTxCurrDataset(true)));
 
-    rd.addDataSetDefinition(
-        "ERI4", Mapped.mapStraightThrough(eri4MonthsDataset.constructEri4MonthsDataset()));
-    rd.addDataSetDefinition(
-        "ERIDSD", Mapped.mapStraightThrough(eriDSDDataset.constructEriDSDDataset()));
+    // rd.addDataSetDefinition(
+    // "ERI2",
+    // Mapped.mapStraightThrough(this.eri2MonthsDataset.constructEri2MonthsDatset()));
+    //
+    // rd.addDataSetDefinition(
+    // "ERI4",
+    // Mapped.mapStraightThrough(this.eri4MonthsDataset.constructEri4MonthsDataset()));
+    //
+    // rd.addDataSetDefinition(
+    // "ERIDSD",
+    // Mapped.mapStraightThrough(this.eriDSDDataset.constructEriDSDDataset()));
 
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
-            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+            this.genericCohortQueries.generalSql(
+                "baseCohortQuery", BaseQueries.getBaseCohortQuery()),
+            "endDate=${endDate},location=${location}"));
 
     return rd;
   }
@@ -86,16 +98,16 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
   }
 
   @Override
-  public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
+  public List<ReportDesign> constructReportDesigns(final ReportDefinition reportDefinition) {
     ReportDesign reportDesign = null;
     try {
       reportDesign =
-          createXlsReportDesign(
-              reportDefinition, "IM_ER_Report.xls", "ERI-Report", getExcelDesignUuid(), null);
-      Properties props = new Properties();
+          this.createXlsReportDesign(
+              reportDefinition, "IM_ER_Report.xls", "ERI-Report", this.getExcelDesignUuid(), null);
+      final Properties props = new Properties();
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
-    } catch (IOException e) {
+    } catch (final IOException e) {
       throw new ReportingException(e.toString());
     }
 
