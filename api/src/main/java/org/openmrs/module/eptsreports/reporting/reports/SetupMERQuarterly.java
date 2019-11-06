@@ -21,6 +21,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQue
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxPvlsDataset;
+import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
@@ -68,40 +69,46 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 
   @Override
   public ReportDefinition constructReportDefinition() {
-    ReportDefinition reportDefinition = new ReportDefinition();
-    reportDefinition.setUuid(getUuid());
-    reportDefinition.setName(getName());
-    reportDefinition.setDescription(getDescription());
-    reportDefinition.setParameters(txPvlsDataset.getParameters());
+    final ReportDefinition reportDefinition = new ReportDefinition();
+
+    reportDefinition.setUuid(this.getUuid());
+    reportDefinition.setName(this.getName());
+    reportDefinition.setDescription(this.getDescription());
+    reportDefinition.setParameters(this.txPvlsDataset.getParameters());
+
     reportDefinition.addDataSetDefinition(
-        "N", Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
+        "N", Mapped.mapStraightThrough(this.txNewDataset.constructTxNewDataset()));
+
     reportDefinition.addDataSetDefinition(
-        "C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
+        "C", Mapped.mapStraightThrough(this.txCurrDataset.constructTxCurrDataset(true)));
+
     reportDefinition.addDataSetDefinition(
-        "P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
-    // add a base cohort here to help in calculations running
+        "P", Mapped.mapStraightThrough(this.txPvlsDataset.constructTxPvlsDatset()));
+
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
-            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+            this.genericCohortQueries.generalSql(
+                "baseCohortQuery", BaseQueries.getBaseCohortQuery()),
+            "endDate=${endDate},location=${location}"));
 
     return reportDefinition;
   }
 
   @Override
-  public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
+  public List<ReportDesign> constructReportDesigns(final ReportDefinition reportDefinition) {
     ReportDesign reportDesign = null;
     try {
       reportDesign =
-          createXlsReportDesign(
+          this.createXlsReportDesign(
               reportDefinition,
               "PEPFAR_MER_2.3_QUARTERLY.xls",
               "PEPFAR MER 2.3 Quarterly Report",
-              getExcelDesignUuid(),
+              this.getExcelDesignUuid(),
               null);
-      Properties props = new Properties();
+      final Properties props = new Properties();
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
-    } catch (IOException e) {
+    } catch (final IOException e) {
       throw new ReportingException(e.toString());
     }
 

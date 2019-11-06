@@ -23,22 +23,38 @@ public class BaseQueries {
   // concept
   // they map to concept_id=1369 - TRANSFER FROM OTHER FACILITY
   // TODO: Query needs to be refactored
-  public static String getBaseCohortQuery(Map<String, String> parameters) {
-    String query =
+  public static String getBaseCohortQuery(final Map<String, String> parameters) {
+    final String query =
         "SELECT p.patient_id FROM patient p JOIN encounter e ON e.patient_id=p.patient_id "
             + "WHERE e.voided=0 AND p.voided=0 AND e.encounter_type IN (%s) AND e.encounter_datetime<=:endDate AND e.location_id = :location "
             + "UNION "
             + "SELECT pg.patient_id FROM patient p JOIN patient_program pg ON p.patient_id=pg.patient_id WHERE pg.voided=0 AND p.voided=0 AND program_id IN (%s) AND date_enrolled<=:endDate AND location_id=:location ";
-    String encounterTypes =
+    final String encounterTypes =
         StringUtils.join(
             Arrays.asList(
                 parameters.get("arvAdultInitialEncounterTypeId"),
                 parameters.get("arvPediatriaInitialEncounterTypeId")),
             ',');
-    String programs =
+    final String programs =
         StringUtils.join(
             Arrays.asList(parameters.get("hivCareProgramId"), parameters.get("artProgramId")), ',');
     return String.format(query, encounterTypes, programs);
+  }
+
+  public static String getBaseCohortQuery() {
+
+    final String query =
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON e.patient_id=p.patient_id "
+            + "WHERE e.voided=0 AND p.voided=0 AND e.encounter_type IN (5,7) "
+            + "AND e.encounter_datetime<=:endDate AND e.location_id = :location "
+            + "UNION SELECT pg.patient_id FROM 	patient p INNER JOIN patient_program pg ON p.patient_id=pg.patient_id "
+            + "WHERE pg.voided=0 AND p.voided=0 AND program_id IN (1,2) AND date_enrolled<=:endDate AND location_id=:location "
+            + "UNION SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=53 AND o.concept_id=23891 "
+            + "AND o.value_datetime IS NOT NULL AND o.value_datetime<=:endDate AND e.location_id=:location";
+
+    return query;
   }
 
   /**
@@ -46,7 +62,7 @@ public class BaseQueries {
    *
    * @retrun String
    */
-  public static String getBaseQueryForDataQuality(int programId) {
+  public static String getBaseQueryForDataQuality(final int programId) {
     return "SELECT p.patient_id from patient p JOIN patient_program pg ON p.patient_id=pg.patient_id JOIN patient_state ps on pg.patient_program_id=ps.patient_program_id "
         + "WHERE pg.program_id="
         + programId
@@ -59,9 +75,9 @@ public class BaseQueries {
    * @return
    */
   public static String getBaseQueryForEc20DataQuality(
-      int adultoSeguimentoEncounterTypeId,
-      int arvPediatriaInitialEncounterTypeId,
-      int arvPharmaciaEncounterTypeId) {
+      final int adultoSeguimentoEncounterTypeId,
+      final int arvPediatriaInitialEncounterTypeId,
+      final int arvPharmaciaEncounterTypeId) {
     return "SELECT p.patient_id from patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE p.voided=0  AND e.location_id IN(:location) AND p.date_created BETWEEN :startDate AND :endDate AND e.encounter_type IN("
         + adultoSeguimentoEncounterTypeId
         + ","

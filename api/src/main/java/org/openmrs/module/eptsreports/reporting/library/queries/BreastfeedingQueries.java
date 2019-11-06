@@ -16,7 +16,7 @@ package org.openmrs.module.eptsreports.reporting.library.queries;
 public class BreastfeedingQueries {
 
   public static String getPatientsWhoGaveBirthWithinReportingPeriod(
-      int etvProgram, int patientState) {
+      final int etvProgram, final int patientState) {
     return "select 	pg.patient_id"
         + " from patient p"
         + " inner join patient_program pg on p.patient_id=pg.patient_id"
@@ -31,8 +31,10 @@ public class BreastfeedingQueries {
   }
 
   public static String getLactatingPatients(
-      int breastFeedingConcept, int yesValueConcept, int adultFollowupEncounterType) {
-    String qry =
+      final int breastFeedingConcept,
+      final int yesValueConcept,
+      final int adultFollowupEncounterType) {
+    final String qry =
         "select max_visit.person_id "
             + "from ("
             + "select person_id, MAX(encounter_datetime) as edt "
@@ -50,8 +52,10 @@ public class BreastfeedingQueries {
   }
 
   public static String getLactatingPatientsStartingART(
-      int artStartConcept, int breastFeedingConcept, int adultFollowupEncounterType) {
-    String qry =
+      final int artStartConcept,
+      final int breastFeedingConcept,
+      final int adultFollowupEncounterType) {
+    final String qry =
         "select max_visit.person_id "
             + "from ("
             + "select person_id, MIN(encounter_datetime) as edt "
@@ -66,5 +70,35 @@ public class BreastfeedingQueries {
             + ") max_visit";
 
     return String.format(qry, artStartConcept, breastFeedingConcept, adultFollowupEncounterType);
+  }
+
+  public static String findPatientsWhoAreBreastfeeding() {
+
+    final String query =
+        "SELECT lactante_real.patient_id FROM ( "
+            + "SELECT p.patient_id, o.value_datetime data_parto FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id=5599 "
+            + "AND e.encounter_type IN (5,6) AND o.value_datetime BETWEEN :startDate AND :endDate AND e.location_id=:location "
+            + "UNION "
+            + "SELECT p.patient_id, e.encounter_datetime data_parto FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id=6332 AND value_coded=1065 "
+            + "AND e.encounter_type in (6,53) and e.encounter_datetime between :startDate and :endDate and e.location_id=:location "
+            + "UNION "
+            + "SELECT p.patient_id, e.encounter_datetime data_parto FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "INNER JOIN obs o ON e.encounter_id=o.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id=6334 "
+            + "AND value_coded=6332 AND e.encounter_type IN (5,6) AND e.encounter_datetime BETWEEN :startDate AND :endDate AND e.location_id=:location "
+            + "UNION "
+            + "SELECT pg.patient_id, ps.start_date data_parto FROM patient p "
+            + "INNER JOIN patient_program pg ON p.patient_id=pg.patient_id "
+            + "INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND pg.program_id=8 "
+            + "AND ps.state=27 AND ps.end_date IS NULL AND ps.start_date BETWEEN :startDate AND :endDate AND location_id=:location ) lactante_real "
+            + "INNER JOIN person ON lactante_real.patient_id=person.person_id WHERE person.gender='F'";
+
+    return query;
   }
 }
