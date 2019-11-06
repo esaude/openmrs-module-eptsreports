@@ -64,6 +64,9 @@ public class TxNewDataset extends BaseDataSet {
     dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dataSetDefinition.addDimension(
         "age", EptsReportUtils.map(eptsCommonDimension.age(ageDimensionCohort), mappings));
+    String keyPopMappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
+    dataSetDefinition.addDimension(
+        "keypop", EptsReportUtils.map(eptsCommonDimension.getKeyPopsDimension(), keyPopMappings));
 
     dataSetDefinition.addColumn(
         "1All",
@@ -76,6 +79,30 @@ public class TxNewDataset extends BaseDataSet {
         "TX_NEW: Breastfeeding Started ART",
         EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
         "maternity=breastfeeding");
+
+    dataSetDefinition.addColumn(
+        "PID",
+        "TX_NEW: People who inject drugs",
+        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+        "keypop=PID");
+
+    dataSetDefinition.addColumn(
+        "MSM",
+        "TX_NEW: Men who have sex with men",
+        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+        "keypop=MSM");
+
+    dataSetDefinition.addColumn(
+        "CSW",
+        "TX_NEW: Female sex workers",
+        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+        "keypop=CSW");
+
+    dataSetDefinition.addColumn(
+        "PRI",
+        "TX_NEW: People in prison and other closed settings",
+        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+        "keypop=PRI");
 
     addRow(
         dataSetDefinition,

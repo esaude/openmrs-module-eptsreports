@@ -21,7 +21,7 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
 
   @Override
   public Collection<Integer> getCohort() {
-    return Arrays.asList(new Integer[] {2, 6, 7, 8, 999, 432, 1777005});
+    return Arrays.asList(2, 6, 7, 8, 999, 432, 1777005, 1777007);
   }
 
   @Override
@@ -41,7 +41,7 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
     map.put(
         6,
         new SimpleResult(
-            new Timestamp(testsHelper.getDate("2018-06-21 00:00:00.0").getTime()),
+            new Timestamp(testsHelper.getDate("1998-09-01 00:00:00.0").getTime()),
             calculation,
             evaluationContext));
     // initiated ART by historical start date observation
@@ -67,6 +67,13 @@ public class InitialArtStartDateCalculationTest extends BasePatientCalculationTe
         1777005,
         new SimpleResult(
             new Timestamp(testsHelper.getDate("2018-01-21 00:00:00.0").getTime()),
+            calculation,
+            evaluationContext));
+    // initiated ART by mastercard drug pickup
+    map.put(
+        1777007,
+        new SimpleResult(
+            new Timestamp(testsHelper.getDate("1998-10-01 01:02:00.0").getTime()),
             calculation,
             evaluationContext));
     return map;

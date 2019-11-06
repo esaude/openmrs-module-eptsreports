@@ -39,6 +39,9 @@ public class JembiPatientStateEvaluator implements PatientDataEvaluator {
     qb.whereIn("patientState.state", def.getStates());
     qb.whereNotNull("patientState.startDate");
     qb.whereNull("patientState.endDate");
+    if (def.getStartedOnOrAfter() != null) {
+      qb.whereGreaterOrEqualTo("patientState.startDate", def.getStartedOnOrAfter());
+    }
     qb.whereLessOrEqualTo("patientState.startDate", def.getStartedOnOrBefore());
 
     qb.whereEqual("patientState.patientProgram.location", def.getLocation());

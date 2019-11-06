@@ -11,6 +11,8 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.dimensions;
 
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
+
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -19,9 +21,11 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri4MonthsCohort
 import org.openmrs.module.eptsreports.reporting.library.cohorts.EriCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TbPrevCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +49,8 @@ public class EptsCommonDimension {
   @Autowired private EriCohortQueries eriCohortQueries;
 
   @Autowired private TbPrevCohortQueries tbPrevCohortQueries;
+
+  @Autowired private HivCohortQueries hivCohortQueries;
 
   /**
    * Gender dimension
@@ -132,7 +138,7 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "breastfeeding",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
+            txNewCohortQueries.getTxNewBreastfeedingCohort(),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     dim.addCohortDefinition(
         "pregnant",
@@ -267,6 +273,23 @@ public class EptsCommonDimension {
         EptsReportUtils.map(
             tbPrevCohortQueries.getPreviouslyOnArt(),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+    return dim;
+  }
+
+  public CohortDefinitionDimension getKeyPopsDimension() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setName("Key Population Dimension");
+    dim.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    dim.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
+    dim.addParameter(new Parameter("locationList", "Location", Location.class));
+    CohortDefinition drugUserKeyPopCohort = hivCohortQueries.getDrugUserKeyPopCohort();
+    CohortDefinition homosexualKeyPopCohort = hivCohortQueries.getHomosexualKeyPopCohort();
+    CohortDefinition imprisonmentKeyPopCohort = hivCohortQueries.getImprisonmentKeyPopCohort();
+    CohortDefinition sexWorkerKeyPopCohort = hivCohortQueries.getSexWorkerKeyPopCohort();
+    dim.addCohortDefinition("PID", mapStraightThrough(drugUserKeyPopCohort));
+    dim.addCohortDefinition("MSM", mapStraightThrough(homosexualKeyPopCohort));
+    dim.addCohortDefinition("CSW", mapStraightThrough(sexWorkerKeyPopCohort));
+    dim.addCohortDefinition("PRI", mapStraightThrough(imprisonmentKeyPopCohort));
     return dim;
   }
 }
