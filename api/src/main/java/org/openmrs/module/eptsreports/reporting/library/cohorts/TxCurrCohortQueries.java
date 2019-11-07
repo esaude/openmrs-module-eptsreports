@@ -394,8 +394,8 @@ public class TxCurrCohortQueries {
         TXCurrQueries.getPatientDeathRegisteredInLastHomeVisitCardByReportingEndDate(
             encounterTypes,
             hivMetadata.getPatientFoundConcept().getConceptId(),
-            hivMetadata.getReasonPatientNotFound().getConceptId(),
             hivMetadata.getNoConcept().getConceptId(),
+            hivMetadata.getReasonPatientNotFound().getConceptId(),
             hivMetadata.getPatientIsDead().getConceptId()));
 
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));

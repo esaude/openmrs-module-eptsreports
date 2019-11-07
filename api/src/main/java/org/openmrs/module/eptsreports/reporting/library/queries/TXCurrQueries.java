@@ -99,7 +99,9 @@ public class TXCurrQueries {
             + " inner join encounter e on e.patient_id=p.patient_id "
             + " inner join obs o  on o.encounter_id=e.encounter_id "
             + " where  p.voided=0  and e.voided=0 and o.voided=0 "
-            + " and e.encounter_type in (%s) and o.concept_id in (%s,%s) and o.value_coded in (%s,%s) "
+            + " and e.encounter_type in (%s) and ((o.concept_id = %s and o.value_coded = %s ) or (o.concept_id = %s and o.value_coded = %s )) "
+            + " and e.encounter_datetime = (select  max(encounter_datetime) from encounter "
+            + " where  patient_id= p.patient_id and encounter_type = e.encounter_type) "
             + " and e.encounter_datetime <= :onOrBefore and  e.location_id = :location group by p.patient_id ";
 
     return String.format(
@@ -193,7 +195,7 @@ public class TXCurrQueries {
             + " inner join encounter e on  e.patient_id = p.patient_id "
             + " where  p.voided=0  and e.voided=0 "
             + " and e.encounter_type in (%s,%s,%s)  "
-            + " and e.encounter_datetime = (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id) "
+            + " and e.encounter_datetime > (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id ) "
             + " and e.location_id= :location group by p.patient_id "
             + " union "
             + " select p.patient_id "
@@ -203,7 +205,7 @@ public class TXCurrQueries {
             + " where e.encounter_type = %s and p.voided=0  and e.voided=0 and o.voided=0 "
             + " and o.concept_id=%s  "
             + " and o.value_datetime > (select  max(value_datetime) from obs where  encounter_id= e.encounter_id) "
-            + " and e.location_id= 6 group by p.patient_id ";
+            + " and e.location_id= :location group by p.patient_id ";
 
     return String.format(
         query,
