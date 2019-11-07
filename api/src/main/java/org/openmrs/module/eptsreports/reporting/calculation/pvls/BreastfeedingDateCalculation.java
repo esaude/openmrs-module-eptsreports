@@ -94,7 +94,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
 
     CalculationResultMap patientStateMap =
         ePTSCalculationService.allPatientStates(
-            cohort, location, hivMetadata.getPatientGaveBirthWorkflowState(), context);
+            cohort, location, hivMetadata.getPatientIsBreastfeedingWorkflowState(), context);
 
     CalculationResultMap lastVl =
         ePTSCalculationService.lastObs(
