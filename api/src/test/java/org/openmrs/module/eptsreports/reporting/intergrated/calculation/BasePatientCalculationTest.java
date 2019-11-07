@@ -108,7 +108,6 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
           matched = results1.get(key).getValue() == null;
         } else if (!results1.get(key).getValue().equals(results2.get(key).getValue())) {
           matched = false;
-          break;
         }
       }
     }

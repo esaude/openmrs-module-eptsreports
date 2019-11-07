@@ -21,8 +21,6 @@ public class JembiPatientStateDefinition extends BaseDataDefinition
   @ConfigurationProperty(required = true)
   private List<ProgramWorkflowState> states;
 
-  @ConfigurationProperty private Date startedOnOrAfter;
-
   @ConfigurationProperty(required = true)
   private Date startedOnOrBefore;
 
@@ -66,13 +64,5 @@ public class JembiPatientStateDefinition extends BaseDataDefinition
 
   public void setWhich(TimeQualifier which) {
     this.which = which;
-  }
-
-  public Date getStartedOnOrAfter() {
-    return startedOnOrAfter;
-  }
-
-  public void setStartedOnOrAfter(Date startedOnOrAfter) {
-    this.startedOnOrAfter = startedOnOrAfter;
   }
 }

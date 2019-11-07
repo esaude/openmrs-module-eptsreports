@@ -1779,7 +1779,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.setQuery(
         QualiltyImprovementQueries.getPatientWithDeliveryDate2YearsAgoBreatFeeding(
             hivMetadata.getPtvEtvProgram().getProgramId(),
-            hivMetadata.getPatientGaveBirthWorkflowState().getProgramWorkflowStateId()));
+            hivMetadata.getPatientIsBreastfeedingWorkflowState().getProgramWorkflowStateId()));
 
     return sqlCohortDefinition;
   }
