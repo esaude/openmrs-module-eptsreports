@@ -172,7 +172,7 @@ public class EptsCommonDimension {
         "DP",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            "onOrBefore=${reportingEndDate},location=${location}"));
 
     dim.addCohortDefinition(
         "LTFU",

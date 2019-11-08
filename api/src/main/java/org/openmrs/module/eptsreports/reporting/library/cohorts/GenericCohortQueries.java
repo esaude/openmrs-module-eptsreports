@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,12 +26,12 @@ import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.calculation.eri.ERIDeadPatientsCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.AgeOnArtStartDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtBeforeDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtOnPeriodCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
@@ -199,27 +201,11 @@ public class GenericCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getDeceasedPatients() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    CalculationCohortDefinition cd = new CalculationCohortDefinition();
+    cd.setCalculation(Context.getRegisteredComponents(ERIDeadPatientsCalculation.class).get(0));
     cd.setName("Get deceased patients based on patient states and person object");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    cd.addSearch(
-        "dead",
-        EptsReportUtils.map(
-            getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "deceased",
-        EptsReportUtils.map(
-            generalSql(
-                "deceased",
-                "SELECT patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id AND pe.dead=1 WHERE pe.death_date <=:endDate"),
-            "startDate=${startDate},endDate=${endDate}"));
-    cd.setCompositionString("dead OR deceased");
     return cd;
   }
 
@@ -236,14 +222,14 @@ public class GenericCohortQueries {
 
     cd.addSearch(
         "dead",
-        EptsReportUtils.map(
+        map(
             getPatientsBasedOnPatientStatesBeforeDate(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
             "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "deceased",
-        EptsReportUtils.map(
+        map(
             generalSql(
                 "deceased",
                 "SELECT patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id AND pe.dead=1 WHERE pe.death_date <=:endDate"),
