@@ -39,6 +39,12 @@
 		birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
 		  date_created="2005-01-01 00:00:00.0" voided="false"   death_date="2018-07-13 00:00:00.0"
 		uuid="f8bb3068-ffd1-11e9-83a4-ff897e853a14" />
+		
+		
+		<person person_id="12593" gender="M"  creator="1"
+		birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+		  date_created="2005-01-01 00:00:00.0" voided="false"   death_date="2018-07-13 00:00:00.0"
+		uuid="340825ca-0204-11ea-ad28-47dd9db33d34" />
  
 
 	<!-- patient -->
@@ -61,6 +67,10 @@
 		date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
 		
 			<patient patient_id="1005"   creator="1"
+		date_created="2005-09-22 00:00:00.0"  
+		date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+		
+		<patient patient_id="12593"   creator="1"
 		date_created="2005-09-22 00:00:00.0"  
 		date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
 		
@@ -199,6 +209,19 @@
 		description="Fake for concept 2031"
 		uuid="4e54d95c-ffd7-11e9-bea9-6731c57238f3" />
 		
+			<global_property
+		property="eptsreports.returnVisitDateConceptConceptUuid"
+		property_value="e1dae630-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the DATA DE PROXIMA CONSULTA concept  "
+		uuid="3ef717ce-79e4-4fb4-a120-d6c551dcd9a1" />
+		
+			<global_property
+		property="eptsreports.returnVisitDateForArvDrugConceptUuid"
+		property_value="e1e2efd8-1d5f-11e0-b929-000c29ad1d07"
+		description=" UUID for the DATA DO PROXIMO LEVANTAMENTO DE ARV concept"
+		uuid="2576e015-c322-4c58-84a5-880a105ce2d7" />
+		
+		
 		
 		<!-- concept -->
 		<concept concept_id="6276" retired="0"   creator="1"
@@ -298,6 +321,16 @@
 		  is_set="0"   class_id="11" datatype_id="4"
 		date_created="2008-10-13 05:58:15" creator="1"
 		uuid="e1dac772-1d5f-11e0-b929-000c29ad1d07" />
+		
+	   <concept concept_id="1410" retired="0" 
+		  is_set="0"   class_id="11" datatype_id="6"
+		date_created="2008-10-13 05:58:15" creator="1"
+		uuid="e1dae630-1d5f-11e0-b929-000c29ad1d07" />
+		
+		<concept concept_id="5096" retired="0" 
+		  is_set="0"   class_id="11" datatype_id="6"
+		date_created="2008-10-13 05:58:15" creator="1"
+		uuid="e1e2efd8-1d5f-11e0-b929-000c29ad1d07" />
 		
 		
 		
@@ -441,6 +474,11 @@
 		date_created="2018-06-20 12:55:48" voided="0"
 		uuid="c9e94ad0-ffd2-11e9-95d2-bfdc3a1c82c8" location_id="6" />
 		
+		<encounter encounter_id="9006" encounter_type="9"
+		patient_id="12593" encounter_datetime="2018-07-12 00:00:00" creator="1"
+		date_created="2018-06-20 12:55:48" voided="0"
+		uuid="5dbccfb4-0205-11ea-b51e-33b37a47226e" location_id="6" />
+		
 		
 	<!-- obs -->
 	<obs obs_id="100" person_id="1001" concept_id="1255"
@@ -461,6 +499,11 @@
 		<obs obs_id="103" person_id="1005" concept_id="2031"
 		encounter_id="9005" obs_datetime="2018-07-08 00:00:00"
 		value_coded="1383" creator="1" date_created="2018-07-08 12:55:48"
+		voided="0" uuid="7f733e90-0205-11ea-b85d-93d5cd2cbe5e" location_id="6" />
+		
+		<obs obs_id="104" person_id="12593" concept_id="1410"
+		encounter_id="9006" obs_datetime="2018-07-08 00:00:00"
+		creator="1" date_created="2018-07-08 12:55:48"
 		voided="0" uuid="d6796536-ffd8-11e9-8a8a-177367cdb83a" location_id="6" />
 		
 	
