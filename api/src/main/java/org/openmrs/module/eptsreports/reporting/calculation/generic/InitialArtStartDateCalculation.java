@@ -181,6 +181,7 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 
   private CalculationResultMap getMastercardDrugPickupMap(
       Collection<Integer> cohort, Location location, PatientCalculationContext context) {
+//    TODO: also handle Levantou ARV (concept id 23865) = SIm (1065)
     Concept artDatePickup = hivMetadata.getArtDatePickup();
     EncounterType masterCardDrugPickup = hivMetadata.getMasterCardDrugPickupEncounterType();
     return ePTSCalculationService.firstObs(
