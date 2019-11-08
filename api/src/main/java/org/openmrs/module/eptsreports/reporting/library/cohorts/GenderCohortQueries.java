@@ -16,7 +16,6 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.queries.TXCurrQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -56,30 +55,5 @@ public class GenderCohortQueries {
     return cohort;
   }
   
-  public CohortDefinition getPatinetWhoToLostToFollowUp() {
-	  CompositionCohortDefinition  definition  = new CompositionCohortDefinition();
-	  
-	  
-	    String mappings = "onOrBefore=${onOrBefore},location=${location}";
-	    
-	    definition.addSearch(
-	            "31",
-	            EptsReportUtils.map(txCurrCohortQueries.
-	            		getPatientHavingLastScheduledDrugPickupDate(),
-	                mappings));
-	    
-	    definition.addSearch(
-	            "32",
-	            EptsReportUtils.map(txCurrCohortQueries.
-	            		getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(),
-	                mappings));
-
-	  
-	  definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-	  definition.addParameter(new Parameter("location", "location", Location.class));
-	  definition.setCompositionString(
-		        "31 OR  32");
-	  
-	  return definition;
-  }
+ 
 }
