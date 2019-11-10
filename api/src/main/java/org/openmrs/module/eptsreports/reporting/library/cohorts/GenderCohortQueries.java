@@ -13,21 +13,15 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.Date;
-
-import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class GenderCohortQueries {
-	
-	@Autowired private TxCurrCohortQueries txCurrCohortQueries;
+
+  @Autowired private TxCurrCohortQueries txCurrCohortQueries;
 
   /**
    * Patients who are female
@@ -54,6 +48,4 @@ public class GenderCohortQueries {
     cohort.setFemaleIncluded(false);
     return cohort;
   }
-  
- 
 }

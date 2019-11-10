@@ -49,7 +49,7 @@ import org.springframework.stereotype.Component;
 public class GenericCohortQueries {
 
   @Autowired private HivMetadata hivMetadata;
-  
+
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
 
   /**
@@ -322,31 +322,27 @@ public class GenericCohortQueries {
 
     return cd;
   }
-  
-  public CohortDefinition getPatinetWhoToLostToFollowUp() {
-	  CompositionCohortDefinition  definition  = new CompositionCohortDefinition();
-	  
-	  
-	    String mappings = "onOrBefore=${onOrBefore},location=${location}";
-	    
-	    definition.addSearch(
-	            "31",
-	            EptsReportUtils.map(txCurrCohortQueries.
-	            		getPatientHavingLastScheduledDrugPickupDate(),
-	                mappings));
-	    
-	    definition.addSearch(
-	            "32",
-	            EptsReportUtils.map(txCurrCohortQueries.
-	            		getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(),
-	                mappings));
 
-	  
-	  definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-	  definition.addParameter(new Parameter("location", "location", Location.class));
-	  definition.setCompositionString(
-		        "31 OR  32");
-	  
-	  return definition;
+  public CohortDefinition getPatinetWhoToLostToFollowUp() {
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    String mappings = "onOrBefore=${onOrBefore},location=${location}";
+
+    definition.addSearch(
+        "31",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getPatientHavingLastScheduledDrugPickupDate(), mappings));
+
+    definition.addSearch(
+        "32",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(),
+            mappings));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+    definition.setCompositionString("31 OR  32");
+
+    return definition;
   }
 }

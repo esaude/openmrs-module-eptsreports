@@ -96,7 +96,7 @@ public class TxCurrCohortQueriesTest extends DefinitionsTest {
       throws EvaluationException {
     CohortDefinition cd =
         txCurrCohortQueries
-            .getPatientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate();
+            .getPatientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate(false);
 
     Map<Parameter, Object> parameters = new HashMap<>();
 
@@ -111,7 +111,8 @@ public class TxCurrCohortQueriesTest extends DefinitionsTest {
 
   @Test
   public void testGetDeadPatientsInDemographiscByReportingEndDate() throws EvaluationException {
-    CohortDefinition cd = txCurrCohortQueries.getDeadPatientsInDemographiscByReportingEndDate();
+    CohortDefinition cd =
+        txCurrCohortQueries.getDeadPatientsInDemographiscByReportingEndDate(false);
 
     Map<Parameter, Object> parameters = new HashMap<>();
 
