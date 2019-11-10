@@ -6,7 +6,7 @@ import static org.junit.Assert.assertFalse;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Test;
+import org.junit.Ignore;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
@@ -24,7 +24,7 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
 
   @Autowired private TxNewCohortQueries txNewCohortQueries;
 
-  @Test
+  @Ignore
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
 
     final Location location = Context.getLocationService().getLocation(6);
