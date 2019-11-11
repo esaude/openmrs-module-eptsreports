@@ -47,6 +47,8 @@ public class TxNewCohortQueries {
 
   @Autowired private GenericCohortQueries genericCohorts;
 
+  @Autowired private GenderCohortQueries genderCohorts;
+
   @Autowired private HivCohortQueries hivCohortQueries;
 
   /**
@@ -155,6 +157,7 @@ public class TxNewCohortQueries {
         EptsReportUtils.map(
             getPatientsWhoGaveBirthWithinReportingPeriod(),
             "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
+    cd.addSearch("FEMININO", EptsReportUtils.map(genderCohorts.femaleCohort(), ""));
     cd.addSearch(
         "LACTANTE",
         EptsReportUtils.map(
@@ -166,7 +169,8 @@ public class TxNewCohortQueries {
                 Arrays.asList(commonMetadata.getYesConcept())),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
 
-    String compositionString = "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE)";
+    String compositionString =
+        "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE) AND FEMININO";
 
     cd.setCompositionString(compositionString);
     return cd;

@@ -1356,6 +1356,24 @@
 			UUID for the SINTOMAS DE TUBERCULOSE concept
 		</description>
 	</globalProperty>
+	
+	<!--23722-->
+	<globalProperty>
+		<property>eptsreports.applicationForLaboratoryResearch</property>
+		<defaultValue>92653c45-9eb2-486d-90c0-3e00569e99c0</defaultValue>
+		<description>
+			UUID for the APPLICATION FOR LABORATORY RESEARCH concept
+		</description>
+	</globalProperty>
+
+	<!--1305-->
+	<globalProperty>
+		<property>eptsreports.viralLoadQualitativeConceptUuid</property>
+		<defaultValue>e1da2704-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Viral load qualitative  concept
+		</description>
+	</globalProperty>
 
 	<!-- 6272 -->
 	<globalProperty>
