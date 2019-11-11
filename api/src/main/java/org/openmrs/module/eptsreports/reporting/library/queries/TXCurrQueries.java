@@ -145,7 +145,8 @@ public class TXCurrQueries {
     if (maxDate) {
       dateClause =
           " and e.location_id = :location and e.encounter_datetime "
-              + " =  (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id) ";
+              + " =  (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id "
+              + " and encounter_type = e.encounter_type) ";
     }
     String query =
         "select  p.patient_id "
@@ -176,7 +177,8 @@ public class TXCurrQueries {
     if (maxDate) {
       dateClause =
           " and e.location_id = :location and e.encounter_datetime "
-              + " =  (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id) ";
+              + " =  (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id "
+              + " and encounter_type = e.encounter_type ) ";
     }
 
     String query =
@@ -208,7 +210,8 @@ public class TXCurrQueries {
     if (maxDate) {
       dateClause =
           " and e.location_id = :location and e.encounter_datetime "
-              + " =  (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id) ";
+              + " =  (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id "
+              + " and encounter_type = e.encounter_type )";
     }
     String query =
         "select  p.patient_id "
