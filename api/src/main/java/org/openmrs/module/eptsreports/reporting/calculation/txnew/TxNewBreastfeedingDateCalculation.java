@@ -23,6 +23,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculati
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiPatientStateDefinition;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
+import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -39,20 +40,33 @@ public class TxNewBreastfeedingDateCalculation extends AbstractPatientCalculatio
     CalculationResultMap criteriaHivStartMap = getLactatingCriteriaForARTStart(cohort, context);
     CalculationResultMap patientStateMap = getPatientGaveBirthState(cohort, context);
     CalculationResultMap mastercardMap = getBreastfeedingInMastercardMap(cohort, context);
+    CalculationResultMap genderMap = getGenderMap(cohort, context);
 
     CalculationResultMap resultMap = new CalculationResultMap();
     for (Integer pId : cohort) {
-      Date resultantDate =
-          getResultantDate(
-              deliveryDateMap,
-              breastfeedingMap,
-              criteriaHivStartMap,
-              patientStateMap,
-              mastercardMap,
-              pId);
-      resultMap.put(pId, new SimpleResult(resultantDate, this));
+      if (isFemale(pId, genderMap)) {
+        Date resultantDate =
+            getResultantDate(
+                deliveryDateMap,
+                breastfeedingMap,
+                criteriaHivStartMap,
+                patientStateMap,
+                mastercardMap,
+                pId);
+        resultMap.put(pId, new SimpleResult(resultantDate, this));
+      }
     }
     return resultMap;
+  }
+
+  private boolean isFemale(Integer pId, CalculationResultMap genderMap) {
+    return !genderMap.isEmpty(pId) && "F".equals(genderMap.get(pId).asType(String.class));
+  }
+
+  private CalculationResultMap getGenderMap(
+      Collection<Integer> cohort, PatientCalculationContext context) {
+    GenderDataDefinition def = new GenderDataDefinition();
+    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
   }
 
   private Date getResultantDate(
