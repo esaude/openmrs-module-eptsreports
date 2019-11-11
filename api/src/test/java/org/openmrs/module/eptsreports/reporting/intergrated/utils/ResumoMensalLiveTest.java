@@ -30,12 +30,6 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
   @Autowired private HivCohortQueries hivCohortQueries;
 
   @Test
-  public void test() throws EvaluationException {
-    CohortDefinition cd = hivCohortQueries.getPatientsTransferredOut();
-    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd);
-  }
-
-  @Test
   public void A1() throws EvaluationException {
     CohortDefinition cd =
         resumoMensalCohortQueries.getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1();
