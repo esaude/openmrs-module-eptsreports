@@ -169,6 +169,7 @@ public class PatientsWhoStoppedTreatmentCalculation extends AbstractPatientCalcu
     EncounterType arvPharmacia = hivMetadata.getARVPharmaciaEncounterType();
 
     EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition();
+    def.setWhich(TimeQualifier.LAST);
     def.addType(adultoSeguimento);
     def.addType(arvPediatriaSeguimento);
     def.addType(arvPharmacia);
