@@ -28,6 +28,7 @@ public class EriDSDCohortQueries {
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
   @Autowired private TxNewCohortQueries txNewCohortQueries;
   @Autowired private GenericCohortQueries genericCohortQueries;
+  @Autowired private GenderCohortQueries genderCohorts;
 
   @Autowired private AgeCohortQueries ageCohortQueries;
   @Autowired private HivCohortQueries hivCohortQueries;
@@ -1316,13 +1317,15 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             txNewCohortQueries.getPatientsWhoGaveBirthWithinReportingPeriod(),
             "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
+    cd.addSearch("FEMININO", EptsReportUtils.map(genderCohorts.femaleCohort(), ""));
     cd.addSearch(
         "LACTANTE",
         EptsReportUtils.map(
             getBreastfeedingPatients(),
             "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
 
-    String compositionString = "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE)";
+    String compositionString =
+        "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE) AND FEMININO";
 
     cd.setCompositionString(compositionString);
     return cd;
