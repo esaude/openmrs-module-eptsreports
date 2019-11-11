@@ -102,25 +102,27 @@ public class EriDSDDataset extends BaseDataSet {
                     mappings)),
             mappings),
         getChildrenColumn());
-    dsd.addColumn(
-        "D2BNP",
-        "Breastfeeding (exclude pregnant)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "D2BNP",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreBreastFeedingAndNotPregnant(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "D2PNB",
-        "Pregnant (exclude breastfeeding)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "D2PNB",
-                EptsReportUtils.map(eriDSDCohortQueries.getPatientsWhoArePregnant(), mappings)),
-            mappings),
-        "");
+    //    dsd.addColumn(
+    //        "D2BNP",
+    //        "Breastfeeding (exclude pregnant)",
+    //        EptsReportUtils.map(
+    //            eptsGeneralIndicator.getIndicator(
+    //                "D2BNP",
+    //                EptsReportUtils.map(
+    //                    eriDSDCohortQueries.getPatientsWhoAreBreastFeedingAndNotPregnant(),
+    // mappings)),
+    //            mappings),
+    //        "");
+    //    dsd.addColumn(
+    //        "D2PNB",
+    //        "Pregnant (exclude breastfeeding)",
+    //        EptsReportUtils.map(
+    //            eptsGeneralIndicator.getIndicator(
+    //                "D2PNB",
+    //                EptsReportUtils.map(eriDSDCohortQueries.getPatientsWhoArePregnant(),
+    // mappings)),
+    //            mappings),
+    //        "");
     /*dsd.addColumn(
         "NT",
         "DSD N Total",
