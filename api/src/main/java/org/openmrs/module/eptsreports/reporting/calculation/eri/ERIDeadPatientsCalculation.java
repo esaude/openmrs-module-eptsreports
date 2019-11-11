@@ -114,7 +114,7 @@ public class ERIDeadPatientsCalculation extends AbstractPatientCalculation {
       dates.add(followUpStateOfStay.getEncounter().getEncounterDatetime());
     }
 
-    Obs mastercardStateOfStay = EptsCalculationUtils.resultForPatient(deadInFollowUp, pId);
+    Obs mastercardStateOfStay = EptsCalculationUtils.resultForPatient(deadInMastercard, pId);
     if (mastercardStateOfStay != null) {
       dates.add(mastercardStateOfStay.getEncounter().getEncounterDatetime());
     }
