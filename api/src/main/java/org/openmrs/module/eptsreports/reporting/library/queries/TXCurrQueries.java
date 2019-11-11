@@ -241,7 +241,7 @@ public class TXCurrQueries {
       int msterCardDrugPickupEncounterType) {
     String query =
         "select most_recent.patient_id "
-            + "from (select p.patient_id , o.value_datetime, e.location_id, e.encounter_id "
+            + "from (select p.patient_id , o.value_datetime, e.location_id, e.encounter_id, e.encounter_type "
             + "from patient p  "
             + "inner join encounter e on e.patient_id=p.patient_id  "
             + "inner join obs o on o.encounter_id=e.encounter_id  "
@@ -251,7 +251,7 @@ public class TXCurrQueries {
             + "  "
             + "union   "
             + " "
-            + "select p.patient_id, o.value_datetime,e.location_id,e.encounter_id "
+            + "select p.patient_id, o.value_datetime,e.location_id,e.encounter_id, e.encounter_type "
             + "from patient p  "
             + "inner join encounter e on e.patient_id=p.patient_id  "
             + "inner join obs o on o.encounter_id=e.encounter_id  "
@@ -260,13 +260,16 @@ public class TXCurrQueries {
             + " "
             + "union  "
             + " "
-            + "select p.patient_id, o.value_datetime,e.location_id,e.encounter_id "
+            + "select p.patient_id, o.value_datetime,e.location_id,e.encounter_id, e.encounter_type "
             + "from patient p  "
             + "inner join encounter e on e.patient_id=p.patient_id  "
             + "inner join obs o on o.encounter_id=e.encounter_id  "
             + "where p.voided=0 and e.voided=0 and o.voided=0  "
             + "and o.concept_id= %s and o.value_datetime is not null and e.encounter_type = %s ) most_recent  "
-            + "where  most_recent.value_datetime =(select  max(value_datetime) from obs where  encounter_id = most_recent.encounter_id) "
+            + "where  most_recent.value_datetime =(select  max(obss.value_datetime) from obs obss"
+            + " inner  join encounter et on  et.encounter_id=obss.encounter_id "
+            + " where  obss.encounter_id = most_recent.encounter_id "
+            + " and et.encounter_type = most_recent.encounter_type) "
             + "and most_recent.value_datetime <  date_add(:onOrBefore, interval 30 day) and most_recent.location_id = :location  "
             + "group by most_recent.patient_id";
 
@@ -307,7 +310,8 @@ public class TXCurrQueries {
             + "inner join encounter e on e.patient_id=p.patient_id "
             + "inner join obs o on o.encounter_id=e.encounter_id "
             + "where p.voided=0 and e.voided=0 and o.voided=0 "
-            + "and  e.encounter_datetime =  (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id) "
+            + "and  e.encounter_datetime =  (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id "
+            + " and encounter_type = e.encounter_type ) "
             + "and e.encounter_type in (%s,%s,%s)    "
             + "and (o.concept_id not in (%s, %s) or o.encounter_id is  null) "
             + "and  e.location_id= :location "
@@ -338,7 +342,8 @@ public class TXCurrQueries {
             + " inner join encounter e on  e.patient_id = p.patient_id "
             + " where  p.voided=0  and e.voided=0 "
             + " and e.encounter_type in (%s,%s,%s)  "
-            + " and e.encounter_datetime > (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id ) "
+            + " and e.encounter_datetime > (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id "
+            + " and encounter_type = e.encounter_type ) "
             + " and e.location_id= :location group by p.patient_id "
             + " union "
             + " select p.patient_id "
@@ -347,7 +352,8 @@ public class TXCurrQueries {
             + " inner join obs o on o.encounter_id=e.encounter_id "
             + " where e.encounter_type = %s and p.voided=0  and e.voided=0 and o.voided=0 "
             + " and o.concept_id=%s  "
-            + " and o.value_datetime > (select  max(value_datetime) from obs where  encounter_id= e.encounter_id) "
+            + " and o.value_datetime > (select  max(value_datetime) from obs where  encounter_id= e.encounter_id  "
+            + " and encounter_type = e.encounter_type ) "
             + " and e.location_id= :location group by p.patient_id ";
 
     return String.format(
