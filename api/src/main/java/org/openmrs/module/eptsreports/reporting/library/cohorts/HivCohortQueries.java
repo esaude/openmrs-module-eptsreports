@@ -20,8 +20,10 @@ import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,44 +94,6 @@ public class HivCohortQueries {
         Collections.singletonList(hivMetadata.getRestartConcept()));
   }
 
-  /**
-   * Looks for patients enrolled on ART program (program 2=SERVICO TARV - TRATAMENTO), transferred
-   * from other health facility (program workflow state is 29=TRANSFER FROM OTHER FACILITY) between
-   * start date and end date
-   *
-   * @return CohortDefinition
-   */
-  @DocumentedDefinition(value = "transferredFromOtherHealthFacility")
-  public CohortDefinition getPatientsTransferredFromOtherHealthFacility() {
-    // TODO refactor this method, use #getPatientsInProgramWithStateDuringPeriod(Program,
-    // ProgramWorkflowState)
-    SqlCohortDefinition transferredFromOtherHealthFacility = new SqlCohortDefinition();
-    transferredFromOtherHealthFacility.setName("transferredFromOtherHealthFacility");
-    String query =
-        "select p.patient_id from patient p "
-            + "inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%d"
-            + " and ps.state=%d"
-            + " and ps.start_date=pg.date_enrolled"
-            + " and ps.start_date between :onOrAfter and :onOrBefore and location_id=:location "
-            + "group by p.patient_id";
-    transferredFromOtherHealthFacility.setQuery(
-        String.format(
-            query,
-            hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata
-                .getTransferredFromOtherHealthFacilityWorkflowState()
-                .getProgramWorkflowStateId()));
-    transferredFromOtherHealthFacility.addParameter(
-        new Parameter("onOrAfter", "onOrAfter", Date.class));
-    transferredFromOtherHealthFacility.addParameter(
-        new Parameter("onOrBefore", "onOrBefore", Date.class));
-    transferredFromOtherHealthFacility.addParameter(
-        new Parameter("location", "location", Location.class));
-    return transferredFromOtherHealthFacility;
-  }
-
   public CohortDefinition getPatientsInArtCareTransferredFromOtherHealthFacility() {
     Program hivCareProgram = hivMetadata.getHIVCareProgram();
     ProgramWorkflowState transferredFrom =
@@ -159,7 +123,7 @@ public class HivCohortQueries {
     String query =
         "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
-            + "WHERE p.voided=0 and e.voided=0 AND o.voided=0 AND e.encounter_type IN (%d, %d, %d) "
+            + "WHERE p.voided=0 and e.voided=0 AND o.voided=0 AND e.encounter_type IN (%d, %d, %d,%d) "
             + "AND o.concept_id=%d "
             + "AND o.value_datetime IS NOT NULL AND o.value_datetime <= :onOrBefore AND e.location_id=:location GROUP BY p.patient_id";
     patientWithHistoricalDrugStartDateObs.setQuery(
@@ -168,6 +132,7 @@ public class HivCohortQueries {
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHistoricalDrugStartDateConcept().getConceptId()));
     patientWithHistoricalDrugStartDateObs.addParameter(
         new Parameter("onOrBefore", "onOrBefore", Date.class));
@@ -224,5 +189,49 @@ public class HivCohortQueries {
     ProgramWorkflowState state = hivMetadata.getArtAbandonedWorkflowState();
     return genericCohortQueires.getPatientsBasedOnPatientStatesBeforeDate(
         artProgram.getProgramId(), state.getProgramWorkflowStateId());
+  }
+
+  public CohortDefinition getHomosexualKeyPopCohort() {
+    CodedObsCohortDefinition cd = (CodedObsCohortDefinition) getKeyPopulationCohort();
+    cd.setName("Men who have sex with men");
+    cd.setValueList(Collections.singletonList(hivMetadata.getHomosexualConcept()));
+    return cd;
+  }
+
+  public CohortDefinition getDrugUserKeyPopCohort() {
+    CodedObsCohortDefinition cd = (CodedObsCohortDefinition) getKeyPopulationCohort();
+    cd.setName("People who inject drugs");
+    cd.setValueList(Collections.singletonList(hivMetadata.getDrugUseConcept()));
+    return cd;
+  }
+
+  public CohortDefinition getImprisonmentKeyPopCohort() {
+    CodedObsCohortDefinition cd = (CodedObsCohortDefinition) getKeyPopulationCohort();
+    cd.setName("People in prison and other closed settings");
+    cd.setValueList(Collections.singletonList(hivMetadata.getImprisonmentConcept()));
+    return cd;
+  }
+
+  public CohortDefinition getSexWorkerKeyPopCohort() {
+    CodedObsCohortDefinition cd = (CodedObsCohortDefinition) getKeyPopulationCohort();
+    cd.setName("Female sex workers");
+    cd.setValueList(Collections.singletonList(hivMetadata.getSexWorkerConcept()));
+    return cd;
+  }
+
+  private CohortDefinition getKeyPopulationCohort() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.setName("Key population");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("locationList", "location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setQuestion(hivMetadata.getKeyPopulationConcept());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getHomosexualConcept());
+    cd.addValue(hivMetadata.getDrugUseConcept());
+    cd.addValue(hivMetadata.getImprisonmentConcept());
+    cd.addValue(hivMetadata.getSexWorkerConcept());
+    return cd;
   }
 }

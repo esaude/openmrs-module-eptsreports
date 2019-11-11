@@ -369,6 +369,46 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>@MODULE_ID@.keyPopulationConceptUuid</property>
+		<defaultValue>c7c0b430-bbc1-4042-a365-ad78a13aef56</defaultValue>
+		<description>
+			UUID for the POPULACAO CHAVE concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.homosexualConceptUuid</property>
+		<defaultValue>e1daa454-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the HOMOSEXUAL concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.drugUseConceptUuid</property>
+		<defaultValue>5bdb7ec1-908a-11e6-a98e-000c29db4475</defaultValue>
+		<description>
+			UUID for the USO DE DROGA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.imprisonmentConceptUuid</property>
+		<defaultValue>58021703-908a-11e6-a98e-000c29db4475</defaultValue>
+		<description>
+			UUID for the PRISÃO OU ENCARCERAMENTO concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.sexWorkerConceptUuid</property>
+		<defaultValue>e1df1296-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TRABALHADOR DE SEXO concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>@MODULE_ID@.adultInitialBEncounterType</property>
 		<defaultValue>e278f1c2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
@@ -1356,7 +1396,7 @@
 			UUID for the SINTOMAS DE TUBERCULOSE concept
 		</description>
 	</globalProperty>
-
+	
 	<!--23722-->
 	<globalProperty>
 		<property>eptsreports.applicationForLaboratoryResearch</property>
@@ -1375,7 +1415,14 @@
 		</description>
 	</globalProperty>
 
-
+	<!-- 6272 -->
+	<globalProperty>
+		<property>eptsreports.stateOfStayPriorArtPatientConceptUuid</property>
+		<defaultValue>3bd7a5d1-afc0-478d-9aa6-c7bdd9a050c8</defaultValue>
+		<description>
+			UUID for the ESTADO DE PERMANENCIA DO PACIENTE PRE-TARV concept
+		</description>
+	</globalProperty>
 
 
 

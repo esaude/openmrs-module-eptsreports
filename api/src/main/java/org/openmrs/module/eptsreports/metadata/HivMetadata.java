@@ -627,6 +627,44 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.transferOutToAnotherFacilityConceptUuid");
     return getConcept(uuid);
   }
+  // Concept 6272  STATE OF STAY PRIOR ART PATIENT
+  public Concept getStateOfStayPriorArtPatientConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.stateOfStayPriorArtPatientConceptUuid");
+    return getConcept(uuid);
+  }
+
+  public Concept getKeyPopulationConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.keyPopulationConceptUuid");
+    return getConcept(uuid);
+  }
+
+  public Concept getHomosexualConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.homosexualConceptUuid");
+    return getConcept(uuid);
+  }
+
+  public Concept getDrugUseConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.drugUseConceptUuid");
+    return getConcept(uuid);
+  }
+
+  public Concept getImprisonmentConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.imprisonmentConceptUuid");
+    return getConcept(uuid);
+  }
+
+  public Concept getSexWorkerConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.sexWorkerConceptUuid");
+    return getConcept(uuid);
+  }
 
   // Concept 23722 APPLICATION FOR LABORATORY RESEARCH
   public Concept getApplicationForLaboratoryResearch() {
@@ -642,6 +680,7 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.viralLoadQualitativeConceptUuid");
     return getConcept(uuid);
   }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
@@ -896,7 +935,7 @@ public class HivMetadata extends ProgramsMetadata {
     return getProgramWorkflowState(artProgramUuid, "2", "PATIENT HAS DIED");
   }
 
-  public ProgramWorkflowState getPatientIsBreastfeedingWorkflowState() {
+  public ProgramWorkflowState getPatientGaveBirthWorkflowState() {
     String ptvProgramUuid =
         Context.getAdministrationService().getGlobalProperty(gpPtvEtvProgramUuid);
     return getProgramWorkflowState(ptvProgramUuid, "5", "GAVE BIRTH");

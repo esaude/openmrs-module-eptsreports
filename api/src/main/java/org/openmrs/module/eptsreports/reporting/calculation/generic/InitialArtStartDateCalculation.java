@@ -76,12 +76,13 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
     Concept transferInConcept = hivMetadata.getTransferFromOtherFacilityConcept();
     Concept hostoricalStartConcept = commonMetadata.getHistoricalDrugStartDateConcept();
     EncounterType encounterTypePharmacy = hivMetadata.getARVPharmaciaEncounterType();
+    EncounterType masterCardFichaResumo = hivMetadata.getMasterCardEncounterType();
+    EncounterType adultoSeguimento = hivMetadata.getAdultoSeguimentoEncounterType();
+    EncounterType arvPediatriaSeguimento = hivMetadata.getARVPediatriaSeguimentoEncounterType();
 
     List<EncounterType> encounterTypes =
         Arrays.asList(
-            encounterTypePharmacy,
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType());
+            encounterTypePharmacy, adultoSeguimento, arvPediatriaSeguimento, masterCardFichaResumo);
 
     CalculationResultMap inProgramMap =
         ePTSCalculationService.firstPatientProgram(treatmentProgram, location, cohort, context);
@@ -114,6 +115,8 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
         ePTSCalculationService.firstObs(
             arvPlan, transferInConcept, location, true, null, null, null, cohort, context);
 
+    CalculationResultMap drugPickupMap = getMastercardDrugPickupMap(cohort, location, context);
+
     for (Integer pId : cohort) {
       Date requiredDate = null;
       List<Date> enrollmentDates = new ArrayList<Date>();
@@ -129,6 +132,10 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
       Obs historicalDateObs = EptsCalculationUtils.resultForPatient(historicalMap, pId);
       if (historicalDateObs != null) {
         enrollmentDates.add(historicalDateObs.getValueDatetime());
+      }
+      Obs drugPickup = EptsCalculationUtils.resultForPatient(drugPickupMap, pId);
+      if (drugPickup != null) {
+        enrollmentDates.add(drugPickup.getValueDatetime());
       }
       if (considerPharmacyEncounter) {
         Encounter pharmacyEncounter =
@@ -170,5 +177,21 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
       return (Date) calculationResult.getValue();
     }
     return null;
+  }
+
+  private CalculationResultMap getMastercardDrugPickupMap(
+      Collection<Integer> cohort, Location location, PatientCalculationContext context) {
+    Concept artDatePickup = hivMetadata.getArtDatePickup();
+    EncounterType masterCardDrugPickup = hivMetadata.getMasterCardDrugPickupEncounterType();
+    return ePTSCalculationService.firstObs(
+        artDatePickup,
+        null,
+        location,
+        true,
+        null,
+        null,
+        Arrays.asList(masterCardDrugPickup),
+        cohort,
+        context);
   }
 }

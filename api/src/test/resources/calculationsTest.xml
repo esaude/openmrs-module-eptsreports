@@ -5,96 +5,96 @@
 	under the terms of the Healthcare Disclaimer located at http://openmrs.org/license. 
 	Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS 
 	graphic logo is a trademark of OpenMRS Inc. -->
-	
+
 <dataset>
 	<concept concept_id="7777001" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1d6247e-1d5f-11e0-b929-000c29ad1d07"/>
   	<concept_name concept_id="7777001" name="Viral Load" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_id="5777001" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777001"/>
   	<concept_numeric concept_id="7777001" hi_normal="1497.0" low_absolute="40.0" low_critical="75.0" hi_critical="500" hi_absolute="1600" units="cells/mmL" precise="1"/>
-  	
+
   	<concept concept_id="7777002" retired="false" datatype_id="2" class_id="17" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777002"/>
   	<concept_name concept_name_id="5777002" concept_id="7777002" name="ARV Plan" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777002"/>
-  	
+
   	<concept concept_id="7777003" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777003"/>
   	<concept_name concept_name_id="5777003" concept_id="7777003" name="Start drugs" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777003"/>
-  	
+
   	<concept concept_id="7777004" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777004"/>
   	<concept_name concept_name_id="5777004" concept_id="7777004" name="Transfer from other facility" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777004"/>
-  	
+
   	<concept concept_id="7777005" retired="false" datatype_id="8" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777005"/>
   	<concept_name concept_name_id="5777005" concept_id="7777005" name="Historical drugs start date" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777005"/>
-  	
+
   	<concept concept_id="7777006" retired="false" datatype_id="2" class_id="17" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777006"/>
   	<concept_name concept_name_id="5777006" concept_id="7777006" name="Regimen" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777006"/>
-  	
+
   	<concept concept_id="7777007" retired="false" datatype_id="11" class_id="3" is_set="true" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777007"/>
   	<concept_name concept_name_id="5777007" concept_id="7777007" name="Second line Regimen" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777007"/>
-  	
+
   	<concept concept_id="7777008" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777008"/>
   	<concept_name concept_name_id="5777008" concept_id="7777008" name="Azt3tcAbcEfv regimen line" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777008"/>
-  	
+
   	<concept concept_id="7777009" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777009"/>
   	<concept_name concept_name_id="5777009" concept_id="7777009" name="D4t3tcAbcEfv Second regimen line ARV" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777009"/>
-  	
+
   	<concept concept_id="7777010" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777010"/>
   	<concept_name concept_name_id="5777010" concept_id="7777010" name="Azt3tcAbcLpv Second regimen line ARV" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777010"/>
-  	
+
   	<concept concept_id="7777011" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777011"/>
   	<concept_name concept_name_id="5777011" concept_id="7777011" name="D4t3tcAbcLpv Second regimen line ARV" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777011"/>
-  	
+
   	<concept concept_id="7777012" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777012"/>
   	<concept_name concept_name_id="5777012" concept_id="7777012" name="AztDdiLpv Second regimen line ARV" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777012"/>
-  	
+
   	<concept concept_id="7777013" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777013"/>
   	<concept_name concept_name_id="5777013" concept_id="7777013" name="Tdf3tcEfv Second regimen line ARV" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777013"/>
-  	
+
   	<concept concept_id="7777014" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777014"/>
   	<concept_name concept_name_id="5777014" concept_id="7777014" name="Azt3tcLpv Second regimen line ARV" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777014"/>
-  	
+
   	<concept concept_id="7777015" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777015"/>
   	<concept_name concept_name_id="5777015" concept_id="7777015" name="Abc3tcEfv Second regimen line ARV" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777015"/>
-  	
+
   	<concept concept_id="7777016" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777016"/>
   	<concept_name concept_name_id="5777016" concept_id="7777016" name="Abc3tcNvp Second regimen line ARV" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777016"/>
-  	
+
   	<concept concept_id="7777017" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777017"/>
   	<concept_name concept_name_id="5777017" concept_id="7777017" name="Abc3tcLpv Second regimen line ARV" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777017"/>
-  	
+
   	<concept concept_id="7777018" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777018"/>
   	<concept_name concept_name_id="5777018" concept_id="7777018" name="Tdf3tcLpv Second regimen line ARV" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777018"/>
-  	
+
   	<concept concept_id="7777019" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1e056a6-1d5f-11e0-b929-000c29ad1d07"/>
   	<concept_name concept_name_id="5777019" concept_id="7777019" name="PREGNANT" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="b09b9e78-3059-11e9-bee9-5780600a708e"/>
-  	
+
   	<concept concept_id="7777020" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1d81b62-1d5f-11e0-b929-000c29ad1d07"/>
   	<concept_name concept_name_id="5777020" concept_id="7777020" name="YES" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="dd9e2ca6-3059-11e9-ac8e-678eec31324a"/>
-  	
+
   	<concept concept_id="7777021" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1da0788-1d5f-11e0-b929-000c29ad1d07"/>
   	<concept_name concept_name_id="5777021" concept_id="7777021" name="NUMBER OF WEEKS PREGNANT" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="ab5e678a-3061-11e9-b63b-4f04eabee0d4"/>
-  	
+
   	<concept concept_id="7777022" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1dca8ee-1d5f-11e0-b929-000c29ad1d07"/>
   	<concept_name concept_name_id="5777022" concept_id="7777022" name="PREGNANCY DUE DATE" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="2f8496b0-3062-11e9-91f6-5f4f95c602f8"/>
-  	
+
   	<concept concept_id="7777023" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1dca6e6-1d5f-11e0-b929-000c29ad1d07"/>
   	<concept_name concept_name_id="5777023" concept_id="7777023" name="PTV" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="c1f972fe-3067-11e9-9214-37162b3db162"/>
-  	
+
   	<concept concept_id="7777024" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1e482ee-1d5f-11e0-b929-000c29ad1d07"/>
   	<concept_name concept_name_id="5777024" concept_id="7777024" name="PREGNANCY STATUS" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="e243e69e-1d5f-11e0-b929-000c29ad1d07"/>
-  	
+
   	<concept concept_id="7777025" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="bc4fe755-fc8f-49b8-9956-baf2477e8313"/>
   	<concept_name concept_name_id="5777025" concept_id="7777025" name="LACTATION" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="1922496c-3107-11e9-b18c-c7b57951ae46"/>
-  	
+
   	<concept concept_id="7777026" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="607315ab-2f52-4d9f-b28a-6383b9a5f9c4"/>
   	<concept_name concept_name_id="5777026" concept_id="7777026" name="CRITERIA FOR START ARV TREATMENT" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="2b525464-3108-11e9-9732-672ca7411885"/>
-  	
+
   	<concept concept_id="7777027" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1e765c2-1d5f-11e0-b929-000c29ad1d07"/>
   	<concept_name concept_name_id="5777027" concept_id="7777027" name="PRIOR DELIVERY DATE" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="975583e8-3108-11e9-8d3b-0fa6aac69dde"/>
-  	
+
   	<concept concept_id="7777028" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="98979f92-b5bf-4716-b5de-679c88dd755a"/>
   	<concept_name concept_name_id="5777028" concept_id="7777028" name="GAVE BIRTH" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="ba4224e2-310d-11e9-87a2-5b7ba44d255a"/>
-  	
+
   	<concept concept_id="7777029" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1cdd58a-1d5f-11e0-b929-000c29ad1d07"/>
   	<concept_name concept_name_id="5777029" concept_id="7777029" name="PREGNANCY" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="9d98bd1e-35e6-11e9-98d5-578d0b38d001"/>
-  	
+
 	<concept concept_id="7777030" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2012-02-29 09:46:11.0" version="" uuid="be53ec04-d2ae-485e-9a6c-e167deef9a95"/>
 	<concept_name concept_id="7777030" name="SERVICO TARV - TRATAMENTO" locale="pt" creator="1" date_created="2012-02-29 09:46:11.0" concept_name_id="5777029" voided="false" uuid="46126628-55b6-4bd7-b15a-9b5bc02d5ecd" concept_name_type="FULLY_SPECIFIED" locale_preferred="true"/>
 
@@ -106,7 +106,31 @@
 
 	<concept concept_id="7777033" retired="false" datatype_id="11" class_id="7" is_set="false" creator="1" date_created="2011-02-18 13:55:12.0" changed_by="1" date_changed="2016-10-31 12:17:03.0" uuid="9e555978-3a02-4da4-855e-7b1bfc807347"/>
 	<concept_name concept_id="7777033" name="ISONIAZID PROPHYLAXIS END DATE" locale="en" creator="1" date_created="2011-02-18 13:55:12.0" concept_name_id="7777033" voided="false" uuid="07164d17-c4e6-46e1-87ce-59f872a21dc8" concept_name_type="FULLY_SPECIFIED" locale_preferred="false"/>
-  	
+
+	<concept concept_id="7777034" retired="0" class_id="7" is_set="0" creator="1" date_created="2019-07-09 13:00:20" changed_by="1" date_changed="2019-07-09 13:00:20" uuid="74f6c17f-9819-41da-ba34-5910f67d24d0"/>
+	<concept_name concept_id="7777034" name="Date of ART Pickup" locale="en" creator="1" date_created="2019-07-09 13:00:20" concept_name_id="33690" voided="0" uuid="58316739-bdba-4f65-9661-ddd04e089f49" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
+
+	<concept concept_id="6276" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2012-02-29 10:06:33" uuid="7f3af436-5c3a-447c-9012-42bb314e03db"/>
+	<concept_name concept_id="6276" name="ART" locale="en" creator="1" date_created="2012-02-29 10:06:33" concept_name_id="7185" voided="0" uuid="7ca92681-a65c-4e6f-a038-8ad2d3a8aad5" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+	<concept concept_id="6300" retired="0" datatype_id="2" class_id="11" is_set="0" creator="1" date_created="2012-05-31 11:58:42" uuid="4f139c0a-9843-4dc4-b3e5-5aa00812e605"/>
+	<concept_name concept_id="6300" name="TYPE OF PATIENT TRANSFERED FROM" locale="en" creator="1" date_created="2012-05-31 11:58:42" concept_name_id="7266" voided="0" uuid="be0ab68a-26ba-44cb-906a-c7c465aa3ae7" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+	<concept concept_id="23703" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2018-10-19 15:24:55" changed_by="1" date_changed="2019-01-07 23:01:13" uuid="c7c0b430-bbc1-4042-a365-ad78a13aef56"/>
+	<concept_name concept_id="23703" name="KEY POPULATION" locale="en" creator="1" date_created="2018-10-19 15:24:55" concept_name_id="33146" voided="0" uuid="a1e8d1c0-a818-44d8-b8b2-7cd7a503a483" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+	<concept concept_id="20426" retired="0" datatype_id="4" class_id="4" is_set="0" creator="1" date_created="2016-10-12 00:00:00" date_changed="2018-11-13 09:43:02" uuid="58021703-908a-11e6-a98e-000c29db4475" />
+	<concept_name concept_id="20426" name="PRISÃO OU ENCARCERAMENTO" locale="pt" creator="1" date_created="2016-10-12 00:00:00" concept_name_id="26831" voided="0" uuid="5805f202-908a-11e6-a98e-000c29db4475" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+	<concept concept_id="20454" retired="0" datatype_id="4" class_id="4" is_set="0" creator="1" date_created="2016-10-12 00:00:00" changed_by="1" date_changed="2018-11-13 09:41:39" uuid="5bdb7ec1-908a-11e6-a98e-000c29db4475"/>
+	<concept_name concept_id="20454" name="USO DE DROGA" locale="pt" creator="1" date_created="2016-10-12 00:00:00" concept_name_id="26864" voided="0" uuid="5bdf53b1-908a-11e6-a98e-000c29db4475" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
+
+	<concept concept_id="1377" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2008-10-13 06:07:35" changed_by="1" date_changed="2018-10-08 12:48:46" uuid="e1daa454-1d5f-11e0-b929-000c29ad1d07" />
+	<concept_name concept_id="1377" name="HOMOSEXUAL" locale="en" creator="1" date_created="2008-10-13 06:07:35" concept_name_id="2474" voided="0" uuid="e24a0394-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
+
+	<concept concept_id="1901" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2008-11-21 14:46:34" changed_by="1" date_changed="2019-01-07 23:01:51" uuid="e1df1296-1d5f-11e0-b929-000c29ad1d07"/>
+	<concept_name concept_id="1901" name="SEX WORKER" locale="en" creator="1" date_created="2008-11-21 14:46:34" concept_name_id="3632" voided="0" uuid="e25165bc-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
+
   	<concept_set concept_set_id="8777008" concept_id="7777008" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777008"/>
   	<concept_set concept_set_id="8777009" concept_id="7777009" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777009"/>
   	<concept_set concept_set_id="8777010" concept_id="7777010" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777010"/>
@@ -118,18 +142,26 @@
   	<concept_set concept_set_id="8777016" concept_id="7777016" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777016"/>
   	<concept_set concept_set_id="8777017" concept_id="7777017" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777017"/>
   	<concept_set concept_set_id="8777018" concept_id="7777018" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777018"/>
- 
- 	
+
+
  	<program program_id="8" concept_id="7777023" creator="1" date_created="2019-03-02 11:30:33.0" retired="false" name="PTV" description="Programa de representa o estado de gravidez de uma mulher" uuid="06057245-ca21-43ab-a02f-e861d7e54593"/>
 	<program program_id="9" concept_id="7777030" creator="1" date_created="2012-02-29 09:46:38.0" changed_by="1" date_changed="2013-07-24 11:45:49.0" retired="false" name="SERVICO TARV - TRATAMENTO" description="Programa de seguimento e tratamento aos pacientes HIV+" uuid="efe2481f-9e75-4515-8d5a-86bfde2b5ad3"/>
-  	
+
+	<program_workflow program_workflow_id="5" program_id="8" concept_id="7777024" creator="1" date_created="2012-06-26 11:39:12" retired="0" changed_by="1" date_changed="2013-07-24 07:56:14" />
+	<program_workflow program_workflow_id="2" program_id="9" concept_id="6276" creator="1" date_created="2012-02-29 10:17:25" retired="0"  />
+
+	<program_workflow_state program_workflow_state_id="27" program_workflow_id="5" concept_id="7777028" initial="0" terminal="1" creator="1" date_created="2012-06-26 11:40:22" retired="0" changed_by="1" date_changed="2013-07-24 07:56:14" />
+	<program_workflow_state program_workflow_state_id="29" program_workflow_id="2" concept_id="7777004" initial="1" terminal="0" creator="1" date_created="2013-07-24 11:45:49" retired="0" />
+
 	<encounter_type encounter_type_id="6777001" name="Child Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777001"/>
   	<encounter_type encounter_type_id="6777002" name="Adult Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777002"/>
   	<encounter_type encounter_type_id="6777003" name="ARV Pharmacia" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777003"/>
   	<encounter_type encounter_type_id="6777004" name="Adult initial" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777004"/>
   	<encounter_type encounter_type_id="6777005" name="Child initial" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777005"/>
   	<encounter_type encounter_type_id="6777006" name="MISAU: LABORATORIO" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="e2790f68-1d5f-11e0-b929-000c29ad1d07"/>
-  	
+	<encounter_type encounter_type_id="6777007" name="Master Card - Ficha Resumo" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="26e4f8a9-618d-4283-a7c7-62378e325aee"/>
+    <encounter_type encounter_type_id="6777008" name="Levantamento de ARV Master Card" description="Registo de levantamento de ARV no Master Card" creator="1" date_created="2019-07-09 13:03:45" retired="0" uuid="cce7b2ec-4fc0-4f9e-806d-b1c4ee9577db" />
+
 	<global_property property="eptsreports.hivViralLoadConceptUuid" property_value="e1d6247e-1d5f-11e0-b929-000c29ad1d07" uuid="a09ab2c5-878e-4905-b25d-578417777001"/>
 	<global_property property="eptsreports.misauLaboratorioEncounterTypeUuid" property_value="e2790f68-1d5f-11e0-b929-000c29ad1d07" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d09a0ac8"/>
 	<global_property property="eptsreports.sTarvPediatriaInitialAEncounterTypeUuid" property_value="02c533ab-b74b-4ee4-b6e5-ffb6d6777005" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777005"/>
@@ -166,5 +198,14 @@
 	<global_property property="eptsreports.DataFimProfilaxiaIsoniazidaConceptUuid" property_value="9e555978-3a02-4da4-855e-7b1bfc807347" description="Data de finalizacao de profilaxia com Isoniazida" uuid="30aa408c-cd99-4f62-b7c8-2c20dd9b798b"/>
 	<global_property property="eptsreports.DataInicioProfilaxiaIsoniazidaConceptUuid" property_value="6fa92ac9-0a96-4372-9e10-dd9683c19135" description="Data de inicio de profilaxia com Isoniazida" uuid="064cdd91-f014-4856-9300-9b9b73ddfe70"/>
 	<global_property property="eptsreports.isoniazidUseConceptUuid" property_value="be4a76ca-662a-4c39-903b-71983f5f67c9" description="Uso de Isoniazida" uuid="8b866a7d-c72d-41c6-9171-36dcf5234937"/>
-	
+	<global_property property="eptsreports.masterCardEncounterType" property_value="26e4f8a9-618d-4283-a7c7-62378e325aee" description="Uso de Isoniazida" uuid="789af6ab-faf9-4984-8a3b-72aed5653a43"/>
+	<global_property property="eptsreports.preArtPickupDate" property_value="74f6c17f-9819-41da-ba34-5910f67d24d0" description="UUID for the Date of ART Pickup concept" uuid="238a5273-a6f7-40fd-a8ba-895b38e8514c"/>
+    <global_property property="eptsreports.masterCardDrugPickupEncounterTypeUuid" property_value="cce7b2ec-4fc0-4f9e-806d-b1c4ee9577db" description="UUID for the Levantamento de ARV Master Card encounter type" uuid="923bb4f9-41f4-4141-bb6e-51ea7ac68c6b"/>
+	<global_property property="eptsreports.art" property_value="7f3af436-5c3a-447c-9012-42bb314e03db" description="UUID for the ART concept" />
+	<global_property property="eptsreports.typeOfPatientTransferredFrom" property_value="4f139c0a-9843-4dc4-b3e5-5aa00812e605" description="UUID for the TYPE OF PATIENT TRANSFERED FROM concept" />
+	<global_property property="eptsreports.keyPopulationConceptUuid" property_value="c7c0b430-bbc1-4042-a365-ad78a13aef56" description="UUID for the POPULACAO CHAVE concept" />
+	<global_property property="eptsreports.homosexualConceptUuid" property_value="e1daa454-1d5f-11e0-b929-000c29ad1d07" description="UUID for the HOMOSEXUAL concept" />
+	<global_property property="eptsreports.drugUseConceptUuid" property_value="5bdb7ec1-908a-11e6-a98e-000c29db4475" description="UUID for the USO DE DROGA concept" />
+	<global_property property="eptsreports.imprisonmentConceptUuid" property_value="58021703-908a-11e6-a98e-000c29db4475" description="UUID for the PRISÃO OU ENCARCERAMENTO concept" />
+	<global_property property="eptsreports.sexWorkerConceptUuid" property_value="e1df1296-1d5f-11e0-b929-000c29ad1d07" description="UUID for the TRABALHADOR DE SEXO concept" />
 </dataset>
