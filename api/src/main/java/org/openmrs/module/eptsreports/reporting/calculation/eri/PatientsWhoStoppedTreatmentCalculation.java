@@ -31,7 +31,7 @@ import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefin
 import org.springframework.stereotype.Component;
 
 @Component
-public class TransferredOutPatientsCalculation extends AbstractPatientCalculation {
+public class PatientsWhoStoppedTreatmentCalculation extends AbstractPatientCalculation {
 
   @Override
   public CalculationResultMap evaluate(
@@ -40,8 +40,8 @@ public class TransferredOutPatientsCalculation extends AbstractPatientCalculatio
       PatientCalculationContext context) {
 
     CalculationResultMap programMap = getTransferredOutViaProgram(cohort, context);
-    CalculationResultMap adultoSeguimento = getTransferredOutViaAdultSeguimento(cohort, context);
-    CalculationResultMap mastercard = getTransferredOutViaMastercard(cohort, context);
+    CalculationResultMap followUpMap = getSuspendedInFollowUp(cohort, context);
+    CalculationResultMap mastercardMap = getSuspendedInMastercard(cohort, context);
     CalculationResultMap followUpOrPharmacy = getFollowUpOrPharmacy(cohort, context);
     CalculationResultMap mastercardDrugPickup = getMastercardDrugPickup(cohort, context);
 
@@ -50,15 +50,15 @@ public class TransferredOutPatientsCalculation extends AbstractPatientCalculatio
     for (Integer pId : cohort) {
       boolean exclude = false;
 
-      Date transferOutDate = getMostRecent(pId, programMap, adultoSeguimento, mastercard);
-      if (transferOutDate == null) {
+      Date suspendedDate = getMostRecent(pId, programMap, followUpMap, mastercardMap);
+      if (suspendedDate == null) {
         continue;
       }
 
       for (CalculationResultMap c : Arrays.asList(followUpOrPharmacy, mastercardDrugPickup)) {
         if (!c.isEmpty(pId)) {
           Date encounterOrPickup = c.get(pId).asType(Date.class);
-          if (encounterOrPickup.after(transferOutDate)) {
+          if (encounterOrPickup.after(suspendedDate)) {
             exclude = true;
             break;
           }
@@ -66,7 +66,7 @@ public class TransferredOutPatientsCalculation extends AbstractPatientCalculatio
       }
 
       if (!exclude) {
-        resultMap.put(pId, new SimpleResult(transferOutDate, this));
+        resultMap.put(pId, new SimpleResult(suspendedDate, this));
       }
     }
 
@@ -107,26 +107,27 @@ public class TransferredOutPatientsCalculation extends AbstractPatientCalculatio
     return EptsCalculationUtils.evaluateWithReporting(startDate, cohort, null, null, context);
   }
 
-  private CalculationResultMap getTransferredOutViaAdultSeguimento(
+  private CalculationResultMap getSuspendedInFollowUp(
       Collection<Integer> cohort, PatientCalculationContext context) {
+
     HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
 
     EncounterType adultoSeguimento = hivMetadata.getAdultoSeguimentoEncounterType();
     Concept stateOfStay = hivMetadata.getStateOfStayOfArtPatient();
-    Concept transferredOut = hivMetadata.getTransferredOutConcept();
+    Concept suspended = hivMetadata.getSuspendedTreatmentConcept();
 
-    return getBasedOnStateOfStay(cohort, context, adultoSeguimento, stateOfStay, transferredOut);
+    return getBasedOnStateOfStay(cohort, context, adultoSeguimento, stateOfStay, suspended);
   }
 
-  private CalculationResultMap getTransferredOutViaMastercard(
+  private CalculationResultMap getSuspendedInMastercard(
       Collection<Integer> cohort, PatientCalculationContext context) {
     HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
 
-    EncounterType mastercard = hivMetadata.getMasterCardEncounterType();
+    EncounterType adultoSeguimento = hivMetadata.getMasterCardEncounterType();
     Concept stateOfStay = hivMetadata.getStateOfStayOfPreArtPatient();
-    Concept transferredOut = hivMetadata.getTransferredOutConcept();
+    Concept suspended = hivMetadata.getSuspendedTreatmentConcept();
 
-    return getBasedOnStateOfStay(cohort, context, mastercard, stateOfStay, transferredOut);
+    return getBasedOnStateOfStay(cohort, context, adultoSeguimento, stateOfStay, suspended);
   }
 
   private CalculationResultMap getBasedOnStateOfStay(

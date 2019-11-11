@@ -23,6 +23,7 @@ import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.calculation.eri.PatientsWhoStoppedTreatmentCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.eri.TransferredOutPatientsCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
@@ -263,6 +264,16 @@ public class HivCohortQueries {
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.setCalculation(
         Context.getRegisteredComponents(TransferredOutPatientsCalculation.class).get(0));
+    return cd;
+  }
+
+  public CohortDefinition getPatientsWhoStoppedTreatment() {
+    CalculationCohortDefinition cd = new CalculationCohortDefinition();
+    cd.setName("patientsWhoStoppedTreatment");
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.setCalculation(
+        Context.getRegisteredComponents(PatientsWhoStoppedTreatmentCalculation.class).get(0));
     return cd;
   }
 
