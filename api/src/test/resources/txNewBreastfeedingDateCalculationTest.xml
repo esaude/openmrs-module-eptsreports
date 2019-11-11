@@ -1,0 +1,255 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public 
+	License, v. 2.0. If a copy of the MPL was not distributed with this file, 
+	You can obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed 
+	under the terms of the Healthcare Disclaimer located at http://openmrs.org/license. 
+	Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS 
+	graphic logo is a trademark of OpenMRS Inc. -->
+
+<dataset>
+    <!-- Patient with breastfeeding=yes in mastercard as most recent -->
+
+    <person person_id="10001" gender="F" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2019-01-01 15:46:47.0" voided="false" uuid="1fbe26c3-86a8-4bf7-a7ed-6eed7b9cdfb4"/>
+
+    <patient patient_id="10001" creator="1" date_created="2019-01-01 00:00:00.0" changed_by="1"
+             date_changed="2019-01-01 12:25:57.0" voided="false" void_reason=""/>
+
+    <patient_program patient_program_id="10001" patient_id="10001" program_id="8" date_enrolled="2009-04-08 00:00:00"
+                     creator="1" date_created="2013-09-16 00:00:00" uuid="f50e25d0-1eb3-11e3-99f6-00242122a7a8"
+                     voided="0" location_id="1"/>
+
+    <patient_state patient_state_id="10001" patient_program_id="10001" state="27" creator="1"
+                   date_created="2013-09-16 00:00:00" uuid="18fd47bc-1eb4-11e3-99f6-00242122a7a8"
+                   start_date="2018-08-09 00:00:00.0" voided="0"/>
+
+    <encounter encounter_id="10001" encounter_type="6777007" patient_id="10001" location_id="1" form_id="1"
+               encounter_datetime="2018-08-10 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="e8c6a344-10b7-4634-ac5d-18f99564b132"/>
+
+    <encounter encounter_id="10002" encounter_type="6777004" patient_id="10001" location_id="1" form_id="1"
+               encounter_datetime="2018-08-08 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="8e082f1f-08ec-41b7-90d7-70c9b28d9b40"/>
+
+    <encounter encounter_id="10003" encounter_type="6777002" patient_id="10001" location_id="1" form_id="1"
+               encounter_datetime="2018-08-07 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="e3085993-3541-4cff-b18f-3f5edd1c4452"/>
+
+    <encounter encounter_id="10004" encounter_type="6777002" patient_id="10001" location_id="1" form_id="1"
+               encounter_datetime="2018-08-10 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="e4407054-9588-4606-b62b-bd4a0e833a5d"/>
+
+    <obs obs_id="10001" person_id="10001" concept_id="7777025" encounter_id="10001" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_coded="7777020" comments="" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="39178c88-b014-4c4a-9d3b-dbdaa9d9c25e"/>
+
+    <obs obs_id="10002" person_id="10001" concept_id="7777026" encounter_id="10002" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_coded="7777025" comments="" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="84793c2f-4eee-4f33-aad3-449a97afa950"/>
+
+    <obs obs_id="10003" person_id="10001" concept_id="7777025" encounter_id="10003" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_coded="7777020" comments="" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="aa057d41-21c6-4f2f-9a67-9e89aaec772a"/>
+
+    <obs obs_id="10004" person_id="10001" concept_id="7777027" encounter_id="10004" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_datetime="2018-08-10 00:00:00.0" comments="" creator="1"
+         date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="54673b8e-e795-4dd0-9899-d077671a3aee"/>
+
+    <!-- Patient with delivery date in adult initial/followup as most recent -->
+
+    <person person_id="10002" gender="F" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2019-01-01 15:46:47.0" voided="false" uuid="84ffa73d-3160-4665-aaf9-527e1640e115"/>
+
+    <patient patient_id="10002" creator="1" date_created="2019-01-01 00:00:00.0" changed_by="1"
+             date_changed="2019-01-01 12:25:57.0" voided="false" void_reason=""/>
+
+    <patient_program patient_program_id="10002" patient_id="10002" program_id="8" date_enrolled="2009-04-08 00:00:00"
+                     creator="1" date_created="2013-09-16 00:00:00" uuid="5764c9ee-3e7f-4aad-bb75-738ce35a55f8"
+                     voided="0" location_id="1"/>
+
+    <patient_state patient_state_id="10002" patient_program_id="10002" state="27" creator="1"
+                   date_created="2013-09-16 00:00:00" uuid="48254660-5453-45fb-ae9f-f768e6375989"
+                   start_date="2018-08-09 00:00:00.0" voided="0"/>
+
+    <encounter encounter_id="10005" encounter_type="6777007" patient_id="10002" location_id="1" form_id="1"
+               encounter_datetime="2018-08-09 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="bda7b322-979f-4324-b6f2-08621f43f1b2"/>
+
+    <encounter encounter_id="10006" encounter_type="6777004" patient_id="10002" location_id="1" form_id="1"
+               encounter_datetime="2018-08-08 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="4e92dfee-9115-4e53-8ece-25deb797da49"/>
+
+    <encounter encounter_id="10007" encounter_type="6777002" patient_id="10002" location_id="1" form_id="1"
+               encounter_datetime="2018-08-07 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="c2251fad-eb85-430f-88ed-662708d06bad"/>
+
+    <encounter encounter_id="10008" encounter_type="6777002" patient_id="10002" location_id="1" form_id="1"
+               encounter_datetime="2018-08-10 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="6fa07a01-7fb1-4f27-a70b-78d5f448e723"/>
+
+    <obs obs_id="10005" person_id="10002" concept_id="7777025" encounter_id="10005" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_coded="7777020" comments="" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="10f4b246-4df1-4d09-8f66-831c83b83b58"/>
+
+    <obs obs_id="10006" person_id="10002" concept_id="7777026" encounter_id="10006" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_coded="7777025" comments="" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="0f46b504-222c-4b31-ae55-132e1d6a11d4"/>
+
+    <obs obs_id="10007" person_id="10002" concept_id="7777025" encounter_id="10007" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_coded="7777020" comments="" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="07561349-b798-44e3-b19e-4d5ae4232c16"/>
+
+    <obs obs_id="10008" person_id="10002" concept_id="7777027" encounter_id="10008" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_datetime="2018-08-10 00:00:00.0" comments="" creator="1"
+         date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="7a94a36b-76b8-4950-8de1-6fd360013da2"/>
+
+    <!-- Patient with breastfeeding=yes in adult follow up as most recent -->
+
+    <person person_id="10003" gender="F" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2019-01-01 15:46:47.0" voided="false" uuid="889312cd-adf3-4658-8f08-ff09e0b15951"/>
+
+    <patient patient_id="10003" creator="1" date_created="2019-01-01 00:00:00.0" changed_by="1"
+             date_changed="2019-01-01 12:25:57.0" voided="false" void_reason=""/>
+
+    <patient_program patient_program_id="10003" patient_id="10003" program_id="8" date_enrolled="2009-04-08 00:00:00"
+                     creator="1" date_created="2013-09-16 00:00:00" uuid="dd9a2edc-61c4-4b45-9a79-52e2ade529af"
+                     voided="0" location_id="1"/>
+
+    <patient_state patient_state_id="10003" patient_program_id="10003" state="27" creator="1"
+                   date_created="2013-09-16 00:00:00" uuid="edb5c75a-1028-4ca5-a08c-c3c09b397e9c"
+                   start_date="2018-08-09 00:00:00.0" voided="0"/>
+
+    <encounter encounter_id="10009" encounter_type="6777007" patient_id="10003" location_id="1" form_id="1"
+               encounter_datetime="2018-08-09 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="6d531ad7-c35a-48aa-af5c-bc44dbc99953"/>
+
+    <encounter encounter_id="10010" encounter_type="6777004" patient_id="10003" location_id="1" form_id="1"
+               encounter_datetime="2018-08-08 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="ede72df7-0f0e-454b-982d-16276d82991b"/>
+
+    <encounter encounter_id="10011" encounter_type="6777002" patient_id="10003" location_id="1" form_id="1"
+               encounter_datetime="2018-08-10 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="7453840e-7dca-49a0-b4d7-222fc48bcb04"/>
+
+    <encounter encounter_id="10012" encounter_type="6777002" patient_id="10003" location_id="1" form_id="1"
+               encounter_datetime="2018-08-07 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="ba4cb5d5-ac5d-4bc1-902c-e201e03f621f"/>
+
+    <obs obs_id="10009" person_id="10003" concept_id="7777025" encounter_id="10009" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_coded="7777020" comments="" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="9f46428d-34b1-4bca-87a0-51019fd03263"/>
+
+    <obs obs_id="10010" person_id="10003" concept_id="7777026" encounter_id="10010" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_coded="7777025" comments="" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="327462eb-07a5-4512-822a-5444861cdb42"/>
+
+    <obs obs_id="10011" person_id="10003" concept_id="7777025" encounter_id="10011" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_coded="7777020" comments="" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="b38554df-713b-49fc-b2b8-187aeac81198"/>
+
+    <obs obs_id="10012" person_id="10003" concept_id="7777027" encounter_id="10012" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_datetime="2018-08-10 00:00:00.0" comments="" creator="1"
+         date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="5edecda2-c319-465a-93e8-638252019675"/>
+
+    <!-- Patient with criteria for hiv start=breastfeeding in adult inital/follow up as most recent -->
+
+    <person person_id="10004" gender="F" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2019-01-01 15:46:47.0" voided="false" uuid="17b00c5a-5441-4d4c-8332-31f3b42b8d1f"/>
+
+    <patient patient_id="10004" creator="1" date_created="2019-01-01 00:00:00.0" changed_by="1"
+             date_changed="2019-01-01 12:25:57.0" voided="false" void_reason=""/>
+
+    <patient_program patient_program_id="10004" patient_id="10004" program_id="8" date_enrolled="2009-04-08 00:00:00"
+                     creator="1" date_created="2013-09-16 00:00:00" uuid="8f0895dc-11e7-4c32-b602-de987d15de77"
+                     voided="0" location_id="1"/>
+
+    <patient_state patient_state_id="10004" patient_program_id="10004" state="27" creator="1"
+                   date_created="2013-09-16 00:00:00" uuid="b77570d9-ac37-442a-840a-7c0b9448eef6"
+                   start_date="2018-08-09 00:00:00.0" voided="0"/>
+
+    <encounter encounter_id="10013" encounter_type="6777007" patient_id="10004" location_id="1" form_id="1"
+               encounter_datetime="2018-08-09 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="12b8e72e-5dc8-4417-80db-9ecb21a1508b"/>
+
+    <encounter encounter_id="10014" encounter_type="6777004" patient_id="10004" location_id="1" form_id="1"
+               encounter_datetime="2018-08-10 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="ed3a649b-ac07-4414-a101-ebe634e2d5d8"/>
+
+    <encounter encounter_id="10015" encounter_type="6777002" patient_id="10004" location_id="1" form_id="1"
+               encounter_datetime="2018-08-08 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="07ad68c2-5944-4587-8733-07d11d735b2b"/>
+
+    <encounter encounter_id="10016" encounter_type="6777002" patient_id="10004" location_id="1" form_id="1"
+               encounter_datetime="2018-08-07 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="8005f902-901f-4dbe-92bc-8bb99ae2a3d7"/>
+
+    <obs obs_id="10013" person_id="10004" concept_id="7777025" encounter_id="10013" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_coded="7777020" comments="" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="efea3f61-2bca-4e67-8602-564e32036d50"/>
+
+    <obs obs_id="10014" person_id="10004" concept_id="7777026" encounter_id="10014" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_coded="7777025" comments="" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="13434df5-1747-4c98-b22f-696605628c28"/>
+
+    <obs obs_id="10015" person_id="10004" concept_id="7777025" encounter_id="10015" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_coded="7777020" comments="" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="9bf9a4c3-d00b-47c8-bfef-c45f723e8751"/>
+
+    <obs obs_id="10016" person_id="10004" concept_id="7777027" encounter_id="10016" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_datetime="2018-08-10 00:00:00.0" comments="" creator="1"
+         date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="fc0e056d-d41f-4e95-85ff-2302cee13df3"/>
+
+    <!-- Patient with gave birth state in PTV program as most recent -->
+
+    <person person_id="10005" gender="F" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2019-01-01 15:46:47.0" voided="false" uuid="e4cb4c21-e02e-4ec7-ae74-74696de2bc1b"/>
+
+    <patient patient_id="10005" creator="1" date_created="2019-01-01 00:00:00.0" changed_by="1"
+             date_changed="2019-01-01 12:25:57.0" voided="false" void_reason=""/>
+
+    <patient_program patient_program_id="10005" patient_id="10005" program_id="8" date_enrolled="2009-04-08 00:00:00"
+                     creator="1" date_created="2013-09-16 00:00:00" uuid="47db8c90-e121-4360-9dcb-dbda6302b5fb"
+                     voided="0" location_id="1"/>
+
+    <patient_state patient_state_id="10005" patient_program_id="10005" state="27" creator="1"
+                   date_created="2013-09-16 00:00:00" uuid="55916b37-9237-4f5c-a622-02cb25adae4b"
+                   start_date="2018-08-10 00:00:00.0" voided="0"/>
+
+    <encounter encounter_id="10017" encounter_type="6777007" patient_id="10005" location_id="1" form_id="1"
+               encounter_datetime="2018-08-09 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="c6f59bd4-ce95-44fd-84a0-7c81330f90c6"/>
+
+    <encounter encounter_id="10018" encounter_type="6777004" patient_id="10005" location_id="1" form_id="1"
+               encounter_datetime="2018-08-09 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="b27afcbc-bb5c-4867-af4b-e013d7213cab"/>
+
+    <encounter encounter_id="10019" encounter_type="6777002" patient_id="10005" location_id="1" form_id="1"
+               encounter_datetime="2018-08-08 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="88b0b9a4-107e-46e3-9e84-e1ea822d5a7b"/>
+
+    <encounter encounter_id="10020" encounter_type="6777002" patient_id="10005" location_id="1" form_id="1"
+               encounter_datetime="2018-08-07 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="cd1aefac-0b6e-4a90-903e-1e12d4701d0a"/>
+
+    <obs obs_id="10017" person_id="10005" concept_id="7777025" encounter_id="10017" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_coded="7777020" comments="" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="ed8188f9-c969-40cf-a5e4-b43f5fa69f8d"/>
+
+    <obs obs_id="10018" person_id="10005" concept_id="7777026" encounter_id="10018" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_coded="7777025" comments="" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="6eb201e1-1724-490e-bc3a-07c7882e95d5"/>
+
+    <obs obs_id="10019" person_id="10005" concept_id="7777025" encounter_id="10019" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_coded="7777020" comments="" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="d74379af-400e-4d81-839b-6523c2d42ea7"/>
+
+    <obs obs_id="10020" person_id="10005" concept_id="7777027" encounter_id="10020" obs_datetime="2018-08-20 00:00:00.0"
+         location_id="1" value_datetime="2018-08-10 00:00:00.0" comments="" creator="1"
+         date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="ffceae59-e531-4d96-a519-9c2a76e06d62"/>
+
+</dataset>
