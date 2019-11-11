@@ -628,6 +628,20 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // Concept 23722 APPLICATION FOR LABORATORY RESEARCH
+  public Concept getApplicationForLaboratoryResearch() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.applicationForLaboratoryResearch");
+    return getConcept(uuid);
+  }
+  // Concept 1305 HIV VIRAL LOAD, QUALITATIVE
+  public Concept getHivViralLoadQualitative() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.viralLoadQualitativeConceptUuid");
+    return getConcept(uuid);
+  }
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
