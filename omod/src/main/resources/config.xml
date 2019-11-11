@@ -1350,6 +1350,14 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>eptsreports.stateOfStayOfPreArtPatient</property>
+		<defaultValue>3bd7a5d1-afc0-478d-9aa6-c7bdd9a050c8</defaultValue>
+		<description>
+			UUID for the STATE OF STAY PRIOR ART PATIENT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>eptsreports.hasTbSymptomsConceptUuid</property>
 		<defaultValue>2eab4e55-d0d0-4fa8-8d23-b40eaaee44c8</defaultValue>
 		<description>

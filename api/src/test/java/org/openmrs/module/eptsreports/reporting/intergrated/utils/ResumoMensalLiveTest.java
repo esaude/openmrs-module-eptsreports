@@ -13,6 +13,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -25,6 +26,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
 
   @Autowired private ResumoMensalCohortQueries resumoMensalCohortQueries;
+
+  @Autowired private HivCohortQueries hivCohortQueries;
+
+  @Test
+  public void test() throws EvaluationException {
+    CohortDefinition cd = hivCohortQueries.getPatientsTransferredOut();
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd);
+  }
 
   @Test
   public void A1() throws EvaluationException {
