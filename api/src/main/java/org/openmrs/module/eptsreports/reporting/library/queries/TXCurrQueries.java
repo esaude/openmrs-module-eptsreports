@@ -241,7 +241,7 @@ public class TXCurrQueries {
       int msterCardDrugPickupEncounterType) {
     String query =
         "select most_recent.patient_id "
-            + "from (select p.patient_id , o.value_datetime, e.location_id, e.encounter_id, e.encounter_type "
+            + "from (select p.patient_id , o.value_datetime, e.location_id, e.encounter_id,  o.concept_id "
             + "from patient p  "
             + "inner join encounter e on e.patient_id=p.patient_id  "
             + "inner join obs o on o.encounter_id=e.encounter_id  "
@@ -251,7 +251,7 @@ public class TXCurrQueries {
             + "  "
             + "union   "
             + " "
-            + "select p.patient_id, o.value_datetime,e.location_id,e.encounter_id, e.encounter_type "
+            + "select p.patient_id, o.value_datetime,e.location_id,e.encounter_id,  o.concept_id "
             + "from patient p  "
             + "inner join encounter e on e.patient_id=p.patient_id  "
             + "inner join obs o on o.encounter_id=e.encounter_id  "
@@ -260,16 +260,15 @@ public class TXCurrQueries {
             + " "
             + "union  "
             + " "
-            + "select p.patient_id, o.value_datetime,e.location_id,e.encounter_id, e.encounter_type "
+            + "select p.patient_id, o.value_datetime,e.location_id,e.encounter_id,  o.concept_id "
             + "from patient p  "
             + "inner join encounter e on e.patient_id=p.patient_id  "
             + "inner join obs o on o.encounter_id=e.encounter_id  "
             + "where p.voided=0 and e.voided=0 and o.voided=0  "
             + "and o.concept_id= %s and o.value_datetime is not null and e.encounter_type = %s ) most_recent  "
             + "where  most_recent.value_datetime =(select  max(obss.value_datetime) from obs obss"
-            + " inner  join encounter et on  et.encounter_id=obss.encounter_id "
             + " where  obss.encounter_id = most_recent.encounter_id "
-            + " and et.encounter_type = most_recent.encounter_type) "
+            + " and obss.concept_id = most_recent.concept_id ) "
             + "and most_recent.value_datetime <  date_add(:onOrBefore, interval 30 day) and most_recent.location_id = :location  "
             + "group by most_recent.patient_id";
 
