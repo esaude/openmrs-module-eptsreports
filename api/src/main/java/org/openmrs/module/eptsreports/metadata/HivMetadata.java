@@ -636,11 +636,11 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  //Concept  1465
+  // Concept  1465
   public Concept getDateOfLastMenstruationConcept() {
     String uuid =
-            Context.getAdministrationService()
-                    .getGlobalProperty("eptsreports.dateOfLastMenstruationConcept");
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.dateOfLastMenstruationConcept");
     return getConcept(uuid);
   }
 
