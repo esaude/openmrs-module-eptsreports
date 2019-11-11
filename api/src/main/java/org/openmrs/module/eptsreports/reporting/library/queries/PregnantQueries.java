@@ -37,7 +37,7 @@ public class PregnantQueries {
         + adultInitailEncounter
         + ","
         + adultSegEncounter
-        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location "
+        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location and pe.gender='F' "
         + " union"
         + " Select p.patient_id"
         + " from patient p"
@@ -51,7 +51,7 @@ public class PregnantQueries {
         + adultInitailEncounter
         + ","
         + adultSegEncounter
-        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location "
+        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location and pe.gender='F' "
         + " union"
         + " Select p.patient_id"
         + " from patient p"
@@ -65,12 +65,12 @@ public class PregnantQueries {
         + adultInitailEncounter
         + ","
         + adultSegEncounter
-        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location "
+        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location and pe.gender='F' "
         + " union"
         + " select pp.patient_id from patient_program pp"
         + " inner join person pe on pp.patient_id=pe.person_id"
         + " where pp.program_id="
         + etvProgram
-        + " and pp.voided=0 and pp.date_enrolled between :startDate and :endDate and pp.location_id=:location ";
+        + " and pp.voided=0 and pp.date_enrolled between :startDate and :endDate and pp.location_id=:location and pe.gender='F' ";
   }
 }
