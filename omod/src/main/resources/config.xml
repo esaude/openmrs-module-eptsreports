@@ -425,6 +425,14 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>@MODULE_ID@.patientIsdeadIncorrect</property>
+		<defaultValue>e1dac772-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT IS DEAD concept - Incorrectly used
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>@MODULE_ID@.typeOfVisit</property>
 		<defaultValue>e1e055a2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
@@ -1346,6 +1354,24 @@
 		<defaultValue>2eab4e55-d0d0-4fa8-8d23-b40eaaee44c8</defaultValue>
 		<description>
 			UUID for the SINTOMAS DE TUBERCULOSE concept
+		</description>
+	</globalProperty>
+
+	<!--23722-->
+	<globalProperty>
+		<property>eptsreports.applicationForLaboratoryResearch</property>
+		<defaultValue>92653c45-9eb2-486d-90c0-3e00569e99c0</defaultValue>
+		<description>
+			UUID for the APPLICATION FOR LABORATORY RESEARCH concept
+		</description>
+	</globalProperty>
+
+	<!--1305-->
+	<globalProperty>
+		<property>eptsreports.viralLoadQualitativeConceptUuid</property>
+		<defaultValue>e1da2704-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Viral load qualitative  concept
 		</description>
 	</globalProperty>
 

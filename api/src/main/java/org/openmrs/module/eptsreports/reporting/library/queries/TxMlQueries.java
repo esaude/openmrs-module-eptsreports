@@ -82,7 +82,7 @@ public class TxMlQueries {
             + "ON         pa.patient_id=e.patient_id "
             + "INNER JOIN obs o "
             + "ON         pa.patient_id=o.person_id "
-            + "WHERE      e.encounter_type IN (%d) "
+            + "WHERE      e.encounter_type IN (%d, %d, %d) "
             + "AND        o.concept_id= %d "
             + "AND        o.value_coded = %d "
             + "AND        e.location_id=:location "
@@ -99,9 +99,9 @@ public class TxMlQueries {
 
   /*
    Untraced Patients Criteria 2
-   Patients without Patient Visit Card without a set of observations
+   Patients without Patient Visit Card of type busca and with a set of observations
   */
-  public static String getPatientsWithVisitCardAndWithoutObs(
+  public static String getPatientsWithVisitCardAndWithObs(
       int pharmacyEncounterTypeId,
       int adultoSequimentoEncounterTypeId,
       int arvPediatriaSeguimentoEncounterTypeId,
@@ -125,34 +125,33 @@ public class TxMlQueries {
     String query =
         "SELECT pa.patient_id "
             + "FROM   patient pa "
-            + " INNER JOIN ("
-            + "      SELECT pa.patient_id,e.encounter_id FROM patient pa "
-            + "       INNER JOIN encounter e ON pa.patient_id=e.patient_id "
-            + "       INNER JOIN obs o ON pa.patient_id=o.person_id "
-            + "       INNER JOIN ("
-            + "          SELECT p.patient_id,MAX(e.encounter_datetime) return_date FROM patient p "
-            + "             INNER JOIN encounter e ON e.patient_id = p.patient_id AND e.encounter_datetime <=:endDate AND e.location_id=:location "
-            + "             INNER JOIN obs o ON o.encounter_id = e.encounter_id  AND o.location_id=:location  "
-            + "          WHERE p.voided = 0 AND e.voided = 0 AND o.voided=0 "
-            + "            AND e.encounter_type IN (%d,%d,%d) "
-            + "            AND o.concept_id IN (%d, %d) "
-            + "            AND e.location_id = :location "
-            + "          GROUP BY p.patient_id)lp ON pa.patient_id=lp.patient_id "
-            + "      WHERE e.encounter_datetime >= lp.return_date AND e.encounter_datetime<=:endDate "
-            + "         AND e.encounter_type IN (%d, %d, %d) "
-            + "         AND e.location_id=:location  "
-            + "      GROUP BY pa.patient_id) visitCard on visitCard.patient_id = pa.patient_id "
-            + "    LEFT JOIN obs visitType ON "
-            + "        visitType.encounter_id = visitCard.encounter_id AND "
-            + "        visitType.concept_id = %d AND "
-            + "        visitType.value_coded = %d AND "
-            + "        visitType.obs_datetime <= :endDate "
-            + "    LEFT JOIN obs o ON "
-            + "        o.encounter_id = visitCard.encounter_id AND "
-            + "        o.concept_id IN (%d, %d, %d, %d, %d, %d, %d, %d, %d, %d) AND "
-            + "        o.obs_datetime <= :endDate "
-            + "   WHERE o.obs_id IS NULL OR visitType.obs_id IS NULL "
-            + "GROUP  BY pa.patient_id ";
+            + "INNER JOIN ("
+            + "  SELECT p.patient_id,MAX(e.encounter_datetime) return_date FROM patient p "
+            + "    INNER JOIN encounter e ON e.patient_id = p.patient_id AND e.encounter_datetime <=:endDate AND e.location_id=:location "
+            + "    INNER JOIN obs o ON o.encounter_id = e.encounter_id  AND o.location_id=:location  "
+            + "  WHERE p.voided = 0 AND e.voided = 0 AND o.voided=0 "
+            + "    AND e.encounter_type IN (%d,%d,%d) "
+            + "    AND o.concept_id IN (%d, %d) "
+            + "    AND e.location_id = :location "
+            + "  GROUP BY p.patient_id)lp ON pa.patient_id=lp.patient_id "
+            + "INNER JOIN encounter e ON "
+            + "  pa.patient_id=e.patient_id AND "
+            + "  e.encounter_datetime >= lp.return_date AND "
+            + "  e.encounter_datetime <= :endDate AND "
+            + "  e.encounter_type IN (%d, %d, %d) AND "
+            + "  e.location_id=:location "
+            + "INNER JOIN obs visitType ON "
+            + "  pa.patient_id=visitType.person_id AND "
+            + "  visitType.encounter_id = e.encounter_id AND "
+            + "  visitType.concept_id = %d AND "
+            + "  visitType.value_coded = %d AND "
+            + "  visitType.obs_datetime <= :endDate "
+            + "INNER JOIN obs o ON "
+            + "  pa.patient_id=o.person_id AND "
+            + "  o.encounter_id = e.encounter_id AND "
+            + "  o.concept_id IN (%d, %d, %d, %d, %d, %d, %d, %d, %d, %d) AND "
+            + "  o.obs_datetime <= :endDate "
+            + "GROUP BY pa.patient_id ";
 
     return String.format(
         query,
@@ -182,18 +181,22 @@ public class TxMlQueries {
        ◦ the last scheduled appointment or drugs pick up (the most recent one) by reporting end date and
        ◦ the reporting end date
   */
-  public static String getPatientsWithVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(
-      int pharmacyEncounterTypeId,
-      int adultoSequimentoEncounterTypeId,
-      int arvPediatriaSeguimentoEncounterTypeId,
-      int returnVisitDateForDrugsConcept,
-      int returnVisitDateConcept,
-      int homeVisitCardEncounterTypeId,
-      int apoioReintegracaoParteAEncounterTypeId,
-      int apoioReintegracaoParteBEncounterTypeId) {
+  public static String
+      getPatientsWithoutVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(
+          int pharmacyEncounterTypeId,
+          int adultoSequimentoEncounterTypeId,
+          int arvPediatriaSeguimentoEncounterTypeId,
+          int returnVisitDateForDrugsConcept,
+          int returnVisitDateConcept,
+          int homeVisitCardEncounterTypeId,
+          int apoioReintegracaoParteAEncounterTypeId,
+          int apoioReintegracaoParteBEncounterTypeId) {
 
     String query =
         " SELECT pa.patient_id FROM patient pa "
+            + " WHERE pa.patient_id NOT IN ("
+            + "  SELECT pa.patient_id "
+            + "  FROM patient pa"
             + "  INNER JOIN encounter e ON pa.patient_id=e.patient_id "
             + "  INNER JOIN obs o ON pa.patient_id=o.person_id "
             + "  INNER JOIN ("
@@ -208,7 +211,9 @@ public class TxMlQueries {
             + "  WHERE e.encounter_datetime >= lp.return_date AND e.encounter_datetime<=:endDate"
             + "  AND e.encounter_type IN (%d, %d, %d) "
             + "  AND e.location_id=:location  "
-            + "  GROUP BY pa.patient_id";
+            + "  GROUP BY pa.patient_id"
+            + ") "
+            + " GROUP BY pa.patient_id";
 
     return String.format(
         query,

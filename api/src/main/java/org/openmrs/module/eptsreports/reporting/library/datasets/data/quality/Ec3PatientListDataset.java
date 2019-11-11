@@ -17,6 +17,7 @@ import java.util.List;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.data.quality.Ec3Queries;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -42,7 +43,8 @@ public class Ec3PatientListDataset extends BaseDataSet {
         Ec3Queries.getEc3CombinedQuery(
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            EptsReportConstants.getProgramWorkflowStateIds(hivMetadata.getARTProgram())));
     return dsd;
   }
 }
