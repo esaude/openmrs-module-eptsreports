@@ -22,6 +22,7 @@ public class PregnantQueries {
       int eddConcept,
       int adultInitailEncounter,
       int adultSegEncounter,
+      int fichaResumo,
       int etvProgram) {
 
     return "Select     p.patient_id"
@@ -65,6 +66,8 @@ public class PregnantQueries {
         + adultInitailEncounter
         + ","
         + adultSegEncounter
+            + ","
+            + fichaResumo
         + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location "
         + " union"
         + " select pp.patient_id from patient_program pp"
