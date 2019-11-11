@@ -20,12 +20,13 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiPatientStateDefinition;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.common.VitalStatus;
 import org.openmrs.module.reporting.data.converter.PropertyConverter;
+import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
@@ -51,75 +52,50 @@ public class ERIDeadPatientsCalculation extends AbstractPatientCalculation {
     CalculationResultMap mastercardDrugPickup = getMastercardDrugPickup(cohort, context);
 
     CalculationResultMap resultMap = new CalculationResultMap();
+
     for (Integer pId : cohort) {
       boolean exclude = false;
 
       Date deathDate =
           getMostRecent(
+              pId,
               deadInProgram,
               deadInDemographics,
               deadInVisitCard,
               deadInFollowUp,
-              deadInMastercard,
-              pId);
+              deadInMastercard);
 
       if (deathDate == null) {
         continue;
       }
 
-      Encounter e = EptsCalculationUtils.resultForPatient(followUpOrPharmacy, pId);
-      if (e != null) {
-        exclude = e.getEncounterDatetime().after(deathDate);
-      }
-
-      Obs o = EptsCalculationUtils.resultForPatient(mastercardDrugPickup, pId);
-      if (!exclude && o != null) {
-        exclude = o.getValueDatetime().after(deathDate);
+      for (CalculationResultMap c : Arrays.asList(followUpOrPharmacy, mastercardDrugPickup)) {
+        if (!c.isEmpty(pId)) {
+          Date encounterOrPickup = c.get(pId).asType(Date.class);
+          if (encounterOrPickup.after(deathDate)) {
+            exclude = true;
+            break;
+          }
+        }
       }
 
       if (!exclude) {
         resultMap.put(pId, new SimpleResult(deathDate, this));
       }
     }
+
     return resultMap;
   }
 
-  private Date getMostRecent(
-      CalculationResultMap deadInProgram,
-      CalculationResultMap deadInDemographics,
-      CalculationResultMap deadInVisitCard,
-      CalculationResultMap deadInFollowUp,
-      CalculationResultMap deadInMastercard,
-      Integer pId) {
+  private Date getMostRecent(Integer pId, CalculationResultMap... dateCalculations) {
 
     List<Date> dates = new ArrayList<>();
 
-    PatientState died = EptsCalculationUtils.resultForPatient(deadInProgram, pId);
-    if (died != null) {
-      dates.add(died.getStartDate());
+    for (CalculationResultMap c : dateCalculations) {
+      if (!c.isEmpty(pId)) {
+        dates.add(c.get(pId).asType(Date.class));
+      }
     }
-
-    VitalStatus vitalStatus = EptsCalculationUtils.resultForPatient(deadInDemographics, pId);
-    if (vitalStatus != null) {
-      dates.add(vitalStatus.getDeathDate());
-    }
-
-    Date encounterDatetime = EptsCalculationUtils.resultForPatient(deadInVisitCard, pId);
-    if (encounterDatetime != null) {
-      dates.add(encounterDatetime);
-    }
-
-    Date followUpDeathDate = EptsCalculationUtils.resultForPatient(deadInFollowUp, pId);
-    if (followUpDeathDate != null) {
-      dates.add(followUpDeathDate);
-    }
-
-    Date mastercardDeathDate = EptsCalculationUtils.resultForPatient(deadInMastercard, pId);
-    if (mastercardDeathDate != null) {
-      dates.add(mastercardDeathDate);
-    }
-
-    dates.removeAll(Collections.singleton(null));
 
     return dates.size() > 0 ? Collections.max(dates) : null;
   }
@@ -135,7 +111,9 @@ public class ERIDeadPatientsCalculation extends AbstractPatientCalculation {
     def.setStartedOnOrBefore(onOrBefore);
     def.setWhich(TimeQualifier.LAST);
     def.setStates(Collections.singletonList(patientHasDiedWorkflowState));
-    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
+    PropertyConverter converter = new PropertyConverter(PatientState.class, "startDate");
+    ConvertedPatientDataDefinition startDate = new ConvertedPatientDataDefinition(def, converter);
+    return EptsCalculationUtils.evaluateWithReporting(startDate, cohort, null, null, context);
   }
 
   /**
@@ -154,7 +132,7 @@ public class ERIDeadPatientsCalculation extends AbstractPatientCalculation {
     for (Integer pId : cohort) {
       VitalStatus v = EptsCalculationUtils.resultForPatient(vitalStatus, pId);
       if (v != null && v.getDead()) {
-        deadMap.put(pId, new SimpleResult(v, null));
+        deadMap.put(pId, new SimpleResult(v.getDeathDate(), null));
       }
     }
 
@@ -277,8 +255,6 @@ public class ERIDeadPatientsCalculation extends AbstractPatientCalculation {
   private CalculationResultMap getFollowUpOrPharmacy(
       Collection<Integer> cohort, PatientCalculationContext context) {
     HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
-    EPTSCalculationService ePTSCalculationService =
-        Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
 
     Location location = (Location) context.getFromCache("location");
 
@@ -286,28 +262,39 @@ public class ERIDeadPatientsCalculation extends AbstractPatientCalculation {
     EncounterType arvPediatriaSeguimento = hivMetadata.getARVPediatriaSeguimentoEncounterType();
     EncounterType arvPharmacia = hivMetadata.getARVPharmaciaEncounterType();
 
-    return ePTSCalculationService.getEncounter(
-        Arrays.asList(adultoSeguimento, arvPediatriaSeguimento, arvPharmacia),
-        TimeQualifier.LAST,
-        cohort,
-        location,
-        null,
-        context);
+    EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition();
+    def.addType(adultoSeguimento);
+    def.addType(arvPediatriaSeguimento);
+    def.addType(arvPharmacia);
+    def.setLocationList(Collections.singletonList(location));
+
+    PropertyConverter converter = new PropertyConverter(Encounter.class, "encounterDatetime");
+    ConvertedPatientDataDefinition encounterDatetime =
+        new ConvertedPatientDataDefinition(def, converter);
+
+    return EptsCalculationUtils.evaluateWithReporting(
+        encounterDatetime, cohort, null, null, context);
   }
 
   private CalculationResultMap getMastercardDrugPickup(
       Collection<Integer> cohort, PatientCalculationContext context) {
 
     HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
-    EPTSCalculationService ePTSCalculationService =
-        Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
-
     Location location = (Location) context.getFromCache("location");
 
     EncounterType masterCard = hivMetadata.getMasterCardDrugPickupEncounterType();
     Concept pickUpDate = hivMetadata.getArtDatePickup();
 
-    return ePTSCalculationService.lastObs(
-        Collections.singletonList(masterCard), pickUpDate, location, null, null, cohort, context);
+    ObsForPersonDataDefinition def = new ObsForPersonDataDefinition();
+    def.setEncounterTypeList(Collections.singletonList(masterCard));
+    def.setWhich(TimeQualifier.LAST);
+    def.setQuestion(pickUpDate);
+    def.setLocationList(Collections.singletonList(location));
+
+    PropertyConverter converter = new PropertyConverter(Obs.class, "valueDatetime");
+    ConvertedPersonDataDefinition valueDatetime =
+        new ConvertedPersonDataDefinition(null, def, converter);
+
+    return EptsCalculationUtils.evaluateWithReporting(valueDatetime, cohort, null, null, context);
   }
 }
