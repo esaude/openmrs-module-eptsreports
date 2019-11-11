@@ -348,11 +348,11 @@ public class TXCurrQueries {
             + " select p.patient_id "
             + " from patient p "
             + " inner join encounter e on e.patient_id=p.patient_id "
-            + " inner join obs o on o.encounter_id=e.encounter_id "
-            + " where e.encounter_type = %s and p.voided=0  and e.voided=0 and o.voided=0 "
-            + " and o.concept_id=%s  "
-            + " and o.value_datetime > (select  max(value_datetime) from obs where  encounter_id= e.encounter_id  "
-            + " and encounter_type = e.encounter_type ) "
+            + " inner join obs obss on obss.encounter_id=e.encounter_id "
+            + " where e.encounter_type = %s and p.voided=0  and e.voided=0 and obss.voided=0 "
+            + " and obss.concept_id=%s  "
+            + " and obss.value_datetime > (select  max(value_datetime) from obs where  encounter_id= e.encounter_id  "
+            + " and concept_id = obss.concept_id) "
             + " and e.location_id= :location group by p.patient_id ";
 
     return String.format(
