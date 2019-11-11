@@ -40,7 +40,8 @@ public class PatientsWhoStoppedTreatmentCalculation extends AbstractPatientCalcu
       PatientCalculationContext context) {
 
     CalculationResultMap programMap = getTransferredOutViaProgram(cohort, context);
-    CalculationResultMap followUpOrMastercard = getSuspendedInFollowUpOrMastercard(cohort, context);
+    CalculationResultMap followUpMap = getSuspendedInFollowUp(cohort, context);
+    CalculationResultMap mastercardMap = getSuspendedInMastercard(cohort, context);
     CalculationResultMap followUpOrPharmacy = getFollowUpOrPharmacy(cohort, context);
     CalculationResultMap mastercardDrugPickup = getMastercardDrugPickup(cohort, context);
 
@@ -49,7 +50,7 @@ public class PatientsWhoStoppedTreatmentCalculation extends AbstractPatientCalcu
     for (Integer pId : cohort) {
       boolean exclude = false;
 
-      Date suspendedDate = getMostRecent(pId, programMap, followUpOrMastercard);
+      Date suspendedDate = getMostRecent(pId, programMap, followUpMap, mastercardMap);
       if (suspendedDate == null) {
         continue;
       }
@@ -106,28 +107,47 @@ public class PatientsWhoStoppedTreatmentCalculation extends AbstractPatientCalcu
     return EptsCalculationUtils.evaluateWithReporting(startDate, cohort, null, null, context);
   }
 
-  private CalculationResultMap getSuspendedInFollowUpOrMastercard(
+  private CalculationResultMap getSuspendedInFollowUp(
+      Collection<Integer> cohort, PatientCalculationContext context) {
+
+    HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
+
+    EncounterType adultoSeguimento = hivMetadata.getAdultoSeguimentoEncounterType();
+    Concept stateOfStay = hivMetadata.getStateOfStayOfArtPatient();
+    Concept suspended = hivMetadata.getSuspendedTreatmentConcept();
+
+    return getBasedOnStateOfStay(cohort, context, adultoSeguimento, stateOfStay, suspended);
+  }
+
+  private CalculationResultMap getSuspendedInMastercard(
       Collection<Integer> cohort, PatientCalculationContext context) {
     HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
+
+    EncounterType adultoSeguimento = hivMetadata.getMasterCardEncounterType();
+    Concept stateOfStay = hivMetadata.getStateOfStayOfPreArtPatient();
+    Concept suspended = hivMetadata.getSuspendedTreatmentConcept();
+
+    return getBasedOnStateOfStay(cohort, context, adultoSeguimento, stateOfStay, suspended);
+  }
+
+  private CalculationResultMap getBasedOnStateOfStay(
+      Collection<Integer> cohort,
+      PatientCalculationContext context,
+      EncounterType encounterType,
+      Concept stateOfStay,
+      Concept valueCoded) {
 
     Location location = (Location) context.getFromCache("location");
     Date onOrAfter = (Date) context.getFromCache("onOrAfter");
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
 
-    EncounterType adultoSeguimento = hivMetadata.getAdultoSeguimentoEncounterType();
-    EncounterType masterCard = hivMetadata.getMasterCardEncounterType();
-    Concept stateOfStay =
-        hivMetadata.getStateOfStayOfArtPatient(); // TODO it should be 6272 or 6273
-    Concept suspended = hivMetadata.getSuspendedTreatmentConcept();
-
     ObsForPersonDataDefinition def = new ObsForPersonDataDefinition();
     def.setWhich(TimeQualifier.LAST);
-    def.setQuestion(stateOfStay);
-    def.addEncounterType(adultoSeguimento);
-    def.addEncounterType(masterCard);
     def.setOnOrBefore(onOrBefore);
     def.setOnOrAfter(onOrAfter);
-    def.addValueCoded(suspended);
+    def.addEncounterType(encounterType);
+    def.setQuestion(stateOfStay);
+    def.addValueCoded(valueCoded);
     def.addLocation(location);
 
     PropertyConverter converter = new PropertyConverter(Obs.class, "encounter.encounterDatetime");

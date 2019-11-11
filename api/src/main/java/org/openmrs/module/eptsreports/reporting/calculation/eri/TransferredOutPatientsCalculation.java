@@ -114,22 +114,8 @@ public class TransferredOutPatientsCalculation extends AbstractPatientCalculatio
     EncounterType adultoSeguimento = hivMetadata.getAdultoSeguimentoEncounterType();
     Concept stateOfStay = hivMetadata.getStateOfStayOfArtPatient();
     Concept transferredOut = hivMetadata.getTransferredOutConcept();
-    Location location = (Location) context.getFromCache("location");
-    Date onOrBefore = (Date) context.getFromCache("onOrBefore");
 
-    ObsForPersonDataDefinition def = new ObsForPersonDataDefinition();
-    def.setWhich(TimeQualifier.LAST);
-    def.setOnOrBefore(onOrBefore);
-    def.addLocation(location);
-    def.addEncounterType(adultoSeguimento);
-    def.setQuestion(stateOfStay);
-    def.addValueCoded(transferredOut);
-
-    PropertyConverter converter = new PropertyConverter(Obs.class, "obsDatetime");
-    ConvertedPersonDataDefinition obsDatetime =
-        new ConvertedPersonDataDefinition(null, def, converter);
-
-    return EptsCalculationUtils.evaluateWithReporting(obsDatetime, cohort, null, null, context);
+    return getBasedOnStateOfStay(cohort, context, adultoSeguimento, stateOfStay, transferredOut);
   }
 
   private CalculationResultMap getTransferredOutViaMastercard(
@@ -137,24 +123,38 @@ public class TransferredOutPatientsCalculation extends AbstractPatientCalculatio
     HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
 
     EncounterType mastercard = hivMetadata.getMasterCardEncounterType();
-    Concept stateOfStay = hivMetadata.getStateOfStayOfArtPatient();
+    Concept stateOfStay = hivMetadata.getStateOfStayOfPreArtPatient();
     Concept transferredOut = hivMetadata.getTransferredOutConcept();
+
+    return getBasedOnStateOfStay(cohort, context, mastercard, stateOfStay, transferredOut);
+  }
+
+  private CalculationResultMap getBasedOnStateOfStay(
+      Collection<Integer> cohort,
+      PatientCalculationContext context,
+      EncounterType encounterType,
+      Concept stateOfStay,
+      Concept valueCoded) {
+
     Location location = (Location) context.getFromCache("location");
+    Date onOrAfter = (Date) context.getFromCache("onOrAfter");
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
 
     ObsForPersonDataDefinition def = new ObsForPersonDataDefinition();
     def.setWhich(TimeQualifier.LAST);
     def.setOnOrBefore(onOrBefore);
-    def.addLocation(location);
-    def.addEncounterType(mastercard);
+    def.setOnOrAfter(onOrAfter);
+    def.addEncounterType(encounterType);
     def.setQuestion(stateOfStay);
-    def.addValueCoded(transferredOut);
+    def.addValueCoded(valueCoded);
+    def.addLocation(location);
 
-    PropertyConverter converter = new PropertyConverter(Obs.class, "obsDatetime");
-    ConvertedPersonDataDefinition obsDatetime =
+    PropertyConverter converter = new PropertyConverter(Obs.class, "encounter.encounterDatetime");
+    ConvertedPersonDataDefinition encounterDatetime =
         new ConvertedPersonDataDefinition(null, def, converter);
 
-    return EptsCalculationUtils.evaluateWithReporting(obsDatetime, cohort, null, null, context);
+    return EptsCalculationUtils.evaluateWithReporting(
+        encounterDatetime, cohort, null, null, context);
   }
 
   private CalculationResultMap getFollowUpOrPharmacy(

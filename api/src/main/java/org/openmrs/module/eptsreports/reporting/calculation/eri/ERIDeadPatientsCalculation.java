@@ -25,7 +25,10 @@ import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiPatientSt
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.common.VitalStatus;
+import org.openmrs.module.reporting.data.converter.PropertyConverter;
 import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
@@ -42,7 +45,8 @@ public class ERIDeadPatientsCalculation extends AbstractPatientCalculation {
     CalculationResultMap deadInProgram = getDeadInProgram(cohort, context);
     CalculationResultMap deadInDemographics = getDeadInDemographics(cohort, context);
     CalculationResultMap deadInVisitCard = getDeadInVisitCard(cohort, context);
-    CalculationResultMap followUpOrMastercard = getDeadInFollowUpOrMastercard(cohort, context);
+    CalculationResultMap deadInFollowUp = getDeadInFollowUp(cohort, context);
+    CalculationResultMap deadInMastercard = getDeadInMastercard(cohort, context);
     CalculationResultMap followUpOrPharmacy = getFollowUpOrPharmacy(cohort, context);
     CalculationResultMap mastercardDrugPickup = getMastercardDrugPickup(cohort, context);
 
@@ -52,7 +56,12 @@ public class ERIDeadPatientsCalculation extends AbstractPatientCalculation {
 
       Date deathDate =
           getMostRecent(
-              deadInProgram, deadInDemographics, deadInVisitCard, followUpOrMastercard, pId);
+              deadInProgram,
+              deadInDemographics,
+              deadInVisitCard,
+              deadInFollowUp,
+              deadInMastercard,
+              pId);
 
       if (deathDate == null) {
         continue;
@@ -79,6 +88,7 @@ public class ERIDeadPatientsCalculation extends AbstractPatientCalculation {
       CalculationResultMap deadInProgram,
       CalculationResultMap deadInDemographics,
       CalculationResultMap deadInVisitCard,
+      CalculationResultMap deadInFollowUp,
       CalculationResultMap deadInMastercard,
       Integer pId) {
 
@@ -99,9 +109,14 @@ public class ERIDeadPatientsCalculation extends AbstractPatientCalculation {
       dates.add(encounterDatetime);
     }
 
-    Obs stateOfStay = EptsCalculationUtils.resultForPatient(deadInMastercard, pId);
-    if (stateOfStay != null) {
-      dates.add(stateOfStay.getEncounter().getEncounterDatetime());
+    Obs followUpStateOfStay = EptsCalculationUtils.resultForPatient(deadInFollowUp, pId);
+    if (followUpStateOfStay != null) {
+      dates.add(followUpStateOfStay.getEncounter().getEncounterDatetime());
+    }
+
+    Obs mastercardStateOfStay = EptsCalculationUtils.resultForPatient(deadInFollowUp, pId);
+    if (mastercardStateOfStay != null) {
+      dates.add(mastercardStateOfStay.getEncounter().getEncounterDatetime());
     }
 
     dates.removeAll(Collections.singleton(null));
@@ -209,30 +224,54 @@ public class ERIDeadPatientsCalculation extends AbstractPatientCalculation {
     return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
   }
 
-  private CalculationResultMap getDeadInFollowUpOrMastercard(
+  private CalculationResultMap getDeadInFollowUp(
       Collection<Integer> cohort, PatientCalculationContext context) {
     HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
-    EPTSCalculationService ePTSCalculationService =
-        Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
+
+    EncounterType adultoSeguimento = hivMetadata.getAdultoSeguimentoEncounterType();
+    Concept stateOfStay = hivMetadata.getStateOfStayOfArtPatient();
+    Concept died = hivMetadata.getPatientHasDiedConcept();
+
+    return getBasedOnStateOfStay(cohort, context, adultoSeguimento, stateOfStay, died);
+  }
+
+  private CalculationResultMap getDeadInMastercard(
+      Collection<Integer> cohort, PatientCalculationContext context) {
+    HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
+
+    EncounterType masterCard = hivMetadata.getMasterCardEncounterType();
+    Concept stateOfStay = hivMetadata.getStateOfStayOfArtPatient();
+    Concept died = hivMetadata.getPatientHasDiedConcept();
+
+    return getBasedOnStateOfStay(cohort, context, masterCard, stateOfStay, died);
+  }
+
+  private CalculationResultMap getBasedOnStateOfStay(
+      Collection<Integer> cohort,
+      PatientCalculationContext context,
+      EncounterType encounterType,
+      Concept stateOfStay,
+      Concept valueCoded) {
 
     Location location = (Location) context.getFromCache("location");
     Date onOrAfter = (Date) context.getFromCache("onOrAfter");
+    Date onOrBefore = (Date) context.getFromCache("onOrBefore");
 
-    EncounterType adultoSeguimento = hivMetadata.getAdultoSeguimentoEncounterType();
-    EncounterType masterCard = hivMetadata.getMasterCardEncounterType();
-    Concept stateOfStay =
-        hivMetadata.getStateOfStayOfArtPatient(); // TODO it should be 6272 or 6273
-    Concept died = hivMetadata.getPatientHasDiedConcept();
+    ObsForPersonDataDefinition def = new ObsForPersonDataDefinition();
+    def.setWhich(TimeQualifier.LAST);
+    def.setOnOrBefore(onOrBefore);
+    def.setOnOrAfter(onOrAfter);
+    def.addEncounterType(encounterType);
+    def.setQuestion(stateOfStay);
+    def.addValueCoded(valueCoded);
+    def.addLocation(location);
 
-    return ePTSCalculationService.getObs(
-        stateOfStay,
-        Arrays.asList(adultoSeguimento, masterCard),
-        cohort,
-        Collections.singletonList(location),
-        Collections.singletonList(died),
-        TimeQualifier.LAST,
-        onOrAfter,
-        context);
+    PropertyConverter converter = new PropertyConverter(Obs.class, "encounter.encounterDatetime");
+    ConvertedPersonDataDefinition encounterDatetime =
+        new ConvertedPersonDataDefinition(null, def, converter);
+
+    return EptsCalculationUtils.evaluateWithReporting(
+        encounterDatetime, cohort, null, null, context);
   }
 
   private CalculationResultMap getFollowUpOrPharmacy(
