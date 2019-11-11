@@ -689,6 +689,14 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  //Concept  1465
+  public Concept getDateOfLastMenstruationConcept() {
+    String uuid =
+            Context.getAdministrationService()
+                    .getGlobalProperty("eptsreports.dateOfLastMenstruationConcept");
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {

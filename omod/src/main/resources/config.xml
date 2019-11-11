@@ -1423,6 +1423,14 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.dateOfLastMenstruationConcept</property>
+		<defaultValue>e1dc0dd0-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for DATE OF LAST MENSTRATION concept
+		</description>
+	</globalProperty>
+
 	<!-- 6272 -->
 	<globalProperty>
 		<property>eptsreports.stateOfStayPriorArtPatientConceptUuid</property>
