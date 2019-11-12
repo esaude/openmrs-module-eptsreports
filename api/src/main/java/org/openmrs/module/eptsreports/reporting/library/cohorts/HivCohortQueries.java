@@ -221,7 +221,7 @@ public class HivCohortQueries {
     return definition;
   }
 
-  public CohortDefinition getPatientsTransferredOut() {
+  public CohortDefinition getPatientsTransferredOutOrSuspended( int transferedOutOrSuspendedConcept) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("transferredOutPatients");
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
@@ -296,7 +296,7 @@ public class HivCohortQueries {
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getStateOfStayOfPreArtPatient().getConceptId(),
             hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
-            hivMetadata.getTransferredOutConcept().getConceptId(),
+            transferedOutOrSuspendedConcept,
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
@@ -506,4 +506,5 @@ public class HivCohortQueries {
     cd.addValue(hivMetadata.getSexWorkerConcept());
     return cd;
   }
+
 }
