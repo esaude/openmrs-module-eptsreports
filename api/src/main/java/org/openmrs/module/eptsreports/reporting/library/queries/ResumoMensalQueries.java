@@ -120,4 +120,243 @@ public class ResumoMensalQueries {
         typeOfPantientConcept,
         tarvConcept);
   }
+
+  public static String getPatientsForF2ForExclusionFromMainQuery(
+      int encounterType, int tbSymptomsConcept, int yesConcept, int tbTreatmentPlanConcept) {
+    String query =
+        "SELECT p.patient_id "
+            + "FROM   patient p "
+            + " JOIN encounter e "
+            + " ON p.patient_id = e.patient_id "
+            + " JOIN obs o "
+            + " ON o.encounter_id = e.encounter_id "
+            + " JOIN (SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM encounter enc JOIN patient pat ON pat.patient_id=enc.patient_id "
+            + " JOIN obs ob ON enc.encounter_id=ob.encounter_id WHERE pat.voided = 0 AND enc.voided = 0 AND ob.voided = 0 "
+            + " AND enc.location_id = :location AND enc.encounter_datetime BETWEEN :startDate AND :endDate "
+            + " AND enc.encounter_type= %d AND ob.concept_id=%d AND ob.value_coded=%d) ed "
+            + " ON p.patient_id=ed.patient_id"
+            + " WHERE  p.voided = 0 "
+            + " AND e.voided = 0 "
+            + " AND e.encounter_type = %d "
+            + " AND e.location_id = :location "
+            + " AND e.encounter_datetime = ed.endDate "
+            + " AND o.voided = 0 "
+            + " AND o.concept_id = %d ";
+    return String.format(
+        query, encounterType, tbSymptomsConcept, yesConcept, encounterType, tbTreatmentPlanConcept);
+  }
+
+  /**
+   * Get patients with encounters within start and end date F1: Number of patients who had clinical
+   * appointment during the reporting month
+   *
+   * @return String
+   */
+  public static String getPatientsWithGivenEncounterType(int encounterType) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id "
+            + " WHERE e.encounter_type=%d AND e.location_id=:location "
+            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate AND p.voided=0 AND e.voided=0 ";
+    return String.format(query, encounterType);
+  }
+
+  /**
+   * Get patients with viral load suppression
+   *
+   * @return String
+   */
+  public static String getPatientsHavingViralLoadSuppression(
+      int viralLoadConcept, int encounterType) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location "
+            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + " AND o.value_numeric IS NOT NULL "
+            + " AND o.concept_id=%d "
+            + " AND e.encounter_type=%d "
+            + " AND o.value_numeric < 1000";
+    return String.format(query, viralLoadConcept, encounterType);
+  }
+
+  /**
+   * getPatientsWithCodedObsAndAnswers
+   *
+   * @return String
+   */
+  public static String getPatientsWithCodedObsAndAnswers(
+      int encounterType, int questionConceptId, int answerConceptId) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + " AND e.location_id = :location AND e.encounter_datetime BETWEEN :startDate AND :endDate AND e.encounter_type=%d "
+            + " AND o.concept_id=%d AND o.value_coded=%d";
+    return String.format(query, encounterType, questionConceptId, answerConceptId);
+  }
+
+  /**
+   * Get patients with viral load suppression
+   *
+   * @return String
+   */
+  public static String getPatientsHavingViralLoadResults(int viralLoadConcept, int encounterType) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location "
+            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + " AND o.value_numeric IS NOT NULL "
+            + " AND o.concept_id=%d "
+            + " AND e.encounter_type=%d ";
+    return String.format(query, viralLoadConcept, encounterType);
+  }
+
+  /**
+   * Get patients with any coded obs value
+   *
+   * @return String
+   */
+  public static String gePatientsWithCodedObs(int encounterType, int conceptId) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + " AND e.location_id = :location AND e.encounter_datetime BETWEEN :startDate AND :endDate AND e.encounter_type=%d "
+            + " AND o.concept_id=%d ";
+    return String.format(query, encounterType, conceptId);
+  }
+
+  /**
+   * E1 exclusions
+   *
+   * @return String
+   */
+  public static String getE1ExclusionCriteria(
+      int encounterType, int questionConceptId, int answerConceptId) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " JOIN (SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM patient pat "
+            + " JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob ON enc.encounter_id=ob.encounter_id "
+            + " WHERE pat.voided = 0 AND enc.voided = 0 AND ob.voided = 0 AND enc.location_id = :location "
+            + " AND enc.encounter_datetime BETWEEN :startDate AND :endDate AND enc.encounter_type=%d AND "
+            + " ob.concept_id=%d AND ob.value_coded=%d) ed "
+            + " ON p.patient_id=ed.patient_id "
+            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + " AND e.location_id = :location AND e.encounter_datetime BETWEEN "
+            + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
+            + " AND ed.endDate AND e.encounter_type=%d "
+            + " AND o.concept_id=%d AND o.value_coded=%d";
+    return String.format(
+        query,
+        encounterType,
+        questionConceptId,
+        answerConceptId,
+        encounterType,
+        questionConceptId,
+        answerConceptId);
+  }
+
+  /**
+   * E2 exclusions
+   *
+   * @param viralLoadConcept
+   * @param encounterType
+   * @param qualitativeConcept
+   * @return String
+   */
+  public static String getE2ExclusionCriteria(
+      int viralLoadConcept, int encounterType, int qualitativeConcept) {
+
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "JOIN (SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob "
+            + " ON enc.encounter_id=ob.encounter_id "
+            + " WHERE pat.voided=0 AND enc.voided=0 AND ob.voided=0 AND enc.location_id=:location AND enc.encounter_datetime "
+            + " BETWEEN :startDate AND :endDate AND ob.concept_id IN(%d, %d) AND enc.encounter_type=%d) ed "
+            + " ON p.patient_id=ed.patient_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location "
+            + " AND e.encounter_datetime BETWEEN "
+            + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
+            + " AND ed.endDate "
+            + " AND o.concept_id IN (%d, %d)"
+            + " AND e.encounter_type=%d ";
+    return String.format(
+        query,
+        viralLoadConcept,
+        qualitativeConcept,
+        encounterType,
+        viralLoadConcept,
+        qualitativeConcept,
+        encounterType);
+  }
+
+  /**
+   * E3 exclusion
+   *
+   * @param viralLoadConcept
+   * @param encounterType
+   * @param qualitativeConcept
+   * @return
+   */
+  public static String getE3ExclusionCriteria(
+      int viralLoadConcept, int encounterType, int qualitativeConcept) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " JOIN (SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM patient pat "
+            + " JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob ON enc.encounter_id=ob.encounter_id "
+            + " WHERE pat.voided=0 AND enc.voided=0 AND ob.voided=0 AND enc.location_id=:location "
+            + " AND enc.encounter_datetime BETWEEN :startDate AND :endDate AND ob.value_numeric IS NOT NULL "
+            + " AND ob.concept_id=%d AND enc.encounter_type=%d AND ob.value_numeric < 1000) ed "
+            + " ON p.patient_id=ed.patient_id"
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location "
+            + " AND e.encounter_datetime BETWEEN "
+            + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
+            + " AND ed.endDate "
+            + " AND o.value_numeric IS NOT NULL "
+            + " AND o.concept_id=%d "
+            + " AND e.encounter_type=%d "
+            + " AND o.value_numeric < 1000"
+            + " UNION "
+            + " SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " JOIN (SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM patient pat "
+            + " JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob ON enc.encounter_id=ob.encounter_id "
+            + " WHERE pat.voided = 0 AND enc.voided = 0 AND ob.voided = 0 AND enc.location_id = :location AND "
+            + " enc.encounter_datetime BETWEEN :startDate AND :endDate AND enc.encounter_type=%d AND ob.concept_id=%d) ed "
+            + " ON p.patient_id=ed.patient_id "
+            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + " AND e.location_id = :location AND e.encounter_datetime BETWEEN "
+            + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
+            + " AND ed.endDate "
+            + " AND e.encounter_type=%d "
+            + " AND o.concept_id=%d ";
+
+    return String.format(
+        query,
+        viralLoadConcept,
+        encounterType,
+        viralLoadConcept,
+        encounterType,
+        encounterType,
+        qualitativeConcept,
+        encounterType,
+        qualitativeConcept);
+  }
+
+  /**
+   * F3 exclusions
+   *
+   * @param encounterType
+   * @return
+   */
+  public static String getF3Exclusion(int encounterType) {
+    String query =
+        " SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN ( "
+            + " SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM encounter enc JOIN patient pat "
+            + " ON enc.patient_id=pat.patient_id WHERE enc.encounter_type=%d AND enc.location_id=:location "
+            + " AND enc.encounter_datetime BETWEEN :startDate AND :endDate AND pat.voided=0 AND enc.voided=0) ed "
+            + " ON p.patient_id=ed.patient_id"
+            + " WHERE e.encounter_type=%d AND e.location_id=:location "
+            + " AND e.encounter_datetime BETWEEN "
+            + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
+            + " AND ed.endDate "
+            + "AND p.voided=0 AND e.voided=0 ";
+    return String.format(query, encounterType, encounterType);
+  }
 }

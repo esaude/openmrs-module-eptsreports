@@ -31,11 +31,13 @@
 
     <encounter_type encounter_type_id="677004" name="Adult initial" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02ca533ab-b74b-4ee4-b6e5-ffb6d677004"/>
     <encounter_type encounter_type_id="677005" name="Child initial" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02ca533ab-b74b-4ee4-b6e5-ffb6d677005"/>
+    <encounter_type encounter_type_id="677006" name="Ficha Resumo - MasterCard" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02ca533ab-b74b-4ee4-b6e5-ffb6d677006"/>
 
     <global_property property="eptsreports.hivCareProgramUuid" property_value="aa4a0391-ba62-4fad-ad66-1e3722d16381" uuid="aa4a0391-ba62-4fad-ad66-1e3722d16381"/>
     <global_property property="eptsreports.artProgramUuid" property_value="aa4a0391-ba62-4fad-ad66-1e3722d16382" uuid="aa4a0391-ba62-4fad-ad66-1e3722d16382"/>
     <global_property property="eptsreports.sTarvAdultoInitialAEncounterTypeUuid" property_value="02ca533ab-b74b-4ee4-b6e5-ffb6d677004" uuid="02ca533ab-b74b-4ee4-b6e5-ffb6d677004"/>
     <global_property property="eptsreports.sTarvPediatriaInicialAEncounterTypeUuid" property_value="02ca533ab-b74b-4ee4-b6e5-ffb6d677005" uuid="02ca533ab-b74b-4ee4-b6e5-ffb6d677005"/>
+    <global_property property="eptsreports.masterCardEncounterType" property_value="02ca533ab-b74b-4ee4-b6e5-ffb6d677006" uuid="02ca533ab-b74b-4ee4-b6e5-ffb6d677006"/>
 
     <encounter encounter_id="10" encounter_type="677004" patient_id="2" location_id="1" form_id="1" encounter_datetime="2019-02-01 00:00:00.0" creator="1" date_created="2019-02-01 00:00:00.0" voided="false" uuid="0519d653-393b-4118-9c83-a3715b82d4ap"/>
     <encounter encounter_id="11" encounter_type="677005" patient_id="6" location_id="1" form_id="1" encounter_datetime="2019-02-01 00:00:00.0" creator="1" date_created="2019-02-01 00:00:00.0" voided="false" uuid="1519d653-393b-4118-9c83-a3715b82d4ap"/>

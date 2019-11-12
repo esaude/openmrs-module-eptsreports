@@ -29,6 +29,9 @@
 	<person person_id="1777006" gender="F" dead="false" creator="1"
 		birthdate_estimated="0" date_created="2019-01-01 15:46:47.0"
 		voided="false" uuid="a6d7607a-99f5-4c0d-937b-c54dc6375853" />
+	<person person_id="1777007" gender="F" dead="false" creator="1"
+			birthdate_estimated="0" date_created="2019-01-01 15:46:47.0"
+			voided="false" uuid="7a0bd131-7c04-4bfc-bfc7-464106375e8d" />
 
 	<patient patient_id="90" creator="1"
 		date_created="2006-01-18 00:00:00.0" changed_by="1"
@@ -57,6 +60,9 @@
 	<patient patient_id="1777006" creator="1"
 		date_created="2019-01-01 00:00:00.0" changed_by="1"
 		date_changed="2019-01-01 12:25:57.0" voided="false" void_reason="" />
+	<patient patient_id="1777007" creator="1"
+			 date_created="2019-01-01 00:00:00.0" changed_by="1"
+			 date_changed="2019-01-01 12:25:57.0" voided="false" void_reason="" />
 
 	<patient_program patient_program_id="10"
 		patient_id="1777001" program_id="9" location_id="1"
@@ -229,6 +235,11 @@
 		encounter_datetime="1998-09-01 00:00:00.0" creator="1"
 		date_created="2015-05-21 14:09:05.0" voided="false"
 		uuid="24339337-f5d0-4406-b5c2-61d7240175f1" />
+	<encounter encounter_id="2777024" encounter_type="6777008"
+			   patient_id="1777007" location_id="1" form_id="1"
+			   encounter_datetime="1998-09-01 00:00:00.0" creator="1"
+			   date_created="2015-05-21 14:09:05.0" voided="false"
+			   uuid="9cadec8e-5b96-4612-af3a-ce7347aad914" />
 
 	<obs obs_id="3777002" person_id="6" concept_id="7777002"
 		encounter_id="2777023" obs_datetime="2018-06-21 00:00:00.0" location_id="1"
@@ -351,4 +362,10 @@
 		location_id="1" value_datetime="1998-09-01 00:00:00.0" comments=""
 		creator="1" date_created="2019-01-29 14:11:13.0" voided="false"
 		uuid="3e25eeba-3640-11e9-8f88-87de3b3d755d" />
+
+	<obs obs_id="3777027" person_id="1777007" concept_id="7777034"
+		 encounter_id="2777024" obs_datetime="1998-09-01 00:00:00.0"
+		 location_id="1" value_datetime="1998-10-01 01:02:00.0" comments=""
+		 creator="1" date_created="2019-01-29 14:11:13.0" voided="false"
+		 uuid="333ddf53-d698-4efa-8605-2eeb025a2e3f" />
 </dataset>

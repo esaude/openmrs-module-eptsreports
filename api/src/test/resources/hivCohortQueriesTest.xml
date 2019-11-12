@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public 
+	License, v. 2.0. If a copy of the MPL was not distributed with this file, 
+	You can obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed 
+	under the terms of the Healthcare Disclaimer located at http://openmrs.org/license. 
+	Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS 
+	graphic logo is a trademark of OpenMRS Inc. -->
+
+<dataset>
+
+    <!-- getHomosexualKeyPopCohortShouldReturn -->
+    <person person_id="10000" gender="F" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2019-01-01 15:46:47.0" voided="false" uuid="0005baa9-1f46-4597-8898-7fd644a8fa7d"/>
+
+    <patient patient_id="10000" creator="1" date_created="2019-01-01 00:00:00.0" changed_by="1"
+             date_changed="2019-01-01 12:25:57.0" voided="false" void_reason=""/>
+
+    <encounter encounter_id="10000" encounter_type="6777002" patient_id="10000" location_id="1" form_id="1"
+               encounter_datetime="2019-08-15 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="f858bde0-134c-404c-bde8-d5a59d6f9d0e"/>
+
+    <obs obs_id="10000" person_id="10000" concept_id="23703" encounter_id="10000" obs_datetime="2019-08-15 00:00:00.0"
+         location_id="1" value_coded="1377" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="af7f70fc-8cb9-43f7-af45-af4cc68c004c"/>
+
+    <!-- getDrugUserKeyPopCohortShouldReturn -->
+    <person person_id="10001" gender="F" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2019-01-01 15:46:47.0" voided="false" uuid="0a06a3d0-7bde-4f09-a2de-c214198872df"/>
+
+    <patient patient_id="10001" creator="1" date_created="2019-01-01 00:00:00.0" changed_by="1"
+             date_changed="2019-01-01 12:25:57.0" voided="false" void_reason=""/>
+
+    <encounter encounter_id="10001" encounter_type="6777002" patient_id="10001" location_id="1" form_id="1"
+               encounter_datetime="2019-08-15 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="7c704cf4-243c-4d74-833e-d261b897f951"/>
+
+    <obs obs_id="10001" person_id="10001" concept_id="23703" encounter_id="10001" obs_datetime="2019-08-15 00:00:00.0"
+         location_id="1" value_coded="20454" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="e5e86459-52ac-4750-9278-12fe5686adc6"/>
+
+    <!-- getImprisonmentKeyPopCohortShouldReturn -->
+    <person person_id="10002" gender="F" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2019-01-01 15:46:47.0" voided="false" uuid="c2689bfa-6d15-457a-87fc-38833e4f559a"/>
+
+    <patient patient_id="10002" creator="1" date_created="2019-01-01 00:00:00.0" changed_by="1"
+             date_changed="2019-01-01 12:25:57.0" voided="false" void_reason=""/>
+
+    <encounter encounter_id="10002" encounter_type="6777002" patient_id="10002" location_id="1" form_id="1"
+               encounter_datetime="2019-08-15 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="4264194c-11bd-46e1-88cc-3b669f8138d1"/>
+
+    <obs obs_id="10002" person_id="10002" concept_id="23703" encounter_id="10002" obs_datetime="2019-08-15 00:00:00.0"
+         location_id="1" value_coded="1901" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="086c662a-3d4a-41b3-a2fa-233289d694a4"/>
+
+    <!-- getImprisonmentKeyPopCohortShouldReturn -->
+    <person person_id="10003" gender="F" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2019-01-01 15:46:47.0" voided="false" uuid="b275da8f-c0a0-4f7d-8fdf-ff0f24e18362"/>
+
+    <patient patient_id="10003" creator="1" date_created="2019-01-01 00:00:00.0" changed_by="1"
+             date_changed="2019-01-01 12:25:57.0" voided="false" void_reason=""/>
+
+    <encounter encounter_id="10003" encounter_type="6777002" patient_id="10003" location_id="1" form_id="1"
+               encounter_datetime="2019-08-15 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
+               voided="false" uuid="dbdf5a9f-9a94-4ac1-a710-eb03276200b0"/>
+
+    <obs obs_id="10003" person_id="10003" concept_id="23703" encounter_id="10003" obs_datetime="2019-08-15 00:00:00.0"
+         location_id="1" value_coded="20426" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="1dea9ea5-fe22-48c2-9e88-737fe9ee4e10"/>
+
+</dataset>
