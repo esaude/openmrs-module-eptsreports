@@ -288,18 +288,20 @@ public class HivCohortQueries {
     cd.setQuery(
         String.format(
             sql,
-            hivMetadata.getARTProgram(),
-            hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState(),
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getMasterCardEncounterType(),
-            hivMetadata.getStateOfStayOfPreArtPatient(),
-            hivMetadata.getStateOfStayOfArtPatient(),
-            hivMetadata.getTransferredOutConcept(),
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType(),
-            hivMetadata.getARVPharmaciaEncounterType(),
-            hivMetadata.getMasterCardDrugPickupEncounterType(),
-            hivMetadata.getArtDatePickup()));
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getStateOfStayOfPreArtPatient().getConceptId(),
+            hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
+            hivMetadata.getTransferredOutConcept().getConceptId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickup().getConceptId()));
     return cd;
   }
 
