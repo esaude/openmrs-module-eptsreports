@@ -29,6 +29,7 @@ public class EriDSDCohortQueries {
   @Autowired private TxNewCohortQueries txNewCohortQueries;
   @Autowired private GenericCohortQueries genericCohortQueries;
   @Autowired private GenderCohortQueries genderCohorts;
+  @Autowired private TXTBCohortQueries txTBCohortQueries;
 
   @Autowired private AgeCohortQueries ageCohortQueries;
   @Autowired private HivCohortQueries hivCohortQueries;
@@ -413,7 +414,14 @@ public class EriDSDCohortQueries {
             getAllPatientsWhoAreActiveAndStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("allPatientsTxCurr AND NOT activeAndStablePatients");
+    cd.addSearch(
+        "patientsWithTB",
+        EptsReportUtils.map(
+            txTBCohortQueries.getInTBProgram(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+        "allPatientsTxCurr AND NOT (activeAndStablePatients OR patientsWithTB)");
 
     return cd;
   }
