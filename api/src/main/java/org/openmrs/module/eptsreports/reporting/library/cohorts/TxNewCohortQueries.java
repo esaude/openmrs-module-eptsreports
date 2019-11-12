@@ -16,24 +16,24 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.calculation.txnew.TxNewBreastfeedingDateCalculation;
-import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
+import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,15 +131,48 @@ public class TxNewCohortQueries {
    *
    * @return CohortDefinition
    */
-  @DocumentedDefinition(value = "txNewBreastfeedingCohort")
-  public CohortDefinition getTxNewBreastfeedingCohort() {
-    CalculationCohortDefinition cd = new CalculationCohortDefinition();
+  @DocumentedDefinition(value = "txNewBreastfeedingComposition")
+  public CohortDefinition getTxNewBreastfeedingComposition() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setDescription("breastfeedingComposition");
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
-    cd.setCalculation(
-        Context.getRegisteredComponents(TxNewBreastfeedingDateCalculation.class).get(0));
+
+    cd.addSearch(
+        "DATAPARTO",
+        EptsReportUtils.map(
+            getPatientsWithUpdatedDepartureInART(),
+            "value1=${onOrAfter},value2=${onOrBefore},locationList=${location}"));
+    cd.addSearch(
+        "INICIOLACTANTE",
+        EptsReportUtils.map(
+            genericCohorts.hasCodedObs(
+                hivMetadata.getCriteriaForArtStart(),
+                BaseObsCohortDefinition.TimeModifier.FIRST,
+                SetComparator.IN,
+                Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
+                Arrays.asList(commonMetadata.getBreastfeeding())),
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
+    cd.addSearch(
+        "LACTANTEPROGRAMA",
+        EptsReportUtils.map(
+            getPatientsWhoGaveBirthWithinReportingPeriod(),
+            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
+    cd.addSearch(
+        "LACTANTE",
+        EptsReportUtils.map(
+            genericCohorts.hasCodedObs(
+                commonMetadata.getBreastfeeding(),
+                BaseObsCohortDefinition.TimeModifier.LAST,
+                SetComparator.IN,
+                Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
+                Arrays.asList(commonMetadata.getYesConcept())),
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
+
+    String compositionString = "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE)";
+
+    cd.setCompositionString(compositionString);
     return cd;
   }
 
