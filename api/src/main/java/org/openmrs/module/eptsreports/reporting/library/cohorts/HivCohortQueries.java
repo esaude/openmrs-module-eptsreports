@@ -24,7 +24,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.eri.PatientsWhoStoppedTreatmentCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.eri.TransferredOutPatientsCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
@@ -223,12 +222,84 @@ public class HivCohortQueries {
   }
 
   public CohortDefinition getPatientsTransferredOut() {
-    CalculationCohortDefinition cd = new CalculationCohortDefinition();
+    SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("transferredOutPatients");
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
-    cd.setCalculation(
-        Context.getRegisteredComponents(TransferredOutPatientsCalculation.class).get(0));
+    String sql =
+        "SELECT patient_id "
+            + "FROM (SELECT patient_id, "
+            + "             Max(transferout_date) transferout_date "
+            + "      FROM (SELECT p.patient_id, "
+            + "                   ps.start_date transferout_date "
+            + "            FROM patient p "
+            + "                     JOIN patient_program pp "
+            + "                          ON p.patient_id = pp.patient_id "
+            + "                     JOIN patient_state ps "
+            + "                          ON pp.patient_program_id = ps.patient_program_id "
+            + "            WHERE p.voided = 0 "
+            + "              AND pp.voided = 0 "
+            + "              AND pp.program_id = %d "
+            + "              AND pp.location_id = :location "
+            + "              AND ps.voided = 0 "
+            + "              AND ps.state = %d "
+            + "              AND ps.start_date <= :onOrBefore "
+            + "              AND ps.end_date IS NULL "
+            + "            UNION "
+            + "            SELECT p.patient_id, "
+            + "                   e.encounter_datetime transferout_date "
+            + "            FROM patient p "
+            + "                     JOIN encounter e "
+            + "                          ON p.patient_id = e.patient_id "
+            + "                     JOIN obs o "
+            + "                          ON e.encounter_id = o.encounter_id "
+            + "            WHERE p.voided = 0 "
+            + "              AND e.voided = 0 "
+            + "              AND e.location_id = :location "
+            + "              AND e.encounter_type IN (%d, %d) "
+            + "              AND e.encounter_datetime <= :onOrBefore "
+            + "              AND o.voided = 0 "
+            + "              AND o.concept_id IN (%d, %d) "
+            + "              AND o.value_coded = %d) transferout "
+            + "      GROUP BY patient_id) max_transferout "
+            + "WHERE patient_id NOT IN (SELECT p.patient_id "
+            + "                         FROM patient p "
+            + "                                  JOIN encounter e "
+            + "                                       ON p.patient_id = e.patient_id "
+            + "                         WHERE p.voided = 0 "
+            + "                           AND e.voided = 0 "
+            + "                           AND e.encounter_type IN (%d, %d, %d) "
+            + "                           AND e.location_id = :location "
+            + "                           AND e.encounter_datetime > transferout_date "
+            + "                         UNION "
+            + "                         SELECT p.patient_id "
+            + "                         FROM patient p "
+            + "                                  JOIN encounter e "
+            + "                                       ON p.patient_id = e.patient_id "
+            + "                                  JOIN obs o "
+            + "                                       ON e.encounter_id = o.encounter_id "
+            + "                         WHERE p.voided = 0 "
+            + "                           AND e.voided = 0 "
+            + "                           AND e.encounter_type = %d "
+            + "                           AND e.location_id = :location "
+            + "                           AND o.concept_id = %d "
+            + "                           AND o.value_datetime "
+            + "                             > transferout_date);";
+    cd.setQuery(
+        String.format(
+            sql,
+            hivMetadata.getARTProgram(),
+            hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState(),
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getMasterCardEncounterType(),
+            hivMetadata.getStateOfStayOfPreArtPatient(),
+            hivMetadata.getStateOfStayOfArtPatient(),
+            hivMetadata.getTransferredOutConcept(),
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+            hivMetadata.getARVPharmaciaEncounterType(),
+            hivMetadata.getMasterCardDrugPickupEncounterType(),
+            hivMetadata.getArtDatePickup()));
     return cd;
   }
 
