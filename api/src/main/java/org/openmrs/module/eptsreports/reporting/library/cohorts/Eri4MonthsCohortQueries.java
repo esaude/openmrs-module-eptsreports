@@ -59,7 +59,11 @@ public class Eri4MonthsCohortQueries {
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata
                     .getTransferredFromOtherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()));
+                    .getProgramWorkflowStateId(),
+                hivMetadata.getArtPickupConcept().getConceptId(),
+                hivMetadata.getYesConcept().getConceptId(),
+                hivMetadata.getArtDatePickup().getConceptId(),
+                hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
     return cd;
   }
 

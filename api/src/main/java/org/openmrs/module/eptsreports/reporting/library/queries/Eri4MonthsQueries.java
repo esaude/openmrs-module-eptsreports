@@ -22,7 +22,11 @@ public class Eri4MonthsQueries {
           int startDrugsConcept,
           int historicalDrugsConcept,
           int artProgram,
-          int transferFromStates) {
+          int transferFromStates,
+          int artPickupConcept,
+          int yesConcept,
+          int artPickupDateConcept,
+          int mastercardDrugPickupEncounterType) {
 
     String sql =
         "SELECT inicio_real.patient_id "
@@ -85,7 +89,27 @@ public class Eri4MonthsQueries {
             + "                               AND e.voided = 0 "
             + "                               AND e.encounter_datetime <= :endDate "
             + "                               AND e.location_id = :location "
-            + "                        GROUP  BY p.patient_id) inicio "
+            + "                        GROUP  BY p.patient_id "
+            + "                        UNION "
+            + "                        SELECT e.patient_id, "
+            + "                               Min(e.encounter_datetime) AS data_inicio"
+            + "                        FROM   patient p "
+            + "                               JOIN encounter e "
+            + "                                 ON p.patient_id = e.patient_id "
+            + "                               JOIN obs pickup "
+            + "                                 ON e.encounter_id = pickup.encounter_id "
+            + "                               JOIN obs pickupdate "
+            + "                                 ON e.encounter_id = pickupdate.encounter_id "
+            + "                        WHERE  p.voided = 0 "
+            + "                               AND pickup.voided = 0 "
+            + "                               AND pickup.concept_id = %d "
+            + "                               AND pickup.value_coded = %d "
+            + "                               AND pickupdate.voided = 0 "
+            + "                               AND pickupdate.concept_id = %d "
+            + "                               AND pickupdate.value_datetime <= :endDate "
+            + "                               AND e.encounter_type = %d "
+            + "                               AND e.voided = 0 "
+            + "                               AND e.location_id = :location) inicio "
             + "                GROUP  BY patient_id) inicio1 "
             + "        WHERE  data_inicio BETWEEN :startDate AND :endDate) inicio_real "
             + "       INNER JOIN encounter e "
@@ -132,6 +156,10 @@ public class Eri4MonthsQueries {
         historicalDrugsConcept,
         artProgram,
         arvPharmaciaEncounter,
+        artPickupConcept,
+        yesConcept,
+        artPickupDateConcept,
+        mastercardDrugPickupEncounterType,
         arvPharmaciaEncounter,
         arvAdultoSeguimentoEncounter,
         arvPediatriaSeguimentoEncounter,
