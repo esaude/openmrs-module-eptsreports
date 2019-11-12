@@ -26,7 +26,6 @@ import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.calculation.eri.ERIDeadPatientsCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.AgeOnArtStartDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtBeforeDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtOnPeriodCalculation;
@@ -206,11 +205,123 @@ public class GenericCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getDeceasedPatients() {
-    CalculationCohortDefinition cd = new CalculationCohortDefinition();
-    cd.setCalculation(Context.getRegisteredComponents(ERIDeadPatientsCalculation.class).get(0));
+    SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Get deceased patients based on patient states and person object");
     cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    String sql =
+        "SELECT patient_id "
+            + "FROM   (SELECT patient_id, "
+            + "               Max(death_date) death_date "
+            + "        FROM   (SELECT p.patient_id, "
+            + "                       ps.start_date death_date "
+            + "                FROM   patient p "
+            + "                       JOIN patient_program pp "
+            + "                         ON p.patient_id = pp.patient_id "
+            + "                       JOIN patient_state ps "
+            + "                         ON pp.patient_program_id = ps.patient_program_id "
+            + "                WHERE  p.voided = 0 "
+            + "                       AND pp.voided = 0 "
+            + "                       AND pp.program_id = %d "
+            + "                       AND pp.location_id = :location "
+            + "                       AND ps.voided = 0 "
+            + "                       AND ps.state = %d "
+            + "                       AND ps.start_date <= :onOrBefore "
+            + "                       AND ps.end_date IS NULL "
+            + "                UNION "
+            + "                SELECT p.person_id, "
+            + "                       p.death_date "
+            + "                FROM   person p "
+            + "                WHERE  p.voided = 0"
+            + "                   AND p.dead = 1 "
+            + "                UNION "
+            + "                SELECT e.patient_id, "
+            + "                       visit_card.death_date "
+            + "                FROM   (SELECT p.patient_id, "
+            + "                               Max(e.encounter_datetime) death_date "
+            + "                        FROM   patient p "
+            + "                               JOIN encounter e "
+            + "                                 ON p.patient_id = e.patient_id "
+            + "                               JOIN obs notfound "
+            + "                                 ON e.encounter_id = notfound.encounter_id "
+            + "                               JOIN obs reason "
+            + "                                 ON e.encounter_id = reason.encounter_id "
+            + "                        WHERE  p.voided = 0 "
+            + "                               AND e.voided = 0 "
+            + "                               AND e.encounter_type IN ( %d, %d, %d ) "
+            + "                               AND e.encounter_datetime <= :onOrBefore "
+            + "                               AND notfound.voided = 0 "
+            + "                               AND notfound.concept_id = %d "
+            + "                               AND notfound.value_coded = %d "
+            + "                               AND reason.voided = 0 "
+            + "                               AND reason.concept_id = %d "
+            + "                               AND reason.value_coded = %d "
+            + "                        GROUP  BY p.patient_id) visit_card "
+            + "                       JOIN encounter e "
+            + "                         ON visit_card.patient_id = e.patient_id "
+            + "                            AND visit_card.death_date = e.encounter_datetime "
+            + "                UNION "
+            + "                SELECT p.patient_id, "
+            + "                       e.encounter_datetime death_date "
+            + "                FROM   patient p "
+            + "                       JOIN encounter e "
+            + "                         ON p.patient_id = e.patient_id "
+            + "                       JOIN obs o "
+            + "                         ON e.encounter_id = o.encounter_id "
+            + "                WHERE  p.voided = 0 "
+            + "                       AND e.voided = 0 "
+            + "                       AND e.location_id = :location "
+            + "                       AND e.encounter_type IN ( %d, %d ) "
+            + "                       AND e.encounter_datetime <= :onOrBefore "
+            + "                       AND o.voided = 0 "
+            + "                       AND o.concept_id IN ( %d, %d ) "
+            + "                       AND o.value_coded = %d) dead "
+            + "        GROUP  BY patient_id) max_dead "
+            + "WHERE  patient_id NOT IN (SELECT p.patient_id "
+            + "                          FROM   patient p "
+            + "                                 JOIN encounter e "
+            + "                                   ON p.patient_id = e.patient_id "
+            + "                          WHERE  p.voided = 0 "
+            + "                                 AND e.voided = 0 "
+            + "                                 AND e.encounter_type IN ( %d, %d, %d ) "
+            + "                                 AND e.location_id = :location "
+            + "                                 AND e.encounter_datetime > death_date "
+            + "                          UNION "
+            + "                          SELECT p.patient_id "
+            + "                          FROM   patient p "
+            + "                                 JOIN encounter e "
+            + "                                   ON p.patient_id = e.patient_id "
+            + "                                 JOIN obs o "
+            + "                                   ON e.encounter_id = o.encounter_id "
+            + "                          WHERE  p.voided = 0 "
+            + "                                 AND e.voided = 0 "
+            + "                                 AND e.encounter_type = %d "
+            + "                                 AND e.location_id = :location "
+            + "                                 AND o.concept_id = 23866 "
+            + "                                 AND o.value_datetime > death_date); ";
+    cd.setQuery(
+        String.format(
+            sql,
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+            hivMetadata.getVisitaApoioReintegracaoParteAEncounterType().getEncounterTypeId(),
+            hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId(),
+            hivMetadata.getPatientFoundConcept().getConceptId(),
+            hivMetadata.getNoConcept().getConceptId(),
+            hivMetadata.getReasonPatientNotFound().getConceptId(),
+            hivMetadata.getPatientIsDead().getConceptId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getStateOfStayOfPreArtPatient().getConceptId(),
+            hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
+            hivMetadata.getPatientHasDiedConcept().getConceptId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickup().getConceptId()));
+
     return cd;
   }
 

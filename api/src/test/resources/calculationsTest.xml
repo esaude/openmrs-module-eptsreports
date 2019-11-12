@@ -150,6 +150,9 @@
 	<concept concept_id="1366" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2008-10-13 07:58:15" changed_by="1" date_changed="2018-10-08 12:04:32" uuid="e1da766e-1d5f-11e0-b929-000c29ad1d07" />
 	<concept_name concept_id="1366" name="PATIENT HAS DIED" locale="en" creator="1" date_created="2008-10-13 07:58:15" concept_name_id="2462" voided="0" uuid="e249f6c4-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
 
+	<concept concept_id="6272" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2012-02-29 09:27:06" changed_by="1" date_changed="2019-08-09 07:03:59" uuid="3bd7a5d1-afc0-478d-9aa6-c7bdd9a050c8" />
+	<concept_name concept_id="6272" name="STATE OF STAY PRIOR ART PATIENT" locale="en" creator="1" date_created="2012-02-29 09:27:06" concept_name_id="7174" voided="0" uuid="ddf5d0d1-2142-4629-8403-d0d9b2a77839" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
+
   	<concept_set concept_set_id="8777008" concept_id="7777008" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777008"/>
   	<concept_set concept_set_id="8777009" concept_id="7777009" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777009"/>
   	<concept_set concept_set_id="8777010" concept_id="7777010" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777010"/>
@@ -241,4 +244,5 @@
 	<global_property property="eptsreports.stateOfStayArtPatient" property_value="a7d3b5c9-8b8e-4f29-b332-8db47466fed3" description="UUID for the STATE OF STAY ART PATIENT concept" uuid="9c4c260c-fdb0-43e6-a459-f1cbe84d66f3" />
 	<global_property property="eptsreports.patientHasDiedConceptUuid" property_value="e1da766e-1d5f-11e0-b929-000c29ad1d07" description="UUID for the OBITOU concept" uuid="c917c33b-638b-463a-b53c-54497588ef4a"/>
 	<global_property property="eptsreports.sTarvPediatriaInicialAEncounterTypeUuid" property_value="e278fa8c-1d5f-11e0-b929-000c29ad1d07" description="UUID for the S.TARV: PEDIATRIA INICIAL A encounter type" uuid="18a936da-4a29-4428-a27d-2e1c0da93ecd" />
+	<global_property property="eptsreports.stateOfStayOfPreArtPatient" property_value="3bd7a5d1-afc0-478d-9aa6-c7bdd9a050c8" description="UUID for the STATE OF STAY PRIOR ART PATIENT concept" uuid="d7878b38-6c0c-438a-beab-c56287b9b859" />
 </dataset>
