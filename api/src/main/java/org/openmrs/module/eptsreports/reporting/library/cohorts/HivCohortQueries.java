@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.Collections;
 import java.util.Date;
@@ -25,7 +24,6 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
@@ -195,175 +193,6 @@ public class HivCohortQueries {
     ProgramWorkflowState state = hivMetadata.getArtAbandonedWorkflowState();
     return genericCohortQueires.getPatientsBasedOnPatientStatesBeforeDate(
         artProgram.getProgramId(), state.getProgramWorkflowStateId());
-  }
-
-  public CohortDefinition getPatientsWhoToLostToFollowUp() {
-    CompositionCohortDefinition definition = new CompositionCohortDefinition();
-
-    definition.setName("LTFU");
-
-    CohortDefinition scheduledDrugPickup = getPatientHavingLastScheduledDrugPickupDate();
-
-    CohortDefinition noScheduledDrugPickupMasterCard =
-        getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup();
-
-    definition.addSearch("31", mapStraightThrough(scheduledDrugPickup));
-    definition.addSearch("32", mapStraightThrough(noScheduledDrugPickupMasterCard));
-
-    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-
-    definition.setCompositionString("31 OR  32");
-
-    return definition;
-  }
-
-  /**
-   * 13..All patients having the most recent date between last scheduled drug pickup date (Fila) or
-   * last scheduled consultation date (Ficha Seguimento or Ficha Clínica) or 30 days after last ART
-   * pickup date (Recepção – Levantou ARV) and adding 30 days and this date being less than
-   * reporting end Date. (For more clarifications refer to scenario Table 1)
-   */
-  @DocumentedDefinition(value = "patientHavingLastScheduledDrugPickupDate")
-  private CohortDefinition getPatientHavingLastScheduledDrugPickupDate() {
-    SqlCohortDefinition definition = new SqlCohortDefinition();
-
-    definition.setName("patientHavingLastScheduledDrugPickupDate");
-
-    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-
-    String query =
-        "SELECT most_recent.patient_id "
-            + "FROM   (SELECT p.patient_id, "
-            + "               o.value_datetime, "
-            + "               e.location_id, "
-            + "               e.encounter_id "
-            + "        FROM   patient p "
-            + "               inner join encounter e "
-            + "                       ON e.patient_id = p.patient_id "
-            + "               inner join obs o "
-            + "                       ON o.encounter_id = e.encounter_id "
-            + "        WHERE  p.voided = 0 "
-            + "               AND e.voided = 0 "
-            + "               AND o.voided = 0 "
-            + "               AND e.encounter_type = %s "
-            + "               AND o.value_datetime IS NOT NULL "
-            + "               AND o.concept_id = %s "
-            + "        UNION "
-            + "        SELECT p.patient_id, "
-            + "               o.value_datetime, "
-            + "               e.location_id, "
-            + "               e.encounter_id "
-            + "        FROM   patient p "
-            + "               inner join encounter e "
-            + "                       ON e.patient_id = p.patient_id "
-            + "               inner join obs o "
-            + "                       ON o.encounter_id = e.encounter_id "
-            + "        WHERE  p.voided = 0 "
-            + "               AND e.voided = 0 "
-            + "               AND o.voided = 0 "
-            + "               AND e.encounter_type IN ( %s, %s ) "
-            + "               AND o.concept_id = %s "
-            + "        UNION "
-            + "        SELECT p.patient_id, "
-            + "               o.value_datetime, "
-            + "               e.location_id, "
-            + "               e.encounter_id "
-            + "        FROM   patient p "
-            + "               inner join encounter e "
-            + "                       ON e.patient_id = p.patient_id "
-            + "               inner join obs o "
-            + "                       ON o.encounter_id = e.encounter_id "
-            + "        WHERE  p.voided = 0 "
-            + "               AND e.voided = 0 "
-            + "               AND o.voided = 0 "
-            + "               AND o.concept_id = %s "
-            + "               AND o.value_datetime IS NOT NULL "
-            + "               AND e.encounter_type = %s) most_recent "
-            + "WHERE  most_recent.value_datetime = (SELECT Max(value_datetime) "
-            + "                                     FROM   obs "
-            + "                                     WHERE  encounter_id = "
-            + "                                            most_recent.encounter_id) "
-            + "       AND most_recent.value_datetime < Date_add(:onOrBefore, interval 30 day) "
-            + "       AND most_recent.location_id = :location "
-            + "GROUP  BY most_recent.patient_id ";
-
-    definition.setQuery(
-        String.format(
-            query,
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            commonMetadata.getReturnVisitDateConcept().getConceptId(),
-            hivMetadata.getArtDatePickup().getConceptId(),
-            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
-
-    return definition;
-  }
-
-  /**
-   * 14. All patients who do not have the next scheduled drug pick up date (Fila) and next scheduled
-   * consultation date (Ficha de Seguimento or Ficha Clinica – Master Card) and ART Pickup date
-   * (Recepção – Levantou ARV).
-   *
-   * @return
-   */
-  @DocumentedDefinition(value = "patientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup")
-  private CohortDefinition getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup() {
-    SqlCohortDefinition definition = new SqlCohortDefinition();
-
-    definition.setName("patientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup");
-
-    definition.addParameter(new Parameter("location", "location", Location.class));
-
-    String query =
-        "SELECT p.patient_id "
-            + "FROM   patient p "
-            + "       inner join encounter e "
-            + "               ON e.patient_id = p.patient_id "
-            + "       inner join obs o "
-            + "               ON o.encounter_id = e.encounter_id "
-            + "WHERE  p.voided = 0 "
-            + "       AND e.voided = 0 "
-            + "       AND o.voided = 0 "
-            + "       AND e.encounter_type NOT IN ( %s, %s, %s, %s ) "
-            + "       AND e.location_id = :location "
-            + "GROUP  BY p.patient_id "
-            + "UNION "
-            + "SELECT p.patient_id "
-            + "FROM   patient p "
-            + "       inner join encounter e "
-            + "               ON e.patient_id = p.patient_id "
-            + "       inner join obs o "
-            + "               ON o.encounter_id = e.encounter_id "
-            + "WHERE  p.voided = 0 "
-            + "       AND e.voided = 0 "
-            + "       AND o.voided = 0 "
-            + "       AND e.encounter_datetime = (SELECT Max(encounter_datetime) "
-            + "                                   FROM   encounter "
-            + "                                   WHERE  patient_id = p.patient_id) "
-            + "       AND e.encounter_type IN ( %s, %s, %s ) "
-            + "       AND ( o.concept_id NOT IN ( %s, %s ) "
-            + "              OR o.encounter_id IS NULL ) "
-            + "       AND e.location_id = :location "
-            + "GROUP  BY p.patient_id ";
-
-    definition.setQuery(
-        String.format(
-            query,
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getReturnVisitDateConcept().getConceptId(),
-            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
-
-    return definition;
   }
 
   public CohortDefinition getHomosexualKeyPopCohort() {

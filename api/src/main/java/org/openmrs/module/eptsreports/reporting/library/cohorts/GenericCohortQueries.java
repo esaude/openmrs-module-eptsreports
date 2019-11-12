@@ -424,7 +424,7 @@ public class GenericCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getPatinetWhoToLostToFollowUp() {
+  public CohortDefinition getPatientsWhoToLostToFollowUp() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     String mappings = "onOrBefore=${onOrBefore},location=${location}";
