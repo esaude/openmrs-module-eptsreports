@@ -139,6 +139,8 @@ public class TxNewCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
+    cd.addSearch("FEMININO", EptsReportUtils.map(genderCohorts.femaleCohort(), ""));
+
     cd.addSearch(
         "DATAPARTO",
         EptsReportUtils.map(
@@ -174,7 +176,7 @@ public class TxNewCohortQueries {
     cd.addSearch("MASTERCARD", mapStraightThrough(breastfeedingInMastercard));
 
     String compositionString =
-        "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE OR MASTERCARD)";
+        "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE OR MASTERCARD) AND FEMININO";
 
     cd.setCompositionString(compositionString);
     return cd;
