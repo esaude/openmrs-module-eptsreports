@@ -14,6 +14,7 @@ package org.openmrs.module.eptsreports.reporting.library.dimensions;
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.BreastFeedingCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri2MonthsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri4MonthsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.EriCohortQueries;
@@ -50,6 +51,8 @@ public class EptsCommonDimension {
   @Autowired private EriCohortQueries eriCohortQueries;
 
   @Autowired private TbPrevCohortQueries tbPrevCohortQueries;
+
+  @Autowired private BreastFeedingCohortQueries breastFeedingCohortQueries;
 
   /**
    * Gender dimension
@@ -144,70 +147,6 @@ public class EptsCommonDimension {
         EptsReportUtils.map(
             this.txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    return dim;
-  }
-
-  /**
-   * Get the dimensions based on the patient states for ERI-4 months
-   *
-   * @return CohortDefinitionDimension
-   */
-  public CohortDefinitionDimension getEri4MonthsDimension() {
-    final CohortDefinitionDimension dim = new CohortDefinitionDimension();
-    dim.addParameter(new Parameter("cohortStartDate", "Cohort Start Date", Date.class));
-    dim.addParameter(new Parameter("cohortEndDate", "Cohort End Date", Date.class));
-    dim.addParameter(new Parameter("reportingStartDate", "Report Start Date", Date.class));
-    dim.addParameter(new Parameter("reportingEndDate", "Report End Date", Date.class));
-    dim.addParameter(new Parameter("location", "location", Location.class));
-    dim.setName("Get patient states");
-
-    dim.addCohortDefinition(
-        "IART",
-        EptsReportUtils.map(
-            this.eriCohortQueries.getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
-
-    dim.addCohortDefinition(
-        "AIT",
-        EptsReportUtils.map(
-            this.eri4MonthsCohortQueries.getPatientsWhoAreAliveAndOnTreatment(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
-
-    dim.addCohortDefinition(
-        "DP",
-        EptsReportUtils.map(
-            this.genericCohortQueries.getDeceasedPatients(),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
-
-    dim.addCohortDefinition(
-        "LTFU",
-        EptsReportUtils.map(
-            this.eri4MonthsCohortQueries.getAllPatientsWhoAreLostToFollowUpDuringPeriod(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
-
-    dim.addCohortDefinition(
-        "TOP",
-        EptsReportUtils.map(
-            this.genericCohortQueries.getPatientsBasedOnPatientStates(
-                this.hivMetadata.getARTProgram().getProgramId(),
-                this.hivMetadata
-                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
-
-    dim.addCohortDefinition(
-        "STP",
-        EptsReportUtils.map(
-            this.genericCohortQueries.getPatientsBasedOnPatientStates(
-                this.hivMetadata.getARTProgram().getProgramId(),
-                this.hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
-
-    dim.addCohortDefinition(
-        "ANIT",
-        EptsReportUtils.map(
-            this.eri4MonthsCohortQueries.getPatientsWhoAreAliveAndNotOnTreatment(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     return dim;
   }
 

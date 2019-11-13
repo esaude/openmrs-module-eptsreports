@@ -16,13 +16,13 @@ public class PregnantQueries {
 
   /** GRAVIDAS INSCRITAS NO SERVIÇO TARV */
   public static String getPregnantWhileOnArt(
-      int pregnantConcept,
-      int gestationConcept,
-      int weeksPregnantConcept,
-      int eddConcept,
-      int adultInitailEncounter,
-      int adultSegEncounter,
-      int etvProgram) {
+      final int pregnantConcept,
+      final int gestationConcept,
+      final int weeksPregnantConcept,
+      final int eddConcept,
+      final int adultInitailEncounter,
+      final int adultSegEncounter,
+      final int etvProgram) {
 
     return "Select     p.patient_id"
         + " from patient p"
@@ -72,5 +72,33 @@ public class PregnantQueries {
         + " where pp.program_id="
         + etvProgram
         + " and pp.voided=0 and pp.date_enrolled between :startDate and :endDate and pp.location_id=:location ";
+  }
+
+  public static final String findPatientsWhoArePregnantInAPeriod() {
+
+    final String query =
+        "SELECT patient_id FROM ("
+            + "SELECT p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=1982 and value_coded in (44,1465) and e.encounter_type in (5,6) "
+            + "and e.encounter_datetime between :startDate AND :endDate and e.location_id=:location UNION "
+            + "SELECT p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on e.encounter_id=o.encounter_id "
+            + "WHERE p.voided=0 and e.voided=0 and o.voided=0 and concept_id=1279 and e.encounter_type in (5,6) and e.encounter_datetime between :startDate "
+            + "AND :endDate and e.location_id=:location UNION "
+            + "SELECT 	p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on e.encounter_id=o.encounter_id "
+            + "WHERE p.voided=0 and e.voided=0 and o.voided=0 and concept_id=1600 and e.encounter_type in (5,6) "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate AND e.location_id=:location	UNION "
+            + "SELECT p.patient_id FROM patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on e.encounter_id=o.encounter_id "
+            + "WHERE p.voided=0 and e.voided=0 and o.voided=0 and concept_id=6334 and value_coded=6331 and e.encounter_type in (5,6) "
+            + "and e.encounter_datetime between :startDate AND :endDate and e.location_id=:location	UNION "
+            + "SELECT pp.patient_id FROM patient_program pp WHERE pp.program_id=8 and pp.voided=0 and pp.date_enrolled "
+            + "BETWEEN :startDate AND :endDate and pp.location_id=:location UNION "
+            + "SELECT 	p.patient_id FROM patient p inner join encounter e on p.patient_id=e.patient_id INNER JOIN obs o on e.encounter_id=o.encounter_id "
+            + "WHERE p.voided=0 and e.voided=0 and o.voided=0 and o.concept_id=5272 and o.value_coded=1065 and e.encounter_type=53 and e.encounter_datetime "
+            + "BETWEEN :startDate AND :endDate and e.location_id=:location UNION "
+            + "SELECT p.patient_id FROM patient p inner join encounter e on p.patient_id=e.patient_id INNER JOIN obs o on e.encounter_id=o.encounter_id "
+            + "WHERE p.voided=0 and e.voided=0 and o.voided=0 and o.concept_id=1465 and e.encounter_type=6 and e.encounter_datetime "
+            + "BETWEEN :startDate AND :endDate and e.location_id=:location) pregnant inner join person p on p.person_id=pregnant.patient_id where p.gender='F'";
+
+    return query;
   }
 }
