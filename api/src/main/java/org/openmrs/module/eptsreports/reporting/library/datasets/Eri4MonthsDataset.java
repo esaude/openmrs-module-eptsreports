@@ -15,7 +15,6 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.Arrays;
 import java.util.List;
-
 import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri4MonthsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
@@ -34,138 +33,173 @@ import org.springframework.stereotype.Component;
 @Component
 public class Eri4MonthsDataset extends BaseDataSet {
 
-	@Autowired
-	private EptsGeneralIndicator eptsGeneralIndicator;
+  @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
 
-	@Autowired
-	private Eri4MonthsDimensions eri4MonthsDimensions;
+  @Autowired private Eri4MonthsDimensions eri4MonthsDimensions;
 
-	@Autowired
-	private TxNewCohortQueries txNewCohortQueries;
+  @Autowired private TxNewCohortQueries txNewCohortQueries;
 
-	@Autowired
-	private GenericCohortQueries genericCohortQueries;
+  @Autowired private GenericCohortQueries genericCohortQueries;
 
-	@Autowired
-	private Eri4MonthsCohortQueries eri4MonthsCohortQueries;
+  @Autowired private Eri4MonthsCohortQueries eri4MonthsCohortQueries;
 
-	public DataSetDefinition constructEri4MonthsDataset() {
+  public DataSetDefinition constructEri4MonthsDataset() {
 
-		final CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
+    final CohortIndicatorDataSetDefinition dataSetDefinition =
+        new CohortIndicatorDataSetDefinition();
 
-		final String cohortPeriodMappings = "cohortStartDate=${endDate-5m+1d},cohortEndDate=${endDate-4m},location=${location}";
+    final String cohortPeriodMappings =
+        "cohortStartDate=${endDate-5m+1d},cohortEndDate=${endDate-4m},location=${location}";
 
-		final String reportingPeriodMappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    final String reportingPeriodMappings =
+        "startDate=${startDate},endDate=${endDate},location=${location}";
 
-		dataSetDefinition.setName("ERI-4months Data Set");
+    dataSetDefinition.setName("ERI-4months Data Set");
 
-		dataSetDefinition.addParameters(this.getParameters());
+    dataSetDefinition.addParameters(this.getParameters());
 
-		dataSetDefinition.addDimension("state",
-		        EptsReportUtils.map(this.eri4MonthsDimensions.getDimension(), cohortPeriodMappings));
+    dataSetDefinition.addDimension(
+        "state",
+        EptsReportUtils.map(this.eri4MonthsDimensions.getDimension(), cohortPeriodMappings));
 
-		this.addColumns(dataSetDefinition, "01",
-		        EptsReportUtils.map(
-		                this.eptsGeneralIndicator.getIndicator("all patients",
-		                        EptsReportUtils.map(
-		                                this.txNewCohortQueries.getTxNewCompositionCohort("patientNewlyEnrolledInART"),
-		                                "startDate=${endDate-5m+1d},endDate=${endDate-4m},location=${location}")),
-		                reportingPeriodMappings),
-		        this.get4MonthsRetentionColumns());
+    this.addColumns(
+        dataSetDefinition,
+        "01",
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "all patients",
+                EptsReportUtils.map(
+                    this.txNewCohortQueries.getTxNewCompositionCohort("patientNewlyEnrolledInART"),
+                    "startDate=${endDate-5m+1d},endDate=${endDate-4m},location=${location}")),
+            reportingPeriodMappings),
+        this.get4MonthsRetentionColumns());
 
-		this.addColumns(dataSetDefinition, "02",
-		        EptsReportUtils.map(this.eptsGeneralIndicator.getIndicator("all patients in treatment",
-		                EptsReportUtils.map(
-		                        this.genericCohortQueries.generalSql("patientsInTreatment",
-		                                Eri4MonthsQueries
-		                                        .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
-		                                                Eri4mType.IN_TREATMENT)),
-		                        "endDate=${endDate},location=${location}")),
-		                reportingPeriodMappings),
-		        this.get4MonthsRetentionColumns());
+    this.addColumns(
+        dataSetDefinition,
+        "02",
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "all patients in treatment",
+                EptsReportUtils.map(
+                    this.genericCohortQueries.generalSql(
+                        "patientsInTreatment",
+                        Eri4MonthsQueries
+                            .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
+                                Eri4mType.IN_TREATMENT)),
+                    "endDate=${endDate},location=${location}")),
+            reportingPeriodMappings),
+        this.get4MonthsRetentionColumns());
 
-		this.addColumns(dataSetDefinition, "03",
-		        EptsReportUtils
-		                .map(this.eptsGeneralIndicator.getIndicator("all patients dead",
-		                        EptsReportUtils.map(
-		                                this.genericCohortQueries.generalSql("patientsDead",
-		                                        Eri4MonthsQueries
-		                                                .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
-		                                                        Eri4mType.DEAD)),
-		                                "endDate=${endDate},location=${location}")),
-		                        reportingPeriodMappings),
-		        this.get4MonthsRetentionColumns());
+    this.addColumns(
+        dataSetDefinition,
+        "03",
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "all patients dead",
+                EptsReportUtils.map(
+                    this.genericCohortQueries.generalSql(
+                        "patientsDead",
+                        Eri4MonthsQueries
+                            .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
+                                Eri4mType.DEAD)),
+                    "endDate=${endDate},location=${location}")),
+            reportingPeriodMappings),
+        this.get4MonthsRetentionColumns());
 
-		this.addColumns(dataSetDefinition, "04",
-		        EptsReportUtils.map(
-		                this.eptsGeneralIndicator.getIndicator("all patients who are lost follow up",
-		                        EptsReportUtils.map(this.eri4MonthsCohortQueries.findPatientsWhoAreLostFollowUp(),
-		                                cohortPeriodMappings + ",reportingEndDate=${endDate}")),
-		                reportingPeriodMappings),
-		        this.get4MonthsRetentionColumns());
+    this.addColumns(
+        dataSetDefinition,
+        "04",
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "all patients who are lost follow up",
+                EptsReportUtils.map(
+                    this.eri4MonthsCohortQueries.findPatientsWhoAreLostFollowUp(),
+                    cohortPeriodMappings + ",reportingEndDate=${endDate}")),
+            reportingPeriodMappings),
+        this.get4MonthsRetentionColumns());
 
-		this.addColumns(dataSetDefinition, "05",
-		        EptsReportUtils.map(this.eptsGeneralIndicator.getIndicator("all patients in tranferred out",
-		                EptsReportUtils.map(
-		                        this.genericCohortQueries.generalSql("patientsTransferredOut",
-		                                Eri4MonthsQueries
-		                                        .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
-		                                                Eri4mType.TRANFERED_OUT)),
-		                        "endDate=${endDate},location=${location}")),
-		                reportingPeriodMappings),
-		        this.get4MonthsRetentionColumns());
+    this.addColumns(
+        dataSetDefinition,
+        "05",
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "all patients in tranferred out",
+                EptsReportUtils.map(
+                    this.genericCohortQueries.generalSql(
+                        "patientsTransferredOut",
+                        Eri4MonthsQueries
+                            .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
+                                Eri4mType.TRANFERED_OUT)),
+                    "endDate=${endDate},location=${location}")),
+            reportingPeriodMappings),
+        this.get4MonthsRetentionColumns());
 
-		this.addColumns(dataSetDefinition, "06",
-		        EptsReportUtils.map(this.eptsGeneralIndicator.getIndicator("all patients who stopped treatment",
-		                EptsReportUtils.map(
-		                        this.genericCohortQueries.generalSql("patientsStoppedTreatment",
-		                                Eri4MonthsQueries
-		                                        .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
-		                                                Eri4mType.SPTOPPED_TREATMENT)),
-		                        "endDate=${endDate},location=${location}")),
-		                reportingPeriodMappings),
-		        this.get4MonthsRetentionColumns());
+    this.addColumns(
+        dataSetDefinition,
+        "06",
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "all patients who stopped treatment",
+                EptsReportUtils.map(
+                    this.genericCohortQueries.generalSql(
+                        "patientsStoppedTreatment",
+                        Eri4MonthsQueries
+                            .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
+                                Eri4mType.SPTOPPED_TREATMENT)),
+                    "endDate=${endDate},location=${location}")),
+            reportingPeriodMappings),
+        this.get4MonthsRetentionColumns());
 
-		this.addColumns(dataSetDefinition, "07",
-		        EptsReportUtils.map(this.eptsGeneralIndicator.getIndicator("all patients defaulters",
-		                EptsReportUtils.map(
-		                        this.genericCohortQueries.generalSql("patientsDefaulters",
-		                                Eri4MonthsQueries
-		                                        .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
-		                                                Eri4mType.DEFAULTER)),
-		                        "endDate=${endDate},location=${location}")),
-		                reportingPeriodMappings),
-		        this.get4MonthsRetentionColumns());
+    this.addColumns(
+        dataSetDefinition,
+        "07",
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "all patients defaulters",
+                EptsReportUtils.map(
+                    this.genericCohortQueries.generalSql(
+                        "patientsDefaulters",
+                        Eri4MonthsQueries
+                            .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
+                                Eri4mType.DEFAULTER)),
+                    "endDate=${endDate},location=${location}")),
+            reportingPeriodMappings),
+        this.get4MonthsRetentionColumns());
 
-		return dataSetDefinition;
-	}
+    return dataSetDefinition;
+  }
 
-	private List<ColumnParameters> get4MonthsRetentionColumns() {
+  private List<ColumnParameters> get4MonthsRetentionColumns() {
 
-		final ColumnParameters allPatients = new ColumnParameters("initiated ART", "Initiated ART", "", "I");
-		final ColumnParameters pregnantWoman = new ColumnParameters("pregnant woman", "Pregnant Woman",
-		        "state=PREGNANT", "I");
-		final ColumnParameters brestfedding = new ColumnParameters("breastfeeding", "Breastfeeding",
-		        "state=BREASTFEEDING", "I");
-		final ColumnParameters children = new ColumnParameters("children", "Children", "state=CHILDREN", "I");
-		final ColumnParameters adult = new ColumnParameters("adult", "Adult", "state=ADULT", "I");
+    final ColumnParameters allPatients =
+        new ColumnParameters("initiated ART", "Initiated ART", "", "I");
+    final ColumnParameters pregnantWoman =
+        new ColumnParameters("pregnant woman", "Pregnant Woman", "state=PREGNANT", "I");
+    final ColumnParameters brestfedding =
+        new ColumnParameters("breastfeeding", "Breastfeeding", "state=BREASTFEEDING", "I");
+    final ColumnParameters children =
+        new ColumnParameters("children", "Children", "state=CHILDREN", "I");
+    final ColumnParameters adult = new ColumnParameters("adult", "Adult", "state=ADULT", "I");
 
-		return Arrays.asList(allPatients, pregnantWoman, brestfedding, children, adult);
-	}
+    return Arrays.asList(allPatients, pregnantWoman, brestfedding, children, adult);
+  }
 
-	private void addColumns(final CohortIndicatorDataSetDefinition definition, final String columNumber,
-	        final Mapped<CohortIndicator> indicator, final List<ColumnParameters> columns) {
+  private void addColumns(
+      final CohortIndicatorDataSetDefinition definition,
+      final String columNumber,
+      final Mapped<CohortIndicator> indicator,
+      final List<ColumnParameters> columns) {
 
-		int position = 1;
+    int position = 1;
 
-		for (final ColumnParameters column : columns) {
+    for (final ColumnParameters column : columns) {
 
-			final String name = column.getColumn() + "" + position + "-" + columNumber;
-			final String label = column.getLabel() + "(" + name + ")";
+      final String name = column.getColumn() + "" + position + "-" + columNumber;
+      final String label = column.getLabel() + "(" + name + ")";
 
-			definition.addColumn(name, label, indicator, column.getDimensions());
+      definition.addColumn(name, label, indicator, column.getDimensions());
 
-			position++;
-		}
-	}
+      position++;
+    }
+  }
 }
