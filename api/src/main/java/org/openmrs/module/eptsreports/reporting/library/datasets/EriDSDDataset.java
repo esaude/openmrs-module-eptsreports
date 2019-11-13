@@ -37,6 +37,8 @@ public class EriDSDDataset extends BaseDataSet {
         "age", EptsReportUtils.map(eptsCommonDimension.getEri2DsdDimension2(), mappings));
     dsd.setName("Total");
 
+    // DSD: Denominator: Number of active patients on ART - (Non-pregnant and Non-Breastfeeding not
+    // on TB treatment)
     dsd.addColumn(
         "D1T",
         "DSD D1 Total",
@@ -160,6 +162,29 @@ public class EriDSDDataset extends BaseDataSet {
                 "10-14",
                 EptsReportUtils.map(
                     elegibleCohortQuery.getChild10To14ActiveOnArtNotElegibleDsd(""), mappings)),
+            mappings),
+        "");
+    // DSD: Numerator: Number of active on ART whose next ART pick-up is schedule for 83-97 days
+    // after the date of their last ART drug pick-up (DT) - (Non-pregnant and Non-Breastfeeding not
+    // on TB treatment)
+    dsd.addColumn(
+        "N1T",
+        "N1T Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "TOTAL",
+                EptsReportUtils.map(dsdCohortQueries.getPatientsActiveOnArtWhoInDt(""), mappings)),
+            mappings),
+        "");
+
+    dsd.addColumn(
+        "N1SST",
+        "N1SST Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "SUB TOTAL",
+                EptsReportUtils.map(
+                    dsdCohortQueries.getPatientsActiveOnArtElegibleDsdWhoInDt(""), mappings)),
             mappings),
         "");
 
