@@ -1,4 +1,3 @@
-/** */
 package org.openmrs.module.eptsreports.reporting.intergrated.library.cohorts;
 
 import static org.junit.Assert.assertFalse;

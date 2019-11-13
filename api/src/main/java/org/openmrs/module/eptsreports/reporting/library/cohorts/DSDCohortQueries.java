@@ -152,4 +152,60 @@ public class DSDCohortQueries {
 
     return dsd;
   }
+
+  @DocumentedDefinition(value = "patientsActiveOnArtWhoInDt")
+  public CohortDefinition getPatientsActiveOnArtWhoInDt(final String cohortName) {
+    final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
+
+    dsd.setName(cohortName);
+    dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dsd.addParameter(new Parameter("location", "location", Location.class));
+
+    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    dsd.addSearch(
+        "IN-ART",
+        EptsReportUtils.map(
+            getPatientsActiveOnArtExcludingPregnantBreastfeedingAndTb(""), mappings));
+
+    dsd.addSearch(
+        "QUARTERLY-DISPENSATION",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "QUARTERLY-DISPENSATION",
+                DsdQueriesInterface.QUERY.findPatientWhoAreMdcQuarterlyDispensation),
+            mappings));
+
+    dsd.setCompositionString("(IN-ART AND QUARTERLY-DISPENSATION)");
+
+    return dsd;
+  }
+
+  @DocumentedDefinition(value = "patientsActiveOnArtWhoInDt")
+  public CohortDefinition getPatientsActiveOnArtElegibleDsdWhoInDt(final String cohortName) {
+    final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
+
+    dsd.setName(cohortName);
+    dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dsd.addParameter(new Parameter("location", "location", Location.class));
+
+    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    dsd.addSearch(
+        "ELEGIBLE", EptsReportUtils.map(getPatientsActiveOnArtEligibleForDsd(""), mappings));
+
+    dsd.addSearch(
+        "QUARTERLY-DISPENSATION",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "QUARTERLY-DISPENSATION",
+                DsdQueriesInterface.QUERY.findPatientWhoAreMdcQuarterlyDispensation),
+            mappings));
+
+    dsd.setCompositionString("(ELEGIBLE AND QUARTERLY-DISPENSATION)");
+
+    return dsd;
+  }
 }
