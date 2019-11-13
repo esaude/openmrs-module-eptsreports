@@ -24,6 +24,7 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxNewQueries;
+import org.openmrs.module.eptsreports.reporting.utils.AgeRange;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -46,6 +47,8 @@ public class TxNewCohortQueries {
   @Autowired private CommonMetadata commonMetadata;
 
   @Autowired private GenericCohortQueries genericCohorts;
+
+  @Autowired private BreastFeedingCohortQueries breastFeedingCohortQueries;
 
   /**
    * PATIENTS WITH UPDATED DATE OF DEPARTURE IN THE ART SERVICE Are patients with date of delivery
@@ -216,5 +219,51 @@ public class TxNewCohortQueries {
         "START-ART NOT (TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD)");
 
     return txNewCompositionCohort;
+  }
+
+  public CohortDefinition findPatientsNewlyEnrolledByAgeInAPeriodExcludingBreastFeedingAndPregnant(
+      final AgeRange ageRange) {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("patientsNewlyEnrolledByAgeInAPeriodExcludingBreastFeedingAndPregnant");
+
+    definition.addParameter(new Parameter("cohortStartDate", "Cohort Start Date", Date.class));
+    definition.addParameter(new Parameter("cohortEndDate", "Cohort End Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query = TxNewQueries.QUERY.findPatientsWhoAreNewlyEnrolledOnArtByAge;
+    query = String.format(query, ageRange.getMin(), ageRange.getMax());
+
+    if (AgeRange.ADULT.equals(ageRange)) {
+      query =
+          query.replace(
+              "BETWEEN " + ageRange.getMin() + " AND " + ageRange.getMax(),
+              ">= " + ageRange.getMax());
+    }
+
+    definition.addSearch(
+        "IART",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql("patientsWhoAreNewlyEnrolledOnArtByAge", query),
+            "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
+
+    definition.addSearch(
+        "PREGNANT",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "patientsWhoArePregnantInAPeriod",
+                PregnantQueries.findPatientsWhoArePregnantInAPeriod()),
+            "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
+
+    definition.addSearch(
+        "BREASTFEEDING",
+        EptsReportUtils.map(
+            this.breastFeedingCohortQueries
+                .findPatientsWhoAreBreastFeedingExcludingPregnantsInAPeriod(),
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
+
+    definition.setCompositionString("IART NOT (PREGNANT OR BREASTFEEDING)");
+
+    return definition;
   }
 }

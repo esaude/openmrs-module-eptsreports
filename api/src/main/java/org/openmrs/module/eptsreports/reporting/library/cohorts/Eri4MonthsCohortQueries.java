@@ -36,13 +36,15 @@ public class Eri4MonthsCohortQueries {
 
   @Autowired private EriCohortQueries eriCohortQueries;
 
+  @Autowired private TxNewCohortQueries txNewCohortQueries;
+
   /**
    * C Get all patients who initiated treatment and had a drug pick up or had a consultation between
    * 61 and 120 days from the encounter date
    */
   public CohortDefinition
       getAllPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120OfEncounterDate() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
+    final SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Patients who had consultation between 61 to 120 days from encounter date");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -50,14 +52,14 @@ public class Eri4MonthsCohortQueries {
     cd.setQuery(
         Eri4MonthsQueries
             .allPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120OfEncounterDate(
-                hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPlanConcept().getConceptId(),
-                hivMetadata.getStartDrugsConcept().getConceptId(),
-                hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
+                this.hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+                this.hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                this.hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+                this.hivMetadata.getARVPlanConcept().getConceptId(),
+                this.hivMetadata.getStartDrugsConcept().getConceptId(),
+                this.hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
+                this.hivMetadata.getARTProgram().getProgramId(),
+                this.hivMetadata
                     .getTransferredFromOtherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()));
     return cd;
@@ -69,24 +71,24 @@ public class Eri4MonthsCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getPatientsWhoAreLostToFollowUpWithinPeriod() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    final CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Get lost to follow up patients within period");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    int daysThreshold = 60;
+    final int daysThreshold = 60;
 
     cd.addSearch(
         "drugPickupLTFU",
         EptsReportUtils.map(
-            getPatientsLostToFollowUpOnDrugPickup(daysThreshold),
+            this.getPatientsLostToFollowUpOnDrugPickup(daysThreshold),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
         "consultationLTFU",
         EptsReportUtils.map(
-            getPatientsLostToFollowUpOnConsultation(daysThreshold),
+            this.getPatientsLostToFollowUpOnConsultation(daysThreshold),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("drugPickupLTFU AND consultationLTFU");
@@ -94,29 +96,29 @@ public class Eri4MonthsCohortQueries {
     return cd;
   }
 
-  private SqlCohortDefinition getPatientsLostToFollowUpOnConsultation(int daysThreshold) {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
+  private SqlCohortDefinition getPatientsLostToFollowUpOnConsultation(final int daysThreshold) {
+    final SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setQuery(
         Eri4MonthsQueries.getPatientsLostToFollowUpOnConsultation(
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getReturnVisitDateConcept().getConceptId(),
+            this.hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            this.hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            this.hivMetadata.getReturnVisitDateConcept().getConceptId(),
             daysThreshold));
     return cd;
   }
 
-  private SqlCohortDefinition getPatientsLostToFollowUpOnDrugPickup(int daysThreshold) {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
+  private SqlCohortDefinition getPatientsLostToFollowUpOnDrugPickup(final int daysThreshold) {
+    final SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setQuery(
         Eri4MonthsQueries.getPatientsLostToFollowUpOnDrugPickup(
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+            this.hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            this.hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             daysThreshold));
     return cd;
   }
@@ -128,7 +130,7 @@ public class Eri4MonthsCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getPatientsWhoAreAliveAndOnTreatment() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    final CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients who are a live and on treatment");
     cd.addParameter(new Parameter("cohortStartDate", "Cohort Start Date", Date.class));
     cd.addParameter(new Parameter("cohortEndDate", "Cohort End Date", Date.class));
@@ -137,24 +139,25 @@ public class Eri4MonthsCohortQueries {
     cd.addSearch(
         "initiatedArt",
         EptsReportUtils.map(
-            eriCohortQueries.getAllPatientsWhoInitiatedArt(),
+            this.eriCohortQueries.getAllPatientsWhoInitiatedArt(),
             "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "consultation",
         EptsReportUtils.map(
-            getAllPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120OfEncounterDate(),
+            this
+                .getAllPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120OfEncounterDate(),
             "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
-            genericCohortQueries.getDeceasedPatients(),
+            this.genericCohortQueries.getDeceasedPatients(),
             "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
+            this.genericCohortQueries.getPatientsBasedOnPatientStates(
+                this.hivMetadata.getARTProgram().getProgramId(),
+                this.hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
             "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
@@ -168,7 +171,7 @@ public class Eri4MonthsCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getAllPatientsWhoAreLostToFollowUpDuringPeriod() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    final CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Lost to follow up patients");
     cd.addParameter(new Parameter("cohortStartDate", "Cohort Start Date", Date.class));
     cd.addParameter(new Parameter("cohortEndDate", "Cohort End Date", Date.class));
@@ -177,24 +180,24 @@ public class Eri4MonthsCohortQueries {
     cd.addSearch(
         "initiatedArt",
         EptsReportUtils.map(
-            eriCohortQueries.getAllPatientsWhoInitiatedArt(),
+            this.eriCohortQueries.getAllPatientsWhoInitiatedArt(),
             "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "missedVisit",
         EptsReportUtils.map(
-            getPatientsWhoAreLostToFollowUpWithinPeriod(),
+            this.getPatientsWhoAreLostToFollowUpWithinPeriod(),
             "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
-            genericCohortQueries.getDeceasedPatients(),
+            this.genericCohortQueries.getDeceasedPatients(),
             "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
+            this.genericCohortQueries.getPatientsBasedOnPatientStates(
+                this.hivMetadata.getARTProgram().getProgramId(),
+                this.hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
             "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
@@ -209,7 +212,7 @@ public class Eri4MonthsCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getPatientsWhoAreAliveAndNotOnTreatment() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    final CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients who are a live and NOT treatment");
     cd.addParameter(new Parameter("cohortStartDate", "Cohort Start Date", Date.class));
     cd.addParameter(new Parameter("cohortEndDate", "Cohort End Date", Date.class));
@@ -218,28 +221,57 @@ public class Eri4MonthsCohortQueries {
     cd.addSearch(
         "initiatedArt",
         EptsReportUtils.map(
-            eriCohortQueries.getAllPatientsWhoInitiatedArt(),
+            this.eriCohortQueries.getAllPatientsWhoInitiatedArt(),
             "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "consultation",
         EptsReportUtils.map(
-            getAllPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120OfEncounterDate(),
+            this
+                .getAllPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120OfEncounterDate(),
             "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
-            genericCohortQueries.getDeceasedPatients(),
+            this.genericCohortQueries.getDeceasedPatients(),
             "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
+            this.genericCohortQueries.getPatientsBasedOnPatientStates(
+                this.hivMetadata.getARTProgram().getProgramId(),
+                this.hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
             "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
     cd.setCompositionString("initiatedArt AND NOT (consultation OR dead OR transfersOut)");
     return cd;
+  }
+
+  public CohortDefinition findPatientsWhoAreLostFollowUp() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("Patients who are a Lost Follow Up");
+
+    definition.addParameter(new Parameter("cohortStartDate", "Cohort Start Date", Date.class));
+    definition.addParameter(new Parameter("cohortEndDate", "Cohort End Date", Date.class));
+    definition.addParameter(new Parameter("reportingEndDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    definition.addSearch(
+        "IART",
+        EptsReportUtils.map(
+            this.txNewCohortQueries.getTxNewCompositionCohort("patientNewlyEnrolledInART"),
+            "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
+
+    definition.addSearch(
+        "LFU",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "patientsWhoAreLostFollowUp", Eri4MonthsQueries.findPatientsWhoAreLostFollowUp()),
+            "endDate=${reportingEndDate},location=${location}"));
+
+    definition.setCompositionString("IART AND LFU");
+
+    return definition;
   }
 }
