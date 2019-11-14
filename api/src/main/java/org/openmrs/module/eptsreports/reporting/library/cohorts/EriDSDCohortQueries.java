@@ -898,7 +898,7 @@ public class EriDSDCohortQueries {
   public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingN3Unstable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
-    cd.setName("N1 Patients who are NOT pregnant and NOT breastfeeding");
+    cd.setName("N3 Patients who are NOT pregnant and NOT breastfeeding");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -938,7 +938,7 @@ public class EriDSDCohortQueries {
   public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingN3Stable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
-    cd.setName("N1 Patients who are NOT pregnant and NOT breastfeeding");
+    cd.setName("N3 Patients who are NOT pregnant and NOT breastfeeding");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -1142,7 +1142,7 @@ public class EriDSDCohortQueries {
   public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingN4Stable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
-    cd.setName("N1 Patients who are NOT pregnant and NOT breastfeeding");
+    cd.setName("N4 Patients who are NOT pregnant and NOT breastfeeding");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -1176,7 +1176,7 @@ public class EriDSDCohortQueries {
   public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingN4Unstable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
-    cd.setName("N1 Patients who are NOT pregnant and NOT breastfeeding");
+    cd.setName("N4 Patients who are NOT pregnant and NOT breastfeeding");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
