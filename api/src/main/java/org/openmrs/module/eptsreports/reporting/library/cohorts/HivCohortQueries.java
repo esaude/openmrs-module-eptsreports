@@ -396,14 +396,18 @@ public class HivCohortQueries {
 
   public CohortDefinition getPatientsTransferredOut() {
     Integer transferOut = hivMetadata.getTransferredOutConcept().getConceptId();
-    Integer transferOutState = hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState().getProgramWorkflowStateId();
-    return getPatientsTransferredOutOrSuspended(transferOut,transferOutState);
+    Integer transferOutState =
+        hivMetadata
+            .getTransferredOutToAnotherHealthFacilityWorkflowState()
+            .getProgramWorkflowStateId();
+    return getPatientsTransferredOutOrSuspended(transferOut, transferOutState);
   }
 
   public CohortDefinition getPatientsWhoStoppedTreatment() {
     Integer suspended = hivMetadata.getSuspendedTreatmentConcept().getConceptId();
-    Integer suspendedState = hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId();
-    return getPatientsTransferredOutOrSuspended(suspended,suspendedState);
+    Integer suspendedState =
+        hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId();
+    return getPatientsTransferredOutOrSuspended(suspended, suspendedState);
   }
 
   private CohortDefinition getKeyPopulationCohort() {
@@ -423,8 +427,7 @@ public class HivCohortQueries {
   }
 
   private CohortDefinition getPatientsTransferredOutOrSuspended(
-      int transferedOutOrSuspendedConcept,
-      int patientStateId) {
+      int transferedOutOrSuspendedConcept, int patientStateId) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("transferredOutPatients");
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
