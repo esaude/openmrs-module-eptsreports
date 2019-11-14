@@ -497,11 +497,11 @@ public class TxCurrCohortQueries {
 
     definition.setQuery(
         TXCurrQueries.getPatientHavingLastScheduledDrugPickupDate(
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            commonMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            commonMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getArtDatePickup().getConceptId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
 
@@ -777,5 +777,32 @@ public class TxCurrCohortQueries {
     defintion.setCompositionString("12 NOT (6 OR 7 OR 8 OR 9 OR 10 OR 11)");
 
     return defintion;
+  }
+
+  public CohortDefinition test() {
+    CompositionCohortDefinition txCurrComposition = new CompositionCohortDefinition();
+
+    txCurrComposition.setName("test");
+
+    txCurrComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    txCurrComposition.addParameter(new Parameter("location", "location", Location.class));
+
+    txCurrComposition
+        .getSearches()
+        .put(
+            "13",
+            EptsReportUtils.map(
+                getPatientHavingLastScheduledDrugPickupDate(),
+                "onOrBefore=${onOrBefore},location=${location}"));
+    txCurrComposition
+        .getSearches()
+        .put(
+            "14",
+            EptsReportUtils.map(
+                getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(),
+                "location=${location}"));
+
+    txCurrComposition.setCompositionString("13 OR 14");
+    return txCurrComposition;
   }
 }
