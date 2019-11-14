@@ -1362,6 +1362,14 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>@MODULE_ID@.artPickupConceptUuid</property>
+		<defaultValue>e07fb227-7a5a-4edf-93e8-7633c9fd1ea0</defaultValue>
+		<description>
+			UUID for the LEVANTOU ARV concept
+		</description>
+	</globalProperty>
+
 	<!--6300-->
 	<globalProperty>
 		<property>eptsreports.typeOfPatientTransferredFrom</property>

@@ -153,6 +153,9 @@
 	<concept concept_id="6272" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2012-02-29 09:27:06" changed_by="1" date_changed="2019-08-09 07:03:59" uuid="3bd7a5d1-afc0-478d-9aa6-c7bdd9a050c8" />
 	<concept_name concept_id="6272" name="STATE OF STAY PRIOR ART PATIENT" locale="en" creator="1" date_created="2012-02-29 09:27:06" concept_name_id="7174" voided="0" uuid="ddf5d0d1-2142-4629-8403-d0d9b2a77839" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
 
+	<concept concept_id="23865" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2019-07-09 12:53:56" changed_by="1" date_changed="2019-07-09 12:53:56" uuid="e07fb227-7a5a-4edf-93e8-7633c9fd1ea0" />
+	<concept_name concept_id="23865" name="ART PICKUP" locale="en" creator="1" date_created="2019-07-09 12:53:56" concept_name_id="33689" voided="0" uuid="02dd0763-2269-431d-8531-fe438c15d0a1" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
+
 	<concept_set concept_set_id="8777008" concept_id="7777008" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777008"/>
   	<concept_set concept_set_id="8777009" concept_id="7777009" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777009"/>
   	<concept_set concept_set_id="8777010" concept_id="7777010" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777010"/>
@@ -241,5 +244,6 @@
 	<global_property property="eptsreports.patientHasDiedConceptUuid" property_value="e1da766e-1d5f-11e0-b929-000c29ad1d07" description="UUID for the OBITOU concept" uuid="c917c33b-638b-463a-b53c-54497588ef4a"/>
 	<global_property property="eptsreports.sTarvPediatriaInicialAEncounterTypeUuid" property_value="e278fa8c-1d5f-11e0-b929-000c29ad1d07" description="UUID for the S.TARV: PEDIATRIA INICIAL A encounter type" uuid="18a936da-4a29-4428-a27d-2e1c0da93ecd" />
 	<global_property property="eptsreports.stateOfStayOfPreArtPatient" property_value="3bd7a5d1-afc0-478d-9aa6-c7bdd9a050c8" description="UUID for the STATE OF STAY PRIOR ART PATIENT concept" uuid="d7878b38-6c0c-438a-beab-c56287b9b859" />
+	<global_property property="eptsreports.artPickupConceptUuid" property_value="e07fb227-7a5a-4edf-93e8-7633c9fd1ea0" description="UUID for the LEVANTOU ARV concept" uuid="5a7969d8-1a3f-4e80-9dff-d63a56bc2329" />
 
 </dataset>
