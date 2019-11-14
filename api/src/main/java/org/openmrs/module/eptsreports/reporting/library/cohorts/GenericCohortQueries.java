@@ -234,6 +234,7 @@ public class GenericCohortQueries {
             + "                FROM   person p "
             + "                WHERE  p.voided = 0"
             + "                   AND p.dead = 1 "
+            + "                   AND p.death_date <= :onOrBefore "
             + "                UNION "
             + "                SELECT e.patient_id, "
             + "                       visit_card.death_date "
