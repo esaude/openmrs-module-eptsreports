@@ -1,15 +1,15 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import java.util.Arrays;
-import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.DSDCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.DsdElegibleCohortQuery;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
+import org.openmrs.module.eptsreports.reporting.utils.AgeRange;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class EriDSDDataset extends BaseDataSet {
 
   @Autowired private DSDCohortQueries dsdCohortQueries;
-  @Autowired private DsdElegibleCohortQuery elegibleCohortQuery;
+
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
   @Autowired private EptsCommonDimension eptsCommonDimension;
 
@@ -27,681 +27,511 @@ public class EriDSDDataset extends BaseDataSet {
   private AgeDimensionCohortInterface ageDimensionCohort;
 
   public DataSetDefinition constructEriDSDDataset() {
-    CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+    final CohortIndicatorDataSetDefinition definition = new CohortIndicatorDataSetDefinition();
 
-    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
-    dsd.setName("DSD Data Set");
-    dsd.addParameters(getParameters());
-    dsd.addDimension(
-        "age", EptsReportUtils.map(eptsCommonDimension.getEri2DsdDimension2(), mappings));
-    dsd.setName("Total");
+    definition.setName("DSD Data Set");
+    definition.addParameters(this.getParameters());
 
-    // DSD: Denominator: Number of active patients on ART - (Non-pregnant and Non-Breastfeeding not
-    // on TB treatment)
-    dsd.addColumn(
-        "D1T",
-        "DSD D1 Total",
+    this.addAgeDimensions(
+        definition,
+        AgeRange.UNDER_TWO,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN,
+        AgeRange.ADULT);
+
+    this.dsdDenominator1(definition, mappings);
+
+    this.dsdNumerator1(definition, mappings);
+    this.dsdNumerator2(definition, mappings);
+    this.dsdNumerator3(definition, mappings);
+    this.dsdNumerator4(definition, mappings);
+    this.dsdNumerator5(definition, mappings);
+    this.dsdNumerator6(definition, mappings);
+    this.dsdNumerator7(definition, mappings);
+    this.dsdNumerator8(definition, mappings);
+
+    return definition;
+  }
+
+  private void dsdNumerator8(
+      final CohortIndicatorDataSetDefinition definition, final String mappings) {
+    definition.addColumn(
+        "DSDN8T",
+        "DSDN8T Total",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "DSD D1 Total",
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtInCommunityDrugsDistribution",
                 EptsReportUtils.map(
-                    dsdCohortQueries.getPatientsActiveOnArtExcludingPregnantBreastfeedingAndTb(""),
+                    this.dsdCohortQueries.findPatientsActiveOnArtInCommunityDrugsDistribution(),
                     mappings)),
             mappings),
         "");
-    dsd.addColumn(
-        "D2T",
-        "DSD D1 Sub Total",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "DSD D2 Total",
-                EptsReportUtils.map(
-                    dsdCohortQueries.getPatientsActiveOnArtEligibleForDsd(""), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "D1SNPNB",
-        "Adults (>=15)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Adults (>=15)",
-                EptsReportUtils.map(
-                    elegibleCohortQuery.getAdultActiveOnArtElegibleDsd(""), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "D1SNPNBC-01",
-        "2-4",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "2-4",
-                EptsReportUtils.map(
-                    elegibleCohortQuery.getChild2To4ActiveOnArtElegibleDsd(""), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "D1SNPNBC-02",
-        "5-9",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "5-9",
-                EptsReportUtils.map(
-                    elegibleCohortQuery.getChild5To9ActiveOnArtElegibleDsd(""), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "D1SNPNBC-03",
-        "10-14",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "10-14",
-                EptsReportUtils.map(
-                    elegibleCohortQuery.getChild10To14ActiveOnArtElegibleDsd(""), mappings)),
-            mappings),
-        "");
 
-    dsd.addColumn(
-        "D2TA",
-        "10-14",
+    this.addColumns(
+        "DSDN8-E",
+        "DSDN8-E",
+        definition,
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "D2TA Total",
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtEligibleToSixMonthsDrugsDistribution",
                 EptsReportUtils.map(
-                    dsdCohortQueries.getPatientsActiveOnArtNotEligibleForDsd(""), mappings)),
+                    this.dsdCohortQueries
+                        .findPatientsActiveOnArtEligibleToCommunityDrugsDistribution(),
+                    mappings)),
             mappings),
-        "");
+        AgeRange.ADULT,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN);
 
-    dsd.addColumn(
-        "D2NPNB",
-        "15+",
+    this.addColumns(
+        "DSDN8-N",
+        "DSDN8-N",
+        definition,
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "15+",
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtNotEligibleToSixMonthsDrugsDistribution",
                 EptsReportUtils.map(
-                    elegibleCohortQuery.getAdultActiveOnArtNotElegibleDsd(""), mappings)),
+                    this.dsdCohortQueries
+                        .findPatientsActiveOnArtNotEligibleToCommunityDrugsDistribution(),
+                    mappings)),
             mappings),
-        "");
-
-    dsd.addColumn(
-        "D2NPNBC-D01",
-        "<2",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "<2",
-                EptsReportUtils.map(
-                    elegibleCohortQuery.getChildLessthan2ActiveOnArtNotElegibleDsd(""), mappings)),
-            mappings),
-        "");
-
-    dsd.addColumn(
-        "D2NPNBC-01",
-        "2-4",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "2-4",
-                EptsReportUtils.map(
-                    elegibleCohortQuery.getChild2To4ActiveOnArtNotElegibleDsd(""), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "D2NPNBC-02",
-        "5-9",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "5-9",
-                EptsReportUtils.map(
-                    elegibleCohortQuery.getChild5To9ActiveOnNotArtElegibleDsd(""), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "D2NPNBC-03",
-        "10-14",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "10-14",
-                EptsReportUtils.map(
-                    elegibleCohortQuery.getChild10To14ActiveOnArtNotElegibleDsd(""), mappings)),
-            mappings),
-        "");
-    // DSD: Numerator: Number of active on ART whose next ART pick-up is schedule for 83-97 days
-    // after the date of their last ART drug pick-up (DT) - (Non-pregnant and Non-Breastfeeding not
-    // on TB treatment)
-    dsd.addColumn(
-        "N1T",
-        "N1T Total",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "TOTAL",
-                EptsReportUtils.map(dsdCohortQueries.getPatientsActiveOnArtWhoInDt(""), mappings)),
-            mappings),
-        "");
-
-    dsd.addColumn(
-        "N1SST",
-        "N1SST Total",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "SUB TOTAL",
-                EptsReportUtils.map(
-                    dsdCohortQueries.getPatientsActiveOnArtElegibleDsdWhoInDt(""), mappings)),
-            mappings),
-        "");
-
-    // addRow(
-    // dsd,
-    // "D1SNPNBC",
-    // "Non-pregnant and Non-Breastfeeding Adults",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "D1SNPNBC",
-    // EptsReportUtils.map(
-    // this.genericCohorts.generalSql("",
-    // DsdQueriesInterface.QUERY.findPatientsAge15Plus),
-    // mappings)),
-    // mappings),
-    // getChildrenColumn());
-
-    // dsd.addColumn(
-    // "D2T",
-    // "DSD D2 Total",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "DSD D2 Total",
-    // EptsReportUtils.map(
-    // eriDSDCohortQueries.getPatientsWhoAreActiveAndUnstable(), mappings)),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "D2NPNB",
-    // "Non-pregnant and Non-Breastfeeding Adults (>=15)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "D2NPNB",
-    // EptsReportUtils.map(
-    // eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingD2(),
-    // mappings)),
-    // mappings),
-    // "age=15+");
-    // addRow(
-    // dsd,
-    // "D2NPNBC",
-    // "Non-pregnant and Non-Breastfeeding Children By age",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "D2NPNBC",
-    // EptsReportUtils.map(
-    // eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingD2(),
-    // mappings)),
-    // mappings),
-    // getChildrenColumn());
-    // dsd.addColumn(
-    // "D2BNP",
-    // "Breastfeeding (exclude pregnant)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "D2BNP",
-    // EptsReportUtils.map(
-    // eriDSDCohortQueries.getPatientsWhoAreBreastFeedingAndNotPregnant(),
-    // mappings)),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "D2PNB",
-    // "Pregnant (exclude breastfeeding)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "D2PNB",
-    // EptsReportUtils.map(eriDSDCohortQueries.getPatientsWhoArePregnant(),
-    // mappings)),
-    // mappings),
-    // "");
-    // /*dsd.addColumn(
-    // "NT",
-    // "DSD N Total",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "NT",
-    // EptsReportUtils.map(
-    // eriDSDCohortQueries.getPatientsWhoAreActiveAndParticipateInDsdModel(),
-    // "endDate=${endDate},location=${location}")),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "NSST",
-    // "DSD N Stable subtotal",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "NSST",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreActiveAndParticipateInDsdModelStable(),
-    // "endDate=${endDate},location=${location}")),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "NSNPNB",
-    // "Stable Non-pregnant and Non-Breastfeeding Adults (>=15)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "NSNPNB",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreActiveAndParticipateInDsdModelStable(),
-    // "endDate=${endDate},location=${location}")),
-    // mappings),
-    // "age=15+");
-    // addRow(
-    // dsd,
-    // "NSNPNBC",
-    // "Stable Non-pregnant and Non-Breastfeeding Children By age",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "NSNPNBC",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreActiveAndParticipateInDsdModelStable(),
-    // "endDate=${endDate},location=${location}")),
-    // mappings),
-    // getChildrenColumn());
-    // dsd.addColumn(
-    // "NUST",
-    // "DSD N Unstable subtotal",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "NUST",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreActiveAndParticipateInDsdModelUnstable(),
-    // "endDate=${endDate},location=${location}")),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "NUNPNB",
-    // "Unstable Non-pregnant and Non-Breastfeeding Adults (>=15)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "NUNPNB",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreActiveAndParticipateInDsdModelUnstable(),
-    // "endDate=${endDate},location=${location}")),
-    // mappings),
-    // "age=15+");
-    // addRow(
-    // dsd,
-    // "NUNPNBC",
-    // "Unstable Non-pregnant and Non-Breastfeeding Children By age",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "NUNPNBC",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreActiveAndParticipateInDsdModelUnstable(),
-    // "endDate=${endDate},location=${location}")),
-    // mappings),
-    // getChildrenColumn());
-    // dsd.addColumn(
-    // "NUBNP",
-    // "N Unstable Breastfeeding (exclude pregnant)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "NUBNP",
-    // EptsReportUtils.map(
-    // eriDSDCohortQueries
-    //
-    // .getPatientsWhoAreBreastFeedingAndNotPregnantAndParticipateInDsdModelUnstable(),
-    // "endDate=${endDate},location=${location}")),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "NUPB",
-    // "N Unstable Pregnant (include breastfeeding)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "NUPB",
-    // EptsReportUtils.map(
-    // eriDSDCohortQueries
-    //
-    // .getPatientsWhoArePregnantAndNotBreastFeedingAndParticipateInDsdModelUnstable(),
-    // "endDate=${endDate},location=${location}")),
-    // mappings),
-    // "");*/
-    // dsd.addColumn(
-    // "N1T",
-    // "DSD N1 Total",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N1T",
-    // EptsReportUtils.map(
-    // eriDSDCohortQueries.getPatientsWhoAreActiveWithNextPickupAs3Months(),
-    // mappings)),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "N1SST",
-    // "DSD N1 Stable Subtotal",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N1SST",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1Stable(),
-    // mappings)),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "N1SNPNBA",
-    // "N1 Non-pregnant and Non-Breastfeeding Adults (>=15)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N1SNPNBA",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1Stable(),
-    // mappings)),
-    // mappings),
-    // "age=15+");
-    // addRow(
-    // dsd,
-    // "N1SNPNBC",
-    // "N1 Non-pregnant and Non-Breastfeeding Children (<15)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N1SNPNBC",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1Stable(),
-    // mappings)),
-    // mappings),
-    // getChildrenColumn());
-    // dsd.addColumn(
-    // "N1UST",
-    // "DSD N1 Unstable Subtotal",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N1UST",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreActiveWithNextPickupAs3MonthsAndUnstable(),
-    // mappings)),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "N1UNPNBA",
-    // "N1 Non-pregnant and Non-Breastfeeding Adults (>=15)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N1UNPNBA",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1Unstable(),
-    // mappings)),
-    // mappings),
-    // "age=15+");
-    // addRow(
-    // dsd,
-    // "N1UNPNBC",
-    // "N1 Non-pregnant and Non-Breastfeeding Children (<15)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N1UNPNBC",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1Unstable(),
-    // mappings)),
-    // mappings),
-    // getChildrenColumn());
-    // dsd.addColumn(
-    // "N1UBNP",
-    // "N1 Patients who are breastfeeding excluding pregnant patients",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N1UBNP",
-    // EptsReportUtils.map(
-    // eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN1(),
-    // mappings)),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "N1UPB",
-    // "N1: Pregnant: includes breastfeeding patients",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N1UPB",
-    // EptsReportUtils.map(
-    // eriDSDCohortQueries.getPatientsWhoArePregnantAndNotBreastfeedingN1(),
-    // mappings)),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "N2T",
-    // "DSD N2 Total",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N2T",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWithNextConsultationScheduled175To190Days(),
-    // mappings)),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "N2SST",
-    // "DSD N2 Stable subtotal",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N2SST",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN2Stable(),
-    // mappings)),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "N2SNPNBA",
-    // "DSD N2 Stable Non-pregnant and Non-Breastfeeding Adults (>=15)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N2SNPNBA",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN2Stable(),
-    // mappings)),
-    // mappings),
-    // "age=15+");
-    // addRow(
-    // dsd,
-    // "N2SNPNBC",
-    // " DSD N2 Stable Non-pregnant and Non-Breastfeeding Children (2-4,
-    // 5-9, 10-14)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N2SNPNBC",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN2Stable(),
-    // mappings)),
-    // mappings),
-    // getChildrenColumn());
-    // dsd.addColumn(
-    // "N2UST",
-    // "DSD N2 Unstable subtotal",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N2UST",
-    // EptsReportUtils.map(
-    // eriDSDCohortQueries
-    // .getPatientsWithNextConsultationScheduled175To190DaysUnstable(),
-    // mappings)),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "N2UNPNBA",
-    // "DSD N2 Unstable Non-pregnant and Non-Breastfeeding Adults (>=15)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N2UNPNBA",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN2Unstable(),
-    // mappings)),
-    // mappings),
-    // "age=15+");
-    // addRow(
-    // dsd,
-    // "N2UNPNBC",
-    // " DSD N2 Unstable Non-pregnant and Non-Breastfeeding Children (2-4,
-    // 5-9, 10-14)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N2UNPNBC",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN2Unstable(),
-    // mappings)),
-    // mappings),
-    // getChildrenColumn());
-    // dsd.addColumn(
-    // "N2UBNP",
-    // "N2 Patients who are breastfeeding excluding pregnant patients",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N2UBNP",
-    // EptsReportUtils.map(
-    // eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN2(),
-    // mappings)),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "N2UPB",
-    // "N2: Pregnant: includes breastfeeding patients",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N2UPB",
-    // EptsReportUtils.map(
-    // eriDSDCohortQueries.getPatientsWhoArePregnantAndBreastfeedingN2(),
-    // mappings)),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "N3T",
-    // "DSD N3 Total",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N3T",
-    // EptsReportUtils.map(
-    // eriDSDCohortQueries.getPatientsWhoAreActiveAndParticpatingInGaac(),
-    // mappings)),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "N3SST",
-    // "DSD N3 Stable subtotal",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N3SST",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN3Stable(),
-    // mappings)),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "N3SNPNBA",
-    // "DSD N3 Stable Non-pregnant and Non-Breastfeeding Adults (>=15)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N3SNPNBA",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN3Stable(),
-    // mappings)),
-    // mappings),
-    // "age=15+");
-    // addRow(
-    // dsd,
-    // "N3SNPNBC",
-    // " DSD N3 Stable Non-pregnant and Non-Breastfeeding Children (2-4,
-    // 5-9, 10-14)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N3SNPNBC",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN3Stable(),
-    // mappings)),
-    // mappings),
-    // getChildrenColumn());
-    // dsd.addColumn(
-    // "N3UST",
-    // "DSD N3 Unstable subtotal",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N3UST",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreActiveAndParticpatingInGaacUnstable(),
-    // mappings)),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "N3UNPNBA",
-    // "DSD N3 Unstable Non-pregnant and Non-Breastfeeding Adults (>=15)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N3UNPNBA",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN3Unstable(),
-    // mappings)),
-    // mappings),
-    // "age=15+");
-    // addRow(
-    // dsd,
-    // "N3UNPNBC",
-    // " DSD N3 Unstable Non-pregnant and Non-Breastfeeding Children (2-4,
-    // 5-9, 10-14)",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N3UNPNBC",
-    // EptsReportUtils.map(
-    //
-    // eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN3Unstable(),
-    // mappings)),
-    // mappings),
-    // getChildrenColumn());
-    // dsd.addColumn(
-    // "N3UBNP",
-    // "N3 Patients who are breastfeeding excluding pregnant patients",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N3UBNP",
-    // EptsReportUtils.map(
-    // eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN3(),
-    // mappings)),
-    // mappings),
-    // "");
-    // dsd.addColumn(
-    // "N3UPB",
-    // "N3: Pregnant: includes breastfeeding patients",
-    // EptsReportUtils.map(
-    // eptsGeneralIndicator.getIndicator(
-    // "N3UPB",
-    // EptsReportUtils.map(
-    // eriDSDCohortQueries.getPatientsWhoArePregnantAndBreastfeedingN3(),
-    // mappings)),
-    // mappings),
-    // "");
-    //
-    return dsd;
+        AgeRange.ADULT,
+        AgeRange.UNDER_TWO,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN);
   }
 
-  private List<ColumnParameters> getChildrenColumn() {
-    ColumnParameters twoTo4 = new ColumnParameters("twoTo4", "2-4", "age=2-4", "01");
-    ColumnParameters fiveTo9 = new ColumnParameters("fiveTo9", "5-9", "age=5-9", "02");
-    ColumnParameters tenTo14 = new ColumnParameters("tenTo14", "10-14", "age=10-14", "03");
+  private void dsdNumerator7(
+      final CohortIndicatorDataSetDefinition definition, final String mappings) {
+    definition.addColumn(
+        "DSDN7T",
+        "DSDN7T Total",
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtInSixMonthsDrugsDistribution",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries.findPatientsActiveOnArtInSixMonthsDrugsDistribution(),
+                    mappings)),
+            mappings),
+        "");
 
-    return Arrays.asList(twoTo4, fiveTo9, tenTo14);
+    this.addColumns(
+        "DSDN7-E",
+        "DSDN7-E",
+        definition,
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtEligibleToSixMonthsDrugsDistribution",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries
+                        .findPatientsActiveOnArtEligibleToSixMonthsDrugsDistribution(),
+                    mappings)),
+            mappings),
+        AgeRange.ADULT,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN);
+
+    this.addColumns(
+        "DSDN7-N",
+        "DSDN7-N",
+        definition,
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtNotEligibleToSixMonthsDrugsDistribution",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries
+                        .findPatientsActiveOnArtNotEligibleToSixMonthsDrugsDistribution(),
+                    mappings)),
+            mappings),
+        AgeRange.ADULT,
+        AgeRange.UNDER_TWO,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN);
+  }
+
+  private void dsdNumerator6(
+      final CohortIndicatorDataSetDefinition definition, final String mappings) {
+    definition.addColumn(
+        "DSDN6T",
+        "DSDN6T Total",
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtInAdherenceClubs",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries.findPatientsActiveOnArtInAdherenceClubs(), mappings)),
+            mappings),
+        "");
+
+    this.addColumns(
+        "DSDN6-E",
+        "DSDN6-E",
+        definition,
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtEligibleToFamilyApproach",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries.findPatientsActiveOnArtEligibleToAdherenceClubs(),
+                    mappings)),
+            mappings),
+        AgeRange.ADULT,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN);
+
+    this.addColumns(
+        "DSDN6-N",
+        "DSDN6-N",
+        definition,
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtNotEligibleToFamilyApproach",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries.findPatientsActiveOnArtNotEligibleToAdherenceClubs(),
+                    mappings)),
+            mappings),
+        AgeRange.ADULT,
+        AgeRange.UNDER_TWO,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN);
+  }
+
+  private void dsdNumerator5(
+      final CohortIndicatorDataSetDefinition definition, final String mappings) {
+    definition.addColumn(
+        "DSDN5T",
+        "DSDN5T Total",
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtInFamilyApproach",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries.findPatientsActiveOnArtInFamilyApproach(), mappings)),
+            mappings),
+        "");
+
+    this.addColumns(
+        "DSDN5-E",
+        "DSDN5-E",
+        definition,
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtEligibleToFamilyApproach",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries.findPatientsActiveOnArtEligibleToFamilyApproach(),
+                    mappings)),
+            mappings),
+        AgeRange.ADULT,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN);
+
+    this.addColumns(
+        "DSDN5-N",
+        "DSDN5-N",
+        definition,
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtNotEligibleToFamilyApproach",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries.findPatientsActiveOnArtNotEligibleToFamilyApproach(),
+                    mappings)),
+            mappings),
+        AgeRange.ADULT,
+        AgeRange.UNDER_TWO,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN);
+  }
+
+  private void dsdNumerator4(
+      final CohortIndicatorDataSetDefinition definition, final String mappings) {
+    definition.addColumn(
+        "DSDN4T",
+        "DSDN4T Total",
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtInCommunityAdherennceGroups",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries.findPatientsActiveOnArtInCommunityAdherennceGroups(),
+                    mappings)),
+            mappings),
+        "");
+
+    this.addColumns(
+        "DSDN4-E",
+        "DSDN4-E",
+        definition,
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtEligibleToCommunityAdherennceGroups",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries
+                        .findPatientsActiveOnArtEligibleToCommunityAdherennceGroups(),
+                    mappings)),
+            mappings),
+        AgeRange.ADULT,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN);
+
+    this.addColumns(
+        "DSDN4-N",
+        "DSDN4-N",
+        definition,
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtNotEligibleToCommunityAdherennceGroups",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries
+                        .findPatientsActiveOnArtNotEligibleToCommunityAdherennceGroups(),
+                    mappings)),
+            mappings),
+        AgeRange.ADULT,
+        AgeRange.UNDER_TWO,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN);
+  }
+
+  private void dsdNumerator3(
+      final CohortIndicatorDataSetDefinition definition, final String mappings) {
+    definition.addColumn(
+        "DSDN3T",
+        "DSDN3T Total",
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtInFastTrack",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries.findPatientsActiveOnArtInFastTrack(), mappings)),
+            mappings),
+        "");
+
+    this.addColumns(
+        "DSDN3-E",
+        "DSDN3-E",
+        definition,
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtAndEligibleToFastTrack",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries.findPatientsActiveOnArtEligibleToFastTrack(), mappings)),
+            mappings),
+        AgeRange.ADULT,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN);
+
+    this.addColumns(
+        "DSDN3-N",
+        "DSDN3-N",
+        definition,
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtNotElegibleToDsdWhoInFastFlow",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries.findPatientsActiveOnArtNotElegibleToFastTrack(),
+                    mappings)),
+            mappings),
+        AgeRange.ADULT,
+        AgeRange.UNDER_TWO,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN);
+  }
+
+  private void dsdNumerator2(
+      final CohortIndicatorDataSetDefinition definition, final String mappings) {
+    definition.addColumn(
+        "DSDN2T",
+        "DSDN2T Total",
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsWhoAreActiveOnArtAndInThreeMonthsDrugsDistribution",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries
+                        .findPatientsWhoAreActiveOnArtAndInThreeMonthsDrugsDistribution(),
+                    mappings)),
+            mappings),
+        "");
+
+    this.addColumns(
+        "DSDN2-E",
+        "DSDN2-E",
+        definition,
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsWhoAreActiveOnArtAndEligibleToThreeMonthsDrugsDistribution",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries
+                        .findPatientsWhoAreActiveOnArtAndEligibleToThreeMonthsDrugsDistribution(),
+                    mappings)),
+            mappings),
+        AgeRange.ADULT,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN);
+
+    this.addColumns(
+        "DSDN2-N",
+        "DSDN2-N",
+        definition,
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsWhoAreActiveOnArtAndNotEligibleToThreeMonthsDrugsDistribution",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries
+                        .findPatientsWhoAreActiveOnArtAndNotEligibleToThreeMonthsDrugsDistribution(),
+                    mappings)),
+            mappings),
+        AgeRange.ADULT,
+        AgeRange.UNDER_TWO,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN);
+  }
+
+  private void dsdNumerator1(
+      final CohortIndicatorDataSetDefinition definition, final String mappings) {
+    definition.addColumn(
+        "DSDN1T",
+        "DSDN1T Total",
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsWhoAreActiveOnArtAndInAtleastOneDSD",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries.findPatientsWhoAreActiveOnArtAndInAtleastOneDSD(),
+                    mappings)),
+            mappings),
+        "");
+
+    this.addColumns(
+        "DSDN1-E",
+        "DSDN1-E",
+        definition,
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsWhoAreActiveOnArtAndInAtleastOneDSDAndAreStable",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries
+                        .findPatientsWhoAreActiveOnArtAndInAtleastOneDSDAndAreStable(),
+                    mappings)),
+            mappings),
+        AgeRange.ADULT,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN);
+
+    this.addColumns(
+        "DSDN1-N",
+        "DSDN1-N",
+        definition,
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "findPatientsWhoAreActiveOnArtAndInAtleastOneDSDAndAreUnstable",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries
+                        .findPatientsWhoAreActiveOnArtAndInAtleastOneDSDAndAreUnstable(),
+                    mappings)),
+            mappings),
+        AgeRange.ADULT,
+        AgeRange.UNDER_TWO,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN);
+  }
+
+  /**
+   * @param definition
+   * @param mappings
+   */
+  private void dsdDenominator1(
+      final CohortIndicatorDataSetDefinition definition, final String mappings) {
+    definition.addColumn(
+        "DSDD1T",
+        "DSDD1",
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsWhoAreActiveOnArtExcludingPregnantBreastfeedingAndTb",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries
+                        .findPatientsWhoAreActiveOnArtExcludingPregnantBreastfeedingAndTb(),
+                    mappings)),
+            mappings),
+        "");
+
+    this.addColumns(
+        "DSDD1-E",
+        "DSDD1-E",
+        definition,
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtEligibleForDsd",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries.findPatientsActiveOnArtEligibleForDsd(), mappings)),
+            mappings),
+        AgeRange.ADULT,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN);
+
+    this.addColumns(
+        "DSDD1-N",
+        "DSDD1-N",
+        definition,
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "patientsActiveOnArtNotEligibleForDsd",
+                EptsReportUtils.map(
+                    this.dsdCohortQueries.findPatientsActiveOnArtNotEligibleForDsd(), mappings)),
+            mappings),
+        AgeRange.ADULT,
+        AgeRange.UNDER_TWO,
+        AgeRange.TWO_TO_FOUR,
+        AgeRange.FIVE_TO_NINE,
+        AgeRange.TEN_TO_FOURTEEN);
+  }
+
+  private void addColumns(
+      final String name,
+      final String label,
+      final CohortIndicatorDataSetDefinition definition,
+      final Mapped<CohortIndicator> indicator,
+      final AgeRange... ranges) {
+
+    int position = 1;
+
+    String baseName = name + position;
+    String baseLabel = label + "(" + position + ")";
+
+    definition.addColumn(baseName, baseLabel, indicator, "");
+    position++;
+
+    for (final AgeRange range : ranges) {
+
+      baseName = name + position;
+      baseLabel = label + "(" + position + ")";
+
+      definition.addColumn(baseName, baseLabel, indicator, range.getName() + "=" + range.getName());
+      position++;
+    }
+  }
+
+  private void addAgeDimensions(
+      final CohortIndicatorDataSetDefinition definition, final AgeRange... ranges) {
+
+    for (final AgeRange range : ranges) {
+      definition.addDimension(
+          range.getName(),
+          EptsReportUtils.map(
+              this.eptsCommonDimension.findPatientsByRange(range.getName(), range),
+              "endDate=${endDate}"));
+    }
   }
 }

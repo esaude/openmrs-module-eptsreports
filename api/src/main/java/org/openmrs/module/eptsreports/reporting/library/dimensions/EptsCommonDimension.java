@@ -14,11 +14,9 @@ package org.openmrs.module.eptsreports.reporting.library.dimensions;
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.BreastFeedingCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri2MonthsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri4MonthsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.EriCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.EriDSDCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TbPrevCohortQueries;
@@ -51,13 +49,9 @@ public class EptsCommonDimension {
 
   @Autowired private Eri2MonthsCohortQueries eri2MonthsCohortQueries;
 
-  @Autowired private EriDSDCohortQueries eriDSDCohortQueries;
-
   @Autowired private EriCohortQueries eriCohortQueries;
 
   @Autowired private TbPrevCohortQueries tbPrevCohortQueries;
-
-  @Autowired private BreastFeedingCohortQueries breastFeedingCohortQueries;
 
   @Autowired private GenericCohortQueries genericCohorts;
 
@@ -285,7 +279,8 @@ public class EptsCommonDimension {
     dimension.addCohortDefinition(
         "IART",
         EptsReportUtils.map(
-            eri2MonthsCohortQueries.getEri2MonthsCompositionCohort("IART"), mappings));
+            this.txNewCohortQueries.getTxNewCompositionCohort("Eri2Months"),
+            "startDate=${endDate-2m+1d},endDate=${endDate-1m},location=${location}"));
 
     dimension.addCohortDefinition(
         "DNPUD",
@@ -330,26 +325,6 @@ public class EptsCommonDimension {
                 "findPatientsWhoStartedArtInAPeriodAndSuspendTratement33DaysAfterInitiation",
                 Eri2MonthsQueriesInterface.QUERY
                     .findPatientsWhoStartedArtInAPeriodAndSuspendTratement33DaysAfterInitiation),
-            mappings));
-
-    return dimension;
-  }
-
-  public CohortDefinitionDimension getEri2DsdDimension2() {
-    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
-
-    dimension.setName("Get patients dimensions for Eri2Months");
-    dimension.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
-    dimension.addParameter(new Parameter("location", "location", Location.class));
-
-    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-
-    dimension.addCohortDefinition(
-        "D1SNPNB",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "patientsAge15Plus", DsdQueriesInterface.QUERY.findPatientsAge15Plus),
             mappings));
 
     return dimension;
@@ -475,8 +450,41 @@ public class EptsCommonDimension {
     dimension.addCohortDefinition(
         name,
         EptsReportUtils.map(
-            this.genericCohortQueries.generalSql(
-                "patientsWhoAreNewlyEnrolledOnArtByAgeAndGender", query),
+            this.genericCohortQueries.generalSql("findPatientsByGenderAndRage", query),
+            "endDate=${endDate}"));
+
+    return dimension;
+  }
+
+  public CohortDefinitionDimension findPatientsByRange(final String name, final AgeRange range) {
+    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
+
+    dimension.setName(name);
+    dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+    String query = DsdQueriesInterface.QUERY.findPatientsAgeRange;
+    query = String.format(query, range.getMin(), range.getMax());
+
+    switch (range) {
+      case UNDER_TWO:
+        query =
+            query.replace(
+                "BETWEEN " + range.getMin() + " AND " + range.getMax(), " < " + range.getMax());
+        break;
+
+      case ADULT:
+        query =
+            query.replace(
+                "BETWEEN " + range.getMin() + " AND " + range.getMax(), " >= " + range.getMax());
+
+      default:
+        break;
+    }
+
+    dimension.addCohortDefinition(
+        name,
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql("findPatientsByRange", query),
             "endDate=${endDate}"));
 
     return dimension;

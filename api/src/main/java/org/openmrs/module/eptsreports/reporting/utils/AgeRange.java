@@ -9,6 +9,10 @@ public enum AgeRange {
 
   ONE_TO_FOUR("oneTo4", 1, 4),
 
+  UNDER_TWO("under2", 0, 2),
+
+  TWO_TO_FOUR("twoTo4", 2, 4),
+
   FIVE_TO_NINE("fiveTo9", 5, 9),
 
   TEN_TO_FOURTEEN("tenTo14", 10, 14),

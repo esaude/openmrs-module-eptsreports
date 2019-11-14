@@ -231,20 +231,10 @@ public class TxNewCohortQueries {
     definition.addParameter(new Parameter("cohortEndDate", "Cohort End Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
-    String query = TxNewQueries.QUERY.findPatientsWhoAreNewlyEnrolledOnArtByAge;
-    query = String.format(query, ageRange.getMin(), ageRange.getMax());
-
-    if (AgeRange.ADULT.equals(ageRange)) {
-      query =
-          query.replace(
-              "BETWEEN " + ageRange.getMin() + " AND " + ageRange.getMax(),
-              ">= " + ageRange.getMax());
-    }
-
     definition.addSearch(
         "IART",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql("patientsWhoAreNewlyEnrolledOnArtByAge", query),
+            this.findPatientsWhoAreNewlyEnrolledOnArtByAgeRange(ageRange),
             "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
 
     definition.addSearch(
@@ -263,6 +253,29 @@ public class TxNewCohortQueries {
             "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
 
     definition.setCompositionString("IART NOT (PREGNANT OR BREASTFEEDING)");
+
+    return definition;
+  }
+
+  public CohortDefinition findPatientsWhoAreNewlyEnrolledOnArtByAgeRange(final AgeRange ageRange) {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query = TxNewQueries.QUERY.findPatientsWhoAreNewlyEnrolledOnArtByAge;
+    query = String.format(query, ageRange.getMin(), ageRange.getMax());
+
+    if (AgeRange.ADULT.equals(ageRange)) {
+      query =
+          query.replace(
+              "BETWEEN " + ageRange.getMin() + " AND " + ageRange.getMax(),
+              ">= " + ageRange.getMax());
+    }
+
+    definition.setQuery(query);
 
     return definition;
   }

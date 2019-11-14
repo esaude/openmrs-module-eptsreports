@@ -15,8 +15,8 @@ import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.Eri2MonthsQueries;
-import org.openmrs.module.eptsreports.reporting.library.queries.Eri2MonthsQueriesInterface;
-import org.openmrs.module.eptsreports.reporting.library.queries.TxNewQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
+import org.openmrs.module.eptsreports.reporting.utils.AgeRange;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -36,6 +36,10 @@ public class Eri2MonthsCohortQueries {
 
   @Autowired private GenericCohortQueries genericCohorts;
 
+  @Autowired private TxNewCohortQueries txNewCohortQueries;
+
+  @Autowired private BreastFeedingCohortQueries breastFeedingCohortQueries;
+
   /**
    * C
    *
@@ -43,20 +47,20 @@ public class Eri2MonthsCohortQueries {
    */
   public CohortDefinition
       getAllPatientsWhoReturnedFor2ndConsultationOR2ndDrugsPickUpWithin33Days() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
+    final SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Patients who picked up drugs in 33 days");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setQuery(
         Eri2MonthsQueries.getAllPatientsWhoReturnedFor2ndConsultationOR2ndDrugsPickUpWithin33Days(
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPlanConcept().getConceptId(),
-            hivMetadata.getStartDrugsConcept().getConceptId(),
-            hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
-            hivMetadata.getARTProgram().getProgramId()));
+            this.hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            this.hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            this.hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            this.hivMetadata.getARVPlanConcept().getConceptId(),
+            this.hivMetadata.getStartDrugsConcept().getConceptId(),
+            this.hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
+            this.hivMetadata.getARTProgram().getProgramId()));
     return cd;
   }
 
@@ -66,7 +70,7 @@ public class Eri2MonthsCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getAllPatientsWhoStartedArtAndPickedDrugsOnTheirNextVisit() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    final CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients who  picked up drugs during their second visit and had initiated ART");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -74,12 +78,12 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "initiatedArt",
         EptsReportUtils.map(
-            eriCohortQueries.getAllPatientsWhoInitiatedArt(),
+            this.eriCohortQueries.getAllPatientsWhoInitiatedArt(),
             "cohortStartDate=${startDate},cohortEndDate=${endDate},location=${location}"));
     cd.addSearch(
         "pickedDrugs",
         EptsReportUtils.map(
-            getAllPatientsWhoReturnedFor2ndConsultationOR2ndDrugsPickUpWithin33Days(),
+            this.getAllPatientsWhoReturnedFor2ndConsultationOR2ndDrugsPickUpWithin33Days(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.setCompositionString("initiatedArt AND pickedDrugs");
     return cd;
@@ -91,7 +95,7 @@ public class Eri2MonthsCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getPatientsWhoDidNotPickDrugsOnTheirSecondVisit() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    final CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients who did not pick up drugs during their second visit");
     cd.addParameter(new Parameter("cohortStartDate", "Cohort Start Date", Date.class));
     cd.addParameter(new Parameter("cohortEndDate", "Cohort End Date", Date.class));
@@ -100,24 +104,24 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "initiatedArt",
         EptsReportUtils.map(
-            eriCohortQueries.getAllPatientsWhoInitiatedArt(),
+            this.eriCohortQueries.getAllPatientsWhoInitiatedArt(),
             "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "pickedDrugs",
         EptsReportUtils.map(
-            getAllPatientsWhoReturnedFor2ndConsultationOR2ndDrugsPickUpWithin33Days(),
+            this.getAllPatientsWhoReturnedFor2ndConsultationOR2ndDrugsPickUpWithin33Days(),
             "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
-            genericCohortQueries.getDeceasedPatients(),
+            this.genericCohortQueries.getDeceasedPatients(),
             "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "transfers",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
+            this.genericCohortQueries.getPatientsBasedOnPatientStates(
+                this.hivMetadata.getARTProgram().getProgramId(),
+                this.hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
             "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
@@ -137,7 +141,7 @@ public class Eri2MonthsCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getPatientsWhoPickedUpDrugsOnTheirSecondVisit() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    final CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients who  picked up drugs during their second visit");
     cd.addParameter(new Parameter("cohortStartDate", "Cohort Start Date", Date.class));
     cd.addParameter(new Parameter("cohortEndDate", "Cohort End Date", Date.class));
@@ -146,19 +150,19 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "pickedDrugsAndStartedART",
         EptsReportUtils.map(
-            getAllPatientsWhoStartedArtAndPickedDrugsOnTheirNextVisit(),
+            this.getAllPatientsWhoStartedArtAndPickedDrugsOnTheirNextVisit(),
             "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
-            genericCohortQueries.getDeceasedPatients(),
+            this.genericCohortQueries.getDeceasedPatients(),
             "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "transfers",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
+            this.genericCohortQueries.getPatientsBasedOnPatientStates(
+                this.hivMetadata.getARTProgram().getProgramId(),
+                this.hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
             "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
@@ -173,7 +177,7 @@ public class Eri2MonthsCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getPatientsWhoInitiatedArtAndDead() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    final CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients who died during period");
     cd.addParameter(new Parameter("cohortStartDate", "Cohort Start Date", Date.class));
     cd.addParameter(new Parameter("cohortEndDate", "Cohort End Date", Date.class));
@@ -182,12 +186,12 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "initiatedArtAndNotTransferIns",
         EptsReportUtils.map(
-            eriCohortQueries.getAllPatientsWhoInitiatedArt(),
+            this.eriCohortQueries.getAllPatientsWhoInitiatedArt(),
             "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
-            genericCohortQueries.getDeceasedPatients(),
+            this.genericCohortQueries.getDeceasedPatients(),
             "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
     cd.setCompositionString("initiatedArtAndNotTransferIns AND dead");
     return cd;
@@ -200,7 +204,7 @@ public class Eri2MonthsCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getPatientsWhoInitiatedArtButSuspendedTreatment() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    final CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients who suspended treatment");
     cd.addParameter(new Parameter("cohortStartDate", "Cohort Start Date", Date.class));
     cd.addParameter(new Parameter("cohortEndDate", "Cohort End Date", Date.class));
@@ -209,14 +213,14 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "initiatedArtAndNotTransferIns",
         EptsReportUtils.map(
-            eriCohortQueries.getAllPatientsWhoInitiatedArt(),
+            this.eriCohortQueries.getAllPatientsWhoInitiatedArt(),
             "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "suspendedTreatment",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),
+            this.genericCohortQueries.getPatientsBasedOnPatientStates(
+                this.hivMetadata.getARTProgram().getProgramId(),
+                this.hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),
             "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
     cd.setCompositionString("initiatedArtAndNotTransferIns AND suspendedTreatment");
     return cd;
@@ -229,7 +233,7 @@ public class Eri2MonthsCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getPatientsWhoInitiatedArtButTransferredOut() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    final CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients who transferred out during period");
     cd.addParameter(new Parameter("cohortStartDate", "Cohort Start Date", Date.class));
     cd.addParameter(new Parameter("cohortEndDate", "Cohort End Date", Date.class));
@@ -239,60 +243,19 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "initiatedArtAndNotTransferIns",
         EptsReportUtils.map(
-            eriCohortQueries.getAllPatientsWhoInitiatedArt(),
+            this.eriCohortQueries.getAllPatientsWhoInitiatedArt(),
             "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "transferredOut",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
+            this.genericCohortQueries.getPatientsBasedOnPatientStates(
+                this.hivMetadata.getARTProgram().getProgramId(),
+                this.hivMetadata
                     .getTransferredOutToAnotherHealthFacilityWorkflowState()
                     .getProgramWorkflowStateId()),
             "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
     cd.setCompositionString("initiatedArtAndNotTransferIns AND transferredOut");
     return cd;
-  }
-
-  public CohortDefinition getEri2MonthsCompositionCohort(final String cohortName) {
-    final CompositionCohortDefinition eri2MonthsCompositionCohort =
-        new CompositionCohortDefinition();
-
-    eri2MonthsCompositionCohort.setName(cohortName);
-    eri2MonthsCompositionCohort.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    eri2MonthsCompositionCohort.addParameter(new Parameter("endDate", "End Date", Date.class));
-    eri2MonthsCompositionCohort.addParameter(new Parameter("location", "location", Location.class));
-
-    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-
-    eri2MonthsCompositionCohort.addSearch(
-        "START-ART-2-MONTHS",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "patientEnrolledInART2Months",
-                Eri2MonthsQueriesInterface.QUERY.findPatientsWhoStartArtOneMonth),
-            mappings));
-
-    eri2MonthsCompositionCohort.addSearch(
-        "TRANSFERED-IN",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod",
-                TxNewQueries.QUERY.findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod),
-            mappings));
-
-    eri2MonthsCompositionCohort.addSearch(
-        "TRANSFERED-IN-AND-IN-ART-MASTER-CARD",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard",
-                TxNewQueries.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard),
-            mappings));
-
-    eri2MonthsCompositionCohort.setCompositionString(
-        "START-ART-2-MONTHS NOT (TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD)");
-    return eri2MonthsCompositionCohort;
   }
 
   public CohortDefinition getEri2MonthsPregnatCompositionCohort(final String cohortName) {
@@ -309,26 +272,7 @@ public class Eri2MonthsCohortQueries {
     eri2MonthsCompositionCohort.addSearch(
         "START-ART-2-MONTHS",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "patientEnrolledInART2Months",
-                Eri2MonthsQueriesInterface.QUERY.findPatientsWhoStartArtOneMonth),
-            mappings));
-
-    eri2MonthsCompositionCohort.addSearch(
-        "TRANSFERED-IN",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod",
-                TxNewQueries.QUERY.findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod),
-            mappings));
-
-    eri2MonthsCompositionCohort.addSearch(
-        "TRANSFERED-IN-AND-IN-ART-MASTER-CARD",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard",
-                TxNewQueries.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard),
+            this.txNewCohortQueries.getTxNewCompositionCohort("patientEnrolledInART2Months"),
             mappings));
 
     eri2MonthsCompositionCohort.addSearch(
@@ -336,12 +280,10 @@ public class Eri2MonthsCohortQueries {
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
                 "patientsThatAreFemaleAndWereMarkedAsPregnantInTheInitialConsultationOrFollowUpConsultationAndMasterCard",
-                Eri2MonthsQueriesInterface.QUERY
-                    .patientsThatAreFemaleAndWereMarkedAsPregnantInTheInitialConsultationOrFollowUpConsultationAndMasterCard),
+                PregnantQueries.findPatientsWhoArePregnantInAPeriod()),
             mappings));
 
-    eri2MonthsCompositionCohort.setCompositionString(
-        "START-ART-2-MONTHS AND PREGNANT  NOT (TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD)");
+    eri2MonthsCompositionCohort.setCompositionString("START-ART-2-MONTHS AND PREGNANT");
 
     return eri2MonthsCompositionCohort;
   }
@@ -360,39 +302,17 @@ public class Eri2MonthsCohortQueries {
     eri2MonthsCompositionCohort.addSearch(
         "START-ART-2-MONTHS",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "patientEnrolledInART2Months",
-                Eri2MonthsQueriesInterface.QUERY.findPatientsWhoStartArtOneMonth),
+            this.txNewCohortQueries.getTxNewCompositionCohort("patientEnrolledInART2Months"),
             mappings));
 
     eri2MonthsCompositionCohort.addSearch(
-        "TRANSFERED-IN",
+        "BREASTFEEDING",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod",
-                TxNewQueries.QUERY.findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod),
-            mappings));
+            this.breastFeedingCohortQueries
+                .findPatientsWhoAreBreastFeedingExcludingPregnantsInAPeriod(),
+            "cohortStartDate=${startDate},cohortEndDate=${endDate},location=${location}"));
 
-    eri2MonthsCompositionCohort.addSearch(
-        "TRANSFERED-IN-AND-IN-ART-MASTER-CARD",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard",
-                TxNewQueries.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard),
-            mappings));
-
-    eri2MonthsCompositionCohort.addSearch(
-        "BRESTFEETING",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "patientsThatAreFemaleAndWereMarkedAsBrestfeetingInTheInitialConsultationOrFollowUpConsultationAndMasterCard",
-                Eri2MonthsQueriesInterface.QUERY
-                    .patientsThatAreFemaleAndWereMarkedAsBrestfeetingInTheInitialConsultationOrFollowUpConsultationAndMasterCard),
-            mappings));
-
-    eri2MonthsCompositionCohort.setCompositionString(
-        "START-ART-2-MONTHS AND BRESTFEETING  NOT (TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD)");
+    eri2MonthsCompositionCohort.setCompositionString("START-ART-2-MONTHS AND BREASTFEEDING");
 
     return eri2MonthsCompositionCohort;
   }
@@ -411,55 +331,32 @@ public class Eri2MonthsCohortQueries {
     eri2MonthsCompositionCohort.addSearch(
         "START-ART-2-MONTHS",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "patientEnrolledInART2Months",
-                Eri2MonthsQueriesInterface.QUERY.findPatientsWhoStartArtOneMonth),
+            this.txNewCohortQueries.getTxNewCompositionCohort("patientEnrolledInART2Months"),
             mappings));
 
     eri2MonthsCompositionCohort.addSearch(
-        "TRANSFERED-IN",
+        "BREASTFEEDING",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod",
-                TxNewQueries.QUERY.findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod),
-            mappings));
-
-    eri2MonthsCompositionCohort.addSearch(
-        "TRANSFERED-IN-AND-IN-ART-MASTER-CARD",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard",
-                TxNewQueries.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard),
-            mappings));
-
-    eri2MonthsCompositionCohort.addSearch(
-        "BRESTFEETING",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "patientsThatAreFemaleAndWereMarkedAsBrestfeetingInTheInitialConsultationOrFollowUpConsultationAndMasterCard",
-                Eri2MonthsQueriesInterface.QUERY
-                    .patientsThatAreFemaleAndWereMarkedAsBrestfeetingInTheInitialConsultationOrFollowUpConsultationAndMasterCard),
-            mappings));
+            this.breastFeedingCohortQueries
+                .findPatientsWhoAreBreastFeedingExcludingPregnantsInAPeriod(),
+            "cohortStartDate=${startDate},cohortEndDate=${endDate},location=${location}"));
 
     eri2MonthsCompositionCohort.addSearch(
         "PREGNANT",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
-                "patientsThatAreFemaleAndWereMarkedAsPregnantInTheInitialConsultationOrFollowUpConsultationAndMasterCard",
-                Eri2MonthsQueriesInterface.QUERY
-                    .patientsThatAreFemaleAndWereMarkedAsPregnantInTheInitialConsultationOrFollowUpConsultationAndMasterCard),
+                "patientsWhoArePregnantInAPeriod",
+                PregnantQueries.findPatientsWhoArePregnantInAPeriod()),
             mappings));
 
     eri2MonthsCompositionCohort.addSearch(
         "ADULT",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "patientsThatAreAdult", Eri2MonthsQueriesInterface.QUERY.patientsThatAreAdult),
+            this.txNewCohortQueries.findPatientsWhoAreNewlyEnrolledOnArtByAgeRange(AgeRange.ADULT),
             mappings));
 
     eri2MonthsCompositionCohort.setCompositionString(
-        "START-ART-2-MONTHS AND ADULT NOT (TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD OR PREGNANT OR BRESTFEETING)");
+        "(START-ART-2-MONTHS AND ADULT) NOT (PREGNANT OR BREASTFEEDING)");
 
     return eri2MonthsCompositionCohort;
   }
@@ -478,55 +375,33 @@ public class Eri2MonthsCohortQueries {
     eri2MonthsCompositionCohort.addSearch(
         "START-ART-2-MONTHS",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "patientEnrolledInART2Months",
-                Eri2MonthsQueriesInterface.QUERY.findPatientsWhoStartArtOneMonth),
+            this.txNewCohortQueries.getTxNewCompositionCohort("patientEnrolledInART2Months"),
             mappings));
 
     eri2MonthsCompositionCohort.addSearch(
-        "TRANSFERED-IN",
+        "BREASTFEEDING",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod",
-                TxNewQueries.QUERY.findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod),
-            mappings));
-
-    eri2MonthsCompositionCohort.addSearch(
-        "TRANSFERED-IN-AND-IN-ART-MASTER-CARD",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard",
-                TxNewQueries.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard),
-            mappings));
-
-    eri2MonthsCompositionCohort.addSearch(
-        "BRESTFEETING",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "patientsThatAreFemaleAndWereMarkedAsBrestfeetingInTheInitialConsultationOrFollowUpConsultationAndMasterCard",
-                Eri2MonthsQueriesInterface.QUERY
-                    .patientsThatAreFemaleAndWereMarkedAsBrestfeetingInTheInitialConsultationOrFollowUpConsultationAndMasterCard),
-            mappings));
+            this.breastFeedingCohortQueries
+                .findPatientsWhoAreBreastFeedingExcludingPregnantsInAPeriod(),
+            "cohortStartDate=${startDate},cohortEndDate=${endDate},location=${location}"));
 
     eri2MonthsCompositionCohort.addSearch(
         "PREGNANT",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
-                "patientsThatAreFemaleAndWereMarkedAsPregnantInTheInitialConsultationOrFollowUpConsultationAndMasterCard",
-                Eri2MonthsQueriesInterface.QUERY
-                    .patientsThatAreFemaleAndWereMarkedAsPregnantInTheInitialConsultationOrFollowUpConsultationAndMasterCard),
+                "patientsWhoArePregnantInAPeriod",
+                PregnantQueries.findPatientsWhoArePregnantInAPeriod()),
             mappings));
 
     eri2MonthsCompositionCohort.addSearch(
-        "CHILD",
+        "CHILDREN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "patientsThatAreChild", Eri2MonthsQueriesInterface.QUERY.patientsThatAreChild),
+            this.txNewCohortQueries.findPatientsWhoAreNewlyEnrolledOnArtByAgeRange(
+                AgeRange.CHILDREN),
             mappings));
 
     eri2MonthsCompositionCohort.setCompositionString(
-        "START-ART-2-MONTHS AND CHILD NOT (TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD OR PREGNANT OR BRESTFEETING)");
+        "(START-ART-2-MONTHS AND CHILDREN) NOT (PREGNANT OR BREASTFEEDING)");
 
     return eri2MonthsCompositionCohort;
   }

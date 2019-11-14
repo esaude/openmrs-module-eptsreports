@@ -84,7 +84,7 @@ public class PregnantQueries {
             + "SELECT p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on e.encounter_id=o.encounter_id "
             + "WHERE p.voided=0 and e.voided=0 and o.voided=0 and concept_id=1279 and e.encounter_type in (5,6) and e.encounter_datetime between :startDate "
             + "AND :endDate and e.location_id=:location UNION "
-            + "SELECT 	p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on e.encounter_id=o.encounter_id "
+            + "SELECT p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on e.encounter_id=o.encounter_id "
             + "WHERE p.voided=0 and e.voided=0 and o.voided=0 and concept_id=1600 and e.encounter_type in (5,6) "
             + "AND e.encounter_datetime BETWEEN :startDate AND :endDate AND e.location_id=:location	UNION "
             + "SELECT p.patient_id FROM patient p inner join encounter e on p.patient_id=e.patient_id inner join obs o on e.encounter_id=o.encounter_id "
