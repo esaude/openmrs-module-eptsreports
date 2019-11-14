@@ -396,12 +396,14 @@ public class HivCohortQueries {
 
   public CohortDefinition getPatientsTransferredOut() {
     Integer transferOut = hivMetadata.getTransferredOutConcept().getConceptId();
-    return getPatientsTransferredOutOrSuspended(transferOut);
+    Integer transferOutState = hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState().getProgramWorkflowStateId();
+    return getPatientsTransferredOutOrSuspended(transferOut,transferOutState);
   }
 
   public CohortDefinition getPatientsWhoStoppedTreatment() {
     Integer suspended = hivMetadata.getSuspendedTreatmentConcept().getConceptId();
-    return getPatientsTransferredOutOrSuspended(suspended);
+    Integer suspendedState = hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId();
+    return getPatientsTransferredOutOrSuspended(suspended,suspendedState);
   }
 
   private CohortDefinition getKeyPopulationCohort() {
@@ -421,7 +423,8 @@ public class HivCohortQueries {
   }
 
   private CohortDefinition getPatientsTransferredOutOrSuspended(
-      int transferedOutOrSuspendedConcept) {
+      int transferedOutOrSuspendedConcept,
+      int patientStateId) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("transferredOutPatients");
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
@@ -489,9 +492,7 @@ public class HivCohortQueries {
         String.format(
             sql,
             hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata
-                .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                .getProgramWorkflowStateId(),
+            patientStateId,
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getStateOfStayOfPreArtPatient().getConceptId(),
