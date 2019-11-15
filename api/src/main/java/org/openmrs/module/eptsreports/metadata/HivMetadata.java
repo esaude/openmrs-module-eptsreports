@@ -572,13 +572,6 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // concept_id = 23865
-  public Concept getArtPickupConcept() {
-    String uuid =
-        Context.getAdministrationService().getGlobalProperty("eptsreports.artPickupConceptUuid");
-    return getConcept(uuid);
-  }
-
   // Concept 23866 Date of ART Pickup
   public Concept getArtDatePickup() {
     String uuid =
@@ -665,14 +658,6 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // Concept  1465
-  public Concept getDateOfLastMenstruationConcept() {
-    String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty("eptsreports.dateOfLastMenstruationConcept");
-    return getConcept(uuid);
-  }
-
   public Concept getKeyPopulationConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -708,6 +693,14 @@ public class HivMetadata extends ProgramsMetadata {
   public Concept getArtPickupConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.artPickupConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept  1465
+  public Concept getDateOfLastMenstruationConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.dateOfLastMenstruationConcept");
     return getConcept(uuid);
   }
 
