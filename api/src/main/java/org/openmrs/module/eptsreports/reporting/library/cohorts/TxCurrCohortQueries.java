@@ -778,5 +778,4 @@ public class TxCurrCohortQueries {
 
     return defintion;
   }
-
 }
