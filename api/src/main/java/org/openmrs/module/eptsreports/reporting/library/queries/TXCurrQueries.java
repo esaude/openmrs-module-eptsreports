@@ -348,7 +348,7 @@ public class TXCurrQueries {
             + "               AND o.voided = 0  "
             + "               AND p.patient_id NOT IN (SELECT patient_id  "
             + "                                        FROM   encounter  "
-            + "                                        WHERE  encounter_type NOT IN (  "
+            + "                                        WHERE  encounter_type IN (  "
             + "                                               %s,%s, %s, %s )  "
             + "                                               AND location_id = :location)  "
             + "               AND e.location_id = :location  "
