@@ -666,26 +666,6 @@ public class TxCurrCohortQueries {
     return definition;
   }
 
-  public CohortDefinition getPatinetLostToFollowUp() {
-    CompositionCohortDefinition definition = new CompositionCohortDefinition();
-
-    String mappings = "onOrBefore=${onOrBefore},location=${location}";
-
-    definition.addSearch(
-        "31", EptsReportUtils.map(getPatientHavingLastScheduledDrugPickupDate(), mappings));
-
-    definition.addSearch(
-        "32",
-        EptsReportUtils.map(
-            getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(), mappings));
-
-    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-    definition.setCompositionString("31 OR  32");
-
-    return definition;
-  }
-
   @DocumentedDefinition(value = "patientWhoAfterMostRecentDateHaveDrusPickupOrConsultation")
   public CohortDefinition getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultation() {
     SqlCohortDefinition definition = new SqlCohortDefinition();
