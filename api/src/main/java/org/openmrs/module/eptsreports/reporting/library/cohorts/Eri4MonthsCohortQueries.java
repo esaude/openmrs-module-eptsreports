@@ -148,7 +148,7 @@ public class Eri4MonthsCohortQueries {
         "dead",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            "onOrBefore=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
@@ -188,7 +188,7 @@ public class Eri4MonthsCohortQueries {
         "dead",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            "onOrBefore=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
@@ -229,7 +229,7 @@ public class Eri4MonthsCohortQueries {
         "dead",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            "onOrBefore=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
