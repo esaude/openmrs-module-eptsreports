@@ -3,110 +3,20 @@ package org.openmrs.module.eptsreports.reporting.library.queries;
 public interface DsdQueriesInterface {
   class QUERY {
 
-    public static final String findPatientsBeingOnTuberculosisTreatmentEndPeriod =
-        "select inicio_tb.patient_id from "
-            + "(select patient_id,max(data_inicio_tb) data_inicio_tb from ( "
-            + "select p.patient_id,o.value_datetime data_inicio_tb from patient p "
-            + "inner join encounter e on p.patient_id=e.patient_id "
-            + "inner join obs o on o.encounter_id=e.encounter_id "
-            + "where e.encounter_type in (6,9) and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=1113 and e.location_id=:location and  o.value_datetime<=:endDate "
-            + "union "
-            + "select patient_id,date_enrolled data_inicio_tb from patient_program "
-            + "where program_id=5 and voided=0 and date_enrolled<=:endDate and location_id=:location) inicio1 group by patient_id) inicio_tb "
-            + "left join ("
-            + "select patient_id,max(data_fim_tb) data_fim_tb from ( "
-            + "select p.patient_id,o.value_datetime data_fim_tb from patient p "
-            + "inner join encounter e on p.patient_id=e.patient_id "
-            + "inner join obs o on o.encounter_id=e.encounter_id "
-            + "where e.encounter_type in (6,9) and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=6120 and e.location_id=:location and o.value_datetime<=:endDate "
-            + "union "
-            + "select patient_id,date_completed data_fim_tb from patient_program "
-            + "where program_id=5 and voided=0 and location_id=:location and date_completed is not null and date_completed<=:endDate) fim1 group by patient_id) "
-            + "fim on inicio_tb.patient_id=fim.patient_id  and data_fim_tb>data_inicio_tb "
-            + "where data_fim_tb is null "
-            + " union "
-            + "select max_tb.patient_id from ( "
-            + "select p.patient_id,max(o.obs_datetime) max_datatb from patient p "
-            + "inner join encounter e on p.patient_id=e.patient_id "
-            + "inner join obs o on o.encounter_id=e.encounter_id "
-            + "where e.encounter_type in (6,9) and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=1268 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id) max_tb "
-            + "inner join obs on obs.person_id=max_tb.patient_id and max_tb.max_datatb=obs.obs_datetime "
-            + "where obs.concept_id=1268 and obs.value_coded in (1256,1257) and obs.location_id=:location "
-            + "union "
-            + "select p.patient_id from patient p "
-            + "inner join encounter e on p.patient_id=e.patient_id "
-            + "inner join obs o on o.encounter_id=e.encounter_id "
-            + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23761 and o.value_coded=1065 and e.encounter_datetime between (:endDate - INTERVAL 6 MONTH + INTERVAL 1 DAY) and :endDate and e.location_id=:location group by p.patient_id";
-
     public static final String
         findPatientsWithAdverseDrugReactionsRequiringRegularMonitoringNotifiedInLast6Months =
             "Select p.patient_id From patient p "
                 + "inner join encounter e on p.patient_id=e.patient_id "
                 + "inner join obs o on e.encounter_id=o.encounter_id "
-                + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=2015 and e.encounter_type=6 and e.encounter_datetime between (:endDate - INTERVAL 6 MONTH) AND :endDate and e.location_id=:location and o.value_coded in (23748,6293,23749,29,23750,23751,6299,23752) group by p.patient_id ";
+                + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=2015 and e.encounter_type=6 and e.encounter_datetime "
+                + "between (:endDate - INTERVAL 6 MONTH) AND :endDate and e.location_id=:location and o.value_coded "
+                + "IN (23748,6293,23749,29,23750,23751,6299,23752) group by p.patient_id ";
 
     public static final String findPatientsWhoHaveBeenNotifiedOfKaposiSarcoma =
         "SELECT p.patient_id FROM patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
             + "INNER JOIN obs o ON e.encounter_id = o.encounter_id "
             + "WHERE o.concept_id=1406 AND o.value_coded = 507 AND encounter_type=6 AND p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND e.location_id =:location AND e.encounter_datetime<=:endDate group by p.patient_id ";
-
-    public static final String
-        findPregnantWomenRegisteredInTheLast9MonthsOrBrestfeetingWomenRegisteredInTheLast18Months =
-            "select lactante_real.patient_id from( "
-                + "Select p.patient_id,o.value_datetime data_parto from patient p "
-                + "inner join encounter e on p.patient_id=e.patient_id "
-                + "inner join obs o on e.encounter_id=o.encounter_id "
-                + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=5599 and  e.encounter_type in (5,6) and o.value_datetime between (:endDate - INTERVAL 18 MONTH ) AND :endDate  and e.location_id=:location "
-                + "union "
-                + "Select p.patient_id, e.encounter_datetime data_parto from patient p "
-                + "inner join encounter e on p.patient_id=e.patient_id "
-                + "inner join obs o on e.encounter_id=o.encounter_id "
-                + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=6332 and value_coded=1065 and e.encounter_type in (6,53) and e.encounter_datetime between (:endDate - INTERVAL 18 MONTH ) AND :endDate and e.location_id=:location "
-                + "union "
-                + "Select p.patient_id, e.encounter_datetime data_parto from patient p  "
-                + "inner join encounter e on p.patient_id=e.patient_id "
-                + "inner join obs o on e.encounter_id=o.encounter_id "
-                + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=6334 and value_coded=6332 and e.encounter_type in (5,6) and e.encounter_datetime between (:endDate - INTERVAL 18 MONTH ) AND :endDate and e.location_id=:location "
-                + "union "
-                + "select pg.patient_id,ps.start_date data_parto from patient p "
-                + "inner join patient_program pg on p.patient_id=pg.patient_id "
-                + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-                + "where pg.voided=0 and ps.voided=0 and p.voided=0 and  pg.program_id=8 and ps.state=27 and ps.end_date is null and  ps.start_date between (:endDate - INTERVAL 18 MONTH ) AND :endDate and location_id=:location) lactante_real "
-                + "inner join person on lactante_real.patient_id=person.person_id where person.gender='F' "
-                + "union "
-                + "select patient_id from ( "
-                + "Select p.patient_id from patient p "
-                + "inner join encounter e on p.patient_id=e.patient_id "
-                + "inner join obs o on e.encounter_id=o.encounter_id "
-                + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=1982 and value_coded in (44,1465) and  e.encounter_type in (5,6) and e.encounter_datetime between (:endDate - INTERVAL 9 MONTH ) AND :endDate  and e.location_id=:location "
-                + "union "
-                + "Select p.patient_id from patient p "
-                + "inner join encounter e on p.patient_id=e.patient_id "
-                + "inner join obs o on e.encounter_id=o.encounter_id "
-                + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=1279 and  e.encounter_type in (5,6) and e.encounter_datetime between (:endDate - INTERVAL 9 MONTH ) AND :endDate and e.location_id=:location "
-                + "union "
-                + "Select p.patient_id from patient p "
-                + "inner join encounter e on p.patient_id=e.patient_id "
-                + "inner join obs o on e.encounter_id=o.encounter_id "
-                + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=1600 and  e.encounter_type in (5,6) and e.encounter_datetime between (:endDate - INTERVAL 9 MONTH ) AND :endDate and e.location_id=:location "
-                + "union "
-                + "Select p.patient_id from patient p  "
-                + "inner join encounter e on p.patient_id=e.patient_id "
-                + "inner join obs o on e.encounter_id=o.encounter_id "
-                + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=6334 and value_coded=6331 and  e.encounter_type in (5,6) and e.encounter_datetime between (:endDate - INTERVAL 9 MONTH ) AND :endDate and e.location_id=:location "
-                + "union "
-                + "select pp.patient_id from patient_program pp  where pp.program_id=8 and pp.voided=0 and  pp.date_enrolled between (:endDate - INTERVAL 9 MONTH ) AND :endDate and pp.location_id=:location "
-                + "union "
-                + "Select p.patient_id from patient p "
-                + "inner join encounter e on p.patient_id=e.patient_id "
-                + "inner join obs o on e.encounter_id=o.encounter_id "
-                + "where p.voided=0 and e.voided=0 and o.voided=0 and o.concept_id=5272 and o.value_coded=1065 and  e.encounter_type=53 and e.encounter_datetime between (:endDate - INTERVAL 9 MONTH ) AND :endDate and e.location_id=:location "
-                + "union "
-                + "Select p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id "
-                + "inner join obs o on e.encounter_id=o.encounter_id "
-                + "where p.voided=0 and e.voided=0 and o.voided=0 and o.concept_id=1465 and  e.encounter_type=6 and e.encounter_datetime between (:endDate - INTERVAL 9 MONTH ) AND :endDate and e.location_id=:location) gravida "
-                + "inner join person p on p.person_id=gravida.patient_id where p.gender='F'";
 
     public static final String findPatientsInArtWhoAreStable =
         "select patient_id from(select inicio.patient_id, inicio.data_inicio, timestampdiff(year,per.birthdate,:endDate) idade, timestampdiff(month,inicio.data_inicio,:endDate) idadeEmTarv, cd4Absoluto.value_numeric cd4Abs, cd4Percentual.value_numeric cd4Per, cvmenor1000.patient_id pidcvmenor100 from ( "
@@ -156,7 +66,17 @@ public interface DsdQueriesInterface {
             + "where o.concept_id=730 and o.value_numeric>15 and o.location_id=:location) cd4Percentual on inicio.patient_id=cd4Percentual.patient_id) elegivel "
             + "where idade>=2 and ((idade<=9 and idadeEmTarv>=12) or (idade>=10 and idadeEmTarv>=6)) and ((pidcvmenor100 is not null ) or (pidcvmenor100 is null and idade>=5 and cd4Abs>200) or (pidcvmenor100 is null and idade<=4 and (cd4Abs>750 or cd4Per>15))) ";
 
-    public static final String findPatientWhoAreMdcQuarterlyDispensation =
+    public static final String findPatietsWhoAreOnAdherenceClubs =
+        "SELECT max_ca.patient_id FROM ( "
+            + "SELECT p.patient_id,max(o.obs_datetime) max_dataca FROM 	patient p "
+            + "INNER JOIN encounter e on p.patient_id=e.patient_id "
+            + "INNER JOIN obs o on o.encounter_id=e.encounter_id "
+            + "WHERE e.encounter_type=6 AND e.voided=0 AND o.voided=0 AND p.voided=0 "
+            + "AND o.concept_id=23726 and e.location_id=:location "
+            + "AND o.obs_datetime<=:endDate GROUP BY p.patient_id) max_ca INNER JOIN obs on obs.person_id=max_ca.patient_id and max_ca.max_dataca=obs.obs_datetime "
+            + "WHERE obs.concept_id=23726 AND obs.value_coded IN (1256,1257) AND obs.location_id=:location";
+
+    public static final String findPatientsWhoAreThreeMonthsDrugDistribution =
         "select patient_id from ( "
             + "select levantamento.patient_id from ( "
             + "Select p.patient_id,max(e.encounter_datetime) data_levantamento from patient p "
@@ -187,7 +107,7 @@ public interface DsdQueriesInterface {
             + "inner join obs on obs.person_id=max_dts.patient_id and max_dts.max_datadts=obs.obs_datetime "
             + "where obs.concept_id=23730 and obs.value_coded=1267 and obs.location_id=:location) ";
 
-    public static final String findPatientWhoAreMdcFastFlow =
+    public static final String findPatientsWhoAreFastTrack =
         "select patient_id from( "
             + "select ultimaConsulta.patient_id from ( "
             + "Select p.patient_id,max(e.encounter_datetime) data_consulta from patient p "
@@ -210,29 +130,82 @@ public interface DsdQueriesInterface {
             + "inner join obs on obs.person_id=max_fr.patient_id and max_fr.max_datafr=obs.obs_datetime "
             + "where obs.concept_id=23729 and obs.value_coded=1267 and obs.location_id=:location) ";
 
-    public static final String findPatientsAge15Plus =
-        "SELECT patient_id FROM patient "
-            + "INNER JOIN person ON patient_id = person_id WHERE patient.voided=0 AND person.voided=0 "
-            + "AND TIMESTAMPDIFF(year,birthdate,:endDate)>=15 AND birthdate IS NOT NULL";
+    public static final String findPatientsWhoAreInCommunityDrugsDistribution =
+        "SELECT max_dc.patient_id from  (	"
+            + "SELECT p.patient_id,max(o.obs_datetime) max_datadc from patient p "
+            + "INNER JOIN encounter e on p.patient_id=e.patient_id "
+            + "INNER JOIN obs o on o.encounter_id=e.encounter_id "
+            + "WHERE e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 "
+            + "and o.concept_id=23731 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id) max_dc "
+            + "inner join obs on obs.person_id=max_dc.patient_id and max_dc.max_datadc=obs.obs_datetime "
+            + "where obs.concept_id=23731 and obs.value_coded in (1256,1257) and obs.location_id=:location";
 
-    public static final String findPatientsAgeLessThan2 =
-        "SELECT patient_id FROM patient "
-            + "INNER JOIN person ON patient_id = person_id WHERE patient.voided=0 AND person.voided=0 "
-            + "AND TIMESTAMPDIFF(year,birthdate,:endDate) < 2 AND birthdate is not null";
+    public static final String findPatientsWhoAreCommunityAdherenceGroups =
+        "select patient_id from( "
+            + "Select gm.member_id as patient_id from gaac g "
+            + "inner join gaac_member gm on g.gaac_id=gm.gaac_id "
+            + "where gm.start_date<=:endDate and gm.voided=0 and g.voided=0 and ((leaving is null) or (leaving=0) or (leaving=1 and gm.end_date>:endDate)) and location_id=:location "
+            + "union "
+            + "select max_gaac.patient_id from( "
+            + "select p.patient_id,max(o.obs_datetime) max_datagaac from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on o.encounter_id=e.encounter_id "
+            + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23724 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id) max_gaac "
+            + "inner join obs on obs.person_id=max_gaac.patient_id and max_gaac.max_datagaac=obs.obs_datetime "
+            + "where obs.concept_id=23724 and obs.value_coded in (1256,1257) and obs.location_id=:location) gaac  "
+            + "where patient_id not in( "
+            + "select max_gaac.patient_id from ( "
+            + "select p.patient_id,max(o.obs_datetime) max_datagaac from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on o.encounter_id=e.encounter_id "
+            + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23724 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id)max_gaac "
+            + "inner join obs on obs.person_id=max_gaac.patient_id and max_gaac.max_datagaac=obs.obs_datetime "
+            + "where obs.concept_id=23724 and obs.value_coded=1267 and obs.location_id=:location)";
 
-    public static final String findPatientsAge2to4 =
-        "SELECT patient_id FROM patient "
-            + "INNER JOIN person ON patient_id = person_id WHERE patient.voided=0 AND person.voided=0 "
-            + "AND TIMESTAMPDIFF(year,birthdate,:endDate) between 2 and 4 and birthdate is not null";
+    public static final String findPatientsWhoAreFamilyAproach =
+        "select max_af.patient_id from ("
+            + "select p.patient_id,max(o.obs_datetime) max_dataaf from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on o.encounter_id=e.encounter_id "
+            + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 "
+            + "and o.concept_id=23725 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id) max_af "
+            + "inner join obs on obs.person_id=max_af.patient_id and max_af.max_dataaf=obs.obs_datetime "
+            + "where obs.concept_id=23725 and obs.value_coded in (1256,1257) and obs.location_id=:location";
 
-    public static final String findPatientsAge5to9 =
-        "SELECT patient_id FROM patient "
-            + "INNER JOIN person ON patient_id = person_id WHERE patient.voided=0 AND person.voided=0 "
-            + "AND TIMESTAMPDIFF(year,birthdate,:endDate) between 5 and 9 and birthdate is not null";
+    public static final String findPatientsWhoAreSixMonthsDrugsDistribution =
+        "select patient_id from( "
+            + "select levantamento.patient_id from( "
+            + "Select 	p.patient_id,max(e.encounter_datetime) data_levantamento from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "where p.voided=0 and e.voided=0 and e.encounter_type=18 and  e.encounter_datetime<=:endDate and e.location_id=:location group by p.patient_id )levantamento "
+            + "inner join obs o on o.person_id=levantamento.patient_id "
+            + "where levantamento.data_levantamento=o.obs_datetime and o.concept_id=5096 and o.voided=0 and o.location_id=:location and  datediff(o.value_datetime,levantamento.data_levantamento) between 175 and 190 "
+            + "union select max_tl.patient_id from ( "
+            + "select p.patient_id,max(o.obs_datetime) max_datatl from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on o.encounter_id=e.encounter_id "
+            + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23739 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id) max_tl "
+            + "inner join obs on obs.person_id=max_tl.patient_id and max_tl.max_datatl=obs.obs_datetime "
+            + "where obs.concept_id=23739 and obs.value_coded=23888 and obs.location_id=:location union "
+            + "select max_dt.patient_id from( "
+            + "select p.patient_id,max(o.obs_datetime) max_datadt from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on o.encounter_id=e.encounter_id "
+            + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23888 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id) max_dt "
+            + "inner join obs on obs.person_id=max_dt.patient_id and max_dt.max_datadt=obs.obs_datetime "
+            + "where obs.concept_id=23888 and obs.value_coded in (1256,1257) and obs.location_id=:location) dt "
+            + "where patient_id not in( "
+            + "select max_dts.patient_id from( "
+            + "select p.patient_id,max(o.obs_datetime) max_datadts from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on o.encounter_id=e.encounter_id "
+            + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23888 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id) max_dts "
+            + "inner join obs on obs.person_id=max_dts.patient_id and max_dts.max_datadts=obs.obs_datetime "
+            + "where obs.concept_id=23888 and obs.value_coded=1267 and obs.location_id=:location)";
 
-    public static final String findPatientsAge10to14 =
+    public static final String findPatientsAgeRange =
         "SELECT patient_id FROM patient "
             + "INNER JOIN person ON patient_id = person_id WHERE patient.voided=0 AND person.voided=0 "
-            + "AND TIMESTAMPDIFF(year,birthdate,:endDate) between 10 and 14 and birthdate is not null";
+            + "AND TIMESTAMPDIFF(year,birthdate,:endDate) BETWEEN %d AND %d AND birthdate IS NOT NULL";
   }
 }

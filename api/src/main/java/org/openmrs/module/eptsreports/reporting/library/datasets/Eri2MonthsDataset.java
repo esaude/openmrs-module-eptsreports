@@ -16,6 +16,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 import java.util.Arrays;
 import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri2MonthsCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -33,110 +34,102 @@ public class Eri2MonthsDataset extends BaseDataSet {
 
   @Autowired private Eri2MonthsCohortQueries eri2MonthsCohortQueries;
 
+  @Autowired private TxNewCohortQueries txNewCohortQueries;
+
   public DataSetDefinition constructEri2MonthsDatset() {
 
-    CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+    final CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 
-    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    final String cohortMappings =
+        "startDate=${endDate-2m+1d},endDate=${endDate-1m},location=${location}";
+
     dsd.setName("ERI-2months Data Set");
-    dsd.addParameters(getParameters());
-    // apply disaggregations
-    dsd.addDimension(
-        "state", EptsReportUtils.map(eptsCommonDimension.getEri2MonthsDimension2(), mappings));
+    dsd.addParameters(this.getParameters());
 
-    addRow(
+    dsd.addDimension(
+        "state", EptsReportUtils.map(this.eptsCommonDimension.getEri2MonthsDimension2(), mappings));
+
+    this.addRow(
         dsd,
         "R21",
         "All Patients retained on ART 2 months after ART initiation",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
+            this.eptsGeneralIndicator.getIndicator(
                 "All patients",
                 EptsReportUtils.map(
-                    eri2MonthsCohortQueries.getEri2MonthsCompositionCohort("All patients"),
-                    mappings)),
+                    this.txNewCohortQueries.getTxNewCompositionCohort("Eri2Months"),
+                    cohortMappings)),
             mappings),
-        get2MonthsRetentionColumns());
+        this.get2MonthsRetentionColumns());
 
-    addRow(
+    this.addRow(
         dsd,
         "R22",
         "Pregnant women retained on ART 2 months after ART initiation",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
+            this.eptsGeneralIndicator.getIndicator(
                 "Pregnant women",
                 EptsReportUtils.map(
-                    eri2MonthsCohortQueries.getEri2MonthsPregnatCompositionCohort("Pregnant"),
-                    mappings)),
+                    this.eri2MonthsCohortQueries.getEri2MonthsPregnatCompositionCohort("Pregnant"),
+                    cohortMappings)),
             mappings),
-        get2MonthsRetentionColumns());
+        this.get2MonthsRetentionColumns());
 
-    addRow(
+    this.addRow(
         dsd,
         "R23",
         "Breastfeeding women retained on ART 2 months after ART initiation",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
+            this.eptsGeneralIndicator.getIndicator(
                 "Breastfeeding women",
                 EptsReportUtils.map(
-                    eri2MonthsCohortQueries.getEri2MonthsBrestfeetingCompositionCohort(
+                    this.eri2MonthsCohortQueries.getEri2MonthsBrestfeetingCompositionCohort(
                         "BrestFeeting"),
-                    mappings)),
+                    cohortMappings)),
             mappings),
-        get2MonthsRetentionColumns());
-    addRow(
-        dsd,
-        "R23",
-        "Breastfeeding women retained on ART 2 months after ART initiation",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Breastfeeding women",
-                EptsReportUtils.map(
-                    eri2MonthsCohortQueries.getEri2MonthsBrestfeetingCompositionCohort(
-                        "BrestFeeting"),
-                    mappings)),
-            mappings),
-        get2MonthsRetentionColumns());
+        this.get2MonthsRetentionColumns());
 
-    addRow(
+    this.addRow(
         dsd,
         "R24",
         "Children (0-14, excluding pregnant and breastfeeding women) retained on ART 2 months",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
+            this.eptsGeneralIndicator.getIndicator(
                 "Children",
                 EptsReportUtils.map(
-                    eri2MonthsCohortQueries.getEri2MonthsChildCompositionCohort("Children"),
-                    mappings)),
+                    this.eri2MonthsCohortQueries.getEri2MonthsChildCompositionCohort("Children"),
+                    cohortMappings)),
             mappings),
-        get2MonthsRetentionColumns());
+        this.get2MonthsRetentionColumns());
 
-    addRow(
+    this.addRow(
         dsd,
         "R25",
         "Adults (15+, excluding pregnant and breastfeeding women)  retained on ART 2 months",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
+            this.eptsGeneralIndicator.getIndicator(
                 "Adult",
                 EptsReportUtils.map(
-                    eri2MonthsCohortQueries.getEri2MonthsAdultCompositionCohort("Adult"),
-                    mappings)),
+                    this.eri2MonthsCohortQueries.getEri2MonthsAdultCompositionCohort("Adult"),
+                    cohortMappings)),
             mappings),
-        get2MonthsRetentionColumns());
+        this.get2MonthsRetentionColumns());
 
     return dsd;
   }
 
   private List<ColumnParameters> get2MonthsRetentionColumns() {
-    ColumnParameters artStart =
+    final ColumnParameters artStart =
         new ColumnParameters("initiated ART", "Initiated ART", "state=IART", "01");
-    ColumnParameters didNotPickUpDrugs =
+    final ColumnParameters didNotPickUpDrugs =
         new ColumnParameters("did Not pick drugs", "Did Not pick up drugs", "state=DNPUD", "02");
-    ColumnParameters pickedUpDrugs =
+    final ColumnParameters pickedUpDrugs =
         new ColumnParameters("picked drugs", "Picked up Drugs", "state=PUD", "03");
-    ColumnParameters dead = new ColumnParameters("dead", "Dead", "state=DP", "04");
-    ColumnParameters transfers =
+    final ColumnParameters dead = new ColumnParameters("dead", "Dead", "state=DP", "04");
+    final ColumnParameters transfers =
         new ColumnParameters("transfers", "Transferred Out", "state=TOP", "05");
-    ColumnParameters stopped =
+    final ColumnParameters stopped =
         new ColumnParameters("stopped", "Stopped treatment", "state=STP", "06");
     return Arrays.asList(artStart, didNotPickUpDrugs, pickedUpDrugs, dead, transfers, stopped);
   }
