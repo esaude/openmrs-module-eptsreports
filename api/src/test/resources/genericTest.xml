@@ -368,4 +368,10 @@
 		 location_id="1" value_datetime="1998-10-01 01:02:00.0" comments=""
 		 creator="1" date_created="2019-01-29 14:11:13.0" voided="false"
 		 uuid="333ddf53-d698-4efa-8605-2eeb025a2e3f" />
+
+	<obs obs_id="3777028" person_id="1777007" concept_id="23865"
+		 encounter_id="2777024" obs_datetime="1998-09-01 00:00:00.0"
+		 location_id="1" value_coded="7777020" comments=""
+		 creator="1" date_created="2019-01-29 14:11:13.0" voided="false"
+		 uuid="26d7da2a-0eee-42ab-83ce-e3e8ae168af2" />
 </dataset>
