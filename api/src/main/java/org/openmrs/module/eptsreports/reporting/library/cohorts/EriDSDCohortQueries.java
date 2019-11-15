@@ -414,14 +414,9 @@ public class EriDSDCohortQueries {
             getAllPatientsWhoAreActiveAndStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.addSearch(
-        "patientsWithTB",
-        EptsReportUtils.map(
-            txTBCohortQueries.getInTBProgram(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
+    
     cd.setCompositionString(
-        "allPatientsTxCurr AND NOT (activeAndStablePatients OR patientsWithTB)");
+    		"allPatientsTxCurr AND NOT activeAndStablePatients");
 
     return cd;
   }

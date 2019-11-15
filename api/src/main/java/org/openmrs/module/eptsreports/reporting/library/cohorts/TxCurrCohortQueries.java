@@ -779,30 +779,5 @@ public class TxCurrCohortQueries {
     return defintion;
   }
 
-  public CohortDefinition test() {
-    CompositionCohortDefinition txCurrComposition = new CompositionCohortDefinition();
-
-    txCurrComposition.setName("test");
-
-    txCurrComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    txCurrComposition.addParameter(new Parameter("location", "location", Location.class));
-
-    txCurrComposition
-        .getSearches()
-        .put(
-            "13",
-            EptsReportUtils.map(
-                getPatientHavingLastScheduledDrugPickupDate(),
-                "onOrBefore=${onOrBefore},location=${location}"));
-    txCurrComposition
-        .getSearches()
-        .put(
-            "14",
-            EptsReportUtils.map(
-                getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(),
-                "location=${location}"));
-
-    txCurrComposition.setCompositionString("13 OR 14");
-    return txCurrComposition;
-  }
+  
 }
