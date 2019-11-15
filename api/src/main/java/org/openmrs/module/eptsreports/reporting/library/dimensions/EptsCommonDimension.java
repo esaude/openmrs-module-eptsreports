@@ -187,19 +187,19 @@ public class EptsCommonDimension {
         "LTFU",
         EptsReportUtils.map(
             genericCohortQueries.getPatientsWhoToLostToFollowUp(),
-            "onOrBefore=${reportingEndDate},${location}"));
+            "onOrBefore=${reportingEndDate},location=${location}"));
 
     dim.addCohortDefinition(
         "TOP",
         EptsReportUtils.map(
             hivCohortQueries.getPatientsTransferredOut(),
-            "onOrBefore=${reportingEndDate},${location}"));
+            "onOrBefore=${reportingEndDate},location=${location}"));
 
     dim.addCohortDefinition(
         "STP",
         EptsReportUtils.map(
             hivCohortQueries.getPatientsWhoStoppedTreatment(),
-            "onOrBefore=${reportingEndDate},${location}"));
+            "onOrBefore=${reportingEndDate},location=${location}"));
 
     dim.addCohortDefinition(
         "ANIT",
