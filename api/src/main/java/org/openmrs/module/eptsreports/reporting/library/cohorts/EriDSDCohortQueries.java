@@ -53,7 +53,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "2",
         EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("moreThanOrEqual2Years", 2, 200),
+            ageCohortQueries.createXtoYAgeCohort("moreThanOrEqual0Years", 0, 200),
             "effectiveDate=${endDate}"));
     cd.addSearch(
         "3",
@@ -81,7 +81,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
-  private CohortDefinition getPatientsWhoAreStable() {
+  public CohortDefinition getPatientsWhoAreStable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("Patients who are stable");
@@ -416,25 +416,26 @@ public class EriDSDCohortQueries {
 
     // D2: Get Patients who are pregnant including those that are pregnant and breastfeeding
     // gravidas e a amamentar
-    cd.addSearch(
-        "pregnantIncludeBreatfeeding",
-        EptsReportUtils.map(
-            getPatientsWhoArePregnant(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
+//    cd.addSearch(
+//        "pregnantIncludeBreatfeeding",
+//        EptsReportUtils.map(
+//            getPatientsWhoArePregnant(),
+//            "startDate=${startDate},endDate=${endDate},location=${location}"));
+     
     // Get patients who are breastfeeding and not pregnant
     // getPatientsWhoAreBreastFeedingAndNotPregnant
-    cd.addSearch(
-        "breastFeedingAndNotPregnant",
-        EptsReportUtils.map(
-            getPatientsWhoAreBreastFeedingAndNotPregnant(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+//    cd.addSearch(
+//        "breastFeedingAndNotPregnant",
+//        EptsReportUtils.map(
+//            getPatientsWhoAreBreastFeedingAndNotPregnant(),
+//            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     // Get all TB patients
-    cd.addSearch("tbPatient", EptsReportUtils.map(txTBCohortQueries.getInTBProgram(), ""));
+    cd.addSearch("tbPatient", EptsReportUtils.map(txTBCohortQueries.getInTBProgram(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+//"allPatientsTxCurr AND NOT (activeAndStablePatients OR pregnantIncludeBreatfeeding OR breastFeedingAndNotPregnant OR tbPatient)");
 
     cd.setCompositionString(
-        "allPatientsTxCurr AND NOT (activeAndStablePatients OR pregnantIncludeBreatfeeding OR breastFeedingAndNotPregnant OR tbPatient)");
+        "allPatientsTxCurr AND NOT (activeAndStablePatients or tbPatient)");
 
     return cd;
   }
