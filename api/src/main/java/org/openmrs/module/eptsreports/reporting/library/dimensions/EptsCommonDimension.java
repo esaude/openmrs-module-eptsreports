@@ -239,18 +239,18 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "DP",
         EptsReportUtils.map(
-            eri2MonthsCohortQueries.getPatientsWhoInitiatedArtAndDead(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
+            genericCohortQueries.getDeceasedPatients(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
     dim.addCohortDefinition(
         "TOP",
         EptsReportUtils.map(
-            eri2MonthsCohortQueries.getPatientsWhoInitiatedArtButTransferredOut(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
+            hivCohortQueries.getPatientsTransferredOut(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
     dim.addCohortDefinition(
         "STP",
         EptsReportUtils.map(
-            eri2MonthsCohortQueries.getPatientsWhoInitiatedArtButSuspendedTreatment(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
+            hivCohortQueries.getPatientsWhoStoppedTreatment(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
     return dim;
   }
 
