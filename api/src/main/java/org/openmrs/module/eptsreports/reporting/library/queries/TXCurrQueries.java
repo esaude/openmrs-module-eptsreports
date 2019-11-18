@@ -332,6 +332,9 @@ public class TXCurrQueries {
       int adultoSeguimentoEncounterType1,
       int aRVPediatriaSeguimentoEncounterType,
       int aRVPharmaciaEncounterType1,
+      int adultoSeguimentoEncounterType2,
+      int aRVPediatriaSeguimentoEncounterType2,
+      int aRVPharmaciaEncounterType2,
       int returnVisitDateConcept,
       int returnVisitDateForArvDrugConcept) {
 
@@ -341,11 +344,8 @@ public class TXCurrQueries {
             + "        FROM   patient p  "
             + "               INNER JOIN encounter e  "
             + "                       ON e.patient_id = p.patient_id  "
-            + "               INNER JOIN obs o  "
-            + "                       ON o.encounter_id = e.encounter_id  "
             + "        WHERE  p.voided = 0  "
             + "               AND e.voided = 0  "
-            + "               AND o.voided = 0  "
             + "               AND p.patient_id NOT IN (SELECT patient_id  "
             + "                                        FROM   encounter  "
             + "                                        WHERE  encounter_type IN (  "
@@ -366,14 +366,13 @@ public class TXCurrQueries {
             + "               AND e.encounter_datetime = (SELECT Max(encounter_datetime)  "
             + "                                           FROM   encounter  "
             + "                                           WHERE  patient_id = p.patient_id  "
-            + "                                                  AND encounter_type =  "
-            + "                                                      e.encounter_type  "
+            + "                                                  AND encounter_type  IN ( %s, %s, %s )  "
             + "                                          )  "
             + "               AND e.encounter_type IN ( %s, %s, %s )  "
             + "               AND e.encounter_id NOT IN (SELECT encounter_id  "
             + "                                          FROM   obs  "
-            + "                                          WHERE  concept_id = %s  "
-            + "                                                  OR concept_id = %s)  "
+            + "                                          WHERE  (concept_id = %s and (value_datetime is null or value_numeric is null)) "
+            + "                                                  OR (concept_id = %s and (value_datetime is null or value_numeric is null)))  "
             + "               AND e.location_id = :location  "
             + "        GROUP  BY p.patient_id) ps  "
             + "GROUP  BY ps.patient_id;";
@@ -387,6 +386,9 @@ public class TXCurrQueries {
         adultoSeguimentoEncounterType1,
         aRVPediatriaSeguimentoEncounterType,
         aRVPharmaciaEncounterType1,
+        adultoSeguimentoEncounterType2,
+        aRVPediatriaSeguimentoEncounterType2,
+        aRVPharmaciaEncounterType2,
         returnVisitDateConcept,
         returnVisitDateForArvDrugConcept);
   }
