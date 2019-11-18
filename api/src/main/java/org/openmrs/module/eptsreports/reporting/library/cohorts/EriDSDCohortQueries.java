@@ -69,7 +69,11 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             getPatientsWhoAreStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch("6", EptsReportUtils.map(getAllPatientsOnSarcomaKarposi(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "6",
+        EptsReportUtils.map(
+            getAllPatientsOnSarcomaKarposi(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("(1 AND 2 AND NOT (3 OR 4 OR 6) AND 5)");
 
@@ -104,11 +108,6 @@ public class EriDSDCohortQueries {
             getCD4CountAndCD4PercentCombined(),
             "startDate=${endDate-12m},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "D",
-        EptsReportUtils.map(
-            getPatientsWhoAreOnWhoStage3Or4InLastEncounter(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
         "F",
         EptsReportUtils.map(
             genericCohortQueries.hasCodedObs(
@@ -136,9 +135,6 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             hivCohortQueries.getPatientsViralLoadWithin12Months(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    //    cd.setCompositionString("A AND (B OR (NOT patientsWithViralLoad AND C)) AND NOT D AND NOT
-    // F");
     cd.setCompositionString("A AND (B OR (NOT patientsWithViralLoad AND C))  AND NOT F");
 
     return cd;
@@ -366,29 +362,6 @@ public class EriDSDCohortQueries {
     return sql;
   }
 
-  /**
-   * Get Patients which WHO Stage 3 or 4 In the last clinical encounter
-   *
-   * @return
-   */
-  private CohortDefinition getPatientsWhoAreOnWhoStage3Or4InLastEncounter() {
-    SqlCohortDefinition sql = new SqlCohortDefinition();
-    sql.setName("Patients who are on WHO stage 3 or 4 in the last encounter");
-
-    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    sql.addParameter(new Parameter("endDate", "End Date", Date.class));
-    sql.addParameter(new Parameter("location", "Location", Location.class));
-
-    sql.setQuery(
-        DsdQueries.getPatientsWithWHOStage3Or4(
-            hivMetadata.getCurrentWHOHIVStageConcept().getConceptId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getWho3AdultStageConcept().getConceptId(),
-            hivMetadata.getWho4AdultStageConcept().getConceptId()));
-
-    return sql;
-  }
 
   /**
    * D2: Number of active patients on ART Not Eligible for DSD D1
@@ -1375,21 +1348,22 @@ public class EriDSDCohortQueries {
 
   /**
    * Get Patients who are on Sarcoma Karposi
+   *
    * @return
    */
-  public  CohortDefinition getAllPatientsOnSarcomaKarposi(){
+  public CohortDefinition getAllPatientsOnSarcomaKarposi() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("sarcomaKarposiPatients");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    cd.setQuery(DsdQueries.getPatientsOnSarcomaKarposi(
+    cd.setQuery(
+        DsdQueries.getPatientsOnSarcomaKarposi(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getOtherDiagnosis().getConceptId(),
-            hivMetadata.getKaposiSarcomaConcept().getConceptId()
-    ));
+            hivMetadata.getKaposiSarcomaConcept().getConceptId()));
 
     return cd;
   }

@@ -132,24 +132,29 @@ public class DsdQueries {
 
   /**
    * Get All Patients On Sarcoma Karposi
+   *
    * @param adultSeguimentoEncounter
    * @param pediatriaSeguimentoEncounter
    * @param otherDiagnosisConceptId
    * @param sarcomakarposiConceptId
    * @return
    */
-  public static String  getPatientsOnSarcomaKarposi(
-          int adultSeguimentoEncounter,
-          int pediatriaSeguimentoEncounter,
-          int otherDiagnosisConceptId,
-          int sarcomakarposiConceptId
-  ){
-    String query = "SELECT p.patient_id FROM patient p " +
-            "JOIN encounter e ON p.patient_id=e.patient_id " +
-            "JOIN obs o ON p.patient_id=o.person_id " +
-            "WHERE e.encounter_type IN (%d,%d) AND o.concept_id=%d AND o.value_coded=%d AND e.location_id= :location AND e.encounter_datetime<= :endDate AND p.voided=0 AND e.voided=0 ";
+  public static String getPatientsOnSarcomaKarposi(
+      int adultSeguimentoEncounter,
+      int pediatriaSeguimentoEncounter,
+      int otherDiagnosisConceptId,
+      int sarcomakarposiConceptId) {
+    String query =
+        "SELECT p.patient_id FROM patient p "
+            + "JOIN encounter e ON p.patient_id=e.patient_id "
+            + "JOIN obs o ON p.patient_id=o.person_id "
+            + "WHERE e.encounter_type IN (%d,%d) AND o.concept_id=%d AND o.value_coded=%d AND e.location_id= :location AND e.encounter_datetime<= :endDate AND p.voided=0 AND e.voided=0 ";
 
-    return String.format(query, adultSeguimentoEncounter,pediatriaSeguimentoEncounter,otherDiagnosisConceptId,sarcomakarposiConceptId);
+    return String.format(
+        query,
+        adultSeguimentoEncounter,
+        pediatriaSeguimentoEncounter,
+        otherDiagnosisConceptId,
+        sarcomakarposiConceptId);
   }
-
 }
