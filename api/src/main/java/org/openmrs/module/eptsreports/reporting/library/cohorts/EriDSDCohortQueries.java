@@ -12,7 +12,6 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.NextAndPrevDatesCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.OnArtForAtleastXmonthsCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
-import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.DsdQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.*;
@@ -1331,78 +1330,7 @@ public class EriDSDCohortQueries {
    */
   @DocumentedDefinition(value = "BreastfeedingComposition")
   public CohortDefinition getBreastfeedingComposition() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setDescription("breastfeedingComposition");
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-
-    cd.addSearch(
-        "DATAPARTO",
-        EptsReportUtils.map(
-            txNewCohortQueries.getPatientsWithUpdatedDepartureInART(),
-            "value1=${onOrAfter},value2=${onOrBefore},locationList=${location}"));
-    cd.addSearch(
-        "INICIOLACTANTE",
-        EptsReportUtils.map(
-            getBreastfeedingPatientsStartingART(),
-            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
-    cd.addSearch(
-        "LACTANTEPROGRAMA",
-        EptsReportUtils.map(
-            txNewCohortQueries.getPatientsWhoGaveBirthWithinReportingPeriod(),
-            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
-    cd.addSearch("FEMININO", EptsReportUtils.map(genderCohorts.femaleCohort(), ""));
-    cd.addSearch(
-        "LACTANTE",
-        EptsReportUtils.map(
-            getBreastfeedingPatients(),
-            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
-
-    String compositionString =
-        "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE) AND FEMININO";
-
-    cd.setCompositionString(compositionString);
-    return cd;
-  }
-
-  /**
-   * Custom implementation of LACTANTE query to correctly pick breastfeeding patients
-   *
-   * @return CohortDefinitions
-   */
-  public CohortDefinition getBreastfeedingPatients() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("breastfeedingPatients");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.setQuery(
-        BreastfeedingQueries.getLactatingPatients(
-            commonMetadata.getBreastfeeding().getConceptId(),
-            commonMetadata.getYesConcept().getConceptId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
-    return cd;
-  }
-
-  /**
-   * Custom implementation of INICIOLACTANTE query to correctly pick breastfeeding patients starting
-   * ARV treatement
-   *
-   * @return CohortDefinitions
-   */
-  public CohortDefinition getBreastfeedingPatientsStartingART() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("breastfeedingPatients");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.setQuery(
-        BreastfeedingQueries.getLactatingPatientsStartingART(
-            hivMetadata.getCriteriaForArtStart().getConceptId(),
-            commonMetadata.getBreastfeeding().getConceptId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
-    return cd;
+    return txNewCohortQueries.getTxNewBreastfeedingComposition();
   }
 
   /**
