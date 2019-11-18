@@ -537,12 +537,21 @@ public class EriDSDCohortQueries {
             Arrays.asList(hivMetadata.getARVPharmaciaEncounterType()),
             97,
             83);
+    CohortDefinition quarterly = getPatientsWithQuarterlyTypeOfDispensation();
+    CohortDefinition startOrContinue = getPatientsWithStartOrContinueOnQuarterlyDispensation();
+    CohortDefinition completed = getPatientsWithCompletedOnQuarterlyDispensation();
 
     String mappings = "onOrBefore=${endDate},location=${location}";
+    String dispensationMappings =
+        "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
+
     cd.addSearch("TxCurr", EptsReportUtils.map(txCurr, mappings));
     cd.addSearch("scheduled", EptsReportUtils.map(patientsScheduled, mappings));
+    cd.addSearch("quarterly", EptsReportUtils.map(quarterly, dispensationMappings));
+    cd.addSearch("startOrContinue", EptsReportUtils.map(startOrContinue, dispensationMappings));
+    cd.addSearch("completed", EptsReportUtils.map(completed, dispensationMappings));
 
-    cd.setCompositionString("TxCurr AND scheduled");
+    cd.setCompositionString("TxCurr AND (scheduled OR quarterly OR startOrContinue) NOT completed");
 
     return cd;
   }
@@ -1490,4 +1499,44 @@ public class EriDSDCohortQueries {
             hivMetadata.getContinueRegimen().getConceptId()));
     return cd;
   }*/
+
+  private CohortDefinition getPatientsWithCompletedOnQuarterlyDispensation() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getQuarterlyDispensation());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getCompletedConcept());
+    return cd;
+  }
+
+  private CohortDefinition getPatientsWithStartOrContinueOnQuarterlyDispensation() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getQuarterlyDispensation());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getStartDrugsConcept());
+    cd.addValue(hivMetadata.getContinueRegimen());
+    return cd;
+  }
+
+  private CohortDefinition getPatientsWithQuarterlyTypeOfDispensation() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getTypeOfDispensationConcept());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getQuarterlyConcept());
+    return cd;
+  }
 }
