@@ -530,20 +530,17 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    cd.addSearch(
-        "TxCurr",
-        EptsReportUtils.map(
-            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
-            "onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "scheduled",
-        EptsReportUtils.map(
-            getPatientsScheduled(
-                hivMetadata.getReturnVisitDateForArvDrugConcept(),
-                Arrays.asList(hivMetadata.getARVPharmaciaEncounterType()),
-                97,
-                83),
-            "onOrBefore=${endDate},location=${location}"));
+    CohortDefinition txCurr = txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true);
+    CohortDefinition patientsScheduled =
+        getPatientsScheduled(
+            hivMetadata.getReturnVisitDateForArvDrugConcept(),
+            Arrays.asList(hivMetadata.getARVPharmaciaEncounterType()),
+            97,
+            83);
+
+    String mappings = "onOrBefore=${endDate},location=${location}";
+    cd.addSearch("TxCurr", EptsReportUtils.map(txCurr, mappings));
+    cd.addSearch("scheduled", EptsReportUtils.map(patientsScheduled, mappings));
 
     cd.setCompositionString("TxCurr AND scheduled");
 
