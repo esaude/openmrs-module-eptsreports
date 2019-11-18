@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-
 import java.util.Collections;
 import java.util.Date;
 import org.openmrs.Location;
