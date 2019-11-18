@@ -130,6 +130,14 @@ public class DsdQueries {
     return query;
   }
 
+  /**
+   * Get All Patients On Sarcoma Karposi
+   * @param adultSeguimentoEncounter
+   * @param pediatriaSeguimentoEncounter
+   * @param otherDiagnosisConceptId
+   * @param sarcomakarposiConceptId
+   * @return
+   */
   public static String  getPatientsOnSarcomaKarposi(
           int adultSeguimentoEncounter,
           int pediatriaSeguimentoEncounter,

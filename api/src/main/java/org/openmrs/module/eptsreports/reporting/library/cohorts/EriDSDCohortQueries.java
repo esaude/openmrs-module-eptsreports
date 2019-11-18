@@ -69,8 +69,9 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             getPatientsWhoAreStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch("6", EptsReportUtils.map(getAllPatientsOnSarcomaKarposi(), "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(1 AND 2 AND NOT (3 OR 4) AND 5)");
+    cd.setCompositionString("(1 AND 2 AND NOT (3 OR 4 OR 6) AND 5)");
 
     return cd;
   }
@@ -1369,6 +1370,27 @@ public class EriDSDCohortQueries {
             hivMetadata.getCriteriaForArtStart().getConceptId(),
             commonMetadata.getBreastfeeding().getConceptId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
+    return cd;
+  }
+
+  /**
+   * Get Patients who are on Sarcoma Karposi
+   * @return
+   */
+  public  CohortDefinition getAllPatientsOnSarcomaKarposi(){
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("sarcomaKarposiPatients");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.setQuery(DsdQueries.getPatientsOnSarcomaKarposi(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getOtherDiagnosis().getConceptId(),
+            hivMetadata.getKaposiSarcomaConcept().getConceptId()
+    ));
+
     return cd;
   }
 
