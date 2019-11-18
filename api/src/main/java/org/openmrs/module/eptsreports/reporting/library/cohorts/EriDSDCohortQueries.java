@@ -128,7 +128,13 @@ public class EriDSDCohortQueries {
                     hivMetadata.getLacticAcidosis(),
                     hivMetadata.getPeripheralNeuropathy(),
                     hivMetadata.getDiarrhea(),
-                    hivMetadata.getOtherDiagnosis())),
+                    hivMetadata.getOtherDiagnosis(),
+                    hivMetadata.getCytopeniaConcept(),
+                    hivMetadata.getNephrotoxicityConcept(),
+                    hivMetadata.getHepatitisConcept(),
+                    hivMetadata.getStevensJonhsonSyndromeConcept(),
+                    hivMetadata.getHypersensitivityToAbcOrRailConcept(),
+                    hivMetadata.getHepaticSteatosisWithHyperlactataemiaConcept())),
             "onOrAfter=${endDate - 6m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "patientsWithViralLoad",
@@ -361,7 +367,6 @@ public class EriDSDCohortQueries {
             hivMetadata.getHivViralLoadConcept().getConceptId()));
     return sql;
   }
-
 
   /**
    * D2: Number of active patients on ART Not Eligible for DSD D1

@@ -704,57 +704,50 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  //Concept 23748
+  // Concept 23748
   public Concept getCytopeniaConcept() {
     String uuid =
-            Context.getAdministrationService()
-                    .getGlobalProperty("eptsreports.cytopeniaConcept");
+        Context.getAdministrationService().getGlobalProperty("eptsreports.cytopeniaConcept");
     return getConcept(uuid);
   }
 
-  //Concept 23749
+  // Concept 23749
   public Concept getNephrotoxicityConcept() {
     String uuid =
-            Context.getAdministrationService()
-                    .getGlobalProperty("eptsreports.nephrotoxicityConcept");
+        Context.getAdministrationService().getGlobalProperty("eptsreports.nephrotoxicityConcept");
     return getConcept(uuid);
   }
 
-  //Concept 29
+  // Concept 29
   public Concept getHepatitisConcept() {
     String uuid =
-            Context.getAdministrationService()
-                    .getGlobalProperty("eptsreports.hepatitisConcept");
+        Context.getAdministrationService().getGlobalProperty("eptsreports.hepatitisConcept");
     return getConcept(uuid);
   }
 
-  //Concept 23750 STEVENS-JOHNSON SYNDROME
+  // Concept 23750 STEVENS-JOHNSON SYNDROME
   public Concept getStevensJonhsonSyndromeConcept() {
     String uuid =
-            Context.getAdministrationService()
-                    .getGlobalProperty("eptsreports.stevensJonhsonSyndromeConcept");
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.stevensJonhsonSyndromeConcept");
     return getConcept(uuid);
   }
 
-  //Concept 23751 HYPERSENSITIVITY TO ABC/RAL
+  // Concept 23751 HYPERSENSITIVITY TO ABC/RAL
   public Concept getHypersensitivityToAbcOrRailConcept() {
     String uuid =
-            Context.getAdministrationService()
-                    .getGlobalProperty("eptsreports.hypersensitivityToAbcOrRailConcept");
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.hypersensitivityToAbcOrRailConcept");
     return getConcept(uuid);
   }
 
-  //Concept 23752 HEPATIC STEATOSIS WITH HYPERLACTATAEMIA
+  // Concept 23752 HEPATIC STEATOSIS WITH HYPERLACTATAEMIA
   public Concept getHepaticSteatosisWithHyperlactataemiaConcept() {
     String uuid =
-            Context.getAdministrationService()
-                    .getGlobalProperty("eptsreports.hepaticSteatosisWithHyperlactataemiaConcept");
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.hepaticSteatosisWithHyperlactataemiaConcept");
     return getConcept(uuid);
   }
-
-
-
-
 
   // Encounter types
   // encounterType_id = 6
