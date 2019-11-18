@@ -414,9 +414,27 @@ public class EriDSDCohortQueries {
             getAllPatientsWhoAreActiveAndStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    
+    // D2: Get Patients who are pregnant including those that are pregnant and breastfeeding
+    // gravidas e a amamentar
+    cd.addSearch(
+        "pregnantIncludeBreatfeeding",
+        EptsReportUtils.map(
+            getPatientsWhoArePregnant(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    // Get patients who are breastfeeding and not pregnant
+    // getPatientsWhoAreBreastFeedingAndNotPregnant
+    cd.addSearch(
+        "breastFeedingAndNotPregnant",
+        EptsReportUtils.map(
+            getPatientsWhoAreBreastFeedingAndNotPregnant(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    // Get all TB patients
+    cd.addSearch("tbPatient", EptsReportUtils.map(txTBCohortQueries.getInTBProgram(), ""));
+
     cd.setCompositionString(
-    		"allPatientsTxCurr AND NOT activeAndStablePatients");
+        "allPatientsTxCurr AND NOT (activeAndStablePatients OR pregnantIncludeBreatfeeding OR breastFeedingAndNotPregnant OR tbPatient)");
 
     return cd;
   }
