@@ -447,7 +447,7 @@ public class EriDSDCohortQueries {
   public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingD2() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
-    cd.setName("D2 Patients who are NOT pregnant and NOT breastfeeding\"");
+    cd.setName("D2 Patients who are NOT pregnant and NOT breastfeeding");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
