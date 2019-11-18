@@ -103,6 +103,8 @@ public class TxNewCohortQueries {
             hivMetadata.getPregnancyDueDate().getConceptId(),
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getDateOfLastMenstruationConcept().getConceptId(),
             hivMetadata.getPtvEtvProgram().getProgramId()));
     return cd;
   }

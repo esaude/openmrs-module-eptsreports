@@ -59,7 +59,11 @@ public class Eri4MonthsCohortQueries {
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata
                     .getTransferredFromOtherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()));
+                    .getProgramWorkflowStateId(),
+                hivMetadata.getArtPickupConcept().getConceptId(),
+                hivMetadata.getYesConcept().getConceptId(),
+                hivMetadata.getArtDatePickup().getConceptId(),
+                hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
     return cd;
   }
 
@@ -148,7 +152,7 @@ public class Eri4MonthsCohortQueries {
         "dead",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            "onOrBefore=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
@@ -188,7 +192,7 @@ public class Eri4MonthsCohortQueries {
         "dead",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            "onOrBefore=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
@@ -229,7 +233,7 @@ public class Eri4MonthsCohortQueries {
         "dead",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            "onOrBefore=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(

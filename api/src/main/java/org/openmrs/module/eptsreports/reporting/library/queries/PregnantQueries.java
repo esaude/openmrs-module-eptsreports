@@ -22,6 +22,8 @@ public class PregnantQueries {
       int eddConcept,
       int adultInitailEncounter,
       int adultSegEncounter,
+      int fichaResumo,
+      int lastMenstrualPeriod,
       int etvProgram) {
 
     return "Select     p.patient_id"
@@ -71,6 +73,17 @@ public class PregnantQueries {
         + " inner join person pe on pp.patient_id=pe.person_id"
         + " where pp.program_id="
         + etvProgram
-        + " and pp.voided=0 and pp.date_enrolled between :startDate and :endDate and pp.location_id=:location and pe.gender='F' ";
+        + " and pp.voided=0 and pp.date_enrolled between :startDate and :endDate and pp.location_id=:location and pe.gender='F' "
+        + "union "
+        + " SELECT p.patient_id FROM patient p "
+        + " inner join person pe on p.patient_id=pe.person_id "
+        + " inner join encounter e on p.patient_id=e.patient_id "
+        + " inner join obs o on e.encounter_id=o.encounter_id "
+        + "  where p.voided=0 and e.voided=0 and o.voided=0 and concept_id= "
+        + lastMenstrualPeriod
+        + " AND e.encounter_type IN ( "
+        + fichaResumo
+        + ") "
+        + " AND o.value_datetime BETWEEN :startDate AND :endDate ";
   }
 }

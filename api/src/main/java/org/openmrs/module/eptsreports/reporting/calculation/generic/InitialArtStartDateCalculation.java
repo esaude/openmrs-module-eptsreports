@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.openmrs.Concept;
@@ -34,6 +35,8 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -115,7 +118,7 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
         ePTSCalculationService.firstObs(
             arvPlan, transferInConcept, location, true, null, null, null, cohort, context);
 
-    CalculationResultMap drugPickupMap = getMastercardDrugPickupMap(cohort, location, context);
+    CalculationResultMap drugPickupMap = getMastercardDrugPickupMap(cohort, context);
 
     for (Integer pId : cohort) {
       Date requiredDate = null;
@@ -133,9 +136,9 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
       if (historicalDateObs != null) {
         enrollmentDates.add(historicalDateObs.getValueDatetime());
       }
-      Obs drugPickup = EptsCalculationUtils.resultForPatient(drugPickupMap, pId);
+      Date drugPickup = EptsCalculationUtils.resultForPatient(drugPickupMap, pId);
       if (drugPickup != null) {
-        enrollmentDates.add(drugPickup.getValueDatetime());
+        enrollmentDates.add(drugPickup);
       }
       if (considerPharmacyEncounter) {
         Encounter pharmacyEncounter =
@@ -180,18 +183,42 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
   }
 
   private CalculationResultMap getMastercardDrugPickupMap(
-      Collection<Integer> cohort, Location location, PatientCalculationContext context) {
-    Concept artDatePickup = hivMetadata.getArtDatePickup();
-    EncounterType masterCardDrugPickup = hivMetadata.getMasterCardDrugPickupEncounterType();
-    return ePTSCalculationService.firstObs(
-        artDatePickup,
-        null,
-        location,
-        true,
-        null,
-        null,
-        Arrays.asList(masterCardDrugPickup),
-        cohort,
-        context);
+      Collection<Integer> cohort, PatientCalculationContext context) {
+    SqlPatientDataDefinition def = new SqlPatientDataDefinition();
+    def.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    def.addParameter(new Parameter("location", "location", Location.class));
+    String sql =
+        "SELECT p.patient_id, "
+            + "       Min(pickupdate.value_datetime) value_datetime "
+            + "FROM patient p "
+            + "         JOIN encounter e "
+            + "              ON p.patient_id = e.patient_id "
+            + "         JOIN obs pickupdate on e.encounter_id = pickupdate.encounter_id "
+            + "         JOIN obs pickup on e.encounter_id = pickup.encounter_id "
+            + "WHERE p.voided = 0 "
+            + "  AND p.patient_id in (:patientIds)"
+            + "  AND e.voided = 0 "
+            + "  AND e.encounter_type = %d "
+            + "  AND e.location_id = :location "
+            + "  AND pickup.voided = 0 "
+            + "  AND pickup.concept_id = %d "
+            + "  AND pickup.value_coded = %d "
+            + "  AND pickupdate.voided = 0 "
+            + "  AND pickupdate.concept_id = %d "
+            + "  AND pickupdate.value_datetime <= :onOrBefore "
+            + "GROUP BY p.patient_id;";
+
+    def.setSql(
+        String.format(
+            sql,
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtPickupConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getArtDatePickup().getConceptId()));
+
+    Map<String, Object> params = new HashMap<>();
+    params.put("location", context.getFromCache("location"));
+    params.put("onOrBefore", context.getFromCache("onOrBefore"));
+    return EptsCalculationUtils.evaluateWithReporting(def, cohort, params, null, context);
   }
 }

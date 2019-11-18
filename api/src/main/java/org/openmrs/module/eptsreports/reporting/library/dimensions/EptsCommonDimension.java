@@ -183,31 +183,25 @@ public class EptsCommonDimension {
         "DP",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            "onOrBefore=${reportingEndDate},location=${location}"));
 
     dim.addCohortDefinition(
         "LTFU",
         EptsReportUtils.map(
-            eri4MonthsCohortQueries.getAllPatientsWhoAreLostToFollowUpDuringPeriod(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
+            genericCohortQueries.getPatientsWhoToLostToFollowUp(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
 
     dim.addCohortDefinition(
         "TOP",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
-                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            hivCohortQueries.getPatientsTransferredOut(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
 
     dim.addCohortDefinition(
         "STP",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            hivCohortQueries.getPatientsWhoStoppedTreatment(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
 
     dim.addCohortDefinition(
         "ANIT",
@@ -247,18 +241,18 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "DP",
         EptsReportUtils.map(
-            eri2MonthsCohortQueries.getPatientsWhoInitiatedArtAndDead(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
+            genericCohortQueries.getDeceasedPatients(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
     dim.addCohortDefinition(
         "TOP",
         EptsReportUtils.map(
-            eri2MonthsCohortQueries.getPatientsWhoInitiatedArtButTransferredOut(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
+            hivCohortQueries.getPatientsTransferredOut(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
     dim.addCohortDefinition(
         "STP",
         EptsReportUtils.map(
-            eri2MonthsCohortQueries.getPatientsWhoInitiatedArtButSuspendedTreatment(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
+            hivCohortQueries.getPatientsWhoStoppedTreatment(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
     return dim;
   }
 

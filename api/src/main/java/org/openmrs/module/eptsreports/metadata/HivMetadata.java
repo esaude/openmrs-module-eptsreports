@@ -594,6 +594,14 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id = 6272
+  public Concept getStateOfStayOfPreArtPatient() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.stateOfStayOfPreArtPatient");
+    return getConcept(uuid);
+  }
+
   // Concept 2031 REASON PATIENT NOT FOUND BY ACTIVIST
   public Concept getReasonPatientNotFound() {
     String uuid =
@@ -635,6 +643,21 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // Concept 23722 APPLICATION FOR LABORATORY RESEARCH
+  public Concept getApplicationForLaboratoryResearch() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.applicationForLaboratoryResearch");
+    return getConcept(uuid);
+  }
+  // Concept 1305 HIV VIRAL LOAD, QUALITATIVE
+  public Concept getHivViralLoadQualitative() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.viralLoadQualitativeConceptUuid");
+    return getConcept(uuid);
+  }
+
   public Concept getKeyPopulationConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -666,18 +689,18 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // Concept 23722 APPLICATION FOR LABORATORY RESEARCH
-  public Concept getApplicationForLaboratoryResearch() {
+  // concept_id = 23865
+  public Concept getArtPickupConcept() {
     String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty("eptsreports.applicationForLaboratoryResearch");
+        Context.getAdministrationService().getGlobalProperty("eptsreports.artPickupConceptUuid");
     return getConcept(uuid);
   }
-  // Concept 1305 HIV VIRAL LOAD, QUALITATIVE
-  public Concept getHivViralLoadQualitative() {
+
+  // Concept  1465
+  public Concept getDateOfLastMenstruationConcept() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty("eptsreports.viralLoadQualitativeConceptUuid");
+            .getGlobalProperty("eptsreports.dateOfLastMenstruationConcept");
     return getConcept(uuid);
   }
 
