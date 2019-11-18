@@ -129,7 +129,7 @@ public class EriDSDCohortQueries {
                     hivMetadata.getPeripheralNeuropathy(),
                     hivMetadata.getDiarrhea(),
                     hivMetadata.getOtherDiagnosis())),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+            "onOrAfter=${endDate - 6m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "patientsWithViralLoad",
         EptsReportUtils.map(
