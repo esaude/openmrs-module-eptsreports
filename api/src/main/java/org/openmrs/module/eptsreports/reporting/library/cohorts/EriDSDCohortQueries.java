@@ -797,25 +797,27 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    cd.addSearch(
-        "TxCurr",
-        EptsReportUtils.map(
-            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
-            "onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "scheduledN3",
-        EptsReportUtils.map(
-            getPatientsScheduled(
-                hivMetadata.getReturnVisitDateConcept(),
-                Arrays.asList(
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
-                    hivMetadata.getAdultoSeguimentoEncounterType()),
-                190,
-                175),
-            "onOrBefore=${endDate},location=${location}"));
+    CohortDefinition txCurr = txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true);
+    CohortDefinition patientsScheduled = getPatientsScheduled175to190days();
+
+    String mappings = "onOrBefore=${endDate},location=${location}";
+    cd.addSearch("TxCurr", EptsReportUtils.map(txCurr, mappings));
+    cd.addSearch("scheduledN3", EptsReportUtils.map(patientsScheduled, mappings));
+
     cd.setCompositionString("TxCurr AND scheduledN3");
 
     return cd;
+  }
+
+  private CohortDefinition getPatientsScheduled175to190days() {
+    int lowerBound = 175;
+    int upperBound = 190;
+    Concept returnVisitDate = hivMetadata.getReturnVisitDateConcept();
+    List<EncounterType> encounterTypes =
+        Arrays.asList(
+            hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+            hivMetadata.getAdultoSeguimentoEncounterType());
+    return getPatientsScheduled(returnVisitDate, encounterTypes, upperBound, lowerBound);
   }
 
   /**
