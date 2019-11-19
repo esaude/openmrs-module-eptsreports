@@ -336,4 +336,17 @@ public class HivCohortQueries {
             hivMetadata.getArtDatePickup().getConceptId()));
     return cd;
   }
+
+  private CohortDefinition getPatientsOnTbTreatment(){
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("patientsOnTbTreatment");
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    String query ="";
+
+    cd.setQuery(String.format(query,hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
+
+    return cd;
+  }
 }
