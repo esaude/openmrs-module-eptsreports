@@ -56,25 +56,14 @@ public class TXCurrQueries {
       int artProgram,
       int transferredOutToAnotherHealthFacilityWorkflowState,
       int suspendedTreatmentWorkflowState,
-      int artDeadWorkflowState,
-      boolean maxDate) {
-
-    String dateCluase =
-        " and ps.state in (%d,%d,%d) and ps.end_date is null and ps.start_date<=:onOrBefore ";
-    ;
-
-    if (maxDate) {
-      dateCluase =
-          " and ps.state in (%d,%d,%d) and ps.end_date is null and ps.start_date ="
-              + "(select max(start_date)  from patient_state where patient_state_id = ps.patient_state_id ) ";
-    }
+      int artDeadWorkflowState) {
 
     String query =
         " select p.patient_id from patient p "
             + " inner join patient_program pg on p.patient_id=pg.patient_id "
             + " inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
             + " where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%d "
-            + dateCluase
+            + " and ps.state in (%d,%d,%d) and ps.end_date is null and ps.start_date<=:onOrBefore "
             + "and pg.location_id=:location group by p.patient_id  ";
 
     return String.format(
@@ -85,23 +74,14 @@ public class TXCurrQueries {
         artDeadWorkflowState);
   }
 
-  public static String getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(
-      boolean maxDate) {
+  public static String getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate() {
 
-    String dateCluase =
-        " where prs.dead=1 and prs.death_date <= :onOrBefore and p.voided=0 and prs.voided=0 ";
-
-    if (maxDate) {
-      dateCluase =
-          " where prs.dead=1 and prs.death_date = (select max(death_date) from person where  person_id = prs.person_id )"
-              + " and p.voided=0 and prs.voided=0  ";
-    }
     String query =
         "select p.patient_id  "
             + " from patient p "
             + " inner join person prs on prs.person_id=p.patient_id "
             + " inner join  encounter e on  e.patient_id=p.patient_id "
-            + dateCluase
+            + " where prs.dead=1 and prs.death_date <= :onOrBefore and p.voided=0 and prs.voided=0 "
             + " and e.location_id = :location group by p.patient_id ";
 
     return query;
@@ -137,17 +117,8 @@ public class TXCurrQueries {
       int adultoSeguimentoEncounterType,
       int masterCardEncounterType,
       int stateOfStayPriorArtPatientConcept,
-      int patientHasDiedConcept,
-      boolean maxDate) {
+      int patientHasDiedConcept) {
 
-    String dateClause = " and e.location_id = :location and e.encounter_datetime <= :onOrBefore ";
-
-    if (maxDate) {
-      dateClause =
-          " and e.location_id = :location and e.encounter_datetime "
-              + " =  (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id "
-              + " and encounter_type = e.encounter_type) ";
-    }
     String query =
         "select  p.patient_id "
             + "from patient p "
@@ -155,7 +126,7 @@ public class TXCurrQueries {
             + "inner join obs o on o.encounter_id=e.encounter_id "
             + "where e.encounter_type in (%s,%s) and p.voided=0  and e.voided=0 and o.voided=0 "
             + "and o.concept_id=%s and   o.value_coded=%s "
-            + dateClause
+            + " and e.location_id = :location and e.encounter_datetime <= :onOrBefore "
             + "group by p.patient_id";
 
     return String.format(
@@ -170,26 +141,17 @@ public class TXCurrQueries {
       int adultoSeguimentoEncounterType,
       int masterCardEncounterType,
       int stateOfStayPriorArtPatientConcept,
-      int transferredOutConcept,
-      boolean maxDate) {
-    String dateClause = " and e.location_id = :location and e.encounter_datetime <= :onOrBefore ";
-
-    if (maxDate) {
-      dateClause =
-          " and e.location_id = :location and e.encounter_datetime "
-              + " =  (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id "
-              + " and encounter_type = e.encounter_type ) ";
-    }
+      int transferredOutConcept) {
 
     String query =
         "select  p.patient_id "
-            + "from patient p "
-            + "inner join encounter e on e.patient_id=p.patient_id "
-            + "inner join obs o on o.encounter_id=e.encounter_id "
-            + "where e.encounter_type in (%s,%s) and p.voided=0  and e.voided=0 and o.voided=0 "
-            + "and o.concept_id=%s and   o.value_coded=%s "
-            + dateClause
-            + "group by p.patient_id ";
+            + " from patient p "
+            + " inner join encounter e on e.patient_id=p.patient_id "
+            + " inner join obs o on o.encounter_id=e.encounter_id "
+            + " where e.encounter_type in (%s,%s) and p.voided=0  and e.voided=0 and o.voided=0 "
+            + " and o.concept_id=%s and   o.value_coded=%s "
+            + " and e.location_id = :location and e.encounter_datetime <= :onOrBefore "
+            + " group by p.patient_id ";
 
     return String.format(
         query,
@@ -203,16 +165,8 @@ public class TXCurrQueries {
       int adultoSeguimentoEncounterType,
       int masterCardEncounterType,
       int stateOfStayPriorArtPatientConcept,
-      int suspendedTreatmentConcept,
-      boolean maxDate) {
-    String dateClause = " and e.location_id = :location and e.encounter_datetime <= :onOrBefore ";
+      int suspendedTreatmentConcept) {
 
-    if (maxDate) {
-      dateClause =
-          " and e.location_id = :location and e.encounter_datetime "
-              + " =  (select  max(encounter_datetime) from encounter where  patient_id= p.patient_id "
-              + " and encounter_type = e.encounter_type )";
-    }
     String query =
         "select  p.patient_id "
             + "from patient p "
@@ -220,7 +174,7 @@ public class TXCurrQueries {
             + "inner join obs o on o.encounter_id=e.encounter_id "
             + "where e.encounter_type in (%s,%s) and p.voided=0  and e.voided=0 and o.voided=0 "
             + "and o.concept_id=%s and   o.value_coded=%s "
-            + dateClause
+            + " and e.location_id = :location and e.encounter_datetime <= :onOrBefore "
             + "group by p.patient_id ";
 
     return String.format(
@@ -332,6 +286,9 @@ public class TXCurrQueries {
       int adultoSeguimentoEncounterType1,
       int aRVPediatriaSeguimentoEncounterType,
       int aRVPharmaciaEncounterType1,
+      int adultoSeguimentoEncounterType2,
+      int aRVPediatriaSeguimentoEncounterType2,
+      int aRVPharmaciaEncounterType2,
       int returnVisitDateConcept,
       int returnVisitDateForArvDrugConcept) {
 
@@ -341,11 +298,8 @@ public class TXCurrQueries {
             + "        FROM   patient p  "
             + "               INNER JOIN encounter e  "
             + "                       ON e.patient_id = p.patient_id  "
-            + "               INNER JOIN obs o  "
-            + "                       ON o.encounter_id = e.encounter_id  "
             + "        WHERE  p.voided = 0  "
             + "               AND e.voided = 0  "
-            + "               AND o.voided = 0  "
             + "               AND p.patient_id NOT IN (SELECT patient_id  "
             + "                                        FROM   encounter  "
             + "                                        WHERE  encounter_type IN (  "
@@ -366,14 +320,13 @@ public class TXCurrQueries {
             + "               AND e.encounter_datetime = (SELECT Max(encounter_datetime)  "
             + "                                           FROM   encounter  "
             + "                                           WHERE  patient_id = p.patient_id  "
-            + "                                                  AND encounter_type =  "
-            + "                                                      e.encounter_type  "
+            + "                                                  AND encounter_type  IN ( %s, %s, %s )  "
             + "                                          )  "
             + "               AND e.encounter_type IN ( %s, %s, %s )  "
             + "               AND e.encounter_id NOT IN (SELECT encounter_id  "
             + "                                          FROM   obs  "
-            + "                                          WHERE  concept_id = %s  "
-            + "                                                  OR concept_id = %s)  "
+            + "                                          WHERE  (concept_id = %s and (value_datetime is null or value_numeric is null)) "
+            + "                                                  OR (concept_id = %s and (value_datetime is null or value_numeric is null)))  "
             + "               AND e.location_id = :location  "
             + "        GROUP  BY p.patient_id) ps  "
             + "GROUP  BY ps.patient_id;";
@@ -387,6 +340,9 @@ public class TXCurrQueries {
         adultoSeguimentoEncounterType1,
         aRVPediatriaSeguimentoEncounterType,
         aRVPharmaciaEncounterType1,
+        adultoSeguimentoEncounterType2,
+        aRVPediatriaSeguimentoEncounterType2,
+        aRVPharmaciaEncounterType2,
         returnVisitDateConcept,
         returnVisitDateForArvDrugConcept);
   }
@@ -424,5 +380,154 @@ public class TXCurrQueries {
         aRVPharmaciaEncounterType,
         masterCardDrugPickupEncounterType,
         artDatePickup);
+  }
+
+  public static String getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition(
+      int adultoSeguimento,
+      int aRVPediatriaSeguimento,
+      int aRVPharmacia,
+      int masterCardDrugPickup,
+      int artDatePickup,
+      int masterCardEncounterType,
+      int transferredOutToAnotherHealthFacilityWorkflowState,
+      int getSuspendedTreatmentWorkflowState,
+      int getArtDeadWorkflowState,
+      int buscaActivaEncounterType,
+      int visitaApoioReintegracaoParteA,
+      int visitaApoioReintegracaoParteB,
+      int patientFoundConcept,
+      int noConcept,
+      int reasonPatientNotFound,
+      int patientIsDead,
+      int stateOfStayOfPreArtPatient,
+      int patientHasDiedConcept,
+      int transferredOutConcept,
+      int suspendedTreatmentConcept,
+      int artProgram) {
+    String query =
+        "select p.patient_id  "
+            + "             from patient p  "
+            + "             inner join encounter e on  e.patient_id = p.patient_id  "
+            + "             inner join obs obss on obss.encounter_id=e.encounter_id  "
+            + "             where  p.voided=0  and e.voided=0  and obss.voided=0  "
+            + "             and e.encounter_type in ("
+            + adultoSeguimento
+            + ","
+            + aRVPediatriaSeguimento
+            + ","
+            + aRVPharmacia
+            + ")  or  ( e.encounter_type = "
+            + masterCardDrugPickup
+            + " and obss.concept_id="
+            + artDatePickup
+            + " ) "
+            + "             and e.encounter_datetime > (select max(most_recent.common_date)  "
+            + "from( "
+            + " "
+            + "select p.patient_id  , ps.end_date common_date from patient p  "
+            + "             inner join patient_program pg on p.patient_id=pg.patient_id  "
+            + "             inner join patient_state ps on pg.patient_program_id=ps.patient_program_id  "
+            + "             where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id="
+            + artProgram
+            + " "
+            + "            and ps.state in ("
+            + transferredOutToAnotherHealthFacilityWorkflowState
+            + ","
+            + getSuspendedTreatmentWorkflowState
+            + ","
+            + getArtDeadWorkflowState
+            + ") and ps.end_date is null and ps.start_date<= :onOrBefore "
+            + "            and pg.location_id= :location group by p.patient_id  "
+            + " "
+            + "union "
+            + "             select p.patient_id  , prs.death_date common_date "
+            + "            from patient p  "
+            + "            inner join person prs on prs.person_id=p.patient_id  "
+            + "            inner join  encounter e on  e.patient_id=p.patient_id  "
+            + "               where prs.dead=1 and prs.death_date <= :onOrBefore and p.voided=0 and prs.voided=0  "
+            + "            and e.location_id = :location group by p.patient_id "
+            + " "
+            + "union "
+            + " "
+            + "select  p.patient_id , e.encounter_datetime common_date "
+            + "            from patient p  "
+            + "            inner join encounter e on e.patient_id=p.patient_id  "
+            + "            inner join obs o  on o.encounter_id=e.encounter_id  "
+            + "            where  p.voided=0  and e.voided=0 and o.voided=0  "
+            + "            and e.encounter_type in ("
+            + buscaActivaEncounterType
+            + ","
+            + visitaApoioReintegracaoParteA
+            + ","
+            + visitaApoioReintegracaoParteB
+            + ") and ((o.concept_id = "
+            + patientFoundConcept
+            + " and o.value_coded = "
+            + noConcept
+            + " )  "
+            + "                        or (o.concept_id = "
+            + reasonPatientNotFound
+            + " and o.value_coded ="
+            + patientIsDead
+            + " ))  "
+            + "            and e.encounter_datetime = (select  max(encounter_datetime) from encounter  "
+            + "            where  patient_id= p.patient_id and encounter_type = e.encounter_type)  "
+            + "            and e.encounter_datetime <= :onOrBefore and  e.location_id = :location group by p.patient_id  "
+            + " "
+            + "union "
+            + " "
+            + "select  p.patient_id , e.encounter_datetime common_date  "
+            + "             from patient p  "
+            + "             inner join encounter e on e.patient_id=p.patient_id  "
+            + "             inner join obs o on o.encounter_id=e.encounter_id  "
+            + "             where e.encounter_type in ("
+            + adultoSeguimento
+            + ","
+            + masterCardEncounterType
+            + ") and p.voided=0  and e.voided=0 and o.voided=0  "
+            + "             and o.concept_id="
+            + stateOfStayOfPreArtPatient
+            + " and   o.value_coded="
+            + patientHasDiedConcept
+            + " "
+            + "              and e.location_id = :location and e.encounter_datetime <= :onOrBefore "
+            + "             group by p.patient_id "
+            + "union "
+            + "             select  p.patient_id , e.encounter_datetime common_date  "
+            + "             from patient p  "
+            + "             inner join encounter e on e.patient_id=p.patient_id  "
+            + "             inner join obs o on o.encounter_id=e.encounter_id  "
+            + "             where e.encounter_type in ("
+            + adultoSeguimento
+            + ","
+            + masterCardEncounterType
+            + ") and p.voided=0  and e.voided=0 and o.voided=0  "
+            + "             and o.concept_id="
+            + stateOfStayOfPreArtPatient
+            + " and   o.value_coded="
+            + transferredOutConcept
+            + " "
+            + "              and e.location_id = :location and e.encounter_datetime <= :onOrBefore "
+            + "             group by p.patient_id "
+            + "union "
+            + "             select  p.patient_id , e.encounter_datetime common_date  "
+            + "             from patient p  "
+            + "             inner join encounter e on e.patient_id=p.patient_id  "
+            + "             inner join obs o on o.encounter_id=e.encounter_id  "
+            + "             where e.encounter_type in ("
+            + adultoSeguimento
+            + ","
+            + masterCardEncounterType
+            + ") and p.voided=0  and e.voided=0 and o.voided=0  "
+            + "             and o.concept_id="
+            + stateOfStayOfPreArtPatient
+            + " and   o.value_coded="
+            + suspendedTreatmentConcept
+            + " "
+            + "              and e.location_id = :location and e.encounter_datetime <= :onOrBefore "
+            + "             group by p.patient_id) most_recent  where  most_recent.common_date is not null )  "
+            + "             and e.location_id= :location group by p.patient_id ";
+
+    return query;
   }
 }
