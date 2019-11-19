@@ -799,13 +799,46 @@ public class EriDSDCohortQueries {
 
     CohortDefinition txCurr = txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true);
     CohortDefinition patientsScheduled = getPatientsScheduled175to190days();
+    CohortDefinition rapidFlow = getPatientsWithStartOrContinueOnRapidFlow();
 
     String mappings = "onOrBefore=${endDate},location=${location}";
+    String rapidFlowMappings =
+        "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
     cd.addSearch("TxCurr", EptsReportUtils.map(txCurr, mappings));
     cd.addSearch("scheduledN3", EptsReportUtils.map(patientsScheduled, mappings));
+    cd.addSearch("rapidFlow", EptsReportUtils.map(rapidFlow, rapidFlowMappings));
+    cd.addSearch(
+        "completed", EptsReportUtils.map(getPatientsWhoCompletedRapidFlow(), rapidFlowMappings));
 
-    cd.setCompositionString("TxCurr AND scheduledN3");
+    cd.setCompositionString("TxCurr AND (scheduledN3 OR rapidFlow) NOT completed");
 
+    return cd;
+  }
+
+  private CohortDefinition getPatientsWhoCompletedRapidFlow() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getRapidFlow());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getCompletedConcept());
+    return cd;
+  }
+
+  private CohortDefinition getPatientsWithStartOrContinueOnRapidFlow() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getRapidFlow());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getStartDrugsConcept());
+    cd.addValue(hivMetadata.getContinueRegimen());
     return cd;
   }
 
