@@ -749,27 +749,34 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  //Concept Id 1113
-  public Concept getTBDrugStartDateConcept(){
-    String uuid= Context.getAdministrationService().getGlobalProperty("eptsreports.tuberculosisTreatmentStartDateConceptUuid");
+  // Concept Id 1113
+  public Concept getTBDrugStartDateConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.tuberculosisTreatmentStartDateConceptUuid");
     return getConcept(uuid);
   }
 
-  //Concept 6120
-  public Concept getTBDrugEndDateConcept(){
-    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.tbDgrusTreatmentEndDateUuid");
-    return  getConcept(uuid);
+  // Concept 6120
+  public Concept getTBDrugEndDateConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.tbDgrusTreatmentEndDateUuid");
+    return getConcept(uuid);
   }
 
-  //Concept ID 23761
-  public Concept getActiveTBConcept(){
-    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.activeTBConceptUuid");
-    return  getConcept(uuid);
+  // Concept ID 23761
+  public Concept getActiveTBConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.activeTBConceptUuid");
+    return getConcept(uuid);
   }
 
-  //Concept ID 1268
-  public Concept getTBTreatmentPlanConcept(){
-    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.tuberculosisTreatmentPlanConceptUuid");
+  // Concept ID 1268
+  public Concept getTBTreatmentPlanConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.tuberculosisTreatmentPlanConceptUuid");
     return getConcept(uuid);
   }
 
@@ -943,10 +950,10 @@ public class HivMetadata extends ProgramsMetadata {
     return getProgram(uuid);
   }
 
-  //Program Id 5 TB
-  public Program getTBProgram(){
+  // Program Id 5 TB
+  public Program getTBProgram() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.tbProgramUuid");
-    return  getProgram(uuid);
+    return getProgram(uuid);
   }
 
   // Identifier types

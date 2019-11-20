@@ -74,8 +74,13 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             getAllPatientsOnSarcomaKarposi(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "7",
+        EptsReportUtils.map(
+            hivCohortQueries.getPatientsOnTbTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(1 AND 2 AND NOT (3 OR 4 OR 6) AND 5)");
+    cd.setCompositionString("(1 AND 2 AND NOT (3 OR 4 OR 6 OR 7) AND 5)");
 
     return cd;
   }
