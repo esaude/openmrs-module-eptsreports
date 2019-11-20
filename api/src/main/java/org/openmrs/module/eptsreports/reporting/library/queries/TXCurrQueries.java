@@ -94,21 +94,27 @@ public class TXCurrQueries {
       int noConcept,
       int patientIsDead) {
     String query =
-        "select  p.patient_id"
-            + " from patient p "
-            + " inner join encounter e on e.patient_id=p.patient_id "
-            + " inner join obs o  on o.encounter_id=e.encounter_id "
-            + " where  p.voided=0  and e.voided=0 and o.voided=0 "
-            + " and e.encounter_type in (%s) and ((o.concept_id = %s and o.value_coded = %s ) or (o.concept_id = %s and o.value_coded = %s )) "
-            + " and e.encounter_datetime = (select  max(encounter_datetime) from encounter "
-            + " where  patient_id= p.patient_id and encounter_type = e.encounter_type) "
-            + " and e.encounter_datetime <= :onOrBefore and  e.location_id = :location group by p.patient_id ";
+        " SELECT named.patient_id FROM ( " + 
+        " SELECT p.patient_id AS patient_id, MAX(e.encounter_datetime)   " + 
+        " FROM patient p " + 
+        " INNER JOIN encounter e ON e.patient_id=p.patient_id " + 
+        " WHERE p.voided=0 AND e.voided=0 AND e.encounter_type IN(%s) AND e.encounter_datetime is not null AND e.encounter_datetime <= :onOrBefore AND " + 
+        " e.encounter_id IN ( " + 
+        "      select ee.encounter_id from " + 
+        "      encounter ee INNER JOIN obs o ON o.encounter_id=ee.encounter_id AND o.voided=0 AND " + 
+        "      ee.encounter_type IN(%s) AND " + 
+        "      o.concept_id=%s AND o.value_coded=%s) AND " + 
+        " e.encounter_id IN ( " + 
+        "      select eee.encounter_id from " + 
+        "      encounter eee INNER JOIN obs oo ON oo.encounter_id=eee.encounter_id AND oo.voided=0 AND " + 
+        "      eee.encounter_type IN(%s) AND " + 
+        "oo.concept_id=%s AND oo.value_coded=%s) and e.location_id = :location  group by p.patient_id) named " ;
 
     return String.format(
         query,
-        encounterTypes,
+        encounterTypes,encounterTypes,
         patientFoundConcept,
-        reasonPatientNotFound,
+        reasonPatientNotFound,encounterTypes,
         noConcept,
         patientIsDead);
   }
@@ -449,30 +455,21 @@ public class TXCurrQueries {
             + " "
             + "union "
             + " "
-            + "select  p.patient_id , e.encounter_datetime common_date "
-            + "            from patient p  "
-            + "            inner join encounter e on e.patient_id=p.patient_id  "
-            + "            inner join obs o  on o.encounter_id=e.encounter_id  "
-            + "            where  p.voided=0  and e.voided=0 and o.voided=0  "
-            + "            and e.encounter_type in ("
-            + buscaActivaEncounterType
-            + ","
-            + visitaApoioReintegracaoParteA
-            + ","
-            + visitaApoioReintegracaoParteB
-            + ") and ((o.concept_id = "
-            + patientFoundConcept
-            + " and o.value_coded = "
-            + noConcept
-            + " )  "
-            + "                        or (o.concept_id = "
-            + reasonPatientNotFound
-            + " and o.value_coded ="
-            + patientIsDead
-            + " ))  "
-            + "            and e.encounter_datetime = (select  max(encounter_datetime) from encounter  "
-            + "            where  patient_id= p.patient_id and encounter_type = e.encounter_type)  "
-            + "            and e.encounter_datetime <= :onOrBefore and  e.location_id = :location group by p.patient_id  "
+            +" SELECT named.patient_id, named.common_date FROM ( " + 
+            " SELECT p.patient_id AS patient_id, MAX(e.encounter_datetime)  as  common_date " + 
+            " FROM patient p" + 
+            " INNER JOIN encounter e ON e.patient_id=p.patient_id " + 
+            " WHERE p.voided=0 AND e.voided=0 AND e.encounter_type IN("+ buscaActivaEncounterType+","+ visitaApoioReintegracaoParteA+","+ visitaApoioReintegracaoParteB+") AND e.encounter_datetime is not null AND e.encounter_datetime <= :onOrBefore AND " + 
+            " e.encounter_id IN ( " + 
+            "      select ee.encounter_id from " + 
+            "      encounter ee INNER JOIN obs o ON o.encounter_id=ee.encounter_id AND o.voided=0 AND " + 
+            "      ee.encounter_type IN("+ buscaActivaEncounterType+","+ visitaApoioReintegracaoParteA+","+ visitaApoioReintegracaoParteB+") AND " + 
+            "      o.concept_id="+patientFoundConcept+" AND o.value_coded="+noConcept+") AND " + 
+            " e.encounter_id IN ( " + 
+            "      select eee.encounter_id from " + 
+            "      encounter eee INNER JOIN obs oo ON oo.encounter_id=eee.encounter_id AND oo.voided=0 AND " + 
+            "      eee.encounter_type IN("+ buscaActivaEncounterType+","+ visitaApoioReintegracaoParteA+","+ visitaApoioReintegracaoParteB+") AND " + 
+            "oo.concept_id="+reasonPatientNotFound+" AND oo.value_coded="+patientIsDead+") and e.location_id = :location  group by p.patient_id) named "
             + " "
             + "union "
             + " "
