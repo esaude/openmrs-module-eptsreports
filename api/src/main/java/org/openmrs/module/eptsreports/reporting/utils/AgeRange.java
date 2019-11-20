@@ -58,4 +58,14 @@ public enum AgeRange {
   public int getMax() {
     return this.max;
   }
+
+  public String getDesagregationColumnName(final String prefix, final Gender gender) {
+    StringBuilder sb = new StringBuilder(prefix);
+    sb.append("-");
+    sb.append(Gender.FEMALE.equals(gender) ? "females" : "males");
+    sb.append("-");
+    sb.append(this.getName());
+    sb.append(gender.getName());
+    return sb.toString();
+  }
 }

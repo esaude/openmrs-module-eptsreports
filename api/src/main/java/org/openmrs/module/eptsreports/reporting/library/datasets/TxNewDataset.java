@@ -98,17 +98,17 @@ public class TxNewDataset extends BaseDataSet {
         ABOVE_FIFTY);
 
     dataSetDefinition.addDimension(
-        this.getName(Gender.MALE, AgeRange.UNKNOWN),
+        this.getColumnName(AgeRange.UNKNOWN, Gender.MALE),
         EptsReportUtils.map(
             this.eptsCommonDimension.findPatientsWithUnknownAgeByGender(
-                this.getName(Gender.MALE, AgeRange.UNKNOWN), Gender.MALE),
+                this.getColumnName(AgeRange.UNKNOWN, Gender.MALE), Gender.MALE),
             ""));
 
     dataSetDefinition.addDimension(
-        this.getName(Gender.FEMALE, AgeRange.UNKNOWN),
+        this.getColumnName(AgeRange.UNKNOWN, Gender.FEMALE),
         EptsReportUtils.map(
             this.eptsCommonDimension.findPatientsWithUnknownAgeByGender(
-                this.getName(Gender.FEMALE, AgeRange.UNKNOWN), Gender.FEMALE),
+                this.getColumnName(AgeRange.UNKNOWN, Gender.FEMALE), Gender.FEMALE),
             ""));
 
     dataSetDefinition.addDimension(
@@ -193,8 +193,8 @@ public class TxNewDataset extends BaseDataSet {
 
     for (final AgeRange range : rannges) {
 
-      final String maleName = this.getName(Gender.MALE, range);
-      final String femaleName = this.getName(Gender.FEMALE, range);
+      final String maleName = this.getColumnName(range, Gender.MALE);
+      final String femaleName = this.getColumnName(range, Gender.FEMALE);
 
       dataSetDefinition.addColumn(
           maleName,
@@ -218,28 +218,22 @@ public class TxNewDataset extends BaseDataSet {
     for (final AgeRange range : ranges) {
 
       cohortIndicatorDataSetDefinition.addDimension(
-          this.getName(Gender.MALE, range),
+          this.getColumnName(range, Gender.MALE),
           EptsReportUtils.map(
               this.eptsCommonDimension.findPatientsWhoAreNewlyEnrolledOnArtByAgeAndGender(
-                  this.getName(Gender.MALE, range), range, Gender.MALE.getName()),
+                  this.getColumnName(range, Gender.MALE), range, Gender.MALE.getName()),
               mappings));
 
       cohortIndicatorDataSetDefinition.addDimension(
-          this.getName(Gender.FEMALE, range),
+          this.getColumnName(range, Gender.FEMALE),
           EptsReportUtils.map(
               this.eptsCommonDimension.findPatientsWhoAreNewlyEnrolledOnArtByAgeAndGender(
-                  this.getName(Gender.FEMALE, range), range, Gender.FEMALE.getName()),
+                  this.getColumnName(range, Gender.FEMALE), range, Gender.FEMALE.getName()),
               mappings));
     }
   }
 
-  private String getName(final Gender gender, final AgeRange ageRange) {
-    String name = "males-" + ageRange.getName() + "" + gender.getName();
-
-    if (gender.equals(Gender.FEMALE)) {
-      name = "females-" + ageRange.getName() + "" + gender.getName();
-    }
-
-    return name;
+  private String getColumnName(AgeRange range, Gender gender) {
+    return range.getDesagregationColumnName("N", gender);
   }
 }
