@@ -14,6 +14,7 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -427,16 +428,14 @@ public class GenericCohortQueries {
   public CohortDefinition getPatientsWhoToLostToFollowUp() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    String mappings = "onOrBefore=${onOrBefore},location=${location}";
-
     definition.addSearch(
-        "31", map(txCurrCohortQueries.getPatientHavingLastScheduledDrugPickupDate(), mappings));
+        "31",
+        mapStraightThrough(txCurrCohortQueries.getPatientHavingLastScheduledDrugPickupDate()));
 
     definition.addSearch(
         "32",
-        map(
-            txCurrCohortQueries.getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(),
-            mappings));
+        mapStraightThrough(
+            txCurrCohortQueries.getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup()));
 
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
