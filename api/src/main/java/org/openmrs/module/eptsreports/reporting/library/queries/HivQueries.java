@@ -10,11 +10,7 @@ public class HivQueries {
    * @param tbStartDateConceptId
    * @param tbEndDateConceptId
    * @param tbProgramId
-<<<<<<< HEAD
-   * @param patientStateId
-=======
    * @param activeOnProgramConceptId
->>>>>>> 12d5a87afab5c4a26765f1c2d83d2d8bff3ab1ce
    * @param activeTBConceptId
    * @param yesConceptId
    * @param tbTreatmentPlanConceptId
