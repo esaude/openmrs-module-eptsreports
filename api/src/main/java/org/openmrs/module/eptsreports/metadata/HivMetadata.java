@@ -347,7 +347,7 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   // concept_id = 6269
-  private Concept getActiveOnProgramConcept() {
+  public Concept getActiveOnProgramConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.activeOnProgramConcept");
     return getConcept(uuid);

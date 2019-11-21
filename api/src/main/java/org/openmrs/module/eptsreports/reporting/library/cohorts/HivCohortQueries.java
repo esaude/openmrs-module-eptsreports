@@ -356,7 +356,7 @@ public class HivCohortQueries {
             hivMetadata.getTBDrugStartDateConcept().getConceptId(),
             hivMetadata.getTBDrugEndDateConcept().getConceptId(),
             hivMetadata.getTBProgram().getProgramId(),
-            16, // TODO Add the right concept ID for the Patient State
+            hivMetadata.getActiveOnProgramConcept().getConceptId(), // TODO Add the right concept ID for the Patient State
             hivMetadata.getActiveTBConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getTBTreatmentPlanConcept().getConceptId(),
