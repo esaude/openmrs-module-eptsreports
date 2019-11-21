@@ -143,12 +143,12 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "breastfeeding",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
+            hivCohortQueries.getTxNewBreastfeedingComposition(),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     dim.addCohortDefinition(
         "pregnant",
         EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            hivCohortQueries.getPatientsPregnantEnrolledOnART(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     return dim;
   }

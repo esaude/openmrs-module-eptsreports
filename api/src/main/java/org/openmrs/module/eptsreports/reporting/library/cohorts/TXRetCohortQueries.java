@@ -28,6 +28,8 @@ public class TXRetCohortQueries {
 
   @Autowired TxNewCohortQueries txNewCohortQueries;
 
+  @Autowired HivCohortQueries hivCohortQueries;
+
   private String mappings =
       "startDate=${startDate},endDate=${endDate},location=${location},months=${months}";
 
@@ -159,7 +161,7 @@ public class TXRetCohortQueries {
     cd.addSearch(
         "GRAVIDAS",
         EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            hivCohortQueries.getPatientsPregnantEnrolledOnART(),
             "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
     cd.addSearch(
         "LACTANTEPROGRAMA",
