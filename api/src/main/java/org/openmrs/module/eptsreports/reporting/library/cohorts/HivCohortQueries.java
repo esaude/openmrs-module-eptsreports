@@ -15,8 +15,6 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Collections;
 import java.util.Date;
-
-import com.sun.xml.internal.bind.v2.TODO;
 import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
@@ -342,27 +340,28 @@ public class HivCohortQueries {
 
   /**
    * Get All Patients On TB Treatment
+   *
    * @return
    */
-  private CohortDefinition getPatientsOnTbTreatment() {
+  public CohortDefinition getPatientsOnTbTreatment() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("patientsOnTbTreatment");
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
-    cd.setQuery(HivQueries.getPatientsOnTbTreatmentQuery(
+    cd.setQuery(
+        HivQueries.getPatientsOnTbTreatmentQuery(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getTBDrugStartDateConcept().getConceptId(),
             hivMetadata.getTBDrugEndDateConcept().getConceptId(),
             hivMetadata.getTBProgram().getProgramId(),
-            6269, //TODO Add the right concept ID for the Patient State
+            16, // TODO Add the right concept ID for the Patient State
             hivMetadata.getActiveTBConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getTBTreatmentPlanConcept().getConceptId(),
             hivMetadata.getStartDrugs().getConceptId(),
-            hivMetadata.getContinueRegimen().getConceptId()
-    ));
+            hivMetadata.getContinueRegimen().getConceptId()));
 
     return cd;
   }
