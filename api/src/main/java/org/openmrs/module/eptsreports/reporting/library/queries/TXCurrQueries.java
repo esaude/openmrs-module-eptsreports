@@ -94,27 +94,29 @@ public class TXCurrQueries {
       int noConcept,
       int patientIsDead) {
     String query =
-        " SELECT named.patient_id FROM ( " + 
-        " SELECT p.patient_id AS patient_id, MAX(e.encounter_datetime)   " + 
-        " FROM patient p " + 
-        " INNER JOIN encounter e ON e.patient_id=p.patient_id " + 
-        " WHERE p.voided=0 AND e.voided=0 AND e.encounter_type IN(%s) AND e.encounter_datetime is not null AND e.encounter_datetime <= :onOrBefore AND " + 
-        " e.encounter_id IN ( " + 
-        "      select ee.encounter_id from " + 
-        "      encounter ee INNER JOIN obs o ON o.encounter_id=ee.encounter_id AND o.voided=0 AND " + 
-        "      ee.encounter_type IN(%s) AND " + 
-        "      o.concept_id=%s AND o.value_coded=%s) AND " + 
-        " e.encounter_id IN ( " + 
-        "      select eee.encounter_id from " + 
-        "      encounter eee INNER JOIN obs oo ON oo.encounter_id=eee.encounter_id AND oo.voided=0 AND " + 
-        "      eee.encounter_type IN(%s) AND " + 
-        "oo.concept_id=%s AND oo.value_coded=%s) and e.location_id = :location  group by p.patient_id) named " ;
+        " SELECT named.patient_id FROM ( "
+            + " SELECT p.patient_id AS patient_id, MAX(e.encounter_datetime)   "
+            + " FROM patient p "
+            + " INNER JOIN encounter e ON e.patient_id=p.patient_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND e.encounter_type IN(%s) AND e.encounter_datetime is not null AND e.encounter_datetime <= :onOrBefore AND "
+            + " e.encounter_id IN ( "
+            + "      select ee.encounter_id from "
+            + "      encounter ee INNER JOIN obs o ON o.encounter_id=ee.encounter_id AND o.voided=0 AND "
+            + "      ee.encounter_type IN(%s) AND "
+            + "      o.concept_id=%s AND o.value_coded=%s) AND "
+            + " e.encounter_id IN ( "
+            + "      select eee.encounter_id from "
+            + "      encounter eee INNER JOIN obs oo ON oo.encounter_id=eee.encounter_id AND oo.voided=0 AND "
+            + "      eee.encounter_type IN(%s) AND "
+            + "oo.concept_id=%s AND oo.value_coded=%s) and e.location_id = :location  group by p.patient_id) named ";
 
     return String.format(
         query,
-        encounterTypes,encounterTypes,
+        encounterTypes,
+        encounterTypes,
         patientFoundConcept,
-        reasonPatientNotFound,encounterTypes,
+        reasonPatientNotFound,
+        encounterTypes,
         noConcept,
         patientIsDead);
   }
@@ -200,78 +202,100 @@ public class TXCurrQueries {
       int artDatePickup,
       int msterCardDrugPickupEncounterType) {
     String query =
-        "select  final.patient_id "
-            + " from ( "
-            + " select most_recent.patient_id , max(date_add(most_recent.obs_datetime, interval 30 day)) final_obs_date "
-            + "        from (SELECT  p.patient_id, "
-            + "		       recent.location_id, "
-            + "		       recent.obs_datetime "
-            + "		FROM   patient p  "
-            + "	       INNER join  (SELECT enc.patient_id, enc.location_id, max(obs.value_datetime) obs_datetime "
-            + "            	FROM   patient pa 	 "
-            + "					INNER JOIN encounter enc  "
-            + "						ON enc.patient_id = pa.patient_id  "
-            + "				    INNER JOIN obs obs "
-            + "						ON obs.encounter_id = enc.encounter_id "
-            + "        		WHERE  pa.voided = 0  "
-            + "			       AND enc.voided = 0  "
-            + "			       AND obs.voided = 0  "
-            + "			       and obs.concept_id = %s                                  "
-            + "                AND obs.value_datetime IS NOT NULL "
-            + "               and enc.encounter_type=%s  and  enc.location_id= :location "
-            + "               GROUP by pa.patient_id, enc.location_id) recent on p.patient_id=recent.patient_id and "
-            + "                p.voided=0			        "
-            + "		GROUP  BY p.patient_id  "
-            + "               "
-            + "            union    "
-            + "             "
-            + "            SELECT p.patient_id, "
-            + "			       recent.location_id, "
-            + "			       recent.obs_datetime "
-            + " "
-            + "	FROM   patient p  "
-            + "	       INNER join  (SELECT enc.patient_id, enc.location_id, max(obs.value_datetime) obs_datetime "
-            + "	        	FROM   patient pa  "
-            + "				INNER JOIN encounter enc  "
-            + "					ON enc.patient_id = pa.patient_id  "
-            + "			    INNER JOIN obs obs "
-            + "					ON obs.encounter_id = enc.encounter_id "
-            + "    		WHERE  pa.voided = 0  "
-            + "		       AND enc.voided = 0  "
-            + "		       AND obs.voided = 0  "
-            + "		       and obs.concept_id = %s                                  "
-            + "            AND obs.value_datetime IS NOT NULL "
-            + "           and enc.encounter_type in (%s,%s) and  enc.location_id= :location "
-            + "           GROUP by pa.patient_id, enc.location_id) recent on p.patient_id=recent.patient_id and "
-            + "            p.voided=0		        "
-            + "	GROUP  BY p.patient_id "
-            + " "
-            + "	union "
-            + " "
-            + "	            SELECT p.patient_id, "
-            + "			       recent.location_id, "
-            + "			       recent.obs_datetime "
-            + " "
-            + "	FROM   patient p  "
-            + "	       INNER join  (SELECT enc.patient_id, enc.location_id, max(date_add(obs.value_datetime, interval 30 day)) obs_datetime "
-            + "	        	FROM   patient pa  "
-            + "				INNER JOIN encounter enc  "
-            + "					ON enc.patient_id = pa.patient_id  "
-            + "			    INNER JOIN obs obs "
-            + "					ON obs.encounter_id = enc.encounter_id "
-            + "    		WHERE  pa.voided = 0  "
-            + "		       AND enc.voided = 0  "
-            + "		       AND obs.voided = 0  "
-            + "		       and obs.concept_id = %s                                  "
-            + "            AND obs.value_datetime IS NOT NULL "
-            + "           and enc.encounter_type = %s and  enc.location_id= :location "
-            + "           GROUP by pa.patient_id, enc.location_id) recent on p.patient_id=recent.patient_id and "
-            + "            p.voided=0		        "
-            + "	GROUP  BY p.patient_id "
-            + " "
-            + " "
-            + "	) most_recent    GROUP by   most_recent.patient_id) final  "
-            + "where final.final_obs_date < :onOrBefore  ;  ";
+        " SELECT final.patient_id  "
+            + "FROM   (SELECT most_recent.patient_id,  "
+            + "               Date_add(Max(most_recent.obs_datetime), interval 30 day)  "
+            + "               final_obs_date  "
+            + "        FROM   (SELECT p.patient_id,  "
+            + "                         Max(recent.obs_datetime)  as obs_datetime "
+            + "                FROM   patient p  "
+            + "                       inner join (SELECT enc.patient_id,  "
+            + "                                           Max(enc.encounter_datetime)  "
+            + "                                          encounter_datetime,  "
+            + "                                          obs.value_datetime  "
+            + "                                          obs_datetime  "
+            + "                                   FROM   patient pa  "
+            + "                                          inner join encounter enc  "
+            + "                                                  ON enc.patient_id =  "
+            + "                                                     pa.patient_id  "
+            + "                                          inner join obs obs  "
+            + "                                                  ON obs.encounter_id =  "
+            + "                                                     enc.encounter_id  "
+            + "                                   WHERE  pa.voided = 0  "
+            + "                                          AND enc.voided = 0  "
+            + "                                          AND obs.voided = 0  "
+            + "                                          AND obs.concept_id = %s  "
+            + "                                          AND obs.value_datetime IS NOT NULL  "
+            + "                                          AND enc.encounter_type = %s  "
+            + "                                          AND enc.location_id =  :location  "
+            + "                                          AND enc.encounter_datetime <  "
+            + "                                               :onOrBefore  "
+            + "                                   GROUP  BY pa.patient_id) recent  "
+            + "                               ON p.patient_id = recent.patient_id  "
+            + "                                  AND p.voided = 0  "
+            + "                GROUP  BY recent.patient_id  "
+            + "                UNION  "
+            + "                SELECT p.patient_id,  "
+            + "                        Max(recent.obs_datetime)  as obs_datetime "
+            + "                FROM   patient p  "
+            + "                       inner join (SELECT enc.patient_id,  "
+            + "                                          Max(enc.encounter_datetime)  "
+            + "                                          encounter_datetime,  "
+            + "                                          obs.value_datetime  "
+            + "                                          obs_datetime  "
+            + "                                   FROM   patient pa  "
+            + "                                          inner join encounter enc  "
+            + "                                                  ON enc.patient_id =  "
+            + "                                                     pa.patient_id  "
+            + "                                          inner join obs obs  "
+            + "                                                  ON obs.encounter_id =  "
+            + "                                                     enc.encounter_id  "
+            + "                                   WHERE  pa.voided = 0  "
+            + "                                          AND enc.voided = 0  "
+            + "                                          AND obs.voided = 0  "
+            + "                                          AND obs.concept_id = %s  "
+            + "                                          AND obs.value_datetime IS NOT NULL  "
+            + "                                          AND enc.encounter_type IN ( %s, %s )  "
+            + "                                          AND enc.location_id =  :location  "
+            + "                                          AND enc.encounter_datetime <  "
+            + "                                               :onOrBefore  "
+            + "                                   GROUP  BY pa.patient_id) recent  "
+            + "                               ON p.patient_id = recent.patient_id  "
+            + "                                  AND p.voided = 0  "
+            + "                GROUP  BY recent.patient_id  "
+            + "                UNION  "
+            + "                SELECT p.patient_id,  "
+            + "                         Max(recent.obs_datetime)  as obs_datetime  "
+            + "                FROM   patient p  "
+            + "                       inner join (SELECT enc.patient_id,  "
+            + "                                          Max(enc.encounter_datetime)  "
+            + "                                                           encounter_datetime,  "
+            + "                                          Date_add(obs.value_datetime, interval  "
+            + "                                          30 day)  "
+            + "                                          obs_datetime  "
+            + "                                   FROM   patient pa  "
+            + "                                          inner join encounter enc  "
+            + "                                                  ON enc.patient_id =  "
+            + "                                                     pa.patient_id  "
+            + "                                          inner join obs obs  "
+            + "                                                  ON obs.encounter_id =  "
+            + "                                                     enc.encounter_id  "
+            + "                                   WHERE  pa.voided = 0  "
+            + "                                          AND enc.voided = 0  "
+            + "                                          AND obs.voided = 0  "
+            + "                                          AND obs.concept_id = %s  "
+            + "                                          AND obs.value_datetime IS NOT NULL  "
+            + "                                          AND enc.encounter_type = %s  "
+            + "                                          AND enc.location_id =  :location  "
+            + "                                          AND enc.encounter_datetime <  "
+            + "                                               :onOrBefore  "
+            + "                                   GROUP  BY pa.patient_id) recent  "
+            + "                               ON p.patient_id = recent.patient_id  "
+            + "                                  AND p.voided = 0  "
+            + "                GROUP  BY recent.patient_id) most_recent   "
+            + "        GROUP  BY most_recent.patient_id) final  "
+            + "WHERE     final.final_obs_date <  :onOrBefore;  "
+            + "";
 
     return String.format(
         query,
@@ -455,21 +479,47 @@ public class TXCurrQueries {
             + " "
             + "union "
             + " "
-            +" SELECT named.patient_id, named.common_date FROM ( " + 
-            " SELECT p.patient_id AS patient_id, MAX(e.encounter_datetime)  as  common_date " + 
-            " FROM patient p" + 
-            " INNER JOIN encounter e ON e.patient_id=p.patient_id " + 
-            " WHERE p.voided=0 AND e.voided=0 AND e.encounter_type IN("+ buscaActivaEncounterType+","+ visitaApoioReintegracaoParteA+","+ visitaApoioReintegracaoParteB+") AND e.encounter_datetime is not null AND e.encounter_datetime <= :onOrBefore AND " + 
-            " e.encounter_id IN ( " + 
-            "      select ee.encounter_id from " + 
-            "      encounter ee INNER JOIN obs o ON o.encounter_id=ee.encounter_id AND o.voided=0 AND " + 
-            "      ee.encounter_type IN("+ buscaActivaEncounterType+","+ visitaApoioReintegracaoParteA+","+ visitaApoioReintegracaoParteB+") AND " + 
-            "      o.concept_id="+patientFoundConcept+" AND o.value_coded="+noConcept+") AND " + 
-            " e.encounter_id IN ( " + 
-            "      select eee.encounter_id from " + 
-            "      encounter eee INNER JOIN obs oo ON oo.encounter_id=eee.encounter_id AND oo.voided=0 AND " + 
-            "      eee.encounter_type IN("+ buscaActivaEncounterType+","+ visitaApoioReintegracaoParteA+","+ visitaApoioReintegracaoParteB+") AND " + 
-            "oo.concept_id="+reasonPatientNotFound+" AND oo.value_coded="+patientIsDead+") and e.location_id = :location  group by p.patient_id) named "
+            + " SELECT named.patient_id, named.common_date FROM ( "
+            + " SELECT p.patient_id AS patient_id, MAX(e.encounter_datetime)  as  common_date "
+            + " FROM patient p"
+            + " INNER JOIN encounter e ON e.patient_id=p.patient_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND e.encounter_type IN("
+            + buscaActivaEncounterType
+            + ","
+            + visitaApoioReintegracaoParteA
+            + ","
+            + visitaApoioReintegracaoParteB
+            + ") AND e.encounter_datetime is not null AND e.encounter_datetime <= :onOrBefore AND "
+            + " e.encounter_id IN ( "
+            + "      select ee.encounter_id from "
+            + "      encounter ee INNER JOIN obs o ON o.encounter_id=ee.encounter_id AND o.voided=0 AND "
+            + "      ee.encounter_type IN("
+            + buscaActivaEncounterType
+            + ","
+            + visitaApoioReintegracaoParteA
+            + ","
+            + visitaApoioReintegracaoParteB
+            + ") AND "
+            + "      o.concept_id="
+            + patientFoundConcept
+            + " AND o.value_coded="
+            + noConcept
+            + ") AND "
+            + " e.encounter_id IN ( "
+            + "      select eee.encounter_id from "
+            + "      encounter eee INNER JOIN obs oo ON oo.encounter_id=eee.encounter_id AND oo.voided=0 AND "
+            + "      eee.encounter_type IN("
+            + buscaActivaEncounterType
+            + ","
+            + visitaApoioReintegracaoParteA
+            + ","
+            + visitaApoioReintegracaoParteB
+            + ") AND "
+            + "oo.concept_id="
+            + reasonPatientNotFound
+            + " AND oo.value_coded="
+            + patientIsDead
+            + ") and e.location_id = :location  group by p.patient_id) named "
             + " "
             + "union "
             + " "
