@@ -216,7 +216,7 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4AbsoluteOBSConcept(),
-                BaseObsCohortDefinition.TimeModifier.ANY,
+                BaseObsCohortDefinition.TimeModifier.LAST,
                 RangeComparator.GREATER_THAN,
                 750.0,
                 null,
@@ -231,7 +231,7 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4AbsoluteConcept(),
-                BaseObsCohortDefinition.TimeModifier.ANY,
+                BaseObsCohortDefinition.TimeModifier.LAST,
                 RangeComparator.GREATER_THAN,
                 750.0,
                 null,
@@ -246,7 +246,7 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4PercentConcept(),
-                BaseObsCohortDefinition.TimeModifier.ANY,
+                BaseObsCohortDefinition.TimeModifier.LAST,
                 RangeComparator.GREATER_THAN,
                 15.0,
                 null,
@@ -283,7 +283,7 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4AbsoluteOBSConcept(),
-                BaseObsCohortDefinition.TimeModifier.ANY,
+                BaseObsCohortDefinition.TimeModifier.LAST,
                 RangeComparator.GREATER_THAN,
                 200.0,
                 null,
@@ -298,7 +298,7 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4AbsoluteConcept(),
-                BaseObsCohortDefinition.TimeModifier.ANY,
+                BaseObsCohortDefinition.TimeModifier.LAST,
                 RangeComparator.GREATER_THAN,
                 200.0,
                 null,
