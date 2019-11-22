@@ -47,48 +47,55 @@ public class DsdQueries {
   }
 
   /**
-   * Get Patients with Viral Load less than 1000 in the last 12 Months for DSD criteria 5B
-   *
-   * @param labEncounter
-   * @param adultSeguimentoEncounter
-   * @param pediatriaSeguimentoEncounter
-   * @param vlConceptQuestion
+   *  Get Patients with Recent Viral Load Encounter in the last 12 Months for DSD 1 criteria
+   * @param adultSeguimentoEncounterTypeId
+   * @param pediatriaSeguimentoEncounterTypeId
+   * @param labEncounterTypeId
+   * @param masterCardEncounterTypeId
+   * @param hivViralLoadConceptId
+   * @param hivViralLoadQualitativeConceptId
    * @return
    */
- /* public static String patientsWithViralLoadLessThan1000(
-      int labEncounter,
-      int adultSeguimentoEncounter,
-      int pediatriaSeguimentoEncounter,
-      int vlConceptQuestion) {
-    String query =
-        "SELECT p.patient_id "
-            + " FROM patient p"
-            + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
-            + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
-            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type IN ("
-            + labEncounter
-            + ","
-            + adultSeguimentoEncounter
-            + ","
-            + pediatriaSeguimentoEncounter
-            + ")"
-            + " AND  o.concept_id="
-            + vlConceptQuestion
-            + " AND o.value_numeric IS NOT NULL AND"
-            + " e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
-            + " AND e.location_id=:location "
-            + " AND o.value_numeric < 1000"
-            + " GROUP BY p.patient_id";
-
-    return query;
-  }*/
-
-  public static String patientsWithViralLoadConcept(){
-    String query = "";
+  public static String patientsWithTheRecentViralLoadEncounter(
+          int adultSeguimentoEncounterTypeId,
+          int pediatriaSeguimentoEncounterTypeId,
+          int labEncounterTypeId,
+          int masterCardEncounterTypeId,
+          int hivViralLoadConceptId,
+          int hivViralLoadQualitativeConceptId
+          ){
+    String query = "SELECT vl_final.patient_id FROM ( " +
+            "SELECT vl.patient_id, MAX(vl.latest_date) date FROM ( " +
+            "SELECT p.patient_id, MAX(e.encounter_datetime) latest_date FROM patient p " +
+            "INNER JOIN encounter e ON p.patient_id=e.patient_id " +
+            "INNER JOIN obs o ON p.patient_id=o.person_id " +
+            "WHERE e.encounter_type IN ( " + adultSeguimentoEncounterTypeId + "," + pediatriaSeguimentoEncounterTypeId + "," + labEncounterTypeId + " ) AND  o.concept_id IN ( " + hivViralLoadConceptId + "," +  hivViralLoadQualitativeConceptId + " ) AND " +
+            "e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate " +
+            "AND e.location_id=:location AND p.voided=0 AND e.voided=0 AND o.voided=0 GROUP BY p.patient_id " +
+            "UNION " +
+            "SELECT p.patient_id, MAX(o.obs_datetime) latest_date  FROM patient p " +
+            "INNER JOIN encounter e ON p.patient_id=e.patient_id " +
+            "INNER JOIN obs o ON p.patient_id=o.person_id " +
+            "WHERE e.encounter_type= " + masterCardEncounterTypeId  +
+            "AND  o.concept_id= " + hivViralLoadConceptId + " AND " +
+            "o.obs_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate " +
+            "AND e.location_id=:location AND p.voided=0 AND e.voided=0 AND o.voided=0 GROUP BY p.patient_id)vl GROUP BY vl.patient_id) vl_final ";
 
     return  query;
   }
 
+  /**
+   * Get Patients with Viral Load less than 1000 in the last 12 Months for DSD 1 criteria
+   * @param hivViralLoadConceptId
+   * @param hivViralLoadQualitativeConceptId
+   * @param beyondDetectableLimitConceptId
+   * @param undetectableViralLoadConceptId
+   * @param lessThan10CopiesConceptId
+   * @param lessThan20CopiesConceptId
+   * @param lessThan40CopiesConceptId
+   * @param lessThan400CopiesConceptId
+   * @return
+   */
   public static String patientsWithViralLoadLessThan1000(
           int hivViralLoadConceptId,
           int hivViralLoadQualitativeConceptId,
