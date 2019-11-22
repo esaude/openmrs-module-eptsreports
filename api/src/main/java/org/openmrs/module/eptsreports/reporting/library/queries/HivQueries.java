@@ -10,7 +10,7 @@ public class HivQueries {
    * @param tbStartDateConceptId
    * @param tbEndDateConceptId
    * @param tbProgramId
-   * @param activeOnProgramConceptId
+   * @param patientStateId
    * @param activeTBConceptId
    * @param yesConceptId
    * @param tbTreatmentPlanConceptId
@@ -24,7 +24,7 @@ public class HivQueries {
       int tbStartDateConceptId,
       int tbEndDateConceptId,
       int tbProgramId,
-      int activeOnProgramConceptId,
+      int patientStateId,
       int activeTBConceptId,
       int yesConceptId,
       int tbTreatmentPlanConceptId,
@@ -64,47 +64,44 @@ public class HivQueries {
             + tbEndDateConceptId
             + " AND o.value_datetime > :endDate AND e.location_id=:location "
             + "UNION "
-            + " SELECT p.patient_id FROM patient p "
-            + " JOIN patient_program pp ON p.patient_id=pp.patient_id"
-            + " JOIN encounter e ON p.patient_id=e.patient_id"
-            + "  JOIN obs o ON p.patient_id=o.person_id"
-            + " JOIN program_workflow pw ON pp.program_id=pw.program_id"
-            + " JOIN program_workflow_state pws ON pw.program_workflow_id=pws.program_workflow_id"
-            + "  WHERE pp.program_id= "
+            + "SELECT p.patient_id FROM patient p "
+            + "JOIN encounter e ON p.patient_id=e.patient_id "
+            + "JOIN obs o ON p.patient_id=o.person_id "
+            + "JOIN patient_program pp ON p.patient_id=pp.patient_id "
+            + "JOIN patient_state ps ON pp.patient_program_id=ps.patient_program_id "
+            + "WHERE pp.program_id= "
             + tbProgramId
-            + " AND pws.concept_id= "
-            + activeOnProgramConceptId
+            + " AND ps.state= "
+            + patientStateId
             + " AND e.location_id=:location AND o.concept_id= "
             + tbStartDateConceptId
-            + " AND o.value_datetime BETWEEN :startDate AND :endDate "
-            + " UNION"
-            + " SELECT p.patient_id FROM patient p"
-            + " JOIN patient_program pp ON p.patient_id=pp.patient_id"
-            + "  JOIN encounter e ON p.patient_id=e.patient_id"
-            + " JOIN obs o ON p.patient_id=o.person_id"
-            + "  JOIN program_workflow pw ON pp.program_id=pw.program_id"
-            + " JOIN program_workflow_state pws ON pw.program_workflow_id=pws.program_workflow_id"
-            + "  WHERE pp.program_id= "
+            + " AND o.value_datetime BETWEEN :startDate AND :endDate AND p.voided=0 AND e.voided=0 "
+            + "UNION "
+            + "SELECT p.patient_id FROM patient p "
+            + "JOIN encounter e ON p.patient_id=e.patient_id "
+            + "JOIN obs o ON p.patient_id=o.person_id "
+            + "JOIN patient_program pp ON p.patient_id=pp.patient_id "
+            + "JOIN patient_state ps ON pp.patient_program_id=ps.patient_program_id "
+            + "WHERE pp.program_id= "
             + tbProgramId
-            + " AND pws.concept_id= "
-            + activeOnProgramConceptId
+            + "  AND ps.state= "
+            + patientStateId
             + " AND e.location_id=:location AND o.concept_id= "
             + tbEndDateConceptId
-            + " AND o.value_datetime IS NULL"
-            + " UNION"
-            + " SELECT p.patient_id FROM patient p"
-            + " JOIN patient_program pp ON p.patient_id=pp.patient_id"
-            + " JOIN encounter e ON p.patient_id=e.patient_id"
-            + " JOIN obs o ON p.patient_id=o.person_id"
-            + " JOIN program_workflow pw ON pp.program_id=pw.program_id"
-            + "  JOIN program_workflow_state pws ON pw.program_workflow_id=pws.program_workflow_id"
-            + " WHERE pp.program_id= "
+            + " AND o.value_datetime IS NULL AND p.voided=0 AND e.voided=0 "
+            + "UNION "
+            + "SELECT p.patient_id FROM patient p "
+            + "JOIN encounter e ON p.patient_id=e.patient_id "
+            + "JOIN obs o ON p.patient_id=o.person_id "
+            + "JOIN patient_program pp ON p.patient_id=pp.patient_id "
+            + "JOIN patient_state ps ON pp.patient_program_id=ps.patient_program_id "
+            + "WHERE pp.program_id= "
             + tbProgramId
-            + " AND pws.concept_id= "
-            + activeOnProgramConceptId
-            + " AND e.location_id= :location AND o.concept_id= "
+            + " AND ps.state= "
+            + patientStateId
+            + " AND e.location_id=:location AND o.concept_id= "
             + tbEndDateConceptId
-            + " AND o.value_datetime > :endDate "
+            + " AND o.value_datetime > :endDate  AND p.voided=0 AND e.voided=0 "
             + " UNION "
             + "SELECT p.patient_id FROM patient p "
             + "JOIN encounter e ON p.patient_id=e.patient_id "
