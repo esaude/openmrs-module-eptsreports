@@ -313,53 +313,67 @@ public class TXCurrQueries {
       int ARVPediatriaSeguimentoEncounterType,
       int aRVPharmaciaEncounterType,
       int masterCardDrugPickupEncounterType,
-      int adultoSeguimentoEncounterType1,
-      int aRVPediatriaSeguimentoEncounterType,
-      int aRVPharmaciaEncounterType1,
-      int adultoSeguimentoEncounterType2,
-      int aRVPediatriaSeguimentoEncounterType2,
-      int aRVPharmaciaEncounterType2,
       int returnVisitDateConcept,
       int returnVisitDateForArvDrugConcept) {
 
     String query =
-        "SELECT ps.patient_id  "
-            + "FROM   (SELECT p.patient_id  "
-            + "        FROM   patient p  "
-            + "               INNER JOIN encounter e  "
-            + "                       ON e.patient_id = p.patient_id  "
-            + "        WHERE  p.voided = 0  "
-            + "               AND e.voided = 0  "
-            + "               AND p.patient_id NOT IN (SELECT patient_id  "
-            + "                                        FROM   encounter  "
-            + "                                        WHERE  encounter_type IN (  "
-            + "                                               %s,%s, %s, %s )  "
-            + "                                               AND location_id = :location)  "
-            + "               AND e.location_id = :location  "
-            + "        GROUP  BY p.patient_id  "
-            + "        UNION  "
-            + "        SELECT p.patient_id  "
-            + "        FROM   patient p  "
-            + "               INNER JOIN encounter e  "
-            + "                       ON e.patient_id = p.patient_id  "
-            + "               INNER JOIN obs o  "
-            + "                       ON o.encounter_id = e.encounter_id  "
-            + "        WHERE  p.voided = 0  "
-            + "               AND e.voided = 0  "
-            + "               AND o.voided = 0  "
-            + "               AND e.encounter_datetime = (SELECT Max(encounter_datetime)  "
-            + "                                           FROM   encounter  "
-            + "                                           WHERE  patient_id = p.patient_id  "
-            + "                                                  AND encounter_type  IN ( %s, %s, %s )  "
-            + "                                          )  "
-            + "               AND e.encounter_type IN ( %s, %s, %s )  "
-            + "               AND e.encounter_id NOT IN (SELECT encounter_id  "
-            + "                                          FROM   obs  "
-            + "                                          WHERE  (concept_id = %s and (value_datetime is null or value_numeric is null)) "
-            + "                                                  OR (concept_id = %s and (value_datetime is null or value_numeric is null)))  "
-            + "               AND e.location_id = :location  "
-            + "        GROUP  BY p.patient_id) ps  "
-            + "GROUP  BY ps.patient_id;";
+        "SELECT ps.patient_id  " + 
+        "FROM   (SELECT p.patient_id  " + 
+        "        FROM   patient p  " + 
+        "        WHERE  p.voided = 0  " + 
+        "                AND p.patient_id NOT IN (SELECT patient_id  " + 
+        "                                        FROM   encounter  " + 
+        "                                        WHERE  encounter_type IN  " + 
+        "                                               ( %s,%s, %s, %s )  " + 
+        "                                               AND location_id = :location  " + 
+        "                                               AND voided = 0)  " + 
+        "        UNION  " + 
+        "        SELECT recent.patient_id  " + 
+        "        FROM   ( " + 
+        "                select patient_id from patient " + 
+        "where patient_id NOT in ( " + 
+        "                Select  q1.patient_id from " + 
+        "                (SELECT p.patient_id,  " + 
+        "                       Max(e.encounter_datetime) " + 
+        "                FROM   patient p  " + 
+        "                       INNER JOIN encounter e  " + 
+        "                               ON e.patient_id = p.patient_id  " + 
+        "                       INNER JOIN obs o  " + 
+        "                               ON o.encounter_id = e.encounter_id  " + 
+        "                WHERE  p.voided = 0  " + 
+        "                       AND e.voided = 0 " + 
+        "                       AND o.voided = 0  " + 
+        "                       AND (e.encounter_type IN (%s,%s) " + 
+        "                       AND o.concept_id =%s and o.value_datetime is null) " + 
+        "                       or  (e.encounter_type IN (%s,%s) " + 
+        "                       AND o.concept_id !=%s AND e.location_id = :location) " + 
+        "                GROUP  BY p.patient_id " + 
+        "                ) q1 " + 
+        ") " + 
+        "AND patient_id NOT in " + 
+        "( " + 
+        "                Select  q2.patient_id from " + 
+        "                ( " + 
+        "                SELECT p.patient_id as patient_id,  " + 
+        "                       Max(e.encounter_datetime) " + 
+        "                FROM   patient p  " + 
+        "                       INNER JOIN encounter e  " + 
+        "                               ON e.patient_id = p.patient_id  " + 
+        "                       INNER JOIN obs o  " + 
+        "                               ON o.encounter_id = e.encounter_id  " + 
+        "                WHERE  p.voided = 0  " + 
+        "                       AND e.voided = 0 " + 
+        "                       AND o.voided = 0  " + 
+        "                       AND (e.encounter_type IN (%s) " + 
+        "                       AND o.concept_id =%s and o.value_datetime is null) " + 
+        "                       or (e.encounter_type IN (%s) " + 
+        "                       AND o.concept_id !=%s AND e.location_id = :location )  " + 
+        "                GROUP  BY p.patient_id) q2 " + 
+        ") " + 
+        " " + 
+        ")recent )ps " + 
+        "                        " + 
+        "GROUP  BY ps.patient_id; ";
 
     return String.format(
         query,
@@ -367,13 +381,15 @@ public class TXCurrQueries {
         ARVPediatriaSeguimentoEncounterType,
         aRVPharmaciaEncounterType,
         masterCardDrugPickupEncounterType,
-        adultoSeguimentoEncounterType1,
-        aRVPediatriaSeguimentoEncounterType,
-        aRVPharmaciaEncounterType1,
-        adultoSeguimentoEncounterType2,
-        aRVPediatriaSeguimentoEncounterType2,
-        aRVPharmaciaEncounterType2,
+        adultoSeguimentoEncounterType,
+        ARVPediatriaSeguimentoEncounterType,
         returnVisitDateConcept,
+        adultoSeguimentoEncounterType,
+        ARVPediatriaSeguimentoEncounterType,
+        returnVisitDateConcept,
+        aRVPharmaciaEncounterType,
+        returnVisitDateForArvDrugConcept,
+        aRVPharmaciaEncounterType,
         returnVisitDateForArvDrugConcept);
   }
 
