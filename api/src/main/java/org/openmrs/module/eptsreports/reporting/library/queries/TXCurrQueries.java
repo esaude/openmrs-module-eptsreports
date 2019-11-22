@@ -317,14 +317,14 @@ public class TXCurrQueries {
       int returnVisitDateForArvDrugConcept) {
 
     String query =
-        "SELECT ps.patient_id  " + 
-        "FROM   (SELECT p.patient_id  " + 
+        " SELECT ps.patient_id  " + 
+        " FROM   (SELECT p.patient_id  " + 
         "        FROM   patient p  " + 
         "        WHERE  p.voided = 0  " + 
         "                AND p.patient_id NOT IN (SELECT patient_id  " + 
         "                                        FROM   encounter  " + 
         "                                        WHERE  encounter_type IN  " + 
-        "                                               ( %s,%s, %s, %s )  " + 
+        "                                               ( %s, %s, %s, %s )  " + 
         "                                               AND location_id = :location  " + 
         "                                               AND voided = 0)  " + 
         "        UNION  " + 
@@ -344,9 +344,8 @@ public class TXCurrQueries {
         "                       AND e.voided = 0 " + 
         "                       AND o.voided = 0  " + 
         "                       AND (e.encounter_type IN (%s,%s) " + 
-        "                       AND o.concept_id =%s and o.value_datetime is null) " + 
-        "                       or  (e.encounter_type IN (%s,%s) " + 
-        "                       AND o.concept_id !=%s AND e.location_id = :location) " + 
+        "                       AND o.concept_id = %s ) " + 
+        "                        AND e.location_id = :location " + 
         "                GROUP  BY p.patient_id " + 
         "                ) q1 " + 
         ") " + 
@@ -365,9 +364,8 @@ public class TXCurrQueries {
         "                       AND e.voided = 0 " + 
         "                       AND o.voided = 0  " + 
         "                       AND (e.encounter_type IN (%s) " + 
-        "                       AND o.concept_id =%s and o.value_datetime is null) " + 
-        "                       or (e.encounter_type IN (%s) " + 
-        "                       AND o.concept_id !=%s AND e.location_id = :location )  " + 
+        "                       AND o.concept_id =%s ) " + 
+        "                       AND e.location_id = :location  " + 
         "                GROUP  BY p.patient_id) q2 " + 
         ") " + 
         " " + 
@@ -384,11 +382,6 @@ public class TXCurrQueries {
         adultoSeguimentoEncounterType,
         ARVPediatriaSeguimentoEncounterType,
         returnVisitDateConcept,
-        adultoSeguimentoEncounterType,
-        ARVPediatriaSeguimentoEncounterType,
-        returnVisitDateConcept,
-        aRVPharmaciaEncounterType,
-        returnVisitDateForArvDrugConcept,
         aRVPharmaciaEncounterType,
         returnVisitDateForArvDrugConcept);
   }
