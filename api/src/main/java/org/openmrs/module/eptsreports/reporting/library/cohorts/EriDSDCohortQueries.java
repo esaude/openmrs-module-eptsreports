@@ -53,7 +53,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "2",
         EptsReportUtils.map(
-            ageCohortQueries.createXtoYAgeCohort("moreThanOrEqual0Years", 0, 200),
+            ageCohortQueries.createXtoYAgeCohort("moreThanOrEqual0Years", 2, 200),
             "effectiveDate=${endDate}"));
     cd.addSearch(
         "3",
@@ -419,8 +419,14 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             txTBCohortQueries.getInTBProgram(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
+    
+    cd.addSearch(
+    "ageUnderTwo",
+    EptsReportUtils.map(
+        ageCohortQueries.createXtoYAgeCohort("ageUnder2", 0, 2),
+        "effectiveDate=${endDate}"));
 
-    cd.setCompositionString("allPatientsTxCurr AND NOT (activeAndStablePatients OR tbPatient)");
+    cd.setCompositionString("allPatientsTxCurr AND NOT (activeAndStablePatients OR tbPatient) AND ageUnderTwo");
 
     return cd;
   }
