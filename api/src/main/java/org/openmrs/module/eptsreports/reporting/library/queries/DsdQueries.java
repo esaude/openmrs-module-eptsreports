@@ -55,7 +55,7 @@ public class DsdQueries {
    * @param vlConceptQuestion
    * @return
    */
-  public static String patientsWithViralLoadLessThan1000(
+ /* public static String patientsWithViralLoadLessThan1000(
       int labEncounter,
       int adultSeguimentoEncounter,
       int pediatriaSeguimentoEncounter,
@@ -81,7 +81,41 @@ public class DsdQueries {
             + " GROUP BY p.patient_id";
 
     return query;
+  }*/
+
+  public static String patientsWithViralLoadConcept(){
+    String query = "";
+
+    return  query;
   }
+
+  public static String patientsWithViralLoadLessThan1000(
+          int hivViralLoadConceptId,
+          int hivViralLoadQualitativeConceptId,
+          int beyondDetectableLimitConceptId,
+          int undetectableViralLoadConceptId,
+          int lessThan10CopiesConceptId,
+          int lessThan20CopiesConceptId,
+          int lessThan40CopiesConceptId,
+          int lessThan400CopiesConceptId
+  ){
+    String query = "SELECT p.patient_id FROM patient p " +
+            "INNER JOIN encounter e ON p.patient_id=e.patient_id " +
+            "INNER JOIN obs o ON p.patient_id=o.person_id " +
+            "WHERE o.concept_id= " + hivViralLoadConceptId + " AND o.value_numeric < 1000 AND e.location_id=:location AND " +
+            "e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate " +
+            "AND p.voided=0 AND e.voided=0 AND o.voided=0 " +
+            "UNION " +
+            "SELECT p.patient_id FROM patient p " +
+            "INNER JOIN encounter e ON p.patient_id=e.patient_id " +
+            "INNER JOIN obs o ON p.patient_id=o.person_id " +
+            "WHERE o.concept_id= " + hivViralLoadQualitativeConceptId + " AND o.value_coded IN ( " + beyondDetectableLimitConceptId + "," + undetectableViralLoadConceptId  + "," + lessThan10CopiesConceptId  + "," + lessThan20CopiesConceptId  + "," + lessThan40CopiesConceptId  + "," + lessThan400CopiesConceptId + " ) AND e.location_id=:location " +
+            "AND e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate " +
+            "AND p.voided=0 AND e.voided=0 AND o.voided=0";
+
+    return query;
+  }
+
 
   /**
    * @param adultSeguimentoEncounter
