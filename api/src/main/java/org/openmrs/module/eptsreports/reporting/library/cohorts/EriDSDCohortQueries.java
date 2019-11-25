@@ -415,12 +415,25 @@ public class EriDSDCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
+        "breastfeeding",
+        EptsReportUtils.map(
+            hivCohortQueries.getTxNewBreastfeedingComposition(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "pregnant",
+        EptsReportUtils.map(
+            hivCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
         "tbPatient",
         EptsReportUtils.map(
             txTBCohortQueries.getInTBProgram(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("allPatientsTxCurr AND NOT (activeAndStablePatients OR tbPatient)");
+    cd.setCompositionString(
+        "allPatientsTxCurr AND NOT (activeAndStablePatients OR tbPatient OR breastfeeding OR pregnant)");
 
     return cd;
   }
