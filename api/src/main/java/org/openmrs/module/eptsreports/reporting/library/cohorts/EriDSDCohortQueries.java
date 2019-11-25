@@ -377,6 +377,25 @@ public class EriDSDCohortQueries {
     return sql;
   }
 
+  private  CohortDefinition getPatientsWithTheRecentViralLoadEncounter(){
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("Patients with The Recent VL Encounter");
+    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sql.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sql.addParameter(new Parameter("location", "Location", Location.class));
+
+    sql.setQuery(DsdQueries.patientsWithTheRecentViralLoadEncounter(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getHivViralLoadConcept().getConceptId(),
+            hivMetadata.getHivViralLoadQualitative().getConceptId()
+    ));
+
+    return sql;
+  }
+
   /**
    * D2: Number of active patients on ART Not Eligible for DSD D1
    *
