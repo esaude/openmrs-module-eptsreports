@@ -419,14 +419,8 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             txTBCohortQueries.getInTBProgram(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    
-    cd.addSearch(
-    "ageUnderTwo",
-    EptsReportUtils.map(
-        ageCohortQueries.createXtoYAgeCohort("ageUnder2", 0, 2),
-        "effectiveDate=${endDate}"));
 
-    cd.setCompositionString("allPatientsTxCurr AND NOT (activeAndStablePatients OR tbPatient) AND ageUnderTwo");
+    cd.setCompositionString("allPatientsTxCurr AND NOT (activeAndStablePatients OR tbPatient)");
 
     return cd;
   }

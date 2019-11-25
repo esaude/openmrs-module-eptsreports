@@ -101,7 +101,7 @@ public class EriDSDDataset extends BaseDataSet {
                     eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingD2(),
                     mappings)),
             mappings),
-        getChildrenColumn());
+        getChildrenColumnComplete());
 
     /*dsd.addColumn(
         "NT",
@@ -512,6 +512,15 @@ public class EriDSDDataset extends BaseDataSet {
   }
 
   private List<ColumnParameters> getChildrenColumn() {
+    ColumnParameters twoTo4 = new ColumnParameters("twoTo4", "2-4", "age=2-4", "02");
+    ColumnParameters fiveTo9 = new ColumnParameters("fiveTo9", "5-9", "age=5-9", "03");
+    ColumnParameters tenTo14 = new ColumnParameters("tenTo14", "10-14", "age=10-14", "04");
+
+    return Arrays.asList(twoTo4, fiveTo9, tenTo14);
+  }
+
+  private List<ColumnParameters> getChildrenColumnComplete() {
+
     ColumnParameters zeroTo2 = new ColumnParameters("zeroTo2", "<2", "age=<2", "01");
     ColumnParameters twoTo4 = new ColumnParameters("twoTo4", "2-4", "age=2-4", "02");
     ColumnParameters fiveTo9 = new ColumnParameters("fiveTo9", "5-9", "age=5-9", "03");
