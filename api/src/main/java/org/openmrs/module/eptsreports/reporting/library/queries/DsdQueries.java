@@ -47,7 +47,8 @@ public class DsdQueries {
   }
 
   /**
-   *  Get Patients with Recent Viral Load Encounter in the last 12 Months for DSD 1 criteria
+   * Get Patients with Recent Viral Load Encounter in the last 12 Months for DSD 1 criteria
+   *
    * @param adultSeguimentoEncounterTypeId
    * @param pediatriaSeguimentoEncounterTypeId
    * @param labEncounterTypeId
@@ -57,35 +58,49 @@ public class DsdQueries {
    * @return
    */
   public static String patientsWithTheRecentViralLoadEncounter(
-          int adultSeguimentoEncounterTypeId,
-          int pediatriaSeguimentoEncounterTypeId,
-          int labEncounterTypeId,
-          int masterCardEncounterTypeId,
-          int hivViralLoadConceptId,
-          int hivViralLoadQualitativeConceptId
-          ){
-    String query = "SELECT vl_final.patient_id FROM ( " +
-            "SELECT vl.patient_id, MAX(vl.latest_date) date FROM ( " +
-            "SELECT p.patient_id, MAX(e.encounter_datetime) latest_date FROM patient p " +
-            "INNER JOIN encounter e ON p.patient_id=e.patient_id " +
-            "INNER JOIN obs o ON p.patient_id=o.person_id " +
-            "WHERE e.encounter_type IN ( " + adultSeguimentoEncounterTypeId + "," + pediatriaSeguimentoEncounterTypeId + "," + labEncounterTypeId + " ) AND  o.concept_id IN ( " + hivViralLoadConceptId + "," +  hivViralLoadQualitativeConceptId + " ) AND " +
-            "e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate " +
-            "AND e.location_id=:location AND p.voided=0 AND e.voided=0 AND o.voided=0 GROUP BY p.patient_id " +
-            "UNION " +
-            "SELECT p.patient_id, MAX(o.obs_datetime) latest_date  FROM patient p " +
-            "INNER JOIN encounter e ON p.patient_id=e.patient_id " +
-            "INNER JOIN obs o ON p.patient_id=o.person_id " +
-            "WHERE e.encounter_type= " + masterCardEncounterTypeId  +
-            "AND  o.concept_id= " + hivViralLoadConceptId + " AND " +
-            "o.obs_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate " +
-            "AND e.location_id=:location AND p.voided=0 AND e.voided=0 AND o.voided=0 GROUP BY p.patient_id)vl GROUP BY vl.patient_id) vl_final ";
+      int adultSeguimentoEncounterTypeId,
+      int pediatriaSeguimentoEncounterTypeId,
+      int labEncounterTypeId,
+      int masterCardEncounterTypeId,
+      int hivViralLoadConceptId,
+      int hivViralLoadQualitativeConceptId) {
+    String query =
+        "SELECT vl_final.patient_id FROM ( "
+            + "SELECT vl.patient_id, MAX(vl.latest_date) date FROM ( "
+            + "SELECT p.patient_id, MAX(e.encounter_datetime) latest_date FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "INNER JOIN obs o ON p.patient_id=o.person_id "
+            + "WHERE e.encounter_type IN ( "
+            + adultSeguimentoEncounterTypeId
+            + ","
+            + pediatriaSeguimentoEncounterTypeId
+            + ","
+            + labEncounterTypeId
+            + " ) AND  o.concept_id IN ( "
+            + hivViralLoadConceptId
+            + ","
+            + hivViralLoadQualitativeConceptId
+            + " ) AND "
+            + "e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
+            + "AND e.location_id=:location AND p.voided=0 AND e.voided=0 AND o.voided=0 GROUP BY p.patient_id "
+            + "UNION "
+            + "SELECT p.patient_id, MAX(o.obs_datetime) latest_date  FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "INNER JOIN obs o ON p.patient_id=o.person_id "
+            + "WHERE e.encounter_type= "
+            + masterCardEncounterTypeId
+            + "AND  o.concept_id= "
+            + hivViralLoadConceptId
+            + " AND "
+            + "o.obs_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
+            + "AND e.location_id=:location AND p.voided=0 AND e.voided=0 AND o.voided=0 GROUP BY p.patient_id)vl GROUP BY vl.patient_id) vl_final ";
 
-    return  query;
+    return query;
   }
 
   /**
    * Get Patients with Viral Load less than 1000 in the last 12 Months for DSD 1 criteria
+   *
    * @param hivViralLoadConceptId
    * @param hivViralLoadQualitativeConceptId
    * @param beyondDetectableLimitConceptId
@@ -97,32 +112,47 @@ public class DsdQueries {
    * @return
    */
   public static String patientsWithViralLoadLessThan1000(
-          int hivViralLoadConceptId,
-          int hivViralLoadQualitativeConceptId,
-          int beyondDetectableLimitConceptId,
-          int undetectableViralLoadConceptId,
-          int lessThan10CopiesConceptId,
-          int lessThan20CopiesConceptId,
-          int lessThan40CopiesConceptId,
-          int lessThan400CopiesConceptId
-  ){
-    String query = "SELECT p.patient_id FROM patient p " +
-            "INNER JOIN encounter e ON p.patient_id=e.patient_id " +
-            "INNER JOIN obs o ON p.patient_id=o.person_id " +
-            "WHERE o.concept_id= " + hivViralLoadConceptId + " AND o.value_numeric < 1000 AND e.location_id=:location AND " +
-            "e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate " +
-            "AND p.voided=0 AND e.voided=0 AND o.voided=0 " +
-            "UNION " +
-            "SELECT p.patient_id FROM patient p " +
-            "INNER JOIN encounter e ON p.patient_id=e.patient_id " +
-            "INNER JOIN obs o ON p.patient_id=o.person_id " +
-            "WHERE o.concept_id= " + hivViralLoadQualitativeConceptId + " AND o.value_coded IN ( " + beyondDetectableLimitConceptId + "," + undetectableViralLoadConceptId  + "," + lessThan10CopiesConceptId  + "," + lessThan20CopiesConceptId  + "," + lessThan40CopiesConceptId  + "," + lessThan400CopiesConceptId + " ) AND e.location_id=:location " +
-            "AND e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate " +
-            "AND p.voided=0 AND e.voided=0 AND o.voided=0";
+      int hivViralLoadConceptId,
+      int hivViralLoadQualitativeConceptId,
+      int beyondDetectableLimitConceptId,
+      int undetectableViralLoadConceptId,
+      int lessThan10CopiesConceptId,
+      int lessThan20CopiesConceptId,
+      int lessThan40CopiesConceptId,
+      int lessThan400CopiesConceptId) {
+    String query =
+        "SELECT p.patient_id FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "INNER JOIN obs o ON p.patient_id=o.person_id "
+            + "WHERE o.concept_id= "
+            + hivViralLoadConceptId
+            + " AND o.value_numeric < 1000 AND e.location_id=:location AND "
+            + "e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
+            + "AND p.voided=0 AND e.voided=0 AND o.voided=0 "
+            + "UNION "
+            + "SELECT p.patient_id FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "INNER JOIN obs o ON p.patient_id=o.person_id "
+            + "WHERE o.concept_id= "
+            + hivViralLoadQualitativeConceptId
+            + " AND o.value_coded IN ( "
+            + beyondDetectableLimitConceptId
+            + ","
+            + undetectableViralLoadConceptId
+            + ","
+            + lessThan10CopiesConceptId
+            + ","
+            + lessThan20CopiesConceptId
+            + ","
+            + lessThan40CopiesConceptId
+            + ","
+            + lessThan400CopiesConceptId
+            + " ) AND e.location_id=:location "
+            + "AND e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
+            + "AND p.voided=0 AND e.voided=0 AND o.voided=0";
 
     return query;
   }
-
 
   /**
    * @param adultSeguimentoEncounter

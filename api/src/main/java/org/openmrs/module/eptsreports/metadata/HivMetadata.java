@@ -781,44 +781,50 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   // Concept ID 1306
-  public Concept getBeyondDetectableLimitConcept(){
+  public Concept getBeyondDetectableLimitConcept() {
     String uuid =
-            Context.getAdministrationService().getGlobalProperty("eptsreports.beyondDtectableLimitConceptUuid");
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.beyondDtectableLimitConceptUuid");
     return getConcept(uuid);
   }
 
   // Concept ID 23814
-  public Concept getUndetectableViralLoadConcept(){
+  public Concept getUndetectableViralLoadConcept() {
     String uuid =
-            Context.getAdministrationService().getGlobalProperty("eptsreports.undetectableViralLoadConceptUuid");
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.undetectableViralLoadConceptUuid");
     return getConcept(uuid);
   }
 
   // Concept ID 23905
-  public Concept getLessThan10CopiesConcept(){
+  public Concept getLessThan10CopiesConcept() {
     String uuid =
-            Context.getAdministrationService().getGlobalProperty("eptsreports.lessThan10CopiesConceptUuid");
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.lessThan10CopiesConceptUuid");
     return getConcept(uuid);
   }
 
   // Concept ID 23906
-  public Concept getLessThan20CopiesConcept(){
+  public Concept getLessThan20CopiesConcept() {
     String uuid =
-            Context.getAdministrationService().getGlobalProperty("eptsreports.lessThan20CopiesConceptUuid");
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.lessThan20CopiesConceptUuid");
     return getConcept(uuid);
   }
 
   // Concept ID 23907
-  public Concept getLessThan40CopiesConcept(){
+  public Concept getLessThan40CopiesConcept() {
     String uuid =
-            Context.getAdministrationService().getGlobalProperty("eptsreports.lessThan40CopiesConceptUuid");
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.lessThan40CopiesConceptUuid");
     return getConcept(uuid);
   }
 
   // Concept ID 23908
-  public Concept getLessThan400CopiesConcept(){
+  public Concept getLessThan400CopiesConcept() {
     String uuid =
-            Context.getAdministrationService().getGlobalProperty("eptsreports.lessThan400CopiesConceptUuid");
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.lessThan400CopiesConceptUuid");
     return getConcept(uuid);
   }
   // Encounter types

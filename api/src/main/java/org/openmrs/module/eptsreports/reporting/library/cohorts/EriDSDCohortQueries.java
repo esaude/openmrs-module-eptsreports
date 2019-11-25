@@ -354,17 +354,48 @@ public class EriDSDCohortQueries {
   }
 
   /**
+   * Patients with LAST Viral Load Result is < 1000 copies/ml in last ART year (only if VL exists)
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWithViralLoadLessThan1000Within12Months() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("LAST Viral Load Result is < 1000 copies/ml in last ART year (only if VL exists)");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "patientsWithViralLoadConcepts",
+        EptsReportUtils.map(
+            getPatientsWithViralLoadConcepts(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "patientsWithRecentViralLoadEncounter",
+        EptsReportUtils.map(
+            getPatientsWithTheRecentViralLoadEncounter(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+        "patientsWithViralLoadConcepts AND patientsWithRecentViralLoadEncounter");
+
+    return cd;
+  }
+
+  /**
    * Get Patients with Viral Load less than 1000 in the last 12 months.
    *
    * @return
    */
-  private CohortDefinition getPatientsWithViralLoadLessThan1000Within12Months() {
+  private CohortDefinition getPatientsWithViralLoadConcepts() {
     SqlCohortDefinition sql = new SqlCohortDefinition();
     sql.setName("Viral Load Less Than 1000 Within 12Months");
     sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sql.addParameter(new Parameter("endDate", "End Date", Date.class));
     sql.addParameter(new Parameter("location", "Location", Location.class));
-    sql.setQuery(DsdQueries.patientsWithViralLoadLessThan1000(
+    sql.setQuery(
+        DsdQueries.patientsWithViralLoadLessThan1000(
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getHivViralLoadQualitative().getConceptId(),
             hivMetadata.getBeyondDetectableLimitConcept().getConceptId(),
@@ -377,21 +408,26 @@ public class EriDSDCohortQueries {
     return sql;
   }
 
-  private  CohortDefinition getPatientsWithTheRecentViralLoadEncounter(){
+  /**
+   * Patients with The Recent VL Encounter
+   *
+   * @return
+   */
+  private CohortDefinition getPatientsWithTheRecentViralLoadEncounter() {
     SqlCohortDefinition sql = new SqlCohortDefinition();
     sql.setName("Patients with The Recent VL Encounter");
     sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sql.addParameter(new Parameter("endDate", "End Date", Date.class));
     sql.addParameter(new Parameter("location", "Location", Location.class));
 
-    sql.setQuery(DsdQueries.patientsWithTheRecentViralLoadEncounter(
+    sql.setQuery(
+        DsdQueries.patientsWithTheRecentViralLoadEncounter(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
-            hivMetadata.getHivViralLoadQualitative().getConceptId()
-    ));
+            hivMetadata.getHivViralLoadQualitative().getConceptId()));
 
     return sql;
   }
