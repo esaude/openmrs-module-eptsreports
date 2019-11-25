@@ -780,6 +780,47 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // Concept ID 1306
+  public Concept getBeyondDetectableLimitConcept(){
+    String uuid =
+            Context.getAdministrationService().getGlobalProperty("eptsreports.beyondDtectableLimitConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept ID 23814
+  public Concept getUndetectableViralLoadConcept(){
+    String uuid =
+            Context.getAdministrationService().getGlobalProperty("eptsreports.undetectableViralLoadConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept ID 23905
+  public Concept getLessThan10CopiesConcept(){
+    String uuid =
+            Context.getAdministrationService().getGlobalProperty("eptsreports.lessThan10CopiesConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept ID 23906
+  public Concept getLessThan20CopiesConcept(){
+    String uuid =
+            Context.getAdministrationService().getGlobalProperty("eptsreports.lessThan20CopiesConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept ID 23907
+  public Concept getLessThan40CopiesConcept(){
+    String uuid =
+            Context.getAdministrationService().getGlobalProperty("eptsreports.lessThan40CopiesConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept ID 23908
+  public Concept getLessThan400CopiesConcept(){
+    String uuid =
+            Context.getAdministrationService().getGlobalProperty("eptsreports.lessThan400CopiesConceptUuid");
+    return getConcept(uuid);
+  }
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {

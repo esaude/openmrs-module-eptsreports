@@ -1510,6 +1510,54 @@
 			UUID for the HEPATIC STEATOSIS WITH HYPERLACTATAEMIA concept
 		</description>
 	</globalProperty>
+	<!-- 1306 -->
+	<globalProperty>
+		<property>eptsreports.beyondDtectableLimitConceptUuid</property>
+		<defaultValue>e1da2812-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the BEYOND DETECTABLE LIMIT concept
+		</description>
+	</globalProperty>
+	<!-- 23814 -->
+	<globalProperty>
+		<property>eptsreports.undetectableViralLoadConceptUuid</property>
+		<defaultValue>cc8ef88c-6ab6-4404-a036-d415bc42cc1c</defaultValue>
+		<description>
+			UUID for the UNDETECTABLE VIRAL LOAD concept
+		</description>
+	</globalProperty>
+	<!-- 23905 -->
+	<globalProperty>
+		<property>eptsreports.lessThan10CopiesConceptUuid</property>
+		<defaultValue>78a76661-50c0-41cf-b566-de275f17b648</defaultValue>
+		<description>
+			UUID for the LESS THAN 10 COPIES/ML concept
+		</description>
+	</globalProperty>
+	<!-- 23906 -->
+	<globalProperty>
+		<property>eptsreports.lessThan20CopiesConceptUuid</property>
+		<defaultValue>ae6c048f-8b04-46cb-903e-51d5670db525</defaultValue>
+		<description>
+			UUID for the LESS THAN 20 COPIES/ML concept
+		</description>
+	</globalProperty>
+	<!-- 23907 -->
+	<globalProperty>
+		<property>eptsreports.lessTha40CopiesConceptUuid</property>
+		<defaultValue>1321eeac-5832-4076-88e9-b1f2cd351ada</defaultValue>
+		<description>
+			UUID for the LESS THAN 40 COPIES/ML concept
+		</description>
+	</globalProperty>
+	<!-- 23908 -->
+	<globalProperty>
+		<property>eptsreports.lessTha400CopiesConceptUuid</property>
+		<defaultValue>d6eb4797-2c01-4b6e-b43f-be15cd2fdcc2</defaultValue>
+		<description>
+			UUID for the LESS THAN 400 COPIES/ML concept
+		</description>
+	</globalProperty>
 
 
 

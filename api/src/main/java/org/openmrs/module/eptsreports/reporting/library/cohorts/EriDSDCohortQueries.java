@@ -364,12 +364,16 @@ public class EriDSDCohortQueries {
     sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sql.addParameter(new Parameter("endDate", "End Date", Date.class));
     sql.addParameter(new Parameter("location", "Location", Location.class));
-    sql.setQuery(
-        DsdQueries.patientsWithViralLoadLessThan1000(
-            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getHivViralLoadConcept().getConceptId()));
+    sql.setQuery(DsdQueries.patientsWithViralLoadLessThan1000(
+            hivMetadata.getHivViralLoadConcept().getConceptId(),
+            hivMetadata.getHivViralLoadQualitative().getConceptId(),
+            hivMetadata.getBeyondDetectableLimitConcept().getConceptId(),
+            hivMetadata.getUndetectableViralLoadConcept().getConceptId(),
+            hivMetadata.getLessThan10CopiesConcept().getConceptId(),
+            hivMetadata.getLessThan20CopiesConcept().getConceptId(),
+            hivMetadata.getLessThan40CopiesConcept().getConceptId(),
+            hivMetadata.getLessThan400CopiesConcept().getConceptId()));
+
     return sql;
   }
 
