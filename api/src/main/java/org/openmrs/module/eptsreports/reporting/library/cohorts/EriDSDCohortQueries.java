@@ -418,7 +418,7 @@ public class EriDSDCohortQueries {
         "breastfeeding",
         EptsReportUtils.map(
             hivCohortQueries.getTxNewBreastfeedingComposition(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
         "pregnant",
