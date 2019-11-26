@@ -1049,12 +1049,19 @@ public class EriDSDCohortQueries {
 
     CohortDefinition txCurr = txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true);
     CohortDefinition patientsEnrolledOnGaac = getAllPatientsEnrolledOnGaac();
+    CohortDefinition startOrContinueGAAC = getPatientsWithStartOrContinueGAAC();
+    CohortDefinition completedGAAC = getPatientsWhoCompletedGAAC();
 
     cd.addSearch(
         "TxCurr", EptsReportUtils.map(txCurr, "onOrBefore=${endDate},location=${location}"));
     cd.addSearch("patientsEnrolledOnGaac", mapStraightThrough(patientsEnrolledOnGaac));
 
-    cd.setCompositionString("TxCurr AND patientsEnrolledOnGaac");
+    String gaacMappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+    cd.addSearch("startOrContinueGAAC", EptsReportUtils.map(startOrContinueGAAC, gaacMappings));
+    cd.addSearch("completedGAAC", EptsReportUtils.map(completedGAAC, gaacMappings));
+
+    cd.setCompositionString(
+        "TxCurr AND (patientsEnrolledOnGaac OR startOrContinueGAAC) NOT completedGAAC");
 
     return cd;
   }
@@ -1294,39 +1301,7 @@ public class EriDSDCohortQueries {
    */
   @DocumentedDefinition(value = "BreastfeedingComposition")
   public CohortDefinition getBreastfeedingComposition() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setDescription("breastfeedingComposition");
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-
-    cd.addSearch(
-        "DATAPARTO",
-        EptsReportUtils.map(
-            txNewCohortQueries.getPatientsWithUpdatedDepartureInART(),
-            "value1=${onOrAfter},value2=${onOrBefore},locationList=${location}"));
-    cd.addSearch(
-        "INICIOLACTANTE",
-        EptsReportUtils.map(
-            getBreastfeedingPatientsStartingART(),
-            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
-    cd.addSearch(
-        "LACTANTEPROGRAMA",
-        EptsReportUtils.map(
-            txNewCohortQueries.getPatientsWhoGaveBirthWithinReportingPeriod(),
-            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
-    cd.addSearch("FEMININO", EptsReportUtils.map(genderCohorts.femaleCohort(), ""));
-    cd.addSearch(
-        "LACTANTE",
-        EptsReportUtils.map(
-            getBreastfeedingPatients(),
-            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
-
-    String compositionString =
-        "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE) AND FEMININO";
-
-    cd.setCompositionString(compositionString);
-    return cd;
+    return txNewCohortQueries.getTxNewBreastfeedingComposition();
   }
 
   /**
@@ -1365,6 +1340,33 @@ public class EriDSDCohortQueries {
             hivMetadata.getCriteriaForArtStart().getConceptId(),
             commonMetadata.getBreastfeeding().getConceptId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
+    return cd;
+  }
+
+  private CohortDefinition getPatientsWithStartOrContinueGAAC() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getGaac());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getStartDrugsConcept());
+    cd.addValue(hivMetadata.getContinueRegimen());
+    return cd;
+  }
+
+  private CohortDefinition getPatientsWhoCompletedGAAC() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getGaac());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getCompletedConcept());
     return cd;
   }
 
