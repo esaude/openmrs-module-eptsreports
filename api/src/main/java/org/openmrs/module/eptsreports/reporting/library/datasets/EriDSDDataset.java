@@ -225,120 +225,19 @@ public class EriDSDDataset extends BaseDataSet {
             mappings),
         "");*/
     dsd.addColumn(
-        "N1T",
-        "DSD N1 Total",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "N1T",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveWithNextPickupAs3Months(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "N1SST",
-        "DSD N1 Stable Subtotal",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "N1SST",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1Stable(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "N1SNPNBA",
-        "N1 Non-pregnant and Non-Breastfeeding Adults (>=15)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "N1SNPNBA",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1Stable(),
-                    mappings)),
-            mappings),
-        "age=15+");
-    addRow(
-        dsd,
-        "N1SNPNBC",
-        "N1 Non-pregnant and Non-Breastfeeding Children (<15)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "N1SNPNBC",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1Stable(),
-                    mappings)),
-            mappings),
-        getChildrenColumn());
-    dsd.addColumn(
-        "N1UST",
-        "DSD N1 Unstable Subtotal",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "N1UST",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveWithNextPickupAs3MonthsAndUnstable(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "N1UNPNBA",
-        "N1 Non-pregnant and Non-Breastfeeding Adults (>=15)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "N1UNPNBA",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1Unstable(),
-                    mappings)),
-            mappings),
-        "age=15+");
-    addRow(
-        dsd,
-        "N1UNPNBC",
-        "N1 Non-pregnant and Non-Breastfeeding Children (<15)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "N1UNPNBC",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN1Unstable(),
-                    mappings)),
-            mappings),
-        getChildrenColumn());
-    dsd.addColumn(
-        "N1UBNP",
-        "N1 Patients who are breastfeeding excluding pregnant patients",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "N1UBNP",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN1(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "N1UPB",
-        "N1: Pregnant: includes breastfeeding patients",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "N1UPB",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoArePregnantAndNotBreastfeedingN1(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
         "N2T",
         "DSD N2 Total",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "N2T",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWithNextConsultationScheduled175To190Days(),
+                    eriDSDCohortQueries.getPatientsWhoAreActiveWithNextPickupAs3Months(),
                     mappings)),
             mappings),
         "");
     dsd.addColumn(
         "N2SST",
-        "DSD N2 Stable subtotal",
+        "DSD N2 Stable Subtotal",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "N2SST",
@@ -349,7 +248,7 @@ public class EriDSDDataset extends BaseDataSet {
         "");
     dsd.addColumn(
         "N2SNPNBA",
-        "DSD N2 Stable Non-pregnant and Non-Breastfeeding Adults (>=15)",
+        "N2 Non-pregnant and Non-Breastfeeding Adults (>=15)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "N2SNPNBA",
@@ -361,7 +260,7 @@ public class EriDSDDataset extends BaseDataSet {
     addRow(
         dsd,
         "N2SNPNBC",
-        " DSD N2 Stable Non-pregnant and Non-Breastfeeding Children (2-4, 5-9, 10-14)",
+        "N2 Non-pregnant and Non-Breastfeeding Children (<15)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "N2SNPNBC",
@@ -372,19 +271,18 @@ public class EriDSDDataset extends BaseDataSet {
         getChildrenColumn());
     dsd.addColumn(
         "N2UST",
-        "DSD N2 Unstable subtotal",
+        "DSD N2 Unstable Subtotal",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "N2UST",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries
-                        .getPatientsWithNextConsultationScheduled175To190DaysUnstable(),
+                    eriDSDCohortQueries.getPatientsWhoAreActiveWithNextPickupAs3MonthsAndUnstable(),
                     mappings)),
             mappings),
         "");
     dsd.addColumn(
         "N2UNPNBA",
-        "DSD N2 Unstable Non-pregnant and Non-Breastfeeding Adults (>=15)",
+        "N2 Non-pregnant and Non-Breastfeeding Adults (>=15)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "N2UNPNBA",
@@ -396,7 +294,7 @@ public class EriDSDDataset extends BaseDataSet {
     addRow(
         dsd,
         "N2UNPNBC",
-        " DSD N2 Unstable Non-pregnant and Non-Breastfeeding Children (2-4, 5-9, 10-14)",
+        "N2 Non-pregnant and Non-Breastfeeding Children (<15)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "N2UNPNBC",
@@ -423,7 +321,8 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N2UPB",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoArePregnantAndBreastfeedingN2(), mappings)),
+                    eriDSDCohortQueries.getPatientsWhoArePregnantAndNotBreastfeedingN2(),
+                    mappings)),
             mappings),
         "");
     dsd.addColumn(
@@ -433,7 +332,8 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N3T",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticpatingInGaac(), mappings)),
+                    eriDSDCohortQueries.getPatientsWithNextConsultationScheduled175To190Days(),
+                    mappings)),
             mappings),
         "");
     dsd.addColumn(
@@ -477,7 +377,8 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N3UST",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticpatingInGaacUnstable(),
+                    eriDSDCohortQueries
+                        .getPatientsWithNextConsultationScheduled175To190DaysUnstable(),
                     mappings)),
             mappings),
         "");
@@ -523,6 +424,105 @@ public class EriDSDDataset extends BaseDataSet {
                 "N3UPB",
                 EptsReportUtils.map(
                     eriDSDCohortQueries.getPatientsWhoArePregnantAndBreastfeedingN3(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N4T",
+        "DSD N4 Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4T",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticpatingInGaac(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N4SST",
+        "DSD N4 Stable subtotal",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4SST",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN4Stable(),
+                    mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N4SNPNBA",
+        "DSD N4 Stable Non-pregnant and Non-Breastfeeding Adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4SNPNBA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN4Stable(),
+                    mappings)),
+            mappings),
+        "age=15+");
+    addRow(
+        dsd,
+        "N4SNPNBC",
+        " DSD N4 Stable Non-pregnant and Non-Breastfeeding Children (2-4, 5-9, 10-14)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4SNPNBC",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN4Stable(),
+                    mappings)),
+            mappings),
+        getChildrenColumn());
+    dsd.addColumn(
+        "N4UST",
+        "DSD N4 Unstable subtotal",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4UST",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticpatingInGaacUnstable(),
+                    mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N4UNPNBA",
+        "DSD N4 Unstable Non-pregnant and Non-Breastfeeding Adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4UNPNBA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN4Unstable(),
+                    mappings)),
+            mappings),
+        "age=15+");
+    addRow(
+        dsd,
+        "N4UNPNBC",
+        " DSD N4 Unstable Non-pregnant and Non-Breastfeeding Children (2-4, 5-9, 10-14)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4UNPNBC",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN4Unstable(),
+                    mappings)),
+            mappings),
+        getChildrenColumn());
+    dsd.addColumn(
+        "N4UBNP",
+        "N4 Patients who are breastfeeding excluding pregnant patients",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4UBNP",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN4(),
+                    mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N4UPB",
+        "N4: Pregnant: includes breastfeeding patients",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4UPB",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoArePregnantAndBreastfeedingN4(), mappings)),
             mappings),
         "");
 
