@@ -1,5 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -1045,16 +1047,12 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
+    CohortDefinition txCurr = txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true);
+    CohortDefinition patientsEnrolledOnGaac = getAllPatientsEnrolledOnGaac();
+
     cd.addSearch(
-        "TxCurr",
-        EptsReportUtils.map(
-            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
-            "onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "patientsEnrolledOnGaac",
-        EptsReportUtils.map(
-            getAllPatientsEnrolledOnGaac(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "TxCurr", EptsReportUtils.map(txCurr, "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch("patientsEnrolledOnGaac", mapStraightThrough(patientsEnrolledOnGaac));
 
     cd.setCompositionString("TxCurr AND patientsEnrolledOnGaac");
 
