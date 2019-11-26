@@ -29,6 +29,8 @@ public class HivMetadata extends ProgramsMetadata {
 
   private String gpPtvEtvProgramUuid = "eptsreports.ptvEtvProgramUuid";
 
+  private String getTBProgramUuid = "eptsreports.tbProgramUuid";
+
   // Concepts Id = 856
   public Concept getHivViralLoadConcept() {
     String uuid =
@@ -1033,6 +1035,11 @@ public class HivMetadata extends ProgramsMetadata {
     String hivCareProgramUuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.hivCareProgramUuid");
     return getProgramWorkflowState(hivCareProgramUuid, "1", "TRANSFER FROM OTHER FACILITY");
+  }
+
+  public ProgramWorkflowState getPatientActiveOnTBProgramWorkflowState() {
+    String tbProgramUuid = Context.getAdministrationService().getGlobalProperty(getTBProgramUuid);
+    return getProgramWorkflowState(tbProgramUuid, "16", "ACTIVE ON PROGRAM");
   }
 
   // Concept 5356
