@@ -1,5 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -1367,6 +1369,124 @@ public class EriDSDCohortQueries {
             hivMetadata.getCriteriaForArtStart().getConceptId(),
             commonMetadata.getBreastfeeding().getConceptId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
+    return cd;
+  }
+
+  @DocumentedDefinition(
+      "Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in CA")
+  public CohortDefinition getPatientsWhoAreActiveAndParticipatingInAccessionClubs() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition txCurr = txCurrCohortQueries.getTxCurrCompositionCohort("TX_CURR", true);
+    CohortDefinition startOrContinueCA = getPatientsWithStartOrContinueCA();
+
+    String mappings = "onOrBefore=${endDate},location=${location}";
+    cd.addSearch("txCurr", EptsReportUtils.map(txCurr, mappings));
+
+    String caMappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
+    cd.addSearch("startOrContinueCA", EptsReportUtils.map(startOrContinueCA, caMappings));
+
+    cd.setCompositionString("txCurr AND startOrContinueCA");
+
+    return cd;
+  }
+
+  @DocumentedDefinition(
+      "Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in CA and stable")
+  public CohortDefinition getPatientsWhoAreActiveParticipatingInAccessionClubsAndStable() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition ca = getPatientsWhoAreActiveAndParticipatingInAccessionClubs();
+    CohortDefinition stable = getPatientsWhoAreStable();
+
+    cd.addSearch("ca", mapStraightThrough(ca));
+    cd.addSearch("stable", mapStraightThrough(stable));
+
+    cd.setCompositionString("ca AND stable");
+
+    return cd;
+  }
+
+  @DocumentedDefinition(
+      "Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in CA and unstable")
+  public CohortDefinition getPatientsWhoAreActiveParticipatingInAccessionClubsAndUnstable() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition ca = getPatientsWhoAreActiveAndParticipatingInAccessionClubs();
+    CohortDefinition stable = getPatientsWhoAreStable();
+
+    cd.addSearch("ca", mapStraightThrough(ca));
+    cd.addSearch("stable", mapStraightThrough(stable));
+
+    cd.setCompositionString("ca NOT stable");
+
+    return cd;
+  }
+
+  @DocumentedDefinition(
+      "Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in CA and stable not pregnant or breastfeeding")
+  public CohortDefinition getN5StableNonPregnantNonBreastfeeding() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition caStable = getPatientsWhoAreActiveParticipatingInAccessionClubsAndUnstable();
+    CohortDefinition pregnant = txNewCohortQueries.getPatientsPregnantEnrolledOnART();
+    CohortDefinition breastfeeding =
+        txNewCohortQueries.getPatientsWhoGaveBirthWithinReportingPeriod();
+
+    cd.addSearch("caStable", mapStraightThrough(caStable));
+    cd.addSearch("pregnant", mapStraightThrough(pregnant));
+    cd.addSearch("breastfeeding", mapStraightThrough(breastfeeding));
+
+    cd.setCompositionString("caStable NOT (pregnant OR breastfeeding)");
+
+    return cd;
+  }
+
+  @DocumentedDefinition(
+      "Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in CA and unstable not pregnant or breastfeeding")
+  public CohortDefinition getN5UnstableNonPregnantNonBreastfeeding() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition caUnstable = getPatientsWhoAreActiveParticipatingInAccessionClubsAndUnstable();
+    CohortDefinition pregnant = txNewCohortQueries.getPatientsPregnantEnrolledOnART();
+    CohortDefinition breastfeeding =
+        txNewCohortQueries.getPatientsWhoGaveBirthWithinReportingPeriod();
+
+    cd.addSearch("caUnstable", mapStraightThrough(caUnstable));
+    cd.addSearch("pregnant", mapStraightThrough(pregnant));
+    cd.addSearch("breastfeeding", mapStraightThrough(breastfeeding));
+
+    cd.setCompositionString("caUnstable NOT (pregnant OR breastfeeding)");
+
+    return cd;
+  }
+
+  private CohortDefinition getPatientsWithStartOrContinueCA() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getAccessionClubs());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getStartDrugsConcept());
+    cd.addValue(hivMetadata.getContinueRegimen());
     return cd;
   }
 
