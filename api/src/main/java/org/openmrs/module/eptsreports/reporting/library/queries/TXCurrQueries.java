@@ -235,7 +235,7 @@ public class TXCurrQueries {
             + " AND obs.concept_id =%d"
             + " AND obs.value_datetime IS NOT NULL "
             + " AND enc.encounter_type IN ( %d, %d ) "
-            + " AND enc.location_id =:endDate "
+            + " AND enc.location_id =:location "
             + " AND enc.encounter_datetime < :onOrBefore "
             + " GROUP  BY pa.patient_id) recent "
             + " ON p.patient_id = recent.patient_id "
