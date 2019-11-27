@@ -346,7 +346,8 @@ public class HivCohortQueries {
   public CohortDefinition getPatientsOnTbTreatment() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("patientsOnTbTreatment");
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
     cd.setQuery(
@@ -356,7 +357,7 @@ public class HivCohortQueries {
             hivMetadata.getTBDrugStartDateConcept().getConceptId(),
             hivMetadata.getTBDrugEndDateConcept().getConceptId(),
             hivMetadata.getTBProgram().getProgramId(),
-            hivMetadata.getActiveOnProgramConcept().getConceptId(),
+            hivMetadata.getPatientActiveOnTBProgramWorkflowState().getProgramWorkflowStateId(),
             hivMetadata.getActiveTBConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getTBTreatmentPlanConcept().getConceptId(),
