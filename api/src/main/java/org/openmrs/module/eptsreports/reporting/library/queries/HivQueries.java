@@ -69,10 +69,11 @@ public class HivQueries {
             + "JOIN obs o ON e.encounter_id = o.encounter_id "
             + "WHERE o.concept_id = %d "
             + "AND e.location_id = :location "
+            + "AND e.encounter_type IN (%d,%d) "
             + "AND e.encounter_datetime BETWEEN date_sub(e.encounter_datetime, INTERVAL 6 MONTH) AND :endDate AND p.voided=0 "
             + "GROUP BY p.patient_id) last "
             + "ON e.patient_id = last.patient_id AND e.encounter_datetime = last.encounter_datetime "
-            + "WHERE e.encounter_type IN (%d,%d) AND  o.value_coded = %d AND e.voided=0 AND o.voided=0 "
+            + "WHERE o.value_coded = %d AND e.voided=0 AND o.voided=0 "
             + "UNION "
             + "SELECT e.patient_id "
             + "FROM encounter e "
@@ -83,10 +84,11 @@ public class HivQueries {
             + "JOIN obs o ON e.encounter_id = o.encounter_id "
             + "WHERE o.concept_id = %d "
             + "AND e.location_id = :location "
+            + "AND e.encounter_type IN (%d,%d) "
             + "AND o.value_datetime BETWEEN :startDate AND :endDate AND p.voided=0 "
             + "GROUP BY p.patient_id) last "
             + "ON e.patient_id = last.patient_id AND o.value_datetime = last.value_datetime "
-            + "WHERE e.encounter_type IN (%d,%d) AND o.value_coded IN(%d,%d) AND e.voided=0 AND o.voided=0 ";
+            + "WHERE o.value_coded IN(%d,%d) AND e.voided=0 AND o.voided=0 ";
 
     return String.format(
         query,
