@@ -48,7 +48,7 @@ public class HivQueries {
             + "JOIN obs end ON e1.encounter_id = end.encounter_id "
             + "WHERE  e1.encounter_type IN (%d,%d) AND end.concept_id = %d "
             + "AND (end.value_datetime is NOT NULL "
-            + "OR end.value_datetime <=  :endDate ) "
+            + "AND end.value_datetime <=  :endDate ) "
             + "AND  end.value_datetime > start.value_datetime "
             + "AND e.location_id=:location "
             + ") "
@@ -60,19 +60,33 @@ public class HivQueries {
             + "WHERE pp.program_id=%d AND ps.state=%d AND e.location_id=:location AND ps.start_date BETWEEN :startDate AND :endDate AND "
             + "(ps.end_date IS NULL OR ps.end_date > :endDate )AND p.voided=0 AND e.voided=0 "
             + "UNION "
-            + "SELECT p.patient_id FROM patient p "
-            + "JOIN encounter e ON p.patient_id=e.patient_id "
-            + "JOIN obs o ON p.patient_id=o.person_id "
-            + "WHERE e.encounter_type IN (%d,%d) AND p.voided=0 AND e.voided=0 "
-            + "AND o.concept_id=%d AND o.value_coded=%d "
-            + "AND e.encounter_datetime BETWEEN :endDate AND DATE_SUB(:endDate, INTERVAL 6 MONTH) AND e.location_id=:location "
+            + "SELECT e.patient_id "
+            + "FROM encounter e "
+            + "JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "JOIN (SELECT p.patient_id, max(e.encounter_datetime) encounter_datetime "
+            + "FROM patient p "
+            + " JOIN encounter e ON p.patient_id = e.patient_id "
+            + "JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "WHERE o.concept_id = %d "
+            + "AND e.location_id = :location "
+            + "AND e.encounter_datetime BETWEEN date_sub(e.encounter_datetime, INTERVAL 6 MONTH) AND :endDate AND p.voided=0 "
+            + "GROUP BY p.patient_id) last "
+            + "ON e.patient_id = last.patient_id AND e.encounter_datetime = last.encounter_datetime "
+            + "WHERE e.encounter_type IN (%d,%d) AND  o.value_coded = %d AND e.voided=0 AND o.voided=0 "
             + "UNION "
-            + "SELECT p.patient_id FROM patient p  "
-            + "JOIN encounter e ON p.patient_id=e.patient_id "
-            + "JOIN obs o ON p.patient_id=o.person_id "
-            + "WHERE e.encounter_type IN (%d,%d) AND p.voided=0 AND e.voided=0  "
-            + "AND o.concept_id=%d AND o.value_coded IN (%d,%d) "
-            + "AND o.value_datetime BETWEEN :startDate AND :endDate AND e.location_id=:location ";
+            + "SELECT e.patient_id "
+            + "FROM encounter e "
+            + "JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "JOIN (SELECT p.patient_id, max(o.value_datetime) value_datetime "
+            + "FROM patient p "
+            + "JOIN encounter e ON p.patient_id = e.patient_id "
+            + "JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "WHERE o.concept_id = %d "
+            + "AND e.location_id = :location "
+            + "AND o.value_datetime BETWEEN :startDate AND :endDate AND p.voided=0 "
+            + "GROUP BY p.patient_id) last "
+            + "ON e.patient_id = last.patient_id AND o.value_datetime = last.value_datetime "
+            + "WHERE e.encounter_type IN (%d,%d) AND o.value_coded IN(%d,%d) AND e.voided=0 AND o.voided=0 ";
 
     return String.format(
         query,
@@ -84,13 +98,13 @@ public class HivQueries {
         tbEndDateConceptId,
         tbProgramId,
         patientStateId,
-        adultoSeguimentoEncounterTypeId,
-        arvPediatriaSeguimentoEncounterTypeId,
         activeTBConceptId,
-        yesConceptId,
         adultoSeguimentoEncounterTypeId,
         arvPediatriaSeguimentoEncounterTypeId,
+        yesConceptId,
         tbTreatmentPlanConceptId,
+        adultoSeguimentoEncounterTypeId,
+        arvPediatriaSeguimentoEncounterTypeId,
         startDrugsConceptId,
         continueRegimenConceptId);
   }
