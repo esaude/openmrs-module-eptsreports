@@ -29,6 +29,8 @@ public class HivMetadata extends ProgramsMetadata {
 
   private String gpPtvEtvProgramUuid = "eptsreports.ptvEtvProgramUuid";
 
+  private String getTBProgramUuid = "eptsreports.tbProgramUuid";
+
   // Concepts Id = 856
   public Concept getHivViralLoadConcept() {
     String uuid =
@@ -347,7 +349,7 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   // concept_id = 6269
-  private Concept getActiveOnProgramConcept() {
+  public Concept getActiveOnProgramConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.activeOnProgramConcept");
     return getConcept(uuid);
@@ -726,6 +728,37 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // Concept Id 1113
+  public Concept getTBDrugStartDateConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.tuberculosisTreatmentStartDateConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept 6120
+  public Concept getTBDrugEndDateConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.tbDgrusTreatmentEndDateUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept ID 23761
+  public Concept getActiveTBConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.activeTBConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept ID 1268
+  public Concept getTBTreatmentPlanConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.tuberculosisTreatmentPlanConceptUuid");
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
@@ -896,6 +929,12 @@ public class HivMetadata extends ProgramsMetadata {
     return getProgram(uuid);
   }
 
+  // Program Id 5 TB
+  public Program getTBProgram() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.tbProgramUuid");
+    return getProgram(uuid);
+  }
+
   // Identifier types
   public PatientIdentifierType getNidServiceTarvIdentifierType() {
     String uuid =
@@ -1018,6 +1057,11 @@ public class HivMetadata extends ProgramsMetadata {
     String hivCareProgramUuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.hivCareProgramUuid");
     return getProgramWorkflowState(hivCareProgramUuid, "1", "TRANSFER FROM OTHER FACILITY");
+  }
+
+  public ProgramWorkflowState getPatientActiveOnTBProgramWorkflowState() {
+    String tbProgramUuid = Context.getAdministrationService().getGlobalProperty(getTBProgramUuid);
+    return getProgramWorkflowState(tbProgramUuid, "4", "ACTIVE ON PROGRAM");
   }
 
   // Concept 5356
