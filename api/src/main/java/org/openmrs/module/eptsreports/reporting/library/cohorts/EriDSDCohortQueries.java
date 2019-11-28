@@ -1056,7 +1056,7 @@ public class EriDSDCohortQueries {
         "TxCurr", EptsReportUtils.map(txCurr, "onOrBefore=${endDate},location=${location}"));
     cd.addSearch("patientsEnrolledOnGaac", mapStraightThrough(patientsEnrolledOnGaac));
 
-    String gaacMappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+    String gaacMappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
     cd.addSearch("startOrContinueGAAC", EptsReportUtils.map(startOrContinueGAAC, gaacMappings));
     cd.addSearch("completedGAAC", EptsReportUtils.map(completedGAAC, gaacMappings));
 
