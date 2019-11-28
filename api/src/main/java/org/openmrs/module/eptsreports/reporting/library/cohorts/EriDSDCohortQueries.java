@@ -65,22 +65,23 @@ public class EriDSDCohortQueries {
             getBreastfeedingComposition(),
             "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
-        "5",
-        EptsReportUtils.map(
-            getPatientsWhoAreStable(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "5",
+            EptsReportUtils.map(
+                    getAllPatientsOnSarcomaKarposi(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "6",
-        EptsReportUtils.map(
-            getAllPatientsOnSarcomaKarposi(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "6",
+            EptsReportUtils.map(
+                    hivCohortQueries.getPatientsOnTbTreatment(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "7",
         EptsReportUtils.map(
-            hivCohortQueries.getPatientsOnTbTreatment(),
+            getPatientsWhoAreStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(1 AND 2 AND NOT (3 OR 4 OR 6 OR 7) AND 5)");
+
+    cd.setCompositionString("(1 AND 2 AND NOT (3 OR 4 OR 5 OR 6) AND 7)");
 
     return cd;
   }
