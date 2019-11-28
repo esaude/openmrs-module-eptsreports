@@ -427,7 +427,7 @@ public class TXCurrQueries {
             + "    AND        ps.state IN (%s,%s,%s) "
             + "    AND        ps.end_date IS NULL "
             + "    AND        ps.start_date<= :onOrBefore "
-            + "    AND        location_id= :location "
+            + "    AND        pg.location_id= :location "
             + "    GROUP BY   pg.patient_id "
             + "   UNION  "
             + "   SELECT p.person_id patient_id, p.death_date common_date "
