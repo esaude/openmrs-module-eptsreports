@@ -63,21 +63,19 @@ public class HivQueries {
                 "UNION " +
                 "SELECT p.patient_id " +
                 "FROM   patient p " +
-                "JOIN   encounter e " +
-                "ON     p.patient_id=e.patient_id " +
                 "JOIN   patient_program pp " +
                 "ON     p.patient_id=pp.patient_id " +
                 "JOIN   patient_state ps " +
                 "ON     pp.patient_program_id=ps.patient_program_id " +
                 "WHERE  pp.program_id=%d " +
                 "AND    ps.state=%d " +
-                "AND    e.location_id=:location " +
+                "AND    pp.location_id=:location " +
                 "AND    ps.start_date BETWEEN :startDate AND    :endDate " +
                 "AND    ( " +
                 "              ps.end_date IS NULL " +
                 "       OR     ps.end_date > :endDate ) " +
                 "AND    p.voided=0 " +
-                "AND    e.voided=0 " +
+                "AND    ps.voided=0 " +
                 "UNION " +
                 "SELECT e.patient_id " +
                 "FROM   encounter e " +
