@@ -829,6 +829,7 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.lessThan400CopiesConceptUuid");
     return getConcept(uuid);
   }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
@@ -1131,7 +1132,7 @@ public class HivMetadata extends ProgramsMetadata {
 
   public ProgramWorkflowState getPatientActiveOnTBProgramWorkflowState() {
     String tbProgramUuid = Context.getAdministrationService().getGlobalProperty(getTBProgramUuid);
-    return getProgramWorkflowState(tbProgramUuid, "16", "ACTIVE ON PROGRAM");
+    return getProgramWorkflowState(tbProgramUuid, "4", "ACTIVE ON PROGRAM");
   }
 
   // Concept 5356

@@ -152,8 +152,7 @@ public class TxCurrCohortQueries {
         .put(
             "7",
             EptsReportUtils.map(
-                getDeadPatientsInDemographiscByReportingEndDate(),
-                "onOrBefore=${onOrBefore},location=${location}"));
+                getDeadPatientsInDemographiscByReportingEndDate(), "onOrBefore=${onOrBefore}"));
     txCurrComposition
         .getSearches()
         .put(
@@ -212,7 +211,7 @@ public class TxCurrCohortQueries {
             "14",
             EptsReportUtils.map(
                 getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(),
-                "location=${location}"));
+                "onOrBefore=${onOrBefore},location=${location}"));
 
     String compositionString;
     if (currentSpec) {
@@ -305,12 +304,12 @@ public class TxCurrCohortQueries {
     definition.setName("patientsWhoHavePickedUpDrugsMasterCardByEndReporingPeriod");
 
     String query =
-        " select p.patient_id "
+        "select p.patient_id "
             + " from patient p "
             + " inner join encounter e on  e.patient_id=p.patient_id "
             + " inner join obs o on  o.encounter_id=e.encounter_id "
             + " where  e.encounter_type = %s and o.concept_id = %s "
-            + " and e.encounter_datetime <= :onOrBefore and e.location_id = :location "
+            + " and o.value_datetime <= :onOrBefore and e.location_id = :location "
             + " and p.voided =0 and e.voided=0  and o.voided = 0 group by p.patient_id";
 
     definition.setQuery(
@@ -366,7 +365,6 @@ public class TxCurrCohortQueries {
     definition.setQuery(
         TXCurrQueries.getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate());
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
 
     return definition;
   }
@@ -523,15 +521,10 @@ public class TxCurrCohortQueries {
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
 
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
 
     return definition;
