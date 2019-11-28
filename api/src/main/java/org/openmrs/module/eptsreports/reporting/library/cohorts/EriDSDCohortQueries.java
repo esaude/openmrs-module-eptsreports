@@ -29,7 +29,7 @@ public class EriDSDCohortQueries {
   @Autowired private TxNewCohortQueries txNewCohortQueries;
   @Autowired private GenericCohortQueries genericCohortQueries;
   @Autowired private GenderCohortQueries genderCohorts;
-  @Autowired private TXTBCohortQueries txTBCohortQueries;
+  @Autowired private TbCohortQueries tbCohortQueries;
 
   @Autowired private AgeCohortQueries ageCohortQueries;
   @Autowired private HivCohortQueries hivCohortQueries;
@@ -429,7 +429,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "tbPatient",
         EptsReportUtils.map(
-            txTBCohortQueries.getInTBProgram(),
+        		tbCohortQueries.getPatientsOnTbTreatment(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
