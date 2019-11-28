@@ -309,7 +309,7 @@ public class TxCurrCohortQueries {
             + " inner join encounter e on  e.patient_id=p.patient_id "
             + " inner join obs o on  o.encounter_id=e.encounter_id "
             + " where  e.encounter_type = %s and o.concept_id = %s "
-            + " and e.encounter_datetime <= :onOrBefore and e.location_id = :location "
+            + " and o.value_datetime <= :onOrBefore and e.location_id = :location "
             + " and p.voided =0 and e.voided=0  and o.voided = 0 group by p.patient_id";
 
     definition.setQuery(
