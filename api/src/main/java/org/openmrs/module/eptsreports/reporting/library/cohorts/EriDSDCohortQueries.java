@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -801,10 +802,11 @@ public class EriDSDCohortQueries {
     CohortDefinition rapidFlow = getPatientsWithStartOrContinueOnRapidFlow();
 
     String mappings = "onOrBefore=${endDate},location=${location}";
-    String rapidFlowMappings =
-        "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
     cd.addSearch("TxCurr", EptsReportUtils.map(txCurr, mappings));
     cd.addSearch("scheduledN3", EptsReportUtils.map(patientsScheduled, mappings));
+
+    String rapidFlowMappings =
+        "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
     cd.addSearch("rapidFlow", EptsReportUtils.map(rapidFlow, rapidFlowMappings));
     cd.addSearch(
         "completed", EptsReportUtils.map(getPatientsWhoCompletedRapidFlow(), rapidFlowMappings));
@@ -845,10 +847,9 @@ public class EriDSDCohortQueries {
     int lowerBound = 175;
     int upperBound = 190;
     Concept returnVisitDate = hivMetadata.getReturnVisitDateConcept();
-    List<EncounterType> encounterTypes =
-        Arrays.asList(
-            hivMetadata.getARVPediatriaSeguimentoEncounterType(),
-            hivMetadata.getAdultoSeguimentoEncounterType());
+    List<EncounterType> encounterTypes = new ArrayList<>();
+    encounterTypes.add(hivMetadata.getARVPediatriaSeguimentoEncounterType());
+    encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
     return getPatientsScheduled(returnVisitDate, encounterTypes, upperBound, lowerBound);
   }
 

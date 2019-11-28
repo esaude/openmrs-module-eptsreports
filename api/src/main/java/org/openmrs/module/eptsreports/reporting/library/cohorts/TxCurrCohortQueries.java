@@ -136,7 +136,7 @@ public class TxCurrCohortQueries {
         .put(
             "6",
             EptsReportUtils.map(
-                getPatientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate(false),
+                getPatientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate(),
                 "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
@@ -152,8 +152,7 @@ public class TxCurrCohortQueries {
         .put(
             "7",
             EptsReportUtils.map(
-                getDeadPatientsInDemographiscByReportingEndDate(false),
-                "onOrBefore=${onOrBefore},location=${location}"));
+                getDeadPatientsInDemographiscByReportingEndDate(), "onOrBefore=${onOrBefore}"));
     txCurrComposition
         .getSearches()
         .put(
@@ -175,21 +174,21 @@ public class TxCurrCohortQueries {
         .put(
             "9",
             EptsReportUtils.map(
-                getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(false),
+                getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(),
                 "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
         .put(
             "10",
             EptsReportUtils.map(
-                getTransferredOutPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(false),
+                getTransferredOutPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(),
                 "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
         .put(
             "11",
             EptsReportUtils.map(
-                getPatientSuspendedInFichaResumeAndClinicaOfMasterCardByReportEndDate(false),
+                getPatientSuspendedInFichaResumeAndClinicaOfMasterCardByReportEndDate(),
                 "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
@@ -197,7 +196,7 @@ public class TxCurrCohortQueries {
             "12",
             EptsReportUtils.map(
                 getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition(),
-                "location=${location}"));
+                "onOrBefore=${onOrBefore},location=${location}"));
     // section 3
     txCurrComposition
         .getSearches()
@@ -212,7 +211,7 @@ public class TxCurrCohortQueries {
             "14",
             EptsReportUtils.map(
                 getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(),
-                "location=${location}"));
+                "onOrBefore=${onOrBefore},location=${location}"));
 
     String compositionString;
     if (currentSpec) {
@@ -305,12 +304,12 @@ public class TxCurrCohortQueries {
     definition.setName("patientsWhoHavePickedUpDrugsMasterCardByEndReporingPeriod");
 
     String query =
-        " select p.patient_id "
+        "select p.patient_id "
             + " from patient p "
             + " inner join encounter e on  e.patient_id=p.patient_id "
             + " inner join obs o on  o.encounter_id=e.encounter_id "
             + " where  e.encounter_type = %s and o.concept_id = %s "
-            + " and e.encounter_datetime <= :onOrBefore and e.location_id = :location "
+            + " and o.value_datetime <= :onOrBefore and e.location_id = :location "
             + " and p.voided =0 and e.voided=0  and o.voided = 0 group by p.patient_id";
 
     definition.setQuery(
@@ -333,8 +332,8 @@ public class TxCurrCohortQueries {
    */
   @DocumentedDefinition(
       value = "patientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate")
-  public CohortDefinition getPatientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate(
-      boolean maxDate) {
+  public CohortDefinition
+      getPatientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate() {
 
     SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("patientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate");
@@ -346,8 +345,7 @@ public class TxCurrCohortQueries {
                 .getTransferredOutToAnotherHealthFacilityWorkflowState()
                 .getProgramWorkflowStateId(),
             hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId(),
-            hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
-            maxDate));
+            hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId()));
 
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -360,14 +358,13 @@ public class TxCurrCohortQueries {
    * death_date <= :endDate
    */
   @DocumentedDefinition(value = "deadPatientsInDemographiscByReportingEndDate")
-  public CohortDefinition getDeadPatientsInDemographiscByReportingEndDate(boolean maxDate) {
+  public CohortDefinition getDeadPatientsInDemographiscByReportingEndDate() {
     SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("deadPatientsInDemographiscByReportingEndDate");
 
     definition.setQuery(
-        TXCurrQueries.getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(maxDate));
+        TXCurrQueries.getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate());
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
 
     return definition;
   }
@@ -412,8 +409,7 @@ public class TxCurrCohortQueries {
    * Encounter_datetime <= endDate
    */
   @DocumentedDefinition(value = "deadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate")
-  public CohortDefinition getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(
-      boolean maxDate) {
+  public CohortDefinition getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate() {
     SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("deadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate");
 
@@ -422,8 +418,7 @@ public class TxCurrCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getStateOfStayPriorArtPatientConcept().getConceptId(),
-            hivMetadata.getPatientHasDiedConcept().getConceptId(),
-            maxDate));
+            hivMetadata.getPatientHasDiedConcept().getConceptId()));
 
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -439,7 +434,7 @@ public class TxCurrCohortQueries {
   @DocumentedDefinition(
       value = "transferredOutPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate")
   public CohortDefinition
-      getTransferredOutPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(boolean maxDate) {
+      getTransferredOutPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate() {
     SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("transferredOutPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate");
 
@@ -448,8 +443,7 @@ public class TxCurrCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getStateOfStayPriorArtPatientConcept().getConceptId(),
-            hivMetadata.getTransferredOutConcept().getConceptId(),
-            maxDate));
+            hivMetadata.getTransferredOutConcept().getConceptId()));
 
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -464,8 +458,7 @@ public class TxCurrCohortQueries {
    */
   @DocumentedDefinition(
       value = "patientSuspendedInFichaResumeAndClinicaOfMasterCardByReportEndDate")
-  public CohortDefinition getPatientSuspendedInFichaResumeAndClinicaOfMasterCardByReportEndDate(
-      boolean maxDate) {
+  public CohortDefinition getPatientSuspendedInFichaResumeAndClinicaOfMasterCardByReportEndDate() {
     SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("patientSuspendedInFichaResumeAndClinicaOfMasterCardByReportEndDate");
 
@@ -474,8 +467,7 @@ public class TxCurrCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getStateOfStayPriorArtPatientConcept().getConceptId(),
-            hivMetadata.getSuspendedTreatmentConcept().getConceptId(),
-            maxDate));
+            hivMetadata.getSuspendedTreatmentConcept().getConceptId()));
 
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -529,12 +521,10 @@ public class TxCurrCohortQueries {
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
 
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
 
     return definition;
@@ -666,26 +656,6 @@ public class TxCurrCohortQueries {
     return definition;
   }
 
-  public CohortDefinition getPatinetLostToFollowUp() {
-    CompositionCohortDefinition definition = new CompositionCohortDefinition();
-
-    String mappings = "onOrBefore=${onOrBefore},location=${location}";
-
-    definition.addSearch(
-        "31", EptsReportUtils.map(getPatientHavingLastScheduledDrugPickupDate(), mappings));
-
-    definition.addSearch(
-        "32",
-        EptsReportUtils.map(
-            getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(), mappings));
-
-    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-    definition.setCompositionString("31 OR  32");
-
-    return definition;
-  }
-
   @DocumentedDefinition(value = "patientWhoAfterMostRecentDateHaveDrusPickupOrConsultation")
   public CohortDefinition getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultation() {
     SqlCohortDefinition definition = new SqlCohortDefinition();
@@ -715,94 +685,39 @@ public class TxCurrCohortQueries {
       value = "patientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition")
   public CohortDefinition
       getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition() {
-    CompositionCohortDefinition defintion = new CompositionCohortDefinition();
+    SqlCohortDefinition defintion = new SqlCohortDefinition();
 
     defintion.setName("patientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition");
+
+    defintion.setQuery(
+        TXCurrQueries.getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickup().getConceptId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata
+                .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId(),
+            hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+            hivMetadata.getVisitaApoioReintegracaoParteAEncounterType().getEncounterTypeId(),
+            hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId(),
+            hivMetadata.getPatientFoundConcept().getConceptId(),
+            hivMetadata.getNoConcept().getConceptId(),
+            hivMetadata.getReasonPatientNotFound().getConceptId(),
+            hivMetadata.getPatientIsDead().getConceptId(),
+            hivMetadata.getStateOfStayOfPreArtPatient().getConceptId(),
+            hivMetadata.getPatientHasDiedConcept().getConceptId(),
+            hivMetadata.getTransferredOutConcept().getConceptId(),
+            hivMetadata.getSuspendedTreatmentConcept().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId()));
 
     defintion.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     defintion.addParameter(new Parameter("location", "location", Location.class));
 
-    defintion
-        .getSearches()
-        .put(
-            "6",
-            EptsReportUtils.map(
-                getPatientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate(true),
-                "onOrBefore=${onOrBefore},location=${location}"));
-
-    defintion
-        .getSearches()
-        .put(
-            "7",
-            EptsReportUtils.map(
-                getDeadPatientsInDemographiscByReportingEndDate(true),
-                "onOrBefore=${onOrBefore},location=${location}"));
-
-    defintion
-        .getSearches()
-        .put(
-            "8",
-            EptsReportUtils.map(
-                getPatientDeathRegisteredInLastHomeVisitCardByReportingEndDate(),
-                "onOrBefore=${onOrBefore},location=${location}"));
-    defintion
-        .getSearches()
-        .put(
-            "9",
-            EptsReportUtils.map(
-                getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(true),
-                "onOrBefore=${onOrBefore},location=${location}"));
-    defintion
-        .getSearches()
-        .put(
-            "10",
-            EptsReportUtils.map(
-                getTransferredOutPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(true),
-                "onOrBefore=${onOrBefore},location=${location}"));
-    defintion
-        .getSearches()
-        .put(
-            "11",
-            EptsReportUtils.map(
-                getPatientSuspendedInFichaResumeAndClinicaOfMasterCardByReportEndDate(true),
-                "onOrBefore=${onOrBefore},location=${location}"));
-    defintion
-        .getSearches()
-        .put(
-            "12",
-            EptsReportUtils.map(
-                getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultation(),
-                "location=${location}"));
-
-    defintion.setCompositionString("12 NOT (6 OR 7 OR 8 OR 9 OR 10 OR 11)");
-
     return defintion;
-  }
-
-  public CohortDefinition test() {
-    CompositionCohortDefinition txCurrComposition = new CompositionCohortDefinition();
-
-    txCurrComposition.setName("test");
-
-    txCurrComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    txCurrComposition.addParameter(new Parameter("location", "location", Location.class));
-
-    txCurrComposition
-        .getSearches()
-        .put(
-            "13",
-            EptsReportUtils.map(
-                getPatientHavingLastScheduledDrugPickupDate(),
-                "onOrBefore=${onOrBefore},location=${location}"));
-    txCurrComposition
-        .getSearches()
-        .put(
-            "14",
-            EptsReportUtils.map(
-                getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(),
-                "location=${location}"));
-
-    txCurrComposition.setCompositionString("13 OR 14");
-    return txCurrComposition;
   }
 }
