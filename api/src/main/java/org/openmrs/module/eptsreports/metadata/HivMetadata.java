@@ -1039,7 +1039,7 @@ public class HivMetadata extends ProgramsMetadata {
 
   public ProgramWorkflowState getPatientActiveOnTBProgramWorkflowState() {
     String tbProgramUuid = Context.getAdministrationService().getGlobalProperty(getTBProgramUuid);
-    return getProgramWorkflowState(tbProgramUuid, "16", "ACTIVE ON PROGRAM");
+    return getProgramWorkflowState(tbProgramUuid, "4", "ACTIVE ON PROGRAM");
   }
 
   // Concept 5356
