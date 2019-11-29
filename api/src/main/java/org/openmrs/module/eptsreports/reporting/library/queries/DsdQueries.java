@@ -124,8 +124,7 @@ public class DsdQueries {
         "SELECT p.patient_id FROM patient p "
             + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "INNER JOIN obs o ON p.patient_id=o.person_id "
-            + "WHERE o.concept_id= "
-            + hivViralLoadConceptId
+            + "WHERE o.concept_id=%d "
             + " AND o.value_numeric < 1000 AND e.location_id=:location AND "
             + "e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
             + "AND p.voided=0 AND e.voided=0 AND o.voided=0 "
@@ -133,25 +132,20 @@ public class DsdQueries {
             + "SELECT p.patient_id FROM patient p "
             + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "INNER JOIN obs o ON p.patient_id=o.person_id "
-            + "WHERE o.concept_id= "
-            + hivViralLoadQualitativeConceptId
-            + " AND o.value_coded IN ( "
-            + beyondDetectableLimitConceptId
-            + ","
-            + undetectableViralLoadConceptId
-            + ","
-            + lessThan10CopiesConceptId
-            + ","
-            + lessThan20CopiesConceptId
-            + ","
-            + lessThan40CopiesConceptId
-            + ","
-            + lessThan400CopiesConceptId
-            + " ) AND e.location_id=:location "
+            + "WHERE o.concept_id=%d "
+            + " AND o.value_coded IN (%d,%d,%d,%d,%d,%d  ) AND e.location_id=:location "
             + "AND e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
             + "AND p.voided=0 AND e.voided=0 AND o.voided=0";
 
-    return query;
+    return String.format(query,
+            hivViralLoadConceptId,
+            hivViralLoadQualitativeConceptId,
+            beyondDetectableLimitConceptId,
+            undetectableViralLoadConceptId,
+            lessThan10CopiesConceptId,
+            lessThan20CopiesConceptId,
+            lessThan40CopiesConceptId,
+            lessThan400CopiesConceptId);
   }
 
   /**
