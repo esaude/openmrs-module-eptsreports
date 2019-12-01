@@ -1629,4 +1629,33 @@ public class EriDSDCohortQueries {
 
     return cd;
   }
+
+  /**
+   * Number of active patients on ART and are marked in the last PU as I OR C on Ficha Clinica and
+   * are NO Eligible
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition
+      getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndNotEligible() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName(
+        "Number of active patients on ART who are in PU as I or C on ficha clinica and are NOT eligible");
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "Tx_cur_pu",
+        EptsReportUtils.map(
+            getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinica(),
+            "onOrBefore=${onOrBefore},onOrAfter=${onOrAfter},location=${location}"));
+    cd.addSearch(
+        "NotActive",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveAndUnstable(),
+            "endDate=${onOrBefore},startDate=${onOrAfter},location=${location}"));
+    cd.setCompositionString("Tx_cur_pu AND NotActive");
+
+    return cd;
+  }
 }

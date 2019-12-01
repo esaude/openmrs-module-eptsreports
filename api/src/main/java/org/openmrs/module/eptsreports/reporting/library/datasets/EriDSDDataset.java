@@ -552,6 +552,20 @@ public class EriDSDDataset extends BaseDataSet {
             mappings),
         dsdN6Disag());
 
+    addRow(
+        dsd,
+        "N6NNE",
+        "N6: Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in PU and are NOT Eligible",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N6NNE",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndNotEligible(),
+                    mappings)),
+            mappings),
+        dsdN6Disag());
+
     return dsd;
   }
 
