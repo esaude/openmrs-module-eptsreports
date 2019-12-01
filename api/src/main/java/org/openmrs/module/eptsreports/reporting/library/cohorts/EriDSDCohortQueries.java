@@ -1558,4 +1558,26 @@ public class EriDSDCohortQueries {
             hivMetadata.getContinueRegimen().getConceptId()));
     return cd;
   }*/
+  /**
+   * Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who
+   * are in PU
+   *
+   * @retturn CohortDefinition
+   */
+  public CohortDefinition getNumberOfPatientsOnArtNonPregnantNonBreastfeedingNonTbAndAreInPuN6() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName(
+        "Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in PU");
+    cd.addParameter(new Parameter("onOrBefore", " Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "Tx_currr",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getTxCurrCompositionCohort("tx_curr", true),
+            "onOrBefore=${onOrBefore},location=${location},locations=${locations}"));
+    cd.setCompositionString("Tx_currr");
+    return cd;
+  }
 }

@@ -525,6 +525,19 @@ public class EriDSDDataset extends BaseDataSet {
                     eriDSDCohortQueries.getPatientsWhoArePregnantAndBreastfeedingN4(), mappings)),
             mappings),
         "");
+    addRow(
+        dsd,
+        "N6NE",
+        "N6: Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in PU",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N6N",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getNumberOfPatientsOnArtNonPregnantNonBreastfeedingNonTbAndAreInPuN6(),
+                    mappings)),
+            mappings),
+        dsdN6Disag());
 
     return dsd;
   }
@@ -534,6 +547,14 @@ public class EriDSDDataset extends BaseDataSet {
     ColumnParameters fiveTo9 = new ColumnParameters("fiveTo9", "5-9", "age=5-9", "02");
     ColumnParameters tenTo14 = new ColumnParameters("tenTo14", "10-14", "age=10-14", "03");
 
+    return Arrays.asList(twoTo4, fiveTo9, tenTo14);
+  }
+
+  private List<ColumnParameters> dsdN6Disag() {
+    ColumnParameters twoTo4 = new ColumnParameters("twoTo4", "2-4", "age=2-4", "01");
+    ColumnParameters fiveTo9 = new ColumnParameters("fiveTo9", "5-9", "age=5-9", "02");
+    ColumnParameters tenTo14 = new ColumnParameters("tenTo14", "10-14", "age=10-14", "03");
+    ColumnParameters over14 = new ColumnParameters("over14", "15+", "age=15+", "04");
     return Arrays.asList(twoTo4, fiveTo9, tenTo14);
   }
 }
