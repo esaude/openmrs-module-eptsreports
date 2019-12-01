@@ -578,6 +578,7 @@ public class EriDSDDataset extends BaseDataSet {
   }
 
   private List<ColumnParameters> dsdN6Disag() {
+    ColumnParameters under2Years = new ColumnParameters("under2Years", "<2", "age=0-1", "00");
     ColumnParameters twoTo4 = new ColumnParameters("twoTo4", "2-4", "age=2-4", "01");
     ColumnParameters fiveTo9 = new ColumnParameters("fiveTo9", "5-9", "age=5-9", "02");
     ColumnParameters tenTo14 = new ColumnParameters("tenTo14", "10-14", "age=10-14", "03");
