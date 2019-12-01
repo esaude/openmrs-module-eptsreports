@@ -546,4 +546,20 @@ public class TXCurrQueries {
         masterCardDrugPickup,
         artDatePickup);
   }
+
+  /**
+   * All patients marked in last “Paragen Unica (PU)” as Iniciar (I) or Continua (C) on Ficha
+   * Clinica – Master Card
+   *
+   * @return @String
+   */
+  public static String getAllPatientsMarkedInLastPuAsIOrConFichaClinicaMasterCard(
+      int encounterType,
+      int lastOnsStopConcept,
+      int startDrugsConcept,
+      int continueRegimenConcept) {
+    String query = "";
+    return String.format(
+        query, encounterType, lastOnsStopConcept, startDrugsConcept, continueRegimenConcept);
+  }
 }

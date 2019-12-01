@@ -525,16 +525,29 @@ public class EriDSDDataset extends BaseDataSet {
                     eriDSDCohortQueries.getPatientsWhoArePregnantAndBreastfeedingN4(), mappings)),
             mappings),
         "");
+
+    dsd.addColumn(
+        "TN6",
+        "Total-N6: include all patients from 2",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "TN6",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinica(),
+                    mappings)),
+            mappings),
+        "");
     addRow(
         dsd,
         "N6NE",
-        "N6: Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in PU",
+        "N6: Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in PU and are Eligible",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "N6N",
                 EptsReportUtils.map(
                     eriDSDCohortQueries
-                        .getNumberOfPatientsOnArtNonPregnantNonBreastfeedingNonTbAndAreInPuN6(),
+                        .getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndEligible(),
                     mappings)),
             mappings),
         dsdN6Disag());
@@ -555,6 +568,7 @@ public class EriDSDDataset extends BaseDataSet {
     ColumnParameters fiveTo9 = new ColumnParameters("fiveTo9", "5-9", "age=5-9", "02");
     ColumnParameters tenTo14 = new ColumnParameters("tenTo14", "10-14", "age=10-14", "03");
     ColumnParameters over14 = new ColumnParameters("over14", "15+", "age=15+", "04");
-    return Arrays.asList(twoTo4, fiveTo9, tenTo14);
+    ColumnParameters total = new ColumnParameters("total", "Total", "", "05");
+    return Arrays.asList(twoTo4, fiveTo9, tenTo14, over14, total);
   }
 }
