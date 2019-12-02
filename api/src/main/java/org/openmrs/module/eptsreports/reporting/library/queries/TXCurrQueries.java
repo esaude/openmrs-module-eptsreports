@@ -273,7 +273,7 @@ public class TXCurrQueries {
             + "                            and e.location_id=   :location and e.voided=0  "
             + "                            and e.encounter_datetime=most_recent.encounter_datetime  and e.encounter_datetime <   :onOrBefore  "
             + "                        inner join obs o  on   "
-            + "                            o.encounter_id=e.encounter_id and o.voided =0 and   o.value_datetime <   :onOrBefore  "
+            + "                            o.encounter_id=e.encounter_id and o.voided =0 and  o.concept_id in (%s,%s,%s) "
             + "                    GROUP BY most_recent.patient_id  "
             + "            ) final  "
             + "         where final.patient_id  group by final.patient_id";
@@ -290,7 +290,10 @@ public class TXCurrQueries {
         adultoSeguimentoEncounterType,
         aRVPediatriaSeguimentoEncounterType,
         ARVPharmaciaEncounterType,
-        msterCardDrugPickupEncounterType);
+        msterCardDrugPickupEncounterType,
+        returnVisitDateForArvDrugConcept,
+        returnVisitDateConcept,
+        artDatePickup);
   }
 
   public static String getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(
@@ -302,48 +305,49 @@ public class TXCurrQueries {
       int returnVisitDateForArvDrugConcept) {
 
     String query =
-        "SELECT ps.patient_id    "
-            + "                        FROM   (SELECT p.patient_id    "
-            + "                               FROM   patient p  "
-            + "                               INNER join encounter e on p.patient_id=e.patient_id  "
-            + "                               WHERE  p.voided = 0 and e.location_id=  :location  and e.voided=0   "
-            + "                                       AND p.patient_id NOT IN   "
-            + "                                               (SELECT patient_id  "
-            + "                                                   FROM   encounter    "
-            + "                                                   WHERE  encounter_type IN    "
-            + "                                                       ( %s, %s, %s, %s )    "
+        "SELECT ps.patient_id     "
+            + "                        FROM   (SELECT p.patient_id     "
+            + "                               FROM   patient p   "
+            + "                               INNER join encounter e on p.patient_id=e.patient_id   "
+            + "                               WHERE  p.voided = 0 and e.location_id=  :location and e.voided=0    "
+            + "                                       AND p.patient_id NOT IN    "
+            + "                                               (SELECT patient_id   "
+            + "                                                   FROM   encounter     "
+            + "                                                   WHERE  encounter_type IN     "
+            + "                                                       ( %s,%s,%s,%s)     "
             + "                                                       AND location_id =  :location   "
-            + "                                                       AND voided = 0  and encounter_datetime <=  :onOrBefore  ) "
-            + "                               UNION    "
-            + "                                      "
-            + "                               Select  q1.patient_id  "
-            + "                                from (SELECT p.patient_id,    "
-            + "                                           Max(e.encounter_datetime) as max_enc_datetime "
-            + "                                           FROM   patient p    "
-            + "                                           INNER JOIN encounter e    "
-            + "                                               ON e.patient_id = p.patient_id    "
-            + "                                           INNER JOIN obs o    "
-            + "                                               ON o.encounter_id = e.encounter_id    "
-            + "                                           WHERE  p.voided = 0    "
-            + "                                               AND e.voided = 0   "
-            + "                                               AND o.voided = 0    "
-            + "                                               AND e.encounter_type IN (%s,%s,%s)   "
-            + "                                               and e.encounter_datetime <=  :onOrBefore   "
+            + "                                                       AND voided = 0  and encounter_datetime <=  :onOrBefore)  "
+            + "                               UNION     "
+            + "                                       "
+            + "                               Select  q1.patient_id   "
+            + "                                from (SELECT p.patient_id,     "
+            + "                                           Max(e.encounter_datetime) as max_enc_datetime  "
+            + "                                           FROM   patient p     "
+            + "                                           INNER JOIN encounter e     "
+            + "                                               ON e.patient_id = p.patient_id     "
+            + "                                           INNER JOIN obs o     "
+            + "                                               ON o.encounter_id = e.encounter_id     "
+            + "                                           WHERE  p.voided = 0     "
+            + "                                               AND e.voided = 0    "
+            + "                                               AND o.voided = 0     "
+            + "                                               AND e.encounter_type IN (%s,%s,%s)    "
+            + "                                               and e.encounter_datetime <=  :onOrBefore  "
             + "                                               AND e.location_id =  :location       "
-            + "                                           GROUP  BY p.patient_id   "
-            + "                                       ) q1   "
-            + "                                        inner join encounter e on e.patient_id=q1.patient_id  "
+            + "                                           GROUP  BY p.patient_id    "
+            + "                                       ) q1    "
+            + "                                        inner join encounter e on e.patient_id=q1.patient_id   "
             + "                                          and  e.encounter_datetime =q1.max_enc_datetime and e.location_id= :location   "
-            + "                                       left  join obs  o on   "
-            + "                                           o.encounter_id=e.encounter_id and   "
-            + "                                           (o.concept_id in (%s,%s) and o.value_datetime is null) and o.voided=0  "
-            + "                                       left join obs o2 on "
-            + "                                           o.encounter_id=e.encounter_id and "
-            + "                                           o.concept_id in (%s,%s) and o2.voided=0 "
-            + "                                       where (o.obs_id IS NOT NULL or o2.obs_id is NULL) "
-            + "                   )ps         "
-            + "             GROUP  BY ps.patient_id;  "
-            + "";
+            + "                                       left  join obs  o on    "
+            + "                                           o.encounter_id=e.encounter_id and    "
+            + "                                           (o.concept_id in (%s,%s) and o.value_datetime is null) and o.voided=0   "
+            + "                                           and o.location_id= :location  "
+            + "                                       left join obs o2 on  "
+            + "                                           o2.encounter_id=e.encounter_id and  "
+            + "                                           o2.concept_id in (%s,%s) and o2.voided=0  "
+            + "                                           and o.location_id= :location  "
+            + "                                       where (o.obs_id IS NOT NULL or o2.obs_id is NULL)  "
+            + "                   )ps          "
+            + "             GROUP  BY ps.patient_id; ";
 
     return String.format(
         query,
