@@ -21,6 +21,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQue
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxPvlsDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxRttDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
@@ -40,6 +41,8 @@ public class SetupMERQuarterly extends EptsDataExportManager {
   @Autowired private TxCurrDataset txCurrDataset;
 
   @Autowired protected GenericCohortQueries genericCohortQueries;
+
+  @Autowired private TxRttDataset txRttDataset;
 
   @Override
   public String getVersion() {
@@ -79,6 +82,8 @@ public class SetupMERQuarterly extends EptsDataExportManager {
         "C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
     reportDefinition.addDataSetDefinition(
         "P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
+    reportDefinition.addDataSetDefinition(
+        "RTT", Mapped.mapStraightThrough(txRttDataset.constructTxRttDataset()));
     // add a base cohort here to help in calculations running
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
