@@ -1568,20 +1568,20 @@ public class EriDSDCohortQueries {
   public CohortDefinition getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinica() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Number of active patients on ART who are in PU as I or C on ficha clinica");
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
         "Tx_currr",
         EptsReportUtils.map(
             txCurrCohortQueries.getTxCurrCompositionCohort("tx_curr", true),
-            "onOrBefore=${onOrBefore},location=${location},locations=${locations}"));
+            "endDate=${onOrBefore},location=${location},locations=${locations}"));
     cd.addSearch(
         "PU",
         EptsReportUtils.map(
             getAllPatientsMarkedInLastPuAsIorConFichaClinicaMasterCard(),
-            "onOrBefore=${onOrBefore},onOrAfter=${onOrAfter},location=${location}"));
+            "endDate=${onOrBefore},startDate=${onOrAfter},location=${location}"));
     cd.setCompositionString("Tx_currr AND PU");
     return cd;
   }
@@ -1613,19 +1613,19 @@ public class EriDSDCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
         "Number of active patients on ART who are in PU as I or C on ficha clinica and are eligible");
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "Tx_cur_pu",
         EptsReportUtils.map(
             getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinica(),
-            "onOrBefore=${onOrBefore},onOrAfter=${onOrAfter},location=${location}"));
+            "endDate=${endDate},startDate=${startDate},location=${location}"));
     cd.addSearch(
         "Active",
         EptsReportUtils.map(
             getAllPatientsWhoAreActiveAndStable(),
-            "endDate=${onOrBefore},startDate=${onOrAfter},location=${location}"));
+            "endDate=${endDate},startDate=${startDate},location=${location}"));
     cd.setCompositionString("Tx_cur_pu AND Active");
 
     return cd;
