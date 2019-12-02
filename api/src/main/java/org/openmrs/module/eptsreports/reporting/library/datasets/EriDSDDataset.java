@@ -551,6 +551,18 @@ public class EriDSDDataset extends BaseDataSet {
                     mappings)),
             mappings),
         dsdN6Disag());
+    dsd.addColumn(
+        "N6EA",
+        "DSD N6 stable Non-pregnant and Non-Breastfeeding Adults (>=15) NOT on TB treatment",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N6EA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndEligibleAndNotOnTbtreatment(),
+                    mappings)),
+            mappings),
+        "age=15+");
 
     addRow(
         dsd,

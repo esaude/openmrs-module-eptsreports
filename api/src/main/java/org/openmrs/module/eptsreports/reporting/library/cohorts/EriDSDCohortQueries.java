@@ -35,6 +35,7 @@ public class EriDSDCohortQueries {
   @Autowired private HivCohortQueries hivCohortQueries;
   @Autowired private HivMetadata hivMetadata;
   @Autowired private CommonMetadata commonMetadata;
+  @Autowired private TbCohortQueries tbCohortQueries;
 
   /** D1: Number of active, stable, patients on ART. Combinantion of Criteria 1,2,3,4,5 */
   public CohortDefinition getAllPatientsWhoAreActiveAndStable() {
@@ -1655,6 +1656,35 @@ public class EriDSDCohortQueries {
             getPatientsWhoAreActiveAndUnstable(),
             "endDate=${onOrBefore},startDate=${onOrAfter},location=${location}"));
     cd.setCompositionString("Tx_cur_pu AND NotActive");
+
+    return cd;
+  }
+
+  /**
+   * Number of active patients on ART and are marked in the last PU as I OR C on Ficha Clinica and
+   * are aligible and NOT on TB treatment
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition
+      getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndEligibleAndNotOnTbtreatment() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName(
+        "Number of active patients on ART who are in PU as I or C on ficha clinica and are eligible and NOT on TB treatment");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "eligible",
+        EptsReportUtils.map(
+            getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndEligible(),
+            "onOrBefore=${endDate},onOrAfter=${startDate},location=${location}"));
+    cd.addSearch(
+        "Tb",
+        EptsReportUtils.map(
+            tbCohortQueries.getPatientsOnTbTreatment(),
+            "endDate=${endDate},startDate=${startDate},location=${location}"));
+    cd.setCompositionString("eligible AND NOT Tb");
 
     return cd;
   }
