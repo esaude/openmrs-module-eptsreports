@@ -14,6 +14,7 @@ package org.openmrs.module.eptsreports.metadata;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
@@ -1126,5 +1127,12 @@ public class HivMetadata extends ProgramsMetadata {
     ProgramWorkflow workflow = getArtWorkflow();
     ProgramWorkflowState state = getAbandonedWorkflowState(artProgram, workflow);
     return state;
+  }
+
+  public PersonAttributeType getIdentificadorDefinidoLocalmente01() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.identificadorDefinidoLocalment01Uuid");
+    return getPersonAttributeType(uuid);
   }
 }

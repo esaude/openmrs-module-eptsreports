@@ -1457,6 +1457,16 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.identificadorDefinidoLocalment01Uuid</property>
+		<defaultValue>c89c90eb-5b03-4899-ab9f-06fecd123511</defaultValue>
+		<description>
+			UUID for the Identificador definido localmente 01 person attribute type
+		</description>
+	</globalProperty>
+
+
+
 
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
