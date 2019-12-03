@@ -64,10 +64,23 @@ public class TxRttDataset extends BaseDataSet {
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
     dsd.setName("TX_RTT Dataset");
     dsd.addParameters(getParameters());
+    addRow(
+        dsd,
+        "TRR",
+        "Patients who missed appointment",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Patients who missed appointment",
+                EptsReportUtils.map(
+                    txRttCohortQueries
+                        .getAllPatientsWhoMissedAppointmentBy28Or30DaysButLaterHadVisit(),
+                    mappings)),
+            mappings),
+        dissagChildrenAndAdultsAndKeyPop());
     return dsd;
   }
 
-  private List<ColumnParameters> dissagChildrenAndAdults() {
+  private List<ColumnParameters> dissagChildrenAndAdultsAndKeyPop() {
     // children Male
     ColumnParameters under1YearM =
         new ColumnParameters("under1YearM", "<1 Male", "gender=M|age=<1", "01");
