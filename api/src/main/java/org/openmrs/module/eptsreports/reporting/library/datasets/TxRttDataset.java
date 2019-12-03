@@ -13,25 +13,88 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
+import java.util.Arrays;
+import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxRttCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
+import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TxRttDataset extends BaseDataSet {
 
   private TxRttCohortQueries txRttCohortQueries;
+  private EptsGeneralIndicator eptsGeneralIndicator;
+  private EptsCommonDimension eptsCommonDimension;
 
   @Autowired
-  public TxRttDataset(TxRttCohortQueries txRttCohortQueries) {
+  @Qualifier("commonAgeDimensionCohort")
+  private AgeDimensionCohortInterface ageDimensionCohort;
+
+  @Autowired
+  public TxRttDataset(
+      TxRttCohortQueries txRttCohortQueries,
+      EptsGeneralIndicator eptsGeneralIndicator,
+      EptsCommonDimension eptsCommonDimension) {
     this.txRttCohortQueries = txRttCohortQueries;
+    this.eptsGeneralIndicator = eptsGeneralIndicator;
+    this.eptsCommonDimension = eptsCommonDimension;
   }
 
   public DataSetDefinition constructTxRttDataset() {
 
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+    String mappings =
+        "startDate=${startDate},endDate=${endDate},location=${location},months=${months}";
+    dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
+    dsd.addDimension(
+        "age",
+        EptsReportUtils.map(
+            eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
     dsd.setName("TX_RTT Dataset");
     dsd.addParameters(getParameters());
     return dsd;
+  }
+
+  private List<ColumnParameters> dissagChildren() {
+    // children Male
+    ColumnParameters under1YearM =
+        new ColumnParameters("under1YearM", "<1 Male", "gender=M|age=<1", "01");
+    ColumnParameters oneT04YearsM =
+        new ColumnParameters("oneT04YearsM", "1-4 Male", "gender=M|age=1-4", "02");
+    ColumnParameters fiveT09YearsM =
+        new ColumnParameters("fiveT09YearsM", "5-9 Male", "gender=M|age=5-9", "03");
+    ColumnParameters tenT014YearsM =
+        new ColumnParameters("tenT014YearsM", "10-14 Male", "gender=M|age=10-14", "04");
+
+    // Children Female
+    ColumnParameters under1YearF =
+        new ColumnParameters("under1YearF", "<1 Female", "gender=F|age=<1", "05");
+    ColumnParameters oneT04YearsF =
+        new ColumnParameters("oneT04YearsF", "1-4 Female", "gender=F|age=1-4", "06");
+    ColumnParameters fiveT09YearsF =
+        new ColumnParameters("fiveT09YearsF", "5-9 Female", "gender=F|age=5-9", "07");
+    ColumnParameters tenT014YearsF =
+        new ColumnParameters("tenT014YearsF", "10-14 Female", "gender=F|age=10-14", "08");
+
+    // Adults Male
+
+    // Adults Female
+
+    return Arrays.asList(
+        under1YearM,
+        oneT04YearsM,
+        fiveT09YearsM,
+        tenT014YearsM,
+        under1YearF,
+        oneT04YearsF,
+        fiveT09YearsF,
+        tenT014YearsF);
   }
 }

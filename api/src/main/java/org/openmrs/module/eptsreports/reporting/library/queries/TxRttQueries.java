@@ -20,13 +20,65 @@ public class TxRttQueries {
    * Encounter Type Ids 6 or 9 during the reporting period, the occurred encounter date minus the
    * previous scheduled consultation date (Concept ID 1410 value_datetime) from the previous
    * consultation of Encounter Type Ids 6 or 9, is greater than 28 days
+   *
+   * @return String
    */
-  public static String getpatientsHavingConsultation(int adultoSeg, int padiatSeg, int conceptid) {
+  public static String getPatientsHavingConsultationAfter28DaysPriorToPreviousConsultation(
+      int adultoSeg, int padiatSeg, int conceptid) {
     String query =
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
-            + " INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voide=0 AND e.voide=0 AND o.voided=0 AND e.encounter_type IN(%d, %d)"
-            + " AND o.concept_id=%d";
+        "SELECT e.patient_id "
+            + " FROM ("
+            + " SELECT e.encounter_id,  p.patient_id, "
+            + " ("
+            + " SELECT oo.value_datetime "
+            + " FROM encounter ee "
+            + " INNER JOIN obs oo ON ee.encounter_id = oo.encounter_id "
+            + " WHERE "
+            + " ee.voided = 0 AND "
+            + " oo.voided = 0 AND "
+            + " ee.encounter_type IN (%d, %d) AND "
+            + " oo.concept_id = %d AND "
+            + " ee.patient_id = e.patient_id AND "
+            + " ee.encounter_datetime < e.encounter_datetime AND "
+            + " ee.location = :location AND "
+            + " ee.encounter_datetime <= :endDate "
+            + " ORDER BY ee.encounter_datetime DESC LIMIT 1) AS prev_scheduled_date, e.encounter_datetime "
+            + " FROM	patient p "
+            + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + " WHERE "
+            + " p.voided = 0 AND "
+            + " e.voided = 0 AND "
+            + " e.encounter_type IN (%d, %d) AND "
+            + " e.location = :location "
+            + " ) e "
+            + " WHERE "
+            + " TIMESTAMPDIFF(DAY, e.prev_scheduled_date, e.encounter_datetime) > 28 "
+            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate ";
 
-    return String.format(query, adultoSeg, padiatSeg, conceptid);
+    return String.format(query, adultoSeg, padiatSeg, conceptid, adultoSeg, padiatSeg);
+  }
+
+  /**
+   * For each occurred drug pick ups of Encounter Types Ids 18 or 52 during the reporting period,
+   * the occurred encounter date minus the previous scheduled drug pick up date (as the most recent
+   * between previous encounter type 18 scheduled date (Concept ID 1410 value_datetime) and the
+   * previous encounter type 52 pick up date (Concept ID 23866 value_datetime +30 days)), is greater
+   * than 28 days
+   *
+   * @return String
+   */
+  public static String
+      getAllPatientsWhoMissedDrugPickupHavingPreviousMasterCardAppointment30DaysWhichIs28DaysLaterThanEncounterDate(
+          int pharmacyEncounter,
+          int masterCardEncounter,
+          int nextAppointmentConcept,
+          int dateOfArtPickupConcept) {
+    String query = "";
+    return String.format(
+        query,
+        pharmacyEncounter,
+        masterCardEncounter,
+        nextAppointmentConcept,
+        dateOfArtPickupConcept);
   }
 }
