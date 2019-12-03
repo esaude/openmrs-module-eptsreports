@@ -71,7 +71,9 @@ public class TxRttCohortQueries {
                 hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
                 hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
                 hivMetadata.getReturnVisitDateConcept().getConceptId(),
-                hivMetadata.getArtDatePickup().getConceptId()));
+                hivMetadata.getArtDatePickup().getConceptId(),
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
   }
 
   /**

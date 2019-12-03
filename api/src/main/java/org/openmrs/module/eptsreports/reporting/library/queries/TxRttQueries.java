@@ -72,13 +72,54 @@ public class TxRttQueries {
           int pharmacyEncounter,
           int masterCardEncounter,
           int nextAppointmentConcept,
-          int dateOfArtPickupConcept) {
-    String query = "";
+          int dateOfArtPickupConcept,
+          int adultoSeg,
+          int paedSeg) {
+    String query =
+        " SELECT e.patient_id "
+            + " FROM ("
+            + " SELECT e.encounter_id, p.patient_id,("
+            + " SELECT "
+            + " CASE WHEN ee.encounter_type = %d THEN "
+            + " oo.value_datetime "
+            + " ELSE "
+            + " DATE_ADD(oo.value_datetime, INTERVAL 30 DAY) "
+            + " END AS next_schedule_date "
+            + " FROM encounter ee "
+            + " INNER JOIN obs oo ON ee.encounter_id = oo.encounter_id "
+            + " WHERE "
+            + " ee.voided = 0 AND "
+            + " oo.voided = 0 AND "
+            + "("
+            + " (ee.encounter_type = %d AND oo.concept_id = %d) OR "
+            + " (ee.encounter_type = %d AND oo.concept_id = %d) "
+            + ") AND "
+            + " ee.patient_id = e.patient_id AND "
+            + " ee.encounter_datetime < e.encounter_datetime AND "
+            + " ee.location_id = :location AND "
+            + " ee.encounter_datetime <= :endDate "
+            + " ORDER BY ee.encounter_datetime DESC LIMIT 1 "
+            + ") AS prev_scheduled_date, "
+            + " e.encounter_datetime "
+            + " FROM patient p "
+            + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + " WHERE "
+            + " p.voided = 0 AND "
+            + " e.voided = 0 AND "
+            + " e.encounter_type IN (%d, %d) AND "
+            + " e.location_id = :location "
+            + ") e "
+            + " WHERE "
+            + " TIMESTAMPDIFF(DAY, e.prev_scheduled_date, e.encounter_datetime) > 28 "
+            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate";
     return String.format(
         query,
         pharmacyEncounter,
-        masterCardEncounter,
+        pharmacyEncounter,
         nextAppointmentConcept,
-        dateOfArtPickupConcept);
+        masterCardEncounter,
+        dateOfArtPickupConcept,
+        adultoSeg,
+        paedSeg);
   }
 }
