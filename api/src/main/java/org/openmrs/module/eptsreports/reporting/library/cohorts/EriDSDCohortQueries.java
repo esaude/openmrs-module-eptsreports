@@ -28,6 +28,7 @@ public class EriDSDCohortQueries {
   @Autowired private TxNewCohortQueries txNewCohortQueries;
   @Autowired private GenericCohortQueries genericCohortQueries;
   @Autowired private GenderCohortQueries genderCohorts;
+  @Autowired private TbCohortQueries tbCohortQueries;
 
   @Autowired private AgeCohortQueries ageCohortQueries;
   @Autowired private HivCohortQueries hivCohortQueries;
@@ -723,6 +724,46 @@ public class EriDSDCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("activeAndStableN2 AND NOT pregnant AND NOT breastfeeding");
+
+    return cd;
+  }
+
+  /**
+   * N2: Stable Patients who are Non-pregnant and Non-Breastfeeding and NOT on TB
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingN2StableNotOnTB() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("N2 Patients who are NOT pregnant and NOT breastfeeding and NOT on TB");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "breastfeeding",
+        EptsReportUtils.map(
+            txNewCohortQueries.getTxNewBreastfeedingComposition(),
+            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "pregnant",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "activeAndStableN2",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveWithNextPickupAs3MonthsAndStable(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "patientsOnTB",
+        EptsReportUtils.map(
+            tbCohortQueries.getPatientsOnTbTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+        "activeAndStableN2 AND NOT pregnant AND NOT breastfeeding AND NOT patientsOnTB");
 
     return cd;
   }
