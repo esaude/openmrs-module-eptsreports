@@ -1573,16 +1573,16 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "Tx_currr",
+        "TxCurr",
         EptsReportUtils.map(
-            txCurrCohortQueries.getTxCurrCompositionCohort("tx_curr", true),
-            "endDate=${onOrBefore},location=${location},locations=${locations}"));
+            txCurrCohortQueries.getTxCurrCompositionCohort("TxCurr", true),
+            "onOrBefore=${endDate},location=${location},locations=${locations}"));
     cd.addSearch(
         "PU",
         EptsReportUtils.map(
             getAllPatientsMarkedInLastPuAsIorConFichaClinicaMasterCard(),
-            "endDate=${onOrBefore},startDate=${onOrAfter},location=${location}"));
-    cd.setCompositionString("Tx_currr AND PU");
+            "onOrBefore=${endDate},onOrAfter=${startDate},location=${location}"));
+    cd.setCompositionString("TxCurr AND PU");
     return cd;
   }
 
@@ -1617,7 +1617,7 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
-        "Tx_cur_pu",
+        "TxCurrPu",
         EptsReportUtils.map(
             getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinica(),
             "endDate=${endDate},startDate=${startDate},location=${location}"));
@@ -1626,7 +1626,7 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             getAllPatientsWhoAreActiveAndStable(),
             "endDate=${endDate},startDate=${startDate},location=${location}"));
-    cd.setCompositionString("Tx_cur_pu AND Active");
+    cd.setCompositionString("TxCurrPu AND Active");
 
     return cd;
   }
@@ -1642,20 +1642,20 @@ public class EriDSDCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
         "Number of active patients on ART who are in PU as I or C on ficha clinica and are NOT eligible");
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
-        "Tx_cur_pu",
+        "TxCurrPu",
         EptsReportUtils.map(
             getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinica(),
-            "onOrBefore=${onOrBefore},onOrAfter=${onOrAfter},location=${location}"));
+            "endDate=${endDate},startDate=${startDate},location=${location}"));
     cd.addSearch(
         "NotActive",
         EptsReportUtils.map(
             getPatientsWhoAreActiveAndUnstable(),
-            "endDate=${onOrBefore},startDate=${onOrAfter},location=${location}"));
-    cd.setCompositionString("Tx_cur_pu AND NotActive");
+            "endDate=${endDate},startDate=${startDate},location=${location}"));
+    cd.setCompositionString("TxCurrPu AND NotActive");
 
     return cd;
   }
@@ -1678,7 +1678,7 @@ public class EriDSDCohortQueries {
         "eligible",
         EptsReportUtils.map(
             getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndEligible(),
-            "onOrBefore=${endDate},onOrAfter=${startDate},location=${location}"));
+            "endDate=${endDate},startDate=${startDate},location=${location}"));
     cd.addSearch(
         "Tb",
         EptsReportUtils.map(

@@ -590,12 +590,12 @@ public class EriDSDDataset extends BaseDataSet {
   }
 
   private List<ColumnParameters> dsdN6Disag() {
-    ColumnParameters under2Years = new ColumnParameters("under2Years", "<2", "age=0-1", "00");
+    ColumnParameters under2Years = new ColumnParameters("under2Years", "<2", "age=<2", "00");
     ColumnParameters twoTo4 = new ColumnParameters("twoTo4", "2-4", "age=2-4", "01");
     ColumnParameters fiveTo9 = new ColumnParameters("fiveTo9", "5-9", "age=5-9", "02");
     ColumnParameters tenTo14 = new ColumnParameters("tenTo14", "10-14", "age=10-14", "03");
     ColumnParameters over14 = new ColumnParameters("over14", "15+", "age=15+", "04");
     ColumnParameters total = new ColumnParameters("total", "Total", "", "05");
-    return Arrays.asList(twoTo4, fiveTo9, tenTo14, over14, total);
+    return Arrays.asList(under2Years, twoTo4, fiveTo9, tenTo14, over14, total);
   }
 }
