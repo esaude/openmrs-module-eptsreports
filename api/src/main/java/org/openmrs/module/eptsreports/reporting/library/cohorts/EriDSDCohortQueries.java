@@ -66,10 +66,20 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "5",
         EptsReportUtils.map(
+            getAllPatientsOnSarcomaKarposi(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "6",
+        EptsReportUtils.map(
+            hivCohortQueries.getPatientsOnTbTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "7",
+        EptsReportUtils.map(
             getPatientsWhoAreStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(1 AND 2 AND NOT (3 OR 4) AND 5)");
+    cd.setCompositionString("(1 AND 2 AND NOT (3 OR 4 OR 5 OR 6) AND 7)");
 
     return cd;
   }
@@ -102,11 +112,6 @@ public class EriDSDCohortQueries {
             getCD4CountAndCD4PercentCombined(),
             "startDate=${endDate-12m},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "D",
-        EptsReportUtils.map(
-            getPatientsWhoAreOnWhoStage3Or4InLastEncounter(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
         "F",
         EptsReportUtils.map(
             genericCohortQueries.hasCodedObs(
@@ -127,15 +132,20 @@ public class EriDSDCohortQueries {
                     hivMetadata.getLacticAcidosis(),
                     hivMetadata.getPeripheralNeuropathy(),
                     hivMetadata.getDiarrhea(),
-                    hivMetadata.getOtherDiagnosis())),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+                    hivMetadata.getOtherDiagnosis(),
+                    hivMetadata.getCytopeniaConcept(),
+                    hivMetadata.getNephrotoxicityConcept(),
+                    hivMetadata.getHepatitisConcept(),
+                    hivMetadata.getStevensJonhsonSyndromeConcept(),
+                    hivMetadata.getHypersensitivityToAbcOrRailConcept(),
+                    hivMetadata.getHepaticSteatosisWithHyperlactataemiaConcept())),
+            "onOrAfter=${endDate - 6m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "patientsWithViralLoad",
         EptsReportUtils.map(
             hivCohortQueries.getPatientsViralLoadWithin12Months(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString("A AND (B OR (NOT patientsWithViralLoad AND C)) AND NOT D AND NOT F");
+    cd.setCompositionString("A AND (B OR (NOT patientsWithViralLoad AND C))  AND NOT F");
 
     return cd;
   }
@@ -205,7 +215,7 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4AbsoluteOBSConcept(),
-                BaseObsCohortDefinition.TimeModifier.ANY,
+                BaseObsCohortDefinition.TimeModifier.LAST,
                 RangeComparator.GREATER_THAN,
                 750.0,
                 null,
@@ -220,7 +230,7 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4AbsoluteConcept(),
-                BaseObsCohortDefinition.TimeModifier.ANY,
+                BaseObsCohortDefinition.TimeModifier.LAST,
                 RangeComparator.GREATER_THAN,
                 750.0,
                 null,
@@ -235,7 +245,7 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4PercentConcept(),
-                BaseObsCohortDefinition.TimeModifier.ANY,
+                BaseObsCohortDefinition.TimeModifier.LAST,
                 RangeComparator.GREATER_THAN,
                 15.0,
                 null,
@@ -272,7 +282,7 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4AbsoluteOBSConcept(),
-                BaseObsCohortDefinition.TimeModifier.ANY,
+                BaseObsCohortDefinition.TimeModifier.LAST,
                 RangeComparator.GREATER_THAN,
                 200.0,
                 null,
@@ -287,7 +297,7 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             genericCohortQueries.hasNumericObs(
                 hivMetadata.getCD4AbsoluteConcept(),
-                BaseObsCohortDefinition.TimeModifier.ANY,
+                BaseObsCohortDefinition.TimeModifier.LAST,
                 RangeComparator.GREATER_THAN,
                 200.0,
                 null,
@@ -324,7 +334,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            getBreastfeedingComposition(),
+            txNewCohortQueries.getTxNewBreastfeedingComposition(),
             "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "pregnant",
@@ -343,11 +353,41 @@ public class EriDSDCohortQueries {
   }
 
   /**
+   * Patients with LAST Viral Load Result is < 1000 copies/ml in last ART year (only if VL exists)
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWithViralLoadLessThan1000Within12Months() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("LAST Viral Load Result is < 1000 copies/ml in last ART year (only if VL exists)");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "patientsWithViralLoadConcepts",
+        EptsReportUtils.map(
+            getPatientsWithViralLoadConcepts(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "patientsWithRecentViralLoadEncounter",
+        EptsReportUtils.map(
+            getPatientsWithTheRecentViralLoadEncounter(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+        "patientsWithViralLoadConcepts AND patientsWithRecentViralLoadEncounter");
+
+    return cd;
+  }
+
+  /**
    * Get Patients with Viral Load less than 1000 in the last 12 months.
    *
    * @return
    */
-  private CohortDefinition getPatientsWithViralLoadLessThan1000Within12Months() {
+  private CohortDefinition getPatientsWithViralLoadConcepts() {
     SqlCohortDefinition sql = new SqlCohortDefinition();
     sql.setName("Viral Load Less Than 1000 Within 12Months");
     sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -355,33 +395,38 @@ public class EriDSDCohortQueries {
     sql.addParameter(new Parameter("location", "Location", Location.class));
     sql.setQuery(
         DsdQueries.patientsWithViralLoadLessThan1000(
-            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getHivViralLoadConcept().getConceptId()));
+            hivMetadata.getHivViralLoadConcept().getConceptId(),
+            hivMetadata.getHivViralLoadQualitative().getConceptId(),
+            hivMetadata.getBeyondDetectableLimitConcept().getConceptId(),
+            hivMetadata.getUndetectableViralLoadConcept().getConceptId(),
+            hivMetadata.getLessThan10CopiesConcept().getConceptId(),
+            hivMetadata.getLessThan20CopiesConcept().getConceptId(),
+            hivMetadata.getLessThan40CopiesConcept().getConceptId(),
+            hivMetadata.getLessThan400CopiesConcept().getConceptId()));
+
     return sql;
   }
 
   /**
-   * Get Patients which WHO Stage 3 or 4 In the last clinical encounter
+   * Patients with The Recent VL Encounter
    *
    * @return
    */
-  private CohortDefinition getPatientsWhoAreOnWhoStage3Or4InLastEncounter() {
+  private CohortDefinition getPatientsWithTheRecentViralLoadEncounter() {
     SqlCohortDefinition sql = new SqlCohortDefinition();
-    sql.setName("Patients who are on WHO stage 3 or 4 in the last encounter");
-
+    sql.setName("Patients with The Recent VL Encounter");
     sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sql.addParameter(new Parameter("endDate", "End Date", Date.class));
     sql.addParameter(new Parameter("location", "Location", Location.class));
 
     sql.setQuery(
-        DsdQueries.getPatientsWithWHOStage3Or4(
-            hivMetadata.getCurrentWHOHIVStageConcept().getConceptId(),
+        DsdQueries.patientsWithTheRecentViralLoadEncounter(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getWho3AdultStageConcept().getConceptId(),
-            hivMetadata.getWho4AdultStageConcept().getConceptId()));
+            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getHivViralLoadConcept().getConceptId(),
+            hivMetadata.getHivViralLoadQualitative().getConceptId()));
 
     return sql;
   }
@@ -1237,6 +1282,28 @@ public class EriDSDCohortQueries {
   @DocumentedDefinition(value = "BreastfeedingComposition")
   public CohortDefinition getBreastfeedingComposition() {
     return txNewCohortQueries.getTxNewBreastfeedingComposition();
+  }
+
+  /**
+   * Get Patients who are on Sarcoma Karposi
+   *
+   * @return
+   */
+  public CohortDefinition getAllPatientsOnSarcomaKarposi() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("sarcomaKarposiPatients");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.setQuery(
+        DsdQueries.getPatientsOnSarcomaKarposi(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getOtherDiagnosis().getConceptId(),
+            hivMetadata.getKaposiSarcomaConcept().getConceptId()));
+
+    return cd;
   }
 
   /**
