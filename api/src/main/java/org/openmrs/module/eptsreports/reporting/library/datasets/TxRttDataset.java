@@ -57,12 +57,17 @@ public class TxRttDataset extends BaseDataSet {
         "age",
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
+    dsd.addDimension(
+        "KP",
+        EptsReportUtils.map(
+            eptsCommonDimension.getKeyPopsDimension(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
     dsd.setName("TX_RTT Dataset");
     dsd.addParameters(getParameters());
     return dsd;
   }
 
-  private List<ColumnParameters> dissagChildren() {
+  private List<ColumnParameters> dissagChildrenAndAdults() {
     // children Male
     ColumnParameters under1YearM =
         new ColumnParameters("under1YearM", "<1 Male", "gender=M|age=<1", "01");
@@ -84,8 +89,58 @@ public class TxRttDataset extends BaseDataSet {
         new ColumnParameters("tenT014YearsF", "10-14 Female", "gender=F|age=10-14", "08");
 
     // Adults Male
+    // 15-19, 20-24,25-29,30-34,35-39,40-44,45-49, >=50, Unknown age
+    ColumnParameters fifteenTo19YearsM =
+        new ColumnParameters("fifteenTo19YearsM", "15-19 Male", "gender=M|age=15-19", "09");
+    ColumnParameters twentyTo24YearsM =
+        new ColumnParameters("twentyTo24YearsM", "20 - 24 male", "gender=M|age=20-24", "10");
+    ColumnParameters twenty5To29M =
+        new ColumnParameters("twenty4To29M", "25 - 29 male", "gender=M|age=25-29", "11");
+    ColumnParameters thirtyTo34M =
+        new ColumnParameters("thirtyTo34M", "30 - 34 male", "gender=M|age=30-34", "12");
+    ColumnParameters thirty5To39M =
+        new ColumnParameters("thirty5To39M", "35 - 39 male", "gender=M|age=35-39", "13");
+    ColumnParameters foutyTo44M =
+        new ColumnParameters("foutyTo44M", "40 - 44 male", "gender=M|age=40-44", "14");
+    ColumnParameters fouty5To49M =
+        new ColumnParameters("fouty5To49M", "45 - 49 male", "gender=M|age=45-49", "15");
+    ColumnParameters above50M =
+        new ColumnParameters("above50M", "50+ male", "gender=M|age=50+", "16");
+    ColumnParameters unknownM =
+        new ColumnParameters("unknownM", "Unknown age male", "gender=M|age=UK", "17");
 
     // Adults Female
+    // 15-19, 20-24,25-29,30-34,35-39,40-44,45-49, >=50, Unknown age
+    ColumnParameters fifteenTo19YearsF =
+        new ColumnParameters("fifteenTo19YearsF", "15-19 female", "gender=F|age=15-19", "18");
+    ColumnParameters twentyTo24YearsF =
+        new ColumnParameters("twentyTo24YearsF", "20 - 24 female", "gender=F|age=20-24", "19");
+    ColumnParameters twenty5To29F =
+        new ColumnParameters("twenty5To29F", "25 - 29 female", "gender=F|age=25-29", "20");
+    ColumnParameters thirtyTo34F =
+        new ColumnParameters("thirtyTo34F", "30 - 34 female", "gender=F|age=30-34", "21");
+    ColumnParameters thirty5To39F =
+        new ColumnParameters("thirty5To39F", "35 - 39 female", "gender=F|age=35-39", "22");
+    ColumnParameters foutyTo44F =
+        new ColumnParameters("foutyTo44F", "40 - 44 female", "gender=F|age=40-44", "23");
+    ColumnParameters fouty5To49F =
+        new ColumnParameters("fouty5To49F", "45 - 49 female", "gender=F|age=45-49", "24");
+    ColumnParameters above50F =
+        new ColumnParameters("above50F", "50+ female", "gender=F|age=50+", "25");
+    ColumnParameters unknownF =
+        new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=UK", "26");
+
+    // Key population
+    /**
+     * dim.addCohortDefinition("PID", mapStraightThrough(drugUserKeyPopCohort));
+     * dim.addCohortDefinition("MSM", mapStraightThrough(homosexualKeyPopCohort));
+     * dim.addCohortDefinition("CSW", mapStraightThrough(sexWorkerKeyPopCohort));
+     * dim.addCohortDefinition("PRI", mapStraightThrough(imprisonmentKeyPopCohort));
+     */
+    ColumnParameters pid = new ColumnParameters("pid", "PID", "KP=PID", "01");
+    ColumnParameters msm = new ColumnParameters("msm", "MSM", "KP=MSM", "02");
+    ColumnParameters csw = new ColumnParameters("msm", "CSW", "KP=CSW", "03");
+    ColumnParameters pri = new ColumnParameters("pri", "PRI", "KP=PRI", "04");
 
     return Arrays.asList(
         under1YearM,
@@ -95,6 +150,28 @@ public class TxRttDataset extends BaseDataSet {
         under1YearF,
         oneT04YearsF,
         fiveT09YearsF,
-        tenT014YearsF);
+        tenT014YearsF,
+        fifteenTo19YearsM,
+        twentyTo24YearsM,
+        twenty5To29M,
+        thirtyTo34M,
+        thirty5To39M,
+        foutyTo44M,
+        fouty5To49M,
+        above50M,
+        unknownM,
+        fifteenTo19YearsF,
+        twentyTo24YearsF,
+        twenty5To29F,
+        thirtyTo34F,
+        thirty5To39F,
+        foutyTo44F,
+        fouty5To49F,
+        above50F,
+        unknownF,
+        pid,
+        msm,
+        csw,
+        pri);
   }
 }
