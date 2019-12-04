@@ -15,7 +15,6 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Collections;
 import java.util.Date;
-
 import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
@@ -82,8 +81,8 @@ public class HivCohortQueries {
             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-		    hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-		    hivMetadata.getFsrEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getFsrEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getHivViralLoadQualitative().getConceptId()));
     return sql;

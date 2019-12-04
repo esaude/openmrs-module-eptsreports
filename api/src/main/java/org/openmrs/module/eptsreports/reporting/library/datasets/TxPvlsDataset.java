@@ -72,6 +72,36 @@ public class TxPvlsDataset extends BaseDataSet {
             mappings),
         "");
 
+    //Get patients with viral load and on routine
+    addRow(
+            dsd,
+            "DR",
+            "Patients Denominator on Routine",
+            EptsReportUtils.map(
+                    eptsGeneralIndicator.getIndicator(
+                            "viral load results on routine adults and children",
+                            EptsReportUtils.map(
+                                    txPvls.getPatientsWithViralLoadResultsAndOnRoutine(),
+                                    mappings)),
+                    mappings),
+            getAdultChildrenColumns());
+  //Get patients with viral load and on target
+    addRow(
+            dsd,
+            "DT",
+            "Patients Denominator on Target",
+            EptsReportUtils.map(
+                    eptsGeneralIndicator.getIndicator(
+                            "viral load results on target adults and children",
+                            EptsReportUtils.map(
+                                    txPvls.getPatientsWithViralLoadResultsAndOnTarget(),
+                                    mappings)),
+                    mappings),
+            getAdultChildrenColumns());
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////
     // Breastfeeding & Pregnant
     dsd.addColumn(
         "B05",

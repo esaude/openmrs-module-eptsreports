@@ -185,7 +185,7 @@ public class HivMetadata extends ProgramsMetadata {
 
   // concept id 1066
   @Override
-public Concept getNoConcept() {
+  public Concept getNoConcept() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.noConceptUuid");
     return getConcept(uuid);
   }
@@ -738,6 +738,13 @@ public Concept getNoConcept() {
     return getConcept(uuid);
   }
 
+  // Concept ID 1067
+  public Concept getUnkownConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.unknownConceptUuid");
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
@@ -888,13 +895,14 @@ public Concept getNoConcept() {
         Context.getAdministrationService().getGlobalProperty("eptsreports.masterCardEncounterType");
     return getEncounterType(uuid);
   }
-	
-	// encounter_type = 51
-	public EncounterType getFsrEncounterType() {
-		String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.fsrEncounterType");
-		return getEncounterType(uuid);
-	}
-	
+
+  // encounter_type = 51
+  public EncounterType getFsrEncounterType() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.fsrEncounterType");
+    return getEncounterType(uuid);
+  }
+
   // Programs
 
   // program_id=2
@@ -1055,6 +1063,48 @@ public Concept getNoConcept() {
     return getConcept(
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.currentWHOHIVStageConceptUuid"));
+  }
+
+  // Concept 23818
+  public Concept getReasonForRequestingViralLoadConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.reasonForRequestingViralLoadConceptUuid"));
+  }
+
+  // Concept 23817
+  public Concept getRoutineForRequestingViralLoadConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.routineForRequestingViralLoadConceptUuid"));
+  }
+
+  // Concept 843
+  public Concept getRegimenFailureConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.regimenFailureConceptUuid"));
+  }
+
+  // Concept 23881
+  public Concept getSuspectedImmuneFailureConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.suspectedImmuneFailureConceptUuid"));
+  }
+
+  // Concept 23864
+  public Concept getRepeatAfterBreastfeedingConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.repeatAfterBreastfeedingConceptUuid"));
+  }
+
+  // Concept 23882
+  public Concept getClinicalSuspicionConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.clinicalSuspicionConceptUuid"));
   }
 
   public ProgramWorkflow getPreArtWorkflow() {

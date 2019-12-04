@@ -14,15 +14,17 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.BreastfeedingPregnantCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForMoreThanXmonthsCalcultion;
-import org.openmrs.module.eptsreports.reporting.calculation.pvls.RoutineCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
+import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PatientsOnRoutineEnum;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PregnantOrBreastfeedingWomen;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class TxPvlsCohortQueries {
 
-  @Autowired private HivCohortQueries hivCohortQueries;
+  private HivCohortQueries hivCohortQueries;
+
+  private HivMetadata hivMetadata;
+
+  @Autowired
+  public TxPvlsCohortQueries(HivCohortQueries hivCohortQueries, HivMetadata hivMetadata) {
+    this.hivCohortQueries = hivCohortQueries;
+    this.hivMetadata = hivMetadata;
+  }
 
   /**
    * Patients who have NOT been on ART for 3 months based on the ART initiation date and date of
@@ -134,8 +144,27 @@ public class TxPvlsCohortQueries {
 
   /**
    * Patients with viral results recorded in the last 12 months excluding dead, LTFU, transferred
-   * out, stopped ARTtxNewCohortQueries
-   * Only filter out patients who are on routine
+   * out, stopped ARTtxNewCohortQueries Only filter out patients who are on routine
+   */
+  public CohortDefinition getPatientsWithViralLoadResults() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    cd.addSearch(
+        "results",
+        EptsReportUtils.map(hivCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
+    cd.addSearch(
+        "onArtLongEnough",
+        EptsReportUtils.map(
+            getPatientsWhoAreMoreThan3MonthsOnArt(), "onOrBefore=${endDate},location=${location}"));
+    cd.setCompositionString("results AND onArtLongEnough");
+    return cd;
+  }
+  /**
+   * Patients with viral results recorded in the last 12 months excluding dead, LTFU, transferred
+   * out, stopped ARTtxNewCohortQueries Only filter out patients who are on routine
    */
   public CohortDefinition getPatientsWithViralLoadResultsAndOnRoutine() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -151,23 +180,75 @@ public class TxPvlsCohortQueries {
         EptsReportUtils.map(
             getPatientsWhoAreMoreThan3MonthsOnArt(), "onOrBefore=${endDate},location=${location}"));
     cd.addSearch("Routine", EptsReportUtils.map(getPatientsWhoAreOnRoutine(), mappings));
-    cd.setCompositionString("results AND onArtLongEnough");
+    cd.setCompositionString("(results AND onArtLongEnough) AND Routine");
     return cd;
   }
 
   /**
-   * Get adults and children patients who are on routine
+   * Patients with viral results recorded in the last 12 months excluding dead, LTFU, transferred
+   * out, stopped ARTtxNewCohortQueries Only filter out patients who are on target
+   */
+  public CohortDefinition getPatientsWithViralLoadResultsAndOnTarget() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    cd.addSearch(
+        "results",
+        EptsReportUtils.map(hivCohortQueries.getPatientsViralLoadWithin12Months(), mappings));
+    cd.addSearch(
+        "onArtLongEnough",
+        EptsReportUtils.map(
+            getPatientsWhoAreMoreThan3MonthsOnArt(), "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch("Target", EptsReportUtils.map(getPatientsWhoAreOnTarget(), mappings));
+    cd.setCompositionString("(results AND onArtLongEnough) AND Target");
+    return cd;
+  }
+
+  /**
+   * Get patients who are on routine
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getPatientsWhoAreOnRoutine(PatientsOnRoutineEnum criteria) {
-    CalculationCohortDefinition cd =
-        new CalculationCohortDefinition(
-            "criteria", Context.getRegisteredComponents(RoutineCalculation.class).get(0));
-    cd.setName("Routine for all patients controlled by parameter");
-    cd.addParameter(new Parameter("onOrBefore", "On or before Date", Date.class));
+  public CohortDefinition getPatientsWhoAreOnRoutine() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Routine for all patients on Routine");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addCalculationParameter("criteria", criteria);
+    cd.setQuery(
+        ViralLoadQueries.getPatientsHavingRoutineViralLoadTests(
+            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getFsrEncounterType().getEncounterTypeId(),
+            hivMetadata.getHivViralLoadQualitative().getConceptId(),
+            hivMetadata.getHivViralLoadConcept().getConceptId(),
+            hivMetadata.getUnkownConcept().getConceptId()));
+    return cd;
+  }
+
+  /**
+   * Get patients who are on target
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoAreOnTarget() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Routine for all patients on Target");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        ViralLoadQueries.getPatientsHavingTargetedViralLoadTests(
+            hivMetadata.getFsrEncounterType().getEncounterTypeId(),
+            hivMetadata.getReasonForRequestingViralLoadConcept().getConceptId(),
+            hivMetadata.getRegimenFailureConcept().getConceptId(),
+            hivMetadata.getSuspectedImmuneFailureConcept().getConceptId(),
+            hivMetadata.getRepeatAfterBreastfeedingConcept().getConceptId(),
+            hivMetadata.getClinicalSuspicionConcept().getConceptId()));
     return cd;
   }
 
