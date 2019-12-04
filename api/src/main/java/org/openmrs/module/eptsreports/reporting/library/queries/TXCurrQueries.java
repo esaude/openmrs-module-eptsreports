@@ -268,7 +268,7 @@ public class TXCurrQueries {
             + "                                    GROUP  BY pa.patient_id  "
             + "                                    ) most_recent  "
             + "                                    inner join obs o  on  "
-            + "                                        o.encounter_id=most_recent.encounter_id and o.voided =0 and o.concept_id in (%s,%s,%s) and o.voided=0"
+            + "                                        o.encounter_id=most_recent.encounter_id and o.voided =0 and o.concept_id in (%s,%s,%s) "
             + "                                GROUP BY most_recent.patient_id  "
             + "                                HAVING final_encounter_date<= :onOrBefore  "
             + "                        ) final  "
