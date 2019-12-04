@@ -50,8 +50,7 @@ public class TxRttDataset extends BaseDataSet {
   public DataSetDefinition constructTxRttDataset() {
 
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-    String mappings =
-        "startDate=${startDate},endDate=${endDate},location=${location},months=${months}";
+    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dsd.addDimension(
         "age",

@@ -92,16 +92,16 @@ public class TxRttCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
-        "28DaysLater",
+        "M1",
         EptsReportUtils.map(
             getAllPatientsWhoDelayedMoreThan28Days(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "30DaysLater",
+        "M2",
         EptsReportUtils.map(
             getAllPatientsWhoDelayedMoreThan30Days(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.setCompositionString("28DaysLater OR 30DaysLater");
+    cd.setCompositionString("M1 OR M2");
     return cd;
   }
 }
