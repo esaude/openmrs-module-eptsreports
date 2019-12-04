@@ -83,7 +83,7 @@ public class SetupMERQuarterly extends EptsDataExportManager {
     reportDefinition.addDataSetDefinition(
         "P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
     reportDefinition.addDataSetDefinition(
-        "RTT", Mapped.mapStraightThrough(txRttDataset.constructTxRttDataset()));
+        "R", Mapped.mapStraightThrough(txRttDataset.constructTxRttDataset()));
     // add a base cohort here to help in calculations running
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
