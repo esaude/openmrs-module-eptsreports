@@ -83,14 +83,15 @@ public class DsdQueries {
             + "o.obs_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
             + "AND e.location_id=:location AND p.voided=0 AND e.voided=0 AND o.voided=0 GROUP BY p.patient_id)vl GROUP BY vl.patient_id) vl_final ";
 
-    return String.format(query,
-            adultSeguimentoEncounterTypeId,
-            pediatriaSeguimentoEncounterTypeId,
-            labEncounterTypeId,
-            hivViralLoadConceptId,
-            hivViralLoadQualitativeConceptId,
-            masterCardEncounterTypeId,
-            hivViralLoadConceptId);
+    return String.format(
+        query,
+        adultSeguimentoEncounterTypeId,
+        pediatriaSeguimentoEncounterTypeId,
+        labEncounterTypeId,
+        hivViralLoadConceptId,
+        hivViralLoadQualitativeConceptId,
+        masterCardEncounterTypeId,
+        hivViralLoadConceptId);
   }
 
   /**
@@ -132,15 +133,16 @@ public class DsdQueries {
             + "AND e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
             + "AND p.voided=0 AND e.voided=0 AND o.voided=0";
 
-    return String.format(query,
-            hivViralLoadConceptId,
-            hivViralLoadQualitativeConceptId,
-            beyondDetectableLimitConceptId,
-            undetectableViralLoadConceptId,
-            lessThan10CopiesConceptId,
-            lessThan20CopiesConceptId,
-            lessThan40CopiesConceptId,
-            lessThan400CopiesConceptId);
+    return String.format(
+        query,
+        hivViralLoadConceptId,
+        hivViralLoadQualitativeConceptId,
+        beyondDetectableLimitConceptId,
+        undetectableViralLoadConceptId,
+        lessThan10CopiesConceptId,
+        lessThan20CopiesConceptId,
+        lessThan40CopiesConceptId,
+        lessThan400CopiesConceptId);
   }
 
   /**
