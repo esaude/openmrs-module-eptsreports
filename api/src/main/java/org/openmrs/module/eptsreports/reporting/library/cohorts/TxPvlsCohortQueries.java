@@ -135,8 +135,9 @@ public class TxPvlsCohortQueries {
   /**
    * Patients with viral results recorded in the last 12 months excluding dead, LTFU, transferred
    * out, stopped ARTtxNewCohortQueries
+   * Only filter out patients who are on routine
    */
-  public CohortDefinition getPatientsWithViralLoadResults() {
+  public CohortDefinition getPatientsWithViralLoadResultsAndOnRoutine() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -149,6 +150,7 @@ public class TxPvlsCohortQueries {
         "onArtLongEnough",
         EptsReportUtils.map(
             getPatientsWhoAreMoreThan3MonthsOnArt(), "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch("Routine", EptsReportUtils.map(getPatientsWhoAreOnRoutine(), mappings));
     cd.setCompositionString("results AND onArtLongEnough");
     return cd;
   }
