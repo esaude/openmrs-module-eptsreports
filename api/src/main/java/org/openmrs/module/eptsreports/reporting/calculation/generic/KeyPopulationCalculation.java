@@ -64,6 +64,7 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
         case "PID":
           return DRUG_USER;
         case "Prisoner":
+        case "RC":
           return PRISONER;
         case "CSW":
         case "TS":
@@ -136,8 +137,12 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
     if (!personAttribute.isEmpty(pId)) {
       PersonAttribute attr = personAttribute.get(pId).asType(PersonAttribute.class);
       Date date = attr.getDateCreated();
-      KeyPop keypop = KeyPop.of(attr);
-      keyPopByDate.putInList(date, new KeyPopAndSource(keypop, KeyPopSource.PERSON_ATTRIBUTE));
+      try {
+        KeyPop keypop = KeyPop.of(attr);
+        keyPopByDate.putInList(date, new KeyPopAndSource(keypop, KeyPopSource.PERSON_ATTRIBUTE));
+      } catch (IllegalArgumentException e) {
+        // Ignore unmapped key population string
+      }
     }
 
     if (!apssPrevencaoPositiva.isEmpty(pId)) {
