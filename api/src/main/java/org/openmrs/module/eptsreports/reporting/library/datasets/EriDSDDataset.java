@@ -254,7 +254,7 @@ public class EriDSDDataset extends BaseDataSet {
                 "N2SNPNBA",
                 EptsReportUtils.map(
                     eriDSDCohortQueries
-                        .getPatientsWhoAreNotPregnantAndNotBreastfeedingN2StableNotOnTB(),
+                        .getPatientsWhoAreNotPregnantAndNotBreastfeedingN2Stable(),
                     mappings)),
             mappings),
         "age=15+");
