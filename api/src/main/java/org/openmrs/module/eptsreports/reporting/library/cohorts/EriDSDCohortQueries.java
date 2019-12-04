@@ -1273,6 +1273,34 @@ public class EriDSDCohortQueries {
   }
 
   /**
+   * N5: Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment)
+   * who are in AF
+   */
+  public CohortDefinition getActivePatientsOnARTAF() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    String cohortName = "Active patients on ART  who are in AF";
+
+    cd.setName(
+        "N5: Active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in AF");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "txCurr",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
+            "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "masterCardPatients",
+        EptsReportUtils.map(txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true), ""));
+
+    cd.setCompositionString("txCurr AND masterCardPatients");
+
+    return cd;
+  }
+
+  /**
    * Get All patients who have been enrolled in the GAAC program
    *
    * @return
