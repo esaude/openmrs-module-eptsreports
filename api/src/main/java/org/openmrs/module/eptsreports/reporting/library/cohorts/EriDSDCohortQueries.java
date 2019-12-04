@@ -86,6 +86,54 @@ public class EriDSDCohortQueries {
   }
 
   /**
+   * D1: Patients who are eligible: 2,3,4,5,6,7
+   * This is D1 without TxCurr
+   */
+  public CohortDefinition getPatientsWhoAreEligibleD1(){
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+            "2",
+            EptsReportUtils.map(
+                    ageCohortQueries.createXtoYAgeCohort("moreThanOrEqual2Years", 2, 200),
+                    "effectiveDate=${endDate}"));
+    cd.addSearch(
+            "3",
+            EptsReportUtils.map(
+                    txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+                    "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "4",
+            EptsReportUtils.map(
+                    getBreastfeedingComposition(),
+                    "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+            "5",
+            EptsReportUtils.map(
+                    getAllPatientsOnSarcomaKarposi(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "6",
+            EptsReportUtils.map(
+                    hivCohortQueries.getPatientsOnTbTreatment(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "7",
+            EptsReportUtils.map(
+                    getPatientsWhoAreStable(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("(2 AND NOT (3 OR 4 OR 5 OR 6) AND 7)");
+
+    return cd;
+
+  }
+
+  /**
    * Filter patients (from 4) who are considered stable according to criteria 5: a,b,c,d,e,f
    *
    * @return
