@@ -32,8 +32,8 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
   // Key population source by precedence in ascending order
   enum KeyPopSource {
     PERSON_ATTRIBUTE,
-    APSS,
-    ADULTO;
+    APSS_FORM,
+    ADULTO_FORM;
   }
 
   public enum KeyPop {
@@ -131,7 +131,7 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
       Obs obs = adultoSeguimento.get(pId).asType(Obs.class);
       Date date = obs.getEncounter().getEncounterDatetime();
       KeyPop keypop = KeyPop.of(obs.getValueCoded());
-      keyPopByDate.putInList(date, new KeyPopAndSource(keypop, KeyPopSource.ADULTO));
+      keyPopByDate.putInList(date, new KeyPopAndSource(keypop, KeyPopSource.ADULTO_FORM));
     }
 
     if (!personAttribute.isEmpty(pId)) {
@@ -149,7 +149,7 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
       Obs obs = apssPrevencaoPositiva.get(pId).asType(Obs.class);
       Date date = obs.getEncounter().getEncounterDatetime();
       KeyPop keypop = KeyPop.of(obs.getValueCoded());
-      keyPopByDate.putInList(date, new KeyPopAndSource(keypop, KeyPopSource.APSS));
+      keyPopByDate.putInList(date, new KeyPopAndSource(keypop, KeyPopSource.APSS_FORM));
     }
 
     KeyPop assignedKeyPop = null;
