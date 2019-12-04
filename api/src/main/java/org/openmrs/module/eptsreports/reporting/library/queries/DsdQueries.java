@@ -83,14 +83,15 @@ public class DsdQueries {
             + "o.obs_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
             + "AND e.location_id=:location AND p.voided=0 AND e.voided=0 AND o.voided=0 GROUP BY p.patient_id)vl GROUP BY vl.patient_id) vl_final ";
 
-    return String.format(query,
-            adultSeguimentoEncounterTypeId,
-            pediatriaSeguimentoEncounterTypeId,
-            labEncounterTypeId,
-            hivViralLoadConceptId,
-            hivViralLoadQualitativeConceptId,
-            masterCardEncounterTypeId,
-            hivViralLoadConceptId);
+    return String.format(
+        query,
+        adultSeguimentoEncounterTypeId,
+        pediatriaSeguimentoEncounterTypeId,
+        labEncounterTypeId,
+        hivViralLoadConceptId,
+        hivViralLoadQualitativeConceptId,
+        masterCardEncounterTypeId,
+        hivViralLoadConceptId);
   }
 
   /**
@@ -132,15 +133,16 @@ public class DsdQueries {
             + "AND e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
             + "AND p.voided=0 AND e.voided=0 AND o.voided=0";
 
-    return String.format(query,
-            hivViralLoadConceptId,
-            hivViralLoadQualitativeConceptId,
-            beyondDetectableLimitConceptId,
-            undetectableViralLoadConceptId,
-            lessThan10CopiesConceptId,
-            lessThan20CopiesConceptId,
-            lessThan40CopiesConceptId,
-            lessThan400CopiesConceptId);
+    return String.format(
+        query,
+        hivViralLoadConceptId,
+        hivViralLoadQualitativeConceptId,
+        beyondDetectableLimitConceptId,
+        undetectableViralLoadConceptId,
+        lessThan10CopiesConceptId,
+        lessThan20CopiesConceptId,
+        lessThan40CopiesConceptId,
+        lessThan400CopiesConceptId);
   }
 
   /**
@@ -191,9 +193,9 @@ public class DsdQueries {
   }
 
   /**
-<<<<<<< HEAD
-   * N5: Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment)
-   * who are in AF
+   * <<<<<<< HEAD N5: Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB
+   * treatment) who are in AF
+   *
    * @param adultSeguimentoEncounterTypeId
    * @param lastFamilyApproachConceptId
    * @param startDrugsConceptId
@@ -201,24 +203,26 @@ public class DsdQueries {
    * @return
    */
   public static String getPatientsOnMasterCardAF(
-          int adultSeguimentoEncounterTypeId,
-          int lastFamilyApproachConceptId,
-          int startDrugsConceptId,
-          int continueRegimenConceptId
-  ) {
-      String query = "SELECT p.patient_id FROM patient p " +
-              "JOIN encounter e ON p.patient_id=e.patient_id " +
-              "JOIN obs o ON p.patient_id=o.person_id " +
-              "WHERE e.encounter_type=%d AND o.concept_id=%d AND o.value_coded IN (%d, %d) AND e.location_id=:location " +
-              "AND e.encounter_datetime BETWEEN :startDate AND :endDate  AND e.voided=0 AND o.voided=0 AND p.voided=0 ";
+      int adultSeguimentoEncounterTypeId,
+      int lastFamilyApproachConceptId,
+      int startDrugsConceptId,
+      int continueRegimenConceptId) {
+    String query =
+        "SELECT p.patient_id FROM patient p "
+            + "JOIN encounter e ON p.patient_id=e.patient_id "
+            + "JOIN obs o ON p.patient_id=o.person_id "
+            + "WHERE e.encounter_type=%d AND o.concept_id=%d AND o.value_coded IN (%d, %d) AND e.location_id=:location "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate  AND e.voided=0 AND o.voided=0 AND p.voided=0 ";
 
-      return String.format(query,
-              adultSeguimentoEncounterTypeId,
-              lastFamilyApproachConceptId,
-              startDrugsConceptId,
-              continueRegimenConceptId);
+    return String.format(
+        query,
+        adultSeguimentoEncounterTypeId,
+        lastFamilyApproachConceptId,
+        startDrugsConceptId,
+        continueRegimenConceptId);
   }
-   /** Get All Patients On Sarcoma Karposi
+  /**
+   * Get All Patients On Sarcoma Karposi
    *
    * @param adultSeguimentoEncounter
    * @param pediatriaSeguimentoEncounter

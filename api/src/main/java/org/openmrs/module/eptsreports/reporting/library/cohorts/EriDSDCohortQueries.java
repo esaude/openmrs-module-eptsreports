@@ -85,11 +85,8 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  /**
-   * D1: Patients who are eligible: 2,3,4,5,6,7
-   * This is D1 without TxCurr
-   */
-  public CohortDefinition getPatientsWhoAreEligibleD1(){
+  /** D1: Patients who are eligible: 2,3,4,5,6,7 This is D1 without TxCurr */
+  public CohortDefinition getPatientsWhoAreEligibleD1() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -97,40 +94,39 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-            "2",
-            EptsReportUtils.map(
-                    ageCohortQueries.createXtoYAgeCohort("moreThanOrEqual2Years", 2, 200),
-                    "effectiveDate=${endDate}"));
+        "2",
+        EptsReportUtils.map(
+            ageCohortQueries.createXtoYAgeCohort("moreThanOrEqual2Years", 2, 200),
+            "effectiveDate=${endDate}"));
     cd.addSearch(
-            "3",
-            EptsReportUtils.map(
-                    txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-                    "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
+        "3",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
     cd.addSearch(
-            "4",
-            EptsReportUtils.map(
-                    getBreastfeedingComposition(),
-                    "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
+        "4",
+        EptsReportUtils.map(
+            getBreastfeedingComposition(),
+            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
-            "5",
-            EptsReportUtils.map(
-                    getAllPatientsOnSarcomaKarposi(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "5",
+        EptsReportUtils.map(
+            getAllPatientsOnSarcomaKarposi(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-            "6",
-            EptsReportUtils.map(
-                    hivCohortQueries.getPatientsOnTbTreatment(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "6",
+        EptsReportUtils.map(
+            hivCohortQueries.getPatientsOnTbTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-            "7",
-            EptsReportUtils.map(
-                    getPatientsWhoAreStable(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "7",
+        EptsReportUtils.map(
+            getPatientsWhoAreStable(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("(2 AND NOT (3 OR 4 OR 5 OR 6) AND 7)");
 
     return cd;
-
   }
 
   /**
@@ -1386,7 +1382,9 @@ public class EriDSDCohortQueries {
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "masterCardPatients",
-        EptsReportUtils.map(getPatientsOnMasterCardAFQuery(),"startDate=${startDate},endDate=${endDate},location=${location}"));
+        EptsReportUtils.map(
+            getPatientsOnMasterCardAFQuery(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("txCurr AND masterCardPatients");
 
@@ -1395,40 +1393,46 @@ public class EriDSDCohortQueries {
 
   /**
    * N5: Active patients on ART MasterCard who are in AF Cohort Definition Query
+   *
    * @return
    */
-  private  CohortDefinition getPatientsOnMasterCardAFQuery(){
+  private CohortDefinition getPatientsOnMasterCardAFQuery() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
 
-    cd.setName("Active patients on ART MasterCard who are in AF Query" );
+    cd.setName("Active patients on ART MasterCard who are in AF Query");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    cd.setQuery(DsdQueries.getPatientsOnMasterCardAF(
+    cd.setQuery(
+        DsdQueries.getPatientsOnMasterCardAF(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getFamilyApproach().getConceptId(),
             hivMetadata.getStartDrugs().getConceptId(),
-            hivMetadata.getContinueRegimen().getConceptId()
-    ));
+            hivMetadata.getContinueRegimen().getConceptId()));
 
     return cd;
   }
 
-  /**
-   * N5: Active patients on ART who are in AF and Eligible
-   */
-  public CohortDefinition getPatientsOnMasterCardAFAndEligible(){
+  /** N5: Active patients on ART who are in AF and Eligible */
+  public CohortDefinition getPatientsOnMasterCardAFWhoAreEligible() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
-    cd.setName(
-            "N5: Active patients on ART who are in AF and Eligible");
+    cd.setName("N5: Active patients on ART who are in AF and Eligible");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    cd.addSearch("eligiblePatients",EptsReportUtils.map(getPatientsWhoAreStable(),"startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch("masterCardAndTxCurrPatients",EptsReportUtils.map(getActivePatientsOnARTAF(),"startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "eligiblePatientsD1",
+        EptsReportUtils.map(
+            getPatientsWhoAreEligibleD1(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "masterCardAndTxCurrPatients",
+        EptsReportUtils.map(
+            getActivePatientsOnARTAF(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("eligiblePatients AND masterCardAndTxCurrPatients");
 

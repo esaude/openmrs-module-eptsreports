@@ -525,6 +525,37 @@ public class EriDSDDataset extends BaseDataSet {
                     eriDSDCohortQueries.getPatientsWhoArePregnantAndBreastfeedingN4(), mappings)),
             mappings),
         "");
+    dsd.addColumn(
+        "N4UST",
+        "N5: Eligible subtotal",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N4UST",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsOnMasterCardAFWhoAreEligible(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N5SNPNBA",
+        "N5: Non-pregnant and Non-Breastfeeding Adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N5SNPNBA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsOnMasterCardAFWhoAreEligible(), mappings)),
+            mappings),
+        "age=15+");
+    addRow(
+        dsd,
+        "N5SNPNBC",
+        "N5: Non-pregnant and Non-Breastfeeding Adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N5SNPNBC",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsOnMasterCardAFWhoAreEligible(), mappings)),
+            mappings),
+        getChildrenColumn());
 
     return dsd;
   }
