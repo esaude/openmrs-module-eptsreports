@@ -51,6 +51,9 @@ public class TxCurrDataset extends BaseDataSet {
         "age",
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
+    String keyPopMappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
+    dataSetDefinition.addDimension(
+        "keypop", EptsReportUtils.map(eptsCommonDimension.getKeyPopsDimension(), keyPopMappings));
 
     CohortDefinition txCurrCompositionCohort =
         txCurrCohortQueries.getTxCurrCompositionCohort("compositionCohort", currentSpec);
@@ -66,14 +69,40 @@ public class TxCurrDataset extends BaseDataSet {
         "Children",
         EptsReportUtils.map(txCurrIndicator, mappings),
         getColumnsForChildren());
+
     addRow(
         dataSetDefinition,
         "C2",
         "Adults",
         EptsReportUtils.map(txCurrIndicator, mappings),
         getColumnsForAdults());
+
     dataSetDefinition.addColumn(
         "C1All", "TX_CURR: Currently on ART", EptsReportUtils.map(txCurrIndicator, mappings), "");
+
+    dataSetDefinition.addColumn(
+        "PID",
+        "TX_CURR: People who inject drugs",
+        EptsReportUtils.map(txCurrIndicator, mappings),
+        "keypop=PID");
+
+    dataSetDefinition.addColumn(
+        "MSM",
+        "TX_CURR: Men who have sex with men",
+        EptsReportUtils.map(txCurrIndicator, mappings),
+        "keypop=MSM");
+
+    dataSetDefinition.addColumn(
+        "CSW",
+        "TX_CURR: Female sex workers",
+        EptsReportUtils.map(txCurrIndicator, mappings),
+        "keypop=CSW");
+
+    dataSetDefinition.addColumn(
+        "PRI",
+        "TX_CURR: People in prison and other closed settings",
+        EptsReportUtils.map(txCurrIndicator, mappings),
+        "keypop=PRI");
 
     return dataSetDefinition;
   }
