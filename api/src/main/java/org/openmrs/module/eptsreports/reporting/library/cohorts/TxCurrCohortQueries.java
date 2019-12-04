@@ -723,16 +723,5 @@ public class TxCurrCohortQueries {
     return defintion;
   }
 
-  @DocumentedDefinition
-  public CohortDefinition ltfuCalc() {
-    CalculationCohortDefinition cd =
-        new CalculationCohortDefinition(
-            "LTFU Calculation", Context.getRegisteredComponents(LTFUCalculation.class).get(0));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
 
-    cd.addParameter(new Parameter("location", "location", Location.class));
-
-    return cd;
-  }
 }
