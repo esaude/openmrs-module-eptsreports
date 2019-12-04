@@ -1414,7 +1414,11 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  /** N5: Active patients on ART who are in AF and Eligible */
+  /**
+   * N5: Active patients on ART who are in AF and Eligible
+   *
+   * @return
+   */
   public CohortDefinition getPatientsOnMasterCardAFWhoAreEligible() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
@@ -1434,8 +1438,32 @@ public class EriDSDCohortQueries {
             getActivePatientsOnARTAF(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("eligiblePatients AND masterCardAndTxCurrPatients");
+    cd.setCompositionString("eligiblePatientsD1 AND masterCardAndTxCurrPatients");
 
+    return cd;
+  }
+
+  /**
+   * N5: Active patients on ART who are in AF and Not Eligible
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsOnMasterCardAFWhoAreNotEligible() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("N5: Active patients on ART who are in AF and Not Eligible");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "masterCardAndTxCurrPatients",
+        EptsReportUtils.map(
+            getActivePatientsOnARTAF(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("notEligiblePatientsD2 AND masterCardAndTxCurrPatients");
+//TODO Add notEligiblePatientsD2 from 268
     return cd;
   }
 
