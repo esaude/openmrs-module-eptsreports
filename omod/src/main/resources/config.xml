@@ -1567,7 +1567,7 @@
 	</globalProperty>
 	<!-- 23907 -->
 	<globalProperty>
-		<property>eptsreports.lessTha40CopiesConceptUuid</property>
+		<property>eptsreports.lessThan40CopiesConceptUuid</property>
 		<defaultValue>1321eeac-5832-4076-88e9-b1f2cd351ada</defaultValue>
 		<description>
 			UUID for the LESS THAN 40 COPIES/ML concept
@@ -1575,7 +1575,7 @@
 	</globalProperty>
 	<!-- 23908 -->
 	<globalProperty>
-		<property>eptsreports.lessTha400CopiesConceptUuid</property>
+		<property>eptsreports.lessThan400CopiesConceptUuid</property>
 		<defaultValue>d6eb4797-2c01-4b6e-b43f-be15cd2fdcc2</defaultValue>
 		<description>
 			UUID for the LESS THAN 400 COPIES/ML concept

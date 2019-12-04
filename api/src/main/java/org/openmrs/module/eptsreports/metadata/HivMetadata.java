@@ -730,21 +730,22 @@ public class HivMetadata extends ProgramsMetadata {
   // Concept 23748
   public Concept getCytopeniaConcept() {
     String uuid =
-        Context.getAdministrationService().getGlobalProperty("eptsreports.cytopeniaConcept");
+        Context.getAdministrationService().getGlobalProperty("eptsreports.cytopeniaConceptUuid");
     return getConcept(uuid);
   }
 
   // Concept 23749
   public Concept getNephrotoxicityConcept() {
     String uuid =
-        Context.getAdministrationService().getGlobalProperty("eptsreports.nephrotoxicityConcept");
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.nephrotoxicityConceptUuid");
     return getConcept(uuid);
   }
 
   // Concept 29
   public Concept getHepatitisConcept() {
     String uuid =
-        Context.getAdministrationService().getGlobalProperty("eptsreports.hepatitisConcept");
+        Context.getAdministrationService().getGlobalProperty("eptsreports.hepatitisConceptUuid");
     return getConcept(uuid);
   }
 
@@ -752,7 +753,7 @@ public class HivMetadata extends ProgramsMetadata {
   public Concept getStevensJonhsonSyndromeConcept() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty("eptsreports.stevensJonhsonSyndromeConcept");
+            .getGlobalProperty("eptsreports.stevensJonhsonSyndromeConceptUuid");
     return getConcept(uuid);
   }
 
@@ -760,7 +761,7 @@ public class HivMetadata extends ProgramsMetadata {
   public Concept getHypersensitivityToAbcOrRailConcept() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty("eptsreports.hypersensitivityToAbcOrRailConcept");
+            .getGlobalProperty("eptsreports.hypersensitivityToAbcOrRailConceptUuid");
     return getConcept(uuid);
   }
 
@@ -768,7 +769,7 @@ public class HivMetadata extends ProgramsMetadata {
   public Concept getHepaticSteatosisWithHyperlactataemiaConcept() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty("eptsreports.hepaticSteatosisWithHyperlactataemiaConcept");
+            .getGlobalProperty("eptsreports.hepaticSteatosisWithHyperlactataemiaConceptUuid");
     return getConcept(uuid);
   }
 
