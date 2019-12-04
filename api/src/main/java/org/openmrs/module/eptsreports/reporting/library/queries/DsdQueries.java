@@ -130,6 +130,15 @@ public class DsdQueries {
     return query;
   }
 
+  /**
+   * N5: Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment)
+   * who are in AF
+   * @param adultSeguimentoEncounterTypeId
+   * @param lastFamilyApproachConceptId
+   * @param startDrugsConceptId
+   * @param continueRegimenConceptId
+   * @return
+   */
   public static String getPatientsOnMasterCardAF(
           int adultSeguimentoEncounterTypeId,
           int lastFamilyApproachConceptId,

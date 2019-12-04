@@ -1293,9 +1293,31 @@ public class EriDSDCohortQueries {
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "masterCardPatients",
-        EptsReportUtils.map(txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true), ""));
+        EptsReportUtils.map(getPatientsOnMasterCardAF(),"startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("txCurr AND masterCardPatients");
+
+    return cd;
+  }
+
+  /**
+   * N5: Active patients on ART MasterCard who are in AF Cohort Definition Query
+   * @return
+   */
+  private  CohortDefinition getPatientsOnMasterCardAF(){
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
+    cd.setName("Active patients on ART MasterCard who are in AF Query" );
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.setQuery(DsdQueries.getPatientsOnMasterCardAF(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getFamilyApproach().getConceptId(),
+            hivMetadata.getStartDrugs().getConceptId(),
+            hivMetadata.getContinueRegimen().getConceptId()
+    ));
 
     return cd;
   }
