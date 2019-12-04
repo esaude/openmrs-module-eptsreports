@@ -225,7 +225,7 @@ public class TXCurrQueries {
             + "                                            AND obs.value_datetime IS NOT NULL  "
             + "                                            AND enc.encounter_type = %s  "
             + "                                            AND enc.location_id =     :location  "
-            + "                                            AND enc.encounter_datetime <    :onOrBefore  "
+            + "                                            AND enc.encounter_datetime <=    :onOrBefore  "
             + "                                    GROUP  BY pa.patient_id  "
             + "                                    UNION  "
             + "                                    SELECT enc.patient_id,  "
@@ -244,7 +244,7 @@ public class TXCurrQueries {
             + "                                            AND obs.value_datetime IS NOT NULL  "
             + "                                            AND enc.encounter_type IN ( %s,%s )  "
             + "                                            AND enc.location_id =    :location  "
-            + "                                            AND enc.encounter_datetime <    :onOrBefore  "
+            + "                                            AND enc.encounter_datetime <=    :onOrBefore  "
             + "                                    GROUP  BY pa.patient_id  "
             + "                                    UNION  "
             + "                                    SELECT enc.patient_id,  "
@@ -263,14 +263,14 @@ public class TXCurrQueries {
             + "                                            AND obs.value_datetime IS NOT NULL  "
             + "                                            AND enc.encounter_type = %s  "
             + "                                            AND enc.location_id =     :location  "
-            + "                                            AND enc.encounter_datetime <  "
+            + "                                            AND enc.encounter_datetime <=  "
             + "                                                  :onOrBefore  "
             + "                                    GROUP  BY pa.patient_id  "
             + "                                    ) most_recent  "
             + "                                    inner join obs o  on  "
-            + "                                        o.encounter_id=most_recent.encounter_id and o.voided =0  "
+            + "                                        o.encounter_id=most_recent.encounter_id and o.voided =0 and o.concept_id in (%s,%s,%s) and o.voided=0"
             + "                                GROUP BY most_recent.patient_id  "
-            + "                                HAVING final_encounter_date< :onOrBefore  "
+            + "                                HAVING final_encounter_date<= :onOrBefore  "
             + "                        ) final  "
             + "                     group by final.patient_id;";
 
@@ -283,13 +283,9 @@ public class TXCurrQueries {
         aRVPediatriaSeguimentoEncounterType,
         artDatePickup,
         msterCardDrugPickupEncounterType,
-        adultoSeguimentoEncounterType,
-        aRVPediatriaSeguimentoEncounterType,
-        ARVPharmaciaEncounterType,
-        msterCardDrugPickupEncounterType,
-        returnVisitDateForArvDrugConcept,
         returnVisitDateConcept,
-        artDatePickup);
+        artDatePickup,
+        returnVisitDateForArvDrugConcept);
   }
 
   public static String getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(
