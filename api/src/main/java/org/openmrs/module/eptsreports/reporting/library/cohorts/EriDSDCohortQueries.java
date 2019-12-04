@@ -1293,7 +1293,7 @@ public class EriDSDCohortQueries {
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "masterCardPatients",
-        EptsReportUtils.map(getPatientsOnMasterCardAF(),"startDate=${startDate},endDate=${endDate},location=${location}"));
+        EptsReportUtils.map(getPatientsOnMasterCardAFQuery(),"startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("txCurr AND masterCardPatients");
 
@@ -1304,7 +1304,7 @@ public class EriDSDCohortQueries {
    * N5: Active patients on ART MasterCard who are in AF Cohort Definition Query
    * @return
    */
-  private  CohortDefinition getPatientsOnMasterCardAF(){
+  private  CohortDefinition getPatientsOnMasterCardAFQuery(){
     SqlCohortDefinition cd = new SqlCohortDefinition();
 
     cd.setName("Active patients on ART MasterCard who are in AF Query" );
