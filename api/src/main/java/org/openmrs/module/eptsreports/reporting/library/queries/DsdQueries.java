@@ -148,7 +148,7 @@ public class DsdQueries {
     String query = "SELECT p.patient_id FROM patient p " +
             "JOIN encounter e ON p.patient_id=e.patient_id " +
             "JOIN obs o ON p.patient_id=o.person_id " +
-            "WHERE e.encounter_type=%d AND o.concept_id=23725 AND o.value_coded IN (%d, %d) AND e.location_id=:location " +
+            "WHERE e.encounter_type=%d AND o.concept_id=%d AND o.value_coded IN (%d, %d) AND e.location_id=:location " +
             "AND e.encounter_datetime BETWEEN :startDate AND :endDate  AND e.voided=0 AND o.voided=0 AND p.voided=0 ";
 
     return String.format(query,

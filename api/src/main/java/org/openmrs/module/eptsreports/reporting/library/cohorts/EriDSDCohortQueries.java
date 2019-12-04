@@ -1323,6 +1323,26 @@ public class EriDSDCohortQueries {
   }
 
   /**
+   * N5: Active patients on ART who are in AF and Eligible
+   */
+  public CohortDefinition getPatientsOnMasterCardAFAndEligible(){
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName(
+            "N5: Active patients on ART who are in AF and Eligible");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch("eligiblePatients",EptsReportUtils.map(getPatientsWhoAreStable(),"startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch("masterCardAndTxCurrPatients",EptsReportUtils.map(getActivePatientsOnARTAF(),"startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("eligiblePatients AND masterCardAndTxCurrPatients");
+
+    return cd;
+  }
+
+  /**
    * Get All patients who have been enrolled in the GAAC program
    *
    * @return
