@@ -184,7 +184,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   // concept id 1066
-  public Concept getNoConcept() {
+  @Override
+public Concept getNoConcept() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.noConceptUuid");
     return getConcept(uuid);
   }
@@ -887,6 +888,13 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.masterCardEncounterType");
     return getEncounterType(uuid);
   }
+	
+	// encounter_type = 51
+	public EncounterType getFsrEncounterType() {
+		String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.fsrEncounterType");
+		return getEncounterType(uuid);
+	}
+	
   // Programs
 
   // program_id=2
