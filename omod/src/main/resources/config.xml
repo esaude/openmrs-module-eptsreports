@@ -1349,7 +1349,7 @@
 
 	<globalProperty>
 		<property>@MODULE_ID@.masterCardDrugPickupEncounterTypeUuid</property>
-		<defaultValue>cce7b2ec-4fc0-4f9e-806d-b1c4ee9577db</defaultValue>
+		<defaultValue>e2790f68-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
 			UUID for FSR - Carga Viral encounter type
 		</description>

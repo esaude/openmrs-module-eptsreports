@@ -91,35 +91,35 @@ public class ViralLoadQueries {
       int viralLoadRequestReasonConceptId,
       int routineViralLoadConceptId,
       int unknownConceptId) {
-    String sql =
-        String.format(
-            "SELECT "
-                + "	e.patient_id "
-                + " FROM ("
-                + "	SELECT "
-                + "		ee.patient_id, MAX(DATE(ee.encounter_datetime)) AS viral_load_date "
-                + "	FROM "
-                + "		encounter ee "
-                + "		INNER JOIN obs oo ON ee.encounter_id = oo.encounter_id"
-                + "	WHERE "
-                + "		ee.voided = 0 AND"
-                + "		oo.voided = 0 AND"
-                + "		ee.encounter_type IN (%1$d, %2$d, %3$d, %4$d) OR"
-                + "		(ee.encounter_type = %5$d AND oo.concept_id = %6$d AND (oo.value_coded = %7$d OR oo.value_coded = %8$d))"
-                + "		AND ee.location_id = :location"
-                + "		AND ee.encounter_datetime <= :endDate "
-                + "	GROUP BY patient_id"
-                + ") e WHERE e.viral_load_date BETWEEN :startDate AND :endDate",
-            labEncounter,
-            adultSeguimentoEncounter,
-            pediatriaSeguimentoEncounter,
-            mastercardEncounter,
-            fsrEncounterType,
-            viralLoadRequestReasonConceptId,
-            routineViralLoadConceptId,
-            unknownConceptId);
+    String query =
+        "SELECT "
+            + "	e.patient_id "
+            + " FROM ("
+            + "	SELECT "
+            + "		ee.patient_id, MAX(DATE(ee.encounter_datetime)) AS viral_load_date "
+            + "	FROM "
+            + "		encounter ee "
+            + "		INNER JOIN obs oo ON ee.encounter_id = oo.encounter_id"
+            + "	WHERE "
+            + "		ee.voided = 0 AND"
+            + "		oo.voided = 0 AND"
+            + "		ee.encounter_type IN (%d, %d, %d, %d) OR"
+            + "		(ee.encounter_type = %d AND oo.concept_id = %d AND (oo.value_coded = %d OR oo.value_coded = %d))"
+            + "		AND ee.location_id = :location"
+            + "		AND ee.encounter_datetime <= :endDate "
+            + "	GROUP BY patient_id"
+            + ") e WHERE e.viral_load_date BETWEEN :startDate AND :endDate";
 
-    return sql;
+    return String.format(
+        query,
+        labEncounter,
+        adultSeguimentoEncounter,
+        pediatriaSeguimentoEncounter,
+        mastercardEncounter,
+        fsrEncounterType,
+        viralLoadRequestReasonConceptId,
+        routineViralLoadConceptId,
+        unknownConceptId);
   }
 
   public static String getPatientsHavingTargetedViralLoadTests(
@@ -129,31 +129,30 @@ public class ViralLoadQueries {
       int suspectedImmuneFailureConceptId,
       int repeatAfterBreastfeedingConceptId,
       int clinicalSuspicionConceptId) {
-    String sql =
-        String.format(
-            "SELECT "
-                + "	e.patient_id "
-                + " FROM ("
-                + "	SELECT "
-                + "		ee.patient_id, MAX(DATE(ee.encounter_datetime)) AS viral_load_date"
-                + "	FROM "
-                + "		encounter ee "
-                + "		INNER JOIN obs oo ON ee.encounter_id = oo.encounter_id"
-                + "	WHERE "
-                + "		ee.voided = 0 AND"
-                + "		oo.voided = 0 AND"
-                + "		(ee.encounter_type = %1$d AND oo.concept_id = %2$d AND (oo.value_coded = %3$d OR oo.value_coded = %4$d) OR oo.value_coded = %$5d OR oo.value_coded = %6$d)"
-                + "		AND ee.location_id = :location"
-                + "		AND ee.encounter_datetime <= :endDate "
-                + ") e "
-                + " WHERE e.viral_load_date BETWEEN :startDate AND :endDate",
-            fsrEncounterType,
-            viralLoadRequestReasonConceptId,
-            regimenFailureConceptId,
-            suspectedImmuneFailureConceptId,
-            repeatAfterBreastfeedingConceptId,
-            clinicalSuspicionConceptId);
-
-    return sql;
+    String query =
+        "SELECT "
+            + "	e.patient_id "
+            + " FROM ("
+            + "	SELECT "
+            + "		ee.patient_id, MAX(DATE(ee.encounter_datetime)) AS viral_load_date"
+            + "	FROM "
+            + "		encounter ee "
+            + "		INNER JOIN obs oo ON ee.encounter_id = oo.encounter_id"
+            + "	WHERE "
+            + "		ee.voided = 0 AND"
+            + "		oo.voided = 0 AND"
+            + "		(ee.encounter_type = %d AND oo.concept_id = %d AND (oo.value_coded = %d OR oo.value_coded = %d) OR oo.value_coded = %d OR oo.value_coded = %d)"
+            + "		AND ee.location_id = :location"
+            + "		AND ee.encounter_datetime <= :endDate "
+            + ") e "
+            + " WHERE e.viral_load_date BETWEEN :startDate AND :endDate";
+    return String.format(
+        query,
+        fsrEncounterType,
+        viralLoadRequestReasonConceptId,
+        regimenFailureConceptId,
+        suspectedImmuneFailureConceptId,
+        repeatAfterBreastfeedingConceptId,
+        clinicalSuspicionConceptId);
   }
 }

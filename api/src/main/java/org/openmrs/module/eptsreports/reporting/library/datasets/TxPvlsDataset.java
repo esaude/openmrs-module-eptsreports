@@ -309,7 +309,8 @@ public class TxPvlsDataset extends BaseDataSet {
   private List<ColumnParameters> getRoutineTargetedColumns() {
     ColumnParameters routine = new ColumnParameters("routine", "R", "rt=VLR", "01");
     ColumnParameters target = new ColumnParameters("target", "T", "rt=VLT", "02");
-    return Arrays.asList(routine, target);
+    ColumnParameters rtTotal = new ColumnParameters("rtTotal", "Tt", "", "03");
+    return Arrays.asList(routine, target, rtTotal);
   }
 
   private List<ColumnParameters> getKpRoutineTargetedColumns() {
@@ -331,6 +332,6 @@ public class TxPvlsDataset extends BaseDataSet {
     ColumnParameters priTt = new ColumnParameters("priTt", "PRI-TT", "", "12");
 
     return Arrays.asList(
-        piwdR, piwdT, piwdTt, msnR, msnT, msnTt, cswR, cswT, cswTt, priR, priT,priTt);
+        piwdR, piwdT, piwdTt, msnR, msnT, msnTt, cswR, cswT, cswTt, priR, priT, priTt);
   }
 }
