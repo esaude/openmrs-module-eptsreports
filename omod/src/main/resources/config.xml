@@ -1349,18 +1349,18 @@
 
 	<globalProperty>
 		<property>@MODULE_ID@.masterCardDrugPickupEncounterTypeUuid</property>
-		<defaultValue>e2790f68-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<defaultValue>cce7b2ec-4fc0-4f9e-806d-b1c4ee9577db</defaultValue>
 		<description>
-			UUID for FSR - Carga Viral encounter type
+            UUID for the Levantamento de ARV Master Card encounter type
 		</description>
 	</globalProperty>
 
 	<!-- 51 -->
 	<globalProperty>
 		<property>eptsreports.fsrEncounterType</property>
-		<defaultValue>b5b7d21f-efd1-407e-81ce-ba9d93c524f8</defaultValue>
+		<defaultValue>e2790f68-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
-			UUID for the Levantamento de ARV Master Card encounter type
+            UUID for FSR - Carga Viral encounter type
 		</description>
 	</globalProperty>
 
