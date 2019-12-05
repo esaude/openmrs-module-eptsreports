@@ -766,6 +766,12 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  public Concept getSemiannualDispensation() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.semiannualConceptUuid");
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {

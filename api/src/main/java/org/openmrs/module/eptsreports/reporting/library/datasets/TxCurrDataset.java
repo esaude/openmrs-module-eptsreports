@@ -145,7 +145,7 @@ public class TxCurrDataset extends BaseDataSet {
         "C5",
         "6 Months",
         EptsReportUtils.map(txCurrIndicator, mappings),
-        getDispensationColumns3To5Months());
+        getDispensationColumnsMoreThan6Months());
 
     return dataSetDefinition;
   }
