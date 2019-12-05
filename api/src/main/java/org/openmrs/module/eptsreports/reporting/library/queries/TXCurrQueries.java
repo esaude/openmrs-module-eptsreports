@@ -311,6 +311,7 @@ public class TXCurrQueries {
             + "               (SELECT patient_id "
             + "                   FROM encounter "
             + "                   WHERE  encounter_type IN (%s,%s,%s,%s ) "
+            + "						  AND encounter_datetime <= :onOrBefore"
             + "                       AND location_id = :location "
             + "                       AND voided = 0) "
             + "       UNION "
