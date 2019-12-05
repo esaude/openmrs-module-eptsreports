@@ -1371,6 +1371,108 @@ public class EriDSDCohortQueries {
   }
 
   /**
+   * N7 : Patients marked in last Dispensa Comunitaria as start or continue regimen query
+   *
+   * @return @{@link CohortDefinition}
+   */
+  private CohortDefinition getPatientsMarkedInLastDispenseQuery() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients marked in last dispense as start drugs on continue regimen");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        DsdQueries.getPatientsWithDispense(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getCommunityDispensation().getConceptId(),
+            hivMetadata.getStartDrugs().getConceptId(),
+            hivMetadata.getContinueRegimen().getConceptId()));
+
+    return cd;
+  }
+
+  /**
+   * N7 : Patients active in ART marked in last DC cohort
+   *
+   * @return @{@link CohortDefinition}
+   */
+  public CohortDefinition getActivePatientsOnARTDC() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    String cohortName = "Active in ART marked with DC";
+    cd.setName("N7 : Active patients in ART marked in last DC as start or continue regimen");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "txCurr",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
+            "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "markedLastDispense",
+        EptsReportUtils.map(
+            getPatientsMarkedInLastDispenseQuery(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("txCurr and markedLastDispense");
+    return cd;
+  }
+
+  /**
+   * N4 : Active ART patients marked in DC and are eligible
+   *
+   * @return @{@link CohortDefinition}
+   */
+  public CohortDefinition getActiveARTEligiblePatientsDC() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("N7 : Active patients in ART marked in last DC and are eligible");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "activeARTDC",
+        EptsReportUtils.map(
+            getActivePatientsOnARTDC(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "d1EligeblePatients",
+        EptsReportUtils.map(
+            getAllPatientsWhoAreActiveAndStable(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("activeARTDC AND d1EligeblePatients");
+    return cd;
+  }
+
+  /**
+   * N4 : Active ART patients marked in DC and are unstable
+   *
+   * @return @{@link CohortDefinition}
+   */
+  public CohortDefinition getActiveInARTUnstableDC() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("N7 : Active in ART patients marked in last DC and are not eligible");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "activeARTDC",
+        EptsReportUtils.map(
+            getActivePatientsOnARTDC(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "d2UnstablePatients",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveAndUnstable(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("activeARTDC AND d2UnstablePatients");
+    return cd;
+  }
+
+  //  public CohortDefinition getEligiblePatients
+
+  /**
    * THE BELOW CODE IS COMMENTED OUT. THE CODE IS FOR INDICATOR: Number of active patients on ART
    * who participate in >=1 measured DSD model THE INDICATOR WILL NOT BE INCLUDED IN THIS INITIAL
    * RELEASE OF THE DSD REPORTS.
