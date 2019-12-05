@@ -263,7 +263,7 @@ public class TXCurrQueries {
             + "             INNER JOIN encounter e on "
             + "                 e.patient_id = ficha.patient_id and "
             + "                 e.encounter_datetime = ficha.encounter_datetime and "
-            + "                 e.encounter_type (%s,%s) and "
+            + "                 e.encounter_type IN (%s,%s) and "
             + "                 e.location_id = :location and "
             + "                 e.voided = 0 "
             + "             INNER JOIN obs o on "
