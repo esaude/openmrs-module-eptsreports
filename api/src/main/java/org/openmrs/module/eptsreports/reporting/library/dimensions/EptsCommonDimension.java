@@ -14,7 +14,6 @@ package org.openmrs.module.eptsreports.reporting.library.dimensions;
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.Date;
-
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri2MonthsCohortQueries;
@@ -53,7 +52,7 @@ public class EptsCommonDimension {
   @Autowired private TbPrevCohortQueries tbPrevCohortQueries;
 
   @Autowired private HivCohortQueries hivCohortQueries;
-  
+
   @Autowired private TxPvlsCohortQueries txPvlsQueries;
 
   /**
@@ -293,16 +292,16 @@ public class EptsCommonDimension {
     dim.addCohortDefinition("PRI", mapStraightThrough(imprisonmentKeyPopCohort));
     return dim;
   }
-  
+
   public CohortDefinitionDimension getViralLoadRoutineTargetReasonsDimension() {
-	  CohortDefinitionDimension dim = new CohortDefinitionDimension();
-	    dim.addParameter(new Parameter("startDate", "onOrAfter", Date.class));
-	    dim.addParameter(new Parameter("endDate", "onOrBefore", Date.class));
-	    dim.addParameter(new Parameter("location", "Location", Location.class));
-	    CohortDefinition routineViralLoadCohort = txPvlsQueries.getPatientsWhoAreOnRoutine();
-	    CohortDefinition targetedViralLoadCohort = txPvlsQueries.getPatientsWhoAreOnTarget();
-	    dim.addCohortDefinition("VLR", mapStraightThrough(routineViralLoadCohort));
-	    dim.addCohortDefinition("VLT", mapStraightThrough(targetedViralLoadCohort));
-	    return dim;
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.addParameter(new Parameter("startDate", "onOrAfter", Date.class));
+    dim.addParameter(new Parameter("endDate", "onOrBefore", Date.class));
+    dim.addParameter(new Parameter("location", "Location", Location.class));
+    CohortDefinition routineViralLoadCohort = txPvlsQueries.getPatientsWhoAreOnRoutine();
+    CohortDefinition targetedViralLoadCohort = txPvlsQueries.getPatientsWhoAreOnTarget();
+    dim.addCohortDefinition("VLR", mapStraightThrough(routineViralLoadCohort));
+    dim.addCohortDefinition("VLT", mapStraightThrough(targetedViralLoadCohort));
+    return dim;
   }
 }
