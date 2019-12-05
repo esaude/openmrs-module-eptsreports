@@ -716,7 +716,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "eligiblePatientsD1",
         EptsReportUtils.map(
-            getPatientsWhoAreEligibleD1(),
+                getAllPatientsWhoAreActiveAndStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("activeAndStableN2 AND eligiblePatientsD1");
