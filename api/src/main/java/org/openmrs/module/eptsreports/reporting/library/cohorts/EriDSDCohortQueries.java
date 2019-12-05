@@ -1462,8 +1462,8 @@ public class EriDSDCohortQueries {
             getActivePatientsOnARTAF(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("notEligiblePatientsD2 AND masterCardAndTxCurrPatients");
-//TODO Add notEligiblePatientsD2 from 268
+    cd.setCompositionString("masterCardAndTxCurrPatients");
+    // TODO Add notEligiblePatientsD2 from 268
     return cd;
   }
 

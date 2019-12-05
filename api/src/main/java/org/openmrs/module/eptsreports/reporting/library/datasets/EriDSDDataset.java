@@ -526,6 +526,15 @@ public class EriDSDDataset extends BaseDataSet {
             mappings),
         "");
     dsd.addColumn(
+        "N5T",
+        "N5: Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N5T",
+                EptsReportUtils.map(eriDSDCohortQueries.getActivePatientsOnARTAF(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
         "N5EST",
         "N5: Eligible subtotal",
         EptsReportUtils.map(
