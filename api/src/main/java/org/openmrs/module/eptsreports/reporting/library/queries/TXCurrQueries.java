@@ -128,6 +128,7 @@ public class TXCurrQueries {
       int adultoSeguimentoEncounterType,
       int masterCardEncounterType,
       int stateOfStayPriorArtPatientConcept,
+      int stateOfStayOfArtPatient,
       int patientHasDiedConcept) {
 
     String query =
@@ -136,8 +137,8 @@ public class TXCurrQueries {
             + "inner join encounter e on e.patient_id=p.patient_id "
             + "inner join obs o on o.encounter_id=e.encounter_id "
             + "where e.encounter_type in (%s,%s) and p.voided=0  and e.voided=0 and o.voided=0 "
-            + "and o.concept_id=%s and   o.value_coded=%s "
-            + " and e.location_id = :location and e.encounter_datetime <= :onOrBefore "
+            + "and o.concept_id in (%s,%s) and   o.value_coded=%s "
+            + "and e.location_id = :location and e.encounter_datetime <= :onOrBefore "
             + "group by p.patient_id";
 
     return String.format(
@@ -145,6 +146,7 @@ public class TXCurrQueries {
         adultoSeguimentoEncounterType,
         masterCardEncounterType,
         stateOfStayPriorArtPatientConcept,
+        stateOfStayOfArtPatient,
         patientHasDiedConcept);
   }
 
@@ -152,6 +154,7 @@ public class TXCurrQueries {
       int adultoSeguimentoEncounterType,
       int masterCardEncounterType,
       int stateOfStayPriorArtPatientConcept,
+      int stateOfStayOfArtPatient,
       int transferredOutConcept) {
 
     String query =
@@ -160,7 +163,7 @@ public class TXCurrQueries {
             + " inner join encounter e on e.patient_id=p.patient_id "
             + " inner join obs o on o.encounter_id=e.encounter_id "
             + " where e.encounter_type in (%s,%s) and p.voided=0  and e.voided=0 and o.voided=0 "
-            + " and o.concept_id=%s and   o.value_coded=%s "
+            + " and o.concept_id in (%s,%s) and   o.value_coded=%s "
             + " and e.location_id = :location and e.encounter_datetime <= :onOrBefore "
             + " group by p.patient_id ";
 
@@ -169,6 +172,7 @@ public class TXCurrQueries {
         adultoSeguimentoEncounterType,
         masterCardEncounterType,
         stateOfStayPriorArtPatientConcept,
+        stateOfStayOfArtPatient,
         transferredOutConcept);
   }
 
@@ -176,6 +180,7 @@ public class TXCurrQueries {
       int adultoSeguimentoEncounterType,
       int masterCardEncounterType,
       int stateOfStayPriorArtPatientConcept,
+      int stateOfStayOfArtPatient,
       int suspendedTreatmentConcept) {
 
     String query =
@@ -184,7 +189,7 @@ public class TXCurrQueries {
             + "inner join encounter e on e.patient_id=p.patient_id "
             + "inner join obs o on o.encounter_id=e.encounter_id "
             + "where e.encounter_type in (%s,%s) and p.voided=0  and e.voided=0 and o.voided=0 "
-            + "and o.concept_id=%s and   o.value_coded=%s "
+            + "and o.concept_id in (%s,%s) and o.value_coded=%s "
             + " and e.location_id = :location and e.encounter_datetime <= :onOrBefore "
             + "group by p.patient_id ";
 
@@ -193,6 +198,7 @@ public class TXCurrQueries {
         adultoSeguimentoEncounterType,
         masterCardEncounterType,
         stateOfStayPriorArtPatientConcept,
+        stateOfStayOfArtPatient,
         suspendedTreatmentConcept);
   }
 
