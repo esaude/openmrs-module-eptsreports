@@ -418,6 +418,7 @@ public class TxCurrCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getStateOfStayPriorArtPatientConcept().getConceptId(),
+            hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
             hivMetadata.getPatientHasDiedConcept().getConceptId()));
 
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
@@ -443,6 +444,7 @@ public class TxCurrCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getStateOfStayPriorArtPatientConcept().getConceptId(),
+            hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
             hivMetadata.getTransferredOutConcept().getConceptId()));
 
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
@@ -467,6 +469,7 @@ public class TxCurrCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getStateOfStayPriorArtPatientConcept().getConceptId(),
+            hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
             hivMetadata.getSuspendedTreatmentConcept().getConceptId()));
 
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
