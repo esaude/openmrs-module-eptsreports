@@ -525,6 +525,35 @@ public class EriDSDDataset extends BaseDataSet {
                     eriDSDCohortQueries.getPatientsWhoArePregnantAndBreastfeedingN4(), mappings)),
             mappings),
         "");
+    dsd.addColumn(
+        "N7T",
+        "N7: Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N7T",
+                EptsReportUtils.map(eriDSDCohortQueries.getActivePatientsOnARTDC(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N7EST",
+        "N7 : Eligible Sub Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N7EST",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getActiveARTEligiblePatientsDC(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+            "N7ENPNBA",
+            "N7: Eligible Non-Pregnant Non-Breastfeeding adults",
+            EptsReportUtils.map(
+                    eptsGeneralIndicator.getIndicator(
+                            "N7ENPNBA",
+                            EptsReportUtils.map(
+                                    eriDSDCohortQueries.getActiveARTEligiblePatientsDC(), mappings)),
+                    mappings),
+            "age=15+");
 
     return dsd;
   }
