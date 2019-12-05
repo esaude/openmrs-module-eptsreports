@@ -495,7 +495,7 @@ public class TxPvlsCohortQueries {
   // Pregnant and breastfeeding denominator
   // Breastfeeding
   /**
-   * Patients who have viral load results, breastfeeding and on routine denominator
+   * Patients who have viral load results, breastfeeding, and have been on ART for the last 3 months denominator
    *
    * @return CohortDefinition
    */

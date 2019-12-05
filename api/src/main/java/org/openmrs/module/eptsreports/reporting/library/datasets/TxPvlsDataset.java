@@ -52,6 +52,8 @@ public class TxPvlsDataset extends BaseDataSet {
         "age",
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
+    dsd.addDimension("rt", EptsReportUtils.map(eptsCommonDimension.getViralLoadRoutineTargetReasonsDimension(), mappings));
+    dsd.addDimension("kp", EptsReportUtils.map(eptsCommonDimension.getKeyPopsDimension(), mappings));
 
     addNumeratorColumns(dsd, mappings);
     addDenominatorColumns(dsd, mappings);
@@ -99,82 +101,49 @@ public class TxPvlsDataset extends BaseDataSet {
                     mappings),
             getAdultChildrenColumns());
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////
     // Breastfeeding & Pregnant
-    dsd.addColumn(
-        "B05",
-        "Breast feeding and on routine Denominator",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "breastfeedingWomenWithViralLoad-routine denominator",
-                EptsReportUtils.map(
-                    txPvls.getBreastfeedingWomenOnRoutineWithViralLoadResultsDenominator(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "B06",
-        "Breast feeding and NOT documented Denominator",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "breastfeedingWomenWithViralLoad-not documented denominator",
-                EptsReportUtils.map(
-                    txPvls.getBreastfeedingWomenAndNotDocumentedWithViralLoadResultsDenominator(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "B07",
-        "Pregnant and on routine Denominator",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "pregnantWomenWithViralLoad and not documented denominator",
-                EptsReportUtils.map(
-                    txPvls.getPregnantWomenAndOnRoutineWithViralLoadResultsDenominator(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "B08",
-        "Pregnant and NOT documented Denominator",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "pregnantWomenWithViralLoad results not documented denominator",
-                EptsReportUtils.map(
-                    txPvls.getPregnantWomenAndNotDocumentedWithViralLoadResultsDenominator(),
-                    mappings)),
-            mappings),
-        "");
+    //Breastfeeding and on ART for more than 3 months and have VL results
+    addRow(
+            dsd,
+            "B",
+            "Breast feeding, have vl results and on ART more than 3 months Denominator",
+            EptsReportUtils.map(
+                    eptsGeneralIndicator.getIndicator(
+                            "Breast feeding, have vl results and on ART more than 3 months Denominator",
+                            EptsReportUtils.map(
+                                    txPvls.getBreastfeedingWomenWhoHaveViralLoadResults(),
+                                    mappings)),
+                    mappings),
+            getRoutineTargetedColumns());
+
+    //Pregnant women on ART for more than 3 months and have VL results
+    addRow(
+            dsd,
+            "P",
+            "Pregnant, have vl results and on ART more than 3 months Denominator",
+            EptsReportUtils.map(
+                    eptsGeneralIndicator.getIndicator(
+                            "Pregnant, have vl results and on ART more than 3 months Denominator",
+                            EptsReportUtils.map(
+                                    txPvls.getPregnantWomenWithViralLoadResultsDenominator(),
+                                    mappings)),
+                    mappings),
+            getRoutineTargetedColumns());
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Routine for Adults & Children
     addRow(
         dsd,
-        "DR",
-        "Adults & Children Denominator Routine",
+        "KP",
+        "Key population patients and are on routine and target",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "viral load results on routine adults and children",
+                "Key population patients and are on routine and target",
                 EptsReportUtils.map(
-                    txPvls.getPatientsWithViralLoadREsultsAndOnRoutineForChildrenAndAdults(),
+                    txPvls.getPatientsWithViralLoadResults(),
                     mappings)),
             mappings),
-        getAdultChildrenColumns());
-
-    // NOT documented for Adults & Children
-    addRow(
-        dsd,
-        "DND",
-        "Adults & Children Denominator NOT documented",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "viral load results not documented adults & children",
-                EptsReportUtils.map(
-                    txPvls.getPatientsWithViralLoadREsultsAndNotDocumenetdForChildrenAndAdults(),
-                    mappings)),
-            mappings),
-        getAdultChildrenColumns());
+            getKpRoutineTargetedColumns());
   }
 
   private void addNumeratorColumns(CohortIndicatorDataSetDefinition dsd, String mappings) {
@@ -342,5 +311,15 @@ public class TxPvlsDataset extends BaseDataSet {
         foutyTo44F,
         fouty5To49F,
         above50F);
+  }
+
+  private List<ColumnParameters> getRoutineTargetedColumns() {
+    ColumnParameters routine = new ColumnParameters("routine", "R", "rt=VLR", "01");
+    ColumnParameters target = new ColumnParameters("target", "T", "rt=VLT", "02");
+    return Arrays.asList(routine, target);
+  }
+
+  private List<ColumnParameters> getKpRoutineTargetedColumns() {
+
   }
 }

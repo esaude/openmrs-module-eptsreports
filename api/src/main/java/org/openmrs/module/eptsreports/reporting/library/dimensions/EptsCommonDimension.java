@@ -294,7 +294,7 @@ public class EptsCommonDimension {
     return dim;
   }
   
-  public CohortDefinitionDimension getViralLoadReasonDimension() {
+  public CohortDefinitionDimension getViralLoadRoutineTargetReasonsDimension() {
 	  CohortDefinitionDimension dim = new CohortDefinitionDimension();
 	    dim.addParameter(new Parameter("startDate", "onOrAfter", Date.class));
 	    dim.addParameter(new Parameter("endDate", "onOrBefore", Date.class));
