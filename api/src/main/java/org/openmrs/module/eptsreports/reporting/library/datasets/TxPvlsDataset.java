@@ -331,6 +331,6 @@ public class TxPvlsDataset extends BaseDataSet {
     ColumnParameters priTt = new ColumnParameters("priTt", "PRI-TT", "", "12");
 
     return Arrays.asList(
-        piwdR, piwdT, piwdTt, msnR, msnT, msnTt, cswR, cswT, cswTt, priR, priT, priTt);
+        piwdR, piwdT, piwdTt, msnR, msnT, msnTt, cswR, cswT, cswTt, priR, priT,priTt);
   }
 }
