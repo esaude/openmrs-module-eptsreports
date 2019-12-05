@@ -20,6 +20,7 @@ import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.library.queries.HivQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -335,6 +336,35 @@ public class HivCohortQueries {
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
             hivMetadata.getArtDatePickup().getConceptId()));
+    return cd;
+  }
+
+  /**
+   * Get All Patients On TB Treatment
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsOnTbTreatment() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("patientsOnTbTreatment");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    cd.setQuery(
+        HivQueries.getPatientsOnTbTreatmentQuery(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getTBDrugStartDateConcept().getConceptId(),
+            hivMetadata.getTBDrugEndDateConcept().getConceptId(),
+            hivMetadata.getTBProgram().getProgramId(),
+            hivMetadata.getPatientActiveOnTBProgramWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getActiveTBConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getTBTreatmentPlanConcept().getConceptId(),
+            hivMetadata.getStartDrugs().getConceptId(),
+            hivMetadata.getContinueRegimen().getConceptId()));
+
     return cd;
   }
 }
