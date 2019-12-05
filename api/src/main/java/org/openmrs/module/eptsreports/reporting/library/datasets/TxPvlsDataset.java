@@ -58,9 +58,9 @@ public class TxPvlsDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsCommonDimension.getViralLoadRoutineTargetReasonsDimension(), mappings));
     dsd.addDimension(
-        "kp", EptsReportUtils.map(eptsCommonDimension.getKeyPopsDimension(), mappingsKp));
+        "KP", EptsReportUtils.map(eptsCommonDimension.getKeyPopsDimension(), mappingsKp));
 
-    // addNumeratorColumns(dsd, mappings);
+    addNumeratorColumns(dsd, mappings);
     addDenominatorColumns(dsd, mappings);
 
     return dsd;
@@ -146,15 +146,15 @@ public class TxPvlsDataset extends BaseDataSet {
   private void addNumeratorColumns(CohortIndicatorDataSetDefinition dsd, String mappings) {
     // Numerator ------------------------------------------------------------
     // Totals
-    /*dsd.addColumn(
-    "0N",
-    "Total patients with suppressed Viral load - Numerator",
-    EptsReportUtils.map(
-        eptsGeneralIndicator.getIndicator(
-            "suppressed viral load",
-            EptsReportUtils.map(txPvls.getPatientsWithViralLoadSuppression(), mappings)),
-        mappings),
-    "");*/
+    dsd.addColumn(
+        "0N",
+        "Total patients with suppressed Viral load - Numerator",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "suppressed viral load",
+                EptsReportUtils.map(txPvls.getPatientsWithViralLoadSuppression(), mappings)),
+            mappings),
+        "");
 
     // Breastfeeding & Pregnant
     // Breastfeeding

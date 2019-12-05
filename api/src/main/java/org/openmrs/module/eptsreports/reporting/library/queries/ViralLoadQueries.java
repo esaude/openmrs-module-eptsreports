@@ -104,7 +104,7 @@ public class ViralLoadQueries {
             + "		ee.voided = 0 AND"
             + "		oo.voided = 0 AND"
             + "		ee.encounter_type IN (%d, %d, %d, %d) OR"
-            + "		(ee.encounter_type = %d AND oo.concept_id = %d AND (oo.value_coded = %d OR oo.value_coded = %d))"
+            + "		(ee.encounter_type = %d AND oo.concept_id = %d AND oo.value_coded IN (%d, %d))"
             + "		AND ee.location_id = :location"
             + "		AND ee.encounter_datetime <= :endDate "
             + "	GROUP BY patient_id"

@@ -2,6 +2,7 @@ package org.openmrs.module.eptsreports.reporting.unit.library.cohorts;
 
 import java.util.Date;
 import java.util.Set;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
@@ -52,6 +53,7 @@ public class LiveTest extends DefinitionsFGHLiveTest {
     context.addParameterValue("location", location);
   }
 
+  @Ignore
   @Test
   public void testMethod() throws EvaluationException {
     CohortDefinition cd = hivCohortQueries.getPatientsWithViralLoadResults();
