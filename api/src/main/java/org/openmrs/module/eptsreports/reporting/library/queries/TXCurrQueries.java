@@ -272,7 +272,7 @@ public class TXCurrQueries {
             + "                 o.voided = 0 "
             + "             UNION  "
             + "             SELECT enc.patient_id,  "
-            + "                 Date_add(Max(obs.value_datetime), interval 30 day) encounter_datetime "
+            + "                 Date_add(Max(obs.value_datetime), interval 30 day) value_datetime "
             + "             FROM   patient pa  "
             + "                 inner join encounter enc  "
             + "                     ON enc.patient_id = pa.patient_id  "
