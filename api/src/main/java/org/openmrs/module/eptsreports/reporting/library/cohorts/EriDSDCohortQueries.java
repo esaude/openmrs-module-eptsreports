@@ -85,7 +85,6 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-
   /**
    * Filter patients (from 4) who are considered stable according to criteria 5: a,b,c,d,e,f
    *
@@ -1387,7 +1386,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "eligiblePatientsD1",
         EptsReportUtils.map(
-                getAllPatientsWhoAreActiveAndStable(),
+            getAllPatientsWhoAreActiveAndStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "masterCardAndTxCurrPatients",
@@ -1418,9 +1417,14 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             getActivePatientsOnARTAF(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "patientsNotEligibleD2",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveAndUnstable(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("masterCardAndTxCurrPatients");
-    // TODO Add notEligiblePatientsD2 from 268
+    cd.setCompositionString("patientsNotEligibleD2 AND masterCardAndTxCurrPatients");
+
     return cd;
   }
 
