@@ -71,10 +71,8 @@ public class TxRttQueries {
       getAllPatientsWhoMissedDrugPickupHavingPreviousMasterCardAppointment30DaysWhichIs28DaysLaterThanEncounterDate(
           int pharmacyEncounter,
           int masterCardEncounter,
-          int nextAppointmentConcept,
-          int dateOfArtPickupConcept,
-          int adultoSeg,
-          int paedSeg) {
+          int nextDrugPickupConcept,
+          int dateOfArtPickupConcept) {
     String query =
         " SELECT e.patient_id "
             + " FROM ("
@@ -116,10 +114,10 @@ public class TxRttQueries {
         query,
         pharmacyEncounter,
         pharmacyEncounter,
-        nextAppointmentConcept,
+        nextDrugPickupConcept,
         masterCardEncounter,
         dateOfArtPickupConcept,
-        adultoSeg,
-        paedSeg);
+        pharmacyEncounter,
+        masterCardEncounter);
   }
 }

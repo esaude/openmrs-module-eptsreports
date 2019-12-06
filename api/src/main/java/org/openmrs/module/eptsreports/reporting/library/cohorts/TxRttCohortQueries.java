@@ -70,10 +70,8 @@ public class TxRttCohortQueries {
             .getAllPatientsWhoMissedDrugPickupHavingPreviousMasterCardAppointment30DaysWhichIs28DaysLaterThanEncounterDate(
                 hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
                 hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-                hivMetadata.getReturnVisitDateConcept().getConceptId(),
-                hivMetadata.getArtDatePickup().getConceptId(),
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
+                hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+                hivMetadata.getArtDatePickup().getConceptId()));
   }
 
   /**
