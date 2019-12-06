@@ -1608,7 +1608,7 @@ public class EriDSDCohortQueries {
    * 
    * @return CohortDefinition
    * */
-  public CohortDefinition getActivePatientsOnArtWhoParticipateInAtLeastOneDsdModel() {
+  public CohortDefinition getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModel() {
 	  CompositionCohortDefinition cd = new CompositionCohortDefinition();
 	    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 	    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1629,6 +1629,62 @@ public class EriDSDCohortQueries {
 	  
 	  return cd;
   }
+  
+  /*
+   * Get all patients who participated in at least 2 DSD model and are stable
+   * 
+   * @return CohortDefifnition
+   * */
+  public CohortDefinition getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndStable() {
+	  CompositionCohortDefinition cd = new CompositionCohortDefinition();
+	    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+	    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+	    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+	    cd.addSearch(
+	        "1",
+	        EptsReportUtils.map(
+	        	getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModel(),
+	            "startDate=${startDate},endDate=${endDate},location=${location}"));
+	    cd.addSearch(
+	        "2",
+	        EptsReportUtils.map(
+	        	getPatientsWhoAreStable(),
+	            "startDate=${startDate},endDate=${endDate},location=${location}"));
+	    
+	    cd.setCompositionString("(1 AND 2)");
+	  
+	  return cd;	  
+  }
+
+  /*
+   * Get number of patients who participated in at least 1 DSD model and are unstable
+   * 
+   * @return CohortDefinition
+   * */
+  public CohortDefinition getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndUnStable() {
+	  CompositionCohortDefinition cd = new CompositionCohortDefinition();
+	    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+	    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+	    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+	    cd.addSearch(
+	        "1",
+	        EptsReportUtils.map(
+	        	getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModel(),
+	            "startDate=${startDate},endDate=${endDate},location=${location}"));
+	    cd.addSearch(
+	        "2",
+	        EptsReportUtils.map(
+	        	getPatientsWhoAreStable(),
+	            "startDate=${startDate},endDate=${endDate},location=${location}"));
+	    
+	    cd.setCompositionString("(1 AND NOT 2)");
+	  
+	  return cd;	  
+	  
+  }
+  
 
   /**
    * Get Patients who are on Sarcoma Karposi
