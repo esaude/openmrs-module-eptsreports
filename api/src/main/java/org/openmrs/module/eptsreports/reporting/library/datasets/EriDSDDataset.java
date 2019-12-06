@@ -2,6 +2,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.openmrs.module.eptsreports.reporting.library.cohorts.EriDSDCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
@@ -597,6 +598,32 @@ public class EriDSDDataset extends BaseDataSet {
             mappings),
         getChildrenZeroTo14YearsColumn());
 
+    addRow(
+    	dsd,
+    	"N8E",
+    	"Active patients on ART who participate in at least one measured DSD model - Eligible(Stable)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8E",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndStable(),
+                    mappings)),
+            mappings),
+        getChildrenZeroTo14YearsColumn());    	
+    
+    addRow(
+    	dsd,
+    	"N8NE",
+    	"Active patients on ART who participate in at least one measured DSD model - Not-Eligible(UnStable)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8E",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndUnStable(),
+                    mappings)),
+            mappings),
+        getChildrenZeroTo14YearsColumn());
+    
     return dsd;
   }
 
