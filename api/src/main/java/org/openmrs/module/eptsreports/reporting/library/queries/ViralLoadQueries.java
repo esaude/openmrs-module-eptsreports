@@ -125,6 +125,8 @@ public class ViralLoadQueries {
   public static String getPatientsHavingTargetedViralLoadTests(
       int fsrEncounterType,
       int viralLoadRequestReasonConceptId,
+      int routineViralLoadConceptId,
+      int unknown,
       int regimenFailureConceptId,
       int suspectedImmuneFailureConceptId,
       int repeatAfterBreastfeedingConceptId,
@@ -141,7 +143,9 @@ public class ViralLoadQueries {
             + "	WHERE "
             + "		ee.voided = 0 AND"
             + "		oo.voided = 0 AND"
-            + "		(ee.encounter_type = %d AND oo.concept_id = %d AND (oo.value_coded = %d OR oo.value_coded = %d) OR oo.value_coded = %d OR oo.value_coded = %d)"
+            + "		ee.encounter_type = %d AND"
+            + "      oo.concept_id = %d AND"
+            + "      oo.value_coded IN(%d, %d, %d ,%d, %d, %d)"
             + "		AND ee.location_id = :location"
             + "		AND ee.encounter_datetime <= :endDate "
             + ") e "
@@ -150,6 +154,8 @@ public class ViralLoadQueries {
         query,
         fsrEncounterType,
         viralLoadRequestReasonConceptId,
+        routineViralLoadConceptId,
+        unknown,
         regimenFailureConceptId,
         suspectedImmuneFailureConceptId,
         repeatAfterBreastfeedingConceptId,

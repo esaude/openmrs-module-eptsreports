@@ -244,6 +244,8 @@ public class TxPvlsCohortQueries {
         ViralLoadQueries.getPatientsHavingTargetedViralLoadTests(
             hivMetadata.getFsrEncounterType().getEncounterTypeId(),
             hivMetadata.getReasonForRequestingViralLoadConcept().getConceptId(),
+            hivMetadata.getRoutineForRequestingViralLoadConcept().getConceptId(),
+            hivMetadata.getUnkownConcept().getConceptId(),
             hivMetadata.getRegimenFailureConcept().getConceptId(),
             hivMetadata.getSuspectedImmuneFailureConcept().getConceptId(),
             hivMetadata.getRepeatAfterBreastfeedingConcept().getConceptId(),
