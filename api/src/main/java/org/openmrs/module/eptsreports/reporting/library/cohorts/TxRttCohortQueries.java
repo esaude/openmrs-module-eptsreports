@@ -45,7 +45,7 @@ public class TxRttCohortQueries {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getAllPatientsWhoDelayedMoreThan28Days() {
+  private CohortDefinition getAllPatientsWhoDelayedMoreThan28Days() {
     return genericCohortQueries.generalSql(
         "Having visit 28 days later",
         TxRttQueries.getPatientsHavingConsultationAfter28DaysPriorToPreviousConsultation(
@@ -63,7 +63,7 @@ public class TxRttCohortQueries {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getAllPatientsWhoDelayedMoreThan30Days() {
+  private CohortDefinition getAllPatientsWhoDelayedMoreThan30Days() {
     return genericCohortQueries.generalSql(
         "Having visit 30 days later",
         TxRttQueries
