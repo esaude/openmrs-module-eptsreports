@@ -3,6 +3,7 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
@@ -15,7 +16,10 @@ import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCoh
 import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.DsdQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
-import org.openmrs.module.reporting.cohort.definition.*;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
@@ -29,12 +33,57 @@ public class EriDSDCohortQueries {
   @Autowired private TxNewCohortQueries txNewCohortQueries;
   @Autowired private GenericCohortQueries genericCohortQueries;
   @Autowired private GenderCohortQueries genderCohorts;
+  @Autowired private TbCohortQueries tbCohortQueries;
 
   @Autowired private AgeCohortQueries ageCohortQueries;
   @Autowired private HivCohortQueries hivCohortQueries;
   @Autowired private HivMetadata hivMetadata;
   @Autowired private CommonMetadata commonMetadata;
 
+  /** 
+   * Get Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment)  
+   * @return CohortDefinition
+   * */
+  public CohortDefinition getAllActivePatientsOnArt() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    String cohortName = "Number of active patients on ART";
+
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "1",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
+            "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "2",
+        EptsReportUtils.map(
+            ageCohortQueries.createXtoYAgeCohort("moreThanOrEqual2Years", 2, 200),
+            "effectiveDate=${endDate}"));
+    cd.addSearch(
+        "3",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "4",
+        EptsReportUtils.map(
+            getBreastfeedingComposition(),
+            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "5",
+        EptsReportUtils.map(
+            tbCohortQueries.getPatientsOnTbTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    
+    cd.setCompositionString("(1 AND 2 AND NOT (3 OR 4 OR 5))");
+
+    return cd;
+  }
+  
+  
   /** D1: Number of active, stable, patients on ART. Combinantion of Criteria 1,2,3,4,5 */
   public CohortDefinition getAllPatientsWhoAreActiveAndStable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -1524,6 +1573,61 @@ public class EriDSDCohortQueries {
             commonMetadata.getBreastfeeding().getConceptId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
     return cd;
+  }
+  
+  /*
+   * Get number of patients participating in at least one DSD model
+   * 
+   * @return CohortDefinition
+   * */
+  public CohortDefinition getPatientsParticipatingInAtLeastOneDsdModel() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("participatingInDsdModel");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        DsdQueries.getPatientsParticipatingInDsdModel(
+        	hivMetadata.getPrevencaoPositivaInicialEncounterType().getEncounterTypeId(),
+        	hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId(), 
+        	hivMetadata.getGaac().getConceptId(), 
+        	hivMetadata.getFamilyApproach().getConceptId(), 
+        	hivMetadata.getAccessionClubs().getConceptId(), 
+        	hivMetadata.getSingleStop().getConceptId(), 
+        	hivMetadata.getRapidFlow().getConceptId(), 
+        	hivMetadata.getQuarterlyDispensation().getConceptId(), 
+        	hivMetadata.getCommunityDispensation().getConceptId(), 
+        	hivMetadata.getAnotherModel().getConceptId(), 
+        	hivMetadata.getStartDrugs().getConceptId(), 
+        	hivMetadata.getContinueRegimen().getConceptId()));
+     return cd;
+  }
+  
+  /*
+   * Get number of active patients on ART who participate in at least one DSD model
+   * 
+   * @return CohortDefinition
+   * */
+  public CohortDefinition getActivePatientsOnArtWhoParticipateInAtLeastOneDsdModel() {
+	  CompositionCohortDefinition cd = new CompositionCohortDefinition();
+	    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+	    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+	    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+	    cd.addSearch(
+	        "1",
+	        EptsReportUtils.map(
+	        	getAllActivePatientsOnArt(),
+	            "startDate=${startDate},endDate=${endDate},location=${location}"));
+	    cd.addSearch(
+	        "2",
+	        EptsReportUtils.map(
+	            getPatientsParticipatingInAtLeastOneDsdModel(),
+	            "startDate=${startDate},endDate=${endDate},location=${location}"));
+	    
+	    cd.setCompositionString("(1 AND 2)");
+	  
+	  return cd;
   }
 
   /**
