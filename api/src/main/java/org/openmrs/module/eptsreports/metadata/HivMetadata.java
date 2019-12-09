@@ -14,6 +14,7 @@ package org.openmrs.module.eptsreports.metadata;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
@@ -852,6 +853,19 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id = 23720
+  public Concept getMonthlyConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.monthlyConceptUuid");
+    return getConcept(uuid);
+  }
+
+  public Concept getSemiannualDispensation() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.semiannualConceptUuid");
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
@@ -1241,5 +1255,12 @@ public class HivMetadata extends ProgramsMetadata {
     ProgramWorkflow workflow = getArtWorkflow();
     ProgramWorkflowState state = getAbandonedWorkflowState(artProgram, workflow);
     return state;
+  }
+
+  public PersonAttributeType getIdentificadorDefinidoLocalmente01() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.identificadorDefinidoLocalment01Uuid");
+    return getPersonAttributeType(uuid);
   }
 }
