@@ -48,10 +48,10 @@ public class SetupMERQuartelyML extends EptsDataExportManager {
     reportDefinition.setUuid(getUuid());
     reportDefinition.setName(getName());
     reportDefinition.setDescription(getDescription());
-    reportDefinition.setParameters(txNewDataset.getParameters());
+    reportDefinition.setParameters(txMlDataset.getParameters());
 
     reportDefinition.addDataSetDefinition(
-        "ML", Mapped.mapStraightThrough(txMlDataset.constructtxMlDataset()));
+        "TXML", Mapped.mapStraightThrough(txMlDataset.constructtxMlDataset()));
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
             genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
@@ -71,7 +71,7 @@ public class SetupMERQuartelyML extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "PEPFAR_MER_2.4_QUARTERLY_ML.xls",
+              "PEPFAR_MER_2.4_Quarterly_ML.xls",
               "PEPFAR MER 2.4 Quarterly ML Report",
               getExcelDesignUuid(),
               null);
