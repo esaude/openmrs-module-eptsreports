@@ -741,7 +741,7 @@ public class HivMetadata extends ProgramsMetadata {
   // Concept ID 1067
   public Concept getUnkownConcept() {
     String uuid =
-            Context.getAdministrationService().getGlobalProperty("eptsreports.unknownConceptUuid");
+        Context.getAdministrationService().getGlobalProperty("eptsreports.unknownConceptUuid");
     return getConcept(uuid);
   }
 
