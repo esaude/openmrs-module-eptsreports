@@ -25,7 +25,7 @@ public class TxMlCohortQueries {
     return genericCohortQueries.generalSql(
         "Missed Next appointment",
         TxMlQueries.getPatientsWhoMissedAppointment(
-            30,
+            28,
             183,
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
