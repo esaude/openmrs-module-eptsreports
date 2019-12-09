@@ -85,7 +85,6 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-
   /**
    * Filter patients (from 4) who are considered stable according to criteria 5: a,b,c,d,e,f
    *
@@ -716,7 +715,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "eligiblePatientsD1",
         EptsReportUtils.map(
-                getAllPatientsWhoAreActiveAndStable(),
+            getAllPatientsWhoAreActiveAndStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("activeAndStableN2 AND eligiblePatientsD1");
