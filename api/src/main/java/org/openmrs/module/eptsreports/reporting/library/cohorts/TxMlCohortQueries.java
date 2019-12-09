@@ -20,6 +20,8 @@ public class TxMlCohortQueries {
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
+  @Autowired private TxCurrCohortQueries txCurrCohortQueries;
+
   // a
   public CohortDefinition getAllPatientsWhoMissedNextAppointment() {
     return genericCohortQueries.generalSql(
@@ -44,7 +46,6 @@ public class TxMlCohortQueries {
                 .getProgramWorkflowStateId()));
   }
 
-
   // a and b
   public CohortDefinition getPatientsWhoMissedNextAppointmentAndNotTransferredOut() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -57,9 +58,13 @@ public class TxMlCohortQueries {
         EptsReportUtils.map(
             getAllPatientsWhoMissedNextAppointment(), "endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "transferOut",
-        EptsReportUtils.map(getTransferOutPatients(), "endDate=${endDate},location=${location}"));
-    cd.setCompositionString("missedAppointment AND NOT transferOut");
+        "noScheduledDrugPickupOrNextConsultation",
+        EptsReportUtils.map(
+            txCurrCohortQueries
+                .getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition(),
+            "onOrBefore=${endDate},location=${location}"));
+
+    cd.setCompositionString("missedAppointment AND noScheduledDrugPickupOrNextConsultation");
     return cd;
   }
 

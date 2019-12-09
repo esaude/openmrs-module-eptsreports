@@ -33,7 +33,6 @@ public class TxMlQueries {
         max);
   }
 
-
   public static String getTransferredOutPatients(int program, int state) {
     String query =
         "SELECT pg.patient_id"
@@ -75,5 +74,4 @@ public class TxMlQueries {
         busca,
         dead);
   }
-
 }
