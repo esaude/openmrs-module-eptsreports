@@ -20,10 +20,11 @@ import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
+import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
-import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class SetupTxCurr21 extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "TX_CURR Report 2.1";
+    return "TX_CURR Report 2.4";
   }
 
   @Override
@@ -70,30 +71,33 @@ public class SetupTxCurr21 extends EptsDataExportManager {
     reportDefinition.setParameters(txCurrDataset.getParameters());
 
     reportDefinition.addDataSetDefinition(
-        txCurrDataset.constructTxCurrDataset(false),
-        ParameterizableUtil.createParameterMappings(
-            "endDate=${endDate},startDate=${startDate},location=${location}"));
+        "C", Mapped.mapStraightThrough(this.txCurrDataset.constructTxCurrDataset(true)));
 
     // add a base cohort here to help in calculations running
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
-            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+            this.genericCohortQueries.generalSql(
+                "baseCohortQuery", BaseQueries.getBaseCohortQuery()),
+            "endDate=${endDate},location=${location}"));
 
     return reportDefinition;
   }
 
   @Override
-  public List<ReportDesign> constructReportDesigns(ReportDefinition reportDefinition) {
+  public List<ReportDesign> constructReportDesigns(final ReportDefinition reportDefinition) {
     ReportDesign reportDesign = null;
     try {
       reportDesign =
-          createXlsReportDesign(
-              reportDefinition, "TXCURR_2.1.xls", "TXCURR_2.1.xls_", getExcelDesignUuid(), null);
-      Properties props = new Properties();
-      props.put("repeatingSections", "sheet:1,dataset:TX_CURR Data Set");
+          this.createXlsReportDesign(
+              reportDefinition,
+              "TXCURR_2.1.xls",
+              "TX_CURR Report",
+              this.getExcelDesignUuid(),
+              null);
+      final Properties props = new Properties();
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
-    } catch (IOException e) {
+    } catch (final IOException e) {
       throw new ReportingException(e.toString());
     }
 

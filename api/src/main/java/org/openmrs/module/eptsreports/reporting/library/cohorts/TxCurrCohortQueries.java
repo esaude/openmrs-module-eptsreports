@@ -15,7 +15,11 @@ import java.util.Arrays;
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Location;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.calculation.txcurr.TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.util.DisaggregationInterval;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.BaseFghCalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxCurrQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -387,5 +391,151 @@ public class TxCurrCohortQueries {
     definition.setQuery(TxCurrQueries.QUERY.findPatientsWhoAreCurrentlyEnrolledOnART);
 
     return definition;
+  }
+
+  public CohortDefinition getPatientsOnArtOnArvDispenseForLessThan3Months() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Get patients On Art On ARV Dispensation less than 3 months");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "patientsWhoAreActiveOnART",
+        EptsReportUtils.map(
+            this.findPatientsWhoAreActiveOnART(), "endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "arvDispenseForLessThan3Months",
+        EptsReportUtils.map(
+            this.getPatientsOnArtOnArvDispenseForLessThan3MonthsCalculation(),
+            String.format(
+                "startDate=${startDate},endDate=${endDate},location=${location},disaggregation-interval=%s",
+                DisaggregationInterval.LESS_THAN_3_MONTHS)));
+
+    cd.setCompositionString("patientsWhoAreActiveOnART AND arvDispenseForLessThan3Months");
+    return cd;
+  }
+
+  public CohortDefinition getPatientsOnArtOnArvDispenseBetween3And5Months() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Get patients On Art On ARV Dispensation Between 3 and 5 Months");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "patientsWhoAreActiveOnART",
+        EptsReportUtils.map(
+            this.findPatientsWhoAreActiveOnART(), "endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "arvDispenseBetween3And5Months",
+        EptsReportUtils.map(
+            this.getPatientsOnArtOnArvDispenseBetween3And5MonthsCalculation(),
+            String.format(
+                "startDate=${startDate},endDate=${endDate},location=${location},disaggregation-interval=%s",
+                DisaggregationInterval.BETWEEN_3_AND_5_MONTHS)));
+
+    cd.addSearch(
+        "arvDispenseForLessThan3Months",
+        EptsReportUtils.map(
+            this.getPatientsOnArtOnArvDispenseForLessThan3Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+        "patientsWhoAreActiveOnART AND arvDispenseBetween3And5Months NOT (arvDispenseForLessThan3Months)");
+    return cd;
+  }
+
+  public CohortDefinition getPatientsOnArtOnArvDispenseFor6OrMoreMonths() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Get patients On Art On ARV Dispensation For 6 Or More Months");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "patientsWhoAreActiveOnART",
+        EptsReportUtils.map(
+            this.findPatientsWhoAreActiveOnART(), "endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "arvDispenseFor6OrMoreMonths",
+        EptsReportUtils.map(
+            this.getPatientsOnArtOnArvDispenseFor6OrMoreMonthsCalculation(),
+            String.format(
+                "startDate=${startDate},endDate=${endDate},location=${location},disaggregation-interval=%s",
+                DisaggregationInterval.FOR_6_OR_MORE_MONTHS)));
+
+    cd.addSearch(
+        "arvDispenseBetween3And5Months",
+        EptsReportUtils.map(
+            this.getPatientsOnArtOnArvDispenseBetween3And5Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "arvDispenseForLessThan3Months",
+        EptsReportUtils.map(
+            this.getPatientsOnArtOnArvDispenseForLessThan3Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+        "patientsWhoAreActiveOnART AND arvDispenseFor6OrMoreMonths NOT (arvDispenseBetween3And5Months OR arvDispenseForLessThan3Months)");
+    return cd;
+  }
+
+  @DocumentedDefinition(value = "patientsOnArtOnArvDispenseForLessThan3Months")
+  private CohortDefinition getPatientsOnArtOnArvDispenseForLessThan3MonthsCalculation() {
+    BaseFghCalculationCohortDefinition cd =
+        new BaseFghCalculationCohortDefinition(
+            "patientsOnArtOnArvDispenseForLessThan3Months",
+            Context.getRegisteredComponents(
+                    TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation.class)
+                .get(0));
+
+    cd.addParameter(new Parameter("startDate", "start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "end Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(
+        new Parameter(
+            "disaggregation-interval", "Disaggregation Interval", DisaggregationInterval.class));
+    return cd;
+  }
+
+  @DocumentedDefinition(value = "patientsOnArtOnArvDispenseBetween3And5Months")
+  private CohortDefinition getPatientsOnArtOnArvDispenseBetween3And5MonthsCalculation() {
+    BaseFghCalculationCohortDefinition cd =
+        new BaseFghCalculationCohortDefinition(
+            "patientsOnArtOnArvDispenseBetween3And5Months",
+            Context.getRegisteredComponents(
+                    TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation.class)
+                .get(0));
+
+    cd.addParameter(new Parameter("startDate", "start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "end Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(
+        new Parameter(
+            "disaggregation-interval", "Disaggregation Interval", DisaggregationInterval.class));
+    return cd;
+  }
+
+  @DocumentedDefinition(value = "patientsOnArtOnArvDispenseFor6OrMoreMonths")
+  private CohortDefinition getPatientsOnArtOnArvDispenseFor6OrMoreMonthsCalculation() {
+    BaseFghCalculationCohortDefinition cd =
+        new BaseFghCalculationCohortDefinition(
+            "patientsOnArtOnArvDispenseFor6OrMoreMonths",
+            Context.getRegisteredComponents(
+                    TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation.class)
+                .get(0));
+
+    cd.addParameter(new Parameter("startDate", "start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "end Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(
+        new Parameter(
+            "disaggregation-interval", "Disaggregation Interval", DisaggregationInterval.class));
+    return cd;
   }
 }

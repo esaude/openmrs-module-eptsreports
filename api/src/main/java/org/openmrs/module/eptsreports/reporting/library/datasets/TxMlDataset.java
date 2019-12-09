@@ -5,10 +5,14 @@ import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxMlCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.TxMLDimensions;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -26,103 +30,131 @@ public class TxMlDataset extends BaseDataSet {
 
   @Autowired private TxMlCohortQueries txMlCohortQueries;
 
+  @Autowired private TxMLDimensions txMLDimensions;
+
   public DataSetDefinition constructtxMlDataset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     dsd.setName("Tx_Ml Data Set");
     dsd.addParameters(getParameters());
-    // tie dimensions to this data definition
+    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    CohortDefinition patientsWhoMissedNextApointment =
+        txMlCohortQueries.getPatientsWhoMissedNextApointment();
+    CohortDefinition ltfuLessThan3Months =
+        this.txMlCohortQueries.getPatientsWhoAreLTFULessThan3Months();
+    CohortDefinition ltfuLessGreatherThan3Months =
+        this.txMlCohortQueries.getPatientsWhoAreLTFUGreaterThan3Months();
+
+    final CohortIndicator patientsWhoMissedNextApointmentIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "findPatientsWhoMissedNextApointment",
+            EptsReportUtils.map(patientsWhoMissedNextApointment, mappings));
+    final CohortIndicator ltfuLessThan3MonthsIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "findPatientsWhoAreLTFULessThan3Months",
+            EptsReportUtils.map(ltfuLessThan3Months, mappings));
+    final CohortIndicator ltfuLessGreatherThan3MonthsIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "findPatientsWhoAreLTFUGreaterThan3Months",
+            EptsReportUtils.map(ltfuLessGreatherThan3Months, mappings));
+
     dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dsd.addDimension(
         "age",
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
-    // start building the datasets
-    // get the column for the totals
+    dsd.addDimension(
+        "dead", EptsReportUtils.map(this.txMLDimensions.findPatientsWhoAreAsDead(), mappings));
+    dsd.addDimension(
+        "transferedout",
+        EptsReportUtils.map(this.txMLDimensions.findPatientsWhoAreTransferedOut(), mappings));
+    dsd.addDimension(
+        "refusedorstoppedtreatment",
+        EptsReportUtils.map(
+            this.txMLDimensions.findPatientsWhoRefusedOrStoppedTreatment(), mappings));
+
     dsd.addColumn(
         "M1",
         "Total missed appointments",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "totals missed",
-                EptsReportUtils.map(
-                    txMlCohortQueries.getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
-                    mappings)),
-            mappings),
+        EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings),
         "");
-    // get totals disaggregated by gender and age
-    addRow(
+    super.addRow(
         dsd,
         "M2",
         "Age and Gender",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Age and Gender",
-                EptsReportUtils.map(
-                    txMlCohortQueries.getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
-                    mappings)),
-            mappings),
+        EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings),
         getColumnsForAgeAndGender());
-    // Missed appointment and dead
-    addRow(
-        dsd,
-        "M3",
-        "Dead",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "missed and dead",
-                EptsReportUtils.map(
-                    txMlCohortQueries
-                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutButDiedDuringReportingPeriod(),
-                    mappings)),
-            mappings),
-        getColumnsForAgeAndGender());
-
-    // Not Consented
-    addRow(
+    this.setDeadDimension(
+        dsd, EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings), mappings);
+    super.addRow(
         dsd,
         "M4",
-        "Not Consented",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Not Consented",
-                EptsReportUtils.map(
-                    txMlCohortQueries
-                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndNotConsentedDuringReportingPeriod(),
-                    mappings)),
-            mappings),
+        "LTFU < 90 days",
+        EptsReportUtils.map(ltfuLessThan3MonthsIndicator, mappings),
         getColumnsForAgeAndGender());
-
-    // Traced (Unable to locate)
-    addRow(
+    super.addRow(
         dsd,
         "M5",
-        "Traced (Unable to locate)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Traced (Unable to locate)",
-                EptsReportUtils.map(
-                    txMlCohortQueries
-                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndTraced(),
-                    mappings)),
-            mappings),
+        "LTFU >= 90 days",
+        EptsReportUtils.map(ltfuLessGreatherThan3MonthsIndicator, mappings),
         getColumnsForAgeAndGender());
+    this.setTransferedDimension(
+        dsd, EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings), mappings);
+    this.setRefusedOrStoppedTreatmentDimension(
+        dsd, EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings), mappings);
 
-    // Untraced Patients
-    addRow(
-        dsd,
-        "M6",
-        "Untraced patients",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Untraced Patients",
-                EptsReportUtils.map(
-                    txMlCohortQueries
-                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndUntraced(),
-                    mappings)),
-            mappings),
-        getColumnsForAgeAndGender());
     return dsd;
+  }
+
+  private void setDeadDimension(
+      final CohortIndicatorDataSetDefinition dataSetDefinition,
+      Mapped<? extends CohortIndicator> indicator,
+      final String mappings) {
+    String dimension = "dead=dead";
+    for (ColumnParameters column : getColumnsForAgeAndGender()) {
+      String name = "M3" + "-" + column.getColumn();
+      String label = "Dead" + " (" + column.getLabel() + ")";
+      String dimensionIter =
+          (column.getDimensions().length() > 2)
+              ? column.getDimensions() + "|" + dimension
+              : dimension;
+      dataSetDefinition.addColumn(name, label, indicator, dimensionIter);
+    }
+  }
+
+  private void setTransferedDimension(
+      final CohortIndicatorDataSetDefinition dataSetDefinition,
+      Mapped<? extends CohortIndicator> indicator,
+      final String mappings) {
+    String dimension = "transferedout=transferedout";
+    for (ColumnParameters column : getColumnsForAgeAndGender()) {
+      String name = "M6" + "-" + column.getColumn();
+      String label = "Transfered Out" + " (" + column.getLabel() + ")";
+      String dimensionIter =
+          (column.getDimensions().length() > 2)
+              ? column.getDimensions() + "|" + dimension
+              : dimension;
+      dataSetDefinition.addColumn(name, label, indicator, dimensionIter);
+    }
+    dataSetDefinition.addColumn(
+        "M10", "total transfered out", indicator, "transferedout=transferedout");
+  }
+
+  private void setRefusedOrStoppedTreatmentDimension(
+      final CohortIndicatorDataSetDefinition dataSetDefinition,
+      Mapped<? extends CohortIndicator> indicator,
+      final String mappings) {
+
+    String dimension = "refusedorstoppedtreatment=refusedorstoppedtreatment";
+    for (ColumnParameters column : getColumnsForAgeAndGender()) {
+      String name = "M7" + "-" + column.getColumn();
+      String label = "Transfered Out" + " (" + column.getLabel() + ")";
+      String dimensionIter =
+          (column.getDimensions().length() > 2)
+              ? column.getDimensions() + "|" + dimension
+              : dimension;
+      dataSetDefinition.addColumn(name, label, indicator, dimensionIter);
+    }
   }
 
   private List<ColumnParameters> getColumnsForAgeAndGender() {

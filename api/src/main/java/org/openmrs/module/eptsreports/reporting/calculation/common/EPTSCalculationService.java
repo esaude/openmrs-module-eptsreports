@@ -205,6 +205,7 @@ public class EPTSCalculationService {
     }
     return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
   }
+
   /**
    * Evaluates all encounters of a given type of each patient
    *
@@ -365,7 +366,9 @@ public class EPTSCalculationService {
     definition.setName("all obs");
     definition.setEncounterTypeList(encounterTypes);
     definition.setQuestion(question);
-    definition.setValueCodedList(Arrays.asList(answer));
+    if (answer != null) {
+      definition.setValueCodedList(Arrays.asList(answer));
+    }
     definition.setLocationList(Arrays.asList(location));
     definition.setWhich(TimeQualifier.ANY);
     return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);

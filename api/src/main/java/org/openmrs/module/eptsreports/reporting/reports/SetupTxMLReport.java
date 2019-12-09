@@ -5,9 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TbPrevDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxTBDataset;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -19,24 +17,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupMERSemiAnnualReport extends EptsDataExportManager {
+public class SetupTxMLReport extends EptsDataExportManager {
 
   @Autowired private TxMlDataset txMlDataset;
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private TxTBDataset txTBDataset;
-
-  @Autowired private TbPrevDataset tbPrevDataset;
-
   @Override
   public String getExcelDesignUuid() {
-    return "61fea06a-472b-11e9-8b42-876961a472ef";
+    return "bef95984-0b05-4992-8e98-21923084ed91";
   }
 
   @Override
   public String getUuid() {
-    return "6febad76-472b-11e9-a41e-db8c77c788cd";
+    return "9cb1a1f4-c567-4ddc-92d5-d97fda0ebe69";
   }
 
   @Override
@@ -46,30 +40,23 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "PEPFAR MER 2.3 Semi-Annual";
+    return "Tx_ML Report 2.4";
   }
 
   @Override
   public String getDescription() {
-    return "PEPFAR MER 2.3 Semi-Annual Report";
+    return "patients with no clinical contact or ARV pick-up for greater than 28 days since their last expected contact or ARV pick-up";
   }
 
   @Override
   public ReportDefinition constructReportDefinition() {
+
     ReportDefinition rd = new ReportDefinition();
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
     rd.setParameters(txMlDataset.getParameters());
     rd.addDataSetDefinition("TXML", Mapped.mapStraightThrough(txMlDataset.constructtxMlDataset()));
-    rd.addDataSetDefinition("T", Mapped.mapStraightThrough(txTBDataset.constructTxTBDataset()));
-    rd.addDataSetDefinition("TBPREV", Mapped.mapStraightThrough(tbPrevDataset.constructDatset()));
-    // add a base cohort to the report
-
-    //    rd.setBaseCohortDefinition(
-    //        genericCohortQueries.getBaseCohort(),
-    //
-    // ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
@@ -86,8 +73,8 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "PEPFAR_MER_2.3_SEMIANNUAL.xls",
-              "PEPFAR MER 2.3 Semi-Annual Report",
+              "PEPFAR_TX_ML_2.4.xls",
+              "PEPFAR TX_ML 2.4 Report",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();

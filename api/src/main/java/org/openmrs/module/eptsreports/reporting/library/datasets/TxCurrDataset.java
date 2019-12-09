@@ -26,15 +26,19 @@ import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.TWENTY_TO_
 import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.UNDER_ONE;
 import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.UNKNOWN;
 
+import java.util.Arrays;
+import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.TxCurrDimensions;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.AgeRange;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.eptsreports.reporting.utils.Gender;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -48,6 +52,8 @@ public class TxCurrDataset extends BaseDataSet {
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
 
   @Autowired private EptsCommonDimension eptsCommonDimension;
+
+  @Autowired private TxCurrDimensions txCurrDimensions;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
@@ -68,8 +74,30 @@ public class TxCurrDataset extends BaseDataSet {
     final CohortIndicator txCurrIndicator =
         this.eptsGeneralIndicator.getIndicator(
             "findPatientsWhoAreActiveOnART",
-            EptsReportUtils.map(
-                txCurrCompositionCohort, "endDate=${endDate},location=${location}"));
+            EptsReportUtils.map(txCurrCompositionCohort, mappings));
+
+    dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
+    dataSetDefinition.addDimension(
+        "age",
+        EptsReportUtils.map(
+            eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
+    dataSetDefinition.addDimension(
+        "arvdispenseless3months",
+        EptsReportUtils.map(
+            this.txCurrDimensions.findPatientsOnArtOnArvDispenseForLessThan3Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    dataSetDefinition.addDimension(
+        "arvdispensefor3and5months",
+        EptsReportUtils.map(
+            this.txCurrDimensions.findPatientsOnArtOnArvDispenseBetween3And5Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    dataSetDefinition.addDimension(
+        "arvdispensefor6andmoremonths",
+        EptsReportUtils.map(
+            this.txCurrDimensions.findPatientsOnArtOnArvDispenseFor6OrMoreMonths(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     this.addDimensions(
         dataSetDefinition,
@@ -88,21 +116,30 @@ public class TxCurrDataset extends BaseDataSet {
         ABOVE_FIFTY);
 
     dataSetDefinition.addDimension(
-        this.getColumnName(AgeRange.UNKNOWN, Gender.MALE),
+        this.getName(Gender.MALE, AgeRange.UNKNOWN),
         EptsReportUtils.map(
             this.eptsCommonDimension.findPatientsWithUnknownAgeByGender(
-                this.getColumnName(AgeRange.UNKNOWN, Gender.MALE), Gender.MALE),
+                this.getName(Gender.MALE, AgeRange.UNKNOWN), Gender.MALE),
             ""));
 
     dataSetDefinition.addDimension(
-        this.getColumnName(AgeRange.UNKNOWN, Gender.FEMALE),
+        this.getName(Gender.FEMALE, AgeRange.UNKNOWN),
         EptsReportUtils.map(
             this.eptsCommonDimension.findPatientsWithUnknownAgeByGender(
-                this.getColumnName(AgeRange.UNKNOWN, Gender.FEMALE), Gender.FEMALE),
+                this.getName(Gender.FEMALE, AgeRange.UNKNOWN), Gender.FEMALE),
             ""));
 
     dataSetDefinition.addColumn(
         "C1All", "TX_CURR: Currently on ART", EptsReportUtils.map(txCurrIndicator, mappings), "");
+
+    this.setPatientsOnrArvLess3MonthsColumnsDisagregations(
+        dataSetDefinition, EptsReportUtils.map(txCurrIndicator, mappings));
+
+    this.setPatientsOnrArvFor3and5MonthsColumnsDisagregations(
+        dataSetDefinition, EptsReportUtils.map(txCurrIndicator, mappings));
+
+    this.setPatientsOnrArvFor6OrMoreMonthsColumnsDisagregations(
+        dataSetDefinition, EptsReportUtils.map(txCurrIndicator, mappings));
 
     this.addColums(
         dataSetDefinition,
@@ -134,17 +171,17 @@ public class TxCurrDataset extends BaseDataSet {
     for (final AgeRange range : ranges) {
 
       cohortIndicatorDataSetDefinition.addDimension(
-          this.getColumnName(range, Gender.MALE),
+          this.getName(Gender.MALE, range),
           EptsReportUtils.map(
               this.eptsCommonDimension.findPatientsByGenderAndRange(
-                  this.getColumnName(range, Gender.MALE), range, Gender.MALE),
+                  this.getName(Gender.MALE, range), range, Gender.MALE),
               mappings));
 
       cohortIndicatorDataSetDefinition.addDimension(
-          this.getColumnName(range, Gender.FEMALE),
+          this.getName(Gender.FEMALE, range),
           EptsReportUtils.map(
               this.eptsCommonDimension.findPatientsByGenderAndRange(
-                  this.getColumnName(range, Gender.FEMALE), range, Gender.FEMALE),
+                  this.getName(Gender.FEMALE, range), range, Gender.FEMALE),
               mappings));
     }
   }
@@ -157,8 +194,8 @@ public class TxCurrDataset extends BaseDataSet {
 
     for (final AgeRange range : rannges) {
 
-      final String maleName = this.getColumnName(range, Gender.MALE);
-      final String femaleName = this.getColumnName(range, Gender.FEMALE);
+      final String maleName = this.getName(Gender.MALE, range);
+      final String femaleName = this.getName(Gender.FEMALE, range);
 
       dataSetDefinition.addColumn(
           maleName,
@@ -174,7 +211,82 @@ public class TxCurrDataset extends BaseDataSet {
     }
   }
 
-  private String getColumnName(AgeRange range, Gender gender) {
-    return range.getDesagregationColumnName("C", gender);
+  private String getName(final Gender gender, final AgeRange ageRange) {
+    String name = "C-males-" + ageRange.getName() + "" + gender.getName();
+
+    if (gender.equals(Gender.FEMALE)) {
+      name = "C-females-" + ageRange.getName() + "" + gender.getName();
+    }
+
+    return name;
+  }
+
+  private void setPatientsOnrArvLess3MonthsColumnsDisagregations(
+      final CohortIndicatorDataSetDefinition dataSetDefinition,
+      Mapped<? extends CohortIndicator> indicator) {
+
+    for (ColumnParameters column : getColumnsForArvDispenseDisagregatioins()) {
+      String name = "C1" + "-" + column.getColumn();
+      String label = "Patients On Arv Dispensation < 3 Months" + " (" + column.getLabel() + ")";
+      String newDimension =
+          (column.getDimensions().length() > 2)
+              ? column.getDimensions() + "|arvdispenseless3months=arvdispenseless3months"
+              : "arvdispenseless3months=arvdispenseless3months";
+      dataSetDefinition.addColumn(name, label, indicator, newDimension);
+    }
+  }
+
+  private void setPatientsOnrArvFor3and5MonthsColumnsDisagregations(
+      final CohortIndicatorDataSetDefinition dataSetDefinition,
+      Mapped<? extends CohortIndicator> indicator) {
+
+    for (ColumnParameters column : getColumnsForArvDispenseDisagregatioins()) {
+      String name = "C2" + "-" + column.getColumn();
+      String label =
+          "Patients On Arv Dispensation for 3 and 5 Months" + " (" + column.getLabel() + ")";
+      String newDimension =
+          (column.getDimensions().length() > 2)
+              ? column.getDimensions() + "|arvdispensefor3and5months=arvdispensefor3and5months"
+              : "arvdispensefor3and5months=arvdispensefor3and5months";
+      dataSetDefinition.addColumn(name, label, indicator, newDimension);
+    }
+  }
+
+  private void setPatientsOnrArvFor6OrMoreMonthsColumnsDisagregations(
+      final CohortIndicatorDataSetDefinition dataSetDefinition,
+      Mapped<? extends CohortIndicator> indicator) {
+
+    for (ColumnParameters column : getColumnsForArvDispenseDisagregatioins()) {
+      String name = "C3" + "-" + column.getColumn();
+      String label =
+          "Patients On Arv Dispensation for 6 or More Months" + " (" + column.getLabel() + ")";
+      String newDimension =
+          (column.getDimensions().length() > 2)
+              ? column.getDimensions()
+                  + "|arvdispensefor6andmoremonths=arvdispensefor6andmoremonths"
+              : "arvdispensefor6andmoremonths=arvdispensefor6andmoremonths";
+      dataSetDefinition.addColumn(name, label, indicator, newDimension);
+    }
+  }
+
+  private List<ColumnParameters> getColumnsForArvDispenseDisagregatioins() {
+
+    ColumnParameters under15M =
+        new ColumnParameters("under15M", "under 15 year male", "gender=M|age=<15", "01");
+    ColumnParameters above15M =
+        new ColumnParameters("above15M", "above 15 year male", "gender=M|age=15+", "02");
+    ColumnParameters unknownM =
+        new ColumnParameters("unknownM", "Unknown age male", "gender=M|age=UK", "03");
+
+    ColumnParameters under15F =
+        new ColumnParameters("under15F", "under 15 year female", "gender=F|age=<15", "04");
+    ColumnParameters above15F =
+        new ColumnParameters("above15F", "above 15 year female", "gender=F|age=15+", "05");
+    ColumnParameters unknownF =
+        new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=UK", "06");
+
+    ColumnParameters total = new ColumnParameters("totals", "Totals", "", "07");
+
+    return Arrays.asList(under15M, above15M, unknownM, under15F, above15F, unknownF, total);
   }
 }
