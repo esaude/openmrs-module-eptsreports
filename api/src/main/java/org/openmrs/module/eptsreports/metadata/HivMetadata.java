@@ -737,6 +737,41 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id = 23739
+  public Concept getTypeOfDispensationConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.typeOfDispensationConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 23720
+  public Concept getMonthlyConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.monthlyConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 23720
+  public Concept getQuarterlyConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.quarterlyConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 1267
+  public Concept getCompletedConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.completedConceptUuid");
+    return getConcept(uuid);
+  }
+
+  public Concept getSemiannualDispensation() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.semiannualConceptUuid");
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
