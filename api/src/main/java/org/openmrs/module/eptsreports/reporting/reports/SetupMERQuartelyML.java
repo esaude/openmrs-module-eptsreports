@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SetupMERQuartelyML extends EptsDataExportManager {
-  @Autowired private TxNewDataset txNewDataset;
   @Autowired private TxMlDataset txMlDataset;
   @Autowired private GenericCohortQueries genericCohortQueries;
 
