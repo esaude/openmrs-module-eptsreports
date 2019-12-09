@@ -148,6 +148,7 @@ public class ViralLoadQueries {
             + "      oo.value_coded IN(%d, %d, %d ,%d, %d, %d)"
             + "		AND ee.location_id = :location"
             + "		AND ee.encounter_datetime <= :endDate "
+            + " GROUP BY ee.patient_id "
             + ") e "
             + " WHERE e.viral_load_date BETWEEN :startDate AND :endDate";
     return String.format(
