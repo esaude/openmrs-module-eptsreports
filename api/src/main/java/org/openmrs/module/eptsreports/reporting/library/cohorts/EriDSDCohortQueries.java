@@ -3,7 +3,6 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
@@ -40,10 +39,11 @@ public class EriDSDCohortQueries {
   @Autowired private HivMetadata hivMetadata;
   @Autowired private CommonMetadata commonMetadata;
 
-  /** 
-   * Get Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment)  
+  /**
+   * Get Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment)
+   *
    * @return CohortDefinition
-   * */
+   */
   public CohortDefinition getAllActivePatientsOnArt() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     String cohortName = "Number of active patients on ART";
@@ -77,13 +77,12 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             tbCohortQueries.getPatientsOnTbTreatment(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    
+
     cd.setCompositionString("(1 AND 2 AND NOT (3 OR 4 OR 5))");
 
     return cd;
   }
-  
-  
+
   /** D1: Number of active, stable, patients on ART. Combinantion of Criteria 1,2,3,4,5 */
   public CohortDefinition getAllPatientsWhoAreActiveAndStable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -1574,10 +1573,10 @@ public class EriDSDCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
     return cd;
   }
-  
+
   /*
    * Get number of patients participating in at least one DSD model
-   * 
+   *
    * @return CohortDefinition
    * */
   public CohortDefinition getPatientsParticipatingInAtLeastOneDsdModel() {
@@ -1588,103 +1587,101 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setQuery(
         DsdQueries.getPatientsParticipatingInDsdModel(
-        	hivMetadata.getPrevencaoPositivaInicialEncounterType().getEncounterTypeId(),
-        	hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId(), 
-        	hivMetadata.getGaac().getConceptId(), 
-        	hivMetadata.getFamilyApproach().getConceptId(), 
-        	hivMetadata.getAccessionClubs().getConceptId(), 
-        	hivMetadata.getSingleStop().getConceptId(), 
-        	hivMetadata.getRapidFlow().getConceptId(), 
-        	hivMetadata.getQuarterlyDispensation().getConceptId(), 
-        	hivMetadata.getCommunityDispensation().getConceptId(), 
-        	hivMetadata.getAnotherModel().getConceptId(), 
-        	hivMetadata.getStartDrugs().getConceptId(), 
-        	hivMetadata.getContinueRegimen().getConceptId()));
-     return cd;
+            hivMetadata.getPrevencaoPositivaInicialEncounterType().getEncounterTypeId(),
+            hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getGaac().getConceptId(),
+            hivMetadata.getFamilyApproach().getConceptId(),
+            hivMetadata.getAccessionClubs().getConceptId(),
+            hivMetadata.getSingleStop().getConceptId(),
+            hivMetadata.getRapidFlow().getConceptId(),
+            hivMetadata.getQuarterlyDispensation().getConceptId(),
+            hivMetadata.getCommunityDispensation().getConceptId(),
+            hivMetadata.getAnotherModel().getConceptId(),
+            hivMetadata.getStartDrugs().getConceptId(),
+            hivMetadata.getContinueRegimen().getConceptId()));
+    return cd;
   }
-  
+
   /*
    * Get number of active patients on ART who participate in at least one DSD model
-   * 
+   *
    * @return CohortDefinition
    * */
   public CohortDefinition getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModel() {
-	  CompositionCohortDefinition cd = new CompositionCohortDefinition();
-	    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-	    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-	    cd.addParameter(new Parameter("location", "Location", Location.class));
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
 
-	    cd.addSearch(
-	        "1",
-	        EptsReportUtils.map(
-	        	getAllActivePatientsOnArt(),
-	            "startDate=${startDate},endDate=${endDate},location=${location}"));
-	    cd.addSearch(
-	        "2",
-	        EptsReportUtils.map(
-	            getPatientsParticipatingInAtLeastOneDsdModel(),
-	            "startDate=${startDate},endDate=${endDate},location=${location}"));
-	    
-	    cd.setCompositionString("(1 AND 2)");
-	  
-	  return cd;
+    cd.addSearch(
+        "1",
+        EptsReportUtils.map(
+            getAllActivePatientsOnArt(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "2",
+        EptsReportUtils.map(
+            getPatientsParticipatingInAtLeastOneDsdModel(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("(1 AND 2)");
+
+    return cd;
   }
-  
+
   /*
    * Get all patients who participated in at least 2 DSD model and are stable
-   * 
+   *
    * @return CohortDefifnition
    * */
   public CohortDefinition getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndStable() {
-	  CompositionCohortDefinition cd = new CompositionCohortDefinition();
-	    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-	    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-	    cd.addParameter(new Parameter("location", "Location", Location.class));
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
 
-	    cd.addSearch(
-	        "1",
-	        EptsReportUtils.map(
-	        	getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModel(),
-	            "startDate=${startDate},endDate=${endDate},location=${location}"));
-	    cd.addSearch(
-	        "2",
-	        EptsReportUtils.map(
-	        	getPatientsWhoAreStable(),
-	            "startDate=${startDate},endDate=${endDate},location=${location}"));
-	    
-	    cd.setCompositionString("(1 AND 2)");
-	  
-	  return cd;	  
+    cd.addSearch(
+        "1",
+        EptsReportUtils.map(
+            getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModel(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "2",
+        EptsReportUtils.map(
+            getPatientsWhoAreStable(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("(1 AND 2)");
+
+    return cd;
   }
 
   /*
    * Get number of patients who participated in at least 1 DSD model and are unstable
-   * 
+   *
    * @return CohortDefinition
    * */
   public CohortDefinition getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndUnStable() {
-	  CompositionCohortDefinition cd = new CompositionCohortDefinition();
-	    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-	    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-	    cd.addParameter(new Parameter("location", "Location", Location.class));
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
 
-	    cd.addSearch(
-	        "1",
-	        EptsReportUtils.map(
-	        	getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModel(),
-	            "startDate=${startDate},endDate=${endDate},location=${location}"));
-	    cd.addSearch(
-	        "2",
-	        EptsReportUtils.map(
-	        	getPatientsWhoAreStable(),
-	            "startDate=${startDate},endDate=${endDate},location=${location}"));
-	    
-	    cd.setCompositionString("(1 AND NOT 2)");
-	  
-	  return cd;	  
-	  
+    cd.addSearch(
+        "1",
+        EptsReportUtils.map(
+            getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModel(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "2",
+        EptsReportUtils.map(
+            getPatientsWhoAreStable(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("(1 AND NOT 2)");
+
+    return cd;
   }
-  
 
   /**
    * Get Patients who are on Sarcoma Karposi

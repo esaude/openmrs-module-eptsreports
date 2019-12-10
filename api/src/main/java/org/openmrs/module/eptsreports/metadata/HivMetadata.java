@@ -185,6 +185,7 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   // concept id 1066
+  @Override
   public Concept getNoConcept() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.noConceptUuid");
     return getConcept(uuid);
@@ -829,8 +830,9 @@ public class HivMetadata extends ProgramsMetadata {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.lessThan400CopiesConceptUuid");
+    return getConcept(uuid);
   }
-  
+
   // concept_id = 23739
   public Concept getTypeOfDispensationConcept() {
     String uuid =
