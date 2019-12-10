@@ -1458,7 +1458,6 @@
 	</globalProperty>
 
 	<globalProperty>
-<<<<<<< HEAD
 		<property>eptsreports.typeOfDispensationConceptUuid</property>
 		<defaultValue>cadc1c2a-cd22-43dc-8404-4ce4c8a7242d</defaultValue>
 		<description>
@@ -1582,8 +1581,7 @@
 			UUID for the LESS THAN 400 COPIES/ML concept
 		</description>
 	</globalProperty>
-
-=======
+	<globalProperty>
 		<property>eptsreports.identificadorDefinidoLocalment01Uuid</property>
 		<defaultValue>c89c90eb-5b03-4899-ab9f-06fecd123511</defaultValue>
 		<description>
