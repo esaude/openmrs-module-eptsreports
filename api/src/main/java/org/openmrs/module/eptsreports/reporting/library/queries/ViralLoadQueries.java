@@ -118,7 +118,7 @@ public class ViralLoadQueries {
             + " INNER JOIN obs oo ON ee.encounter_id = oo.encounter_id "
             + " WHERE "
             + " ee.voided = 0 AND "
-            + " ee.encounter_type = %d "
+            + " ee.encounter_type = %d AND "
             + " oo.voided = 0 AND "
             + " oo.concept_id = %d AND oo.value_coded IN(%d, %d) AND "
             + " AND ee.location_id = :location "
