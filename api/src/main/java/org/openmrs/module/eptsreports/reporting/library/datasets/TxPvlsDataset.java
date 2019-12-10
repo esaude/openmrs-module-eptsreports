@@ -75,7 +75,8 @@ public class TxPvlsDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "patients with viral load",
-                EptsReportUtils.map(txPvls.getPatientsWithViralLoadResults(), mappings)),
+                EptsReportUtils.map(
+                    txPvls.getPatientsWithViralLoadResultsAndOnArtForMoreThan3Months(), mappings)),
             mappings),
         "");
 
@@ -125,8 +126,7 @@ public class TxPvlsDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Pregnant, have vl results and on ART more than 3 months Denominator",
-                EptsReportUtils.map(
-                    txPvls.getPregnantWomenWithViralLoadResultsDenominator(), mappings)),
+                EptsReportUtils.map(txPvls.getPregnantWomenWithViralLoadResults(), mappings)),
             mappings),
         getRoutineTargetedColumns());
 
@@ -138,7 +138,8 @@ public class TxPvlsDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Key population patients and are on routine and target",
-                EptsReportUtils.map(txPvls.getPatientsWithViralLoadResults(), mappings)),
+                EptsReportUtils.map(
+                    txPvls.getPatientsWithViralLoadResultsAndOnArtForMoreThan3Months(), mappings)),
             mappings),
         getKpRoutineTargetedColumns());
   }
@@ -152,7 +153,9 @@ public class TxPvlsDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "suppressed viral load",
-                EptsReportUtils.map(txPvls.getPatientsWithViralLoadSuppression(), mappings)),
+                EptsReportUtils.map(
+                    txPvls.getPatientsWithViralLoadSuppressionWhoAreOnArtMoreThan3Months(),
+                    mappings)),
             mappings),
         "");
 
@@ -177,8 +180,7 @@ public class TxPvlsDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Pregnant patients, have vl suppression and on ART more than 3 months numerator",
-                EptsReportUtils.map(
-                    txPvls.getPregnantWomenWithViralLoadSuppressionNumerator(), mappings)),
+                EptsReportUtils.map(txPvls.getPregnantWomenWithViralLoadSuppression(), mappings)),
             mappings),
         getRoutineTargetedColumns());
 
@@ -190,9 +192,7 @@ public class TxPvlsDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Adult and children with viral load suppression, have more than 3 months on ART and on routine",
-                EptsReportUtils.map(
-                    txPvls.getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren(),
-                    mappings)),
+                EptsReportUtils.map(txPvls.getPatientWithViralSuppressionAndOnRoutine(), mappings)),
             mappings),
         getAdultChildrenColumns());
     // Adults and children on Target
@@ -203,8 +203,7 @@ public class TxPvlsDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Adult and children with viral load suppression, have more than 3 months on ART and on target",
-                EptsReportUtils.map(
-                    txPvls.getPatientWithViralSuppressionAndOnTargetAdultsAndChildren(), mappings)),
+                EptsReportUtils.map(txPvls.getPatientWithViralSuppressionAndOnTarget(), mappings)),
             mappings),
         getAdultChildrenColumns());
 
@@ -216,7 +215,9 @@ public class TxPvlsDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Key population patients and are on routine and target Numerator",
-                EptsReportUtils.map(txPvls.getPatientsWithViralLoadSuppression(), mappings)),
+                EptsReportUtils.map(
+                    txPvls.getPatientsWithViralLoadSuppressionWhoAreOnArtMoreThan3Months(),
+                    mappings)),
             mappings),
         getKpRoutineTargetedColumns());
   }
