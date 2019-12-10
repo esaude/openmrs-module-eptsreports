@@ -46,6 +46,43 @@ public class TxMlCohortQueries {
                 .getProgramWorkflowStateId()));
   }
 
+  /**
+   * Dead Patients based on State, Home visit card, Ficha, dempographic except drug pickup
+   * @return
+   */
+  public CohortDefinition getDeadPatientsComposition(){
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Get patients who missed appointment and are NOT transferred out");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+            "deadByPatientProgramState",
+            EptsReportUtils.map(
+                    txCurrCohortQueries.getPatientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate(), "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+            "deadByPatientDemographics",
+            EptsReportUtils.map(
+                    txCurrCohortQueries.getDeadPatientsInDemographiscByReportingEndDate(), "onOrBefore=${endDate}"));
+    cd.addSearch(
+            "deadRegisteredInLastHomeVisitCard",
+            EptsReportUtils.map(
+                    txCurrCohortQueries.getPatientDeathRegisteredInLastHomeVisitCardByReportingEndDate(), "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+            "deadRegisteredInFichaResumoAndFichaClinicaMasterCard ",
+            EptsReportUtils.map(
+                    txCurrCohortQueries.getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(), "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+            "patientsWithDrugsPickupOrConsultation",
+            EptsReportUtils.map(
+                    txCurrCohortQueries.getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition(), "onOrBefore=${endDate},location=${location}"));
+
+    cd.setCompositionString("(deadByPatientProgramState OR deadByPatientDemographics OR deadRegisteredInLastHomeVisitCard OR deadRegisteredInFichaResumoAndFichaClinicaMasterCard) AND NOT patientsWithDrugsPickupOrConsultation");
+
+    return  cd;
+  }
+
   // a and b
   public CohortDefinition getPatientsWhoMissedNextAppointmentAndNotTransferredOut() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
