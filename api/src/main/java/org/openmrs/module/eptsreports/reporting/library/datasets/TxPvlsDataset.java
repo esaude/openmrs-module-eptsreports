@@ -310,29 +310,26 @@ public class TxPvlsDataset extends BaseDataSet {
   private List<ColumnParameters> getRoutineTargetedColumns() {
     ColumnParameters routine = new ColumnParameters("routine", "R", "rt=VLR", "01");
     ColumnParameters target = new ColumnParameters("target", "T", "rt=VLT", "02");
-    ColumnParameters rtTotal = new ColumnParameters("rtTotal", "Tt", "", "03");
-    return Arrays.asList(routine, target, rtTotal);
+    return Arrays.asList(routine, target);
   }
 
   private List<ColumnParameters> getKpRoutineTargetedColumns() {
     // PID
     ColumnParameters piwdR = new ColumnParameters("piwdR", "PIWD-R", "KP=PID|rt=VLR", "01");
     ColumnParameters piwdT = new ColumnParameters("piwdT", "PIWD-T", "KP=PID|rt=VLT", "02");
-    ColumnParameters piwdTt = new ColumnParameters("piwdTt", "PIWD-TT", "", "03");
+
     // MSM
     ColumnParameters msnR = new ColumnParameters("msnR", "MSN-R", "KP=MSM|rt=VLR", "04");
     ColumnParameters msnT = new ColumnParameters("msnT", "MSN-T", "KP=MSM|rt=VLT", "05");
-    ColumnParameters msnTt = new ColumnParameters("msnTt", "MSN-TT", "", "06");
+
     // CSW
     ColumnParameters cswR = new ColumnParameters("cswR", "CSW-R", "KP=CSW|rt=VLR", "07");
     ColumnParameters cswT = new ColumnParameters("cswT", "CSW-T", "KP=CSW|rt=VLT", "08");
-    ColumnParameters cswTt = new ColumnParameters("cswTt", "CSW-TT", "", "09");
+
     // PRI
     ColumnParameters priR = new ColumnParameters("priR", "PRI-R", "KP=PRI|rt=VLR", "10");
     ColumnParameters priT = new ColumnParameters("priT", "PRI-T", "KP=PRI|rt=VLT", "11");
-    ColumnParameters priTt = new ColumnParameters("priTt", "PRI-TT", "", "12");
 
-    return Arrays.asList(
-        piwdR, piwdT, piwdTt, msnR, msnT, msnTt, cswR, cswT, cswTt, priR, priT, priTt);
+    return Arrays.asList(piwdR, piwdT, msnR, msnT, cswR, cswT, priR, priT);
   }
 }
