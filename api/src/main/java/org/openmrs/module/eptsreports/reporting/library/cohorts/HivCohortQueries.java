@@ -13,19 +13,26 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import static org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulationCalculation.KeyPop.DRUG_USER;
+import static org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulationCalculation.KeyPop.HOMOSEXUAL;
+import static org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulationCalculation.KeyPop.PRISONER;
+import static org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulationCalculation.KeyPop.SEX_WORKER;
+import static org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulationCalculation.TYPE;
+
 import java.util.Collections;
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulationCalculation;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.HivQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
-import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
-import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -197,30 +204,46 @@ public class HivCohortQueries {
   }
 
   public CohortDefinition getHomosexualKeyPopCohort() {
-    CodedObsCohortDefinition cd = (CodedObsCohortDefinition) getKeyPopulationCohort();
+    CalculationCohortDefinition cd = new CalculationCohortDefinition();
+    cd.setCalculation(Context.getRegisteredComponents(KeyPopulationCalculation.class).get(0));
     cd.setName("Men who have sex with men");
-    cd.setValueList(Collections.singletonList(hivMetadata.getHomosexualConcept()));
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.addCalculationParameter(TYPE, HOMOSEXUAL);
     return cd;
   }
 
   public CohortDefinition getDrugUserKeyPopCohort() {
-    CodedObsCohortDefinition cd = (CodedObsCohortDefinition) getKeyPopulationCohort();
+    CalculationCohortDefinition cd = new CalculationCohortDefinition();
+    cd.setCalculation(Context.getRegisteredComponents(KeyPopulationCalculation.class).get(0));
     cd.setName("People who inject drugs");
-    cd.setValueList(Collections.singletonList(hivMetadata.getDrugUseConcept()));
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.addCalculationParameter(TYPE, DRUG_USER);
     return cd;
   }
 
   public CohortDefinition getImprisonmentKeyPopCohort() {
-    CodedObsCohortDefinition cd = (CodedObsCohortDefinition) getKeyPopulationCohort();
+    CalculationCohortDefinition cd = new CalculationCohortDefinition();
+    cd.setCalculation(Context.getRegisteredComponents(KeyPopulationCalculation.class).get(0));
     cd.setName("People in prison and other closed settings");
-    cd.setValueList(Collections.singletonList(hivMetadata.getImprisonmentConcept()));
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.addCalculationParameter(TYPE, PRISONER);
     return cd;
   }
 
   public CohortDefinition getSexWorkerKeyPopCohort() {
-    CodedObsCohortDefinition cd = (CodedObsCohortDefinition) getKeyPopulationCohort();
+    CalculationCohortDefinition cd = new CalculationCohortDefinition();
+    cd.setCalculation(Context.getRegisteredComponents(KeyPopulationCalculation.class).get(0));
     cd.setName("Female sex workers");
-    cd.setValueList(Collections.singletonList(hivMetadata.getSexWorkerConcept()));
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.addCalculationParameter(TYPE, SEX_WORKER);
     return cd;
   }
 
@@ -238,22 +261,6 @@ public class HivCohortQueries {
     Integer suspendedState =
         hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId();
     return getPatientsTransferredOutOrSuspended(suspended, suspendedState);
-  }
-
-  private CohortDefinition getKeyPopulationCohort() {
-    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-    cd.setName("Key population");
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("locationList", "location", Location.class));
-    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.setQuestion(hivMetadata.getKeyPopulationConcept());
-    cd.setOperator(SetComparator.IN);
-    cd.addValue(hivMetadata.getHomosexualConcept());
-    cd.addValue(hivMetadata.getDrugUseConcept());
-    cd.addValue(hivMetadata.getImprisonmentConcept());
-    cd.addValue(hivMetadata.getSexWorkerConcept());
-    return cd;
   }
 
   private CohortDefinition getPatientsTransferredOutOrSuspended(
