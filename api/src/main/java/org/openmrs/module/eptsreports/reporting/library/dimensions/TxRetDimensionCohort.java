@@ -2,8 +2,8 @@ package org.openmrs.module.eptsreports.reporting.library.dimensions;
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TXRetCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class TxRetDimensionCohort {
   @Autowired private TXRetCohortQueries txRetCohortQueries;
 
-  @Autowired private HivCohortQueries hivCohortQueries;
+  @Autowired private TxNewCohortQueries txNewCohortQueries;
 
   public CohortDefinitionDimension startedTargetAtARTInitiation() {
     CohortDefinitionDimension dim = new CohortDefinitionDimension();
@@ -48,7 +48,7 @@ public class TxRetDimensionCohort {
     dim.addCohortDefinition(
         "GRAVIDAS",
         EptsReportUtils.map(
-            hivCohortQueries.getPatientsPregnantEnrolledOnART(),
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     return dim;
   }

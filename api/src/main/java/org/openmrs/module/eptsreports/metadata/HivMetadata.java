@@ -14,6 +14,7 @@ package org.openmrs.module.eptsreports.metadata;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
@@ -180,12 +181,6 @@ public class HivMetadata extends ProgramsMetadata {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.acceptContactConceptUuid");
-    return getConcept(uuid);
-  }
-
-  // concept id 1066
-  public Concept getNoConcept() {
-    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.noConceptUuid");
     return getConcept(uuid);
   }
 
@@ -706,6 +701,73 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id = 23739
+  public Concept getTypeOfDispensationConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.typeOfDispensationConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 23720
+  public Concept getQuarterlyConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.quarterlyConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 1267
+  public Concept getCompletedConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.completedConceptUuid");
+    return getConcept(uuid);
+  }
+  // Concept 23748
+  public Concept getCytopeniaConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.cytopeniaConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept 23749
+  public Concept getNephrotoxicityConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.nephrotoxicityConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept 29
+  public Concept getHepatitisConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.hepatitisConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept 23750 STEVENS-JOHNSON SYNDROME
+  public Concept getStevensJonhsonSyndromeConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.stevensJonhsonSyndromeConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept 23751 HYPERSENSITIVITY TO ABC/RAL
+  public Concept getHypersensitivityToAbcOrRailConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.hypersensitivityToAbcOrRailConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept 23752 HEPATIC STEATOSIS WITH HYPERLACTATAEMIA
+  public Concept getHepaticSteatosisWithHyperlactataemiaConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.hepaticSteatosisWithHyperlactataemiaConceptUuid");
+    return getConcept(uuid);
+  }
+
   // Concept Id 1113
   public Concept getTBDrugStartDateConcept() {
     String uuid =
@@ -734,6 +796,74 @@ public class HivMetadata extends ProgramsMetadata {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.tuberculosisTreatmentPlanConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept ID 1067
+  public Concept getUnkownConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.unknownConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept ID 1306
+  public Concept getBeyondDetectableLimitConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.beyondDtectableLimitConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept ID 23814
+  public Concept getUndetectableViralLoadConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.undetectableViralLoadConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept ID 23905
+  public Concept getLessThan10CopiesConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.lessThan10CopiesConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept ID 23906
+  public Concept getLessThan20CopiesConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.lessThan20CopiesConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept ID 23907
+  public Concept getLessThan40CopiesConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.lessThan40CopiesConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept ID 23908
+  public Concept getLessThan400CopiesConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.lessThan400CopiesConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 23720
+  public Concept getMonthlyConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.monthlyConceptUuid");
+    return getConcept(uuid);
+  }
+
+  public Concept getSemiannualDispensation() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.semiannualConceptUuid");
     return getConcept(uuid);
   }
 
@@ -887,6 +1017,14 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.masterCardEncounterType");
     return getEncounterType(uuid);
   }
+
+  // encounter_type = 51
+  public EncounterType getFsrEncounterType() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.fsrEncounterType");
+    return getEncounterType(uuid);
+  }
+
   // Programs
 
   // program_id=2
@@ -1049,6 +1187,48 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.currentWHOHIVStageConceptUuid"));
   }
 
+  // Concept 23818
+  public Concept getReasonForRequestingViralLoadConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.reasonForRequestingViralLoadConceptUuid"));
+  }
+
+  // Concept 23817
+  public Concept getRoutineForRequestingViralLoadConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.routineForRequestingViralLoadConceptUuid"));
+  }
+
+  // Concept 843
+  public Concept getRegimenFailureConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.regimenFailureConceptUuid"));
+  }
+
+  // Concept 23881
+  public Concept getSuspectedImmuneFailureConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.suspectedImmuneFailureConceptUuid"));
+  }
+
+  // Concept 23864
+  public Concept getRepeatAfterBreastfeedingConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.repeatAfterBreastfeedingConceptUuid"));
+  }
+
+  // Concept 23882
+  public Concept getClinicalSuspicionConcept() {
+    return getConcept(
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.clinicalSuspicionConceptUuid"));
+  }
+
   public ProgramWorkflow getPreArtWorkflow() {
     return getProgramWorkflow(getHIVCareProgram().getUuid(), "1");
   }
@@ -1126,5 +1306,12 @@ public class HivMetadata extends ProgramsMetadata {
     ProgramWorkflow workflow = getArtWorkflow();
     ProgramWorkflowState state = getAbandonedWorkflowState(artProgram, workflow);
     return state;
+  }
+
+  public PersonAttributeType getIdentificadorDefinidoLocalmente01() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.identificadorDefinidoLocalment01Uuid");
+    return getPersonAttributeType(uuid);
   }
 }

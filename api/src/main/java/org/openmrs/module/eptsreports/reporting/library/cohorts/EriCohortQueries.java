@@ -30,8 +30,6 @@ public class EriCohortQueries {
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private HivCohortQueries hivCohortQueries;
-
   /**
    * Get all patients who initiated ART 2 months from ART initiation less transfer ins return the
    * patient who initiated ART A and B
@@ -83,7 +81,7 @@ public class EriCohortQueries {
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
-            hivCohortQueries.getPatientsPregnantEnrolledOnART(),
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
             "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
     cd.setCompositionString("initiatedART AND pregnant");
     return cd;
@@ -109,7 +107,7 @@ public class EriCohortQueries {
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            hivCohortQueries.getTxNewBreastfeedingComposition(),
+            txNewCohortQueries.getTxNewBreastfeedingComposition(),
             "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "pregnant",
@@ -144,12 +142,12 @@ public class EriCohortQueries {
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
-            hivCohortQueries.getPatientsPregnantEnrolledOnART(),
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
             "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            hivCohortQueries.getTxNewBreastfeedingComposition(),
+            txNewCohortQueries.getTxNewBreastfeedingComposition(),
             "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}"));
     cd.setCompositionString("(initiatedART AND children) AND NOT (pregnant OR breastfeeding)");
     return cd;
@@ -179,12 +177,12 @@ public class EriCohortQueries {
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
-            hivCohortQueries.getPatientsPregnantEnrolledOnART(),
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
             "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            hivCohortQueries.getTxNewBreastfeedingComposition(),
+            txNewCohortQueries.getTxNewBreastfeedingComposition(),
             "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}"));
     cd.setCompositionString("(initiatedART AND adults) AND NOT (pregnant OR breastfeeding)");
     return cd;
