@@ -201,6 +201,7 @@
 	<concept_set concept_set_id="8777017" concept_id="7777017" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777017"/>
 	<concept_set concept_set_id="8777018" concept_id="7777018" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777018"/>
 
+	<person_attribute_type person_attribute_type_id="17" name="Identificador definido localmente 01" format="java.lang.String" searchable="0" creator="1" date_created="2019-03-25 17:12:06.0" changed_by="1" date_changed="2019-03-26 14:52:28.0" retired="0" uuid="c89c90eb-5b03-4899-ab9f-06fecd123511" sort_weight="13.0" />
 
 	<program program_id="8" concept_id="7777023" creator="1" date_created="2019-03-02 11:30:33.0" retired="false" name="PTV" description="Programa de representa o estado de gravidez de uma mulher" uuid="06057245-ca21-43ab-a02f-e861d7e54593"/>
 	<program program_id="9" concept_id="7777030" creator="1" date_created="2012-02-29 09:46:38.0" changed_by="1" date_changed="2013-07-24 11:45:49.0" retired="false" name="SERVICO TARV - TRATAMENTO" description="Programa de seguimento e tratamento aos pacientes HIV+" uuid="efe2481f-9e75-4515-8d5a-86bfde2b5ad3"/>
@@ -217,7 +218,7 @@
 	<encounter_type encounter_type_id="6777006" name="MISAU: LABORATORIO" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="e2790f68-1d5f-11e0-b929-000c29ad1d07"/>
 	<encounter_type encounter_type_id="6777007" name="Master Card - Ficha Resumo" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="26e4f8a9-618d-4283-a7c7-62378e325aee"/>
 	<encounter_type encounter_type_id="6777008" name="Levantamento de ARV Master Card" description="Registo de levantamento de ARV no Master Card" creator="1" date_created="2019-07-09 13:03:45" retired="0" uuid="cce7b2ec-4fc0-4f9e-806d-b1c4ee9577db" />
-
+	<encounter_type encounter_type_id="35" name="APSS: PREVENÇÃO POSITIVA - SEGUIMENTO" description="Ficha de apoio psicossocial e prevenção positiva - Seguimento" creator="1" date_created="2014-07-09 10:16:00.0" retired="0" uuid="f4aa93fe-8737-4f70-9532-542b768459d7" />
 	<encounter_type encounter_type_id="21" name="S.TARV: BUSCA ACTIVA" description="Busca Activa" creator="1" date_created="2008-12-09 14:19:56" retired="0" uuid="e27916d4-1d5f-11e0-b929-000c29ad1d07" />
 	<encounter_type encounter_type_id="7" name="S.TARV: PEDIATRIA INICIAL A" description="Primeira visita do paciente pediatria" creator="1" date_created="2008-10-13 04:33:15" retired="0" uuid="e278fa8c-1d5f-11e0-b929-000c29ad1d07" />
 
@@ -279,5 +280,7 @@
 	<global_property property="eptsreports.sTarvPediatriaInicialAEncounterTypeUuid" property_value="e278fa8c-1d5f-11e0-b929-000c29ad1d07" description="UUID for the S.TARV: PEDIATRIA INICIAL A encounter type" uuid="18a936da-4a29-4428-a27d-2e1c0da93ecd" />
 	<global_property property="eptsreports.stateOfStayOfPreArtPatient" property_value="3bd7a5d1-afc0-478d-9aa6-c7bdd9a050c8" description="UUID for the STATE OF STAY PRIOR ART PATIENT concept" uuid="d7878b38-6c0c-438a-beab-c56287b9b859" />
 	<global_property property="eptsreports.artPickupConceptUuid" property_value="e07fb227-7a5a-4edf-93e8-7633c9fd1ea0" description="UUID for the LEVANTOU ARV concept" uuid="5a7969d8-1a3f-4e80-9dff-d63a56bc2329" />
+	<global_property property="eptsreports.apssPrevencaoPositivaSeguimentoEncounterTypeUuid" property_value="f4aa93fe-8737-4f70-9532-542b768459d7" description="UUID for the APSS: PREVENÇÃO POSITIVA - SEGUIMENTO encounter type" uuid="50729743-4196-4dfa-b43a-accefa6eb937" />
+	<global_property property="eptsreports.identificadorDefinidoLocalment01Uuid" property_value="c89c90eb-5b03-4899-ab9f-06fecd123511" />
 
 </dataset>
