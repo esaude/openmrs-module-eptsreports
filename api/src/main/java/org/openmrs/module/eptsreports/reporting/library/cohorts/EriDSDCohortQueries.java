@@ -467,7 +467,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
-        		txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -734,7 +734,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "eligiblePatientsD1",
         EptsReportUtils.map(
-        	 getAllPatientsWhoAreActiveAndStable(),
+            getAllPatientsWhoAreActiveAndStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("activeAndStableN2 AND eligiblePatientsD1");
@@ -804,7 +804,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "pregnantN2",
         EptsReportUtils.map(
-        		txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
             "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "activeWithNextPickupAs3Months",
@@ -834,7 +834,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "pregnantN2",
         EptsReportUtils.map(
-        		txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
             "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "activeWithNextPickupAs3Months",
