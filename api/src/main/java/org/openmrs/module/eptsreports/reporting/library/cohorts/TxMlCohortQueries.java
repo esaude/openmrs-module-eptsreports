@@ -45,6 +45,28 @@ public class TxMlCohortQueries {
                 .getProgramWorkflowStateId()));
   }
 
+  public CohortDefinition getTransferredOutPatientsComposition() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Get all patients who are Transferred Out");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Date.class));
+
+    cd.addSearch(
+        "patientsWhoLeftARTProgramBeforeOrOnEndDate",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getPatientsWhoLeftARTProgramBeforeOrOnEndDate(),
+            "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "patientsWithDrugsPickupOrConsultation",
+        EptsReportUtils.map(
+            txCurrCohortQueries
+                .getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition(),
+            "onOrBefore=${endDate},location=${location}"));
+
+    return cd;
+  }
+
   /**
    * a. All deaths registered in Patient Program State by reporting end date
    *
@@ -62,7 +84,7 @@ public class TxMlCohortQueries {
    */
   public CohortDefinition getDeadPatientsComposition() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("Get patients who missed appointment and are NOT transferred out");
+    cd.setName("Get patients who are dead according to criteria a,b,c,d and e");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -148,4 +170,6 @@ public class TxMlCohortQueries {
 
     return cd;
   }
+
+  // a, b AND Transferred Out
 }
