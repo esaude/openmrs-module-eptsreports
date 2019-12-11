@@ -193,8 +193,6 @@ public class DsdQueries {
   }
 
   /**
-   *
-   *
    * @param encounterTypeId
    * @param lastCommunityConceptId
    * @param startDrugsConceptId

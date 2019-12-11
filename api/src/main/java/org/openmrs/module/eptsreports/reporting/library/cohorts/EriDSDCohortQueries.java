@@ -1392,8 +1392,7 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * N7 : Patients marked in last Dispensa Comunitaria as start or continue regimen
-   * query
+   * N7 : Patients marked in last Dispensa Comunitaria as start or continue regimen query
    *
    * @return @{@link CohortDefinition}
    */
@@ -1441,7 +1440,7 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * N4 : Active ART patients marked in DC and are eligible
+   * N7 : Active ART patients marked in DC and are eligible
    *
    * @return @{@link CohortDefinition}
    */
@@ -1467,7 +1466,7 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * N4 : Active ART patients marked in DC and are unstable
+   * N7 : Active ART patients marked in DC and are unstable
    *
    * @return @{@link CohortDefinition}
    */
