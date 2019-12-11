@@ -46,7 +46,8 @@ public class TxMlDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "totals missed",
                 EptsReportUtils.map(
-                    txMlCohortQueries.getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
+                    txMlCohortQueries
+                        .getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
                     mappings)),
             mappings),
         "");
@@ -59,7 +60,8 @@ public class TxMlDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Age and Gender",
                 EptsReportUtils.map(
-                    txMlCohortQueries.getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
+                    txMlCohortQueries
+                        .getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
                     mappings)),
             mappings),
         getColumnsForAgeAndGender());

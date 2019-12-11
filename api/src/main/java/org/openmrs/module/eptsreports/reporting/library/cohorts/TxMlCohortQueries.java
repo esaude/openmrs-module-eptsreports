@@ -7,7 +7,6 @@ import org.openmrs.module.eptsreports.reporting.library.queries.TxMlQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -47,10 +46,21 @@ public class TxMlCohortQueries {
   }
 
   /**
-   * Dead Patients based on State, Home visit card, Ficha, dempographic except drug pickup
+   * a. All deaths registered in Patient Program State by reporting end date
+   *
+   * <p>b. All deaths registered in Patient Demographics by reporting end date
+   *
+   * <p>c. All deaths registered in Last Home Visit Card by reporting end date
+   *
+   * <p>d. All deaths registered in Ficha Resumo and Ficha Clinica of Master Card by reporting end
+   * date
+   *
+   * <p>e. Except all patients who after the most recent date from a to d, have a drugs pick up or
+   * consultation
+   *
    * @return
    */
-  public CohortDefinition getDeadPatientsComposition(){
+  public CohortDefinition getDeadPatientsComposition() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Get patients who missed appointment and are NOT transferred out");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -58,33 +68,42 @@ public class TxMlCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-            "deadByPatientProgramState",
-            EptsReportUtils.map(
-                    txCurrCohortQueries.getPatientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate(), "onOrBefore=${endDate},location=${location}"));
+        "deadByPatientProgramState",
+        EptsReportUtils.map(
+            txCurrCohortQueries
+                .getPatientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate(),
+            "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
-            "deadByPatientDemographics",
-            EptsReportUtils.map(
-                    txCurrCohortQueries.getDeadPatientsInDemographiscByReportingEndDate(), "onOrBefore=${endDate}"));
+        "deadByPatientDemographics",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getDeadPatientsInDemographiscByReportingEndDate(),
+            "onOrBefore=${endDate}"));
     cd.addSearch(
-            "deadRegisteredInLastHomeVisitCard",
-            EptsReportUtils.map(
-                    txCurrCohortQueries.getPatientDeathRegisteredInLastHomeVisitCardByReportingEndDate(), "onOrBefore=${endDate},location=${location}"));
+        "deadRegisteredInLastHomeVisitCard",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getPatientDeathRegisteredInLastHomeVisitCardByReportingEndDate(),
+            "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
-            "deadRegisteredInFichaResumoAndFichaClinicaMasterCard ",
-            EptsReportUtils.map(
-                    txCurrCohortQueries.getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(), "onOrBefore=${endDate},location=${location}"));
+        "deadRegisteredInFichaResumoAndFichaClinicaMasterCard ",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(),
+            "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
-            "patientsWithDrugsPickupOrConsultation",
-            EptsReportUtils.map(
-                    txCurrCohortQueries.getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition(), "onOrBefore=${endDate},location=${location}"));
+        "patientsWithDrugsPickupOrConsultation",
+        EptsReportUtils.map(
+            txCurrCohortQueries
+                .getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition(),
+            "onOrBefore=${endDate},location=${location}"));
 
-    cd.setCompositionString("(deadByPatientProgramState OR deadByPatientDemographics OR deadRegisteredInLastHomeVisitCard OR deadRegisteredInFichaResumoAndFichaClinicaMasterCard) AND NOT patientsWithDrugsPickupOrConsultation");
+    cd.setCompositionString(
+        "(deadByPatientProgramState OR deadByPatientDemographics OR deadRegisteredInLastHomeVisitCard OR deadRegisteredInFichaResumoAndFichaClinicaMasterCard) AND NOT patientsWithDrugsPickupOrConsultation");
 
-    return  cd;
+    return cd;
   }
 
   // a and b
-  public CohortDefinition getPatientsWhoMissedNextAppointmentAndNotTransferredOut() {
+  public CohortDefinition
+      getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Get patients who missed appointment and are NOT transferred out");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -117,39 +136,16 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "missedAppointmentLessTransfers",
         EptsReportUtils.map(
-            getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
+            getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
-            genericCohortQueries.getDeceasedPatientsBeforeDate(),
-            "endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "homeVisitCardDead",
-        EptsReportUtils.map(
-            getPatientsMarkedAsDeadInHomeVisitCard(),
+            getDeadPatientsComposition(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.setCompositionString("missedAppointmentLessTransfers AND (dead OR homeVisitCardDead)");
+
+    cd.setCompositionString("missedAppointmentLessTransfers AND dead ");
+
     return cd;
-  }
-
-  // All Patients marked as dead in Patient Home Visit Card
-  private CohortDefinition getPatientsMarkedAsDeadInHomeVisitCard() {
-    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-
-    sqlCohortDefinition.setName("Get patients marked as dead in Patient Home Visit Card");
-    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
-
-    sqlCohortDefinition.setQuery(
-        TxMlQueries.getPatientsMarkedDeadInHomeVisitCard(
-            hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
-            hivMetadata.getVisitaApoioReintegracaoParteAEncounterType().getEncounterTypeId(),
-            hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId(),
-            hivMetadata.getReasonPatientNotFound().getConceptId(),
-            hivMetadata.getPatientIsDead().getConceptId()));
-
-    return sqlCohortDefinition;
   }
 }
