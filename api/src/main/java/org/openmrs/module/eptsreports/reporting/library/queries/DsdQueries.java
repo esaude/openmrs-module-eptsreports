@@ -193,7 +193,7 @@ public class DsdQueries {
   }
 
   /**
-   * <<<<<<< HEAD
+   *
    *
    * @param encounterTypeId
    * @param lastCommunityConceptId

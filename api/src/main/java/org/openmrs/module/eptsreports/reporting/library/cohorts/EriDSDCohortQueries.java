@@ -1392,7 +1392,7 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * <<<<<<< HEAD N7 : Patients marked in last Dispensa Comunitaria as start or continue regimen
+   * N7 : Patients marked in last Dispensa Comunitaria as start or continue regimen
    * query
    *
    * @return @{@link CohortDefinition}
