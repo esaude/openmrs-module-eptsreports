@@ -74,4 +74,33 @@ public class TxMlQueries {
         busca,
         dead);
   }
+
+  public static String getPatientsWithMissedVisitOnMasterCard(
+      int homeVisitCardEncounterTypeId,
+      int reasonPatientMissedVisitConceptId,
+      int transferredOutToAnotherFacilityConceptId,
+      int autoTransferConceptId) {
+    String query =
+        "SELECT e.patient_id "
+            + "FROM encounter e "
+            + "         JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "         JOIN (SELECT p.patient_id, MAX(e.encounter_datetime) encounter_datetime "
+            + "               FROM patient p "
+            + "                        JOIN encounter e ON p.patient_id = e.patient_id "
+            + "                        JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "               WHERE o.concept_id = %d "
+            + "                 AND e.location_id = :location "
+            + "                 AND e.encounter_type= %d "
+            + "                 AND e.encounter_datetime BETWEEN :startDate AND :endDate AND p.voided=0 "
+            + "               GROUP BY p.patient_id) last "
+            + "              ON e.patient_id = last.patient_id AND last.encounter_datetime <= :endDate "
+            + "WHERE o.value_coded IN (%d,%d) AND e.location_id = :location AND e.voided=0 AND o.voided=0 ";
+
+    return String.format(
+        query,
+        reasonPatientMissedVisitConceptId,
+        homeVisitCardEncounterTypeId,
+        transferredOutToAnotherFacilityConceptId,
+        autoTransferConceptId);
+  }
 }

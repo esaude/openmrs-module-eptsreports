@@ -142,6 +142,14 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>@MODULE_ID@.autoTransferConceptUuid</property>
+		<defaultValue>de2c4ec6-c68e-4d4a-993d-23eba2de8267</defaultValue>
+		<description>
+			UUID for the AUTO TRANSFER concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>@MODULE_ID@.tuberculosisTreatmentPlanConceptUuid</property>
 		<defaultValue>e1d9fbda-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>

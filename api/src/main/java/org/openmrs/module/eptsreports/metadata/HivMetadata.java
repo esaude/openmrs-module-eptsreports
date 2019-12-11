@@ -637,6 +637,13 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.transferOutToAnotherFacilityConceptUuid");
     return getConcept(uuid);
   }
+
+  // Concept 23863 AUTO TRANSFER
+  public Concept getAutoTransferConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.autoTransferConceptUuid");
+    return getConcept(uuid);
+  }
   // Concept 6272  STATE OF STAY PRIOR ART PATIENT
   public Concept getStateOfStayPriorArtPatientConcept() {
     String uuid =
