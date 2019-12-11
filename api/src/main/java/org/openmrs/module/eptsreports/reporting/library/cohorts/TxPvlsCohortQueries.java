@@ -211,22 +211,33 @@ public class TxPvlsCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getPatientsWhoAreOnRoutine() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Routine for all patients on Routine");
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Patients who have viral load results OR FSR coded values");
+    cd.setName("Routine for all patients using FSR form");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.setQuery(
-        ViralLoadQueries.getPatientsHavingRoutineViralLoadTests(
-            hivMetadata.getHivViralLoadConcept().getConceptId(),
+
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("Routine for all patients using FSR form");
+    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sql.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sql.addParameter(new Parameter("location", "Location", Location.class));
+    sql.setQuery(
+        ViralLoadQueries.getPatientsHavingRoutineViralLoadTestsUsingFsr(
             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-            hivMetadata.getFsrEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadQualitative().getConceptId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getUnkownConcept().getConceptId()));
+    cd.addSearch(
+        "results",
+        EptsReportUtils.map(
+            hivCohortQueries.getPatientsViralLoadWithin12Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "fsr",
+        EptsReportUtils.map(sql, "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("results OR fsr");
     return cd;
   }
 
@@ -242,11 +253,16 @@ public class TxPvlsCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
+        "results",
+        EptsReportUtils.map(
+            hivCohortQueries.getPatientsViralLoadWithin12Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
         "routine",
         EptsReportUtils.map(
             getPatientsWhoAreOnRoutine(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.setCompositionString("NOT routine");
+    cd.setCompositionString("results AND NOT routine");
     return cd;
   }
 

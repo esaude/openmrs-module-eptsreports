@@ -87,31 +87,13 @@ public class ViralLoadQueries {
     return sql;
   }
 
-  public static String getPatientsHavingRoutineViralLoadTests(
-      int viralLoadConcept,
+  public static String getPatientsHavingRoutineViralLoadTestsUsingFsr(
       int labEncounter,
-      int adultSeguimentoEncounter,
-      int pediatriaSeguimentoEncounter,
-      int mastercardEncounter,
-      int fsrEncounterType,
       int viralLoadRequestReasonConceptId,
       int routineViralLoadConceptId,
       int unknownConceptId) {
     String query =
         " SELECT final.patient_id FROM( "
-            + " SELECT p.patient_id, MAX(ee.encounter_datetime) AS viral_load_date "
-            + " FROM patient p "
-            + " INNER JOIN encounter ee ON p.patient_id=ee.patient_id "
-            + " INNER JOIN obs oo ON ee.encounter_id = oo.encounter_id "
-            + " WHERE "
-            + " ee.voided = 0 AND "
-            + " oo.voided = 0 AND "
-            + " oo.concept_id = %d AND oo.value_numeric IS NOT NULL AND "
-            + " ee.encounter_type IN (%d, %d, %d, %d) "
-            + " AND ee.location_id = :location "
-            + " AND ee.encounter_datetime <= :endDate "
-            + " GROUP BY p.patient_id "
-            + " UNION "
             + " SELECT p.patient_id, MAX(ee.encounter_datetime) AS viral_load_date "
             + " FROM patient p "
             + " INNER JOIN encounter ee ON p.patient_id=ee.patient_id "
@@ -127,12 +109,7 @@ public class ViralLoadQueries {
 
     return String.format(
         query,
-        viralLoadConcept,
         labEncounter,
-        adultSeguimentoEncounter,
-        pediatriaSeguimentoEncounter,
-        mastercardEncounter,
-        fsrEncounterType,
         viralLoadRequestReasonConceptId,
         routineViralLoadConceptId,
         unknownConceptId);
