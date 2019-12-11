@@ -304,28 +304,6 @@ public class EriDSDDataset extends BaseDataSet {
             mappings),
         getChildrenColumn());
     dsd.addColumn(
-        "N2UBNP",
-        "N2 Patients who are breastfeeding excluding pregnant patients",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "N2UBNP",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN2(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "N2UPB",
-        "N2: Pregnant: includes breastfeeding patients",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "N2UPB",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoArePregnantAndNotBreastfeedingN2(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
         "N3T",
         "DSD N3 Total",
         EptsReportUtils.map(
@@ -595,7 +573,7 @@ public class EriDSDDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     eriDSDCohortQueries.getPatientsOnMasterCardAFWhoAreNotEligible(), mappings)),
             mappings),
-        getChildrenZeroTo14YearsColumn());
+        getChildrenColumn());
     dsd.addColumn(
         "N7T",
         "N7: Total",
@@ -663,7 +641,7 @@ public class EriDSDDataset extends BaseDataSet {
                 "N7NENPNBC",
                 EptsReportUtils.map(eriDSDCohortQueries.getActiveInARTUnstableDC(), mappings)),
             mappings),
-        getChildrenZeroTo14YearsColumn());
+        getChildrenColumn());
     return dsd;
   }
 
@@ -676,21 +654,8 @@ public class EriDSDDataset extends BaseDataSet {
     ColumnParameters twoTo4 = new ColumnParameters("twoTo4", "2-4", "age=2-4", "01");
     ColumnParameters fiveTo9 = new ColumnParameters("fiveTo9", "5-9", "age=5-9", "02");
     ColumnParameters tenTo14 = new ColumnParameters("tenTo14", "10-14", "age=10-14", "03");
+    ColumnParameters lesThan2 = new ColumnParameters("lesThan2", "<2", "age=<2", "04");
 
-    return Arrays.asList(twoTo4, fiveTo9, tenTo14);
-  }
-
-  /**
-   * 0-14 years old children List
-   *
-   * @return
-   */
-  private List<ColumnParameters> getChildrenZeroTo14YearsColumn() {
-    ColumnParameters zeroTo2 = new ColumnParameters("zeroTo2", "<2", "age=<2", "01");
-    ColumnParameters twoTo4 = new ColumnParameters("twoTo4", "2-4", "age=2-4", "02");
-    ColumnParameters fiveTo9 = new ColumnParameters("fiveTo9", "5-9", "age=5-9", "03");
-    ColumnParameters tenTo14 = new ColumnParameters("tenTo14", "10-14", "age=10-14", "04");
-
-    return Arrays.asList(zeroTo2, twoTo4, fiveTo9, tenTo14);
+    return Arrays.asList(lesThan2, twoTo4, fiveTo9, tenTo14);
   }
 }

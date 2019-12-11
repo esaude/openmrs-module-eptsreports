@@ -1457,6 +1457,37 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.identificadorDefinidoLocalment01Uuid</property>
+		<defaultValue>c89c90eb-5b03-4899-ab9f-06fecd123511</defaultValue>
+		<description>
+			UUID for the Identificador definido localmente 01 person attribute type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.typeOfDispensationConceptUuid</property>
+		<defaultValue>cadc1c2a-cd22-43dc-8404-4ce4c8a7242d</defaultValue>
+		<description>
+			UUID for the TIPO DE DISPENSA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.quarterlyConceptUuid</property>
+		<defaultValue>f53848d5-3521-4cc8-ac72-d63adef281a1</defaultValue>
+		<description>
+			UUID for the TRIMESTRAL concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.completedConceptUuid</property>
+		<defaultValue>e1d9facc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the COMPLETO concept
+		</description>
+	</globalProperty>
 <!-- 23748 -->
 	<globalProperty>
 		<property>eptsreports.cytopeniaConceptUuid</property>
