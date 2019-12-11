@@ -782,7 +782,7 @@ public class EriDSDCohortQueries {
 
     return cd;
   }
- 
+
   /**
    * N3 : Get the number of active patients on ART whose next clinical consultation is scheduled
    * 175-190 days after the date of the last clinical consultation
