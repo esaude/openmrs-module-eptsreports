@@ -459,7 +459,26 @@ public class EriDSDCohortQueries {
             getAllPatientsWhoAreActiveAndStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("allPatientsTxCurr AND NOT activeAndStablePatients");
+    cd.addSearch(
+        "breastfeeding",
+        EptsReportUtils.map(
+            txNewCohortQueries.getTxNewBreastfeedingComposition(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "pregnant",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "tbPatient",
+        EptsReportUtils.map(
+            tbCohortQueries.getPatientsOnTbTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+        "allPatientsTxCurr AND NOT (activeAndStablePatients OR tbPatient OR breastfeeding OR pregnant)");
 
     return cd;
   }
@@ -763,7 +782,7 @@ public class EriDSDCohortQueries {
 
     return cd;
   }
-
+ 
   /**
    * N3 : Get the number of active patients on ART whose next clinical consultation is scheduled
    * 175-190 days after the date of the last clinical consultation
