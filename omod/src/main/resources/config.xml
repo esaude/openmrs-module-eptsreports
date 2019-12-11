@@ -1351,7 +1351,16 @@
 		<property>@MODULE_ID@.masterCardDrugPickupEncounterTypeUuid</property>
 		<defaultValue>cce7b2ec-4fc0-4f9e-806d-b1c4ee9577db</defaultValue>
 		<description>
-			UUID for the Levantamento de ARV Master Card encounter type
+            UUID for the Levantamento de ARV Master Card encounter type
+		</description>
+	</globalProperty>
+
+	<!-- 51 -->
+	<globalProperty>
+		<property>eptsreports.fsrEncounterType</property>
+		<defaultValue>e2790f68-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+            UUID for FSR - Carga Viral encounter type
 		</description>
 	</globalProperty>
 
@@ -1456,6 +1465,93 @@
 			UUID for the ESTADO DE PERMANENCIA DO PACIENTE PRE-TARV concept
 		</description>
 	</globalProperty>
+	<!-- 1067 -->
+	<globalProperty>
+		<property>eptsreports.unknownConceptUuid</property>
+		<defaultValue>e1d81d7e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the UNKNOWN concept
+		</description>
+	</globalProperty>
+
+	<!-- 23818 -->
+	<globalProperty>
+		<property>eptsreports.reasonForRequestingViralLoadConceptUuid</property>
+		<defaultValue>a97ab290-5b66-4755-bd49-d82f944cd093</defaultValue>
+		<description>
+			UUID for the Reason for requesting viral load concept
+		</description>
+	</globalProperty>
+
+	<!-- 23817 -->
+	<globalProperty>
+		<property>eptsreports.routineForRequestingViralLoadConceptUuid</property>
+		<defaultValue>971cf484-2751-40ce-9f89-d23f544d06e2</defaultValue>
+		<description>
+			UUID for the Routine viral load concept
+		</description>
+	</globalProperty>
+
+	<!-- 843 -->
+	<globalProperty>
+		<property>eptsreports.regimenFailureConceptUuid</property>
+		<defaultValue>e1d616b4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REGIMEN FAILURE concept
+		</description>
+	</globalProperty>
+
+	<!-- 23881 -->
+	<globalProperty>
+		<property>eptsreports.suspectedImmuneFailureConceptUuid</property>
+		<defaultValue>df6aa98d-0124-4fb7-b4fb-5dc99f6ddcc9</defaultValue>
+		<description>
+			UUID for the Suspected immune failure concept
+		</description>
+	</globalProperty>
+
+	<!-- 23864 -->
+	<globalProperty>
+		<property>eptsreports.repeatAfterBreastfeedingConceptUuid</property>
+		<defaultValue>6f60eaa1-886d-4891-9d3d-7ade75d67606</defaultValue>
+		<description>
+			UUID for the REPEAT AFTER BREASTFEEDING concept
+		</description>
+	</globalProperty>
+
+	<!-- 23864 -->
+	<globalProperty>
+		<property>eptsreports.clinicalSuspicionConceptUuid</property>
+		<defaultValue>14ef99f0-88b2-4210-9e85-bfa002743728</defaultValue>
+		<description>
+			UUID for the Clinical suspicion concept
+		</description>
+	</globalProperty>
+
+
+	<globalProperty>
+		<property>eptsreports.identificadorDefinidoLocalment01Uuid</property>
+		<defaultValue>c89c90eb-5b03-4899-ab9f-06fecd123511</defaultValue>
+		<description>
+			UUID for the Identificador definido localmente 01 person attribute type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.typeOfDispensationConceptUuid</property>
+		<defaultValue>cadc1c2a-cd22-43dc-8404-4ce4c8a7242d</defaultValue>
+		<description>
+			UUID for the TIPO DE DISPENSA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.quarterlyConceptUuid</property>
+		<defaultValue>f53848d5-3521-4cc8-ac72-d63adef281a1</defaultValue>
+		<description>
+			UUID for the TRIMESTRAL concept
+		</description>
+	</globalProperty>
 
 	<globalProperty>
 		<property>eptsreports.completedConceptUuid</property>
@@ -1465,7 +1561,147 @@
 		</description>
 	</globalProperty>
 
+	<!-- 23748 -->
+	<globalProperty>
+		<property>eptsreports.cytopeniaConceptUuid</property>
+		<defaultValue>b9fe8ecb-a41d-49d3-b6f6-2c381715262d</defaultValue>
+		<description>
+			UUID for CYTOPENIA concept
+		</description>
+	</globalProperty>
 
+	<!-- 23749 -->
+	<globalProperty>
+		<property>eptsreports.nephrotoxicityConceptUuid</property>
+		<defaultValue>8956c7ea-847a-4f70-91e8-e1cf325b85df</defaultValue>
+		<description>
+			UUID for the NEPHROTOXICITY concept
+		</description>
+	</globalProperty>
+
+	<!-- 29 -->
+	<globalProperty>
+		<property>eptsreports.hepatitisConceptUuid</property>
+		<defaultValue>e1cdc68a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the HEPATITIS concept
+		</description>
+	</globalProperty>
+
+	<!-- 23750 -->
+	<globalProperty>
+		<property>eptsreports.stevensJonhsonSyndromeConceptUuid</property>
+		<defaultValue>d0d485d3-3082-4b1b-a450-6cad31eb56b3</defaultValue>
+		<description>
+			UUID for the STEVENS-JOHNSON SYNDROME concept
+		</description>
+	</globalProperty>
+
+	<!-- 23751 -->
+	<globalProperty>
+		<property>eptsreports.hypersensitivityToAbcOrRailConceptUuid</property>
+		<defaultValue>833aba0d-430a-4537-b202-94c32e9a1317</defaultValue>
+		<description>
+			UUID for the HYPERSENSITIVITY TO ABC/RAL concept
+		</description>
+	</globalProperty>
+
+	<!-- 23752 -->
+	<globalProperty>
+		<property>eptsreports.hepaticSteatosisWithHyperlactataemiaConceptUuid</property>
+		<defaultValue>da3dea8e-9b35-4025-ad5e-cd9aad7707aa</defaultValue>
+		<description>
+			UUID for the HEPATIC STEATOSIS WITH HYPERLACTATAEMIA concept
+		</description>
+	</globalProperty>
+	<!-- 1306 -->
+	<globalProperty>
+		<property>eptsreports.beyondDtectableLimitConceptUuid</property>
+		<defaultValue>e1da2812-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the BEYOND DETECTABLE LIMIT concept
+		</description>
+	</globalProperty>
+	<!-- 23814 -->
+	<globalProperty>
+		<property>eptsreports.undetectableViralLoadConceptUuid</property>
+		<defaultValue>cc8ef88c-6ab6-4404-a036-d415bc42cc1c</defaultValue>
+		<description>
+			UUID for the UNDETECTABLE VIRAL LOAD concept
+		</description>
+	</globalProperty>
+	<!-- 23905 -->
+	<globalProperty>
+		<property>eptsreports.lessThan10CopiesConceptUuid</property>
+		<defaultValue>78a76661-50c0-41cf-b566-de275f17b648</defaultValue>
+		<description>
+			UUID for the LESS THAN 10 COPIES/ML concept
+		</description>
+	</globalProperty>
+	<!-- 23906 -->
+	<globalProperty>
+		<property>eptsreports.lessThan20CopiesConceptUuid</property>
+		<defaultValue>ae6c048f-8b04-46cb-903e-51d5670db525</defaultValue>
+		<description>
+			UUID for the LESS THAN 20 COPIES/ML concept
+		</description>
+	</globalProperty>
+	<!-- 23907 -->
+	<globalProperty>
+		<property>eptsreports.lessThan40CopiesConceptUuid</property>
+		<defaultValue>1321eeac-5832-4076-88e9-b1f2cd351ada</defaultValue>
+		<description>
+			UUID for the LESS THAN 40 COPIES/ML concept
+		</description>
+	</globalProperty>
+	<!-- 23908 -->
+	<globalProperty>
+		<property>eptsreports.lessThan400CopiesConceptUuid</property>
+		<defaultValue>d6eb4797-2c01-4b6e-b43f-be15cd2fdcc2</defaultValue>
+		<description>
+			UUID for the LESS THAN 400 COPIES/ML concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.typeOfDispensationConceptUuid</property>
+		<defaultValue>cadc1c2a-cd22-43dc-8404-4ce4c8a7242d</defaultValue>
+		<description>
+			UUID for the TIPO DE DISPENSA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.monthlyConceptUuid</property>
+		<defaultValue>e1d848f8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the MONTHLY concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.quarterlyConceptUuid</property>
+		<defaultValue>f53848d5-3521-4cc8-ac72-d63adef281a1</defaultValue>
+		<description>
+			UUID for the TRIMESTRAL concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.completedConceptUuid</property>
+		<defaultValue>e1d9facc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the COMPLETO concept
+		</description>
+	</globalProperty>
+
+    <globalProperty>
+        <property>eptsreports.semiannualConceptUuid</property>
+        <defaultValue>3069be5c-cd02-4ddb-aa1f-bdd71d3dd6be</defaultValue>
+        <description>
+            UUID for the DISPENSA SEMESTRAL concept
+        </description>
+    </globalProperty>
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 

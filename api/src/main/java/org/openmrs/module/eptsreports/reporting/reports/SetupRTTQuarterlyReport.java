@@ -18,9 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxPvlsDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxRttDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
@@ -31,39 +29,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupMERQuarterly extends EptsDataExportManager {
+public class SetupRTTQuarterlyReport extends EptsDataExportManager {
 
-  @Autowired private TxPvlsDataset txPvlsDataset;
+  private TxRttDataset txRttDataset;
+  private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private TxNewDataset txNewDataset;
-
-  @Autowired private TxCurrDataset txCurrDataset;
-
-  @Autowired protected GenericCohortQueries genericCohortQueries;
-
-  @Override
-  public String getVersion() {
-    return "1.0-SNAPSHOT";
-  }
-
-  @Override
-  public String getUuid() {
-    return "fa20c1ac-94ea-11e3-96de-0023156365e4";
+  @Autowired
+  public SetupRTTQuarterlyReport(
+      TxRttDataset txRttDataset, GenericCohortQueries genericCohortQueries) {
+    this.txRttDataset = txRttDataset;
+    this.genericCohortQueries = genericCohortQueries;
   }
 
   @Override
   public String getExcelDesignUuid() {
-    return "cea86583-9ca5-4ad9-94e4-e20081a57619";
+    return "75e7bcf2-1682-11ea-8854-6bfca6323c75";
+  }
+
+  @Override
+  public String getUuid() {
+    return "894f63e4-1682-11ea-ad73-37edadd46854";
   }
 
   @Override
   public String getName() {
-    return "PEPFAR MER 2.3 Quarterly";
+    return "PEPFAR MER TX_RTT Numerator";
   }
 
   @Override
   public String getDescription() {
-    return "MER Quarterly Report";
+    return "PEPFAR MER TX_RTT Quarterly Report";
   }
 
   @Override
@@ -72,19 +67,19 @@ public class SetupMERQuarterly extends EptsDataExportManager {
     reportDefinition.setUuid(getUuid());
     reportDefinition.setName(getName());
     reportDefinition.setDescription(getDescription());
-    reportDefinition.setParameters(txPvlsDataset.getParameters());
+    reportDefinition.setParameters(txRttDataset.getParameters());
     reportDefinition.addDataSetDefinition(
-        "N", Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
-    reportDefinition.addDataSetDefinition(
-        "C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
-    reportDefinition.addDataSetDefinition(
-        "P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
+        "R", Mapped.mapStraightThrough(txRttDataset.constructTxRttDataset()));
     // add a base cohort here to help in calculations running
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
             genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
-
     return reportDefinition;
+  }
+
+  @Override
+  public String getVersion() {
+    return "1.0-SNAPSHOT";
   }
 
   @Override
@@ -94,8 +89,8 @@ public class SetupMERQuarterly extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "PEPFAR_MER_2.4_QUARTERLY.xls",
-              "PEPFAR MER 2.4 Quarterly Report",
+              "PEPFAR_MER_2.4_Quarterly_RTT.xls",
+              "PEPFAR_MER_2.4 Quarterly Report",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
