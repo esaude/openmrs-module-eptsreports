@@ -47,40 +47,102 @@ public class DsdQueries {
   }
 
   /**
-   * Get Patients with Viral Load less than 1000 in the last 12 Months for DSD criteria 5B
+   * Get Patients with Recent Viral Load Encounter in the last 12 Months for DSD 1 criteria
    *
-   * @param labEncounter
-   * @param adultSeguimentoEncounter
-   * @param pediatriaSeguimentoEncounter
-   * @param vlConceptQuestion
+   * @param adultSeguimentoEncounterTypeId
+   * @param pediatriaSeguimentoEncounterTypeId
+   * @param labEncounterTypeId
+   * @param masterCardEncounterTypeId
+   * @param hivViralLoadConceptId
+   * @param hivViralLoadQualitativeConceptId
+   * @return
+   */
+  public static String patientsWithTheRecentViralLoadEncounter(
+      int adultSeguimentoEncounterTypeId,
+      int pediatriaSeguimentoEncounterTypeId,
+      int labEncounterTypeId,
+      int masterCardEncounterTypeId,
+      int hivViralLoadConceptId,
+      int hivViralLoadQualitativeConceptId) {
+    String query =
+        "SELECT vl_final.patient_id FROM ( "
+            + "SELECT vl.patient_id, MAX(vl.latest_date) date FROM ( "
+            + "SELECT p.patient_id, MAX(e.encounter_datetime) latest_date FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "INNER JOIN obs o ON p.patient_id=o.person_id "
+            + "WHERE e.encounter_type IN (%d,%d,%d ) AND  o.concept_id IN (%d,%d ) AND "
+            + "e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
+            + "AND e.location_id=:location AND p.voided=0 AND e.voided=0 AND o.voided=0 GROUP BY p.patient_id "
+            + "UNION "
+            + "SELECT p.patient_id, MAX(o.obs_datetime) latest_date  FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "INNER JOIN obs o ON p.patient_id=o.person_id "
+            + "WHERE e.encounter_type=%d "
+            + "AND  o.concept_id=%d "
+            + " AND "
+            + "o.obs_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
+            + "AND e.location_id=:location AND p.voided=0 AND e.voided=0 AND o.voided=0 GROUP BY p.patient_id)vl GROUP BY vl.patient_id) vl_final ";
+
+    return String.format(
+        query,
+        adultSeguimentoEncounterTypeId,
+        pediatriaSeguimentoEncounterTypeId,
+        labEncounterTypeId,
+        hivViralLoadConceptId,
+        hivViralLoadQualitativeConceptId,
+        masterCardEncounterTypeId,
+        hivViralLoadConceptId);
+  }
+
+  /**
+   * Get Patients with Viral Load less than 1000 in the last 12 Months for DSD 1 criteria
+   *
+   * @param hivViralLoadConceptId
+   * @param hivViralLoadQualitativeConceptId
+   * @param beyondDetectableLimitConceptId
+   * @param undetectableViralLoadConceptId
+   * @param lessThan10CopiesConceptId
+   * @param lessThan20CopiesConceptId
+   * @param lessThan40CopiesConceptId
+   * @param lessThan400CopiesConceptId
    * @return
    */
   public static String patientsWithViralLoadLessThan1000(
-      int labEncounter,
-      int adultSeguimentoEncounter,
-      int pediatriaSeguimentoEncounter,
-      int vlConceptQuestion) {
+      int hivViralLoadConceptId,
+      int hivViralLoadQualitativeConceptId,
+      int beyondDetectableLimitConceptId,
+      int undetectableViralLoadConceptId,
+      int lessThan10CopiesConceptId,
+      int lessThan20CopiesConceptId,
+      int lessThan40CopiesConceptId,
+      int lessThan400CopiesConceptId) {
     String query =
-        "SELECT p.patient_id "
-            + " FROM patient p"
-            + " INNER JOIN encounter e ON p.patient_id=e.patient_id"
-            + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
-            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type IN ("
-            + labEncounter
-            + ","
-            + adultSeguimentoEncounter
-            + ","
-            + pediatriaSeguimentoEncounter
-            + ")"
-            + " AND  o.concept_id="
-            + vlConceptQuestion
-            + " AND o.value_numeric IS NOT NULL AND"
-            + " e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
-            + " AND e.location_id=:location "
-            + " AND o.value_numeric < 1000"
-            + " GROUP BY p.patient_id";
+        "SELECT p.patient_id FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "INNER JOIN obs o ON p.patient_id=o.person_id "
+            + "WHERE o.concept_id=%d "
+            + " AND o.value_numeric < 1000 AND e.location_id=:location AND "
+            + "e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
+            + "AND p.voided=0 AND e.voided=0 AND o.voided=0 "
+            + "UNION "
+            + "SELECT p.patient_id FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "INNER JOIN obs o ON p.patient_id=o.person_id "
+            + "WHERE o.concept_id=%d "
+            + " AND o.value_coded IN (%d,%d,%d,%d,%d,%d  ) AND e.location_id=:location "
+            + "AND e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
+            + "AND p.voided=0 AND e.voided=0 AND o.voided=0";
 
-    return query;
+    return String.format(
+        query,
+        hivViralLoadConceptId,
+        hivViralLoadQualitativeConceptId,
+        beyondDetectableLimitConceptId,
+        undetectableViralLoadConceptId,
+        lessThan10CopiesConceptId,
+        lessThan20CopiesConceptId,
+        lessThan40CopiesConceptId,
+        lessThan400CopiesConceptId);
   }
 
   /**
@@ -128,5 +190,97 @@ public class DsdQueries {
             + ") GROUP BY patient_id";
 
     return query;
+  }
+
+  /**
+   * @param encounterTypeId
+   * @param lastCommunityConceptId
+   * @param startDrugsConceptId
+   * @param continueRegimenConceptId
+   * @return query
+   */
+  public static String getPatientsWithDispense(
+      int encounterTypeId,
+      int lastCommunityConceptId,
+      int startDrugsConceptId,
+      int continueRegimenConceptId) {
+    String query =
+        "select "
+            + " p.patient_id FROM patient p "
+            + " JOIN  "
+            + " encounter e ON "
+            + "    p.patient_id = e.patient_id "
+            + " JOIN "
+            + " obs o  ON "
+            + "    p.patient_id = o.person_id "
+            + " WHERE "
+            + " e.encounter_type=%d "
+            + "    AND o.concept_id=%d "
+            + "    AND o.value_coded in (%d,%d) AND e.location_id= :location  "
+            + "    AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "    AND e.voided=0 AND o.voided=0 AND p.voided=0";
+
+    return String.format(
+        query,
+        encounterTypeId,
+        lastCommunityConceptId,
+        startDrugsConceptId,
+        continueRegimenConceptId);
+  }
+  /**
+   * N5: Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment)
+   * who are in AF
+   *
+   * @param adultSeguimentoEncounterTypeId
+   * @param lastFamilyApproachConceptId
+   * @param startDrugsConceptId
+   * @param continueRegimenConceptId
+   * @return
+   */
+  public static String getPatientsOnMasterCardAF(
+      int adultSeguimentoEncounterTypeId,
+      int lastFamilyApproachConceptId,
+      int startDrugsConceptId,
+      int continueRegimenConceptId) {
+    String query =
+        "SELECT p.patient_id FROM patient p "
+            + "JOIN encounter e ON p.patient_id=e.patient_id "
+            + "JOIN obs o ON p.patient_id=o.person_id "
+            + "WHERE e.encounter_type=%d AND o.concept_id=%d AND o.value_coded IN (%d, %d) AND e.location_id=:location "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate  AND e.voided=0 AND o.voided=0 AND p.voided=0 ";
+
+    return String.format(
+        query,
+        adultSeguimentoEncounterTypeId,
+        lastFamilyApproachConceptId,
+        startDrugsConceptId,
+        continueRegimenConceptId);
+  }
+  /**
+   * Get All Patients On Sarcoma Karposi
+   *
+   * @param adultSeguimentoEncounter
+   * @param pediatriaSeguimentoEncounter
+   * @param otherDiagnosisConceptId
+   * @param sarcomakarposiConceptId
+   * @return
+   */
+  public static String getPatientsOnSarcomaKarposi(
+      int adultSeguimentoEncounter,
+      int pediatriaSeguimentoEncounter,
+      int otherDiagnosisConceptId,
+      int sarcomakarposiConceptId) {
+    String query =
+        "SELECT p.patient_id FROM patient p "
+            + "JOIN encounter e ON p.patient_id=e.patient_id "
+            + "JOIN obs o ON p.patient_id=o.person_id "
+            + "WHERE e.encounter_type IN (%d,%d) AND o.concept_id=%d AND o.value_coded=%d AND e.location_id= :location AND e.encounter_datetime<= :endDate AND p.voided=0 AND e.voided=0 ";
+
+    return String.format(
+        query,
+        adultSeguimentoEncounter,
+        pediatriaSeguimentoEncounter,
+        otherDiagnosisConceptId,
+        sarcomakarposiConceptId);
   }
 }
