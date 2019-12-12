@@ -193,6 +193,70 @@ public class DsdQueries {
   }
 
   /**
+   * @param encounterTypeId
+   * @param lastCommunityConceptId
+   * @param startDrugsConceptId
+   * @param continueRegimenConceptId
+   * @return query
+   */
+  public static String getPatientsWithDispense(
+      int encounterTypeId,
+      int lastCommunityConceptId,
+      int startDrugsConceptId,
+      int continueRegimenConceptId) {
+    String query =
+        "select "
+            + " p.patient_id FROM patient p "
+            + " JOIN  "
+            + " encounter e ON "
+            + "    p.patient_id = e.patient_id "
+            + " JOIN "
+            + " obs o  ON "
+            + "    p.patient_id = o.person_id "
+            + " WHERE "
+            + " e.encounter_type=%d "
+            + "    AND o.concept_id=%d "
+            + "    AND o.value_coded in (%d,%d) AND e.location_id= :location  "
+            + "    AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "    AND e.voided=0 AND o.voided=0 AND p.voided=0";
+
+    return String.format(
+        query,
+        encounterTypeId,
+        lastCommunityConceptId,
+        startDrugsConceptId,
+        continueRegimenConceptId);
+  }
+  /**
+   * N5: Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment)
+   * who are in AF
+   *
+   * @param adultSeguimentoEncounterTypeId
+   * @param lastFamilyApproachConceptId
+   * @param startDrugsConceptId
+   * @param continueRegimenConceptId
+   * @return
+   */
+  public static String getPatientsOnMasterCardAF(
+      int adultSeguimentoEncounterTypeId,
+      int lastFamilyApproachConceptId,
+      int startDrugsConceptId,
+      int continueRegimenConceptId) {
+    String query =
+        "SELECT p.patient_id FROM patient p "
+            + "JOIN encounter e ON p.patient_id=e.patient_id "
+            + "JOIN obs o ON p.patient_id=o.person_id "
+            + "WHERE e.encounter_type=%d AND o.concept_id=%d AND o.value_coded IN (%d, %d) AND e.location_id=:location "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate  AND e.voided=0 AND o.voided=0 AND p.voided=0 ";
+
+    return String.format(
+        query,
+        adultSeguimentoEncounterTypeId,
+        lastFamilyApproachConceptId,
+        startDrugsConceptId,
+        continueRegimenConceptId);
+  }
+  /**
    * Get All Patients On Sarcoma Karposi
    *
    * @param adultSeguimentoEncounter
