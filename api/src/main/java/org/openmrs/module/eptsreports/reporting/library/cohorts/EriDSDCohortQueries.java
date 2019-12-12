@@ -15,6 +15,7 @@ import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCoh
 import org.openmrs.module.eptsreports.reporting.library.queries.DsdQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -1565,28 +1566,6 @@ public class EriDSDCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("(1 AND NOT 2)");
-
-    return cd;
-  }
-
-  /**
-   * Get Patients who are on Sarcoma Karposi
-   *
-   * @return
-   */
-  public CohortDefinition getAllPatientsOnSarcomaKarposi() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("sarcomaKarposiPatients");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    cd.setQuery(
-        DsdQueries.getPatientsOnSarcomaKarposi(
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getOtherDiagnosis().getConceptId(),
-            hivMetadata.getKaposiSarcomaConcept().getConceptId()));
 
     return cd;
   }
