@@ -1395,12 +1395,15 @@ public class EriDSDCohortQueries {
     CohortDefinition pregnant = txNewCohortQueries.getPatientsPregnantEnrolledOnART();
     CohortDefinition breastfeeding =
         txNewCohortQueries.getPatientsWhoGaveBirthWithinReportingPeriod();
+    CohortDefinition tbPatients = tbCohortQueries.getPatientsOnTbTreatment();
 
     cd.addSearch("caStable", mapStraightThrough(caStable));
     cd.addSearch("pregnant", mapStraightThrough(pregnant));
     cd.addSearch("breastfeeding", mapStraightThrough(breastfeeding));
+    cd.addSearch("tbPatients", mapStraightThrough(tbPatients));
 
-    cd.setCompositionString("caStable NOT (pregnant OR breastfeeding)");
+
+    cd.setCompositionString("caStable NOT (pregnant OR breastfeeding OR tbPatients)");
 
     return cd;
   }
@@ -1417,12 +1420,15 @@ public class EriDSDCohortQueries {
     CohortDefinition pregnant = txNewCohortQueries.getPatientsPregnantEnrolledOnART();
     CohortDefinition breastfeeding =
         txNewCohortQueries.getPatientsWhoGaveBirthWithinReportingPeriod();
+    CohortDefinition tbPatients =tbCohortQueries.getPatientsOnTbTreatment();
 
     cd.addSearch("caUnstable", mapStraightThrough(caUnstable));
     cd.addSearch("pregnant", mapStraightThrough(pregnant));
     cd.addSearch("breastfeeding", mapStraightThrough(breastfeeding));
+    cd.addSearch("tbPatients", mapStraightThrough(tbPatients));
 
-    cd.setCompositionString("caUnstable NOT (pregnant OR breastfeeding)");
+
+    cd.setCompositionString("caUnstable NOT (pregnant OR breastfeeding OR tbPatients)");
 
     return cd;
   }
