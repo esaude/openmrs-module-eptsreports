@@ -783,7 +783,7 @@ public class EriDSDCohortQueries {
 
     return cd;
   }
- 
+
   /**
    * N3 : Get the number of active patients on ART whose next clinical consultation is scheduled
    * 175-190 days after the date of the last clinical consultation
@@ -1337,10 +1337,20 @@ public class EriDSDCohortQueries {
     String mappings = "onOrBefore=${endDate},location=${location}";
     cd.addSearch("txCurr", EptsReportUtils.map(txCurr, mappings));
 
+    CohortDefinition pregnant = txNewCohortQueries.getPatientsPregnantEnrolledOnART();
+    CohortDefinition breastfeeding =
+        txNewCohortQueries.getPatientsWhoGaveBirthWithinReportingPeriod();
+    CohortDefinition tbPatients = tbCohortQueries.getPatientsOnTbTreatment();
+
     String caMappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
     cd.addSearch("startOrContinueCA", EptsReportUtils.map(startOrContinueCA, caMappings));
 
-    cd.setCompositionString("txCurr AND startOrContinueCA");
+    cd.addSearch("pregnant", mapStraightThrough(pregnant));
+    cd.addSearch("breastfeeding", mapStraightThrough(breastfeeding));
+    cd.addSearch("tbPatients", mapStraightThrough(tbPatients));
+
+    cd.setCompositionString(
+        "txCurr AND startOrContinueCA AND NOT (pregnant OR breastfeeding OR tbPatients)");
 
     return cd;
   }
@@ -1402,8 +1412,7 @@ public class EriDSDCohortQueries {
     cd.addSearch("breastfeeding", mapStraightThrough(breastfeeding));
     cd.addSearch("tbPatients", mapStraightThrough(tbPatients));
 
-
-    cd.setCompositionString("caStable NOT (pregnant OR breastfeeding OR tbPatients)");
+    cd.setCompositionString("caStable AND NOT (pregnant OR breastfeeding OR tbPatients)");
 
     return cd;
   }
@@ -1417,18 +1426,12 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition caUnstable = getPatientsWhoAreActiveParticipatingInAccessionClubsAndUnstable();
-    CohortDefinition pregnant = txNewCohortQueries.getPatientsPregnantEnrolledOnART();
-    CohortDefinition breastfeeding =
-        txNewCohortQueries.getPatientsWhoGaveBirthWithinReportingPeriod();
-    CohortDefinition tbPatients =tbCohortQueries.getPatientsOnTbTreatment();
+    CohortDefinition d2 = getPatientsWhoAreActiveAndUnstable();
 
     cd.addSearch("caUnstable", mapStraightThrough(caUnstable));
-    cd.addSearch("pregnant", mapStraightThrough(pregnant));
-    cd.addSearch("breastfeeding", mapStraightThrough(breastfeeding));
-    cd.addSearch("tbPatients", mapStraightThrough(tbPatients));
+    cd.addSearch("d2", mapStraightThrough(d2));
 
-
-    cd.setCompositionString("caUnstable NOT (pregnant OR breastfeeding OR tbPatients)");
+    cd.setCompositionString("caUnstable AND   d2");
 
     return cd;
   }
