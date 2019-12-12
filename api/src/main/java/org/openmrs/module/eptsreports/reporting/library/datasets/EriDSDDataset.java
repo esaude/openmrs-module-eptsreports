@@ -2,6 +2,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.openmrs.module.eptsreports.reporting.library.cohorts.EriDSDCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
@@ -573,8 +574,75 @@ public class EriDSDDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     eriDSDCohortQueries.getPatientsOnMasterCardAFWhoAreNotEligible(), mappings)),
             mappings),
-        getChildrenZeroTo14YearsColumn());
-
+        getChildrenColumn());
+    dsd.addColumn(
+        "N7T",
+        "N7: Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N7T",
+                EptsReportUtils.map(eriDSDCohortQueries.getActivePatientsOnARTDC(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N7EST",
+        "N7 : Eligible Sub Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N7EST",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getActiveARTEligiblePatientsDC(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N7ENPNBA",
+        "N7: Eligible Non-Pregnant Non-Breastfeeding adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N7ENPNBA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getActiveARTEligiblePatientsDC(), mappings)),
+            mappings),
+        "age=15+");
+    addRow(
+        dsd,
+        "N7ENPNBAC",
+        "N7: Eligible Non-Pregnant Non-Breastfeeding adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N7ENPNBAC",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getActiveARTEligiblePatientsDC(), mappings)),
+            mappings),
+        getChildrenColumn());
+    dsd.addColumn(
+        "N7NEST",
+        "N7 : Non-Eligible Sub-Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N7NEST",
+                EptsReportUtils.map(eriDSDCohortQueries.getActiveInARTUnstableDC(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N7NENPNBA",
+        "N7 : Non-Eligible Non-Pregnant Non-Breastfeeding Adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N7NENPNBA",
+                EptsReportUtils.map(eriDSDCohortQueries.getActiveInARTUnstableDC(), mappings)),
+            mappings),
+        "age=15+");
+    addRow(
+        dsd,
+        "N7NENPNBC",
+        "N7 : Non-eligible Non Pregnant Non Breast Feeding Children",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N7NENPNBC",
+                EptsReportUtils.map(eriDSDCohortQueries.getActiveInARTUnstableDC(), mappings)),
+            mappings),
+        getChildrenColumn());
     addRow(
         dsd,
         "N8E",
@@ -601,7 +669,7 @@ public class EriDSDDataset extends BaseDataSet {
                         .getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndUnStable(),
                     mappings)),
             mappings),
-        getChildrenZeroTo14YearsColumn());
+        getChildrenColumn());
 
     dsd.addColumn(
         "N8NE-05",
@@ -616,6 +684,19 @@ public class EriDSDDataset extends BaseDataSet {
             mappings),
         "age=15+");
 
+    dsd.addColumn(
+        "N8NE-ST",
+        "Active patients on ART who participate in at least one measured DSD model - Not-Eligible(UnStable)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8NE-ST",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndUnStable(),
+                    mappings)),
+            mappings),
+        "");
+    
     addRow(
         dsd,
         "N8E",
@@ -644,7 +725,20 @@ public class EriDSDDataset extends BaseDataSet {
         "age=15+");
 
     dsd.addColumn(
-        "N8T",
+        "N8E-ST",
+        "Active patients on ART who participate in at least one measured DSD model - Eligible(Stable)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8E-ST",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndStable(),
+                    mappings)),
+            mappings),
+        "");
+    
+    dsd.addColumn(
+        "N8-T",
         "Active patients on ART who participate in at least one measured DSD model)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -654,7 +748,6 @@ public class EriDSDDataset extends BaseDataSet {
                     mappings)),
             mappings),
         "");
-
     return dsd;
   }
 
@@ -670,19 +763,5 @@ public class EriDSDDataset extends BaseDataSet {
     ColumnParameters lesThan2 = new ColumnParameters("lesThan2", "<2", "age=<2", "04");
 
     return Arrays.asList(lesThan2, twoTo4, fiveTo9, tenTo14);
-  }
-
-  /**
-   * 0-14 years old children List
-   *
-   * @return
-   */
-  private List<ColumnParameters> getChildrenZeroTo14YearsColumn() {
-    ColumnParameters zeroTo2 = new ColumnParameters("zeroTo2", "<2", "age=<2", "01");
-    ColumnParameters twoTo4 = new ColumnParameters("twoTo4", "2-4", "age=2-4", "02");
-    ColumnParameters fiveTo9 = new ColumnParameters("fiveTo9", "5-9", "age=5-9", "03");
-    ColumnParameters tenTo14 = new ColumnParameters("tenTo14", "10-14", "age=10-14", "04");
-
-    return Arrays.asList(zeroTo2, twoTo4, fiveTo9, tenTo14);
   }
 }
