@@ -18,10 +18,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.Eri2MonthsDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxPvlsDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxRttDataset;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -41,7 +41,7 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 
   @Autowired private TxCurrDataset txCurrDataset;
 
-  @Autowired private Eri2MonthsDataset eri2MonthsDataset;
+  @Autowired private TxRttDataset txRttDataset;
 
   @Autowired protected GenericCohortQueries genericCohortQueries;
 
@@ -62,7 +62,7 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "PEPFAR MER 2.3 Quarterly";
+    return "PEPFAR MER 2.4 Quarterly";
   }
 
   @Override
@@ -77,19 +77,19 @@ public class SetupMERQuarterly extends EptsDataExportManager {
     reportDefinition.setUuid(this.getUuid());
     reportDefinition.setName(this.getName());
     reportDefinition.setDescription(this.getDescription());
-    reportDefinition.setParameters(this.txPvlsDataset.getParameters());
+    reportDefinition.setParameters(this.txRttDataset.getParameters());
+
+    // reportDefinition.addDataSetDefinition("N",
+    // Mapped.mapStraightThrough(this.txNewDataset.constructTxNewDataset()));
+    //
+    // reportDefinition.addDataSetDefinition("C",
+    // Mapped.mapStraightThrough(this.txCurrDataset.constructTxCurrDataset(true)));
+    //
+    // reportDefinition.addDataSetDefinition("P",
+    // Mapped.mapStraightThrough(this.txPvlsDataset.constructTxPvlsDatset()));
 
     reportDefinition.addDataSetDefinition(
-        "N", Mapped.mapStraightThrough(this.txNewDataset.constructTxNewDataset()));
-
-    reportDefinition.addDataSetDefinition(
-        "C", Mapped.mapStraightThrough(this.txCurrDataset.constructTxCurrDataset(true)));
-
-    reportDefinition.addDataSetDefinition(
-        "P", Mapped.mapStraightThrough(this.txPvlsDataset.constructTxPvlsDatset()));
-
-    reportDefinition.addDataSetDefinition(
-        "E", Mapped.mapStraightThrough(this.eri2MonthsDataset.constructEri2MonthsDatset()));
+        "R", Mapped.mapStraightThrough(this.txRttDataset.constructTxRttDataset()));
 
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
@@ -107,8 +107,8 @@ public class SetupMERQuarterly extends EptsDataExportManager {
       reportDesign =
           this.createXlsReportDesign(
               reportDefinition,
-              "PEPFAR_MER_2.3_QUARTERLY.xls",
-              "PEPFAR MER 2.3 Quarterly Report",
+              "PEPFAR_MER_2.4_QUARTERLY.xls",
+              "PEPFAR MER 2.4 Quarterly Report",
               this.getExcelDesignUuid(),
               null);
       final Properties props = new Properties();

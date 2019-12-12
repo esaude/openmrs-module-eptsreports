@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.GlobalProperty;
 import org.openmrs.Program;
@@ -47,16 +48,15 @@ public class EptsReportUtils {
    *
    * @param reportManager the Report Definition
    */
-  public static void purgeReportDefinition(ReportManager reportManager) {
-    ReportDefinition findDefinition = findReportDefinition(reportManager.getUuid());
-    ReportDefinitionService reportService =
-        (ReportDefinitionService) Context.getService(ReportDefinitionService.class);
+  public static void purgeReportDefinition(final ReportManager reportManager) {
+    final ReportDefinition findDefinition = findReportDefinition(reportManager.getUuid());
+    final ReportDefinitionService reportService = Context.getService(ReportDefinitionService.class);
     if (findDefinition != null) {
       reportService.purgeDefinition(findDefinition);
 
       // Purge Global property used to track version of report definition
-      String gpName = "reporting.reportManager." + reportManager.getUuid() + ".version";
-      GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(gpName);
+      final String gpName = "reporting.reportManager." + reportManager.getUuid() + ".version";
+      final GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(gpName);
       if (gp != null) {
         Context.getAdministrationService().purgeGlobalProperty(gp);
       }
@@ -70,9 +70,8 @@ public class EptsReportUtils {
    * @throws RuntimeException a RuntimeException if the Report Definition can't be found
    * @return Report Definition object
    */
-  public static ReportDefinition findReportDefinition(String uuid) {
-    ReportDefinitionService reportService =
-        (ReportDefinitionService) Context.getService(ReportDefinitionService.class);
+  public static ReportDefinition findReportDefinition(final String uuid) {
+    final ReportDefinitionService reportService = Context.getService(ReportDefinitionService.class);
     return reportService.getDefinitionByUuid(uuid);
   }
 
@@ -81,7 +80,7 @@ public class EptsReportUtils {
    *
    * @param reportManager the Report Definition
    */
-  public static void setupReportDefinition(ReportManager reportManager) {
+  public static void setupReportDefinition(final ReportManager reportManager) {
     ReportManagerUtil.setupReport(reportManager);
   }
 
@@ -91,37 +90,40 @@ public class EptsReportUtils {
    * @param <T>
    * @return
    */
-  public static <T extends Parameterizable> Mapped<T> map(T parameterizable, String mappings) {
+  public static <T extends Parameterizable> Mapped<T> map(
+      final T parameterizable, final String mappings) {
     if (parameterizable == null) {
       throw new IllegalArgumentException("Parameterizable cannot be null");
     }
-    String m = mappings != null ? mappings : ""; // probably not necessary, just to be safe
+    final String m = mappings != null ? mappings : ""; // probably not
+    // necessary,
+    // just to be safe
     return new Mapped<T>(parameterizable, ParameterizableUtil.createParameterMappings(m));
   }
 
-  public static String mergeParameterMappings(String... parameters) {
-    if (parameters == null || parameters.length == 0) {
+  public static String mergeParameterMappings(final String... parameters) {
+    if ((parameters == null) || (parameters.length == 0)) {
       throw new ReportingException("parameters are required");
     }
-    LinkedHashSet<String> params = new LinkedHashSet<>();
-    for (String p : parameters) {
+    final LinkedHashSet<String> params = new LinkedHashSet<>();
+    for (final String p : parameters) {
       params.addAll(new LinkedHashSet<String>(Arrays.asList(p.split(","))));
     }
     return StringUtils.join(params, ",");
   }
 
   public static String removeMissingParameterMappingsFromCohortDefintion(
-      CohortDefinition definition, String mappings) {
-    if (definition == null || StringUtils.isEmpty(mappings)) {
+      final CohortDefinition definition, final String mappings) {
+    if ((definition == null) || StringUtils.isEmpty(mappings)) {
       return mappings;
     }
-    Iterator<String> mappingsIterator =
+    final Iterator<String> mappingsIterator =
         new LinkedHashSet<String>(Arrays.asList(mappings.split(","))).iterator();
-    LinkedHashSet<String> existingMappingsSet = new LinkedHashSet<String>();
+    final LinkedHashSet<String> existingMappingsSet = new LinkedHashSet<String>();
     while (mappingsIterator.hasNext()) {
-      String mapping = mappingsIterator.next();
-      for (Parameter p : definition.getParameters()) {
-        String paramMap = "${" + p.getName() + "}";
+      final String mapping = mappingsIterator.next();
+      for (final Parameter p : definition.getParameters()) {
+        final String paramMap = "${" + p.getName() + "}";
         if (mapping.trim().endsWith(paramMap)) {
           existingMappingsSet.add(mapping);
         }
@@ -136,13 +138,13 @@ public class EptsReportUtils {
    *
    * @return
    */
-  public static Parameter getProgramConfigurableParameter(Program program) {
-    List<ProgramWorkflowState> defaultStates = new ArrayList<>();
-    for (ProgramWorkflowState p : program.getAllWorkflows().iterator().next().getStates()) {
+  public static Parameter getProgramConfigurableParameter(final Program program) {
+    final List<ProgramWorkflowState> defaultStates = new ArrayList<>();
+    for (final ProgramWorkflowState p : program.getAllWorkflows().iterator().next().getStates()) {
       defaultStates.add(p);
     }
 
-    Parameter parameter = new Parameter();
+    final Parameter parameter = new Parameter();
     parameter.setName("state");
     parameter.setLabel("States");
     parameter.setType(ProgramWorkflowState.class);
@@ -152,23 +154,30 @@ public class EptsReportUtils {
     return parameter;
   }
 
-  private static Properties getProgramProperties(Program program) {
-    Properties properties = new Properties();
+  private static Properties getProgramProperties(final Program program) {
+    final Properties properties = new Properties();
     properties.put("Program", program.getName());
     return properties;
   }
 
-  public static String formatDateWithTime(Date date) {
+  public static String formatDateWithTime(final Date date) {
 
-    Format formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    final Format formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
     return formatter.format(date);
   }
 
-  public static String formatDate(Date date) {
+  public static String formatDate(final Date date) {
 
-    Format formatter = new SimpleDateFormat("dd-MM-yyyy");
+    final Format formatter = new SimpleDateFormat("dd-MM-yyyy");
 
     return formatter.format(date);
+  }
+
+  public static long getDifferenceInDaysBetweenDates(final Date first, final Date last) {
+    final long diffInMillies = first.getTime() - last.getTime();
+    final long days = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+
+    return days;
   }
 }

@@ -10,6 +10,7 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.DSDCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxRTTCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -22,6 +23,8 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
 
   @Autowired private DSDCohortQueries txNewCohortQueries;
 
+  @Autowired private TxRTTCohortQueries txRTTCohortQueries;
+
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
 
@@ -30,8 +33,7 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
     final Date endDate = DateUtil.getDateTime(2018, 5, 20);
     // final Date reportingEndDate = DateUtil.getDateTime(2018, 9, 20);
 
-    final CohortDefinition txNewCompositionCohort =
-        this.txNewCohortQueries.findPatientsWhoAreActiveOnArtAndInAtleastOneDSD();
+    final CohortDefinition txNewCompositionCohort = this.txRTTCohortQueries.findPatientsOnRTT();
 
     final Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), startDate);
@@ -54,6 +56,6 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
 
   @Override
   protected String password() {
-    return "eSaude123";
+    return "H!$fGH0Mr$";
   }
 }
