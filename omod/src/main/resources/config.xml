@@ -1560,7 +1560,8 @@
 			UUID for the COMPLETO concept
 		</description>
 	</globalProperty>
-<!-- 23748 -->
+
+	<!-- 23748 -->
 	<globalProperty>
 		<property>eptsreports.cytopeniaConceptUuid</property>
 		<defaultValue>b9fe8ecb-a41d-49d3-b6f6-2c381715262d</defaultValue>
@@ -1569,7 +1570,7 @@
 		</description>
 	</globalProperty>
 
-<!-- 23749 -->
+	<!-- 23749 -->
 	<globalProperty>
 		<property>eptsreports.nephrotoxicityConceptUuid</property>
 		<defaultValue>8956c7ea-847a-4f70-91e8-e1cf325b85df</defaultValue>
@@ -1578,7 +1579,7 @@
 		</description>
 	</globalProperty>
 
-<!-- 29 -->
+	<!-- 29 -->
 	<globalProperty>
 		<property>eptsreports.hepatitisConceptUuid</property>
 		<defaultValue>e1cdc68a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -1587,7 +1588,7 @@
 		</description>
 	</globalProperty>
 
-<!-- 23750 -->
+	<!-- 23750 -->
 	<globalProperty>
 		<property>eptsreports.stevensJonhsonSyndromeConceptUuid</property>
 		<defaultValue>d0d485d3-3082-4b1b-a450-6cad31eb56b3</defaultValue>
@@ -1596,7 +1597,7 @@
 		</description>
 	</globalProperty>
 
-<!-- 23751 -->
+	<!-- 23751 -->
 	<globalProperty>
 		<property>eptsreports.hypersensitivityToAbcOrRailConceptUuid</property>
 		<defaultValue>833aba0d-430a-4537-b202-94c32e9a1317</defaultValue>
@@ -1605,7 +1606,7 @@
 		</description>
 	</globalProperty>
 
-<!-- 23752 -->
+	<!-- 23752 -->
 	<globalProperty>
 		<property>eptsreports.hepaticSteatosisWithHyperlactataemiaConceptUuid</property>
 		<defaultValue>da3dea8e-9b35-4025-ad5e-cd9aad7707aa</defaultValue>

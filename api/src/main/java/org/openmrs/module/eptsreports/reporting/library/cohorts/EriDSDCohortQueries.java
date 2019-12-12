@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -781,7 +782,7 @@ public class EriDSDCohortQueries {
 
     return cd;
   }
- 
+
   /**
    * N3 : Get the number of active patients on ART whose next clinical consultation is scheduled
    * 175-190 days after the date of the last clinical consultation
@@ -797,25 +798,60 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
+    CohortDefinition txCurr = txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true);
+    CohortDefinition patientsScheduled = getPatientsScheduled175to190days();
+    CohortDefinition rapidFlow = getPatientsWithStartOrContinueOnRapidFlow();
+
+    String mappings = "onOrBefore=${endDate},location=${location}";
+    cd.addSearch("TxCurr", EptsReportUtils.map(txCurr, mappings));
+    cd.addSearch("scheduledN3", EptsReportUtils.map(patientsScheduled, mappings));
+
+    String rapidFlowMappings =
+        "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
+    cd.addSearch("rapidFlow", EptsReportUtils.map(rapidFlow, rapidFlowMappings));
     cd.addSearch(
-        "TxCurr",
-        EptsReportUtils.map(
-            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
-            "onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "scheduledN3",
-        EptsReportUtils.map(
-            getPatientsScheduled(
-                hivMetadata.getReturnVisitDateConcept(),
-                Arrays.asList(
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
-                    hivMetadata.getAdultoSeguimentoEncounterType()),
-                190,
-                175),
-            "onOrBefore=${endDate},location=${location}"));
-    cd.setCompositionString("TxCurr AND scheduledN3");
+        "completed", EptsReportUtils.map(getPatientsWhoCompletedRapidFlow(), rapidFlowMappings));
+
+    cd.setCompositionString("TxCurr AND (scheduledN3 OR rapidFlow) NOT completed");
 
     return cd;
+  }
+
+  private CohortDefinition getPatientsWhoCompletedRapidFlow() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getRapidFlow());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getCompletedConcept());
+    return cd;
+  }
+
+  private CohortDefinition getPatientsWithStartOrContinueOnRapidFlow() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getRapidFlow());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getStartDrugsConcept());
+    cd.addValue(hivMetadata.getContinueRegimen());
+    return cd;
+  }
+
+  private CohortDefinition getPatientsScheduled175to190days() {
+    int lowerBound = 175;
+    int upperBound = 190;
+    Concept returnVisitDate = hivMetadata.getReturnVisitDateConcept();
+    List<EncounterType> encounterTypes = new ArrayList<>();
+    encounterTypes.add(hivMetadata.getARVPediatriaSeguimentoEncounterType());
+    encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
+    return getPatientsScheduled(returnVisitDate, encounterTypes, upperBound, lowerBound);
   }
 
   /**
@@ -960,71 +996,6 @@ public class EriDSDCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("activeAndStableN3 AND NOT pregnant AND NOT breastfeeding");
-
-    return cd;
-  }
-
-  /**
-   * N3 UNSTABLE: Get Patients who are breastfeeding and not pregnant
-   *
-   * @return
-   */
-  public CohortDefinition getPatientsWhoAreBreastfeedingAndNotPregnantN3() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-
-    cd.setName(
-        "N3 Patients who are breastfeeding: includes all breastfeeding patients excluding pregnant patients");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    cd.addSearch(
-        "breastfeedingN3",
-        EptsReportUtils.map(
-            getBreastfeedingComposition(),
-            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "pregnantN3",
-        EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "activeAndScheduled175To190DaysN3",
-        EptsReportUtils.map(
-            getPatientsWithNextConsultationScheduled175To190Days(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString(
-        "activeAndScheduled175To190DaysN3 AND (breastfeedingN3 AND NOT pregnantN3)");
-
-    return cd;
-  }
-
-  /**
-   * N3 UNSTABLE: Get Patient who are pregnant and includes breastfeeding
-   *
-   * @return
-   */
-  public CohortDefinition getPatientsWhoArePregnantAndBreastfeedingN3() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-
-    cd.setName("N3: Pregnant: includes all pregnant patients");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    cd.addSearch(
-        "pregnantN3",
-        EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "activeAndScheduled175To190DaysN3",
-        EptsReportUtils.map(
-            getPatientsWithNextConsultationScheduled175To190Days(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString("activeAndScheduled175To190DaysN3 AND pregnantN3");
 
     return cd;
   }
