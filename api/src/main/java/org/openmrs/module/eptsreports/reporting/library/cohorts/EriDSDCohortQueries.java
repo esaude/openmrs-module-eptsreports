@@ -1,8 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 import java.util.ArrayList;
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
