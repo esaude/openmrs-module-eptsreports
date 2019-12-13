@@ -1185,7 +1185,7 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-    /**
+  /**
    * N5: Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment)
    * who are in AF
    */
@@ -1725,7 +1725,22 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             getAllPatientsMarkedInLastPuAsIorConFichaClinicaMasterCard(),
             "onOrBefore=${endDate},onOrAfter=${startDate},location=${location}"));
-    cd.setCompositionString("TxCurr AND PU");
+    cd.addSearch(
+        "Preg",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "Breast",
+        EptsReportUtils.map(
+            getBreastfeedingComposition(),
+            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "Tb",
+        EptsReportUtils.map(
+            hivCohortQueries.getPatientsOnTbTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("(TxCurr AND NOT(Preg OR Breast OR Tb)) AND PU");
     return cd;
   }
 
@@ -1770,35 +1785,6 @@ public class EriDSDCohortQueries {
             getAllPatientsWhoAreActiveAndStable(),
             "endDate=${endDate},startDate=${startDate},location=${location}"));
     cd.setCompositionString("TxCurrPu AND Active");
-
-    return cd;
-  }
-
-  /**
-   * Number of active patients on ART and are marked in the last PU as I OR C on Ficha Clinica and
-   * are aligible and NOT on TB treatment
-   *
-   * @return CohortDefinition
-   */
-  public CohortDefinition
-      getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndEligibleAndNotOnTbtreatment() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName(
-        "Number of active patients on ART who are in PU as I or C on ficha clinica and are eligible and NOT on TB treatment");
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addSearch(
-        "eligible",
-        EptsReportUtils.map(
-            getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndEligible(),
-            "endDate=${endDate},startDate=${startDate},location=${location}"));
-    cd.addSearch(
-        "Tb",
-        EptsReportUtils.map(
-            tbCohortQueries.getPatientsOnTbTreatment(),
-            "endDate=${endDate},startDate=${startDate},location=${location}"));
-    cd.setCompositionString("eligible AND NOT Tb");
 
     return cd;
   }

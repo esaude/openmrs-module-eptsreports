@@ -636,7 +636,7 @@ public class EriDSDDataset extends BaseDataSet {
                 "N6EA",
                 EptsReportUtils.map(
                     eriDSDCohortQueries
-                        .getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndEligibleAndNotOnTbtreatment(),
+                        .getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndEligible(),
                     mappings)),
             mappings),
         "age=15+");

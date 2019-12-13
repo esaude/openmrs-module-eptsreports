@@ -598,7 +598,7 @@ public class TXCurrQueries {
     String query =
         "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o "
             + " ON e.encounter_id=o.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d "
-            + " AND o.concept_id=%d AND o.value_coded IN(%d, %d)";
+            + " AND o.concept_id=%d AND o.value_coded IN(%d, %d) AND e.location_id=:location AND e.encounter_datetime BETWEEN :startDate AND :endDate";
     return String.format(
         query, encounterType, lastOnsStopConcept, startDrugsConcept, continueRegimenConcept);
   }
