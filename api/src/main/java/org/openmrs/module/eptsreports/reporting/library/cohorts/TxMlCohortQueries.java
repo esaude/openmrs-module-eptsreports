@@ -22,6 +22,148 @@ public class TxMlCohortQueries {
 
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
 
+  /**
+   * a and b
+   *
+   * @return
+   */
+  public CohortDefinition
+      getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Get patients who missed appointment and are NOT transferred out");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "missedAppointment",
+        EptsReportUtils.map(
+            getAllPatientsWhoMissedNextAppointment(), "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "noScheduledDrugPickupOrNextConsultation",
+        EptsReportUtils.map(
+            txCurrCohortQueries
+                .getPatientWhoAfterMostRecentDateHaveDrugPickupOrConsultationComposition(),
+            "onOrBefore=${endDate},location=${location}"));
+
+    cd.setCompositionString("missedAppointment AND noScheduledDrugPickupOrNextConsultation");
+    return cd;
+  }
+
+  /**
+   * a and b and died
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWhoMissedNextAppointmentAndDiedDuringReportingPeriod() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName(
+        "Get patients who missed appointment and are NOT transferred out, but died during reporting period");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "missedAppointmentLessTransfers",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            getDeadPatientsComposition(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "patientWhoAfterMostRecentDateHaveDrugPickupOrConsultation",
+        EptsReportUtils.map(
+            getPatientWhoAfterMostRecentDateHaveDrugPickupOrConsultation(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+        "missedAppointmentLessTransfers AND dead AND NOT patientWhoAfterMostRecentDateHaveDrugPickupOrConsultation");
+
+    return cd;
+  }
+
+  /**
+   * (from a and b) Refused/Stopped treatment Except patients identified in Dead Disaggregation
+   * Except patients identified in Transferred –out Disaggregation
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName(
+        "Get patients who missed appointment and are NOT dead and NOT transferred out during the reporting period");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "missedAppointmentLessTransfers",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "refusedOrStoppedTreatment",
+        EptsReportUtils.map(
+            getRefusedOrStoppedTreatmentQuery(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            getDeadPatientsComposition(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "transferOut",
+        EptsReportUtils.map(
+            getTransferredOutPatientsComposition(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+        "missedAppointmentLessTransfers AND refusedOrStoppedTreatment AND NOT (dead transferOut)");
+
+    return cd;
+  }
+
+  /**
+   * a, b AND Transferred Out Except all patients who after the most recent date from above
+   * criterias, have a drugs pick up or consultation: Except patients identified in Dead
+   * Disaggregation
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWhoMissedNextAppointmentAndTransferredOut() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName(
+        "Get patients who missed appointment and are transferred out, but died during reporting period");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "missedAppointmentLessTransfers",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "transferOut",
+        EptsReportUtils.map(
+            getTransferredOutPatientsComposition(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "patientWhoAfterMostRecentDateHaveDrugPickupOrConsultation",
+        EptsReportUtils.map(
+            getPatientWhoAfterMostRecentDateHaveDrugPickupOrConsultation(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            getDeadPatientsComposition(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+        "missedAppointmentLessTransfers AND transferOut AND NOT (patientWhoAfterMostRecentDateHaveDrugPickupOrConsultation OR dead) ");
+
+    return cd;
+  }
+
   // a
   public CohortDefinition getAllPatientsWhoMissedNextAppointment() {
     return genericCohortQueries.generalSql(
@@ -34,16 +176,6 @@ public class TxMlCohortQueries {
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
-  }
-
-  public CohortDefinition getTransferOutPatients() {
-    return genericCohortQueries.generalSql(
-        "Transfer out",
-        TxMlQueries.getTransferredOutPatients(
-            hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata
-                .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                .getProgramWorkflowStateId()));
   }
 
   /**
@@ -71,7 +203,40 @@ public class TxMlCohortQueries {
     return sql;
   }
 
-  /** @return */
+  /**
+   * Patients Who have refused or Stopped Treatment Query
+   *
+   * @return
+   */
+  public CohortDefinition getRefusedOrStoppedTreatmentQuery() {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("Patients Who have refused or Stopped Treatment Query");
+    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sql.addParameter(new Parameter("endDate", "End date", Date.class));
+    sql.addParameter(new Parameter("location", "location", Location.class));
+
+    sql.setQuery(
+        TxMlQueries.getRefusedOrStoppedTreatment(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getDefaultingMotiveConcept().getConceptId(),
+            hivMetadata.getPatientIsBedriddenAtHomeConcept().getConceptId(),
+            hivMetadata.getDistanceOrMoneyForTransportIsTooMuchForPatientConcept().getConceptId(),
+            hivMetadata.getPatientIsDissatisfiedWithDayHospitalServicesConcept().getConceptId(),
+            4,
+            5,
+            hivMetadata.getAdverseReaction().getConceptId(),
+            hivMetadata.getPatientIsTreatingHivWithTraditionalMedicineConcept().getConceptId(),
+            hivMetadata.getOtherReasonWhyPatientMissedVisitConcept().getConceptId()));
+
+    return sql;
+  }
+
+  /**
+   * Get Patients Transferred out Using the following criteria:
+   * a:patientsWhoLeftARTProgramBeforeOrOnEndDate b:patientsWithMissedVisitOnMasterCard
+   *
+   * @return
+   */
   public CohortDefinition getTransferredOutPatientsComposition() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Get all patients who are Transferred Out");
@@ -85,19 +250,37 @@ public class TxMlCohortQueries {
             txCurrCohortQueries.getPatientsWhoLeftARTProgramBeforeOrOnEndDate(),
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
-        "patientsWithDrugsPickupOrConsultation",
-        EptsReportUtils.map(
-            txCurrCohortQueries
-                .getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition(),
-            "onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
         "patientsWithMissedVisitOnMasterCard",
         EptsReportUtils.map(
             getPatientsWithMissedVisitOnMasterCardQuery(),
             "startDate=${startDate}, endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "patientsWhoLeftARTProgramBeforeOrOnEndDate OR patientsWithDrugsPickupOrConsultation OR patientsWithMissedVisitOnMasterCard");
+        "patientsWhoLeftARTProgramBeforeOrOnEndDate OR patientsWithMissedVisitOnMasterCard");
+
+    return cd;
+  }
+
+  /**
+   * Get all patients who after most recent Date have drug pickup or consultation
+   *
+   * @return
+   */
+  public CohortDefinition getPatientWhoAfterMostRecentDateHaveDrugPickupOrConsultation() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Get all patients who after most recent Date have drug pickup or consultation");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Date.class));
+
+    cd.addSearch(
+        "patientsWithDrugsPickupOrConsultation",
+        EptsReportUtils.map(
+            txCurrCohortQueries
+                .getPatientWhoAfterMostRecentDateHaveDrugPickupOrConsultationComposition(),
+            "onOrBefore=${endDate},location=${location}"));
+
+    cd.setCompositionString("patientsWithDrugsPickupOrConsultation");
 
     return cd;
   }
@@ -111,9 +294,6 @@ public class TxMlCohortQueries {
    *
    * <p>d. All deaths registered in Ficha Resumo and Ficha Clinica of Master Card by reporting end
    * date
-   *
-   * <p>e. Except all patients who after the most recent date from a to d, have a drugs pick up or
-   * consultation
    *
    * @return
    */
@@ -145,88 +325,9 @@ public class TxMlCohortQueries {
         EptsReportUtils.map(
             txCurrCohortQueries.getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(),
             "onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "patientsWithDrugsPickupOrConsultation",
-        EptsReportUtils.map(
-            txCurrCohortQueries
-                .getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition(),
-            "onOrBefore=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "(deadByPatientProgramState OR deadByPatientDemographics OR deadRegisteredInLastHomeVisitCard OR deadRegisteredInFichaResumoAndFichaClinicaMasterCard) AND NOT patientsWithDrugsPickupOrConsultation");
-
-    return cd;
-  }
-
-  // a and b
-  public CohortDefinition
-      getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("Get patients who missed appointment and are NOT transferred out");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addSearch(
-        "missedAppointment",
-        EptsReportUtils.map(
-            getAllPatientsWhoMissedNextAppointment(), "endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "noScheduledDrugPickupOrNextConsultation",
-        EptsReportUtils.map(
-            txCurrCohortQueries
-                .getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition(),
-            "onOrBefore=${endDate},location=${location}"));
-
-    cd.setCompositionString("missedAppointment AND noScheduledDrugPickupOrNextConsultation");
-    return cd;
-  }
-
-  // a and b and died
-  public CohortDefinition
-  getPatientsWhoMissedNextAppointmentAndDiedDuringReportingPeriod() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName(
-        "Get patients who missed appointment and are NOT transferred out, but died during reporting period");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addSearch(
-        "missedAppointmentLessTransfers",
-        EptsReportUtils.map(
-            getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "dead",
-        EptsReportUtils.map(
-            getDeadPatientsComposition(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString("missedAppointmentLessTransfers AND dead ");
-
-    return cd;
-  }
-
-  // a, b AND Transferred Out
-  public CohortDefinition
-  getPatientsWhoMissedNextAppointmentAndTransferredOut() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName(
-            "Get patients who missed appointment and are NOT transferred out, but died during reporting period");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addSearch(
-            "missedAppointmentLessTransfers",
-            EptsReportUtils.map(
-                    getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-            "transferOut",
-            EptsReportUtils.map(
-                    getTransferredOutPatientsComposition(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString("missedAppointmentLessTransfers AND transferOut ");
+        "deadByPatientProgramState OR deadByPatientDemographics OR deadRegisteredInLastHomeVisitCard OR deadRegisteredInFichaResumoAndFichaClinicaMasterCard");
 
     return cd;
   }

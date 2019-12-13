@@ -200,7 +200,7 @@ public class TxCurrCohortQueries {
         .put(
             "12",
             EptsReportUtils.map(
-                getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition(),
+                getPatientWhoAfterMostRecentDateHaveDrugPickupOrConsultationComposition(),
                 "onOrBefore=${onOrBefore},location=${location}"));
     // section 3
     txCurrComposition
@@ -692,7 +692,7 @@ public class TxCurrCohortQueries {
   @DocumentedDefinition(
       value = "patientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition")
   public CohortDefinition
-      getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition() {
+      getPatientWhoAfterMostRecentDateHaveDrugPickupOrConsultationComposition() {
     SqlCohortDefinition defintion = new SqlCohortDefinition();
 
     defintion.setName("patientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition");

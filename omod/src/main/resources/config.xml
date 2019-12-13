@@ -1505,6 +1505,54 @@
         </description>
     </globalProperty>
 
+    <globalProperty>
+        <property>eptsreports.patientForgotVisitDateConceptUuid</property>
+        <defaultValue>e1e074f6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the PATIENT FORGOT VISIT DATE concept
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>eptsreports.patientIsBedriddenAtHomeConceptUuid</property>
+        <defaultValue>e1e075fa-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the PATIENT IS BEDRIDDEN AT HOME concept
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>eptsreports.distanceOrMoneyForTransportIsTooMuchForPatientConceptUuid</property>
+        <defaultValue>e1e076f4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the DISTANCE OR MONEY FOR TRANSPORT IS TO MUCH FOR PATIENT concept
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>eptsreports.patientIsDissatisfiedWithDayHospitalServicesConceptUuid</property>
+        <defaultValue>e1e079e2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the PATIENT IS DISSATISFIED WITH DAY HOSPITAL SERVICES concept
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>eptsreports.patientIsTreatingHivWithTraditionalMedicineConceptUuid</property>
+        <defaultValue>e1e07cda-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the PATIENT IS TREATING HIV WITH TRADITIONAL MEDICINE concept
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>eptsreports.otherReasonWhyPatientMissedVisitConceptUuid</property>
+        <defaultValue>e1e080cc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the OTHER REASON WHY PATIENT MISSED VISIT concept
+        </description>
+    </globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
