@@ -800,13 +800,6 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // Concept ID 1067
-  public Concept getUnkownConcept() {
-    String uuid =
-        Context.getAdministrationService().getGlobalProperty("eptsreports.unknownConceptUuid");
-    return getConcept(uuid);
-  }
-
   // Concept ID 1306
   public Concept getBeyondDetectableLimitConcept() {
     String uuid =
@@ -852,6 +845,12 @@ public class HivMetadata extends ProgramsMetadata {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.lessThan400CopiesConceptUuid");
+    return getConcept(uuid);
+  }
+  // Concept ID 1067
+  public Concept getUnkownConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.unknownConceptUuid");
     return getConcept(uuid);
   }
 
