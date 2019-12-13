@@ -1572,9 +1572,7 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setQuery(
         DsdQueries.getPatientsParticipatingInDsdModel(
-            hivMetadata.getPrevencaoPositivaInicialEncounterType().getEncounterTypeId(),
-            hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getGaac().getConceptId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getFamilyApproach().getConceptId(),
             hivMetadata.getAccessionClubs().getConceptId(),
             hivMetadata.getSingleStop().getConceptId(),

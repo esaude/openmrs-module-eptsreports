@@ -10,40 +10,46 @@ public class DsdQueries {
     return query;
   }
 
-  public static String getPatientsParticipatingInDsdModel(
-      int prevencaoPositivaInicialEncounterType,
-      int prevencaoPositivaSeguimentoEncounterType,
-      Integer gaac,
+  /*
+   * Get Patients who participate in at least one of teh following measured DSD model (AF, CA, PU, FR, DC)
+   * 
+   * @param adultoSeguimentoEncounterType
+   * @param afConceptId
+   * @param caConceptId
+   * @param puConceptId
+   * @param frConceptId
+   * @param dcConceptId
+   * @param startDrugsConceptId
+   * @param continueRegimenConceptId
+   * 
+   * returns string
+   * */
+  public static String getPatientsParticipatingInAfCaPuFrDcDsdModels(
+      int adultoSeguimentoEncounterType,
       Integer af,
       Integer ca,
       Integer pu,
       Integer fr,
-      Integer dt,
       Integer dc,
-      Integer otherModel,
-      Integer valueCoded1,
-      Integer valueCoded2) {
+      Integer startDrugsConceptId,
+      Integer continueRegimenConceptId) {
 
     String query =
         "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id "
-            + "JOIN obs o ON p.patient_id=o.person_id WHERE e.encounter_id IN (%d,%d) AND o.concept_id "
-            + "IN (%d, %d, %d, %d, %d, %d, %d, %d) "
+            + "JOIN obs o ON p.patient_id=o.person_id WHERE e.encounter_id IN (%d) AND o.concept_id "
+            + "IN (%d, %d, %d, %d, %d) "
             + "AND o.value_coded IN (%d, %d) AND e.encounter_datetime=:endDate";
 
     return String.format(
         query,
-        prevencaoPositivaInicialEncounterType,
-        prevencaoPositivaSeguimentoEncounterType,
-        gaac,
+        adultoSeguimentoEncounterType,
         af,
         ca,
         pu,
         fr,
-        dt,
         dc,
-        otherModel,
-        valueCoded1,
-        valueCoded2);
+        startDrugsConceptId,
+        continueRegimenConceptId);
   }
 
   /**
