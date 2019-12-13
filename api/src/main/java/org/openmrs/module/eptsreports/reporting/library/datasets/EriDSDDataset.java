@@ -384,27 +384,6 @@ public class EriDSDDataset extends BaseDataSet {
             mappings),
         getChildrenColumn());
     dsd.addColumn(
-        "N3UBNP",
-        "N3 Patients who are breastfeeding excluding pregnant patients",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "N3UBNP",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN3(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "N3UPB",
-        "N3: Pregnant: includes breastfeeding patients",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "N3UPB",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoArePregnantAndBreastfeedingN3(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
         "N4T",
         "DSD N4 Total",
         EptsReportUtils.map(
@@ -503,10 +482,153 @@ public class EriDSDDataset extends BaseDataSet {
                     eriDSDCohortQueries.getPatientsWhoArePregnantAndBreastfeedingN4(), mappings)),
             mappings),
         "");
-
+    dsd.addColumn(
+        "N5T",
+        "N5: Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N5T",
+                EptsReportUtils.map(eriDSDCohortQueries.getActivePatientsOnARTAF(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N5EST",
+        "N5: Eligible subtotal",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N5EST",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsOnMasterCardAFWhoAreEligible(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N5ENPNBA",
+        "N5: Eligible Non-pregnant and Non-Breastfeeding Adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N5SNPNBA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsOnMasterCardAFWhoAreEligible(), mappings)),
+            mappings),
+        "age=15+");
+    addRow(
+        dsd,
+        "N5ENPNBC",
+        "N5: Eligible Non-pregnant and Non-Breastfeeding Adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N5ENPNBC",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsOnMasterCardAFWhoAreEligible(), mappings)),
+            mappings),
+        getChildrenColumn());
+    dsd.addColumn(
+        "N5NEST",
+        "N5: Not Eligible subtotal",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N5NEST",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsOnMasterCardAFWhoAreNotEligible(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N5NENPNBA",
+        "N5: Not Eligible Non-pregnant and Non-Breastfeeding Adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N5NENPNBA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsOnMasterCardAFWhoAreNotEligible(), mappings)),
+            mappings),
+        "age=15+");
+    addRow(
+        dsd,
+        "N5NENPNBC",
+        "N5: Not Eligible Non-pregnant and Non-Breastfeeding Adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N5NENPNBC",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsOnMasterCardAFWhoAreNotEligible(), mappings)),
+            mappings),
+        getChildrenColumn());
+    dsd.addColumn(
+        "N7T",
+        "N7: Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N7T",
+                EptsReportUtils.map(eriDSDCohortQueries.getActivePatientsOnARTDC(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N7EST",
+        "N7 : Eligible Sub Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N7EST",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getActiveARTEligiblePatientsDC(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N7ENPNBA",
+        "N7: Eligible Non-Pregnant Non-Breastfeeding adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N7ENPNBA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getActiveARTEligiblePatientsDC(), mappings)),
+            mappings),
+        "age=15+");
+    addRow(
+        dsd,
+        "N7ENPNBAC",
+        "N7: Eligible Non-Pregnant Non-Breastfeeding adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N7ENPNBAC",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getActiveARTEligiblePatientsDC(), mappings)),
+            mappings),
+        getChildrenColumn());
+    dsd.addColumn(
+        "N7NEST",
+        "N7 : Non-Eligible Sub-Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N7NEST",
+                EptsReportUtils.map(eriDSDCohortQueries.getActiveInARTUnstableDC(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N7NENPNBA",
+        "N7 : Non-Eligible Non-Pregnant Non-Breastfeeding Adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N7NENPNBA",
+                EptsReportUtils.map(eriDSDCohortQueries.getActiveInARTUnstableDC(), mappings)),
+            mappings),
+        "age=15+");
+    addRow(
+        dsd,
+        "N7NENPNBC",
+        "N7 : Non-eligible Non Pregnant Non Breast Feeding Children",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N7NENPNBC",
+                EptsReportUtils.map(eriDSDCohortQueries.getActiveInARTUnstableDC(), mappings)),
+            mappings),
+        getChildrenColumn());
     return dsd;
   }
 
+  /**
+   * 2-14 years old children List
+   *
+   * @return
+   */
   private List<ColumnParameters> getChildrenColumn() {
     ColumnParameters twoTo4 = new ColumnParameters("twoTo4", "2-4", "age=2-4", "01");
     ColumnParameters fiveTo9 = new ColumnParameters("fiveTo9", "5-9", "age=5-9", "02");
