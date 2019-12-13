@@ -107,14 +107,15 @@ public class TxMlQueries {
   public static String getRefusedOrStoppedTreatment(
       int homeVisitCardEncounterTypeId,
       int reasonPatientMissedVisitConceptId,
-      int patientIsBedriddenAtHome,
-      int distanceOrMoneyForTransportIsToMuchForPatient,
-      int patientIsDissatifiedWithDayHospitalServices,
-      int fearOfTheProvider,
-      int absenceOfHealthProviderInHealthUnit,
-      int patientDoesNotLikeArvTreatmentSideEffects,
-      int patientIsTreatingHivWithTraditionalMedicine,
-      int otherReasonWhyPatientMissedVisit) {
+      int patientForgotVisitDateConceptId,
+      int patientIsBedriddenAtHomeConceptId,
+      int distanceOrMoneyForTransportIsToMuchForPatientConceptId,
+      int patientIsDissatifiedWithDayHospitalServicesConceptId,
+      int fearOfTheProviderConceptId,
+      int absenceOfHealthProviderInHealthUnitConceptId,
+      int patientDoesNotLikeArvTreatmentSideEffectsConceptId,
+      int patientIsTreatingHivWithTraditionalMedicineConceptId,
+      int otherReasonWhyPatientMissedVisitConceptId) {
 
     String query =
         "SELECT e.patient_id "
@@ -124,22 +125,23 @@ public class TxMlQueries {
             + "               FROM patient p "
             + "   JOIN encounter e ON p.patient_id = e.patient_id "
             + "               WHERE e.encounter_type=%d AND e.location_id = :location "
-            + "                 AND e.encounter_datetime BETWEEN :startDate AND :enddate AND p.voided=0 "
+            + "                 AND e.encounter_datetime BETWEEN :startDate AND :endDate AND p.voided=0 "
             + "               GROUP BY p.patient_id) last "
             + "              ON e.patient_id = last.patient_id AND last.encounter_datetime = e.encounter_datetime "
-            + "WHERE o.concept_id=%d AND o.value_coded IN (2005,2006,2007,2010,23915,23946,2015,2013,2017) AND e.location_id = :location AND e.voided=0 AND o.voided=0 ";
+            + "WHERE o.concept_id=%d AND o.value_coded IN (%d,%d,%d,%d,%d,%d,%d,%d,%d) AND e.location_id = :location AND e.voided=0 AND o.voided=0 ";
 
     return String.format(
         query,
         homeVisitCardEncounterTypeId,
         reasonPatientMissedVisitConceptId,
-        patientIsBedriddenAtHome,
-        distanceOrMoneyForTransportIsToMuchForPatient,
-        patientIsDissatifiedWithDayHospitalServices,
-        fearOfTheProvider,
-        absenceOfHealthProviderInHealthUnit,
-        patientDoesNotLikeArvTreatmentSideEffects,
-        patientIsTreatingHivWithTraditionalMedicine,
-        otherReasonWhyPatientMissedVisit);
+        patientForgotVisitDateConceptId,
+        patientIsBedriddenAtHomeConceptId,
+        distanceOrMoneyForTransportIsToMuchForPatientConceptId,
+        patientIsDissatifiedWithDayHospitalServicesConceptId,
+        fearOfTheProviderConceptId,
+        absenceOfHealthProviderInHealthUnitConceptId,
+        patientDoesNotLikeArvTreatmentSideEffectsConceptId,
+        patientIsTreatingHivWithTraditionalMedicineConceptId,
+        otherReasonWhyPatientMissedVisitConceptId);
   }
 }

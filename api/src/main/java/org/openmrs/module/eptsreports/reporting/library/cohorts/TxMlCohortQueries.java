@@ -188,9 +188,9 @@ public class TxMlCohortQueries {
    */
   public CohortDefinition getPatientsWithMissedVisitOnMasterCardQuery() {
     SqlCohortDefinition sql = new SqlCohortDefinition();
-    sql.setName("Patients With Missed Visist On Master Card Query");
+    sql.setName("Patients With Missed Visit On Master Card Query");
     sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    sql.addParameter(new Parameter("endDate", "End date", Date.class));
+    sql.addParameter(new Parameter("endDate", "End Date", Date.class));
     sql.addParameter(new Parameter("location", "location", Location.class));
 
     sql.setQuery(
@@ -219,6 +219,7 @@ public class TxMlCohortQueries {
         TxMlQueries.getRefusedOrStoppedTreatment(
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getDefaultingMotiveConcept().getConceptId(),
+            hivMetadata.getPatientForgotVisitDateConcept().getConceptId(),
             hivMetadata.getPatientIsBedriddenAtHomeConcept().getConceptId(),
             hivMetadata.getDistanceOrMoneyForTransportIsTooMuchForPatientConcept().getConceptId(),
             hivMetadata.getPatientIsDissatisfiedWithDayHospitalServicesConcept().getConceptId(),
@@ -253,7 +254,7 @@ public class TxMlCohortQueries {
         "patientsWithMissedVisitOnMasterCard",
         EptsReportUtils.map(
             getPatientsWithMissedVisitOnMasterCardQuery(),
-            "startDate=${startDate}, endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
         "patientsWhoLeftARTProgramBeforeOrOnEndDate OR patientsWithMissedVisitOnMasterCard");
@@ -321,7 +322,7 @@ public class TxMlCohortQueries {
             txCurrCohortQueries.getPatientDeathRegisteredInLastHomeVisitCardByReportingEndDate(),
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
-        "deadRegisteredInFichaResumoAndFichaClinicaMasterCard ",
+        "deadRegisteredInFichaResumoAndFichaClinicaMasterCard",
         EptsReportUtils.map(
             txCurrCohortQueries.getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(),
             "onOrBefore=${endDate},location=${location}"));
