@@ -1184,71 +1184,7 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  /**
-   * N4 UNSTABLE: Get Patients who are breastfeeding and not pregnant
-   *
-   * @return
-   */
-  public CohortDefinition getPatientsWhoAreBreastfeedingAndNotPregnantN4() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-
-    cd.setName(
-        "N4 Patients who are breastfeeding: includes all breastfeeding patients excluding pregnant patients");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    cd.addSearch(
-        "breastfeedingN4",
-        EptsReportUtils.map(
-            getBreastfeedingComposition(),
-            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "pregnantN4",
-        EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "activeOnGAACN4",
-        EptsReportUtils.map(
-            getPatientsWhoAreActiveAndParticpatingInGaac(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString("activeOnGAACN4 AND (breastfeedingN4 AND NOT pregnantN4)");
-
-    return cd;
-  }
-
-  /**
-   * N4 UNSTABLE: Get Patient who are pregnant and including breastfeeding
-   *
-   * @return
-   */
-  public CohortDefinition getPatientsWhoArePregnantAndBreastfeedingN4() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-
-    cd.setName("N4: Pregnant: includes all pregnant patients");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    cd.addSearch(
-        "pregnantN4",
-        EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "activeOnGAACN4",
-        EptsReportUtils.map(
-            getPatientsWhoAreActiveAndParticpatingInGaac(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString("activeOnGAACN4 AND pregnantN4");
-
-    return cd;
-  }
-
-  /**
+    /**
    * N5: Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment)
    * who are in AF
    */
