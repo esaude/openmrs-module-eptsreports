@@ -222,8 +222,8 @@ public class TxMlCohortQueries {
             hivMetadata.getPatientIsBedriddenAtHomeConcept().getConceptId(),
             hivMetadata.getDistanceOrMoneyForTransportIsTooMuchForPatientConcept().getConceptId(),
             hivMetadata.getPatientIsDissatisfiedWithDayHospitalServicesConcept().getConceptId(),
-            4,
-            5,
+            hivMetadata.getFearOfTheProviderConcept().getConceptId(),
+            hivMetadata.getAbsenceOfHealthProviderInHealthUnitConcept().getConceptId(),
             hivMetadata.getAdverseReaction().getConceptId(),
             hivMetadata.getPatientIsTreatingHivWithTraditionalMedicineConcept().getConceptId(),
             hivMetadata.getOtherReasonWhyPatientMissedVisitConcept().getConceptId()));

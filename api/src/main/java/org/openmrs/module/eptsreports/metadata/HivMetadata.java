@@ -830,6 +830,22 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id = 23915
+  public Concept getFearOfTheProviderConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.fearOfTheProviderConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 23946
+  public Concept getAbsenceOfHealthProviderInHealthUnitConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.absenceOfHealthProviderInHealthUnitConceptUuid");
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {

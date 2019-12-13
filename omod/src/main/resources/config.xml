@@ -1553,6 +1553,22 @@
         </description>
     </globalProperty>
 
+    <globalProperty>
+        <property>eptsreports.fearOfTheProviderConceptUuid</property>
+        <defaultValue>3c055270-bf64-465a-b649-475dfa1a212d</defaultValue>
+        <description>
+            UUID for the FEAR OF THE PROVIDER concept
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>eptsreports.absenceOfHealthProviderInHealthUnitConceptUuid</property>
+        <defaultValue>558a66da-4900-4313-a02d-4ebb4f9948df</defaultValue>
+        <description>
+            UUID for the Absence of Health Provider in Health Unit concept
+        </description>
+    </globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
