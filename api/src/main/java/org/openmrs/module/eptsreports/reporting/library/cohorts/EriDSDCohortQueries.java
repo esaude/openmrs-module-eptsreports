@@ -674,36 +674,6 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * N2 UNSTABLE: Get number of active on ART whose next ART pick-up is schedule for 83-97 days
-   * after the date of their last ART drug pick-up
-   *
-   * @return
-   */
-  public CohortDefinition getPatientsWhoAreActiveWithNextPickupAs3MonthsAndUnstable() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    cd.addSearch(
-        "patientsWithNextPickupDate",
-        EptsReportUtils.map(
-            getPatientsWhoAreActiveWithNextPickupAs3Months(),
-            "endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "patientsWhoAreStable",
-        EptsReportUtils.map(
-            getPatientsWhoAreStable(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString(
-        "patientsWithNextPickupDate AND NOT patientsWhoAreStable ");
-
-    return cd;
-  }
-
-  /**
    * N2: Stable Patients who are Non-pregnant and Non-Breastfeeding
    *
    * @return
@@ -746,16 +716,6 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "breastfeeding",
-        EptsReportUtils.map(
-            getBreastfeedingComposition(),
-            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "pregnant",
-        EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
-    cd.addSearch(
         "patientsWithNextPickupDate",
         EptsReportUtils.map(
             getPatientsWhoAreActiveWithNextPickupAs3Months(),
@@ -765,6 +725,16 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             getPatientsWhoAreActiveWithNextPickupAs3MonthsAndStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "pregnant",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "breastfeeding",
+        EptsReportUtils.map(
+            getBreastfeedingComposition(),
+            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
 
     cd.setCompositionString(
         "patientsWithNextPickupDate AND NOT patientsWhoAreStable AND NOT pregnant AND NOT breastfeeding");
