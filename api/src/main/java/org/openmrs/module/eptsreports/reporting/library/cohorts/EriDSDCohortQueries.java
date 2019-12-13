@@ -1746,6 +1746,49 @@ public class EriDSDCohortQueries {
     cd.setCompositionString("(TxCurr AND NOT(Preg OR Breast OR Tb)) AND PU");
     return cd;
   }
+  /**
+   * Number of active patients on ART and are marked in the last PU as I OR C on Ficha Clinica
+   * Number of active patients on ART (Non-pregnant and Non-Breastfeeding including those on TB
+   * treatment) who are in PU
+   *
+   * @retturn CohortDefinition
+   */
+  public CohortDefinition
+      getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaNonPregnantAndNonBreastfeedingIncludeThoseOnTb() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Number of active patients on ART who are in PU as I or C on ficha clinica");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "TxCurr",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getTxCurrCompositionCohort("TxCurr", true),
+            "onOrBefore=${endDate},location=${location},locations=${locations}"));
+    cd.addSearch(
+        "PU",
+        EptsReportUtils.map(
+            getAllPatientsMarkedInLastPuAsIorConFichaClinicaMasterCard(),
+            "onOrBefore=${endDate},onOrAfter=${startDate},location=${location}"));
+    cd.addSearch(
+        "Preg",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "Breast",
+        EptsReportUtils.map(
+            getBreastfeedingComposition(),
+            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "Tb",
+        EptsReportUtils.map(
+            hivCohortQueries.getPatientsOnTbTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("(TxCurr AND NOT(Preg OR Breast)) AND PU");
+    return cd;
+  }
 
   private CohortDefinition getAllPatientsMarkedInLastPuAsIorConFichaClinicaMasterCard() {
     SqlCohortDefinition sql = new SqlCohortDefinition();
@@ -1780,19 +1823,14 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "TxCurrPu",
         EptsReportUtils.map(
-            getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaNonPregnantAndNonBreastfeedingAndNotOnTb(),
+            getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaNonPregnantAndNonBreastfeedingIncludeThoseOnTb(),
             "endDate=${endDate},startDate=${startDate},location=${location}"));
     cd.addSearch(
         "Active",
         EptsReportUtils.map(
             getAllPatientsWhoAreActiveAndStable(),
             "endDate=${endDate},startDate=${startDate},location=${location}"));
-    cd.addSearch(
-        "Tb",
-        EptsReportUtils.map(
-            hivCohortQueries.getPatientsOnTbTreatment(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.setCompositionString("(TxCurrPu OR Tb) AND Active");
+    cd.setCompositionString("TxCurrPu AND Active");
 
     return cd;
   }
@@ -1814,19 +1852,14 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "TxCurrPu",
         EptsReportUtils.map(
-            getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaNonPregnantAndNonBreastfeedingAndNotOnTb(),
+            getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaNonPregnantAndNonBreastfeedingIncludeThoseOnTb(),
             "endDate=${endDate},startDate=${startDate},location=${location}"));
     cd.addSearch(
         "NotActive",
         EptsReportUtils.map(
             getPatientsWhoAreActiveAndUnstable(),
             "endDate=${endDate},startDate=${startDate},location=${location}"));
-    cd.addSearch(
-        "Tb",
-        EptsReportUtils.map(
-            hivCohortQueries.getPatientsOnTbTreatment(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.setCompositionString("(TxCurrPu OR Tb) AND NotActive");
+    cd.setCompositionString("TxCurrPu AND NotActive");
 
     return cd;
   }
