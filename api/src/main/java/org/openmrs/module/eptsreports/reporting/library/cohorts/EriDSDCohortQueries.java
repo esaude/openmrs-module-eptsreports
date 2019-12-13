@@ -692,23 +692,13 @@ public class EriDSDCohortQueries {
             getPatientsWhoAreActiveWithNextPickupAs3Months(),
             "endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "breastfeeding",
-        EptsReportUtils.map(
-            getBreastfeedingComposition(),
-            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "pregnant",
-        EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
-    cd.addSearch(
         "patientsWhoAreStable",
         EptsReportUtils.map(
             getPatientsWhoAreStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "patientsWithNextPickupDate AND NOT(patientsWhoAreStable OR breastfeeding OR pregnant)");
+        "patientsWithNextPickupDate AND NOT patientsWhoAreStable ");
 
     return cd;
   }
@@ -736,18 +726,8 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             getAllPatientsWhoAreActiveAndStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-            "breastfeeding",
-            EptsReportUtils.map(
-                    getBreastfeedingComposition(),
-                    "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-            "pregnant",
-            EptsReportUtils.map(
-                    txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-                    "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("activeAndStableN2 AND eligiblePatientsD1 AND NOT(breastfeeding OR pregnant)");
+    cd.setCompositionString("activeAndStableN2 AND eligiblePatientsD1");
 
     return cd;
   }
