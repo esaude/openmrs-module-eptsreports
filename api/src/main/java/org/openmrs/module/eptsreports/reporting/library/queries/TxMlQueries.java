@@ -93,7 +93,7 @@ public class TxMlQueries {
             + "                 AND e.encounter_type= %d "
             + "                 AND e.encounter_datetime BETWEEN :startDate AND :endDate AND p.voided=0 "
             + "               GROUP BY p.patient_id) last "
-            + "              ON e.patient_id = last.patient_id AND last.encounter_datetime <= :endDate "
+            + "              ON e.patient_id = last.patient_id AND last.encounter_datetime = e.encounter_datetime "
             + "WHERE o.value_coded IN (%d,%d) AND e.location_id = :location AND e.voided=0 AND o.voided=0 ";
 
     return String.format(
