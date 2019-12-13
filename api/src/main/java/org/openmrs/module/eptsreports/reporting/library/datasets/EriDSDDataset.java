@@ -605,32 +605,19 @@ public class EriDSDDataset extends BaseDataSet {
     // Start of N6 columns
     dsd.addColumn(
         "TN6",
-        "Total-N6: include all patients from 2",
+        "Total-N6: include all patients from 2 - Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in PU - a",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "TN6",
                 EptsReportUtils.map(
                     eriDSDCohortQueries
-                        .getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinica(),
+                        .getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaNonPregnantAndNonBreastfeedingAndNotOnTb(),
                     mappings)),
             mappings),
         "");
-    addRow(
-        dsd,
-        "N6NE",
-        "N6: Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in PU and are Eligible",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "N6N",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries
-                        .getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndEligible(),
-                    mappings)),
-            mappings),
-        dsdN6Disag());
     dsd.addColumn(
         "N6EA",
-        "DSD N6 stable Non-pregnant and Non-Breastfeeding Adults (>=15) NOT on TB treatment",
+        "DSD N6 stable Non-pregnant and Non-Breastfeeding Adults (>=15) NOT on TB treatment ii",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "N6EA",
@@ -640,6 +627,19 @@ public class EriDSDDataset extends BaseDataSet {
                     mappings)),
             mappings),
         "age=15+");
+    addRow(
+        dsd,
+        "N6NE",
+        "N6: Number of active patients on ART (Non-pregnant and Non-Breastfeeding ) who are in PU and are Eligible -  iii",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N6NE",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndEligible(),
+                    mappings)),
+            mappings),
+        dsdN6Disag());
 
     addRow(
         dsd,

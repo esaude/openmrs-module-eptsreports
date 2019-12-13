@@ -1705,10 +1705,13 @@ public class EriDSDCohortQueries {
 
   /**
    * Number of active patients on ART and are marked in the last PU as I OR C on Ficha Clinica
+   * Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who
+   * are in PU
    *
    * @retturn CohortDefinition
    */
-  public CohortDefinition getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinica() {
+  public CohortDefinition
+      getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaNonPregnantAndNonBreastfeedingAndNotOnTb() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Number of active patients on ART who are in PU as I or C on ficha clinica");
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1777,14 +1780,19 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "TxCurrPu",
         EptsReportUtils.map(
-            getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinica(),
+            getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaNonPregnantAndNonBreastfeedingAndNotOnTb(),
             "endDate=${endDate},startDate=${startDate},location=${location}"));
     cd.addSearch(
         "Active",
         EptsReportUtils.map(
             getAllPatientsWhoAreActiveAndStable(),
             "endDate=${endDate},startDate=${startDate},location=${location}"));
-    cd.setCompositionString("TxCurrPu AND Active");
+    cd.addSearch(
+        "Tb",
+        EptsReportUtils.map(
+            hivCohortQueries.getPatientsOnTbTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("(TxCurrPu OR Tb) AND Active");
 
     return cd;
   }
@@ -1806,14 +1814,19 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "TxCurrPu",
         EptsReportUtils.map(
-            getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinica(),
+            getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaNonPregnantAndNonBreastfeedingAndNotOnTb(),
             "endDate=${endDate},startDate=${startDate},location=${location}"));
     cd.addSearch(
         "NotActive",
         EptsReportUtils.map(
             getPatientsWhoAreActiveAndUnstable(),
             "endDate=${endDate},startDate=${startDate},location=${location}"));
-    cd.setCompositionString("TxCurrPu AND NotActive");
+    cd.addSearch(
+        "Tb",
+        EptsReportUtils.map(
+            hivCohortQueries.getPatientsOnTbTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("(TxCurrPu OR Tb) AND NotActive");
 
     return cd;
   }
