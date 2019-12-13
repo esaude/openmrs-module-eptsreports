@@ -79,6 +79,33 @@ public class TxMlDataset extends BaseDataSet {
                     mappings)),
             mappings),
         getColumnsForAgeAndGender());
+    // Transferred Out
+    addRow(
+        dsd,
+        "M5",
+        "TransferredOut",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "missed and TransferredOut",
+                EptsReportUtils.map(
+                    txMlCohortQueries.getPatientsWhoMissedNextAppointmentAndTransferredOut(),
+                    mappings)),
+            mappings),
+        getColumnsForAgeAndGender());
+    // Refused Or Stopped Treatment
+    addRow(
+        dsd,
+        "M6",
+        "RefusedOrStoppedTreatment",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "missed and RefusedOrStoppedTreatment",
+                EptsReportUtils.map(
+                    txMlCohortQueries
+                        .getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment(),
+                    mappings)),
+            mappings),
+        getColumnsForAgeAndGender());
 
     return dsd;
   }
