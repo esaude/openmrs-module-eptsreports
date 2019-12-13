@@ -384,27 +384,6 @@ public class EriDSDDataset extends BaseDataSet {
             mappings),
         getChildrenColumn());
     dsd.addColumn(
-        "N3UBNP",
-        "N3 Patients who are breastfeeding excluding pregnant patients",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "N3UBNP",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreBreastfeedingAndNotPregnantN3(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "N3UPB",
-        "N3: Pregnant: includes breastfeeding patients",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "N3UPB",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoArePregnantAndBreastfeedingN3(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
         "N4T",
         "DSD N4 Total",
         EptsReportUtils.map(
