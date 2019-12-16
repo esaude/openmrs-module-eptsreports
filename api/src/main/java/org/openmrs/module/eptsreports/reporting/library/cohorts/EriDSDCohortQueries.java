@@ -16,6 +16,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.dsd.NextAndPrevDates
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.OnArtForAtleastXmonthsCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.DsdQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.TXCurrQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.RangeComparator;
@@ -1184,7 +1185,7 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-    /**
+  /**
    * N5: Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment)
    * who are in AF
    */
@@ -1699,6 +1700,167 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getTypeOfDispensationConcept());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getQuarterlyConcept());
+    return cd;
+  }
+
+  /**
+   * Number of active patients on ART and are marked in the last PU as I OR C on Ficha Clinica
+   * Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who
+   * are in PU
+   *
+   * @retturn CohortDefinition
+   */
+  public CohortDefinition
+      getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaNonPregnantAndNonBreastfeedingAndNotOnTb() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Number of active patients on ART who are in PU as I or C on ficha clinica");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "TxCurr",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getTxCurrCompositionCohort("TxCurr", true),
+            "onOrBefore=${endDate},location=${location},locations=${locations}"));
+    cd.addSearch(
+        "PU",
+        EptsReportUtils.map(
+            getAllPatientsMarkedInLastPuAsIorConFichaClinicaMasterCard(),
+            "onOrBefore=${endDate},onOrAfter=${startDate},location=${location}"));
+    cd.addSearch(
+        "Preg",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "Breast",
+        EptsReportUtils.map(
+            getBreastfeedingComposition(),
+            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "Tb",
+        EptsReportUtils.map(
+            hivCohortQueries.getPatientsOnTbTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("(TxCurr AND NOT(Preg OR Breast OR Tb)) AND PU");
+    return cd;
+  }
+  /**
+   * Number of active patients on ART and are marked in the last PU as I OR C on Ficha Clinica
+   * Number of active patients on ART (Non-pregnant and Non-Breastfeeding including those on TB
+   * treatment) who are in PU
+   *
+   * @retturn CohortDefinition
+   */
+  public CohortDefinition
+      getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaNonPregnantAndNonBreastfeedingIncludeThoseOnTb() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Number of active patients on ART who are in PU as I or C on ficha clinica");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "TxCurr",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getTxCurrCompositionCohort("TxCurr", true),
+            "onOrBefore=${endDate},location=${location},locations=${locations}"));
+    cd.addSearch(
+        "PU",
+        EptsReportUtils.map(
+            getAllPatientsMarkedInLastPuAsIorConFichaClinicaMasterCard(),
+            "onOrBefore=${endDate},onOrAfter=${startDate},location=${location}"));
+    cd.addSearch(
+        "Preg",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "Breast",
+        EptsReportUtils.map(
+            getBreastfeedingComposition(),
+            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "Tb",
+        EptsReportUtils.map(
+            hivCohortQueries.getPatientsOnTbTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("(TxCurr AND NOT(Preg OR Breast)) AND PU");
+    return cd;
+  }
+
+  private CohortDefinition getAllPatientsMarkedInLastPuAsIorConFichaClinicaMasterCard() {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName(
+        "All patients marked in last “Paragen Unica (PU)” as Iniciar (I) or Continua (C) on Ficha Clinica – Master Card");
+    sql.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    sql.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    sql.addParameter(new Parameter("location", "Location", Location.class));
+    sql.setQuery(
+        TXCurrQueries.getAllPatientsMarkedInLastPuAsIOrConFichaClinicaMasterCard(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getSingleStop().getConceptId(),
+            hivMetadata.getStartDrugs().getConceptId(),
+            hivMetadata.getContinueRegimen().getConceptId()));
+    return sql;
+  }
+
+  /**
+   * Number of active patients on ART and are marked in the last PU as I OR C on Ficha Clinica and
+   * are aligible
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition
+      getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndEligible() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName(
+        "Number of active patients on ART who are in PU as I or C on ficha clinica and are eligible");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "TxCurrPu",
+        EptsReportUtils.map(
+            getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaNonPregnantAndNonBreastfeedingIncludeThoseOnTb(),
+            "endDate=${endDate},startDate=${startDate},location=${location}"));
+    cd.addSearch(
+        "Active",
+        EptsReportUtils.map(
+            getAllPatientsWhoAreActiveAndStable(),
+            "endDate=${endDate},startDate=${startDate},location=${location}"));
+    cd.setCompositionString("TxCurrPu AND Active");
+
+    return cd;
+  }
+
+  /**
+   * Number of active patients on ART and are marked in the last PU as I OR C on Ficha Clinica and
+   * are NO Eligible
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition
+      getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndNotEligible() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName(
+        "Number of active patients on ART who are in PU as I or C on ficha clinica and are NOT eligible");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "TxCurrPu",
+        EptsReportUtils.map(
+            getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaNonPregnantAndNonBreastfeedingIncludeThoseOnTb(),
+            "endDate=${endDate},startDate=${startDate},location=${location}"));
+    cd.addSearch(
+        "NotActive",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveAndUnstable(),
+            "endDate=${endDate},startDate=${startDate},location=${location}"));
+    cd.setCompositionString("TxCurrPu AND NotActive");
+
     return cd;
   }
 }
