@@ -262,7 +262,7 @@ public class TxPvlsCohortQueries {
         EptsReportUtils.map(
             getPatientsWhoAreOnRoutine(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.setCompositionString("results AND5NOT routine");
+    cd.setCompositionString("results AND NOT routine");
     return cd;
   }
 
