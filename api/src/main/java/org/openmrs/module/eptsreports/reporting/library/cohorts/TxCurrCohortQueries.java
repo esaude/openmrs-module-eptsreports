@@ -200,7 +200,7 @@ public class TxCurrCohortQueries {
         .put(
             "12",
             EptsReportUtils.map(
-                getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition(),
+                getPatientWhoAfterMostRecentDateHaveDrugPickupOrConsultationComposition(),
                 "onOrBefore=${onOrBefore},location=${location}"));
     // section 3
     txCurrComposition
@@ -545,7 +545,7 @@ public class TxCurrCohortQueries {
    *     transferred to, stopped and abandoned (patient state 10, 7, 8 or 9)
    */
   @DocumentedDefinition(value = "leftARTProgramBeforeOrOnEndDate")
-  private CohortDefinition getPatientsWhoLeftARTProgramBeforeOrOnEndDate() {
+  public CohortDefinition getPatientsWhoLeftARTProgramBeforeOrOnEndDate() {
     SqlCohortDefinition leftARTProgramBeforeOrOnEndDate = new SqlCohortDefinition();
     leftARTProgramBeforeOrOnEndDate.setName("leftARTProgramBeforeOrOnEndDate");
 
@@ -692,7 +692,7 @@ public class TxCurrCohortQueries {
   @DocumentedDefinition(
       value = "patientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition")
   public CohortDefinition
-      getPatientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition() {
+      getPatientWhoAfterMostRecentDateHaveDrugPickupOrConsultationComposition() {
     SqlCohortDefinition defintion = new SqlCohortDefinition();
 
     defintion.setName("patientWhoAfterMostRecentDateHaveDrusPickupOrConsultationComposition");
