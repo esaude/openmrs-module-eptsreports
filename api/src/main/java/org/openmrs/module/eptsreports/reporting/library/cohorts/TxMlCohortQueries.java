@@ -259,6 +259,115 @@ public class TxMlCohortQueries {
     return cd;
   }
 
+  /** @return
+   *
+   * Lost to Follow-Up After being on Treatment for <3 months
+   */
+  public CohortDefinition getPatientsLTFULessThan3MonthsComposition() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("Get patients who are Lost To Follow Up Composition");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "missedAppointment",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "untracedPatients",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndUntraced(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "tracedPatients",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndTraced(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "C1",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            getDeadPatientsComposition(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "transferredOut",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndTransferredOut(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "refusedOrStopped",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+        "missedAppointment AND ((untracedPatients OR tracedPatients) AND C1) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
+
+    return cd;
+  }
+
+
+  /** @return
+   *
+   * Lost to Follow-Up After being on Treatment for >3 months
+   */
+  public CohortDefinition getPatientsLTFUGreaterThan3MonthsComposition() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("Get patients who are Lost To Follow Up Composition");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+            "missedAppointment",
+            EptsReportUtils.map(
+                    getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "untracedPatients",
+            EptsReportUtils.map(
+                    getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndUntraced(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "tracedPatients",
+            EptsReportUtils.map(
+                    getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndTraced(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "C2",
+            EptsReportUtils.map(
+                    getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "dead",
+            EptsReportUtils.map(
+                    getDeadPatientsComposition(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "transferredOut",
+            EptsReportUtils.map(
+                    getPatientsWhoMissedNextAppointmentAndTransferredOut(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "refusedOrStopped",
+            EptsReportUtils.map(
+                    getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+            "missedAppointment AND ((untracedPatients OR tracedPatients) AND C2) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
+
+    return cd;
+  }
+
   /**
    * Get Patients Transferred out Using the following criteria:
    * a:patientsWhoLeftARTProgramBeforeOrOnEndDate b:patientsWithMissedVisitOnMasterCard
@@ -405,6 +514,7 @@ public class TxMlCohortQueries {
     cd.setCompositionString("missedAppointment AND NOT transferOut");
     return cd;
   }
+
 
   /*
    * Untraced Patients Criteria 2 Patients with a visit card of type busca with certain set of observations
