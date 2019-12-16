@@ -163,73 +163,101 @@ public class TxMlCohortQueries {
 
     return cd;
   }
-
-  // a
-  public CohortDefinition getAllPatientsWhoMissedNextAppointment() {
-    return genericCohortQueries.generalSql(
-        "Missed Next appointment",
-        TxMlQueries.getPatientsWhoMissedAppointment(
-            28,
-            183,
-            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
-            hivMetadata.getReturnVisitDateConcept().getConceptId(),
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
+  // a and b and Not Consented
+  public CohortDefinition
+  getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndNotConsentedDuringReportingPeriod() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName(
+            "Get patients who missed appointment and are NOT transferred out, and NOT Consented during reporting period");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+            "missedAppointmentLessTransfers",
+            EptsReportUtils.map(
+                    getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "notConsented",
+            EptsReportUtils.map(getNonConsentedPatients(), "endDate=${endDate},location=${location}"));
+    cd.setCompositionString("missedAppointmentLessTransfers AND notConsented");
+    return cd;
   }
 
-  /**
-   * Patients who have REASON PATIENT MISSED VISIT (MOTIVOS DA FALTA) as “Transferido para outra US”
-   * or “Auto-transferencia” marked last Home Visit Card occurred during the reporting period. Use
-   * the “data da visita” when the patient reason was marked on the home visit card as the reference
-   * date
-   *
-   * @return
-   */
-  public CohortDefinition getPatientsWithMissedVisitOnMasterCardQuery() {
-    SqlCohortDefinition sql = new SqlCohortDefinition();
-    sql.setName("Patients With Missed Visit On Master Card Query");
-    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    sql.addParameter(new Parameter("endDate", "End Date", Date.class));
-    sql.addParameter(new Parameter("location", "location", Location.class));
 
-    sql.setQuery(
-        TxMlQueries.getPatientsWithMissedVisitOnMasterCard(
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getDefaultingMotiveConcept().getConceptId(),
-            hivMetadata.getTransferredOutConcept().getConceptId(),
-            hivMetadata.getAutoTransferConcept().getConceptId()));
+  // a and b and Traced (Unable to locate)
+  public CohortDefinition getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndTraced() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
-    return sql;
+    cd.setName(
+            "Get patients who missed next appointment, not transferred out and traced (Unable to locate)");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+            "missedAppointmentLessTransfers",
+            EptsReportUtils.map(
+                    getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "patientsNotFound",
+            EptsReportUtils.map(
+                    getPatientsTracedAndNotFound(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "patientsFound",
+            EptsReportUtils.map(
+                    getPatientTracedAndFound(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "dead",
+            EptsReportUtils.map(
+                    getDeadPatientsComposition(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+            "missedAppointmentLessTransfers AND (patientsNotFound AND NOT patientsFound) AND NOT dead");
+
+    return cd;
   }
 
-  /**
-   * Patients Who have refused or Stopped Treatment Query
-   *
-   * @return
+  /*
+   * a and b and Untraced Patients
    */
-  public CohortDefinition getRefusedOrStoppedTreatmentQuery() {
-    SqlCohortDefinition sql = new SqlCohortDefinition();
-    sql.setName("Patients Who have refused or Stopped Treatment Query");
-    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    sql.addParameter(new Parameter("endDate", "End date", Date.class));
-    sql.addParameter(new Parameter("location", "location", Location.class));
+  public CohortDefinition getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndUntraced() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
-    sql.setQuery(
-        TxMlQueries.getRefusedOrStoppedTreatment(
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getDefaultingMotiveConcept().getConceptId(),
-            hivMetadata.getPatientForgotVisitDateConcept().getConceptId(),
-            hivMetadata.getPatientIsBedriddenAtHomeConcept().getConceptId(),
-            hivMetadata.getDistanceOrMoneyForTransportIsTooMuchForPatientConcept().getConceptId(),
-            hivMetadata.getPatientIsDissatisfiedWithDayHospitalServicesConcept().getConceptId(),
-            hivMetadata.getFearOfTheProviderConcept().getConceptId(),
-            hivMetadata.getAbsenceOfHealthProviderInHealthUnitConcept().getConceptId(),
-            hivMetadata.getAdverseReaction().getConceptId(),
-            hivMetadata.getPatientIsTreatingHivWithTraditionalMedicineConcept().getConceptId(),
-            hivMetadata.getOtherReasonWhyPatientMissedVisitConcept().getConceptId()));
+    cd.setName("Get patients who missed next appointment, not transferred out and untraced");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    return sql;
+    cd.addSearch(
+            "missedAppointmentLessTransfers",
+            EptsReportUtils.map(
+                    getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "withoutVisitCard",
+            EptsReportUtils.map(
+                    getPatientsWithoutVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "withVisitCardandWithObs",
+            EptsReportUtils.map(
+                    getPatientsWithVisitCardAndWithObs(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "dead",
+            EptsReportUtils.map(
+                    getDeadPatientsComposition(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+            "missedAppointmentLessTransfers AND (withoutVisitCard OR NOT withVisitCardandWithObs) AND NOT dead");
+
+    return cd;
   }
 
   /**
@@ -331,5 +359,250 @@ public class TxMlCohortQueries {
         "deadByPatientProgramState OR deadByPatientDemographics OR deadRegisteredInLastHomeVisitCard OR deadRegisteredInFichaResumoAndFichaClinicaMasterCard");
 
     return cd;
+  }
+
+  public CohortDefinition getNonConsentedPatients() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Not Consented and Not dead");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+            "nonConsented",
+            EptsReportUtils.map(
+                    genericCohortQueries.generalSql(
+                            "Non Consented patients",
+                            TxMlQueries.getNonConsentedPatients(
+                                    hivMetadata.getPrevencaoPositivaInicialEncounterType().getEncounterTypeId(),
+                                    hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId(),
+                                    hivMetadata.getAcceptContactConcept().getConceptId(),
+                                    hivMetadata.getNoConcept().getConceptId())),
+                    "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "dead",
+            EptsReportUtils.map(
+                    getDeadPatientsComposition(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("nonConsented AND NOT dead");
+    return cd;
+  }
+
+  // a and b
+  public CohortDefinition getPatientsWhoMissedNextAppointmentAndNotTransferredOut() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Get patients who missed appointment and are NOT transferred out");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+            "missedAppointment",
+            EptsReportUtils.map(
+                    getAllPatientsWhoMissedNextAppointment(), "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+            "transferOut",
+            EptsReportUtils.map(getTransferOutPatients(), "endDate=${endDate},location=${location}"));
+    cd.setCompositionString("missedAppointment AND NOT transferOut");
+    return cd;
+  }
+
+
+  /*
+   * Untraced Patients Criteria 2 Patients with a visit card of type busca with certain set of observations
+   */
+  public CohortDefinition getPatientsWithVisitCardAndWithObs() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+
+    sqlCohortDefinition.setName("Get patients without Visit Card but with a set of observations");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    sqlCohortDefinition.setQuery(
+            TxMlQueries.getPatientsWithVisitCardAndWithObs(
+                    hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+                    hivMetadata.getReturnVisitDateConcept().getConceptId(),
+                    hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+                    hivMetadata.getVisitaApoioReintegracaoParteAEncounterType().getEncounterTypeId(),
+                    hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId(),
+                    hivMetadata.getTypeOfVisitConcept().getConceptId(),
+                    hivMetadata.getBuscaConcept().getConceptId(),
+                    hivMetadata.getSecondAttemptConcept().getConceptId(),
+                    hivMetadata.getThirdAttemptConcept().getConceptId(),
+                    hivMetadata.getPatientFoundConcept().getConceptId(),
+                    hivMetadata.getDefaultingMotiveConcept().getConceptId(),
+                    hivMetadata.getReportOfVisitSupportConcept().getConceptId(),
+                    hivMetadata.getPatientHadDifficultyConcept().getConceptId(),
+                    hivMetadata.getPatientFoundForwardedConcept().getConceptId(),
+                    hivMetadata.getReasonPatientNotFound().getConceptId(),
+                    hivMetadata.getWhoGaveInformationConcept().getConceptId(),
+                    hivMetadata.getCardDeliveryDateConcept().getConceptId()));
+
+    return sqlCohortDefinition;
+  }
+
+  /*
+   * Untraced Patients Criteria 2 All Patients without “Patient Visit Card”
+   * registered between the last scheduled appointment or drugs pick up by
+   * reporting end date and the reporting end date
+   */
+  public CohortDefinition
+  getPatientsWithoutVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+
+    sqlCohortDefinition.setName(
+            "Get patients without Visit Card registered between the last scheduled appointment or drugs pick up by reporting end date and the reporting end date");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    sqlCohortDefinition.setQuery(
+            TxMlQueries.getPatientsWithoutVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(
+                    hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+                    hivMetadata.getReturnVisitDateConcept().getConceptId(),
+                    hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+                    hivMetadata.getVisitaApoioReintegracaoParteAEncounterType().getEncounterTypeId(),
+                    hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId()));
+
+    return sqlCohortDefinition;
+  }
+
+  public CohortDefinition getTransferOutPatients() {
+    return genericCohortQueries.generalSql(
+            "Transfer out",
+            TxMlQueries.getTransferredOutPatients(
+                    hivMetadata.getARTProgram().getProgramId(),
+                    hivMetadata
+                            .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                            .getProgramWorkflowStateId()));
+  }
+
+  // a
+  public CohortDefinition getAllPatientsWhoMissedNextAppointment() {
+    return genericCohortQueries.generalSql(
+            "Missed Next appointment",
+            TxMlQueries.getPatientsWhoMissedAppointment(
+                    28,
+                    183,
+                    hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+                    hivMetadata.getReturnVisitDateConcept().getConceptId(),
+                    hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
+  }
+
+  /**
+   * Patients who have REASON PATIENT MISSED VISIT (MOTIVOS DA FALTA) as “Transferido para outra US”
+   * or “Auto-transferencia” marked last Home Visit Card occurred during the reporting period. Use
+   * the “data da visita” when the patient reason was marked on the home visit card as the reference
+   * date
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWithMissedVisitOnMasterCardQuery() {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("Patients With Missed Visit On Master Card Query");
+    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sql.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sql.addParameter(new Parameter("location", "location", Location.class));
+
+    sql.setQuery(
+            TxMlQueries.getPatientsWithMissedVisitOnMasterCard(
+                    hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                    hivMetadata.getDefaultingMotiveConcept().getConceptId(),
+                    hivMetadata.getTransferredOutConcept().getConceptId(),
+                    hivMetadata.getAutoTransferConcept().getConceptId()));
+
+    return sql;
+  }
+
+  /**
+   * Patients Who have refused or Stopped Treatment Query
+   *
+   * @return
+   */
+  public CohortDefinition getRefusedOrStoppedTreatmentQuery() {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("Patients Who have refused or Stopped Treatment Query");
+    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sql.addParameter(new Parameter("endDate", "End date", Date.class));
+    sql.addParameter(new Parameter("location", "location", Location.class));
+
+    sql.setQuery(
+            TxMlQueries.getRefusedOrStoppedTreatment(
+                    hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                    hivMetadata.getDefaultingMotiveConcept().getConceptId(),
+                    hivMetadata.getPatientForgotVisitDateConcept().getConceptId(),
+                    hivMetadata.getPatientIsBedriddenAtHomeConcept().getConceptId(),
+                    hivMetadata.getDistanceOrMoneyForTransportIsTooMuchForPatientConcept().getConceptId(),
+                    hivMetadata.getPatientIsDissatisfiedWithDayHospitalServicesConcept().getConceptId(),
+                    hivMetadata.getFearOfTheProviderConcept().getConceptId(),
+                    hivMetadata.getAbsenceOfHealthProviderInHealthUnitConcept().getConceptId(),
+                    hivMetadata.getAdverseReaction().getConceptId(),
+                    hivMetadata.getPatientIsTreatingHivWithTraditionalMedicineConcept().getConceptId(),
+                    hivMetadata.getOtherReasonWhyPatientMissedVisitConcept().getConceptId()));
+
+    return sql;
+  }
+
+  // Patients Traced Not Found
+  private CohortDefinition getPatientsTracedAndNotFound() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+
+    sqlCohortDefinition.setName("Get patients traced (Unable to locate) and Not Found");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    sqlCohortDefinition.setQuery(
+            TxMlQueries.getPatientsTracedWithVisitCard(
+                    hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+                    hivMetadata.getReturnVisitDateConcept().getConceptId(),
+                    hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+                    hivMetadata.getVisitaApoioReintegracaoParteAEncounterType().getEncounterTypeId(),
+                    hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId(),
+                    hivMetadata.getTypeOfVisitConcept().getConceptId(),
+                    hivMetadata.getBuscaConcept().getConceptId(),
+                    hivMetadata.getPatientFoundConcept().getConceptId(),
+                    hivMetadata.getNoConcept().getConceptId()));
+
+    return sqlCohortDefinition;
+  }
+
+  // Patients Traced and Found.
+  private CohortDefinition getPatientTracedAndFound() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+
+    sqlCohortDefinition.setName("Get patients traced (Unable to locate) and Found");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    sqlCohortDefinition.setQuery(
+            TxMlQueries.getPatientsTracedWithVisitCard(
+                    hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+                    hivMetadata.getReturnVisitDateConcept().getConceptId(),
+                    hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+                    hivMetadata.getVisitaApoioReintegracaoParteAEncounterType().getEncounterTypeId(),
+                    hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId(),
+                    hivMetadata.getTypeOfVisitConcept().getConceptId(),
+                    hivMetadata.getBuscaConcept().getConceptId(),
+                    hivMetadata.getPatientFoundConcept().getConceptId(),
+                    hivMetadata.getPatientFoundYesConcept().getConceptId()));
+
+    return sqlCohortDefinition;
   }
 }
