@@ -97,7 +97,9 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
             isOnArtForMoreThan3Months = true;
           }
         }
-        if (lastQualitativeResults != null && lastQualitativeResults.getObsDatetime() != null) {
+        if (artStartDate != null
+            && lastQualitativeResults != null
+            && lastQualitativeResults.getObsDatetime() != null) {
           if (isAtLeastThreeMonthsLater(artStartDate, lastQualitativeResults.getObsDatetime())) {
             isOnArtForMoreThan3Months = true;
           }
