@@ -22,6 +22,7 @@ public class TxMlCohortQueries {
 
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
 
+
   /**
    * a and b
    *
@@ -289,7 +290,7 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "C1",
         EptsReportUtils.map(
-            getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
+                getPatientsOnARTForLessThan3Months(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "dead",
@@ -344,7 +345,7 @@ public class TxMlCohortQueries {
     cd.addSearch(
             "C2",
             EptsReportUtils.map(
-                    getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
+                    getPatientsOnARTForMoreThan3Months(),
                     "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
             "dead",
@@ -712,5 +713,29 @@ public class TxMlCohortQueries {
             hivMetadata.getPatientFoundYesConcept().getConceptId()));
 
     return sqlCohortDefinition;
+  }
+
+  public CohortDefinition getPatientsOnARTForLessThan3Months(){
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Get patients who are on ART for less than 3 months");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    return cd;
+
+  }
+
+  public CohortDefinition getPatientsOnARTForMoreThan3Months(){
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Get patients who are on ART for more than 3 months");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    String cohortName = "Number of active, stable, patients on ART";
+
+
+    return cd;
+
   }
 }
