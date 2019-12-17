@@ -245,6 +245,9 @@ public class DsdQueries {
   }
 
   /**
+   * N5: Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment)
+   * who are in AF
+   *
    * @param encounterTypeId
    * @param lastCommunityConceptId
    * @param startDrugsConceptId
