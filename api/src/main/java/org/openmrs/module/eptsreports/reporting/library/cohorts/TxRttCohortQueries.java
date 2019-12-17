@@ -45,7 +45,7 @@ public class TxRttCohortQueries {
    *
    * @return CohortDefinition
    */
-  private CohortDefinition getAllPatientsWhoDelayedMoreThan28Days() {
+  private CohortDefinition getAllConsultationsWhoDelayedMoreThan28Days() {
     return genericCohortQueries.generalSql(
         "Having visit 28 days later",
         TxRttQueries.getPatientsHavingConsultationAfter28DaysPriorToPreviousConsultation(
@@ -63,7 +63,7 @@ public class TxRttCohortQueries {
    *
    * @return CohortDefinition
    */
-  private CohortDefinition getAllPatientsWhoDelayedMoreThan30Days() {
+  private CohortDefinition getAllPickupsWhoDelayedMoreThan28Days() {
     return genericCohortQueries.generalSql(
         "Having visit 30 days later",
         TxRttQueries
@@ -72,6 +72,25 @@ public class TxRttCohortQueries {
                 hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
                 hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
                 hivMetadata.getArtDatePickup().getConceptId()));
+  }
+
+  /** 
+   * Cohort to find all patients who have any ecnounters (6,9,18,52) that occurred more than 28 days after 
+   * the previously scheduled consultation AND drug pickup.
+   * 
+   * @return CohortDefinition 
+   */
+  private CohortDefinition getAllPatientsWhoDelayedMoreThan28Days() {
+    return genericCohortQueries.generalSql(
+        "Having visit 30 days later",
+        TxRttQueries.getAllPatientsWhoMissedPreviousAppointmentBy28Days(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateConcept().getConceptId(),
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+            hivMetadata.getArtDatePickup().getConceptId()));
   }
 
   /**
@@ -89,17 +108,14 @@ public class TxRttCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+
     cd.addSearch(
-        "M1",
+        "RTT",
         EptsReportUtils.map(
             getAllPatientsWhoDelayedMoreThan28Days(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "M2",
-        EptsReportUtils.map(
-            getAllPatientsWhoDelayedMoreThan30Days(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.setCompositionString("M1 OR M2");
+
+    cd.setCompositionString("RTT");
     return cd;
   }
 }
