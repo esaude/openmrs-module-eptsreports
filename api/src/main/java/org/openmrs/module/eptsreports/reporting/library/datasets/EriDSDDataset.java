@@ -2,7 +2,6 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.Arrays;
 import java.util.List;
-
 import org.openmrs.module.eptsreports.reporting.library.cohorts.EriDSDCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
@@ -122,109 +121,7 @@ public class EriDSDDataset extends BaseDataSet {
                 EptsReportUtils.map(eriDSDCohortQueries.getPatientsWhoArePregnant(), mappings)),
             mappings),
         "");
-    /*dsd.addColumn(
-        "NT",
-        "DSD N Total",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "NT",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticipateInDsdModel(),
-                    "endDate=${endDate},location=${location}")),
-            mappings),
-        "");
-    dsd.addColumn(
-        "NSST",
-        "DSD N Stable subtotal",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "NSST",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticipateInDsdModelStable(),
-                    "endDate=${endDate},location=${location}")),
-            mappings),
-        "");
-    dsd.addColumn(
-        "NSNPNB",
-        "Stable Non-pregnant and Non-Breastfeeding Adults (>=15)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "NSNPNB",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticipateInDsdModelStable(),
-                    "endDate=${endDate},location=${location}")),
-            mappings),
-        "age=15+");
-    addRow(
-        dsd,
-        "NSNPNBC",
-        "Stable Non-pregnant and Non-Breastfeeding Children  By age",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "NSNPNBC",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticipateInDsdModelStable(),
-                    "endDate=${endDate},location=${location}")),
-            mappings),
-        getChildrenColumn());
-    dsd.addColumn(
-        "NUST",
-        "DSD N Unstable subtotal",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "NUST",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticipateInDsdModelUnstable(),
-                    "endDate=${endDate},location=${location}")),
-            mappings),
-        "");
-    dsd.addColumn(
-        "NUNPNB",
-        "Unstable Non-pregnant and Non-Breastfeeding Adults (>=15)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "NUNPNB",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticipateInDsdModelUnstable(),
-                    "endDate=${endDate},location=${location}")),
-            mappings),
-        "age=15+");
-    addRow(
-        dsd,
-        "NUNPNBC",
-        "Unstable Non-pregnant and Non-Breastfeeding Children  By age",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "NUNPNBC",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticipateInDsdModelUnstable(),
-                    "endDate=${endDate},location=${location}")),
-            mappings),
-        getChildrenColumn());
-    dsd.addColumn(
-        "NUBNP",
-        "N Unstable Breastfeeding (exclude pregnant)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "NUBNP",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries
-                        .getPatientsWhoAreBreastFeedingAndNotPregnantAndParticipateInDsdModelUnstable(),
-                    "endDate=${endDate},location=${location}")),
-            mappings),
-        "");
-    dsd.addColumn(
-        "NUPB",
-        "N Unstable Pregnant (include breastfeeding)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "NUPB",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries
-                        .getPatientsWhoArePregnantAndNotBreastFeedingAndParticipateInDsdModelUnstable(),
-                    "endDate=${endDate},location=${location}")),
-            mappings),
-        "");*/
+
     dsd.addColumn(
         "N2T",
         "DSD N2 Total",
@@ -675,7 +572,7 @@ public class EriDSDDataset extends BaseDataSet {
                     mappings)),
             mappings),
         "");
-    
+
     addRow(
         dsd,
         "N8E",
@@ -715,7 +612,7 @@ public class EriDSDDataset extends BaseDataSet {
                     mappings)),
             mappings),
         "");
-    
+
     dsd.addColumn(
         "N8-T",
         "Active patients on ART who participate in at least one measured DSD model)",

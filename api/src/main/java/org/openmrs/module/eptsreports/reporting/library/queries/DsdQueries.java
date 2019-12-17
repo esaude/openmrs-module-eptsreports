@@ -1,5 +1,8 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+import org.openmrs.module.eptsreports.metadata.CommonMetadata;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
+
 public class DsdQueries {
 
   public static String getPatientsEnrolledOnGAAC() {
@@ -11,45 +14,88 @@ public class DsdQueries {
   }
 
   /*
-   * Get Patients who participate in at least one of teh following measured DSD model (AF, CA, PU, FR, DC)
-   * 
-   * @param adultoSeguimentoEncounterType
-   * @param afConceptId
-   * @param caConceptId
-   * @param puConceptId
-   * @param frConceptId
-   * @param dcConceptId
-   * @param startDrugsConceptId
-   * @param continueRegimenConceptId
-   * 
-   * returns string
+   * Get Patients who participate in at least one of the following measured DSD model (AF, CA, PU, DC)
+   *
+   * @return String
    * */
-  public static String getPatientsParticipatingInAfCaPuFrDcDsdModels(
-      int adultoSeguimentoEncounterType,
-      Integer af,
-      Integer ca,
-      Integer pu,
-      Integer fr,
-      Integer dc,
-      Integer startDrugsConceptId,
-      Integer continueRegimenConceptId) {
+  public static String getPatientsParticipatingInAfCaPuFrDcDsdModels() {
 
     String query =
-        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id "
-            + "JOIN obs o ON p.patient_id=o.person_id WHERE e.encounter_id IN (%d) AND o.concept_id "
-            + "IN (%d, %d, %d, %d, %d) "
-            + "AND o.value_coded IN (%d, %d) AND e.encounter_datetime=:endDate";
+        ""
+            + "SELECT "
+            + "	p.patient_id "
+            + "FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "INNER JOIN obs o ON p.patient_id=o.person_id "
+            + "WHERE e.encounter_id = %d "
+            + "	AND o.concept_id IN (%d, %d, %d, %d) "
+            + "	AND o.value_coded IN (%d, %d) "
+            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "	AND e.location_id = :location";
 
     return String.format(
         query,
-        adultoSeguimentoEncounterType,
-        af,
-        ca,
-        pu,
-        fr,
-        dc,
-        startDrugsConceptId,
-        continueRegimenConceptId);
+        new HivMetadata().getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+        new HivMetadata().getFamilyApproach().getConceptId(), // fa
+        new HivMetadata().getAccessionClubs().getConceptId(), // ca
+        new HivMetadata().getSingleStop().getConceptId(), // pu
+        new HivMetadata().getCommunityDispensation().getConceptId(), // dc
+        new HivMetadata().getStartDrugs().getConceptId(),
+        new HivMetadata().getContinueRegimen().getConceptId());
+  }
+
+  /**
+   * Looks for patients who had last drug pickup within last 5 months from end date
+   *
+   * <p>returns @String
+   */
+  public static String patientsWithLastDrugPickupWithin5monthsFromEndDate() {
+    String query =
+        ""
+            + "SELECT "
+            + "	DISTINCT ee.patient_id "
+            + "FROM encounter ee "
+            + "INNER JOIN obs oo ON ee.encounter_id = oo.encounter_id "
+            + "WHERE "
+            + "	ee.encounter_id = ee.encounter_id AND "
+            + "	ee.encounter_type = %d "
+            + "	AND oo.concept_id = %d  "
+            + "	AND oo.value_datetime BETWEEN DATE_ADD(:endDate, INTERVAL -5 MONTH) AND :endDate "
+            + "	AND oo.voided = 0 "
+            + "	AND ee.voided = 0 "
+            + "	AND ee.location_id = :location ";
+
+    return String.format(
+        query,
+        new HivMetadata().getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+        new HivMetadata().getArtDatePickup().getConceptId());
+  }
+
+  /**
+   * Looks for patients who had next drug pickup scheduled for 3 months later who had an encounter
+   * within the last 5 months from end date
+   *
+   * <p>returns @String
+   */
+  public static String patientsWithNextDrugPickupScheduled3MonthsLater() {
+    String query =
+        ""
+            + "SELECT "
+            + "	DISTINCT ee.patient_id "
+            + "FROM encounter ee "
+            + "INNER JOIN obs oo ON ee.encounter_id = oo.encounter_id "
+            + "WHERE "
+            + "	ee.encounter_type = %d "
+            + "	AND oo.concept_id = %d "
+            + "	AND TIMESTAMPDIFF(MONTH, ee.encounter_datetime, oo.value_datetime) >= 3 "
+            + "	AND oo.voided = 0 "
+            + "	AND ee.voided = 0 "
+            + "	AND ee.encounter_datetime BETWEEN DATE_ADD(:endDate, INTERVAL -5 MONTH) AND :endDate "
+            + "	AND ee.location_id = :location";
+
+    return String.format(
+        query,
+        new HivMetadata().getARVPharmaciaEncounterType().getEncounterTypeId(),
+        new HivMetadata().getReturnVisitDateForArvDrugConcept().getConceptId());
   }
 
   /**
@@ -288,5 +334,48 @@ public class DsdQueries {
         pediatriaSeguimentoEncounter,
         otherDiagnosisConceptId,
         sarcomakarposiConceptId);
+  }
+
+  public static String patientsWithLastFollowUpConsultationWithinLast7MonthsFromEndDate() {
+    String query =
+        ""
+            + "SELECT "
+            + "	DISTINCT ee.patient_id "
+            + "FROM encounter ee "
+            + "INNER JOIN obs oo ON ee.encounter_id = oo.encounter_id "
+            + "WHERE "
+            + "	ee.encounter_type IN (%d, %d) "
+            + "	AND oo.voided = 0 "
+            + "	AND ee.voided = 0 "
+            + "	AND ee.encounter_datetime BETWEEN DATE_ADD(:endDate, INTERVAL -7 MONTH) AND :endDate "
+            + "	AND ee.location_id = :location";
+
+    return String.format(
+        query,
+        new HivMetadata().getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+        new HivMetadata().getARVPediatriaSeguimentoEncounterType().getEncounterTypeId());
+  }
+
+  public static String patientsWithNextApptmt6MonthsAfterConsultationDate() {
+    String query =
+        ""
+            + "SELECT "
+            + "	DISTINCT ee.patient_id "
+            + "FROM encounter ee "
+            + "INNER JOIN obs oo ON ee.encounter_id = oo.encounter_id "
+            + "WHERE "
+            + "	ee.encounter_type IN (%d, %d) "
+            + "	AND oo.concept_id = %d    "
+            + "	AND TIMESTAMPDIFF(MONTH, ee.encounter_datetime, oo.value_datetime) >= 6 "
+            + "	AND oo.voided = 0 "
+            + "	AND ee.voided = 0 "
+            + "	AND ee.encounter_datetime BETWEEN DATE_ADD(:endDate, INTERVAL -6 MONTH) AND :endDate "
+            + "	AND ee.location_id = :location";
+
+    return String.format(
+        query,
+        new HivMetadata().getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+        new HivMetadata().getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+        new CommonMetadata().getReturnVisitDateConcept().getConceptId());
   }
 }
