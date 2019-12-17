@@ -25,6 +25,7 @@ import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
@@ -735,12 +736,18 @@ public class TxCurrCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+
     CohortDefinition pickupDiff = getPatientsWithNextPickupLessThan83days();
     CohortDefinition monthlyDispensation = getPatientsWithMonthlyTypeOfDispensation();
+    CohortDefinition fila = getPatientsWithArvFarmaciaEncounterType();
+
     cd.addSearch("pickupDiff", mapStraightThrough(pickupDiff));
+
     String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
     cd.addSearch("dispensation", EptsReportUtils.map(monthlyDispensation, mappings));
-    cd.setCompositionString("pickupDiff OR dispensation");
+    cd.addSearch("fila", EptsReportUtils.map(fila, mappings));
+
+    cd.setCompositionString("pickupDiff OR (dispensation NOT fila)");
     return cd;
   }
 
@@ -750,17 +757,24 @@ public class TxCurrCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+
     CohortDefinition pickupDiff = getPatientsWithNextPickup83to173Days();
     CohortDefinition quarterlyDispensation = getPatientsWithQuarterlyTypeOfDispensation();
     CohortDefinition startOrContinue = getPatientsWithStartOrContinueOnQuarterlyDispensation();
     CohortDefinition completed = getPatientsWithCompletedOnQuarterlyDispensation();
+    CohortDefinition fila = getPatientsWithArvFarmaciaEncounterType();
+
     cd.addSearch("pickupDiff", mapStraightThrough(pickupDiff));
+
     String codedObsMappings =
         "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
     cd.addSearch("dispensation", EptsReportUtils.map(quarterlyDispensation, codedObsMappings));
     cd.addSearch("startOrContinue", EptsReportUtils.map(startOrContinue, codedObsMappings));
     cd.addSearch("completed", EptsReportUtils.map(completed, codedObsMappings));
-    cd.setCompositionString("(pickupDiff OR dispensation OR startOrContinue) NOT completed");
+    cd.addSearch("fila", EptsReportUtils.map(fila, codedObsMappings));
+
+    cd.setCompositionString(
+        "(pickupDiff OR ((dispensation OR startOrContinue) NOT fila)) NOT completed");
     return cd;
   }
 
@@ -770,17 +784,24 @@ public class TxCurrCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+
     CohortDefinition pickupDiff = getPatientsWithNextPickupMoreThan173Days();
     CohortDefinition quarterlyDispensation = getPatientsWithSemiAnnualTypeOfDispensation();
     CohortDefinition startOrContinue = getPatientsWithStartOrContinueOnSemiannualDispensation();
     CohortDefinition completed = getPatientsWithCompletedOnSemiannualDispensation();
+    CohortDefinition fila = getPatientsWithArvFarmaciaEncounterType();
+
     cd.addSearch("pickupDiff", mapStraightThrough(pickupDiff));
+
     String codedObsMappings =
         "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
     cd.addSearch("dispensation", EptsReportUtils.map(quarterlyDispensation, codedObsMappings));
     cd.addSearch("startOrContinue", EptsReportUtils.map(startOrContinue, codedObsMappings));
     cd.addSearch("completed", EptsReportUtils.map(completed, codedObsMappings));
-    cd.setCompositionString("(pickupDiff OR dispensation OR startOrContinue) NOT completed");
+    cd.addSearch("fila", EptsReportUtils.map(fila, codedObsMappings));
+
+    cd.setCompositionString(
+        "(pickupDiff OR ((dispensation OR startOrContinue) NOT fila)) NOT completed");
     return cd;
   }
 
@@ -954,6 +975,16 @@ public class TxCurrCohortQueries {
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
 
+    return cd;
+  }
+
+  @DocumentedDefinition("Patients with S.TARV FARMACIA encounter type")
+  private CohortDefinition getPatientsWithArvFarmaciaEncounterType() {
+    EncounterCohortDefinition cd = new EncounterCohortDefinition();
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getARVPharmaciaEncounterType());
     return cd;
   }
 }
