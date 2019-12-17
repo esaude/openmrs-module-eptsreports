@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 /** @author Stélio Moiane */
 @Component
-public class ArtPickUpCalculation extends BaseFghCalculation {
+public class EncounterCalculation extends BaseFghCalculation {
 
   private static final int RTT_DAYS = 28;
 
@@ -35,7 +35,8 @@ public class ArtPickUpCalculation extends BaseFghCalculation {
     for (final Integer patientId : cohort) {
 
       final String query =
-          String.format(TxRttQueries.QUERY.findArtPickUpEncountersByPatient, patientId, patientId);
+          String.format(
+              TxRttQueries.QUERY.findEncountersByPatient, patientId, patientId, patientId);
 
       final List<Object[]> encounters =
           this.evaluationService.evaluateToList(
@@ -51,7 +52,8 @@ public class ArtPickUpCalculation extends BaseFghCalculation {
 
           final String previousEncounterQuery =
               String.format(
-                  TxRttQueries.QUERY.findLastArtPickUpEncounterByPatientAndPeriod,
+                  TxRttQueries.QUERY.findLastEncounterByPatientAndPeriod,
+                  patientId,
                   patientId,
                   patientId);
 
@@ -84,12 +86,16 @@ public class ArtPickUpCalculation extends BaseFghCalculation {
           final Object[] previousEncounter = encounters.get(position + 1);
           final Date previousScheduledDate = (Date) previousEncounter[2];
 
-          final long days =
-              EptsReportUtils.getDifferenceInDaysBetweenDates(encounterDate, previousScheduledDate);
+          if (previousScheduledDate != null) {
 
-          if (days > RTT_DAYS) {
-            resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-            break;
+            final long days =
+                EptsReportUtils.getDifferenceInDaysBetweenDates(
+                    encounterDate, previousScheduledDate);
+
+            if (days > RTT_DAYS) {
+              resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+              break;
+            }
           }
         }
 

@@ -1,7 +1,6 @@
 /** */
 package org.openmrs.module.eptsreports.reporting.calculation.rtt;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.openmrs.api.context.Context;
@@ -37,33 +36,14 @@ public class TxRttCalculation extends BaseFghCalculation {
       patients.retainAll(context.getBaseCohort().getMemberIds());
     }
 
-    final ArtPickUpCalculation artPickUpCalculation =
-        Context.getRegisteredComponents(ArtPickUpCalculation.class).get(0);
+    final EncounterCalculation encounterCalculation =
+        Context.getRegisteredComponents(EncounterCalculation.class).get(0);
 
-    final FollowUpCalculation followUpCalculation =
-        Context.getRegisteredComponents(FollowUpCalculation.class).get(0);
+    final CalculationResultMap encounterResultMap =
+        encounterCalculation.evaluate(patients, parameterValues, context);
 
-    final CalculationResultMap artPickUpResultMap =
-        artPickUpCalculation.evaluate(patients, parameterValues, context);
-
-    patients.removeAll(this.getPatientIds(artPickUpResultMap));
-
-    final CalculationResultMap followUpResultMap =
-        followUpCalculation.evaluate(patients, parameterValues, context);
-
-    resultMap.putAll(artPickUpResultMap);
-    resultMap.putAll(followUpResultMap);
+    resultMap.putAll(encounterResultMap);
 
     return resultMap;
-  }
-
-  private List<Integer> getPatientIds(final CalculationResultMap resultMap) {
-    final List<Integer> patients = new ArrayList<>();
-
-    for (final Integer patientId : resultMap.keySet()) {
-      patients.add(patientId);
-    }
-
-    return patients;
   }
 }
