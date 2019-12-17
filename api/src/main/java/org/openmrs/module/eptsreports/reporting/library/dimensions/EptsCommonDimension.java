@@ -16,16 +16,7 @@ import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraig
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri2MonthsCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri4MonthsCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.EriCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TbPrevCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.*;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -57,6 +48,8 @@ public class EptsCommonDimension {
   @Autowired private TxPvlsCohortQueries txPvlsQueries;
 
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
+
+  @Autowired private TxMlCohortQueries txMlCohortQueries;
 
   /**
    * Gender dimension
@@ -188,8 +181,8 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "DP",
         EptsReportUtils.map(
-            genericCohortQueries.getDeceasedPatients(),
-            "onOrBefore=${reportingEndDate},location=${location}"));
+            txMlCohortQueries.getDeadPatientsComposition(),
+            "startDate=${reportingStartDate},endDate=${reportingEndDate},location=${location}"));
 
     dim.addCohortDefinition(
         "LTFU",
@@ -200,14 +193,14 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "TOP",
         EptsReportUtils.map(
-            hivCohortQueries.getPatientsTransferredOut(),
-            "onOrBefore=${reportingEndDate},location=${location}"));
+            txMlCohortQueries.getPatientsWhoMissedNextAppointmentAndTransferredOut(),
+            "startDate=${reportingStartDate},endDate=${reportingEndDate},location=${location}"));
 
     dim.addCohortDefinition(
         "STP",
         EptsReportUtils.map(
-            hivCohortQueries.getPatientsWhoStoppedTreatment(),
-            "onOrBefore=${reportingEndDate},location=${location}"));
+            txMlCohortQueries.getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment(),
+            "startDate=${reportingStartDate},endDate=${reportingEndDate},location=${location}"));
 
     dim.addCohortDefinition(
         "ANIT",
