@@ -42,7 +42,7 @@ public class TxMlCohortQueries {
         "noScheduledDrugPickupOrNextConsultation",
         EptsReportUtils.map(
             txCurrCohortQueries
-                .getPatientWhoAfterMostRecentDateHaveDrugPickupOrConsultationComposition(),
+                .getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(),
             "onOrBefore=${endDate},location=${location}"));
 
     cd.setCompositionString("missedAppointment AND noScheduledDrugPickupOrNextConsultation");
@@ -118,7 +118,7 @@ public class TxMlCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "missedAppointmentLessTransfers AND refusedOrStoppedTreatment AND NOT (dead transferOut)");
+        "missedAppointmentLessTransfers AND refusedOrStoppedTreatment AND NOT (dead OR transferOut)");
 
     return cd;
   }
