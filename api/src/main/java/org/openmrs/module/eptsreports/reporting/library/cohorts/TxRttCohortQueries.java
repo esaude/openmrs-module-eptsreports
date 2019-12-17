@@ -38,47 +38,10 @@ public class TxRttCohortQueries {
   }
 
   /**
-   * For each occurred consultation (Ficha de Seguimento Adulto, Pediatria or Ficha Clinica) of
-   * Encounter Type Ids 6 or 9 during the reporting period, the occurred encounter date minus the
-   * previous scheduled consultation date (Concept ID 1410 value_datetime) from the previous
-   * consultation of Encounter Type Ids 6 or 9, is greater than 28 days
+   * Cohort to find all patients who have any ecnounters (6,9,18,52) that occurred more than 28 days
+   * after the previously scheduled consultation AND drug pickup.
    *
    * @return CohortDefinition
-   */
-  private CohortDefinition getAllConsultationsWhoDelayedMoreThan28Days() {
-    return genericCohortQueries.generalSql(
-        "Having visit 28 days later",
-        TxRttQueries.getPatientsHavingConsultationAfter28DaysPriorToPreviousConsultation(
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getReturnVisitDateConcept().getConceptId()));
-  }
-
-  /**
-   * * For each occurred drug pick ups of Encounter Types Ids 18 or 52 during the reporting period,
-   * the occurred encounter date minus the previous scheduled drug pick up date (as the most recent
-   * between previous encounter type 18 scheduled date (Concept ID 1410 value_datetime) and the
-   * previous encounter type 52 pick up date (Concept ID 23866 value_datetime +30 days)), is greater
-   * than 28 days
-   *
-   * @return CohortDefinition
-   */
-  private CohortDefinition getAllPickupsWhoDelayedMoreThan28Days() {
-    return genericCohortQueries.generalSql(
-        "Having visit 30 days later",
-        TxRttQueries
-            .getAllPatientsWhoMissedDrugPickupHavingPreviousMasterCardAppointment30DaysWhichIs28DaysLaterThanEncounterDate(
-                hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-                hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-                hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
-                hivMetadata.getArtDatePickup().getConceptId()));
-  }
-
-  /** 
-   * Cohort to find all patients who have any ecnounters (6,9,18,52) that occurred more than 28 days after 
-   * the previously scheduled consultation AND drug pickup.
-   * 
-   * @return CohortDefinition 
    */
   private CohortDefinition getAllPatientsWhoDelayedMoreThan28Days() {
     return genericCohortQueries.generalSql(
