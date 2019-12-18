@@ -33,6 +33,7 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
     CalculationResultMap lastClinicalContactMap = getLastClinicalContactMap(cohort, context);
 
     Boolean lessThan90Days = (Boolean) parameterValues.get("lessThan90Days");
+    Date endDate = (Date) context.getFromCache("onOrBefore");
 
     CalculationResultMap lessThan90DaysMap = new CalculationResultMap();
     CalculationResultMap moreThan90DaysMap = new CalculationResultMap();
@@ -42,9 +43,8 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
             cohort,
             parameterValues,
             context);
-    Date endDate = (Date) parameterValues.get(ON_OR_BEFORE);
     if (endDate == null) {
-      endDate = (Date) context.getFromCache(ON_OR_BEFORE);
+      endDate = (Date) context.getFromCache("onOrBefore");
     }
     if (endDate != null) {
       for (Integer patientId : cohort) {
@@ -82,7 +82,7 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
   private CalculationResultMap getLastClinicalContactMap(
       Collection<Integer> cohort, PatientCalculationContext context) {
     SqlPatientDataDefinition sqlPatientDataDefinition = new SqlPatientDataDefinition();
-    sqlPatientDataDefinition.addParameter(new Parameter("endDate", "onOrBefore", Date.class));
+    sqlPatientDataDefinition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     sqlPatientDataDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     String query =
@@ -91,19 +91,19 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
             + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
             + "WHERE p.voided =0 AND e.voided=0 AND o.voided=0 AND o.concept_id=%d AND o.value_datetime IS NOT NULL AND e.encounter_type =%d AND e.location_id= :location "
-            + "AND e.encounter_datetime <= :endDate GROUP BY p.patient_id "
+            + "AND e.encounter_datetime <= :onOrBefore GROUP BY p.patient_id "
             + "UNION "
             + "SELECT p.patient_id,MAX(o.value_datetime)value_datetime  FROM patient p "
             + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
             + "WHERE p.voided =0 AND e.voided=0 AND o.voided=0 AND o.concept_id=%d AND o.value_datetime IS NOT NULL AND e.encounter_type =%d AND e.location_id= :location "
-            + "AND e.encounter_datetime <= :endDate GROUP BY p.patient_id "
+            + "AND e.encounter_datetime <= :onOrBefore GROUP BY p.patient_id "
             + "UNION "
             + "SELECT p.patient_id,DATE_ADD(MAX(o.value_datetime), INTERVAL 30 day) value_datetime  FROM patient p "
             + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
             + "WHERE p.voided =0 AND e.voided=0 AND o.voided=0 AND o.concept_id=%d AND o.value_datetime IS NOT NULL AND e.encounter_type =%d AND e.location_id= :location "
-            + "AND e.encounter_datetime <= :endDate GROUP BY p.patient_id "
+            + "AND e.encounter_datetime <= :onOrBefore GROUP BY p.patient_id "
             + ")lcc GROUP BY patient_id ";
 
     sqlPatientDataDefinition.setSql(
@@ -117,7 +117,7 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
 
     Map<String, Object> params = new HashMap<>();
-    params.put("endDate", context.getFromCache("endDate"));
+    params.put("onOrBefore", context.getFromCache("onOrBefore"));
     params.put("location", context.getFromCache("location"));
 
     return EptsCalculationUtils.evaluateWithReporting(

@@ -638,7 +638,7 @@ public class EriDSDCohortQueries {
             "scheduledPatients",
             Context.getRegisteredComponents(NextAndPrevDatesCalculation.class).get(0));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Location.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addCalculationParameter("conceptId", conceptId);
     cd.addCalculationParameter("encounterTypes", encounterTypes);
     cd.addCalculationParameter("upperBound", upperBound);

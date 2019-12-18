@@ -293,7 +293,7 @@ public class TxMlCohortQueries {
         "C1",
         EptsReportUtils.map(
             getPatientsOnARTForLessOrMoreThan90Days(true),
-            "endDate=${endDate},location=${location}"));
+            "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
@@ -348,7 +348,7 @@ public class TxMlCohortQueries {
         "C2",
         EptsReportUtils.map(
             getPatientsOnARTForLessOrMoreThan90Days(false),
-            "endDate=${endDate},location=${location}"));
+            "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
@@ -733,7 +733,7 @@ public class TxMlCohortQueries {
                 .get(0));
 
     cd.addCalculationParameter("lessThan90Days", lessThan90Days);
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     return cd;
