@@ -2,7 +2,10 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 import org.openmrs.Location;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.calculation.txml.StartedArtOnLastClinicalContactCalculation;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxMlQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -21,7 +24,6 @@ public class TxMlCohortQueries {
   @Autowired private GenericCohortQueries genericCohortQueries;
 
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
-
 
   /**
    * a and b
@@ -260,10 +262,7 @@ public class TxMlCohortQueries {
     return cd;
   }
 
-  /** @return
-   *
-   * Lost to Follow-Up After being on Treatment for <3 months
-   */
+  /** @return Lost to Follow-Up After being on Treatment for <3 months */
   public CohortDefinition getPatientsLTFULessThan3MonthsComposition() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
@@ -290,7 +289,7 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "C1",
         EptsReportUtils.map(
-                getPatientsOnARTForLessThan3Months(),
+            getPatientsOnARTForLessThan3Months(true),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "dead",
@@ -314,11 +313,7 @@ public class TxMlCohortQueries {
     return cd;
   }
 
-
-  /** @return
-   *
-   * Lost to Follow-Up After being on Treatment for >3 months
-   */
+  /** @return Lost to Follow-Up After being on Treatment for >3 months */
   public CohortDefinition getPatientsLTFUGreaterThan3MonthsComposition() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
@@ -328,43 +323,43 @@ public class TxMlCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-            "missedAppointment",
-            EptsReportUtils.map(
-                    getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "missedAppointment",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-            "untracedPatients",
-            EptsReportUtils.map(
-                    getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndUntraced(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "untracedPatients",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndUntraced(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-            "tracedPatients",
-            EptsReportUtils.map(
-                    getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndTraced(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "tracedPatients",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndTraced(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-            "C2",
-            EptsReportUtils.map(
-                    getPatientsOnARTForMoreThan3Months(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "C2",
+        EptsReportUtils.map(
+            getPatientsOnARTForLessThan3Months(false),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-            "dead",
-            EptsReportUtils.map(
-                    getDeadPatientsComposition(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "dead",
+        EptsReportUtils.map(
+            getDeadPatientsComposition(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-            "transferredOut",
-            EptsReportUtils.map(
-                    getPatientsWhoMissedNextAppointmentAndTransferredOut(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "transferredOut",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndTransferredOut(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-            "refusedOrStopped",
-            EptsReportUtils.map(
-                    getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "refusedOrStopped",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-            "missedAppointment AND ((untracedPatients OR tracedPatients) AND C2) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
+        "missedAppointment AND ((untracedPatients OR tracedPatients) AND C2) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
 
     return cd;
   }
@@ -515,7 +510,6 @@ public class TxMlCohortQueries {
     cd.setCompositionString("missedAppointment AND NOT transferOut");
     return cd;
   }
-
 
   /*
    * Untraced Patients Criteria 2 Patients with a visit card of type busca with certain set of observations
@@ -715,27 +709,17 @@ public class TxMlCohortQueries {
     return sqlCohortDefinition;
   }
 
-  public CohortDefinition getPatientsOnARTForLessThan3Months(){
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("Get patients who are on ART for less than 3 months");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+  public CohortDefinition getPatientsOnARTForLessThan3Months(Boolean lessThan90Days) {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            "lessThan90DaysPatients",
+            Context.getRegisteredComponents(StartedArtOnLastClinicalContactCalculation.class)
+                .get(0));
+
+    cd.addCalculationParameter("lessThan90Days", lessThan90Days);
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     return cd;
-
-  }
-
-  public CohortDefinition getPatientsOnARTForMoreThan3Months(){
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("Get patients who are on ART for more than 3 months");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    String cohortName = "Number of active, stable, patients on ART";
-
-
-    return cd;
-
   }
 }
