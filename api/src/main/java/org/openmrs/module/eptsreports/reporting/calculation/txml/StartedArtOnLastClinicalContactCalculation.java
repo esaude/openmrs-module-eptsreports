@@ -16,7 +16,9 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientCalculation {
 
   @Autowired private HivMetadata hivMetadata;
