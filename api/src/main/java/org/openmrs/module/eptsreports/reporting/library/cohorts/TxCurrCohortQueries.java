@@ -976,6 +976,7 @@ public class TxCurrCohortQueries {
               "  where timestampdiff(DAY, last_obs.encounter_datetime, last_obs.value_datetime) > ")
           .append(minDays);
     }
+    sb.append(" and p.voided = 0");
 
     cd.setQuery(
         String.format(
