@@ -1912,7 +1912,6 @@
 			UUID for the MONTHLY concept
 		</description>
 	</globalProperty>
->>>>>>> 4439865bea2509904a38955cb86ea26475cf670d
 
 	<globalProperty>
 		<property>eptsreports.quarterlyConceptUuid</property>
