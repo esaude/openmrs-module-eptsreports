@@ -47,7 +47,7 @@ public class TxMlCohortQueries {
             txCurrCohortQueries.getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(),
             "onOrBefore=${endDate},location=${location}"));
 
-    cd.setCompositionString("missedAppointment AND noScheduledDrugPickupOrNextConsultation");
+    cd.setCompositionString("missedAppointment OR noScheduledDrugPickupOrNextConsultation");
     return cd;
   }
 
