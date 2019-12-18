@@ -54,10 +54,10 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
         if (artStartDate != null && lastClinicalContact != null) {
           Date onArtForLessThan90Days = EptsCalculationUtils.addDays(artStartDate, 90);
 
-          if (onArtForLessThan90Days.compareTo(lastClinicalContact) <= 0) {
+          if (onArtForLessThan90Days.compareTo(lastClinicalContact) < 0) {
             lessThan90DaysMap.put(patientId, new BooleanResult(true, this));
           }
-          if (onArtForLessThan90Days.compareTo(lastClinicalContact) > 0) {
+          if (onArtForLessThan90Days.compareTo(lastClinicalContact) >= 0) {
             moreThan90DaysMap.put(patientId, new BooleanResult(true, this));
           }
         }
