@@ -79,6 +79,18 @@ public class TxMlDataset extends BaseDataSet {
                     mappings)),
             mappings),
         getColumnsForAgeAndGender());
+    // LTFU Less Than 90 days
+    addRow(
+        dsd,
+        "M4",
+        "LTFU Less Than 90 days",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "missed and LTFU Less Than 90 days",
+                EptsReportUtils.map(
+                    txMlCohortQueries.getPatientsLTFULessThan90DaysComposition(), mappings)),
+            mappings),
+        getColumnsForAgeAndGender());
     // Transferred Out
     addRow(
         dsd,
@@ -104,6 +116,18 @@ public class TxMlDataset extends BaseDataSet {
                     txMlCohortQueries
                         .getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment(),
                     mappings)),
+            mappings),
+        getColumnsForAgeAndGender());
+    // LTFU More Than 90 days
+    addRow(
+        dsd,
+        "M7",
+        "LTFU More Than 90 days",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "missed and LTFU More Than 90 days",
+                EptsReportUtils.map(
+                    txMlCohortQueries.getPatientsLTFUMoreThan90DaysComposition(), mappings)),
             mappings),
         getColumnsForAgeAndGender());
 

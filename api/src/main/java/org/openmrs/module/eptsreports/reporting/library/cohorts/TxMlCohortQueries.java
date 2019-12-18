@@ -262,8 +262,12 @@ public class TxMlCohortQueries {
     return cd;
   }
 
-  /** @return Lost to Follow-Up After being on Treatment for <3 months */
-  public CohortDefinition getPatientsLTFULessThan3MonthsComposition() {
+  /**
+   * @return Disaggregation “Lost to Follow-Up After being on Treatment for <3 months” will have the
+   *     following combination: ((A OR B) AND C1) AND NOT DEAD AND NOT TRANSFERRED OUT AND NOT
+   *     REFUSED Lost to Follow-Up After being on Treatment for <3 months
+   */
+  public CohortDefinition getPatientsLTFULessThan90DaysComposition() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("Get patients who are Lost To Follow Up Composition");
@@ -289,8 +293,8 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "C1",
         EptsReportUtils.map(
-            getPatientsOnARTForLessThan3Months(true),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            getPatientsOnARTForLessOrMoreThan90Days(true),
+            "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
@@ -313,8 +317,12 @@ public class TxMlCohortQueries {
     return cd;
   }
 
-  /** @return Lost to Follow-Up After being on Treatment for >3 months */
-  public CohortDefinition getPatientsLTFUGreaterThan3MonthsComposition() {
+  /**
+   * @return Disaggregation “Lost to Follow-Up After being on Treatment for >3 months” will have the
+   *     following combination: ((A OR B) AND C2) AND NOT DEAD AND NOT TRANSFERRED OUT AND NOT
+   *     REFUSED
+   */
+  public CohortDefinition getPatientsLTFUMoreThan90DaysComposition() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("Get patients who are Lost To Follow Up Composition");
@@ -340,8 +348,8 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "C2",
         EptsReportUtils.map(
-            getPatientsOnARTForLessThan3Months(false),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            getPatientsOnARTForLessOrMoreThan90Days(false),
+            "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
@@ -709,10 +717,19 @@ public class TxMlCohortQueries {
     return sqlCohortDefinition;
   }
 
-  public CohortDefinition getPatientsOnARTForLessThan3Months(Boolean lessThan90Days) {
+  /**
+   * All patients who have been on treatment for less than 90 days since the date initiated ARV
+   * treatment to the date of their last scheduled clinical contact (the last scheduled clinical
+   * appointment or last drugs pick up-FILA or 30 days after last drugs pick-up-MasterCard (the most
+   * recent one from 3 sources) by reporting end date)
+   *
+   * @param lessThan90Days
+   * @return
+   */
+  public CohortDefinition getPatientsOnARTForLessOrMoreThan90Days(Boolean lessThan90Days) {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
-            "lessThan90DaysPatients",
+            "lessThanOrMoreThan90DaysPatients",
             Context.getRegisteredComponents(StartedArtOnLastClinicalContactCalculation.class)
                 .get(0));
 
