@@ -67,24 +67,32 @@ public class ViralLoadQueries {
       int vlConceptQuestion,
       int vlQualitativeConceptQuestion) {
 
-    String sql =
-        String.format(
-            "SELECT p.patient_id FROM  patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN"
-                + " obs o ON e.encounter_id=o.encounter_id"
-                + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND"
-                + " e.encounter_type IN (%d,%d,%d,%d,%d) AND"
-                + " ((o.concept_id=%d AND o.value_numeric IS NOT NULL) OR (o.concept_id=%d AND o.value_coded IS NOT NULL)) AND"
-                + " e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate AND"
-                + " e.location_id=:location",
-            labEncounter,
-            adultSeguimentoEncounter,
-            pediatriaSeguimentoEncounter,
-            mastercardEncounter,
-            fsrEncounter,
-            vlConceptQuestion,
-            vlQualitativeConceptQuestion);
-
-    return sql;
+    String query =
+        "SELECT p.patient_id FROM  patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN"
+            + " obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND "
+            + " e.encounter_type IN (%d,%d,%d,%d,%d) AND "
+            + " ((o.concept_id=%d AND o.value_numeric IS NOT NULL) OR (o.concept_id=%d AND o.value_coded IS NOT NULL)) AND "
+            + " e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate AND "
+            + " e.location_id=:location "
+            + " UNION "
+            + " SELECT p.patient_id FROM  patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN "
+            + " obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND "
+            + " e.encounter_type IN (%d) AND o.concept_id=%d AND o.value_numeric IS NOT NULL AND "
+            + " o.obs_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
+            + " e.location_id=:location ";
+    return String.format(
+        query,
+        labEncounter,
+        adultSeguimentoEncounter,
+        pediatriaSeguimentoEncounter,
+        mastercardEncounter,
+        fsrEncounter,
+        vlConceptQuestion,
+        vlQualitativeConceptQuestion,
+        mastercardEncounter,
+        vlConceptQuestion);
   }
 
   public static String getPatientsHavingRoutineViralLoadTestsUsingFsr(
