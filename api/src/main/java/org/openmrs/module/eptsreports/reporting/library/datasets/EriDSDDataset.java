@@ -2,6 +2,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.openmrs.module.eptsreports.reporting.library.cohorts.EriDSDCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
@@ -654,6 +655,111 @@ public class EriDSDDataset extends BaseDataSet {
                     mappings)),
             mappings),
         dsdN6Disag());
+    addRow(
+        dsd,
+        "N8E",
+        "Active patients on ART who participate in at least one measured DSD model - Eligible(Stable)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8E",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndStable(),
+                    mappings)),
+            mappings),
+        getChildrenColumn());
+
+    addRow(
+        dsd,
+        "N8NE",
+        "Active patients on ART who participate in at least one measured DSD model - Not-Eligible(UnStable)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8NE",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndUnStable(),
+                    mappings)),
+            mappings),
+        getChildrenColumn());
+
+    dsd.addColumn(
+        "N8NE-05",
+        "Adult Active patients on ART who participate in at least one measured DSD model - Not-Eligible(UnStable)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8NE-05",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndUnStable(),
+                    mappings)),
+            mappings),
+        "age=15+");
+
+    dsd.addColumn(
+        "N8NE-ST",
+        "Active patients on ART who participate in at least one measured DSD model - Not-Eligible(UnStable)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8NE-ST",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndUnStable(),
+                    mappings)),
+            mappings),
+        "");
+
+    addRow(
+        dsd,
+        "N8E",
+        "Active patients on ART who participate in at least one measured DSD model - Eligible(Stable)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8E",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndStable(),
+                    mappings)),
+            mappings),
+        getChildrenColumn());
+
+    dsd.addColumn(
+        "N8E-05",
+        "Adult Active patients on ART who participate in at least one measured DSD model - Eligible(Stable)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8E-05",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndStable(),
+                    mappings)),
+            mappings),
+        "age=15+");
+
+    dsd.addColumn(
+        "N8E-ST",
+        "Active patients on ART who participate in at least one measured DSD model - Eligible(Stable)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8E-ST",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndStable(),
+                    mappings)),
+            mappings),
+        "");
+
+    dsd.addColumn(
+        "N8-T",
+        "Active patients on ART who participate in at least one measured DSD model)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8T",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModel(),
+                    mappings)),
+            mappings),
+        "");
     return dsd;
   }
 
