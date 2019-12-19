@@ -7,7 +7,6 @@ import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.Eri2MonthsDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.Eri4MonthsDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.EriDSDDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
@@ -31,8 +30,6 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
   @Autowired private TxNewDataset txNewDataset;
 
   @Autowired private TxCurrDataset txCurrDataset;
-
-  @Autowired private EriDSDDataset eriDSDDataset;
 
   @Override
   public String getExcelDesignUuid() {
