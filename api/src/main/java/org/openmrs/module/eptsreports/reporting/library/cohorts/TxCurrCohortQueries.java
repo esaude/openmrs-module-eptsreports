@@ -933,40 +933,50 @@ public class TxCurrCohortQueries {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
+
     StringBuilder sb =
         new StringBuilder()
             .append("select p.patient_id ")
             .append("from patient p ")
-            .append("         join encounter e on p.patient_id = e.patient_id ")
-            .append("         join (select patient_id, max(encounter_datetime) encounter_datetime ")
+            .append(
+                "         join (select e.patient_id, e.encounter_datetime, max(o.value_datetime) value_datetime ")
             .append("               from encounter e ")
+            .append(
+                "                        join (select patient_id, max(encounter_datetime) encounter_datetime ")
+            .append("                              from encounter e ")
+            .append("                              where e.voided = 0 ")
+            .append("                                and e.encounter_type = %d ")
+            .append("                                and e.encounter_datetime <= :onOrBefore ")
+            .append("                                and e.location_id = :location ")
+            .append("                              group by patient_id) last ")
+            .append("                             on e.patient_id = last.patient_id ")
+            .append(
+                "                                 and e.encounter_datetime = last.encounter_datetime ")
+            .append("                        join obs o on e.encounter_id = o.encounter_id ")
             .append("               where e.voided = 0 ")
-            .append("                 and e.encounter_type = %d ")
-            .append("                 and e.encounter_datetime <= :onOrBefore ")
+            .append("                 and o.voided = 0 ")
+            .append("                 and o.concept_id = %d ")
             .append("                 and e.location_id = :location ")
-            .append("               group by patient_id) last ")
-            .append("              on p.patient_id = last.patient_id ")
-            .append("                  and e.encounter_datetime = last.encounter_datetime ")
-            .append("         join obs o on e.encounter_id = o.encounter_id ")
-            .append("where p.voided = 0 ")
-            .append("  and e.voided = 0 ")
-            .append("  and o.voided = 0 ")
-            .append("  and o.concept_id = %d ");
+            .append("                 and e.encounter_type = %d ")
+            .append("               group by e.patient_id, e.encounter_datetime) last_obs ")
+            .append("              on p.patient_id = last_obs.patient_id ");
 
     if (minDays != null && maxDays != null) {
-      sb.append("  and timestampdiff(DAY, e.encounter_datetime, o.value_datetime) BETWEEN ")
+      sb.append(
+              "  where timestampdiff(DAY, last_obs.encounter_datetime, last_obs.value_datetime) BETWEEN ")
           .append(minDays)
           .append(" AND ")
           .append(maxDays);
     } else if (minDays == null) {
-      sb.append("  and timestampdiff(DAY, e.encounter_datetime, o.value_datetime) < ")
+      sb.append(
+              "  where timestampdiff(DAY, last_obs.encounter_datetime, last_obs.value_datetime) < ")
           .append(maxDays);
     } else {
-      sb.append("  and timestampdiff(DAY, e.encounter_datetime, o.value_datetime) > ")
+      sb.append(
+              "  where timestampdiff(DAY, last_obs.encounter_datetime, last_obs.value_datetime) > ")
           .append(minDays);
     }
-
-    sb.append("  and e.location_id = :location ").append("  and e.encounter_type = %d; ");
+    sb.append(" and p.voided = 0");
 
     cd.setQuery(
         String.format(
