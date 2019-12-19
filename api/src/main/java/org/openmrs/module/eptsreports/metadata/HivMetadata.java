@@ -639,6 +639,13 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.transferOutToAnotherFacilityConceptUuid");
     return getConcept(uuid);
   }
+
+  // Concept 23863 AUTO TRANSFER
+  public Concept getAutoTransferConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.autoTransferConceptUuid");
+    return getConcept(uuid);
+  }
   // Concept 6272  STATE OF STAY PRIOR ART PATIENT
   public Concept getStateOfStayPriorArtPatientConcept() {
     String uuid =
@@ -872,6 +879,73 @@ public class HivMetadata extends ProgramsMetadata {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.semiannualConceptUuid");
 
+    return getConcept(uuid);
+  }
+
+  // concept_id = 2005
+  public Concept getPatientForgotVisitDateConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.patientForgotVisitDateConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 2006
+  public Concept getPatientIsBedriddenAtHomeConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.patientIsBedriddenAtHomeConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 2007
+  public Concept getDistanceOrMoneyForTransportIsTooMuchForPatientConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(
+                "eptsreports.distanceOrMoneyForTransportIsTooMuchForPatientConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 2010
+  public Concept getPatientIsDissatisfiedWithDayHospitalServicesConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(
+                "eptsreports.patientIsDissatisfiedWithDayHospitalServicesConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 2013
+  public Concept getPatientIsTreatingHivWithTraditionalMedicineConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty(
+                "eptsreports.patientIsTreatingHivWithTraditionalMedicineConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 2017
+  public Concept getOtherReasonWhyPatientMissedVisitConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.otherReasonWhyPatientMissedVisitConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 23915
+  public Concept getFearOfTheProviderConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.fearOfTheProviderConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 23946
+  public Concept getAbsenceOfHealthProviderInHealthUnitConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.absenceOfHealthProviderInHealthUnitConceptUuid");
     return getConcept(uuid);
   }
 
