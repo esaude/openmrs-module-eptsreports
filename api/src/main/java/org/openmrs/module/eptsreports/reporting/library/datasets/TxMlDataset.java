@@ -136,8 +136,6 @@ public class TxMlDataset extends BaseDataSet {
               : dimension;
       dataSetDefinition.addColumn(name, label, indicator, dimensionIter);
     }
-    dataSetDefinition.addColumn(
-        "M10", "total transfered out", indicator, "transferedout=transferedout");
   }
 
   private void setRefusedOrStoppedTreatmentDimension(
@@ -148,7 +146,7 @@ public class TxMlDataset extends BaseDataSet {
     String dimension = "refusedorstoppedtreatment=refusedorstoppedtreatment";
     for (ColumnParameters column : getColumnsForAgeAndGender()) {
       String name = "M7" + "-" + column.getColumn();
-      String label = "Transfered Out" + " (" + column.getLabel() + ")";
+      String label = "Stopped/Refused Treatment" + " (" + column.getLabel() + ")";
       String dimensionIter =
           (column.getDimensions().length() > 2)
               ? column.getDimensions() + "|" + dimension

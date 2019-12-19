@@ -83,7 +83,7 @@ public class LastFilaProcessor {
 
     SqlQueryBuilder qb =
         new SqlQueryBuilder(
-            "select last_fila.patient_id, last_fila.last_levantamento, obs_proximo_levantamento.value_datetime from "
+            " select patient_id, last_levantamento, max(proximo_levantamento) from( select last_fila.patient_id, last_fila.last_levantamento, obs_proximo_levantamento.value_datetime proximo_levantamento from "
                 + "	(select p.patient_id, max(e.encounter_datetime) last_levantamento from patient p "
                 + "	inner join encounter e on e.patient_id = p.patient_id "
                 + "	where p.voided = 0 and e.voided = 0 and e.encounter_type = 18 "
@@ -92,7 +92,7 @@ public class LastFilaProcessor {
                 + "	   inner join obs obs_proximo_levantamento on obs_proximo_levantamento.person_id = last_fila.patient_id "
                 + "	   and obs_proximo_levantamento.obs_datetime = last_fila.last_levantamento and "
                 + "	   obs_proximo_levantamento.concept_id = 5096 and obs_proximo_levantamento.voided = 0 "
-                + "	   order by last_fila.patient_id ",
+                + "	   order by last_fila.patient_id ) plastiFila group by patient_id ",
             context.getParameterValues());
 
     return Context.getRegisteredComponents(EvaluationService.class)
