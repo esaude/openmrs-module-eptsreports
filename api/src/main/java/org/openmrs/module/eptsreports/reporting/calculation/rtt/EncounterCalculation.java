@@ -42,67 +42,68 @@ public class EncounterCalculation extends BaseFghCalculation {
           this.evaluationService.evaluateToList(
               new SqlQueryBuilder(query, context.getParameterValues()), context);
 
-      int position = 0;
+      for (int position = 0; position < encounters.size(); position++) {
 
-      while (encounters.size() > position) {
-
-        if ((encounters.size() - 1) == position) {
+        if (this.isLastEncounter(encounters, position)) {
           final Object[] lastEncounter = encounters.get(position);
           final Date lastEncounterDate = (Date) lastEncounter[1];
 
           final String previousEncounterQuery =
               String.format(
-                  TxRttQueries.QUERY.findLastEncounterByPatientAndPeriod,
+                  TxRttQueries.QUERY.findLastScheduledEncounterByPatientAndPeriod,
                   patientId,
                   patientId,
                   patientId);
 
-          final List<Object[]> evaluateToList =
+          final List<Date> evaluateToList =
               this.evaluationService.evaluateToList(
                   new SqlQueryBuilder(previousEncounterQuery, context.getParameterValues()),
+                  Date.class,
                   context);
 
           if (evaluateToList.isEmpty()) {
             break;
           }
 
-          final Object[] previousEncounter = evaluateToList.get(0);
+          final Date previousScheduledDate = evaluateToList.get(0);
 
-          final Date previousScheduledDate = (Date) previousEncounter[2];
+          final long days =
+              EptsReportUtils.getDifferenceInDaysBetweenDates(
+                  lastEncounterDate, previousScheduledDate);
 
-          if (previousScheduledDate != null) {
-            final long days =
-                EptsReportUtils.getDifferenceInDaysBetweenDates(
-                    lastEncounterDate, previousScheduledDate);
-
-            if (days > RTT_DAYS) {
-              resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-              break;
-            }
+          if (this.isOnRTT(days)) {
+            resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
           }
-        } else {
-          final Object[] encounter = encounters.get(position);
-          final Date encounterDate = (Date) encounter[1];
-          final Object[] previousEncounter = encounters.get(position + 1);
-          final Date previousScheduledDate = (Date) previousEncounter[2];
 
-          if (previousScheduledDate != null) {
-
-            final long days =
-                EptsReportUtils.getDifferenceInDaysBetweenDates(
-                    encounterDate, previousScheduledDate);
-
-            if (days > RTT_DAYS) {
-              resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-              break;
-            }
-          }
+          break;
         }
 
-        position++;
+        final Object[] encounter = encounters.get(position);
+        final Date encounterDate = (Date) encounter[1];
+        final Object[] previousEncounter = encounters.get(position + 1);
+        final Date previousScheduledDate = (Date) previousEncounter[2];
+
+        if (previousScheduledDate != null) {
+
+          final long days =
+              EptsReportUtils.getDifferenceInDaysBetweenDates(encounterDate, previousScheduledDate);
+
+          if (this.isOnRTT(days)) {
+            resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+            break;
+          }
+        }
       }
     }
 
     return resultMap;
+  }
+
+  private boolean isOnRTT(final long days) {
+    return days > RTT_DAYS;
+  }
+
+  private boolean isLastEncounter(final List<Object[]> encounters, final int position) {
+    return (encounters.size() - 1) == position;
   }
 }
