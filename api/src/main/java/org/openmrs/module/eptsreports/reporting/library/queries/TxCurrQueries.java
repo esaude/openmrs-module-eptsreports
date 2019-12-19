@@ -36,7 +36,7 @@ public interface TxCurrQueries {
             + "INNER JOIN encounter e on p.patient_id=e.patient_id INNER JOIN obs o on e.encounter_id=o.encounter_id WHERE p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=52 AND o.concept_id=23866 AND o.value_datetime IS NOT NULL AND o.value_datetime<=:endDate and e.location_id=:location GROUP BY p.patient_id) "
             + "max_recepcao on inicio.patient_id=max_recepcao.patient_id GROUP BY inicio.patient_id) inicio_fila_seg LEFT JOIN obs obs_fila ON obs_fila.person_id=inicio_fila_seg.patient_id and obs_fila.voided=0 and obs_fila.obs_datetime=inicio_fila_seg.data_fila and obs_fila.concept_id=5096 and obs_fila.location_id=:location "
             + "left join obs obs_seguimento on obs_seguimento.person_id=inicio_fila_seg.patient_id and obs_seguimento.voided=0 and obs_seguimento.obs_datetime=inicio_fila_seg.data_seguimento and obs_seguimento.concept_id=1410 and obs_seguimento.location_id=:location group by inicio_fila_seg.patient_id) inicio_fila_seg_prox "
-            + "GROUP BY patient_id) coorte12meses_final WHERE (data_estado is null or(data_estado is not null and data_usar_c>data_estado)) AND date_add(data_usar, interval 30 day) >=:endDate";
+            + "GROUP BY patient_id) coorte12meses_final WHERE (data_estado is null or(data_estado is not null and data_usar_c>data_estado)) AND date_add(data_usar, interval 28 day) >=:endDate";
 
     public static final String findPatientsByGenderAndRage =
         "SELECT patient_id FROM patient "

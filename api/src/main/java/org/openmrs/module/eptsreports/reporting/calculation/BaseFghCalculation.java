@@ -12,13 +12,19 @@ public abstract class BaseFghCalculation extends BaseCalculation {
 
   public CalculationResultMap evaluate(
       final Map<String, Object> parameterValues, final EvaluationContext context) {
-    throw new RuntimeException("You must implement your evaluator method...");
+    throw new RuntimeException(
+        String.format(
+            "You must implement your evaluator method for the calculation '%s' ",
+            this.getClass().getName()));
   };
 
   public CalculationResultMap evaluate(
       final Collection<Integer> cohort,
       final Map<String, Object> parameterValues,
       final EvaluationContext context) {
-    throw new RuntimeException("You must implement your evaluator method...");
+    throw new RuntimeException(
+        String.format(
+            "You must implement your evaluator method for the calculation '%s' ",
+            this.getClass().getName()));
   };
 }
