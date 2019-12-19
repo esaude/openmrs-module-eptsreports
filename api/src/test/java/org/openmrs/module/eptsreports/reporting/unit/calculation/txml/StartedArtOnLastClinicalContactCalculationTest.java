@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.openmrs.Location;
+import org.openmrs.Person;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationService;
 import org.openmrs.calculation.patient.PatientCalculationServiceImpl;
@@ -17,6 +19,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import java.util.Collections;
+import java.util.Date;
 
 import static org.mockito.Mockito.when;
 
@@ -47,6 +50,10 @@ public class StartedArtOnLastClinicalContactCalculationTest extends PowerMockBas
 
   @Test
   public void evaluateShouldReturnPatientsOnArtForLessThan90Days(){
+    Date artStartDate = testsHelper.getDate("");
+    Date lastClinicalContactDate = testsHelper.getDate("");
 
+    Location location = new Location(1);
+    Person person = new Person(1);
   }
 }
