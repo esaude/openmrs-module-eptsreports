@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
@@ -1877,7 +1876,7 @@ public class EriDSDCohortQueries {
 
     return cd;
   }
-  
+
   /*
    * Get number of patients participating in at least one DSD model
    *
@@ -2335,5 +2334,4 @@ public class EriDSDCohortQueries {
 
     return cd;
   }
-  
 }

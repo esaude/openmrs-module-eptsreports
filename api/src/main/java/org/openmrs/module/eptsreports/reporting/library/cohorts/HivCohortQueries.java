@@ -67,9 +67,10 @@ public class HivCohortQueries {
             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getFsrEncounterType().getEncounterTypeId(),
-            hivMetadata.getHivViralLoadConcept().getConceptId()));
+            hivMetadata.getHivViralLoadConcept().getConceptId(),
+            hivMetadata.getHivViralLoadQualitative().getConceptId()));
     return sql;
   }
 
@@ -91,7 +92,7 @@ public class HivCohortQueries {
             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getFsrEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getHivViralLoadQualitative().getConceptId()));
