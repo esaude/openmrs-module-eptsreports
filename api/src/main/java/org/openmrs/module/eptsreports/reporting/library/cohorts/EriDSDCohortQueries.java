@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
@@ -16,8 +17,13 @@ import org.openmrs.module.eptsreports.reporting.calculation.dsd.NextAndPrevDates
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.OnArtForAtleastXmonthsCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.DsdQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.TXCurrQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
-import org.openmrs.module.reporting.cohort.definition.*;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
@@ -677,46 +683,6 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * N2 UNSTABLE: Get number of active on ART whose next ART pick-up is schedule for 83-97 days
-   * after the date of their last ART drug pick-up
-   *
-   * @return
-   */
-  public CohortDefinition getPatientsWhoAreActiveWithNextPickupAs3MonthsAndUnstable() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    cd.addSearch(
-        "patientsWithNextPickupDate",
-        EptsReportUtils.map(
-            getPatientsWhoAreActiveWithNextPickupAs3Months(),
-            "endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "breastfeeding",
-        EptsReportUtils.map(
-            getBreastfeedingComposition(),
-            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "pregnant",
-        EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "patientsWhoAreStable",
-        EptsReportUtils.map(
-            getPatientsWhoAreStable(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString(
-        "patientsWithNextPickupDate AND (NOT patientsWhoAreStable OR breastfeeding OR pregnant)");
-
-    return cd;
-  }
-
-  /**
    * N2: Stable Patients who are Non-pregnant and Non-Breastfeeding
    *
    * @return
@@ -759,16 +725,6 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "breastfeeding",
-        EptsReportUtils.map(
-            getBreastfeedingComposition(),
-            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "pregnant",
-        EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
-    cd.addSearch(
         "patientsWithNextPickupDate",
         EptsReportUtils.map(
             getPatientsWhoAreActiveWithNextPickupAs3Months(),
@@ -778,6 +734,16 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             getPatientsWhoAreActiveWithNextPickupAs3MonthsAndStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "pregnant",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "breastfeeding",
+        EptsReportUtils.map(
+            getBreastfeedingComposition(),
+            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
 
     cd.setCompositionString(
         "patientsWithNextPickupDate AND NOT patientsWhoAreStable AND NOT pregnant AND NOT breastfeeding");
@@ -1701,4 +1667,673 @@ public class EriDSDCohortQueries {
     cd.addValue(hivMetadata.getQuarterlyConcept());
     return cd;
   }
+
+  /**
+   * Number of active patients on ART and are marked in the last PU as I OR C on Ficha Clinica
+   * Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who
+   * are in PU
+   *
+   * @retturn CohortDefinition
+   */
+  public CohortDefinition
+      getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaNonPregnantAndNonBreastfeedingAndNotOnTb() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Number of active patients on ART who are in PU as I or C on ficha clinica");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "TxCurr",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getTxCurrCompositionCohort("TxCurr", true),
+            "onOrBefore=${endDate},location=${location},locations=${locations}"));
+    cd.addSearch(
+        "PU",
+        EptsReportUtils.map(
+            getAllPatientsMarkedInLastPuAsIorConFichaClinicaMasterCard(),
+            "onOrBefore=${endDate},onOrAfter=${startDate},location=${location}"));
+    cd.addSearch(
+        "Preg",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "Breast",
+        EptsReportUtils.map(
+            getBreastfeedingComposition(),
+            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "Tb",
+        EptsReportUtils.map(
+            hivCohortQueries.getPatientsOnTbTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("(TxCurr AND NOT(Preg OR Breast OR Tb)) AND PU");
+    return cd;
+  }
+  /**
+   * Number of active patients on ART and are marked in the last PU as I OR C on Ficha Clinica
+   * Number of active patients on ART (Non-pregnant and Non-Breastfeeding including those on TB
+   * treatment) who are in PU
+   *
+   * @retturn CohortDefinition
+   */
+  public CohortDefinition
+      getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaNonPregnantAndNonBreastfeedingIncludeThoseOnTb() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Number of active patients on ART who are in PU as I or C on ficha clinica");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "TxCurr",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getTxCurrCompositionCohort("TxCurr", true),
+            "onOrBefore=${endDate},location=${location},locations=${locations}"));
+    cd.addSearch(
+        "PU",
+        EptsReportUtils.map(
+            getAllPatientsMarkedInLastPuAsIorConFichaClinicaMasterCard(),
+            "onOrBefore=${endDate},onOrAfter=${startDate},location=${location}"));
+    cd.addSearch(
+        "Preg",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "Breast",
+        EptsReportUtils.map(
+            getBreastfeedingComposition(),
+            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "Tb",
+        EptsReportUtils.map(
+            hivCohortQueries.getPatientsOnTbTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("(TxCurr AND NOT(Preg OR Breast)) AND PU");
+    return cd;
+  }
+
+  private CohortDefinition getAllPatientsMarkedInLastPuAsIorConFichaClinicaMasterCard() {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName(
+        "All patients marked in last “Paragen Unica (PU)” as Iniciar (I) or Continua (C) on Ficha Clinica – Master Card");
+    sql.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    sql.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    sql.addParameter(new Parameter("location", "Location", Location.class));
+    sql.setQuery(
+        TXCurrQueries.getAllPatientsMarkedInLastPuAsIOrConFichaClinicaMasterCard(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getSingleStop().getConceptId(),
+            hivMetadata.getStartDrugs().getConceptId(),
+            hivMetadata.getContinueRegimen().getConceptId()));
+    return sql;
+  }
+
+  /**
+   * Number of active patients on ART and are marked in the last PU as I OR C on Ficha Clinica and
+   * are aligible
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition
+      getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndEligible() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName(
+        "Number of active patients on ART who are in PU as I or C on ficha clinica and are eligible");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "TxCurrPu",
+        EptsReportUtils.map(
+            getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaNonPregnantAndNonBreastfeedingIncludeThoseOnTb(),
+            "endDate=${endDate},startDate=${startDate},location=${location}"));
+    cd.addSearch(
+        "Active",
+        EptsReportUtils.map(
+            getAllPatientsWhoAreActiveAndStable(),
+            "endDate=${endDate},startDate=${startDate},location=${location}"));
+    cd.setCompositionString("TxCurrPu AND Active");
+
+    return cd;
+  }
+
+  /**
+   * Number of active patients on ART and are marked in the last PU as I OR C on Ficha Clinica and
+   * are NO Eligible
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition
+      getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndNotEligible() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName(
+        "Number of active patients on ART who are in PU as I or C on ficha clinica and are NOT eligible");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "TxCurrPu",
+        EptsReportUtils.map(
+            getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaNonPregnantAndNonBreastfeedingIncludeThoseOnTb(),
+            "endDate=${endDate},startDate=${startDate},location=${location}"));
+    cd.addSearch(
+        "NotActive",
+        EptsReportUtils.map(
+            getPatientsWhoAreActiveAndUnstable(),
+            "endDate=${endDate},startDate=${startDate},location=${location}"));
+    cd.setCompositionString("TxCurrPu AND NotActive");
+
+    return cd;
+  }
+
+  /**
+   * Get Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment)
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getAllActivePatientsOnArt() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    String cohortName = "Number of active patients on ART";
+
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "1",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
+            "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "2",
+        EptsReportUtils.map(
+            ageCohortQueries.createXtoYAgeCohort("moreThanOrEqual2Years", 2, 200),
+            "effectiveDate=${endDate}"));
+    cd.addSearch(
+        "3",
+        EptsReportUtils.map(
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "4",
+        EptsReportUtils.map(
+            getBreastfeedingComposition(),
+            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "5",
+        EptsReportUtils.map(
+            getAllPatientsOnSarcomaKarposi(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "6",
+        EptsReportUtils.map(
+            hivCohortQueries.getPatientsOnTbTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("(1 AND 2 AND NOT (3 OR 4 OR 5 OR 6))");
+
+    return cd;
+  }
+  
+  /*
+   * Get number of patients participating in at least one DSD model
+   *
+   * @return CohortDefinition
+   * */
+  public CohortDefinition getPatientsParticipatingInAtLeastOneDsdModel() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("participatingInDsdModel");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "1",
+        EptsReportUtils.map(
+            getPatientsParticipatingInAfCaPuFrDcDsdModels(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "2",
+        EptsReportUtils.map(
+            getAllPatientsWhoseDPIsScheduled83To97DaysAfterLastDrugPickupDate(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "3",
+        EptsReportUtils.map(
+            getPatientsWhoseClinicalAppointmentScheduledFor175To190DaysAfterClinicalConsultation(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "4",
+        EptsReportUtils.map(
+            getAllPatientsEnrolledOnGaac(), "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "5",
+        EptsReportUtils.map(
+            getPatientsMarkedInLastGaaCAsIniciarOrContinuaOnFichaClinica(),
+            "onOrBefore=${startDate},onOrAfter=${endDate},location=${location}"));
+    cd.addSearch(
+        "6",
+        EptsReportUtils.map(
+            getPatientsMarkedCompletedForLastGaac(),
+            "onOrBefore=${startDate},onOrAfter=${endDate},location=${location}"));
+
+    cd.setCompositionString("(1 OR 2 OR 3 OR 4 OR 5) AND NOT 6");
+
+    return cd;
+  }
+
+  private CohortDefinition getPatientsParticipatingInAfCaPuFrDcDsdModels() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(DsdQueries.getPatientsParticipatingInAfCaPuFrDcDsdModels());
+
+    return cd;
+  }
+
+  /*
+   * Get number of active patients on ART who participate in at least one DSD model
+   *
+   * @return CohortDefinition
+   * */
+  public CohortDefinition getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModel() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "1",
+        EptsReportUtils.map(
+            getAllActivePatientsOnArt(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "2",
+        EptsReportUtils.map(
+            getPatientsParticipatingInAtLeastOneDsdModel(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("(1 AND 2)");
+
+    return cd;
+  }
+
+  /*
+   * Get all patients who participated in at least 1 DSD model and are stable
+   *
+   * @return CohortDefifnition
+   * */
+  public CohortDefinition getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndStable() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "1",
+        EptsReportUtils.map(
+            getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModel(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "2",
+        EptsReportUtils.map(
+            getPatientsWhoAreStable(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("(1 AND 2)");
+
+    return cd;
+  }
+
+  /*
+   * Get number of patients who participated in at least 1 DSD model and are unstable
+   *
+   * @return CohortDefinition
+   * */
+  public CohortDefinition getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndUnStable() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "1",
+        EptsReportUtils.map(
+            getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModel(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "2",
+        EptsReportUtils.map(
+            getPatientsWhoAreStable(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("(1 AND NOT 2)");
+
+    return cd;
+  }
+
+  /**
+   * 2.5 All patients whose next Drugs Pick up appointment is scheduled for 83-97 days after the
+   * date of their last Drugs pick up
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getAllPatientsWhoseDPIsScheduled83To97DaysAfterLastDrugPickupDate() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "1",
+        EptsReportUtils.map(
+            getPatientsWithLastDPWithin5monthsFromEndDateAndNextDPScheduled3MonthsLater(),
+            "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "2",
+        EptsReportUtils.map(
+            getPatientsMarkedAsDTOnTipoDeLevantamento(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "3",
+        EptsReportUtils.map(
+            getPatientsMarkedinlastDTAsIniciarOrManterFichaClinica(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "4",
+        EptsReportUtils.map(
+            getPatientsMarkedCompletedForTheirLastDT(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    cd.setCompositionString("(1 OR 2 OR 3) AND NOT 4");
+    return cd;
+  }
+
+  /**
+   * 2.5.1: Looks for patients who had last drug pickup within last 5 months from end date and had
+   * next drug pickup scheduled for 3 months later
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition
+      getPatientsWithLastDPWithin5monthsFromEndDateAndNextDPScheduled3MonthsLater() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("endDate", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "1",
+        EptsReportUtils.map(
+            getPatientsWithLastDrugPickupWithin5monthsFromEndDate(),
+            "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "2",
+        EptsReportUtils.map(
+            getPatientsWithNextDrugPickupScheduled3MonthsLater(),
+            "endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("1 AND 2");
+
+    return cd;
+  }
+
+  /*
+   * Looks for patients who had next drug pickup scheduled for 3 months later
+   *
+   * @return CohortDefinition
+   * */
+  private CohortDefinition getPatientsWithNextDrugPickupScheduled3MonthsLater() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
+    cd.addParameter(new Parameter("endDate", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(DsdQueries.patientsWithNextDrugPickupScheduled3MonthsLater());
+
+    return cd;
+  }
+
+  /**
+   * Looks for patients who had last drug pickup within last 5 months from end date
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getPatientsWithLastDrugPickupWithin5monthsFromEndDate() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
+    cd.addParameter(new Parameter("endDate", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(DsdQueries.patientsWithLastDrugPickupWithin5monthsFromEndDate());
+
+    return cd;
+  }
+
+  /**
+   * 2.5.2 Marked as DT on Tipo de Levantamento (ficha clinica – Master Card)
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getPatientsMarkedAsDTOnTipoDeLevantamento() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getTypeOfDispensationConcept());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getQuarterlyConcept());
+
+    return cd;
+  }
+
+  /**
+   * 2.5.3 Marked in last “Dispensa Trimestral (DT)” as Iniciar (I) or Manter (C) on Ficha Clinica –
+   * Master Card
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getPatientsMarkedinlastDTAsIniciarOrManterFichaClinica() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getQuarterlyDispensation());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getStartDrugs());
+    cd.addValue(hivMetadata.getContinueRegimen());
+
+    return cd;
+  }
+
+  /**
+   * Get patients who are marked Completed for their last “Dispensa Trimestral (DT)”
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getPatientsMarkedCompletedForTheirLastDT() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getQuarterlyDispensation());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getCompletedConcept());
+
+    return cd;
+  }
+
+  /**
+   * 2.6 All patients whose next clinical appointment is scheduled for 175-190 days after the date
+   * of their last clinical consultation
+   *
+   * @return @CohortDefinition
+   */
+  private CohortDefinition
+      getPatientsWhoseClinicalAppointmentScheduledFor175To190DaysAfterClinicalConsultation() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Before Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "1",
+        EptsReportUtils.map(
+            getPatientsWithLastFollowUpConsultationWithinLast7MonthsFromEndDateWithNextApptmt6MonthsLater(),
+            "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "2",
+        EptsReportUtils.map(
+            getPatientsMarkedInLastFluxoRapidoAsIniciarOrManterOnFichaClinica(),
+            "onOrBefore=${startDate},onOrAfter=${endDate},location=${location}"));
+    cd.addSearch(
+        "3",
+        EptsReportUtils.map(
+            getPatientsMarkedCompletedForTheirLastFluxoRapido(),
+            "onOrBefore=${startDate},onOrAfter=${endDate},location=${location}"));
+
+    cd.setCompositionString("(1 OR 2) AND NOT 3");
+
+    return cd;
+  }
+
+  /**
+   * 2.6.3 Patients who are marked Completed for their last “Fluxo Rápido (FR)”
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getPatientsMarkedCompletedForTheirLastFluxoRapido() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getRapidFlow());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getCompletedConcept());
+
+    return cd;
+  }
+
+  /**
+   * 2.6.2 Marked in last “Fluxo Rapido (FR)” as Iniciar (I) or Manter (C) on Ficha Clinica – Master
+   * Card
+   *
+   * @return CodedObsCohortDefinition
+   */
+  private CohortDefinition getPatientsMarkedInLastFluxoRapidoAsIniciarOrManterOnFichaClinica() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getRapidFlow());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getStartDrugs());
+    cd.addValue(hivMetadata.getContinueRegimen());
+
+    return cd;
+  }
+
+  /**
+   * Looks for patients who had last follow up consultation within last 7 months from end date and
+   * had next appointment scheduled for 6 months later
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition
+      getPatientsWithLastFollowUpConsultationWithinLast7MonthsFromEndDateWithNextApptmt6MonthsLater() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("endDate", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "1",
+        EptsReportUtils.map(
+            getPatientsWithLastFollowUpConsultationWithinLast7MonthsFromEndDate(),
+            "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "2",
+        EptsReportUtils.map(
+            getPatientsWithNextApptmt6MonthsAfterConsultationDate(),
+            "endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("1 AND 2");
+
+    return cd;
+  }
+
+  /**
+   * Looks for patients who had last follow up consultation within last 7 months from end date
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getPatientsWithNextApptmt6MonthsAfterConsultationDate() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
+    cd.addParameter(new Parameter("endDate", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(DsdQueries.patientsWithNextApptmt6MonthsAfterConsultationDate());
+
+    return cd;
+  }
+
+  /**
+   * Looks for patients who had last follow up consultation within last 7 months from end date
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getPatientsWithLastFollowUpConsultationWithinLast7MonthsFromEndDate() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
+    cd.addParameter(new Parameter("endDate", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(DsdQueries.patientsWithLastFollowUpConsultationWithinLast7MonthsFromEndDate());
+
+    return cd;
+  }
+
+  /**
+   * 2.7.1 All patients Marked in last “GAAC (GA)” as Iniciar (I) or Continua (C) on Ficha Clinica –
+   * Master Card
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getPatientsMarkedInLastGaaCAsIniciarOrContinuaOnFichaClinica() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getGaac());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getStartDrugs());
+    cd.addValue(hivMetadata.getContinueRegimen());
+
+    return cd;
+  }
+
+  /** 2.7.2 all patients who are marked Completed for their last “GAAC(GA)” */
+  private CohortDefinition getPatientsMarkedCompletedForLastGaac() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getGaac());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getCompletedConcept());
+
+    return cd;
+  }
+  
 }

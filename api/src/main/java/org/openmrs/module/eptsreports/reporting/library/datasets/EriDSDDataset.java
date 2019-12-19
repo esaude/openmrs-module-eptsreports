@@ -2,6 +2,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.openmrs.module.eptsreports.reporting.library.cohorts.EriDSDCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
@@ -276,7 +277,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "N2UST",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveWithNextPickupAs3MonthsAndUnstable(),
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingN2Unstable(),
                     mappings)),
             mappings),
         "");
@@ -601,6 +602,164 @@ public class EriDSDDataset extends BaseDataSet {
                 EptsReportUtils.map(eriDSDCohortQueries.getActiveInARTUnstableDC(), mappings)),
             mappings),
         getChildrenColumn());
+
+    // Start of N6 columns
+    dsd.addColumn(
+        "TN6",
+        "Total-N6: include all patients from 2 - Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in PU - a",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "TN6",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaNonPregnantAndNonBreastfeedingAndNotOnTb(),
+                    mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N6EA",
+        "DSD N6 stable Non-pregnant and Non-Breastfeeding Adults (>=15) NOT on TB treatment ii",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N6EA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndEligible(),
+                    mappings)),
+            mappings),
+        "age=15+");
+    addRow(
+        dsd,
+        "N6NE",
+        "N6: Number of active patients on ART (Non-pregnant and Non-Breastfeeding ) who are in PU and are Eligible -  iii",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N6NE",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndEligible(),
+                    mappings)),
+            mappings),
+        dsdN6Disag());
+
+    addRow(
+        dsd,
+        "N6NNE",
+        "N6: Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in PU and are NOT Eligible",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N6NNE",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getNumberOfPatientsOnArtAndAreMArkedInLastPuAsIorConFichaClinicaAndNotEligible(),
+                    mappings)),
+            mappings),
+        dsdN6Disag());
+    addRow(
+        dsd,
+        "N8E",
+        "Active patients on ART who participate in at least one measured DSD model - Eligible(Stable)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8E",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndStable(),
+                    mappings)),
+            mappings),
+        getChildrenColumn());
+
+    addRow(
+        dsd,
+        "N8NE",
+        "Active patients on ART who participate in at least one measured DSD model - Not-Eligible(UnStable)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8NE",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndUnStable(),
+                    mappings)),
+            mappings),
+        getChildrenColumn());
+
+    dsd.addColumn(
+        "N8NE-05",
+        "Adult Active patients on ART who participate in at least one measured DSD model - Not-Eligible(UnStable)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8NE-05",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndUnStable(),
+                    mappings)),
+            mappings),
+        "age=15+");
+
+    dsd.addColumn(
+        "N8NE-ST",
+        "Active patients on ART who participate in at least one measured DSD model - Not-Eligible(UnStable)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8NE-ST",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndUnStable(),
+                    mappings)),
+            mappings),
+        "");
+
+    addRow(
+        dsd,
+        "N8E",
+        "Active patients on ART who participate in at least one measured DSD model - Eligible(Stable)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8E",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndStable(),
+                    mappings)),
+            mappings),
+        getChildrenColumn());
+
+    dsd.addColumn(
+        "N8E-05",
+        "Adult Active patients on ART who participate in at least one measured DSD model - Eligible(Stable)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8E-05",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndStable(),
+                    mappings)),
+            mappings),
+        "age=15+");
+
+    dsd.addColumn(
+        "N8E-ST",
+        "Active patients on ART who participate in at least one measured DSD model - Eligible(Stable)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8E-ST",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndStable(),
+                    mappings)),
+            mappings),
+        "");
+
+    dsd.addColumn(
+        "N8-T",
+        "Active patients on ART who participate in at least one measured DSD model)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N8T",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModel(),
+                    mappings)),
+            mappings),
+        "");
     return dsd;
   }
 
@@ -616,5 +775,15 @@ public class EriDSDDataset extends BaseDataSet {
     ColumnParameters lesThan2 = new ColumnParameters("lesThan2", "<2", "age=<2", "04");
 
     return Arrays.asList(lesThan2, twoTo4, fiveTo9, tenTo14);
+  }
+
+  private List<ColumnParameters> dsdN6Disag() {
+    ColumnParameters under2Years = new ColumnParameters("under2Years", "<2", "age=<2", "00");
+    ColumnParameters twoTo4 = new ColumnParameters("twoTo4", "2-4", "age=2-4", "01");
+    ColumnParameters fiveTo9 = new ColumnParameters("fiveTo9", "5-9", "age=5-9", "02");
+    ColumnParameters tenTo14 = new ColumnParameters("tenTo14", "10-14", "age=10-14", "03");
+    ColumnParameters over14 = new ColumnParameters("over14", "15+", "age=15+", "04");
+    ColumnParameters total = new ColumnParameters("total", "Total", "", "05");
+    return Arrays.asList(under2Years, twoTo4, fiveTo9, tenTo14, over14, total);
   }
 }

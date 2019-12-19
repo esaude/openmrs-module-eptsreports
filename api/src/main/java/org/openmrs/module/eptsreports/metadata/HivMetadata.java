@@ -184,6 +184,13 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept id 1066
+  @Override
+  public Concept getNoConcept() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.noConceptUuid");
+    return getConcept(uuid);
+  }
+
   public Concept getDataInicioProfilaxiaIsoniazidaConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -871,6 +878,7 @@ public class HivMetadata extends ProgramsMetadata {
   public Concept getSemiannualDispensation() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.semiannualConceptUuid");
+
     return getConcept(uuid);
   }
 
