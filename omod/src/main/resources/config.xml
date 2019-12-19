@@ -58,7 +58,7 @@
 			UUID for the INICIAR concept
 		</description>
 	</globalProperty>
-	
+
 	<globalProperty>
 		<property>@MODULE_ID@.dateOfHIVDiagnosis</property>
 		<defaultValue>54b65bbd-a0b0-4dfa-a3b1-de14d41bc314</defaultValue>
@@ -156,7 +156,7 @@
 			UUID for the TRATAMENTO DE TUBERCULOSE concept
 		</description>
 	</globalProperty>
-	
+
 	<globalProperty>
 		<property>eptsreports.tuberculosisTreatmentStartDateConceptUuid</property>
 		<defaultValue>e1d85906-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -164,7 +164,7 @@
 			UUID for the TRATAMENTO start date DE TUBERCULOSE concept
 		</description>
 	</globalProperty>
-	
+
 	<globalProperty>
 		<property>eptsreports.tbLivroEncounterTypeUuid</property>
 		<defaultValue>e2791b98-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -172,7 +172,7 @@
 			UUID for the TUBERCULOSE: LIVRO encounter type
 		</description>
 	</globalProperty>
-	
+
 	<globalProperty>
 		<property>eptsreports.tbProcessoEncounterTypeUuid</property>
 		<defaultValue>e2791cc4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -180,7 +180,7 @@
 			UUID for the TUBERCULOSE: PROCESSO encounter type
 		</description>
 	</globalProperty>
-	
+
 	<globalProperty>
 		<property>eptsreports.tbRastreioEncounterTypeUuid</property>
 		<defaultValue>e27915a8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -303,8 +303,8 @@
 			UUID for the GESTANTE concept
 		</description>
 	</globalProperty>
-	
-	
+
+
 	<globalProperty>
 		<property>@MODULE_ID@.gestationConceptUuid</property>
 		<defaultValue>e1cdd58a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -608,7 +608,7 @@
 			UUID for the ANORMAL concept
 		</description>
 	</globalProperty>
-<!---->
+	<!---->
 	<globalProperty>
 		<property>@MODULE_ID@.secretionsConcept</property>
 		<defaultValue>e1dadb40-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -779,14 +779,14 @@
 			UUID for the NO concept
 		</description>
 	</globalProperty>
-	
-		<globalProperty>
-			<property>eptsreports.evaluationAndPrepForARTEncounterTypeUuid</property>
-			<defaultValue>f69df47f-44a2-4cca-9819-a536bd47d927</defaultValue>
-			<description>
-				UUID for the S.TARV: AVALIACAO E PREPARACAO DO CANDIDATO TARV encounter type
-			</description>
-		</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.evaluationAndPrepForARTEncounterTypeUuid</property>
+		<defaultValue>f69df47f-44a2-4cca-9819-a536bd47d927</defaultValue>
+		<description>
+			UUID for the S.TARV: AVALIACAO E PREPARACAO DO CANDIDATO TARV encounter type
+		</description>
+	</globalProperty>
 	<globalProperty>
 		<property>eptsreports.classificationOfMalnutritionConceptUuid</property>
 		<defaultValue>0b1a2c8c-55d2-42a8-a3d6-62828f52d49a</defaultValue>
@@ -822,20 +822,20 @@
 			UUID for the WHO STAGE 1 ADULT concept
 		</description>
 	</globalProperty>
-    <globalProperty>
-        <property>eptsreports.currentWHOHIVStage3ConceptUuid</property>
-        <defaultValue>e1d9077a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
-        <description>
-            UUID for the WHO STAGE 3 ADULT concept
-        </description>
-    </globalProperty>
-    <globalProperty>
-        <property>eptsreports.currentWHOHIVStage4ConceptUuid</property>
-        <defaultValue>e1d90888-1d5f-11e0-b929-000c29ad1d07</defaultValue>
-        <description>
-            UUID for the WHO STAGE 4 ADULT concept
-        </description>
-    </globalProperty>
+	<globalProperty>
+		<property>eptsreports.currentWHOHIVStage3ConceptUuid</property>
+		<defaultValue>e1d9077a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the WHO STAGE 3 ADULT concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.currentWHOHIVStage4ConceptUuid</property>
+		<defaultValue>e1d90888-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the WHO STAGE 4 ADULT concept
+		</description>
+	</globalProperty>
 	<globalProperty>
 		<property>eptsreports.cd4CountConceptUuid</property>
 		<defaultValue>e1e68f26-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -915,7 +915,7 @@
 		</description>
 	</globalProperty>
 
-<!-- CD4 ABSOLUTE OBS   -->
+	<!-- CD4 ABSOLUTE OBS   -->
 	<globalProperty>
 		<property>eptsreports.cd4AbsoluteOBSUuid</property>
 		<defaultValue>e1dd5ab4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -923,7 +923,7 @@
 			UUID for the  CD4 ABSOLUTE OBS concept
 		</description>
 	</globalProperty>
-	
+
 	<!-- COUCELING ACTIVITY TYPE  -->
 	<globalProperty>
 		<property>eptsreports.coucelingActivityTypeUuid</property>
@@ -932,7 +932,7 @@
 			UUID for the   COUCELING ACTIVITY TYPE concept
 		</description>
 	</globalProperty>
-	
+
 	<!-- ADHERENCE COUNSELING  concept -->
 	<globalProperty>
 		<property>eptsreports.adherenceCounselingUuid</property>
@@ -941,7 +941,7 @@
 			UUID for the   ADHERENCE COUNSELING  concept
 		</description>
 	</globalProperty>
-	
+
 	<!-- CD4 ABSOLUTO  -->
 	<globalProperty>
 		<property>eptsreports.cd4AbsolutoUuid</property>
@@ -950,7 +950,7 @@
 			UUID for the  CD4 ABSOLUTO   concept
 		</description>
 	</globalProperty>
-	
+
 	<!-- TUBERCULOSIS DRUG TREATMENT END DATE -->
 	<globalProperty>
 		<property>eptsreports.tbDgrusTreatmentEndDateUuid</property>
@@ -959,7 +959,7 @@
 			UUID for the TUBERCULOSIS DRUG TREATMENT END DATE    concept
 		</description>
 	</globalProperty>
-	
+
 	<!--  ESTADIO 4 PEDIATRICO, MOCAMBIQUE -->
 	<globalProperty>
 		<property>eptsreports.stage4PediatricMozambiqueUuid</property>
@@ -968,7 +968,7 @@
 			UUID for the STAGE 4 PEDIATRIC, MOZAMBIQUE     concept
 		</description>
 	</globalProperty>
-	
+
 	<!--  ANTECEDENTES CLINICOS, ADULTO -->
 	<globalProperty>
 		<property>eptsreports.adultClinicalHistoryUuid</property>
@@ -977,7 +977,7 @@
 			UUID for the ADULT CLINICAL HISTORY concept
 		</description>
 	</globalProperty>
-	
+
 	<!-- RESULTADO DO EXAME DA PELE -->
 	<globalProperty>
 		<property>eptsreports.skimExamFindingsUuid</property>
@@ -986,7 +986,7 @@
 			UUID for the SKIN EXAM FINDINGS   concept
 		</description>
 	</globalProperty>
-	
+
 	<!-- EXAME DO APARELHO ARTICULAR -->
 	<globalProperty>
 		<property>eptsreports.extremityExamFindingsUuid</property>
@@ -995,8 +995,8 @@
 			UUID for the EXTREMITY EXAM FINDINGS    concept
 		</description>
 	</globalProperty>
-	
-	
+
+
 	<!-- ESTAGIO 4 ADULTO, MOCAMBIQUE  -->
 	<globalProperty>
 		<property>eptsreports.stateAdultMozambiqueUuid</property>
@@ -1005,8 +1005,8 @@
 			UUID for the  STAGE 4 ADULT, MOZAMBIQUE     concept
 		</description>
 	</globalProperty>
-	
-	
+
+
 	<!--  SARCOMA DE KAPOSI   -->
 	<globalProperty>
 		<property>eptsreports.kaposiSarcomaUuid</property>
@@ -1015,8 +1015,8 @@
 			UUID for the   KAPOSI'S SARCOMA  concept
 		</description>
 	</globalProperty>
-	
-	
+
+
 	<!-- ESTADIO OMS ACTUAL   -->
 	<globalProperty>
 		<property>eptsreports.currentWhoHivStageUuid</property>
@@ -1025,7 +1025,7 @@
 			UUID for the    CURRENT WHO HIV STAGE  concept
 		</description>
 	</globalProperty>
-	
+
 	<!--ESTADIO II OMS, ADULTO  -->
 	<globalProperty>
 		<property>eptsreports.who2AdultStageUuid</property>
@@ -1034,7 +1034,7 @@
 			UUID for the     WHO STAGE 2 ADULT  concept
 		</description>
 	</globalProperty>
-	
+
 	<!-- ESTADIO III OMS, ADULTO -->
 	<globalProperty>
 		<property>eptsreports.who3AdultStageUuid</property>
@@ -1043,8 +1043,8 @@
 			UUID for the     WHO STAGE 3 ADULT  concept
 		</description>
 	</globalProperty>
-	
-	
+
+
 	<!-- ESTADIO VI OMS, ADULTO -->
 	<globalProperty>
 		<property>eptsreports.who4AdultStageUuid</property>
@@ -1332,7 +1332,7 @@
 		</description>
 	</globalProperty>
 	<globalProperty>
-	<property>eptsreports.activeTBConceptUuid</property>
+		<property>eptsreports.activeTBConceptUuid</property>
 		<defaultValue>63b15479-5a05-4bdc-a6e5-eab175743122</defaultValue>
 		<description>
 			UUID for the TUBERCULOSE ACTIVO concept
@@ -1429,7 +1429,7 @@
 			UUID for the SINTOMAS DE TUBERCULOSE concept
 		</description>
 	</globalProperty>
-	
+
 	<!--23722-->
 	<globalProperty>
 		<property>eptsreports.applicationForLaboratoryResearch</property>
@@ -1466,6 +1466,14 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>eptsreports.identificadorDefinidoLocalment01Uuid</property>
+		<defaultValue>c89c90eb-5b03-4899-ab9f-06fecd123511</defaultValue>
+		<description>
+			UUID for the Identificador definido localmente 01 person attribute type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>eptsreports.typeOfDispensationConceptUuid</property>
 		<defaultValue>cadc1c2a-cd22-43dc-8404-4ce4c8a7242d</defaultValue>
 		<description>
@@ -1497,77 +1505,141 @@
 		</description>
 	</globalProperty>
 
-    <globalProperty>
-        <property>eptsreports.semiannualConceptUuid</property>
-        <defaultValue>3069be5c-cd02-4ddb-aa1f-bdd71d3dd6be</defaultValue>
-        <description>
-            UUID for the DISPENSA SEMESTRAL concept
-        </description>
-    </globalProperty>
+	<globalProperty>
+		<property>eptsreports.semiannualConceptUuid</property>
+		<defaultValue>3069be5c-cd02-4ddb-aa1f-bdd71d3dd6be</defaultValue>
+		<description>
+			UUID for the DISPENSA SEMESTRAL concept
+		</description>
+	</globalProperty>
 
-    <globalProperty>
-        <property>eptsreports.patientForgotVisitDateConceptUuid</property>
-        <defaultValue>e1e074f6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
-        <description>
-            UUID for the PATIENT FORGOT VISIT DATE concept
-        </description>
-    </globalProperty>
+	<globalProperty>
+		<property>eptsreports.patientForgotVisitDateConceptUuid</property>
+		<defaultValue>e1e074f6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT FORGOT VISIT DATE concept
+		</description>
+	</globalProperty>
 
-    <globalProperty>
-        <property>eptsreports.patientIsBedriddenAtHomeConceptUuid</property>
-        <defaultValue>e1e075fa-1d5f-11e0-b929-000c29ad1d07</defaultValue>
-        <description>
-            UUID for the PATIENT IS BEDRIDDEN AT HOME concept
-        </description>
-    </globalProperty>
+	<globalProperty>
+		<property>eptsreports.patientIsBedriddenAtHomeConceptUuid</property>
+		<defaultValue>e1e075fa-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT IS BEDRIDDEN AT HOME concept
+		</description>
+	</globalProperty>
 
-    <globalProperty>
-        <property>eptsreports.distanceOrMoneyForTransportIsTooMuchForPatientConceptUuid</property>
-        <defaultValue>e1e076f4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
-        <description>
-            UUID for the DISTANCE OR MONEY FOR TRANSPORT IS TO MUCH FOR PATIENT concept
-        </description>
-    </globalProperty>
+	<globalProperty>
+		<property>eptsreports.distanceOrMoneyForTransportIsTooMuchForPatientConceptUuid</property>
+		<defaultValue>e1e076f4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the DISTANCE OR MONEY FOR TRANSPORT IS TO MUCH FOR PATIENT concept
+		</description>
+	</globalProperty>
 
-    <globalProperty>
-        <property>eptsreports.patientIsDissatisfiedWithDayHospitalServicesConceptUuid</property>
-        <defaultValue>e1e079e2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
-        <description>
-            UUID for the PATIENT IS DISSATISFIED WITH DAY HOSPITAL SERVICES concept
-        </description>
-    </globalProperty>
+	<globalProperty>
+		<property>eptsreports.patientIsDissatisfiedWithDayHospitalServicesConceptUuid</property>
+		<defaultValue>e1e079e2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT IS DISSATISFIED WITH DAY HOSPITAL SERVICES concept
+		</description>
+	</globalProperty>
 
-    <globalProperty>
-        <property>eptsreports.patientIsTreatingHivWithTraditionalMedicineConceptUuid</property>
-        <defaultValue>e1e07cda-1d5f-11e0-b929-000c29ad1d07</defaultValue>
-        <description>
-            UUID for the PATIENT IS TREATING HIV WITH TRADITIONAL MEDICINE concept
-        </description>
-    </globalProperty>
+	<globalProperty>
+		<property>eptsreports.patientIsTreatingHivWithTraditionalMedicineConceptUuid</property>
+		<defaultValue>e1e07cda-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT IS TREATING HIV WITH TRADITIONAL MEDICINE concept
+		</description>
+	</globalProperty>
 
-    <globalProperty>
-        <property>eptsreports.otherReasonWhyPatientMissedVisitConceptUuid</property>
-        <defaultValue>e1e080cc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
-        <description>
-            UUID for the OTHER REASON WHY PATIENT MISSED VISIT concept
-        </description>
-    </globalProperty>
+	<globalProperty>
+		<property>eptsreports.otherReasonWhyPatientMissedVisitConceptUuid</property>
+		<defaultValue>e1e080cc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the OTHER REASON WHY PATIENT MISSED VISIT concept
+		</description>
+	</globalProperty>
 
-    <globalProperty>
-        <property>eptsreports.fearOfTheProviderConceptUuid</property>
-        <defaultValue>3c055270-bf64-465a-b649-475dfa1a212d</defaultValue>
-        <description>
-            UUID for the FEAR OF THE PROVIDER concept
-        </description>
-    </globalProperty>
+	<globalProperty>
+		<property>eptsreports.fearOfTheProviderConceptUuid</property>
+		<defaultValue>3c055270-bf64-465a-b649-475dfa1a212d</defaultValue>
+		<description>
+			UUID for the FEAR OF THE PROVIDER concept
+		</description>
+	</globalProperty>
 
-    <globalProperty>
-        <property>eptsreports.absenceOfHealthProviderInHealthUnitConceptUuid</property>
-        <defaultValue>558a66da-4900-4313-a02d-4ebb4f9948df</defaultValue>
-        <description>
-            UUID for the Absence of Health Provider in Health Unit concept
-        </description>
-    </globalProperty>
+	<globalProperty>
+		<property>eptsreports.absenceOfHealthProviderInHealthUnitConceptUuid</property>
+		<defaultValue>558a66da-4900-4313-a02d-4ebb4f9948df</defaultValue>
+		<description>
+			UUID for the Absence of Health Provider in Health Unit concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.patientForgotVisitDateConceptUuid</property>
+		<defaultValue>e1e074f6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT FORGOT VISIT DATE concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.patientIsBedriddenAtHomeConceptUuid</property>
+		<defaultValue>e1e075fa-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT IS BEDRIDDEN AT HOME concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.distanceOrMoneyForTransportIsTooMuchForPatientConceptUuid</property>
+		<defaultValue>e1e076f4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the DISTANCE OR MONEY FOR TRANSPORT IS TO MUCH FOR PATIENT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.patientIsDissatisfiedWithDayHospitalServicesConceptUuid</property>
+		<defaultValue>e1e079e2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT IS DISSATISFIED WITH DAY HOSPITAL SERVICES concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.patientIsTreatingHivWithTraditionalMedicineConceptUuid</property>
+		<defaultValue>e1e07cda-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT IS TREATING HIV WITH TRADITIONAL MEDICINE concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.otherReasonWhyPatientMissedVisitConceptUuid</property>
+		<defaultValue>e1e080cc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the OTHER REASON WHY PATIENT MISSED VISIT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.fearOfTheProviderConceptUuid</property>
+		<defaultValue>3c055270-bf64-465a-b649-475dfa1a212d</defaultValue>
+		<description>
+			UUID for the FEAR OF THE PROVIDER concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.absenceOfHealthProviderInHealthUnitConceptUuid</property>
+		<defaultValue>558a66da-4900-4313-a02d-4ebb4f9948df</defaultValue>
+		<description>
+			UUID for the Absence of Health Provider in Health Unit concept
+		</description>
+	</globalProperty>
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
