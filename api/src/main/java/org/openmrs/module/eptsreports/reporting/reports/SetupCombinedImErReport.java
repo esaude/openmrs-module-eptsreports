@@ -73,8 +73,6 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
 
     rd.addDataSetDefinition(
         "ERI4", Mapped.mapStraightThrough(eri4MonthsDataset.constructEri4MonthsDataset()));
-    rd.addDataSetDefinition(
-        "ERIDSD", Mapped.mapStraightThrough(eriDSDDataset.constructEriDSDDataset()));
 
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(
@@ -95,7 +93,7 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
     try {
       reportDesign =
           createXlsReportDesign(
-              reportDefinition, "IM_ER_Report.xls", "ERI-Report", getExcelDesignUuid(), null);
+              reportDefinition, "IM_ER_Report.xls", "IM_ER-Report", getExcelDesignUuid(), null);
       Properties props = new Properties();
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
