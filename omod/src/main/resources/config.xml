@@ -1603,4 +1603,1978 @@
 	</messages>
 	<!-- /Internationalization -->
 
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module configVersion="1.2">
+
+	<!-- Base Module Properties -->
+	<id>${project.parent.artifactId}</id>
+	<name>${project.parent.name}</name>
+	<version>${project.parent.version}</version>
+	<package>org.openmrs.module.eptsreports</package>
+	<author>Jembi Health Systems NPC</author>
+	<description>
+		${project.parent.description}
+	</description>
+
+	<activator>org.openmrs.module.eptsreports.EptsReportsActivator
+	</activator>
+
+	<!-- <updateURL>https://modules.openmrs.org/modules/download/@MODULE_ID@/update.rdf</updateURL> -->
+	<!-- /Base Module Properties -->
+
+	<require_version>1.11.5</require_version>
+
+	<!-- Extensions -->
+	<extension>
+		<point>org.openmrs.admin.list</point>
+		<class>org.openmrs.module.eptsreports.extension.html.AdminList</class>
+	</extension>
+
+	<require_modules>
+		<require_module version="${reportingVersion}">org.openmrs.module.reporting
+		</require_module>
+		<require_module version="${serializationVersion}">org.openmrs.module.serialization.xstream
+		</require_module>
+		<require_module version="${calculationVersion}">org.openmrs.calculation
+		</require_module>
+		<require_module version="${htmlWidgetsVersion}">org.openmrs.module.htmlwidgets
+		</require_module>
+	</require_modules>
+
+	<aware_of_modules>
+		<aware_of_module>org.openmrs.module.legacyui</aware_of_module>
+	</aware_of_modules>
+
+
+	<!-- AOP <advice> <point>org.openmrs.api.FormService</point> <class>@MODULE_PACKAGE@.advice.DuplicateFormAdvisor</class> 
+		</advice> /AOP -->
+
+
+	<!-- Required Privileges <privilege> <name>Form Entry</name> <description>Allows 
+		user to access Form Entry pages/functions</description> </privilege> /Required 
+		Privileges -->
+
+
+	<globalProperty>
+		<property>@MODULE_ID@.startDrugsConceptUuid</property>
+		<defaultValue>e1d9ef28-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the INICIAR concept
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>@MODULE_ID@.dateOfHIVDiagnosis</property>
+		<defaultValue>54b65bbd-a0b0-4dfa-a3b1-de14d41bc314</defaultValue>
+		<description>
+			UUID for the DATE OF HIV+ DIAGNOSIS concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.historicalStartDateConceptUuid</property>
+		<defaultValue>e1d8f690-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the DATA DE INICIO DO TARV concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.yesConceptUuid</property>
+		<defaultValue>e1d81b62-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the SIM concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.sTarvAdultoSeguimentoEncounterTypeUuid
+		</property>
+		<defaultValue>e278f956-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: ADULTO SEGUIMENTO encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.sTarvPediatriaSeguimentoEncounterTypeUuid
+		</property>
+		<defaultValue>e278fce4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: PEDIATRIA SEGUIMENTO encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.arvPlanConceptUuid</property>
+		<defaultValue>e1d9ee10-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the GESTÃO DE TARV concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.artProgramUuid</property>
+		<defaultValue>efe2481f-9e75-4515-8d5a-86bfde2b5ad3</defaultValue>
+		<description>
+			UUID for the SERVICO TARV - TRATAMENTO program
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.sTarvFarmaciaEncounterTypeUuid</property>
+		<defaultValue>e279133c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: FARMACIA encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.transferFromOtherFacilityConceptUuid</property>
+		<defaultValue>e1da7d3a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TRANSFERIDO DE concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.transferOutToAnotherFacilityConceptUuid</property>
+		<defaultValue>e1de1cf6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TRANSFERIDO PARA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.tuberculosisTreatmentPlanConceptUuid</property>
+		<defaultValue>e1d9fbda-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TRATAMENTO DE TUBERCULOSE concept
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsreports.tuberculosisTreatmentStartDateConceptUuid</property>
+		<defaultValue>e1d85906-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TRATAMENTO start date DE TUBERCULOSE concept
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsreports.tbLivroEncounterTypeUuid</property>
+		<defaultValue>e2791b98-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TUBERCULOSE: LIVRO encounter type
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsreports.tbProcessoEncounterTypeUuid</property>
+		<defaultValue>e2791cc4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TUBERCULOSE: PROCESSO encounter type
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsreports.tbRastreioEncounterTypeUuid</property>
+		<defaultValue>e27915a8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TUBERCULOSE: RASTREIO encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.tuberculosisTreatmentStartDateConceptUuid
+		</property>
+		<defaultValue>e1d85906-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TRATAMENTO start date DE TUBERCULOSE concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.tbLivroEncounterTypeUuid</property>
+		<defaultValue>e2791b98-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TUBERCULOSE: LIVRO encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.tbProcessoEncounterTypeUuid</property>
+		<defaultValue>e2791cc4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TUBERCULOSE: PROCESSO encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.tbRastreioEncounterTypeUuid</property>
+		<defaultValue>e27915a8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TUBERCULOSE: RASTREIO encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.tbProgramUuid</property>
+		<defaultValue>142d23c4-c29f-4799-8047-eb3af911fd21</defaultValue>
+		<description>
+			UUID for the Programa de Combate a Tuberculose
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.sTarvAdultoInitialAEncounterTypeUuid</property>
+		<defaultValue>e278f820-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: ADULTO INICIAL A encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.sTarvPediatriaInicialAEncounterTypeUuid
+		</property>
+		<defaultValue>e278fa8c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: PEDIATRIA INICIAL A encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.hivViralLoadConceptUuid</property>
+		<defaultValue>e1d6247e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the HIV CARGA VIRAL concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.priorDeliveryDateConceptUuid</property>
+		<defaultValue>e1e765c2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Prior Delivery Date concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.criteriaForArtStartUuid</property>
+		<defaultValue>607315ab-2f52-4d9f-b28a-6383b9a5f9c4</defaultValue>
+		<description>
+			UUID for the CRITÉRIO PARA INICIO DE TRATAMENTO ARV
+			concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.returnVisitDateForArvDrugConceptUuid</property>
+		<defaultValue>e1e2efd8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the DATA DO PROXIMO LEVANTAMENTO DE ARV concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.ptvEtvProgramUuid</property>
+		<defaultValue>06057245-ca21-43ab-a02f-e861d7e54593</defaultValue>
+		<description>
+			UUID for the PTV program
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.misauLaboratorioEncounterTypeUuid</property>
+		<defaultValue>e2790f68-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the MISAU: LABORATORIO program
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.pregnantConceptUuid</property>
+		<defaultValue>e1e056a6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the GESTANTE concept
+		</description>
+	</globalProperty>
+	
+	
+	<globalProperty>
+		<property>@MODULE_ID@.gestationConceptUuid</property>
+		<defaultValue>e1cdd58a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the GESTACAO concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.numberOfWeeksPregnantConceptUuid</property>
+		<defaultValue>e1da0788-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the SEMANAS DE GESTAÇÃO concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.pregnancyDueDateConceptUuid</property>
+		<defaultValue>e1dca8ee-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the DATA GRAVIDEZ concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.breastfeedingConceptUuid</property>
+		<defaultValue>bc4fe755-fc8f-49b8-9956-baf2477e8313</defaultValue>
+		<description>
+			UUID for the BREASTFEEDING concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.returnVisitDateConceptConceptUuid</property>
+		<defaultValue>e1dae630-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the DATA DE PROXIMA CONSULTA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.hivCareProgramUuid</property>
+		<defaultValue>7b2e4a0a-d4eb-4df7-be30-78ca4b28ca99</defaultValue>
+		<description>
+			UUID for the Programa de seguimento e cuidado aos
+			pacientes HIV+ program
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.artSecondLineSwitchUuid</property>
+		<defaultValue>7f367983-9911-4f8c-bbfc-a85678801f64</defaultValue>
+		<description>
+			UUID for the SECOND LINE concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.regimeUuid</property>
+		<defaultValue>e1d83e4e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REGIME concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.restartConceptUuid</property>
+		<defaultValue>e1de1bfc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REINICIAR concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.keyPopulationConceptUuid</property>
+		<defaultValue>c7c0b430-bbc1-4042-a365-ad78a13aef56</defaultValue>
+		<description>
+			UUID for the POPULACAO CHAVE concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.homosexualConceptUuid</property>
+		<defaultValue>e1daa454-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the HOMOSEXUAL concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.drugUseConceptUuid</property>
+		<defaultValue>5bdb7ec1-908a-11e6-a98e-000c29db4475</defaultValue>
+		<description>
+			UUID for the USO DE DROGA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.imprisonmentConceptUuid</property>
+		<defaultValue>58021703-908a-11e6-a98e-000c29db4475</defaultValue>
+		<description>
+			UUID for the PRISÃO OU ENCARCERAMENTO concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.sexWorkerConceptUuid</property>
+		<defaultValue>e1df1296-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TRABALHADOR DE SEXO concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.artPickupConceptUuid</property>
+		<defaultValue>e07fb227-7a5a-4edf-93e8-7633c9fd1ea0</defaultValue>
+		<description>
+			UUID for the LEVANTOU ARV concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.adultInitialBEncounterType</property>
+		<defaultValue>e278f1c2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: ADULTO INICIAL B encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.pediatriaInitialBEncounterType</property>
+		<defaultValue>e278f5aa-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: PEDIATRIA INICIAL B encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.artAconselhamentoEncounterType</property>
+		<defaultValue>e2791472-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: ACONSELHAMENTO encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.artAconselhamentoSeguimentoEncounterType</property>
+		<defaultValue>e2791a62-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: ACONSELHAMENTO SEGUIMENTO encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.buscaActivaEncounterTypeUuid</property>
+		<defaultValue>e27916d4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the S.TARV: BUSCA ACTIVA encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.reasonPatientNotFound</property>
+		<defaultValue>e1e09396-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REASON PATIENT NOT FOUND BY ACTIVIST concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.patientIsdead</property>
+		<defaultValue>e1e08f7c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT IS DEAD concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.patientIsdeadIncorrect</property>
+		<defaultValue>e1dac772-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT IS DEAD concept - Incorrectly used
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.typeOfVisit</property>
+		<defaultValue>e1e055a2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TYPE OF VISIT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.patientFound</property>
+		<defaultValue>e1e072c6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the ACTIVIST LOCATED MISSING PATIENT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.busca</property>
+		<defaultValue>e1e20e4c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the BUSCA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.secondAttempt</property>
+		<defaultValue>c0c63fbc-bff0-4f5f-920b-442e7ed6577a</defaultValue>
+		<description>
+			UUID for the DATE OF SECOND OUTREACH ATTEMPT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.thirdAttempt</property>
+		<defaultValue>38f911e7-ff0a-47c6-9209-b24579bf9082</defaultValue>
+		<description>
+			UUID for the DATE OF THIRD OUTREACH ATTEMPT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.defaultingMotive</property>
+		<defaultValue>e1e07fc8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REASON PATIENT MISSED VISIT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.reportOfVisitSupport</property>
+		<defaultValue>e1e20be0-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REPORT OF THE VISIT SUPPORT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.patientHadDifficulty</property>
+		<defaultValue>e1e20ae6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the THE PATIENT HAD DIFFICULTY concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.patientFoundForwarded</property>
+		<defaultValue>e1da001c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REFERRALS ORDERED concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.whoGaveInformation</property>
+		<defaultValue>e1e09d8c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REASON PATIENT NOT FOUND PROVIDED BY concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.cardDeliveryDate</property>
+		<defaultValue>e1e22850-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the DELIVERY DATE OF THE CARD HOME VISIT THE HEALTH UNIT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.activeOnProgramConcept</property>
+		<defaultValue>4a7bec6f-8f27-4da5-b78d-40134c30d3ee</defaultValue>
+		<description>
+			UUID for the ACTIVO NO PROGRAMA encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.urogenitalExamFindingsConcept</property>
+		<defaultValue>e1d86e14-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the EXAME UROGENITAL encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.normalConcept</property>
+		<defaultValue>e1d85b22-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the NORMAL concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.abnormalConcept</property>
+		<defaultValue>e1d85c26-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the ANORMAL concept
+		</description>
+	</globalProperty>
+<!---->
+	<globalProperty>
+		<property>@MODULE_ID@.secretionsConcept</property>
+		<defaultValue>e1dadb40-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the SECRECOES concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.condylomasConcept</property>
+		<defaultValue>e1dadc3a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the CONDILOMAS concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.ulcersConcept</property>
+		<defaultValue>e1dcaaec-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the ULCERAS concept
+		</description>
+	</globalProperty>
+
+	<!-- 2nd line ARV Concepts -->
+
+	<globalProperty>
+		<property>@MODULE_ID@.AZT_3TC_ABC_EFV_ConceptUuid</property>
+		<defaultValue>35a0268e-c1b4-4911-b865-a6d993bfc2f7</defaultValue>
+		<description>AZT_3TC_ABC_EFV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.D4T_3TC_ABC_EFV_ConceptUuid</property>
+		<defaultValue>d39b4713-fdb2-43ec-bb0a-35a093f8bba4</defaultValue>
+		<description>D4T_3TC_ABC_EFV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.AZT_3TC_ABC_LPV_ConceptUuid</property>
+		<defaultValue>106e650c-0fe3-4193-acb4-74afe900382a</defaultValue>
+		<description>AZT_3TC_ABC_LPV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.D4T_3TC_ABC_LPV_ConceptUuid</property>
+		<defaultValue>4f9f0a4b-d1a2-44cb-bcee-9c4d91c13606</defaultValue>
+		<description>D4T_3TC_ABC_LPV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.AZT_DDI_LPV_ConceptUuid</property>
+		<defaultValue>5239a445-d56b-46c0-b977-a6bc152da5b7</defaultValue>
+		<description>AZT_DDI_LPV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.TDF_3TC_EFV_ConceptUuid</property>
+		<defaultValue>e1da3154-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>TDF_3TC_EFV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.AZT_3TC_LPV_ConceptUuid</property>
+		<defaultValue>e1da3046-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>AZT_3TC_LPV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.ABC_3TC_EFV_ConceptUuid</property>
+		<defaultValue>e1da2f42-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>ABC_3TC_EFV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.ABC_3TC_NVP_ConceptUuid</property>
+		<defaultValue>e1da2e3e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>ABC_3TC_NVP</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.ABC_3TC_LPV_ConceptUuid</property>
+		<defaultValue>e1da2d30-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>ABC_3TC_LPV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.TDF_3TC_LPV_ConceptUuid</property>
+		<defaultValue>f8c5d365-7636-4449-9acd-c83c4fd2ea01</defaultValue>
+		<description>TDF_3TC_LPV</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.DataInicioProfilaxiaIsoniazidaConceptUuid
+		</property>
+		<defaultValue>6fa92ac9-0a96-4372-9e10-dd9683c19135</defaultValue>
+		<description>Data de inicio de profilaxia com Isoniazida</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.DataFimProfilaxiaIsoniazidaConceptUuid
+		</property>
+		<defaultValue>9e555978-3a02-4da4-855e-7b1bfc807347</defaultValue>
+		<description>Data de finalizacao de profilaxia com Isoniazida
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.isoniazidUseConceptUuid</property>
+		<defaultValue>be4a76ca-662a-4c39-903b-71983f5f67c9</defaultValue>
+		<description>Uso de Isoniazida</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.tbScreeningConceptUuid</property>
+		<defaultValue>ea1851dc-151b-4c1e-b763-5df48082159d</defaultValue>
+		<description>Concept uuid for SCREENING FOR TB</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.noConceptUuid</property>
+		<defaultValue>e1d81c70-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>Concept uuid for NO</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.researchResultForTbConceptUuid</property>
+		<defaultValue>106c484c-a5a3-4c8b-9586-09b1f22c324d</defaultValue>
+		<description>
+			UUID for the RESULT OF RESEARCH FOR TB OF BK and/or RX
+			concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.positiveConceptUuid</property>
+		<defaultValue>e1d47386-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Positive concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.negativeConceptUuid</property>
+		<defaultValue>e1d446cc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Negative concept
+		</description>
+	</globalProperty>
+
+	<!-- 2nd line ARV Concepts -->
+
+	<globalProperty>
+		<property>@MODULE_ID@.apssPrevencaoPositivaInicialInicialEncounterTypeUuid
+		</property>
+		<defaultValue>f0bc6401-4e62-43e5-97e2-6ab027bb0405</defaultValue>
+		<description>
+			UUID for the APSS: PREVENÇÃO POSITIVA - INICIAL encounter
+			type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.apssPrevencaoPositivaSeguimentoEncounterTypeUuid
+		</property>
+		<defaultValue>f4aa93fe-8737-4f70-9532-542b768459d7</defaultValue>
+		<description>
+			UUID for the APSS: PREVENÇÃO POSITIVA - SEGUIMENTO
+			encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.acceptContactConceptUuid</property>
+		<defaultValue>6d6b3f98-4038-4a08-889c-51a7c4079e11</defaultValue>
+		<description>
+			UUID for the CAN YOU BE CONTACTED WITH HEALTH UNIT IN
+			CASE OF NEED concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.noConceptUuid</property>
+		<defaultValue>e1d81c70-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the NO concept
+		</description>
+	</globalProperty>
+	
+		<globalProperty>
+			<property>eptsreports.evaluationAndPrepForARTEncounterTypeUuid</property>
+			<defaultValue>f69df47f-44a2-4cca-9819-a536bd47d927</defaultValue>
+			<description>
+				UUID for the S.TARV: AVALIACAO E PREPARACAO DO CANDIDATO TARV encounter type
+			</description>
+		</globalProperty>
+	<globalProperty>
+		<property>eptsreports.classificationOfMalnutritionConceptUuid</property>
+		<defaultValue>0b1a2c8c-55d2-42a8-a3d6-62828f52d49a</defaultValue>
+		<description>
+			UUID for the CLASSIFICATION OF MALNUTRITION concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.malnutritionLightConceptUuid</property>
+		<defaultValue>aa84f34d-11f7-4466-b784-0fdda716ace2</defaultValue>
+		<description>
+			UUID for the MALNUTRITION LIGHT concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.malnutritionConceptUuid</property>
+		<defaultValue>e1cf1422-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the MALNUTRITION concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.currentWHOHIVStageConceptUuid</property>
+		<defaultValue>e1e53c02-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the CURRENT WHO HIV STAGE concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.currentWHOHIVStage1ConceptUuid</property>
+		<defaultValue>e1d9055e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the WHO STAGE 1 ADULT concept
+		</description>
+	</globalProperty>
+    <globalProperty>
+        <property>eptsreports.currentWHOHIVStage3ConceptUuid</property>
+        <defaultValue>e1d9077a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the WHO STAGE 3 ADULT concept
+        </description>
+    </globalProperty>
+    <globalProperty>
+        <property>eptsreports.currentWHOHIVStage4ConceptUuid</property>
+        <defaultValue>e1d90888-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+        <description>
+            UUID for the WHO STAGE 4 ADULT concept
+        </description>
+    </globalProperty>
+	<globalProperty>
+		<property>eptsreports.cd4CountConceptUuid</property>
+		<defaultValue>e1e68f26-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the WHO STAGE 1 ADULT concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.chronicMalnutritionConceptUuid</property>
+		<defaultValue>e1dec764-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the CHRONIC MALNUTRITION concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.hivCareEntryPointConceptUuid</property>
+		<defaultValue>e1dca2ea-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the ENTRY POINT INTO HIV CARE, REFERAL TYPE concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.mobileClinicEntryPointConceptUuid</property>
+		<defaultValue>e1daca74-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the MOBILE CLINIC concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.providerBasedServiceEntryPointConceptUuid</property>
+		<defaultValue>adfe6645-9165-483e-a022-4c443de1344a</defaultValue>
+		<description>
+			UUID for the PROVIDER BASED SERVICE concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.medicalInPatientEntryPointConceptUuid</property>
+		<defaultValue>e1dca3ee-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the MEDICAL INPATIENT concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.externalConsultationEntryPointConceptUuid</property>
+		<defaultValue>e1dca4e8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the EXTERNAL CONSULTATION concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.labSamplesEntryPointConceptUuid</property>
+		<defaultValue>e1dacb78-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Lab samples concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.hospitalEntryPointConceptUuid</property>
+		<defaultValue>e1dc10c8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the HOSPITAL/CLINIC concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.referredFromPedTreatmentEntryPointConceptUuid</property>
+		<defaultValue>e1d8051e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REFERRED FROM PEDIATRIC TREATMENT concept
+		</description>
+	</globalProperty>
+	<!-- RASTREIO DE ITS  / SCREENING FOR STI -->
+	<globalProperty>
+		<property>eptsreports.screeningForSTIIuid</property>
+		<defaultValue>794ef662-03bc-4e22-90ff-38742b82827a</defaultValue>
+		<description>
+			UUID for the SCREENING FOR STI concept
+		</description>
+	</globalProperty>
+
+<!-- CD4 ABSOLUTE OBS   -->
+	<globalProperty>
+		<property>eptsreports.cd4AbsoluteOBSUuid</property>
+		<defaultValue>e1dd5ab4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the  CD4 ABSOLUTE OBS concept
+		</description>
+	</globalProperty>
+	
+	<!-- COUCELING ACTIVITY TYPE  -->
+	<globalProperty>
+		<property>eptsreports.coucelingActivityTypeUuid</property>
+		<defaultValue>451b1373-1cb8-4164-b746-907588398c1e</defaultValue>
+		<description>
+			UUID for the   COUCELING ACTIVITY TYPE concept
+		</description>
+	</globalProperty>
+	
+	<!-- ADHERENCE COUNSELING  concept -->
+	<globalProperty>
+		<property>eptsreports.adherenceCounselingUuid</property>
+		<defaultValue>e1e68562-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the   ADHERENCE COUNSELING  concept
+		</description>
+	</globalProperty>
+	
+	<!-- CD4 ABSOLUTO  -->
+	<globalProperty>
+		<property>eptsreports.cd4AbsolutoUuid</property>
+		<defaultValue>e1e68f26-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the  CD4 ABSOLUTO   concept
+		</description>
+	</globalProperty>
+	
+	<!-- TUBERCULOSIS DRUG TREATMENT END DATE -->
+	<globalProperty>
+		<property>eptsreports.tbDgrusTreatmentEndDateUuid</property>
+		<defaultValue>0ef94b67-b202-40ad-b542-7b2016524335</defaultValue>
+		<description>
+			UUID for the TUBERCULOSIS DRUG TREATMENT END DATE    concept
+		</description>
+	</globalProperty>
+	
+	<!--  ESTADIO 4 PEDIATRICO, MOCAMBIQUE -->
+	<globalProperty>
+		<property>eptsreports.stage4PediatricMozambiqueUuid</property>
+		<defaultValue>e1e0c10e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the STAGE 4 PEDIATRIC, MOZAMBIQUE     concept
+		</description>
+	</globalProperty>
+	
+	<!--  ANTECEDENTES CLINICOS, ADULTO -->
+	<globalProperty>
+		<property>eptsreports.adultClinicalHistoryUuid</property>
+		<defaultValue>e1dd41dc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the ADULT CLINICAL HISTORY concept
+		</description>
+	</globalProperty>
+	
+	<!-- RESULTADO DO EXAME DA PELE -->
+	<globalProperty>
+		<property>eptsreports.skimExamFindingsUuid</property>
+		<defaultValue>e1d8602c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the SKIN EXAM FINDINGS   concept
+		</description>
+	</globalProperty>
+	
+	<!-- EXAME DO APARELHO ARTICULAR -->
+	<globalProperty>
+		<property>eptsreports.extremityExamFindingsUuid</property>
+		<defaultValue>e1d86f18-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the EXTREMITY EXAM FINDINGS    concept
+		</description>
+	</globalProperty>
+	
+	
+	<!-- ESTAGIO 4 ADULTO, MOCAMBIQUE  -->
+	<globalProperty>
+		<property>eptsreports.stateAdultMozambiqueUuid</property>
+		<defaultValue>e1dc89c2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the  STAGE 4 ADULT, MOZAMBIQUE     concept
+		</description>
+	</globalProperty>
+	
+	
+	<!--  SARCOMA DE KAPOSI   -->
+	<globalProperty>
+		<property>eptsreports.kaposiSarcomaUuid</property>
+		<defaultValue>e1d2984a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the   KAPOSI'S SARCOMA  concept
+		</description>
+	</globalProperty>
+	
+	
+	<!-- ESTADIO OMS ACTUAL   -->
+	<globalProperty>
+		<property>eptsreports.currentWhoHivStageUuid</property>
+		<defaultValue>e1e53c02-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the    CURRENT WHO HIV STAGE  concept
+		</description>
+	</globalProperty>
+	
+	<!--ESTADIO II OMS, ADULTO  -->
+	<globalProperty>
+		<property>eptsreports.who2AdultStageUuid</property>
+		<defaultValue>e1d9066c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the     WHO STAGE 2 ADULT  concept
+		</description>
+	</globalProperty>
+	
+	<!-- ESTADIO III OMS, ADULTO -->
+	<globalProperty>
+		<property>eptsreports.who3AdultStageUuid</property>
+		<defaultValue>e1d9077a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the     WHO STAGE 3 ADULT  concept
+		</description>
+	</globalProperty>
+	
+	
+	<!-- ESTADIO VI OMS, ADULTO -->
+	<globalProperty>
+		<property>eptsreports.who4AdultStageUuid</property>
+		<defaultValue>e1d90888-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the     WHO STAGE 4 ADULT  concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.recordPreArtFlowConceptUuid</property>
+		<defaultValue>3c648ee6-1702-4eea-b709-aa007f221f57</defaultValue>
+		<description>
+			UUID for the FLUXO REGISTO PRE-TARV concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.recordArtFlowConceptUuid</property>
+		<defaultValue>20d186bd-9e7f-490f-b5cd-ac3c282cef7e</defaultValue>
+		<description>
+			UUID for the FLUXO REGISTO TARV concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.preArtEncounterTypeUuid</property>
+		<defaultValue>bc30cbe1-85b4-459f-acca-cffc4041a3b8</defaultValue>
+		<description>
+			UUID for the S.TARV: LIVRO PRE-TARV encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.artEncounterTypeUuid</property>
+		<defaultValue>15915fa8-3d94-430b-9adb-14ec806a8ff2</defaultValue>
+		<description>
+			UUID for the S.TARV: LIVRO TARV encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.abandonedConceptUuid</property>
+		<defaultValue>e1de1df0-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the ABANDONO concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.patientHasDiedConceptUuid</property>
+		<defaultValue>e1da766e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the OBITOU concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.preArtBook1ConceptUuid</property>
+		<defaultValue>384750e6-d201-488f-948a-93dc616124b4</defaultValue>
+		<description>
+			UUID for the LIVRO 1 PRE-TARV concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.stiScreeningConceptUuid</property>
+		<defaultValue>794ef662-03bc-4e22-90ff-38742b82827a</defaultValue>
+		<description>
+			UUID for the RASTREIO DE ITS concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.cotrimoxazoleProphylaxisStartDateConceptUuid</property>
+		<defaultValue>56a0216c-cd4b-45d3-9f2b-258e6c021d32</defaultValue>
+		<description>
+			UUID for the DATA DE INICIO DA PROFILAXIA COM COTRIMOXAZOL concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.isoniazidProphylaxisStartDateConceptUuid</property>
+		<defaultValue>6fa92ac9-0a96-4372-9e10-dd9683c19135</defaultValue>
+		<description>
+			UUID for the DATA DE INICIO DA PROFILAXIA COM ISONIAZIDA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.artBook1ConceptUuid</property>
+		<defaultValue>cf5969f2-ab91-4c88-9d48-81b1970eb741</defaultValue>
+		<description>
+			UUID for the BOOK 1 ART concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.suspendedTreatmentConceptUuid</property>
+		<defaultValue>e1de1fee-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the SUSPENDER TRATAMENTO concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.cd4PercentUuid</property>
+		<defaultValue>e1d48fba-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the CD4% concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.poorAdherenceUuid</property>
+		<defaultValue>e1de2b9c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the ADHERENCE concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.adverseReactionUuid</property>
+		<defaultValue>e1e07ece-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT DOES NOT LIKE ARV TREATMENT SIDE EFFECTS concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.neutropenia</property>
+		<defaultValue>9badccfc-4032-4337-b3bb-03f4346578a5</defaultValue>
+		<description>
+			UUID for the NEUTROPENIA concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.pancreatitis</property>
+		<defaultValue>20627f0d-858e-4465-a1e1-04f83a962224</defaultValue>
+		<description>
+			UUID for the PANCREATITIS concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.hepatotoxicity</property>
+		<defaultValue>d416c7b6-6775-4d17-aa99-fb0eb0e128c1</defaultValue>
+		<description>
+			UUID for the HEPATOTOXICITY concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.psychologicalChanges</property>
+		<defaultValue>48328d2d-350b-432a-9621-7f91a7325575</defaultValue>
+		<description>
+			UUID for the PSYCHOLOGICAL CHANGES concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.myopathy</property>
+		<defaultValue>e96ef010-d3a6-486c-94fa-383ee5be5642</defaultValue>
+		<description>
+			UUID for the MYOPATHY concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.skinAllergy</property>
+		<defaultValue>ee90cf97-afff-473e-b1a2-a2bf1c40dc75</defaultValue>
+		<description>
+			UUID for the SKIN ALLERGY concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.lipodystrophy</property>
+		<defaultValue>06637aa6-aeda-4b15-b86c-bd555f69c9af</defaultValue>
+		<description>
+			UUID for the LIPODYSTROPHY concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.lacticAcidosis</property>
+		<defaultValue>c7089026-9135-4cd8-af18-596e14e4c512</defaultValue>
+		<description>
+			UUID for the LACTIC ACIDOSIS concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.peripheralNeuropathy</property>
+		<defaultValue>e1d5f8be-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PERIPHERAL NEUROPATHY concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.diarrhea</property>
+		<defaultValue>e1cdb97e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the DIARRHEA concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.otherDiagnosis</property>
+		<defaultValue>e1dae234-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the OTHER DIAGNOSIS concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.gaac</property>
+		<defaultValue>f46bfb16-240d-4bd3-a497-d23afd377f4f</defaultValue>
+		<description>
+			UUID for the GAAC(GA) concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.familyApproach</property>
+		<defaultValue>d2380393-3621-421f-83fc-846d2d332904</defaultValue>
+		<description>
+			UUID for the FAMILY APPROACH concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.accessionClubs</property>
+		<defaultValue>5d82b491-2ca2-41ea-b091-16ffc5169aa1</defaultValue>
+		<description>
+			UUID for the ACCESSION CLUBS (CA) concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.singleStop</property>
+		<defaultValue>f1f6956f-e2e2-4c37-8c4a-ce4a1c381088</defaultValue>
+		<description>
+			UUID for the SINGLE STOP (PU) concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.rapidFlow</property>
+		<defaultValue>1fb0de79-31c6-4a31-a832-0c29f3c01e93</defaultValue>
+		<description>
+			UUID for the RAPID FLOW (FR) concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.quarterlyDispensation</property>
+		<defaultValue>b5c31d5e-165a-4618-aa62-113a0751a400</defaultValue>
+		<description>
+			UUID for the QUARTERLY DISPENSATION (DT) concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.communityDispensation</property>
+		<defaultValue>2e7b0a2a-dae3-460f-b2db-fc8b8d3e9909</defaultValue>
+		<description>
+			UUID for the COMMUNITY DISPENSATION (DC) concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.anotherModel</property>
+		<defaultValue>815b9762-329d-42c8-9158-d42016c49b85</defaultValue>
+		<description>
+			UUID for the ANOTHER MODEL concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.startDrugs</property>
+		<defaultValue>e1d9ef28-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the START DRUGS concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.continueRegimen</property>
+		<defaultValue>e1d9f036-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the CONTINUE REGIMEN concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.visitaApoioReintegracaoParteA</property>
+		<defaultValue>e27916d4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Visita de apoio e reintegracao parte A
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.visitaApoioReintegracaoParteB</property>
+		<defaultValue>e27916d4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Visita de apoio e reintegracao parte B
+		</description>
+	</globalProperty>
+	<globalProperty>
+	<property>eptsreports.activeTBConceptUuid</property>
+		<defaultValue>63b15479-5a05-4bdc-a6e5-eab175743122</defaultValue>
+		<description>
+			UUID for the TUBERCULOSE ACTIVO concept
+		</description>
+	</globalProperty>
+	<!--Patient identifier types-->
+	<globalProperty>
+		<property>eptsreports.nidServicoTarvUuid</property>
+		<defaultValue>e2b966d0-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			Numero de Identificaçao de Doente, serviço TARV
+		</description>
+	</globalProperty>
+	<!--Master card encounter type-->
+	<globalProperty>
+		<property>@MODULE_ID@.masterCardEncounterType</property>
+		<defaultValue>e422ecf9-75dd-4367-b21e-54bccabc4763</defaultValue>
+		<description>
+			UUID for the Master Card - Ficha Resumo encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.masterCardDrugPickupEncounterTypeUuid</property>
+		<defaultValue>cce7b2ec-4fc0-4f9e-806d-b1c4ee9577db</defaultValue>
+		<description>
+            UUID for the Levantamento de ARV Master Card encounter type
+		</description>
+	</globalProperty>
+
+	<!-- 51 -->
+	<globalProperty>
+		<property>eptsreports.fsrEncounterType</property>
+		<defaultValue>e2790f68-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+            UUID for FSR - Carga Viral encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.preArtStartDate</property>
+		<defaultValue>f69b1fe0-a657-4225-a996-20b599132508</defaultValue>
+		<description>
+			UUID for the PRE-ART START DATE concept
+		</description>
+	</globalProperty>
+	<!--23866-->
+	<globalProperty>
+		<property>eptsreports.preArtPickupDate</property>
+		<defaultValue>74f6c17f-9819-41da-ba34-5910f67d24d0</defaultValue>
+		<description>
+			UUID for the Date of ART Pickup concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.artPickupConceptUuid</property>
+		<defaultValue>e07fb227-7a5a-4edf-93e8-7633c9fd1ea0</defaultValue>
+		<description>
+			UUID for the LEVANTOU ARV concept
+		</description>
+	</globalProperty>
+
+	<!--6300-->
+	<globalProperty>
+		<property>eptsreports.typeOfPatientTransferredFrom</property>
+		<defaultValue>4f139c0a-9843-4dc4-b3e5-5aa00812e605</defaultValue>
+		<description>
+			UUID for the TYPE OF PATIENT TRANSFERED FROM concept
+		</description>
+	</globalProperty>
+
+	<!--6276-->
+	<globalProperty>
+		<property>eptsreports.art</property>
+		<defaultValue>7f3af436-5c3a-447c-9012-42bb314e03db</defaultValue>
+		<description>
+			UUID for the ART concept
+		</description>
+	</globalProperty>
+
+	<!--6273-->
+	<globalProperty>
+		<property>eptsreports.stateOfStayArtPatient</property>
+		<defaultValue>a7d3b5c9-8b8e-4f29-b332-8db47466fed3</defaultValue>
+		<description>
+			UUID for the STATE OF STAY ART PATIENT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.stateOfStayOfPreArtPatient</property>
+		<defaultValue>3bd7a5d1-afc0-478d-9aa6-c7bdd9a050c8</defaultValue>
+		<description>
+			UUID for the STATE OF STAY PRIOR ART PATIENT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.hasTbSymptomsConceptUuid</property>
+		<defaultValue>2eab4e55-d0d0-4fa8-8d23-b40eaaee44c8</defaultValue>
+		<description>
+			UUID for the SINTOMAS DE TUBERCULOSE concept
+		</description>
+	</globalProperty>
+	
+	<!--23722-->
+	<globalProperty>
+		<property>eptsreports.applicationForLaboratoryResearch</property>
+		<defaultValue>92653c45-9eb2-486d-90c0-3e00569e99c0</defaultValue>
+		<description>
+			UUID for the APPLICATION FOR LABORATORY RESEARCH concept
+		</description>
+	</globalProperty>
+
+	<!--1305-->
+	<globalProperty>
+		<property>eptsreports.viralLoadQualitativeConceptUuid</property>
+		<defaultValue>e1da2704-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Viral load qualitative  concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.dateOfLastMenstruationConcept</property>
+		<defaultValue>e1dc0dd0-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for DATE OF LAST MENSTRATION concept
+		</description>
+	</globalProperty>
+
+	<!-- 6272 -->
+	<globalProperty>
+		<property>eptsreports.stateOfStayPriorArtPatientConceptUuid</property>
+		<defaultValue>3bd7a5d1-afc0-478d-9aa6-c7bdd9a050c8</defaultValue>
+		<description>
+			UUID for the ESTADO DE PERMANENCIA DO PACIENTE PRE-TARV concept
+		</description>
+	</globalProperty>
+	<!-- 1067 -->
+	<globalProperty>
+		<property>eptsreports.unknownConceptUuid</property>
+		<defaultValue>e1d81d7e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the UNKNOWN concept
+		</description>
+	</globalProperty>
+
+	<!-- 23818 -->
+	<globalProperty>
+		<property>eptsreports.reasonForRequestingViralLoadConceptUuid</property>
+		<defaultValue>a97ab290-5b66-4755-bd49-d82f944cd093</defaultValue>
+		<description>
+			UUID for the Reason for requesting viral load concept
+		</description>
+	</globalProperty>
+
+	<!-- 23817 -->
+	<globalProperty>
+		<property>eptsreports.routineForRequestingViralLoadConceptUuid</property>
+		<defaultValue>971cf484-2751-40ce-9f89-d23f544d06e2</defaultValue>
+		<description>
+			UUID for the Routine viral load concept
+		</description>
+	</globalProperty>
+
+	<!-- 843 -->
+	<globalProperty>
+		<property>eptsreports.regimenFailureConceptUuid</property>
+		<defaultValue>e1d616b4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the REGIMEN FAILURE concept
+		</description>
+	</globalProperty>
+
+	<!-- 23881 -->
+	<globalProperty>
+		<property>eptsreports.suspectedImmuneFailureConceptUuid</property>
+		<defaultValue>df6aa98d-0124-4fb7-b4fb-5dc99f6ddcc9</defaultValue>
+		<description>
+			UUID for the Suspected immune failure concept
+		</description>
+	</globalProperty>
+
+	<!-- 23864 -->
+	<globalProperty>
+		<property>eptsreports.repeatAfterBreastfeedingConceptUuid</property>
+		<defaultValue>6f60eaa1-886d-4891-9d3d-7ade75d67606</defaultValue>
+		<description>
+			UUID for the REPEAT AFTER BREASTFEEDING concept
+		</description>
+	</globalProperty>
+
+	<!-- 23864 -->
+	<globalProperty>
+		<property>eptsreports.clinicalSuspicionConceptUuid</property>
+		<defaultValue>14ef99f0-88b2-4210-9e85-bfa002743728</defaultValue>
+		<description>
+			UUID for the Clinical suspicion concept
+		</description>
+	</globalProperty>
+
+
+	<globalProperty>
+		<property>eptsreports.typeOfDispensationConceptUuid</property>
+		<defaultValue>cadc1c2a-cd22-43dc-8404-4ce4c8a7242d</defaultValue>
+		<description>
+			UUID for the TIPO DE DISPENSA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.quarterlyConceptUuid</property>
+		<defaultValue>f53848d5-3521-4cc8-ac72-d63adef281a1</defaultValue>
+		<description>
+			UUID for the TRIMESTRAL concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.completedConceptUuid</property>
+		<defaultValue>e1d9facc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the COMPLETO concept
+		</description>
+	</globalProperty>
+<!-- 23748 -->
+	<globalProperty>
+		<property>eptsreports.cytopeniaConceptUuid</property>
+		<defaultValue>b9fe8ecb-a41d-49d3-b6f6-2c381715262d</defaultValue>
+		<description>
+			UUID for CYTOPENIA concept
+		</description>
+	</globalProperty>
+
+<!-- 23749 -->
+	<globalProperty>
+		<property>eptsreports.nephrotoxicityConceptUuid</property>
+		<defaultValue>8956c7ea-847a-4f70-91e8-e1cf325b85df</defaultValue>
+		<description>
+			UUID for the NEPHROTOXICITY concept
+		</description>
+	</globalProperty>
+
+<!-- 29 -->
+	<globalProperty>
+		<property>eptsreports.hepatitisConceptUuid</property>
+		<defaultValue>e1cdc68a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the HEPATITIS concept
+		</description>
+	</globalProperty>
+
+<!-- 23750 -->
+	<globalProperty>
+		<property>eptsreports.stevensJonhsonSyndromeConceptUuid</property>
+		<defaultValue>d0d485d3-3082-4b1b-a450-6cad31eb56b3</defaultValue>
+		<description>
+			UUID for the STEVENS-JOHNSON SYNDROME concept
+		</description>
+	</globalProperty>
+
+<!-- 23751 -->
+	<globalProperty>
+		<property>eptsreports.hypersensitivityToAbcOrRailConceptUuid</property>
+		<defaultValue>833aba0d-430a-4537-b202-94c32e9a1317</defaultValue>
+		<description>
+			UUID for the HYPERSENSITIVITY TO ABC/RAL concept
+		</description>
+	</globalProperty>
+
+<!-- 23752 -->
+	<globalProperty>
+		<property>eptsreports.hepaticSteatosisWithHyperlactataemiaConceptUuid</property>
+		<defaultValue>da3dea8e-9b35-4025-ad5e-cd9aad7707aa</defaultValue>
+		<description>
+			UUID for the HEPATIC STEATOSIS WITH HYPERLACTATAEMIA concept
+		</description>
+	</globalProperty>
+	<!-- 1306 -->
+	<globalProperty>
+		<property>eptsreports.beyondDtectableLimitConceptUuid</property>
+		<defaultValue>e1da2812-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the BEYOND DETECTABLE LIMIT concept
+		</description>
+	</globalProperty>
+	<!-- 23814 -->
+	<globalProperty>
+		<property>eptsreports.undetectableViralLoadConceptUuid</property>
+		<defaultValue>cc8ef88c-6ab6-4404-a036-d415bc42cc1c</defaultValue>
+		<description>
+			UUID for the UNDETECTABLE VIRAL LOAD concept
+		</description>
+	</globalProperty>
+	<!-- 23905 -->
+	<globalProperty>
+		<property>eptsreports.lessThan10CopiesConceptUuid</property>
+		<defaultValue>78a76661-50c0-41cf-b566-de275f17b648</defaultValue>
+		<description>
+			UUID for the LESS THAN 10 COPIES/ML concept
+		</description>
+	</globalProperty>
+	<!-- 23906 -->
+	<globalProperty>
+		<property>eptsreports.lessThan20CopiesConceptUuid</property>
+		<defaultValue>ae6c048f-8b04-46cb-903e-51d5670db525</defaultValue>
+		<description>
+			UUID for the LESS THAN 20 COPIES/ML concept
+		</description>
+	</globalProperty>
+	<!-- 23907 -->
+	<globalProperty>
+		<property>eptsreports.lessThan40CopiesConceptUuid</property>
+		<defaultValue>1321eeac-5832-4076-88e9-b1f2cd351ada</defaultValue>
+		<description>
+			UUID for the LESS THAN 40 COPIES/ML concept
+		</description>
+	</globalProperty>
+	<!-- 23908 -->
+	<globalProperty>
+		<property>eptsreports.lessThan400CopiesConceptUuid</property>
+		<defaultValue>d6eb4797-2c01-4b6e-b43f-be15cd2fdcc2</defaultValue>
+		<description>
+			UUID for the LESS THAN 400 COPIES/ML concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.identificadorDefinidoLocalment01Uuid</property>
+		<defaultValue>c89c90eb-5b03-4899-ab9f-06fecd123511</defaultValue>
+		<description>
+			UUID for the Identificador definido localmente 01 person attribute type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.typeOfDispensationConceptUuid</property>
+		<defaultValue>cadc1c2a-cd22-43dc-8404-4ce4c8a7242d</defaultValue>
+		<description>
+			UUID for the TIPO DE DISPENSA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.quarterlyConceptUuid</property>
+		<defaultValue>f53848d5-3521-4cc8-ac72-d63adef281a1</defaultValue>
+		<description>
+			UUID for the TRIMESTRAL concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.completedConceptUuid</property>
+		<defaultValue>e1d9facc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the COMPLETO concept
+		</description>
+	</globalProperty>
+
+	<!-- 23748 -->
+	<globalProperty>
+		<property>eptsreports.cytopeniaConceptUuid</property>
+		<defaultValue>b9fe8ecb-a41d-49d3-b6f6-2c381715262d</defaultValue>
+		<description>
+			UUID for CYTOPENIA concept
+		</description>
+	</globalProperty>
+
+	<!-- 23749 -->
+	<globalProperty>
+		<property>eptsreports.nephrotoxicityConceptUuid</property>
+		<defaultValue>8956c7ea-847a-4f70-91e8-e1cf325b85df</defaultValue>
+		<description>
+			UUID for the NEPHROTOXICITY concept
+		</description>
+	</globalProperty>
+
+	<!-- 29 -->
+	<globalProperty>
+		<property>eptsreports.hepatitisConceptUuid</property>
+		<defaultValue>e1cdc68a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the HEPATITIS concept
+		</description>
+	</globalProperty>
+
+	<!-- 23750 -->
+	<globalProperty>
+		<property>eptsreports.stevensJonhsonSyndromeConceptUuid</property>
+		<defaultValue>d0d485d3-3082-4b1b-a450-6cad31eb56b3</defaultValue>
+		<description>
+			UUID for the STEVENS-JOHNSON SYNDROME concept
+		</description>
+	</globalProperty>
+
+	<!-- 23751 -->
+	<globalProperty>
+		<property>eptsreports.hypersensitivityToAbcOrRailConceptUuid</property>
+		<defaultValue>833aba0d-430a-4537-b202-94c32e9a1317</defaultValue>
+		<description>
+			UUID for the HYPERSENSITIVITY TO ABC/RAL concept
+		</description>
+	</globalProperty>
+
+	<!-- 23752 -->
+	<globalProperty>
+		<property>eptsreports.hepaticSteatosisWithHyperlactataemiaConceptUuid</property>
+		<defaultValue>da3dea8e-9b35-4025-ad5e-cd9aad7707aa</defaultValue>
+		<description>
+			UUID for the HEPATIC STEATOSIS WITH HYPERLACTATAEMIA concept
+		</description>
+	</globalProperty>
+	<!-- 1306 -->
+	<globalProperty>
+		<property>eptsreports.beyondDtectableLimitConceptUuid</property>
+		<defaultValue>e1da2812-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the BEYOND DETECTABLE LIMIT concept
+		</description>
+	</globalProperty>
+	<!-- 23814 -->
+	<globalProperty>
+		<property>eptsreports.undetectableViralLoadConceptUuid</property>
+		<defaultValue>cc8ef88c-6ab6-4404-a036-d415bc42cc1c</defaultValue>
+		<description>
+			UUID for the UNDETECTABLE VIRAL LOAD concept
+		</description>
+	</globalProperty>
+	<!-- 23905 -->
+	<globalProperty>
+		<property>eptsreports.lessThan10CopiesConceptUuid</property>
+		<defaultValue>78a76661-50c0-41cf-b566-de275f17b648</defaultValue>
+		<description>
+			UUID for the LESS THAN 10 COPIES/ML concept
+		</description>
+	</globalProperty>
+	<!-- 23906 -->
+	<globalProperty>
+		<property>eptsreports.lessThan20CopiesConceptUuid</property>
+		<defaultValue>ae6c048f-8b04-46cb-903e-51d5670db525</defaultValue>
+		<description>
+			UUID for the LESS THAN 20 COPIES/ML concept
+		</description>
+	</globalProperty>
+	<!-- 23907 -->
+	<globalProperty>
+		<property>eptsreports.lessThan40CopiesConceptUuid</property>
+		<defaultValue>1321eeac-5832-4076-88e9-b1f2cd351ada</defaultValue>
+		<description>
+			UUID for the LESS THAN 40 COPIES/ML concept
+		</description>
+	</globalProperty>
+	<!-- 23908 -->
+	<globalProperty>
+		<property>eptsreports.lessThan400CopiesConceptUuid</property>
+		<defaultValue>d6eb4797-2c01-4b6e-b43f-be15cd2fdcc2</defaultValue>
+		<description>
+			UUID for the LESS THAN 400 COPIES/ML concept
+		</description>
+	</globalProperty>
+
+<!-- 23748 -->
+	<globalProperty>
+		<property>eptsreports.cytopeniaConceptUuid</property>
+		<defaultValue>b9fe8ecb-a41d-49d3-b6f6-2c381715262d</defaultValue>
+		<description>
+			UUID for CYTOPENIA concept
+		</description>
+	</globalProperty>
+
+<!-- 23749 -->
+	<globalProperty>
+		<property>eptsreports.nephrotoxicityConceptUuid</property>
+		<defaultValue>8956c7ea-847a-4f70-91e8-e1cf325b85df</defaultValue>
+		<description>
+			UUID for the NEPHROTOXICITY concept
+		</description>
+	</globalProperty>
+
+<!-- 29 -->
+	<globalProperty>
+		<property>eptsreports.hepatitisConceptUuid</property>
+		<defaultValue>e1cdc68a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the HEPATITIS concept
+		</description>
+	</globalProperty>
+
+<!-- 23750 -->
+	<globalProperty>
+		<property>eptsreports.stevensJonhsonSyndromeConceptUuid</property>
+		<defaultValue>d0d485d3-3082-4b1b-a450-6cad31eb56b3</defaultValue>
+		<description>
+			UUID for the STEVENS-JOHNSON SYNDROME concept
+		</description>
+	</globalProperty>
+
+<!-- 23751 -->
+	<globalProperty>
+		<property>eptsreports.hypersensitivityToAbcOrRailConceptUuid</property>
+		<defaultValue>833aba0d-430a-4537-b202-94c32e9a1317</defaultValue>
+		<description>
+			UUID for the HYPERSENSITIVITY TO ABC/RAL concept
+		</description>
+	</globalProperty>
+
+<!-- 23752 -->
+	<globalProperty>
+		<property>eptsreports.hepaticSteatosisWithHyperlactataemiaConceptUuid</property>
+		<defaultValue>da3dea8e-9b35-4025-ad5e-cd9aad7707aa</defaultValue>
+		<description>
+			UUID for the HEPATIC STEATOSIS WITH HYPERLACTATAEMIA concept
+		</description>
+	</globalProperty>
+	<!-- 1306 -->
+	<globalProperty>
+		<property>eptsreports.beyondDtectableLimitConceptUuid</property>
+		<defaultValue>e1da2812-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the BEYOND DETECTABLE LIMIT concept
+		</description>
+	</globalProperty>
+	<!-- 23814 -->
+	<globalProperty>
+		<property>eptsreports.undetectableViralLoadConceptUuid</property>
+		<defaultValue>cc8ef88c-6ab6-4404-a036-d415bc42cc1c</defaultValue>
+		<description>
+			UUID for the UNDETECTABLE VIRAL LOAD concept
+		</description>
+	</globalProperty>
+	<!-- 23905 -->
+	<globalProperty>
+		<property>eptsreports.lessThan10CopiesConceptUuid</property>
+		<defaultValue>78a76661-50c0-41cf-b566-de275f17b648</defaultValue>
+		<description>
+			UUID for the LESS THAN 10 COPIES/ML concept
+		</description>
+	</globalProperty>
+	<!-- 23906 -->
+	<globalProperty>
+		<property>eptsreports.lessThan20CopiesConceptUuid</property>
+		<defaultValue>ae6c048f-8b04-46cb-903e-51d5670db525</defaultValue>
+		<description>
+			UUID for the LESS THAN 20 COPIES/ML concept
+		</description>
+	</globalProperty>
+	<!-- 23907 -->
+	<globalProperty>
+		<property>eptsreports.lessThan40CopiesConceptUuid</property>
+		<defaultValue>1321eeac-5832-4076-88e9-b1f2cd351ada</defaultValue>
+		<description>
+			UUID for the LESS THAN 40 COPIES/ML concept
+		</description>
+	</globalProperty>
+	<!-- 23908 -->
+	<globalProperty>
+		<property>eptsreports.lessThan400CopiesConceptUuid</property>
+		<defaultValue>d6eb4797-2c01-4b6e-b43f-be15cd2fdcc2</defaultValue>
+		<description>
+			UUID for the LESS THAN 400 COPIES/ML concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.identificadorDefinidoLocalment01Uuid</property>
+		<defaultValue>c89c90eb-5b03-4899-ab9f-06fecd123511</defaultValue>
+		<description>
+			UUID for the Identificador definido localmente 01 person attribute type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.typeOfDispensationConceptUuid</property>
+		<defaultValue>cadc1c2a-cd22-43dc-8404-4ce4c8a7242d</defaultValue>
+		<description>
+			UUID for the TIPO DE DISPENSA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.monthlyConceptUuid</property>
+		<defaultValue>e1d848f8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the MONTHLY concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.quarterlyConceptUuid</property>
+		<defaultValue>f53848d5-3521-4cc8-ac72-d63adef281a1</defaultValue>
+		<description>
+			UUID for the TRIMESTRAL concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.completedConceptUuid</property>
+		<defaultValue>e1d9facc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the COMPLETO concept
+		</description>
+	</globalProperty>
+
+    <globalProperty>
+        <property>eptsreports.semiannualConceptUuid</property>
+        <defaultValue>3069be5c-cd02-4ddb-aa1f-bdd71d3dd6be</defaultValue>
+        <description>
+            UUID for the DISPENSA SEMESTRAL concept
+        </description>
+    </globalProperty>
+
+	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
+		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
+		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
+		@MODULE_PACKAGE@.web.DWRFormEntryService; DWRFormEntryService.enterForm(Integer 
+		patientId, Integer formId, boolean useEncounter, List<String> fields); ]]> 
+		</signatures> </dwr> -->
+
+	<!-- Servlets -->
+	<!-- Accessed through the url /pageContext()/moduleServlet/<moduleId>/<servlet-name> 
+		<servlet> <servlet-name>formDownload</servlet-name> <servlet-class>@MODULE_PACKAGE@.web.FormDownloadServlet</servlet-class> 
+		</servlet> -->
+	<!-- /Servlets -->
+
+
+	<!-- Internationalization -->
+	<!-- All message codes should start with @MODULE_ID@.* -->
+	<messages>
+		<lang>en</lang>
+		<file>messages.properties</file>
+	</messages>
+	<messages>
+		<lang>fr</lang>
+		<file>messages_fr.properties</file>
+	</messages>
+	<messages>
+		<lang>es</lang>
+		<file>messages_es.properties</file>
+	</messages>
+	<messages>
+		<lang>pt</lang>
+		<file>messages_pt.properties</file>
+	</messages>
+	<!-- /Internationalization -->
+
 </module>

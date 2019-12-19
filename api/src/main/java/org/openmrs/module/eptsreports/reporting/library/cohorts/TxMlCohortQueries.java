@@ -41,8 +41,7 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "noScheduledDrugPickupOrNextConsultation",
         EptsReportUtils.map(
-            txCurrCohortQueries
-                .getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(),
+            txCurrCohortQueries.getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(),
             "onOrBefore=${endDate},location=${location}"));
 
     cd.setCompositionString("missedAppointment OR noScheduledDrugPickupOrNextConsultation");
