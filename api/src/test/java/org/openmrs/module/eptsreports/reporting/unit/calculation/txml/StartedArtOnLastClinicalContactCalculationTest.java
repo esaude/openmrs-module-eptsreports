@@ -1,5 +1,9 @@
 package org.openmrs.module.eptsreports.reporting.unit.calculation.txml;
 
+import static org.mockito.Mockito.when;
+
+import java.util.Collections;
+import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -18,11 +22,6 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
-import java.util.Collections;
-import java.util.Date;
-
-import static org.mockito.Mockito.when;
-
 @PrepareForTest(EptsCalculationUtils.class)
 public class StartedArtOnLastClinicalContactCalculationTest extends PowerMockBaseContextTest {
   @Mock private HivMetadata hivMetadata;
@@ -36,20 +35,20 @@ public class StartedArtOnLastClinicalContactCalculationTest extends PowerMockBas
   private TestsHelper testsHelper;
 
   @Before
-  public void setUp(){
+  public void setUp() {
     PowerMockito.mockStatic(Context.class);
     PowerMockito.mockStatic(EptsCalculationUtils.class);
     when(Context.getRegisteredComponents(HivMetadata.class))
-            .thenReturn(Collections.singletonList(hivMetadata));
+        .thenReturn(Collections.singletonList(hivMetadata));
     when(Context.getRegisteredComponents(EPTSCalculationService.class))
-            .thenReturn(Collections.singletonList(eptsCalculationService));
+        .thenReturn(Collections.singletonList(eptsCalculationService));
     when(Context.getService(PatientCalculationService.class)).thenReturn(patientCalculationService);
     startedArtOnLastClinicalContactCalculation = new StartedArtOnLastClinicalContactCalculation();
     testsHelper = new TestsHelper();
   }
 
   @Test
-  public void evaluateShouldReturnPatientsOnArtForLessThan90Days(){
+  public void evaluateShouldReturnPatientsOnArtForLessThan90Days() {
     Date artStartDate = testsHelper.getDate("");
     Date lastClinicalContactDate = testsHelper.getDate("");
 
