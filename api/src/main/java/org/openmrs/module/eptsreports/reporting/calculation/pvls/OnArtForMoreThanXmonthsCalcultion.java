@@ -91,9 +91,9 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
         Obs lastQualitativeResults =
             EptsCalculationUtils.resultForPatient(qViralLoadResultsMap, ptId);
         if (checkNotNull(artStartDateResult, lastVlObs)) {
-
-          Date lastVlDate = lastVlObs.getObsDatetime();
-          if (checkNotNull(artStartDate) && isAtLeastThreeMonthsLater(artStartDate, lastVlDate)) {
+          if (checkNotNull(artStartDate)
+              && lastVlObs != null
+              && isAtLeastThreeMonthsLater(artStartDate, lastVlObs.getObsDatetime())) {
             isOnArtForMoreThan3Months = true;
           }
         }
