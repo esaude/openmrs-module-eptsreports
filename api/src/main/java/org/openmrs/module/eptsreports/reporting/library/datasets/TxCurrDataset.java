@@ -31,6 +31,7 @@ import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.KeyPopulationDimension;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.TxCurrDimensions;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.AgeRange;
@@ -54,6 +55,8 @@ public class TxCurrDataset extends BaseDataSet {
   @Autowired private EptsCommonDimension eptsCommonDimension;
 
   @Autowired private TxCurrDimensions txCurrDimensions;
+
+  @Autowired private KeyPopulationDimension keyPopulationDimension;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
@@ -98,6 +101,22 @@ public class TxCurrDataset extends BaseDataSet {
         EptsReportUtils.map(
             this.txCurrDimensions.findPatientsOnArtOnArvDispenseFor6OrMoreMonths(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    dataSetDefinition.addDimension(
+        "homosexual",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreHomosexual(), mappings));
+
+    dataSetDefinition.addDimension(
+        "drug-user",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoUseDrugs(), mappings));
+
+    dataSetDefinition.addDimension(
+        "prisioner",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreInPrison(), mappings));
+
+    dataSetDefinition.addDimension(
+        "sex-worker",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreSexWorker(), mappings));
 
     this.addDimensions(
         dataSetDefinition,
@@ -159,6 +178,27 @@ public class TxCurrDataset extends BaseDataSet {
         ABOVE_FIFTY);
 
     this.addColums(dataSetDefinition, "", txCurrIndicator, UNKNOWN);
+
+    dataSetDefinition.addColumn(
+        "MSM",
+        "Homosexual",
+        EptsReportUtils.map(txCurrIndicator, mappings),
+        "homosexual=homosexual");
+
+    dataSetDefinition.addColumn(
+        "PWID",
+        "Drugs User",
+        EptsReportUtils.map(txCurrIndicator, mappings),
+        "drug-user=drug-user");
+
+    dataSetDefinition.addColumn(
+        "PRI", "Prisioners", EptsReportUtils.map(txCurrIndicator, mappings), "prisioner=prisioner");
+
+    dataSetDefinition.addColumn(
+        "FSW",
+        "Sex Worker",
+        EptsReportUtils.map(txCurrIndicator, mappings),
+        "sex-worker=sex-worker");
 
     return dataSetDefinition;
   }
