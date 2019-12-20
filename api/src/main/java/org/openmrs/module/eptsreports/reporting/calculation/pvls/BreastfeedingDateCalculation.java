@@ -51,6 +51,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
     EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
     EncounterType childFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
+    EncounterType fichaResumoEncounterType = hivMetadata.getMasterCardEncounterType();
 
     Concept breastfeedingConcept = hivMetadata.getBreastfeeding();
     Concept yes = hivMetadata.getYesConcept();
@@ -62,7 +63,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap lactatingMap =
         ePTSCalculationService.getObs(
             breastfeedingConcept,
-            null,
+            Arrays.asList(fichaResumoEncounterType, adultFollowup),
             cohort,
             Arrays.asList(location),
             Arrays.asList(yes),
