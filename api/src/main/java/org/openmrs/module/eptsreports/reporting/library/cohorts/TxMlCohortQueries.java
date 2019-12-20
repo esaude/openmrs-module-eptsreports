@@ -37,7 +37,8 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "missedAppointment",
         EptsReportUtils.map(
-            getAllPatientsWhoMissedNextAppointment(), "endDate=${endDate},location=${location}"));
+            getAllPatientsWhoMissedNextAppointment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "noScheduledDrugPickupOrNextConsultation",
         EptsReportUtils.map(
@@ -168,13 +169,13 @@ public class TxMlCohortQueries {
     return genericCohortQueries.generalSql(
         "Missed Next appointment",
         TxMlQueries.getPatientsWhoMissedAppointment(
-            28,
-            183,
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtPickupConcept().getConceptId()));
   }
 
   /**
