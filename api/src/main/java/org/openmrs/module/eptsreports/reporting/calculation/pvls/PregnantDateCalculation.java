@@ -62,6 +62,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     Concept pregnancyDueDate = hivMetadata.getPregnancyDueDate();
     Program ptv = hivMetadata.getPtvEtvProgram();
     Concept gestation = hivMetadata.getGestationConcept();
+    Concept lastMenstartion = hivMetadata.getDateOfLastMenstruationConcept();
 
     CalculationResultMap pregnantMap =
         ePTSCalculationService.getObs(
@@ -95,6 +96,16 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
             TimeQualifier.ANY,
             null,
             context);
+    CalculationResultMap lastMenstralMap =
+        ePTSCalculationService.getObs(
+            lastMenstartion,
+            Arrays.asList(adultFollowup),
+            cohort,
+            Arrays.asList(location),
+            null,
+            TimeQualifier.ANY,
+            null,
+            context);
 
     CalculationResultMap markedPregnantInProgram =
         ePTSCalculationService.allProgramEnrollment(ptv, cohort, context);
@@ -118,6 +129,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
               markedPregnantByWeeks,
               markedPregnantDueDate,
               markedPregnantInProgram,
+              lastMenstralMap,
               pId,
               lastVlObs);
       resultMap.put(pId, new SimpleResult(requiredDate, this));
@@ -131,6 +143,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
       CalculationResultMap markedPregnantByWeeks,
       CalculationResultMap markedPregnantDueDate,
       CalculationResultMap markedPregnantInProgram,
+      CalculationResultMap markedAsMenstralMap,
       Integer pId,
       Obs lastVlObs) {
     Date requiredDate = null;
@@ -141,6 +154,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
       ListResult pregnantByWeeksResullt = (ListResult) markedPregnantByWeeks.get(pId);
       ListResult pregnantDueDateResult = (ListResult) markedPregnantDueDate.get(pId);
       ListResult pregnantsInProgramResults = (ListResult) markedPregnantInProgram.get(pId);
+      ListResult lastMenstralResults = (ListResult) markedAsMenstralMap.get(pId);
 
       List<Obs> pregnantObsList = EptsCalculationUtils.extractResultValues(pregnantResult);
       List<Obs> pregnantByWeeksObsList =
@@ -149,6 +163,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
           EptsCalculationUtils.extractResultValues(pregnantDueDateResult);
       List<PatientProgram> patientProgams =
           EptsCalculationUtils.extractResultValues(pregnantsInProgramResults);
+      List<Obs> lastMensObsList = EptsCalculationUtils.extractResultValues(lastMenstralResults);
 
       // add a list to contains all the dates that can be sorted and pick the most recent one
       List<Date> allPregnancyDates =
@@ -156,7 +171,8 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
               isPregnantDate(lastVlDate, pregnantObsList),
               isPregnantByWeeks(lastVlDate, pregnantByWeeksObsList),
               isPregnantDueDate(lastVlDate, pregnantDueDateObsList),
-              isPregnantInProgram(lastVlDate, patientProgams, location));
+              isPregnantInProgram(lastVlDate, patientProgams, location),
+              isPregnantWithLastMens(lastVlDate, lastMensObsList));
       // have a resultant list of dates
       List<Date> resultantList = new ArrayList<>();
       if (allPregnancyDates.size() > 0) {
@@ -218,6 +234,16 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
       }
     }
     return inProgramDate;
+  }
+
+  private Date isPregnantWithLastMens(Date lastVlDate, List<Obs> pregnantWithLastDateObsList) {
+    Date isPregnancyWihLastMensDate = null;
+    for (Obs obs : pregnantWithLastDateObsList) {
+      if (this.isInPregnantViralLoadRange(lastVlDate, obs.getEncounter().getEncounterDatetime())) {
+        isPregnancyWihLastMensDate = obs.getEncounter().getEncounterDatetime();
+      }
+    }
+    return isPregnancyWihLastMensDate;
   }
 
   private boolean isInPregnantViralLoadRange(Date viralLoadDate, Date pregnancyDate) {
