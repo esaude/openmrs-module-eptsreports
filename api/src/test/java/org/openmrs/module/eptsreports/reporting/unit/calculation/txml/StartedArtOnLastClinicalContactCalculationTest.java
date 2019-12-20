@@ -49,8 +49,8 @@ public class StartedArtOnLastClinicalContactCalculationTest extends PowerMockBas
 
   @Test
   public void evaluateShouldReturnPatientsOnArtForLessThan90Days() {
-    Date artStartDate = testsHelper.getDate("");
-    Date lastClinicalContactDate = testsHelper.getDate("");
+    Date artStartDate = testsHelper.getDate("2018-05-01 00:00:00.0");
+    Date lastClinicalContactDate = testsHelper.getDate("2018-08-01 00:00:00.0");
 
     Location location = new Location(1);
     Person person = new Person(1);
