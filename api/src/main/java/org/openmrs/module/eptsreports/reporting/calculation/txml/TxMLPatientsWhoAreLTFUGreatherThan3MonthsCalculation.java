@@ -60,7 +60,8 @@ public class TxMLPatientsWhoAreLTFUGreatherThan3MonthsCalculation extends BaseFg
                   patientId, lastRecepcaoLevantamentoResult, lastRecepcaoLevantamentoCalculation));
       if (maxNextDate != null && DateUtil.getDaysBetween(inicioRealDate, maxNextDate) >= 90) {
         Date nextDatePlus28 = CalculationProcessorUtils.adjustDaysInDate(maxNextDate, 28);
-        if (nextDatePlus28.compareTo(startDate) >= 0 && nextDatePlus28.compareTo(endDate) < 0) {
+        if (nextDatePlus28.compareTo(CalculationProcessorUtils.adjustDaysInDate(startDate, -1)) >= 0
+            && nextDatePlus28.compareTo(endDate) < 0) {
           resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
         }
       }
