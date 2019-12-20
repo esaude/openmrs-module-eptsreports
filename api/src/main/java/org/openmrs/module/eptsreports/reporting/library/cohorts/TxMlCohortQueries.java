@@ -127,7 +127,7 @@ public class TxMlCohortQueries {
 
   /**
    * a, b AND Transferred Out Except all patients who after the most recent date from above
-   * criterias, have a drugs pick up or consultation: Except patients identified in Dead
+   * criterias, have a drugs pick up or consultation: Except patients identified in Dead
    * Disaggregation
    *
    * @return
