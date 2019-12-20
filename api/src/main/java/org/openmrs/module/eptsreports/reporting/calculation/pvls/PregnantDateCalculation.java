@@ -53,6 +53,8 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
     EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
     EncounterType pediatriaFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
+    EncounterType fichaResumoEncounterType = hivMetadata.getMasterCardEncounterType();
+    EncounterType adultInitial = hivMetadata.getARVAdultInitialEncounterType();
 
     Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
     Concept pregnant = hivMetadata.getPregnantConcept();
@@ -64,7 +66,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap pregnantMap =
         ePTSCalculationService.getObs(
             pregnant,
-            null,
+            Arrays.asList(fichaResumoEncounterType, adultFollowup, adultInitial),
             cohort,
             Arrays.asList(location),
             Arrays.asList(gestation),
