@@ -34,64 +34,50 @@ public class EncounterCalculation extends BaseFghCalculation {
 
     for (final Integer patientId : cohort) {
 
-      final String query =
-          String.format(
-              TxRttQueries.QUERY.findEncountersByPatient, patientId, patientId, patientId);
+      final SqlQueryBuilder queryBuilder =
+          new SqlQueryBuilder(
+              TxRttQueries.QUERY.findEncountersByPatient, context.getParameterValues());
+      queryBuilder.addParameter("patientId", patientId);
 
-      final List<Object[]> encounters =
-          this.evaluationService.evaluateToList(
-              new SqlQueryBuilder(query, context.getParameterValues()), context);
+      final List<Date> encounters =
+          this.evaluationService.evaluateToList(queryBuilder, Date.class, context);
 
-      for (int position = 0; position < encounters.size(); position++) {
+      for (final Date encounterDate : encounters) {
 
-        if (this.isLastEncounter(encounters, position)) {
-          final Object[] lastEncounter = encounters.get(position);
-          final Date lastEncounterDate = (Date) lastEncounter[1];
+        final List<Date> followUpResult =
+            this.findResults(
+                context,
+                patientId,
+                encounterDate,
+                TxRttQueries.QUERY
+                    .findLastNextEncounterScheduledDateOnThePreviousFolloupEncounterByPatient);
 
-          final String previousEncounterQuery =
-              String.format(
-                  TxRttQueries.QUERY.findLastScheduledEncounterByPatientAndPeriod,
-                  patientId,
-                  patientId,
-                  patientId);
-
-          final List<Date> evaluateToList =
-              this.evaluationService.evaluateToList(
-                  new SqlQueryBuilder(previousEncounterQuery, context.getParameterValues()),
-                  Date.class,
-                  context);
-
-          if (evaluateToList.isEmpty()) {
-            break;
-          }
-
-          final Date previousScheduledDate = evaluateToList.get(0);
-
-          final long days =
-              EptsReportUtils.getDifferenceInDaysBetweenDates(
-                  lastEncounterDate, previousScheduledDate);
-
-          if (this.isOnRTT(days)) {
-            resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-          }
-
+        if (followUpResult.isEmpty()) {
           break;
         }
 
-        final Object[] encounter = encounters.get(position);
-        final Date encounterDate = (Date) encounter[1];
-        final Object[] previousEncounter = encounters.get(position + 1);
-        final Date previousScheduledDate = (Date) previousEncounter[2];
+        final List<Date> pickUpResult =
+            this.findResults(
+                context,
+                patientId,
+                encounterDate,
+                TxRttQueries.QUERY.findLastNextPickupDateOnThePreviousPickupEncounterByPatient);
 
-        if (previousScheduledDate != null) {
+        if (pickUpResult.isEmpty()) {
+          break;
+        }
 
-          final long days =
-              EptsReportUtils.getDifferenceInDaysBetweenDates(encounterDate, previousScheduledDate);
+        final Date followUpDate = followUpResult.get(0);
+        final Date pickUpDate = pickUpResult.get(0);
 
-          if (this.isOnRTT(days)) {
-            resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-            break;
-          }
+        final long followUpDays =
+            EptsReportUtils.getDifferenceInDaysBetweenDates(encounterDate, followUpDate);
+        final long pickUpDays =
+            EptsReportUtils.getDifferenceInDaysBetweenDates(encounterDate, pickUpDate);
+
+        if (this.isOnRTT(followUpDays, pickUpDays)) {
+          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+          break;
         }
       }
     }
@@ -99,11 +85,21 @@ public class EncounterCalculation extends BaseFghCalculation {
     return resultMap;
   }
 
-  private boolean isOnRTT(final long days) {
-    return days > RTT_DAYS;
+  private List<Date> findResults(
+      final EvaluationContext context,
+      final Integer patientId,
+      final Date encounterDate,
+      final String query) {
+    final SqlQueryBuilder queryBuilder = new SqlQueryBuilder(query, context.getParameterValues());
+
+    queryBuilder.addParameter("patientId", patientId).addParameter("encounterDate", encounterDate);
+
+    final List<Date> result =
+        this.evaluationService.evaluateToList(queryBuilder, Date.class, context);
+    return result;
   }
 
-  private boolean isLastEncounter(final List<Object[]> encounters, final int position) {
-    return (encounters.size() - 1) == position;
+  private boolean isOnRTT(final long followUpDays, final long pickUpDays) {
+    return (followUpDays > RTT_DAYS) && (pickUpDays > RTT_DAYS);
   }
 }
