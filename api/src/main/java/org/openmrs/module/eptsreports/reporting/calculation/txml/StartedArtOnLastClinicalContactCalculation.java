@@ -43,9 +43,7 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
             cohort,
             parameterValues,
             context);
-    if (endDate == null) {
-      endDate = (Date) context.getFromCache("onOrBefore");
-    }
+
     if (endDate != null) {
       for (Integer patientId : cohort) {
         Date artStartDate =
