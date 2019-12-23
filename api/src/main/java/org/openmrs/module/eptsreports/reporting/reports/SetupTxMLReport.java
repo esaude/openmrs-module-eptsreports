@@ -56,7 +56,7 @@ public class SetupTxMLReport extends EptsDataExportManager {
     rd.setName(getName());
     rd.setDescription(getDescription());
     rd.setParameters(txMlDataset.getParameters());
-    rd.addDataSetDefinition("TXML", Mapped.mapStraightThrough(txMlDataset.constructtxMlDataset()));
+    rd.addDataSetDefinition("ML", Mapped.mapStraightThrough(txMlDataset.constructtxMlDataset()));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
