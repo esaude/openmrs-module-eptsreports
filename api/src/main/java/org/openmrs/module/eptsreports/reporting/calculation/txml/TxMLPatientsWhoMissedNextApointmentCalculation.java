@@ -21,6 +21,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class TxMLPatientsWhoMissedNextApointmentCalculation extends BaseFghCalculation {
 
+  private static int DAYS_TO_LTFU = 28;
+
   @Override
   public CalculationResultMap evaluate(
       Map<String, Object> parameterValues, EvaluationContext context) {
@@ -61,7 +63,7 @@ public class TxMLPatientsWhoMissedNextApointmentCalculation extends BaseFghCalcu
               getLastRecepcaoLevantamentoPlus30(
                   patientId, lastRecepcaoLevantamentoResult, lastRecepcaoLevantamentoCalculation));
       if (maxNextDate != null) {
-        Date nextDatePlus28 = CalculationProcessorUtils.adjustDaysInDate(maxNextDate, 28);
+        Date nextDatePlus28 = CalculationProcessorUtils.adjustDaysInDate(maxNextDate, DAYS_TO_LTFU);
         if (nextDatePlus28.compareTo(CalculationProcessorUtils.adjustDaysInDate(startDate, -1)) >= 0
             && nextDatePlus28.compareTo(endDate) < 0) {
           resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
