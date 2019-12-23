@@ -13,13 +13,15 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.Arrays;
 import java.util.List;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.PvlsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.KeyPopulationDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -31,7 +33,9 @@ public class TxPvlsDataset extends BaseDataSet {
 
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
 
-  @Autowired private TxPvlsCohortQueries txPvls;
+  @Autowired private PvlsCohortQueries pvlsCohortQueries;
+
+  @Autowired private KeyPopulationDimension keyPopulationDimension;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
@@ -39,193 +43,415 @@ public class TxPvlsDataset extends BaseDataSet {
 
   public DataSetDefinition constructTxPvlsDatset() {
 
-    CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-    dsd.setName("Tx_Pvls Data Set");
-    dsd.addParameters(getParameters());
+    final CohortIndicatorDataSetDefinition dataSetDefinition =
+        new CohortIndicatorDataSetDefinition();
 
-    // Tie dimensions to this data definition
-    dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
-    dsd.addDimension(
-        "query", EptsReportUtils.map(eptsCommonDimension.maternityDimension(), mappings));
-    dsd.addDimension(
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    dataSetDefinition.setName("TX_PVLS Data Set");
+
+    dataSetDefinition.addParameters(this.getParameters());
+
+    dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
+
+    dataSetDefinition.addDimension(
         "age",
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
 
-    addNumeratorColumns(dsd, mappings);
-    addDenominatorColumns(dsd, mappings);
-
-    return dsd;
-  }
-
-  private void addDenominatorColumns(CohortIndicatorDataSetDefinition dsd, String mappings) {
-    // Denominator -------------------------------------------------------------
-    // Totals
-    dsd.addColumn(
-        "0D",
+    dataSetDefinition.addColumn(
+        "PVLSTOTAL",
         "Total patients with Viral load - Denominator",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "patients with viral load",
-                EptsReportUtils.map(txPvls.getPatientsWithViralLoadResults(), mappings)),
-            mappings),
-        "");
-
-    // Breastfeeding & Pregnant
-    dsd.addColumn(
-        "B05",
-        "Breast feeding and on routine Denominator",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "breastfeedingWomenWithViralLoad-routine denominator",
                 EptsReportUtils.map(
-                    txPvls.getBreastfeedingWomenOnRoutineWithViralLoadResultsDenominator(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "B06",
-        "Breast feeding and NOT documented Denominator",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "breastfeedingWomenWithViralLoad-not documented denominator",
-                EptsReportUtils.map(
-                    txPvls.getBreastfeedingWomenAndNotDocumentedWithViralLoadResultsDenominator(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "B07",
-        "Pregnant and on routine Denominator",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "pregnantWomenWithViralLoad and not documented denominator",
-                EptsReportUtils.map(
-                    txPvls.getPregnantWomenAndOnRoutineWithViralLoadResultsDenominator(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "B08",
-        "Pregnant and NOT documented Denominator",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "pregnantWomenWithViralLoad results not documented denominator",
-                EptsReportUtils.map(
-                    txPvls.getPregnantWomenAndNotDocumentedWithViralLoadResultsDenominator(),
+                    this.pvlsCohortQueries
+                        .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(),
                     mappings)),
             mappings),
         "");
 
-    // Routine for Adults & Children
     addRow(
-        dsd,
+        dataSetDefinition,
         "DR",
         "Adults & Children Denominator Routine",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "viral load results on routine adults and children",
                 EptsReportUtils.map(
-                    txPvls.getPatientsWithViralLoadREsultsAndOnRoutineForChildrenAndAdults(),
+                    this.pvlsCohortQueries
+                        .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine(),
                     mappings)),
             mappings),
         getAdultChildrenColumns());
 
-    // NOT documented for Adults & Children
     addRow(
-        dsd,
-        "DND",
-        "Adults & Children Denominator NOT documented",
+        dataSetDefinition,
+        "DT",
+        "Adults & Children Denominator Routine",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "viral load results not documented adults & children",
+                "viral load results on routine adults and children",
                 EptsReportUtils.map(
-                    txPvls.getPatientsWithViralLoadREsultsAndNotDocumenetdForChildrenAndAdults(),
+                    this.pvlsCohortQueries
+                        .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(),
                     mappings)),
             mappings),
         getAdultChildrenColumns());
-  }
 
-  private void addNumeratorColumns(CohortIndicatorDataSetDefinition dsd, String mappings) {
-    // Numerator ------------------------------------------------------------
-    // Totals
-    dsd.addColumn(
-        "0N",
-        "Total patients with suppressed Viral load - Numerator",
+    dataSetDefinition.addColumn(
+        "DPREGROTINE",
+        "Pregant routine",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "suppressed viral load",
-                EptsReportUtils.map(txPvls.getPatientsWithViralLoadSuppression(), mappings)),
-            mappings),
-        "");
-
-    // Breastfeeding & Pregnant
-    dsd.addColumn(
-        "B01",
-        "Breast feeding and on routine Numerator",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "breastfeedingWomenWithViralLoadSuppression routine numerator",
-                EptsReportUtils.map(txPvls.getBreastFeedingWomenOnRoutineNumerator(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "B02",
-        "Breast feeding and NOT documented Numerator",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "breastfeedingWomenWithViralLoadSuppression not documented numerator",
+                "Pregant routine",
                 EptsReportUtils.map(
-                    txPvls.getBreastFeedingWomenNotDocumentedNumerator(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "B03",
-        "Pregnant and on routine Numerator",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "pregnantWomenWithViralLoadSuppression and on routine",
-                EptsReportUtils.map(txPvls.getPregnantAndOnRoutineNumerator(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "B04",
-        "Pregnant and NOT documented Numerator",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "pregnantWomenWithViralLoadSuppression and NOT documented",
-                EptsReportUtils.map(txPvls.getPregnantAndNotDocumentedNumerator(), mappings)),
+                    pvlsCohortQueries
+                        .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine(),
+                    mappings)),
             mappings),
         "");
 
-    // Adults & children Routine
+    dataSetDefinition.addColumn(
+        "DPREGTARGET",
+        "pregnant target",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Pregant routine",
+                EptsReportUtils.map(
+                    pvlsCohortQueries
+                        .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(),
+                    mappings)),
+            mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "DBREASROTINE",
+        "Breastfeeding routine",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Breastfeeding routine",
+                EptsReportUtils.map(
+                    pvlsCohortQueries
+                        .findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine(),
+                    mappings)),
+            mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "DBREASTARGET",
+        "Breastfeeding routine",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Pregant routine",
+                EptsReportUtils.map(
+                    pvlsCohortQueries
+                        .findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(),
+                    mappings)),
+            mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "NRTOTAL",
+        "Total patients with Viral load - numerator",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "patients with viral load",
+                EptsReportUtils.map(
+                    this.pvlsCohortQueries
+                        .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12Months(),
+                    mappings)),
+            mappings),
+        "");
+
     addRow(
-        dsd,
+        dataSetDefinition,
         "NR",
-        "Children numerator routine",
+        "Adults & Children Numerator Routine",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "viral load suppression on routine adults and children",
+                "viral load results on routine adults and children",
                 EptsReportUtils.map(
-                    txPvls.getPatientWithViralSuppressionAndOnRoutineAdultsAndChildren(),
+                    this.pvlsCohortQueries
+                        .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine(),
                     mappings)),
             mappings),
         getAdultChildrenColumns());
 
-    // NOT documented Adults & Children
     addRow(
-        dsd,
-        "NND",
-        "Children numerator NOT documented",
+        dataSetDefinition,
+        "NT",
+        "Adults & Children Numerator target",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "viral load suppression not documents adults and children",
+                "viral load results on routine adults and children",
                 EptsReportUtils.map(
-                    txPvls.getPatientWithViralSuppressionAndNotDocumentedForAdultsAndChildren(),
+                    this.pvlsCohortQueries
+                        .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsTarget(),
                     mappings)),
             mappings),
         getAdultChildrenColumns());
+
+    dataSetDefinition.addColumn(
+        "NPREGROTINE",
+        "Pregant routine",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Pregant routine",
+                EptsReportUtils.map(
+                    pvlsCohortQueries
+                        .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Rotine(),
+                    mappings)),
+            mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "NPREGTARGET",
+        "Pregant routine",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Pregant routine",
+                EptsReportUtils.map(
+                    pvlsCohortQueries
+                        .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Target(),
+                    mappings)),
+            mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "NBREASROTINE",
+        "Pregant routine",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Pregant routine",
+                EptsReportUtils.map(
+                    pvlsCohortQueries
+                        .findPregnantBreatsFeedingWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Rotine(),
+                    mappings)),
+            mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "NBREASTARGET",
+        "Pregant target",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Pregant routine",
+                EptsReportUtils.map(
+                    pvlsCohortQueries
+                        .findPregnantBreatsFeedingWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Target(),
+                    mappings)),
+            mappings),
+        "");
+
+    // Add SubTotal Denominator
+
+    dataSetDefinition.addColumn(
+        "DRSUBTOTAL",
+        "Rotine Sub Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Rotine Sub Total",
+                EptsReportUtils.map(
+                    pvlsCohortQueries
+                        .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine(),
+                    mappings)),
+            mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "DTSUBTOTAL",
+        "Target Sub Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Target Sub Total",
+                EptsReportUtils.map(
+                    pvlsCohortQueries
+                        .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(),
+                    mappings)),
+            mappings),
+        "");
+
+    // Add SubTotal Numerator
+
+    dataSetDefinition.addColumn(
+        "NRSUBTOTAL",
+        "Rotine Numerator Sub Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Rotine Numerator Sub Total",
+                EptsReportUtils.map(
+                    pvlsCohortQueries
+                        .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine(),
+                    mappings)),
+            mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "NTSUBTOTAL",
+        "Target Numerator Sub Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Target Numerator Sub Total",
+                EptsReportUtils.map(
+                    pvlsCohortQueries
+                        .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsTarget(),
+                    mappings)),
+            mappings),
+        "");
+
+    // Kay Population dimension
+
+    dataSetDefinition.addDimension(
+        "homosexual",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreHomosexual(), mappings));
+
+    dataSetDefinition.addDimension(
+        "drug-user",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoUseDrugs(), mappings));
+
+    dataSetDefinition.addDimension(
+        "prisioner",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreInPrison(), mappings));
+
+    dataSetDefinition.addDimension(
+        "sex-worker",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreSexWorker(), mappings));
+
+    // Key population collumn denominator
+
+    final CohortIndicator rotineDenominator =
+        this.eptsGeneralIndicator.getIndicator(
+            "rotine",
+            EptsReportUtils.map(
+                pvlsCohortQueries
+                    .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine(),
+                mappings));
+
+    final CohortIndicator targetDenominator =
+        this.eptsGeneralIndicator.getIndicator(
+            "target",
+            EptsReportUtils.map(
+                pvlsCohortQueries
+                    .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(),
+                mappings));
+
+    dataSetDefinition.addColumn(
+        "DRMSM",
+        "Homosexual",
+        EptsReportUtils.map(rotineDenominator, mappings),
+        "homosexual=homosexual");
+
+    dataSetDefinition.addColumn(
+        "DTMSM",
+        "Homosexual",
+        EptsReportUtils.map(targetDenominator, mappings),
+        "homosexual=homosexual");
+
+    dataSetDefinition.addColumn(
+        "DRPWID",
+        "Drugs User",
+        EptsReportUtils.map(rotineDenominator, mappings),
+        "drug-user=drug-user");
+
+    dataSetDefinition.addColumn(
+        "DTPWID",
+        "Drugs User",
+        EptsReportUtils.map(targetDenominator, mappings),
+        "drug-user=drug-user");
+
+    dataSetDefinition.addColumn(
+        "DRPRI",
+        "Prisioners",
+        EptsReportUtils.map(rotineDenominator, mappings),
+        "prisioner=prisioner");
+
+    dataSetDefinition.addColumn(
+        "DTPRI",
+        "Prisioners",
+        EptsReportUtils.map(targetDenominator, mappings),
+        "prisioner=prisioner");
+
+    dataSetDefinition.addColumn(
+        "DRFSW",
+        "Sex Worker",
+        EptsReportUtils.map(rotineDenominator, mappings),
+        "sex-worker=sex-worker");
+
+    dataSetDefinition.addColumn(
+        "DTFSW",
+        "Sex Worker",
+        EptsReportUtils.map(targetDenominator, mappings),
+        "sex-worker=sex-worker");
+
+    // Key population collumn Numerator
+
+    final CohortIndicator rotineNumerator =
+        this.eptsGeneralIndicator.getIndicator(
+            "rotine",
+            EptsReportUtils.map(
+                pvlsCohortQueries
+                    .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine(),
+                mappings));
+
+    final CohortIndicator targetNumerator =
+        this.eptsGeneralIndicator.getIndicator(
+            "target",
+            EptsReportUtils.map(
+                pvlsCohortQueries
+                    .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsTarget(),
+                mappings));
+
+    dataSetDefinition.addColumn(
+        "NRPWID",
+        "Drugs User",
+        EptsReportUtils.map(rotineNumerator, mappings),
+        "drug-user=drug-user");
+
+    dataSetDefinition.addColumn(
+        "NTPWID",
+        "Drugs User",
+        EptsReportUtils.map(targetNumerator, mappings),
+        "drug-user=drug-user");
+
+    dataSetDefinition.addColumn(
+        "NRMSM",
+        "Homosexual",
+        EptsReportUtils.map(rotineNumerator, mappings),
+        "homosexual=homosexual");
+
+    dataSetDefinition.addColumn(
+        "NTMSM",
+        "Homosexual",
+        EptsReportUtils.map(targetNumerator, mappings),
+        "homosexual=homosexual");
+
+    dataSetDefinition.addColumn(
+        "NRFSW",
+        "Sex Worker",
+        EptsReportUtils.map(rotineNumerator, mappings),
+        "sex-worker=sex-worker");
+
+    dataSetDefinition.addColumn(
+        "NTFSW",
+        "Sex Worker",
+        EptsReportUtils.map(targetNumerator, mappings),
+        "sex-worker=sex-worker");
+
+    dataSetDefinition.addColumn(
+        "NRPRI",
+        "Prisioners",
+        EptsReportUtils.map(rotineNumerator, mappings),
+        "prisioner=prisioner");
+
+    dataSetDefinition.addColumn(
+        "NTPRI",
+        "Prisioners",
+        EptsReportUtils.map(targetNumerator, mappings),
+        "prisioner=prisioner");
+
+    return dataSetDefinition;
   }
 
   private List<ColumnParameters> getAdultChildrenColumns() {

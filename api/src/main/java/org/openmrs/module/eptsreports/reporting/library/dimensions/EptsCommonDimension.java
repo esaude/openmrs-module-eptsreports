@@ -433,7 +433,9 @@ public class EptsCommonDimension {
     final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
 
     dimension.setName(name);
+    dimension.addParameter(new Parameter("startDate", "Start Date", Date.class));
     dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dimension.addParameter(new Parameter("location", "location", Location.class));
 
     String query = TxCurrQueries.QUERY.findPatientsByGenderAndRage;
     query = String.format(query, range.getMin(), range.getMax(), gender.getName());
