@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset;
@@ -89,22 +90,22 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 		reportDefinition.setParameters(this.txRttDataset.getParameters());
 
 		reportDefinition.addDataSetDefinition("N",
-				Mapped.mapStraightThrough(this.txNewDataset.constructTxNewDataset()));
+		        Mapped.mapStraightThrough(this.txNewDataset.constructTxNewDataset()));
 
 		reportDefinition.addDataSetDefinition("C",
-				Mapped.mapStraightThrough(this.txCurrDataset.constructTxCurrDataset(true)));
+		        Mapped.mapStraightThrough(this.txCurrDataset.constructTxCurrDataset(true)));
 
 		reportDefinition.addDataSetDefinition("P",
-				Mapped.mapStraightThrough(this.txPvlsDataset.constructTxPvlsDatset()));
-
-		reportDefinition.addDataSetDefinition("R",
-				Mapped.mapStraightThrough(this.txRttDataset.constructTxRttDataset()));
+		        Mapped.mapStraightThrough(this.txPvlsDataset.constructTxPvlsDatset()));
 
 		reportDefinition.addDataSetDefinition("ML", Mapped.mapStraightThrough(this.txMlDataset.constructtxMlDataset()));
 
+		reportDefinition.addDataSetDefinition("R",
+		        Mapped.mapStraightThrough(this.txRttDataset.constructTxRttDataset()));
+
 		reportDefinition.setBaseCohortDefinition(EptsReportUtils.map(
-				this.genericCohortQueries.generalSql("baseCohortQuery", BaseQueries.getBaseCohortQuery()),
-				"endDate=${endDate},location=${location}"));
+		        this.genericCohortQueries.generalSql("baseCohortQuery", BaseQueries.getBaseCohortQuery()),
+		        "endDate=${endDate},location=${location}"));
 
 		return reportDefinition;
 	}
@@ -114,11 +115,12 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 		ReportDesign reportDesign = null;
 		try {
 			reportDesign = this.createXlsReportDesign(reportDefinition, "PEPFAR_MER_2.4_QUARTERLY.xls",
-					"PEPFAR MER 2.4 Quarterly Report", this.getExcelDesignUuid(), null);
+			        "PEPFAR MER 2.4 Quarterly Report", this.getExcelDesignUuid(), null);
 			final Properties props = new Properties();
 			props.put("sortWeight", "5000");
 			reportDesign.setProperties(props);
-		} catch (final IOException e) {
+		}
+		catch (final IOException e) {
 			throw new ReportingException(e.toString());
 		}
 
