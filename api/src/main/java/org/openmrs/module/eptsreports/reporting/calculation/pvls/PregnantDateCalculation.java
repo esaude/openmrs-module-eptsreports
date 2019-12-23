@@ -72,7 +72,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
         ePTSCalculationService.getObs(
             pregnant,
             Arrays.asList(fichaResumoEncounterType, adultFollowup, adultInitial),
-            femaleCohort,
+            cohort,
             Arrays.asList(location),
             Arrays.asList(gestation),
             TimeQualifier.ANY,
@@ -83,7 +83,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
         ePTSCalculationService.getObs(
             pregnantBasedOnWeeks,
             null,
-            femaleCohort,
+            cohort,
             Arrays.asList(location),
             null,
             TimeQualifier.ANY,
@@ -94,7 +94,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
         ePTSCalculationService.getObs(
             pregnancyDueDate,
             null,
-            femaleCohort,
+            cohort,
             Arrays.asList(location),
             null,
             TimeQualifier.ANY,
@@ -104,7 +104,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
         ePTSCalculationService.getObs(
             lastMenstartion,
             Arrays.asList(adultFollowup),
-            femaleCohort,
+            cohort,
             Arrays.asList(location),
             null,
             TimeQualifier.ANY,
@@ -112,7 +112,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
             context);
 
     CalculationResultMap markedPregnantInProgram =
-        ePTSCalculationService.allProgramEnrollment(ptv, femaleCohort, context);
+        ePTSCalculationService.allProgramEnrollment(ptv, cohort, context);
 
     CalculationResultMap lastVl =
         ePTSCalculationService.lastObs(
@@ -121,10 +121,11 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
             location,
             oneYearBefore,
             onOrBefore,
-            femaleCohort,
+            cohort,
             context);
 
-    for (Integer pId : femaleCohort) {
+    for (Integer pId : cohort) {
+
       Obs lastVlObs = EptsCalculationUtils.resultForPatient(lastVl, pId);
       Date requiredDate =
           getRequiredDate(
@@ -138,6 +139,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
               lastVlObs);
       resultMap.put(pId, new SimpleResult(requiredDate, this));
     }
+
     return resultMap;
   }
 

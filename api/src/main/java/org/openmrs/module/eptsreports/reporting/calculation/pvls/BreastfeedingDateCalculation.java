@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
@@ -60,15 +59,11 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     Concept priorDeliveryDate = hivMetadata.getPriorDeliveryDateConcept();
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
     Date oneYearBefore = EptsCalculationUtils.addMonths(onOrBefore, -12);
-
-    // get female patients only
-    Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);
-
     CalculationResultMap lactatingMap =
         ePTSCalculationService.getObs(
             breastfeedingConcept,
             Arrays.asList(fichaResumoEncounterType, adultFollowup),
-            femaleCohort,
+            cohort,
             Arrays.asList(location),
             Arrays.asList(yes),
             TimeQualifier.ANY,
@@ -79,7 +74,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
         ePTSCalculationService.getObs(
             criteriaForHivStart,
             null,
-            femaleCohort,
+            cohort,
             Arrays.asList(location),
             Arrays.asList(breastfeedingConcept),
             TimeQualifier.FIRST,
@@ -90,7 +85,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
         ePTSCalculationService.getObs(
             priorDeliveryDate,
             null,
-            femaleCohort,
+            cohort,
             Arrays.asList(location),
             null,
             TimeQualifier.ANY,
@@ -99,7 +94,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
 
     CalculationResultMap patientStateMap =
         ePTSCalculationService.allPatientStates(
-            femaleCohort, location, hivMetadata.getPatientGaveBirthWorkflowState(), context);
+            cohort, location, hivMetadata.getPatientGaveBirthWorkflowState(), context);
 
     CalculationResultMap lastVl =
         ePTSCalculationService.lastObs(
@@ -108,10 +103,10 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
             location,
             oneYearBefore,
             onOrBefore,
-            femaleCohort,
+            cohort,
             context);
 
-    for (Integer pId : femaleCohort) {
+    for (Integer pId : cohort) {
       Obs lastVlObs = EptsCalculationUtils.resultForPatient(lastVl, pId);
       Date resultantDate =
           getResultantDate(
