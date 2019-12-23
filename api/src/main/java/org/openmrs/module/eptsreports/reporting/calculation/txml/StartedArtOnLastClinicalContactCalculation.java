@@ -8,6 +8,7 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
 public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientCalculation {
 
   @Autowired private HivMetadata hivMetadata;
+  @Autowired private CommonMetadata commonMetadata;
 
   private static final String ON_OR_BEFORE = "endDate";
 
@@ -107,9 +109,9 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
     sqlPatientDataDefinition.setSql(
         String.format(
             query,
-            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+            commonMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getReturnVisitDateConceptConcept().getConceptId(),
+            commonMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getArtDatePickup().getConceptId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
