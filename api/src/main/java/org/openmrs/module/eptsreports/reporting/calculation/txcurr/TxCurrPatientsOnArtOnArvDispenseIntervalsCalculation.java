@@ -19,6 +19,15 @@ public class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation extends BaseFg
 
   public static String DISAGREGRATION_INTERVAL = "disaggregation-interval";
 
+  private static int DAYS_LESS_THAN_3_MONTHS = 83;
+  private static int DAYS_BETWEEN_3_AND_5_MONTHS = 173;
+
+  private static int CONCEPT_TYPE_OF_DISPENSATION = 23739;
+  private static int CONCEPT_MONTHLY = 1098;
+  private static int CONCEPT_QUARTERLY = 23720;
+  private static int CONCEPT_QUARTERLY_DISPENSATION = 23730;
+  private static int CONCEPT_SEMESTER_ARV_PICKUP = 23888;
+
   @Override
   public CalculationResultMap evaluate(
       Map<String, Object> parameterValues, EvaluationContext context) {
@@ -61,7 +70,7 @@ public class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation extends BaseFg
       Date lastFilaDate = (Date) fila[1];
       Date nextExpectedFila = (Date) fila[2];
 
-      if (DateUtil.getDaysBetween(lastFilaDate, nextExpectedFila) < 83) {
+      if (DateUtil.getDaysBetween(lastFilaDate, nextExpectedFila) < DAYS_LESS_THAN_3_MONTHS) {
         resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
       }
     }
@@ -70,7 +79,9 @@ public class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation extends BaseFg
         Context.getRegisteredComponents(LastFilaProcessor.class)
             .get(0)
             .getLastTipoDeLevantamentoOnFichaClinicaMasterCard(
-                context, Integer.valueOf(23739), Integer.valueOf(1098));
+                context,
+                Integer.valueOf(CONCEPT_TYPE_OF_DISPENSATION),
+                Integer.valueOf(CONCEPT_MONTHLY));
     for (Integer patientId : tipoLevantamentoMensal.keySet()) {
       resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
     }
@@ -87,7 +98,7 @@ public class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation extends BaseFg
       Date nextExpectedFila = (Date) fila[2];
 
       int daysBetween = DateUtil.getDaysBetween(lastFilaDate, nextExpectedFila);
-      if (daysBetween >= 83 && daysBetween <= 173) {
+      if (daysBetween >= DAYS_LESS_THAN_3_MONTHS && daysBetween <= DAYS_BETWEEN_3_AND_5_MONTHS) {
         resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
       }
     }
@@ -96,7 +107,9 @@ public class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation extends BaseFg
         Context.getRegisteredComponents(LastFilaProcessor.class)
             .get(0)
             .getLastTipoDeLevantamentoOnFichaClinicaMasterCard(
-                context, Integer.valueOf(23739), Integer.valueOf(23720));
+                context,
+                Integer.valueOf(CONCEPT_TYPE_OF_DISPENSATION),
+                Integer.valueOf(CONCEPT_QUARTERLY));
     for (Integer patientId : tipoLevantamentoTrimestral.keySet()) {
       resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
     }
@@ -104,7 +117,8 @@ public class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation extends BaseFg
     Map<Integer, Date> modelosDiferenciadosTrimestral =
         Context.getRegisteredComponents(LastFilaProcessor.class)
             .get(0)
-            .getLastMarkedInModelosDiferenciadosDeCuidadosOnFichaClinicaMasterCard(context, 23730);
+            .getLastMarkedInModelosDiferenciadosDeCuidadosOnFichaClinicaMasterCard(
+                context, CONCEPT_QUARTERLY_DISPENSATION);
     for (Integer patientId : modelosDiferenciadosTrimestral.keySet()) {
       resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
     }
@@ -120,7 +134,7 @@ public class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation extends BaseFg
       Date lastFilaDate = (Date) fila[1];
       Date nextExpectedFila = (Date) fila[2];
 
-      if (DateUtil.getDaysBetween(lastFilaDate, nextExpectedFila) > 173) {
+      if (DateUtil.getDaysBetween(lastFilaDate, nextExpectedFila) > DAYS_BETWEEN_3_AND_5_MONTHS) {
         resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
       }
     }
@@ -129,7 +143,9 @@ public class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation extends BaseFg
         Context.getRegisteredComponents(LastFilaProcessor.class)
             .get(0)
             .getLastTipoDeLevantamentoOnFichaClinicaMasterCard(
-                context, Integer.valueOf(23739), Integer.valueOf(23888));
+                context,
+                Integer.valueOf(CONCEPT_TYPE_OF_DISPENSATION),
+                Integer.valueOf(CONCEPT_SEMESTER_ARV_PICKUP));
     for (Integer patientId : tipoLevantamentoSemestral.keySet()) {
       resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
     }
@@ -137,7 +153,8 @@ public class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation extends BaseFg
     Map<Integer, Date> modelosDiferenciadosSemestral =
         Context.getRegisteredComponents(LastFilaProcessor.class)
             .get(0)
-            .getLastMarkedInModelosDiferenciadosDeCuidadosOnFichaClinicaMasterCard(context, 23888);
+            .getLastMarkedInModelosDiferenciadosDeCuidadosOnFichaClinicaMasterCard(
+                context, CONCEPT_SEMESTER_ARV_PICKUP);
     for (Integer patientId : modelosDiferenciadosSemestral.keySet()) {
       resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
     }

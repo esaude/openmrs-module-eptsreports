@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxPvlsDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxRttDataset;
@@ -42,6 +43,8 @@ public class SetupMERQuarterly extends EptsDataExportManager {
   @Autowired private TxCurrDataset txCurrDataset;
 
   @Autowired private TxRttDataset txRttDataset;
+
+  @Autowired private TxMlDataset txMlDataset;
 
   @Autowired protected GenericCohortQueries genericCohortQueries;
 
@@ -79,17 +82,17 @@ public class SetupMERQuarterly extends EptsDataExportManager {
     reportDefinition.setDescription(this.getDescription());
     reportDefinition.setParameters(this.txRttDataset.getParameters());
 
-    // reportDefinition.addDataSetDefinition("N",
-    // Mapped.mapStraightThrough(this.txNewDataset.constructTxNewDataset()));
-    //
-    // reportDefinition.addDataSetDefinition("C",
-    // Mapped.mapStraightThrough(this.txCurrDataset.constructTxCurrDataset(true)));
-    //
+    reportDefinition.addDataSetDefinition(
+        "N", Mapped.mapStraightThrough(this.txNewDataset.constructTxNewDataset()));
+
+    reportDefinition.addDataSetDefinition(
+        "C", Mapped.mapStraightThrough(this.txCurrDataset.constructTxCurrDataset(true)));
+
     reportDefinition.addDataSetDefinition(
         "P", Mapped.mapStraightThrough(this.txPvlsDataset.constructTxPvlsDatset()));
 
     reportDefinition.addDataSetDefinition(
-        "R", Mapped.mapStraightThrough(this.txRttDataset.constructTxRttDataset()));
+        "ML", Mapped.mapStraightThrough(this.txMlDataset.constructtxMlDataset()));
 
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
