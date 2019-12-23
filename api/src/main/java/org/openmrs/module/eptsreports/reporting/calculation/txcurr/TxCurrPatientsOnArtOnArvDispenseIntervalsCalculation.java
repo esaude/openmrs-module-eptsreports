@@ -70,8 +70,10 @@ public class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation extends BaseFg
       Date lastFilaDate = (Date) fila[1];
       Date nextExpectedFila = (Date) fila[2];
 
-      if (DateUtil.getDaysBetween(lastFilaDate, nextExpectedFila) < DAYS_LESS_THAN_3_MONTHS) {
-        resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+      if (lastFilaDate != null && nextExpectedFila != null) {
+        if (DateUtil.getDaysBetween(lastFilaDate, nextExpectedFila) < DAYS_LESS_THAN_3_MONTHS) {
+          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+        }
       }
     }
 
@@ -97,9 +99,11 @@ public class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation extends BaseFg
       Date lastFilaDate = (Date) fila[1];
       Date nextExpectedFila = (Date) fila[2];
 
-      int daysBetween = DateUtil.getDaysBetween(lastFilaDate, nextExpectedFila);
-      if (daysBetween >= DAYS_LESS_THAN_3_MONTHS && daysBetween <= DAYS_BETWEEN_3_AND_5_MONTHS) {
-        resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+      if (lastFilaDate != null && nextExpectedFila != null) {
+        int daysBetween = DateUtil.getDaysBetween(lastFilaDate, nextExpectedFila);
+        if (daysBetween >= DAYS_LESS_THAN_3_MONTHS && daysBetween <= DAYS_BETWEEN_3_AND_5_MONTHS) {
+          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+        }
       }
     }
 
@@ -134,8 +138,10 @@ public class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation extends BaseFg
       Date lastFilaDate = (Date) fila[1];
       Date nextExpectedFila = (Date) fila[2];
 
-      if (DateUtil.getDaysBetween(lastFilaDate, nextExpectedFila) > DAYS_BETWEEN_3_AND_5_MONTHS) {
-        resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+      if (lastFilaDate != null && nextExpectedFila != null) {
+        if (DateUtil.getDaysBetween(lastFilaDate, nextExpectedFila) > DAYS_BETWEEN_3_AND_5_MONTHS) {
+          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+        }
       }
     }
 

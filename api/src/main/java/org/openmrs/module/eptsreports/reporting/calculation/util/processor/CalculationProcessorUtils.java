@@ -76,10 +76,11 @@ public class CalculationProcessorUtils {
     for (CalculationResultMap resultItem : calculationResulsts) {
       CalculationResult calculationResult = resultItem.get(patientId);
       if (calculationResult != null && calculationResult.getValue() != null) {
-        Date date = (Date) calculationResult.getValue();
-
-        if (date.compareTo(maxDate) > 0) {
-          maxDate = date;
+        if (calculationResult.getValue() instanceof Date) {
+          Date date = (Date) calculationResult.getValue();
+          if (date.compareTo(maxDate) > 0) {
+            maxDate = date;
+          }
         }
       }
     }
