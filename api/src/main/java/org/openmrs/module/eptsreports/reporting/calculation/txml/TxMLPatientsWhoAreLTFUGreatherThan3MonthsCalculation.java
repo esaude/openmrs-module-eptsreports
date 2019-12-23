@@ -20,6 +20,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class TxMLPatientsWhoAreLTFUGreatherThan3MonthsCalculation extends BaseFghCalculation {
 
+  private static int GREATHER_THAN_3_MONTHS = 90;
+
   @Override
   public CalculationResultMap evaluate(
       Map<String, Object> parameterValues, EvaluationContext context) {
@@ -58,7 +60,8 @@ public class TxMLPatientsWhoAreLTFUGreatherThan3MonthsCalculation extends BaseFg
               nextSeguimentoResult,
               TxMLPatientsWhoMissedNextApointmentCalculation.getLastRecepcaoLevantamentoPlus30(
                   patientId, lastRecepcaoLevantamentoResult, lastRecepcaoLevantamentoCalculation));
-      if (maxNextDate != null && DateUtil.getDaysBetween(inicioRealDate, maxNextDate) >= 90) {
+      if (maxNextDate != null
+          && DateUtil.getDaysBetween(inicioRealDate, maxNextDate) >= GREATHER_THAN_3_MONTHS) {
         Date nextDatePlus28 = CalculationProcessorUtils.adjustDaysInDate(maxNextDate, 28);
         if (nextDatePlus28.compareTo(CalculationProcessorUtils.adjustDaysInDate(startDate, -1)) >= 0
             && nextDatePlus28.compareTo(endDate) < 0) {
