@@ -2,6 +2,7 @@ package org.openmrs.module.eptsreports.reporting.intergrated.library.cohorts;
 
 import static org.junit.Assert.assertFalse;
 
+import org.junit.Ignore;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /** @author Stélio Moiane */
+@Ignore
 public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
 
   @Autowired private TxRTTCohortQueries txRTTCohortQueries;
