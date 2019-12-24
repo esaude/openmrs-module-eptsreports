@@ -12,22 +12,24 @@ public interface TxRttQueries {
             + "AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate AND e.location_id = :location GROUP BY p.patient_id";
 
     public static final String findEncountersByPatient =
-        "SELECT encounters.encounter_datetime FROM ("
-            + "SELECT e.encounter_datetime FROM encounter e "
+        "SELECT encounters.patient_id, encounters.encounter_datetime FROM ("
+            + "SELECT p.patient_id, e.encounter_datetime FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id = e.patient_id "
             + "LEFT JOIN obs o ON o.encounter_id = e.encounter_id AND o.voided = 0 AND o.concept_id = 1410 "
-            + "WHERE e.voided = 0 AND e.encounter_type IN (6,9) "
-            + "AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate "
-            + "AND e.location_id = :location AND e.patient_id = :patientId UNION "
-            + "SELECT e.encounter_datetime FROM encounter e "
+            + "WHERE e.voided = 0 AND e.encounter_type IN (6,9) AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate "
+            + "AND e.location_id = :location GROUP BY p.patient_id, e.encounter_datetime UNION "
+            + "SELECT p.patient_id, e.encounter_datetime FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id = e.patient_id "
             + "INNER JOIN obs o ON o.encounter_id = e.encounter_id "
             + "WHERE e.voided = 0 AND o.voided = 0 AND e.encounter_type = 18 "
-            + "AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate "
-            + "AND e.location_id = :location AND o.concept_id = 5096 AND e.patient_id = :patientId UNION "
-            + "SELECT o.value_datetime FROM encounter e INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate AND e.location_id = :location AND o.concept_id = 5096 "
+            + "GROUP BY p.patient_id, e.encounter_datetime UNION SELECT p.patient_id, e.encounter_datetime FROM patient p "
+            + "INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o ON o.encounter_id = e.encounter_id "
             + "WHERE e.voided = 0 AND o.voided = 0 AND e.encounter_type = 52 "
             + "AND o.value_datetime >= :startDate AND o.value_datetime <= :endDate "
-            + "AND e.location_id = :location AND o.concept_id = 23866 AND e.patient_id = :patientId "
-            + ") encounters GROUP BY encounters.encounter_datetime ORDER BY encounters.encounter_datetime DESC";
+            + "AND e.location_id = :location AND o.concept_id = 23866 "
+            + "GROUP BY p.patient_id, e.encounter_datetime) encounters WHERE encounters.patient_id IN (:patients) ORDER BY encounters.encounter_datetime DESC";
 
     public static final String findLastNextPickupDateOnThePreviousPickupEncounterByPatient =
         "SELECT value_datetime FROM ( "
