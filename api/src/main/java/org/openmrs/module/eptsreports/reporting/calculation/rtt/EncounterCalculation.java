@@ -1,14 +1,17 @@
 /** */
 package org.openmrs.module.eptsreports.reporting.calculation.rtt;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.calculation.BaseFghCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxRttQueries;
+import org.openmrs.module.eptsreports.reporting.utils.EptsListUtils;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
@@ -19,6 +22,8 @@ import org.springframework.stereotype.Component;
 /** @author Stélio Moiane */
 @Component
 public class EncounterCalculation extends BaseFghCalculation {
+
+  private static final int CHUNK_SIZE = 1000;
 
   private static final int RTT_DAYS = 28;
 
@@ -32,15 +37,42 @@ public class EncounterCalculation extends BaseFghCalculation {
 
     final CalculationResultMap resultMap = new CalculationResultMap();
 
-    for (final Integer patientId : cohort) {
+    final List<Integer> list = new ArrayList<>(cohort);
+
+    final int slices = EptsListUtils.listSlices(cohort, CHUNK_SIZE);
+
+    for (int position = 0; position < slices; position++) {
+
+      final List<Integer> subList =
+          list.subList(
+              position * CHUNK_SIZE,
+              (((position * CHUNK_SIZE) + CHUNK_SIZE) < list.size()
+                  ? (position * CHUNK_SIZE) + CHUNK_SIZE
+                  : list.size()));
 
       final SqlQueryBuilder queryBuilder =
           new SqlQueryBuilder(
               TxRttQueries.QUERY.findEncountersByPatient, context.getParameterValues());
-      queryBuilder.addParameter("patientId", patientId);
+      queryBuilder.addParameter("patients", subList);
 
-      final List<Date> encounters =
-          this.evaluationService.evaluateToList(queryBuilder, Date.class, context);
+      final List<Object[]> evaluateToList =
+          this.evaluationService.evaluateToList(queryBuilder, context);
+
+      final Map<Integer, List<Date>> patients = this.getPatientsEncounterDates(evaluateToList);
+
+      this.addIfOnRttPatient(context, resultMap, patients);
+    }
+
+    return resultMap;
+  }
+
+  private void addIfOnRttPatient(
+      final EvaluationContext context,
+      final CalculationResultMap resultMap,
+      final Map<Integer, List<Date>> patients) {
+    for (final Integer patientId : patients.keySet()) {
+
+      final List<Date> encounters = patients.get(patientId);
 
       for (final Date encounterDate : encounters) {
 
@@ -81,8 +113,26 @@ public class EncounterCalculation extends BaseFghCalculation {
         }
       }
     }
+  }
 
-    return resultMap;
+  private Map<Integer, List<Date>> getPatientsEncounterDates(final List<Object[]> evaluateToList) {
+
+    final Map<Integer, List<Date>> map = new HashMap<>();
+
+    for (final Object[] object : evaluateToList) {
+
+      final Integer patientId = (Integer) object[0];
+      List<Date> dates = new ArrayList<>();
+
+      if (map.get(patientId) != null) {
+        dates = map.get(patientId);
+      }
+
+      dates.add((Date) object[1]);
+      map.put(patientId, dates);
+    }
+
+    return map;
   }
 
   private List<Date> findResults(
