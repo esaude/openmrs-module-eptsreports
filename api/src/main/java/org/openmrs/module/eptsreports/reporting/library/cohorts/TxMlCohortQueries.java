@@ -40,14 +40,15 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "missedAppointment",
         EptsReportUtils.map(
-            getAllPatientsWhoMissedNextAppointment(), "endDate=${endDate},location=${location}"));
+            getAllPatientsWhoMissedNextAppointment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "noScheduledDrugPickupOrNextConsultation",
         EptsReportUtils.map(
             txCurrCohortQueries.getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(),
             "onOrBefore=${endDate},location=${location}"));
 
-    cd.setCompositionString("missedAppointment OR noScheduledDrugPickupOrNextConsultation");
+    cd.setCompositionString("noScheduledDrugPickupOrNextConsultation");
     return cd;
   }
 
@@ -510,7 +511,8 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "missedAppointment",
         EptsReportUtils.map(
-            getAllPatientsWhoMissedNextAppointment(), "endDate=${endDate},location=${location}"));
+            getAllPatientsWhoMissedNextAppointment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "transferOut",
         EptsReportUtils.map(getTransferOutPatients(), "endDate=${endDate},location=${location}"));
@@ -599,13 +601,13 @@ public class TxMlCohortQueries {
     return genericCohortQueries.generalSql(
         "Missed Next appointment",
         TxMlQueries.getPatientsWhoMissedAppointment(
-            28,
-            183,
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickup().getConceptId()));
   }
 
   /**

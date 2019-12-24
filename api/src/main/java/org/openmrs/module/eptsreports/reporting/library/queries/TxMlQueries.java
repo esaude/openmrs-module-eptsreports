@@ -3,34 +3,127 @@ package org.openmrs.module.eptsreports.reporting.library.queries;
 public class TxMlQueries {
 
   public static String getPatientsWhoMissedAppointment(
-      int min,
-      int max,
       int returnVisitDateForDrugsConcept,
       int returnVisitDate,
       int pharmacyEncounterType,
       int adultoSequimento,
-      int arvPediatriaSeguimento) {
+      int arvPediatriaSeguimento,
+      int masterCardDrugEncounterType,
+      int artPickupDateConcept) {
     String query =
-        "SELECT patient_id FROM "
-            + "(SELECT p.patient_id,MAX(o.value_datetime) return_date "
-            + "FROM patient p "
-            + "INNER JOIN encounter e ON e.patient_id = p.patient_id AND e.encounter_datetime <=:endDate AND e.location_id=:location "
-            + "INNER JOIN obs o ON o.encounter_id = e.encounter_id AND o.obs_datetime <=:endDate AND o.location_id=:location "
-            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided=0 "
-            + "AND e.encounter_type IN (%d, %d, %d) "
-            + "AND o.concept_id in (%d, %d) "
-            + "AND e.location_id =:location "
-            + "GROUP BY p.patient_id "
-            + ")lost_patients WHERE DATEDIFF(:endDate,lost_patients.return_date)>=%d AND DATEDIFF(:endDate,lost_patients.return_date)<=%d";
+        "SELECT "
+            + "	patient_id "
+            + "FROM "
+            + "("
+            + "	SELECT "
+            + "		pp.patient_id, MAX(pp.return_date) AS return_date"
+            + "	FROM"
+            + "	("
+            + "		SELECT "
+            + "			p.patient_id, "
+            + "			o.value_datetime AS return_date,"
+            + "			e.encounter_id"
+            + "		FROM patient p "
+            + "		INNER JOIN encounter e ON e.patient_id = p.patient_id"
+            + "		INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
+            + "		WHERE "
+            + "			p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + "			AND e.encounter_type IN (%d, %d) "
+            + "			AND o.concept_id = %d "
+            + "			AND e.encounter_datetime <=:endDate AND e.location_id=:location "
+            + "		UNION"
+            + "		SELECT "
+            + "			p.patient_id, "
+            + "			o.value_datetime AS return_date,"
+            + "			e.encounter_id"
+            + "		FROM patient p "
+            + "		INNER JOIN encounter e ON e.patient_id = p.patient_id"
+            + "		INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
+            + "		WHERE "
+            + "			p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + "			AND e.encounter_type IN (%d) "
+            + "			AND o.concept_id = %d "
+            + "			AND e.encounter_datetime <=:endDate AND e.location_id=:location "
+            + "		UNION"
+            + "		SELECT"
+            + "			p.patient_id, "
+            + "			DATE_ADD(o.value_datetime, INTERVAL 30 DAY) AS return_date,"
+            + "			e.encounter_id			"
+            + "		FROM patient p"
+            + "		INNER JOIN encounter e ON e.patient_id = p.patient_id"
+            + "		INNER JOIN obs o ON o.encounter_id = e.encounter_id"
+            + "		WHERE"
+            + "			p.voided = 0 AND e.voided = 0 AND o.voided = 0"
+            + "			AND e.encounter_type = %d "
+            + "			AND o.concept_id = %d"
+            + "			AND e.encounter_datetime <=:endDate AND e.location_id=:location "
+            + "	) pp"
+            + "	INNER JOIN ("
+            + "		SELECT p.patient_id, "
+            + "			("
+            + "				SELECT "
+            + "					e.encounter_id "
+            + "				FROM encounter e"
+            + "				INNER JOIN obs o ON e.encounter_id = o.encounter_id"
+            + "				WHERE "
+            + "					e.patient_id = p.patient_id"
+            + "					AND e.voided = 0"
+            + "					AND o.voided = 0"
+            + "					AND e.encounter_datetime <= :endDate"
+            + "					AND e.encounter_type IN (%d, %d)"
+            + "				ORDER BY e.encounter_datetime DESC"
+            + "				LIMIT 1"
+            + "			) last_cl_encounter,"
+            + "			("
+            + "				SELECT "
+            + "					e.encounter_id "
+            + "				FROM encounter e"
+            + "				INNER JOIN obs o ON e.encounter_id = o.encounter_id"
+            + "				WHERE "
+            + "					e.patient_id = p.patient_id"
+            + "					AND e.voided = 0"
+            + "					AND o.voided = 0"
+            + "					AND e.encounter_datetime <= :endDate"
+            + "					AND e.encounter_type = %d"
+            + "				ORDER BY e.encounter_datetime DESC"
+            + "				LIMIT 1"
+            + "			) AS latest_pharm_encounter_id,"
+            + "			("
+            + "					SELECT "
+            + "						e.encounter_id "
+            + "					FROM encounter e"
+            + "					INNER JOIN obs o ON e.encounter_id = o.encounter_id"
+            + "					WHERE "
+            + "						e.patient_id = p.patient_id"
+            + "						AND e.voided = 0"
+            + "						AND o.voided = 0"
+            + "						AND e.encounter_datetime <= :endDate"
+            + "						AND e.encounter_type = %d"
+            + "					ORDER BY e.encounter_datetime DESC, o.value_datetime DESC"
+            + "					LIMIT 1"
+            + "			) AS latest_dp_encounter_id				"
+            + "		FROM patient p"
+            + "	) last_encounters ON last_encounters.patient_id = pp.patient_id"
+            + "	WHERE pp.encounter_id IN (last_cl_encounter, latest_pharm_encounter_id, latest_dp_encounter_id)"
+            + "	GROUP BY pp.patient_id"
+            + ")all_patients "
+            + " WHERE "
+            + "	DATE_ADD(return_date, INTERVAL 28 DAY)  > :startDate "
+            + "	AND DATE_ADD(return_date, INTERVAL 28 DAY) < :endDate";
+
     return String.format(
         query,
-        pharmacyEncounterType,
         adultoSequimento,
         arvPediatriaSeguimento,
-        returnVisitDateForDrugsConcept,
         returnVisitDate,
-        min,
-        max);
+        pharmacyEncounterType,
+        returnVisitDateForDrugsConcept,
+        masterCardDrugEncounterType,
+        artPickupDateConcept,
+        adultoSequimento,
+        arvPediatriaSeguimento,
+        pharmacyEncounterType,
+        masterCardDrugEncounterType);
   }
 
   public static String getNonConsentedPatients(
