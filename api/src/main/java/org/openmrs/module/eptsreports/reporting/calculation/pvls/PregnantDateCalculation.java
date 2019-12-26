@@ -63,7 +63,8 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     Concept pregnancyDueDate = hivMetadata.getPregnancyDueDate();
     Program ptv = hivMetadata.getPtvEtvProgram();
     Concept gestation = hivMetadata.getGestationConcept();
-    Concept lastMenstartion = hivMetadata.getDateOfLastMenstruationConcept();
+    Concept lastMenstration = hivMetadata.getDateOfLastMenstruationConcept();
+    Concept hivViraloadQualitative = hivMetadata.getHivViralLoadQualitative();
 
     // get female patients only
     Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);
@@ -102,7 +103,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
             context);
     CalculationResultMap lastMenstralMap =
         ePTSCalculationService.getObs(
-            lastMenstartion,
+            lastMenstration,
             Arrays.asList(adultFollowup),
             cohort,
             Arrays.asList(location),
@@ -114,19 +115,17 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     CalculationResultMap markedPregnantInProgram =
         ePTSCalculationService.allProgramEnrollment(ptv, cohort, context);
 
-    CalculationResultMap lastVl =
+    CalculationResultMap lastHivVl =
         ePTSCalculationService.lastObs(
-            Arrays.asList(labEncounterType, adultFollowup, pediatriaFollowup),
-            viralLoadConcept,
-            location,
-            oneYearBefore,
-            onOrBefore,
-            cohort,
-            context);
+            null, viralLoadConcept, location, oneYearBefore, onOrBefore, cohort, context);
+    CalculationResultMap lastHivVlQualitative =
+        ePTSCalculationService.lastObs(
+            null, hivViraloadQualitative, location, oneYearBefore, onOrBefore, cohort, context);
 
     for (Integer pId : cohort) {
 
-      Obs lastVlObs = EptsCalculationUtils.resultForPatient(lastVl, pId);
+      Obs lastHivVlObs = EptsCalculationUtils.resultForPatient(lastHivVl, pId);
+      Obs lastVlQualitativeObs = EptsCalculationUtils.resultForPatient(lastHivVlQualitative, pId);
       Date requiredDate =
           getRequiredDate(
               location,
@@ -136,7 +135,8 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
               markedPregnantInProgram,
               lastMenstralMap,
               pId,
-              lastVlObs);
+              lastHivVlObs,
+              lastVlQualitativeObs);
       resultMap.put(pId, new SimpleResult(requiredDate, this));
     }
 
@@ -151,10 +151,20 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
       CalculationResultMap markedPregnantInProgram,
       CalculationResultMap markedAsMenstralMap,
       Integer pId,
-      Obs lastVlObs) {
+      Obs lastVlObs,
+      Obs lastVlQualitative) {
     Date requiredDate = null;
+    // check of the 2 dates passed for viral load and pick the latest
+    List<Date> dateListForVl = new ArrayList<>();
     if (lastVlObs != null && lastVlObs.getObsDatetime() != null) {
-      Date lastVlDate = lastVlObs.getObsDatetime();
+      dateListForVl.add(lastVlObs.getObsDatetime());
+    }
+    if (lastVlQualitative != null && lastVlQualitative.getObsDatetime() != null) {
+      dateListForVl.add(lastVlQualitative.getObsDatetime());
+    }
+    if (dateListForVl.size() > 0) {
+      Collections.sort(dateListForVl);
+      Date lastVlDate = dateListForVl.get(dateListForVl.size() - 1);
 
       ListResult pregnantResult = (ListResult) pregnantMap.get(pId);
       ListResult pregnantByWeeksResullt = (ListResult) markedPregnantByWeeks.get(pId);
