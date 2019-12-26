@@ -51,9 +51,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
     Date oneYearBefore = EptsCalculationUtils.addMonths(onOrBefore, -12);
 
-    EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
     EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
-    EncounterType pediatriaFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
     EncounterType fichaResumoEncounterType = hivMetadata.getMasterCardEncounterType();
     EncounterType adultInitial = hivMetadata.getARVAdultInitialEncounterType();
 
