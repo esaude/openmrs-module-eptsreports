@@ -37,3 +37,8 @@ api/.scalastyle
 
 omod/maven-eclipse.xml
 omod/.externalToolBuilders/Maven_Ant_Builder.launch
+
+api/pom.xml.releaseBackup
+omod/pom.xml.releaseBackup
+pom.xml.releaseBackup
+release.properties
