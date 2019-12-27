@@ -1655,6 +1655,14 @@
 			UUID for the Reason for requesting viral load concept
 		</description>
 	</globalProperty>
+    <globalProperty>
+        <property>eptsreports.bPlusConceptUuid</property>
+        <defaultValue>8ace1eb2-656b-46e0-933b-670fc975ea19</defaultValue>
+        <description>
+            UUID for the B plus concept
+        </description>
+    </globalProperty>
+
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 

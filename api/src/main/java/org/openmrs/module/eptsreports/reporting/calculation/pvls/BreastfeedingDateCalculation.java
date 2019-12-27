@@ -56,6 +56,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     Concept criteriaForHivStart = hivMetadata.getCriteriaForArtStart();
     Concept priorDeliveryDate = hivMetadata.getPriorDeliveryDateConcept();
     Concept hivViraloadQualitative = hivMetadata.getHivViralLoadQualitative();
+    Concept criteriaForArtStart = hivMetadata.getCriteriaForArtStart();
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
     Date oneYearBefore = EptsCalculationUtils.addMonths(onOrBefore, -12);
     CalculationResultMap lactatingMap =
@@ -102,6 +103,17 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
         ePTSCalculationService.lastObs(
             null, hivViraloadQualitative, location, oneYearBefore, onOrBefore, cohort, context);
 
+    CalculationResultMap startArtBeingBpostiveMap =
+        ePTSCalculationService.getObs(
+            criteriaForArtStart,
+            null,
+            cohort,
+            Arrays.asList(location),
+            Arrays.asList(breastfeedingConcept),
+            TimeQualifier.ANY,
+            null,
+            context);
+
     for (Integer pId : cohort) {
       Obs lastVlObs = EptsCalculationUtils.resultForPatient(lastVl, pId);
       Obs lastVlQualitativeObs = EptsCalculationUtils.resultForPatient(lastHivVlQualitative, pId);
@@ -113,7 +125,8 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
               patientStateMap,
               pId,
               lastVlObs,
-              lastVlQualitativeObs);
+              lastVlQualitativeObs,
+              startArtBeingBpostiveMap);
       resultMap.put(pId, new SimpleResult(resultantDate, this));
     }
     return resultMap;
@@ -126,7 +139,8 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
       CalculationResultMap patientStateMap,
       Integer pId,
       Obs lastVlObs,
-      Obs lastVlQualitative) {
+      Obs lastVlQualitative,
+      CalculationResultMap startArtBeingBpostiveMap) {
     Date resultantDate = null;
     // check of the 2 dates passed for viral load and pick the latest
     List<Date> dateListForVl = new ArrayList<>();
@@ -149,6 +163,9 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
       ListResult deliveryDateResult = (ListResult) deliveryDateMap.get(pId);
       List<Obs> deliveryDateObsList = EptsCalculationUtils.extractResultValues(deliveryDateResult);
       List<PatientState> patientStateList = EptsCalculationUtils.extractResultValues(patientResult);
+      ListResult startArtBeingBptv = (ListResult) startArtBeingBpostiveMap.get(pId);
+      List<Obs> startArtBeingBptvObsList =
+          EptsCalculationUtils.extractResultValues(startArtBeingBptv);
 
       // get a list of all eligible dates
       List<Date> allEligibleDates =
@@ -156,7 +173,8 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
               this.isLactating(lastVlDate, lactatingObs),
               this.hasHIVStartDate(lastVlDate, criteriaHivObs),
               this.hasDeliveryDate(lastVlDate, deliveryDateObsList),
-              this.isInBreastFeedingInProgram(lastVlDate, patientStateList));
+              this.isInBreastFeedingInProgram(lastVlDate, patientStateList),
+              this.getWhenOnARTWhileBpostive(lastVlDate, startArtBeingBptvObsList));
 
       // have a resultant list of dates
       List<Date> resultantList = new ArrayList<>();
@@ -226,5 +244,17 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     Date startDate = EptsCalculationUtils.addMonths(viralLoadDate, -18);
     return breastFeedingDate.compareTo(startDate) >= 0
         && breastFeedingDate.compareTo(viralLoadDate) <= 0;
+  }
+
+  private Date getWhenOnARTWhileBpostive(Date lastVlDate, List<Obs> pregnantWithLastDateObsList) {
+    Date requiredDate = null;
+    for (Obs obs : pregnantWithLastDateObsList) {
+      if (this.isInBreastFeedingViralLoadRange(
+          lastVlDate, obs.getEncounter().getEncounterDatetime())) {
+        requiredDate = obs.getEncounter().getEncounterDatetime();
+      }
+    }
+
+    return requiredDate;
   }
 }
