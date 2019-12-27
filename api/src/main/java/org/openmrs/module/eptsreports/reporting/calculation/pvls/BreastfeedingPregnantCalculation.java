@@ -47,7 +47,7 @@ public class BreastfeedingPregnantCalculation extends AbstractPatientCalculation
           && pregnancyDate != null
           && femaleCohort.contains(ptId)) {
 
-        isCandidate = breastfeedingDate == null || breastfeedingDate.before(pregnancyDate);
+        isCandidate = breastfeedingDate == null || breastfeedingDate.compareTo(pregnancyDate) <= 0;
 
       } else if (state.equals(PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN)
           && breastfeedingDate != null
