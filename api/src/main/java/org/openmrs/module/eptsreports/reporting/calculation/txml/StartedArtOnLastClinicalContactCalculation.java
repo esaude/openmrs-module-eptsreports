@@ -46,31 +46,26 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
             parameterValues,
             context);
 
-    if (endDate != null) {
-      for (Integer patientId : cohort) {
-        Date artStartDate =
-            InitialArtStartDateCalculation.getArtStartDate(patientId, artStartDates);
-        Date lastClinicalContact =
-            EptsCalculationUtils.resultForPatient(lastClinicalContactMap, patientId);
+    for (Integer patientId : cohort) {
+      Date artStartDate = InitialArtStartDateCalculation.getArtStartDate(patientId, artStartDates);
+      Date lastClinicalContact =
+          EptsCalculationUtils.resultForPatient(lastClinicalContactMap, patientId);
 
-        if (artStartDate != null && lastClinicalContact != null) {
-          Date onArtForLessThan90Days = EptsCalculationUtils.addDays(artStartDate, 90);
+      if (artStartDate != null && lastClinicalContact != null) {
+        Date onArtForLessThan90Days = EptsCalculationUtils.addDays(artStartDate, 90);
 
-          if (onArtForLessThan90Days.compareTo(lastClinicalContact) < 0) {
-            lessThan90DaysMap.put(patientId, new BooleanResult(true, this));
-          }
-          if (onArtForLessThan90Days.compareTo(lastClinicalContact) >= 0) {
-            moreThan90DaysMap.put(patientId, new BooleanResult(true, this));
-          }
+        if (onArtForLessThan90Days.compareTo(lastClinicalContact) < 0) {
+          lessThan90DaysMap.put(patientId, new BooleanResult(true, this));
+        }
+        if (onArtForLessThan90Days.compareTo(lastClinicalContact) >= 0) {
+          moreThan90DaysMap.put(patientId, new BooleanResult(true, this));
         }
       }
-      if (lessThan90Days) {
-        return lessThan90DaysMap;
-      } else {
-        return moreThan90DaysMap;
-      }
+    }
+    if (lessThan90Days) {
+      return lessThan90DaysMap;
     } else {
-      throw new IllegalArgumentException(String.format("Parameter %s must be set", ON_OR_BEFORE));
+      return moreThan90DaysMap;
     }
   }
 
