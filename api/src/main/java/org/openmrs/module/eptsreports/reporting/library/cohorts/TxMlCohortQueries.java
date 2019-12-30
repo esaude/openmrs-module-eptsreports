@@ -8,6 +8,7 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,18 +35,19 @@ public class TxMlCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addSearch(
-        "missedAppointment",
-        EptsReportUtils.map(
-            getAllPatientsWhoMissedNextAppointment(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "noScheduledDrugPickupOrNextConsultation",
-        EptsReportUtils.map(
-            txCurrCohortQueries.getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(),
-            "onOrBefore=${endDate},location=${location}"));
 
-    cd.setCompositionString("missedAppointment OR noScheduledDrugPickupOrNextConsultation");
+    CohortDefinition missedAppointment = getAllPatientsWhoMissedNextAppointment();
+    CohortDefinition noScheduled =
+        txCurrCohortQueries.getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup();
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtBeforeDate(false);
+
+    cd.addSearch("missedAppointment", Mapped.mapStraightThrough(missedAppointment));
+
+    String mappings = "onOrBefore=${endDate},location=${location}";
+    cd.addSearch("noScheduled", EptsReportUtils.map(noScheduled, mappings));
+    cd.addSearch("startedArt", EptsReportUtils.map(startedArt, mappings));
+
+    cd.setCompositionString("(missedAppointment OR noScheduled) AND startedArt");
     return cd;
   }
 
@@ -165,7 +167,7 @@ public class TxMlCohortQueries {
   }
 
   // a
-  public CohortDefinition getAllPatientsWhoMissedNextAppointment() {
+  private CohortDefinition getAllPatientsWhoMissedNextAppointment() {
     return genericCohortQueries.generalSql(
         "Missed Next appointment",
         TxMlQueries.getPatientsWhoMissedAppointment(
