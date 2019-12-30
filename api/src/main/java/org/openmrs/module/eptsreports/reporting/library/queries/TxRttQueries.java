@@ -59,6 +59,7 @@ public interface TxRttQueries {
                 + "WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id = 1410 "
                 + "AND e.encounter_type IN (6,9) AND e.encounter_datetime < :encounterDate AND e.location_id = :location AND p.patient_id = :patientId "
                 + "GROUP BY p.patient_id)max_encounter INNER JOIN obs o ON max_encounter.patient_id = o.person_id "
-                + "AND o.concept_id = 1410 AND o.voided = 0 AND max_encounter.encounter_datetime = o.obs_datetime ";
+                + "AND o.concept_id = 1410 AND o.voided = 0 AND max_encounter.encounter_datetime = o.obs_datetime "
+                + "AND o.value_datetime IS NOT NULL;";
   }
 }
