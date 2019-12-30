@@ -261,7 +261,6 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     for (PatientProgram patientProgram : patientPrograms) {
       if (location.equals(patientProgram.getLocation())
           && patientProgram.getDateEnrolled() != null
-          && patientProgram.getDateCompleted() == null
           && this.isInPregnantViralLoadRange(lastVlDate, patientProgram.getDateEnrolled())) {
         inProgramDate = patientProgram.getDateEnrolled();
       }
