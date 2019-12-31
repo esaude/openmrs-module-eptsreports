@@ -1396,4 +1396,10 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.identificadorDefinidoLocalment01Uuid");
     return getPersonAttributeType(uuid);
   }
+
+  // Concept 6331
+  public Concept getBPlusConcept() {
+    return getConcept(
+        Context.getAdministrationService().getGlobalProperty("eptsreports.bPlusConceptUuid"));
+  }
 }
