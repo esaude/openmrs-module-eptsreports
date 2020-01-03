@@ -46,7 +46,8 @@ public class TxMlDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "totals missed",
                 EptsReportUtils.map(
-                    txMlCohortQueries.getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
+                    txMlCohortQueries
+                        .getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
                     mappings)),
             mappings),
         "");
@@ -59,7 +60,8 @@ public class TxMlDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Age and Gender",
                 EptsReportUtils.map(
-                    txMlCohortQueries.getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
+                    txMlCohortQueries
+                        .getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
                     mappings)),
             mappings),
         getColumnsForAgeAndGender());
@@ -73,55 +75,38 @@ public class TxMlDataset extends BaseDataSet {
                 "missed and dead",
                 EptsReportUtils.map(
                     txMlCohortQueries
-                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutButDiedDuringReportingPeriod(),
+                        .getPatientsWhoMissedNextAppointmentAndDiedDuringReportingPeriod(),
                     mappings)),
             mappings),
         getColumnsForAgeAndGender());
-
-    // Not Consented
-    addRow(
-        dsd,
-        "M4",
-        "Not Consented",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Not Consented",
-                EptsReportUtils.map(
-                    txMlCohortQueries
-                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndNotConsentedDuringReportingPeriod(),
-                    mappings)),
-            mappings),
-        getColumnsForAgeAndGender());
-
-    // Traced (Unable to locate)
+    // Transferred Out
     addRow(
         dsd,
         "M5",
-        "Traced (Unable to locate)",
+        "TransferredOut",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Traced (Unable to locate)",
+                "missed and TransferredOut",
+                EptsReportUtils.map(
+                    txMlCohortQueries.getPatientsWhoMissedNextAppointmentAndTransferredOut(),
+                    mappings)),
+            mappings),
+        getColumnsForAgeAndGender());
+    // Refused Or Stopped Treatment
+    addRow(
+        dsd,
+        "M6",
+        "RefusedOrStoppedTreatment",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "missed and RefusedOrStoppedTreatment",
                 EptsReportUtils.map(
                     txMlCohortQueries
-                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndTraced(),
+                        .getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment(),
                     mappings)),
             mappings),
         getColumnsForAgeAndGender());
 
-    // Untraced Patients
-    addRow(
-        dsd,
-        "M6",
-        "Untraced patients",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Untraced Patients",
-                EptsReportUtils.map(
-                    txMlCohortQueries
-                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndUntraced(),
-                    mappings)),
-            mappings),
-        getColumnsForAgeAndGender());
     return dsd;
   }
 

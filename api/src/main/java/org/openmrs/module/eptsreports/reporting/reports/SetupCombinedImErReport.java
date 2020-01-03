@@ -5,7 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.*;
+import org.openmrs.module.eptsreports.reporting.library.datasets.Eri2MonthsDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.Eri4MonthsDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
@@ -27,8 +30,6 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
   @Autowired private TxNewDataset txNewDataset;
 
   @Autowired private TxCurrDataset txCurrDataset;
-
-  @Autowired private EriDSDDataset eriDSDDataset;
 
   @Override
   public String getExcelDesignUuid() {
@@ -69,8 +70,6 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
 
     rd.addDataSetDefinition(
         "ERI4", Mapped.mapStraightThrough(eri4MonthsDataset.constructEri4MonthsDataset()));
-    rd.addDataSetDefinition(
-        "ERIDSD", Mapped.mapStraightThrough(eriDSDDataset.constructEriDSDDataset()));
 
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(
@@ -91,7 +90,7 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
     try {
       reportDesign =
           createXlsReportDesign(
-              reportDefinition, "IM_ER_Report.xls", "ERI-Report", getExcelDesignUuid(), null);
+              reportDefinition, "IM_ER_Report.xls", "IM_ER-Report", getExcelDesignUuid(), null);
       Properties props = new Properties();
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
