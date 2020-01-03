@@ -48,7 +48,7 @@ public class PregnantQueries {
         + " inner join person pe on p.patient_id=pe.person_id"
         + " inner join encounter e on p.patient_id=e.patient_id"
         + " inner join obs o on e.encounter_id=o.encounter_id"
-        + " where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
+        + " where p.voided=0 and pe.voided=0 and e.voided=0 and o.voided=0 and concept_id="
         + startARVCriteriaConcept
         + " and value_coded="
         + bPLusConcept
