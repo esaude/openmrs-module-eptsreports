@@ -16,26 +16,26 @@ import org.openmrs.module.eptsreports.reporting.calculation.generic.InitialArtSt
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientCalculation {
 
-  @Autowired private HivMetadata hivMetadata;
-  @Autowired private CommonMetadata commonMetadata;
-
-  private static final String ON_OR_BEFORE = "endDate";
+  /* @Autowired private HivMetadata hivMetadata;
+  @Autowired private CommonMetadata commonMetadata;*/
 
   @Override
   public CalculationResultMap evaluate(
       Collection<Integer> cohort,
       Map<String, Object> parameterValues,
       PatientCalculationContext context) {
-    CalculationResultMap lastClinicalContactMap = getLastClinicalContactMap(cohort, context);
+    HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
+    CommonMetadata commonMetadata = Context.getRegisteredComponents(CommonMetadata.class).get(0);
+
+    CalculationResultMap lastClinicalContactMap =
+        getLastClinicalContactMap(cohort, context, commonMetadata, hivMetadata);
 
     Boolean lessThan90Days = (Boolean) parameterValues.get("lessThan90Days");
-    Date endDate = (Date) context.getFromCache("onOrBefore");
 
     CalculationResultMap lessThan90DaysMap = new CalculationResultMap();
     CalculationResultMap moreThan90DaysMap = new CalculationResultMap();
@@ -75,7 +75,10 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
    * @return
    */
   private CalculationResultMap getLastClinicalContactMap(
-      Collection<Integer> cohort, PatientCalculationContext context) {
+      Collection<Integer> cohort,
+      PatientCalculationContext context,
+      CommonMetadata commonMetadata,
+      HivMetadata hivMetadata) {
     SqlPatientDataDefinition sqlPatientDataDefinition = new SqlPatientDataDefinition();
     sqlPatientDataDefinition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     sqlPatientDataDefinition.addParameter(new Parameter("location", "location", Location.class));

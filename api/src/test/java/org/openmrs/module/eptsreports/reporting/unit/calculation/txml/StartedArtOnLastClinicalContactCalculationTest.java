@@ -1,58 +1,53 @@
 package org.openmrs.module.eptsreports.reporting.unit.calculation.txml;
 
-import static org.mockito.Mockito.when;
-
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
+import org.apache.commons.lang3.time.DateUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.openmrs.Location;
-import org.openmrs.Person;
 import org.openmrs.api.context.Context;
-import org.openmrs.calculation.patient.PatientCalculationService;
-import org.openmrs.calculation.patient.PatientCalculationServiceImpl;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
+import org.openmrs.calculation.patient.PatientCalculation;
+import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.txml.StartedArtOnLastClinicalContactCalculation;
-import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
-import org.openmrs.module.eptsreports.reporting.unit.PowerMockBaseContextTest;
-import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
 
-@PrepareForTest(EptsCalculationUtils.class)
-public class StartedArtOnLastClinicalContactCalculationTest extends PowerMockBaseContextTest {
-  @Mock private HivMetadata hivMetadata;
-  @Mock private EPTSCalculationService eptsCalculationService;
+public class StartedArtOnLastClinicalContactCalculationTest extends BasePatientCalculationTest {
 
-  @Spy
-  private PatientCalculationService patientCalculationService = new PatientCalculationServiceImpl();
+  @Override
+  public PatientCalculation getCalculation() {
+    return Context.getRegisteredComponents(StartedArtOnLastClinicalContactCalculation.class).get(0);
+  }
 
-  private StartedArtOnLastClinicalContactCalculation startedArtOnLastClinicalContactCalculation;
+  @Override
+  public Collection<Integer> getCohort() {
+    return Arrays.asList(new Integer[] {});
+  }
 
-  private TestsHelper testsHelper;
+  @Override
+  public CalculationResultMap getResult() {
+    CalculationResultMap map = new CalculationResultMap();
+    return map;
+  }
 
   @Before
-  public void setUp() {
-    PowerMockito.mockStatic(Context.class);
-    PowerMockito.mockStatic(EptsCalculationUtils.class);
-    when(Context.getRegisteredComponents(HivMetadata.class))
-        .thenReturn(Collections.singletonList(hivMetadata));
-    when(Context.getRegisteredComponents(EPTSCalculationService.class))
-        .thenReturn(Collections.singletonList(eptsCalculationService));
-    when(Context.getService(PatientCalculationService.class)).thenReturn(patientCalculationService);
-    startedArtOnLastClinicalContactCalculation = new StartedArtOnLastClinicalContactCalculation();
-    testsHelper = new TestsHelper();
+  public void initialise() throws Exception {
+    executeDataSet("genericTest.xml");
   }
 
   @Test
   public void evaluateShouldReturnPatientsOnArtForLessThan90Days() {
-    Date artStartDate = testsHelper.getDate("2018-05-01 00:00:00.0");
-    Date lastClinicalContactDate = testsHelper.getDate("2018-08-01 00:00:00.0");
-
-    Location location = new Location(1);
-    Person person = new Person(1);
+    Map<String, Object> parameterValues = new HashMap<String, Object>();
+    PatientCalculationContext context = getEvaluationContext();
+    Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
+    calendar.set(2019, Calendar.OCTOBER, 20);
+    context.addToCache("onOrBefore", calendar.getTime());
+    final int patientId = 1777001;
+    CalculationResultMap results =
+        service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues, context);
+    BooleanResult result = (BooleanResult) results.get(patientId);
+    Assert.assertNotNull(result);
+    Assert.assertEquals(Boolean.TRUE, result.getValue());
   }
 }
