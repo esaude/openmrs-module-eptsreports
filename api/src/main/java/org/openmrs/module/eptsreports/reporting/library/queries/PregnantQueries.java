@@ -24,7 +24,9 @@ public class PregnantQueries {
       int adultSegEncounter,
       int fichaResumo,
       int lastMenstrualPeriod,
-      int etvProgram) {
+      int etvProgram,
+      int startARVCriteriaConcept,
+      int bPLusConcept) {
 
     return "Select     p.patient_id"
         + " from patient p"
@@ -35,6 +37,21 @@ public class PregnantQueries {
         + pregnantConcept
         + " and value_coded="
         + gestationConcept
+        + " and e.encounter_type in ("
+        + adultInitailEncounter
+        + ","
+        + adultSegEncounter
+        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location and pe.gender='F' "
+        + " union"
+        + " Select     p.patient_id"
+        + " from patient p"
+        + " inner join person pe on p.patient_id=pe.person_id"
+        + " inner join encounter e on p.patient_id=e.patient_id"
+        + " inner join obs o on e.encounter_id=o.encounter_id"
+        + " where p.voided=0 and pe.voided=0 and e.voided=0 and o.voided=0 and concept_id="
+        + startARVCriteriaConcept
+        + " and value_coded="
+        + bPLusConcept
         + " and e.encounter_type in ("
         + adultInitailEncounter
         + ","
