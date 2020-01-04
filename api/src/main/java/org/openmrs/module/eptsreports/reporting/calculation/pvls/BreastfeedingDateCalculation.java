@@ -48,21 +48,21 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     Location location = (Location) context.getFromCache("location");
 
     Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
-    EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
     EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
-    EncounterType childFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
+    EncounterType fichaResumoEncounterType = hivMetadata.getMasterCardEncounterType();
 
     Concept breastfeedingConcept = hivMetadata.getBreastfeeding();
     Concept yes = hivMetadata.getYesConcept();
     Concept criteriaForHivStart = hivMetadata.getCriteriaForArtStart();
     Concept priorDeliveryDate = hivMetadata.getPriorDeliveryDateConcept();
+    Concept hivViraloadQualitative = hivMetadata.getHivViralLoadQualitative();
+    Concept criteriaForArtStart = hivMetadata.getCriteriaForArtStart();
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
     Date oneYearBefore = EptsCalculationUtils.addMonths(onOrBefore, -12);
-
     CalculationResultMap lactatingMap =
         ePTSCalculationService.getObs(
             breastfeedingConcept,
-            null,
+            Arrays.asList(fichaResumoEncounterType, adultFollowup),
             cohort,
             Arrays.asList(location),
             Arrays.asList(yes),
@@ -98,19 +98,35 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
 
     CalculationResultMap lastVl =
         ePTSCalculationService.lastObs(
-            Arrays.asList(labEncounterType, adultFollowup, childFollowup),
-            viralLoadConcept,
-            location,
-            oneYearBefore,
-            onOrBefore,
+            null, viralLoadConcept, location, oneYearBefore, onOrBefore, cohort, context);
+    CalculationResultMap lastHivVlQualitative =
+        ePTSCalculationService.lastObs(
+            null, hivViraloadQualitative, location, oneYearBefore, onOrBefore, cohort, context);
+
+    CalculationResultMap startArtBeingBpostiveMap =
+        ePTSCalculationService.getObs(
+            criteriaForArtStart,
+            null,
             cohort,
+            Arrays.asList(location),
+            Arrays.asList(breastfeedingConcept),
+            TimeQualifier.ANY,
+            null,
             context);
 
     for (Integer pId : cohort) {
       Obs lastVlObs = EptsCalculationUtils.resultForPatient(lastVl, pId);
+      Obs lastVlQualitativeObs = EptsCalculationUtils.resultForPatient(lastHivVlQualitative, pId);
       Date resultantDate =
           getResultantDate(
-              lactatingMap, criteriaHivStartMap, deliveryDateMap, patientStateMap, pId, lastVlObs);
+              lactatingMap,
+              criteriaHivStartMap,
+              deliveryDateMap,
+              patientStateMap,
+              pId,
+              lastVlObs,
+              lastVlQualitativeObs,
+              startArtBeingBpostiveMap);
       resultMap.put(pId, new SimpleResult(resultantDate, this));
     }
     return resultMap;
@@ -122,10 +138,22 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
       CalculationResultMap deliveryDateMap,
       CalculationResultMap patientStateMap,
       Integer pId,
-      Obs lastVlObs) {
+      Obs lastVlObs,
+      Obs lastVlQualitative,
+      CalculationResultMap startArtBeingBpostiveMap) {
     Date resultantDate = null;
+    // check of the 2 dates passed for viral load and pick the latest
+    List<Date> dateListForVl = new ArrayList<>();
     if (lastVlObs != null && lastVlObs.getObsDatetime() != null) {
-      Date lastVlDate = lastVlObs.getObsDatetime();
+      dateListForVl.add(lastVlObs.getObsDatetime());
+    }
+    if (lastVlQualitative != null && lastVlQualitative.getObsDatetime() != null) {
+      dateListForVl.add(lastVlQualitative.getObsDatetime());
+    }
+
+    if (dateListForVl.size() > 0) {
+      Collections.sort(dateListForVl);
+      Date lastVlDate = dateListForVl.get(dateListForVl.size() - 1);
 
       ListResult patientResult = (ListResult) patientStateMap.get(pId);
 
@@ -135,6 +163,9 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
       ListResult deliveryDateResult = (ListResult) deliveryDateMap.get(pId);
       List<Obs> deliveryDateObsList = EptsCalculationUtils.extractResultValues(deliveryDateResult);
       List<PatientState> patientStateList = EptsCalculationUtils.extractResultValues(patientResult);
+      ListResult startArtBeingBptv = (ListResult) startArtBeingBpostiveMap.get(pId);
+      List<Obs> startArtBeingBptvObsList =
+          EptsCalculationUtils.extractResultValues(startArtBeingBptv);
 
       // get a list of all eligible dates
       List<Date> allEligibleDates =
@@ -142,7 +173,8 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
               this.isLactating(lastVlDate, lactatingObs),
               this.hasHIVStartDate(lastVlDate, criteriaHivObs),
               this.hasDeliveryDate(lastVlDate, deliveryDateObsList),
-              this.isInBreastFeedingInProgram(lastVlDate, patientStateList));
+              this.isInBreastFeedingInProgram(lastVlDate, patientStateList),
+              this.getWhenOnARTWhileBpostive(lastVlDate, startArtBeingBptvObsList));
 
       // have a resultant list of dates
       List<Date> resultantList = new ArrayList<>();
@@ -212,5 +244,17 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     Date startDate = EptsCalculationUtils.addMonths(viralLoadDate, -18);
     return breastFeedingDate.compareTo(startDate) >= 0
         && breastFeedingDate.compareTo(viralLoadDate) <= 0;
+  }
+
+  private Date getWhenOnARTWhileBpostive(Date lastVlDate, List<Obs> pregnantWithLastDateObsList) {
+    Date requiredDate = null;
+    for (Obs obs : pregnantWithLastDateObsList) {
+      if (this.isInBreastFeedingViralLoadRange(
+          lastVlDate, obs.getEncounter().getEncounterDatetime())) {
+        requiredDate = obs.getEncounter().getEncounterDatetime();
+      }
+    }
+
+    return requiredDate;
   }
 }
