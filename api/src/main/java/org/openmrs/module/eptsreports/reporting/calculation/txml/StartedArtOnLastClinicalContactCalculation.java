@@ -21,9 +21,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientCalculation {
 
-  /* @Autowired private HivMetadata hivMetadata;
-  @Autowired private CommonMetadata commonMetadata;*/
-
   @Override
   public CalculationResultMap evaluate(
       Collection<Integer> cohort,
