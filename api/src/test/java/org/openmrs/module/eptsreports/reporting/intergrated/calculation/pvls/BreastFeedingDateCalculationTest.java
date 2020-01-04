@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -13,7 +12,6 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.BreastfeedingDateCalculation;
 import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
 
-@Ignore
 public class BreastFeedingDateCalculationTest extends BasePatientCalculationTest {
 
   @Override

@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
@@ -51,9 +50,9 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
     Date oneYearBefore = EptsCalculationUtils.addMonths(onOrBefore, -12);
 
+    EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
     EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
-    EncounterType fichaResumoEncounterType = hivMetadata.getMasterCardEncounterType();
-    EncounterType adultInitial = hivMetadata.getARVAdultInitialEncounterType();
+    EncounterType pediatriaFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
 
     Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
     Concept pregnant = hivMetadata.getPregnantConcept();
@@ -61,18 +60,11 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     Concept pregnancyDueDate = hivMetadata.getPregnancyDueDate();
     Program ptv = hivMetadata.getPtvEtvProgram();
     Concept gestation = hivMetadata.getGestationConcept();
-    Concept lastMenstration = hivMetadata.getDateOfLastMenstruationConcept();
-    Concept hivViraloadQualitative = hivMetadata.getHivViralLoadQualitative();
-    Concept criteriaForArtStart = hivMetadata.getCriteriaForArtStart();
-    Concept bPostive = hivMetadata.getBpostiveConcept();
-
-    // get female patients only
-    Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);
 
     CalculationResultMap pregnantMap =
         ePTSCalculationService.getObs(
             pregnant,
-            Arrays.asList(fichaResumoEncounterType, adultFollowup, adultInitial),
+            null,
             cohort,
             Arrays.asList(location),
             Arrays.asList(gestation),
@@ -101,42 +93,22 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
             TimeQualifier.ANY,
             null,
             context);
-    CalculationResultMap lastMenstralMap =
-        ePTSCalculationService.getObs(
-            lastMenstration,
-            Arrays.asList(adultFollowup),
-            cohort,
-            Arrays.asList(location),
-            null,
-            TimeQualifier.ANY,
-            null,
-            context);
-
-    CalculationResultMap startArtBeingBpostiveMap =
-        ePTSCalculationService.getObs(
-            criteriaForArtStart,
-            null,
-            cohort,
-            Arrays.asList(location),
-            Arrays.asList(bPostive),
-            TimeQualifier.ANY,
-            null,
-            context);
 
     CalculationResultMap markedPregnantInProgram =
         ePTSCalculationService.allProgramEnrollment(ptv, cohort, context);
 
-    CalculationResultMap lastHivVl =
+    CalculationResultMap lastVl =
         ePTSCalculationService.lastObs(
-            null, viralLoadConcept, location, oneYearBefore, onOrBefore, cohort, context);
-    CalculationResultMap lastHivVlQualitative =
-        ePTSCalculationService.lastObs(
-            null, hivViraloadQualitative, location, oneYearBefore, onOrBefore, cohort, context);
+            Arrays.asList(labEncounterType, adultFollowup, pediatriaFollowup),
+            viralLoadConcept,
+            location,
+            oneYearBefore,
+            onOrBefore,
+            cohort,
+            context);
 
     for (Integer pId : cohort) {
-
-      Obs lastHivVlObs = EptsCalculationUtils.resultForPatient(lastHivVl, pId);
-      Obs lastVlQualitativeObs = EptsCalculationUtils.resultForPatient(lastHivVlQualitative, pId);
+      Obs lastVlObs = EptsCalculationUtils.resultForPatient(lastVl, pId);
       Date requiredDate =
           getRequiredDate(
               location,
@@ -144,14 +116,10 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
               markedPregnantByWeeks,
               markedPregnantDueDate,
               markedPregnantInProgram,
-              lastMenstralMap,
               pId,
-              lastHivVlObs,
-              lastVlQualitativeObs,
-              startArtBeingBpostiveMap);
+              lastVlObs);
       resultMap.put(pId, new SimpleResult(requiredDate, this));
     }
-
     return resultMap;
   }
 
@@ -161,30 +129,16 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
       CalculationResultMap markedPregnantByWeeks,
       CalculationResultMap markedPregnantDueDate,
       CalculationResultMap markedPregnantInProgram,
-      CalculationResultMap markedAsMenstralMap,
       Integer pId,
-      Obs lastVlObs,
-      Obs lastVlQualitative,
-      CalculationResultMap artStartWhileBposMap) {
+      Obs lastVlObs) {
     Date requiredDate = null;
-    // check of the 2 dates passed for viral load and pick the latest
-    List<Date> dateListForVl = new ArrayList<>();
     if (lastVlObs != null && lastVlObs.getObsDatetime() != null) {
-      dateListForVl.add(lastVlObs.getObsDatetime());
-    }
-    if (lastVlQualitative != null && lastVlQualitative.getObsDatetime() != null) {
-      dateListForVl.add(lastVlQualitative.getObsDatetime());
-    }
-    if (dateListForVl.size() > 0) {
-      Collections.sort(dateListForVl);
-      Date lastVlDate = dateListForVl.get(dateListForVl.size() - 1);
+      Date lastVlDate = lastVlObs.getObsDatetime();
 
       ListResult pregnantResult = (ListResult) pregnantMap.get(pId);
       ListResult pregnantByWeeksResullt = (ListResult) markedPregnantByWeeks.get(pId);
       ListResult pregnantDueDateResult = (ListResult) markedPregnantDueDate.get(pId);
       ListResult pregnantsInProgramResults = (ListResult) markedPregnantInProgram.get(pId);
-      ListResult lastMenstralResults = (ListResult) markedAsMenstralMap.get(pId);
-      ListResult onArtWhileBpos = (ListResult) artStartWhileBposMap.get(pId);
 
       List<Obs> pregnantObsList = EptsCalculationUtils.extractResultValues(pregnantResult);
       List<Obs> pregnantByWeeksObsList =
@@ -193,8 +147,6 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
           EptsCalculationUtils.extractResultValues(pregnantDueDateResult);
       List<PatientProgram> patientProgams =
           EptsCalculationUtils.extractResultValues(pregnantsInProgramResults);
-      List<Obs> lastMensObsList = EptsCalculationUtils.extractResultValues(lastMenstralResults);
-      List<Obs> artWhileBpos = EptsCalculationUtils.extractResultValues(onArtWhileBpos);
 
       // add a list to contains all the dates that can be sorted and pick the most recent one
       List<Date> allPregnancyDates =
@@ -202,9 +154,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
               isPregnantDate(lastVlDate, pregnantObsList),
               isPregnantByWeeks(lastVlDate, pregnantByWeeksObsList),
               isPregnantDueDate(lastVlDate, pregnantDueDateObsList),
-              isPregnantInProgram(lastVlDate, patientProgams, location),
-              isPregnantWithLastMens(lastVlDate, lastMensObsList),
-              getWhenOnARTWhileBpostive(lastVlDate, artWhileBpos));
+              isPregnantInProgram(lastVlDate, patientProgams, location));
       // have a resultant list of dates
       List<Date> resultantList = new ArrayList<>();
       if (allPregnancyDates.size() > 0) {
@@ -266,27 +216,6 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
       }
     }
     return inProgramDate;
-  }
-
-  private Date isPregnantWithLastMens(Date lastVlDate, List<Obs> pregnantWithLastDateObsList) {
-    Date isPregnancyWihLastMensDate = null;
-    for (Obs obs : pregnantWithLastDateObsList) {
-      if (this.isInPregnantViralLoadRange(lastVlDate, obs.getEncounter().getEncounterDatetime())) {
-        isPregnancyWihLastMensDate = obs.getEncounter().getEncounterDatetime();
-      }
-    }
-    return isPregnancyWihLastMensDate;
-  }
-
-  private Date getWhenOnARTWhileBpostive(Date lastVlDate, List<Obs> pregnantWithLastDateObsList) {
-    Date requiredDate = null;
-    for (Obs obs : pregnantWithLastDateObsList) {
-      if (this.isInPregnantViralLoadRange(lastVlDate, obs.getEncounter().getEncounterDatetime())) {
-        requiredDate = obs.getEncounter().getEncounterDatetime();
-      }
-    }
-
-    return requiredDate;
   }
 
   private boolean isInPregnantViralLoadRange(Date viralLoadDate, Date pregnancyDate) {
