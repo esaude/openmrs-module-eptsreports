@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
@@ -16,7 +15,6 @@ import org.openmrs.module.eptsreports.reporting.calculation.pvls.BreastfeedingPr
 import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PregnantOrBreastfeedingWomen;
 
-@Ignore
 public class BreastfeedingPregnantCalculationTest extends BasePatientCalculationTest {
 
   @Override
