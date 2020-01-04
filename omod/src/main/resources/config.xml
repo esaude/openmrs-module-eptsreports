@@ -1578,6 +1578,101 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.patientForgotVisitDateConceptUuid</property>
+		<defaultValue>e1e074f6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT FORGOT VISIT DATE concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.patientIsBedriddenAtHomeConceptUuid</property>
+		<defaultValue>e1e075fa-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT IS BEDRIDDEN AT HOME concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.distanceOrMoneyForTransportIsTooMuchForPatientConceptUuid</property>
+		<defaultValue>e1e076f4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the DISTANCE OR MONEY FOR TRANSPORT IS TO MUCH FOR PATIENT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.patientIsDissatisfiedWithDayHospitalServicesConceptUuid</property>
+		<defaultValue>e1e079e2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT IS DISSATISFIED WITH DAY HOSPITAL SERVICES concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.patientIsTreatingHivWithTraditionalMedicineConceptUuid</property>
+		<defaultValue>e1e07cda-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT IS TREATING HIV WITH TRADITIONAL MEDICINE concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.otherReasonWhyPatientMissedVisitConceptUuid</property>
+		<defaultValue>e1e080cc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the OTHER REASON WHY PATIENT MISSED VISIT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.fearOfTheProviderConceptUuid</property>
+		<defaultValue>3c055270-bf64-465a-b649-475dfa1a212d</defaultValue>
+		<description>
+			UUID for the FEAR OF THE PROVIDER concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.absenceOfHealthProviderInHealthUnitConceptUuid</property>
+		<defaultValue>558a66da-4900-4313-a02d-4ebb4f9948df</defaultValue>
+		<description>
+			UUID for the Absence of Health Provider in Health Unit concept
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.reasonForRequestingViralLoadConceptUuid</property>
+		<defaultValue>a97ab290-5b66-4755-bd49-d82f944cd093</defaultValue>
+		<description>
+			UUID for the Reason for requesting viral load concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.routineForRequestingViralLoadConceptUuid</property>
+		<defaultValue>971cf484-2751-40ce-9f89-d23f544d06e2</defaultValue>
+		<description>
+			UUID for the Reason for requesting viral load concept
+		</description>
+	</globalProperty>
+    <globalProperty>
+        <property>eptsreports.bPlusConceptUuid</property>
+        <defaultValue>8ace1eb2-656b-46e0-933b-670fc975ea19</defaultValue>
+        <description>
+            UUID for the B plus concept
+        </description>
+    </globalProperty>
+
+
+	<!-- Concept id 6331 : B plus answer -->
+	<globalProperty>
+		<property>eptsreports.bPlusConceptUuid</property>
+		<defaultValue>8ace1eb2-656b-46e0-933b-670fc975ea19</defaultValue>
+		<description>
+			UUID for the B plus concept
+		</description>
+	</globalProperty>
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 

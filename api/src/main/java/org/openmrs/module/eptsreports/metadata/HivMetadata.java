@@ -949,6 +949,13 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id = 6331
+  public Concept getBpostiveConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.bPlusConceptUuid");
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
@@ -1395,5 +1402,11 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.identificadorDefinidoLocalment01Uuid");
     return getPersonAttributeType(uuid);
+  }
+
+  // Concept 6331
+  public Concept getBPlusConcept() {
+    return getConcept(
+        Context.getAdministrationService().getGlobalProperty("eptsreports.bPlusConceptUuid"));
   }
 }
