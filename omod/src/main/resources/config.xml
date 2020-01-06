@@ -1505,6 +1505,7 @@
 		</description>
 	</globalProperty>
 
+
 	<globalProperty>
 		<property>eptsreports.semiannualConceptUuid</property>
 		<defaultValue>3069be5c-cd02-4ddb-aa1f-bdd71d3dd6be</defaultValue>
@@ -1640,8 +1641,40 @@
 			UUID for the Absence of Health Provider in Health Unit concept
 		</description>
 	</globalProperty>
+	<globalProperty>
+		<property>eptsreports.reasonForRequestingViralLoadConceptUuid</property>
+		<defaultValue>a97ab290-5b66-4755-bd49-d82f944cd093</defaultValue>
+		<description>
+			UUID for the Reason for requesting viral load concept
+		</description>
+	</globalProperty>
 
-	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
+	<globalProperty>
+		<property>eptsreports.routineForRequestingViralLoadConceptUuid</property>
+		<defaultValue>971cf484-2751-40ce-9f89-d23f544d06e2</defaultValue>
+		<description>
+			UUID for the Reason for requesting viral load concept
+		</description>
+	</globalProperty>
+    <globalProperty>
+        <property>eptsreports.bPlusConceptUuid</property>
+        <defaultValue>8ace1eb2-656b-46e0-933b-670fc975ea19</defaultValue>
+        <description>
+            UUID for the B plus concept
+        </description>
+    </globalProperty>
+
+
+	<!-- Concept id 6331 : B plus answer -->
+	<globalProperty>
+		<property>eptsreports.bPlusConceptUuid</property>
+		<defaultValue>8ace1eb2-656b-46e0-933b-670fc975ea19</defaultValue>
+		<description>
+			UUID for the B plus concept
+		</description>
+	</globalProperty>
+
+	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
 		@MODULE_PACKAGE@.web.DWRFormEntryService; DWRFormEntryService.enterForm(Integer 
