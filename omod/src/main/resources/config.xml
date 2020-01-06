@@ -1505,6 +1505,7 @@
 		</description>
 	</globalProperty>
 
+
 	<globalProperty>
 		<property>eptsreports.semiannualConceptUuid</property>
 		<defaultValue>3069be5c-cd02-4ddb-aa1f-bdd71d3dd6be</defaultValue>
@@ -1673,7 +1674,7 @@
 		</description>
 	</globalProperty>
 
-	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
+	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
 		@MODULE_PACKAGE@.web.DWRFormEntryService; DWRFormEntryService.enterForm(Integer 
