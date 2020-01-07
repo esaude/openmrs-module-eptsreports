@@ -35,17 +35,33 @@ import org.springframework.stereotype.Component;
 @Component
 public class SetupMERQuarterly24 extends EptsDataExportManager {
 
-  @Autowired private TxPvlsDataset txPvlsDataset;
+  private TxPvlsDataset txPvlsDataset;
 
-  @Autowired private TxNewDataset txNewDataset;
+  private TxNewDataset txNewDataset;
 
-  @Autowired private TxCurrDataset txCurrDataset;
+  private TxCurrDataset txCurrDataset;
 
-  @Autowired private TxMlDataset txMlDataset;
+  private TxMlDataset txMlDataset;
 
-  @Autowired private TxRttDataset txRttDataset;
+  private TxRttDataset txRttDataset;
 
-  @Autowired protected GenericCohortQueries genericCohortQueries;
+  private GenericCohortQueries genericCohortQueries;
+
+  @Autowired
+  public SetupMERQuarterly24(
+      TxPvlsDataset txPvlsDataset,
+      TxNewDataset txNewDataset,
+      TxCurrDataset txCurrDataset,
+      TxMlDataset txMlDataset,
+      TxRttDataset txRttDataset,
+      GenericCohortQueries genericCohortQueries) {
+    this.txPvlsDataset = txPvlsDataset;
+    this.txNewDataset = txNewDataset;
+    this.txCurrDataset = txCurrDataset;
+    this.txMlDataset = txMlDataset;
+    this.txRttDataset = txRttDataset;
+    this.genericCohortQueries = genericCohortQueries;
+  }
 
   @Override
   public String getVersion() {
