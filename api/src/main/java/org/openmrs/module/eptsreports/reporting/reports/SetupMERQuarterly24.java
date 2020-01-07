@@ -18,8 +18,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxRttCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.*;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxPvlsDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxRttDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
@@ -80,10 +83,8 @@ public class SetupMERQuarterly24 extends EptsDataExportManager {
     rd.addDataSetDefinition(
         "C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
     rd.addDataSetDefinition("P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
-    rd.addDataSetDefinition(
-            "TXML", Mapped.mapStraightThrough(txMlDataset.constructtxMlDataset()));
-    rd.addDataSetDefinition(
-            "R", Mapped.mapStraightThrough(txRttDataset.constructTxRttDataset()));
+    rd.addDataSetDefinition("TXML", Mapped.mapStraightThrough(txMlDataset.constructtxMlDataset()));
+    rd.addDataSetDefinition("R", Mapped.mapStraightThrough(txRttDataset.constructTxRttDataset()));
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
