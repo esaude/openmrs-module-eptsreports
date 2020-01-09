@@ -159,25 +159,25 @@ public class TxNewDataset extends BaseDataSet {
     this.addColums(dataSetDefinition, "", patientEnrolledInHIVStartedARTIndicator, UNKNOWN);
 
     dataSetDefinition.addColumn(
-        "MSM",
+        "N-MSM",
         "Homosexual",
         EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
         "homosexual=homosexual");
 
     dataSetDefinition.addColumn(
-        "PWID",
+        "N-PWID",
         "Drugs User",
         EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
         "drug-user=drug-user");
 
     dataSetDefinition.addColumn(
-        "PRI",
+        "N-PRI",
         "Prisioners",
         EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
         "prisioner=prisioner");
 
     dataSetDefinition.addColumn(
-        "FSW",
+        "N-FSW",
         "Sex Worker",
         EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
         "sex-worker=sex-worker");

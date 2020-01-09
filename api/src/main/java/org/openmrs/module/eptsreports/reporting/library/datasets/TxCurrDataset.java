@@ -180,22 +180,25 @@ public class TxCurrDataset extends BaseDataSet {
     this.addColums(dataSetDefinition, "", txCurrIndicator, UNKNOWN);
 
     dataSetDefinition.addColumn(
-        "MSM",
+        "C-MSM",
         "Homosexual",
         EptsReportUtils.map(txCurrIndicator, mappings),
         "homosexual=homosexual");
 
     dataSetDefinition.addColumn(
-        "PWID",
+        "C-PWID",
         "Drugs User",
         EptsReportUtils.map(txCurrIndicator, mappings),
         "drug-user=drug-user");
 
     dataSetDefinition.addColumn(
-        "PRI", "Prisioners", EptsReportUtils.map(txCurrIndicator, mappings), "prisioner=prisioner");
+        "C-PRI",
+        "Prisioners",
+        EptsReportUtils.map(txCurrIndicator, mappings),
+        "prisioner=prisioner");
 
     dataSetDefinition.addColumn(
-        "FSW",
+        "C-FSW",
         "Sex Worker",
         EptsReportUtils.map(txCurrIndicator, mappings),
         "sex-worker=sex-worker");
