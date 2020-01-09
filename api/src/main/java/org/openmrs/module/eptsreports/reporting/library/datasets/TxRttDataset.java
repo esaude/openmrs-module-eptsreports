@@ -124,25 +124,25 @@ public class TxRttDataset extends BaseDataSet {
     this.addColums(definition, "", patientOnRttIndicator, UNKNOWN);
 
     definition.addColumn(
-        "MSM",
+        "R-MSM",
         "Homosexual",
         EptsReportUtils.map(patientOnRttIndicator, mappings),
         "homosexual=homosexual");
 
     definition.addColumn(
-        "PWID",
+        "R-PWID",
         "Drugs User",
         EptsReportUtils.map(patientOnRttIndicator, mappings),
         "drug-user=drug-user");
 
     definition.addColumn(
-        "PRI",
+        "R-PRI",
         "Prisioners",
         EptsReportUtils.map(patientOnRttIndicator, mappings),
         "prisioner=prisioner");
 
     definition.addColumn(
-        "FSW",
+        "R-FSW",
         "Sex Worker",
         EptsReportUtils.map(patientOnRttIndicator, mappings),
         "sex-worker=sex-worker");
