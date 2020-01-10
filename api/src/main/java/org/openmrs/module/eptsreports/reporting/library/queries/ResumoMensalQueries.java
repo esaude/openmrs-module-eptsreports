@@ -359,4 +359,22 @@ public class ResumoMensalQueries {
             + "AND p.voided=0 AND e.voided=0 ";
     return String.format(query, encounterType, encounterType);
   }
+
+  /**
+   * Patients with first clinical consultation 6 on the same Pre-ART Start date() Concept ID 23808
+   *
+   * @return String
+   */
+  public static String getPatientsWithFirstClinicalConsultationOnTheSameDateAsPreArtStartDate(
+      int mastercardEncounterType, int consultationEncounterType, int preArtStarConceptId) {
+    String query =
+        "SELECT l.patient_id FROM"
+            + " (SELECT p.patient_id AS patient_id, MIN(e.encounter_datetime) AS encounter_datetime FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id"
+            + " INNER JOIN(SELECT p.patient_id AS patient_id,o.value_datetime AS art_start_date FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id"
+            + " INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location "
+            + " AND o.value_datetime IS NOT NULL AND o.concept_id=%d GROUP BY p.patient_id) pre_art ON p.patient_id=pre_art.patient_id WHERE p.voided=0 "
+            + " AND e.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND encounter_datetime <= :endDate  AND encounter_datetime=pre_art.art_start_date GROUP BY patient_id) l";
+    return String.format(
+        query, mastercardEncounterType, consultationEncounterType, preArtStarConceptId);
+  }
 }
