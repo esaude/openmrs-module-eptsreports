@@ -74,9 +74,14 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getPreArtStartDate().getConceptId()));
 
     cd.addSearch("A1I", map(sqlCohortDefinition, "startDate=${startDate},location=${location}"));
-    cd.addSearch("A1II", map(getPatientsWithTransferFromOtherHF(), "locationList=${location}"));
+    cd.addSearch("A1III", map(getPatientsWithTransferFromOtherHF(), "locationList=${location}"));
+    cd.addSearch(
+        "A1II",
+        map(
+            getPatientsWithFirstClinicalConsultationOnTheSameDateAsPreArtStartDate(),
+            "endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("A1I AND NOT A1II");
+    cd.setCompositionString("(A1I AND A1II) AND NOT A1III");
 
     return cd;
   }
@@ -106,9 +111,14 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "A2I",
         map(sqlCohortDefinition, "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch("A2II", map(getPatientsWithTransferFromOtherHF(), "locationList=${location}"));
+    cd.addSearch("A2III", map(getPatientsWithTransferFromOtherHF(), "locationList=${location}"));
+    cd.addSearch(
+        "A2II",
+        map(
+            getPatientsWithFirstClinicalConsultationOnTheSameDateAsPreArtStartDate(),
+            "endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("A2I AND NOT A2II");
+    cd.setCompositionString("(A2I AND A2II) AND NOT A2III");
 
     return cd;
   }
@@ -834,6 +844,26 @@ public class ResumoMensalCohortQueries {
                     hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.setCompositionString("F1 AND NOT Fx3");
+    return cd;
+  }
+
+  /**
+   * Get number of patients who have a consultation on the same date as that of pre art
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition
+      getPatientsWithFirstClinicalConsultationOnTheSameDateAsPreArtStartDate() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName(
+        "Get number of patients who have a consultation on the same date as that of pre art");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.setQuery(
+        ResumoMensalQueries.getPatientsWithFirstClinicalConsultationOnTheSameDateAsPreArtStartDate(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPreArtStartDate().getConceptId()));
     return cd;
   }
 }
