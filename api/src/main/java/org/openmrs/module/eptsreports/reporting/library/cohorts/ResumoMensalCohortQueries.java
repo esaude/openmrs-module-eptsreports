@@ -166,10 +166,11 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch("B1i", map(getPatientsWhoInitiatedTarvAtAfacility(), mappings));
     cd.addSearch("B1ii", map(getPatientsWithMasterCardDrugPickUpDate(), mappings));
-    cd.addSearch("B1iii", map(getPatientsWithTransferFromOtherHF(), transferMappings));
+    cd.addSearch("B1iii", map(genericCohortQueries.getPatientsHavingEncounterWithinDateBoundaries(hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()), "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch("B1iv", map(getTypeOfPatientTransferredFrom(), transferMappings));
+    cd.addSearch("B1v", map(getPatientsWithTransferFromOtherHF(), transferMappings));
 
-    cd.setCompositionString("(B1i AND B1ii) AND NOT (B1iii OR B1iv)");
+    cd.setCompositionString("(B1i AND B1ii) AND NOT (B1iv OR B1v)");
     return cd;
   }
 

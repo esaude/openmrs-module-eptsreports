@@ -467,4 +467,21 @@ public class GenericCohortQueries {
 
     return cd;
   }
+
+  /**
+   * Get patients who have encounter of a specific type within date boundaries
+   * @param encounterType
+   * @retrun CohortDefinition
+   */
+  public CohortDefinition getPatientsHavingEncounterWithinDateBoundaries(int encounterType) {
+    String query = "";
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients having encounter type "+ encounterType);
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("EndDate", "End Date", Date.class));
+    cd.setQuery(query);
+    return cd;
+
+  }
 }
