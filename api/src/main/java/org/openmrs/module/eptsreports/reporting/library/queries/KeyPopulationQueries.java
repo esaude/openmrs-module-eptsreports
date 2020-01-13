@@ -11,10 +11,10 @@ public interface KeyPopulationQueries {
             + "SELECT e.patient_id FROM encounter e "
             + "INNER JOIN obs o ON o.encounter_id = e.encounter_id "
             + "WHERE e.voided = 0 AND o.voided = 0 AND e.encounter_type IN (6,35) "
-            + "AND o.concept_id = 23703 AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate "
+            + "AND o.concept_id = 23703  AND e.encounter_datetime <= :endDate "
             + "AND e.location_id = :location GROUP BY e.patient_id UNION "
             + "SELECT pa.person_id as patient_id FROM person_attribute pa WHERE pa.person_attribute_type_id = 24 "
-            + "AND DATE(pa.date_created) >= :startDate AND DATE(pa.date_created) <= :endDate)key_population";
+            + "AND DATE(pa.date_created) <= :endDate)key_population";
 
     public static final String findFilledKeyPopulationByPatient =
         "SELECT * FROM ("
