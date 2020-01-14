@@ -377,4 +377,19 @@ public class ResumoMensalQueries {
     return String.format(
         query, mastercardEncounterType, consultationEncounterType, preArtStarConceptId);
   }
+
+  /**
+   * Number of patientes who Abandoned the ART during the current month
+   *
+   * @param pharmacyEncounterType
+   * @param mastercardEncounterType
+   * @param drugpickupConceptId
+   * @return String
+   */
+  public static String getNumberOfPatientsWhoAbandonedArtDuringCurrentMonth(
+      int pharmacyEncounterType, int mastercardEncounterType, int drugpickupConceptId) {
+    String query = "";
+    return String.format(
+        query, pharmacyEncounterType, mastercardEncounterType, drugpickupConceptId);
+  }
 }

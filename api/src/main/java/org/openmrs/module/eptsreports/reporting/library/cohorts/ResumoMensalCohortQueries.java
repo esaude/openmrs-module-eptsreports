@@ -872,4 +872,23 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getPreArtStartDate().getConceptId()));
     return cd;
   }
+
+  /**
+   * B7: Number of patientes who Abandoned the ART during the current month
+   *
+   * @retrun CohortDefinition
+   */
+  public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringCurrentMonth() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Number of patientes who Abandoned the ART during the current month");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.setName(
+        ResumoMensalQueries.getNumberOfPatientsWhoAbandonedArtDuringCurrentMonth(
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickup().getConceptId()));
+    return cd;
+  }
 }
