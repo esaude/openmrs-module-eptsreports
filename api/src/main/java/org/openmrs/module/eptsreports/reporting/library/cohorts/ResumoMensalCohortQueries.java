@@ -582,8 +582,8 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B7",
         map(
-            getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthB7(),
-            "onOrBefore=${endDate},locationList=${location},value1=${endDate-90d},value2=${endDate}"));
+            getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
+            "startDate=${startDate},location=${location},endDate=${endDate}"));
     cd.addSearch(
         "B8",
         map(
@@ -878,14 +878,14 @@ public class ResumoMensalCohortQueries {
    *
    * @retrun CohortDefinition
    */
-  public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringCurrentMonth() {
+  public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients who Abandoned the ART during the current month");
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.setName(
-        ResumoMensalQueries.getNumberOfPatientsWhoAbandonedArtDuringCurrentMonth(
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.setQuery(
+        ResumoMensalQueries.getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthB7(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getArtDatePickup().getConceptId()));
