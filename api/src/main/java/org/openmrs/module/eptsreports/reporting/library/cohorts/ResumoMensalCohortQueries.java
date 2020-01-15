@@ -880,7 +880,7 @@ public class ResumoMensalCohortQueries {
    */
   public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringCurrentMonth() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Number of patientes who Abandoned the ART during the current month");
+    cd.setName("Number of patients who Abandoned the ART during the current month");
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
