@@ -264,8 +264,15 @@ public class ResumoMensalCohortQueries {
     cd.addSearch("artStartDate", map(patientsWithArtStartDate, mappings));
     cd.addSearch("drugPickup", map(patientsWithDrugPickup, mappings));
     cd.addSearch("transferredIn", map(getPatientsWithTransferFromOtherHF(), transferMappings));
+    cd.addSearch(
+        "encBeforeStartDate",
+        map(
+            genericCohortQueries.getPatientsHavingEncounterBeforeReportingStartDate(
+                hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()),
+            "location=${location},startDate=${startDate}"));
 
-    cd.setCompositionString("artStartDate AND drugPickup NOT transferredIn");
+    cd.setCompositionString(
+        "(artStartDate AND (drugPickup OR encBeforeStartDate)) AND NOT transferredIn");
 
     return cd;
   }

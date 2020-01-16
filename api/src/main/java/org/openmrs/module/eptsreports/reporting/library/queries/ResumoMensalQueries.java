@@ -383,11 +383,11 @@ public class ResumoMensalQueries {
    *
    * @param pharmacyEncounterType
    * @param mastercardEncounterType
-   * @param drugpickupConceptId
+   * @param drugPickupConceptId
    * @return String
    */
   public static String getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthB7(
-      int pharmacyEncounterType, int mastercardEncounterType, int drugpickupConceptId) {
+      int pharmacyEncounterType, int mastercardEncounterType, int drugPickupConceptId) {
     String query =
         "SELECT final.patient_id FROM( "
             + " SELECT c.patient_id, MAX(c.encounter_date) as encounter_date FROM( "
@@ -402,6 +402,6 @@ public class ResumoMensalQueries {
             + " ) c GROUP BY c.patient_id "
             + " ) final WHERE DATE_ADD(final.encounter_date, INTERVAL 90 DAY) < :endDate ";
     return String.format(
-        query, pharmacyEncounterType, mastercardEncounterType, drugpickupConceptId);
+        query, pharmacyEncounterType, mastercardEncounterType, drugPickupConceptId);
   }
 }
