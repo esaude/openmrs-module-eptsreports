@@ -315,7 +315,7 @@ public class ResumoMensalCohortQueries {
         "B7A",
         map(
             getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A(),
-            "location=${location},startDate=${startDate}"));
+            "location=${location},startDate=${startDate},endDate=${endDate}"));
     cd.addSearch("B8A", map(died, encounterWithCodedObsMappings));
 
     cd.setCompositionString("B10 OR B2A OR B3A AND NOT (B5A OR B6A OR B7A OR B8A)");
