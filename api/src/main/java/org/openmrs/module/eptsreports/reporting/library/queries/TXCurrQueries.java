@@ -209,12 +209,13 @@ public class TXCurrQueries {
       int adultoSeguimentoEncounterType,
       int aRVPediatriaSeguimentoEncounterType,
       int artDatePickup,
-      int msterCardDrugPickupEncounterType) {
+      int msterCardDrugPickupEncounterType,
+      int numDays) {
     String query =
         "SELECT final.patient_id  "
             + " from(  "
             + "     SELECT  "
-            + "         most_recent.patient_id, Date_add(Max(most_recent.value_datetime), interval 28 day) final_encounter_date  "
+            + "         most_recent.patient_id, Date_add(Max(most_recent.value_datetime), interval %d day) final_encounter_date  "
             + "     FROM   (SELECT fila.patient_id, o.value_datetime from ( "
             + "                 SELECT enc.patient_id,  "
             + "                     Max(enc.encounter_datetime)  encounter_datetime "
@@ -295,6 +296,7 @@ public class TXCurrQueries {
 
     return String.format(
         query,
+        numDays,
         returnVisitDateForArvDrugConcept,
         ARVPharmaciaEncounterType,
         ARVPharmaciaEncounterType,
