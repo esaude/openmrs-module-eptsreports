@@ -447,26 +447,4 @@ public class GenericCohortQueries {
 
     return definition;
   }
-
-  /**
-   * Get lost to follow up patients who are not dead, transferred out or stopped treatment
-   *
-   * @return @{@link CohortDefinition}
-   */
-  public CohortDefinition getPatientsLostToFollowUpAndNotDeadTransferredOrStoppedTreatment() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName(
-        "Patients who are lost to follow up and not dead, transferred out or stopped treatment");
-
-    cd.addSearch("ltfu", mapStraightThrough(getPatientsWhoToLostToFollowUp(60)));
-    cd.addSearch("dead", mapStraightThrough(getDeceasedPatients()));
-    cd.addSearch("transferOut", mapStraightThrough(hivCohortQueries.getPatientsTransferredOut()));
-    cd.addSearch(
-        "stoppedTreatment", mapStraightThrough(hivCohortQueries.getPatientsWhoStoppedTreatment()));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-    cd.setCompositionString("ltfu and not (stoppedTreatment or transferOut or dead) ");
-
-    return cd;
-  }
 }
