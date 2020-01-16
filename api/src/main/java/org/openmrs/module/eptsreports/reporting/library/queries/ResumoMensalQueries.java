@@ -404,4 +404,31 @@ public class ResumoMensalQueries {
     return String.format(
         query, pharmacyEncounterType, mastercardEncounterType, drugPickupConceptId);
   }
+
+  /**
+   * Number of active patients in ART by end of previous month
+   *
+   * @param pharmacyEncounterType
+   * @param mastercardEncounterType
+   * @param drugPickupConceptId
+   * @return String
+   */
+  public static String getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthB127A(
+      int pharmacyEncounterType, int mastercardEncounterType, int drugPickupConceptId) {
+    String query =
+        "SELECT final.patient_id FROM( "
+            + " SELECT c.patient_id, MAX(c.encounter_date) as encounter_date FROM( "
+            + " SELECT p.patient_id, MAX(e.encounter_datetime) AS encounter_date FROM patient p INNER JOIN encounter e "
+            + " ON p.patient_id=e.patient_id WHERE p.voided=0 AND e.voided=0 AND e.location_id=:location AND "
+            + " e.encounter_datetime <=:endDate AND e.encounter_type=%d GROUP BY p.patient_id "
+            + " UNION  "
+            + " SELECT p.patient_id, MAX(o.value_datetime) AS encounter_date FROM patient p INNER JOIN encounter e "
+            + " ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 "
+            + " AND o.voided=0 AND e.encounter_type=%d AND o.concept_id=%d AND o.value_datetime IS NOT NULL AND "
+            + "e.location_id=:location AND e.encounter_datetime<=:endDate GROUP BY p.patient_id "
+            + " ) c GROUP BY c.patient_id "
+            + " ) final WHERE DATE_ADD(final.encounter_date, INTERVAL 90 DAY) < :startDate ";
+    return String.format(
+        query, pharmacyEncounterType, mastercardEncounterType, drugPickupConceptId);
+  }
 }

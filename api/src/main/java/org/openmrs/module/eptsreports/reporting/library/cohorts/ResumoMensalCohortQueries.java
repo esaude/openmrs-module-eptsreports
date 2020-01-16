@@ -311,7 +311,11 @@ public class ResumoMensalCohortQueries {
     cd.addSearch("B3A", map(startDrugs, encounterWithCodedObsMappings));
     cd.addSearch("B5A", map(transferredOut, encounterWithCodedObsMappings));
     cd.addSearch("B6A", map(suspended, encounterWithCodedObsMappings));
-    cd.addSearch("B7A", map(missedDrugPickup, drugPickupMappings));
+    cd.addSearch(
+        "B7A",
+        map(
+            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A(),
+            "location=${location},startDate=${startDate}"));
     cd.addSearch("B8A", map(died, encounterWithCodedObsMappings));
 
     cd.setCompositionString("B10 OR B2A OR B3A AND NOT (B5A OR B6A OR B7A OR B8A)");
@@ -893,6 +897,25 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.setQuery(
         ResumoMensalQueries.getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthB7(
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickup().getConceptId()));
+    return cd;
+  }
+
+  /**
+   * B12-B7A: Number of active patients in ART by end of previous month
+   *
+   * @retrun CohortDefinition
+   */
+  public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Number of patients who Abandoned the ART during the current month");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.setQuery(
+        ResumoMensalQueries.getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthB127A(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getArtDatePickup().getConceptId()));
