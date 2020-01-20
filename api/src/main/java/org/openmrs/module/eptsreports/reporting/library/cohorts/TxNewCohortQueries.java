@@ -92,10 +92,11 @@ public class TxNewCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+
     cd.setQuery(
         PregnantQueries.getPregnantWhileOnArt(
             this.commonMetadata.getPregnantConcept().getConceptId(),
-            this.hivMetadata.getGestationConcept().getConceptId(),
+            this.hivMetadata.getYesConcept().getConceptId(),
             this.hivMetadata.getNumberOfWeeksPregnant().getConceptId(),
             this.hivMetadata.getPregnancyDueDate().getConceptId(),
             this.hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
