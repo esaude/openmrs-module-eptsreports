@@ -43,21 +43,26 @@ public class EriCohortQueries {
     cd.addParameter(new Parameter("cohortEndDate", "End Date", Date.class));
     cd.addParameter(new Parameter("reportingEndDate", "Reporting End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addSearch(
-        "initiatedArt",
-        EptsReportUtils.map(
-            genericCohortQueries.getStartedArtOnPeriod(false, true),
-            "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}"));
-    cd.addSearch(
-        "transferIns",
-        EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
-                    .getTransferredFromOtherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()),
-            "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
+
+    CohortDefinition startedArtOnPeriod = genericCohortQueries.getStartedArtOnPeriod(false, true);
+
+    CohortDefinition transferIns =
+        genericCohortQueries.getPatientsBasedOnPatientStates(
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getTransferredFromOtherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId());
+
+    String mappings =
+        "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}";
+    cd.addSearch("initiatedArt", EptsReportUtils.map(startedArtOnPeriod, mappings));
+
+    String transferInMappings =
+        "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}";
+    cd.addSearch("transferIns", EptsReportUtils.map(transferIns, transferInMappings));
+
     cd.setCompositionString("initiatedArt AND NOT transferIns");
+
     return cd;
   }
 
