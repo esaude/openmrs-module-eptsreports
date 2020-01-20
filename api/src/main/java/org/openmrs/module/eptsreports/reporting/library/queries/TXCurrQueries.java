@@ -309,9 +309,7 @@ public class TXCurrQueries {
         returnVisitDateConcept,
         artDatePickup,
         msterCardDrugPickupEncounterType,
-        returnVisitDateConcept,
-        artDatePickup,
-        returnVisitDateForArvDrugConcept);
+        returnVisitDateConcept);
   }
 
   public static String getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(
