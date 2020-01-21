@@ -22,7 +22,7 @@ public class QualiltyImprovementQueries {
       int ptvProgram,
       int numberOfWeekPregnant,
       int pregnantConcept,
-      int pregancyConcept,
+      int yesConcept,
       int pStateActivePrioART,
       int transferredOutToAnotherHealthFacilityWorkflowState,
       int pateintTransferedFromOtherFacilityWorkflowState,
@@ -132,7 +132,7 @@ public class QualiltyImprovementQueries {
             + "	where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
             + pregnantConcept
             + " and value_coded="
-            + pregancyConcept
+            + yesConcept
             + " and  "
             + "	e.encounter_type in ("
             + arvAdultInitialEncounterType

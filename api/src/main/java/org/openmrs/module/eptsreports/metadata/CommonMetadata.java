@@ -24,6 +24,7 @@ public class CommonMetadata extends Metadata {
       "eptsreports.transferFromOtherFacilityConceptUuid";
 
   // CONCEPTS
+  // concept_id = 1065
   public Concept getYesConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.yesConceptUuid");
@@ -71,7 +72,7 @@ public class CommonMetadata extends Metadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.pregnantConceptUuid");
     return getConcept(uuid);
   }
-
+  // concept_id = 44
   public Concept getGestationConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.gestationConceptUuid");

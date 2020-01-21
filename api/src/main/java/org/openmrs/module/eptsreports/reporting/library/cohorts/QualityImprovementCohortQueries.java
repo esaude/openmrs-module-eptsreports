@@ -70,7 +70,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getPtvEtvProgram().getProgramId(),
             commonMetadata.getNumberOfWeeksPregnant().getConceptId(),
             commonMetadata.getPregnantConcept().getConceptId(),
-            commonMetadata.getGestationConcept().getConceptId(),
+            commonMetadata.getYesConcept().getConceptId(),
             hivMetadata.getPateintActiveArtWorkflowState().getProgramWorkflowStateId(),
             hivMetadata
                 .getTransferredOutToAnotherHealthFacilityWorkflowState()
@@ -145,9 +145,6 @@ public class QualityImprovementCohortQueries {
    * <p>São pacientes que durante um periodo tiveram consulta clinica e que foram rastreiados para
    * tuberculose em cada visita (Numero de visitas igual ao numero de rastreios)
    *
-   * @param adultoSeguimentoEncounterType
-   * @param arvPediatriaSeguimentoEncounterType
-   * @param tbScreeningConcept
    * @return String
    */
   @DocumentedDefinition(value = "patientWithTrackInEachTBEncounter")
