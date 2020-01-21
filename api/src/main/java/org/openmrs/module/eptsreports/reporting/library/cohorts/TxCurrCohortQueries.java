@@ -209,7 +209,7 @@ public class TxCurrCohortQueries {
         .put(
             "13",
             EptsReportUtils.map(
-                getPatientHavingLastScheduledDrugPickupDate(),
+                getPatientHavingLastScheduledDrugPickupDateDaysBeforeEndDate(28),
                 "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
@@ -487,11 +487,14 @@ public class TxCurrCohortQueries {
   /**
    * 13..All patients having the most recent date between last scheduled drug pickup date (Fila) or
    * last scheduled consultation date (Ficha Seguimento or Ficha Clínica) or 30 days after last ART
-   * pickup date (Recepção – Levantou ARV) and adding 30 days and this date being less than
-   * reporting end Date. (For more clarifications refer to scenario Table 1)
+   * pickup date (Recepção – Levantou ARV) and adding {@code numDays} days and this date being less
+   * than reporting end Date. (For more clarifications refer to scenario Table 1)
+   *
+   * @param numDays
    */
   @DocumentedDefinition(value = "patientHavingLastScheduledDrugPickupDate")
-  public CohortDefinition getPatientHavingLastScheduledDrugPickupDate() {
+  public CohortDefinition getPatientHavingLastScheduledDrugPickupDateDaysBeforeEndDate(
+      int numDays) {
     SqlCohortDefinition definition = new SqlCohortDefinition();
 
     definition.setName("patientHavingLastScheduledDrugPickupDate");
@@ -504,7 +507,8 @@ public class TxCurrCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getArtDatePickup().getConceptId(),
-            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            numDays));
 
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
