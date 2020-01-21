@@ -18,6 +18,7 @@ import static org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPo
 import static org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulationCalculation.KeyPop.PRISONER;
 import static org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulationCalculation.KeyPop.SEX_WORKER;
 import static org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulationCalculation.TYPE;
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.Collections;
 import java.util.Date;
@@ -29,9 +30,11 @@ import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulationCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
+import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.TbQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -267,6 +270,74 @@ public class HivCohortQueries {
     Integer suspendedState =
         hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId();
     return getPatientsTransferredOutOrSuspended(suspended, suspendedState);
+  }
+
+  /**
+   * Looks for patients enrolled on ART program (program 2=SERVICO TARV - TRATAMENTO), transferred
+   * from other health facility (program workflow state is 29=TRANSFER FROM OTHER FACILITY) or
+   * marked as transferred in via mastercard between start date and end date
+   *
+   * @return CohortDefinition
+   */
+  @DocumentedDefinition(value = "transferredFromOtherHealthFacility")
+  public CohortDefinition getPatientsTransferredFromOtherHealthFacility() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("transferredFromOtherHealthFacility");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    CohortDefinition transferredInViaProgram = getTransferredInViaProgram();
+    CohortDefinition mastercard = getTransferredInViaMastercard();
+
+    cd.addSearch("program", mapStraightThrough(transferredInViaProgram));
+    cd.addSearch("mastercard", mapStraightThrough(mastercard));
+
+    cd.setCompositionString("program or mastercard");
+
+    return cd;
+  }
+
+  private CohortDefinition getTransferredInViaProgram() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("transferredFromOtherHealthFacility");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    String query =
+        "select p.patient_id from patient p "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%d"
+            + " and ps.state=%d"
+            + " and ps.start_date=pg.date_enrolled"
+            + " and ps.start_date between :onOrAfter and :onOrBefore and location_id=:location "
+            + "group by p.patient_id";
+
+    cd.setQuery(
+        String.format(
+            query,
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getTransferredFromOtherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
+
+    return cd;
+  }
+
+  private CohortDefinition getTransferredInViaMastercard() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.setQuery(
+        ResumoMensalQueries.getPatientsTransferredFromAnotherHealthFacilityByEndOfPreviousMonth(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId()));
+    return cd;
   }
 
   private CohortDefinition getPatientsTransferredOutOrSuspended(

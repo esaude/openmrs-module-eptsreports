@@ -30,6 +30,8 @@ public class EriCohortQueries {
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
+  @Autowired private HivCohortQueries hivCohortQueries;
+
   /**
    * Get all patients who initiated ART 2 months from ART initiation less transfer ins return the
    * patient who initiated ART A and B
@@ -45,20 +47,14 @@ public class EriCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition startedArtOnPeriod = genericCohortQueries.getStartedArtOnPeriod(false, true);
-
-    CohortDefinition transferIns =
-        genericCohortQueries.getPatientsBasedOnPatientStates(
-            hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata
-                .getTransferredFromOtherHealthFacilityWorkflowState()
-                .getProgramWorkflowStateId());
+    CohortDefinition transferIns = hivCohortQueries.getPatientsTransferredFromOtherHealthFacility();
 
     String mappings =
         "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}";
     cd.addSearch("initiatedArt", EptsReportUtils.map(startedArtOnPeriod, mappings));
 
     String transferInMappings =
-        "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}";
+        "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}";
     cd.addSearch("transferIns", EptsReportUtils.map(transferIns, transferInMappings));
 
     cd.setCompositionString("initiatedArt AND NOT transferIns");
