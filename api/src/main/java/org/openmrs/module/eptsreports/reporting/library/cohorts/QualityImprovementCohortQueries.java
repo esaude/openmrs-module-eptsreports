@@ -221,7 +221,7 @@ public class QualityImprovementCohortQueries {
                 commonMetadata.getStartDrugsConcept().getConceptId(),
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata.getARVStartDate().getConceptId(),
-                commonMetadata.getGestationConcept().getConceptId()));
+                commonMetadata.getYesConcept().getConceptId()));
 
     return sqlCohortDefinition;
   }
@@ -1684,7 +1684,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getPtvEtvProgram().getProgramId(),
-            commonMetadata.getGestationConcept().getConceptId()));
+            commonMetadata.getYesConcept().getConceptId()));
 
     return sqlCohortDefinition;
   }

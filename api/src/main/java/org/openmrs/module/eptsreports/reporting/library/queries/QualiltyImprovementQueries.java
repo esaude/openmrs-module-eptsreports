@@ -340,7 +340,7 @@ public class QualiltyImprovementQueries {
       int startDrugsConcept,
       int artProgram,
       int arvStartDate,
-      int pregancyConcept) {
+      int yesConcept) {
 
     String query =
         "select gravida.patient_id  "
@@ -354,7 +354,7 @@ public class QualiltyImprovementQueries {
             + "	where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
             + pregnantConcept
             + " and value_coded="
-            + pregancyConcept
+            + yesConcept
             + " and   "
             + "			e.encounter_type in ("
             + arvAdultInitialEncounterType
@@ -1837,7 +1837,7 @@ public class QualiltyImprovementQueries {
       int arvAdultInitialEncounterType,
       int adultoSeguimentoEncounterType,
       int ptvEtvProgram,
-      int pregancyConcept) {
+      int yesConcept) {
     String query =
         "Select 	p.patient_id  "
             + "from 	patient p   "
@@ -1846,7 +1846,7 @@ public class QualiltyImprovementQueries {
             + "where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
             + pregnantConcept
             + " and value_coded="
-            + pregancyConcept
+            + yesConcept
             + " and   "
             + "		e.encounter_type in ("
             + arvAdultInitialEncounterType
@@ -2112,7 +2112,6 @@ public class QualiltyImprovementQueries {
    * @param arvPharmaciaEncounterType
    * @param arvPlan
    * @param startDrugsConcept
-   * @param historicalDrugStartDateConcept
    * @param artProgram
    * @param hivViralLoadConcept
    * @return query
