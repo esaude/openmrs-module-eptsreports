@@ -186,14 +186,14 @@ public interface DsdQueriesInterface {
             + "inner join obs o on o.encounter_id=e.encounter_id "
             + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23739 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id) max_tl "
             + "inner join obs on obs.person_id=max_tl.patient_id and max_tl.max_datatl=obs.obs_datetime "
-            + "where obs.concept_id=23739 and obs.value_coded=23888 and obs.location_id=:location union "
+            + "where obs.concept_id=23739 and obs.value_coded=23888 and obs.voided=0 and obs.location_id=:location union "
             + "select max_dt.patient_id from( "
             + "select p.patient_id,max(o.obs_datetime) max_datadt from patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
             + "inner join obs o on o.encounter_id=e.encounter_id "
             + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23888 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id) max_dt "
             + "inner join obs on obs.person_id=max_dt.patient_id and max_dt.max_datadt=obs.obs_datetime "
-            + "where obs.concept_id=23888 and obs.value_coded in (1256,1257) and obs.location_id=:location) dt "
+            + "where obs.concept_id=23888 and obs.voided=0 and obs.value_coded in (1256,1257) and obs.location_id=:location) dt "
             + "where patient_id not in( "
             + "select max_dts.patient_id from( "
             + "select p.patient_id,max(o.obs_datetime) max_datadts from patient p "
@@ -201,7 +201,7 @@ public interface DsdQueriesInterface {
             + "inner join obs o on o.encounter_id=e.encounter_id "
             + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23888 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id) max_dts "
             + "inner join obs on obs.person_id=max_dts.patient_id and max_dts.max_datadts=obs.obs_datetime "
-            + "where obs.concept_id=23888 and obs.value_coded=1267 and obs.location_id=:location)";
+            + "where obs.concept_id=23888 and obs.voided=0 and obs.value_coded=1267 and obs.location_id=:location)";
 
     public static final String findPatientsAgeRange =
         "SELECT patient_id FROM patient "
