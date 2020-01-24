@@ -23,7 +23,9 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQuer
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TbPrevCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -52,6 +54,10 @@ public class EptsCommonDimension {
 
   @Autowired private HivCohortQueries hivCohortQueries;
 
+  @Autowired private TxPvlsCohortQueries txPvlsQueries;
+
+  @Autowired private TxCurrCohortQueries txCurrCohortQueries;
+
   /**
    * Gender dimension
    *
@@ -77,7 +83,9 @@ public class EptsCommonDimension {
 
     dim.addCohortDefinition("UK", ageDimensionCohort.createUnknownAgeCohort());
     dim.addCohortDefinition(
-        "<1", ageDimensionCohort.createXtoYAgeCohort("patients with age bellow 1", 0, 0));
+        "<1", ageDimensionCohort.createXtoYAgeCohort("patients with age below 1", 0, 0));
+    dim.addCohortDefinition(
+        "<2", ageDimensionCohort.createXtoYAgeCohort("patients with age below 2 years", 0, 1));
     dim.addCohortDefinition(
         "0-4",
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 4 years", 0, 4));
@@ -186,7 +194,8 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "LTFU",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsWhoToLostToFollowUp(),
+            eri4MonthsCohortQueries
+                .getPatientsLostToFollowUpAndNotDeadTransferredOrStoppedTreatment(),
             "onOrBefore=${reportingEndDate},location=${location}"));
 
     dim.addCohortDefinition(
@@ -287,6 +296,37 @@ public class EptsCommonDimension {
     dim.addCohortDefinition("MSM", mapStraightThrough(homosexualKeyPopCohort));
     dim.addCohortDefinition("CSW", mapStraightThrough(sexWorkerKeyPopCohort));
     dim.addCohortDefinition("PRI", mapStraightThrough(imprisonmentKeyPopCohort));
+    return dim;
+  }
+
+  public CohortDefinitionDimension getViralLoadRoutineTargetReasonsDimension() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.addParameter(new Parameter("startDate", "onOrAfter", Date.class));
+    dim.addParameter(new Parameter("endDate", "onOrBefore", Date.class));
+    dim.addParameter(new Parameter("location", "Location", Location.class));
+    CohortDefinition routineViralLoadCohort = txPvlsQueries.getPatientsWhoAreOnRoutine();
+    CohortDefinition targetedViralLoadCohort = txPvlsQueries.getPatientsWhoAreOnTarget();
+    dim.addCohortDefinition("VLR", mapStraightThrough(routineViralLoadCohort));
+    dim.addCohortDefinition("VLT", mapStraightThrough(targetedViralLoadCohort));
+    return dim;
+  }
+
+  public CohortDefinitionDimension getDispensingQuantityDimension() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setName("ARV Dispensing quantity dimension");
+    dim.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    dim.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
+    dim.addParameter(new Parameter("locationList", "Location", Location.class));
+    CohortDefinition less3m =
+        txCurrCohortQueries.getPatientsWithLessThan3MonthsDispensationQuantity();
+    CohortDefinition threeTo5m =
+        txCurrCohortQueries.getPatientsWith3to5MonthsOfDispensationQuantity();
+    CohortDefinition more6m =
+        txCurrCohortQueries.getPatientsWithMoreThan6MonthsOfDispensationQuantity();
+    String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${locationList}";
+    dim.addCohortDefinition("<3m", EptsReportUtils.map(less3m, mappings));
+    dim.addCohortDefinition("3-5m", EptsReportUtils.map(threeTo5m, mappings));
+    dim.addCohortDefinition(">6m", EptsReportUtils.map(more6m, mappings));
     return dim;
   }
 }

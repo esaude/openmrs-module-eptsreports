@@ -43,6 +43,7 @@ public class Eri2MonthsCohortQueries {
     cd.setName("Patients who picked up drugs in 33 days");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("reportingEndDate", "Reporting End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setQuery(
         Eri2MonthsQueries.getAllPatientsWhoReturnedFor2ndConsultationOR2ndDrugsPickUpWithin33Days(
@@ -70,6 +71,7 @@ public class Eri2MonthsCohortQueries {
     cd.setName("Patients who  picked up drugs during their second visit and had initiated ART");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("reportingEndDate", "Reporting End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "initiatedArt",
@@ -80,7 +82,7 @@ public class Eri2MonthsCohortQueries {
         "pickedDrugs",
         EptsReportUtils.map(
             getAllPatientsWhoReturnedFor2ndConsultationOR2ndDrugsPickUpWithin33Days(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},reportingEndDate=${reportingEndDate},location=${location}"));
     cd.setCompositionString("initiatedArt AND pickedDrugs");
     return cd;
   }
@@ -106,7 +108,7 @@ public class Eri2MonthsCohortQueries {
         "pickedDrugs",
         EptsReportUtils.map(
             getAllPatientsWhoReturnedFor2ndConsultationOR2ndDrugsPickUpWithin33Days(),
-            "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
+            "startDate=${cohortStartDate},endDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
@@ -142,7 +144,7 @@ public class Eri2MonthsCohortQueries {
         "pickedDrugsAndStartedART",
         EptsReportUtils.map(
             getAllPatientsWhoStartedArtAndPickedDrugsOnTheirNextVisit(),
-            "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
+            "startDate=${cohortStartDate},endDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "dead",
         EptsReportUtils.map(

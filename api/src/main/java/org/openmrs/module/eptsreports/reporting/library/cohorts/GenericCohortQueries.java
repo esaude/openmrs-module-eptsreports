@@ -54,6 +54,8 @@ public class GenericCohortQueries {
 
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
 
+  @Autowired private HivCohortQueries hivCohortQueries;
+
   /**
    * Generic Coded Observation cohort
    *
@@ -425,12 +427,14 @@ public class GenericCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getPatientsWhoToLostToFollowUp() {
+  public CohortDefinition getPatientsWhoToLostToFollowUp(int numDays) {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.addSearch(
         "31",
-        mapStraightThrough(txCurrCohortQueries.getPatientHavingLastScheduledDrugPickupDate()));
+        mapStraightThrough(
+            txCurrCohortQueries.getPatientHavingLastScheduledDrugPickupDateDaysBeforeEndDate(
+                numDays)));
 
     definition.addSearch(
         "32",

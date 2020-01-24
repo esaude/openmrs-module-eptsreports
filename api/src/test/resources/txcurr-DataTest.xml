@@ -487,7 +487,7 @@
 		voided="0" uuid="3d6371cc-45b5-4731-b6c1-8e69cb882cd7" location_id="6" />
 		
 	<obs obs_id="101" person_id="1002" concept_id="23866"
-		encounter_id="9003" obs_datetime="2018-07-08 00:00:00"
+		encounter_id="9003" obs_datetime="2018-07-08 00:00:00" value_datetime="2018-07-08 00:00:00"
 		value_coded="1256" creator="1" date_created="2018-07-08 12:55:48"
 		voided="0" uuid="7aa27d18-ffc6-11e9-b8ec-4339aa98358b" location_id="6" />
 		
