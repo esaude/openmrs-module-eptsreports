@@ -375,7 +375,7 @@ public class ResumoMensalQueries {
             + " AND o.value_datetime IS NOT NULL AND o.concept_id=%d GROUP BY p.patient_id) pre_art ON p.patient_id=pre_art.patient_id WHERE p.voided=0 "
             + " AND e.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND encounter_datetime <= :endDate  AND encounter_datetime=pre_art.art_start_date GROUP BY patient_id) l";
     return String.format(
-        query, mastercardEncounterType, consultationEncounterType, preArtStarConceptId);
+        query, mastercardEncounterType, preArtStarConceptId, consultationEncounterType);
   }
 
   /**
