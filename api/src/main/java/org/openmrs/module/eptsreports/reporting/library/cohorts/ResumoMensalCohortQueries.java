@@ -267,9 +267,8 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "encBeforeStartDate",
         map(
-            genericCohortQueries.getPatientsHavingEncounterBeforeReportingStartDate(
-                hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()),
-            "location=${location},startDate=${startDate}"));
+            genericCohortQueries.hasEncounter(hivMetadata.getARVPharmaciaEncounterType()),
+            "locationList=${location},onOrBefore=${startDate-1d}"));
 
     cd.setCompositionString(
         "(artStartDate AND (drugPickup OR encBeforeStartDate)) AND NOT transferredIn");
