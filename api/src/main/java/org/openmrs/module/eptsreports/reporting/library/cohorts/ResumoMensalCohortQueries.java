@@ -897,7 +897,7 @@ public class ResumoMensalCohortQueries {
     cd.setQuery(
         ResumoMensalQueries.getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthB7(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
             hivMetadata.getArtDatePickup().getConceptId()));
     return cd;
   }
