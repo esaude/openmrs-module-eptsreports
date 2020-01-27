@@ -17,7 +17,7 @@ public class PregnantQueries {
   /** GRAVIDAS INSCRITAS NO SERVIÇO TARV */
   public static String getPregnantWhileOnArt(
       int pregnantConcept,
-      int gestationConcept,
+      int yesConcept,
       int weeksPregnantConcept,
       int eddConcept,
       int adultInitailEncounter,
@@ -36,7 +36,7 @@ public class PregnantQueries {
         + " where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
         + pregnantConcept
         + " and value_coded="
-        + gestationConcept
+        + yesConcept
         + " and e.encounter_type in ("
         + adultInitailEncounter
         + ","

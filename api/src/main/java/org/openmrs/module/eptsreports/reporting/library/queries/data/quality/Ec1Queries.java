@@ -18,7 +18,7 @@ public class Ec1Queries {
   /** Get the combined query for EC1 patient listing */
   public static String getEc1CombinedQuery(
       int pregnantConcept,
-      int gestationConcept,
+      int yesConcept,
       int weeksPregnantConcept,
       int eddConcept,
       int adultInitailEncounter,
@@ -38,7 +38,7 @@ public class Ec1Queries {
             + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id= "
             + pregnantConcept
             + " AND value_coded="
-            + gestationConcept
+            + yesConcept
             + " AND e.encounter_type IN ("
             + adultInitailEncounter
             + ","
