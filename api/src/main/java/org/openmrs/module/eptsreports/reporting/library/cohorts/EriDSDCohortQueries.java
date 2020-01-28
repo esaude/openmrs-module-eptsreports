@@ -686,7 +686,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingN2Stable() {
+  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingDTStable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("N2 Patients who are NOT pregnant and NOT breastfeeding");
@@ -715,7 +715,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingN2Unstable() {
+  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingDTUnstable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("N2 Patients who are NOT pregnant and NOT breastfeeding");
@@ -898,7 +898,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingN3Unstable() {
+  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingFRUnstable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("N3 Patients who are NOT pregnant and NOT breastfeeding");
@@ -938,7 +938,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingN3Stable() {
+  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingFRStable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("N3 Patients who are NOT pregnant and NOT breastfeeding");
@@ -1080,7 +1080,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingN4Stable() {
+  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingGAACStable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("N4 Patients who are NOT pregnant and NOT breastfeeding");
@@ -1114,7 +1114,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingN4Unstable() {
+  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingGAACUnstable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("N4 Patients who are NOT pregnant and NOT breastfeeding");
@@ -1500,7 +1500,7 @@ public class EriDSDCohortQueries {
 
   @DocumentedDefinition(
       "Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in CA and stable not pregnant or breastfeeding")
-  public CohortDefinition getN5StableNonPregnantNonBreastfeeding() {
+  public CohortDefinition getCAStableNonPregnantNonBreastfeeding() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1522,7 +1522,7 @@ public class EriDSDCohortQueries {
 
   @DocumentedDefinition(
       "Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in CA and unstable not pregnant or breastfeeding")
-  public CohortDefinition getN5UnstableNonPregnantNonBreastfeeding() {
+  public CohortDefinition getCAUnstableNonPregnantNonBreastfeeding() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
