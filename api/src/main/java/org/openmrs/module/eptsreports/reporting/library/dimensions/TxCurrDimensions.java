@@ -16,9 +16,9 @@ public class TxCurrDimensions {
 
   public CohortDefinitionDimension findPatientsOnArtOnArvDispenseForLessThan3Months() {
     final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
-    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    final String mappings = "endDate=${endDate},location=${location}";
     dimension.setName("Patients On Arv Dispensation < 3 Months");
-    dimension.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    // dimension.addParameter(new Parameter("startDate", "Start Date", Date.class));
     dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
     dimension.addParameter(new Parameter("location", "location", Location.class));
     dimension.addCohortDefinition(
@@ -31,9 +31,9 @@ public class TxCurrDimensions {
 
   public CohortDefinitionDimension findPatientsOnArtOnArvDispenseBetween3And5Months() {
     final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
-    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    final String mappings = "endDate=${endDate},location=${location}";
     dimension.setName("Patients On Arv Dispensation between 3 and 5 Months");
-    dimension.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    // dimension.addParameter(new Parameter("startDate", "Start Date", Date.class));
     dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
     dimension.addParameter(new Parameter("location", "location", Location.class));
 
@@ -47,9 +47,9 @@ public class TxCurrDimensions {
 
   public CohortDefinitionDimension findPatientsOnArtOnArvDispenseFor6OrMoreMonths() {
     final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
-    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    final String mappings = "endDate=${endDate},location=${location}";
     dimension.setName("Patients On Arv Dispensation for 6 and more months");
-    dimension.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    // dimension.addParameter(new Parameter("startDate", "Start Date", Date.class));
     dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
     dimension.addParameter(new Parameter("location", "location", Location.class));
 
