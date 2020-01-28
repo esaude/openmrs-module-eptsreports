@@ -41,7 +41,7 @@ public class Ec1PatientListDataset extends BaseDataSet {
     dsd.setSqlQuery(
         Ec1Queries.getEc1CombinedQuery(
             hivMetadata.getPregnantConcept().getConceptId(),
-            hivMetadata.getGestationConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getNumberOfWeeksPregnant().getConceptId(),
             hivMetadata.getPregnancyDueDate().getConceptId(),
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),

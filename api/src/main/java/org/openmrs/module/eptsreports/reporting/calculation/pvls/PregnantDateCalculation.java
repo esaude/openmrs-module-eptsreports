@@ -60,7 +60,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     Concept pregnantBasedOnWeeks = hivMetadata.getNumberOfWeeksPregnant();
     Concept pregnancyDueDate = hivMetadata.getPregnancyDueDate();
     Program ptv = hivMetadata.getPtvEtvProgram();
-    Concept gestation = hivMetadata.getGestationConcept();
+    Concept yes = hivMetadata.getYesConcept();
     Concept lastMenstration = hivMetadata.getDateOfLastMenstruationConcept();
     Concept hivViraloadQualitative = hivMetadata.getHivViralLoadQualitative();
     Concept criteriaForArtStart = hivMetadata.getCriteriaForArtStart();
@@ -75,7 +75,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
             Arrays.asList(fichaResumoEncounterType, adultFollowup, adultInitial),
             cohort,
             Arrays.asList(location),
-            Arrays.asList(gestation),
+            Arrays.asList(yes),
             TimeQualifier.ANY,
             null,
             context);
