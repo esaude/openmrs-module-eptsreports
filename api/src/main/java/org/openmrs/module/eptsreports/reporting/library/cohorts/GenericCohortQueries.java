@@ -430,12 +430,14 @@ public class GenericCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getPatientsWhoToLostToFollowUp() {
+  public CohortDefinition getPatientsWhoToLostToFollowUp(int numDays) {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.addSearch(
         "31",
-        mapStraightThrough(txCurrCohortQueries.getPatientHavingLastScheduledDrugPickupDate()));
+        mapStraightThrough(
+            txCurrCohortQueries.getPatientHavingLastScheduledDrugPickupDateDaysBeforeEndDate(
+                numDays)));
 
     definition.addSearch(
         "32",
@@ -459,7 +461,7 @@ public class GenericCohortQueries {
     cd.setName(
         "Patients who are lost to follow up and not dead, transferred out or stopped treatment");
 
-    cd.addSearch("ltfu", mapStraightThrough(getPatientsWhoToLostToFollowUp()));
+    cd.addSearch("ltfu", mapStraightThrough(getPatientsWhoToLostToFollowUp(28)));
     cd.addSearch("dead", mapStraightThrough(getDeceasedPatients()));
     cd.addSearch("transferOut", mapStraightThrough(hivCohortQueries.getPatientsTransferredOut()));
     cd.addSearch(
