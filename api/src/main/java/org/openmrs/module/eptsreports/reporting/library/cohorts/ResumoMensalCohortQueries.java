@@ -593,7 +593,7 @@ public class ResumoMensalCohortQueries {
         "B7",
         map(
             getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
-            "startDate=${startDate},location=${location},endDate=${endDate}"));
+            "location=${location},endDate=${endDate}"));
     cd.addSearch(
         "B8",
         map(
@@ -893,7 +893,6 @@ public class ResumoMensalCohortQueries {
     cd.setName("Number of patients who Abandoned the ART during the current month");
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.setQuery(
         ResumoMensalQueries.getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthB7(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
