@@ -18,7 +18,6 @@ public class TxCurrDimensions {
     final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
     final String mappings = "endDate=${endDate},location=${location}";
     dimension.setName("Patients On Arv Dispensation < 3 Months");
-    // dimension.addParameter(new Parameter("startDate", "Start Date", Date.class));
     dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
     dimension.addParameter(new Parameter("location", "location", Location.class));
     dimension.addCohortDefinition(
@@ -33,7 +32,6 @@ public class TxCurrDimensions {
     final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
     final String mappings = "endDate=${endDate},location=${location}";
     dimension.setName("Patients On Arv Dispensation between 3 and 5 Months");
-    // dimension.addParameter(new Parameter("startDate", "Start Date", Date.class));
     dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
     dimension.addParameter(new Parameter("location", "location", Location.class));
 
@@ -49,7 +47,6 @@ public class TxCurrDimensions {
     final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
     final String mappings = "endDate=${endDate},location=${location}";
     dimension.setName("Patients On Arv Dispensation for 6 and more months");
-    // dimension.addParameter(new Parameter("startDate", "Start Date", Date.class));
     dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
     dimension.addParameter(new Parameter("location", "location", Location.class));
 

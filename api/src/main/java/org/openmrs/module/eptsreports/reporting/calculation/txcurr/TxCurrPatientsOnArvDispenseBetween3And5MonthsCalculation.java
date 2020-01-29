@@ -13,59 +13,86 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TxCurrPatientsOnArvDispenseBetween3And5MonthsCalculation
-		extends TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation {
+    extends TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation {
 
-	private static int DAYS_LESS_THAN_3_MONTHS = 83;
-	private static int DAYS_BETWEEN_3_AND_5_MONTHS = 173;
+  private static int DAYS_LESS_THAN_3_MONTHS = 83;
+  private static int DAYS_BETWEEN_3_AND_5_MONTHS = 173;
 
-	@Override
-	public CalculationResultMap evaluate(Map<String, Object> parameterValues, EvaluationContext context) {
-		return super.evaluate(parameterValues, context);
-	}
+  @Override
+  public CalculationResultMap evaluate(
+      Map<String, Object> parameterValues, EvaluationContext context) {
+    return super.evaluate(parameterValues, context);
+  }
 
-	@Override
-	protected void evaluateDisaggregatedPatients(Integer patientId, CalculationResultMap resultMap,
-			List<PatientDisaggregated> allPatientDisaggregated) {
+  @Override
+  protected void evaluateDisaggregatedPatients(
+      Integer patientId,
+      CalculationResultMap resultMap,
+      List<PatientDisaggregated> allPatientDisaggregated) {
 
-		if (super.havePatientDisagregatedSameDates(allPatientDisaggregated)) {
-			for (PatientDisaggregated pDisaggretated : allPatientDisaggregated) {
-				if (Arrays
-						.asList(DisaggregationSourceTypes.FILA, DisaggregationSourceTypes.DISPENSA_TRIMESTRAL,
-								DisaggregationSourceTypes.MODELO_DIFERENCIADO_TRIMESTRAL)
-						.contains((pDisaggretated.getDisaggregationSourceType()))) {
-					resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-					break;
-				}
-			}
-		} else {
-			PatientDisaggregated maxPatientDisaggregated = super.getMaxPatientDisaggregated(allPatientDisaggregated);
-			if (maxPatientDisaggregated != null) {
+    if (super.havePatientDisagregatedSameDates(allPatientDisaggregated)) {
 
-				if (Arrays
-						.asList(DisaggregationSourceTypes.FILA, DisaggregationSourceTypes.DISPENSA_TRIMESTRAL,
-								DisaggregationSourceTypes.MODELO_DIFERENCIADO_TRIMESTRAL)
-						.contains((maxPatientDisaggregated.getDisaggregationSourceType()))) {
-					resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-				}
-			}
-		}
-	}
+      for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
+        if (DisaggregationSourceTypes.FILA.equals(
+            patientDisaggregated.getDisaggregationSourceType())) {
+          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+          return;
+        }
+      }
 
-	@Override
-	protected Map<Integer, PatientDisaggregated> getFilaDisaggregations(List<Object[]> maxFilas) {
-		Map<Integer, PatientDisaggregated> filaDisaggregated = new HashMap<>();
-		for (Object[] fila : maxFilas) {
-			Integer patientId = (Integer) fila[0];
-			Date lastFilaDate = (Date) fila[1];
-			Date nextExpectedFila = (Date) fila[2];
+      for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
+        if (DisaggregationSourceTypes.DISPENSA_MENSAL.equals(
+            patientDisaggregated.getDisaggregationSourceType())) {
+          return;
+        }
+      }
 
-			if (lastFilaDate != null && nextExpectedFila != null) {
-				int daysBetween = DateUtil.getDaysBetween(lastFilaDate, nextExpectedFila);
-				if (daysBetween >= DAYS_LESS_THAN_3_MONTHS && daysBetween <= DAYS_BETWEEN_3_AND_5_MONTHS) {
-					filaDisaggregated.put(patientId, new FilaPatientDisaggregated(patientId, lastFilaDate));
-				}
-			}
-		}
-		return filaDisaggregated;
-	}
+      for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
+        if (DisaggregationSourceTypes.DISPENSA_TRIMESTRAL.equals(
+            patientDisaggregated.getDisaggregationSourceType())) {
+          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+          return;
+        }
+      }
+
+      for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
+        if (DisaggregationSourceTypes.MODELO_DIFERENCIADO_TRIMESTRAL.equals(
+            patientDisaggregated.getDisaggregationSourceType())) {
+          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+          return;
+        }
+      }
+
+    } else {
+      PatientDisaggregated maxPatientDisaggregated =
+          super.getMaxPatientDisaggregated(allPatientDisaggregated);
+      if (maxPatientDisaggregated != null) {
+
+        if (Arrays.asList(
+                DisaggregationSourceTypes.FILA,
+                DisaggregationSourceTypes.DISPENSA_TRIMESTRAL,
+                DisaggregationSourceTypes.MODELO_DIFERENCIADO_TRIMESTRAL)
+            .contains((maxPatientDisaggregated.getDisaggregationSourceType()))) {
+          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+        }
+      }
+    }
+  }
+
+  @Override
+  protected Map<Integer, PatientDisaggregated> getFilaDisaggregations(List<Object[]> maxFilas) {
+    Map<Integer, PatientDisaggregated> filaDisaggregated = new HashMap<>();
+    for (Object[] fila : maxFilas) {
+      Integer patientId = (Integer) fila[0];
+      Date lastFilaDate = (Date) fila[1];
+      Date nextExpectedFila = (Date) fila[2];
+      if (lastFilaDate != null && nextExpectedFila != null) {
+        int daysBetween = DateUtil.getDaysBetween(lastFilaDate, nextExpectedFila);
+        if (daysBetween >= DAYS_LESS_THAN_3_MONTHS && daysBetween <= DAYS_BETWEEN_3_AND_5_MONTHS) {
+          filaDisaggregated.put(patientId, new FilaPatientDisaggregated(patientId, lastFilaDate));
+        }
+      }
+    }
+    return filaDisaggregated;
+  }
 }

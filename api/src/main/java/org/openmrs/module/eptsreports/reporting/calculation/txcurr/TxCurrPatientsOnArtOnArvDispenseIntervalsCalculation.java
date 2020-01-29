@@ -1,7 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.calculation.txcurr;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,284 +16,315 @@ import org.openmrs.module.eptsreports.reporting.calculation.util.processor.LastF
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
-public abstract class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation extends BaseFghCalculation {
+public abstract class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation
+    extends BaseFghCalculation {
 
-	private static int CONCEPT_TYPE_OF_DISPENSATION = 23739;
-	private static int CONCEPT_MONTHLY = 1098;
-	private static int CONCEPT_QUARTERLY = 23720;
-	private static int CONCEPT_QUARTERLY_DISPENSATION = 23730;
-	private static int CONCEPT_SEMESTER_ARV_PICKUP = 23888;
+  private static int CONCEPT_TYPE_OF_DISPENSATION = 23739;
+  private static int CONCEPT_MONTHLY = 1098;
+  private static int CONCEPT_QUARTERLY = 23720;
+  private static int CONCEPT_QUARTERLY_DISPENSATION = 23730;
+  private static int CONCEPT_SEMESTER_ARV_PICKUP = 23888;
 
-	@Override
-	public CalculationResultMap evaluate(Map<String, Object> parameterValues, EvaluationContext context) {
+  @Override
+  public CalculationResultMap evaluate(
+      Map<String, Object> parameterValues, EvaluationContext context) {
 
-		List<Object[]> maxFilas = Context.getRegisteredComponents(LastFilaProcessor.class).get(0)
-				.getMaxFilaWithProximoLevantamento(context);
-		List<Object[]> filaResults = new ArrayList<Object[]>();
+    List<Object[]> maxFilas =
+        Context.getRegisteredComponents(LastFilaProcessor.class)
+            .get(0)
+            .getMaxFilaWithProximoLevantamento(context);
+    return calculateDisagregration(context, maxFilas);
+  }
 
-		for (Object[] fila : maxFilas) {
-			Integer patientId = (Integer) fila[0];
-			Date lastFilaDate = (Date) fila[1];
-			Date nextExpectedFila = (Date) fila[2];
+  @SuppressWarnings("unchecked")
+  private CalculationResultMap calculateDisagregration(
+      EvaluationContext context, List<Object[]> maxFilas) {
+    CalculationResultMap resultMap = new CalculationResultMap();
 
-			if (lastFilaDate != null && nextExpectedFila != null) {
-				filaResults.add(Arrays.asList(patientId, lastFilaDate, nextExpectedFila).toArray());
-			}
-		}
-		return calculateDisagregration(context, filaResults);
-	}
+    Map<Integer, PatientDisaggregated> filaMensal = this.getFilaDisaggregations(maxFilas);
+    Map<Integer, PatientDisaggregated> levantamentoMensal = this.getAllLevantamentoMensal(context);
+    Map<Integer, PatientDisaggregated> levantamentoTrimestral =
+        this.getAllLevantamentoTrimestral(context);
+    Map<Integer, PatientDisaggregated> levantamentoSemestral =
+        this.getAllLevantamentoSemestral(context);
+    Map<Integer, PatientDisaggregated> modeloDiferenciadoTrimestral =
+        this.getAllModeloDiferenciadoTrimestral(context);
+    Map<Integer, PatientDisaggregated> modeloDiferenciadoSemestral =
+        this.getAllModeloDiferenciadoSemestral(context);
 
-	@SuppressWarnings("unchecked")
-	private CalculationResultMap calculateDisagregration(EvaluationContext context, List<Object[]> maxFilas) {
-		CalculationResultMap resultMap = new CalculationResultMap();
+    Set<Integer> allPatients = new HashSet<>();
+    allPatients.addAll(filaMensal.keySet());
+    allPatients.addAll(levantamentoMensal.keySet());
+    allPatients.addAll(levantamentoTrimestral.keySet());
+    allPatients.addAll(levantamentoSemestral.keySet());
+    allPatients.addAll(modeloDiferenciadoTrimestral.keySet());
+    allPatients.addAll(modeloDiferenciadoSemestral.keySet());
 
-		Map<Integer, PatientDisaggregated> filaMensal = this.getFilaDisaggregations(maxFilas);
-		Map<Integer, PatientDisaggregated> levantamentoMensal = this.getAllLevantamentoMensal(context);
-		Map<Integer, PatientDisaggregated> levantamentoTrimestral = this.getAllLevantamentoTrimestral(context);
-		Map<Integer, PatientDisaggregated> levantamentoSemestral = this.getAllLevantamentoSemestral(context);
-		Map<Integer, PatientDisaggregated> modeloDiferenciadoTrimestral = this
-				.getAllModeloDiferenciadoTrimestral(context);
-		Map<Integer, PatientDisaggregated> modeloDiferenciadoSemestral = this
-				.getAllModeloDiferenciadoSemestral(context);
+    for (Integer patientId : allPatients) {
 
-		Set<Integer> allPatients = new HashSet<>();
-		allPatients.addAll(filaMensal.keySet());
-		allPatients.addAll(levantamentoMensal.keySet());
-		allPatients.addAll(levantamentoTrimestral.keySet());
-		allPatients.addAll(levantamentoSemestral.keySet());
-		allPatients.addAll(modeloDiferenciadoTrimestral.keySet());
-		allPatients.addAll(modeloDiferenciadoSemestral.keySet());
+      List<PatientDisaggregated> allPatientDisaggregated =
+          this.getNonNullPatientDisaggregated(
+              patientId,
+              filaMensal,
+              levantamentoMensal,
+              levantamentoTrimestral,
+              levantamentoSemestral,
+              modeloDiferenciadoTrimestral,
+              modeloDiferenciadoSemestral);
 
-		for (Integer patientId : allPatients) {
+      this.evaluateDisaggregatedPatients(patientId, resultMap, allPatientDisaggregated);
+    }
+    return resultMap;
+  }
 
-			List<PatientDisaggregated> allPatientDisaggregated = this.getNonNullPatientDisaggregated(patientId,
-					filaMensal, levantamentoMensal, levantamentoTrimestral, levantamentoSemestral,
-					modeloDiferenciadoTrimestral, modeloDiferenciadoSemestral);
+  protected abstract Map<Integer, PatientDisaggregated> getFilaDisaggregations(
+      List<Object[]> maxFilas);
 
-			this.evaluateDisaggregatedPatients(patientId, resultMap, allPatientDisaggregated);
-		}
-		return resultMap;
-	}
+  protected abstract void evaluateDisaggregatedPatients(
+      Integer patientId,
+      CalculationResultMap resultMap,
+      List<PatientDisaggregated> allPatientDisaggregated);
 
-	protected abstract Map<Integer, PatientDisaggregated> getFilaDisaggregations(List<Object[]> maxFilas);
+  protected Map<Integer, PatientDisaggregated> getAllLevantamentoMensal(EvaluationContext context) {
+    Map<Integer, Date> map =
+        Context.getRegisteredComponents(LastFilaProcessor.class)
+            .get(0)
+            .getLastTipoDeLevantamentoOnFichaClinicaMasterCard(
+                context,
+                Integer.valueOf(CONCEPT_TYPE_OF_DISPENSATION),
+                Integer.valueOf(CONCEPT_MONTHLY));
+    Map<Integer, PatientDisaggregated> result = new HashMap<>();
+    for (Integer patientId : map.keySet()) {
+      result.put(patientId, new DispensaMensalPatientDisaggregated(patientId, map.get(patientId)));
+    }
+    return result;
+  }
 
-	protected abstract void evaluateDisaggregatedPatients(Integer patientId, CalculationResultMap resultMap,
-			List<PatientDisaggregated> allPatientDisaggregated);
+  protected Map<Integer, PatientDisaggregated> getAllLevantamentoTrimestral(
+      EvaluationContext context) {
+    Map<Integer, Date> map =
+        Context.getRegisteredComponents(LastFilaProcessor.class)
+            .get(0)
+            .getLastTipoDeLevantamentoOnFichaClinicaMasterCard(
+                context,
+                Integer.valueOf(CONCEPT_TYPE_OF_DISPENSATION),
+                Integer.valueOf(CONCEPT_QUARTERLY));
+    Map<Integer, PatientDisaggregated> result = new HashMap<>();
+    for (Integer patientId : map.keySet()) {
+      result.put(
+          patientId, new DispensaTrimestralPatientDisaggregated(patientId, map.get(patientId)));
+    }
+    return result;
+  }
 
-	protected Map<Integer, PatientDisaggregated> getAllLevantamentoMensal(EvaluationContext context) {
-		Map<Integer, Date> map = Context.getRegisteredComponents(LastFilaProcessor.class).get(0)
-				.getLastTipoDeLevantamentoOnFichaClinicaMasterCard(context,
-						Integer.valueOf(CONCEPT_TYPE_OF_DISPENSATION), Integer.valueOf(CONCEPT_MONTHLY));
-		Map<Integer, PatientDisaggregated> result = new HashMap<>();
-		for (Integer patientId : map.keySet()) {
-			result.put(patientId, new DispensaMensalPatientDisaggregated(patientId, map.get(patientId)));
-		}
-		return result;
-	}
+  protected Map<Integer, PatientDisaggregated> getAllLevantamentoSemestral(
+      EvaluationContext context) {
+    Map<Integer, Date> map =
+        Context.getRegisteredComponents(LastFilaProcessor.class)
+            .get(0)
+            .getLastTipoDeLevantamentoOnFichaClinicaMasterCard(
+                context,
+                Integer.valueOf(CONCEPT_TYPE_OF_DISPENSATION),
+                Integer.valueOf(CONCEPT_SEMESTER_ARV_PICKUP));
+    Map<Integer, PatientDisaggregated> result = new HashMap<>();
+    for (Integer patientId : map.keySet()) {
+      result.put(
+          patientId, new DispensaSemestralPatientDisaggregated(patientId, map.get(patientId)));
+    }
+    return result;
+  }
 
-	protected Map<Integer, PatientDisaggregated> getAllLevantamentoTrimestral(EvaluationContext context) {
-		Map<Integer, Date> map = Context.getRegisteredComponents(LastFilaProcessor.class).get(0)
-				.getLastTipoDeLevantamentoOnFichaClinicaMasterCard(context,
-						Integer.valueOf(CONCEPT_TYPE_OF_DISPENSATION), Integer.valueOf(CONCEPT_QUARTERLY));
-		Map<Integer, PatientDisaggregated> result = new HashMap<>();
-		for (Integer patientId : map.keySet()) {
-			result.put(patientId, new DispensaTrimestralPatientDisaggregated(patientId, map.get(patientId)));
-		}
-		return result;
-	}
+  protected Map<Integer, PatientDisaggregated> getAllModeloDiferenciadoTrimestral(
+      EvaluationContext context) {
+    Map<Integer, Date> map =
+        Context.getRegisteredComponents(LastFilaProcessor.class)
+            .get(0)
+            .getLastMarkedInModelosDiferenciadosDeCuidadosOnFichaClinicaMasterCard(
+                context, CONCEPT_QUARTERLY_DISPENSATION);
+    Map<Integer, PatientDisaggregated> result = new HashMap<>();
+    for (Integer patientId : map.keySet()) {
+      result.put(
+          patientId,
+          new ModeloDiferenciadoTrimestralPatientDisaggregated(patientId, map.get(patientId)));
+    }
+    return result;
+  }
 
-	protected Map<Integer, PatientDisaggregated> getAllLevantamentoSemestral(EvaluationContext context) {
-		Map<Integer, Date> map = Context.getRegisteredComponents(LastFilaProcessor.class).get(0)
-				.getLastTipoDeLevantamentoOnFichaClinicaMasterCard(context,
-						Integer.valueOf(CONCEPT_TYPE_OF_DISPENSATION), Integer.valueOf(CONCEPT_SEMESTER_ARV_PICKUP));
-		Map<Integer, PatientDisaggregated> result = new HashMap<>();
-		for (Integer patientId : map.keySet()) {
-			result.put(patientId, new DispensaSemestralPatientDisaggregated(patientId, map.get(patientId)));
-		}
-		return result;
-	}
+  protected Map<Integer, PatientDisaggregated> getAllModeloDiferenciadoSemestral(
+      EvaluationContext context) {
+    Map<Integer, Date> map =
+        Context.getRegisteredComponents(LastFilaProcessor.class)
+            .get(0)
+            .getLastMarkedInModelosDiferenciadosDeCuidadosOnFichaClinicaMasterCard(
+                context, CONCEPT_SEMESTER_ARV_PICKUP);
+    Map<Integer, PatientDisaggregated> result = new HashMap<>();
+    for (Integer patientId : map.keySet()) {
+      result.put(
+          patientId,
+          new ModeloDiferenciadoSemestralPatientDisaggregated(patientId, map.get(patientId)));
+    }
+    return result;
+  }
 
-	protected Map<Integer, PatientDisaggregated> getAllModeloDiferenciadoTrimestral(EvaluationContext context) {
-		Map<Integer, Date> map = Context.getRegisteredComponents(LastFilaProcessor.class).get(0)
-				.getLastMarkedInModelosDiferenciadosDeCuidadosOnFichaClinicaMasterCard(context,
-						CONCEPT_QUARTERLY_DISPENSATION);
-		Map<Integer, PatientDisaggregated> result = new HashMap<>();
-		for (Integer patientId : map.keySet()) {
-			result.put(patientId, new ModeloDiferenciadoTrimestralPatientDisaggregated(patientId, map.get(patientId)));
-		}
-		return result;
-	}
+  protected PatientDisaggregated getMaxPatientDisaggregated(List<PatientDisaggregated> patients) {
+    Date maxDate = DateUtil.getDateTime(Integer.MAX_VALUE, 1, 1);
+    PatientDisaggregated auxDisaggregated = null;
 
-	protected Map<Integer, PatientDisaggregated> getAllModeloDiferenciadoSemestral(EvaluationContext context) {
-		Map<Integer, Date> map = Context.getRegisteredComponents(LastFilaProcessor.class).get(0)
-				.getLastMarkedInModelosDiferenciadosDeCuidadosOnFichaClinicaMasterCard(context,
-						CONCEPT_SEMESTER_ARV_PICKUP);
-		Map<Integer, PatientDisaggregated> result = new HashMap<>();
-		for (Integer patientId : map.keySet()) {
-			result.put(patientId, new ModeloDiferenciadoSemestralPatientDisaggregated(patientId, map.get(patientId)));
-		}
-		return result;
-	}
+    for (PatientDisaggregated pDisaggregated : patients) {
+      if (pDisaggregated.getDate().compareTo(maxDate) > 0) {
+        maxDate = pDisaggregated.getDate();
+        auxDisaggregated = pDisaggregated;
+      }
+    }
+    return auxDisaggregated;
+  }
 
-	protected PatientDisaggregated getMaxPatientDisaggregated(List<PatientDisaggregated> patients) {
-		Date maxDate = DateUtil.getDateTime(Integer.MAX_VALUE, 1, 1);
-		PatientDisaggregated auxDisaggregated = null;
+  @SuppressWarnings("unchecked")
+  protected List<PatientDisaggregated> getNonNullPatientDisaggregated(
+      Integer patientId, Map<Integer, PatientDisaggregated>... allMaps) {
 
-		for (PatientDisaggregated pDisaggregated : patients) {
-			if (pDisaggregated.getDate().compareTo(maxDate) > 0) {
-				maxDate = pDisaggregated.getDate();
-				auxDisaggregated = pDisaggregated;
-			}
-		}
-		return auxDisaggregated;
-	}
+    List<PatientDisaggregated> result = new ArrayList<>();
 
-	@SuppressWarnings("unchecked")
-	protected List<PatientDisaggregated> getNonNullPatientDisaggregated(Integer patientId,
-			Map<Integer, PatientDisaggregated>... allMaps) {
+    for (Map<Integer, PatientDisaggregated> map : allMaps) {
+      PatientDisaggregated pDisaggregated = map.get(patientId);
+      if (pDisaggregated != null) {
+        result.add(pDisaggregated);
+      }
+    }
+    return result;
+  }
 
-		List<PatientDisaggregated> result = new ArrayList<>();
+  protected boolean havePatientDisagregatedSameDates(List<PatientDisaggregated> patients) {
+    List<Date> allDates = new ArrayList<Date>();
 
-		for (Map<Integer, PatientDisaggregated> map : allMaps) {
-			PatientDisaggregated pDisaggregated = map.get(patientId);
-			if (pDisaggregated != null) {
-				result.add(pDisaggregated);
-			}
-		}
-		return result;
-	}
+    for (PatientDisaggregated pDisaggregated : patients) {
+      allDates.add(pDisaggregated.getDate());
+    }
+    if (!allDates.isEmpty()) {
+      return this.hasSameDates(allDates);
+    }
+    return false;
+  }
 
-	protected boolean havePatientDisagregatedSameDates(List<PatientDisaggregated> patients) {
-		List<Date> allDates = new ArrayList<Date>();
+  private boolean hasSameDates(List<Date> allDates) {
+    Date firstDate = allDates.get(0);
+    for (Date date : allDates) {
+      if (!this.isSameDay(firstDate, date)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-		for (PatientDisaggregated pDisaggregated : patients) {
-			allDates.add(pDisaggregated.getDate());
-		}
-		if (!allDates.isEmpty()) {
-			return this.hasSameDates(allDates);
-		}
-		return false;
-	}
+  private boolean isSameDay(Date date1, Date date2) {
+    if (date1 == null || date2 == null) {
+      return false;
+    }
+    Calendar cal1 = Calendar.getInstance();
+    cal1.setTime(date1);
+    Calendar cal2 = Calendar.getInstance();
+    cal2.setTime(date2);
+    return DateUtils.isSameDay(cal1, cal2);
+  }
 
-	private boolean hasSameDates(List<Date> allDates) {
-		Date firstDate = allDates.get(0);
-		for (Date date : allDates) {
-			if (!this.isSameDay(firstDate, date)) {
-				return false;
-			}
-		}
-		return true;
-	}
+  public enum DisaggregationSourceTypes {
+    FILA,
 
-	private boolean isSameDay(Date date1, Date date2) {
-		if (date1 == null || date2 == null) {
-			return false;
-		}
-		Calendar cal1 = Calendar.getInstance();
-		cal1.setTime(date1);
-		Calendar cal2 = Calendar.getInstance();
-		cal2.setTime(date2);
-		return DateUtils.isSameDay(cal1, cal2);
-	}
+    DISPENSA_MENSAL,
 
-	public enum DisaggregationSourceTypes {
-		FILA,
+    DISPENSA_TRIMESTRAL,
 
-		DISPENSA_MENSAL,
+    DISPENSA_SEMESTRAL,
 
-		DISPENSA_TRIMESTRAL,
+    MODELO_DIFERENCIADO_TRIMESTRAL,
 
-		DISPENSA_SEMESTRAL,
+    MODELO_DIFERENCIADO_SEMESTRAL
+  }
 
-		MODELO_DIFERENCIADO_TRIMESTRAL,
+  public abstract class PatientDisaggregated {
 
-		MODELO_DIFERENCIADO_SEMESTRAL
-	}
+    private Integer patientId;
+    private Date date;
 
-	public abstract class PatientDisaggregated {
+    public PatientDisaggregated(Integer patientId, Date date) {
+      this.patientId = patientId;
+      this.date = date;
+    }
 
-		private Integer patientId;
-		private Date date;
+    public Integer getPatientId() {
+      return patientId;
+    }
 
-		public PatientDisaggregated(Integer patientId, Date date) {
-			this.patientId = patientId;
-			this.date = date;
-		}
+    public Date getDate() {
+      return date;
+    }
 
-		public Integer getPatientId() {
-			return patientId;
-		}
+    public abstract DisaggregationSourceTypes getDisaggregationSourceType();
+  }
 
-		public Date getDate() {
-			return date;
-		}
+  public class FilaPatientDisaggregated extends PatientDisaggregated {
+    public FilaPatientDisaggregated(Integer patientId, Date date) {
+      super(patientId, date);
+    }
 
-		public abstract DisaggregationSourceTypes getDisaggregationSourceType();
-	}
+    @Override
+    public DisaggregationSourceTypes getDisaggregationSourceType() {
+      return DisaggregationSourceTypes.FILA;
+    }
+  }
 
-	public class FilaPatientDisaggregated extends PatientDisaggregated {
-		public FilaPatientDisaggregated(Integer patientId, Date date) {
-			super(patientId, date);
-		}
+  public class DispensaMensalPatientDisaggregated extends PatientDisaggregated {
+    public DispensaMensalPatientDisaggregated(Integer patientId, Date date) {
+      super(patientId, date);
+    }
 
-		@Override
-		public DisaggregationSourceTypes getDisaggregationSourceType() {
-			return DisaggregationSourceTypes.FILA;
-		}
-	}
+    @Override
+    public DisaggregationSourceTypes getDisaggregationSourceType() {
+      return DisaggregationSourceTypes.DISPENSA_MENSAL;
+    }
+  }
 
-	public class DispensaMensalPatientDisaggregated extends PatientDisaggregated {
-		public DispensaMensalPatientDisaggregated(Integer patientId, Date date) {
-			super(patientId, date);
-		}
+  public class DispensaTrimestralPatientDisaggregated extends PatientDisaggregated {
+    public DispensaTrimestralPatientDisaggregated(Integer patientId, Date date) {
+      super(patientId, date);
+    }
 
-		@Override
-		public DisaggregationSourceTypes getDisaggregationSourceType() {
-			return DisaggregationSourceTypes.DISPENSA_MENSAL;
-		}
-	}
+    @Override
+    public DisaggregationSourceTypes getDisaggregationSourceType() {
+      return DisaggregationSourceTypes.DISPENSA_TRIMESTRAL;
+    }
+  }
 
-	public class DispensaTrimestralPatientDisaggregated extends PatientDisaggregated {
-		public DispensaTrimestralPatientDisaggregated(Integer patientId, Date date) {
-			super(patientId, date);
-		}
+  public class DispensaSemestralPatientDisaggregated extends PatientDisaggregated {
+    public DispensaSemestralPatientDisaggregated(Integer patientId, Date date) {
+      super(patientId, date);
+    }
 
-		@Override
-		public DisaggregationSourceTypes getDisaggregationSourceType() {
-			return DisaggregationSourceTypes.DISPENSA_TRIMESTRAL;
-		}
-	}
+    @Override
+    public DisaggregationSourceTypes getDisaggregationSourceType() {
+      return DisaggregationSourceTypes.DISPENSA_SEMESTRAL;
+    }
+  }
 
-	public class DispensaSemestralPatientDisaggregated extends PatientDisaggregated {
-		public DispensaSemestralPatientDisaggregated(Integer patientId, Date date) {
-			super(patientId, date);
-		}
+  public class ModeloDiferenciadoTrimestralPatientDisaggregated extends PatientDisaggregated {
+    public ModeloDiferenciadoTrimestralPatientDisaggregated(Integer patientId, Date date) {
+      super(patientId, date);
+    }
 
-		@Override
-		public DisaggregationSourceTypes getDisaggregationSourceType() {
-			return DisaggregationSourceTypes.DISPENSA_SEMESTRAL;
-		}
-	}
+    @Override
+    public DisaggregationSourceTypes getDisaggregationSourceType() {
+      return DisaggregationSourceTypes.MODELO_DIFERENCIADO_TRIMESTRAL;
+    }
+  }
 
-	public class ModeloDiferenciadoTrimestralPatientDisaggregated extends PatientDisaggregated {
-		public ModeloDiferenciadoTrimestralPatientDisaggregated(Integer patientId, Date date) {
-			super(patientId, date);
-		}
+  public class ModeloDiferenciadoSemestralPatientDisaggregated extends PatientDisaggregated {
+    public ModeloDiferenciadoSemestralPatientDisaggregated(Integer patientId, Date date) {
+      super(patientId, date);
+    }
 
-		@Override
-		public DisaggregationSourceTypes getDisaggregationSourceType() {
-			return DisaggregationSourceTypes.MODELO_DIFERENCIADO_TRIMESTRAL;
-		}
-	}
-
-	public class ModeloDiferenciadoSemestralPatientDisaggregated extends PatientDisaggregated {
-		public ModeloDiferenciadoSemestralPatientDisaggregated(Integer patientId, Date date) {
-			super(patientId, date);
-		}
-
-		@Override
-		public DisaggregationSourceTypes getDisaggregationSourceType() {
-			return DisaggregationSourceTypes.MODELO_DIFERENCIADO_SEMESTRAL;
-		}
-	}
+    @Override
+    public DisaggregationSourceTypes getDisaggregationSourceType() {
+      return DisaggregationSourceTypes.MODELO_DIFERENCIADO_SEMESTRAL;
+    }
+  }
 }

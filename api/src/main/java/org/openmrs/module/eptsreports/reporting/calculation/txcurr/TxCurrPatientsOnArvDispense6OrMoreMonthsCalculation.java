@@ -24,16 +24,31 @@ public class TxCurrPatientsOnArvDispense6OrMoreMonthsCalculation
       List<PatientDisaggregated> allPatientDisaggregated) {
 
     if (super.havePatientDisagregatedSameDates(allPatientDisaggregated)) {
-      for (PatientDisaggregated pDisaggretated : allPatientDisaggregated) {
-        if (Arrays.asList(
-                DisaggregationSourceTypes.FILA,
-                DisaggregationSourceTypes.DISPENSA_SEMESTRAL,
-                DisaggregationSourceTypes.MODELO_DIFERENCIADO_SEMESTRAL)
-            .contains((pDisaggretated.getDisaggregationSourceType()))) {
+
+      for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
+        if (DisaggregationSourceTypes.FILA.equals(
+            patientDisaggregated.getDisaggregationSourceType())) {
           resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-          break;
+          return;
         }
       }
+
+      for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
+        if (DisaggregationSourceTypes.DISPENSA_SEMESTRAL.equals(
+            patientDisaggregated.getDisaggregationSourceType())) {
+          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+          return;
+        }
+      }
+
+      for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
+        if (DisaggregationSourceTypes.MODELO_DIFERENCIADO_SEMESTRAL.equals(
+            patientDisaggregated.getDisaggregationSourceType())) {
+          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+          return;
+        }
+      }
+
     } else {
       PatientDisaggregated maxPatientDisaggregated =
           super.getMaxPatientDisaggregated(allPatientDisaggregated);
@@ -57,13 +72,11 @@ public class TxCurrPatientsOnArvDispense6OrMoreMonthsCalculation
 
   @Override
   protected Map<Integer, PatientDisaggregated> getFilaDisaggregations(List<Object[]> maxFilas) {
-
     Map<Integer, PatientDisaggregated> filaDisaggregated = new HashMap<>();
     for (Object[] fila : maxFilas) {
       Integer patientId = (Integer) fila[0];
       Date lastFilaDate = (Date) fila[1];
       Date nextExpectedFila = (Date) fila[2];
-
       if (lastFilaDate != null && nextExpectedFila != null) {
         if (DateUtil.getDaysBetween(lastFilaDate, nextExpectedFila)
             > DAYS_EQULAS_OR_GREATER_SIX_MONTHS) {

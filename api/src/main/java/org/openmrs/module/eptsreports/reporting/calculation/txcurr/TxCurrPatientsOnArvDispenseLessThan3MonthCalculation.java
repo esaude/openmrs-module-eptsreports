@@ -30,9 +30,18 @@ public class TxCurrPatientsOnArvDispenseLessThan3MonthCalculation
       List<PatientDisaggregated> allPatientDisaggregated) {
 
     if (this.havePatientDisagregatedSameDates(allPatientDisaggregated)) {
-      for (PatientDisaggregated pDisaggretated : allPatientDisaggregated) {
-        if (Arrays.asList(DisaggregationSourceTypes.FILA, DisaggregationSourceTypes.DISPENSA_MENSAL)
-            .contains((pDisaggretated.getDisaggregationSourceType()))) {
+
+      for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
+        if (DisaggregationSourceTypes.FILA.equals(
+            patientDisaggregated.getDisaggregationSourceType())) {
+          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+          return;
+        }
+      }
+
+      for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
+        if (DisaggregationSourceTypes.DISPENSA_MENSAL.equals(
+            patientDisaggregated.getDisaggregationSourceType())) {
           resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
           return;
         }
@@ -52,13 +61,14 @@ public class TxCurrPatientsOnArvDispenseLessThan3MonthCalculation
 
   protected Map<Integer, PatientDisaggregated> getFilaDisaggregations(List<Object[]> maxFilas) {
     Map<Integer, PatientDisaggregated> monthlyFila = new HashMap<>();
-
     for (Object[] fila : maxFilas) {
       Integer patientId = (Integer) fila[0];
       Date lastFilaDate = (Date) fila[1];
       Date nextExpectedFila = (Date) fila[2];
-      if (DateUtil.getDaysBetween(lastFilaDate, nextExpectedFila) < DAYS_LESS_THAN_3_MONTHS) {
-        monthlyFila.put(patientId, new FilaPatientDisaggregated(patientId, lastFilaDate));
+      if (lastFilaDate != null && nextExpectedFila != null) {
+        if (DateUtil.getDaysBetween(lastFilaDate, nextExpectedFila) < DAYS_LESS_THAN_3_MONTHS) {
+          monthlyFila.put(patientId, new FilaPatientDisaggregated(patientId, lastFilaDate));
+        }
       }
     }
     return monthlyFila;
