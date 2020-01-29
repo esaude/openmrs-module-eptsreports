@@ -21,7 +21,7 @@ public class SummaryQueries {
   /** GRAVIDAS INSCRITAS NO SERVIÇO TARV */
   public static String getPregnantPatients(
       int pregnantConcept,
-      int gestationConcept,
+      int yesConcept,
       int weeksPregnantConcept,
       int eddConcept,
       int adultInitailEncounter,
@@ -70,7 +70,7 @@ public class SummaryQueries {
     return String.format(
         query,
         pregnantConcept,
-        gestationConcept,
+        yesConcept,
         adultInitailEncounter,
         adultSegEncounter,
         weeksPregnantConcept,
