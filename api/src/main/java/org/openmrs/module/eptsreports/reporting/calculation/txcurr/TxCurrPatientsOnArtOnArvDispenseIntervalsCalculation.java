@@ -41,7 +41,8 @@ public abstract class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation
       EvaluationContext context, List<Object[]> maxFilas) {
     CalculationResultMap resultMap = new CalculationResultMap();
 
-    Map<Integer, PatientDisaggregated> filaMensal = this.getFilaDisaggregations(maxFilas);
+    Map<Integer, PatientDisaggregated> filaPorIntervaloDeDesagregacao =
+        this.getFilaDisaggregations(maxFilas);
     Map<Integer, PatientDisaggregated> levantamentoMensal = this.getAllLevantamentoMensal(context);
     Map<Integer, PatientDisaggregated> levantamentoTrimestral =
         this.getAllLevantamentoTrimestral(context);
@@ -53,7 +54,7 @@ public abstract class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation
         this.getAllModeloDiferenciadoSemestral(context);
 
     Set<Integer> allPatients = new HashSet<>();
-    allPatients.addAll(filaMensal.keySet());
+    allPatients.addAll(filaPorIntervaloDeDesagregacao.keySet());
     allPatients.addAll(levantamentoMensal.keySet());
     allPatients.addAll(levantamentoTrimestral.keySet());
     allPatients.addAll(levantamentoSemestral.keySet());
@@ -65,7 +66,7 @@ public abstract class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation
       List<PatientDisaggregated> allPatientDisaggregated =
           this.getNonNullPatientDisaggregated(
               patientId,
-              filaMensal,
+              filaPorIntervaloDeDesagregacao,
               levantamentoMensal,
               levantamentoTrimestral,
               levantamentoSemestral,
