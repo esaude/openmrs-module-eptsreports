@@ -592,8 +592,8 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B7",
         map(
-            getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
-            "location=${location},endDate=${endDate}"));
+            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A(),
+            "location=${location},endDate=${endDate},startDate=${endDate}"));
     cd.addSearch(
         "B8",
         map(
@@ -884,25 +884,7 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * B7: Number of patientes who Abandoned the ART during the current month
-   *
-   * @retrun CohortDefinition
-   */
-  public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Number of patients who Abandoned the ART during the current month");
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.setQuery(
-        ResumoMensalQueries.getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthB7(
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-            hivMetadata.getArtDatePickup().getConceptId()));
-    return cd;
-  }
-
-  /**
-   * B12-B7A: Number of active patients in ART by end of previous month
+   * B12-B7A: Number of active patients in ART by end of previous/current month
    *
    * @retrun CohortDefinition
    */
