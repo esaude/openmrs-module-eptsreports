@@ -87,20 +87,17 @@ public class TxCurrDataset extends BaseDataSet {
     dataSetDefinition.addDimension(
         "arvdispenseless3months",
         EptsReportUtils.map(
-            this.txCurrDimensions.findPatientsOnArtOnArvDispenseForLessThan3Months(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            this.txCurrDimensions.findPatientsOnArtOnArvDispenseForLessThan3Months(), mappings));
 
     dataSetDefinition.addDimension(
         "arvdispensefor3and5months",
         EptsReportUtils.map(
-            this.txCurrDimensions.findPatientsOnArtOnArvDispenseBetween3And5Months(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            this.txCurrDimensions.findPatientsOnArtOnArvDispenseBetween3And5Months(), mappings));
 
     dataSetDefinition.addDimension(
         "arvdispensefor6andmoremonths",
         EptsReportUtils.map(
-            this.txCurrDimensions.findPatientsOnArtOnArvDispenseFor6OrMoreMonths(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            this.txCurrDimensions.findPatientsOnArtOnArvDispenseFor6OrMoreMonths(), mappings));
 
     dataSetDefinition.addDimension(
         "homosexual",
