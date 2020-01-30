@@ -59,7 +59,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     Concept pregnantBasedOnWeeks = hivMetadata.getNumberOfWeeksPregnant();
     Concept pregnancyDueDate = hivMetadata.getPregnancyDueDate();
     Program ptv = hivMetadata.getPtvEtvProgram();
-    Concept gestation = hivMetadata.getGestationConcept();
+    Concept yes = hivMetadata.getYesConcept();
 
     CalculationResultMap pregnantMap =
         ePTSCalculationService.getObs(
@@ -67,7 +67,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
             null,
             cohort,
             Arrays.asList(location),
-            Arrays.asList(gestation),
+            Arrays.asList(yes),
             TimeQualifier.ANY,
             null,
             context);
@@ -148,7 +148,8 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
       List<PatientProgram> patientProgams =
           EptsCalculationUtils.extractResultValues(pregnantsInProgramResults);
 
-      // add a list to contains all the dates that can be sorted and pick the most recent one
+      // add a list to contains all the dates that can be sorted and pick the most
+      // recent one
       List<Date> allPregnancyDates =
           Arrays.asList(
               isPregnantDate(lastVlDate, pregnantObsList),

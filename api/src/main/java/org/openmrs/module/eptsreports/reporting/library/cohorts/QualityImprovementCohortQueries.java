@@ -70,7 +70,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getPtvEtvProgram().getProgramId(),
             commonMetadata.getNumberOfWeeksPregnant().getConceptId(),
             commonMetadata.getPregnantConcept().getConceptId(),
-            commonMetadata.getGestationConcept().getConceptId(),
+            commonMetadata.getYesConcept().getConceptId(),
             hivMetadata.getPateintActiveArtWorkflowState().getProgramWorkflowStateId(),
             hivMetadata
                 .getTransferredOutToAnotherHealthFacilityWorkflowState()
@@ -224,7 +224,7 @@ public class QualityImprovementCohortQueries {
                 commonMetadata.getStartDrugsConcept().getConceptId(),
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata.getARVStartDate().getConceptId(),
-                commonMetadata.getGestationConcept().getConceptId()));
+                commonMetadata.getYesConcept().getConceptId()));
 
     return sqlCohortDefinition;
   }
@@ -279,6 +279,7 @@ public class QualityImprovementCohortQueries {
 
     return cd;
   }
+
   /**
    * * PACIENTES COM RASTREIO DE TUBERCULOSE POSITIVO São pacientes que tiveram rastreio de
    * tuberculose positivo
@@ -305,6 +306,7 @@ public class QualityImprovementCohortQueries {
 
     return cd;
   }
+
   /**
    * PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA DE TUBERCULOSE - NUM PERIODO São pacientes inscritos
    * no programa de tuberculose num determinado periodo
@@ -325,6 +327,7 @@ public class QualityImprovementCohortQueries {
 
     return sqlCohortDefinition;
   }
+
   /**
    * INICIO DE TRATAMENTO DE TUBERCULOSE DATA NOTIFICADA NAS FICHAS DE: SEGUIMENTO, RASTREIO E LIVRO
    * TB Pacientes que iniciram TB no com a data de inicio de tratamento de TB notificada nas fichas
@@ -393,7 +396,8 @@ public class QualityImprovementCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    // INICIO DE TRATAMENTO DE TUBERCULOSE DATA NOTIFICADA NAS FICHAS DE: SEGUIMENTO, RASTREIO E
+    // INICIO DE TRATAMENTO DE TUBERCULOSE DATA NOTIFICADA NAS FICHAS DE:
+    // SEGUIMENTO, RASTREIO E
     // LIVRO TB
     cd.addSearch(
         "DATAINICIO",
@@ -408,7 +412,8 @@ public class QualityImprovementCohortQueries {
             getPacientsEnrolledInTBProgram(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    // PACIENTES QUE INICIARAM TRATAMENTO DA TUBERCULOSE NOTIFICADOS NO SERVICO TARV - FEV12
+    // PACIENTES QUE INICIARAM TRATAMENTO DA TUBERCULOSE NOTIFICADOS NO SERVICO TARV
+    // - FEV12
     cd.addSearch(
         "INICIOST",
         EptsReportUtils.map(
@@ -426,6 +431,7 @@ public class QualityImprovementCohortQueries {
     cd.setCompositionString("DATAINICIO OR TBPROGRAMA OR INICIOST");
     return cd;
   }
+
   /**
    * MQ_PACIENTES NA AMOSTRA TARV ELEGIVEIS A PROFILAXIA COM ISONIAZIDA (TPI) NUM DETERMINADO
    * PERIODO
@@ -631,6 +637,7 @@ public class QualityImprovementCohortQueries {
 
     return sqlCohortDefinition;
   }
+
   /**
    * MQ_PACIENTES NA AMOSTRA TARV ELEGIVEIS A PROFILAXIA COM ISONIAZIDA, INICIARAM E QUE DEVERIAM
    * TERMINAR São pacientes na amostra TARV elegiveis a profilaxia com Isoniazida, que iniciaram a
@@ -688,7 +695,8 @@ public class QualityImprovementCohortQueries {
                 Arrays.asList(commonMetadata.getYesConcept())),
             "onOrAfter=${startDate},onOrBefore=${dataFinalAvaliacao},locationList=${location}"));
 
-    // MQ_GRAVIDAS INSCRITAS NO SERVICO TARV E QUE INICIARAM TARV NO PERIODO DE INCLUSAO (AMOSTRA
+    // MQ_GRAVIDAS INSCRITAS NO SERVICO TARV E QUE INICIARAM TARV NO PERIODO DE
+    // INCLUSAO (AMOSTRA
     // GRAVIDA)
     cd.addSearch(
         "AMOSTRAGRAVIDA",
@@ -740,7 +748,8 @@ public class QualityImprovementCohortQueries {
     String mappings =
         "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
 
-    // MQ_GRAVIDAS INSCRITAS NO SERVICO TARV (AMOSTRA GRAVIDA) ELEGIVEIS A PROFILAXIA COM ISONIAZIDA
+    // MQ_GRAVIDAS INSCRITAS NO SERVICO TARV (AMOSTRA GRAVIDA) ELEGIVEIS A
+    // PROFILAXIA COM ISONIAZIDA
     cd.addSearch(
         "GRAVIDAELEGINH",
         EptsReportUtils.map(
@@ -814,7 +823,8 @@ public class QualityImprovementCohortQueries {
 
     String mappings =
         "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
-    // MQ_PACIENTES QUE TIVERAM CONSULTA CLINICA NUM PERIODO E QUE TIVERAM RASTREIO DE ITS EM CADA
+    // MQ_PACIENTES QUE TIVERAM CONSULTA CLINICA NUM PERIODO E QUE TIVERAM RASTREIO
+    // DE ITS EM CADA
     // VISITA
     cd.addSearch(
         "AMOSTRATARV",
@@ -856,6 +866,7 @@ public class QualityImprovementCohortQueries {
 
     return sqlCohortDefinition;
   }
+
   /**
    * MQ_PACIENTES NA AMOSTRA TARV COM CD4 REGISTADO DENTRO DE 35 DIAS APOS A INSCRICAO Sao pacientes
    * na amostra tarv com CD4 registado na ficha de seguimento dentro de 35 dias apos inscricao. A
@@ -914,6 +925,7 @@ public class QualityImprovementCohortQueries {
 
     return sqlCohortDefinition;
   }
+
   /**
    * MQ_PACIENTES NA AMOSTRA TARV E QUE INICIARAM TARV DENTRO DE 15 DIAS DEPOIS DE DECLARADAS
    * ELEGIVEIS São pacientes na amostra de TARV e que iniciaram tarv dentro de 15 dias depois de
@@ -974,6 +986,7 @@ public class QualityImprovementCohortQueries {
 
     return sqlCohortDefinition;
   }
+
   /**
    * MQ_PACIENTES NA AMOSTRA TARV QUE RETORNARAM PARA 2ª CONSULTA CLINICA OU LEVANTAMENTO DE ARV
    * DENTRO DE 33 DIAS APÓS INICIO DO TARV
@@ -993,7 +1006,8 @@ public class QualityImprovementCohortQueries {
 
     String mappings =
         "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
-    // PACIENTES QUE INICIARAM TARV NUM PERIODO E QUE TIVERAM SEGUNDO LEVANTAMENTO OU CONSULTA
+    // PACIENTES QUE INICIARAM TARV NUM PERIODO E QUE TIVERAM SEGUNDO LEVANTAMENTO
+    // OU CONSULTA
     // CLINICA DENTRO DE 33 DIAS DEPOIS DO INICIO
     cd.addSearch(
         "SEGUNDAVISITA",
@@ -1038,6 +1052,7 @@ public class QualityImprovementCohortQueries {
 
     return sqlCohortDefinition;
   }
+
   /**
    * MQ_PACIENTES NA AMOSTRA TARV QUE TIVERAM PELO MENOS 3 CONSULTAS CLINICAS OU LEVANTAMENTO DE ARV
    * DENTRO DE 3 MESES DEPOIS DE INICIO DE TARV - NOVO
@@ -1064,7 +1079,8 @@ public class QualityImprovementCohortQueries {
         EptsReportUtils.map(
             getPatientStartedARVInInclusionPeriodWithAtLeastOneEncounter(), mappings));
 
-    // MQ_PACIENTES QUE TIVERAM PELO MENOS 3 CONSULTAS CLINICAS OU LEVANTAMENTOS DENTRO DE 3 MESES
+    // MQ_PACIENTES QUE TIVERAM PELO MENOS 3 CONSULTAS CLINICAS OU LEVANTAMENTOS
+    // DENTRO DE 3 MESES
     // DEPOIS DE INICIO DE TARV - NOVO
     cd.addSearch(
         "TRESCONSULTAS",
@@ -1107,6 +1123,7 @@ public class QualityImprovementCohortQueries {
 
     return sqlCohortDefinition;
   }
+
   /**
    * MQ_PACIENTES NA AMOSTRA TARV QUE TIVERAM PELO MENOS 3 AVALIAÇÕES DE ADESÃO DENTRO DE 3 MESES
    * DEPOIS DE INICIO DE TARV - NOVO São pacientes na amostra de TARV de melhoria de qualidade e que
@@ -1133,7 +1150,8 @@ public class QualityImprovementCohortQueries {
         EptsReportUtils.map(
             getPatientStartedARVInInclusionPeriodWithAtLeastOneEncounter(), mappings));
 
-    // PACIENTES QUE TIVERAM PELO MENOS 3 AVALIAÇÕES DE ADESÃO DENTRO DE 3 MESES DEPOIS DE INICIO
+    // PACIENTES QUE TIVERAM PELO MENOS 3 AVALIAÇÕES DE ADESÃO DENTRO DE 3 MESES
+    // DEPOIS DE INICIO
     // TARV - ARIEL
     cd.addSearch(
         "AVALIACAOADESAO",
@@ -1144,6 +1162,7 @@ public class QualityImprovementCohortQueries {
     cd.setCompositionString("AMOSTRATARV AND AVALIACAOADESAO");
     return cd;
   }
+
   /**
    * MQ_PACIENTES COM CONSULTAS MENSAIS APOS INICIO DE TARV Sao pacientes que tem consultas mensais
    * durante um periodo contado a partir da data de início do TARV: O Calculo de consultas mensais
@@ -1203,6 +1222,7 @@ public class QualityImprovementCohortQueries {
     cd.setCompositionString("CONSULTAS AND INICIOTARV");
     return cd;
   }
+
   /**
    * MQ_PACIENTES COM CONSULTAS MENSAIS DE APSS APOS INICIO DE TARV Sao pacientes que tem consultas
    * mensais de APSS durante um período contado a partir da data de início do TARV: O Cálculo de
@@ -1236,6 +1256,7 @@ public class QualityImprovementCohortQueries {
 
     return sqlCohortDefinition;
   }
+
   /**
    * MQ_PACIENTES NA AMOSTRA (INICIO TARV) E QUE TIVERAM CONSULTAS MENSAIS DE APSS APOS INICIO DE
    * TARV São pacientes na amostra de inicio de TARV e que tiveram consultas mensais de APSS dentro
@@ -1287,7 +1308,8 @@ public class QualityImprovementCohortQueries {
 
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
-    // MQ_GRAVIDAS INSCRITAS NO SERVICO TARV E QUE INICIARAM TARV NO PERIODO DE INCLUSAO (AMOSTRA
+    // MQ_GRAVIDAS INSCRITAS NO SERVICO TARV E QUE INICIARAM TARV NO PERIODO DE
+    // INCLUSAO (AMOSTRA
     // GRAVIDA)
     cd.addSearch(
         "AMOSTRAGRAVIDA",
@@ -1295,7 +1317,8 @@ public class QualityImprovementCohortQueries {
             getPragnantPatientsEnrolledInARVThatStartedInInclusionPeriodPregnantSample(),
             mappings));
 
-    // PACIENTES QUE INICIARAM TARV NUM PERIODO E QUE TIVERAM SEGUNDO LEVANTAMENTO OU CONSULTA
+    // PACIENTES QUE INICIARAM TARV NUM PERIODO E QUE TIVERAM SEGUNDO LEVANTAMENTO
+    // OU CONSULTA
     // CLINICA DENTRO DE 33 DIAS DEPOIS DE INICIO
     cd.addSearch(
         "SEGUNDAVISITA",
@@ -1321,14 +1344,16 @@ public class QualityImprovementCohortQueries {
 
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
-    // MQ_PACIENTES QUE TIVERAM PELO MENOS 3 CONSULTAS CLINICAS OU LEVANTAMENTOS DENTRO DE 3 MESES
+    // MQ_PACIENTES QUE TIVERAM PELO MENOS 3 CONSULTAS CLINICAS OU LEVANTAMENTOS
+    // DENTRO DE 3 MESES
     // DEPOIS DE INICIO DE TARV - NOVO
     cd.addSearch(
         "CONSULTAS",
         EptsReportUtils.map(
             getPatientsWhoHadAtLeast3EncountersIn3MonthsAfterBeginingART(), mappings));
 
-    // MQ_GRAVIDAS INSCRITAS NO SERVICO TARV E QUE INICIARAM TARV NO PERIODO DE INCLUSAO (AMOSTRA
+    // MQ_GRAVIDAS INSCRITAS NO SERVICO TARV E QUE INICIARAM TARV NO PERIODO DE
+    // INCLUSAO (AMOSTRA
     // GRAVIDA)
     cd.addSearch(
         "AMOSTRAGRAVIDA",
@@ -1378,6 +1403,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getHivViralLoadConcept().getConceptId()));
     return sqlCohortDefinition;
   }
+
   /**
    * PACIENTES QUE ESTAO HA MAIS DE 6 MESES EM TARV Sao pacientes que iniciaram tarv ha mais de 6
    * meses
@@ -1426,6 +1452,7 @@ public class QualityImprovementCohortQueries {
 
     return cd;
   }
+
   /**
    * ALGUMA VEZ ESTEVE EM TRATAMENTO ARV - PERIODO FINAL Pacientes que alguma vez esteve em
    * tratamento ARV (Iniciou ou veio transferido de outra us em TARV) até um determinado periodo
@@ -1452,6 +1479,7 @@ public class QualityImprovementCohortQueries {
 
     return cd;
   }
+
   /**
    * ALGUMA VEZ ESTEVE EM TRATAMENTO ARV - PERIODO FINAL - FARMACIA Pacientes que alguma vez esteve
    * em tratamento ARV, levantou pelo menos uma vez ARV na Famacia (tem pelo menos um FRIDA/FILA
@@ -1470,6 +1498,7 @@ public class QualityImprovementCohortQueries {
 
     return encounterCohortDefinition;
   }
+
   /**
    * PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA TRATAMENTO ARV (TARV) - PERIODO FINAL Sao pacientes
    * inscritos no programa de tratamento ARV até um determinado periodo final
@@ -1502,7 +1531,8 @@ public class QualityImprovementCohortQueries {
 
     String mappings = "endDate=${endDate},location=${location}";
 
-    // PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA TRATAMENTO ARV (TARV) - PERIODO FINAL
+    // PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA TRATAMENTO ARV (TARV) - PERIODO
+    // FINAL
     cd.addSearch(
         "PROGRAMA", EptsReportUtils.map(getPatientEnrolledARTProgramFinalPeriod(), mappings));
 
@@ -1581,6 +1611,7 @@ public class QualityImprovementCohortQueries {
     cd.setCompositionString("ALGUMAVEZTARV NOT SAIDAPROGRAMA");
     return cd;
   }
+
   /**
    * ABANDONO NÃO NOTIFICADO - TARV São pacientes que desde a ultima data marcada para levantamento
    * até a data final passam mais de 60 dias sem voltar e que ainda não foram notificados como
@@ -1627,7 +1658,7 @@ public class QualityImprovementCohortQueries {
 
     String mappings = "endDate=${endDate},location=${location}";
 
-    // ACTUALMENTE EM TRATAMENTO ARV (COMPOSICAO) -  PERIODO FINAL
+    // ACTUALMENTE EM TRATAMENTO ARV (COMPOSICAO) - PERIODO FINAL
     cd.addSearch(
         "TARV", EptsReportUtils.map(getPatientInARTTreatmentCompositionFinalPeriod(), mappings));
 
@@ -1653,7 +1684,8 @@ public class QualityImprovementCohortQueries {
 
     String mappings = "endDate=${endDate},location=${location}";
 
-    // ACTUALMENTE EM TARV ATÉ UM DETERMINADO PERIODO FINAL - SEM INCLUIR ABANDONOS NAO NOTIFICADOS
+    // ACTUALMENTE EM TARV ATÉ UM DETERMINADO PERIODO FINAL - SEM INCLUIR ABANDONOS
+    // NAO NOTIFICADOS
     cd.addSearch(
         "ACTUALTARV",
         EptsReportUtils.map(
@@ -1666,6 +1698,7 @@ public class QualityImprovementCohortQueries {
     cd.setCompositionString("ACTUALTARV AND HA6MESES");
     return cd;
   }
+
   /**
    * GRAVIDAS INSCRITAS NO SERVIÇO TARV São pacientes que estão gravidas durante a abertura do
    * processo ou durante o seguimento no serviço TARV e que foi notificado como nova gravidez
@@ -1687,7 +1720,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getPtvEtvProgram().getProgramId(),
-            commonMetadata.getGestationConcept().getConceptId()));
+            commonMetadata.getYesConcept().getConceptId()));
 
     return sqlCohortDefinition;
   }
@@ -1720,6 +1753,7 @@ public class QualityImprovementCohortQueries {
 
     return cd;
   }
+
   /**
    * LACTANTES REGISTADAS São pacientes que foram actualizados como lactantes na ficha de seguimento
    */
@@ -1802,14 +1836,15 @@ public class QualityImprovementCohortQueries {
             getPregantPatientWithDueDateUpdateInTARV(),
             "value1=${startDate},value2=${endDate},locationList=${location}"));
 
-    //   INICIO DE TARV POR SER LACTANTE
+    // INICIO DE TARV POR SER LACTANTE
     cd.addSearch(
         "INICIOLACTANTE",
         EptsReportUtils.map(
             getPatientsStartTARVBecouseOfBreatFeeding(),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
 
-    // PROGRAMA: PACIENTES QUE DERAM PARTO HÁ DOIS ANOS ATRÁS DA DATA DE REFERENCIA - LACTANTES
+    // PROGRAMA: PACIENTES QUE DERAM PARTO HÁ DOIS ANOS ATRÁS DA DATA DE REFERENCIA
+    // - LACTANTES
     cd.addSearch(
         "LACTANTEPROGRAMA",
         EptsReportUtils.map(
@@ -1853,7 +1888,8 @@ public class QualityImprovementCohortQueries {
     cd.addSearch(
         "GRAVIDAS", EptsReportUtils.map(getPregnantPatientEnrolledInTARVService(), mappings));
 
-    //  LACTANTES OU PUERPUERAS (POS-PARTO) REGISTADAS: PROCESSO CLINICO E FICHA DE SEGUIMENTO
+    // LACTANTES OU PUERPUERAS (POS-PARTO) REGISTADAS: PROCESSO CLINICO E FICHA DE
+    // SEGUIMENTO
     cd.addSearch(
         "PUERPUERA",
         EptsReportUtils.map(getPatientInBreastFeedingEnrolledClinicProcess(), mappings));
@@ -1881,7 +1917,7 @@ public class QualityImprovementCohortQueries {
             getPatientInARTTreatmentWithMoreThan6Months(),
             "endDate=${endDate},location=${location}"));
 
-    //  GRAVIDAS INSCRITAS NO SERVICO TARV INCLUINDO PUERPUERAS
+    // GRAVIDAS INSCRITAS NO SERVICO TARV INCLUINDO PUERPUERAS
     cd.addSearch(
         "GRAVIDASLACTANTE",
         EptsReportUtils.map(
@@ -1983,7 +2019,8 @@ public class QualityImprovementCohortQueries {
 
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
-    // ACTUALMENTE EM TARV ATÉ UM DETERMINADO PERIODO FINAL - SEM INCLUIR ABANDONOS NAO NOTIFICADOS:
+    // ACTUALMENTE EM TARV ATÉ UM DETERMINADO PERIODO FINAL - SEM INCLUIR ABANDONOS
+    // NAO NOTIFICADOS:
     // SEM INCLUIR GRÁVIDAS OU LACTANTES
     cd.addSearch(
         "ACTUALTARV",
@@ -2014,7 +2051,8 @@ public class QualityImprovementCohortQueries {
             getPatientsNotifiedSarcomaKaposi(),
             "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
 
-    // MQ_PACIENTES QUE INICIARAM TRATAMENTO DE TUBERCULOSE E NAO TERMINARAM ATE PERIODO FINAL
+    // MQ_PACIENTES QUE INICIARAM TRATAMENTO DE TUBERCULOSE E NAO TERMINARAM ATE
+    // PERIODO FINAL
     cd.addSearch(
         "TUBERCULOSE",
         EptsReportUtils.map(
@@ -2051,6 +2089,7 @@ public class QualityImprovementCohortQueries {
 
     return sqlCohortDefinition;
   }
+
   /**
    * PACIENTES QUE TIVERAM LEVANTAMENTO DE ARVs NOS ULTIMOS 5 MESES E QUE FORAM MARCADOS PARA
    * PROXIMO LEVANTAMENTO PARA 3 MESES Pacientes que tiveram levantamento de ARVs nos ultimos 5
@@ -2087,7 +2126,8 @@ public class QualityImprovementCohortQueries {
     String mappings =
         "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
 
-    // PACIENTES ACTUALMENTE EM TARV ELEGIVEIS  PARA SEREM  INSCRITOS EM ALGUM MODELO DIFERENCIADO
+    // PACIENTES ACTUALMENTE EM TARV ELEGIVEIS PARA SEREM INSCRITOS EM ALGUM MODELO
+    // DIFERENCIADO
     cd.addSearch(
         "ELEGIVEIS",
         EptsReportUtils.map(getPatientInARTElegibleToBeEnrolledInSomeDiffModel(), mappings));
@@ -2099,7 +2139,8 @@ public class QualityImprovementCohortQueries {
             getPatientsEnrolledInGaacInAPeriod(),
             "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
 
-    // PACIENTES QUE TIVERAM LEVANTAMENTO DE ARVs NOS ULTIMOS 5 MESES E QUE FORAM MARCADOS PARA
+    // PACIENTES QUE TIVERAM LEVANTAMENTO DE ARVs NOS ULTIMOS 5 MESES E QUE FORAM
+    // MARCADOS PARA
     // PROXIMO LEVANTAMENTO PARA 3 MESES
     cd.addSearch(
         "LEVANTAMENTO3MESES",
@@ -2107,7 +2148,8 @@ public class QualityImprovementCohortQueries {
             getPatientsTookARVInLast5MonthAndWereMarkedToNextEncounter(),
             "endDate=${dataFinalAvaliacao},location=${location}"));
 
-    // PACIENTES QUE TIVERAM CONSULTA CLINICA NOS ULTIMOS 7 MESES E QUE FORAM MARCADOS PARA CONSULTA
+    // PACIENTES QUE TIVERAM CONSULTA CLINICA NOS ULTIMOS 7 MESES E QUE FORAM
+    // MARCADOS PARA CONSULTA
     // SEGUINTE PARA 6 MESES
     cd.addSearch(
         "CONSULTA6MESES",
@@ -2151,7 +2193,8 @@ public class QualityImprovementCohortQueries {
         EptsReportUtils.map(
             getPatientsInTARVMoreThan6Months(), "endDate=${startDate},location=${location}"));
 
-    // ACTUALMENTE EM TARV ATÉ UM DETERMINADO PERIODO FINAL - SEM INCLUIR ABANDONOS NAO NOTIFICADOS:
+    // ACTUALMENTE EM TARV ATÉ UM DETERMINADO PERIODO FINAL - SEM INCLUIR ABANDONOS
+    // NAO NOTIFICADOS:
     // SEM INCLUIR GRÁVIDAS OU LACTANTES
     cd.addSearch(
         "ACTUALTARV",
@@ -2163,7 +2206,8 @@ public class QualityImprovementCohortQueries {
     cd.addSearch(
         "CONSULTA", EptsReportUtils.map(getPatientWithAtLeastOneEncounterInPeriod(), mappings));
 
-    // MQ_PACIENTES QUE INICIARAM TRATAMENTO DE TUBERCULOSE E NAO TERMINARAM ATE PERIODO FINAL
+    // MQ_PACIENTES QUE INICIARAM TRATAMENTO DE TUBERCULOSE E NAO TERMINARAM ATE
+    // PERIODO FINAL
     cd.addSearch(
         "TUBERCULOSE",
         EptsReportUtils.map(
@@ -2182,6 +2226,7 @@ public class QualityImprovementCohortQueries {
 
     return cd;
   }
+
   /**
    * MQ_PACIENTES QUE RECEBERAM RESULTADO DA CARGA VIRAL ENTRE O SEXTO E NONO MES DEPOIS DE INICIO
    * DE TARV São pacientes que iniciaram TARV nos primeiros 3 meses voltando 12 meses da data de
@@ -2209,6 +2254,7 @@ public class QualityImprovementCohortQueries {
 
     return sqlCohortDefinition;
   }
+
   /** PACIENTES QUE ESTAO NA SEGUNDA LINHA DE ARV - PERIODO FINAL */
   private CohortDefinition getPatientInSecondARVLineFinalPeriod() {
 
@@ -2237,6 +2283,7 @@ public class QualityImprovementCohortQueries {
 
     return cd;
   }
+
   /**
    * PACIENTES ACTUALMENTE EM TARV E QUE ESTAO NA SEGUNDA LINHA DE ARV - PERIODO FINAL (ABANDONO
    * RETIRA NOTIFICADO E NAO NOTIFICADO)
@@ -2248,7 +2295,8 @@ public class QualityImprovementCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    // ACTUALMENTE EM TARV ATÉ UM DETERMINADO PERIODO FINAL - SEM INCLUIR ABANDONOS NAO NOTIFICADOS
+    // ACTUALMENTE EM TARV ATÉ UM DETERMINADO PERIODO FINAL - SEM INCLUIR ABANDONOS
+    // NAO NOTIFICADOS
     cd.addSearch(
         "ACTUALARV",
         EptsReportUtils.map(
@@ -2338,7 +2386,8 @@ public class QualityImprovementCohortQueries {
         EptsReportUtils.map(
             getPatientsWithImmunologicFailture(), "endDate=${endDate},location=${location}"));
 
-    // ACTUALMENTE EM TARV ATÉ UM DETERMINADO PERIODO FINAL - SEM INCLUIR ABANDONOS NAO NOTIFICADOS
+    // ACTUALMENTE EM TARV ATÉ UM DETERMINADO PERIODO FINAL - SEM INCLUIR ABANDONOS
+    // NAO NOTIFICADOS
     cd.addSearch(
         "TARV",
         EptsReportUtils.map(
