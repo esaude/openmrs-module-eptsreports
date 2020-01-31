@@ -232,13 +232,6 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  /** @return B7: Number of patients who abandoned the ART during the current month */
-  public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthB7() {
-    DateObsCohortDefinition cd = getLastArvPickupDateCohort();
-    cd.setName("Number of patientes who Abandoned the ART during the current month");
-    return cd;
-  }
-
   /** @return B8: Number of dead patients during the current month */
   public CohortDefinition getPatientsWhoDied() {
     EncounterWithCodedObsCohortDefinition cd = getStateOfStayCohort();
