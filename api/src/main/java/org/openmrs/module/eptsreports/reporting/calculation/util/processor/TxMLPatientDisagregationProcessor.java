@@ -2,6 +2,7 @@ package org.openmrs.module.eptsreports.reporting.calculation.util.processor;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
@@ -22,11 +23,12 @@ public class TxMLPatientDisagregationProcessor {
 
   @SuppressWarnings("unchecked")
   public Map<Integer, Date> getPatientsWhoRefusedOrStoppedTreatmentResults(
-      EvaluationContext context) {
+      EvaluationContext context, CalculationResultMap numerator) {
 
     Map<Integer, Date> patientsDeadInHomeVisitForm =
-        getPatientsDeadInHomeVisitForm(
+        getPatientsInHomeVisitForm(
             context,
+            numerator,
             Arrays.asList(2016),
             Arrays.asList(2005, 2006, 2007, 2010, 23915, 23946, 2015, 2013, 2017));
 
@@ -34,7 +36,8 @@ public class TxMLPatientDisagregationProcessor {
   }
 
   @SuppressWarnings("unchecked")
-  public Map<Integer, Date> getPatienTransferedOutResults(EvaluationContext context) {
+  public Map<Integer, Date> getPatienTransferedOutResults(
+      EvaluationContext context, CalculationResultMap numerator) {
 
     Map<Integer, Date> patientsDeadInArtProgram =
         this.getPatientsDeadInArtProgram(
@@ -44,7 +47,8 @@ public class TxMLPatientDisagregationProcessor {
                 .getProgramWorkflowStateId());
 
     Map<Integer, Date> patientsDeadInHomeVisitForm =
-        getPatientsDeadInHomeVisitForm(context, Arrays.asList(2016), Arrays.asList(1706, 23863));
+        getPatientsInHomeVisitForm(
+            context, numerator, Arrays.asList(2016), Arrays.asList(1706, 23863));
 
     Map<Integer, Date> deadFichaClinicaAndFichaResumo =
         getPatientDeadInFichaResumoAndClinica(context, 1706);
@@ -54,14 +58,15 @@ public class TxMLPatientDisagregationProcessor {
   }
 
   @SuppressWarnings("unchecked")
-  public Map<Integer, Date> getPatientsMarkedAsDeadResults(EvaluationContext context) {
+  public Map<Integer, Date> getPatientsMarkedAsDeadResults(
+      EvaluationContext context, CalculationResultMap numerator) {
 
     Map<Integer, Date> patientsDeadInArtProgram =
         this.getPatientsDeadInArtProgram(
             context, hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId());
     Map<Integer, Date> patientsDeadInHomeVisitForm =
-        getPatientsDeadInHomeVisitForm(
-            context, Arrays.asList(2031, 23944, 23945), Arrays.asList(1383));
+        getPatientsInHomeVisitForm(
+            context, numerator, Arrays.asList(2031, 23944, 23945), Arrays.asList(1383));
     Map<Integer, Date> patientsDeadInDemographicModule =
         getPatientsDeadInDemographicModule(context);
 
@@ -76,7 +81,15 @@ public class TxMLPatientDisagregationProcessor {
         deadFichaClinicaAndFichaResumo);
   }
 
-  public static boolean hasExclusion(
+  /**
+   * Verifica se o paciente esta no map exclusionsToUse
+   *
+   * @param patientId
+   * @param candidateDate
+   * @param exclusionsToUse
+   * @return
+   */
+  public static boolean hasDatesGreatherThanEvaluatedDateToExclude(
       Integer patientId, Date candidateDate, CalculationResultMap exclusionsToUse) {
 
     CalculationResult exclusionDateResult = exclusionsToUse.get(patientId);
@@ -85,6 +98,16 @@ public class TxMLPatientDisagregationProcessor {
 
     if (exclusionDate != null && exclusionDate.compareTo(candidateDate) > 0) {
       return Boolean.TRUE;
+    }
+    return Boolean.FALSE;
+  }
+
+  public static boolean hasPatientsFromOtherDisaggregationToExclude(
+      Integer patientId, CalculationResultMap... resultMap) {
+    for (CalculationResultMap resultMapItem : resultMap) {
+      if (resultMapItem.get(patientId) != null) {
+        return Boolean.TRUE;
+      }
     }
     return Boolean.FALSE;
   }
@@ -117,25 +140,47 @@ public class TxMLPatientDisagregationProcessor {
         .evaluateToMap(qb, Integer.class, Date.class, context);
   }
 
-  private Map<Integer, Date> getPatientsDeadInHomeVisitForm(
-      EvaluationContext context, List<Integer> conceptIds, List<Integer> answerIds) {
+  private Map<Integer, Date> getPatientsInHomeVisitForm(
+      EvaluationContext context,
+      CalculationResultMap numerator,
+      List<Integer> conceptIds,
+      List<Integer> answerIds) {
 
     SqlQueryBuilder qb =
         new SqlQueryBuilder(
             String.format(
-                "select p.patient_id, max(obsObito.obs_datetime) data_estado from patient p "
+                "select p.patient_id, max(obsHomeSource.obs_datetime) data_estado from patient p "
                     + "					inner join encounter e on p.patient_id=e.patient_id "
-                    + "					inner join obs obsObito on e.encounter_id=obsObito.encounter_id "
-                    + "			where 	e.voided=0 and p.voided=0 and obsObito.voided=0 and "
+                    + "					inner join obs obsHomeSource on e.encounter_id=obsHomeSource.encounter_id "
+                    + "			where 	e.voided=0 and p.voided=0 and obsHomeSource.voided=0 and "
                     + "					e.encounter_type in (21) and e.encounter_datetime>= :startDate and e.encounter_datetime<= :endDate  and  e.location_id= :location and "
-                    + "					obsObito.concept_id in (%s) and obsObito.value_coded in (%s) "
+                    + "					obsHomeSource.concept_id in (%s) and obsHomeSource.value_coded in (%s) "
                     + "			group by p.patient_id",
                 StringUtils.join(conceptIds, ","), StringUtils.join(answerIds, ",")),
             context.getParameterValues());
 
-    return Context.getRegisteredComponents(EvaluationService.class)
-        .get(0)
-        .evaluateToMap(qb, Integer.class, Date.class, context);
+    Map<Integer, Date> result = new HashMap<>();
+    Map<Integer, Date> homeVisitResult =
+        Context.getRegisteredComponents(EvaluationService.class)
+            .get(0)
+            .evaluateToMap(qb, Integer.class, Date.class, context);
+
+    for (Integer patientId : numerator.keySet()) {
+      CalculationResult numeratorResult = numerator.get(patientId);
+
+      if (numeratorResult != null) {
+        Date numeratorNextExpectedDate = (Date) numeratorResult.getValue();
+        if (numeratorNextExpectedDate != null) {
+          Date candidateDate = homeVisitResult.get(patientId);
+          if (candidateDate != null) {
+            if (candidateDate.compareTo(numeratorNextExpectedDate) >= 0) {
+              result.put(patientId, candidateDate);
+            }
+          }
+        }
+      }
+    }
+    return result;
   }
 
   private Map<Integer, Date> getPatientsDeadInDemographicModule(EvaluationContext context) {

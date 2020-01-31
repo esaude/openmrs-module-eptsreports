@@ -20,12 +20,18 @@ public class TxMLPatientsWhoAreDeadCalculation extends BaseFghCalculation {
       Map<String, Object> parameterValues, EvaluationContext context) {
     CalculationResultMap resultMap = new CalculationResultMap();
 
+    CalculationResultMap numerator =
+        Context.getRegisteredComponents(TxMLPatientsWhoMissedNextApointmentCalculation.class)
+            .get(0)
+            .evaluate(parameterValues, context);
     Map<Integer, Date> processorResult =
         Context.getRegisteredComponents(TxMLPatientDisagregationProcessor.class)
             .get(0)
-            .getPatientsMarkedAsDeadResults(context);
+            .getPatientsMarkedAsDeadResults(context, numerator);
 
-    CalculationResultMap exclusionsToUse =
+    // Excluir pacientes q fizeram consulta/levantamento apos serem marcados como
+    // mortos
+    CalculationResultMap possiblePatientsToExclude =
         Context.getRegisteredComponents(MaxLastDateFromFilaSeguimentoRecepcaoCalculation.class)
             .get(0)
             .evaluate(parameterValues, context);
@@ -33,8 +39,8 @@ public class TxMLPatientsWhoAreDeadCalculation extends BaseFghCalculation {
     for (Integer patientId : processorResult.keySet()) {
 
       Date candidateDate = processorResult.get(patientId);
-      if (!TxMLPatientDisagregationProcessor.hasExclusion(
-          patientId, candidateDate, exclusionsToUse)) {
+      if (!TxMLPatientDisagregationProcessor.hasDatesGreatherThanEvaluatedDateToExclude(
+          patientId, candidateDate, possiblePatientsToExclude)) {
         resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
       }
     }

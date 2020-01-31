@@ -9,19 +9,21 @@ import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.BaseFghCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.LastFilaCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.LastRecepcaoLevantamentoCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.LastSeguimentoCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.NextFilaDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.NextSeguimentoDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.OnArtInitiatedArvDrugsCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.util.processor.CalculationProcessorUtils;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TxMLPatientsWhoMissedNextApointmentCalculation extends BaseFghCalculation {
 
-  private static int DAYS_TO_LTFU = 28;
+  public static int DAYS_TO_LTFU = 28;
 
   @Override
   public CalculationResultMap evaluate(
@@ -43,15 +45,24 @@ public class TxMLPatientsWhoMissedNextApointmentCalculation extends BaseFghCalcu
     CalculationResultMap lastRecepcaoLevantamentoResult =
         lastRecepcaoLevantamentoCalculation.evaluate(cohort, parameterValues, context);
 
+    CalculationResultMap lastFilaCalculationResult =
+        Context.getRegisteredComponents(LastFilaCalculation.class)
+            .get(0)
+            .evaluate(cohort, parameterValues, context);
+    CalculationResultMap lastSeguimentoCalculation =
+        Context.getRegisteredComponents(LastSeguimentoCalculation.class)
+            .get(0)
+            .evaluate(cohort, parameterValues, context);
+
     CalculationResultMap nextFilaResult =
         Context.getRegisteredComponents(NextFilaDateCalculation.class)
             .get(0)
-            .evaluate(cohort, parameterValues, context);
+            .evaluate(lastFilaCalculationResult.keySet(), parameterValues, context);
 
     CalculationResultMap nextSeguimentoResult =
         Context.getRegisteredComponents(NextSeguimentoDateCalculation.class)
             .get(0)
-            .evaluate(cohort, parameterValues, context);
+            .evaluate(lastSeguimentoCalculation.keySet(), parameterValues, context);
 
     for (Integer patientId : cohort) {
 
@@ -66,8 +77,13 @@ public class TxMLPatientsWhoMissedNextApointmentCalculation extends BaseFghCalcu
         Date nextDatePlus28 = CalculationProcessorUtils.adjustDaysInDate(maxNextDate, DAYS_TO_LTFU);
         if (nextDatePlus28.compareTo(CalculationProcessorUtils.adjustDaysInDate(startDate, -1)) >= 0
             && nextDatePlus28.compareTo(endDate) < 0) {
-          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+          resultMap.put(patientId, new SimpleResult(maxNextDate, this));
         }
+      } else {
+        this.checkConsultationsOrFilaWithoutNextConsultationDate(
+            patientId, resultMap, endDate, lastFilaCalculationResult, nextFilaResult);
+        this.checkConsultationsOrFilaWithoutNextConsultationDate(
+            patientId, resultMap, endDate, lastSeguimentoCalculation, nextSeguimentoResult);
       }
     }
     return resultMap;
@@ -77,6 +93,27 @@ public class TxMLPatientsWhoMissedNextApointmentCalculation extends BaseFghCalcu
   public CalculationResultMap evaluate(
       Collection<Integer> cohort, Map<String, Object> parameterValues, EvaluationContext context) {
     return this.evaluate(parameterValues, context);
+  }
+
+  private void checkConsultationsOrFilaWithoutNextConsultationDate(
+      Integer patientId,
+      CalculationResultMap resultMap,
+      Date endDate,
+      CalculationResultMap lastResult,
+      CalculationResultMap nextResult) {
+
+    CalculationResult calculationLastResult = lastResult.get(patientId);
+    CalculationResult calculationNextResult = nextResult.get(patientId);
+
+    if (calculationNextResult != null && calculationNextResult.getValue() == null) {
+      if (calculationLastResult != null) {
+        Date lastDate = (Date) calculationLastResult.getValue();
+        if (DateUtil.getDaysBetween(lastDate, endDate) >= 0) {
+          resultMap.put(patientId, new SimpleResult(lastDate, this));
+          System.out.println("Patient without consultation " + patientId);
+        }
+      }
+    }
   }
 
   public static CalculationResultMap getLastRecepcaoLevantamentoPlus30(
