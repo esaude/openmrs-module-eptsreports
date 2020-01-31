@@ -392,7 +392,7 @@ public class ResumoMensalQueries {
             + " SELECT c.patient_id, MAX(c.encounter_date) as encounter_date FROM( "
             + " SELECT p.patient_id, MAX(e.encounter_datetime) AS encounter_date FROM patient p INNER JOIN encounter e "
             + " ON p.patient_id=e.patient_id WHERE p.voided=0 AND e.voided=0 AND e.location_id=:location AND "
-            + " e.encounter_datetime <=:endDate AND e.encounter_type=%d GROUP BY p.patient_id "
+            + " e.encounter_datetime <=:startDate AND e.encounter_type=%d GROUP BY p.patient_id "
             + " UNION  "
             + " SELECT p.patient_id, MAX(o.value_datetime) AS encounter_date FROM patient p INNER JOIN encounter e "
             + " ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 "
