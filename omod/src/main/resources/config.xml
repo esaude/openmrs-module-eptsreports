@@ -1674,6 +1674,24 @@
 		</description>
 	</globalProperty>
 
+	<!-- Concept id 23944 -->
+	<globalProperty>
+		<property>eptsreports.reasonPatientNotFoundByActivist2ndVisitConceptUuid</property>
+		<defaultValue>1ca778cc-509f-4ca3-ad97-f719e36f7b05</defaultValue>
+		<description>
+			UUID for the REASON PATIENT NOT FOUND BY ACTIVIST (2and Visit) concept
+		</description>
+	</globalProperty>
+
+	<!-- Concept id 23945 -->
+	<globalProperty>
+		<property>eptsreports.reasonPatientNotFoundByActivist3rdVisitConceptUuid</property>
+		<defaultValue>15906fed-6dd3-4e4c-bb8b-21ba5ff96011</defaultValue>
+		<description>
+			UUID for the REASON PATIENT NOT FOUND BY ACTIVIST (3rd Visit) concept
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 

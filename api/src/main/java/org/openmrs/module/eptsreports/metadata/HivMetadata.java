@@ -956,6 +956,22 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id = 23944
+  public Concept getReasonPatientNotFoundByActivist2ndVisitConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.reasonPatientNotFoundByActivist2ndVisitConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 23945
+  public Concept getReasonPatientNotFoundByActivist3rdVisitConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.reasonPatientNotFoundByActivist3rdVisitConceptUuid");
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
