@@ -307,7 +307,7 @@ public class ResumoMensalCohortQueries {
         "B7A",
         map(
             getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A(),
-            "location=${location},startDate=${startDate}"));
+            "location=${location},onDate=${startDate}"));
     cd.addSearch("B8A", map(died, encounterWithCodedObsMappings));
 
     cd.setCompositionString("B10 OR B2A OR B3A AND NOT (B5A OR B6A OR B7A OR B8A)");
@@ -586,7 +586,7 @@ public class ResumoMensalCohortQueries {
         "B7",
         map(
             getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A(),
-            "location=${location},startDate=${endDate}"));
+            "location=${location},onDate=${endDate}"));
     cd.addSearch(
         "B8",
         map(
@@ -885,8 +885,7 @@ public class ResumoMensalCohortQueries {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients who Abandoned the ART during the current month");
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("onDate", "On Date", Date.class));
     cd.setQuery(
         ResumoMensalQueries.getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthB127A(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
