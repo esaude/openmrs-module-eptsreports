@@ -759,6 +759,85 @@ public class EriDSDDataset extends BaseDataSet {
                     mappings)),
             mappings),
         "");
+
+    dsd.addColumn(
+        "N5TCA",
+        "DSD N5 Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N5TCA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticipatingInAccessionClubs(),
+                    mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N5SSTCA",
+        "DSD N5 Stable subtotal",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N5SSTCA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getPatientsWhoAreActiveParticipatingInAccessionClubsAndStable(),
+                    mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N5SNPNBACA",
+        "DSD N5 Stable Non-pregnant and Non-Breastfeeding Adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N5SNPNBACA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getN5StableNonPregnantNonBreastfeeding(), mappings)),
+            mappings),
+        "age=15+");
+    addRow(
+        dsd,
+        "N5SNPNBCCA",
+        " DSD N5 Stable Non-pregnant and Non-Breastfeeding Children (2-4, 5-9, 10-14)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N5SNPNBCCA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getN5StableNonPregnantNonBreastfeeding(), mappings)),
+            mappings),
+        getChildrenColumn());
+    dsd.addColumn(
+        "N5USTCA",
+        "DSD N5 Unstable subtotal",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N5USTCA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries
+                        .getPatientsWhoAreActiveParticipatingInAccessionClubsAndUnstable(),
+                    mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N5UNPNBACA",
+        "DSD N5 Unstable Non-pregnant and Non-Breastfeeding Adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N5UNPNBACA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getN5UnstableNonPregnantNonBreastfeeding(), mappings)),
+            mappings),
+        "age=15+");
+    addRow(
+        dsd,
+        "N5UNPNBCCA",
+        " DSD N5 Unstable Non-pregnant and Non-Breastfeeding Children (2-4, 5-9, 10-14)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N5UNPNBCCA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getN5UnstableNonPregnantNonBreastfeeding(), mappings)),
+            mappings),
+        getChildrenColumn());
+
     return dsd;
   }
 
