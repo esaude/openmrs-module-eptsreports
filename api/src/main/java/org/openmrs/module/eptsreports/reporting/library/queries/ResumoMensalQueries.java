@@ -397,7 +397,7 @@ public class ResumoMensalQueries {
             + " SELECT p.patient_id, MAX(o.value_datetime) AS encounter_date FROM patient p INNER JOIN encounter e "
             + " ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 "
             + " AND o.voided=0 AND e.encounter_type=%d AND o.concept_id=%d AND o.value_datetime IS NOT NULL AND "
-            + "e.location_id=:location AND e.encounter_datetime<=:endDate GROUP BY p.patient_id "
+            + "e.location_id=:location AND e.encounter_datetime<=:startDate GROUP BY p.patient_id "
             + " ) c GROUP BY c.patient_id "
             + " ) final WHERE DATE_ADD(final.encounter_date, INTERVAL 90 DAY) < :startDate ";
     return String.format(
