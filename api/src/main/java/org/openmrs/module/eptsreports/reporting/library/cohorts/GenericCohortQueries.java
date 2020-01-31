@@ -458,6 +458,8 @@ public class GenericCohortQueries {
    * @retrun CohortDefinition
    */
   public CohortDefinition getPatientsHavingEncounterWithinDateBoundaries(int encounterType) {
+    // TODO: #hasEncounter should be used here
+    // (https://github.com/esaude/openmrs-module-eptsreports/pull/185#discussion_r370630968)
     String query =
         "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE e.voided=0 AND p.voided=0 AND e.encounter_type = %d AND e.encounter_datetime BETWEEN :startDate AND :endDate";
     SqlCohortDefinition cd = new SqlCohortDefinition();
