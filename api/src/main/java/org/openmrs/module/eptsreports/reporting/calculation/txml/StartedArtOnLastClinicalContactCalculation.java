@@ -91,7 +91,7 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
             + "SELECT p.patient_id,MAX(o.value_datetime)value_datetime  FROM patient p "
             + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
-            + "WHERE p.voided =0 AND e.voided=0 AND o.voided=0 AND o.concept_id=%d AND o.value_datetime IS NOT NULL AND e.encounter_type =%d AND e.location_id= :location "
+            + "WHERE p.voided =0 AND e.voided=0 AND o.voided=0 AND o.concept_id=%d AND o.value_datetime IS NOT NULL AND e.encounter_type IN (%d,%d) AND e.location_id= :location "
             + "AND e.encounter_datetime <= :onOrBefore GROUP BY p.patient_id "
             + "UNION "
             + "SELECT p.patient_id,DATE_ADD(MAX(o.value_datetime), INTERVAL 30 day) value_datetime  FROM patient p "
@@ -104,10 +104,11 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
     sqlPatientDataDefinition.setSql(
         String.format(
             query,
-            commonMetadata.getReturnVisitDateConcept().getConceptId(),
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             commonMetadata.getReturnVisitDateConcept().getConceptId(),
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getArtDatePickup().getConceptId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
 
