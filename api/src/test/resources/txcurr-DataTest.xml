@@ -222,6 +222,21 @@
 		uuid="2576e015-c322-4c58-84a5-880a105ce2d7" />
 		
 		
+		<global_property
+		property="eptsreports.reasonPatientNotFoundByActivist2ndVisitConceptUuid"
+		property_value="1ca778cc-509f-4ca3-ad97-f719e36f7b05"
+		description=" UUID for reason Patient Not Found By Activist 2nd Visit "
+		uuid="668ea3dc-472a-11ea-94ad-87ec1077a1b9" />
+		
+		
+		<global_property
+		property="eptsreports.reasonPatientNotFoundByActivist3rdVisitConceptUuid"
+		property_value="15906fed-6dd3-4e4c-bb8b-21ba5ff96011"
+		description=" UUID for the REASON PATIENT NOT FOUND BY ACTIVIST (3rd Visit) concept "
+		uuid="9a628470-472b-11ea-8826-7ff98c298bc7" />
+		
+		
+		
 		
 		<!-- concept -->
 		<concept concept_id="6276" retired="0"   creator="1"
@@ -331,6 +346,17 @@
 		  is_set="0"   class_id="11" datatype_id="6"
 		date_created="2008-10-13 05:58:15" creator="1"
 		uuid="e1e2efd8-1d5f-11e0-b929-000c29ad1d07" />
+		
+		<concept concept_id="23944" retired="0" 
+		  is_set="0"   class_id="7" datatype_id="2"
+		date_created="2019-10-24 17:16:23" creator="1"
+		uuid="1ca778cc-509f-4ca3-ad97-f719e36f7b05" />
+		
+		
+		<concept concept_id="23945" retired="0" 
+		  is_set="0"   class_id="7" datatype_id="2"
+		date_created="2019-10-24 17:23:07" creator="1"
+		uuid="15906fed-6dd3-4e4c-bb8b-21ba5ff96011" />
 		
 		
 		
