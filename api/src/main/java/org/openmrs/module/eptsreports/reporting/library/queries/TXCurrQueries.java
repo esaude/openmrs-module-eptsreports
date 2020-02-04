@@ -88,9 +88,9 @@ public class TXCurrQueries {
 
   public static String getPatientDeathRegisteredInLastHomeVisitCardByReportingEndDate(
       String encounterTypes,
-      int patientFoundConcept,
       int reasonPatientNotFound,
-      int noConcept,
+      int reasonPatientNotFoundByActivist2ndVisit,
+      int reasonPatientNotFoundByActivist3rdVisit,
       int patientIsDead) {
     String query =
         " SELECT named.patient_id FROM ( SELECT     p.patient_id, "
@@ -109,18 +109,16 @@ public class TXCurrQueries {
             + "    AND        e.encounter_type IN (%s)  "
             + "    AND        e.encounter_datetime<= :onOrBefore "
             + "    AND        e.location_id= :location "
-            + "    AND        obsencontrado.concept_id = %s "
-            + "    AND        obsencontrado.value_coded=%s "
-            + "    AND        obsobito.concept_id=%s "
+            + "    AND        obsobito.concept_id IN(%s,%s,%s) "
             + "    AND        obsobito.value_coded=%s "
             + "    GROUP BY   p.patient_id) named ";
 
     return String.format(
         query,
         encounterTypes,
-        patientFoundConcept,
         reasonPatientNotFound,
-        noConcept,
+        reasonPatientNotFoundByActivist2ndVisit,
+        reasonPatientNotFoundByActivist3rdVisit,
         patientIsDead);
   }
 
