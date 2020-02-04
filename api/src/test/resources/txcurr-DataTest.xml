@@ -45,6 +45,12 @@
 		birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
 		  date_created="2005-01-01 00:00:00.0" voided="false"   death_date="2018-07-13 00:00:00.0"
 		uuid="340825ca-0204-11ea-ad28-47dd9db33d34" />
+		
+		<person person_id="12594" gender="M"  creator="1"
+		birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+		  date_created="2005-01-01 00:00:00.0" voided="false"   death_date="2018-07-13 00:00:00.0"
+		uuid="91687fac-472e-11ea-9654-df7f5070812f" />
+ 
  
 
 	<!-- patient -->
@@ -71,6 +77,11 @@
 		date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
 		
 		<patient patient_id="12593"   creator="1"
+		date_created="2005-09-22 00:00:00.0"  
+		date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+		
+		 
+		<patient patient_id="12594"   creator="1"
 		date_created="2005-09-22 00:00:00.0"  
 		date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
 		
@@ -506,6 +517,12 @@
 		uuid="5dbccfb4-0205-11ea-b51e-33b37a47226e" location_id="6" />
 		
 		
+		<encounter encounter_id="9007" encounter_type="21"
+		patient_id="12594" encounter_datetime="2018-07-12 00:00:00" creator="1"
+		date_created="2018-06-20 12:55:48" voided="0"
+		uuid="5daed5efe-472e-11ea-ba16-c799d6b7d180" location_id="6" />
+		
+		
 	<!-- obs -->
 	<obs obs_id="100" person_id="1001" concept_id="1255"
 		encounter_id="9001" obs_datetime="2018-07-08 00:00:00"
@@ -531,6 +548,11 @@
 		encounter_id="9006" obs_datetime="2018-07-08 00:00:00"
 		creator="1" date_created="2018-07-08 12:55:48"
 		voided="0" uuid="d6796536-ffd8-11e9-8a8a-177367cdb83a" location_id="6" />
+		
+	   <obs obs_id="105" person_id="12594" concept_id="23944"
+		encounter_id="9007" obs_datetime="2018-07-08 00:00:00"
+		creator="1" date_created="2018-07-08 12:55:48" value_coded="1366"
+		voided="0" uuid="39883c90-472f-11ea-8508-17dd56388f73" location_id="6" />
 		
 	
 </dataset>
