@@ -36,7 +36,8 @@ public class TXTBCohortDefinitionsFGHLiveTest extends DefinitionsFGHLiveTest {
   public void tbTreatmentStartUsingEndDate() throws EvaluationException {
     // TODO remove startDate
     EvaluatedCohort result =
-        evaluateCohortDefinition(txTbCohortQueries.tbTreatmentStartDateWithinReportingDate());
+        evaluateCohortDefinition(
+            txTbCohortQueries.getTbDrugTreatmentStartDateWithinReportingDate());
     Assert.assertEquals(3, result.size());
   }
 
