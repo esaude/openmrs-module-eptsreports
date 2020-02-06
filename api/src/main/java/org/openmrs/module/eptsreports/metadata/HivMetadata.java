@@ -658,6 +658,21 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // Concept 23863 AUTO TRANSFER
+  public Concept getAutoTransfer() {
+    final String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.autoTransfer");
+    return getConcept(uuid);
+  }
+
+  // Concept 6272 STATE OF STAY PRIOR ART PATIENT
+  public Concept getStateOfStayPriorArtPatient() {
+    final String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.stateOfStayPriorArtPatient");
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {

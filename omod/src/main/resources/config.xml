@@ -184,15 +184,6 @@
 	</globalProperty>
 
 	<globalProperty>
-		<property>eptsreports.tuberculosisTreatmentStartDateConceptUuid
-		</property>
-		<defaultValue>e1d85906-1d5f-11e0-b929-000c29ad1d07</defaultValue>
-		<description>
-			UUID for the TRATAMENTO start date DE TUBERCULOSE concept
-		</description>
-	</globalProperty>
-
-	<globalProperty>
 		<property>eptsreports.tbLivroEncounterTypeUuid</property>
 		<defaultValue>e2791b98-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
@@ -1385,8 +1376,145 @@
 			UUID for the Viral load qualitative concept
 		</description>
 	</globalProperty>
-
-
+	
+	<!--42 -->
+	<globalProperty>
+		<property>eptsreports.pulmonaryTBConceptUuid</property>
+		<defaultValue>e1cdd38c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PULMONARY TB concept
+		</description>
+	</globalProperty>
+	
+	<!--1763 -->
+	<globalProperty>
+		<property>eptsreports.feverLastingMoreThan3Weeks</property>
+		<defaultValue>e1de6878-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the FEVER LASTING MORE THAN 3 WEEKS concept
+		</description>
+	</globalProperty>
+	
+	<!--1764 -->
+	<globalProperty>
+		<property>eptsreports.weightLossOfMoreThan3KgInLastMonth</property>
+		<defaultValue>e1de6a12-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the WEIGHT LOSS OF MORE THAN 3 KG IN LAST MONTH concept
+		</description>
+	</globalProperty>
+	
+	<!--1762 -->
+	<globalProperty>
+		<property>eptsreports.nightsweatsLastingMoreThan3Weeks</property>
+		<defaultValue>e1de66e8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the NIGHTSWEATS LASTING MORE THAN 3 WEEKS concept
+		</description>
+	</globalProperty>
+	
+	<!--1760 -->
+	<globalProperty>
+		<property>eptsreports.coughLastingMoreThan3Weeks</property>
+		<defaultValue>e1de63d2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the COUGH LASTING MORE THAN 3 WEEKS concept
+		</description>
+	</globalProperty>
+	
+	<!--23760 -->
+	<globalProperty>
+		<property>eptsreports.asthenia</property>
+		<defaultValue>44b63d4c-341b-48f0-baa0-ce88ed7afc71</defaultValue>
+		<description>
+			UUID for the ASTHENIA concept
+		</description>
+	</globalProperty>
+	
+	<!--1765 -->
+	<globalProperty>
+		<property>eptsreports.cohabitantBeingTreatedForTB</property>
+		<defaultValue>e1de6b98-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the COHABITANT BEING TREATED FOR TB concept
+		</description>
+	</globalProperty>
+	
+	<!--161 -->
+	<globalProperty>
+		<property>eptsreports.lymphadenopathy</property>
+		<defaultValue>e1cfd43e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the LYMPHADENOPATHY concept
+		</description>
+	</globalProperty>
+	
+	<!--23723 -->
+	<globalProperty>
+		<property>eptsreports.tbGenexpertTest</property>
+		<defaultValue>b08eb89b-c609-4d15-ab81-53ad7c745332</defaultValue>
+		<description>
+			UUID for the TB GENEXPERT TEST concept
+		</description>
+	</globalProperty>
+	
+	<!--23774 -->
+	<globalProperty>
+		<property>eptsreports.cultureTest</property>
+		<defaultValue>a73de314-89fa-4feb-9085-c81e95c7d0dd</defaultValue>
+		<description>
+			UUID for the CULTURE TEST concept
+		</description>
+	</globalProperty>
+	
+	
+	<!--23951 -->
+	<globalProperty>
+		<property>eptsreports.tbLam</property>
+		<defaultValue>ef139cb2-97c1-4c0f-9189-5e0711a45b8f</defaultValue>
+		<description>
+			UUID for the TB LAM concept
+		</description>
+	</globalProperty>
+	
+	
+	<!--23863 -->
+	<globalProperty>
+		<property>eptsreports.autoTransfer</property>
+		<defaultValue>de2c4ec6-c68e-4d4a-993d-23eba2de8267</defaultValue>
+		<description>
+			UUID for the AUTO TRANSFER concept
+		</description>
+	</globalProperty>
+	
+	<!--6272 -->
+	<globalProperty>
+		<property>eptsreports.stateOfStayPriorArtPatient</property>
+		<defaultValue>3bd7a5d1-afc0-478d-9aa6-c7bdd9a050c8</defaultValue>
+		<description>
+			UUID for the STATE OF STAY PRIOR ART PATIENT concept
+		</description>
+	</globalProperty>
+	
+	<!--1766 -->
+	<globalProperty>
+		<property>eptsreports.tbObservations</property>
+		<defaultValue>e1de6d1e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the TB OBSERVATIONS concept
+		</description>
+	</globalProperty>
+	
+	
+	<!--307 -->
+	<globalProperty>
+		<property>eptsreports.sputumForAcidFastBacilli</property>
+		<defaultValue>e1d1564c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the SPUTUM FOR ACID FAST BACILLI concept
+		</description>
+	</globalProperty>
+	
 
 
 

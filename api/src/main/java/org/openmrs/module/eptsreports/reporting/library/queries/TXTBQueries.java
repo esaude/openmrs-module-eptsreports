@@ -129,30 +129,66 @@ public class TXTBQueries {
       Integer questionId, List<Integer> encounterTypeIds, boolean startDate) {
     String sql =
         String.format(
-            "select person_id from obs "
-                + "where concept_id = %s and encounter_id in("
-                + "select distinct encounter_id "
-                + "from encounter "
-                + "where encounter_type in(%s)) and location_id = :location and ",
+            "select obs.person_id from obs inner join encounter on encounter.encounter_id = obs.encounter_id "
+                + " where obs.concept_id = %s and encounter.encounter_type in(%s) and obs.location_id = :location and obs.voided=0 and ",
             questionId, StringUtils.join(encounterTypeIds, ","));
     if (startDate) {
-      sql += "value_datetime >= :startDate and value_datetime <= :endDate and voided=0";
+      sql += "obs.value_datetime >= :startDate and obs.value_datetime <= :endDate";
     } else {
-      sql += "value_datetime <= :endDate and voided=0";
+      sql += "obs.value_datetime <= :endDate";
     }
+    return sql;
+  }
+
+  public static String dateObsByObsDateTimeClausule(
+      Integer conceptQuestionId, Integer conceptAnswerId, Integer encounterId) {
+    String sql =
+        String.format(
+            "select distinct obs.person_id from obs "
+                + "    inner join encounter on encounter.encounter_id = obs.encounter_id "
+                + "  where obs.concept_id =%s and obs.value_coded =%s and encounter.encounter_type =%s "
+                + "  and obs.location_id =:location and obs.obs_datetime >=:startDate and obs.obs_datetime <=:endDate and obs.voided=0",
+            conceptQuestionId, conceptAnswerId, encounterId);
+
+    return sql;
+  }
+
+  public static String dateObsByObsValueDateTimeClausule(
+      Integer conceptQuestionId, Integer conceptAnswerId, Integer encounterId) {
+    String sql =
+        String.format(
+            "select distinct obs.person_id from obs "
+                + "   inner join encounter on encounter.encounter_id = obs.encounter_id "
+                + "where obs.concept_id =%s and obs.value_coded =%s and encounter.encounter_type =%s "
+                + "  and obs.location_id =:location and obs.value_datetime >=:startDate and obs.value_datetime <=:endDate and obs.voided=0",
+            conceptQuestionId, conceptAnswerId, encounterId);
+
+    return sql;
+  }
+
+  public static String dateObsForEncounterAndQuestionAndAnswers(
+      Integer encounterId, List<Integer> questionConceptIds, List<Integer> answerConceptIds) {
+    String sql =
+        String.format(
+            "select distinct obs.person_id from obs "
+                + "	 inner join encounter on encounter.encounter_id = obs.encounter_id where encounter.encounter_type = %s "
+                + "  and obs.concept_id in (%s) and obs.value_coded in (%s) and encounter.voided = 0 and obs.voided =0 and obs.location_id =:location "
+                + "  and encounter.encounter_datetime >=:startDate and encounter.encounter_datetime <=:endDate",
+            encounterId,
+            StringUtils.join(questionConceptIds, ","),
+            StringUtils.join(answerConceptIds, ","));
+
     return sql;
   }
 
   public static String dateObsWithinXMonthsBeforeStartDate(
       Integer questionId, List<Integer> encounterTypeIds, Integer xMonths) {
     return String.format(
-        "select person_id from obs "
-            + "where concept_id = %s and encounter_id in"
-            + "( select distinct encounter_id from encounter "
-            + "where encounter_type in(%s)) and location_id = :location "
-            + "and value_datetime >= DATE_SUB(:startDate, INTERVAL "
+        "select obs.person_id from obs inner join encounter on encounter.encounter_id = obs.encounter_id "
+            + " where obs.concept_id = %s and encounter.encounter_type in(%s) and obs.location_id = :location "
+            + " and obs.value_datetime >= DATE_SUB(:startDate, INTERVAL "
             + "%s MONTH) "
-            + "and value_datetime < :startDate and voided=0",
+            + " and obs.value_datetime < :startDate and obs.voided=0",
         questionId, StringUtils.join(encounterTypeIds, ","), xMonths);
   }
 
