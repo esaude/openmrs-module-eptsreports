@@ -38,12 +38,9 @@ public class NextFilaDateCalculation extends BaseFghCalculation {
         nextFilaProcessor.getResutls(new ArrayList<>(lastFilaCalculationResult.keySet()), context);
 
     for (Integer patientId : lastFilaCalculationResult.keySet()) {
-
       CalculationResult calculationResult = lastFilaCalculationResult.get(patientId);
       Date lastDateFila = (Date) (calculationResult != null ? calculationResult.getValue() : null);
-
       List<Obs> allObsFila = resutls.get(patientId);
-
       this.setMaxValueDateTime(patientId, lastDateFila, allObsFila, resultMap);
     }
 
@@ -56,16 +53,21 @@ public class NextFilaDateCalculation extends BaseFghCalculation {
     Date finalComparisonDate = DateUtil.getDateTime(Integer.MAX_VALUE, 1, 1);
     Date maxDate = DateUtil.getDateTime(Integer.MAX_VALUE, 1, 1);
 
-    if (lastDateFila != null && allObsFila != null) {
-      for (Obs obs : allObsFila) {
-        if (obs != null && obs.getObsDatetime() != null) {
-          if (obs.getObsDatetime().compareTo(lastDateFila) == 0) {
-            Date valueDatetime = obs.getValueDatetime();
-            if (valueDatetime != null && valueDatetime.compareTo(maxDate) > 0) {
-              maxDate = valueDatetime;
+    if (lastDateFila != null) {
+      if (allObsFila != null) {
+        for (Obs obs : allObsFila) {
+          if (obs != null && obs.getObsDatetime() != null) {
+            if (obs.getObsDatetime().compareTo(lastDateFila) == 0) {
+              Date valueDatetime = obs.getValueDatetime();
+              if (valueDatetime != null && valueDatetime.compareTo(maxDate) > 0) {
+                maxDate = valueDatetime;
+              }
             }
           }
         }
+      } else {
+        resultMap.put(pId, null);
+        return;
       }
     }
     if (!DateUtils.isSameDay(maxDate, finalComparisonDate)) {

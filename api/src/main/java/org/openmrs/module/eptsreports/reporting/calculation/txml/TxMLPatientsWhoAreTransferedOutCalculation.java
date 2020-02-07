@@ -20,29 +20,34 @@ public class TxMLPatientsWhoAreTransferedOutCalculation extends BaseFghCalculati
       Map<String, Object> parameterValues, EvaluationContext context) {
     CalculationResultMap resultMap = new CalculationResultMap();
 
+    CalculationResultMap numerator =
+        Context.getRegisteredComponents(TxMLPatientsWhoMissedNextApointmentCalculation.class)
+            .get(0)
+            .evaluate(parameterValues, context);
     Map<Integer, Date> processorResult =
         Context.getRegisteredComponents(TxMLPatientDisagregationProcessor.class)
             .get(0)
-            .getPatienTransferedOutResults(context);
+            .getPatienTransferedOutResults(context, numerator);
 
-    CalculationResultMap exclusionsToUse =
+    // Excluir todos pacientes com consulta ou levantamento apos terem sido marcados
+    // como transferidos para
+    CalculationResultMap possiblePatientsToExclude =
         Context.getRegisteredComponents(MaxLastDateFromFilaSeguimentoRecepcaoCalculation.class)
             .get(0)
             .evaluate(parameterValues, context);
 
-    CalculationResultMap exclusionsDeadPatients =
+    CalculationResultMap deadExclusion =
         Context.getRegisteredComponents(TxMLPatientsWhoAreDeadCalculation.class)
             .get(0)
             .evaluate(parameterValues, context);
 
     for (Integer patientId : processorResult.keySet()) {
-
-      if (exclusionsDeadPatients.get(patientId) != null) {
-        continue;
-      }
       Date candidateDate = processorResult.get(patientId);
-      if (!TxMLPatientDisagregationProcessor.hasExclusion(
-          patientId, candidateDate, exclusionsToUse)) {
+
+      if (!(TxMLPatientDisagregationProcessor.hasPatientsFromOtherDisaggregationToExclude(
+              patientId, deadExclusion)
+          || TxMLPatientDisagregationProcessor.hasDatesGreatherThanEvaluatedDateToExclude(
+              patientId, candidateDate, possiblePatientsToExclude))) {
         resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
       }
     }

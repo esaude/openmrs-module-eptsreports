@@ -20,12 +20,28 @@ public class TxMLPatientsWhoRefusedOrStoppedTreatmentCalculation extends BaseFgh
       Map<String, Object> parameterValues, EvaluationContext context) {
     CalculationResultMap resultMap = new CalculationResultMap();
 
+    CalculationResultMap numerator =
+        Context.getRegisteredComponents(TxMLPatientsWhoMissedNextApointmentCalculation.class)
+            .get(0)
+            .evaluate(parameterValues, context);
     Map<Integer, Date> processorResult =
         Context.getRegisteredComponents(TxMLPatientDisagregationProcessor.class)
             .get(0)
-            .getPatientsWhoRefusedOrStoppedTreatmentResults(context);
-    CalculationResultMap exclusionsToUse =
+            .getPatientsWhoRefusedOrStoppedTreatmentResults(context, numerator);
+
+    // Excluir todos pacientes que fizeram consulta/levantamento apos serem marcados
+    // como Stopped/Transfered out
+    CalculationResultMap possiblePatientsToExclude =
         Context.getRegisteredComponents(MaxLastDateFromFilaSeguimentoRecepcaoCalculation.class)
+            .get(0)
+            .evaluate(parameterValues, context);
+
+    CalculationResultMap deadExclusion =
+        Context.getRegisteredComponents(TxMLPatientsWhoAreDeadCalculation.class)
+            .get(0)
+            .evaluate(parameterValues, context);
+    CalculationResultMap transferedOutExclusion =
+        Context.getRegisteredComponents(TxMLPatientsWhoAreTransferedOutCalculation.class)
             .get(0)
             .evaluate(parameterValues, context);
 
@@ -33,8 +49,10 @@ public class TxMLPatientsWhoRefusedOrStoppedTreatmentCalculation extends BaseFgh
 
       Date candidateDate = processorResult.get(patientId);
 
-      if (!TxMLPatientDisagregationProcessor.hasExclusion(
-          patientId, candidateDate, exclusionsToUse)) {
+      if (!(TxMLPatientDisagregationProcessor.hasPatientsFromOtherDisaggregationToExclude(
+              patientId, deadExclusion, transferedOutExclusion)
+          || TxMLPatientDisagregationProcessor.hasDatesGreatherThanEvaluatedDateToExclude(
+              patientId, candidateDate, possiblePatientsToExclude))) {
         resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
       }
     }
