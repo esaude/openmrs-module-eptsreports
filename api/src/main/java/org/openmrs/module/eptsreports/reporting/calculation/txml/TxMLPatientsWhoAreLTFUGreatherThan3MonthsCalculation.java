@@ -1,56 +1,34 @@
 package org.openmrs.module.eptsreports.reporting.calculation.txml;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
 import java.util.Set;
-import org.openmrs.api.context.Context;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.eptsreports.reporting.calculation.BaseFghCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.LastRecepcaoLevantamentoCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.generic.NextFilaDateCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.generic.NextSeguimentoDateCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.generic.OnArtInitiatedArvDrugsCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.util.processor.CalculationProcessorUtils;
 import org.openmrs.module.reporting.common.DateUtil;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TxMLPatientsWhoAreLTFUGreatherThan3MonthsCalculation extends BaseFghCalculation {
+public class TxMLPatientsWhoAreLTFUGreatherThan3MonthsCalculation
+    extends TxMLAbstractPatientCalculation {
 
   private static int GREATHER_THAN_3_MONTHS = 90;
   private static int DAYS_TO_LTFU = 28;
 
   @Override
-  public CalculationResultMap evaluate(
-      Map<String, Object> parameterValues, EvaluationContext context) {
-    CalculationResultMap resultMap = new CalculationResultMap();
-
-    Date startDate = (Date) context.getParameterValues().get("startDate");
-    Date endDate = (Date) context.getParameterValues().get("endDate");
-    CalculationResultMap inicioRealResult =
-        Context.getRegisteredComponents(OnArtInitiatedArvDrugsCalculation.class)
-            .get(0)
-            .evaluate(parameterValues, context);
-
-    Set<Integer> cohort = inicioRealResult.keySet();
-
-    LastRecepcaoLevantamentoCalculation lastRecepcaoLevantamentoCalculation =
-        Context.getRegisteredComponents(LastRecepcaoLevantamentoCalculation.class).get(0);
-    CalculationResultMap lastRecepcaoLevantamentoResult =
-        lastRecepcaoLevantamentoCalculation.evaluate(cohort, parameterValues, context);
-
-    CalculationResultMap nextFilaResult =
-        Context.getRegisteredComponents(NextFilaDateCalculation.class)
-            .get(0)
-            .evaluate(cohort, parameterValues, context);
-
-    CalculationResultMap nextSeguimentoResult =
-        Context.getRegisteredComponents(NextSeguimentoDateCalculation.class)
-            .get(0)
-            .evaluate(cohort, parameterValues, context);
+  protected CalculationResultMap evaluateUsingCalculationRules(
+      Set<Integer> cohort,
+      Date startDate,
+      Date endDate,
+      CalculationResultMap resultMap,
+      CalculationResultMap inicioRealResult,
+      CalculationResultMap lastFilaCalculationResult,
+      CalculationResultMap lastSeguimentoCalculationResult,
+      CalculationResultMap nextFilaResult,
+      CalculationResultMap nextSeguimentoResult,
+      CalculationResultMap lastRecepcaoLevantamentoResult,
+      LastRecepcaoLevantamentoCalculation lastRecepcaoLevantamentoCalculation) {
 
     for (Integer patientId : cohort) {
       Date inicioRealDate = (Date) inicioRealResult.get(patientId).getValue();
@@ -68,14 +46,13 @@ public class TxMLPatientsWhoAreLTFUGreatherThan3MonthsCalculation extends BaseFg
             && nextDatePlus28.compareTo(endDate) < 0) {
           resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
         }
+      } else {
+        super.checkConsultationsOrFilaWithoutNextConsultationDate(
+            patientId, resultMap, endDate, lastFilaCalculationResult, nextFilaResult);
+        super.checkConsultationsOrFilaWithoutNextConsultationDate(
+            patientId, resultMap, endDate, lastSeguimentoCalculationResult, nextSeguimentoResult);
       }
     }
     return resultMap;
-  }
-
-  @Override
-  public CalculationResultMap evaluate(
-      Collection<Integer> cohort, Map<String, Object> parameterValues, EvaluationContext context) {
-    return this.evaluate(parameterValues, context);
   }
 }

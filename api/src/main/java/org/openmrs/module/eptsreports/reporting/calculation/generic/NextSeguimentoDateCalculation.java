@@ -61,8 +61,8 @@ public class NextSeguimentoDateCalculation extends BaseFghCalculation {
     Date finalComparisonDate = DateUtil.getDateTime(Integer.MAX_VALUE, 1, 1);
     Date maxDate = DateUtil.getDateTime(Integer.MAX_VALUE, 1, 1);
 
-    if (allObsSeguimento != null && allObsSeguimento != null) {
-      if (lastDateSeguimento != null) {
+    if (lastDateSeguimento != null) {
+      if (allObsSeguimento != null) {
         for (Obs obs : allObsSeguimento) {
           if (obs != null && obs.getObsDatetime() != null) {
             if (obs.getObsDatetime().compareTo(lastDateSeguimento) == 0) {
@@ -73,7 +73,11 @@ public class NextSeguimentoDateCalculation extends BaseFghCalculation {
             }
           }
         }
+      } else {
+        resultMap.put(pId, null);
+        return;
       }
+
       if (!DateUtils.isSameDay(maxDate, finalComparisonDate)) {
         resultMap.put(pId, new SimpleResult(maxDate, this));
       }
