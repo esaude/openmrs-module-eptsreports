@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import org.openmrs.api.context.Context;
-import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.BaseFghCalculation;
@@ -13,6 +12,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.MaxLastDateFromFilaSeguimentoRecepcaoCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.util.processor.CalculationProcessorUtils;
 import org.openmrs.module.eptsreports.reporting.calculation.util.processor.QueryDisaggregationProcessor;
+import org.openmrs.module.eptsreports.reporting.calculation.util.processor.TxMLPatientDisagregationProcessor;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.springframework.stereotype.Component;
 
@@ -66,13 +66,12 @@ public class TxTBPatientsWhoAreTransferedOutCalculation extends BaseFghCalculati
             .evaluate(parameterValues, context);
 
     for (Integer patientId : maxResultFromAllSources.keySet()) {
-
       Date candidateDate = maxResultFromAllSources.get(patientId);
-      if (!hasExclusion(patientId, candidateDate, exclusionsToUse)) {
+      if (!TxMLPatientDisagregationProcessor.hasDatesGreatherThanEvaluatedDateToExclude(
+          patientId, candidateDate, exclusionsToUse)) {
         resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
       }
     }
-
     return resultMap;
   }
 
@@ -80,18 +79,5 @@ public class TxTBPatientsWhoAreTransferedOutCalculation extends BaseFghCalculati
   public CalculationResultMap evaluate(
       Collection<Integer> cohort, Map<String, Object> parameterValues, EvaluationContext context) {
     return this.evaluate(parameterValues, context);
-  }
-
-  public boolean hasExclusion(
-      Integer patientId, Date candidateDate, CalculationResultMap exclusionsToUse) {
-
-    CalculationResult exclusionDateResult = exclusionsToUse.get(patientId);
-    Date exclusionDate =
-        (Date) ((exclusionDateResult != null) ? exclusionDateResult.getValue() : null);
-
-    if (exclusionDate != null && exclusionDate.compareTo(candidateDate) > 0) {
-      return Boolean.TRUE;
-    }
-    return Boolean.FALSE;
   }
 }

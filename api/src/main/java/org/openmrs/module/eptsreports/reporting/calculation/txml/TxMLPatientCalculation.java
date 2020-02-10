@@ -2,6 +2,7 @@ package org.openmrs.module.eptsreports.reporting.calculation.txml;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.openmrs.api.context.Context;
@@ -20,7 +21,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.util.processor.Calcu
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
-public abstract class TxMLAbstractPatientCalculation extends BaseFghCalculation {
+public abstract class TxMLPatientCalculation extends BaseFghCalculation {
 
   public static int DAYS_TO_LTFU = 28;
 
@@ -127,5 +128,25 @@ public abstract class TxMLAbstractPatientCalculation extends BaseFghCalculation 
               lastRecepcaoLevantamentoCalculation));
     }
     return lastRecepcaoLevantamentoPlus30;
+  }
+
+  public static Map<Integer, Date> excludeEarlyHomeVisitDatesFromNextExpectedDateNumerator(
+      CalculationResultMap numerator, Map<Integer, Date> deadInHomeVisitForm) {
+    Map<Integer, Date> result = new HashMap<>();
+    for (Integer patientId : numerator.keySet()) {
+      CalculationResult numeratorResult = numerator.get(patientId);
+      if (numeratorResult != null) {
+        Date numeratorNextExpectedDate = (Date) numeratorResult.getValue();
+        if (numeratorNextExpectedDate != null) {
+          Date candidateDate = deadInHomeVisitForm.get(patientId);
+          if (candidateDate != null) {
+            if (candidateDate.compareTo(numeratorNextExpectedDate) >= 0) {
+              result.put(patientId, candidateDate);
+            }
+          }
+        }
+      }
+    }
+    return result;
   }
 }

@@ -11,7 +11,7 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TxMLPatientsWhoMissedNextApointmentCalculation extends TxMLAbstractPatientCalculation {
+public class TxMLPatientsWhoMissedNextApointmentCalculation extends TxMLPatientCalculation {
 
   public static int DAYS_TO_LTFU = 28;
 

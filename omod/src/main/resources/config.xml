@@ -1515,8 +1515,96 @@
 		</description>
 	</globalProperty>
 	
-
-
+	<!--23944 -->
+	<globalProperty>
+		<property>eptsreports.reasonPatientNotFoundByActivistSecondVisit</property>
+		<defaultValue>1ca778cc-509f-4ca3-ad97-f719e36f7b05</defaultValue>
+		<description>
+			UUID for the REASON PATIENT NOT FOUND BY ACTIVIST (2and Visit) concept
+		</description>
+	</globalProperty>
+	
+	<!--23945 -->
+	<globalProperty>
+		<property>eptsreports.reasonPatientNotFoundByActivistThirdVisit</property>
+		<defaultValue>15906fed-6dd3-4e4c-bb8b-21ba5ff96011</defaultValue>
+		<description>
+			UUID for the REASON PATIENT NOT FOUND BY ACTIVIST (3rd Visit) concept
+		</description>
+	</globalProperty>
+	
+	<!--2005 -->
+	<globalProperty>
+		<property>eptsreports.patientForgotVisitDate</property>
+		<defaultValue>e1e074f6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT FORGOT VISIT DATE concept
+		</description>
+	</globalProperty>
+	
+	<!--2006 -->
+	<globalProperty>
+		<property>eptsreports.patientIsBedriddenAtHome</property>
+		<defaultValue>e1e075fa-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT IS BEDRIDDEN AT HOME concept
+		</description>
+	</globalProperty>
+	
+	<!--2007 -->
+	<globalProperty>
+		<property>eptsreports.distanceOrMoneyForTransportIsToMuchForPatient</property>
+		<defaultValue>e1e076f4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the DISTANCE OR MONEY FOR TRANSPORT IS TO MUCH FOR PATIENT concept
+		</description>
+	</globalProperty>
+	
+	<!--2010 -->
+	<globalProperty>
+		<property>eptsreports.patientIsDissatisfiedWithDayHospitalServices</property>
+		<defaultValue>e1e079e2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the PATIENT IS DISSATISFIED WITH DAY HOSPITAL SERVICES concept
+		</description>
+	</globalProperty>
+	
+	<!--23915 -->
+	<globalProperty>
+		<property>eptsreports.fearOfTheProvider</property>
+		<defaultValue>3c055270-bf64-465a-b649-475dfa1a212d</defaultValue>
+		<description>
+			UUID for the FEAR OF THE PROVIDER concept
+		</description>
+	</globalProperty>
+	
+	<!--23946 -->
+	<globalProperty>
+		<property>eptsreports.absenceOfHealthProviderInHealthUnit</property>
+		<defaultValue>558a66da-4900-4313-a02d-4ebb4f9948df</defaultValue>
+		<description>
+			UUID for the Absence of Health Provider in Health Unit concept
+		</description>
+	</globalProperty>
+	
+	<!--2013 -->
+	<globalProperty>
+		<property>eptsreports.patientIsTreatingHivWithTradittionalMedicine</property>
+		<defaultValue>e1e07cda-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+				UUID for the PATIENT IS TREATING HIV WITH TRADITIONAL MEDICINE concept
+		</description>
+	</globalProperty>
+	
+	<!--2017 -->
+	<globalProperty>
+		<property>eptsreports.otherReasonWhyPatientMissedVisit</property>
+		<defaultValue>e1e080cc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+				UUID for the OTHER REASON WHY PATIENT MISSED VISIT concept
+		</description>
+	</globalProperty>
+	
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 

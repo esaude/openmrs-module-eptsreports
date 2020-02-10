@@ -673,6 +673,84 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // Concept 23944 REASON PATIENT NOT FOUND BY ACTIVIST (2and Visit)
+  public Concept getReasonPatientNotFoundByActivistSecondVisit() {
+    final String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.reasonPatientNotFoundByActivistSecondVisit");
+    return getConcept(uuid);
+  }
+
+  // Concept 23945 REASON PATIENT NOT FOUND BY ACTIVIST (3rd Visit)
+  public Concept getReasonPatientNotFoundByActivistThirdVisit() {
+    final String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.reasonPatientNotFoundByActivistThirdVisit");
+    return getConcept(uuid);
+  }
+
+  // Concept 2005 PATIENT FORGOT VISIT DATE
+  public Concept getPatientForgotVisitDate() {
+    final String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.patientForgotVisitDate");
+    return getConcept(uuid);
+  }
+
+  // Concept 2006 PATIENT IS BEDRIDDEN AT HOME
+  public Concept getPatientIsBedriddenAtHome() {
+    final String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.patientIsBedriddenAtHome");
+    return getConcept(uuid);
+  }
+
+  // Concept 2007 DISTANCE OR MONEY FOR TRANSPORT IS TO MUCH FOR PATIENT
+  public Concept getDistanceOrMoneyForTransportIsToMuchForPatient() {
+    final String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.distanceOrMoneyForTransportIsToMuchForPatient");
+    return getConcept(uuid);
+  }
+
+  // Concept 2010 PATIENT IS DISSATISFIED WITH DAY HOSPITAL SERVICES
+  public Concept getPatientIsDissatisfiedWithDayHospitalServices() {
+    final String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.patientIsDissatisfiedWithDayHospitalServices");
+    return getConcept(uuid);
+  }
+
+  // Concept 23915 FEAR OF THE PROVIDER
+  public Concept getFearOfTheProvider() {
+    final String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.fearOfTheProvider");
+    return getConcept(uuid);
+  }
+
+  // Concept 23946 Absence of Health Provider in Health Unit
+  public Concept getAbsenceOfHealthProviderInHealthUnit() {
+    final String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.absenceOfHealthProviderInHealthUnit");
+    return getConcept(uuid);
+  }
+
+  // Concept 2013 PATIENT IS TREATING HIV WITH TRADITIONAL MEDICINE
+  public Concept getPatientIsTreatingHivWithTradittionalMedicine() {
+    final String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.patientIsTreatingHivWithTradittionalMedicine");
+    return getConcept(uuid);
+  }
+
+  // Concept 2017 OTHER REASON WHY PATIENT MISSED VISIT
+  public Concept getOtherReasonWhyPatientMissedVisit() {
+    final String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.otherReasonWhyPatientMissedVisit");
+    return getConcept(uuid);
+  }
+
   // Encounter types
   // encounterType_id = 6
   public EncounterType getAdultoSeguimentoEncounterType() {
