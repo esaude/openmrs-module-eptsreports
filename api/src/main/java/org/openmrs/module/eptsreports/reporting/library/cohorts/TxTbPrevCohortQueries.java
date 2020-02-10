@@ -146,7 +146,7 @@ public class TxTbPrevCohortQueries {
   }
 
   @DocumentedDefinition(value = "findTbTotalDenominator")
-  public CohortDefinition findTbTotalDenominator() {
+  public CohortDefinition findTbPrevTotalDenominator() {
     final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
 
     dsd.setName("findTbTotalDenominator");
@@ -165,6 +165,28 @@ public class TxTbPrevCohortQueries {
             this.findPatientsWhoStartedArtAndTpiPreviouslyDessagragation(), mappings));
 
     dsd.setCompositionString("NEW OR PRIVIUS");
+
+    return dsd;
+  }
+
+  @DocumentedDefinition(value = "findTbPrevTotalNumerator")
+  public CohortDefinition findTbPrevTotalNumerator() {
+    final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
+
+    dsd.setName("findTbTotalDenominator");
+    dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dsd.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    dsd.addSearch(
+        "ENDTPI",
+        EptsReportUtils.map(findPatientsWhoStartedTpi6MonthsAgoAndWhoEndedTpi(), mappings));
+
+    dsd.addSearch("STARTTPI", EptsReportUtils.map(this.findTbPrevTotalDenominator(), mappings));
+
+    dsd.setCompositionString("ENDTPI AND STARTTPI");
 
     return dsd;
   }
