@@ -15,7 +15,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.Arrays;
 import java.util.List;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TbPrevCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxTbPrevCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
@@ -31,7 +31,7 @@ public class TbPrevDataset extends BaseDataSet {
 
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
 
-  @Autowired private TbPrevCohortQueries tbPrevCohortQueries;
+  @Autowired private TxTbPrevCohortQueries txTbPrevCohortQueries;
 
   @Autowired private EptsCommonDimension eptsCommonDimension;
 
@@ -49,33 +49,44 @@ public class TbPrevDataset extends BaseDataSet {
         "age",
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
+
     dsd.addDimension(
         "art-status",
-        EptsReportUtils.map(
-            eptsCommonDimension.getArtStatusDimension(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    dsd.addColumn(
-        "NUM-TOTAL",
-        "Numerator Total",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Numerator Total",
-                EptsReportUtils.map(
-                    tbPrevCohortQueries.getNumerator(),
-                    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
-            mappings),
-        "");
+        EptsReportUtils.map(eptsCommonDimension.getTbPrevArtStatusDimension(), mappings));
+
     dsd.addColumn(
         "DEN-TOTAL",
         "Denominator Total",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Denominator Total",
-                EptsReportUtils.map(
-                    tbPrevCohortQueries.getDenominator(),
-                    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
+                EptsReportUtils.map(txTbPrevCohortQueries.findTbTotalDenominator(), mappings)),
             mappings),
         "");
+
+    addRow(
+        dsd,
+        "R02",
+        "Denominator Disaggregations",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Denominator Disaggregations",
+                EptsReportUtils.map(txTbPrevCohortQueries.findTbTotalDenominator(), mappings)),
+            mappings),
+        getColumns());
+
+    dsd.addColumn(
+        "NUM-TOTAL",
+        "Numerador Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Denominator Total",
+                EptsReportUtils.map(
+                    txTbPrevCohortQueries.findPatientsWhoStartedTpi6MonthsAgoAndWhoEndedTpi(),
+                    mappings)),
+            mappings),
+        "");
+
     addRow(
         dsd,
         "R01",
@@ -84,22 +95,11 @@ public class TbPrevDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Numerator Disaggregations",
                 EptsReportUtils.map(
-                    tbPrevCohortQueries.getNumerator(),
-                    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
+                    txTbPrevCohortQueries.findPatientsWhoStartedTpi6MonthsAgoAndWhoEndedTpi(),
+                    mappings)),
             mappings),
         getColumns());
-    addRow(
-        dsd,
-        "R02",
-        "Denominator Disaggregations",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Denominator Disaggregations",
-                EptsReportUtils.map(
-                    tbPrevCohortQueries.getDenominator(),
-                    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
-            mappings),
-        getColumns());
+
     return dsd;
   }
 
