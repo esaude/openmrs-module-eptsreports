@@ -409,7 +409,18 @@ public class TxCurrCohortQueries {
         EptsReportUtils.map(
             this.getPatientsOnArtOnArvDispenseForLessThan3MonthsCalculation(), mapping));
 
-    cd.setCompositionString("patientsWhoAreActiveOnART AND arvDispenseForLessThan3Months");
+    cd.addSearch(
+        "arvDispenseBetween3And5Months",
+        EptsReportUtils.map(
+            this.getPatientsOnArtOnArvDispenseBetween3And5MonthsCalculation(), mapping));
+
+    cd.addSearch(
+        "arvDispenseFor6OrMoreMonths",
+        EptsReportUtils.map(
+            this.getPatientsOnArtOnArvDispenseFor6OrMoreMonthsCalculation(), mapping));
+
+    cd.setCompositionString(
+        "patientsWhoAreActiveOnART AND arvDispenseForLessThan3Months NOT (arvDispenseBetween3And5Months OR arvDispenseFor6OrMoreMonths)");
     return cd;
   }
 
@@ -420,16 +431,28 @@ public class TxCurrCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     String mapping = "endDate=${endDate},location=${location}";
+
     cd.addSearch(
         "patientsWhoAreActiveOnART",
         EptsReportUtils.map(this.findPatientsWhoAreActiveOnART(), mapping));
+
     cd.addSearch(
         "arvDispenseBetween3And5Months",
         EptsReportUtils.map(
             this.getPatientsOnArtOnArvDispenseBetween3And5MonthsCalculation(), mapping));
 
-    cd.setCompositionString("patientsWhoAreActiveOnART AND arvDispenseBetween3And5Months");
+    cd.addSearch(
+        "arvDispenseForLessThan3Months",
+        EptsReportUtils.map(
+            this.getPatientsOnArtOnArvDispenseForLessThan3MonthsCalculation(), mapping));
 
+    cd.addSearch(
+        "arvDispenseFor6OrMoreMonths",
+        EptsReportUtils.map(
+            this.getPatientsOnArtOnArvDispenseFor6OrMoreMonthsCalculation(), mapping));
+
+    cd.setCompositionString(
+        "patientsWhoAreActiveOnART AND arvDispenseBetween3And5Months NOT (arvDispenseForLessThan3Months OR arvDispenseFor6OrMoreMonths)");
     return cd;
   }
 
@@ -440,16 +463,28 @@ public class TxCurrCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     String mapping = "endDate=${endDate},location=${location}";
+
     cd.addSearch(
         "patientsWhoAreActiveOnART",
         EptsReportUtils.map(this.findPatientsWhoAreActiveOnART(), mapping));
+
     cd.addSearch(
         "arvDispenseFor6OrMoreMonths",
         EptsReportUtils.map(
             this.getPatientsOnArtOnArvDispenseFor6OrMoreMonthsCalculation(), mapping));
 
-    cd.setCompositionString("patientsWhoAreActiveOnART AND arvDispenseFor6OrMoreMonths");
+    cd.addSearch(
+        "arvDispenseBetween3And5Months",
+        EptsReportUtils.map(
+            this.getPatientsOnArtOnArvDispenseBetween3And5MonthsCalculation(), mapping));
 
+    cd.addSearch(
+        "arvDispenseForLessThan3Months",
+        EptsReportUtils.map(
+            this.getPatientsOnArtOnArvDispenseForLessThan3MonthsCalculation(), mapping));
+
+    cd.setCompositionString(
+        "patientsWhoAreActiveOnART AND arvDispenseFor6OrMoreMonths NOT (arvDispenseBetween3And5Months OR arvDispenseForLessThan3Months)");
     return cd;
   }
 

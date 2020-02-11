@@ -78,8 +78,19 @@ public abstract class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation
     return resultMap;
   }
 
-  protected abstract Map<Integer, PatientDisaggregated> getFilaDisaggregations(
-      List<Object[]> maxFilas);
+  protected Map<Integer, PatientDisaggregated> getFilaDisaggregations(List<Object[]> maxFilas) {
+    Map<Integer, PatientDisaggregated> filaDisaggregated = new HashMap<>();
+    for (Object[] fila : maxFilas) {
+      Integer patientId = (Integer) fila[0];
+      Date lastFilaDate = (Date) fila[1];
+      Date nextExpectedFila = (Date) fila[2];
+      if (lastFilaDate != null && nextExpectedFila != null) {
+        filaDisaggregated.put(
+            patientId, new FilaPatientDisaggregated(patientId, lastFilaDate, nextExpectedFila));
+      }
+    }
+    return filaDisaggregated;
+  }
 
   protected abstract void evaluateDisaggregatedPatients(
       Integer patientId,
@@ -264,13 +275,20 @@ public abstract class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation
   }
 
   public class FilaPatientDisaggregated extends PatientDisaggregated {
-    public FilaPatientDisaggregated(Integer patientId, Date date) {
-      super(patientId, date);
+    private Date nextFila;
+
+    public FilaPatientDisaggregated(Integer patientId, Date lasteFila, Date nextFila) {
+      super(patientId, lasteFila);
+      this.nextFila = nextFila;
     }
 
     @Override
     public DisaggregationSourceTypes getDisaggregationSourceType() {
       return DisaggregationSourceTypes.FILA;
+    }
+
+    public Date getNextFila() {
+      return nextFila;
     }
   }
 

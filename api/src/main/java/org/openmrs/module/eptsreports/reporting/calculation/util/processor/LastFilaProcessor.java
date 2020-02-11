@@ -41,10 +41,7 @@ public class LastFilaProcessor {
                     + "			e.encounter_type =6 and o.concept_id=%s and o.value_coded=%s and "
                     + "			e.encounter_datetime<=:endDate and e.location_id=:location "
                     + "	group by p.patient_id ) max_ficha "
-                    + "inner join patient patient_without_fila on patient_without_fila.patient_id = max_ficha.patient_id) "
-                    + "where not exists ( select fila_encounter.patient_id from encounter fila_encounter  "
-                    + "   where fila_encounter.patient_id = patient_without_fila.patient_id "
-                    + "    and fila_encounter.voided =0 and fila_encounter.encounter_type = 18) ",
+                    + "inner join patient patient_without_fila on patient_without_fila.patient_id = max_ficha.patient_id) ",
                 conceptId, valueCodedId),
             context.getParameterValues());
 
@@ -67,10 +64,7 @@ public class LastFilaProcessor {
                     + "		e.encounter_type =6 and o.concept_id=%s and o.value_coded in(1256,1257) and "
                     + "		e.encounter_datetime<=:endDate and e.location_id=:location "
                     + " group by p.patient_id ) max_ficha "
-                    + " inner join patient patient_without_fila on patient_without_fila.patient_id = max_ficha.patient_id) "
-                    + " where not exists ( select fila_encounter.patient_id from encounter fila_encounter "
-                    + "   where fila_encounter.patient_id = patient_without_fila.patient_id "
-                    + "    and fila_encounter.voided =0 and fila_encounter.encounter_type = 18) ",
+                    + " inner join patient patient_without_fila on patient_without_fila.patient_id = max_ficha.patient_id)",
                 conceptId),
             context.getParameterValues());
 

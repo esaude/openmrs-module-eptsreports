@@ -1,8 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.calculation.txcurr;
 
 import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -34,7 +32,13 @@ public class TxCurrPatientsOnArvDispenseLessThan3MonthCalculation
       for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
         if (DisaggregationSourceTypes.FILA.equals(
             patientDisaggregated.getDisaggregationSourceType())) {
-          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+          FilaPatientDisaggregated filaDisaggregation =
+              (FilaPatientDisaggregated) patientDisaggregated;
+          if (DateUtil.getDaysBetween(
+                  filaDisaggregation.getDate(), filaDisaggregation.getNextFila())
+              < DAYS_LESS_THAN_3_MONTHS) {
+            resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+          }
           return;
         }
       }
@@ -51,26 +55,25 @@ public class TxCurrPatientsOnArvDispenseLessThan3MonthCalculation
           this.getMaxPatientDisaggregated(allPatientDisaggregated);
 
       if (maxPatientDisaggregated != null) {
-        if (Arrays.asList(DisaggregationSourceTypes.FILA, DisaggregationSourceTypes.DISPENSA_MENSAL)
-            .contains((maxPatientDisaggregated.getDisaggregationSourceType()))) {
-          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-        }
-      }
-    }
-  }
 
-  protected Map<Integer, PatientDisaggregated> getFilaDisaggregations(List<Object[]> maxFilas) {
-    Map<Integer, PatientDisaggregated> monthlyFila = new HashMap<>();
-    for (Object[] fila : maxFilas) {
-      Integer patientId = (Integer) fila[0];
-      Date lastFilaDate = (Date) fila[1];
-      Date nextExpectedFila = (Date) fila[2];
-      if (lastFilaDate != null && nextExpectedFila != null) {
-        if (DateUtil.getDaysBetween(lastFilaDate, nextExpectedFila) < DAYS_LESS_THAN_3_MONTHS) {
-          monthlyFila.put(patientId, new FilaPatientDisaggregated(patientId, lastFilaDate));
+        if (DisaggregationSourceTypes.FILA.equals(
+            maxPatientDisaggregated.getDisaggregationSourceType())) {
+          FilaPatientDisaggregated filaDisaggregation =
+              (FilaPatientDisaggregated) maxPatientDisaggregated;
+          if (DateUtil.getDaysBetween(
+                  filaDisaggregation.getDate(), filaDisaggregation.getNextFila())
+              < DAYS_LESS_THAN_3_MONTHS) {
+            resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+          }
+        } else {
+
+          if (Arrays.asList(
+                  DisaggregationSourceTypes.FILA, DisaggregationSourceTypes.DISPENSA_MENSAL)
+              .contains((maxPatientDisaggregated.getDisaggregationSourceType()))) {
+            resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+          }
         }
       }
     }
-    return monthlyFila;
   }
 }
