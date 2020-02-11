@@ -33,26 +33,13 @@ public class TxCurrPatientsOnArvDispenseBetween3And5MonthsCalculation
       for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
         if (DisaggregationSourceTypes.FILA.equals(
             patientDisaggregated.getDisaggregationSourceType())) {
-          FilaPatientDisaggregated filaDisaggregation =
-              (FilaPatientDisaggregated) patientDisaggregated;
-          int daysBetween =
-              DateUtil.getDaysBetween(
-                  filaDisaggregation.getDate(), filaDisaggregation.getNextFila());
-          if (daysBetween >= DAYS_LESS_THAN_3_MONTHS
-              && daysBetween <= DAYS_BETWEEN_3_AND_5_MONTHS) {
+          if (this.isInExpectedFilaDisaggregationInterval(
+              (FilaPatientDisaggregated) patientDisaggregated)) {
             resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
           }
           return;
         }
       }
-
-      for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
-        if (DisaggregationSourceTypes.DISPENSA_MENSAL.equals(
-            patientDisaggregated.getDisaggregationSourceType())) {
-          return;
-        }
-      }
-
       for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
         if (DisaggregationSourceTypes.DISPENSA_TRIMESTRAL.equals(
             patientDisaggregated.getDisaggregationSourceType())) {
@@ -72,28 +59,29 @@ public class TxCurrPatientsOnArvDispenseBetween3And5MonthsCalculation
     } else {
       PatientDisaggregated maxPatientDisaggregated =
           super.getMaxPatientDisaggregated(allPatientDisaggregated);
-
       if (maxPatientDisaggregated != null) {
         if (DisaggregationSourceTypes.FILA.equals(
             maxPatientDisaggregated.getDisaggregationSourceType())) {
-          FilaPatientDisaggregated filaDisaggregation =
-              (FilaPatientDisaggregated) maxPatientDisaggregated;
-          int daysBetween =
-              DateUtil.getDaysBetween(
-                  filaDisaggregation.getDate(), filaDisaggregation.getNextFila());
-          if (daysBetween >= DAYS_LESS_THAN_3_MONTHS
-              && daysBetween <= DAYS_BETWEEN_3_AND_5_MONTHS) {
+          if (this.isInExpectedFilaDisaggregationInterval(
+              (FilaPatientDisaggregated) maxPatientDisaggregated)) {
             resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
           }
-        } else {
-          if (Arrays.asList(
-                  DisaggregationSourceTypes.DISPENSA_TRIMESTRAL,
-                  DisaggregationSourceTypes.MODELO_DIFERENCIADO_TRIMESTRAL)
-              .contains((maxPatientDisaggregated.getDisaggregationSourceType()))) {
-            resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-          }
+          return;
+        }
+        if (Arrays.asList(
+                DisaggregationSourceTypes.DISPENSA_TRIMESTRAL,
+                DisaggregationSourceTypes.MODELO_DIFERENCIADO_TRIMESTRAL)
+            .contains((maxPatientDisaggregated.getDisaggregationSourceType()))) {
+          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
         }
       }
     }
+  }
+
+  private boolean isInExpectedFilaDisaggregationInterval(
+      FilaPatientDisaggregated filaDisaggregation) {
+    int daysBetween =
+        DateUtil.getDaysBetween(filaDisaggregation.getDate(), filaDisaggregation.getNextFila());
+    return daysBetween >= DAYS_LESS_THAN_3_MONTHS && daysBetween <= DAYS_BETWEEN_3_AND_5_MONTHS;
   }
 }

@@ -1,6 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.calculation.txcurr;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -32,11 +31,8 @@ public class TxCurrPatientsOnArvDispenseLessThan3MonthCalculation
       for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
         if (DisaggregationSourceTypes.FILA.equals(
             patientDisaggregated.getDisaggregationSourceType())) {
-          FilaPatientDisaggregated filaDisaggregation =
-              (FilaPatientDisaggregated) patientDisaggregated;
-          if (DateUtil.getDaysBetween(
-                  filaDisaggregation.getDate(), filaDisaggregation.getNextFila())
-              < DAYS_LESS_THAN_3_MONTHS) {
+          if (this.isInExpectedFilaDisaggregationInterval(
+              (FilaPatientDisaggregated) patientDisaggregated)) {
             resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
           }
           return;
@@ -55,25 +51,25 @@ public class TxCurrPatientsOnArvDispenseLessThan3MonthCalculation
           this.getMaxPatientDisaggregated(allPatientDisaggregated);
 
       if (maxPatientDisaggregated != null) {
-
         if (DisaggregationSourceTypes.FILA.equals(
             maxPatientDisaggregated.getDisaggregationSourceType())) {
-          FilaPatientDisaggregated filaDisaggregation =
-              (FilaPatientDisaggregated) maxPatientDisaggregated;
-          if (DateUtil.getDaysBetween(
-                  filaDisaggregation.getDate(), filaDisaggregation.getNextFila())
-              < DAYS_LESS_THAN_3_MONTHS) {
+          if (this.isInExpectedFilaDisaggregationInterval(
+              (FilaPatientDisaggregated) maxPatientDisaggregated)) {
             resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
           }
-        } else {
-
-          if (Arrays.asList(
-                  DisaggregationSourceTypes.FILA, DisaggregationSourceTypes.DISPENSA_MENSAL)
-              .contains((maxPatientDisaggregated.getDisaggregationSourceType()))) {
-            resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-          }
+          return;
+        }
+        if (DisaggregationSourceTypes.DISPENSA_MENSAL.equals(
+            maxPatientDisaggregated.getDisaggregationSourceType())) {
+          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
         }
       }
     }
+  }
+
+  private boolean isInExpectedFilaDisaggregationInterval(
+      FilaPatientDisaggregated filaDisaggregation) {
+    return DateUtil.getDaysBetween(filaDisaggregation.getDate(), filaDisaggregation.getNextFila())
+        < DAYS_LESS_THAN_3_MONTHS;
   }
 }

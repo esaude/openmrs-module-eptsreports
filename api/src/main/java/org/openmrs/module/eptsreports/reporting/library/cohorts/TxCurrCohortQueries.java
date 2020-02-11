@@ -409,18 +409,7 @@ public class TxCurrCohortQueries {
         EptsReportUtils.map(
             this.getPatientsOnArtOnArvDispenseForLessThan3MonthsCalculation(), mapping));
 
-    cd.addSearch(
-        "arvDispenseBetween3And5Months",
-        EptsReportUtils.map(
-            this.getPatientsOnArtOnArvDispenseBetween3And5MonthsCalculation(), mapping));
-
-    cd.addSearch(
-        "arvDispenseFor6OrMoreMonths",
-        EptsReportUtils.map(
-            this.getPatientsOnArtOnArvDispenseFor6OrMoreMonthsCalculation(), mapping));
-
-    cd.setCompositionString(
-        "patientsWhoAreActiveOnART AND arvDispenseForLessThan3Months NOT (arvDispenseBetween3And5Months OR arvDispenseFor6OrMoreMonths)");
+    cd.setCompositionString("patientsWhoAreActiveOnART AND arvDispenseForLessThan3Months");
     return cd;
   }
 
@@ -441,18 +430,7 @@ public class TxCurrCohortQueries {
         EptsReportUtils.map(
             this.getPatientsOnArtOnArvDispenseBetween3And5MonthsCalculation(), mapping));
 
-    cd.addSearch(
-        "arvDispenseForLessThan3Months",
-        EptsReportUtils.map(
-            this.getPatientsOnArtOnArvDispenseForLessThan3MonthsCalculation(), mapping));
-
-    cd.addSearch(
-        "arvDispenseFor6OrMoreMonths",
-        EptsReportUtils.map(
-            this.getPatientsOnArtOnArvDispenseFor6OrMoreMonthsCalculation(), mapping));
-
-    cd.setCompositionString(
-        "patientsWhoAreActiveOnART AND arvDispenseBetween3And5Months NOT (arvDispenseForLessThan3Months OR arvDispenseFor6OrMoreMonths)");
+    cd.setCompositionString("patientsWhoAreActiveOnART AND arvDispenseBetween3And5Months");
     return cd;
   }
 
@@ -473,18 +451,7 @@ public class TxCurrCohortQueries {
         EptsReportUtils.map(
             this.getPatientsOnArtOnArvDispenseFor6OrMoreMonthsCalculation(), mapping));
 
-    cd.addSearch(
-        "arvDispenseBetween3And5Months",
-        EptsReportUtils.map(
-            this.getPatientsOnArtOnArvDispenseBetween3And5MonthsCalculation(), mapping));
-
-    cd.addSearch(
-        "arvDispenseForLessThan3Months",
-        EptsReportUtils.map(
-            this.getPatientsOnArtOnArvDispenseForLessThan3MonthsCalculation(), mapping));
-
-    cd.setCompositionString(
-        "patientsWhoAreActiveOnART AND arvDispenseFor6OrMoreMonths NOT (arvDispenseBetween3And5Months OR arvDispenseForLessThan3Months)");
+    cd.setCompositionString("patientsWhoAreActiveOnART AND arvDispenseFor6OrMoreMonths");
     return cd;
   }
 
