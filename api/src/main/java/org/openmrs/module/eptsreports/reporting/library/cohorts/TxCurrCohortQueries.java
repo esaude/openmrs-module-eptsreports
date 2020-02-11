@@ -746,29 +746,9 @@ public class TxCurrCohortQueries {
 
   @DocumentedDefinition("3-5 months of ARVs dispensed")
   public CohortDefinition getPatientsWith3to5MonthsOfDispensationQuantity() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    CohortDefinition pickupDiff = getPatientsWithNextPickup83to173Days();
-    CohortDefinition quarterlyDispensation = getPatientsWithQuarterlyTypeOfDispensation();
-    CohortDefinition startOrContinue = getPatientsWithStartOrContinueOnQuarterlyDispensation();
-    CohortDefinition completed = getPatientsWithCompletedOnQuarterlyDispensation();
-    CohortDefinition fila = getPatientsWithArvFarmaciaEncounterType();
-
-    cd.addSearch("pickupDiff", mapStraightThrough(pickupDiff));
-
-    String codedObsMappings =
-        "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}";
-    cd.addSearch("dispensation", EptsReportUtils.map(quarterlyDispensation, codedObsMappings));
-    cd.addSearch("startOrContinue", EptsReportUtils.map(startOrContinue, codedObsMappings));
-    cd.addSearch("completed", EptsReportUtils.map(completed, codedObsMappings));
-    cd.addSearch("fila", EptsReportUtils.map(fila, codedObsMappings));
-
-    cd.setCompositionString(
-        "(pickupDiff OR ((dispensation OR startOrContinue) NOT fila)) NOT completed");
-    return cd;
+	  List<EncounterType> ets = Arrays.asList(hivMetadata.getARVPharmaciaEncounterType(),
+			  hivMetadata.getAdultoSeguimentoEncounterType());
+	  return getPatientsWithQuarterlyTypeOfDispensation(ets);
   }
 
   @DocumentedDefinition("6 or more months of ARV dispensed")
@@ -868,6 +848,30 @@ public class TxCurrCohortQueries {
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getQuarterlyConcept());
     return cd;
+  }
+  
+  public SqlCohortDefinition getPatientsWithQuarterlyTypeOfDispensation(List < EncounterType > encounterTypes) {
+	  SqlCohortDefinition query = new SqlCohortDefinition();
+	  StringBuilder queryStr = new StringBuilder();
+	  queryStr.append("select pp.patient_id from (select lst.patient_id, lst.encounter_datetime from (select last_encounter.patient_id, last_encounter.encounter_id, last_encounter.encounter_datetime from (select e.patient_id, e.encounter_datetime, e.encounter_id from encounter e where e.encounter_type in(");
+
+	  int i = 0;
+	  for (EncounterType et: encounterTypes) {
+		  if (i > 0) {
+			  queryStr.append(",");
+		  }
+		  queryStr.append(et.getEncounterTypeId());
+
+		  i++;
+	  }
+
+	  queryStr.append(") and e.encounter_datetime >= :onOrAfter and e.encounter_datetime <= :onOrBefore and e.location_id = :location and e.voided=0 order by e.encounter_datetime desc, case when encounter_type = "+encounterTypes.get(0).getEncounterTypeId()+" then 1 else 2 end ) as last_encounter group by last_encounter.patient_id) as lst, obs o where lst.encounter_id=o.encounter_id and o.voided=0 and (( o.concept_id=" + hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId() + " and timestampdiff(DAY, lst.encounter_datetime, o.value_datetime) BETWEEN 83 AND 173 ) or ( o.concept_id= " + hivMetadata.getTypeOfDispensationConcept().getConceptId() + " and o.value_coded =" + hivMetadata.getQuarterlyConcept().getConceptId() + ") or (o.concept_id=" + hivMetadata.getQuarterlyDispensation().getConceptId() + " and o.value_coded in (" + hivMetadata.getStartDrugsConcept().getConceptId() + "," + hivMetadata.getContinueRegimen().getConceptId() + ")))) as pp");
+
+	  query.setQuery(queryStr.toString());
+	  query.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+	  query.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+	  query.addParameter(new Parameter("location", "Location", Location.class));
+	  return query;
   }
 
   @DocumentedDefinition(
