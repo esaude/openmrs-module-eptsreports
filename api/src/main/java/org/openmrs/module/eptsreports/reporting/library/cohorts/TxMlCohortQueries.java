@@ -506,7 +506,9 @@ public class TxMlCohortQueries {
             hivMetadata.getPatientFoundForwardedConcept().getConceptId(),
             hivMetadata.getReasonPatientNotFound().getConceptId(),
             hivMetadata.getWhoGaveInformationConcept().getConceptId(),
-            hivMetadata.getCardDeliveryDateConcept().getConceptId()));
+            hivMetadata.getCardDeliveryDateConcept().getConceptId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickup().getConceptId()));
 
     return sqlCohortDefinition;
   }
@@ -535,7 +537,9 @@ public class TxMlCohortQueries {
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
             hivMetadata.getVisitaApoioReintegracaoParteAEncounterType().getEncounterTypeId(),
-            hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId()));
+            hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickup().getConceptId()));
 
     return sqlCohortDefinition;
   }
@@ -634,13 +638,15 @@ public class TxMlCohortQueries {
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
             hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
             hivMetadata.getVisitaApoioReintegracaoParteAEncounterType().getEncounterTypeId(),
             hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId(),
             hivMetadata.getTypeOfVisitConcept().getConceptId(),
             hivMetadata.getBuscaConcept().getConceptId(),
             hivMetadata.getPatientFoundConcept().getConceptId(),
-            hivMetadata.getNoConcept().getConceptId()));
+            hivMetadata.getNoConcept().getConceptId(),
+            hivMetadata.getArtDatePickup().getConceptId()));
 
     return sqlCohortDefinition;
   }
@@ -661,13 +667,15 @@ public class TxMlCohortQueries {
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
             hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
             hivMetadata.getVisitaApoioReintegracaoParteAEncounterType().getEncounterTypeId(),
             hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId(),
             hivMetadata.getTypeOfVisitConcept().getConceptId(),
             hivMetadata.getBuscaConcept().getConceptId(),
             hivMetadata.getPatientFoundConcept().getConceptId(),
-            hivMetadata.getPatientFoundYesConcept().getConceptId()));
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getArtDatePickup().getConceptId()));
 
     return sqlCohortDefinition;
   }
