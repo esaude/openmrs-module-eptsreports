@@ -84,6 +84,18 @@ public class TxMlDataset extends BaseDataSet {
         "Age and Gender",
         EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings),
         getColumnsForAgeAndGender());
+
+    dsd.addColumn(
+        "M2-TotalMale",
+        " Age and Gender (Totals male) ",
+        EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings),
+        "gender=M");
+    dsd.addColumn(
+        "M2-TotalFemale",
+        "Age and Gender (Totals female) ",
+        EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings),
+        "gender=F");
+
     this.setDeadDimension(
         dsd, EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings), mappings);
     super.addRow(
@@ -92,12 +104,34 @@ public class TxMlDataset extends BaseDataSet {
         "LTFU < 90 days",
         EptsReportUtils.map(ltfuLessThan3MonthsIndicator, mappings),
         getColumnsForAgeAndGender());
+    dsd.addColumn(
+        "M4-TotalMale",
+        "LTFU < 90 days (Totals male) ",
+        EptsReportUtils.map(ltfuLessThan3MonthsIndicator, mappings),
+        "gender=M");
+    dsd.addColumn(
+        "M4-TotalFemale",
+        "LTFU < 90 days (Totals female) ",
+        EptsReportUtils.map(ltfuLessThan3MonthsIndicator, mappings),
+        "gender=F");
+
     super.addRow(
         dsd,
         "M5",
         "LTFU >= 90 days",
         EptsReportUtils.map(ltfuLessGreatherThan3MonthsIndicator, mappings),
         getColumnsForAgeAndGender());
+    dsd.addColumn(
+        "M5-TotalMale",
+        "LTFU >= 90 days (Totals male) ",
+        EptsReportUtils.map(ltfuLessGreatherThan3MonthsIndicator, mappings),
+        "gender=M");
+    dsd.addColumn(
+        "M5-TotalFemale",
+        "LTFU >= 90 days (Totals female) ",
+        EptsReportUtils.map(ltfuLessGreatherThan3MonthsIndicator, mappings),
+        "gender=F");
+
     this.setTransferedDimension(
         dsd, EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings), mappings);
     this.setRefusedOrStoppedTreatmentDimension(
@@ -120,6 +154,10 @@ public class TxMlDataset extends BaseDataSet {
               : dimension;
       dataSetDefinition.addColumn(name, label, indicator, dimensionIter);
     }
+    dataSetDefinition.addColumn(
+        "M3-TotalMale", "Dead (Totals male) ", indicator, "gender=M|dead=dead");
+    dataSetDefinition.addColumn(
+        "M3-TotalFemale", "Dead (Totals female) ", indicator, "gender=F|dead=dead");
   }
 
   private void setTransferedDimension(
@@ -136,6 +174,16 @@ public class TxMlDataset extends BaseDataSet {
               : dimension;
       dataSetDefinition.addColumn(name, label, indicator, dimensionIter);
     }
+    dataSetDefinition.addColumn(
+        "M6-TotalMale",
+        "Transfered Out (Totals male) ",
+        indicator,
+        "gender=M|transferedout=transferedout");
+    dataSetDefinition.addColumn(
+        "M6-TotalFemale",
+        "Transfered Out (Totals female) ",
+        indicator,
+        "gender=F|transferedout=transferedout");
   }
 
   private void setRefusedOrStoppedTreatmentDimension(
@@ -153,6 +201,16 @@ public class TxMlDataset extends BaseDataSet {
               : dimension;
       dataSetDefinition.addColumn(name, label, indicator, dimensionIter);
     }
+    dataSetDefinition.addColumn(
+        "M7-TotalMale",
+        "Stopped/Refused Treatment (Totals male) ",
+        indicator,
+        "gender=M|refusedorstoppedtreatment=refusedorstoppedtreatment");
+    dataSetDefinition.addColumn(
+        "M7-TotalFemale",
+        "Stopped/Refused Treatment (Totals female) ",
+        indicator,
+        "gender=F|refusedorstoppedtreatment=refusedorstoppedtreatment");
   }
 
   private List<ColumnParameters> getColumnsForAgeAndGender() {
