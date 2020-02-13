@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +12,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -25,6 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
 
   @Autowired private ResumoMensalCohortQueries resumoMensalCohortQueries;
+
+  @Autowired private HivCohortQueries hivCohortQueries;
 
   @Test
   public void A1() throws EvaluationException {
@@ -107,24 +109,6 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, mappings);
     assertEquals(1, evaluatedCohort.size());
     assertTrue(evaluatedCohort.contains(1006));
-  }
-
-  @Test
-  public void B7() throws EvaluationException {
-    CohortDefinition cd =
-        resumoMensalCohortQueries.getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthB7();
-
-    Calendar endDateMinus90Days = Calendar.getInstance();
-    endDateMinus90Days.setTime(getEndDate());
-    endDateMinus90Days.add(Calendar.DAY_OF_MONTH, -90);
-    Map<Parameter, Object> mappings = new HashMap<>();
-    mappings.put(new Parameter("value1", "value1", Date.class), endDateMinus90Days.getTime());
-    mappings.put(new Parameter("value2", "value2", Date.class), getEndDate());
-    mappings.put(new Parameter("locationList", "locationList", Location.class), getLocation());
-    mappings.put(new Parameter("onOrBefore", "onOrBefore", Date.class), getEndDate());
-    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, mappings);
-    assertEquals(1, evaluatedCohort.size());
-    assertTrue(evaluatedCohort.contains(1007));
   }
 
   @Test

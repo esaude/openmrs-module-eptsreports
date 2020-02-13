@@ -46,7 +46,8 @@ public class TxMlDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "totals missed",
                 EptsReportUtils.map(
-                    txMlCohortQueries.getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
+                    txMlCohortQueries
+                        .getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
                     mappings)),
             mappings),
         "");
@@ -59,7 +60,8 @@ public class TxMlDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Age and Gender",
                 EptsReportUtils.map(
-                    txMlCohortQueries.getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
+                    txMlCohortQueries
+                        .getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
                     mappings)),
             mappings),
         getColumnsForAgeAndGender());
@@ -73,55 +75,62 @@ public class TxMlDataset extends BaseDataSet {
                 "missed and dead",
                 EptsReportUtils.map(
                     txMlCohortQueries
-                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutButDiedDuringReportingPeriod(),
+                        .getPatientsWhoMissedNextAppointmentAndDiedDuringReportingPeriod(),
                     mappings)),
             mappings),
         getColumnsForAgeAndGender());
-
-    // Not Consented
+    // LTFU Less Than 90 days
     addRow(
         dsd,
         "M4",
-        "Not Consented",
+        "LTFU Less Than 90 days",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Not Consented",
+                "missed and LTFU Less Than 90 days",
                 EptsReportUtils.map(
-                    txMlCohortQueries
-                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndNotConsentedDuringReportingPeriod(),
-                    mappings)),
+                    txMlCohortQueries.getPatientsLTFULessThan90DaysComposition(), mappings)),
             mappings),
         getColumnsForAgeAndGender());
-
-    // Traced (Unable to locate)
+    // Transferred Out
     addRow(
         dsd,
         "M5",
-        "Traced (Unable to locate)",
+        "TransferredOut",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Traced (Unable to locate)",
+                "missed and TransferredOut",
                 EptsReportUtils.map(
-                    txMlCohortQueries
-                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndTraced(),
+                    txMlCohortQueries.getPatientsWhoMissedNextAppointmentAndTransferredOut(),
                     mappings)),
             mappings),
         getColumnsForAgeAndGender());
-
-    // Untraced Patients
+    // Refused Or Stopped Treatment
     addRow(
         dsd,
         "M6",
-        "Untraced patients",
+        "RefusedOrStoppedTreatment",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Untraced Patients",
+                "missed and RefusedOrStoppedTreatment",
                 EptsReportUtils.map(
                     txMlCohortQueries
-                        .getPatientsWhoMissedNextAppointmentAndNotTransferredOutAndUntraced(),
+                        .getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment(),
                     mappings)),
             mappings),
         getColumnsForAgeAndGender());
+    // LTFU More Than 90 days
+    addRow(
+        dsd,
+        "M7",
+        "LTFU More Than 90 days",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "missed and LTFU More Than 90 days",
+                EptsReportUtils.map(
+                    txMlCohortQueries.getPatientsLTFUMoreThan90DaysComposition(), mappings)),
+            mappings),
+        getColumnsForAgeAndGender());
+
     return dsd;
   }
 

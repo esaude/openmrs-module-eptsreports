@@ -24,12 +24,14 @@ public class CommonMetadata extends Metadata {
       "eptsreports.transferFromOtherFacilityConceptUuid";
 
   // CONCEPTS
+  // concept_id = 1065
   public Concept getYesConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.yesConceptUuid");
     return getConcept(uuid);
   }
 
+  // concept_id=1066
   public Concept getNoConcept() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.noConceptUuid");
     return getConcept(uuid);
@@ -68,12 +70,6 @@ public class CommonMetadata extends Metadata {
   public Concept getPregnantConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.pregnantConceptUuid");
-    return getConcept(uuid);
-  }
-
-  public Concept getGestationConcept() {
-    String uuid =
-        Context.getAdministrationService().getGlobalProperty("eptsreports.gestationConceptUuid");
     return getConcept(uuid);
   }
 

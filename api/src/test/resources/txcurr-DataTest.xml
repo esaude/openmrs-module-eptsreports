@@ -45,6 +45,12 @@
 		birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
 		  date_created="2005-01-01 00:00:00.0" voided="false"   death_date="2018-07-13 00:00:00.0"
 		uuid="340825ca-0204-11ea-ad28-47dd9db33d34" />
+		
+		<person person_id="12594" gender="M"  creator="1"
+		birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+		  date_created="2005-01-01 00:00:00.0" voided="false"   death_date="2018-07-13 00:00:00.0"
+		uuid="91687fac-472e-11ea-9654-df7f5070812f" />
+ 
  
 
 	<!-- patient -->
@@ -71,6 +77,11 @@
 		date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
 		
 		<patient patient_id="12593"   creator="1"
+		date_created="2005-09-22 00:00:00.0"  
+		date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+		
+		 
+		<patient patient_id="12594"   creator="1"
 		date_created="2005-09-22 00:00:00.0"  
 		date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
 		
@@ -222,6 +233,21 @@
 		uuid="2576e015-c322-4c58-84a5-880a105ce2d7" />
 		
 		
+		<global_property
+		property="eptsreports.reasonPatientNotFoundByActivist2ndVisitConceptUuid"
+		property_value="1ca778cc-509f-4ca3-ad97-f719e36f7b05"
+		description=" UUID for reason Patient Not Found By Activist 2nd Visit "
+		uuid="668ea3dc-472a-11ea-94ad-87ec1077a1b9" />
+		
+		
+		<global_property
+		property="eptsreports.reasonPatientNotFoundByActivist3rdVisitConceptUuid"
+		property_value="15906fed-6dd3-4e4c-bb8b-21ba5ff96011"
+		description=" UUID for the REASON PATIENT NOT FOUND BY ACTIVIST (3rd Visit) concept "
+		uuid="9a628470-472b-11ea-8826-7ff98c298bc7" />
+		
+		
+		
 		
 		<!-- concept -->
 		<concept concept_id="6276" retired="0"   creator="1"
@@ -331,6 +357,17 @@
 		  is_set="0"   class_id="11" datatype_id="6"
 		date_created="2008-10-13 05:58:15" creator="1"
 		uuid="e1e2efd8-1d5f-11e0-b929-000c29ad1d07" />
+		
+		<concept concept_id="23944" retired="0" 
+		  is_set="0"   class_id="7" datatype_id="2"
+		date_created="2019-10-24 17:16:23" creator="1"
+		uuid="1ca778cc-509f-4ca3-ad97-f719e36f7b05" />
+		
+		
+		<concept concept_id="23945" retired="0" 
+		  is_set="0"   class_id="7" datatype_id="2"
+		date_created="2019-10-24 17:23:07" creator="1"
+		uuid="15906fed-6dd3-4e4c-bb8b-21ba5ff96011" />
 		
 		
 		
@@ -480,6 +517,12 @@
 		uuid="5dbccfb4-0205-11ea-b51e-33b37a47226e" location_id="6" />
 		
 		
+		<encounter encounter_id="9007" encounter_type="21"
+		patient_id="12594" encounter_datetime="2018-07-12 00:00:00" creator="1"
+		date_created="2018-06-20 12:55:48" voided="0"
+		uuid="5daed5efe-472e-11ea-ba16-c799d6b7d180" location_id="6" />
+		
+		
 	<!-- obs -->
 	<obs obs_id="100" person_id="1001" concept_id="1255"
 		encounter_id="9001" obs_datetime="2018-07-08 00:00:00"
@@ -487,7 +530,7 @@
 		voided="0" uuid="3d6371cc-45b5-4731-b6c1-8e69cb882cd7" location_id="6" />
 		
 	<obs obs_id="101" person_id="1002" concept_id="23866"
-		encounter_id="9003" obs_datetime="2018-07-08 00:00:00"
+		encounter_id="9003" obs_datetime="2018-07-08 00:00:00" value_datetime="2018-07-08 00:00:00"
 		value_coded="1256" creator="1" date_created="2018-07-08 12:55:48"
 		voided="0" uuid="7aa27d18-ffc6-11e9-b8ec-4339aa98358b" location_id="6" />
 		
@@ -505,6 +548,11 @@
 		encounter_id="9006" obs_datetime="2018-07-08 00:00:00"
 		creator="1" date_created="2018-07-08 12:55:48"
 		voided="0" uuid="d6796536-ffd8-11e9-8a8a-177367cdb83a" location_id="6" />
+		
+	   <obs obs_id="105" person_id="12594" concept_id="23944"
+		encounter_id="9007" obs_datetime="2018-07-08 00:00:00"
+		creator="1" date_created="2018-07-08 12:55:48" value_coded="1366"
+		voided="0" uuid="39883c90-472f-11ea-8508-17dd56388f73" location_id="6" />
 		
 	
 </dataset>
