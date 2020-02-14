@@ -11,7 +11,6 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
