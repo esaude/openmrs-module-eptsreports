@@ -5,12 +5,12 @@ import static org.junit.Assert.assertFalse;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxRTTCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxTbPrevCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -19,10 +19,10 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /** @author Stélio Moiane */
-@Ignore
 public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
 
   @Autowired private TxRTTCohortQueries txRTTCohortQueries;
+  @Autowired private TxTbPrevCohortQueries txTbPrevCohortQueries;
 
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
@@ -32,7 +32,8 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
     final Date endDate = DateUtil.getDateTime(2019, 12, 20);
     // final Date reportingEndDate = DateUtil.getDateTime(2018, 9, 20);
 
-    final CohortDefinition txNewCompositionCohort = this.txRTTCohortQueries.findPatientsOnRTT();
+    final CohortDefinition txNewCompositionCohort =
+        this.txTbPrevCohortQueries.findPatientsTransferredOut();
 
     final Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), startDate);
@@ -45,6 +46,7 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
     final EvaluatedCohort evaluateCohortDefinition =
         this.evaluateCohortDefinition(txNewCompositionCohort, parameters);
 
+    System.out.println(evaluateCohortDefinition.getMemberIds().size());
     assertFalse(evaluateCohortDefinition.getMemberIds().isEmpty());
   }
 
