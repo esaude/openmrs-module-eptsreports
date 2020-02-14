@@ -11,12 +11,10 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
@@ -738,25 +736,31 @@ public class TxCurrCohortQueries {
   }
 
   @DocumentedDefinition("<3 month of ARVs Dispensed")
-	public CohortDefinition getPatientsWithLessThan3MonthsDispensationQuantity() {
-		List<EncounterType> ets = Arrays.asList(hivMetadata.getARVPharmaciaEncounterType(),
-			hivMetadata.getAdultoSeguimentoEncounterType());
-		return getPatientsWithMonthlyTypeOfDispensation(ets);
-	}
+  public CohortDefinition getPatientsWithLessThan3MonthsDispensationQuantity() {
+    List<EncounterType> ets =
+        Arrays.asList(
+            hivMetadata.getARVPharmaciaEncounterType(),
+            hivMetadata.getAdultoSeguimentoEncounterType());
+    return getPatientsWithMonthlyTypeOfDispensation(ets);
+  }
 
   @DocumentedDefinition("3-5 months of ARVs dispensed")
   public CohortDefinition getPatientsWith3to5MonthsOfDispensationQuantity() {
-	  List<EncounterType> ets = Arrays.asList(hivMetadata.getARVPharmaciaEncounterType(),
-			  hivMetadata.getAdultoSeguimentoEncounterType());
-	  return getPatientsWithQuarterlyTypeOfDispensation(ets);
+    List<EncounterType> ets =
+        Arrays.asList(
+            hivMetadata.getARVPharmaciaEncounterType(),
+            hivMetadata.getAdultoSeguimentoEncounterType());
+    return getPatientsWithQuarterlyTypeOfDispensation(ets);
   }
 
   @DocumentedDefinition("6 or more months of ARV dispensed")
-	public CohortDefinition getPatientsWithMoreThan6MonthsOfDispensationQuantity() {
-		List<EncounterType> ets = Arrays.asList(hivMetadata.getARVPharmaciaEncounterType(),
-		    hivMetadata.getAdultoSeguimentoEncounterType());
-		return getPatientsWithSemiAnnualTypeOfDispensation(ets);
-	}
+  public CohortDefinition getPatientsWithMoreThan6MonthsOfDispensationQuantity() {
+    List<EncounterType> ets =
+        Arrays.asList(
+            hivMetadata.getARVPharmaciaEncounterType(),
+            hivMetadata.getAdultoSeguimentoEncounterType());
+    return getPatientsWithSemiAnnualTypeOfDispensation(ets);
+  }
 
   @DocumentedDefinition(
       "patients whose next ART pick-up is scheduled for >173 days after the date of their last ART drug pick-up")
@@ -790,29 +794,40 @@ public class TxCurrCohortQueries {
     cd.addValue(hivMetadata.getMonthlyConcept());
     return cd;
   }
-  
-  public SqlCohortDefinition getPatientsWithMonthlyTypeOfDispensation(List < EncounterType > encounterTypes) {
-	  SqlCohortDefinition query = new SqlCohortDefinition();
-	  StringBuilder queryStr = new StringBuilder();
-	  queryStr.append("select pp.patient_id from (select lst.patient_id, lst.encounter_datetime from (select last_encounter.patient_id, last_encounter.encounter_id, last_encounter.encounter_datetime from (select e.patient_id, e.encounter_datetime, e.encounter_id from encounter e where e.encounter_type in(");
 
-	  int i = 0;
-	  for (EncounterType et: encounterTypes) {
-		  if (i > 0) {
-			  queryStr.append(",");
-		  }
-		  queryStr.append(et.getEncounterTypeId());
+  public SqlCohortDefinition getPatientsWithMonthlyTypeOfDispensation(
+      List<EncounterType> encounterTypes) {
+    SqlCohortDefinition query = new SqlCohortDefinition();
+    StringBuilder queryStr = new StringBuilder();
+    queryStr.append(
+        "select pp.patient_id from (select lst.patient_id, lst.encounter_datetime from (select last_encounter.patient_id, last_encounter.encounter_id, last_encounter.encounter_datetime from (select e.patient_id, e.encounter_datetime, e.encounter_id from encounter e where e.encounter_type in(");
 
-		  i++;
-	  }
+    int i = 0;
+    for (EncounterType et : encounterTypes) {
+      if (i > 0) {
+        queryStr.append(",");
+      }
+      queryStr.append(et.getEncounterTypeId());
 
-	  queryStr.append(") and e.encounter_datetime <= :onOrBefore and e.location_id = :location and e.voided=0 order by e.encounter_datetime desc, case when e.encounter_type = "+encounterTypes.get(0).getEncounterTypeId()+" then 1 else 2 end ) as last_encounter group by last_encounter.patient_id) as lst, obs o where lst.encounter_id=o.encounter_id and o.voided=0 and (( o.concept_id=" + hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId() + " and timestampdiff(DAY, lst.encounter_datetime, o.value_datetime) < 83 ) or ( o.concept_id= " + hivMetadata.getTypeOfDispensationConcept().getConceptId() + " and o.value_coded =" + hivMetadata.getMonthlyConcept().getConceptId() + "))) as pp");
+      i++;
+    }
 
-	  query.setQuery(queryStr.toString());
-	  query.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-	  query.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-	  query.addParameter(new Parameter("location", "Location", Location.class));
-	  return query;
+    queryStr.append(
+        ") and e.encounter_datetime <= :onOrBefore and e.location_id = :location and e.voided=0 order by e.encounter_datetime desc, case when e.encounter_type = "
+            + encounterTypes.get(0).getEncounterTypeId()
+            + " then 1 else 2 end ) as last_encounter group by last_encounter.patient_id) as lst, obs o where lst.encounter_id=o.encounter_id and o.voided=0 and (( o.concept_id="
+            + hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()
+            + " and timestampdiff(DAY, lst.encounter_datetime, o.value_datetime) < 83 ) or ( o.concept_id= "
+            + hivMetadata.getTypeOfDispensationConcept().getConceptId()
+            + " and o.value_coded ="
+            + hivMetadata.getMonthlyConcept().getConceptId()
+            + "))) as pp");
+
+    query.setQuery(queryStr.toString());
+    query.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    query.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    query.addParameter(new Parameter("location", "Location", Location.class));
+    return query;
   }
 
   @DocumentedDefinition(
@@ -829,29 +844,46 @@ public class TxCurrCohortQueries {
     cd.addValue(hivMetadata.getQuarterlyConcept());
     return cd;
   }
-  
-  public SqlCohortDefinition getPatientsWithQuarterlyTypeOfDispensation(List < EncounterType > encounterTypes) {
-	  SqlCohortDefinition query = new SqlCohortDefinition();
-	  StringBuilder queryStr = new StringBuilder();
-	  queryStr.append("select pp.patient_id from (select lst.patient_id, lst.encounter_datetime from (select last_encounter.patient_id, last_encounter.encounter_id, last_encounter.encounter_datetime from (select e.patient_id, e.encounter_datetime, e.encounter_id from encounter e where e.encounter_type in(");
 
-	  int i = 0;
-	  for (EncounterType et: encounterTypes) {
-		  if (i > 0) {
-			  queryStr.append(",");
-		  }
-		  queryStr.append(et.getEncounterTypeId());
+  public SqlCohortDefinition getPatientsWithQuarterlyTypeOfDispensation(
+      List<EncounterType> encounterTypes) {
+    SqlCohortDefinition query = new SqlCohortDefinition();
+    StringBuilder queryStr = new StringBuilder();
+    queryStr.append(
+        "select pp.patient_id from (select lst.patient_id, lst.encounter_datetime from (select last_encounter.patient_id, last_encounter.encounter_id, last_encounter.encounter_datetime from (select e.patient_id, e.encounter_datetime, e.encounter_id from encounter e where e.encounter_type in(");
 
-		  i++;
-	  }
+    int i = 0;
+    for (EncounterType et : encounterTypes) {
+      if (i > 0) {
+        queryStr.append(",");
+      }
+      queryStr.append(et.getEncounterTypeId());
 
-	  queryStr.append(") and e.encounter_datetime <= :onOrBefore and e.location_id = :location and e.voided=0 order by e.encounter_datetime desc, case when e.encounter_type = "+encounterTypes.get(0).getEncounterTypeId()+" then 1 else 2 end ) as last_encounter group by last_encounter.patient_id) as lst, obs o where lst.encounter_id=o.encounter_id and o.voided=0 and (( o.concept_id=" + hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId() + " and timestampdiff(DAY, lst.encounter_datetime, o.value_datetime) BETWEEN 83 AND 173 ) or ( o.concept_id= " + hivMetadata.getTypeOfDispensationConcept().getConceptId() + " and o.value_coded =" + hivMetadata.getQuarterlyConcept().getConceptId() + ") or (o.concept_id=" + hivMetadata.getQuarterlyDispensation().getConceptId() + " and o.value_coded in (" + hivMetadata.getStartDrugsConcept().getConceptId() + "," + hivMetadata.getContinueRegimen().getConceptId() + ")))) as pp");
+      i++;
+    }
 
-	  query.setQuery(queryStr.toString());
-	  query.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-	  query.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-	  query.addParameter(new Parameter("location", "Location", Location.class));
-	  return query;
+    queryStr.append(
+        ") and e.encounter_datetime <= :onOrBefore and e.location_id = :location and e.voided=0 order by e.encounter_datetime desc, case when e.encounter_type = "
+            + encounterTypes.get(0).getEncounterTypeId()
+            + " then 1 else 2 end ) as last_encounter group by last_encounter.patient_id) as lst, obs o where lst.encounter_id=o.encounter_id and o.voided=0 and (( o.concept_id="
+            + hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()
+            + " and timestampdiff(DAY, lst.encounter_datetime, o.value_datetime) BETWEEN 83 AND 173 ) or ( o.concept_id= "
+            + hivMetadata.getTypeOfDispensationConcept().getConceptId()
+            + " and o.value_coded ="
+            + hivMetadata.getQuarterlyConcept().getConceptId()
+            + ") or (o.concept_id="
+            + hivMetadata.getQuarterlyDispensation().getConceptId()
+            + " and o.value_coded in ("
+            + hivMetadata.getStartDrugsConcept().getConceptId()
+            + ","
+            + hivMetadata.getContinueRegimen().getConceptId()
+            + ")))) as pp");
+
+    query.setQuery(queryStr.toString());
+    query.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    query.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    query.addParameter(new Parameter("location", "Location", Location.class));
+    return query;
   }
 
   @DocumentedDefinition(
@@ -868,29 +900,46 @@ public class TxCurrCohortQueries {
     cd.addValue(hivMetadata.getSemiannualDispensation());
     return cd;
   }
-  
-  public SqlCohortDefinition getPatientsWithSemiAnnualTypeOfDispensation(List < EncounterType > encounterTypes) {
-	  SqlCohortDefinition query = new SqlCohortDefinition();
-	  StringBuilder queryStr = new StringBuilder();
-	  queryStr.append("select pp.patient_id from (select lst.patient_id, lst.encounter_datetime from (select last_encounter.patient_id, last_encounter.encounter_id, last_encounter.encounter_datetime from (select e.patient_id, e.encounter_datetime, e.encounter_id from encounter e where e.encounter_type in(");
 
-	  int i = 0;
-	  for (EncounterType et: encounterTypes) {
-		  if (i > 0) {
-			  queryStr.append(",");
-		  }
-		  queryStr.append(et.getEncounterTypeId());
+  public SqlCohortDefinition getPatientsWithSemiAnnualTypeOfDispensation(
+      List<EncounterType> encounterTypes) {
+    SqlCohortDefinition query = new SqlCohortDefinition();
+    StringBuilder queryStr = new StringBuilder();
+    queryStr.append(
+        "select pp.patient_id from (select lst.patient_id, lst.encounter_datetime from (select last_encounter.patient_id, last_encounter.encounter_id, last_encounter.encounter_datetime from (select e.patient_id, e.encounter_datetime, e.encounter_id from encounter e where e.encounter_type in(");
 
-		  i++;
-	  }
+    int i = 0;
+    for (EncounterType et : encounterTypes) {
+      if (i > 0) {
+        queryStr.append(",");
+      }
+      queryStr.append(et.getEncounterTypeId());
 
-	  queryStr.append(") and e.encounter_datetime <= :onOrBefore and e.location_id = :location and e.voided=0 order by e.encounter_datetime desc, case when e.encounter_type = "+encounterTypes.get(0).getEncounterTypeId()+" then 1 else 2 end ) as last_encounter group by last_encounter.patient_id) as lst, obs o where lst.encounter_id=o.encounter_id and o.voided=0 and (( o.concept_id=" + hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId() + " and timestampdiff(DAY, lst.encounter_datetime, o.value_datetime) > 173 ) or ( o.concept_id= " + hivMetadata.getTypeOfDispensationConcept().getConceptId() + " and o.value_coded =" + hivMetadata.getSemiannualDispensation().getConceptId() + ") or (o.concept_id=" + hivMetadata.getSemiannualDispensation().getConceptId() + " and o.value_coded in (" + hivMetadata.getStartDrugsConcept().getConceptId() + "," + hivMetadata.getContinueRegimen().getConceptId() + ")))) as pp");
+      i++;
+    }
 
-	  query.setQuery(queryStr.toString());
-	  query.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-	  query.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-	  query.addParameter(new Parameter("location", "Location", Location.class));
-	  return query;
+    queryStr.append(
+        ") and e.encounter_datetime <= :onOrBefore and e.location_id = :location and e.voided=0 order by e.encounter_datetime desc, case when e.encounter_type = "
+            + encounterTypes.get(0).getEncounterTypeId()
+            + " then 1 else 2 end ) as last_encounter group by last_encounter.patient_id) as lst, obs o where lst.encounter_id=o.encounter_id and o.voided=0 and (( o.concept_id="
+            + hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()
+            + " and timestampdiff(DAY, lst.encounter_datetime, o.value_datetime) > 173 ) or ( o.concept_id= "
+            + hivMetadata.getTypeOfDispensationConcept().getConceptId()
+            + " and o.value_coded ="
+            + hivMetadata.getSemiannualDispensation().getConceptId()
+            + ") or (o.concept_id="
+            + hivMetadata.getSemiannualDispensation().getConceptId()
+            + " and o.value_coded in ("
+            + hivMetadata.getStartDrugsConcept().getConceptId()
+            + ","
+            + hivMetadata.getContinueRegimen().getConceptId()
+            + ")))) as pp");
+
+    query.setQuery(queryStr.toString());
+    query.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    query.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    query.addParameter(new Parameter("location", "Location", Location.class));
+    return query;
   }
 
   @DocumentedDefinition(
