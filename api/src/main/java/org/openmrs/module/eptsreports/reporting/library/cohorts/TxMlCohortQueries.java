@@ -607,7 +607,7 @@ public class TxMlCohortQueries {
 
     sql.setQuery(
         TxMlQueries.getRefusedOrStoppedTreatment(
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
             hivMetadata.getDefaultingMotiveConcept().getConceptId(),
             hivMetadata.getPatientForgotVisitDateConcept().getConceptId(),
             hivMetadata.getPatientIsBedriddenAtHomeConcept().getConceptId(),
@@ -617,7 +617,14 @@ public class TxMlCohortQueries {
             hivMetadata.getAbsenceOfHealthProviderInHealthUnitConcept().getConceptId(),
             hivMetadata.getAdverseReaction().getConceptId(),
             hivMetadata.getPatientIsTreatingHivWithTraditionalMedicineConcept().getConceptId(),
-            hivMetadata.getOtherReasonWhyPatientMissedVisitConcept().getConceptId()));
+            hivMetadata.getOtherReasonWhyPatientMissedVisitConcept().getConceptId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateConcept().getConceptId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickup().getConceptId()));
 
     return sql;
   }

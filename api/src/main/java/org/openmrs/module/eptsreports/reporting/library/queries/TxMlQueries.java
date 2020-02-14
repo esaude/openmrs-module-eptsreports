@@ -230,24 +230,81 @@ public class TxMlQueries {
       int absenceOfHealthProviderInHealthUnitConceptId,
       int patientDoesNotLikeArvTreatmentSideEffectsConceptId,
       int patientIsTreatingHivWithTraditionalMedicineConceptId,
-      int otherReasonWhyPatientMissedVisitConceptId) {
+      int otherReasonWhyPatientMissedVisitConceptId,
+      int pharmacyEncounterTypeId,
+      int returnVisitDateForDrugsConcept,
+      int adultoSequimentoEncounterTypeId,
+      int arvPediatriaSeguimentoEncounterTypeId,
+      int returnVisitDateConcept,
+      int masterCardDrugPickupEncounterTypeId,
+      int artDatePickupConceptId) {
 
     String query =
         "SELECT e.patient_id "
             + "FROM encounter e "
             + "         JOIN obs o ON e.encounter_id = o.encounter_id "
-            + "         JOIN (SELECT p.patient_id, MAX(e.encounter_datetime) encounter_datetime "
-            + "               FROM patient p "
-            + "   JOIN encounter e ON p.patient_id = e.patient_id "
-            + "               WHERE e.encounter_type=%d AND e.location_id = :location "
-            + "                 AND e.encounter_datetime BETWEEN :startDate AND :endDate AND p.voided=0 "
-            + "               GROUP BY p.patient_id) last "
-            + "              ON e.patient_id = last.patient_id AND last.encounter_datetime = e.encounter_datetime "
-            + "WHERE o.concept_id=%d AND o.value_coded IN (%d,%d,%d,%d,%d,%d,%d,%d,%d) AND e.location_id = :location AND e.voided=0 AND o.voided=0 ";
+            + "         JOIN (SELECT patient_id, DATE_ADD(MAX(return_date), INTERVAL 28 DAY) AS return_date "
+            + "               FROM (SELECT p.patient_id, "
+            + "                            (SELECT o.value_datetime AS return_date "
+            + "                             FROM encounter e "
+            + "                                      INNER JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "                             WHERE p.patient_id = e.patient_id "
+            + "                               AND e.voided = 0 "
+            + "                               AND o.voided = 0 "
+            + "                               AND e.encounter_type = %d "
+            + "                               AND e.location_id = :location "
+            + "                               AND o.concept_id = %d "
+            + "                               AND e.encounter_datetime <= :endDate "
+            + "                             ORDER BY e.encounter_datetime DESC "
+            + "                             LIMIT 1) AS return_date "
+            + "                     FROM patient p "
+            + "                     UNION "
+            + "                     SELECT p.patient_id, "
+            + "                            (SELECT o.value_datetime AS return_date "
+            + "                             FROM encounter e "
+            + "                                      INNER JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "                             WHERE p.patient_id = e.patient_id "
+            + "                               AND e.voided = 0 "
+            + "                               AND o.voided = 0 "
+            + "                               AND e.encounter_type IN (%d, %d) "
+            + "                               AND e.location_id = :location "
+            + "                               AND o.concept_id = %d "
+            + "                               AND e.encounter_datetime <= :endDate "
+            + "                             ORDER BY e.encounter_datetime DESC "
+            + "                             LIMIT 1) AS return_date "
+            + "                     FROM patient p "
+            + "                     UNION "
+            + "                     SELECT p.patient_id, "
+            + "                            (SELECT DATE_ADD(o.value_datetime, INTERVAL 30 DAY) AS return_date "
+            + "                             FROM encounter e "
+            + "                                      INNER JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "                             WHERE p.patient_id = e.patient_id "
+            + "                               AND e.voided = 0 "
+            + "                               AND o.voided = 0 "
+            + "                               AND e.encounter_type = %d "
+            + "                               AND e.location_id = :location "
+            + "                               AND o.concept_id = %d "
+            + "                               AND e.encounter_datetime <= :endDate "
+            + "                             ORDER BY e.encounter_datetime DESC "
+            + "                             LIMIT 1) AS return_date "
+            + "                     FROM patient p) e "
+            + "               GROUP BY e.patient_id) lp ON e.patient_id = lp.patient_id "
+            + "WHERE o.concept_id = %d AND o.value_coded IN (%d,%d,%d,%d,%d,%d,%d,%d,%d) "
+            + "AND e.encounter_type = %d "
+            + "AND e.encounter_datetime BETWEEN lp.return_date and :endDate "
+            + "AND e.location_id = :location "
+            + "AND e.voided=0 "
+            + "AND o.voided=0 ";
 
     return String.format(
         query,
-        homeVisitCardEncounterTypeId,
+        pharmacyEncounterTypeId,
+        returnVisitDateForDrugsConcept,
+        adultoSequimentoEncounterTypeId,
+        arvPediatriaSeguimentoEncounterTypeId,
+        returnVisitDateConcept,
+        masterCardDrugPickupEncounterTypeId,
+        artDatePickupConceptId,
         reasonPatientMissedVisitConceptId,
         patientForgotVisitDateConceptId,
         patientIsBedriddenAtHomeConceptId,
@@ -257,7 +314,8 @@ public class TxMlQueries {
         absenceOfHealthProviderInHealthUnitConceptId,
         patientDoesNotLikeArvTreatmentSideEffectsConceptId,
         patientIsTreatingHivWithTraditionalMedicineConceptId,
-        otherReasonWhyPatientMissedVisitConceptId);
+        otherReasonWhyPatientMissedVisitConceptId,
+        homeVisitCardEncounterTypeId);
   }
 
   /*
@@ -291,7 +349,7 @@ public class TxMlQueries {
         "SELECT pa.patient_id "
             + "FROM   patient pa "
             + "INNER JOIN ("
-            + "SELECT patient_id, MAX(return_date) AS return_date "
+            + "SELECT patient_id, DATE_ADD(MAX(return_date), INTERVAL 28 DAY) AS return_date "
             + "FROM (SELECT p.patient_id, "
             + "             (SELECT o.value_datetime AS return_date "
             + "              FROM encounter e "
@@ -410,7 +468,7 @@ public class TxMlQueries {
             + "  INNER JOIN encounter e ON pa.patient_id=e.patient_id "
             + "  INNER JOIN obs o ON pa.patient_id=o.person_id "
             + "  INNER JOIN ("
-            + "                SELECT patient_id, MAX(return_date) AS return_date "
+            + "                SELECT patient_id, DATE_ADD(MAX(return_date), INTERVAL 28 DAY) AS return_date "
             + "                FROM (SELECT p.patient_id, "
             + "                             (SELECT o.value_datetime AS return_date "
             + "                              FROM encounter e "
@@ -499,7 +557,7 @@ public class TxMlQueries {
     String query =
         "SELECT DISTINCT pa.patient_id FROM patient pa "
             + "    INNER JOIN ( "
-            + "    SELECT patient_id, MAX(return_date) AS return_date "
+            + "    SELECT patient_id, DATE_ADD(MAX(return_date), INTERVAL 28 DAY) AS return_date "
             + "    FROM (SELECT p.patient_id, "
             + "                 (SELECT o.value_datetime AS return_date "
             + "                  FROM encounter e "
