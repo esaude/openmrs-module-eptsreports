@@ -25,9 +25,9 @@ public class BaseQueries {
   public static String getBaseCohortQuery(Map<String, String> parameters) {
     String query =
         "SELECT p.patient_id FROM patient p JOIN encounter e ON e.patient_id=p.patient_id "
-            + "WHERE e.voided=0 AND p.voided=0 AND e.encounter_type IN (%s) AND e.encounter_datetime<=:endDate AND e.location_id = :location "
+            + "WHERE e.voided=0 AND p.voided=0 AND e.encounter_type IN (%s) AND e.location_id = :location "
             + "UNION "
-            + "SELECT pg.patient_id FROM patient p JOIN patient_program pg ON p.patient_id=pg.patient_id WHERE pg.voided=0 AND p.voided=0 AND program_id IN (%s) AND date_enrolled<=:endDate AND location_id=:location ";
+            + "SELECT pg.patient_id FROM patient p JOIN patient_program pg ON p.patient_id=pg.patient_id WHERE pg.voided=0 AND p.voided=0 AND program_id IN (%s) AND location_id=:location ";
     String encounterTypes =
         StringUtils.join(
             Arrays.asList(
