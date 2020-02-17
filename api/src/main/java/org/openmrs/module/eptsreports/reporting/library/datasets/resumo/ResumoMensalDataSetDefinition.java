@@ -203,34 +203,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
         "Adolescentes patients",
         getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2(),
         resumoMensalAandBdisaggregations.getAdolescentesColumns());
-    // B3 indicators
-    /*addRow(
-            dsd,
-            "B3TC",
-            "Patients under 15 years",
-            getPatientsWhoRestartedTreatmentDuringCurrentMonthB3(),
-            resumoMensalAandBdisaggregations.getUnder14YearsColumns());
 
-        addRow(
-            dsd,
-            "B3TA",
-            "Patients over 15 years - adults",
-            getPatientsWhoRestartedTreatmentDuringCurrentMonthB3(),
-            resumoMensalAandBdisaggregations.getAdultPatients());
-
-        dsd.addColumn(
-            "B3TP",
-            "Total patients - Total Geral",
-            getPatientsWhoRestartedTreatmentDuringCurrentMonthB3(),
-            "");
-
-        addRow(
-            dsd,
-            "B3TAD",
-            "Adolescentes patients",
-            getPatientsWhoRestartedTreatmentDuringCurrentMonthB3(),
-            resumoMensalAandBdisaggregations.getAdolescentesColumns());
-    */
     // B5 indicators
     addRow(
         dsd,
