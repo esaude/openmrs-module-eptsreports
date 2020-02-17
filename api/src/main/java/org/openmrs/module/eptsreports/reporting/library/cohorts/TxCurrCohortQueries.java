@@ -14,11 +14,9 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
-import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -739,29 +737,17 @@ public class TxCurrCohortQueries {
 
   @DocumentedDefinition("<3 month of ARVs Dispensed")
   public CohortDefinition getPatientsWithLessThan3MonthsDispensationQuantity() {
-    List<EncounterType> ets =
-        Arrays.asList(
-            hivMetadata.getARVPharmaciaEncounterType(),
-            hivMetadata.getAdultoSeguimentoEncounterType());
-    return getPatientsWithMonthlyTypeOfDispensation(ets);
+    return getPatientsWithMonthlyTypeOfDispensation();
   }
 
   @DocumentedDefinition("3-5 months of ARVs dispensed")
   public CohortDefinition getPatientsWith3to5MonthsOfDispensationQuantity() {
-    List<EncounterType> ets =
-        Arrays.asList(
-            hivMetadata.getARVPharmaciaEncounterType(),
-            hivMetadata.getAdultoSeguimentoEncounterType());
-    return getPatientsWithQuarterlyTypeOfDispensation(ets);
+    return getPatientsWithQuarterlyTypeOfDispensation();
   }
 
   @DocumentedDefinition("6 or more months of ARV dispensed")
   public CohortDefinition getPatientsWithMoreThan6MonthsOfDispensationQuantity() {
-    List<EncounterType> ets =
-        Arrays.asList(
-            hivMetadata.getARVPharmaciaEncounterType(),
-            hivMetadata.getAdultoSeguimentoEncounterType());
-    return getPatientsWithSemiAnnualTypeOfDispensation(ets);
+    return getPatientsWithSemiAnnualTypeOfDispensation();
   }
 
   @DocumentedDefinition(
@@ -784,21 +770,7 @@ public class TxCurrCohortQueries {
 
   @DocumentedDefinition(
       "Patients marked as DM on Ficha Clinica Mastercard on last Tipo de Levantamento")
-  private CohortDefinition getPatientsWithMonthlyTypeOfDispensation() {
-    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
-    cd.setQuestion(hivMetadata.getTypeOfDispensationConcept());
-    cd.setOperator(SetComparator.IN);
-    cd.addValue(hivMetadata.getMonthlyConcept());
-    return cd;
-  }
-
-  public SqlCohortDefinition getPatientsWithMonthlyTypeOfDispensation(
-      List<EncounterType> encounterTypes) {
+  public SqlCohortDefinition getPatientsWithMonthlyTypeOfDispensation() {
     SqlCohortDefinition patientsWithMonthlyTypeOfDispensation = new SqlCohortDefinition();
     String sqlQuery =
         "select pp.patient_id from (select lst.patient_id, lst.encounter_datetime from (select last_encounter.patient_id, last_encounter.encounter_id, last_encounter.encounter_datetime from (select e.patient_id, e.encounter_datetime, e.encounter_id from encounter e where e.encounter_type in (${aRVPharmaciaEncounterType}, ${adultoSeguimentoEncounterType}) and e.encounter_datetime <= :onOrBefore and e.location_id = :location and e.voided=0 order by e.encounter_datetime desc, case when e.encounter_type = ${aRVPharmaciaEncounterType} then 1 else 2 end ) as last_encounter group by last_encounter.patient_id) as lst, obs o where lst.encounter_id=o.encounter_id and o.voided=0 and (( o.concept_id= ${returnVisitDateForArvDrugConcept} and timestampdiff(DAY, lst.encounter_datetime, o.value_datetime) < ${maxDays} ) or ( o.concept_id= ${typeOfDispensationConcept} and o.value_coded = ${monthlyConcept}))) as pp";
@@ -831,114 +803,75 @@ public class TxCurrCohortQueries {
 
   @DocumentedDefinition(
       "Patients marked as DT on Ficha Clinica Mastercard on last Tipo de Levantamento")
-  private CohortDefinition getPatientsWithQuarterlyTypeOfDispensation() {
-    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
-    cd.setQuestion(hivMetadata.getTypeOfDispensationConcept());
-    cd.setOperator(SetComparator.IN);
-    cd.addValue(hivMetadata.getQuarterlyConcept());
-    return cd;
-  }
+  public SqlCohortDefinition getPatientsWithQuarterlyTypeOfDispensation() {
+    SqlCohortDefinition patientsWithQuarterlyTypeOfDispensation = new SqlCohortDefinition();
+    String sqlQuery =
+        "select pp.patient_id from (select lst.patient_id, lst.encounter_datetime from (select last_encounter.patient_id, last_encounter.encounter_id, last_encounter.encounter_datetime from (select e.patient_id, e.encounter_datetime, e.encounter_id from encounter e where e.encounter_type in(${aRVPharmaciaEncounterType}, ${adultoSeguimentoEncounterType}) and e.encounter_datetime <= :onOrBefore and e.location_id = :location and e.voided=0 order by e.encounter_datetime desc, case when e.encounter_type = ${aRVPharmaciaEncounterType} then 1 else 2 end ) as last_encounter group by last_encounter.patient_id) as lst, obs o where lst.encounter_id=o.encounter_id and o.voided=0 and (( o.concept_id= ${returnVisitDateForArvDrugConcept} and timestampdiff(DAY, lst.encounter_datetime, o.value_datetime) BETWEEN ${minDays} AND ${maxDays} ) or ( o.concept_id= ${typeOfDispensationConcept} and o.value_coded = ${quarterlyConcept}) or (o.concept_id= ${quarterlyConcept} and o.value_coded in (${startDrugsConcept}, ${continueRegimen})))) as pp";
 
-  public SqlCohortDefinition getPatientsWithQuarterlyTypeOfDispensation(
-      List<EncounterType> encounterTypes) {
-    SqlCohortDefinition query = new SqlCohortDefinition();
-    StringBuilder queryStr = new StringBuilder();
-    queryStr.append(
-        "select pp.patient_id from (select lst.patient_id, lst.encounter_datetime from (select last_encounter.patient_id, last_encounter.encounter_id, last_encounter.encounter_datetime from (select e.patient_id, e.encounter_datetime, e.encounter_id from encounter e where e.encounter_type in(");
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put(
+        "aRVPharmaciaEncounterType",
+        hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    valuesMap.put(
+        "adultoSeguimentoEncounterType",
+        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    valuesMap.put(
+        "returnVisitDateForArvDrugConcept",
+        hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId());
+    valuesMap.put("minDays", 83);
+    valuesMap.put("maxDays", 173);
+    valuesMap.put(
+        "typeOfDispensationConcept", hivMetadata.getTypeOfDispensationConcept().getConceptId());
+    valuesMap.put("quarterlyConcept", hivMetadata.getQuarterlyConcept().getConceptId());
+    valuesMap.put("startDrugsConcept", hivMetadata.getStartDrugsConcept().getConceptId());
+    valuesMap.put("continueRegimen", hivMetadata.getContinueRegimen().getConceptId());
 
-    int i = 0;
-    for (EncounterType et : encounterTypes) {
-      if (i > 0) {
-        queryStr.append(",");
-      }
-      queryStr.append(et.getEncounterTypeId());
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    patientsWithQuarterlyTypeOfDispensation.setQuery(sub.replace(sqlQuery));
 
-      i++;
-    }
-
-    queryStr.append(
-        ") and e.encounter_datetime <= :onOrBefore and e.location_id = :location and e.voided=0 order by e.encounter_datetime desc, case when e.encounter_type = "
-            + encounterTypes.get(0).getEncounterTypeId()
-            + " then 1 else 2 end ) as last_encounter group by last_encounter.patient_id) as lst, obs o where lst.encounter_id=o.encounter_id and o.voided=0 and (( o.concept_id="
-            + hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()
-            + " and timestampdiff(DAY, lst.encounter_datetime, o.value_datetime) BETWEEN 83 AND 173 ) or ( o.concept_id= "
-            + hivMetadata.getTypeOfDispensationConcept().getConceptId()
-            + " and o.value_coded ="
-            + hivMetadata.getQuarterlyConcept().getConceptId()
-            + ") or (o.concept_id="
-            + hivMetadata.getQuarterlyDispensation().getConceptId()
-            + " and o.value_coded in ("
-            + hivMetadata.getStartDrugsConcept().getConceptId()
-            + ","
-            + hivMetadata.getContinueRegimen().getConceptId()
-            + ")))) as pp");
-
-    query.setQuery(queryStr.toString());
-    query.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    query.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    query.addParameter(new Parameter("location", "Location", Location.class));
-    return query;
+    patientsWithQuarterlyTypeOfDispensation.addParameter(
+        new Parameter("onOrBefore", "Before Date", Date.class));
+    patientsWithQuarterlyTypeOfDispensation.addParameter(
+        new Parameter("onOrAfter", "After Date", Date.class));
+    patientsWithQuarterlyTypeOfDispensation.addParameter(
+        new Parameter("location", "Location", Location.class));
+    return patientsWithQuarterlyTypeOfDispensation;
   }
 
   @DocumentedDefinition(
       "Patients marked as DS on Ficha Clinica Mastercard on last Tipo de Levantamento")
-  private CohortDefinition getPatientsWithSemiAnnualTypeOfDispensation() {
-    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
-    cd.setQuestion(hivMetadata.getTypeOfDispensationConcept());
-    cd.setOperator(SetComparator.IN);
-    cd.addValue(hivMetadata.getSemiannualDispensation());
-    return cd;
-  }
+  public SqlCohortDefinition getPatientsWithSemiAnnualTypeOfDispensation() {
+    SqlCohortDefinition patientsWithSemiAnnualTypeOfDispensation = new SqlCohortDefinition();
+    String sqlQuery =
+        "select pp.patient_id from (select lst.patient_id, lst.encounter_datetime from (select last_encounter.patient_id, last_encounter.encounter_id, last_encounter.encounter_datetime from (select e.patient_id, e.encounter_datetime, e.encounter_id from encounter e where e.encounter_type in(${aRVPharmaciaEncounterType}, ${adultoSeguimentoEncounterType}) and e.encounter_datetime <= :onOrBefore and e.location_id = :location and e.voided=0 order by e.encounter_datetime desc, case when e.encounter_type = ${aRVPharmaciaEncounterType} then 1 else 2 end ) as last_encounter group by last_encounter.patient_id) as lst, obs o where lst.encounter_id=o.encounter_id and o.voided=0 and (( o.concept_id= ${returnVisitDateForArvDrugConcept} and timestampdiff(DAY, lst.encounter_datetime, o.value_datetime) > ${minDays} ) or ( o.concept_id= ${typeOfDispensationConcept} and o.value_coded = ${semiannualDispensation}) or (o.concept_id= ${semiannualDispensation} and o.value_coded in (${startDrugsConcept}, ${continueRegimen})))) as pp";
 
-  public SqlCohortDefinition getPatientsWithSemiAnnualTypeOfDispensation(
-      List<EncounterType> encounterTypes) {
-    SqlCohortDefinition query = new SqlCohortDefinition();
-    StringBuilder queryStr = new StringBuilder();
-    queryStr.append(
-        "select pp.patient_id from (select lst.patient_id, lst.encounter_datetime from (select last_encounter.patient_id, last_encounter.encounter_id, last_encounter.encounter_datetime from (select e.patient_id, e.encounter_datetime, e.encounter_id from encounter e where e.encounter_type in(");
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put(
+        "aRVPharmaciaEncounterType",
+        hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    valuesMap.put(
+        "adultoSeguimentoEncounterType",
+        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    valuesMap.put(
+        "returnVisitDateForArvDrugConcept",
+        hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId());
+    valuesMap.put("minDays", 173);
+    valuesMap.put(
+        "typeOfDispensationConcept", hivMetadata.getTypeOfDispensationConcept().getConceptId());
+    valuesMap.put("semiannualDispensation", hivMetadata.getSemiannualDispensation().getConceptId());
+    valuesMap.put("startDrugsConcept", hivMetadata.getStartDrugsConcept().getConceptId());
+    valuesMap.put("continueRegimen", hivMetadata.getContinueRegimen().getConceptId());
 
-    int i = 0;
-    for (EncounterType et : encounterTypes) {
-      if (i > 0) {
-        queryStr.append(",");
-      }
-      queryStr.append(et.getEncounterTypeId());
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    patientsWithSemiAnnualTypeOfDispensation.setQuery(sub.replace(sqlQuery));
 
-      i++;
-    }
-
-    queryStr.append(
-        ") and e.encounter_datetime <= :onOrBefore and e.location_id = :location and e.voided=0 order by e.encounter_datetime desc, case when e.encounter_type = "
-            + encounterTypes.get(0).getEncounterTypeId()
-            + " then 1 else 2 end ) as last_encounter group by last_encounter.patient_id) as lst, obs o where lst.encounter_id=o.encounter_id and o.voided=0 and (( o.concept_id="
-            + hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()
-            + " and timestampdiff(DAY, lst.encounter_datetime, o.value_datetime) > 173 ) or ( o.concept_id= "
-            + hivMetadata.getTypeOfDispensationConcept().getConceptId()
-            + " and o.value_coded ="
-            + hivMetadata.getSemiannualDispensation().getConceptId()
-            + ") or (o.concept_id="
-            + hivMetadata.getSemiannualDispensation().getConceptId()
-            + " and o.value_coded in ("
-            + hivMetadata.getStartDrugsConcept().getConceptId()
-            + ","
-            + hivMetadata.getContinueRegimen().getConceptId()
-            + ")))) as pp");
-
-    query.setQuery(queryStr.toString());
-    query.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    query.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    query.addParameter(new Parameter("location", "Location", Location.class));
-    return query;
+    patientsWithSemiAnnualTypeOfDispensation.addParameter(
+        new Parameter("onOrBefore", "Before Date", Date.class));
+    patientsWithSemiAnnualTypeOfDispensation.addParameter(
+        new Parameter("onOrAfter", "After Date", Date.class));
+    patientsWithSemiAnnualTypeOfDispensation.addParameter(
+        new Parameter("location", "Location", Location.class));
+    return patientsWithSemiAnnualTypeOfDispensation;
   }
 
   @DocumentedDefinition(
