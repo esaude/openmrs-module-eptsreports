@@ -173,7 +173,7 @@ public class TxTbPrevCohortQueries {
   public CohortDefinition findTbPrevTotalNumerator() {
     final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
 
-    dsd.setName("findTbTotalDenominator");
+    dsd.setName("findTbPrevTotalNumerator");
     dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
     dsd.addParameter(new Parameter("location", "location", Location.class));
