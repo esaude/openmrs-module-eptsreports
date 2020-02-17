@@ -1,5 +1,9 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.commons.text.StringSubstitutor;
+
 public class TxMlQueries {
 
   public static String getPatientsWhoMissedAppointment(
@@ -358,9 +362,9 @@ public class TxMlQueries {
             + "              WHERE p.patient_id = e.patient_id "
             + "                AND e.voided = 0 "
             + "                AND o.voided = 0 "
-            + "                AND e.encounter_type = %d "
+            + "                AND e.encounter_type = ${pharmacy} "
             + "                AND e.location_id = :location "
-            + "                AND o.concept_id = %d "
+            + "                AND o.concept_id = ${drugReturnVisitDate} "
             + "                AND e.encounter_datetime <= :endDate "
             + "              ORDER BY e.encounter_datetime DESC "
             + "              LIMIT 1) AS return_date "
@@ -374,9 +378,9 @@ public class TxMlQueries {
             + "              WHERE p.patient_id = e.patient_id "
             + "                AND e.voided = 0 "
             + "                AND o.voided = 0 "
-            + "                AND e.encounter_type IN (%d, %d) "
+            + "                AND e.encounter_type IN (${adultSeg}, ${childSeg}) "
             + "                AND e.location_id = :location "
-            + "                AND o.concept_id = %d "
+            + "                AND o.concept_id = ${returnVisitDate} "
             + "                AND e.encounter_datetime <= :endDate "
             + "              ORDER BY e.encounter_datetime DESC "
             + "              LIMIT 1) AS return_date "
@@ -390,9 +394,9 @@ public class TxMlQueries {
             + "              WHERE p.patient_id = e.patient_id "
             + "                AND e.voided = 0 "
             + "                AND o.voided = 0 "
-            + "                AND e.encounter_type = %d "
+            + "                AND e.encounter_type = ${masterCardPickup} "
             + "                AND e.location_id = :location "
-            + "                AND o.concept_id = %d "
+            + "                AND o.concept_id = ${artDatePickup} "
             + "                AND e.encounter_datetime <= :endDate "
             + "              ORDER BY e.encounter_datetime DESC "
             + "              LIMIT 1) AS return_date "
@@ -402,46 +406,57 @@ public class TxMlQueries {
             + "  pa.patient_id=e.patient_id AND "
             + "  e.encounter_datetime >= lp.return_date AND "
             + "  e.encounter_datetime <= :endDate AND "
-            + "  e.encounter_type IN (%d, %d, %d) AND "
+            + "  e.encounter_type IN (${homeVisit}, ${apoioA}, ${apoioB}) AND "
             + "  e.location_id=:location "
             + "INNER JOIN obs visitType ON "
             + "  pa.patient_id=visitType.person_id AND "
             + "  visitType.encounter_id = e.encounter_id AND "
-            + "  visitType.concept_id = %d AND "
-            + "  visitType.value_coded = %d AND "
+            + "  visitType.concept_id = ${typeVisit} AND "
+            + "  visitType.value_coded = ${busca} AND "
             + "  visitType.obs_datetime <= :endDate "
             + "INNER JOIN obs o ON "
             + "  pa.patient_id=o.person_id AND "
             + "  o.encounter_id = e.encounter_id AND "
-            + "  o.concept_id IN (%d, %d, %d, %d, %d, %d, %d, %d, %d, %d) AND "
+            + "  o.concept_id IN (${secondAttempt},"
+            + "                   ${thirdAttempt},"
+            + "                   ${patientFound},"
+            + "                   ${defaultingMotive},"
+            + "                   ${reportVisit1},"
+            + "                   ${reportVisit2},"
+            + "                   ${patientFoundForwarded},"
+            + "                   ${reasonForNotFinding},"
+            + "                   ${whoGaveInformation},"
+            + "                   ${cardDeliveryDate} ) AND "
             + "  o.obs_datetime <= :endDate "
             + "GROUP BY pa.patient_id ";
 
-    return String.format(
-        query,
-        pharmacyEncounterTypeId,
-        returnVisitDateForDrugsConcept,
-        adultoSequimentoEncounterTypeId,
-        arvPediatriaSeguimentoEncounterTypeId,
-        returnVisitDateConcept,
-        masterCardDrugPickupEncounterTypeId,
-        artDatePickupConceptId,
-        homeVisitCardEncounterTypeId,
-        apoioReintegracaoParteAEncounterTypeId,
-        apoioReintegracaoParteBEncounterTypeId,
-        typeOfVisitConcept,
-        buscaConcept,
-        secondAttemptConcept,
-        thirdAttemptConcept,
-        patientFoundConcept,
-        defaultingMotiveConcept,
-        reportVisitConcept1,
-        reportVisitConcept2,
-        patientFoundForwardedConcept,
-        reasonForNotFindingConcept,
-        whoGaveInformationConcept,
-        cardDeliveryDate);
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("pharmacy", pharmacyEncounterTypeId);
+    valuesMap.put("drugReturnVisitDate", returnVisitDateForDrugsConcept);
+    valuesMap.put("adultSeg", adultoSequimentoEncounterTypeId);
+    valuesMap.put("childSeg", arvPediatriaSeguimentoEncounterTypeId);
+    valuesMap.put("returnVisitDate", returnVisitDateConcept);
+    valuesMap.put("masterCardPickup", masterCardDrugPickupEncounterTypeId);
+    valuesMap.put("artDatePickup", artDatePickupConceptId);
+    valuesMap.put("homeVisit", homeVisitCardEncounterTypeId);
+    valuesMap.put("apoioA", apoioReintegracaoParteAEncounterTypeId);
+    valuesMap.put("apoioB", apoioReintegracaoParteBEncounterTypeId);
+    valuesMap.put("typeVisit", typeOfVisitConcept);
+    valuesMap.put("busca", buscaConcept);
+    valuesMap.put("secondAttempt", secondAttemptConcept);
+    valuesMap.put("thirdAttempt", thirdAttemptConcept);
+    valuesMap.put("patientFound", patientFoundConcept);
+    valuesMap.put("defaultingMotive", defaultingMotiveConcept);
+    valuesMap.put("reportVisit1", reportVisitConcept1);
+    valuesMap.put("reportVisit2", reportVisitConcept2);
+    valuesMap.put("patientFoundForwarded", patientFoundForwardedConcept);
+    valuesMap.put("reasonForNotFinding", reasonForNotFindingConcept);
+    valuesMap.put("whoGaveInformation", whoGaveInformationConcept);
+    valuesMap.put("cardDeliveryDate", cardDeliveryDate);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
   }
+
   /*
        All Patients without “Patient Visit Card” (Encounter type 21 or 36 or 37) registered between
        ◦ the last scheduled appointment or drugs pick up (the most recent one) by reporting end date and
