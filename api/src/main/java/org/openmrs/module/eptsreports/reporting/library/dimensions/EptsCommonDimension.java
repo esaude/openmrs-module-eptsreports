@@ -21,6 +21,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQuer
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TbPrevCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxTbPrevCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.DsdQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.library.queries.Eri2MonthsQueriesInterface;
@@ -52,6 +53,8 @@ public class EptsCommonDimension {
   @Autowired private EriCohortQueries eriCohortQueries;
 
   @Autowired private TbPrevCohortQueries tbPrevCohortQueries;
+
+  @Autowired private TxTbPrevCohortQueries txTbPrevCohortQueries;
 
   @Autowired private GenericCohortQueries genericCohorts;
 
@@ -329,6 +332,30 @@ public class EptsCommonDimension {
                 Eri2MonthsQueriesInterface.QUERY
                     .findPatientsWhoStartedArtInAPeriodAndSuspendTratement33DaysAfterInitiation),
             mappings));
+
+    return dimension;
+  }
+
+  public CohortDefinitionDimension getTbPrevArtStatusDimension() {
+    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
+
+    dimension.setName("Get patients dimensions for Eri2Months");
+    dimension.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dimension.addParameter(new Parameter("location", "location", Location.class));
+    dimension.setName("ART-status Dimension");
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    dimension.addCohortDefinition(
+        "previously-on-art",
+        EptsReportUtils.map(
+            txTbPrevCohortQueries.findPatientsWhoStartedArtAndTpiPreviouslyDessagragation(),
+            mappings));
+
+    dimension.addCohortDefinition(
+        "new-on-art",
+        EptsReportUtils.map(
+            txTbPrevCohortQueries.findPatientsWhoStartedArtAndTpiNewDessagragation(), mappings));
 
     return dimension;
   }
