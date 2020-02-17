@@ -93,25 +93,20 @@ public class TXCurrQueries {
       int reasonPatientNotFoundByActivist3rdVisit,
       int patientIsDead) {
     String query =
-        " SELECT named.patient_id FROM ( SELECT     p.patient_id, "
-            + "            max(obsobito.obs_datetime) common_date "
-            + "    FROM       patient p "
-            + "    INNER JOIN encounter e "
-            + "    ON         p.patient_id=e.patient_id  "
-            + "    INNER JOIN obs obsencontrado "
-            + "    ON         e.encounter_id=obsencontrado.encounter_id "
-            + "    INNER JOIN obs obsobito "
-            + "    ON         e.encounter_id=obsobito.encounter_id "
-            + "    WHERE      e.voided=0 "
-            + "    AND        obsencontrado.voided=0 "
-            + "    AND        p.voided=0 "
-            + "    AND        obsobito.voided=0 "
-            + "    AND        e.encounter_type IN (%s)  "
-            + "    AND        e.encounter_datetime<= :onOrBefore "
-            + "    AND        e.location_id= :location "
-            + "    AND        obsobito.concept_id IN(%s,%s,%s) "
-            + "    AND        obsobito.value_coded=%s "
-            + "    GROUP BY   p.patient_id) named ";
+        "   select last.patient_id from (  "
+            + "select  p.patient_id,max(e.encounter_datetime)  "
+            + "from obs o   "
+            + "inner  join encounter e on e.encounter_id = o.encounter_id  "
+            + "inner join patient p on p.patient_id=e.patient_id  "
+            + "where  e.voided = 0  "
+            + " and  p.voided=0  "
+            + "and o.voided = 0  "
+            + "and  e.encounter_type  in (%s)  "
+            + "and o.concept_id in (%s,%s,%s)  "
+            + "and  o.value_coded = %s  "
+            + "and e.location_id = :location  "
+            + "and e.encounter_datetime <= :onOrBefore  "
+            + "group by p.patient_id) last ";
 
     return String.format(
         query,
