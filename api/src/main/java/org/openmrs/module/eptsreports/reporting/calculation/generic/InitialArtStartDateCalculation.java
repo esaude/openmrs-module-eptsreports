@@ -74,7 +74,8 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
     Concept arvPlan = hivMetadata.getARVPlanConcept();
     Concept startDrugsConcept = hivMetadata.getStartDrugsConcept();
     Concept transferInConcept = hivMetadata.getTransferFromOtherFacilityConcept();
-    Concept hostoricalStartConcept = commonMetadata.getHistoricalDrugStartDateConcept();
+    Concept historicalStartConcept = commonMetadata.getHistoricalDrugStartDateConcept();
+    Concept artDatePickupConcept = hivMetadata.getArtDatePickup();
     EncounterType encounterTypePharmacy = hivMetadata.getARVPharmaciaEncounterType();
 
     List<EncounterType> encounterTypes =
@@ -96,17 +97,34 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
             encounterTypes,
             cohort,
             context);
+
     CalculationResultMap historicalMap =
         ePTSCalculationService.firstObs(
-            hostoricalStartConcept,
+            historicalStartConcept,
             null,
             location,
             false,
             null,
             null,
-            encounterTypes,
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                hivMetadata.getMasterCardEncounterType()),
             cohort,
             context);
+
+    CalculationResultMap historicalDrugPickupInReceptionMap =
+        ePTSCalculationService.firstObs(
+            artDatePickupConcept,
+            null,
+            location,
+            false,
+            null,
+            null,
+            Arrays.asList(hivMetadata.getMasterCardDrugPickupEncounterType()),
+            cohort,
+            context);
+
     CalculationResultMap pharmacyEncounterMap =
         ePTSCalculationService.firstEncounter(
             Arrays.asList(encounterTypePharmacy), cohort, location, context);
@@ -130,6 +148,13 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
       if (historicalDateObs != null) {
         enrollmentDates.add(historicalDateObs.getValueDatetime());
       }
+
+      Obs historicalDrugPickupInReceptionDateObs =
+          EptsCalculationUtils.resultForPatient(historicalDrugPickupInReceptionMap, pId);
+      if (historicalDrugPickupInReceptionDateObs != null) {
+        enrollmentDates.add(historicalDrugPickupInReceptionDateObs.getValueDatetime());
+      }
+
       if (considerPharmacyEncounter) {
         Encounter pharmacyEncounter =
             EptsCalculationUtils.resultForPatient(pharmacyEncounterMap, pId);

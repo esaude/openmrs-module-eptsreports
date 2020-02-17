@@ -110,4 +110,100 @@ public class TbMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.hasTbSymptomsConceptUuid");
     return getConcept(uuid);
   }
+
+  // Concept 42 PULMONARY TB, QUALITATIVE
+  public Concept getPulmonaryTB() {
+    final String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.pulmonaryTBConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // Concept 1763 FEVER LASTING MORE THAN 3 WEEKS
+  public Concept getFeverLastingMoreThan3Weeks() {
+    final String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.feverLastingMoreThan3Weeks");
+    return getConcept(uuid);
+  }
+
+  // Concept 1764 WEIGHT LOSS OF MORE THAN 3 KG IN LAST MONTH
+  public Concept getWeightLossOfMoreThan3KgInLastMonth() {
+    final String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.weightLossOfMoreThan3KgInLastMonth");
+    return getConcept(uuid);
+  }
+
+  // Concept 1762 NIGHTSWEATS LASTING MORE THAN 3 WEEKS
+  public Concept getNightsweatsLastingMoreThan3Weeks() {
+    final String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.nightsweatsLastingMoreThan3Weeks");
+    return getConcept(uuid);
+  }
+
+  // Concept 1760 COUGH LASTING MORE THAN 3 WEEKS
+  public Concept getCoughLastingMoreThan3Weeks() {
+    final String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.coughLastingMoreThan3Weeks");
+    return getConcept(uuid);
+  }
+
+  // Concept 23760 ASTHENIA
+  public Concept getAsthenia() {
+    final String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.asthenia");
+    return getConcept(uuid);
+  }
+
+  // Concept 1765 COHABITANT BEING TREATED FOR TB
+  public Concept getCohabitantBeingTreatedForTB() {
+    final String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.cohabitantBeingTreatedForTB");
+    return getConcept(uuid);
+  }
+
+  // Concept 161 LYMPHADENOPATHY
+  public Concept getLymphadenopathy() {
+    final String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.lymphadenopathy");
+    return getConcept(uuid);
+  }
+
+  // Concept 23723 B GENEXPERT TEST
+  public Concept getTbGenexpertTest() {
+    final String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.tbGenexpertTest");
+    return getConcept(uuid);
+  }
+
+  // Concept 23774 CULTURE TEST
+  public Concept getCultureTest() {
+    final String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.cultureTest");
+    return getConcept(uuid);
+  }
+
+  // Concept 23951 TB LAM
+  public Concept getTbLam() {
+    final String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.tbLam");
+    return getConcept(uuid);
+  }
+
+  // Concept 1766 TB LAM
+  public Concept getTbObservations() {
+    final String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.tbObservations");
+    return getConcept(uuid);
+  }
+
+  // Concept 307 SPUTUM FOR ACID FAST BACILLI
+  public Concept getSputumForAcidFastBacilli() {
+    final String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.sputumForAcidFastBacilli");
+    return getConcept(uuid);
+  }
 }

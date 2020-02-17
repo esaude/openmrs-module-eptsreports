@@ -55,6 +55,10 @@ public class TxTBDataset extends BaseDataSet {
 
     addTXTBDenominator(mappings, dataSetDefinition);
 
+    addSpecimenSentDisaggregation(mappings, dataSetDefinition);
+    addDiagnositcTestDisaggregation(mappings, dataSetDefinition);
+    addPositiveResultsDisaggregation(mappings, dataSetDefinition);
+
     return dataSetDefinition;
   }
 
@@ -141,6 +145,73 @@ public class TxTBDataset extends BaseDataSet {
         "Denominator (previouslyOnARTNegativeScreening)",
         EptsReportUtils.map(previouslyOnARTNegativeScreening, mappings),
         dissagregations());
+  }
+
+  private void addSpecimenSentDisaggregation(
+      String mappings, CohortIndicatorDataSetDefinition dataSetDefinition) {
+
+    CohortIndicator specimentSent =
+        eptsGeneralIndicator.getIndicator(
+            "SPECIMEN-SENT",
+            EptsReportUtils.map(txTbCohortQueries.getSpecimenSentCohortDefinition(), mappings));
+
+    dataSetDefinition.addColumn(
+        "TX_TB_TOTAL_SPECIMEN_SENT",
+        "TX_TB: Total Patients With Specimen Sent",
+        EptsReportUtils.map(specimentSent, mappings),
+        "");
+  }
+
+  private void addDiagnositcTestDisaggregation(
+      String mappings, CohortIndicatorDataSetDefinition dataSetDefinition) {
+
+    CohortIndicator geneExpert =
+        eptsGeneralIndicator.getIndicator(
+            "GENEXPERT-DIAGNOSTIC-TEST",
+            EptsReportUtils.map(
+                txTbCohortQueries.getGeneXpertMTBDiagnosticTestCohortDefinition(), mappings));
+
+    CohortIndicator smearOnly =
+        eptsGeneralIndicator.getIndicator(
+            "SMEAR-ONLY-DIAGNOSTIC-TEST",
+            EptsReportUtils.map(
+                txTbCohortQueries.getSmearMicroscopyOnlyDiagnosticTestCohortDefinition(),
+                mappings));
+    CohortIndicator otherNoExpert =
+        eptsGeneralIndicator.getIndicator(
+            "OTHER-NO-EXPERT-DIAGNOSTIC-TEST",
+            EptsReportUtils.map(
+                txTbCohortQueries.getAdditionalOtherThanGenExpertTestCohortDefinition(), mappings));
+    dataSetDefinition.addColumn(
+        "TX_TB_TOTAL_GENEXPERT_DIAGNOSTIC",
+        "TX_TB: Total Gene Xpert MTB/RIF Assay (Diagnostic Test)",
+        EptsReportUtils.map(geneExpert, mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "TX_TB_TOTAL_SMEAR_ONLY_DIAGNOSTIC",
+        "TX_TB: Total Smear Only (Diagnostic Test)",
+        EptsReportUtils.map(smearOnly, mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "TX_TB_TOTAL_OTHER-NO-EXPERT-DIAGNOSTIC",
+        "TX_TB: Total Other (No Xpert) (Diagnostic Test)",
+        EptsReportUtils.map(otherNoExpert, mappings),
+        "");
+  }
+
+  private void addPositiveResultsDisaggregation(
+      String mappings, CohortIndicatorDataSetDefinition dataSetDefinition) {
+
+    CohortIndicator positiveResults =
+        eptsGeneralIndicator.getIndicator(
+            "POSITIVE-RESULT",
+            EptsReportUtils.map(txTbCohortQueries.getPositiveResultCohortDefinition(), mappings));
+
+    dataSetDefinition.addColumn(
+        "TX_TB_TOTAL_POSITIVE_RESULT",
+        "TX_TB: Total Patients With Positive Results",
+        EptsReportUtils.map(positiveResults, mappings),
+        "");
   }
 
   private List<ColumnParameters> dissagregations() {

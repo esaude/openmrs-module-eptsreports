@@ -10,8 +10,7 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TxMLPatientsWhoAreLTFULessThan3MonthsCalculation
-    extends TxMLAbstractPatientCalculation {
+public class TxMLPatientsWhoAreLTFULessThan3MonthsCalculation extends TxMLPatientCalculation {
 
   private static int LESS_THAN_3_MONTHS = 90;
   private static int DAYS_TO_LTFU = 28;
@@ -37,7 +36,7 @@ public class TxMLPatientsWhoAreLTFULessThan3MonthsCalculation
               patientId,
               nextFilaResult,
               nextSeguimentoResult,
-              TxMLAbstractPatientCalculation.getLastRecepcaoLevantamentoPlus30(
+              TxMLPatientCalculation.getLastRecepcaoLevantamentoPlus30(
                   patientId, lastRecepcaoLevantamentoResult, lastRecepcaoLevantamentoCalculation));
       if (maxNextDate != null
           && DateUtil.getDaysBetween(inicioRealDate, maxNextDate) < LESS_THAN_3_MONTHS) {

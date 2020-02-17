@@ -1,11 +1,13 @@
 package org.openmrs.module.eptsreports.reporting.calculation.util.processor;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import org.apache.commons.lang3.time.DateUtils;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -15,25 +17,20 @@ public class CalculationProcessorUtils {
 
   @SuppressWarnings("unchecked")
   public static Map<Integer, Date> getMaxMapDateByPatient(Map<Integer, Date>... maps) {
-
     Map<Integer, Date> resutls = new HashMap<>();
-
     Set<Integer> ids = new TreeSet<>();
     for (Map<Integer, Date> map : maps) {
       ids.addAll(map.keySet());
     }
-    Date finalComparisonDate = DateUtil.getDateTime(Integer.MAX_VALUE, 1, 1);
     for (Integer patientId : ids) {
-      Date maxDate = DateUtil.getDateTime(Integer.MAX_VALUE, 1, 1);
-      for (int i = 0; i < maps.length; i++) {
-        Date dateMap = getDate(maps[i], patientId);
-
-        if (dateMap != null && dateMap.compareTo(maxDate) > 0) {
-          maxDate = dateMap;
-        }
+      List<Date> dates = new ArrayList<Date>();
+      for (Map<Integer, Date> map : maps) {
+        dates.add(map.get(patientId));
       }
-      if (!DateUtils.isSameDay(maxDate, finalComparisonDate)) {
-        resutls.put(patientId, maxDate);
+      dates.removeAll(Collections.singleton(null));
+      if (dates.size() > 0) {
+        Collections.sort(dates);
+        resutls.put(patientId, dates.get(dates.size() - 1));
       }
     }
     return resutls;
@@ -41,25 +38,20 @@ public class CalculationProcessorUtils {
 
   @SuppressWarnings("unchecked")
   public static Map<Integer, Date> getMinMapDateByPatient(Map<Integer, Date>... maps) {
-
     Map<Integer, Date> resutls = new HashMap<>();
     Set<Integer> ids = new TreeSet<>();
     for (Map<Integer, Date> map : maps) {
       ids.addAll(map.keySet());
     }
-    Date finalComparisonDate = DateUtil.getDateTime(Integer.MIN_VALUE, 1, 1);
     for (Integer patientId : ids) {
-
-      Date minDate = DateUtil.getDateTime(Integer.MIN_VALUE, 1, 1);
-      for (int i = 0; i < maps.length; i++) {
-        Date dateMap = getDate(maps[i], patientId);
-
-        if (dateMap != null && dateMap.compareTo(minDate) < 0) {
-          minDate = dateMap;
-        }
+      List<Date> dates = new ArrayList<Date>();
+      for (Map<Integer, Date> map : maps) {
+        dates.add(map.get(patientId));
       }
-      if (!DateUtils.isSameDay(minDate, finalComparisonDate)) {
-        resutls.put(patientId, minDate);
+      dates.removeAll(Collections.singleton(null));
+      if (dates.size() > 0) {
+        Collections.sort(dates);
+        resutls.put(patientId, dates.get(0));
       }
     }
     return resutls;
@@ -70,27 +62,19 @@ public class CalculationProcessorUtils {
   }
 
   public static Date getMaxDate(Integer patientId, CalculationResultMap... calculationResulsts) {
-    Date finalComparisonDate = DateUtil.getDateTime(Integer.MAX_VALUE, 1, 1);
-    Date maxDate = DateUtil.getDateTime(Integer.MAX_VALUE, 1, 1);
-
+    List<Date> dates = new ArrayList<Date>();
     for (CalculationResultMap resultItem : calculationResulsts) {
       CalculationResult calculationResult = resultItem.get(patientId);
       if (calculationResult != null && calculationResult.getValue() != null) {
         if (calculationResult.getValue() instanceof Date) {
-          Date date = (Date) calculationResult.getValue();
-          if (date.compareTo(maxDate) > 0) {
-            maxDate = date;
-          }
+          dates.add((Date) calculationResult.getValue());
         }
       }
     }
-    if (!DateUtils.isSameDay(maxDate, finalComparisonDate)) {
-      return maxDate;
+    if (dates.size() > 0) {
+      Collections.sort(dates);
+      return dates.get(dates.size() - 1);
     }
     return null;
-  }
-
-  private static Date getDate(Map<Integer, Date> map, Integer patientId) {
-    return map != null ? map.get(patientId) : null;
   }
 }

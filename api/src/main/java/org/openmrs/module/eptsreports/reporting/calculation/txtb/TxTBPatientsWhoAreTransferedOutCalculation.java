@@ -1,4 +1,4 @@
-package org.openmrs.module.eptsreports.reporting.calculation.txml;
+package org.openmrs.module.eptsreports.reporting.calculation.txtb;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,7 +17,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TxMLPatientsWhoAreDeadCalculation extends BaseFghCalculation {
+public class TxTBPatientsWhoAreTransferedOutCalculation extends BaseFghCalculation {
 
   @SuppressWarnings("unchecked")
   @Override
@@ -27,24 +27,23 @@ public class TxMLPatientsWhoAreDeadCalculation extends BaseFghCalculation {
 
     QueryDisaggregationProcessor queryDisaggregation =
         Context.getRegisteredComponents(QueryDisaggregationProcessor.class).get(0);
+
     HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
 
-    Map<Integer, Date> patientsDeadInArtProgram =
+    Map<Integer, Date> transferedOutByProgram =
         queryDisaggregation.findMapMaxPatientStateDateByProgramAndPatientStateAndEndDate(
-            context, hivMetadata.getARTProgram(), hivMetadata.getPatientHasDiedWorkflowState());
+            context,
+            hivMetadata.getARTProgram(),
+            hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState());
 
     Map<Integer, Date> deadInHomeVisitForm =
         queryDisaggregation.findMapMaxObsDatetimeByEncounterAndQuestionsAndAnswersInPeriod(
             context,
             hivMetadata.getBuscaActivaEncounterType(),
+            Arrays.asList(hivMetadata.getDefaultingMotiveConcept().getConceptId()),
             Arrays.asList(
-                hivMetadata.getReasonPatientNotFound().getConceptId(),
-                hivMetadata.getReasonPatientNotFoundByActivistSecondVisit().getConceptId(),
-                hivMetadata.getReasonPatientNotFoundByActivistThirdVisit().getConceptId()),
-            Arrays.asList(hivMetadata.getPatientHasDiedConcept().getConceptId()));
-
-    Map<Integer, Date> deadInDemographicModule =
-        queryDisaggregation.findPatientAndDateInDemographicModule(context);
+                hivMetadata.getTransferOutToAnotherFacilityConcept().getConceptId(),
+                hivMetadata.getAutoTransfer().getConceptId()));
 
     Map<Integer, Date> deadFichaClinicaAndFichaResumo =
         queryDisaggregation.findMapMaxObsDatetimeByEncountersAndQuestionsAndAnswerAndEndDate(
@@ -55,36 +54,21 @@ public class TxMLPatientsWhoAreDeadCalculation extends BaseFghCalculation {
             Arrays.asList(
                 hivMetadata.getStateOfStayPriorArtPatient().getConceptId(),
                 hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
-            hivMetadata.getPatientHasDiedConcept());
-
-    CalculationResultMap numerator =
-        Context.getRegisteredComponents(TxMLPatientsWhoMissedNextApointmentCalculation.class)
-            .get(0)
-            .evaluate(parameterValues, context);
-
-    deadInHomeVisitForm =
-        TxMLPatientCalculation.excludeEarlyHomeVisitDatesFromNextExpectedDateNumerator(
-            numerator, deadInHomeVisitForm);
+            hivMetadata.getTransferOutToAnotherFacilityConcept());
 
     Map<Integer, Date> maxResultFromAllSources =
         CalculationProcessorUtils.getMaxMapDateByPatient(
-            patientsDeadInArtProgram,
-            deadInHomeVisitForm,
-            deadInDemographicModule,
-            deadFichaClinicaAndFichaResumo);
+            transferedOutByProgram, deadInHomeVisitForm, deadFichaClinicaAndFichaResumo);
 
-    // Excluir pacientes q fizeram consulta/levantamento apos serem marcados como
-    // mortos
-    CalculationResultMap possiblePatientsToExclude =
+    CalculationResultMap exclusionsToUse =
         Context.getRegisteredComponents(MaxLastDateFromFilaSeguimentoRecepcaoCalculation.class)
             .get(0)
             .evaluate(parameterValues, context);
 
     for (Integer patientId : maxResultFromAllSources.keySet()) {
-
       Date candidateDate = maxResultFromAllSources.get(patientId);
       if (!TxMLPatientDisagregationProcessor.hasDatesGreatherThanEvaluatedDateToExclude(
-          patientId, candidateDate, possiblePatientsToExclude)) {
+          patientId, candidateDate, exclusionsToUse)) {
         resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
       }
     }

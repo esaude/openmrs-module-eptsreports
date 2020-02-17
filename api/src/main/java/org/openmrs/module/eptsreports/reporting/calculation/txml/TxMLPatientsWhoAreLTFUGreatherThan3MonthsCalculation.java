@@ -10,8 +10,7 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TxMLPatientsWhoAreLTFUGreatherThan3MonthsCalculation
-    extends TxMLAbstractPatientCalculation {
+public class TxMLPatientsWhoAreLTFUGreatherThan3MonthsCalculation extends TxMLPatientCalculation {
 
   private static int GREATHER_THAN_3_MONTHS = 90;
   private static int DAYS_TO_LTFU = 28;
