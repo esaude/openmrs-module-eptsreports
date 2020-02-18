@@ -112,13 +112,15 @@ public class ResumoMensalCohortQueries {
         "A2I",
         map(sqlCohortDefinition, "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch("A2III", map(getPatientsWithTransferFromOtherHF(), "locationList=${location}"));
-    cd.addSearch(
+
+    //Removes the limitation of having the first clinical consultation on the same Pre-ART Start Date.
+    /*cd.addSearch(
         "A2II",
         map(
             getPatientsWithFirstClinicalConsultationOnTheSameDateAsPreArtStartDate(),
-            "endDate=${endDate},location=${location}"));
+            "endDate=${endDate},location=${location}"));*/
 
-    cd.setCompositionString("(A2I AND A2II) AND NOT A2III");
+    cd.setCompositionString("(A2I) AND NOT A2III");
 
     return cd;
   }
