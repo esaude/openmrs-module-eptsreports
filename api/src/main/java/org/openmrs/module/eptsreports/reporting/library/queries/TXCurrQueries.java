@@ -93,20 +93,27 @@ public class TXCurrQueries {
       int reasonPatientNotFoundByActivist3rdVisit,
       int patientIsDead) {
     String query =
-        "   select last.patient_id from (  "
-            + "select  p.patient_id,max(e.encounter_datetime)  "
-            + "from obs o   "
-            + "inner  join encounter e on e.encounter_id = o.encounter_id  "
-            + "inner join patient p on p.patient_id=e.patient_id  "
-            + "where  e.voided = 0  "
-            + " and  p.voided=0  "
-            + "and o.voided = 0  "
-            + "and  e.encounter_type  in (%s)  "
-            + "and o.concept_id in (%s,%s,%s)  "
-            + "and  o.value_coded = %s  "
-            + "and e.location_id = :location  "
-            + "and e.encounter_datetime <= :onOrBefore  "
-            + "group by p.patient_id) last ";
+        "   select  max_date.patient_id from \n" + 
+        "    (select \n" + 
+        "      p.patient_id, \n" + 
+        "      max(e.encounter_datetime) last  \n" + 
+        "    from patient p\n" + 
+        "      inner  join encounter e on e.patient_id=p.patient_id\n" + 
+        "     where \n" + 
+        "      e.encounter_datetime <= '2019-10-20'\n" + 
+        "      and e.location_id = 221\n" + 
+        "      and e.encounter_type  in( 21,36,37) \n" + 
+        "      and e.voided=0\n" + 
+        "      and p.voided = 0\n" + 
+        "     group by p.patient_id  ) max_date\n" + 
+        "        inner join encounter ee\n" + 
+        "            on ee.patient_id = max_date.patient_id\n" + 
+        "      inner join obs o on ee.encounter_id = o.encounter_id \n" + 
+        "        where \n" + 
+        "        ((o.concept_id = 2031 and o.value_coded = 1366) or\n" + 
+        "        (o.concept_id =  23944 and o.value_coded = 1366) or\n" + 
+        "    (o.concept_id =  23945 and o.value_coded = 1366 )) and\n" + 
+        "    o.voided=0";
 
     return String.format(
         query,
