@@ -74,14 +74,9 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getPreArtStartDate().getConceptId()));
 
     cd.addSearch("A1I", map(sqlCohortDefinition, "startDate=${startDate},location=${location}"));
-    cd.addSearch("A1III", map(getPatientsWithTransferFromOtherHF(), "locationList=${location}"));
-    cd.addSearch(
-        "A1II",
-        map(
-            getPatientsWithFirstClinicalConsultationOnTheSameDateAsPreArtStartDate(),
-            "endDate=${endDate},location=${location}"));
+    cd.addSearch("A1II", map(getPatientsWithTransferFromOtherHF(), "locationList=${location}"));
 
-    cd.setCompositionString("(A1I AND A1II) AND NOT A1III");
+    cd.setCompositionString("A1I AND NOT A1II");
 
     return cd;
   }
