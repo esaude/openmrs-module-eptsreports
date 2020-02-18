@@ -94,16 +94,15 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-  private CohortDefinition getTuberculosisSymptoms() {
+  private CohortDefinition getTuberculosisSymptoms(Integer... answerIds) {
+
     CohortDefinition definition =
         this.genericCohortQueries.generalSql(
             "tuberculosisSymptoms",
             TXTBQueries.dateObsForEncounterAndQuestionAndAnswers(
                 this.hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                 Arrays.asList(this.tbMetadata.getHasTbSymptomsConcept().getConceptId()),
-                Arrays.asList(
-                    this.hivMetadata.getYesConcept().getConceptId(),
-                    this.hivMetadata.getNoConcept().getConceptId())));
+                Arrays.asList(answerIds)));
     this.addGeneralParameters(definition);
     return definition;
   }
@@ -349,7 +348,10 @@ public class TXTBCohortQueries {
         "F",
         EptsReportUtils.map(
             this.getTuberculosisTreatmentPlanWithinReportingDate(), this.generalParameterMapping));
-    cd.addSearch("G", this.map(this.getAllTBSymptomsComposition(), this.generalParameterMapping));
+    cd.addSearch(
+        "G",
+        this.map(
+            this.getAllTBSymptomsForDisaggregationComposition(), this.generalParameterMapping));
     cd.addSearch(
         "H",
         EptsReportUtils.map(
@@ -513,7 +515,7 @@ public class TXTBCohortQueries {
         this.map(fichaClinicaMasterCard, this.generalParameterMapping));
     definition.addSearch(
         "all-tb-symptoms",
-        this.map(this.getAllTBSymptomsComposition(), this.generalParameterMapping));
+        this.map(this.getAllTBSymptomsForDemoninatorComposition(), this.generalParameterMapping));
 
     definition.setCompositionString(
         "(art-list AND "
@@ -536,7 +538,7 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-  private CohortDefinition getAllTBSymptomsComposition() {
+  private CohortDefinition getAllTBSymptomsForDisaggregationComposition() {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
     this.addGeneralParameters(definition);
@@ -544,7 +546,9 @@ public class TXTBCohortQueries {
 
     definition.addSearch(
         "tuberculosis-symptoms",
-        this.map(this.getTuberculosisSymptoms(), this.generalParameterMapping));
+        this.map(
+            this.getTuberculosisSymptoms(this.hivMetadata.getYesConcept().getConceptId()),
+            this.generalParameterMapping));
     definition.addSearch(
         "active-tuberculosis",
         this.map(this.getActiveTuberculosis(), this.generalParameterMapping));
@@ -553,6 +557,41 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "application-for-laboratory-research",
         this.map(this.getApplicationForLaboratoryResearch(), this.generalParameterMapping));
+    definition.addSearch(
+        "tb-genexpert-or-culture-test-or-lam-test",
+        this.map(this.getTbGenExpertORCultureTestOrTbLam(), this.generalParameterMapping));
+
+    definition.setCompositionString(
+        "tuberculosis-symptoms OR active-tuberculosis OR tb-observations OR application-for-laboratory-research OR tb-genexpert-or-culture-test-or-lam-test");
+
+    return definition;
+  }
+
+  private CohortDefinition getAllTBSymptomsForDemoninatorComposition() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    this.addGeneralParameters(definition);
+    definition.setName("TxTB -Symptoms");
+
+    definition.addSearch(
+        "tuberculosis-symptoms",
+        this.map(
+            this.getTuberculosisSymptoms(
+                this.hivMetadata.getYesConcept().getConceptId(),
+                this.hivMetadata.getNoConcept().getConceptId()),
+            this.generalParameterMapping));
+
+    definition.addSearch(
+        "active-tuberculosis",
+        this.map(this.getActiveTuberculosis(), this.generalParameterMapping));
+
+    definition.addSearch(
+        "tb-observations", this.map(this.getTbObservations(), this.generalParameterMapping));
+
+    definition.addSearch(
+        "application-for-laboratory-research",
+        this.map(this.getApplicationForLaboratoryResearch(), this.generalParameterMapping));
+
     definition.addSearch(
         "tb-genexpert-or-culture-test-or-lam-test",
         this.map(this.getTbGenExpertORCultureTestOrTbLam(), this.generalParameterMapping));
