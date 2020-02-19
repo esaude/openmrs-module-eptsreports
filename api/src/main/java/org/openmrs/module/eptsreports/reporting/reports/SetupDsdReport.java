@@ -74,7 +74,7 @@ public class SetupDsdReport extends EptsDataExportManager {
         "ERIDSD", Mapped.mapStraightThrough(eriDSDDataset.constructEriDSDDataset()));
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
-            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+            genericCohortQueries.getBaseCohort(), "location=${location}"));
     return rd;
   }
 
