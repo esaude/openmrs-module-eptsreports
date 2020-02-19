@@ -220,10 +220,18 @@ public class TxCurrCohortQueries {
                 getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(),
                 "onOrBefore=${onOrBefore},location=${location}"));
 
+    txCurrComposition
+        .getSearches()
+        .put(
+            "15",
+            EptsReportUtils.map(
+                getPatientsTransferedOutInLastHomeVisitCard(),
+                "onOrBefore=${onOrBefore},location=${location}"));
+
     String compositionString;
     if (currentSpec) {
       compositionString =
-          "(1 OR 2 OR 3 OR 4 OR 5) AND NOT ((6 OR 7 OR 8 OR 9 OR 10 OR 11) AND NOT 12) AND NOT (13 OR 14)   ";
+          "(1 OR 2 OR 3 OR 4 OR 5) AND NOT ((6 OR 7 OR 8 OR 9 OR 10 OR 11 OR 15) AND NOT 12) AND NOT (13 OR 14)   ";
     } else {
       compositionString = "(111 OR 2 OR 3 OR 4) AND (NOT (555 OR (666 AND (NOT (777 OR 888)))))";
     }
@@ -467,7 +475,7 @@ public class TxCurrCohortQueries {
 
     definition.setQuery(
         TXCurrQueries.getPatientSuspendedInFichaResumeAndClinicaOfMasterCardByReportEndDate(
-        	hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getStateOfStayPriorArtPatientConcept().getConceptId(),
@@ -721,7 +729,10 @@ public class TxCurrCohortQueries {
             hivMetadata.getPatientHasDiedConcept().getConceptId(),
             hivMetadata.getTransferredOutConcept().getConceptId(),
             hivMetadata.getSuspendedTreatmentConcept().getConceptId(),
-            hivMetadata.getARTProgram().getProgramId()));
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata.getDefaultingMotiveConcept().getConceptId(),
+            hivMetadata.getAutoTransferConcept().getConceptId(),
+            hivMetadata.getStateOfStayOfArtPatient().getConceptId()));
 
     defintion.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     defintion.addParameter(new Parameter("location", "location", Location.class));
@@ -996,5 +1007,24 @@ public class TxCurrCohortQueries {
     cd.addParameter(new Parameter("locationList", "Location", Location.class));
     cd.addEncounterType(hivMetadata.getARVPharmaciaEncounterType());
     return cd;
+  }
+
+  /** 15. 2.7 = 15 since version 4 . All transferred-outs registered in Last Home Visit Card */
+  @DocumentedDefinition(value = "Patients Transfered Out In Last Home Visit Card")
+  public CohortDefinition getPatientsTransferedOutInLastHomeVisitCard() {
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("Patients Transfered Out In Last Home Visit Card");
+
+    definition.setQuery(
+        TXCurrQueries.getPatientsTransferedOutInLastHomeVisitCard(
+            hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+            hivMetadata.getDefaultingMotiveConcept().getConceptId(),
+            hivMetadata.getTransferredOutConcept().getConceptId(),
+            hivMetadata.getAutoTransferConcept().getConceptId()));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
   }
 }
