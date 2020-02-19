@@ -21,10 +21,32 @@ public class ResumoMensalQueries {
    * @return String
    */
   public static String getAllPatientsWithPreArtStartDateLessThanReportingStartDate(
-      int encounterType, int conceptId) {
+      int encouterTypeFichaResumo,
+      int conceptDataInicioPreTart,
+      int encounterTypeAdultoInicialA,
+      int encounterTypePediatriaInicialA,
+      int programServicoTarvCuidado) {
     String query =
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND o.value_datetime IS NOT NULL AND o.concept_id=%d AND o.value_datetime <:startDate";
-    return String.format(query, encounterType, conceptId);
+        "SELECT InitArt.patient_id FROM (SELECT p.patient_id,MIN(o.value_datetime) AS initialDate FROM patient p  "
+            + "INNER JOIN encounter e  ON e.patient_id=p.patient_id "
+            + "INNER JOIN obs o on o.encounter_id=e.encounter_id "
+            + "WHERE e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND o.value_datetime IS NOT NULL AND o.concept_id=%d AND o.value_datetime<:startDate GROUP BY p.patient_id "
+            + "UNION SELECT p.patient_id,min(e.encounter_datetime) AS initialDate FROM patient p  "
+            + "INNER JOIN encounter e  ON e.patient_id=p.patient_id "
+            + "INNER JOIN obs o on o.encounter_id=e.encounter_id "
+            + "WHERE e.voided=0 AND o.voided=0 AND e.encounter_type IN(%d, %d) "
+            + "AND e.location_id=:location  AND e.encounter_datetime<:startDate GROUP BY p.patient_id UNION "
+            + "SELECT pg.patient_id, pg.date_enrolled  AS initialDate FROM patient p "
+            + "INNER JOIN patient_program pg on pg.patient_id=p.patient_id "
+            + "WHERE pg.program_id=%d AND pg.voided=0 AND pg.date_enrolled<:startDate GROUP BY patient_id) InitArt";
+
+    return String.format(
+        query,
+        encouterTypeFichaResumo,
+        conceptDataInicioPreTart,
+        encounterTypeAdultoInicialA,
+        encounterTypePediatriaInicialA,
+        programServicoTarvCuidado);
   }
 
   /**
@@ -34,10 +56,33 @@ public class ResumoMensalQueries {
    * @return String
    */
   public static String getAllPatientsWithPreArtStartDateWithBoundaries(
-      int encounterType, int conceptId) {
+      int encouterTypeFichaResumo,
+      int conceptDataInicioPreTart,
+      int encounterTypeAdultoInicialA,
+      int encounterTypePediatriaInicialA,
+      int programServicoTarvCuidado) {
     String query =
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND o.value_datetime IS NOT NULL  AND o.value_datetime BETWEEN :startDate AND :endDate AND o.concept_id=%d";
-    return String.format(query, encounterType, conceptId);
+        "SELECT preTarvFinal.patient_id FROM ( "
+            + "SELECT preTarv.patient_id, MIN(preTarv.initialDate) FROM ( "
+            + "SELECT p.patient_id,min(o.value_datetime) AS initialDate FROM patient p  "
+            + "INNER JOIN encounter e  ON e.patient_id=p.patient_id "
+            + "INNER JOIN obs o on o.encounter_id=e.encounter_id WHERE e.voided=0 AND o.voided=0 AND e.encounter_type=%s "
+            + "AND e.location_id=:location  AND o.value_datetime IS NOT NULL AND o.concept_id=%s AND o.value_datetime<=:endDate GROUP BY p.patient_id "
+            + "UNION SELECT p.patient_id,min(e.encounter_datetime) AS initialDate FROM patient p "
+            + "INNER JOIN encounter e  ON e.patient_id=p.patient_id "
+            + "INNER JOIN obs o on o.encounter_id=e.encounter_id WHERE e.voided=0 AND o.voided=0 AND e.encounter_type IN(%s, %s) AND e.location_id=:location AND e.encounter_datetime<=:endDate GROUP BY p.patient_id "
+            + "UNION SELECT pg.patient_id, MIN(pg.date_enrolled) AS initialDate FROM patient p "
+            + "INNER JOIN patient_program pg on pg.patient_id=p.patient_id WHERE pg.program_id=%s AND pg.voided=0 AND pg.date_enrolled<=:endDate  GROUP BY patient_id ) preTarv "
+            + "WHERE preTarv.initialDate BETWEEN :startDate AND :endDate GROUP BY preTarv.patient_id) "
+            + "preTarvFinal GROUP BY preTarvFinal.patient_id ";
+
+    return String.format(
+        query,
+        encouterTypeFichaResumo,
+        conceptDataInicioPreTart,
+        encounterTypeAdultoInicialA,
+        encounterTypePediatriaInicialA,
+        programServicoTarvCuidado);
   }
 
   /**
@@ -46,41 +91,171 @@ public class ResumoMensalQueries {
    * @return String
    */
   public static String getPatientsTransferredFromAnotherHealthFacilityDuringTheCurrentMonth(
-      int masterCardEncounter,
-      int transferFromConcept,
-      int yesConcept,
-      int typeOfPantientConcept,
-      int tarvConcept) {
+      int preTarvProgram,
+      int trasferedState,
+      int encouterTypeFichaResumo,
+      int typeOfPatientTransferedFromConcept,
+      int typeOfPatientTransferedFromAnswer,
+      int transferFromOtherFacility,
+      int transferFromOtherFacilityAnswer) {
 
     String query =
-        "SELECT p.patient_id "
-            + "FROM   patient p "
-            + "       JOIN encounter e "
-            + "         ON p.patient_id = e.patient_id "
-            + "       JOIN obs transf "
-            + "         ON transf.encounter_id = e.encounter_id "
-            + "       JOIN obs type "
-            + "         ON type.encounter_id = e.encounter_id "
-            + "WHERE  p.voided = 0 "
-            + "       AND e.voided = 0 "
-            + "       AND e.encounter_type = %d "
-            + "       AND e.location_id = :location "
-            + "       AND e.encounter_datetime BETWEEN :startDate AND :endDate "
-            + "       AND transf.voided = 0 "
-            + "       AND transf.concept_id = %d "
-            + "       AND transf.value_coded = %d "
-            + "       AND transf.obs_datetime BETWEEN :startDate AND :endDate "
-            + "       AND type.voided = 0 "
-            + "       AND type.concept_id = %d "
-            + "       AND type.value_coded = %d";
+        "SELECT trasferedPatients.patient_id FROM ("
+            + "SELECT pg.patient_id, MIN(ps.start_date) FROM  patient p "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + "WHERE pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%d and ps.state=%d and ps.start_date=pg.date_enrolled and ps.start_date<:startDate  and location_id=:location GROUP BY p.patient_id "
+            + "UNION "
+            + "SELECT p.patient_id,o.obs_datetime AS initialDate  FROM patient p  "
+            + "INNER JOIN encounter e  ON e.patient_id=p.patient_id "
+            + "INNER JOIN obs o on o.encounter_id=e.encounter_id "
+            + "INNER JOIN obs obsPretarv on e.encounter_id=obsPretarv.encounter_id "
+            + "WHERE e.voided=0 AND o.voided=0 AND e.encounter_type=%d and obsPretarv.voided=0 and obsPretarv.concept_id=%d AND obsPretarv.value_coded=%d "
+            + "AND e.location_id=:location  AND o.concept_id=%d AND o.value_coded=%d AND o.obs_datetime<:startDate GROUP BY p.patient_id)trasferedPatients GROUP BY trasferedPatients.patient_id ";
 
     return String.format(
         query,
-        masterCardEncounter,
-        transferFromConcept,
-        yesConcept,
-        typeOfPantientConcept,
-        tarvConcept);
+        preTarvProgram,
+        trasferedState,
+        encouterTypeFichaResumo,
+        typeOfPatientTransferedFromConcept,
+        typeOfPatientTransferedFromAnswer,
+        transferFromOtherFacility,
+        transferFromOtherFacilityAnswer);
+  }
+
+  public static String
+      getPatientsTransferredFromAnotherHealthFacilityDuringTheCurrentStartDateEndDate(
+          int preTarvProgram,
+          int trasferedState,
+          int encouterTypeFichaResumo,
+          int typeOfPatientTransferedFromConcept,
+          int typeOfPatientTransferedFromAnswer,
+          int transferFromOtherFacility,
+          int transferFromOtherFacilityAnswer) {
+
+    String query =
+        "SELECT trasferedPatients.patient_id FROM ( "
+            + "SELECT pg.patient_id, MIN(ps.start_date) FROM  patient p "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + "WHERE pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%d and ps.state=%d and ps.start_date=pg.date_enrolled and ps.start_date BETWEEN :startDate AND :endDate and location_id=:location GROUP BY p.patient_id "
+            + "UNION "
+            + "SELECT p.patient_id,MIN(o.obs_datetime) AS initialDate  FROM patient p  "
+            + "INNER JOIN encounter e  ON e.patient_id=p.patient_id "
+            + "INNER JOIN obs o on o.encounter_id=e.encounter_id "
+            + "INNER JOIN obs obsPretarv on e.encounter_id=obsPretarv.encounter_id "
+            + "WHERE e.voided=0 AND o.voided=0 AND e.encounter_type=%d and obsPretarv.voided=0 and obsPretarv.concept_id=%d AND obsPretarv.value_coded=%d "
+            + "AND e.location_id=:location AND o.concept_id=%d AND o.value_coded=%d AND o.obs_datetime BETWEEN :startDate AND :endDate GROUP BY p.patient_id )trasferedPatients GROUP BY trasferedPatients.patient_id ";
+
+    return String.format(
+        query,
+        preTarvProgram,
+        trasferedState,
+        encouterTypeFichaResumo,
+        typeOfPatientTransferedFromConcept,
+        typeOfPatientTransferedFromAnswer,
+        transferFromOtherFacility,
+        transferFromOtherFacilityAnswer);
+  }
+
+  public static String getPatientsTransferredFromAnotherHealthFacilityEndDate(
+      int preTarvProgram,
+      int trasferedState,
+      int encouterTypeFichaResumo,
+      int typeOfPatientTransferedFromConcept,
+      int typeOfPatientTransferedFromAnswer,
+      int transferFromOtherFacility,
+      int transferFromOtherFacilityAnswer) {
+
+    String query =
+        "SELECT trasferedPatients.patient_id FROM ("
+            + "SELECT pg.patient_id, MIN(ps.start_date) FROM  patient p "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + "WHERE pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%d and ps.state=%d and ps.start_date=pg.date_enrolled and ps.start_date<:endDate  and location_id=:location GROUP BY p.patient_id "
+            + "UNION "
+            + "SELECT p.patient_id,o.obs_datetime AS initialDate FROM patient p "
+            + "INNER JOIN encounter e  ON e.patient_id=p.patient_id "
+            + "INNER JOIN obs o on o.encounter_id=e.encounter_id "
+            + "INNER JOIN obs obsPretarv on e.encounter_id=obsPretarv.encounter_id "
+            + "WHERE e.voided=0 AND o.voided=0 AND e.encounter_type=%d and obsPretarv.voided=0 and obsPretarv.concept_id=%d AND obsPretarv.value_coded=%d "
+            + "AND e.location_id=:location  AND o.concept_id=%d AND o.value_coded=%d AND o.obs_datetime<:startDate GROUP BY p.patient_id)trasferedPatients GROUP BY trasferedPatients.patient_id ";
+
+    return String.format(
+        query,
+        preTarvProgram,
+        trasferedState,
+        encouterTypeFichaResumo,
+        typeOfPatientTransferedFromConcept,
+        typeOfPatientTransferedFromAnswer,
+        transferFromOtherFacility,
+        transferFromOtherFacilityAnswer);
+  }
+
+  public static String getPatientsTransferredFromAnotherHealthFacilityB5() {
+    String query =
+        "select transferidopara.patient_id from ( "
+            + "select patient_id,max(data_transferidopara) data_transferidopara from ( "
+            + "select pg.patient_id,max(ps.start_date) data_transferidopara from  patient p "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id where pg.voided=0 and ps.voided=0 and p.voided=0 and "
+            + "pg.program_id=2 and ps.state=7 and ps.end_date is null and ps.start_date<=:endDate and location_id=:location group by p.patient_id "
+            + "union "
+            + "select p.patient_id,max(o.obs_datetime) data_transferidopara from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on o.encounter_id=e.encounter_id "
+            + "where e.voided=0 and p.voided=0 and o.obs_datetime<=:endDate and o.voided=0 and o.concept_id=6272 and o.value_coded=1706 and e.encounter_type=53 and  e.location_id=:location group by p.patient_id "
+            + "union "
+            + "select p.patient_id,max(e.encounter_datetime) data_transferidopara from  patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on o.encounter_id=e.encounter_id where  e.voided=0 and p.voided=0 and e.encounter_datetime<=:endDate and "
+            + "o.voided=0 and o.concept_id=6273 and o.value_coded=1706 and e.encounter_type=6 and  e.location_id=:location group by p.patient_id) transferido group by patient_id ) transferidopara "
+            + "inner join( "
+            + "select patient_id,max(encounter_datetime) encounter_datetime from( "
+            + "select p.patient_id,max(e.encounter_datetime) encounter_datetime from  patient p "
+            + "inner join encounter e on e.patient_id=p.patient_id where  p.voided=0 and e.voided=0 and e.encounter_datetime<=:endDate and e.location_id=:location and e.encounter_type in (18,6,9) "
+            + "group by p.patient_id "
+            + "union "
+            + "Select p.patient_id,max(value_datetime) encounter_datetime from  patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=52 and o.concept_id=23866 and o.value_datetime is not null and o.value_datetime<=:endDate and e.location_id=:location group by p.patient_id) consultaLev group by patient_id) consultaOuARV on transferidopara.patient_id=consultaOuARV.patient_id "
+            + "where consultaOuARV.encounter_datetime<transferidopara.data_transferidopara and transferidopara.data_transferidopara between :startDate AND :endDate ";
+    return query;
+  }
+
+  public static String getPatientsWhoSuspendTratmentB6() {
+
+    String query =
+        "select suspenso1.patient_id from ( "
+            + "select patient_id,max(data_suspencao) data_suspencao from ( "
+            + "select pg.patient_id,max(ps.start_date) data_suspencao from  patient p "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and ps.state=8 and ps.end_date is null and ps.start_date<=:endDate and location_id=:location "
+            + "group by p.patient_id  "
+            + "union "
+            + " select p.patient_id,max(o.obs_datetime) data_suspencao from  patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on o.encounter_id=e.encounter_id "
+            + "where e.voided=0 and p.voided=0 and o.obs_datetime<=:endDate and o.voided=0 and o.concept_id=6272 and o.value_coded=1709 and e.encounter_type=53 and  e.location_id=:location group by p.patient_id "
+            + "union "
+            + "select  p.patient_id,max(e.encounter_datetime) data_suspencao from  patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on o.encounter_id=e.encounter_id "
+            + "where  e.voided=0 and p.voided=0 and e.encounter_datetime<=:endDate and o.voided=0 and o.concept_id=6273 and o.value_coded=1709 and e.encounter_type=6 and  e.location_id=:location group by p.patient_id ) suspenso group by patient_id) suspenso1 "
+            + "inner join ( "
+            + "select patient_id,max(encounter_datetime) encounter_datetime from ( "
+            + "select p.patient_id,max(e.encounter_datetime) encounter_datetime from  patient p "
+            + "inner join encounter e on e.patient_id=p.patient_id where p.voided=0 and e.voided=0 and e.encounter_datetime<=:endDate and  e.location_id=:location and e.encounter_type in (18,6,9) group by p.patient_id "
+            + "union "
+            + "Select  p.patient_id,max(value_datetime) encounter_datetime from  patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where  p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=52 and o.concept_id=23866 and o.value_datetime is not null and o.value_datetime<=:endDate and e.location_id=:location group by p.patient_id) consultaLev group by patient_id) consultaOuARV on suspenso1.patient_id=consultaOuARV.patient_id "
+            + "where consultaOuARV.encounter_datetime<suspenso1.data_suspencao and suspenso1.data_suspencao between :startDate  AND :endDate ";
+
+    return query;
   }
 
   public static String getPatientsTransferredFromAnotherHealthFacilityByEndOfPreviousMonth(
