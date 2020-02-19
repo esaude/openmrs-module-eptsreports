@@ -40,6 +40,24 @@ public class ResumoMensalQueries {
     return String.format(query, encounterType, conceptId);
   }
 
+
+
+  /**
+   * All patients with encounter type 53, and Pre-ART Start Date that falls between startDate and
+   * enddate
+   *
+   * @return String
+   */
+  public static String getPatientsEnrolledInPreArtOrRegisteredInClinicalProcessOpening(
+          int encounterType1,  int encounterType2, int programId) {
+    String query = "SELECT * FROM (SELECT patient_id, date_enrolled as enrollment_date  from patient_program where program_id = %d and location_id:location AND date_enrolled BETWEEN :startDate AND :endDate  UNION ALL " +
+            "SELECT patient_id , encounter_datetime as enrollment_date from encounter where encounter_type in (%d,%d) and location_id =:location AND encounter_datetime BETWEEN :startDate AND :endDate order by enrollment_date asc) results GROUP BY results.patient_id";
+    return String.format(query,programId, encounterType1, encounterType2);
+  }
+
+
+
+
   /**
    * Number of patients transferred-in from another HFs during the current month
    *
