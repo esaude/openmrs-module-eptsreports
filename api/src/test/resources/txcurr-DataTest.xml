@@ -549,7 +549,7 @@
 		creator="1" date_created="2018-07-08 12:55:48"
 		voided="0" uuid="d6796536-ffd8-11e9-8a8a-177367cdb83a" location_id="6" />
 		
-	   <obs obs_id="105" person_id="12594" concept_id="23944"
+	   <obs obs_id="105" person_id="12594" concept_id="2031"
 		encounter_id="9007" obs_datetime="2018-07-08 00:00:00"
 		creator="1" date_created="2018-07-08 12:55:48" value_coded="1366"
 		voided="0" uuid="39883c90-472f-11ea-8508-17dd56388f73" location_id="6" />
