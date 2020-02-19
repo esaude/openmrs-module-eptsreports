@@ -70,7 +70,7 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
-            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+            genericCohortQueries.getBaseCohort(), "location=${location}"));
 
     return rd;
   }

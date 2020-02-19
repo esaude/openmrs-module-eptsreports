@@ -52,7 +52,7 @@ public class SetupMERQuartelyML extends EptsDataExportManager {
         "TXML", Mapped.mapStraightThrough(txMlDataset.constructtxMlDataset()));
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
-            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+            genericCohortQueries.getBaseCohort(), "location=${location}"));
 
     return reportDefinition;
   }
