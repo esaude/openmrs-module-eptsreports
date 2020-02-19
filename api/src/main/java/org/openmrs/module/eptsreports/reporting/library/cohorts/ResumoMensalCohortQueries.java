@@ -236,9 +236,10 @@ public class ResumoMensalCohortQueries {
 
   /** @return B6: Number of patients with ART suspension during the current month */
   public CohortDefinition getPatientsWhoSuspendedTreatment() {
-    EncounterWithCodedObsCohortDefinition cd = getStateOfStayCohort();
+    Concept suspendedConcept = hivMetadata.getSuspendedTreatmentConcept();
+    ProgramWorkflowState suspendedState = hivMetadata.getSuspendedTreatmentWorkflowState();
+    CohortDefinition cd = getPatientsBasedOnState(suspendedConcept, suspendedState);
     cd.setName("Number of patients with ART suspension during the current month");
-    cd.addIncludeCodedValue(hivMetadata.getSuspendedTreatmentConcept());
     return cd;
   }
 
