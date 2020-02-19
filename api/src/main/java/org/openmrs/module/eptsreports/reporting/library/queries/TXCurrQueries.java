@@ -1,5 +1,10 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.text.StringSubstitutor;
+
 public class TXCurrQueries {
 
   public static String getPatientWithSTARTDRUGSObsBeforeOrOnEndDate(
@@ -149,55 +154,117 @@ public class TXCurrQueries {
   }
 
   public static String getTransferredOutPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(
-      int adultoSeguimentoEncounterType,
-      int masterCardEncounterType,
-      int stateOfStayPriorArtPatientConcept,
-      int stateOfStayOfArtPatient,
-      int transferredOutConcept) {
+		  int adultoSeguimentoEncounterType,
+		  int stateOfStayOfArtPatientConcept,
+		  int masterCardEncounterType,
+		  int stateOfStayPriorArtPatientConcept,
+		  int transferredOutConcept)
+ {
 
     String query =
-        "select  p.patient_id "
-            + " from patient p "
-            + " inner join encounter e on e.patient_id=p.patient_id "
-            + " inner join obs o on o.encounter_id=e.encounter_id "
-            + " where e.encounter_type in (%s,%s) and p.voided=0  and e.voided=0 and o.voided=0 "
-            + " and o.concept_id in (%s,%s) and   o.value_coded=%s "
-            + " and e.location_id = :location and e.encounter_datetime <= :onOrBefore "
-            + " group by p.patient_id ";
+        " SELECT  p.patient_id "
+            + " FROM patient p "
+            + " 	INNER JOIN encounter e "
+            + "			ON e.patient_id=p.patient_id "
+            + " 	INNER JOIN obs o "
+            + "			ON o.encounter_id=e.encounter_id "
+            + " WHERE e.encounter_type = ${adultoSeguimento} "
+            + "		AND p.voided=0  "
+            + "		AND e.voided=0 "
+            + "		AND o.voided=0 "
+            + " 	AND o.concept_id = ${stateOfStayOfArtPatient} "
+            + "		AND o.value_coded= ${transferredOut} "
+            + " 	AND e.location_id = :location "
+            + "		AND e.encounter_datetime <= :onOrBefore "
+            + " GROUP BY p.patient_id "
+            + " UNION "
+            + " SELECT  p.patient_id " 
+            + " FROM patient p  " 
+            + " 	INNER JOIN encounter e "
+            + "			ON e.patient_id=p.patient_id "  
+            + " 	INNER JOIN obs o "
+            + "			ON o.encounter_id=e.encounter_id " 
+            + " WHERE e.encounter_type = ${masterCard}"
+            + "		AND p.voided=0 "
+            + "		AND e.voided=0 "
+            + "		AND o.voided=0 "  
+            + " 	AND o.concept_id = ${stateOfStayPriorArtPatient} "
+            + "		AND o.value_coded= ${transferredOut}" 
+            + " 	AND e.location_id = :location "
+            + "		AND e.encounter_datetime <= :onOrBefore "  
+            + " GROUP BY p.patient_id ";
 
-    return String.format(
-        query,
-        adultoSeguimentoEncounterType,
-        masterCardEncounterType,
-        stateOfStayPriorArtPatientConcept,
-        stateOfStayOfArtPatient,
-        transferredOutConcept);
+    Map<String, Integer> map = new  HashMap<>();
+    map.put("adultoSeguimento", adultoSeguimentoEncounterType);
+    map.put("stateOfStayOfArtPatient", stateOfStayOfArtPatientConcept);
+    map.put("masterCard", masterCardEncounterType);
+    map.put("stateOfStayPriorArtPatient", stateOfStayPriorArtPatientConcept);
+    map.put("transferredOut", transferredOutConcept);
+    
+    StringSubstitutor stringSubstitutor = new  StringSubstitutor(map);
+    return stringSubstitutor.replace(query);
+
   }
 
   public static String getPatientSuspendedInFichaResumeAndClinicaOfMasterCardByReportEndDate(
-      int adultoSeguimentoEncounterType,
-      int masterCardEncounterType,
-      int stateOfStayPriorArtPatientConcept,
-      int stateOfStayOfArtPatient,
-      int suspendedTreatmentConcept) {
+		  int adultoSeguimentoEncounterType,
+		  int stateOfStayOfArtPatientConcept,
+		  int masterCardEncounterType,
+		  int stateOfStayPriorArtPatientConcept,
+		  int suspendedTreatmentConcept) {
 
-    String query =
-        "select  p.patient_id "
-            + "from patient p "
-            + "inner join encounter e on e.patient_id=p.patient_id "
-            + "inner join obs o on o.encounter_id=e.encounter_id "
-            + "where e.encounter_type in (%s,%s) and p.voided=0  and e.voided=0 and o.voided=0 "
-            + "and o.concept_id in (%s,%s) and o.value_coded=%s "
-            + " and e.location_id = :location and e.encounter_datetime <= :onOrBefore "
-            + "group by p.patient_id ";
+	  String query =
+		        " SELECT  p.patient_id "
+		            + " FROM patient p "
+		            + " 	INNER JOIN encounter e "
+		            + "			ON e.patient_id=p.patient_id "
+		            + " 	INNER JOIN obs o "
+		            + "			ON o.encounter_id=e.encounter_id "
+		            + " WHERE e.encounter_type = ${adultoSeguimento} "
+		            + "		AND p.voided=0  "
+		            + "		AND e.voided=0 "
+		            + "		AND o.voided=0 "
+		            + " 	AND o.concept_id = ${stateOfStayOfArtPatient} "
+		            + "		AND o.value_coded= ${suspendedTreatment} "
+		            + " 	AND e.location_id = :location "
+		            + "		AND e.encounter_datetime <= :onOrBefore "
+		            + " GROUP BY p.patient_id "
+		            + " UNION "
+		            + " SELECT  p.patient_id " 
+		            + " FROM patient p  " 
+		            + " 	INNER JOIN encounter e "
+		            + "			ON e.patient_id=p.patient_id "  
+		            + " 	INNER JOIN obs o "
+		            + "			ON o.encounter_id=e.encounter_id " 
+		            + " WHERE e.encounter_type = ${masterCard}"
+		            + "		AND p.voided=0 "
+		            + "		AND e.voided=0 "
+		            + "		AND o.voided=0 "  
+		            + " 	AND o.concept_id = ${stateOfStayPriorArtPatient} "
+		            + "		AND o.value_coded= ${suspendedTreatment}" 
+		            + " 	AND e.location_id = :location "
+		            + "		AND e.encounter_datetime <= :onOrBefore "  
+		            + " GROUP BY p.patient_id ";
 
-    return String.format(
-        query,
-        adultoSeguimentoEncounterType,
-        masterCardEncounterType,
-        stateOfStayPriorArtPatientConcept,
-        stateOfStayOfArtPatient,
-        suspendedTreatmentConcept);
+		    Map<String, Integer> map = new  HashMap<>();
+		    map.put("adultoSeguimento", adultoSeguimentoEncounterType);
+		    map.put("stateOfStayOfArtPatient", stateOfStayOfArtPatientConcept);
+		    map.put("masterCard", masterCardEncounterType);
+		    map.put("stateOfStayPriorArtPatient", stateOfStayPriorArtPatientConcept);
+		    map.put("suspendedTreatment", suspendedTreatmentConcept);
+		    
+		    StringSubstitutor stringSubstitutor = new  StringSubstitutor(map);
+		    return stringSubstitutor.replace(query);
+  }
+  
+  public static String getAllTransferedOutInLastHomeVisitCard() {
+	  
+	  String  query = "";
+	  
+	  Map<String, Integer> map = new HashMap<>();
+	  
+	  StringSubstitutor stringSubstitutor  = new StringSubstitutor(map);
+	  return stringSubstitutor.replace(query);
   }
 
   public static String getPatientHavingLastScheduledDrugPickupDate(
