@@ -48,6 +48,21 @@ public class ResumoMensalQueries {
    *
    * @return String
    */
+  public static String getAllPatientsWithPreArtDateTransferredInFromWithBoundaries(
+          int encounterType, int conceptId) {
+    String query =
+            "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND o.value_datetime IS NOT NULL  AND o.value_datetime BETWEEN :startDate AND :endDate AND o.concept_id=%d";
+    return String.format(query, encounterType, conceptId);
+  }
+
+
+
+  /**
+   * All patients with encounter type 53, and Pre-ART Start Date that falls between startDate and
+   * enddate
+   *
+   * @return String
+   */
   public static String getPatientsEnrolledInPreArtOrRegisteredInClinicalProcessOpening(
           int encounterType1,  int encounterType2, int programId) {
     String query = "SELECT * FROM (SELECT patient_id, date_enrolled as enrollment_date  from patient_program where program_id = %d and location_id:location AND date_enrolled BETWEEN :startDate AND :endDate  UNION ALL " +

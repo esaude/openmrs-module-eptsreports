@@ -113,6 +113,8 @@ public class ResumoMensalCohortQueries {
         map(sqlCohortDefinition, "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch("A2II",map(getPatientsEnrolledInPreArtOrRegisteredInClinicalProcessOpening(), "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch("A2III", map(getPatientsWithTransferFromOtherHF(), "locationList=${location}"));
+    cd.addSearch("A2IV",map(getPatientsWithTransferFrom(),"locationList=${location}"));
+    cd.addSearch("A2V",map(getAllPatientsWithPreArtDateTransferredInFromWithBoundaries(),"startDate=${startDate},endDate=${endDate},location=${location}"));
 
 
     //Removes the limitation of having the first clinical consultation on the same Pre-ART Start Date.
@@ -147,6 +149,26 @@ public class ResumoMensalCohortQueries {
                     hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
                     hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
                     hivMetadata.getHIVCareProgram().getProgramId()));
+    return scd;
+  }
+
+
+  /**
+   * Get patients With Date fo Transferred In Between etartDate and endDate
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition
+  getAllPatientsWithPreArtDateTransferredInFromWithBoundaries() {
+    SqlCohortDefinition scd = new SqlCohortDefinition();
+    scd.setName("Get patients enrolled on Pre Art  or registered on clinical process opening");
+    scd.addParameter(new Parameter("location","Location",Location.class));
+    scd.addParameter(new Parameter("startDate","Start Date",Date.class));
+    scd.addParameter(new Parameter("endDate","End Date",Date.class));
+    scd.setQuery(
+            ResumoMensalQueries.getAllPatientsWithPreArtDateTransferredInFromWithBoundaries(
+                    hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+                    hivMetadata.getTransferredFromOtherFacilityConcept().getConceptId()));
     return scd;
   }
 
@@ -482,6 +504,18 @@ public class ResumoMensalCohortQueries {
     cd.addEncounterType(hivMetadata.getMasterCardEncounterType());
     cd.setConcept(hivMetadata.getTransferFromOtherFacilityConcept());
     cd.addIncludeCodedValue(hivMetadata.getYesConcept());
+    return cd;
+  }
+
+  /** @return CohortDefinition Patients with Type of Patient Transferred From = 'Pre-TARV' */
+  private CohortDefinition getPatientsWithTransferFrom() {
+    EncounterWithCodedObsCohortDefinition cd = new EncounterWithCodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("locationList", "location", Location.class));
+    cd.addEncounterType(hivMetadata.getMasterCardEncounterType());
+    cd.setConcept(hivMetadata.getTypeOfPatientTransferredFrom());
+    cd.addIncludeCodedValue(hivMetadata.getPreTarvConcept());
     return cd;
   }
 

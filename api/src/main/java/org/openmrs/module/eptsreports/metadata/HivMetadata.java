@@ -956,6 +956,13 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id = 1369
+  public Concept getTransferredFromOtherFacilityConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.transferFromOtherFacilityConceptUuid");
+    return getConcept(uuid);
+  }
+
   // concept_id = 23944
   public Concept getReasonPatientNotFoundByActivist2ndVisitConcept() {
     String uuid =
@@ -1424,5 +1431,13 @@ public class HivMetadata extends ProgramsMetadata {
   public Concept getBPlusConcept() {
     return getConcept(
         Context.getAdministrationService().getGlobalProperty("eptsreports.bPlusConceptUuid"));
+  }
+
+
+  // concept_id = 6275
+  public Concept getPreTarvConcept() {
+    String uuid =
+            Context.getAdministrationService().getGlobalProperty("eptsreports.preTarvConceptUuid");
+    return getConcept(uuid);
   }
 }
