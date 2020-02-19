@@ -13,6 +13,10 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.commons.text.StringSubstitutor;
+
 public class ResumoMensalQueries {
 
   /**
@@ -50,7 +54,9 @@ public class ResumoMensalQueries {
       int transferFromConcept,
       int yesConcept,
       int typeOfPantientConcept,
-      int tarvConcept) {
+      int tarvConcept,
+      int artProgramId,
+      int transferOutPWfState) {
 
     String query =
         "SELECT p.patient_id "
@@ -63,24 +69,40 @@ public class ResumoMensalQueries {
             + "         ON type.encounter_id = e.encounter_id "
             + "WHERE  p.voided = 0 "
             + "       AND e.voided = 0 "
-            + "       AND e.encounter_type = %d "
+            + "       AND e.encounter_type = ${masterCard} "
             + "       AND e.location_id = :location "
             + "       AND e.encounter_datetime BETWEEN :startDate AND :endDate "
             + "       AND transf.voided = 0 "
-            + "       AND transf.concept_id = %d "
-            + "       AND transf.value_coded = %d "
+            + "       AND transf.concept_id = ${transferFromOther} "
+            + "       AND transf.value_coded = ${yes} "
             + "       AND transf.obs_datetime BETWEEN :startDate AND :endDate "
             + "       AND type.voided = 0 "
-            + "       AND type.concept_id = %d "
-            + "       AND type.value_coded = %d";
+            + "       AND type.concept_id = ${typeOfPatient} "
+            + "       AND type.value_coded = ${tarv} "
+            + "UNION "
+            + "SELECT p.patient_id "
+            + "FROM patient p   "
+            + "    JOIN patient_program pp  "
+            + "        ON p.patient_id=pp.patient_id "
+            + "    JOIN patient_state ps  "
+            + "        ON ps.patient_program_id=pp.patient_program_id "
+            + "WHERE  pp.program_id = ${artProgram} "
+            + "    AND ps.state = ${transferOutState} "
+            + "    AND ps.start_date BETWEEN :startDate AND :endDate "
+            + "    AND p.voided = 0 "
+            + "    AND pp.voided = 0 "
+            + "    AND ps.voided = 0";
 
-    return String.format(
-        query,
-        masterCardEncounter,
-        transferFromConcept,
-        yesConcept,
-        typeOfPantientConcept,
-        tarvConcept);
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("masterCard", masterCardEncounter);
+    valuesMap.put("transferFromOther", transferFromConcept);
+    valuesMap.put("yes", yesConcept);
+    valuesMap.put("typeOfPatient", typeOfPantientConcept);
+    valuesMap.put("tarv", tarvConcept);
+    valuesMap.put("artProgram", artProgramId);
+    valuesMap.put("transferOutState", transferOutPWfState);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
   }
 
   public static String getPatientsTransferredFromAnotherHealthFacilityByEndOfPreviousMonth(

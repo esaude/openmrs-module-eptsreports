@@ -187,7 +187,8 @@ public class ResumoMensalCohortQueries {
    */
   public CohortDefinition
       getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2() {
-
+    // TODO maybe we should be re-using HivCohortQueries#getPatientsTransferredFromOtherHealthFacility
+    // Waiting for BAs response
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients transferred-in from another HFs during the current month");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -199,7 +200,11 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
-            hivMetadata.getArtStatus().getConceptId()));
+            hivMetadata.getArtStatus().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
 
     return cd;
   }
