@@ -66,7 +66,7 @@ public class SetupQualityImprovementReport extends EptsDataExportManager {
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
             genericCohortQueries.getBaseCohort(),
-            "endDate=${dataFinalAvaliacao},location=${location}"));
+            "location=${location}"));
 
     return reportDefinition;
   }
