@@ -237,24 +237,27 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
         dsd,
         "B5TC",
         "Patients under 15 years",
-        getPatientsTransferredOutDuringCurrentMonth(),
+        getNumberOfPatientsTransferredOutFromOtherHealthFacilitiesDuringCurrentMonthB5(),
         resumoMensalAandBdisaggregations.getUnder14YearsColumns());
 
     addRow(
         dsd,
         "B5TA",
         "Patients over 15 years - adults",
-        getPatientsTransferredOutDuringCurrentMonth(),
+        getNumberOfPatientsTransferredOutFromOtherHealthFacilitiesDuringCurrentMonthB5(),
         resumoMensalAandBdisaggregations.getAdultPatients());
 
     dsd.addColumn(
-        "B5TP", "Total patients - Total Geral", getPatientsTransferredOutDuringCurrentMonth(), "");
+        "B5TP",
+        "Total patients - Total Geral",
+        getNumberOfPatientsTransferredOutFromOtherHealthFacilitiesDuringCurrentMonthB5(),
+        "");
 
     addRow(
         dsd,
         "B5TAD",
         "Adolescentes patients",
-        getPatientsTransferredOutDuringCurrentMonth(),
+        getNumberOfPatientsTransferredOutFromOtherHealthFacilitiesDuringCurrentMonthB5(),
         resumoMensalAandBdisaggregations.getAdolescentesColumns());
 
     // B6 indicators
@@ -262,109 +265,99 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
         dsd,
         "B6TC",
         "Patients under 15 years",
-        getPatientsWithArtSuspensionDuringCurrentMonth(),
+        getPatientsWhoSuspendTratmentB6(),
         resumoMensalAandBdisaggregations.getUnder14YearsColumns());
 
     addRow(
         dsd,
         "B6TA",
         "Patients over 15 years - adults",
-        getPatientsWithArtSuspensionDuringCurrentMonth(),
+        getPatientsWhoSuspendTratmentB6(),
         resumoMensalAandBdisaggregations.getAdultPatients());
 
-    dsd.addColumn(
-        "B6TP",
-        "Total patients - Total Geral",
-        getPatientsWithArtSuspensionDuringCurrentMonth(),
-        "");
+    dsd.addColumn("B6TP", "Total patients - Total Geral", getPatientsWhoSuspendTratmentB6(), "");
 
     addRow(
         dsd,
         "B6TAD",
         "Adolescentes patients",
-        getPatientsWithArtSuspensionDuringCurrentMonth(),
+        getPatientsWhoSuspendTratmentB6(),
         resumoMensalAandBdisaggregations.getAdolescentesColumns());
 
-    // // B7 indicators
-    // addRow(
-    // dsd,
-    // "B7TC",
-    // "Patients under 15 years",
-    // getPatientsWhoAbandonedArtDuringCurrentMonth(),
-    // resumoMensalAandBdisaggregations.getUnder14YearsColumns());
-    //
-    // addRow(
-    // dsd,
-    // "B7TA",
-    // "Patients over 15 years - adults",
-    // getPatientsWhoAbandonedArtDuringCurrentMonth(),
-    // resumoMensalAandBdisaggregations.getAdultPatients());
-    //
-    // dsd.addColumn(
-    // "B7TP", "Total patients - Total Geral",
-    // getPatientsWhoAbandonedArtDuringCurrentMonth(), "");
-    //
-    // addRow(
-    // dsd,
-    // "B7TAD",
-    // "Adolescentes patients",
-    // getPatientsWhoAbandonedArtDuringCurrentMonth(),
-    // resumoMensalAandBdisaggregations.getAdolescentesColumns());
-    //
-    // // B8 indicators
-    // addRow(
-    // dsd,
-    // "B8TC",
-    // "Patients under 15 years",
-    // getPatientsWhoDiedDuringCurrentMonth(),
-    // resumoMensalAandBdisaggregations.getUnder14YearsColumns());
-    //
-    // addRow(
-    // dsd,
-    // "B8TA",
-    // "Patients over 15 years - adults",
-    // getPatientsWhoDiedDuringCurrentMonth(),
-    // resumoMensalAandBdisaggregations.getAdultPatients());
-    //
-    // dsd.addColumn(
-    // "B8TP", "Total patients - Total Geral",
-    // getPatientsWhoDiedDuringCurrentMonth(), "");
-    //
-    // addRow(
-    // dsd,
-    // "B8TAD",
-    // "Adolescentes patients",
-    // getPatientsWhoDiedDuringCurrentMonth(),
-    // resumoMensalAandBdisaggregations.getAdolescentesColumns());
-    //
-    // // B10 indicators
-    // addRow(
-    // dsd,
-    // "B10TC",
-    // "Patients under 15 years",
-    // getPatientsWhoStartedArtByEndOfPreviousMonth(),
-    // resumoMensalAandBdisaggregations.getUnder14YearsColumns());
-    //
-    // addRow(
-    // dsd,
-    // "B10TA",
-    // "Patients over 15 years - adults",
-    // getPatientsWhoStartedArtByEndOfPreviousMonth(),
-    // resumoMensalAandBdisaggregations.getAdultPatients());
-    //
-    // dsd.addColumn(
-    // "B10TP",
-    // "Total patients - Total Geral",
-    // getPatientsWhoStartedArtByEndOfPreviousMonth(),
-    // "");
-    //
-    // addRow(
-    // dsd,
-    // "B10TAD",
-    // "Adolescentes patients",
-    // getPatientsWhoStartedArtByEndOfPreviousMonth(),
-    // resumoMensalAandBdisaggregations.getAdolescentesColumns());
-    //
+    // B7 indicators
+    addRow(
+        dsd,
+        "B7TC",
+        "Patients under 15 years",
+        getPatientsWhoAbandonedTratmentUpB7(),
+        resumoMensalAandBdisaggregations.getUnder14YearsColumns());
+
+    addRow(
+        dsd,
+        "B7TA",
+        "Patients over 15 years - adults",
+        getPatientsWhoAbandonedTratmentUpB7(),
+        resumoMensalAandBdisaggregations.getAdultPatients());
+
+    dsd.addColumn(
+        "B7TP", "Total patients - Total Geral", getPatientsWhoAbandonedTratmentUpB7(), "");
+
+    addRow(
+        dsd,
+        "B7TAD",
+        "Adolescentes patients",
+        getPatientsWhoAbandonedTratmentUpB7(),
+        resumoMensalAandBdisaggregations.getAdolescentesColumns());
+
+    // B8 indicators
+    addRow(
+        dsd,
+        "B8TC",
+        "Patients under 15 years",
+        getPatientsWhoDiedTratmentB8(),
+        resumoMensalAandBdisaggregations.getUnder14YearsColumns());
+
+    addRow(
+        dsd,
+        "B8TA",
+        "Patients over 15 years - adults",
+        getPatientsWhoDiedTratmentB8(),
+        resumoMensalAandBdisaggregations.getAdultPatients());
+
+    dsd.addColumn("B8TP", "Total patients - Total Geral", getPatientsWhoDiedTratmentB8(), "");
+
+    addRow(
+        dsd,
+        "B8TAD",
+        "Adolescentes patients",
+        getPatientsWhoDiedTratmentB8(),
+        resumoMensalAandBdisaggregations.getAdolescentesColumns());
+
+    // B10 indicators
+    addRow(
+        dsd,
+        "B10TC",
+        "Patients under 15 years",
+        getTxNewEndDateB10(),
+        resumoMensalAandBdisaggregations.getUnder14YearsColumns());
+
+    addRow(
+        dsd,
+        "B10TA",
+        "Patients over 15 years - adults",
+        getTxNewEndDateB10(),
+        resumoMensalAandBdisaggregations.getAdultPatients());
+
+    dsd.addColumn("B10TP", "Total patients - Total Geral", getTxNewEndDateB10(), "");
+
+    addRow(
+        dsd,
+        "B10TAD",
+        "Adolescentes patients",
+        getTxNewEndDateB10(),
+        resumoMensalAandBdisaggregations.getAdolescentesColumns());
+    
+
     // // B12 indicators
     // addRow(
     // dsd,
@@ -536,14 +529,6 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
                     .getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1())));
   }
 
-  private Mapped<CohortIndicator> getPatientsWhoRestartedTreatmentDuringCurrentMonthB3() {
-    String name = "Patients under 15 years";
-    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
-    CohortDefinition cohort = resumoMensalCohortQueries.getPatientsWithStartDrugs();
-    CohortIndicator indicator = eptsGeneralIndicator.getIndicator(name, map(cohort, mappings));
-    return mapStraightThrough(indicator);
-  }
-
   private Mapped<CohortIndicator>
       getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2() {
     return mapStraightThrough(
@@ -563,7 +548,8 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
                     .getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1())));
   }
 
-  private Mapped<CohortIndicator> getPatientsTransferredOutDuringCurrentMonth() {
+  private Mapped<CohortIndicator>
+      getNumberOfPatientsTransferredOutFromOtherHealthFacilitiesDuringCurrentMonthB5() {
     String name = "Patients transferred out during the current month";
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     CohortDefinition cohort =
@@ -573,72 +559,36 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
     return mapStraightThrough(indicator);
   }
 
-  private Mapped<CohortIndicator> getPatientsWithArtSuspensionDuringCurrentMonth() {
+  private Mapped<CohortIndicator> getPatientsWhoSuspendTratmentB6() {
     String name = "Patients transferred out during the current month";
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     CohortDefinition cohort = resumoMensalCohortQueries.getPatientsWhoSuspendTratmentB6();
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, map(cohort, mappings)));
   }
 
-  private Mapped<CohortIndicator> getPatientsWhoAbandonedArtDuringCurrentMonth() {
+  private Mapped<CohortIndicator> getPatientsWhoAbandonedTratmentUpB7() {
     String name = "Patients who abandoned the ART during the current month";
+    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
     Mapped<CohortDefinition> cohort =
-        map(
-            resumoMensalCohortQueries.getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthB7(),
-            "value1=${endDate-90d},value2=${endDate},onOrBefore=${endDate},locationList=${location}");
+        map(resumoMensalCohortQueries.getPatientsWhoAbandonedTratmentUpB7(), mappings);
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
   }
 
-  private Mapped<CohortIndicator> getPatientsWhoDiedDuringCurrentMonth() {
-    String name = "Patients who died during the current month";
-    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
-    CohortDefinition cohort = resumoMensalCohortQueries.getPatientsWhoDied();
-    return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, map(cohort, mappings)));
-  }
+  private Mapped<CohortIndicator> getPatientsWhoDiedTratmentB8() {
+    String name = "Patients who abandoned the ART during the current month";
+    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
-  private Mapped<CohortIndicator> getPatientsWhoStartedArtByEndOfPreviousMonth() {
-    String name = "Patients who started ART by end of current month";
     Mapped<CohortDefinition> cohort =
-        mapStraightThrough(
-            resumoMensalCohortQueries.getPatientsWhoStartedArtByEndOfPreviousMonthB10());
+        map(resumoMensalCohortQueries.getPatientsWhoDiedTratmentB8(), mappings);
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
   }
 
-  private Mapped<CohortIndicator> getPatientsWhoWereActiveByEndOfPreviousMonth() {
-    String name = "Patients active in ART by end of previous month";
-    Mapped<CohortDefinition> cohort =
-        mapStraightThrough(
-            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfPreviousMonthB12());
-    return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
-  }
+  private Mapped<CohortIndicator> getTxNewEndDateB10() {
+    String name = "Patients who abandoned the ART during the current month";
+    String mappings = "endDate=${endDate},location=${location}";
 
-  private Mapped<CohortIndicator> getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTB() {
-    String name =
-        "Patients who initiated Pre-TARV during the current month and was screened for TB";
-    Mapped<CohortDefinition> cohort =
-        mapStraightThrough(
-            resumoMensalCohortQueries
-                .getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTB());
-    return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
-  }
-
-  private Mapped<CohortIndicator> getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTPI() {
-    String name = "Patients who initiated Pre-TARV during the current month and started TPI";
-    Mapped<CohortDefinition> cohort =
-        mapStraightThrough(
-            resumoMensalCohortQueries
-                .getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTPI());
-    return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
-  }
-
-  private Mapped<CohortIndicator>
-      getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTB() {
-    String name =
-        "Patientes who initiated Pre-TARV during the current month and were diagnosed for active TB";
-    Mapped<CohortDefinition> cohort =
-        mapStraightThrough(
-            resumoMensalCohortQueries
-                .getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTB());
+    Mapped<CohortDefinition> cohort = map(resumoMensalCohortQueries.getTxNewEndDateB10(), mappings);
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
   }
 }

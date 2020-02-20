@@ -26,20 +26,17 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
 
     final Location location = Context.getLocationService().getLocation(221);
-    final Date startDate = DateUtil.getDateTime(2019, 9, 21);
+    final Date startDate = DateUtil.getDateTime(2019, 11, 21);
     final Date endDate = DateUtil.getDateTime(2019, 12, 20);
     // final Date reportingEndDate = DateUtil.getDateTime(2018, 9, 20);
 
     final CohortDefinition txNewCompositionCohort =
-        this.resumoMensalQueries.getPatientsWhoSuspendTratmentB6();
+        this.resumoMensalQueries.getPatientsWhoAbandonedTratmentUpB7();
 
     final Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), startDate);
     parameters.put(new Parameter("endDate", "End Date", Date.class), endDate);
     parameters.put(new Parameter("location", "Location", Location.class), location);
-
-    // parameters.put(new Parameter("reportingEndDate", "End Date",
-    // Date.class), reportingEndDate);
 
     final EvaluatedCohort evaluateCohortDefinition =
         this.evaluateCohortDefinition(txNewCompositionCohort, parameters);
