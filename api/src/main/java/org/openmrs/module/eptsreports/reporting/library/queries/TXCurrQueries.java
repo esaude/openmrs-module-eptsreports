@@ -201,7 +201,7 @@ public class TXCurrQueries {
             + " 	AND o.concept_id = ${stateOfStayPriorArtPatient} "
             + "		AND o.value_coded= ${transferredOut}"
             + " 	AND e.location_id = :location "
-            + "		AND e.encounter_datetime <= :onOrBefore "
+            + "		AND o.value_datetime <= :onOrBefore "
             + " GROUP BY p.patient_id ";
 
     Map<String, Integer> map = new HashMap<>();
@@ -252,7 +252,7 @@ public class TXCurrQueries {
             + " 	AND o.concept_id = ${stateOfStayPriorArtPatient} "
             + "		AND o.value_coded= ${suspendedTreatment}"
             + " 	AND e.location_id = :location "
-            + "		AND e.encounter_datetime <= :onOrBefore "
+            + "		AND o.value_datetime <= :onOrBefore "
             + " GROUP BY p.patient_id ";
 
     Map<String, Integer> map = new HashMap<>();
@@ -643,7 +643,7 @@ public class TXCurrQueries {
             + "              AND o.concept_id = ${stateOfStayOfPreArtPatient}  "
             + "                    AND o.value_coded= ${transferredOutConcept}  "
             + "              AND e.location_id = :location  "
-            + "                    AND e.encounter_datetime <= :onOrBefore    "
+            + "                    AND o.value_datetime <= :onOrBefore    "
             + "            GROUP BY p.patient_id ) last10 "
             + " GROUP BY last10.patient_id  "
             + "   UNION  "
@@ -677,7 +677,7 @@ public class TXCurrQueries {
             + "                           AND o.concept_id = ${stateOfStayOfPreArtPatient}  "
             + "                                 AND o.value_coded= ${suspendedTreatmentConcept}  "
             + "                           AND e.location_id = :location  "
-            + "                                 AND e.encounter_datetime <= :onOrBefore    "
+            + "                                 AND o.value_datetime <= :onOrBefore    "
             + "                         GROUP BY p.patient_id ) last11 "
             + " GROUP BY last11.patient_id   "
             + " UNION "
@@ -693,7 +693,7 @@ public class TXCurrQueries {
             + "	  		     GROUP BY e.patient_id) last_home_visit     "
             + "	  		          ON last_home_visit.patient_id=p.patient_id     "
             + "	  		 INNER JOIN encounter ee     "
-            + "	  		         ON ee.patient_id=ee.patient_id     "
+            + "	  		         ON ee.patient_id=last_home_visit.patient_id     "
             + "	  		 INNER JOIN obs o     "
             + "	  		         ON o.encounter_id = ee.encounter_id     "
             + " WHERE o.concept_id = ${defaultingMotiveConcept}     "
@@ -758,7 +758,7 @@ public class TXCurrQueries {
             + "         GROUP BY e.patient_id) last_home_visit "
             + "            ON last_home_visit.patient_id=p.patient_id "
             + "    INNER JOIN encounter ee "
-            + "        ON ee.patient_id=ee.patient_id "
+            + "        ON ee.patient_id=last_home_visit.patient_id "
             + "    INNER JOIN obs o "
             + "        ON o.encounter_id = ee.encounter_id "
             + "WHERE o.concept_id = ${defaultingMotiveConcept} "
