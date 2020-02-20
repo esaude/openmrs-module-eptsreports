@@ -111,69 +111,86 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "A2I",
         map(sqlCohortDefinition, "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch("A2II",map(getPatientsEnrolledInPreArtOrRegisteredInClinicalProcessOpening(), "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch("A2III", map(getPatientsWithTransferFromOtherHF(), "locationList=${location}"));
-    cd.addSearch("A2IV",map(getPatientsWithTransferFrom(),"locationList=${location}"));
-    cd.addSearch("A2V",map(getAllPatientsWithPreArtDateTransferredInFromWithBoundaries(),"startDate=${startDate},endDate=${endDate},location=${location}"));
-
-
-    //Removes the limitation of having the first clinical consultation on the same Pre-ART Start Date.
-    /*cd.addSearch(
+    cd.addSearch(
         "A2II",
         map(
-            getPatientsWithFirstClinicalConsultationOnTheSameDateAsPreArtStartDate(),
-            "endDate=${endDate},location=${location}"));*/
+            getPatientsEnrolledInPreArtOrRegisteredInClinicalProcessOpening(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch("A2III", map(getPatientsWithTransferFromOtherHF(), "locationList=${location}"));
+    cd.addSearch("A2IV", map(getPatientsWithTransferFrom(), "locationList=${location}"));
+    cd.addSearch(
+        "A2V",
+        map(
+            getAllPatientsWithPreArtDateTransferredInFromWithBoundaries(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "A2VI",
+        map(
+            getAllPatientsRegisteredAsTransferredInProgramEnrolmentWithBoundaries(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(A2I AND A2II) AND NOT A2III");
+    cd.setCompositionString("(A2I AND A2II) AND NOT (A2III AND A2IV AND A2V AND A2VI)");
 
     return cd;
   }
 
-
-
-
   /**
-   * Get patients enrolled in PRE-ART Program with enrollment date or registered in "Abertura de processo clinico" with the most earliest date in reporting period
+   * Get patients enrolled in PRE-ART Program with enrollment date or registered in "Abertura de
+   * processo clinico" with the most earliest date in reporting period
    *
    * @return CohortDefinition
    */
-  private CohortDefinition
-  getPatientsEnrolledInPreArtOrRegisteredInClinicalProcessOpening() {
+  private CohortDefinition getPatientsEnrolledInPreArtOrRegisteredInClinicalProcessOpening() {
     SqlCohortDefinition scd = new SqlCohortDefinition();
     scd.setName("Get patients enrolled on Pre Art  or registered on clinical process opening");
-    scd.addParameter(new Parameter("location","Location",Location.class));
-    scd.addParameter(new Parameter("startDate","Start Date",Date.class));
-    scd.addParameter(new Parameter("endDate","End Date",Date.class));
+    scd.addParameter(new Parameter("location", "Location", Location.class));
+    scd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    scd.addParameter(new Parameter("endDate", "End Date", Date.class));
     scd.setQuery(
-            ResumoMensalQueries.getPatientsEnrolledInPreArtOrRegisteredInClinicalProcessOpening(
-                    hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
-                    hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
-                    hivMetadata.getHIVCareProgram().getProgramId()));
+        ResumoMensalQueries.getPatientsEnrolledInPreArtOrRegisteredInClinicalProcessOpening(
+            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getHIVCareProgram().getProgramId()));
     return scd;
   }
-
 
   /**
    * Get patients With Date fo Transferred In Between etartDate and endDate
    *
    * @return CohortDefinition
    */
-  private CohortDefinition
-  getAllPatientsWithPreArtDateTransferredInFromWithBoundaries() {
+  private CohortDefinition getAllPatientsWithPreArtDateTransferredInFromWithBoundaries() {
     SqlCohortDefinition scd = new SqlCohortDefinition();
     scd.setName("Get patients enrolled on Pre Art  or registered on clinical process opening");
-    scd.addParameter(new Parameter("location","Location",Location.class));
-    scd.addParameter(new Parameter("startDate","Start Date",Date.class));
-    scd.addParameter(new Parameter("endDate","End Date",Date.class));
+    scd.addParameter(new Parameter("location", "Location", Location.class));
+    scd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    scd.addParameter(new Parameter("endDate", "End Date", Date.class));
     scd.setQuery(
-            ResumoMensalQueries.getAllPatientsWithPreArtDateTransferredInFromWithBoundaries(
-                    hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
-                    hivMetadata.getTransferredFromOtherFacilityConcept().getConceptId()));
+        ResumoMensalQueries.getAllPatientsWithPreArtDateTransferredInFromWithBoundaries(
+            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getTransferredFromOtherFacilityConcept().getConceptId()));
     return scd;
   }
 
-
-
+  /**
+   * Get patients registered as "Transferred-in" Program Enrollment":
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getAllPatientsRegisteredAsTransferredInProgramEnrolmentWithBoundaries() {
+    SqlCohortDefinition scd = new SqlCohortDefinition();
+    scd.setName("Get patients registered as Transferred-In in Program Enrollment");
+    scd.addParameter(new Parameter("location", "Location", Location.class));
+    scd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    scd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    scd.setQuery(
+        ResumoMensalQueries.getAllPatientsRegisteredAsTransferredInProgramEnrolmentWithBoundaries(
+            hivMetadata
+                .getTransferredFromOtherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId(),
+            hivMetadata.getHIVCareProgram().getProgramId()));
+    return scd;
+  }
 
   /**
    * A3 = A.1 + A.2
@@ -940,7 +957,6 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getPreArtStartDate().getConceptId()));
     return cd;
   }
-
 
   /**
    * B12-B7A: Number of active patients in ART by end of previous/current month
