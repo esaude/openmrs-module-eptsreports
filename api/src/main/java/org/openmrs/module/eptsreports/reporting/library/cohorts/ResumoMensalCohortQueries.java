@@ -18,6 +18,9 @@ import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
@@ -234,9 +237,60 @@ public class ResumoMensalCohortQueries {
 
   /** @return B8: Number of dead patients during the current month */
   public CohortDefinition getPatientsWhoDied() {
-    EncounterWithCodedObsCohortDefinition cd = getStateOfStayCohort();
+    /*EncounterWithCodedObsCohortDefinition cd = getStateOfStayCohort();
     cd.addIncludeCodedValue(hivMetadata.getPatientHasDiedConcept());
-    cd.setName("Number of dead patients during the current month");
+    cd.setName("Number of dead patients during the current month");*/
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("locationList", "location", Location.class));
+    String sql =
+        "SELECT p.patient_id, "
+            + "                   e.encounter_datetime "
+            + "            FROM patient p "
+            + "                     JOIN encounter e "
+            + "                          ON p.patient_id = e.patient_id "
+            + "                     JOIN obs o "
+            + "                          ON e.encounter_id = o.encounter_id "
+            + "            WHERE p.voided = 0 "
+            + "              AND e.voided = 0 "
+            + "              AND e.location_id = :location "
+            + "              AND e.encounter_type = ${adultoSeguimento}) "
+            + "              AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore "
+            + "              AND o.voided = 0 "
+            + "              AND o.concept_id = ${artStateOfStay}"
+            + "              AND o.value_coded = ${patientDeadConcept}) "
+            + "      GROUP BY patient_id"
+            + "            UNION"
+            + "            SELECT p.patient_id, "
+            + "                   e.encounter_datetime "
+            + "            FROM patient p "
+            + "                     JOIN encounter e "
+            + "                          ON p.patient_id = e.patient_id "
+            + "                     JOIN obs o "
+            + "                          ON e.encounter_id = o.encounter_id "
+            + "            WHERE p.voided = 0 "
+            + "              AND e.voided = 0 "
+            + "              AND e.location_id = :location "
+            + "              AND e.encounter_type = ${masterCard} "
+            + "              AND o.obs_datetime BETWEEN :onOrAfter AND :onOrBefore "
+            + "              AND o.voided = 0 "
+            + "              AND o.concept_id = ${preArtStateOfStay}  "
+            + "              AND o.value_coded = ${patientDeadConcept} "
+            + "      GROUP BY patient_id;";
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put(
+        "adultoSeguimento", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    valuesMap.put("masterCard", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    valuesMap.put("preArtStateOfStay", hivMetadata.getStateOfStayOfPreArtPatient().getConceptId());
+    valuesMap.put("artStateOfStay", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
+    valuesMap.put("patientDeadConcept", hivMetadata.getPatientHasDiedConcept().getConceptId());
+
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    cd.setQuery(sub.replace(sql));
+
     return cd;
   }
 
