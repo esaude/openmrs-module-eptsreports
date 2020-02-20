@@ -508,15 +508,14 @@ public class TXCurrQueries {
       int reasonPatientNotFound,
       int reasonPatientNotFoundByActivist2ndVisit,
       int reasonPatientNotFoundByActivist3rdVisit,
-      int patientIsDead,
-      int stateOfStayOfPreArtPatient,
       int patientHasDiedConcept,
+      int stateOfStayOfPreArtPatient,
       int transferredOutConcept,
       int suspendedTreatmentConcept,
       int artProgram,
       int defaultingMotiveConcept,
       int autoTransferConcept,
-      int stateOfStayOfArtPatient) {
+      int stateOfStayOfArtPatient){
 
     Map<String, Integer> map = new HashMap<>();
     map.put("adultoSeguimento", adultoSeguimento);
@@ -533,15 +532,14 @@ public class TXCurrQueries {
     map.put("buscaActivaEncounterType", buscaActivaEncounterType);
     map.put("visitaApoioReintegracaoParteA", visitaApoioReintegracaoParteA);
     map.put("visitaApoioReintegracaoParteB", visitaApoioReintegracaoParteB);
-    map.put("reasonPatientNotFound", reasonPatientNotFound);
+    map.put("reasonPatientNotFound", reasonPatientNotFound);//2031
     map.put("reasonPatientNotFoundByActivist2ndVisit", reasonPatientNotFoundByActivist2ndVisit);
     map.put("reasonPatientNotFoundByActivist3rdVisit", reasonPatientNotFoundByActivist3rdVisit);
-    map.put("patientIsDead", patientIsDead);
     map.put("stateOfStayOfPreArtPatient", stateOfStayOfPreArtPatient);
     map.put("patientHasDiedConcept", patientHasDiedConcept);
     map.put("transferredOutConcept", transferredOutConcept);
     map.put("suspendedTreatmentConcept", suspendedTreatmentConcept);
-    map.put("artProgram", artProgram);
+    map.put("artProgram", artProgram);//2
     map.put("defaultingMotiveConcept", defaultingMotiveConcept);
     map.put("autoTransferConcept", autoTransferConcept);
     map.put("stateOfStayOfArtPatient", stateOfStayOfArtPatient);
@@ -694,6 +692,7 @@ public class TXCurrQueries {
             + "	  		          ON last_home_visit.patient_id=p.patient_id     "
             + "	  		 INNER JOIN encounter ee     "
             + "	  		         ON ee.patient_id=last_home_visit.patient_id     "
+            + "							AND ee.encounter_datetime = last_home_visit.last "
             + "	  		 INNER JOIN obs o     "
             + "	  		         ON o.encounter_id = ee.encounter_id     "
             + " WHERE o.concept_id = ${defaultingMotiveConcept}     "
@@ -749,7 +748,7 @@ public class TXCurrQueries {
         "SELECT p.patient_id "
             + "FROM patient p "
             + "    INNER JOIN  "
-            + "        (SELECT e.patient_id, max(encounter_datetime) "
+            + "        (SELECT e.patient_id, max(encounter_datetime)  AS maxdate"
             + "         FROM encounter e "
             + "         WHERE  e.encounter_type = ${buscaActivaEncounterType}  "
             + "            AND e.voided = 0  "
@@ -759,6 +758,7 @@ public class TXCurrQueries {
             + "            ON last_home_visit.patient_id=p.patient_id "
             + "    INNER JOIN encounter ee "
             + "        ON ee.patient_id=last_home_visit.patient_id "
+            + "				AND ee.encounter_datetime = last_home_visit.maxdate "
             + "    INNER JOIN obs o "
             + "        ON o.encounter_id = ee.encounter_id "
             + "WHERE o.concept_id = ${defaultingMotiveConcept} "

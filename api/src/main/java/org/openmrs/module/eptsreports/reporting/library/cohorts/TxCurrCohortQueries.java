@@ -726,7 +726,6 @@ public class TxCurrCohortQueries {
             hivMetadata.getReasonPatientNotFoundByActivist3rdVisitConcept().getConceptId(),
             hivMetadata.getPatientHasDiedConcept().getConceptId(),
             hivMetadata.getStateOfStayOfPreArtPatient().getConceptId(),
-            hivMetadata.getPatientHasDiedConcept().getConceptId(),
             hivMetadata.getTransferredOutConcept().getConceptId(),
             hivMetadata.getSuspendedTreatmentConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),
