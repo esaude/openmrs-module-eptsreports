@@ -350,7 +350,7 @@ public class TXCurrQueries {
             + "                 AND obs.value_datetime IS NOT NULL  "
             + "                 AND enc.encounter_type = %s  "
             + "                 AND enc.location_id = :location  "
-            + "                 AND enc.encounter_datetime <= :onOrBefore  "
+            + "                 AND obs.value_datetime <= :onOrBefore  "
             + "            GROUP  BY pa.patient_id  "
             + "        ) most_recent  "
             + "    GROUP BY most_recent.patient_id  "
