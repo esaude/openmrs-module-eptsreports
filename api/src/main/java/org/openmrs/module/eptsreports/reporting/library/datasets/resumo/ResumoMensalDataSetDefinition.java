@@ -408,22 +408,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
     dsd.addColumn("C2TC", "Total patients - Total Geral", getPatientsWhoMarkedINHC2A2(), "");
     dsd.addColumn("C3TC", "Total patients - Total Geral", getPatientsWhoMarkedTbActiveC3A2(), "");
 
-    // // C2 indicators
-    // dsd.addColumn(
-    // "C2TC",
-    // "Patients who initiated Pre-TARV during the current month and started TPI",
-    // getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTPI(),
-    // "");
-    //
-    // // C3 indicators
-    // dsd.addColumn(
-    // "C3TC",
-    // "Patientes who initiated Pre-TARV during the current month and were diagnosed
-    // for
-    // active TB",
-    // getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTB(),
-    // "");
-    //
+
     // // E1 indicators
     //
     // addRow(

@@ -71,7 +71,7 @@ public class ResumoMensalCohortQueries {
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
                 "getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1",
-                ResumoMensalQueries.getAllPatientsWithPreArtStartDateLessThanReportingStartDate(
+                ResumoMensalQueries.getAllPatientsWithPreArtStartDateLessThanReportingStartDateA1(
                     hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
                     hivMetadata.getPreArtStartDate().getConceptId(),
                     hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
@@ -121,7 +121,7 @@ public class ResumoMensalCohortQueries {
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
                 "patientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2",
-                ResumoMensalQueries.getAllPatientsWithPreArtStartDateWithBoundaries(
+                ResumoMensalQueries.getAllPatientsWithPreArtStartDateWithBoundariesA2(
                     hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
                     hivMetadata.getPreArtStartDate().getConceptId(),
                     hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
@@ -433,7 +433,7 @@ public class ResumoMensalCohortQueries {
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
                 "findPatientsWhoAreNewlyEnrolledOnART",
-                ResumoMensalQueries.findPatientsWhoAreNewlyEnrolledOnART),
+                ResumoMensalQueries.findPatientsWhoAreNewlyEnrolledOnARTB10),
             mappings));
 
     definition.addSearch(
@@ -491,7 +491,7 @@ public class ResumoMensalCohortQueries {
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
-    String query = ResumoMensalQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHLastMonth();
+    String query = ResumoMensalQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHLastMonthB12();
     definition.setQuery(query);
 
     return definition;
@@ -506,7 +506,7 @@ public class ResumoMensalCohortQueries {
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
-    String query = ResumoMensalQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOH();
+    String query = ResumoMensalQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13();
     definition.setQuery(query);
 
     return definition;
