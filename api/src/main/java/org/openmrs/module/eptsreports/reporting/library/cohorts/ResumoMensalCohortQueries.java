@@ -337,7 +337,6 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("locationList", "location", Location.class));
     String sql =
         "SELECT p.patient_id, "
-            + "                   e.encounter_datetime "
             + "            FROM patient p "
             + "                     JOIN encounter e "
             + "                          ON p.patient_id = e.patient_id "
@@ -353,8 +352,7 @@ public class ResumoMensalCohortQueries {
             + "              AND o.value_coded = ${patientDeadConcept}) "
             + "      GROUP BY patient_id"
             + "            UNION"
-            + "            SELECT p.patient_id, "
-            + "                   e.encounter_datetime "
+            + "            SELECT p.patient_id "
             + "            FROM patient p "
             + "                     JOIN encounter e "
             + "                          ON p.patient_id = e.patient_id "
@@ -368,7 +366,21 @@ public class ResumoMensalCohortQueries {
             + "              AND o.voided = 0 "
             + "              AND o.concept_id = ${preArtStateOfStay}  "
             + "              AND o.value_coded = ${patientDeadConcept} "
-            + "      GROUP BY patient_id;";
+            + "      GROUP BY patient_id"
+            + "            UNION"
+            + "       SELECT pg.patient_id"
+            + "       FROM patient p"
+            + "         INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
+            + "         INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
+            + "       WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 "
+            + "         AND pg.program_id=${arvProgram}  AND ps.state=${deadState} AND ps.end_date is null "
+            + "         AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore AND location_id=:location"
+            + "            UNION"
+            + "        SELECT p.person_id patient_id "
+            + "      FROM person p "
+            + "      WHERE p.dead=1 "
+            + "       AND p.death_date BETWEEN :onOrAfter AND :onOrBefore "
+            + "       AND p.voided=0";
 
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put(
@@ -377,6 +389,8 @@ public class ResumoMensalCohortQueries {
     valuesMap.put("preArtStateOfStay", hivMetadata.getStateOfStayOfPreArtPatient().getConceptId());
     valuesMap.put("artStateOfStay", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
     valuesMap.put("patientDeadConcept", hivMetadata.getPatientHasDiedConcept().getConceptId());
+    valuesMap.put("arvProgram", hivMetadata.getARTProgram().getProgramId());
+    valuesMap.put("deadState", hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId());
 
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     cd.setQuery(sub.replace(sql));
