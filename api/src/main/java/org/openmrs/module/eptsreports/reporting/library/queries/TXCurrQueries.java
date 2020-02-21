@@ -152,7 +152,7 @@ public class TXCurrQueries {
             + "inner join obs o on o.encounter_id=e.encounter_id "
             + "where e.encounter_type in (%s,%s) and p.voided=0  and e.voided=0 and o.voided=0 "
             + "and o.concept_id in (%s,%s) and   o.value_coded=%s "
-            + "and e.location_id = :location and e.encounter_datetime <= :onOrBefore "
+            + "and e.location_id = :location and o.obs_datetime <= :onOrBefore "
             + "group by p.patient_id";
 
     return String.format(
@@ -201,7 +201,7 @@ public class TXCurrQueries {
             + " 	AND o.concept_id = ${stateOfStayPriorArtPatient} "
             + "		AND o.value_coded= ${transferredOut}"
             + " 	AND e.location_id = :location "
-            + "		AND o.value_datetime <= :onOrBefore "
+            + "		AND o.obs_datetime <= :onOrBefore "
             + " GROUP BY p.patient_id ";
 
     Map<String, Integer> map = new HashMap<>();
@@ -252,7 +252,7 @@ public class TXCurrQueries {
             + " 	AND o.concept_id = ${stateOfStayPriorArtPatient} "
             + "		AND o.value_coded= ${suspendedTreatment}"
             + " 	AND e.location_id = :location "
-            + "		AND o.value_datetime <= :onOrBefore "
+            + "		AND o.obs_datetime <= :onOrBefore "
             + " GROUP BY p.patient_id ";
 
     Map<String, Integer> map = new HashMap<>();
@@ -606,7 +606,7 @@ public class TXCurrQueries {
             + "     AND e.voided=0 "
             + "     AND o.voided=0 "
             + "     AND o.concept_id= ${stateOfStayOfPreArtPatient} "
-            + "     AND o.value_coded=${patientHasDiedConcept}"
+            + "     AND o.obs_datetime=${patientHasDiedConcept}"
             + "     AND e.location_id =  :location "
             + "     AND e.encounter_datetime <=  :onOrBefore "
             + "   GROUP BY p.patient_id "
@@ -642,7 +642,7 @@ public class TXCurrQueries {
             + "         AND o.concept_id = ${stateOfStayOfPreArtPatient}  "
             + "         AND o.value_coded= ${transferredOutConcept}  "
             + "         AND e.location_id = :location  "
-            + "         AND o.value_datetime <= :onOrBefore    "
+            + "         AND o.obs_datetime <= :onOrBefore    "
             + "      GROUP BY p.patient_id ) last10 "
             + " GROUP BY last10.patient_id  "
             + "   UNION  "
@@ -677,7 +677,7 @@ public class TXCurrQueries {
             + "          AND o.concept_id = ${stateOfStayOfPreArtPatient}  "
             + "          AND o.value_coded= ${suspendedTreatmentConcept}  "
             + "          AND e.location_id = :location  "
-            + "          AND o.value_datetime <= :onOrBefore    "
+            + "          AND o.obs_datetime <= :onOrBefore    "
             + "     GROUP BY p.patient_id ) last11 "
             + " GROUP BY last11.patient_id   "
             + " UNION "
