@@ -40,8 +40,6 @@ public class ResumoMensalQueries {
     return String.format(query, encounterType, conceptId);
   }
 
-
-
   /**
    * All patients with encounter type 53, and Pre-ART Start Date that falls between startDate and
    * enddate
@@ -49,29 +47,36 @@ public class ResumoMensalQueries {
    * @return String
    */
   public static String getAllPatientsWithPreArtDateTransferredInFromWithBoundaries(
-          int encounterType, int conceptId) {
+      int encounterType, int conceptId) {
     String query =
-            "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND o.value_datetime IS NOT NULL  AND o.value_datetime BETWEEN :startDate AND :endDate AND o.concept_id=%d";
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND o.value_datetime IS NOT NULL  AND o.value_datetime BETWEEN :startDate AND :endDate AND o.concept_id=%d";
     return String.format(query, encounterType, conceptId);
   }
 
-
-
   /**
-   * All patients with encounter type 53, and Pre-ART Start Date that falls between startDate and
-   * enddate
+   * All patients Enrolle in Pre-Art or Registered In Clinical Process Opening enddate
    *
    * @return String
    */
   public static String getPatientsEnrolledInPreArtOrRegisteredInClinicalProcessOpening(
-          int encounterType1,  int encounterType2, int programId) {
-    String query = "SELECT * FROM (SELECT patient_id, date_enrolled as enrollment_date  from patient_program where program_id = %d and location_id:location AND date_enrolled BETWEEN :startDate AND :endDate  UNION ALL " +
-            "SELECT patient_id , encounter_datetime as enrollment_date from encounter where encounter_type in (%d,%d) and location_id =:location AND encounter_datetime BETWEEN :startDate AND :endDate order by enrollment_date asc) results GROUP BY results.patient_id";
-    return String.format(query,programId, encounterType1, encounterType2);
+      int encounterType1, int encounterType2, int programId) {
+    String query =
+        "SELECT * FROM (SELECT patient_id, date_enrolled as enrollment_date  from patient_program where program_id = %d and location_id:location AND date_enrolled BETWEEN :startDate AND :endDate  UNION ALL "
+            + "SELECT patient_id , encounter_datetime as enrollment_date from encounter where encounter_type in (%d,%d) and location_id =:location AND encounter_datetime BETWEEN :startDate AND :endDate order by enrollment_date asc) results GROUP BY results.patient_id";
+    return String.format(query, programId, encounterType1, encounterType2);
   }
 
-
-
+  /**
+   * All patients Enrolle in Pre-Art or Registered In Clinical Process Opening enddate
+   *
+   * @return String
+   */
+  public static String getAllPatientsRegisteredAsTransferredInProgramEnrolmentWithBoundaries(
+      int stateId, int programId) {
+    String query =
+        "SELECT p.patient_id FROM patient p INNER JOIN patient_program pp ON p.patient_id = pp.patient_id INNER JOIN patient_state ps ON ps.patient_program_id = pp.program_id WHERE p.voided=0 AND ps.state=%d AND pp.program_id = %d AND pp.location_id=:location pp.date_enrolled BETWEEN :startDate AND :endDate";
+    return String.format(query, stateId, programId);
+  }
 
   /**
    * Number of patients transferred-in from another HFs during the current month
