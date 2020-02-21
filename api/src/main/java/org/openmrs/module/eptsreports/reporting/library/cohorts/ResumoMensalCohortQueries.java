@@ -285,6 +285,7 @@ public class ResumoMensalCohortQueries {
             + "                           AND e.encounter_type IN (${adultSeg}, ${childSeg}, ${fila}) "
             + "                           AND e.location_id = :location "
             + "                           AND e.encounter_datetime > transferout_date "
+            + "                           AND e.encounter_datetime <= :endDate "
             + "                         UNION "
             + "                         SELECT p.patient_id "
             + "                         FROM patient p "
@@ -298,7 +299,9 @@ public class ResumoMensalCohortQueries {
             + "                           AND e.location_id = :location "
             + "                           AND o.concept_id = ${drugPickup} "
             + "                           AND o.value_datetime "
-            + "                             > transferout_date);";
+            + "                             > transferout_date) "
+            + "                           AND o.value_datetime "
+            + "                             < :endDate";
 
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put("art", hivMetadata.getARTProgram().getProgramId());
