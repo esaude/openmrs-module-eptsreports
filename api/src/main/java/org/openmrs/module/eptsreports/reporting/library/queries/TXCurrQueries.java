@@ -382,7 +382,8 @@ public class TXCurrQueries {
       int aRVPharmaciaEncounterType,
       int masterCardDrugPickupEncounterType,
       int returnVisitDateConcept,
-      int returnVisitDateForArvDrugConcept) {
+      int returnVisitDateForArvDrugConcept,
+      int artDatePickup) {
     String query =
         " SELECT ps.patient_id "
             + "   FROM (        "
@@ -392,10 +393,20 @@ public class TXCurrQueries {
             + "           AND p.patient_id NOT IN "
             + "               (SELECT patient_id "
             + "                   FROM encounter "
-            + "                   WHERE  encounter_type IN (%s,%s,%s,%s ) "
+            + "                   WHERE  encounter_type IN (%s,%s,%s) "
             + "						  AND encounter_datetime <= :onOrBefore"
             + "                       AND location_id = :location "
-            + "                       AND voided = 0) "
+            + "                       AND voided = 0 "
+            + "				 UNION "
+            + "               SELECT patient_id "
+            + "                   FROM encounter e"
+            + "						INNER JOIN obs o ON o.encounter_id=e.encounter_id "
+            + "                   WHERE  e.encounter_type = %s  "
+            + "                       AND e.location_id = :location "
+            + "                       AND e.voided = 0"
+            + "						  AND o.voided = 0"
+            + "						  AND o.value_datetime <= :onOrBefore  "
+            + "						  AND o.concept_id = %s) "
             + "       UNION "
             + "       Select ficha.patient_id "
             + "       from ( "
@@ -450,6 +461,7 @@ public class TXCurrQueries {
         ARVPediatriaSeguimentoEncounterType,
         aRVPharmaciaEncounterType,
         masterCardDrugPickupEncounterType,
+        artDatePickup,
         adultoSeguimentoEncounterType,
         ARVPediatriaSeguimentoEncounterType,
         returnVisitDateConcept,

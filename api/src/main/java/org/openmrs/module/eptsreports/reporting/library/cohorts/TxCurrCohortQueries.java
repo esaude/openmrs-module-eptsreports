@@ -538,7 +538,8 @@ public class TxCurrCohortQueries {
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
-            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+            hivMetadata.getArtDatePickup().getConceptId()));
 
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
