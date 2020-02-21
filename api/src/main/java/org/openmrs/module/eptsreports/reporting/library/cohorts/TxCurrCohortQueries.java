@@ -388,17 +388,11 @@ public class TxCurrCohortQueries {
     SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("patientDeathRegisteredInLastHomeVisitCardByReportingEndDate");
 
-    String encounterTypes =
-        StringUtils.join(
-            Arrays.asList(
-                hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
-                hivMetadata.getVisitaApoioReintegracaoParteAEncounterType().getEncounterTypeId(),
-                hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId()),
-            ',');
-
     definition.setQuery(
         TXCurrQueries.getPatientDeathRegisteredInLastHomeVisitCardByReportingEndDate(
-            encounterTypes,
+            hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+            hivMetadata.getVisitaApoioReintegracaoParteAEncounterType().getEncounterTypeId(),
+            hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId(),
             hivMetadata.getReasonPatientNotFound().getConceptId(),
             hivMetadata.getReasonPatientNotFoundByActivist2ndVisitConcept().getConceptId(),
             hivMetadata.getReasonPatientNotFoundByActivist3rdVisitConcept().getConceptId(),
@@ -719,10 +713,10 @@ public class TxCurrCohortQueries {
             hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
             hivMetadata.getVisitaApoioReintegracaoParteAEncounterType().getEncounterTypeId(),
             hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId(),
-            hivMetadata.getPatientFoundConcept().getConceptId(),
-            hivMetadata.getNoConcept().getConceptId(),
             hivMetadata.getReasonPatientNotFound().getConceptId(),
-            hivMetadata.getPatientIsDead().getConceptId(),
+            hivMetadata.getReasonPatientNotFoundByActivist2ndVisitConcept().getConceptId(),
+            hivMetadata.getReasonPatientNotFoundByActivist3rdVisitConcept().getConceptId(),
+            hivMetadata.getPatientHasDiedConcept().getConceptId(),
             hivMetadata.getStateOfStayOfPreArtPatient().getConceptId(),
             hivMetadata.getPatientHasDiedConcept().getConceptId(),
             hivMetadata.getTransferredOutConcept().getConceptId(),

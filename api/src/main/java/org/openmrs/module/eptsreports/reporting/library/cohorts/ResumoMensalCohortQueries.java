@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
@@ -164,22 +165,27 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    String mappings = "value1=${startDate},value2=${endDate},locationList=${location}";
-    String transferMappings =
-        "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    CohortDefinition mcDrugPickup = getPatientsWithMasterCardDrugPickUpDate();
 
-    cd.addSearch("B1i", map(getPatientsWhoInitiatedTarvAtAfacility(), mappings));
-    cd.addSearch("B1ii", map(getPatientsWithMasterCardDrugPickUpDate(), mappings));
-    cd.addSearch(
-        "B1iii",
-        map(
-            genericCohortQueries.getPatientsHavingEncounterWithinDateBoundaries(
-                hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch("B1iv", map(getTypeOfPatientTransferredFrom(), transferMappings));
-    cd.addSearch("B1v", map(getPatientsWithTransferFromOtherHF(), transferMappings));
+    EncounterType pharmacy = hivMetadata.getARVPharmaciaEncounterType();
+    CohortDefinition fila =
+        genericCohortQueries.getPatientsHavingEncounterWithinDateBoundaries(
+            pharmacy.getEncounterTypeId());
 
-    cd.setCompositionString("(B1i AND (B1ii OR B1iii)) AND NOT (B1iv OR B1v)");
+    CohortDefinition transferredIn =
+        getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2();
+
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+    cd.addSearch("startedArt", map(startedArt, mappings));
+
+    String pckupMappings = "value1=${startDate},value2=${endDate},locationList=${location}";
+    cd.addSearch("mcDrugPickup", map(mcDrugPickup, pckupMappings));
+
+    cd.addSearch("fila", mapStraightThrough(fila));
+    cd.addSearch("transferredIn", mapStraightThrough(transferredIn));
+
+    cd.setCompositionString("(startedArt AND (mcDrugPickup OR fila)) AND NOT transferredIn");
     return cd;
   }
 
@@ -191,7 +197,8 @@ public class ResumoMensalCohortQueries {
    */
   public CohortDefinition
       getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2() {
-
+    // TODO maybe we should be re-using HivCohortQueries#getPatientsTransferredFromOtherHealthFacility
+    // Waiting for BAs response
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients transferred-in from another HFs during the current month");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -203,7 +210,11 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
-            hivMetadata.getArtStatus().getConceptId()));
+            hivMetadata.getArtStatus().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
 
     return cd;
   }

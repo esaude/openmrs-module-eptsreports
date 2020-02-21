@@ -1,5 +1,9 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.commons.text.StringSubstitutor;
+
 public class TXCurrQueries {
 
   public static String getPatientWithSTARTDRUGSObsBeforeOrOnEndDate(
@@ -87,39 +91,51 @@ public class TXCurrQueries {
   }
 
   public static String getPatientDeathRegisteredInLastHomeVisitCardByReportingEndDate(
-      String encounterTypes,
+      int buscaActivaEncounterType,
+      int visitaApoioReintegracaoParteAEncounterType,
+      int visitaApoioReintegracaoParteBEncounterType,
       int reasonPatientNotFound,
       int reasonPatientNotFoundByActivist2ndVisit,
       int reasonPatientNotFoundByActivist3rdVisit,
       int patientIsDead) {
     String query =
-        " SELECT named.patient_id FROM ( SELECT     p.patient_id, "
-            + "            max(obsobito.obs_datetime) common_date "
-            + "    FROM       patient p "
-            + "    INNER JOIN encounter e "
-            + "    ON         p.patient_id=e.patient_id  "
-            + "    INNER JOIN obs obsencontrado "
-            + "    ON         e.encounter_id=obsencontrado.encounter_id "
-            + "    INNER JOIN obs obsobito "
-            + "    ON         e.encounter_id=obsobito.encounter_id "
-            + "    WHERE      e.voided=0 "
-            + "    AND        obsencontrado.voided=0 "
-            + "    AND        p.voided=0 "
-            + "    AND        obsobito.voided=0 "
-            + "    AND        e.encounter_type IN (%s)  "
-            + "    AND        e.encounter_datetime<= :onOrBefore "
-            + "    AND        e.location_id= :location "
-            + "    AND        obsobito.concept_id IN(%s,%s,%s) "
-            + "    AND        obsobito.value_coded=%s "
-            + "    GROUP BY   p.patient_id) named ";
+        "  SELECT  max_date.patient_id FROM  "
+            + "    (SELECT  "
+            + "      p.patient_id,  "
+            + "      MAX(e.encounter_datetime) last   "
+            + "    FROM patient p "
+            + "      INNER  JOIN encounter e ON e.patient_id=p.patient_id "
+            + "     WHERE  "
+            + "      e.encounter_datetime <= :onOrBefore "
+            + "      AND e.location_id = :location "
+            + "      AND e.encounter_type  in( ${buscaActiva},${visitaApoioReintegracaoParteA},${visitaApoioReintegracaoParteB})  "
+            + "      AND e.voided=0 "
+            + "      AND p.voided = 0 "
+            + "    GROUP BY  p.patient_id  ) max_date "
+            + "    INNER  JOIN encounter ee "
+            + "            ON ee.patient_id = max_date.patient_id "
+            + "    INNER  JOIN obs o ON ee.encounter_id = o.encounter_id  "
+            + "        WHERE  "
+            + "        ( "
+            + "            (o.concept_id = ${reasonPatientNotFound} AND o.value_coded = ${patientIsDead}) OR "
+            + "            (o.concept_id = ${reasonPatientNotFoundByActivist2ndVisit} AND o.value_coded = ${patientIsDead}) OR "
+            + "            (o.concept_id = ${reasonPatientNotFoundByActivist3rdVisit} AND o.value_coded = ${patientIsDead} ) "
+            + "        )  "
+            + "    AND o.voided=0 "
+            + "    AND ee.voided = 0 "
+            + "    GROUP BY  max_date.patient_id";
 
-    return String.format(
-        query,
-        encounterTypes,
-        reasonPatientNotFound,
-        reasonPatientNotFoundByActivist2ndVisit,
-        reasonPatientNotFoundByActivist3rdVisit,
-        patientIsDead);
+    Map<String, Integer> map = new HashMap<>();
+    map.put("buscaActiva", buscaActivaEncounterType);
+    map.put("visitaApoioReintegracaoParteA", visitaApoioReintegracaoParteAEncounterType);
+    map.put("visitaApoioReintegracaoParteB", visitaApoioReintegracaoParteBEncounterType);
+    map.put("reasonPatientNotFound", reasonPatientNotFound);
+    map.put("reasonPatientNotFoundByActivist2ndVisit", reasonPatientNotFoundByActivist2ndVisit);
+    map.put("reasonPatientNotFoundByActivist3rdVisit", reasonPatientNotFoundByActivist3rdVisit);
+    map.put("patientIsDead", patientIsDead);
+
+    StringSubstitutor sub = new StringSubstitutor(map);
+    return sub.replace(query);
   }
 
   public static String getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(
@@ -284,7 +300,7 @@ public class TXCurrQueries {
             + "                 AND obs.value_datetime IS NOT NULL  "
             + "                 AND enc.encounter_type = %s  "
             + "                 AND enc.location_id = :location  "
-            + "                 AND enc.encounter_datetime <= :onOrBefore  "
+            + "                 AND obs.value_datetime <= :onOrBefore  "
             + "            GROUP  BY pa.patient_id  "
             + "        ) most_recent  "
             + "    GROUP BY most_recent.patient_id  "
@@ -439,9 +455,9 @@ public class TXCurrQueries {
       int buscaActivaEncounterType,
       int visitaApoioReintegracaoParteA,
       int visitaApoioReintegracaoParteB,
-      int patientFoundConcept,
-      int noConcept,
       int reasonPatientNotFound,
+      int reasonPatientNotFoundByActivist2ndVisit,
+      int reasonPatientNotFoundByActivist3rdVisit,
       int patientIsDead,
       int stateOfStayOfPreArtPatient,
       int patientHasDiedConcept,
@@ -474,27 +490,31 @@ public class TXCurrQueries {
             + "     AND p.voided=0 "
             + "    UNION  "
             + "    "
-            + "   SELECT     p.patient_id, "
-            + "            max(obsobito.obs_datetime) common_date "
-            + "    FROM       patient p "
-            + "    INNER JOIN encounter e "
-            + "    ON         p.patient_id=e.patient_id  "
-            + "    INNER JOIN obs obsencontrado "
-            + "    ON         e.encounter_id=obsencontrado.encounter_id "
-            + "    INNER JOIN obs obsobito "
-            + "    ON         e.encounter_id=obsobito.encounter_id "
-            + "    WHERE      e.voided=0 "
-            + "    AND        obsencontrado.voided=0 "
-            + "    AND        p.voided=0 "
-            + "    AND        obsobito.voided=0 "
-            + "    AND        e.encounter_type IN (%s,%s,%s)  "
-            + "    AND        e.encounter_datetime<= :onOrBefore "
-            + "    AND        e.location_id= :location "
-            + "    AND        obsencontrado.concept_id = %s "
-            + "    AND        obsencontrado.value_coded=%s "
-            + "    AND        obsobito.concept_id=%s "
-            + "    AND        obsobito.value_coded=%s "
-            + "    GROUP BY   p.patient_id "
+            + "  SELECT  max_date.patient_id, max_date.last FROM  "
+            + "    (SELECT  "
+            + "      p.patient_id,  "
+            + "      MAX(e.encounter_datetime) last   "
+            + "    FROM patient p "
+            + "      INNER JOIN encounter e ON e.patient_id=p.patient_id "
+            + "     WHERE  "
+            + "      e.encounter_datetime <= :onOrBefore "
+            + "      AND e.location_id = :location "
+            + "      AND e.encounter_type  in( %s,%s,%s)  "
+            + "      AND e.voided=0 "
+            + "      AND p.voided = 0 "
+            + "     GROUP BY p.patient_id  ) max_date "
+            + "    INNER JOIN encounter ee "
+            + "            ON ee.patient_id = max_date.patient_id "
+            + "   INNER JOIN obs o ON ee.encounter_id = o.encounter_id  "
+            + "        WHERE  "
+            + "        ( "
+            + "            (o.concept_id = %s AND o.value_coded =%s) OR "
+            + "            (o.concept_id = %s AND o.value_coded = %s) OR "
+            + "            (o.concept_id = %s AND o.value_coded = %s) "
+            + "        )  "
+            + "    AND o.voided=0 "
+            + "    AND ee.voided = 0"
+            + "    GROUP BY  max_date.patient_id"
             + "   UNION  "
             + "   SELECT p.patient_id, "
             + "                max(e.encounter_datetime) common_date "
@@ -559,9 +579,11 @@ public class TXCurrQueries {
         buscaActivaEncounterType,
         visitaApoioReintegracaoParteA,
         visitaApoioReintegracaoParteB,
-        patientFoundConcept,
-        noConcept,
         reasonPatientNotFound,
+        patientIsDead,
+        reasonPatientNotFoundByActivist2ndVisit,
+        patientIsDead,
+        reasonPatientNotFoundByActivist3rdVisit,
         patientIsDead,
         adultoSeguimento,
         masterCardEncounterType,

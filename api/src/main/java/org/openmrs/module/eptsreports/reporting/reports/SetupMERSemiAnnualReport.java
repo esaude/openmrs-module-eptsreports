@@ -66,7 +66,7 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
     // add a base cohort to the report
     rd.setBaseCohortDefinition(
         genericCohortQueries.getBaseCohort(),
-        ParameterizableUtil.createParameterMappings("endDate=${endDate},location=${location}"));
+        ParameterizableUtil.createParameterMappings("location=${location}"));
 
     return rd;
   }
