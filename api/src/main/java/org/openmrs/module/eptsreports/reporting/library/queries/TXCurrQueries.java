@@ -515,7 +515,7 @@ public class TXCurrQueries {
       int artProgram,
       int defaultingMotiveConcept,
       int autoTransferConcept,
-      int stateOfStayOfArtPatient){
+      int stateOfStayOfArtPatient) {
 
     Map<String, Integer> map = new HashMap<>();
     map.put("adultoSeguimento", adultoSeguimento);
@@ -532,14 +532,14 @@ public class TXCurrQueries {
     map.put("buscaActivaEncounterType", buscaActivaEncounterType);
     map.put("visitaApoioReintegracaoParteA", visitaApoioReintegracaoParteA);
     map.put("visitaApoioReintegracaoParteB", visitaApoioReintegracaoParteB);
-    map.put("reasonPatientNotFound", reasonPatientNotFound);//2031
+    map.put("reasonPatientNotFound", reasonPatientNotFound); // 2031
     map.put("reasonPatientNotFoundByActivist2ndVisit", reasonPatientNotFoundByActivist2ndVisit);
     map.put("reasonPatientNotFoundByActivist3rdVisit", reasonPatientNotFoundByActivist3rdVisit);
     map.put("stateOfStayOfPreArtPatient", stateOfStayOfPreArtPatient);
     map.put("patientHasDiedConcept", patientHasDiedConcept);
     map.put("transferredOutConcept", transferredOutConcept);
     map.put("suspendedTreatmentConcept", suspendedTreatmentConcept);
-    map.put("artProgram", artProgram);//2
+    map.put("artProgram", artProgram);
     map.put("defaultingMotiveConcept", defaultingMotiveConcept);
     map.put("autoTransferConcept", autoTransferConcept);
     map.put("stateOfStayOfArtPatient", stateOfStayOfArtPatient);
