@@ -22,6 +22,9 @@ import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraig
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
@@ -140,21 +143,42 @@ public class HivCohortQueries {
   public CohortDefinition getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate() {
     SqlCohortDefinition patientWithHistoricalDrugStartDateObs = new SqlCohortDefinition();
     patientWithHistoricalDrugStartDateObs.setName("patientWithHistoricalDrugStartDateObs");
+
+    Map<String, Integer> map = new HashMap<>();
+
+    map.put(
+        "aRVPharmaciaEncounterType",
+        hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    map.put(
+        "adultoSeguimentoEncounterType",
+        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put(
+        "aRVPediatriaSeguimentoEncounterType",
+        hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    map.put(
+        "masterCardEncounterType", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put(
+        "historicalDrugStartDateConcept",
+        hivMetadata.getHistoricalDrugStartDateConcept().getConceptId());
     String query =
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
-            + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
-            + "WHERE p.voided=0 and e.voided=0 AND o.voided=0 AND e.encounter_type IN (%d, %d, %d,%d) "
-            + "AND o.concept_id=%d "
-            + "AND e.encounter_datetime<=:onOrBefore "
-            + "AND o.value_datetime IS NOT NULL AND o.value_datetime <= :onOrBefore AND e.location_id=:location GROUP BY p.patient_id";
-    patientWithHistoricalDrugStartDateObs.setQuery(
-        String.format(
-            query,
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getHistoricalDrugStartDateConcept().getConceptId()));
+        "SELECT p.patient_id  "
+            + "FROM patient p  "
+            + "    INNER JOIN encounter e  "
+            + "        ON p.patient_id=e.patient_id  "
+            + "    INNER JOIN obs o  "
+            + "        ON e.encounter_id=o.encounter_id  "
+            + "WHERE p.voided=0 and e.voided= 0  "
+            + "    AND o.voided=0  "
+            + "    AND e.encounter_type IN (${aRVPharmaciaEncounterType}, ${adultoSeguimentoEncounterType}, ${aRVPediatriaSeguimentoEncounterType},${masterCardEncounterType})  "
+            + "    AND o.concept_id= ${historicalDrugStartDateConcept}  "
+            + "    AND o.value_datetime IS NOT NULL  "
+            + "    AND o.value_datetime <= :onOrBefore  "
+            + "    AND e.location_id= :location "
+            + "GROUP BY p.patient_id";
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    patientWithHistoricalDrugStartDateObs.setQuery(stringSubstitutor.replace(query));
+
     patientWithHistoricalDrugStartDateObs.addParameter(
         new Parameter("onOrBefore", "onOrBefore", Date.class));
     patientWithHistoricalDrugStartDateObs.addParameter(
