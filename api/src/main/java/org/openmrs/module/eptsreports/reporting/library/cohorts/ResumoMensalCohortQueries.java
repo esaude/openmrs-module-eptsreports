@@ -660,22 +660,7 @@ public class ResumoMensalCohortQueries {
         map(
             getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTB(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "B1",
-        map(
-            getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "B2",
-        map(
-            getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "B3",
-        map(
-            getPatientsWithStartDrugs(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
-    cd.addSearch(
+        cd.addSearch(
         "B5",
         map(
             getPatientsTransferredOut(),
@@ -695,7 +680,7 @@ public class ResumoMensalCohortQueries {
         map(
             getPatientsWhoDied(),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
-    cd.setCompositionString("(B12 OR (B1 OR B2 OR B3)) AND NOT (B5 OR B6 OR B7 OR B8)");
+    cd.setCompositionString("B12  AND NOT (B5 OR B6 OR B7 OR B8)");
     return cd;
   }
 
