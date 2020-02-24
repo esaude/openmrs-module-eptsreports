@@ -63,6 +63,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
 
     dsd.setName("Resumo Mensal Data set B");
     dsd.addParameters(getParameters());
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     dsd.addDimension("gender", map(eptsCommonDimension.gender(), ""));
     dsd.addDimension(
@@ -408,96 +409,88 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
     dsd.addColumn("C2TC", "Total patients - Total Geral", getPatientsWhoMarkedINHC2A2(), "");
     dsd.addColumn("C3TC", "Total patients - Total Geral", getPatientsWhoMarkedTbActiveC3A2(), "");
 
-    // // E1 indicators
-    //
-    // addRow(
-    // dsd,
-    // "E1",
-    // "Annual Notification",
-    // map(
-    // eptsGeneralIndicator.getIndicator(
-    // "E1",
-    // map(
-    // resumoMensalCohortQueries
-    // .getNumberOfActivePatientsInArtAtEndOfCurrentMonthWithVlPerformed(),
-    // mappings)),
-    // mappings),
-    // resumoMensalAandBdisaggregations.disAggForE());
-    // // E2
-    // addRow(
-    // dsd,
-    // "E2",
-    // "Annual Notification",
-    // map(
-    // eptsGeneralIndicator.getIndicator(
-    // "E2",
-    // map(
-    // resumoMensalCohortQueries
-    //
-    // .getNumberOfActivePatientsInArtAtTheEndOfTheCurrentMonthHavingVlTestResults(),
-    // mappings)),
-    // mappings),
-    // resumoMensalAandBdisaggregations.disAggForE());
-    //
-    // // E3
-    // addRow(
-    // dsd,
-    // "E3",
-    // "Annual Notification",
-    // map(
-    // eptsGeneralIndicator.getIndicator(
-    // "E3",
-    // map(
-    // resumoMensalCohortQueries
-    // .getActivePatientsOnArtWhoRecievedVldSuppressionResults(),
-    // mappings)),
-    // mappings),
-    // resumoMensalAandBdisaggregations.disAggForE());
-    //
-    // // F1
-    // dsd.addColumn(
-    // "F1",
-    // "Number of patients who had clinical appointment during the reporting month",
-    // map(
-    // eptsGeneralIndicator.getIndicator(
-    // "F1",
-    // map(
-    // resumoMensalCohortQueries
-    //
-    // .getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonth(),
-    // mappings)),
-    // mappings),
-    // "");
-    // // F2
-    // dsd.addColumn(
-    // "F2",
-    // "Number of patients who had clinical appointment during the reporting month
-    // and were
-    // screened for TB",
-    // map(
-    // eptsGeneralIndicator.getIndicator(
-    // "F2",
-    // map(
-    // resumoMensalCohortQueries
-    //
-    // .getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthAndScreenedFoTb(),
-    // mappings)),
-    // mappings),
-    // "");
-    // // F3
-    // dsd.addColumn(
-    // "F3",
-    // "Number of patients who had at least one clinical appointment during the
-    // year",
-    // map(
-    // eptsGeneralIndicator.getIndicator(
-    // "F3",
-    // map(
-    // resumoMensalCohortQueries
-    // .getNumberOfPatientsWithAtLeastOneClinicalAppointmentDuringTheYear(),
-    // mappings)),
-    // mappings),
-    // "");
+    // E1 indicators
+
+    addRow(
+        dsd,
+        "E1",
+        "Annual Notification",
+        map(
+            eptsGeneralIndicator.getIndicator(
+                "E1",
+                map(
+                    resumoMensalCohortQueries
+                        .findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithRequestForVLE1(),
+                    mappings)),
+            mappings),
+        resumoMensalAandBdisaggregations.disAggForE());
+
+    // E2
+    addRow(
+        dsd,
+        "E2",
+        "Annual Notification",
+        map(
+            eptsGeneralIndicator.getIndicator(
+                "E2",
+                map(
+                    resumoMensalCohortQueries
+                        .findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithVLResultE2(),
+                    mappings)),
+            mappings),
+        resumoMensalAandBdisaggregations.disAggForE());
+
+    // E3
+    addRow(
+        dsd,
+        "E3",
+        "Annual Notification",
+        map(
+            eptsGeneralIndicator.getIndicator(
+                "E3",
+                map(resumoMensalCohortQueries.findPatientWithVlResulLessThan1000E3(), mappings)),
+            mappings),
+        resumoMensalAandBdisaggregations.disAggForE());
+
+    // F1
+    dsd.addColumn(
+        "F1",
+        "Number of patients who had clinical appointment during the reporting month",
+        map(
+            eptsGeneralIndicator.getIndicator(
+                "F1",
+                map(
+                    resumoMensalCohortQueries
+                        .getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1(),
+                    mappings)),
+            mappings),
+        "");
+    // F2
+    dsd.addColumn(
+        "F2",
+        "Number of patients who had clinical appointment during the reporting month and were screened for TB",
+        map(
+            eptsGeneralIndicator.getIndicator(
+                "F2",
+                map(
+                    resumoMensalCohortQueries
+                        .getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthTbF2(),
+                    mappings)),
+            mappings),
+        "");
+    // F3
+    dsd.addColumn(
+        "F3",
+        "Number of patients who had at least one clinical appointment during the year",
+        map(
+            eptsGeneralIndicator.getIndicator(
+                "F3",
+                map(
+                    resumoMensalCohortQueries
+                        .getNumberOfPatientsWithAtLeastOneClinicalAppointmentDuringTheYearF3(),
+                    mappings)),
+            mappings),
+        "");
 
     return dsd;
   }

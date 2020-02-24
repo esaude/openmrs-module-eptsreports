@@ -17,6 +17,7 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
 
 import java.util.Date;
+
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -516,6 +517,7 @@ public class ResumoMensalCohortQueries {
   public CohortDefinition findPatientWhoHaveTbSymthomsC1() {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("C1");
 
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -569,6 +571,7 @@ public class ResumoMensalCohortQueries {
 
     String mapping = "startDate=${startDate},endDate=${endDate},location=${location}";
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("INH");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -588,6 +591,8 @@ public class ResumoMensalCohortQueries {
 
     String mapping = "startDate=${startDate},endDate=${endDate},location=${location}";
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("TB Active");
+
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -600,6 +605,201 @@ public class ResumoMensalCohortQueries {
     cd.addSearch("C3", EptsReportUtils.map(this.getPatientsWhoMarkedTbActiveC3(), mapping));
 
     cd.setCompositionString("A2 AND C3");
+    return cd;
+  }
+
+  public CohortDefinition findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithRequestForVLE1() {
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("Tx Curr E1");
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    definition.addSearch(
+        "B13", EptsReportUtils.map(getPatientsWhoAreCurrentlyEnrolledOnARTB13(), mappings));
+
+    definition.addSearch(
+        "VL",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "VL",
+                ResumoMensalQueries.findPatietWithRequestForVL(
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
+                    hivMetadata.getHivViralLoadConcept().getConceptId())),
+            mappings));
+
+    definition.addSearch(
+        "E1x",
+        map(
+            genericCohortQueries.generalSql(
+                "E1x",
+                ResumoMensalQueries.getE1ExclusionCriteria(
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
+                    hivMetadata.getHivViralLoadConcept().getConceptId())),
+            mappings));
+
+    definition.setCompositionString("(B13 AND VL) NOT E1x");
+
+    return definition;
+  }
+
+  public CohortDefinition findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithVLResultE2() {
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("Tx Curr Vl");
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    definition.addSearch(
+        "B13", EptsReportUtils.map(getPatientsWhoAreCurrentlyEnrolledOnARTB13(), mappings));
+
+    definition.addSearch(
+        "VL",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "VL",
+                ResumoMensalQueries.findPatientWithVlResult(
+                    hivMetadata.getHivViralLoadConcept().getConceptId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
+            mappings));
+
+    definition.addSearch(
+        "Ex2",
+        map(
+            genericCohortQueries.generalSql(
+                "Ex2",
+                ResumoMensalQueries.getE2ExclusionCriteria(
+                    hivMetadata.getHivViralLoadConcept().getConceptId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
+            mappings));
+
+    definition.setCompositionString("(B13 AND VL) NOT Ex2");
+
+    return definition;
+  }
+
+  public CohortDefinition findPatientWithVlResulLessThan1000E3() {
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("Tx Curr Vl");
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    definition.addSearch(
+        "B13", EptsReportUtils.map(getPatientsWhoAreCurrentlyEnrolledOnARTB13(), mappings));
+
+    definition.addSearch(
+        "VL",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "VL",
+                ResumoMensalQueries.findPatientWithVlResulLessThan1000(
+                    hivMetadata.getHivViralLoadConcept().getConceptId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
+            mappings));
+
+    definition.addSearch(
+        "Ex3",
+        map(
+            genericCohortQueries.generalSql(
+                "Ex3",
+                ResumoMensalQueries.getE3ExclusionCriteria(
+                    hivMetadata.getHivViralLoadConcept().getConceptId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
+            mappings));
+
+    definition.setCompositionString("(B13 AND VL) NOT Ex3");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "F1")
+  public CohortDefinition getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("F1: Number of patients who had clinical appointment during the reporting month");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        ResumoMensalQueries.getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
+    return cd;
+  }
+
+  @DocumentedDefinition(value = "F1TB")
+  public CohortDefinition
+      getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthTbF2() {
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("Tx Curr Vl");
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    definition.addSearch(
+        "F1",
+        EptsReportUtils.map(
+            getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1(), mappings));
+
+    definition.addSearch(
+        "TB1",
+        map(
+            genericCohortQueries.generalSql(
+                "TB1", ResumoMensalQueries.findPatientWhoHaveTbSymthomsF2()),
+            mappings));
+
+    definition.addSearch(
+        "TB2",
+        map(
+            genericCohortQueries.generalSql(
+                "TB2", ResumoMensalQueries.findPatientWhoHaveTbActiveF2()),
+            mappings));
+
+    definition.setCompositionString("F1 AND (TB1 OR TB2)");
+
+    return definition;
+  }
+
+  /**
+   * F3: Number of patients who had at least one clinical appointment during the year
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getNumberOfPatientsWithAtLeastOneClinicalAppointmentDuringTheYearF3() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Number of patients who had at least one clinical appointment during the year");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+   
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    cd.addSearch(
+        "F1",
+        map(getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1(), mappings));
+    cd.addSearch(
+        "Fx3",
+        map(
+            genericCohortQueries.generalSql(
+                "Fx3",
+                ResumoMensalQueries.getF3Exclusion(
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
+            mappings));
+
+    cd.setCompositionString("F1 AND NOT Fx3");
     return cd;
   }
 
