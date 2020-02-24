@@ -197,7 +197,8 @@ public class ResumoMensalCohortQueries {
    */
   public CohortDefinition
       getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2() {
-    // TODO maybe we should be re-using HivCohortQueries#getPatientsTransferredFromOtherHealthFacility
+    // TODO maybe we should be re-using
+    // HivCohortQueries#getPatientsTransferredFromOtherHealthFacility
     // Waiting for BAs response
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients transferred-in from another HFs during the current month");
