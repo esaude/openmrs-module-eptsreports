@@ -408,7 +408,6 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
     dsd.addColumn("C2TC", "Total patients - Total Geral", getPatientsWhoMarkedINHC2A2(), "");
     dsd.addColumn("C3TC", "Total patients - Total Geral", getPatientsWhoMarkedTbActiveC3A2(), "");
 
-
     // // E1 indicators
     //
     // addRow(
