@@ -64,7 +64,7 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("A1i");
+    sqlCohortDefinition.setName("A1I");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
@@ -75,8 +75,23 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch("A1I", map(sqlCohortDefinition, "startDate=${startDate},location=${location}"));
     cd.addSearch("A1II", map(getPatientsWithTransferFromOtherHF(), "locationList=${location}"));
+    cd.addSearch(
+        "A1III",
+        map(
+            getAllPatientsEnrolledInPreArtProgramWithDateEnrolledLessThanStartDateA1(),
+            "startDate=${startDate},location=${location}"));
+    cd.addSearch(
+        "A1IV",
+        map(
+            getAllPatientsRegisteredInEncounterType5or7WithEncounterDatetimeLessThanStartDateA1(),
+            "startDate=${startDate},location=${location}"));
+    cd.addSearch(
+        "A1V",
+        map(
+            getTypeofPatientTransferredFromTipodePacienteTransferidoInPreTARVA1(),
+            "startDate=${startDate},location=${location}"));
 
-    cd.setCompositionString("A1I AND NOT A1II");
+    cd.setCompositionString("(A1I OR A1III OR A1IV) AND NOT (A1II AND A1V)");
 
     return cd;
   }
@@ -887,5 +902,75 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
             hivMetadata.getArtDatePickup().getConceptId()));
     return cd;
+  }
+
+  /**
+   * Get all patients enrolled in PRE-ART program id 1, with date enrolled less than startDate
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition
+      getAllPatientsEnrolledInPreArtProgramWithDateEnrolledLessThanStartDateA1() {
+    SqlCohortDefinition sqlPatientsEnrolledInPreART = new SqlCohortDefinition();
+    sqlPatientsEnrolledInPreART.setName("patientsEnrolledInPreART");
+    sqlPatientsEnrolledInPreART.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlPatientsEnrolledInPreART.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlPatientsEnrolledInPreART.addParameter(new Parameter("location", "Location", Location.class));
+    sqlPatientsEnrolledInPreART.setQuery(
+        ResumoMensalQueries.getAllPatientsEnrolledInPreArtProgramWithDateEnrolledLessThanStartDate(
+            hivMetadata.getHIVCareProgram().getProgramId()));
+
+    return sqlPatientsEnrolledInPreART;
+  }
+
+  /**
+   * Get all patients registered in encounterType 5 or 7, with date enrolled less than startDate
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition
+      getAllPatientsRegisteredInEncounterType5or7WithEncounterDatetimeLessThanStartDateA1() {
+    SqlCohortDefinition sqlPatientsRegisteredEncounterType5or7 = new SqlCohortDefinition();
+    sqlPatientsRegisteredEncounterType5or7.setName("patientsRegisteredEncounterType5or7");
+    sqlPatientsRegisteredEncounterType5or7.addParameter(
+        new Parameter("startDate", "Start Date", Date.class));
+    sqlPatientsRegisteredEncounterType5or7.addParameter(
+        new Parameter("endDate", "End Date", Date.class));
+    sqlPatientsRegisteredEncounterType5or7.addParameter(
+        new Parameter("location", "Location", Location.class));
+    sqlPatientsRegisteredEncounterType5or7.setQuery(
+        ResumoMensalQueries
+            .getAllPatientsRegisteredInEncounterType5or7WithEncounterDatetimeLessThanStartDate(
+                hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+                hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId()));
+
+    return sqlPatientsRegisteredEncounterType5or7;
+  }
+
+  /**
+   * Type of Patient Transferred From in Pre-TARV
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getTypeofPatientTransferredFromTipodePacienteTransferidoInPreTARVA1() {
+    SqlCohortDefinition typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV =
+        new SqlCohortDefinition();
+    typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV.setName(
+        "patientsRegisteredEncounterType5or7");
+    typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV.addParameter(
+        new Parameter("startDate", "Start Date", Date.class));
+    typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV.addParameter(
+        new Parameter("endDate", "End Date", Date.class));
+    typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV.addParameter(
+        new Parameter("location", "Location", Location.class));
+    typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV.setQuery(
+        ResumoMensalQueries.TypeofPatientTransferredFromTipodePacienteTransferidoInPreTARV(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getPreTARVConcept().getConceptId(),
+            hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId()));
+
+    return typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV;
   }
 }

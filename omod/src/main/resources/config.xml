@@ -1423,6 +1423,15 @@
 		</description>
 	</globalProperty>
 
+	<!--6275-->
+	<globalProperty>
+		<property>eptsreports.preTarvConceptUuid</property>
+		<defaultValue>44f812e8-c4c0-40cd-aef3-6b1ef76d43e1</defaultValue>
+		<description>
+			UUID for PRE-TARV concept
+		</description>
+	</globalProperty>
+
 	<globalProperty>
 		<property>eptsreports.stateOfStayOfPreArtPatient</property>
 		<defaultValue>3bd7a5d1-afc0-478d-9aa6-c7bdd9a050c8</defaultValue>

@@ -13,6 +13,10 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.commons.text.StringSubstitutor;
+
 public class ResumoMensalQueries {
 
   /**
@@ -402,5 +406,90 @@ public class ResumoMensalQueries {
             + " ) final WHERE DATE_ADD(final.encounter_date, INTERVAL 90 DAY) < :onDate ";
     return String.format(
         query, pharmacyEncounterType, mastercardEncounterType, drugPickupConceptId);
+  }
+
+  /**
+   * Get all patients enrolled in PRE-ART program id 1, with date enrolled less than startDate
+   *
+   * @return String
+   */
+  public static String getAllPatientsEnrolledInPreArtProgramWithDateEnrolledLessThanStartDate(
+      int programId) {
+    String query =
+        "SELECT p.patient_id "
+            + "FROM   patient p "
+            + "       INNER JOIN patient_program pp "
+            + "               ON p.patient_id = pp.patient_id "
+            + "WHERE  p.voided = 0 "
+            + "       AND pp.voided = 0 "
+            + "       AND pp.location_id = :location "
+            + "       AND pp.program_id = ${programId} "
+            + "       AND pp.date_enrolled < :startDate";
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("programId", programId);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
+  }
+
+  /**
+   * Get all patients registered in encounterType 5 or 7, with date enrolled less than startDate
+   *
+   * @return String
+   */
+  public static String
+      getAllPatientsRegisteredInEncounterType5or7WithEncounterDatetimeLessThanStartDate(
+          int encounterType5, int encounterType7) {
+    String query =
+        "SELECT p.patient_id "
+            + "FROM patient p "
+            + "INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "WHERE p.voided = 0 "
+            + "AND e.voided = 0 "
+            + "AND e.location_id = :location "
+            + "AND e.encounter_type IN (${encounterType5}, ${encounterType7}) "
+            + "AND e.encounter_datetime < :startDate";
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("encounterType5", encounterType5);
+    valuesMap.put("encounterType7", encounterType7);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
+  }
+
+  /**
+   * Type of Patient Transferred From in Pre-TARV
+   *
+   * @return String
+   */
+  public static String TypeofPatientTransferredFromTipodePacienteTransferidoInPreTARV(
+      int encounterType, int patientType, int preTARV, int transferredFrom, int yesAnswer) {
+    String query =
+        "SELECT p.patient_id "
+            + "FROM patient p "
+            + "INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
+            + "INNER JOIN obs oo "
+            + "ON e.encounter_id = oo.encounter_id "
+            + "WHERE p.voided = 0 "
+            + "AND e.voided = 0 "
+            + "AND o.voided = 0 "
+            + "AND oo.voided = 0 "
+            + "AND e.encounter_type = ${encounterType} "
+            + "AND ((o.concept_id = ${patientType} AND o.value_coded = ${preTARV}) "
+            + "AND (oo.concept_id = ${transferredFrom} AND oo.value_coded = ${yesAnswer}) "
+            + "AND (o.obs_datetime  < :startDate ${} AND oo.obs_datetime  < :startDate ${}))";
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("encounterType", encounterType);
+    valuesMap.put("patientType", patientType);
+    valuesMap.put("preTARV", preTARV);
+    valuesMap.put("transferredFrom", transferredFrom);
+    valuesMap.put("yesAnswer", yesAnswer);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
   }
 }
