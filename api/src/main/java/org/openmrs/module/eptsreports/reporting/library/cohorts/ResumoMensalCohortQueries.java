@@ -203,6 +203,7 @@ public class ResumoMensalCohortQueries {
     // Waiting for BAs response
     EptsTransferredInCohortDefinition cd = new EptsTransferredInCohortDefinition();
     cd.setName("Number of patients transferred-in from another HFs during the current month");
+    cd.setTypeOfPatientTransferredFromAnswer(hivMetadata.getArtStatus());
     cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));

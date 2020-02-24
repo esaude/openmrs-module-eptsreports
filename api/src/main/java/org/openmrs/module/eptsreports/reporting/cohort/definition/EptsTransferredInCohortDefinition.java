@@ -1,6 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.cohort.definition;
 
 import java.util.Date;
+import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -19,6 +20,9 @@ public class EptsTransferredInCohortDefinition extends BaseCohortDefinition {
   @ConfigurationProperty private Date onOrBefore;
 
   @ConfigurationProperty private Location location;
+
+  @ConfigurationProperty(required = true)
+  private Concept typeOfPatientTransferredFromAnswer;
 
   public Date getOnOrBefore() {
     return onOrBefore;
@@ -42,5 +46,13 @@ public class EptsTransferredInCohortDefinition extends BaseCohortDefinition {
 
   public void setLocation(Location location) {
     this.location = location;
+  }
+
+  public Concept getTypeOfPatientTransferredFromAnswer() {
+    return typeOfPatientTransferredFromAnswer;
+  }
+
+  public void setTypeOfPatientTransferredFromAnswer(Concept typeOfPatientTransferredFromAnswer) {
+    this.typeOfPatientTransferredFromAnswer = typeOfPatientTransferredFromAnswer;
   }
 }
