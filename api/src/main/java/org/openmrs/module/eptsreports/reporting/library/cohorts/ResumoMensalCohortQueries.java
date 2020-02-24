@@ -529,22 +529,6 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  /**
-   * Get number of patients transferred from other health facility marked in master card
-   *
-   * @return CohortDefinition
-   */
-  private CohortDefinition getTypeOfPatientTransferredFrom() {
-    EncounterWithCodedObsCohortDefinition cd = new EncounterWithCodedObsCohortDefinition();
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("locationList", "location", Location.class));
-    cd.addEncounterType(hivMetadata.getMasterCardEncounterType());
-    cd.setConcept(hivMetadata.getTypeOfPatientTransferredFrom());
-    cd.addIncludeCodedValue(hivMetadata.getArtStatus());
-    return cd;
-  }
-
   /** @return CohortDefinition Patients with transfer from other HF = YES */
   private CohortDefinition getPatientsWithTransferFromOtherHF() {
     EncounterWithCodedObsCohortDefinition cd = new EncounterWithCodedObsCohortDefinition();
@@ -608,7 +592,7 @@ public class ResumoMensalCohortQueries {
 
   /**
    * E1: Number of active patients in ART at the end of current month who performed Viral Load Test
-   * (Annual Notification) B12 OR (B1 OR B2 OR B3) AND NOT (B5 OR B6 OR B7 OR B8)
+   * (Annual Notification) B12 AND NOT (B5 OR B6 OR B7 OR B8)
    *
    * @return CohortDefinition
    */
