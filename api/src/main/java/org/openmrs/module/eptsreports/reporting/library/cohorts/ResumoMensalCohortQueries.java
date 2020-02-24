@@ -956,7 +956,7 @@ public class ResumoMensalCohortQueries {
     SqlCohortDefinition typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV =
         new SqlCohortDefinition();
     typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV.setName(
-        "patientsRegisteredEncounterType5or7");
+        "typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV");
     typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV.addParameter(
         new Parameter("startDate", "Start Date", Date.class));
     typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV.addParameter(

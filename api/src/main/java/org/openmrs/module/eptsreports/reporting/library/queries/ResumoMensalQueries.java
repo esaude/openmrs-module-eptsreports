@@ -481,7 +481,7 @@ public class ResumoMensalQueries {
             + "AND e.encounter_type = ${encounterType} "
             + "AND ((o.concept_id = ${patientType} AND o.value_coded = ${preTARV}) "
             + "AND (oo.concept_id = ${transferredFrom} AND oo.value_coded = ${yesAnswer}) "
-            + "AND (o.obs_datetime  < :startDate ${} AND oo.obs_datetime  < :startDate ${}))";
+            + "AND (o.obs_datetime  < :startDate AND oo.obs_datetime  < :startDate))";
 
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put("encounterType", encounterType);
