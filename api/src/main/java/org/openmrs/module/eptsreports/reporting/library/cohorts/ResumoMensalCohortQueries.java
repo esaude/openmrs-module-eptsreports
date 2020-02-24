@@ -18,13 +18,19 @@ import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.CodedObsOnFirstOrSecondEncounterCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
@@ -230,22 +236,27 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    String mappings = "value1=${startDate},value2=${endDate},locationList=${location}";
-    String transferMappings =
-        "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    CohortDefinition mcDrugPickup = getPatientsWithMasterCardDrugPickUpDate();
 
-    cd.addSearch("B1i", map(getPatientsWhoInitiatedTarvAtAfacility(), mappings));
-    cd.addSearch("B1ii", map(getPatientsWithMasterCardDrugPickUpDate(), mappings));
-    cd.addSearch(
-        "B1iii",
-        map(
-            genericCohortQueries.getPatientsHavingEncounterWithinDateBoundaries(
-                hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch("B1iv", map(getTypeOfPatientTransferredFrom(), transferMappings));
-    cd.addSearch("B1v", map(getPatientsWithTransferFromOtherHF(), transferMappings));
+    EncounterType pharmacy = hivMetadata.getARVPharmaciaEncounterType();
+    CohortDefinition fila =
+        genericCohortQueries.getPatientsHavingEncounterWithinDateBoundaries(
+            pharmacy.getEncounterTypeId());
 
-    cd.setCompositionString("(B1i AND (B1ii OR B1iii)) AND NOT (B1iv OR B1v)");
+    CohortDefinition transferredIn =
+        getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2();
+
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+    cd.addSearch("startedArt", map(startedArt, mappings));
+
+    String pckupMappings = "value1=${startDate},value2=${endDate},locationList=${location}";
+    cd.addSearch("mcDrugPickup", map(mcDrugPickup, pckupMappings));
+
+    cd.addSearch("fila", mapStraightThrough(fila));
+    cd.addSearch("transferredIn", map(transferredIn, mappings));
+
+    cd.setCompositionString("(startedArt AND (mcDrugPickup OR fila)) AND NOT transferredIn");
     return cd;
   }
 
@@ -257,20 +268,15 @@ public class ResumoMensalCohortQueries {
    */
   public CohortDefinition
       getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2() {
-
-    SqlCohortDefinition cd = new SqlCohortDefinition();
+    // TODO maybe we should be re-using
+    // HivCohortQueries#getPatientsTransferredFromOtherHealthFacility
+    // Waiting for BAs response
+    EptsTransferredInCohortDefinition cd = new EptsTransferredInCohortDefinition();
     cd.setName("Number of patients transferred-in from another HFs during the current month");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.setTypeOfPatientTransferredFromAnswer(hivMetadata.getArtStatus());
+    cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.setQuery(
-        ResumoMensalQueries.getPatientsTransferredFromAnotherHealthFacilityDuringTheCurrentMonth(
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
-            hivMetadata.getYesConcept().getConceptId(),
-            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
-            hivMetadata.getArtStatus().getConceptId()));
-
     return cd;
   }
 
@@ -286,11 +292,98 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  /** @return B.5 Number of patients transferred out during the current month */
+  /**
+   * See {@link HivCohortQueries#getPatientsTransferredOut}
+   *
+   * @return B.5 Number of patients transferred out during the current month
+   */
   public CohortDefinition getPatientsTransferredOut() {
-    EncounterWithCodedObsCohortDefinition cd = getStateOfStayCohort();
-    cd.setName("Number of patients transferred out during the current month");
-    cd.addIncludeCodedValue(hivMetadata.getTransferredOutConcept());
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    String sql =
+        "SELECT patient_id "
+            + "FROM (SELECT patient_id, "
+            + "             Max(transferout_date) transferout_date "
+            + "      FROM (SELECT p.patient_id, "
+            + "                   ps.start_date transferout_date "
+            + "            FROM patient p "
+            + "                     JOIN patient_program pp "
+            + "                          ON p.patient_id = pp.patient_id "
+            + "                     JOIN patient_state ps "
+            + "                          ON pp.patient_program_id = ps.patient_program_id "
+            + "            WHERE p.voided = 0 "
+            + "              AND pp.voided = 0 "
+            + "              AND pp.program_id = ${art} "
+            + "              AND pp.location_id = :location "
+            + "              AND ps.voided = 0 "
+            + "              AND ps.state = ${transferOutState} "
+            + "              AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore "
+            + "            UNION "
+            + "            SELECT p.patient_id, "
+            + "                   e.encounter_datetime transferout_date "
+            + "            FROM patient p "
+            + "                     JOIN encounter e "
+            + "                          ON p.patient_id = e.patient_id "
+            + "                     JOIN obs o "
+            + "                          ON e.encounter_id = o.encounter_id "
+            + "            WHERE p.voided = 0 "
+            + "              AND e.voided = 0 "
+            + "              AND e.location_id = :location "
+            + "              AND e.encounter_type IN (${adultSeg}, ${masterCard}) "
+            + "              AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore "
+            + "              AND o.voided = 0 "
+            + "              AND o.concept_id IN (${artStateOfStay}, ${preArtStateOfStay}) "
+            + "              AND o.value_coded = ${transfOutConcept}) transferout "
+            + "      GROUP BY patient_id) max_transferout "
+            + "WHERE patient_id NOT IN (SELECT p.patient_id "
+            + "                         FROM patient p "
+            + "                                  JOIN encounter e "
+            + "                                       ON p.patient_id = e.patient_id "
+            + "                         WHERE p.voided = 0 "
+            + "                           AND e.voided = 0 "
+            + "                           AND e.encounter_type IN (${adultSeg}, ${childSeg}, ${fila}) "
+            + "                           AND e.location_id = :location "
+            + "                           AND e.encounter_datetime > transferout_date "
+            + "                           AND e.encounter_datetime <= :endDate "
+            + "                         UNION "
+            + "                         SELECT p.patient_id "
+            + "                         FROM patient p "
+            + "                                  JOIN encounter e "
+            + "                                       ON p.patient_id = e.patient_id "
+            + "                                  JOIN obs o "
+            + "                                       ON e.encounter_id = o.encounter_id "
+            + "                         WHERE p.voided = 0 "
+            + "                           AND e.voided = 0 "
+            + "                           AND e.encounter_type = ${mcDrugPickup} "
+            + "                           AND e.location_id = :location "
+            + "                           AND o.concept_id = ${drugPickup} "
+            + "                           AND o.value_datetime "
+            + "                             > transferout_date) "
+            + "                           AND o.value_datetime "
+            + "                             < :endDate";
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("art", hivMetadata.getARTProgram().getProgramId());
+
+    ProgramWorkflowState transferOut =
+        hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState();
+    valuesMap.put("transferOutState", transferOut.getProgramWorkflowStateId());
+
+    valuesMap.put("adultSeg", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    valuesMap.put("masterCard", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    valuesMap.put("artStateOfStay", hivMetadata.getStateOfStayOfPreArtPatient().getConceptId());
+    valuesMap.put("preArtStateOfStay", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
+    valuesMap.put("transfOutConcept", hivMetadata.getTransferredOutConcept().getConceptId());
+    valuesMap.put(
+        "childSeg", hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    valuesMap.put("fila", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    valuesMap.put(
+        "mcDrugPickup", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    valuesMap.put("drugPickup", hivMetadata.getArtDatePickup().getConceptId());
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    cd.setQuery(sub.replace(sql));
     return cd;
   }
 
@@ -648,7 +741,7 @@ public class ResumoMensalCohortQueries {
         "B2",
         map(
             getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "B3",
         map(

@@ -466,7 +466,7 @@ public class GenericCohortQueries {
     cd.setName("Patients having encounter type " + encounterType);
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("EndDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.setQuery(String.format(query, encounterType));
     return cd;
   }
