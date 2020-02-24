@@ -622,6 +622,11 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /**
+   * (B12 OR (B1 OR B2 OR B3)) AND NOT (B5 OR B6 OR B7 OR B8) = B13
+   * This just implementation of B12
+   * @return
+   */
   public CohortDefinition getStandardDefinitionForEcolumns() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Standard columns for E1, E2 and E3");
@@ -634,26 +639,7 @@ public class ResumoMensalCohortQueries {
         map(
             getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTB(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-        "B5",
-        map(
-            getPatientsTransferredOut(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
-    cd.addSearch(
-        "B6",
-        map(
-            getPatientsWhoSuspendedTreatment(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
-    cd.addSearch(
-        "B7",
-        map(
-            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A(),
-            "location=${location},onDate=${endDate}"));
-    cd.addSearch(
-        "B8",
-        map(
-            getPatientsWhoDied(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
-    cd.setCompositionString("B12  AND NOT (B5 OR B6 OR B7 OR B8)");
+    cd.setCompositionString("B12");
     return cd;
   }
 
