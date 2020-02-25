@@ -17,7 +17,6 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
 
 import java.util.Date;
-
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -784,7 +783,7 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-   
+
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     cd.addSearch(
