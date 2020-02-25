@@ -13,6 +13,10 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class ResumoMensalQueries {
 
   /**
@@ -35,6 +39,13 @@ public class ResumoMensalQueries {
    */
   public static String getPatientsWhoInitiatedPreArtDuringCurrentMonthWithConditions(
       int encounterType, int conceptId, int programId, int encounterType1, int encounterType2) {
+    Map<String, Integer> map = new HashMap<>();
+    map.put("encounterType", encounterType);
+    map.put("conceptId", conceptId);
+    map.put("programId", programId);
+    map.put("encounterType1", encounterType1);
+    map.put("encounterType2", encounterType2);
+
     String query =
         "SELECT results.patient_id,"
             + "       Min(results.enrollment_date) "
@@ -48,11 +59,11 @@ public class ResumoMensalQueries {
             + "        WHERE  p.voided = 0 "
             + "               AND e.voided = 0 "
             + "               AND o.voided = 0 "
-            + "               AND e.encounter_type = %d "
+            + "               AND e.encounter_type = ${encounterType} "
             + "               AND e.location_id =:location "
             + "               AND o.value_datetime IS NOT NULL "
             + "               AND o.value_datetime BETWEEN :startDate AND :endDate "
-            + "               AND o.concept_id =%d "
+            + "               AND o.concept_id =${conceptId}"
             + "        UNION ALL "
             + "        SELECT p.patient_id, "
             + "               date_enrolled AS enrollment_date "
@@ -61,7 +72,7 @@ public class ResumoMensalQueries {
             + "                 ON pp.patient_id = p.patient_id "
             + "        WHERE  p.voided = 0 "
             + "               AND pp.voided = 0 "
-            + "               AND pp.program_id =%d "
+            + "               AND pp.program_id =${programId} "
             + "               AND pp.location_id =:location "
             + "               AND pp.date_enrolled BETWEEN :startDate AND :endDate "
             + "        UNION ALL "
@@ -71,25 +82,43 @@ public class ResumoMensalQueries {
             + "               JOIN patient p "
             + "                 ON p.patient_id = enc.patient_id "
             + "        WHERE  p.voided = 0 "
-            + "               AND enc.encounter_type IN (%d,%d) "
+            + "               AND enc.encounter_type IN (${encounterType1},${encounterType2}) "
             + "               AND enc.location_id =:location "
             + "               AND enc.encounter_datetime "
             + "                   :startDate AND :endDate "
             + "        ORDER  BY enrollment_date ASC) results "
             + "GROUP  BY results.patient_id  ";
-    return String.format(
-        query, encounterType, conceptId, programId, encounterType1, encounterType2);
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    return stringSubstitutor.replace(query);
   }
 
   /**
-   * All patients Enrolle in Pre-Art or Registered In Clinical Process Opening enddate
+   * All patients Enrolled in Pre-Art or Registered In Clinical Process Opening enddate
    *
    * @return String
    */
   public static String getAllPatientsRegisteredAsTransferredInProgramEnrolmentWithBoundaries(
       int stateId, int programId) {
-    String query =
-        "SELECT p.patient_id FROM patient p INNER JOIN patient_program pp ON p.patient_id = pp.patient_id INNER JOIN patient_state ps ON ps.patient_program_id = pp.program_id WHERE p.voided=0 AND ps.state=%d AND pp.program_id = %d AND pp.location_id=:location pp.date_enrolled BETWEEN :startDate AND :endDate";
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("stateId", stateId);
+    map.put("programId", programId);
+    String query = "SELECT p.patient_id "
+            +"FROM   patient p "
+            +"       INNER JOIN patient_program pp "
+            +"               ON p.patient_id = pp.patient_id "
+            +"       INNER JOIN patient_state ps "
+            +"               ON ps.patient_program_id = pp.patient_program_id "
+            +"WHERE  p.voided = 0 "
+            +"       AND ps.state = ${stateId} "
+            +"       AND pp.location_id =:location "
+            +"       AND pp.date_enrolled BETWEEN :startDate AND D:endDate "
+            +"       AND pp.program_id = ${programId} ";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    return stringSubstitutor.replace(query);
+
     return String.format(query, stateId, programId);
   }
 
