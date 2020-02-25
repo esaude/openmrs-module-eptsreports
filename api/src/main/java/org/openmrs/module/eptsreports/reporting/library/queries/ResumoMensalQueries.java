@@ -13,9 +13,9 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
-
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.text.StringSubstitutor;
 
 public class ResumoMensalQueries {
 
@@ -104,22 +104,21 @@ public class ResumoMensalQueries {
     Map<String, Integer> map = new HashMap<>();
     map.put("stateId", stateId);
     map.put("programId", programId);
-    String query = "SELECT p.patient_id "
-            +"FROM   patient p "
-            +"       INNER JOIN patient_program pp "
-            +"               ON p.patient_id = pp.patient_id "
-            +"       INNER JOIN patient_state ps "
-            +"               ON ps.patient_program_id = pp.patient_program_id "
-            +"WHERE  p.voided = 0 "
-            +"       AND ps.state = ${stateId} "
-            +"       AND pp.location_id =:location "
-            +"       AND pp.date_enrolled BETWEEN :startDate AND D:endDate "
-            +"       AND pp.program_id = ${programId} ";
+    String query =
+        "SELECT p.patient_id "
+            + "FROM   patient p "
+            + "       INNER JOIN patient_program pp "
+            + "               ON p.patient_id = pp.patient_id "
+            + "       INNER JOIN patient_state ps "
+            + "               ON ps.patient_program_id = pp.patient_program_id "
+            + "WHERE  p.voided = 0 "
+            + "       AND ps.state = ${stateId} "
+            + "       AND pp.location_id =:location "
+            + "       AND pp.date_enrolled BETWEEN :startDate AND D:endDate "
+            + "       AND pp.program_id = ${programId} ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     return stringSubstitutor.replace(query);
-
-    return String.format(query, stateId, programId);
   }
 
   /**
