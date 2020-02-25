@@ -110,72 +110,47 @@ public class ResumoMensalCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
     sqlCohortDefinition.setQuery(
-        ResumoMensalQueries.getAllPatientsWithPreArtStartDateWithBoundaries(
+        ResumoMensalQueries.getPatientsWhoInitiatedPreArtDuringCurrentMonthWithConditions(
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getPreArtStartDate().getConceptId()));
+            hivMetadata.getPreArtStartDate().getConceptId(),
+            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getHIVCareProgram().getProgramId()));
 
-    cd.addSearch(
-        "A2I",
-        map(sqlCohortDefinition, "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch("A2I", map(sqlCohortDefinition, "startDate=${startDate},location=${location}"));
     cd.addSearch(
         "A2II",
         map(
-            getPatientsEnrolledInPreArtOrRegisteredInClinicalProcessOpening(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch("A2III", map(getPatientsWithTransferFromOtherHF(), "locationList=${location}"));
-    cd.addSearch("A2IV", map(getPatientsWithTransferFrom(), "locationList=${location}"));
+            getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
-        "A2V",
-        map(
-            getAllPatientsWithPreArtDateTransferredInFromWithBoundaries(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "A2VI",
+        "A2III",
         map(
             getAllPatientsRegisteredAsTransferredInProgramEnrolmentWithBoundaries(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(A2I AND A2II) AND NOT (A2III AND A2IV AND A2V AND A2VI)");
+    cd.setCompositionString("(A2I) AND NOT (A2II OR A2III)");
 
     return cd;
   }
 
   /**
-   * Get patients enrolled in PRE-ART Program with enrollment date or registered in "Abertura de
-   * processo clinico" with the most earliest date in reporting period
+   * A.2: Number of patients transferred-in from another HFs during the current month
    *
+   * @return Cohort
    * @return CohortDefinition
    */
-  private CohortDefinition getPatientsEnrolledInPreArtOrRegisteredInClinicalProcessOpening() {
-    SqlCohortDefinition scd = new SqlCohortDefinition();
-    scd.setName("Get patients enrolled on Pre Art  or registered on clinical process opening");
-    scd.addParameter(new Parameter("location", "Location", Location.class));
-    scd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    scd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    scd.setQuery(
-        ResumoMensalQueries.getPatientsEnrolledInPreArtOrRegisteredInClinicalProcessOpening(
-            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
-            hivMetadata.getHIVCareProgram().getProgramId()));
-    return scd;
-  }
-
-  /**
-   * Get patients With Date fo Transferred In Between etartDate and endDate
-   *
-   * @return CohortDefinition
-   */
-  private CohortDefinition getAllPatientsWithPreArtDateTransferredInFromWithBoundaries() {
-    SqlCohortDefinition scd = new SqlCohortDefinition();
-    scd.setName("Get patients enrolled on Pre Art  or registered on clinical process opening");
-    scd.addParameter(new Parameter("location", "Location", Location.class));
-    scd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    scd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    scd.setQuery(
-        ResumoMensalQueries.getAllPatientsWithPreArtDateTransferredInFromWithBoundaries(
-            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
-            hivMetadata.getTransferredFromOtherFacilityConcept().getConceptId()));
-    return scd;
+  public CohortDefinition
+      getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2() {
+    // TODO maybe we should be re-using
+    // HivCohortQueries#getPatientsTransferredFromOtherHealthFacility
+    EptsTransferredInCohortDefinition cd = new EptsTransferredInCohortDefinition();
+    cd.setName("Number of patients transferred-in from another HFs during the current month");
+    cd.setTypeOfPatientTransferredFromAnswer(hivMetadata.getPreTarvConcept());
+    cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    return cd;
   }
 
   /**

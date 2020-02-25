@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
-
 public class ResumoMensalQueries {
 
   /**
@@ -34,37 +33,52 @@ public class ResumoMensalQueries {
    *
    * @return String
    */
-  public static String getAllPatientsWithPreArtStartDateWithBoundaries(
-      int encounterType, int conceptId) {
+  public static String getPatientsWhoInitiatedPreArtDuringCurrentMonthWithConditions(
+      int encounterType, int conceptId, int programId, int encounterType1, int encounterType2) {
     String query =
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND o.value_datetime IS NOT NULL  AND o.value_datetime BETWEEN :startDate AND :endDate AND o.concept_id=%d";
-    return String.format(query, encounterType, conceptId);
-  }
-
-  /**
-   * All patients with encounter type 53, and Pre-ART Start Date that falls between startDate and
-   * enddate
-   *
-   * @return String
-   */
-  public static String getAllPatientsWithPreArtDateTransferredInFromWithBoundaries(
-      int encounterType, int conceptId) {
-    String query =
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND o.value_datetime IS NOT NULL  AND o.value_datetime BETWEEN :startDate AND :endDate AND o.concept_id=%d";
-    return String.format(query, encounterType, conceptId);
-  }
-
-  /**
-   * All patients Enrolle in Pre-Art or Registered In Clinical Process Opening enddate
-   *
-   * @return String
-   */
-  public static String getPatientsEnrolledInPreArtOrRegisteredInClinicalProcessOpening(
-      int encounterType1, int encounterType2, int programId) {
-    String query =
-        "SELECT * FROM (SELECT patient_id, date_enrolled as enrollment_date  from patient_program where program_id = %d and location_id:location AND date_enrolled BETWEEN :startDate AND :endDate  UNION ALL "
-            + "SELECT patient_id , encounter_datetime as enrollment_date from encounter where encounter_type in (%d,%d) and location_id =:location AND encounter_datetime BETWEEN :startDate AND :endDate order by enrollment_date asc) results GROUP BY results.patient_id";
-    return String.format(query, programId, encounterType1, encounterType2);
+        "SELECT results.patient_id,"
+            + "       Min(results.enrollment_date) "
+            + "FROM   (SELECT p.patient_id, "
+            + "               e.encounter_datetime AS enrollment_date "
+            + "        FROM   patient p "
+            + "               INNER JOIN encounter e "
+            + "                       ON p.patient_id = e.patient_id "
+            + "               INNER JOIN obs o "
+            + "                       ON o.encounter_id = e.encounter_id "
+            + "        WHERE  p.voided = 0 "
+            + "               AND e.voided = 0 "
+            + "               AND o.voided = 0 "
+            + "               AND e.encounter_type = %d "
+            + "               AND e.location_id =:location "
+            + "               AND o.value_datetime IS NOT NULL "
+            + "               AND o.value_datetime BETWEEN :startDate AND :endDate "
+            + "               AND o.concept_id =%d "
+            + "        UNION ALL "
+            + "        SELECT p.patient_id, "
+            + "               date_enrolled AS enrollment_date "
+            + "        FROM   patient_program pp "
+            + "               JOIN patient p "
+            + "                 ON pp.patient_id = p.patient_id "
+            + "        WHERE  p.voided = 0 "
+            + "               AND pp.voided = 0 "
+            + "               AND pp.program_id =%d "
+            + "               AND pp.location_id =:location "
+            + "               AND pp.date_enrolled BETWEEN :startDate AND :endDate "
+            + "        UNION ALL "
+            + "        SELECT p.patient_id, "
+            + "               enc.encounter_datetime AS enrollment_date "
+            + "        FROM   encounter enc "
+            + "               JOIN patient p "
+            + "                 ON p.patient_id = enc.patient_id "
+            + "        WHERE  p.voided = 0 "
+            + "               AND enc.encounter_type IN (%d,%d) "
+            + "               AND enc.location_id =:location "
+            + "               AND enc.encounter_datetime "
+            + "                   :startDate AND :endDate "
+            + "        ORDER  BY enrollment_date ASC) results "
+            + "GROUP  BY results.patient_id  ";
+    return String.format(
+        query, encounterType, conceptId, programId, encounterType1, encounterType2);
   }
 
   /**
