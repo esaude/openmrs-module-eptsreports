@@ -42,8 +42,8 @@ public class TbPrevCohortQueries {
         StringUtils.join(
             Arrays.asList(
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getId()),
-                hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType().getId(),
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId()),
             ",");
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Patient states based on end of reporting period");
