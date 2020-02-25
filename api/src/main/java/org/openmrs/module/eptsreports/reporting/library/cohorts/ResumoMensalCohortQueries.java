@@ -898,6 +898,7 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             tbMetadata.getHasTbSymptomsConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getNoConcept().getConceptId(),
             tbMetadata.getTBTreatmentPlanConcept().getConceptId()));
 
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
