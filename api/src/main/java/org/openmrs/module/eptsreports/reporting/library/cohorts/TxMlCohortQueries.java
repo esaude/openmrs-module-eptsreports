@@ -630,7 +630,7 @@ public class TxMlCohortQueries {
   }
 
   // Patients Traced Not Found
-  private CohortDefinition getPatientsTracedAndNotFound() {
+  public CohortDefinition getPatientsTracedAndNotFound() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
 
     sqlCohortDefinition.setName("Get patients traced (Unable to locate) and Not Found");
