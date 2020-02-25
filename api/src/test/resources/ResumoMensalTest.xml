@@ -13,5 +13,141 @@
 		date_created="2008-10-13 11:32:52" county_district="NA" address6="NA"
 		retired="0" uuid="e2b32fc2-1d5f-11e0-b929-000c29ad1d07" />
 
+ <!-- dead on demographics -->
+<person person_id="1020" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="true"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false" death_date="2018-06-30"
+            uuid="8b6657b8-57dc-11ea-8247-a0a4c5d1c75c"/>
+
+<!-- dead with more recent encounter -->
+			<person person_id="1021" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="true"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false" death_date="2018-06-30"
+            uuid="bb9df255-57dc-11ea-8247-a0a4c5d1c75c"/>
+
+<!-- dead in ART -->
+			<person person_id="1022" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="c64cc15b-57dc-11ea-8247-a0a4c5d1c75c"/>
+
+<!-- dead in PRE ART -->
+			<person person_id="1023" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="32625400-57de-11ea-8247-a0a4c5d1c75c"/>
+
+			<!-- dead in PRE ART -->
+			<person person_id="1023" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="32625400-57de-11ea-8247-a0a4c5d1c75c"/>
+
+			<patient patient_id="1020" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+			 <patient patient_id="1021" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+			 <patient patient_id="1022" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+			 <patient patient_id="1023" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+			 <concept concept_id="6272" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2012-02-29 09:46:11" uuid="3bd7a5d1-afc0-478d-9aa6-c7bdd9a050c8"/>
+
+    <concept concept_id="6273" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2012-02-29 10:06:33" uuid="a7d3b5c9-8b8e-4f29-b332-8db47466fed3"/>
+
+			 <concept concept_id="1366" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2012-02-29 09:46:11" uuid="e1da766e-1d5f-11e0-b929-000c29ad1d07"/>
+
+			 <concept_name concept_id="6272" name="STATE OF STAY PRIOR ART PATIENT" locale="en" creator="1" date_created="2008-10-13 05:58:15"
+                  concept_name_id="7174" voided="0" uuid="ddf5d0d1-2142-4629-8403-d0d9b2a77839"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+				  <concept_name concept_id="6273" name="STATE OF STAY ART PATIENT" locale="en" creator="1" date_created="2008-10-13 05:58:15"
+                  concept_name_id="7670" voided="0" uuid="3f799096-60dd-4491-a99e-8e01ebdff7e5"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+			<concept_name concept_id="1366" name="PATIENT HAS DIED" locale="en" creator="1" date_created="2008-10-13 05:58:15"
+                  concept_name_id="2462" voided="0" uuid="e249f6c4-1d5f-11e0-b929-000c29ad1d07"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <program program_id="1" concept_id="1781" creator="1" date_created="2012-02-29 09:42:25" retired="0"
+             name="SERVICO TARV - CUIDADO" description="Programa de seguimento e cuidado aos pacientes HIV+"
+             uuid="7b2e4a0a-d4eb-4df7-be30-78ca4b28ca99"/>
+
+    <program program_id="2" concept_id="6274" creator="1" date_created="2012-02-29 09:46:38" retired="0"
+             name="SERVICO TARV - TRATAMENTO" description="Programa de seguimento e tratamento aos pacientes HIV+"
+             uuid="efe2481f-9e75-4515-8d5a-86bfde2b5ad3"/>
+
+			 <patient_program patient_program_id="5616" patient_id="1022" program_id="2" date_enrolled="2013-08-01 00:00:00"
+                     creator="1" date_created="2013-09-16 17:53:04" voided="0"
+                     uuid="94f3d04d-57de-11ea-8247-a0a4c5d1c75c" location_id="1"/>
+
+					 <patient_program patient_program_id="5617" patient_id="1023" program_id="2" date_enrolled="2013-08-01 00:00:00"
+                     creator="1" date_created="2013-09-16 17:53:04" voided="0"
+                     uuid="9ddc09d5-57de-11ea-8247-a0a4c5d1c75c" location_id="1"/>
+
+					 <patient_state patient_state_id="7572" patient_program_id="5616" state="10" start_date="2013-08-01" creator="1"
+                   date_created="2013-09-16 17:53:04" voided="0"/>
+
+				   <patient_state patient_state_id="7553" patient_program_id="5617" state="10" start_date="2013-08-01" creator="1"
+                   date_created="2013-09-16 17:53:04" voided="0"/>
+
+			 <encounter_type encounter_type_id="6" name="S.TARV: ADULTO SEGUIMENTO"
+                    description="seguimento visita do paciente adulto" creator="1" date_created="2008-10-13 04:32:34"
+                    retired="0" uuid="e278f956-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <encounter_type encounter_type_id="9" name="S.TARV: PEDIATRIA SEGUIMENTO"
+                    description="Seguimento visita do paciente pediatria" creator="1" date_created="2008-10-13 11:35:34"
+                    retired="0" uuid="e278fce4-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <encounter_type encounter_type_id="18" name="S.TARV: FARMACIA" description="Farmacia" creator="1"
+                    date_created="2008-10-25 15:07:04" retired="0" uuid="e279133c-1d5f-11e0-b929-000c29ad1d07"/>
+
+					<encounter_type encounter_type_id="52" name="Levantamento de ARV Master Card" description="Registo de levantamento de ARV no Master Card" creator="1"
+                    date_created="2019-07-09 13:03:45" retired="0" uuid="cce7b2ec-4fc0-4f9e-806d-b1c4ee9577db"/>
+
+					<encounter_type encounter_type_id="53" name="Master Card - Ficha Resumo" description="Ficha resumo no master card" creator="1"
+                    date_created="2019-07-31 14:23:47" retired="0" uuid="e422ecf9-75dd-4367-b21e-54bccabc4763"/>
+
+					<encounter encounter_id="52671" encounter_type="6" patient_id="1021" encounter_datetime="2018-09-17 00:00:00"
+               creator="1" date_created="2018-09-17 00:00:00" voided="0"
+               uuid="cd33857e-c11b-4eb5-8c11-e84a8315958d" location_id="1"/>
+
+			   <encounter encounter_id="52672" encounter_type="9" patient_id="1021" encounter_datetime="2018-09-17 00:00:00"
+               creator="1" date_created="2018-09-17 00:00:00" voided="0"
+               uuid="cd33857e-c11b-4eb5-8c12-e84a8315958d" location_id="1"/>
+
+			   <encounter encounter_id="52673" encounter_type="18" patient_id="1021" encounter_datetime="2018-09-17 00:00:00"
+               creator="1" date_created="2018-09-17 00:00:00" voided="0"
+               uuid="cd33857e-c11b-4eb5-8c13-e84a8315958d" location_id="1"/>
+
+					<encounter encounter_id="52674" encounter_type="6" patient_id="1022" encounter_datetime="2018-07-10 00:00:00"
+               creator="1" date_created="2018-07-10 12:55:48" voided="0"
+               uuid="ca8c2c5e-57e7-11ea-8247-a0a4c5d1c75c" location_id="1"/>
+
+    <encounter encounter_id="52675" encounter_type="53" patient_id="1023" encounter_datetime="2018-07-10 00:00:00"
+               creator="1" date_created="2018-07-10 12:55:48" voided="0"
+               uuid="0578f158-57e7-11ea-8247-a0a4c5d1c75c" location_id="1"/>
+
+			   <obs obs_id="473785" person_id="1021" concept_id="6273" encounter_id="52671" obs_datetime="2018-09-17 00:00:00"
+         value_coded="1366" creator="1" date_created="2018-09-17 10:03:01" voided="0"
+         uuid="c0a0d917-ea43-443c-8924-31fbd88f2410" location_id="1"/>
+
+		 <obs obs_id="473786" person_id="1021" concept_id="6273" encounter_id="52672" obs_datetime="2018-09-17 00:00:00"
+         value_coded="1366" creator="1" date_created="2018-09-17 10:03:01" voided="0"
+         uuid="c0a0d917-ea43-443c-8925-31fbd88f2410" location_id="1"/>
+
+		 <obs obs_id="473787" person_id="1021" concept_id="23866" encounter_id="52673" obs_datetime="2013-05-03 00:00:00"
+         creator="1" date_created="2013-06-19 10:03:01" voided="0"
+         uuid="c0a0d917-ea43-443c-8926-31fbd88f2410" location_id="1"/>
+
+			   <obs obs_id="473788" person_id="1022" concept_id="6273" encounter_id="52674" obs_datetime="2018-07-10 00:00:00"
+         value_coded="1366" creator="1" date_created="2018-07-10 10:03:01" voided="0"
+         uuid="ca34e782-57e9-11ea-8247-a0a4c5d1c75c" location_id="1"/>
+
+		 <obs obs_id="473789" person_id="1023" concept_id="6272" encounter_id="52675" obs_datetime="2018-07-10 00:00:00"
+         value_coded="1366" creator="1" date_created="2018-07-10 10:03:01" voided="0"
+         uuid="e5818f05-57e9-11ea-8247-a0a4c5d1c75c" location_id="1"/>
 
 </dataset>
