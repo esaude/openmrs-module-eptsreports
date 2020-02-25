@@ -29,11 +29,11 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     executeDataSet("ResumoMensalTest.xml");
   }
 
- 
   @Test
   public void Test(){
 
   }
+
 
   @Override
   protected Date getStartDate() {
