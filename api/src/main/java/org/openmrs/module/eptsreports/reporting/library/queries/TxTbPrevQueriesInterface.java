@@ -57,7 +57,7 @@ public interface TxTbPrevQueriesInterface {
             + "inner join obs o on e.encounter_id=o.encounter_id "
             + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=:location2 and "
             + "o.concept_id=23866 and o.value_datetime is not null and  o.value_datetime<=:endDate and e.location_id=:location group by p.patient_id) inicio_real group by patient_id) "
-            + "inicioTarv on inicioTarv.patient_id=inicio_tpi.patient_id and inicio_tpi.data_inicio_tpi <= DATE_ADD(inicioTarv.data_inicio, INTERVAL 6 MONTH) and inicio_tpi.data_inicio_tpi >= inicioTarv.data_inicio ";
+            + "inicioTarv on inicioTarv.patient_id=inicio_tpi.patient_id and inicio_tpi.data_inicio_tpi <= DATE_ADD(inicioTarv.data_inicio, INTERVAL 6 MONTH) ";
 
     public static final String findPatientsWhoStartedArtAndTpiPreviouslyDessagragation =
         "select inicio_tpi.patient_id from ( "
@@ -97,7 +97,7 @@ public interface TxTbPrevQueriesInterface {
             + "inner join obs o on e.encounter_id=o.encounter_id "
             + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=:location2 and "
             + "o.concept_id=23866 and o.value_datetime is not null and  o.value_datetime<=:endDate and e.location_id=:location group by p.patient_id) inicio_real group by patient_id) "
-            + "inicioTarv on inicioTarv.patient_id=inicio_tpi.patient_id and inicio_tpi.data_inicio_tpi > DATE_ADD(inicioTarv.data_inicio, INTERVAL 6 MONTH) and inicio_tpi.data_inicio_tpi >= inicioTarv.data_inicio ";
+            + "inicioTarv on inicioTarv.patient_id=inicio_tpi.patient_id and inicio_tpi.data_inicio_tpi > DATE_ADD(inicioTarv.data_inicio, INTERVAL 6 MONTH) ";
 
     public static final String findPatientsWhoStartedTpi6MonthsAgoAndWhoEndedTpi =
         "select inicio_tpi.patient_id from ( "
@@ -170,10 +170,16 @@ public interface TxTbPrevQueriesInterface {
             + "inner join obs o on o.encounter_id=e.encounter_id "
             + "where e.voided=0 and p.voided=0 and e.encounter_datetime>=:startDate - interval 6 month and e.encounter_datetime<=:endDate and "
             + "o.voided=0 and o.concept_id=6273 and o.value_coded=1706 and e.encounter_type=6 and  e.location_id=:location group by p.patient_id) transferido group by patient_id) transferidopara "
-            + "inner join ( "
-            + "select p.patient_id,max(e.encounter_datetime) encounter_datetime from patient p "
-            + "inner join encounter e on e.patient_id=p.patient_id where p.voided=0 and e.voided=0 and e.encounter_datetime<=:endDate and  e.location_id=:location and e.encounter_type in (18,6,9,52) group by p.patient_id  "
-            + ") consultaOuARV on transferidopara.patient_id=consultaOuARV.patient_id "
+            + "inner join (select p.patient_id,max(e.encounter_datetime) encounter_datetime from patient p "
+            + "inner join encounter e on e.patient_id=p.patient_id "
+            + "where p.voided=0 and e.voided=0 and e.encounter_datetime<=:endDate and e.location_id=:location and e.encounter_type in (18,6,9) group by p.patient_id "
+            + "union "
+            + "select p.patient_id,max(value_datetime) encounter_datetime "
+            + "from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=52 and o.concept_id=23866 and o.value_datetime is not null and o.value_datetime<=:endDate and e.location_id=:location group by p.patient_id "
+            + " ) consultaOuARV on transferidopara.patient_id=consultaOuARV.patient_id "
             + "where consultaOuARV.encounter_datetime<=transferidopara.data_transferidopara ";
   }
 }
