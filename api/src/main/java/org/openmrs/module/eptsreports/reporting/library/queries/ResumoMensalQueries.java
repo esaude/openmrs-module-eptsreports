@@ -83,9 +83,13 @@ public class ResumoMensalQueries {
   }
 
   public static String getPatientsForF2ForExclusionFromMainQuery(
-      int adultoSeguimentoEncounterType, int tbSymptomsConcept, int yesConcept, int noConcept, int tbTreatmentPlanConcept) {
+      int adultoSeguimentoEncounterType,
+      int tbSymptomsConcept,
+      int yesConcept,
+      int noConcept,
+      int tbTreatmentPlanConcept) {
     String query =
-            "SELECT p.patient_id "
+        "SELECT p.patient_id "
             + "FROM   patient p "
             + " JOIN encounter e "
             + " ON p.patient_id = e.patient_id "
@@ -104,14 +108,14 @@ public class ResumoMensalQueries {
             + " AND o.voided = 0 "
             + " AND o.concept_id = ${tbTreatmentPlanConcept} ";
 
-            Map<String, Integer> valuesMap = new HashMap<>();
-            valuesMap.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
-            valuesMap.put("tbSymptomsConcept", tbSymptomsConcept);
-            valuesMap.put("yesConcept", yesConcept);
-            valuesMap.put("noConcept", noConcept);
-            valuesMap.put("tbTreatmentPlanConcept", tbTreatmentPlanConcept);
-            StringSubstitutor sub = new StringSubstitutor(valuesMap);
-            return sub.replace(query);
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
+    valuesMap.put("tbSymptomsConcept", tbSymptomsConcept);
+    valuesMap.put("yesConcept", yesConcept);
+    valuesMap.put("noConcept", noConcept);
+    valuesMap.put("tbTreatmentPlanConcept", tbTreatmentPlanConcept);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
   }
 
   /**
