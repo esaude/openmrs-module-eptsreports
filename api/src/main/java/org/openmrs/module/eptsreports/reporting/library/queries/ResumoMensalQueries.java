@@ -38,10 +38,24 @@ public class ResumoMensalQueries {
    * @return String
    */
   public static String getAllPatientsWithPreArtStartDateWithBoundaries(
-      int encounterType, int conceptId) {
+      int sTarvAdultoInicialA5, int sTarvPediatriaInicial7, int masterCardFichaResumo53, int dataDoInicioPreTarvConcept, int programId) {
     String query =
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND o.value_datetime IS NOT NULL  AND o.value_datetime BETWEEN :startDate AND :endDate AND o.concept_id=%d";
-    return String.format(query, encounterType, conceptId);
+        "SELECT p.patient_id, o.value_datetime AS encounter_date FROM patient p "
+                + " INNER JOIN encounter e ON p.patient_id=e.patient_id "
+                + " INNER JOIN obs o ON e.encounter_id=o.encounter_id  WHERE e.location_id=:location "
+                + " AND e.encounter_datetime <=:endDate AND o.concept_id=${dataDoInicioPreTarvConcept} "
+                + " AND o.value_datetime IS NOT NULL AND p.voided=0 AND e.voided=0 AND o.voided=0"
+        +" UNION "
+        +"SELECT p.patient_id, pg.date_enrolled AS encounter_date FROM patient p "
+                + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id "
+                + " WHERE p.voided=0 AND pg.voided=0 AND pg.location_id=:location "
+                + " AND pg.date_enrolled <=:endDate AND pg.program_id=${programId} "
+        +" UNION "
+        +"SELECT p.patient_id, e.encounter_datetime AS encounter_date FROM patient p INNER JOIN encounter e "
+                + " WHERE p.voided=0 AND e.voided=0 AND e.location_id=:location "
+                + " AND e.encounter_type IN (${sTarvAdultoInicialA5},${sTarvPediatriaInicial7}) "
+                + " AND e.encounter_datetime <=:endDate";
+    return String.format(query, sTarvAdultoInicialA5, sTarvPediatriaInicial7, masterCardFichaResumo53, dataDoInicioPreTarvConcept, programId);
   }
 
   public static String getPatientsTransferredFromAnotherHealthFacilityByEndOfPreviousMonth(
