@@ -224,7 +224,7 @@ public class ResumoMensalCohortQueries {
    *
    * @return B.5 Number of patients transferred out during the current month
    */
-  public CohortDefinition getPatientsTransferredOut() {
+  public CohortDefinition getPatientsTransferredOutB5() {
     ResumoMensalTransferredOutCohortDefinition cd =
         new ResumoMensalTransferredOutCohortDefinition();
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
@@ -298,7 +298,7 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getArtStatus().getConceptId()));
 
     CohortDefinition startDrugs = getPatientsWithStartDrugs();
-    CohortDefinition transferredOut = getPatientsTransferredOut();
+    CohortDefinition transferredOut = getPatientsTransferredOutB5();
     CohortDefinition suspended = getPatientsWhoSuspendedTreatment();
     CohortDefinition missedDrugPickup = getLastArvPickupDateCohort();
     CohortDefinition died = getPatientsWhoDied();
@@ -584,7 +584,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B5",
         map(
-            getPatientsTransferredOut(),
+            getPatientsTransferredOutB5(),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "B6",
