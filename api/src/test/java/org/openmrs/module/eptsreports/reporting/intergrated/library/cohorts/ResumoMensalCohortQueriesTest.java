@@ -28,6 +28,12 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     executeDataSet("ResumoMensalTest.xml");
   }
 
+  @Test
+  public void Test(){
+
+  }
+
+
   @Override
   protected Date getStartDate() {
     return DateUtil.getDateTime(2019, 9, 21);
