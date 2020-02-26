@@ -34,13 +34,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class ResumoMensalDataSetDefinition extends BaseDataSet {
 
-  @Autowired private EptsCommonDimension eptsCommonDimension;
+  private EptsCommonDimension eptsCommonDimension;
 
-  @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
+  private EptsGeneralIndicator eptsGeneralIndicator;
 
-  @Autowired private ResumoMensalCohortQueries resumoMensalCohortQueries;
+  private ResumoMensalCohortQueries resumoMensalCohortQueries;
 
-  @Autowired private ResumoMensalAandBdisaggregations resumoMensalAandBdisaggregations;
+  private ResumoMensalAandBdisaggregations resumoMensalAandBdisaggregations;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
