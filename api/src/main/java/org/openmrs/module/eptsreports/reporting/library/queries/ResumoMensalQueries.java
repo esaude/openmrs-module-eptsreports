@@ -47,7 +47,7 @@ public class ResumoMensalQueries {
     map.put("encounterType2", encounterType2);
 
     String query =
-        "SELECT results.patient_id,"
+        "SELECT results.patient_id, "
             + "       Min(results.enrollment_date) "
             + "FROM   (SELECT p.patient_id, "
             + "               e.encounter_datetime AS enrollment_date "
@@ -84,7 +84,7 @@ public class ResumoMensalQueries {
             + "        WHERE  p.voided = 0 "
             + "               AND enc.encounter_type IN (${encounterType1},${encounterType2}) "
             + "               AND enc.location_id =:location "
-            + "               AND enc.encounter_datetime "
+            + "               AND enc.encounter_datetime BETWEEN"
             + "                   :startDate AND :endDate "
             + "        ORDER  BY enrollment_date ASC) results "
             + "GROUP  BY results.patient_id  ";
@@ -106,7 +106,7 @@ public class ResumoMensalQueries {
     map.put("programId", programId);
     String query =
         "SELECT p.patient_id "
-            + "FROM   patient p "
+            + "FROM  patient p "
             + "       INNER JOIN patient_program pp "
             + "               ON p.patient_id = pp.patient_id "
             + "       INNER JOIN patient_state ps "
@@ -114,7 +114,7 @@ public class ResumoMensalQueries {
             + "WHERE  p.voided = 0 "
             + "       AND ps.state = ${stateId} "
             + "       AND pp.location_id =:location "
-            + "       AND pp.date_enrolled BETWEEN :startDate AND D:endDate "
+            + "       AND pp.date_enrolled BETWEEN :startDate AND :endDate "
             + "       AND pp.program_id = ${programId} ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
