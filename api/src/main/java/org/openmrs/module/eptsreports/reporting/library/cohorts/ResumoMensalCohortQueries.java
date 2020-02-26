@@ -80,7 +80,11 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getPreArtStartDate().getConceptId()));
 
     cd.addSearch("A1I", map(sqlCohortDefinition, "startDate=${startDate},location=${location}"));
-    cd.addSearch("A1II", map(getPatientsWithTransferFromOtherHF(), "locationList=${location}"));
+    cd.addSearch(
+        "A1II",
+        map(
+            getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA1(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "A1III",
         map(
@@ -91,13 +95,8 @@ public class ResumoMensalCohortQueries {
         map(
             getAllPatientsRegisteredInEncounterType5or7WithEncounterDatetimeLessThanStartDateA1(),
             "startDate=${startDate},location=${location}"));
-    cd.addSearch(
-        "A1V",
-        map(
-            getTypeofPatientTransferredFromTipodePacienteTransferidoInPreTARVA1(),
-            "startDate=${startDate},location=${location}"));
 
-    cd.setCompositionString("(A1I OR A1III OR A1IV) AND NOT (A1II AND A1V)");
+    cd.setCompositionString("(A1I OR A1III OR A1IV) AND NOT A1II");
 
     return cd;
   }
@@ -1042,29 +1041,19 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * Type of Patient Transferred From in Pre-TARV
+   * Number of patients transferred-in from another HF during a period less than startDate
    *
    * @return CohortDefinition
    */
-  private CohortDefinition getTypeofPatientTransferredFromTipodePacienteTransferidoInPreTARVA1() {
-    SqlCohortDefinition typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV =
-        new SqlCohortDefinition();
-    typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV.setName(
-        "typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV");
-    typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV.addParameter(
-        new Parameter("startDate", "Start Date", Date.class));
-    typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV.addParameter(
-        new Parameter("endDate", "End Date", Date.class));
-    typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV.addParameter(
-        new Parameter("location", "Location", Location.class));
-    typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV.setQuery(
-        ResumoMensalQueries.TypeofPatientTransferredFromTipodePacienteTransferidoInPreTARV(
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
-            hivMetadata.getPreTARVConcept().getConceptId(),
-            hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
-            hivMetadata.getPatientFoundYesConcept().getConceptId()));
-
-    return typeofPatientTransferredFromTipodePacienteTransferidoInPreTARV;
+  public CohortDefinition
+      getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA1() {
+    EptsTransferredInCohortDefinition cd = new EptsTransferredInCohortDefinition();
+    cd.setName(
+        "Number of patients transferred-in from another HF during a period less than startDate");
+    cd.setTypeOfPatientTransferredFromAnswer(hivMetadata.getPreTARVConcept());
+    cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    return cd;
   }
 }
