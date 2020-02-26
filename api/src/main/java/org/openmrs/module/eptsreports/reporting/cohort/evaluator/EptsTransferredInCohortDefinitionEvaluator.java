@@ -2,6 +2,7 @@ package org.openmrs.module.eptsreports.reporting.cohort.evaluator;
 
 import java.util.HashSet;
 import java.util.List;
+import org.openmrs.Concept;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition;
@@ -70,7 +71,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
 
     q.append("       AND type.voided = 0 ");
     q.append("       AND type.concept_id = :typeOfPatient ");
-    q.append("       AND type.value_coded = :tarv ");
+    q.append("       AND type.value_coded = :answer ");
 
     q.append("UNION ");
 
@@ -97,7 +98,12 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.addParameter("transferFromOther", hivMetadata.getTransferFromOtherFacilityConcept());
     q.addParameter("yes", hivMetadata.getYesConcept());
     q.addParameter("typeOfPatient", hivMetadata.getTypeOfPatientTransferredFrom());
-    q.addParameter("tarv", hivMetadata.getArtStatus());
+    Concept typeOfPatientTransferredFrom = cd.getTypeOfPatientTransferredFromAnswer();
+    if (typeOfPatientTransferredFrom == null) {
+      throw new NullPointerException(
+          "Answer for TYPE OF PATIENT TRANSFERRED FROM concept cannot be null");
+    }
+    q.addParameter("answer", typeOfPatientTransferredFrom);
     q.addParameter("artProgram", hivMetadata.getARTProgram());
     q.addParameter(
         "transferOutState", hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState());
