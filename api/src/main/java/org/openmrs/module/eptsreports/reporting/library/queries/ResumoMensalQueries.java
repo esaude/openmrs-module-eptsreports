@@ -83,9 +83,9 @@ public class ResumoMensalQueries {
   }
 
   public static String getPatientsForF2ForExclusionFromMainQuery(
-      int encounterType, int tbSymptomsConcept, int yesConcept, int tbTreatmentPlanConcept) {
+      int encounterType, int tbSymptomsConcept, int yesConcept, int noConcept, int tbTreatmentPlanConcept) {
     String query =
-        "SELECT p.patient_id "
+            "SELECT p.patient_id "
             + "FROM   patient p "
             + " JOIN encounter e "
             + " ON p.patient_id = e.patient_id "
@@ -94,17 +94,25 @@ public class ResumoMensalQueries {
             + " JOIN (SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM encounter enc JOIN patient pat ON pat.patient_id=enc.patient_id "
             + " JOIN obs ob ON enc.encounter_id=ob.encounter_id WHERE pat.voided = 0 AND enc.voided = 0 AND ob.voided = 0 "
             + " AND enc.location_id = :location AND enc.encounter_datetime BETWEEN :startDate AND :endDate "
-            + " AND enc.encounter_type= %d AND ob.concept_id=%d AND ob.value_coded=%d) ed "
+            + " AND enc.encounter_type= ${encounterType} AND ob.concept_id=${tbSymptomsConcept} AND (ob.value_coded=${yesConcept} OR ob.value_coded=${noConcept})) ed "
             + " ON p.patient_id=ed.patient_id"
             + " WHERE  p.voided = 0 "
             + " AND e.voided = 0 "
-            + " AND e.encounter_type = %d "
+            + " AND e.encounter_type = ${encounterType} "
             + " AND e.location_id = :location "
             + " AND e.encounter_datetime = ed.endDate "
             + " AND o.voided = 0 "
-            + " AND o.concept_id = %d ";
-    return String.format(
-        query, encounterType, tbSymptomsConcept, yesConcept, encounterType, tbTreatmentPlanConcept);
+            + " AND o.concept_id = ${tbTreatmentPlanConcept} ";
+
+            Map<String, Integer> valuesMap = new HashMap<>();
+            valuesMap.put("encounterType", encounterType);
+            valuesMap.put("tbSymptomsConcept", tbSymptomsConcept);
+            valuesMap.put("yesConcept", yesConcept);
+            valuesMap.put("noConcept", noConcept);
+            valuesMap.put("encounterType", encounterType);
+            valuesMap.put("tbTreatmentPlanConcept", tbTreatmentPlanConcept);
+            StringSubstitutor sub = new StringSubstitutor(valuesMap);
+            return sub.replace(query);
   }
 
   /**
