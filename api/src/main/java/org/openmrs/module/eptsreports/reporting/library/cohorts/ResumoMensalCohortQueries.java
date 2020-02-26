@@ -107,9 +107,12 @@ public class ResumoMensalCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
     sqlCohortDefinition.setQuery(
-        ResumoMensalQueries.getAllPatientsWithPreArtStartDateWithBoundaries(hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(), hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
+        ResumoMensalQueries.getAllPatientsWithPreArtStartDateWithBoundaries(
+            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getPreArtStartDate().getConceptId(), hivMetadata.getHIVCareProgram().getProgramId()));
+            hivMetadata.getPreArtStartDate().getConceptId(), 
+            hivMetadata.getHIVCareProgram().getProgramId()));
 
     cd.addSearch(
         "A2I",
