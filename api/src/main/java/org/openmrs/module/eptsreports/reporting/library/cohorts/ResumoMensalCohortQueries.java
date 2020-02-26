@@ -326,7 +326,7 @@ public class ResumoMensalCohortQueries {
   }
 
   /** @return B8: Number of dead patients during the current month */
-  public CohortDefinition getPatientsWhoDied(Boolean data1) {
+  public CohortDefinition getPatientsWhoDied(Boolean hasStartDate) {
 
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
@@ -345,9 +345,9 @@ public class ResumoMensalCohortQueries {
             + "              AND e.voided = 0 "
             + "              AND e.location_id = :locationList "
             + "              AND e.encounter_type = ${adultoSeguimento} ";
-    if (data1 == true) {
+    if (hasStartDate == true) {
       sql = sql + "AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore ";
-    } else if (data1 == false) {
+    } else {
       sql = sql + "AND e.encounter_datetime <= :onOrBefore ";
     }
     sql =
@@ -355,7 +355,7 @@ public class ResumoMensalCohortQueries {
             + "              AND o.voided = 0 "
             + "              AND o.concept_id = ${artStateOfStay}"
             + "              AND o.value_coded = ${patientDeadConcept} "
-            + "      GROUP BY patient_id"
+            + "      GROUP BY p.patient_id"
             + "            UNION"
             + "            SELECT p.patient_id, max(e.encounter_datetime) AS death_date "
             + "            FROM patient p "
@@ -367,9 +367,9 @@ public class ResumoMensalCohortQueries {
             + "              AND e.voided = 0 "
             + "              AND e.location_id = :locationList "
             + "              AND e.encounter_type = ${masterCard} ";
-    if (data1 == true) {
+    if (hasStartDate == true) {
       sql = sql + "AND o.obs_datetime BETWEEN :onOrAfter AND :onOrBefore ";
-    } else if (data1 == false) {
+    } else {
       sql = sql + "AND o.obs_datetime <= :onOrBefore ";
     }
     sql =
@@ -377,7 +377,7 @@ public class ResumoMensalCohortQueries {
             + "AND o.voided = 0 "
             + "              AND o.concept_id = ${preArtStateOfStay}  "
             + "              AND o.value_coded = ${patientDeadConcept} "
-            + "      GROUP BY patient_id"
+            + "      GROUP BY p.patient_id"
             + "            UNION"
             + "       SELECT pg.patient_id, ps.start_date"
             + "       FROM patient p"
@@ -385,9 +385,9 @@ public class ResumoMensalCohortQueries {
             + "         INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
             + "       WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 "
             + "         AND pg.program_id=${arvProgram}  AND ps.state=${deadState} AND ps.end_date is null ";
-    if (data1 == true) {
+    if (hasStartDate == true) {
       sql = sql + "AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ";
-    } else if (data1 == false) {
+    } else {
       sql = sql + "AND ps.start_date <= :onOrBefore ";
     }
     sql =
@@ -397,9 +397,9 @@ public class ResumoMensalCohortQueries {
             + "        SELECT p.person_id patient_id, p.death_date "
             + "      FROM person p "
             + "      WHERE p.dead=1 ";
-    if (data1 == true) {
+    if (hasStartDate == true) {
       sql = sql + "AND p.death_date BETWEEN :onOrAfter AND :onOrBefore ";
-    } else if (data1 == false) {
+    } else {
       sql = sql + "AND p.death_date <= :onOrBefore ";
     }
     sql =
@@ -426,7 +426,7 @@ public class ResumoMensalCohortQueries {
             + "       AND e.voided = 0 "
             + "       AND e.encounter_type = ${arvLevantamento} "
             + "       AND e.location_id = :locationList "
-            + "       AND o.concept_id = 23866 "
+            + "       AND o.concept_id = ${arvLevantamentoDate} "
             + "       AND o.value_datetime > death_date)";
 
     Map<String, Integer> valuesMap = new HashMap<>();
@@ -444,6 +444,7 @@ public class ResumoMensalCohortQueries {
     valuesMap.put("farmacia", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
     valuesMap.put(
         "arvLevantamento", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    valuesMap.put("arvLevantamentoDate", hivMetadata.getArtDatePickup().getConceptId());
 
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     cd.setQuery(sub.replace(sql));
