@@ -1,8 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.library.cohorts;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +9,6 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsTest;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -20,9 +16,10 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
+
 public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
 
-    @Autowired private ResumoMensalCohortQueries resumoMensalCohortQueries;
+  @Autowired private ResumoMensalCohortQueries resumoMensalCohortQueries;
 
   @Before
   public void setup() throws Exception {
@@ -30,10 +27,23 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void Test(){
+  public void Test() {}
 
+  @Test
+  public void testGetNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1()
+      throws EvaluationException {
+    CohortDefinition cd =
+        resumoMensalCohortQueries.getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1();
+
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+
+    // TODO all the tests related to getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1()
   }
-
 
   @Override
   protected Date getStartDate() {

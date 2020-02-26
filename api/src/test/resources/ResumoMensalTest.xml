@@ -13,5 +13,170 @@
 		date_created="2008-10-13 11:32:52" county_district="NA" address6="NA"
 		retired="0" uuid="e2b32fc2-1d5f-11e0-b929-000c29ad1d07" />
 
+  <location location_id="221" name="CS 24 de Julho" description="NA" address2="NA" state_province="NA" country="Kepler"
+    creator="1" date_created="2008-10-13 11:32:52" county_district="NA" address5="24 de Julho" address6="NA" retired="0"
+    uuid="c9c8c8bb-67b3-41f7-948a-c58ae02dca46"/>
+
+  <person person_id="1001" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+    creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="37ee85cb-3be7-45f8-905d-bfaf085a942e"/>
+
+  <patient patient_id="1001" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+    date_changed="2008-08-18 12:29:59.0" voided="false"/>
+
+  <global_property property="eptsreports.transferFromOtherFacilityConceptUuid" property_value="e1da7d3a-1d5f-11e0-b929-000c29ad1d07"
+    description="UUID for the TRANSFERIDO DE concept" uuid="a03044bc-abc9-4e14-9041-1515f7ea2082"/>
+
+  <global_property property="eptsreports.yesConceptUuid" property_value="e1d81b62-1d5f-11e0-b929-000c29ad1d07"
+    description="UUID for the SIM concept" uuid="05c8573e-8137-4a6a-98d4-c20624d020ec"/>
+
+  <global_property property="eptsreports.sTarvAdultoInitialAEncounterTypeUuid" property_value="e278f820-1d5f-11e0-b929-000c29ad1d07"
+    description="UUID for the S.TARV: ADULTO INICIAL A encounter type" uuid="db881f46-42dd-4f4b-9732-0822ea1143e6"/>
+
+  <global_property property="eptsreports.sTarvPediatriaInicialAEncounterTypeUuid" property_value="e278fa8c-1d5f-11e0-b929-000c29ad1d07"
+    description="UUID for the S.TARV: PEDIATRIA INICIAL A encounter type" uuid="74f87235-8803-4134-aec7-dc37a972f5bb"/>
+
+  <global_property property="eptsreports.masterCardEncounterType" property_value="e422ecf9-75dd-4367-b21e-54bccabc4763"
+    description="UUID for the Master Card - Ficha Resumo encounter type"/>
+
+  <global_property property="eptsreports.typeOfPatientTransferredFrom" property_value="4f139c0a-9843-4dc4-b3e5-5aa00812e605"
+    description="UUID for the TYPE OF PATIENT TRANSFERED FROM concept"/>
+
+  <global_property property="eptsreports.preArtStartDate" property_value="f69b1fe0-a657-4225-a996-20b599132508"
+    description="UUID for the PRE-ART START DATE concept" uuid="5a7969d8-1a3f-4e80-9dff-d63a56bc2329" />
+
+  <global_property property="eptsreports.art" property_value="7f3af436-5c3a-447c-9012-42bb314e03db"
+    description="UUID for the ARTconcept"/>
+
+  <global_property property="eptsreports.preTarvConceptUuid" property_value="44f812e8-c4c0-40cd-aef3-6b1ef76d43e1"
+    description="UUID for PRE-TARV concept"/>
+
+  <global_property property="eptsreports.hivCareProgramUuid" property_value="7b2e4a0a-d4eb-4df7-be30-78ca4b28ca99"
+		description="UUID for the Programa de seguimento e cuidado aos pacientes HIV+ program"/>
+
+  <global_property property="eptsreports.artProgramUuid" property_value="efe2481f-9e75-4515-8d5a-86bfde2b5ad3"
+		description="UUID for the SERVICO TARV - TRATAMENTO program"/>
+
+<!-- concept 1065 -->
+  <concept concept_id="1065" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+    date_created="2005-01-06 00:00:00" uuid="e1d81b62-1d5f-11e0-b929-000c29ad1d07"/>
+
+<!-- concept 1369 -->
+  <concept concept_id="1369" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1"
+    date_created="2008-10-13 05:59:00" uuid="e1da7d3a-1d5f-11e0-b929-000c29ad1d07"/>
+
+  <concept_name concept_id="1369" name="TRANSFERIDO DE" locale="pt" creator="1" date_created="2008-10-25 13:54:23"
+    concept_name_id="3145" voided="0" uuid="e24e2ffa-1d5f-11e0-b929-000c29ad1d07"
+    concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+<!-- concept 1706 -->
+  <concept concept_id="1706" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+    date_created="2008-10-25 12:58:24" uuid="e1de1cf6-1d5f-11e0-b929-000c29ad1d07"/>
+  <concept_name concept_id="1706" name="TRANSFERRED OUT TO ANOTHER FACILITY" locale="en" creator="1"
+    date_created="2008-10-25 12:58:24" concept_name_id="3139" voided="0"
+    uuid="e24e2a8c-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+<!-- concept 1781 -->
+  <concept concept_id="1781" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+    date_created="2008-11-05 14:34:43" uuid="e1de7d54-1d5f-11e0-b929-000c29ad1d07"/>
+
+<!-- concept 6274 -->
+	<concept concept_id="6274" retired="0" 
+		is_set="0"  class_id="11" datatype_id="4"
+		date_created="2012-02-29 09:46:11"  creator="1"
+		uuid="be53ec04-d2ae-485e-9a6c-e167deef9a95" />
+		
+		<concept_name concept_id="6274" name="ART SERVICE - TREATMENT"
+		locale="en"   date_created="2012-02-29 09:46:11"
+		concept_name_id="7179" voided="0" creator="1"
+		uuid="d82b5012-6bec-4f68-95db-e12083e1a2ce"
+		concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+		
+		<concept_name concept_id="6274" name="SERVICO TARV - TRATAMENTO"
+		locale="pt"   date_created="2012-02-29 09:46:11"
+		concept_name_id="7178" voided="0" creator="1"
+		uuid="46126628-55b6-4bd7-b15a-9b5bc02d5ecd"
+		concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+
+<!-- concept 6275 -->
+	<concept concept_id="6275" retired="0" 
+		  is_set="0"  class_id="11" datatype_id="4"
+		date_created="2012-02-27 11:30:21"  creator="1"
+		uuid="7f3af436-5c3a-447c-9012-42bb314e03db" />
+		
+		<concept_name concept_id="6275" name="PRIOR TARV"
+		locale="en"   date_created="2012-02-29 09:50:50"
+		concept_name_id="7180" voided="0" creator="1"
+		uuid="36db9523-49c6-4958-a999-fcea6a0af2dc"
+		concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+		
+		<concept_name concept_id="6275" name="PRE-TARV"
+		locale="pt"   date_created="2012-02-29 09:50:50"
+		concept_name_id="7181" voided="0" creator="1"
+		uuid="11bda988-b5f5-439c-83fe-c8f3fd256878"
+		concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+		
+		<concept_name concept_id="6275" name="HIV - CARE"
+		locale="en"   date_created="2012-02-29 09:50:50"
+		concept_name_id="7188" voided="0" creator="1" 
+		uuid="5a6372d9-5c28-4d39-b93b-1f25270f23e5"
+		concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+
+<!-- concept 6276 -->
+	<concept concept_id="6276" retired="0"   creator="1"
+		  is_set="0"  class_id="11" datatype_id="4"
+		date_created="2012-02-27 11:30:21"
+		uuid="44f812e8-c4c0-40cd-aef3-6b1ef76d43e1" />
+
+	<concept_name concept_id="6276" name="TARV" locale="en" creator="1" 
+		  date_created="2012-02-29 09:50:50" concept_name_id="7187"
+		voided="0" uuid="33f1a883-ebd0-4e5b-bb6a-a254d573877c"
+		concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+
+<!-- concept 6300 -->
+	<concept concept_id="6300" retired="0" datatype_id="2" class_id="11" is_set="0" creator="1"
+    date_created="2012-05-31 11:58:42" uuid="4f139c0a-9843-4dc4-b3e5-5aa00812e605"/>
+	
+  <concept_name concept_id="6300" name="TYPE OF PATIENT TRANSFERED FROM" locale="en" creator="1"
+    date_created="2012-05-31 11:58:42" concept_name_id="7266" voided="0" uuid="be0ab68a-26ba-44cb-906a-c7c465aa3ae7"
+    concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+<!-- concept 23808 -->
+	<concept concept_id="23808" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1"
+    date_created="2019-01-07 16:40:15" changed_by="1" uuid="f69b1fe0-a657-4225-a996-20b599132508" />
+	<concept_name concept_id="23808" name="PRE-ART START DATE" locale="en" creator="1" date_created="2019-01-07 16:40:15"
+    concept_name_id="33489" voided="0" uuid="b5b7a331-b5dc-4f14-a29d-dd511994748b" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
+
+<!-- program 1 -->
+  <program program_id="1" concept_id="1781" creator="1" date_created="2012-02-29 09:42:25" retired="0"
+    name="SERVICO TARV - CUIDADO" description="Programa de seguimento e cuidado aos pacientes HIV+"
+    uuid="7b2e4a0a-d4eb-4df7-be30-78ca4b28ca99"/>
+  <program_workflow program_workflow_id="1" program_id="1" concept_id="6275" creator="1"
+    date_created="2012-02-29 10:11:08" retired="0" uuid="beea7be9-cbf5-4a15-923a-ff193eea9d50"/>
+
+<!-- program 2 -->
+  <program program_id="2" concept_id="6274" creator="1" date_created="2013-07-24 11:45:49" retired="0"
+    name="SERVICO TARV - TRATAMENTO" description="Programa de seguimento e tratamento aos pacientes HIV+"
+    uuid="efe2481f-9e75-4515-8d5a-86bfde2b5ad3"/>
+  <program_workflow program_workflow_id="2" program_id="2" concept_id="6276" creator="1"
+    date_created="2012-02-29 10:17:25" retired="0" uuid="a59bd818-d2f0-4a9a-a2f2-0a54af4ce04e"/>
+
+  <program_workflow_state program_workflow_state_id="7" program_workflow_id="2" concept_id="1706" initial="0"
+    terminal="0" creator="1" date_created="2012-02-29 10:20:45" retired="0"
+    uuid="9f2f86e9-303c-4b98-a6ae-37e8806a6f47"/>
+
+<!-- encounte type id 5 -->
+  <encounter_type encounter_type_id="5" name="S.TARV: ADULTO INICIAL A"
+    description="Primeira visita do paciente adulto" creator="1" date_created="2008-10-13 04:31:00"
+    retired="0" uuid="e278f820-1d5f-11e0-b929-000c29ad1d07"/>
+
+<!-- encounte type id 7 -->
+  <encounter_type encounter_type_id="7" name="S.TARV: PEDIATRIA INICIAL A"
+      description="Primeira visita do paciente pediatria" creator="1" date_created="2008-10-13 04:33:15"
+      retired="0" uuid="e278fa8c-1d5f-11e0-b929-000c29ad1d07"/>
+
+<!-- encounte type id 53 -->
+  <encounter_type encounter_type_id="53" name="Master Card - Ficha Resumo"
+      description="UUID for the Master Card - Ficha Resumo encounter type" creator="1" date_created="2008-10-13 04:33:15"
+      retired="0" uuid="e422ecf9-75dd-4367-b21e-54bccabc4763"/>
 
 </dataset>
