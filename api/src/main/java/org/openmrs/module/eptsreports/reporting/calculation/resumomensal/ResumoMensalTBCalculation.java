@@ -59,11 +59,6 @@ public class ResumoMensalTBCalculation extends BaseFghCalculation {
           }
         }
       }
-      for (Object[] object : objects) {
-        if (object[1] != null) {
-          resultMap.put(patientId, new BooleanResult(true, this));
-        }
-      }
     }
     return resultMap;
   }
