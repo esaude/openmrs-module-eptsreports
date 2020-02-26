@@ -90,6 +90,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
+   // TODO add some mappings on the dataset to properly test the whole query
   public void getPatientsWhoInitiatedPreArtDuringCurrentMonthWithConditions()
       throws EvaluationException {
     CohortDefinition cohort =
