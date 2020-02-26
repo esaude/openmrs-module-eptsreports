@@ -60,22 +60,6 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getAllPatientsRegisteredAsTransferredInProgramEnrolmentWithBoundaries()
-      throws EvaluationException {
-    CohortDefinition cohort =
-        resumoMensalCohortQueries
-            .getAllPatientsRegisteredAsTransferredInProgramEnrolmentWithBoundaries();
-    HashMap<Parameter, Object> parameters = new HashMap<>();
-    parameters.put(new Parameter("startDate", "", Date.class), getStartDate());
-    parameters.put(new Parameter("endDate", "", Date.class), getEndDate());
-    parameters.put(new Parameter("location", "", Location.class), getLocation());
-    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, parameters);
-
-    assertEquals(1, evaluatedCohort.getMemberIds().size());
-    assertTrue(evaluatedCohort.getMemberIds().contains(1003));
-  }
-
-  @Test
   public void getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2()
       throws EvaluationException {
     CohortDefinition cohort =
@@ -90,7 +74,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     assertTrue(evaluatedCohort.getMemberIds().contains(1010));
   }
 
-  @Ignore
+  @Test
    // TODO add some mappings on the dataset to properly test the whole query
   public void getPatientsWhoInitiatedPreArtDuringCurrentMonthWithConditions()
       throws EvaluationException {

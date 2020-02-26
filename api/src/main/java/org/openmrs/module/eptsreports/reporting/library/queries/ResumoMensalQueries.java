@@ -38,13 +38,13 @@ public class ResumoMensalQueries {
    * @return String
    */
   public static String getPatientsWhoInitiatedPreArtDuringCurrentMonthWithConditions(
-      int encounterType, int conceptId, int programId, int encounterType1, int encounterType2) {
+      int masterCardEncounterType, int preArtStartDateConceptId, int HIVCareProgramId, int ARVAdultInitialEncounterType, int ARVPediatriaInitialEncounterType) {
     Map<String, Integer> map = new HashMap<>();
-    map.put("encounterType", encounterType);
-    map.put("conceptId", conceptId);
-    map.put("programId", programId);
-    map.put("encounterType1", encounterType1);
-    map.put("encounterType2", encounterType2);
+    map.put("masterCardEncounterType", masterCardEncounterType);
+    map.put("preArtStartDateConceptId", preArtStartDateConceptId);
+    map.put("HIVCareProgramId", HIVCareProgramId);
+    map.put("ARVAdultInitialEncounterType", ARVAdultInitialEncounterType);
+    map.put("ARVPediatriaInitialEncounterType", ARVPediatriaInitialEncounterType);
 
     String query =
         "SELECT res.patient_id FROM "
@@ -60,11 +60,11 @@ public class ResumoMensalQueries {
             + "        WHERE  p.voided = 0 "
             + "               AND e.voided = 0 "
             + "               AND o.voided = 0 "
-            + "               AND e.encounter_type = ${encounterType} "
+            + "               AND e.encounter_type = ${masterCardEncounterType} "
             + "               AND e.location_id =:location "
             + "               AND o.value_datetime IS NOT NULL "
             + "               AND o.value_datetime BETWEEN :startDate AND :endDate "
-            + "               AND o.concept_id =${conceptId}"
+            + "               AND o.concept_id =${preArtStartDateConceptId}"
             + "        UNION ALL "
             + "        SELECT p.patient_id, "
             + "               date_enrolled AS enrollment_date "
@@ -73,7 +73,7 @@ public class ResumoMensalQueries {
             + "                 ON pp.patient_id = p.patient_id "
             + "        WHERE  p.voided = 0 "
             + "               AND pp.voided = 0 "
-            + "               AND pp.program_id =${programId} "
+            + "               AND pp.program_id =${HIVCareProgramId} "
             + "               AND pp.location_id =:location "
             + "               AND pp.date_enrolled BETWEEN :startDate AND :endDate "
             + "        UNION ALL "
@@ -83,7 +83,7 @@ public class ResumoMensalQueries {
             + "               JOIN patient p "
             + "                 ON p.patient_id = enc.patient_id "
             + "        WHERE  p.voided = 0 "
-            + "               AND enc.encounter_type IN (${encounterType1},${encounterType2}) "
+            + "               AND enc.encounter_type IN (${ARVAdultInitialEncounterType},${ARVPediatriaInitialEncounterType}) "
             + "               AND enc.location_id =:location "
             + "               AND enc.encounter_datetime BETWEEN"
             + "                   :startDate AND :endDate "
@@ -94,34 +94,7 @@ public class ResumoMensalQueries {
     return stringSubstitutor.replace(query);
   }
 
-  /**
-   * All patients Enrolled in Pre-Art or Registered In Clinical Process Opening enddate
-   *
-   * @return String
-   */
-  public static String getAllPatientsRegisteredAsTransferredInProgramEnrolmentWithBoundaries(
-      int stateId, int programId) {
 
-    Map<String, Integer> map = new HashMap<>();
-    map.put("stateId", stateId);
-    map.put("programId", programId);
-    String query =
-        "SELECT p.patient_id "
-            + "FROM  patient p "
-            + "       INNER JOIN patient_program pp "
-            + "               ON p.patient_id = pp.patient_id "
-            + "       INNER JOIN patient_state ps "
-            + "               ON ps.patient_program_id = pp.patient_program_id "
-            + "WHERE  p.voided = 0 "
-            + "       AND ps.state = ${stateId} "
-            + "       AND pp.location_id =:location "
-            + "       AND pp.date_enrolled BETWEEN :startDate AND :endDate "
-            + "       AND pp.program_id = ${programId} ";
-
-    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
-    return stringSubstitutor.replace(query);
-  }
-  
   public static String getPatientsTransferredFromAnotherHealthFacilityByEndOfPreviousMonth(
       int masterCardEncounter,
       int transferFromConcept,

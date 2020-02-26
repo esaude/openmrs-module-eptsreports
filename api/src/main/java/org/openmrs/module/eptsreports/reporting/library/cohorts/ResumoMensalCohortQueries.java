@@ -125,13 +125,8 @@ public class ResumoMensalCohortQueries {
         map(
             getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2(),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "A2III",
-        map(
-            getAllPatientsRegisteredAsTransferredInProgramEnrolmentWithBoundaries(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(A2I) AND NOT (A2II OR A2III)");
+    cd.setCompositionString("(A2I) AND NOT A2II");
 
     return cd;
   }
@@ -155,25 +150,6 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  /**
-   * Get patients registered as "Transferred-in" Program Enrollment":
-   *
-   * @return CohortDefinition
-   */
-  public CohortDefinition getAllPatientsRegisteredAsTransferredInProgramEnrolmentWithBoundaries() {
-    SqlCohortDefinition scd = new SqlCohortDefinition();
-    scd.setName("Get patients registered as Transferred-In in Program Enrollment");
-    scd.addParameter(new Parameter("location", "Location", Location.class));
-    scd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    scd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    scd.setQuery(
-        ResumoMensalQueries.getAllPatientsRegisteredAsTransferredInProgramEnrolmentWithBoundaries(
-            hivMetadata
-                .getTransferredFromOtherHealthFacilityWorkflowState()
-                .getProgramWorkflowStateId(),
-            hivMetadata.getHIVCareProgram().getProgramId()));
-    return scd;
-  }
 
   /**
    * A3 = A.1 + A.2
