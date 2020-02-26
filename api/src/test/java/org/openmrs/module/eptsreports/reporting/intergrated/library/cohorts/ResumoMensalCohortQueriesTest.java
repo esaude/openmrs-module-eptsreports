@@ -30,10 +30,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void Test(){
-
-  }
-
+  public void Test() {}
 
   @Override
   protected Date getStartDate() {
@@ -75,7 +72,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Ignore
-   // TODO add some mappings on the dataset to properly test the whole query
+  // TODO add some mappings on the dataset to properly test the whole query
   public void getPatientsWhoInitiatedPreArtDuringCurrentMonthWithConditions()
       throws EvaluationException {
     CohortDefinition cohort =

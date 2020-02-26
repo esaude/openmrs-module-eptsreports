@@ -147,7 +147,6 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-
   /**
    * A3 = A.1 + A.2
    *
