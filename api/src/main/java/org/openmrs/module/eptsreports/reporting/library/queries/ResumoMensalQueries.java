@@ -40,22 +40,34 @@ public class ResumoMensalQueries {
   public static String getAllPatientsWithPreArtStartDateWithBoundaries(
       int sTarvAdultoInicialA5, int sTarvPediatriaInicial7, int masterCardFichaResumo53, int dataDoInicioPreTarvConcept, int programId) {
     String query =
-        "SELECT p.patient_id, o.value_datetime AS encounter_date FROM patient p "
-                + " INNER JOIN encounter e ON p.patient_id=e.patient_id "
-                + " INNER JOIN obs o ON e.encounter_id=o.encounter_id  WHERE e.location_id=:location "
-                + " AND e.encounter_datetime <=:endDate AND o.concept_id=${dataDoInicioPreTarvConcept} "
-                + " AND o.value_datetime IS NOT NULL AND p.voided=0 AND e.voided=0 AND o.voided=0"
-        +" UNION "
-        +"SELECT p.patient_id, pg.date_enrolled AS encounter_date FROM patient p "
-                + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id "
-                + " WHERE p.voided=0 AND pg.voided=0 AND pg.location_id=:location "
-                + " AND pg.date_enrolled <=:endDate AND pg.program_id=${programId} "
-        +" UNION "
-        +"SELECT p.patient_id, e.encounter_datetime AS encounter_date FROM patient p INNER JOIN encounter e "
-                + " WHERE p.voided=0 AND e.voided=0 AND e.location_id=:location "
-                + " AND e.encounter_type IN (${sTarvAdultoInicialA5},${sTarvPediatriaInicial7}) "
-                + " AND e.encounter_datetime <=:endDate";
-    return String.format(query, sTarvAdultoInicialA5, sTarvPediatriaInicial7, masterCardFichaResumo53, dataDoInicioPreTarvConcept, programId);
+         "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
+                 + " WHERE e.location_id=:location AND e.encounter_type=${masterCardFichaResumo53} "
+                 + " AND e.encounter_datetime BETWEEN :startDate AND :endDate p.patient_id IN ("
+         +" SELECT patient_id FROM "
+            +" ( SELECT p.patient_id, MIN(encounter_datetime) AS encounter_date FROM "
+                +"( SELECT p.patient_id, o.value_datetime AS encounter_date FROM patient p "
+                        + " INNER JOIN encounter e ON p.patient_id=e.patient_id "
+                        + " INNER JOIN obs o ON e.encounter_id=o.encounter_id  WHERE e.location_id=:location "
+                        + " AND e.encounter_datetime BETWEEN :startDate AND :endDate AND o.concept_id=${dataDoInicioPreTarvConcept} "
+                        + " AND o.value_datetime IS NOT NULL AND p.voided=0 AND e.voided=0 AND o.voided=0"
+                +" UNION "
+                +" SELECT p.patient_id, pg.date_enrolled AS encounter_date FROM patient p "
+                        + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id "
+                        + " WHERE p.voided=0 AND pg.voided=0 AND pg.location_id=:location "
+                        + " AND pg.date_enrolled BETWEEN :startDate AND :endDate AND pg.program_id=${programId} "
+                +" UNION "
+                +" SELECT p.patient_id, e.encounter_datetime AS encounter_date FROM patient p INNER JOIN encounter e "
+                        + " WHERE p.voided=0 AND e.voided=0 AND e.location_id=:location "
+                        + " AND e.encounter_type IN (${sTarvAdultoInicialA5},${sTarvPediatriaInicial7}) "
+                        + " AND e.encounter_datetime BETWEEN :startDate AND :endDate) pop GROUP BY p.patient_id) min_results) results";
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("masterCardFichaResumo53", masterCardFichaResumo53);
+    valuesMap.put("dataDoInicioPreTarvConcept", dataDoInicioPreTarvConcept);
+    valuesMap.put("programId", programId);
+    valuesMap.put("sTarvAdultoInicialA5", sTarvAdultoInicialA5);
+    valuesMap.put("sTarvPediatriaInicial7", sTarvPediatriaInicial7);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
   }
 
   public static String getPatientsTransferredFromAnotherHealthFacilityByEndOfPreviousMonth(
