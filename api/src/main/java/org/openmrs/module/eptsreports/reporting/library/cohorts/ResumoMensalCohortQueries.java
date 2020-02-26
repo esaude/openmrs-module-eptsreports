@@ -18,19 +18,16 @@ import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
-import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.CodedObsOnFirstOrSecondEncounterCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.ResumoMensalTransferredOutCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
@@ -227,93 +224,12 @@ public class ResumoMensalCohortQueries {
    *
    * @return B.5 Number of patients transferred out during the current month
    */
-  public CohortDefinition getPatientsTransferredOut() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
+  public CohortDefinition getPatientsTransferredOutB5() {
+    ResumoMensalTransferredOutCohortDefinition cd =
+        new ResumoMensalTransferredOutCohortDefinition();
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
-    String sql =
-        "SELECT patient_id "
-            + "FROM (SELECT patient_id, "
-            + "             Max(transferout_date) transferout_date "
-            + "      FROM (SELECT p.patient_id, "
-            + "                   ps.start_date transferout_date "
-            + "            FROM patient p "
-            + "                     JOIN patient_program pp "
-            + "                          ON p.patient_id = pp.patient_id "
-            + "                     JOIN patient_state ps "
-            + "                          ON pp.patient_program_id = ps.patient_program_id "
-            + "            WHERE p.voided = 0 "
-            + "              AND pp.voided = 0 "
-            + "              AND pp.program_id = ${art} "
-            + "              AND pp.location_id = :location "
-            + "              AND ps.voided = 0 "
-            + "              AND ps.state = ${transferOutState} "
-            + "              AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore "
-            + "            UNION "
-            + "            SELECT p.patient_id, "
-            + "                   e.encounter_datetime transferout_date "
-            + "            FROM patient p "
-            + "                     JOIN encounter e "
-            + "                          ON p.patient_id = e.patient_id "
-            + "                     JOIN obs o "
-            + "                          ON e.encounter_id = o.encounter_id "
-            + "            WHERE p.voided = 0 "
-            + "              AND e.voided = 0 "
-            + "              AND e.location_id = :location "
-            + "              AND e.encounter_type IN (${adultSeg}, ${masterCard}) "
-            + "              AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore "
-            + "              AND o.voided = 0 "
-            + "              AND o.concept_id IN (${artStateOfStay}, ${preArtStateOfStay}) "
-            + "              AND o.value_coded = ${transfOutConcept}) transferout "
-            + "      GROUP BY patient_id) max_transferout "
-            + "WHERE patient_id NOT IN (SELECT p.patient_id "
-            + "                         FROM patient p "
-            + "                                  JOIN encounter e "
-            + "                                       ON p.patient_id = e.patient_id "
-            + "                         WHERE p.voided = 0 "
-            + "                           AND e.voided = 0 "
-            + "                           AND e.encounter_type IN (${adultSeg}, ${childSeg}, ${fila}) "
-            + "                           AND e.location_id = :location "
-            + "                           AND e.encounter_datetime > transferout_date "
-            + "                           AND e.encounter_datetime <= :onOrBefore "
-            + "                         UNION "
-            + "                         SELECT p.patient_id "
-            + "                         FROM patient p "
-            + "                                  JOIN encounter e "
-            + "                                       ON p.patient_id = e.patient_id "
-            + "                                  JOIN obs o "
-            + "                                       ON e.encounter_id = o.encounter_id "
-            + "                         WHERE p.voided = 0 "
-            + "                           AND e.voided = 0 "
-            + "                           AND e.encounter_type = ${mcDrugPickup} "
-            + "                           AND e.location_id = :location "
-            + "                           AND o.concept_id = ${drugPickup} "
-            + "                           AND o.value_datetime "
-            + "                             > transferout_date "
-            + "                           AND o.value_datetime "
-            + "                             < :onOrBefore)";
-
-    Map<String, Integer> valuesMap = new HashMap<>();
-    valuesMap.put("art", hivMetadata.getARTProgram().getProgramId());
-
-    ProgramWorkflowState transferOut =
-        hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState();
-    valuesMap.put("transferOutState", transferOut.getProgramWorkflowStateId());
-
-    valuesMap.put("adultSeg", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
-    valuesMap.put("masterCard", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
-    valuesMap.put("artStateOfStay", hivMetadata.getStateOfStayOfPreArtPatient().getConceptId());
-    valuesMap.put("preArtStateOfStay", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
-    valuesMap.put("transfOutConcept", hivMetadata.getTransferredOutConcept().getConceptId());
-    valuesMap.put(
-        "childSeg", hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId());
-    valuesMap.put("fila", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
-    valuesMap.put(
-        "mcDrugPickup", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
-    valuesMap.put("drugPickup", hivMetadata.getArtDatePickup().getConceptId());
-    StringSubstitutor sub = new StringSubstitutor(valuesMap);
-    cd.setQuery(sub.replace(sql));
     return cd;
   }
 
@@ -335,29 +251,31 @@ public class ResumoMensalCohortQueries {
 
   /** @return Number of cumulative patients who started ART by end of previous month */
   public CohortDefinition getPatientsWhoStartedArtByEndOfPreviousMonthB10() {
-    CohortDefinition patientsWithArtStartDate = getPatientsWhoInitiatedTarvAtAfacility();
-    CohortDefinition patientsWithDrugPickup = getPatientsWithMasterCardDrugPickUpDate();
-
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Number of cumulative patients who started ART by end of previous month");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    String mappings = "value2=${startDate},locationList=${location}";
-    String transferMappings =
-        "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
+    CohortDefinition patientsWithArtStartDate = genericCohortQueries.getStartedArtBeforeDate(false);
+    CohortDefinition patientsWithDrugPickup = getPatientsWithMasterCardDrugPickUpDate();
+    CohortDefinition fila =
+        genericCohortQueries.hasEncounter(hivMetadata.getARVPharmaciaEncounterType());
+    CohortDefinition transferredIn =
+        getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2();
 
-    cd.addSearch("artStartDate", map(patientsWithArtStartDate, mappings));
-    cd.addSearch("drugPickup", map(patientsWithDrugPickup, mappings));
-    cd.addSearch("transferredIn", map(getPatientsWithTransferFromOtherHF(), transferMappings));
     cd.addSearch(
-        "encBeforeStartDate",
-        map(
-            genericCohortQueries.hasEncounter(hivMetadata.getARVPharmaciaEncounterType()),
-            "locationList=${location},onOrBefore=${startDate-1d}"));
+        "artStartDate",
+        map(patientsWithArtStartDate, "onOrBefore=${startDate},location=${location}"));
 
-    cd.setCompositionString(
-        "(artStartDate AND (drugPickup OR encBeforeStartDate)) AND NOT transferredIn");
+    String mappings = "value2=${startDate},locationList=${location}";
+    cd.addSearch("drugPickup", map(patientsWithDrugPickup, mappings));
+
+    String transferMappings = "onOrBefore=${startDate},location=${location}";
+    cd.addSearch("transferredIn", map(transferredIn, transferMappings));
+
+    cd.addSearch("fila", map(fila, "locationList=${location},onOrBefore=${startDate-1d}"));
+
+    cd.setCompositionString("(artStartDate AND (drugPickup OR fila)) AND NOT transferredIn");
 
     return cd;
   }
@@ -382,7 +300,7 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getArtStatus().getConceptId()));
 
     CohortDefinition startDrugs = getPatientsWithStartDrugs();
-    CohortDefinition transferredOut = getPatientsTransferredOut();
+    CohortDefinition transferredOut = getPatientsTransferredOutB5();
     CohortDefinition suspended = getPatientsWhoSuspendedTreatment();
     CohortDefinition missedDrugPickup = getLastArvPickupDateCohort();
     CohortDefinition died = getPatientsWhoDied();
@@ -394,7 +312,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch("B10", mapStraightThrough(getPatientsWhoStartedArtByEndOfPreviousMonthB10()));
     cd.addSearch("B2A", map(transferredIn, "onOrBefore=${startDate},location=${location}"));
     cd.addSearch("B3A", map(startDrugs, encounterWithCodedObsMappings));
-    cd.addSearch("B5A", map(transferredOut, encounterWithCodedObsMappings));
+    cd.addSearch("B5A", map(transferredOut, "onOrBefore=${startDate},location=${location}"));
     cd.addSearch("B6A", map(suspended, encounterWithCodedObsMappings));
     cd.addSearch(
         "B7A",
@@ -668,8 +586,8 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B5",
         map(
-            getPatientsTransferredOut(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+            getPatientsTransferredOutB5(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "B6",
         map(
