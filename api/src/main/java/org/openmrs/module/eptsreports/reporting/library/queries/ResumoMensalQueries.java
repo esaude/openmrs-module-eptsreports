@@ -121,50 +121,7 @@ public class ResumoMensalQueries {
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     return stringSubstitutor.replace(query);
   }
-
-  /**
-   * Number of patients transferred-in from another HFs during the current month
-   *
-   * @return String
-   */
-  public static String getPatientsTransferredFromAnotherHealthFacilityDuringTheCurrentMonth(
-      int masterCardEncounter,
-      int transferFromConcept,
-      int yesConcept,
-      int typeOfPantientConcept,
-      int tarvConcept) {
-
-    String query =
-        "SELECT p.patient_id "
-            + "FROM   patient p "
-            + "       JOIN encounter e "
-            + "         ON p.patient_id = e.patient_id "
-            + "       JOIN obs transf "
-            + "         ON transf.encounter_id = e.encounter_id "
-            + "       JOIN obs type "
-            + "         ON type.encounter_id = e.encounter_id "
-            + "WHERE  p.voided = 0 "
-            + "       AND e.voided = 0 "
-            + "       AND e.encounter_type = %d "
-            + "       AND e.location_id = :location "
-            + "       AND e.encounter_datetime BETWEEN :startDate AND :endDate "
-            + "       AND transf.voided = 0 "
-            + "       AND transf.concept_id = %d "
-            + "       AND transf.value_coded = %d "
-            + "       AND transf.obs_datetime BETWEEN :startDate AND :endDate "
-            + "       AND type.voided = 0 "
-            + "       AND type.concept_id = %d "
-            + "       AND type.value_coded = %d";
-
-    return String.format(
-        query,
-        masterCardEncounter,
-        transferFromConcept,
-        yesConcept,
-        typeOfPantientConcept,
-        tarvConcept);
-  }
-
+  
   public static String getPatientsTransferredFromAnotherHealthFacilityByEndOfPreviousMonth(
       int masterCardEncounter,
       int transferFromConcept,
