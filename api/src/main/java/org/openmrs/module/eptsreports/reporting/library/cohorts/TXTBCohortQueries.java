@@ -94,16 +94,15 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-  private CohortDefinition getTuberculosisSymptoms() {
+  private CohortDefinition getTuberculosisSymptoms(Integer... answerIds) {
+
     CohortDefinition definition =
         this.genericCohortQueries.generalSql(
             "tuberculosisSymptoms",
             TXTBQueries.dateObsForEncounterAndQuestionAndAnswers(
                 this.hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                 Arrays.asList(this.tbMetadata.getHasTbSymptomsConcept().getConceptId()),
-                Arrays.asList(
-                    this.hivMetadata.getYesConcept().getConceptId(),
-                    this.hivMetadata.getNoConcept().getConceptId())));
+                Arrays.asList(answerIds)));
     this.addGeneralParameters(definition);
     return definition;
   }
@@ -254,6 +253,20 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  public CohortDefinition negativeInvestigationResult() {
+    final CohortDefinition cd =
+        this.genericCohortQueries.hasCodedObs(
+            this.tbMetadata.getResearchResultConcept(),
+            TimeModifier.ANY,
+            SetComparator.IN,
+            Arrays.asList(
+                this.hivMetadata.getAdultoSeguimentoEncounterType(),
+                this.hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+            Arrays.asList(this.tbMetadata.getNegativeConcept()));
+    this.addGeneralParameters(cd);
+    return cd;
+  }
+
   /**
    * at least one “POS” or “NEG” selected for “Resultado da Investigação para TB de BK e/ou RX?”
    * during the reporting period consultations; ( response 703: POS or 664: NEG for question: 6277)
@@ -263,6 +276,18 @@ public class TXTBCohortQueries {
     final CohortDefinition P = this.positiveInvestigationResult();
     cd.addSearch("P", this.map(P, this.codedObsParameterMapping));
     cd.setCompositionString("P");
+    this.addGeneralParameters(cd);
+    return cd;
+  }
+
+  public CohortDefinition negativeInvestigationResultAndAnyResultForTBScreeningComposition() {
+    final CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    final CohortDefinition N = this.negativeInvestigationResult();
+    CohortDefinition YN = this.yesOrNoInvestigationResult();
+    cd.addSearch("N", this.map(N, this.codedObsParameterMapping));
+    cd.addSearch("YN", this.map(YN, this.generalParameterMapping));
+
+    cd.setCompositionString("N AND YN");
     this.addGeneralParameters(cd);
     return cd;
   }
@@ -339,23 +364,31 @@ public class TXTBCohortQueries {
     cd.addSearch(
         "C",
         EptsReportUtils.map(
-            this.getTbDrugTreatmentStartDateWithinReportingDate(), this.generalParameterMapping));
-    cd.addSearch("D", EptsReportUtils.map(this.getInTBProgram(), this.generalParameterMapping));
+            this.negativeInvestigationResultAndAnyResultForTBScreeningComposition(),
+            this.generalParameterMapping));
     cd.addSearch(
-        "E",
+        "D",
         EptsReportUtils.map(
-            this.getPulmonaryTBWithinReportingDate(), this.generalParameterMapping));
+            this.getTbDrugTreatmentStartDateWithinReportingDate(), this.generalParameterMapping));
+    cd.addSearch("E", EptsReportUtils.map(this.getInTBProgram(), this.generalParameterMapping));
     cd.addSearch(
         "F",
         EptsReportUtils.map(
+            this.getPulmonaryTBWithinReportingDate(), this.generalParameterMapping));
+    cd.addSearch(
+        "G",
+        EptsReportUtils.map(
             this.getTuberculosisTreatmentPlanWithinReportingDate(), this.generalParameterMapping));
-    cd.addSearch("G", this.map(this.getAllTBSymptomsComposition(), this.generalParameterMapping));
     cd.addSearch(
         "H",
+        this.map(
+            this.getAllTBSymptomsForDisaggregationComposition(), this.generalParameterMapping));
+    cd.addSearch(
+        "I",
         EptsReportUtils.map(
             this.getSputumForAcidFastBacilliWithinReportingDate(), this.generalParameterMapping));
 
-    cd.setCompositionString("A OR B OR C OR D OR E OR F OR G OR H");
+    cd.setCompositionString("A OR B OR C OR D OR E OR F OR G OR H OR I");
     this.addGeneralParameters(cd);
     return cd;
   }
@@ -513,7 +546,7 @@ public class TXTBCohortQueries {
         this.map(fichaClinicaMasterCard, this.generalParameterMapping));
     definition.addSearch(
         "all-tb-symptoms",
-        this.map(this.getAllTBSymptomsComposition(), this.generalParameterMapping));
+        this.map(this.getAllTBSymptomsForDemoninatorComposition(), this.generalParameterMapping));
 
     definition.setCompositionString(
         "(art-list AND "
@@ -536,7 +569,7 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-  private CohortDefinition getAllTBSymptomsComposition() {
+  private CohortDefinition getAllTBSymptomsForDisaggregationComposition() {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
     this.addGeneralParameters(definition);
@@ -544,7 +577,9 @@ public class TXTBCohortQueries {
 
     definition.addSearch(
         "tuberculosis-symptoms",
-        this.map(this.getTuberculosisSymptoms(), this.generalParameterMapping));
+        this.map(
+            this.getTuberculosisSymptoms(this.hivMetadata.getYesConcept().getConceptId()),
+            this.generalParameterMapping));
     definition.addSearch(
         "active-tuberculosis",
         this.map(this.getActiveTuberculosis(), this.generalParameterMapping));
@@ -553,6 +588,41 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "application-for-laboratory-research",
         this.map(this.getApplicationForLaboratoryResearch(), this.generalParameterMapping));
+    definition.addSearch(
+        "tb-genexpert-or-culture-test-or-lam-test",
+        this.map(this.getTbGenExpertORCultureTestOrTbLam(), this.generalParameterMapping));
+
+    definition.setCompositionString(
+        "tuberculosis-symptoms OR active-tuberculosis OR tb-observations OR application-for-laboratory-research OR tb-genexpert-or-culture-test-or-lam-test");
+
+    return definition;
+  }
+
+  private CohortDefinition getAllTBSymptomsForDemoninatorComposition() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    this.addGeneralParameters(definition);
+    definition.setName("TxTB -Symptoms");
+
+    definition.addSearch(
+        "tuberculosis-symptoms",
+        this.map(
+            this.getTuberculosisSymptoms(
+                this.hivMetadata.getYesConcept().getConceptId(),
+                this.hivMetadata.getNoConcept().getConceptId()),
+            this.generalParameterMapping));
+
+    definition.addSearch(
+        "active-tuberculosis",
+        this.map(this.getActiveTuberculosis(), this.generalParameterMapping));
+
+    definition.addSearch(
+        "tb-observations", this.map(this.getTbObservations(), this.generalParameterMapping));
+
+    definition.addSearch(
+        "application-for-laboratory-research",
+        this.map(this.getApplicationForLaboratoryResearch(), this.generalParameterMapping));
+
     definition.addSearch(
         "tb-genexpert-or-culture-test-or-lam-test",
         this.map(this.getTbGenExpertORCultureTestOrTbLam(), this.generalParameterMapping));
