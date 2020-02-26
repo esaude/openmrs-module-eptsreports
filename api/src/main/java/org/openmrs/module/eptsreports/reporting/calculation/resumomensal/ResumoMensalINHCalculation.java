@@ -46,6 +46,19 @@ public class ResumoMensalINHCalculation extends BaseFghCalculation {
     for (Integer patientId : resutls.keySet()) {
       List<Object[]> objects = resutls.get(patientId);
 
+      if (!objects.isEmpty()) {
+        Object[] obj1 = objects.get(0);
+        if (obj1[1] != null) {
+          resultMap.put(patientId, new BooleanResult(true, this));
+        } else {
+          if (objects.size() > 1) {
+            Object[] obj2 = objects.get(1);
+            if (obj2[1] != null) {
+              resultMap.put(patientId, new BooleanResult(true, this));
+            }
+          }
+        }
+      }
       for (Object[] object : objects) {
         if (object[1] != null) {
           resultMap.put(patientId, new BooleanResult(true, this));
