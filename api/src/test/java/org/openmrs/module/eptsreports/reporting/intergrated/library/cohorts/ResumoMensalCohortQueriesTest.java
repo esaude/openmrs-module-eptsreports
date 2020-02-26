@@ -1,6 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.library.cohorts;
 
-
 import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
