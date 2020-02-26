@@ -955,7 +955,7 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.bPlusConceptUuid");
     return getConcept(uuid);
   }
-  
+
   // concept_id = 23944
   public Concept getReasonPatientNotFoundByActivist2ndVisitConcept() {
     String uuid =

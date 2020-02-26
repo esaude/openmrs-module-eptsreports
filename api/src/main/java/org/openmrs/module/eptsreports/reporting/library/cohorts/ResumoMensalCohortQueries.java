@@ -117,12 +117,14 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getHIVCareProgram().getProgramId()));
 
-    cd.addSearch("A2I", map(sqlCohortDefinition, "startDate=${startDate},location=${location}"));
+    cd.addSearch(
+        "A2I",
+        map(sqlCohortDefinition, "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "A2II",
         map(
             getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "A2III",
         map(
@@ -158,7 +160,7 @@ public class ResumoMensalCohortQueries {
    *
    * @return CohortDefinition
    */
-  private CohortDefinition getAllPatientsRegisteredAsTransferredInProgramEnrolmentWithBoundaries() {
+  public CohortDefinition getAllPatientsRegisteredAsTransferredInProgramEnrolmentWithBoundaries() {
     SqlCohortDefinition scd = new SqlCohortDefinition();
     scd.setName("Get patients registered as Transferred-In in Program Enrollment");
     scd.addParameter(new Parameter("location", "Location", Location.class));

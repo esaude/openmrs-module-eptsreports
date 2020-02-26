@@ -47,7 +47,8 @@ public class ResumoMensalQueries {
     map.put("encounterType2", encounterType2);
 
     String query =
-        "SELECT results.patient_id, "
+        "SELECT res.patient_id FROM "
+            + "(SELECT results.patient_id, "
             + "       Min(results.enrollment_date) "
             + "FROM   (SELECT p.patient_id, "
             + "               e.encounter_datetime AS enrollment_date "
@@ -87,7 +88,7 @@ public class ResumoMensalQueries {
             + "               AND enc.encounter_datetime BETWEEN"
             + "                   :startDate AND :endDate "
             + "        ORDER  BY enrollment_date ASC) results "
-            + "GROUP  BY results.patient_id  ";
+            + "GROUP  BY results.patient_id) res  ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     return stringSubstitutor.replace(query);
