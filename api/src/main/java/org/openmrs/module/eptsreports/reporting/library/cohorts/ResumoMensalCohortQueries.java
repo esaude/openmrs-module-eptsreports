@@ -299,10 +299,8 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
             hivMetadata.getArtStatus().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata.getArtTransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()
-            ));
+            hivMetadata.getArtTransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()));
 
-    CohortDefinition startDrugs = getPatientsWithStartDrugs();
     CohortDefinition transferredOut = getPatientsTransferredOutB5();
     CohortDefinition suspended = getPatientsWhoSuspendedTreatment();
     CohortDefinition missedDrugPickup = getLastArvPickupDateCohort();
@@ -314,7 +312,7 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch("B10", mapStraightThrough(getPatientsWhoStartedArtByEndOfPreviousMonthB10()));
     cd.addSearch("B2A", map(transferredIn, "onOrBefore=${startDate},location=${location}"));
-    cd.addSearch("B3A", map(startDrugs, encounterWithCodedObsMappings));
+
     cd.addSearch("B5A", map(transferredOut, "onOrBefore=${startDate},location=${location}"));
     cd.addSearch("B6A", map(suspended, encounterWithCodedObsMappings));
     cd.addSearch(
@@ -324,7 +322,7 @@ public class ResumoMensalCohortQueries {
             "location=${location},onDate=${startDate}"));
     cd.addSearch("B8A", map(died, encounterWithCodedObsMappings));
 
-    cd.setCompositionString("B10 OR B2A OR B3A AND NOT (B5A OR B6A OR B7A OR B8A)");
+    cd.setCompositionString("B10 OR B2A AND NOT (B5A OR B6A OR B7A OR B8A)");
 
     return cd;
   }
