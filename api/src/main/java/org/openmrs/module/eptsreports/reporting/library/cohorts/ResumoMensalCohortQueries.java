@@ -310,7 +310,9 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
             hivMetadata.getArtStatus().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata.getArtTransferredFromOtherHealthFacilityWorkflowState().getProgramWorkflowStateId()));
+            hivMetadata
+                .getArtTransferredFromOtherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
 
     CohortDefinition transferredOut = getPatientsTransferredOutB5();
     CohortDefinition suspended = getPatientsWhoSuspendedTreatment();
