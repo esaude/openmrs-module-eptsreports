@@ -541,7 +541,9 @@ public class ResumoMensalCohortQueries {
     List<Concept> concepts = new ArrayList<>();
     cd.addSearch("transferBasedOnObsDate", map(getPatientsTransferBasedOnObsDate(), "onOrAfter=${onOrAfter-1m},onOrBefore=${onOrBefore},locationList=${locationList}"));
     cd.addSearch("getTypeOfPatientTransferredFrom", map(getTypeOfPatientTransferredFrom(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}"));
-    cd.setCompositionString("transferBasedOnObsDate OR getTypeOfPatientTransferredFrom");
+    cd.addSearch("inProgramState", map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata.getHIVCareProgram().getProgramId(),
+            hivMetadata.getPateintTransferedFromOtherFacilityWorkflowState().getProgramWorkflowStateId()), "startDate=${onOrAfter-1m},endDate=${onOrBefore},location=${locationList}"));
+    cd.setCompositionString("transferBasedOnObsDate OR getTypeOfPatientTransferredFrom OR inProgramState");
     return cd;
   }
 
