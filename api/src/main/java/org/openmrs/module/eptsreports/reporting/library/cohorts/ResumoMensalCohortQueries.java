@@ -987,4 +987,63 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getArtDatePickup().getConceptId()));
     return cd;
   }
+
+  /**
+   * B13 B.13: Number of active patients in ART by end of current month (PT: Nº activo em TARV no
+   * fim do mês automaticamente calculado através da seguinte formula)
+   *
+   * @retrun CompositionCohortDefinition
+   */
+  public CohortDefinition getActivePatientsInARTByEndOfCurrentMonth() {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("Number of active patients in ART by end of current month");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
+
+    CohortDefinition fila =
+        genericCohortQueries.getPatientsHavingEncounterWithinDateBoundaries(
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+
+    CohortDefinition masterCardPickup = getPatientsWithMasterCardDrugPickUpDate();
+
+    CohortDefinition transferredIn =
+        getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2();
+
+    CohortDefinition B5E = getPatientsTransferredOut();
+
+    CohortDefinition B6E = getPatientsWhoSuspendedTreatment();
+    ;
+
+    CohortDefinition B7E = getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A();
+
+    CohortDefinition B8E = getPatientsWhoDied();
+
+    String mappingsDefault = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+
+    String mappingsOnDate = "onDate=${endDate},location=${location}";
+    String mappingsOnOrBeforeLocationList = "onOrBefore=${endDate},locationList=${location}";
+
+    cd.addSearch("startedArt", map(startedArt, mappings));
+
+    cd.addSearch("fila", map(fila, mappingsDefault));
+
+    cd.addSearch("masterCardPickup", map(masterCardPickup, mappingsOnOrBeforeLocationList));
+
+    cd.addSearch("transferredIn", map(transferredIn, mappings));
+    cd.addSearch("B5E", map(B5E, mappings));
+    cd.addSearch("B6E", map(B6E, mappings));
+    cd.addSearch("B7E", map(B7E, mappingsOnDate));
+    cd.addSearch("B8E", map(B8E, mappings));
+
+    cd.setCompositionString(
+        "startedArt AND (fila OR masterCardPickup) AND NOT  (transferredIn OR B5E  OR B6E  OR B7E OR B8E )");
+
+    return cd;
+  }
 }
