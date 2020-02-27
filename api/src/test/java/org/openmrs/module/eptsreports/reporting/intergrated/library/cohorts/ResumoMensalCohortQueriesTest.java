@@ -1,7 +1,11 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.library.cohorts;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -13,6 +17,8 @@ import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
@@ -23,22 +29,6 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   public void setup() throws Exception {
     executeDataSet("ResumoMensalTest.xml");
   }
-
-  @Test
-  public void getTrasferinCohort()
-      throws EvaluationException {
-    CohortDefinition cohort = resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfPreviousMonthB12();
-    Map<Parameter, Object> params = new HashMap<>();
-    params.put(new Parameter("onOrAfter", "onOrAfter", Date.class), getStartDate());
-    params.put(new Parameter("onOrBefore", "onOrBefore", Date.class), getEndDate());
-    params.put(new Parameter("location", "location", Location.class), getLocation());
-    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, params);
-
-    assertEquals(0, evaluatedCohort.size());
-    assertFalse(evaluatedCohort.contains(10000));
-  
-  }
-
 
   @Test
   public void Test() {}
@@ -91,5 +81,19 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort);
 
     assertEquals(0, evaluatedCohort.getMemberIds().size());
+  }
+
+  @Test
+  public void getPatientsWhoWereActiveByEndOfPreviousMonthB12() throws EvaluationException {
+    CohortDefinition cohort =
+        resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfPreviousMonthB12();
+    Map<Parameter, Object> params = new HashMap<>();
+    params.put(new Parameter("onOrAfter", "onOrAfter", Date.class), getStartDate());
+    params.put(new Parameter("onOrBefore", "onOrBefore", Date.class), getEndDate());
+    params.put(new Parameter("location", "location", Location.class), getLocation());
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, params);
+
+    assertEquals(1, evaluatedCohort.size());
+    assertTrue(evaluatedCohort.contains(1003));
   }
 }
