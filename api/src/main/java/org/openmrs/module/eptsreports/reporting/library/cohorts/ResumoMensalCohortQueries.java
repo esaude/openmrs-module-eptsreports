@@ -463,14 +463,27 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("locationList", "location", Location.class));
     List<Concept> concepts = new ArrayList<>();
-    cd.addSearch("transferBasedOnObsDate", map(genericCohortQueries.hasCodedObs(hivMetadata.getTransferFromOtherFacilityConcept(),
-            BaseObsCohortDefinition.TimeModifier.ANY, SetComparator.IN, Arrays.asList(hivMetadata.getMasterCardEncounterType()),concepts), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}"));
+    cd.addSearch("transferBasedOnObsDate", map(getPatientsTransferBasedOnObsDate(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}"));
     cd.addSearch("getPatientsWithTransferFromOtherHF", map(getPatientsWithTransferFromOtherHF(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}"));
     cd.addSearch("getTypeOfPatientTransferredFrom", map(getTypeOfPatientTransferredFrom(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}"));
     cd.addSearch("inProgramState", map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata.getHIVCareProgram().getProgramId(),
             hivMetadata.getPateintTransferedFromOtherFacilityWorkflowState().getProgramWorkflowStateId()), "startDate=${onOrAfter},endDate=${onOrBefore},location=${locationList}"));
     cd.setCompositionString("transferBasedOnObsDate OR getPatientsWithTransferFromOtherHF OR getTypeOfPatientTransferredFrom OR inProgramState");
     return cd;
+  }
+
+  private CohortDefinition getPatientsTransferBasedOnObsDate() {
+    CodedObsCohortDefinition cd  = new CodedObsCohortDefinition();
+    cd.setName("Get patients with obs date based on a concept");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("locationList", "location", Location.class));
+    cd.setQuestion(hivMetadata.getTransferFromOtherFacilityConcept());
+    cd.setOperator(SetComparator.IN);
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
+    cd.setEncounterTypeList(Arrays.asList(hivMetadata.getMasterCardEncounterType()));
+    return cd;
+
   }
 
   private CohortDefinition getPatientsWhoInitiatedTarvAtAfacility() {
