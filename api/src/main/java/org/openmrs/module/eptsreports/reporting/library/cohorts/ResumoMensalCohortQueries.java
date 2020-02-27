@@ -17,7 +17,11 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
@@ -115,16 +119,11 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getHIVCareProgram().getProgramId()));
 
     cd.addSearch(
-        "A2I",
+        "population",
         map(sqlCohortDefinition, "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch("A2III", map(getPatientsWithTransferFromOtherHF(), "locationList=${location}"));
-    cd.addSearch(
-        "A2II",
-        map(
-            getPatientsWithFirstClinicalConsultationOnTheSameDateAsPreArtStartDate(),
-            "endDate=${endDate},location=${location}"));
+    cd.addSearch("exclusions", map(getExclusionCriteriaForC1(), "locationList=${location},onOrAfter=${startDate},onOrBefore=${endDate}"));
 
-    cd.setCompositionString("(A2I AND A2II) AND NOT A2III");
+    cd.setCompositionString("population AND NOT exclusions");
 
     return cd;
   }
@@ -452,7 +451,7 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("locationList", "location", Location.class));
     cd.addEncounterType(hivMetadata.getMasterCardEncounterType());
     cd.setConcept(hivMetadata.getTypeOfPatientTransferredFrom());
-    cd.addIncludeCodedValue(hivMetadata.getArtStatus());
+    cd.addIncludeCodedValue(hivMetadata.getHivCareConcept());
     return cd;
   }
 
@@ -465,6 +464,23 @@ public class ResumoMensalCohortQueries {
     cd.addEncounterType(hivMetadata.getMasterCardEncounterType());
     cd.setConcept(hivMetadata.getTransferFromOtherFacilityConcept());
     cd.addIncludeCodedValue(hivMetadata.getYesConcept());
+    return cd;
+  }
+
+  public CohortDefinition getExclusionCriteriaForC1() {
+    CompositionCohortDefinition cd  = new CompositionCohortDefinition();
+    cd.setName("All patients to be excluded for the C1 definition");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("locationList", "location", Location.class));
+    List<Concept> concepts = new ArrayList<>();
+    cd.addSearch("transferBasedOnObsDate", map(genericCohortQueries.hasCodedObs(hivMetadata.getTransferFromOtherFacilityConcept(),
+            BaseObsCohortDefinition.TimeModifier.ANY, SetComparator.IN, Arrays.asList(hivMetadata.getMasterCardEncounterType()),concepts), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}"));
+    cd.addSearch("getPatientsWithTransferFromOtherHF", map(getPatientsWithTransferFromOtherHF(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}"));
+    cd.addSearch("getTypeOfPatientTransferredFrom", map(getTypeOfPatientTransferredFrom(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}"));
+    cd.addSearch("inProgramState", map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata.getHIVCareProgram().getProgramId(),
+            hivMetadata.getPateintTransferedFromOtherFacilityWorkflowState().getProgramWorkflowStateId()), "startDate=${onOrAfter},endDate=${onOrBefore},location=${locationList}"));
+    cd.setCompositionString("transferBasedOnObsDate OR getPatientsWithTransferFromOtherHF OR getTypeOfPatientTransferredFrom OR inProgramState");
     return cd;
   }
 

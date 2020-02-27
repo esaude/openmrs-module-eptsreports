@@ -78,7 +78,9 @@ public class GenericCohortQueries {
     cd.setOperator(operator);
     cd.setTimeModifier(timeModifier);
     cd.setEncounterTypeList(encounterTypes);
-    cd.setValueList(values);
+    if(values.size() > 0) {
+      cd.setValueList(values);
+    }
 
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));

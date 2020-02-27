@@ -1425,4 +1425,10 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(
         Context.getAdministrationService().getGlobalProperty("eptsreports.bPlusConceptUuid"));
   }
+
+  //6275
+  public Concept getHivCareConcept() {
+    return getConcept(
+            Context.getAdministrationService().getGlobalProperty("eptsreports.hivCareConceptUuid"));
+  }
 }

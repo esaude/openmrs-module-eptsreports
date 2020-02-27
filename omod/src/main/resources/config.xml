@@ -1842,6 +1842,15 @@
 		</description>
 	</globalProperty>
 
+	<!--6275-->
+	<globalProperty>
+		<property>eptsreports.hivCareConceptUuid</property>
+		<defaultValue>44f812e8-c4c0-40cd-aef3-6b1ef76d43e1</defaultValue>
+		<description>
+			UUID for HIV CARE concept
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
