@@ -7,9 +7,36 @@
 	graphic logo is a trademark of OpenMRS Inc. -->
 <dataset>
 
+
 	<location location_id="4" name="6 Azure" description="NA" address2="NA" state_province="NA" country="NetBeans" creator="1" date_created="2008-10-13 11:32:52" county_district="NA" address6="NA" retired="0" uuid="e3b32fc2-1d5f-11e0-b929-000c29ad1d07" />
 	<location location_id="21" name="24 de Julho" description="NA" address2="NA" state_province="NA" country="MA" date_created="2008-10-13 11:32:52" county_district="NA" address6="NA" retired="0" uuid="e2b32fc2-1d5f-11e0-b929-000c29ad1d07" />
 
+
+<person person_id="1020" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="true"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false" death_date="2018-06-30"
+            uuid="8b6657b8-57dc-11ea-8247-a0a4c5d1c75c"/>
+
+
+			<person person_id="1021" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="true"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false" death_date="2018-06-30"
+            uuid="bb9df255-57dc-11ea-8247-a0a4c5d1c75c"/>
+
+
+			<person person_id="1022" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="c64cc15b-57dc-11ea-8247-a0a4c5d1c75c"/>
+
+
+			<person person_id="1023" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="32625400-57de-11ea-8247-a0a4c5d1c75c"/>
+
+
+			<person person_id="1023" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="32625400-57de-11ea-8247-a0a4c5d1c75c"/>
+
+			
 	<person person_id="1010" gender="M" birthdate="1992-01-01 00:00:00.0" birthdate_estimated="0" dead="false" creator="1" date_created="2019-01-01 00:00:00.0" voided="false" uuid="37ee85cb-3be7-45f8-905d-caaf085a942e" />
 
 	<person person_id="1001" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="37ee85cb-3be7-45f8-905d-bfaf085a942e" />
@@ -32,7 +59,19 @@
 
 	<person person_id="9999" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="ac4b29bb-4f62-43d6-9a6a-1d994a04110a" />
 
-	<patient patient_id="1010" creator="1" date_created="2019-09-22 00:00:00.0" changed_by="1" date_changed="2019-10-20 12:29:59.0" voided="0" void_reason="" />
+<patient patient_id="1020" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+			 <patient patient_id="1021" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+			 <patient patient_id="1022" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+			 <patient patient_id="1023" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+	
+    <patient patient_id="1010" creator="1" date_created="2019-09-22 00:00:00.0" changed_by="1" date_changed="2019-10-20 12:29:59.0" voided="0" void_reason="" />
 
 	<patient patient_id="1001" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
 
@@ -54,6 +93,31 @@
 
 	<patient patient_id="9999" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
 
+ <global_property property="eptsreports.stateOfStayArtPatient"
+                     property_value="a7d3b5c9-8b8e-4f29-b332-8db47466fed3"
+                     description="UUID for the ART concept" uuid="3d0f0b38-5875-11ea-8247-a0a4c5d1c75c"/>
+
+					 <global_property property="eptsreports.stateOfStayOfPreArtPatient"
+                     property_value="3bd7a5d1-afc0-478d-9aa6-c7bdd9a050c8"
+                     description="UUID for the PRE ART concept" uuid="31c73ffc-5875-11ea-8247-a0a4c5d1c75c"/>
+
+					 <global_property property="eptsreports.patientHasDiedConceptUuid"
+                     property_value="e1da766e-1d5f-11e0-b929-000c29ad1d07"
+                     description="UUID for the DIED concept" uuid="17e1f07e-5875-11ea-8247-a0a4c5d1c75c"/>
+
+					 <global_property property="eptsreports.preArtPickupDate"
+                     property_value="74f6c17f-9819-41da-ba34-5910f67d24d0"
+                     description="UUID for the ART pickup concept" uuid="083ed0c9-5875-11ea-8247-a0a4c5d1c75c"/>
+
+					 <global_property property="eptsreports.art"
+                     property_value="7f3af436-5c3a-447c-9012-42bb314e03db"
+                     description="UUID for the ART" uuid="b22eaf67-587d-11ea-8247-a0a4c5d1c75c"/>
+
+
+	<global_property property="eptsreports.masterCardDrugPickupEncounterTypeUuid"
+                     property_value="cce7b2ec-4fc0-4f9e-806d-b1c4ee9577db"
+                     description="UUID for the LEVANTAMENTO DE ARV concept"
+                     uuid="087391f3-5895-11ea-8247-a0a4c5d1c75c"/>
 
 	<global_property property="eptsreports.preArtStartDate" property_value="f69b1fe0-a657-4225-a996-20b599132508" description="UUID for the PRE-ART START DATE concept" uuid="26b9f568-7d4f-4496-b372-939978af7ddc" />
 
@@ -133,7 +197,13 @@
 
 	<concept concept_id="8888" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2012-02-27 11:30:21" uuid="4f139c0a-9843-4dc4-b3e5-5aa00812e605" />
 
-	<concept concept_id="6263" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2012-02-27 11:30:21" uuid="3c648ee6-1702-4eea-b709-aa007f221f57" />
+ <concept concept_id="6272" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2012-02-29 09:46:11" uuid="3bd7a5d1-afc0-478d-9aa6-c7bdd9a050c8"/>
+	
+    <concept concept_id="6273" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2012-02-29 10:06:33" uuid="a7d3b5c9-8b8e-4f29-b332-8db47466fed3"/>
+   
+    <concept concept_id="6263" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2012-02-27 11:30:21" uuid="3c648ee6-1702-4eea-b709-aa007f221f57" />
 
 	<concept concept_id="6259" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2012-02-27 10:52:59" uuid="384750e6-d201-488f-948a-93dc616124b4" />
 
@@ -195,11 +265,32 @@
 
 	<concept concept_id="1602" retired="0" datatype_id="4" class_id="5" is_set="0" creator="1" date_created="2008-10-13 23:14:01" uuid="e1dcaaec-1d5f-11e0-b929-000c29ad1d07" />
 
-	<concept_name concept_id="6275" name="PRE-TARV" locale="pt" creator="1" date_created="2012-02-29 09:50:50" concept_name_id="7181" voided="0" uuid="11bda988-b5f5-439c-83fe-c8f3fd256878" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+
+		 <concept concept_id="23866" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1"
+             date_created="2019-07-09 13:00:20" uuid="74f6c17f-9819-41da-ba34-5910f67d24d0"/>
+
+ <concept_name concept_id="1781" name="ARV SERVICE - CARE" locale="en" creator="1" date_created="2008-10-13 05:58:15"
+                  concept_name_id="7172" voided="0" uuid="c953fdcc-e049-4c30-b847-a86eb1851f51"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+			 <concept_name concept_id="6272" name="STATE OF STAY PRIOR ART PATIENT" locale="en" creator="1" date_created="2008-10-13 05:58:15"
+                  concept_name_id="7174" voided="0" uuid="ddf5d0d1-2142-4629-8403-d0d9b2a77839"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+ <concept_name concept_id="6273" name="STATE OF STAY ART PATIENT" locale="en" creator="1" date_created="2008-10-13 05:58:15"
+                  concept_name_id="7670" voided="0" uuid="3f799096-60dd-4491-a99e-8e01ebdff7e5"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+	
+    <concept_name concept_id="6275" name="PRE-TARV" locale="pt" creator="1" date_created="2012-02-29 09:50:50" concept_name_id="7181" voided="0" uuid="11bda988-b5f5-439c-83fe-c8f3fd256878" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
 
 	<concept_name concept_id="1369" name="TRANSFERIDO DE" locale="pt" creator="1" date_created="2008-10-25 13:54:23" concept_name_id="3145" voided="0" uuid="e24e2ffa-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
 
-	<concept_name concept_id="6276" name="TARV" locale="pt" creator="1" date_created="2012-02-29 10:06:33" concept_name_id="7187" voided="0" uuid="33f1a883-ebd0-4e5b-bb6a-a254d573877c" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+  <concept_name concept_id="6274" name="ART SERVICE - TREATMENT" locale="en" creator="1" date_created="2008-10-13 05:58:15"
+                  concept_name_id="7179" voided="0" uuid="d82b5012-6bec-4f68-95db-e12083e1a2ce"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+	
+    <concept_name concept_id="6276" name="TARV" locale="pt" creator="1" date_created="2012-02-29 10:06:33" concept_name_id="7187" voided="0" uuid="33f1a883-ebd0-4e5b-bb6a-a254d573877c" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
 
 	<concept_name concept_id="1707" name="ABANDONO" locale="pt" creator="1" date_created="2008-10-25 13:17:30" concept_name_id="3141" voided="0" uuid="e24e2c58-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
 
@@ -210,6 +301,10 @@
 	<concept_name concept_id="1707" name="ABANDONED" locale="en" creator="1" date_created="2008-10-25 13:17:30" concept_name_id="5369" voided="0" uuid="e25e3a80-1d5f-11e0-b929-000c29ad1d07" locale_preferred="0" />
 
 	<concept_name concept_id="1366" name="PATIENT HAS DIED" locale="en" creator="1" date_created="2008-10-13 05:58:15" concept_name_id="2462" voided="0" uuid="e249f6c4-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+ 
+ <concept_name concept_id="23866" name="Date of ART Pickup" locale="en" creator="1" date_created="2008-10-13 05:58:15"
+                  concept_name_id="7185" voided="0" uuid="58316739-bdba-4f65-9661-ddd04e089f49"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
 	<program program_id="1" concept_id="1781" creator="1" date_created="2012-02-29 09:42:25" retired="0" name="SERVICO TARV - CUIDADO" description="Programa de seguimento e cuidado aos pacientes HIV+" uuid="7b2e4a0a-d4eb-4df7-be30-78ca4b28ca99" />
 
@@ -217,7 +312,8 @@
 
 	<program_workflow program_workflow_id="1" program_id="1" concept_id="6275" creator="1" date_created="2012-02-29 10:11:08" retired="0" uuid="beea7be9-cbf5-4a15-923a-ff193eea9d50" />
 
-	<program_workflow program_workflow_id="2" program_id="2" concept_id="6276" creator="1" date_created="2012-02-29 10:17:25" retired="0" uuid="a59bd818-d2f0-4a9a-a2f2-0a54af4ce04e" />
+	 <program_workflow program_workflow_id="2" program_id="2" concept_id="6274" creator="1"
+                      date_created="2012-02-29 10:17:25" retired="0" uuid="a59bd818-d2f0-4a9a-a2f2-0a54af4ce04e"/>
 
 	<program_workflow_state program_workflow_state_id="28" program_workflow_id="1" concept_id="1369" initial="1" terminal="0" creator="1" date_created="2013-07-24 11:45:26" retired="0" uuid="b227d4ff-2dc3-4c18-9a58-d4de8d077746" />
 
@@ -241,11 +337,23 @@
 
 	<patient_program patient_program_id="6517" patient_id="9999" program_id="2" date_enrolled="2012-08-05 00:00:00" creator="1" date_created="2013-09-16 00:00:00" voided="0" uuid="dcc59d60-d608-40b4-bb8a-22595c7c0b76" location_id="1" />
 
+<patient_program patient_program_id="5616" patient_id="1022" program_id="2" date_enrolled="2013-08-01 00:00:00"
+                     creator="1" date_created="2013-09-16 17:53:04" voided="0"
+                     uuid="94f3d04d-57de-11ea-8247-a0a4c5d1c75c" location_id="21"/>
+
+					 <patient_program patient_program_id="5617" patient_id="1023" program_id="2" date_enrolled="2013-08-01 00:00:00"
+                     creator="1" date_created="2013-09-16 17:53:04" voided="0"
+                     uuid="9ddc09d5-57de-11ea-8247-a0a4c5d1c75c" location_id="21"/>
+
+                      <patient_state patient_state_id="7572" patient_program_id="5616" state="10" start_date="2013-08-01" creator="1"
+                   date_created="2013-09-16 17:53:04" voided="0"/>
+
+				   <patient_state patient_state_id="7553" patient_program_id="5617" state="10" start_date="2013-08-01" creator="1"
+                   date_created="2013-09-16 17:53:04" voided="0"/>
+
 	<patient_state patient_state_id="6552" patient_program_id="4616" state="29" start_date="2013-08-01" creator="1" date_created="2013-09-16 17:53:04" voided="0" />
 
 	<patient_state patient_state_id="5220" patient_program_id="6517" state="29" start_date="2012-08-05 00:00:00" creator="1" date_created="2013-09-16 00:00:00" voided="0" uuid="71d30157-19a9-4909-98fe-8068849c8253" />
-
-	<encounter_type encounter_type_id="34" name="STARV: MASTER CARD" description="EnconterType do Mastercard" creator="1" date_created="2012-02-29 17:05:14" retired="0" uuid="e422ecf9-75dd-4367-b21e-54bccabc4763" />
 
 	<encounter_type encounter_type_id="32" name="STARV: LIVRO PRE-TARV" description="Representao livro de registo PRE-TARV" creator="1" date_created="2012-02-29 17:05:14" retired="0" uuid="bc30cbe1-85b4-459f-acca-cffc4041a3b8" />
 
@@ -263,9 +371,28 @@
 
 	<encounter_type encounter_type_id="1" name="S.TARV: ADULTO INICIAL B" description="Outpatient Adult Initial Visit part 2" creator="1" date_created="2005-02-24 00:00:00" retired="0" uuid="e278f1c2-1d5f-11e0-b929-000c29ad1d07" />
 
-	<encounter encounter_id="33683" encounter_type="34" patient_id="1004" encounter_datetime="2019-09-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="d012e5e6-06ff-4a1c-9896-7ad705f0e4e1" location_id="21" />
+<encounter_type encounter_type_id="52" name="Levantamento de ARV Master Card" description="Registo de levantamento de ARV no Master Card" creator="1"
+                    date_created="2019-07-09 13:03:45" retired="0" uuid="cce7b2ec-4fc0-4f9e-806d-b1c4ee9577db"/>
 
-	<encounter encounter_id="32682" encounter_type="34" patient_id="1010" encounter_datetime="2019-09-25 00:00:00" creator="1" date_created="2019-09-25 00:00:00" voided="0" uuid="d012e4e6-05ff-4a1c-8896-7ad705f0e4e1" location_id="21" />
+					<encounter_type encounter_type_id="53" name="Master Card - Ficha Resumo" description="Ficha resumo no master card" creator="1"
+                    date_created="2019-07-31 14:23:47" retired="0" uuid="e422ecf9-75dd-4367-b21e-54bccabc4763"/>
+
+			   <encounter encounter_id="52673" encounter_type="18" patient_id="1021" encounter_datetime="2018-09-17 00:00:00"
+               creator="1" date_created="2018-09-17 00:00:00" voided="0"
+               uuid="cd33857e-c11b-4eb5-8c13-e84a8315958d" location_id="21"/>
+
+					<encounter encounter_id="52674" encounter_type="6" patient_id="1022" encounter_datetime="2018-07-10 00:00:00"
+               creator="1" date_created="2018-07-10 12:55:48" voided="0"
+               uuid="ca8c2c5e-57e7-11ea-8247-a0a4c5d1c75c" location_id="21"/>
+
+    <encounter encounter_id="52675" encounter_type="53" patient_id="1023" encounter_datetime="2018-07-10 00:00:00"
+               creator="1" date_created="2018-07-10 12:55:48" voided="0"
+               uuid="0578f158-57e7-11ea-8247-a0a4c5d1c75c" location_id="21"/>
+
+    
+    <encounter encounter_id="33683" encounter_type="53" patient_id="1004" encounter_datetime="2019-09-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="d012e5e6-06ff-4a1c-9896-7ad705f0e4e1" location_id="21" />
+
+	<encounter encounter_id="32682" encounter_type="53" patient_id="1010" encounter_datetime="2019-09-25 00:00:00" creator="1" date_created="2019-09-25 00:00:00" voided="0" uuid="d012e4e6-05ff-4a1c-8896-7ad705f0e4e1" location_id="21" />
 
 	<encounter encounter_id="32672" encounter_type="6" patient_id="2" encounter_datetime="2013-06-17 00:00:00" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="d012e4e6-05ff-4a1c-8896-7fd705f0e4e1" location_id="1" />
 
@@ -291,6 +418,19 @@
 
 	<encounter encounter_id="11668" encounter_type="6" patient_id="1008" encounter_datetime="2013-06-17 00:00:00" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="081c1d39-c634-4ac5-8b5e-b387871b0179" location_id="4" />
 
+		 <obs obs_id="473787" person_id="1021" concept_id="23866" value_datetime="2018-09-17 00:00:00" encounter_id="52673" obs_datetime="2018-09-17 00:00:00"
+         creator="1" date_created="2018-09-17 00:00:00" voided="0"
+         uuid="c0a0d917-ea43-443c-8926-31fbd88f2410" location_id="21"/>
+
+			   <obs obs_id="473788" person_id="1022" concept_id="6273" encounter_id="52674" obs_datetime="2018-07-10 00:00:00"
+         value_coded="1366" creator="1" date_created="2018-07-10 10:03:01" voided="0"
+         uuid="ca34e782-57e9-11ea-8247-a0a4c5d1c75c" location_id="21"/>
+
+		 <obs obs_id="473789" person_id="1023" concept_id="6272" encounter_id="52675" obs_datetime="2018-07-10 00:00:00"
+         value_coded="1366" creator="1" date_created="2018-07-10 10:03:01" voided="0"
+         uuid="e5818f05-57e9-11ea-8247-a0a4c5d1c75c" location_id="21"/>
+
+
 	<obs obs_id="274088" person_id="6" concept_id="6263" encounter_id="32673" obs_datetime="2013-06-17 00:00:00" value_coded="6260" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="28297084-dd14-4a4c-9e85-4b0bf149795b" location_id="1" />
 
 	<obs obs_id="273788" person_id="8" concept_id="6264" encounter_id="32643" obs_datetime="2013-05-03 00:00:00" value_coded="6261" creator="1" date_created="2013-06-19 10:03:01" voided="0" uuid="c0a0d917-ea43-443c-8924-31fbd88f2410" location_id="1" />
@@ -306,5 +446,6 @@
 	<obs obs_id="161899" person_id="1010" concept_id="8888" encounter_id="32682" obs_datetime="2019-09-26 00:00:00" value_coded="6275" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="6d6371cc-45b5-4731-b6d1-8e69cb882cd7" location_id="21" />
 
 	<obs obs_id="161999" person_id="1004" concept_id="9999" encounter_id="33683" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-09-27 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="6d6371cc-45b5-5751-b6d1-8e69cb882cd7" location_id="21" />
+
 
 </dataset>
