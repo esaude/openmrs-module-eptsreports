@@ -81,7 +81,6 @@ public class ResumoMensalQueries {
             + "       AND pg.program_id=${artProgram}"
             + "       AND ps.state=${transferInState}"
             + "       AND ps.end_date is null"
-            + "       AND e.location_id= :location"
             + "       and ps.start_date < :onOrBefore";
 
     Map<String, Integer> valuesMap = new HashMap<>();
