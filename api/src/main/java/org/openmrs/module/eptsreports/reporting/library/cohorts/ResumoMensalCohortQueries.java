@@ -131,6 +131,18 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  public CohortDefinition getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthC1() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("C1");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch("population", map(getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch("exclusion", map(getAdditionalExclusionCriteriaForC1(), "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+    cd.setCompositionString("population AND NOT exclusion");
+    return cd;
+  }
+
 
   /**
    * A.2: Number of patients transferred-in from another HFs during the current month
@@ -362,6 +374,30 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /**
+   * C1: Number of patients who initiated Pre-TARV during the current month and was
+   * screened for TB C1
+   * @return
+   */
+  public CohortDefinition getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTbC1() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Patients who initiated Pre-TARV during the current month and was screened for TB C1");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition c1 = getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2();
+    CohortDefinition tb = getPatientScreenedForTb();
+
+    String mappings = "onOrAfter=${startDate},locationList=${location}";
+    cd.addSearch("Pop", map(getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthC1(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch("TB", map(tb, mappings));
+
+    cd.setCompositionString("Pop AND TB");
+
+    return cd;
+  }
+
   /** @return Patients who initiated Pre-TARV during the current month and started TPI. */
   public CohortDefinition getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTPI() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -481,7 +517,7 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getExclusionCriteriaForC1() {
+  public CohortDefinition getAdditionalExclusionCriteriaForC1() {
     CompositionCohortDefinition cd  = new CompositionCohortDefinition();
     cd.setName("All patients to be excluded for the C1 definition");
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
@@ -489,11 +525,10 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("locationList", "location", Location.class));
     List<Concept> concepts = new ArrayList<>();
     cd.addSearch("transferBasedOnObsDate", map(getPatientsTransferBasedOnObsDate(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}"));
-    cd.addSearch("getPatientsWithTransferFromOtherHF", map(getPatientsWithTransferFromOtherHF(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}"));
     cd.addSearch("getTypeOfPatientTransferredFrom", map(getTypeOfPatientTransferredFrom(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}"));
     cd.addSearch("inProgramState", map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata.getHIVCareProgram().getProgramId(),
             hivMetadata.getPateintTransferedFromOtherFacilityWorkflowState().getProgramWorkflowStateId()), "startDate=${onOrAfter},endDate=${onOrBefore},location=${locationList}"));
-    cd.setCompositionString("transferBasedOnObsDate OR getPatientsWithTransferFromOtherHF OR getTypeOfPatientTransferredFrom OR inProgramState");
+    cd.setCompositionString("transferBasedOnObsDate OR getTypeOfPatientTransferredFrom OR inProgramState");
     return cd;
   }
 
