@@ -252,12 +252,14 @@ public class ResumoMensalCohortQueries {
     definition.setName("Sum B9");
 
     definition.addSearch(
-        "B13", EptsReportUtils.map(getPatientsWhoAreCurrentlyEnrolledOnARTB13(), mappings));
+        "B13", EptsReportUtils.map(findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(), mappings));
 
     definition.addSearch("B9", EptsReportUtils.map(getSumPatientsB9(), mappings));
 
     definition.addSearch(
-        "B12", EptsReportUtils.map(this.getPatientsWhoAreCurrentlyEnrolledOnARTB12(), mappings));
+        "B12",
+        EptsReportUtils.map(
+            this.findPatientsWhoAreCurrentlyEnrolledOnArtMOHLastMonthB12(), mappings));
 
     definition.addSearch(
         "B1",
@@ -329,8 +331,6 @@ public class ResumoMensalCohortQueries {
 
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
-    final String mappingsExclusion = "startDate=${startDate-1d},location=${location}";
-
     definition.addSearch(
         "ABANDONED",
         EptsReportUtils.map(
@@ -343,7 +343,7 @@ public class ResumoMensalCohortQueries {
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
                 "EXCLUSION", ResumoMensalQueries.getPatientsWhoAbandonedTratmentB7Exclusion()),
-            mappingsExclusion));
+            mappings));
 
     definition.addSearch(
         "SUSPEND",
@@ -483,7 +483,7 @@ public class ResumoMensalCohortQueries {
   }
 
   @DocumentedDefinition(value = "B12")
-  public CohortDefinition getPatientsWhoAreCurrentlyEnrolledOnARTB12() {
+  public CohortDefinition findPatientsWhoAreCurrentlyEnrolledOnArtMOHLastMonthB12() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("Suspend RT");
@@ -498,7 +498,7 @@ public class ResumoMensalCohortQueries {
   }
 
   @DocumentedDefinition(value = "B13")
-  public CohortDefinition getPatientsWhoAreCurrentlyEnrolledOnARTB13() {
+  public CohortDefinition findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("Suspend RT");
@@ -617,7 +617,7 @@ public class ResumoMensalCohortQueries {
 
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     definition.addSearch(
-        "B13", EptsReportUtils.map(getPatientsWhoAreCurrentlyEnrolledOnARTB13(), mappings));
+        "B13", EptsReportUtils.map(findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(), mappings));
 
     definition.addSearch(
         "VL",
@@ -656,7 +656,7 @@ public class ResumoMensalCohortQueries {
 
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     definition.addSearch(
-        "B13", EptsReportUtils.map(getPatientsWhoAreCurrentlyEnrolledOnARTB13(), mappings));
+        "B13", EptsReportUtils.map(findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(), mappings));
 
     definition.addSearch(
         "VL",
@@ -695,7 +695,7 @@ public class ResumoMensalCohortQueries {
 
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     definition.addSearch(
-        "B13", EptsReportUtils.map(getPatientsWhoAreCurrentlyEnrolledOnARTB13(), mappings));
+        "B13", EptsReportUtils.map(findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(), mappings));
 
     definition.addSearch(
         "VL",
@@ -713,7 +713,7 @@ public class ResumoMensalCohortQueries {
         map(
             genericCohortQueries.generalSql(
                 "Ex3",
-                ResumoMensalQueries.getE3ExclusionCriteria(
+                ResumoMensalQueries.getE2ExclusionCriteria(
                     hivMetadata.getHivViralLoadConcept().getConceptId(),
                     hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                     hivMetadata.getHivViralLoadQualitative().getConceptId())),

@@ -71,7 +71,7 @@ public class ResumoMensalAandBdisaggregations {
     ColumnParameters fifteenTo19Male =
         new ColumnParameters("fifteenTo19Male", "15 to 19 years male", "gender=M|age=15-19", "04");
     ColumnParameters adolescentTotals =
-        new ColumnParameters("adolescentTotals", "15 to 19 years Totals", "age=15-19", "05");
+        new ColumnParameters("adolescentTotals", "10 to 19 years Totals", "age=10-19", "05");
 
     return Arrays.asList(
         tenTo14Male, tenTo14Female, fifteenTo19Female, fifteenTo19Male, adolescentTotals);
