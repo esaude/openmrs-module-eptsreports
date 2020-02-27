@@ -13,12 +13,12 @@
 
 
 <person person_id="1020" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="true"
-            creator="1" date_created="2005-01-01 00:00:00.0" voided="false" death_date="2018-06-30"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false" death_date="2019-09-30"
             uuid="8b6657b8-57dc-11ea-8247-a0a4c5d1c75c"/>
 
 
 			<person person_id="1021" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="true"
-            creator="1" date_created="2005-01-01 00:00:00.0" voided="false" death_date="2018-06-30"
+            creator="1" date_created="2005-01-01 00:00:00.0" voided="false" death_date="2019-09-25"
             uuid="bb9df255-57dc-11ea-8247-a0a4c5d1c75c"/>
 
 
@@ -377,16 +377,16 @@
 					<encounter_type encounter_type_id="53" name="Master Card - Ficha Resumo" description="Ficha resumo no master card" creator="1"
                     date_created="2019-07-31 14:23:47" retired="0" uuid="e422ecf9-75dd-4367-b21e-54bccabc4763"/>
 
-			   <encounter encounter_id="52673" encounter_type="18" patient_id="1021" encounter_datetime="2018-09-17 00:00:00"
-               creator="1" date_created="2018-09-17 00:00:00" voided="0"
+			   <encounter encounter_id="52673" encounter_type="18" patient_id="1021" encounter_datetime="2019-09-30 00:00:00"
+               creator="1" date_created="2018-09-30 00:00:00" voided="0"
                uuid="cd33857e-c11b-4eb5-8c13-e84a8315958d" location_id="21"/>
 
-					<encounter encounter_id="52674" encounter_type="6" patient_id="1022" encounter_datetime="2018-07-10 00:00:00"
-               creator="1" date_created="2018-07-10 12:55:48" voided="0"
+					<encounter encounter_id="52674" encounter_type="6" patient_id="1022" encounter_datetime="2019-09-30 00:00:00"
+               creator="1" date_created="2018-09-30 12:55:48" voided="0"
                uuid="ca8c2c5e-57e7-11ea-8247-a0a4c5d1c75c" location_id="21"/>
 
-    <encounter encounter_id="52675" encounter_type="53" patient_id="1023" encounter_datetime="2018-07-10 00:00:00"
-               creator="1" date_created="2018-07-10 12:55:48" voided="0"
+    <encounter encounter_id="52675" encounter_type="53" patient_id="1023" encounter_datetime="2019-09-30 00:00:00"
+               creator="1" date_created="2018-09-30 12:55:48" voided="0"
                uuid="0578f158-57e7-11ea-8247-a0a4c5d1c75c" location_id="21"/>
 
     
@@ -418,16 +418,16 @@
 
 	<encounter encounter_id="11668" encounter_type="6" patient_id="1008" encounter_datetime="2013-06-17 00:00:00" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="081c1d39-c634-4ac5-8b5e-b387871b0179" location_id="4" />
 
-		 <obs obs_id="473787" person_id="1021" concept_id="23866" value_datetime="2018-09-17 00:00:00" encounter_id="52673" obs_datetime="2018-09-17 00:00:00"
-         creator="1" date_created="2018-09-17 00:00:00" voided="0"
+		 <obs obs_id="473787" person_id="1021" concept_id="23866" value_datetime="2019-09-17 00:00:00" encounter_id="52673" obs_datetime="2019-09-30 00:00:00"
+         creator="1" date_created="2019-09-30 00:00:00" voided="0"
          uuid="c0a0d917-ea43-443c-8926-31fbd88f2410" location_id="21"/>
 
-			   <obs obs_id="473788" person_id="1022" concept_id="6273" encounter_id="52674" obs_datetime="2018-07-10 00:00:00"
-         value_coded="1366" creator="1" date_created="2018-07-10 10:03:01" voided="0"
+			   <obs obs_id="473788" person_id="1022" concept_id="6273" encounter_id="52674" obs_datetime="2019-09-30 00:00:00"
+         value_coded="1366" creator="1" date_created="2019-09-30 10:03:01" voided="0"
          uuid="ca34e782-57e9-11ea-8247-a0a4c5d1c75c" location_id="21"/>
 
-		 <obs obs_id="473789" person_id="1023" concept_id="6272" encounter_id="52675" obs_datetime="2018-07-10 00:00:00"
-         value_coded="1366" creator="1" date_created="2018-07-10 10:03:01" voided="0"
+		 <obs obs_id="473789" person_id="1023" concept_id="6272" encounter_id="52675" obs_datetime="2019-09-30 00:00:00"
+         value_coded="1366" creator="1" date_created="2019-09-30 10:03:01" voided="0"
          uuid="e5818f05-57e9-11ea-8247-a0a4c5d1c75c" location_id="21"/>
 
 
