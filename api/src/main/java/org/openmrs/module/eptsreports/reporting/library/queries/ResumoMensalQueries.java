@@ -37,11 +37,62 @@ public class ResumoMensalQueries {
    *
    * @return String
    */
-  public static String getAllPatientsWithPreArtStartDateWithBoundaries(
-      int encounterType, int conceptId) {
+  public static String getPatientsWhoInitiatedPreArtDuringCurrentMonthWithConditions(
+      int masterCardEncounterType,
+      int preArtStartDateConceptId,
+      int HIVCareProgramId,
+      int ARVAdultInitialEncounterType,
+      int ARVPediatriaInitialEncounterType) {
+    Map<String, Integer> map = new HashMap<>();
+    map.put("masterCardEncounterType", masterCardEncounterType);
+    map.put("preArtStartDateConceptId", preArtStartDateConceptId);
+    map.put("HIVCareProgramId", HIVCareProgramId);
+    map.put("ARVAdultInitialEncounterType", ARVAdultInitialEncounterType);
+    map.put("ARVPediatriaInitialEncounterType", ARVPediatriaInitialEncounterType);
+
     String query =
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND o.value_datetime IS NOT NULL  AND o.value_datetime BETWEEN :startDate AND :endDate AND o.concept_id=%d";
-    return String.format(query, encounterType, conceptId);
+        "SELECT res.patient_id FROM "
+            + "(SELECT results.patient_id, "
+            + "       Min(results.enrollment_date) enrollment_date "
+            + "FROM   (SELECT p.patient_id, "
+            + "               e.encounter_datetime AS enrollment_date "
+            + "        FROM   patient p "
+            + "               INNER JOIN encounter e "
+            + "                       ON p.patient_id = e.patient_id "
+            + "               INNER JOIN obs o "
+            + "                       ON o.encounter_id = e.encounter_id "
+            + "        WHERE  p.voided = 0 "
+            + "               AND e.voided = 0 "
+            + "               AND o.voided = 0 "
+            + "               AND e.encounter_type = ${masterCardEncounterType} "
+            + "               AND e.location_id =:location "
+            + "               AND o.value_datetime IS NOT NULL "
+            + "               AND o.concept_id =${preArtStartDateConceptId} "
+            + "        UNION ALL "
+            + "        SELECT p.patient_id, "
+            + "               date_enrolled AS enrollment_date "
+            + "        FROM   patient_program pp "
+            + "               JOIN patient p "
+            + "                 ON pp.patient_id = p.patient_id "
+            + "        WHERE  p.voided = 0 "
+            + "               AND pp.voided = 0 "
+            + "               AND pp.program_id =${HIVCareProgramId} "
+            + "               AND pp.location_id =:location "
+            + "        UNION ALL "
+            + "        SELECT p.patient_id, "
+            + "               enc.encounter_datetime AS enrollment_date "
+            + "        FROM   encounter enc "
+            + "               JOIN patient p "
+            + "                 ON p.patient_id = enc.patient_id "
+            + "        WHERE  p.voided = 0 "
+            + "               AND enc.encounter_type IN (${ARVAdultInitialEncounterType},${ARVPediatriaInitialEncounterType}) "
+            + "               AND enc.location_id =:location "
+            + "        ORDER  BY enrollment_date ASC) results "
+            + "        WHERE results.enrollment_date BETWEEN :startDate AND :endDate "
+            + "     GROUP  BY results.patient_id) res  ";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    return stringSubstitutor.replace(query);
   }
 
   public static String getPatientsTransferredFromAnotherHealthFacilityByEndOfPreviousMonth(
@@ -349,6 +400,7 @@ public class ResumoMensalQueries {
     return String.format(
         query, mastercardEncounterType, preArtStarConceptId, consultationEncounterType);
   }
+
   /**
    * Number of active patients in ART by end of previous month
    *
