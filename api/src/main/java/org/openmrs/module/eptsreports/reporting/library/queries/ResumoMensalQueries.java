@@ -69,7 +69,7 @@ public class ResumoMensalQueries {
             + "       AND type.voided = 0 "
             + "       AND type.concept_id = ${typeOfPantientConcept} "
             + "       AND type.value_coded = ${tarvConcept}"
-            + "       AND transf.obs_datetime < :onOrAfter"
+            + "       AND transf.obs_datetime < :onOrBefore"
             + "UNION"
             + "       SELECT pg.patient_id"
             + "       FROM patient p"
@@ -82,18 +82,18 @@ public class ResumoMensalQueries {
             + "       AND ps.state=${transferInState}"
             + "       AND ps.end_date is null"
             + "       AND e.location_id= :location"
-            + "       and ps.start_date < :onOrAfter";
+            + "       and ps.start_date < :onOrBefore";
 
-            Map<String, Integer> valuesMap = new HashMap<>();
-            valuesMap.put("masterCardEncounter", masterCardEncounter);
-            valuesMap.put("transferFromConcept", transferFromConcept);
-            valuesMap.put("yesConcept", yesConcept);
-            valuesMap.put("typeOfPantientConcept", typeOfPantientConcept);
-            valuesMap.put("tarvConcept", tarvConcept);
-            valuesMap.put("artProgram", artProgram);
-            valuesMap.put("transferInState", transferInState);
-            StringSubstitutor sub = new StringSubstitutor(valuesMap);
-            return sub.replace(query);
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("masterCardEncounter", masterCardEncounter);
+    valuesMap.put("transferFromConcept", transferFromConcept);
+    valuesMap.put("yesConcept", yesConcept);
+    valuesMap.put("typeOfPantientConcept", typeOfPantientConcept);
+    valuesMap.put("tarvConcept", tarvConcept);
+    valuesMap.put("artProgram", artProgram);
+    valuesMap.put("transferInState", transferInState);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
   }
 
   public static String getPatientsForF2ForExclusionFromMainQuery(
