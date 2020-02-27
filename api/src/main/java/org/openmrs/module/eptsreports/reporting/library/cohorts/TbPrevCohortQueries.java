@@ -142,7 +142,7 @@ public class TbPrevCohortQueries {
     definition.addSearch(
             "initiated-profilaxia",
             EptsReportUtils.map(
-            		getPatientsthatInitiatedProfilaxia(),
+            		getPatientsThatInitiatedProfilaxia(),
                 "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
     definition.addSearch(
         "transferred-out",
@@ -182,7 +182,7 @@ public class TbPrevCohortQueries {
 	 * 
 	 * @return the cohort definition
 	 */
-  public CohortDefinition getPatientsthatInitiatedProfilaxia() {
+  public CohortDefinition getPatientsThatInitiatedProfilaxia() {
       Concept profilaxiaINH = hivMetadata.getIsoniazidUsageConcept();
       Concept inicio = hivMetadata.getStartDrugs();
       EncounterType adultoSeguimentoEncounterType = hivMetadata.getAdultoSeguimentoEncounterType();
