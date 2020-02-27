@@ -240,29 +240,31 @@ public class ResumoMensalCohortQueries {
 
   /** @return Number of cumulative patients who started ART by end of previous month */
   public CohortDefinition getPatientsWhoStartedArtByEndOfPreviousMonthB10() {
-    CohortDefinition patientsWithArtStartDate = getPatientsWhoInitiatedTarvAtAfacility();
-    CohortDefinition patientsWithDrugPickup = getPatientsWithMasterCardDrugPickUpDate();
-
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Number of cumulative patients who started ART by end of previous month");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    String mappings = "value2=${startDate},locationList=${location}";
-    String transferMappings =
-        "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
+    CohortDefinition patientsWithArtStartDate = genericCohortQueries.getStartedArtBeforeDate(false);
+    CohortDefinition patientsWithDrugPickup = getPatientsWithMasterCardDrugPickUpDate();
+    CohortDefinition fila =
+        genericCohortQueries.hasEncounter(hivMetadata.getARVPharmaciaEncounterType());
+    CohortDefinition transferredIn =
+        getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2();
 
-    cd.addSearch("artStartDate", map(patientsWithArtStartDate, mappings));
-    cd.addSearch("drugPickup", map(patientsWithDrugPickup, mappings));
-    cd.addSearch("transferredIn", map(getPatientsWithTransferFromOtherHF(), transferMappings));
     cd.addSearch(
-        "encBeforeStartDate",
-        map(
-            genericCohortQueries.hasEncounter(hivMetadata.getARVPharmaciaEncounterType()),
-            "locationList=${location},onOrBefore=${startDate-1d}"));
+        "artStartDate",
+        map(patientsWithArtStartDate, "onOrBefore=${startDate},location=${location}"));
 
-    cd.setCompositionString(
-        "(artStartDate AND (drugPickup OR encBeforeStartDate)) AND NOT transferredIn");
+    String mappings = "value2=${startDate},locationList=${location}";
+    cd.addSearch("drugPickup", map(patientsWithDrugPickup, mappings));
+
+    String transferMappings = "onOrBefore=${startDate},location=${location}";
+    cd.addSearch("transferredIn", map(transferredIn, transferMappings));
+
+    cd.addSearch("fila", map(fila, "locationList=${location},onOrBefore=${startDate-1d}"));
+
+    cd.setCompositionString("(artStartDate AND (drugPickup OR fila)) AND NOT transferredIn");
 
     return cd;
   }
