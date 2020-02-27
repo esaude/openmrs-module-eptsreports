@@ -40,6 +40,8 @@ public class TbPrevCohortQueries {
   @Autowired private HivMetadata hivMetadata;
 
   @Autowired private GenericCohortQueries genericCohortQueries;
+  
+  @Autowired private HivCohortQueries hivCohortQueries;
 
   public CohortDefinition getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod() {
     Concept treatmentStartConcept = hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept();
@@ -147,12 +149,8 @@ public class TbPrevCohortQueries {
     definition.addSearch(
         "transferred-out",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
-                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()),
-            "startDate=${onOrAfter-200y},endDate=${onOrBefore},location=${location}"));
+                hivCohortQueries.getPatientsTransferredOut(),
+                "onOrBefore=${onOrBefore-6m},location=${location}"));
     definition.addSearch(
         "completed-isoniazid",
         EptsReportUtils.map(
