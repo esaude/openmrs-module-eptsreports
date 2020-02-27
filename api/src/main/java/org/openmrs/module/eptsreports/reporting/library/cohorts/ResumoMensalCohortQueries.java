@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.openmrs.Concept;
-import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -166,12 +165,6 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
-    CohortDefinition mcDrugPickup = getPatientsWithMasterCardDrugPickUpDate();
-
-    EncounterType pharmacy = hivMetadata.getARVPharmaciaEncounterType();
-    CohortDefinition fila =
-        genericCohortQueries.getPatientsHavingEncounterWithinDateBoundaries(
-            pharmacy.getEncounterTypeId());
 
     CohortDefinition transferredIn =
         getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2();
@@ -179,13 +172,9 @@ public class ResumoMensalCohortQueries {
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
     cd.addSearch("startedArt", map(startedArt, mappings));
 
-    String pckupMappings = "value1=${startDate},value2=${endDate},locationList=${location}";
-    cd.addSearch("mcDrugPickup", map(mcDrugPickup, pckupMappings));
-
-    cd.addSearch("fila", mapStraightThrough(fila));
     cd.addSearch("transferredIn", map(transferredIn, mappings));
 
-    cd.setCompositionString("(startedArt AND (mcDrugPickup OR fila)) AND NOT transferredIn");
+    cd.setCompositionString("startedArt AND NOT transferredIn");
     return cd;
   }
 
