@@ -351,8 +351,6 @@
 
 	<patient_state patient_state_id="5220" patient_program_id="6517" state="29" start_date="2012-08-05 00:00:00" creator="1" date_created="2013-09-16 00:00:00" voided="0" uuid="71d30157-19a9-4909-98fe-8068849c8253" />
 
-	<encounter_type encounter_type_id="34" name="STARV: MASTER CARD" description="EnconterType do Mastercard" creator="1" date_created="2012-02-29 17:05:14" retired="0" uuid="e422ecf9-75dd-4367-b21e-54bccabc4763" />
-
 	<encounter_type encounter_type_id="32" name="STARV: LIVRO PRE-TARV" description="Representao livro de registo PRE-TARV" creator="1" date_created="2012-02-29 17:05:14" retired="0" uuid="bc30cbe1-85b4-459f-acca-cffc4041a3b8" />
 
 	<encounter_type encounter_type_id="33" name="S.TARV: LIVRO TARV" description="Representa o livro de registo TARV" creator="1" date_created="2012-02-29 17:05:40" retired="0" uuid="15915fa8-3d94-430b-9adb-14ec806a8ff2" />
@@ -388,9 +386,9 @@
                uuid="0578f158-57e7-11ea-8247-a0a4c5d1c75c" location_id="21"/>
 
     
-    <encounter encounter_id="33683" encounter_type="34" patient_id="1004" encounter_datetime="2019-09-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="d012e5e6-06ff-4a1c-9896-7ad705f0e4e1" location_id="21" />
+    <encounter encounter_id="33683" encounter_type="53" patient_id="1004" encounter_datetime="2019-09-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="d012e5e6-06ff-4a1c-9896-7ad705f0e4e1" location_id="21" />
 
-	<encounter encounter_id="32682" encounter_type="34" patient_id="1010" encounter_datetime="2019-09-25 00:00:00" creator="1" date_created="2019-09-25 00:00:00" voided="0" uuid="d012e4e6-05ff-4a1c-8896-7ad705f0e4e1" location_id="21" />
+	<encounter encounter_id="32682" encounter_type="53" patient_id="1010" encounter_datetime="2019-09-25 00:00:00" creator="1" date_created="2019-09-25 00:00:00" voided="0" uuid="d012e4e6-05ff-4a1c-8896-7ad705f0e4e1" location_id="21" />
 
 	<encounter encounter_id="32672" encounter_type="6" patient_id="2" encounter_datetime="2013-06-17 00:00:00" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="d012e4e6-05ff-4a1c-8896-7fd705f0e4e1" location_id="1" />
 
