@@ -385,8 +385,6 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    CohortDefinition c1 = getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2();
     CohortDefinition tb = getPatientScreenedForTb();
 
     String mappings = "onOrAfter=${startDate},locationList=${location}";
@@ -399,7 +397,7 @@ public class ResumoMensalCohortQueries {
   }
 
   /** @return Patients who initiated Pre-TARV during the current month and started TPI. */
-  public CohortDefinition getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTPI() {
+  public CohortDefinition getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTpiC2() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients who initiated Pre-TARV during the current month and started TPI");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -410,10 +408,12 @@ public class ResumoMensalCohortQueries {
     CohortDefinition tpi = getPatientsWhoStartedTPI();
 
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
-    cd.addSearch("A2", mapStraightThrough(a2));
+    String mappings1 = "startDate=${startDate-1m},endDate=${endDate},location=${location}";
+    cd.addSearch("A2", map(a2, mappings1));
     cd.addSearch("TPI", map(tpi, mappings));
+    cd.addSearch("exclusions", map(getAdditionalExclusionCriteriaForC2(), "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
 
-    cd.setCompositionString("A2 AND TPI");
+    cd.setCompositionString("(A2 AND TPI) AND NOT exclusions");
 
     return cd;
   }
@@ -529,6 +529,19 @@ public class ResumoMensalCohortQueries {
     cd.addSearch("inProgramState", map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata.getHIVCareProgram().getProgramId(),
             hivMetadata.getPateintTransferedFromOtherFacilityWorkflowState().getProgramWorkflowStateId()), "startDate=${onOrAfter},endDate=${onOrBefore},location=${locationList}"));
     cd.setCompositionString("transferBasedOnObsDate OR getTypeOfPatientTransferredFrom OR inProgramState");
+    return cd;
+  }
+
+  public CohortDefinition getAdditionalExclusionCriteriaForC2() {
+    CompositionCohortDefinition cd  = new CompositionCohortDefinition();
+    cd.setName("All patients to be excluded for the C2 definition");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("locationList", "location", Location.class));
+    List<Concept> concepts = new ArrayList<>();
+    cd.addSearch("transferBasedOnObsDate", map(getPatientsTransferBasedOnObsDate(), "onOrAfter=${onOrAfter-1m},onOrBefore=${onOrBefore},locationList=${locationList}"));
+    cd.addSearch("getTypeOfPatientTransferredFrom", map(getTypeOfPatientTransferredFrom(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}"));
+    cd.setCompositionString("transferBasedOnObsDate OR getTypeOfPatientTransferredFrom");
     return cd;
   }
 
