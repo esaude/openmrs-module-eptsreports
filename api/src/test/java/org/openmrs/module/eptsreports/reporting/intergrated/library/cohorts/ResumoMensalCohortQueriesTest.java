@@ -3,6 +3,7 @@ package org.openmrs.module.eptsreports.reporting.intergrated.library.cohorts;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +30,6 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   public void setup() throws Exception {
     executeDataSet("ResumoMensalTest.xml");
   }
-
 
   @Test
   public void getDeadPatientsShouldReturn() throws EvaluationException {
@@ -60,7 +60,6 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   public void Test() {}
-
 
   @Override
   protected Date getStartDate() {
