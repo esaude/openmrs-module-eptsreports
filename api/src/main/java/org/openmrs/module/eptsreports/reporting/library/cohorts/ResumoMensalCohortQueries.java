@@ -1083,7 +1083,7 @@ public class ResumoMensalCohortQueries {
 
     CohortDefinition B7E = getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A();
 
-    CohortDefinition B8E = getPatientsWhoDied();
+    CohortDefinition B8E = getPatientsWhoDied(false);
 
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
 
