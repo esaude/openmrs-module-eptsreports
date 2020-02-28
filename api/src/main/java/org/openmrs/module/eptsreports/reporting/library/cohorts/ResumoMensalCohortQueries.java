@@ -947,8 +947,7 @@ public class ResumoMensalCohortQueries {
     CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
 
     CohortDefinition fila =
-        genericCohortQueries.getPatientsHavingEncounterBeforeEndDate(
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+        genericCohortQueries.hasEncounter(hivMetadata.getARVPharmaciaEncounterType());
 
     CohortDefinition masterCardPickup = getPatientsWithMasterCardDrugPickUpDate();
 
@@ -964,7 +963,6 @@ public class ResumoMensalCohortQueries {
 
     CohortDefinition B8E = getPatientsWhoDied();
 
-    String mappingsDefault = "startDate=${startDate},endDate=${endDate},location=${location}";
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
 
     String mappingsOnDate = "onDate=${endDate},location=${location}";
@@ -972,7 +970,7 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch("startedArt", map(startedArt, mappings));
 
-    cd.addSearch("fila", map(fila, mappingsDefault));
+    cd.addSearch("fila", map(fila, "nOrBefore=${endDate},locationList=${location}"));
 
     cd.addSearch("masterCardPickup", map(masterCardPickup, mappingsOnOrBeforeLocationList));
 

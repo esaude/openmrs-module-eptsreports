@@ -22,7 +22,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
@@ -487,40 +486,6 @@ public class GenericCohortQueries {
     if (types.length > 0) {
       cd.setEncounterTypeList(Arrays.asList(types));
     }
-    return cd;
-  }
-
-  /**
-   * Get patients who have encounter of a specific before endDate
-   *
-   * @param encounterType
-   * @retrun CohortDefinition
-   */
-  public CohortDefinition getPatientsHavingEncounterBeforeEndDate(int encounterType) {
-
-    Map<String, Integer> map = new HashMap<>();
-    map.put("encounterType", encounterType);
-
-    String query =
-        "  SELECT p.patient_id "
-            + " FROM patient p "
-            + "		INNER JOIN encounter e "
-            + "			ON p.patient_id=e.patient_id "
-            + " WHERE e.voided=0 "
-            + "		AND p.voided=0 "
-            + "		AND e.encounter_type = ${encounterType} "
-            + "		AND e.encounter_datetime <= :endDate "
-            + " GROUP BY p.patient_id";
-
-    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
-    String replacedQUery = stringSubstitutor.replace(query);
-
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Patients having encounter type " + encounterType);
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.setQuery(replacedQUery);
     return cd;
   }
 }
