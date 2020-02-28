@@ -1,6 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.library.cohorts;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -15,7 +14,6 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsTest;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalCohortQueries;
-
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -61,7 +59,6 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     assertTrue(evaluatedCohort.getMemberIds().contains(1023));
   }
 
-
   @Override
   protected Date getStartDate() {
     return DateUtil.getDateTime(2019, 9, 21);
@@ -86,7 +83,6 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     context.addParameterValue("onOrBefore", endDate);
     context.addParameterValue("location", location);
   }
-
 
   @Test
   public void getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2()
