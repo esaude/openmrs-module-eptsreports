@@ -284,7 +284,7 @@ public class ResumoMensalCohortQueries {
     String transferMappings = "onOrBefore=${startDate},location=${location}";
     cd.addSearch("transferredIn", map(transferredIn, transferMappings));
 
-    cd.addSearch("fila", map(fila, "locationList=${location},onOrBefore=${startDate-1d}"));
+    cd.addSearch("fila", map(fila, "onOrBefore=${startDate-1d},locationList=${location}"));
 
     cd.setCompositionString("(artStartDate AND (drugPickup OR fila)) AND NOT transferredIn");
 
@@ -318,12 +318,13 @@ public class ResumoMensalCohortQueries {
     CohortDefinition suspended = getPatientsWhoSuspendedTreatment();
     CohortDefinition missedDrugPickup = getLastArvPickupDateCohort();
     CohortDefinition died = getPatientsWhoDied();
+    CohortDefinition patientsArt = getPatientsWhoStartedArtByEndOfPreviousMonthB10();
 
     String encounterWithCodedObsMappings = "onOrBefore=${startDate},locationList=${location}";
     String drugPickupMappings =
         "value1=${endDate-90d},value2=${endDate},onOrBefore=${startDate},locationList=${location}";
 
-    cd.addSearch("B10", mapStraightThrough(getPatientsWhoStartedArtByEndOfPreviousMonthB10()));
+    cd.addSearch("B10", map(patientsArt, "startDate=${startDate},location=${location}"));
     cd.addSearch("B2A", map(transferredIn, "onOrBefore=${startDate},location=${location}"));
 
     cd.addSearch("B5A", map(transferredOut, "onOrBefore=${startDate},location=${location}"));

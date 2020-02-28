@@ -119,6 +119,8 @@
                      description="UUID for the LEVANTAMENTO DE ARV concept"
                      uuid="087391f3-5895-11ea-8247-a0a4c5d1c75c"/>
 
+	<global_property property="eptsreports.suspendedTreatmentConceptUuid" property_value="e1de1fee-1d5f-11e0-b929-000c29ad1d07" description="UUID for the SUSPENDER TRATAMENTO concept" uuid="5bd1b98b-5972-11ea-8247-a0a4c5d1c75c" />
+
 	<global_property property="eptsreports.preArtStartDate" property_value="f69b1fe0-a657-4225-a996-20b599132508" description="UUID for the PRE-ART START DATE concept" uuid="26b9f568-7d4f-4496-b372-939978af7ddc" />
 
 	<global_property property="eptsreports.preTarvConceptUuid" property_value="44f812e8-c4c0-40cd-aef3-6b1ef76d43e1" description="UUID for PRE-TARV concept" uuid="25a9f568-7d4f-4496-b372-939978af7ddc" />
@@ -192,6 +194,10 @@
 <global_property property="eptsreports.art"
                      property_value="7f3af436-5c3a-447c-9012-42bb314e03db"
                      description="UUID for the ART" uuid="b22eaf67-587d-11ea-8247-a0a4c5d1c75c"/>
+
+					 <global_property property="eptsreports.artPickupConceptUuid"
+                     property_value="e07fb227-7a5a-4edf-93e8-7633c9fd1ea0"
+                     description="UUID for the ART" uuid="754b9578-5974-11ea-8247-a0a4c5d1c75c"/>
 					 
 	<concept concept_id="9999" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2012-02-27 11:30:21" uuid="f69b1fe0-a657-4225-a996-20b599132508" />
 
@@ -265,6 +271,8 @@
 
 	<concept concept_id="1602" retired="0" datatype_id="4" class_id="5" is_set="0" creator="1" date_created="2008-10-13 23:14:01" uuid="e1dcaaec-1d5f-11e0-b929-000c29ad1d07" />
 
+	<concept concept_id="23865" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2008-10-13 23:14:01" uuid="e07fb227-7a5a-4edf-93e8-7633c9fd1ea0" />
+
 
 		 <concept concept_id="23866" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1"
              date_created="2019-07-09 13:00:20" uuid="74f6c17f-9819-41da-ba34-5910f67d24d0"/>
@@ -304,6 +312,10 @@
  
  <concept_name concept_id="23866" name="Date of ART Pickup" locale="en" creator="1" date_created="2008-10-13 05:58:15"
                   concept_name_id="7185" voided="0" uuid="58316739-bdba-4f65-9661-ddd04e089f49"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+				  <concept_name concept_id="23865" name="ART PICKUP" locale="en" creator="1" date_created="2008-10-13 05:58:15"
+                  concept_name_id="33689" voided="0" uuid="02dd0763-2269-431d-8531-fe438c15d0a1"
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
 	<program program_id="1" concept_id="1781" creator="1" date_created="2012-02-29 09:42:25" retired="0" name="SERVICO TARV - CUIDADO" description="Programa de seguimento e cuidado aos pacientes HIV+" uuid="7b2e4a0a-d4eb-4df7-be30-78ca4b28ca99" />

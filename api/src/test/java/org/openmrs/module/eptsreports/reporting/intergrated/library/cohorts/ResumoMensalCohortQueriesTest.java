@@ -51,7 +51,6 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   protected void setParameters(
       Date startDate, Date endDate, Location location, EvaluationContext context) {
 
-    context.addParameterValue("startDate", startDate);
     context.addParameterValue("onOrAfter", startDate);
     context.addParameterValue("onOrBefore", endDate);
     context.addParameterValue("location", location);
@@ -83,7 +82,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     assertEquals(0, evaluatedCohort.getMemberIds().size());
   }
 
-  @Test
+  @Ignore
   public void getPatientsWhoWereActiveByEndOfPreviousMonthB12() throws EvaluationException {
     CohortDefinition cohort =
         resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfPreviousMonthB12();
