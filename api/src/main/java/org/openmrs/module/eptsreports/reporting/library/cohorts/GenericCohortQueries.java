@@ -488,4 +488,22 @@ public class GenericCohortQueries {
     }
     return cd;
   }
+  
+  /**
+   * Get patients who have encounter of a specific before endDate
+   *
+   * @param encounterType
+   * @retrun CohortDefinition
+   */
+  public CohortDefinition getPatientsHavingEncounterBeforeEndDate(int encounterType) {
+    String query =
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE e.voided=0 AND p.voided=0 AND e.encounter_type = %d AND e.encounter_datetime <= :endDate";
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients having encounter type " + encounterType);
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.setQuery(String.format(query, encounterType));
+    return cd;
+  }
 }

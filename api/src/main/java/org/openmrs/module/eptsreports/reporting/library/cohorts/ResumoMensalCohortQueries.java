@@ -947,7 +947,7 @@ public class ResumoMensalCohortQueries {
     CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
 
     CohortDefinition fila =
-        genericCohortQueries.getPatientsHavingEncounterWithinDateBoundaries(
+        genericCohortQueries.getPatientsHavingEncounterBeforeEndDate(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
 
     CohortDefinition masterCardPickup = getPatientsWithMasterCardDrugPickUpDate();
