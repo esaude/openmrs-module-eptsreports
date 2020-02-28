@@ -18,6 +18,9 @@ import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
@@ -253,10 +256,129 @@ public class ResumoMensalCohortQueries {
   }
 
   /** @return B8: Number of dead patients during the current month */
-  public CohortDefinition getPatientsWhoDied() {
-    EncounterWithCodedObsCohortDefinition cd = getStateOfStayCohort();
-    cd.addIncludeCodedValue(hivMetadata.getPatientHasDiedConcept());
-    cd.setName("Number of dead patients during the current month");
+  public CohortDefinition getPatientsWhoDied(Boolean hasStartDate) {
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("locationList", "location", Location.class));
+    String sql =
+        "SELECT patient_id"
+            + "            FROM (SELECT patient_id, Max(death_date) AS death_date"
+            + "            FROM (SELECT p.patient_id, Max(e.encounter_datetime) AS death_date"
+            + "            FROM patient p "
+            + "                     JOIN encounter e "
+            + "                          ON p.patient_id = e.patient_id "
+            + "                     JOIN obs o "
+            + "                          ON e.encounter_id = o.encounter_id "
+            + "            WHERE p.voided = 0 "
+            + "              AND e.voided = 0 "
+            + "              AND e.location_id = :locationList "
+            + "              AND e.encounter_type = ${adultoSeguimento} ";
+    if (hasStartDate == true) {
+      sql = sql + "AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore ";
+    } else {
+      sql = sql + "AND e.encounter_datetime <= :onOrBefore ";
+    }
+    sql =
+        sql
+            + "              AND o.voided = 0 "
+            + "              AND o.concept_id = ${artStateOfStay}"
+            + "              AND o.value_coded = ${patientDeadConcept} "
+            + "      GROUP BY p.patient_id"
+            + "            UNION"
+            + "            SELECT p.patient_id, max(e.encounter_datetime) AS death_date "
+            + "            FROM patient p "
+            + "                     JOIN encounter e "
+            + "                          ON p.patient_id = e.patient_id "
+            + "                     JOIN obs o "
+            + "                          ON e.encounter_id = o.encounter_id "
+            + "            WHERE p.voided = 0 "
+            + "              AND e.voided = 0 "
+            + "              AND e.location_id = :locationList "
+            + "              AND e.encounter_type = ${masterCard} ";
+    if (hasStartDate == true) {
+      sql = sql + "AND o.obs_datetime BETWEEN :onOrAfter AND :onOrBefore ";
+    } else {
+      sql = sql + "AND o.obs_datetime <= :onOrBefore ";
+    }
+    sql =
+        sql
+            + "AND o.voided = 0 "
+            + "              AND o.concept_id = ${preArtStateOfStay}  "
+            + "              AND o.value_coded = ${patientDeadConcept} "
+            + "      GROUP BY p.patient_id"
+            + "            UNION"
+            + "       SELECT pg.patient_id, ps.start_date"
+            + "       FROM patient p"
+            + "         INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
+            + "         INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
+            + "       WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 "
+            + "         AND pg.program_id=${arvProgram}  AND ps.state=${deadState} AND ps.end_date is null ";
+    if (hasStartDate == true) {
+      sql = sql + "AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ";
+    } else {
+      sql = sql + "AND ps.start_date <= :onOrBefore ";
+    }
+    sql =
+        sql
+            + "AND location_id=:locationList"
+            + "            UNION"
+            + "        SELECT p.person_id patient_id, p.death_date "
+            + "      FROM person p "
+            + "      WHERE p.dead=1 ";
+    if (hasStartDate == true) {
+      sql = sql + "AND p.death_date BETWEEN :onOrAfter AND :onOrBefore ";
+    } else {
+      sql = sql + "AND p.death_date <= :onOrBefore ";
+    }
+    sql =
+        sql
+            + "AND p.voided=0) dead"
+            + "       GROUP  BY patient_id) all_dead"
+            + "      WHERE patient_id NOT IN (SELECT p.patient_id "
+            + "         FROM patient p "
+            + "         JOIN encounter e "
+            + "         ON p.patient_id = e.patient_id "
+            + "       WHERE  p.voided = 0 "
+            + "       AND e.voided = 0 "
+            + "       AND e.encounter_type IN ( ${adultoSeguimento}, ${pediatriaSeguimento}, ${farmacia} )  "
+            + "       AND e.location_id = :locationList "
+            + "       AND e.encounter_datetime > death_date "
+            + "       UNION "
+            + "       SELECT p.patient_id "
+            + "       FROM   patient p "
+            + "       JOIN encounter e "
+            + "       ON p.patient_id = e.patient_id "
+            + "       JOIN obs o "
+            + "       ON e.encounter_id = o.encounter_id "
+            + "       WHERE  p.voided = 0 "
+            + "       AND e.voided = 0 "
+            + "       AND e.encounter_type = ${arvLevantamento} "
+            + "       AND e.location_id = :locationList "
+            + "       AND o.concept_id = ${arvLevantamentoDate} "
+            + "       AND o.value_datetime > death_date)";
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put(
+        "adultoSeguimento", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    valuesMap.put("masterCard", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    valuesMap.put("preArtStateOfStay", hivMetadata.getStateOfStayOfPreArtPatient().getConceptId());
+    valuesMap.put("artStateOfStay", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
+    valuesMap.put("patientDeadConcept", hivMetadata.getPatientHasDiedConcept().getConceptId());
+    valuesMap.put("arvProgram", hivMetadata.getARTProgram().getProgramId());
+    valuesMap.put("deadState", hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId());
+    valuesMap.put(
+        "pediatriaSeguimento",
+        hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    valuesMap.put("farmacia", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    valuesMap.put(
+        "arvLevantamento", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    valuesMap.put("arvLevantamentoDate", hivMetadata.getArtDatePickup().getConceptId());
+
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    cd.setQuery(sub.replace(sql));
+
     return cd;
   }
 
@@ -317,8 +439,8 @@ public class ResumoMensalCohortQueries {
     CohortDefinition transferredOut = getPatientsTransferredOutB5();
     CohortDefinition suspended = getPatientsWhoSuspendedTreatment();
     CohortDefinition missedDrugPickup = getLastArvPickupDateCohort();
-    CohortDefinition died = getPatientsWhoDied();
     CohortDefinition patientsArt = getPatientsWhoStartedArtByEndOfPreviousMonthB10();
+    CohortDefinition died = getPatientsWhoDied(false);
 
     String encounterWithCodedObsMappings = "onOrBefore=${startDate},locationList=${location}";
     String drugPickupMappings =
@@ -628,7 +750,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B8",
         map(
-            getPatientsWhoDied(),
+            getPatientsWhoDied(true),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
     cd.setCompositionString("(B12 OR (B1 OR B2 OR B3)) AND NOT (B5 OR B6 OR B7 OR B8)");
     return cd;

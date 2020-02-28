@@ -119,6 +119,7 @@
                      description="UUID for the LEVANTAMENTO DE ARV concept"
                      uuid="087391f3-5895-11ea-8247-a0a4c5d1c75c"/>
 
+
 	<global_property property="eptsreports.suspendedTreatmentConceptUuid" property_value="e1de1fee-1d5f-11e0-b929-000c29ad1d07" description="UUID for the SUSPENDER TRATAMENTO concept" uuid="5bd1b98b-5972-11ea-8247-a0a4c5d1c75c" />
 
 	<global_property property="eptsreports.preArtStartDate" property_value="f69b1fe0-a657-4225-a996-20b599132508" description="UUID for the PRE-ART START DATE concept" uuid="26b9f568-7d4f-4496-b372-939978af7ddc" />
@@ -275,8 +276,8 @@
 
 	<concept concept_id="1602" retired="0" datatype_id="4" class_id="5" is_set="0" creator="1" date_created="2008-10-13 23:14:01" uuid="e1dcaaec-1d5f-11e0-b929-000c29ad1d07" />
 
-	<concept concept_id="23865" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2008-10-13 23:14:01" uuid="e07fb227-7a5a-4edf-93e8-7633c9fd1ea0" />
 
+	<concept concept_id="23865" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2008-10-13 23:14:01" uuid="e07fb227-7a5a-4edf-93e8-7633c9fd1ea0" />
 
 		 <concept concept_id="23866" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1"
              date_created="2019-07-09 13:00:20" uuid="74f6c17f-9819-41da-ba34-5910f67d24d0"/>
@@ -296,6 +297,7 @@
     <concept_name concept_id="6275" name="PRE-TARV" locale="pt" creator="1" date_created="2012-02-29 09:50:50" concept_name_id="7181" voided="0" uuid="11bda988-b5f5-439c-83fe-c8f3fd256878" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
 
 	<concept_name concept_id="1369" name="TRANSFERIDO DE" locale="pt" creator="1" date_created="2008-10-25 13:54:23" concept_name_id="3145" voided="0" uuid="e24e2ffa-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+
 
 <concept_name concept_id="1706" name="TRANSFERIDO PARA" locale="pt" creator="1" date_created="2008-10-25 13:54:23" concept_name_id="3140" voided="0" uuid="e24e2b72-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
 
@@ -392,7 +394,7 @@
 <encounter_type encounter_type_id="52" name="Levantamento de ARV Master Card" description="Registo de levantamento de ARV no Master Card" creator="1"
                     date_created="2019-07-09 13:03:45" retired="0" uuid="cce7b2ec-4fc0-4f9e-806d-b1c4ee9577db"/>
 
-					<encounter_type encounter_type_id="53" name="Master Card - Ficha Resumo" description="Ficha resumo no master card" creator="1"
+  <encounter_type encounter_type_id="53" name="Master Card - Ficha Resumo" description="Ficha resumo no master card" creator="1"
                     date_created="2019-07-31 14:23:47" retired="0" uuid="e422ecf9-75dd-4367-b21e-54bccabc4763"/>
 
 			   <encounter encounter_id="52673" encounter_type="18" patient_id="1021" encounter_datetime="2019-09-30 00:00:00"
