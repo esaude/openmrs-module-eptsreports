@@ -330,6 +330,30 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
         getPatientsWhoDiedTratmentB8(),
         resumoMensalAandBdisaggregations.getAdolescentesColumns());
 
+    // B9 indicators
+    addRow(
+        dsd,
+        "B9TC",
+        "Patients under 15 years",
+        getSumPatientsB9(),
+        resumoMensalAandBdisaggregations.getUnder14YearsColumns());
+
+    addRow(
+        dsd,
+        "B9TA",
+        "Patients over 15 years - adults",
+        getSumPatientsB9(),
+        resumoMensalAandBdisaggregations.getAdultPatients());
+
+    dsd.addColumn("B9TP", "Total patients - Total Geral", getSumPatientsB9(), "");
+
+    addRow(
+        dsd,
+        "B9TAD",
+        "Adolescentes patients",
+        getSumPatientsB9(),
+        resumoMensalAandBdisaggregations.getAdolescentesColumns());
+
     // B10 indicators
     addRow(
         dsd,
@@ -540,7 +564,6 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
   }
 
   private Mapped<CohortIndicator> getSumPatientsB3() {
-
     return mapStraightThrough(
         eptsGeneralIndicator.getIndicator(
             "Patients under 15 years",
@@ -568,7 +591,6 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
   private Mapped<CohortIndicator> getPatientsWhoAbandonedTratmentUpB7() {
     String name = "Patients who abandoned the ART during the current month";
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-
     Mapped<CohortDefinition> cohort =
         map(resumoMensalCohortQueries.getPatientsWhoAbandonedTratmentUpB7(), mappings);
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
@@ -577,42 +599,46 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
   private Mapped<CohortIndicator> getPatientsWhoDiedTratmentB8() {
     String name = "Patients who abandoned the ART during the current month";
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-
     Mapped<CohortDefinition> cohort =
         map(resumoMensalCohortQueries.getPatientsWhoDiedTratmentB8(), mappings);
+    return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
+  }
+
+  private Mapped<CohortIndicator> getSumPatientsB9() {
+    String name = "Patients who abandoned the ART during the current month";
+    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    Mapped<CohortDefinition> cohort = map(resumoMensalCohortQueries.getSumPatientsB9(), mappings);
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
   }
 
   private Mapped<CohortIndicator> getTxNewEndDateB10() {
     String name = "Patients who abandoned the ART during the current month";
     String mappings = "startDate=${startDate},location=${location}";
-
     Mapped<CohortDefinition> cohort = map(resumoMensalCohortQueries.getTxNewEndDateB10(), mappings);
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
   }
 
-  private Mapped<CohortIndicator> getPatientsWhoAreCurrentlyEnrolledOnARTB12() {
+  public Mapped<CohortIndicator> getPatientsWhoAreCurrentlyEnrolledOnARTB12() {
     String name = "Patients who abandoned the ART during the current month";
-    String mappings = "startDate=${startDate-1d},location=${location}";
-
+    String mappings = "startDate=${startDate},location=${location}";
     Mapped<CohortDefinition> cohort =
-        map(resumoMensalCohortQueries.getPatientsWhoAreCurrentlyEnrolledOnARTB12(), mappings);
+        map(
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHLastMonthB12(),
+            mappings);
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
   }
 
   private Mapped<CohortIndicator> getPatientsWhoAreCurrentlyEnrolledOnARTB13() {
     String name = "Patients who abandoned the ART during the current month";
     final String mappings = "endDate=${endDate},location=${location}";
-
     Mapped<CohortDefinition> cohort =
-        map(resumoMensalCohortQueries.getPatientsWhoAreCurrentlyEnrolledOnARTB13(), mappings);
+        map(resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(), mappings);
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
   }
 
   private Mapped<CohortIndicator> findPatientWhoHaveTbSymthomsC1() {
     String name = "Patients who abandoned the ART during the current month";
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-
     Mapped<CohortDefinition> cohort =
         map(resumoMensalCohortQueries.findPatientWhoHaveTbSymthomsC1(), mappings);
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
@@ -621,7 +647,6 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
   private Mapped<CohortIndicator> getPatientsWhoMarkedINHC2A2() {
     String name = "Patients who abandoned the ART during the current month";
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-
     Mapped<CohortDefinition> cohort =
         map(resumoMensalCohortQueries.getPatientsWhoMarkedINHC2A2(), mappings);
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
@@ -630,7 +655,6 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
   private Mapped<CohortIndicator> getPatientsWhoMarkedTbActiveC3A2() {
     String name = "Patients who abandoned the ART during the current month";
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-
     Mapped<CohortDefinition> cohort =
         map(resumoMensalCohortQueries.getPatientsWhoMarkedTbActiveC3A2(), mappings);
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));

@@ -28,6 +28,7 @@ public class ResumoMensalINHCalculation extends BaseFghCalculation {
             .evaluateToList(sqlQuery, context);
 
     ListMap<Integer, Object[]> obsForPatients = new ListMap<Integer, Object[]>();
+
     for (Object[] row : queryResult) {
 
       Object[] obj = {row[1], row[2]};
