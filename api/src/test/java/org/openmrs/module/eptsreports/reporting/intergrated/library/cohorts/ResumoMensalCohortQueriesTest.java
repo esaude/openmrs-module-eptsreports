@@ -102,7 +102,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void testGetNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1()
+  public void getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1()
       throws EvaluationException {
     CohortDefinition cd =
         resumoMensalCohortQueries.getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1();
@@ -114,8 +114,8 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
 
-    assertEquals(3, evaluatedCohort.getMemberIds().size());
-    assertTrue(evaluatedCohort.getMemberIds().contains(1021));
+    assertEquals(1, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1933));
   }
 
   @Ignore

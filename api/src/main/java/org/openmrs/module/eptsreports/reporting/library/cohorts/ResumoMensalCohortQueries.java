@@ -94,7 +94,7 @@ public class ResumoMensalCohortQueries {
         "A1IV",
         map(
             getAllPatientsRegisteredInEncounterType5or7WithEncounterDatetimeLessThanStartDateA1(),
-            "startDate=${startDate},location=${location}"));
+            "onOrBefore=${startDate},locationList=${location}"));
 
     cd.setCompositionString("(A1I OR A1III OR A1IV) AND NOT A1II");
 
@@ -1088,9 +1088,10 @@ public class ResumoMensalCohortQueries {
   private CohortDefinition
       getAllPatientsRegisteredInEncounterType5or7WithEncounterDatetimeLessThanStartDateA1() {
     EncounterCohortDefinition cd = new EncounterCohortDefinition();
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrBefore", "Start Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
     cd.addEncounterType(hivMetadata.getARVPharmaciaEncounterType());
+    cd.addEncounterType(hivMetadata.getARVPediatriaInitialEncounterType());
     return cd;
   }
 
