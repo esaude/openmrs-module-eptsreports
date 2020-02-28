@@ -365,27 +365,24 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
 
     // B13 Indicators
     dsd.addColumn(
-        "B13TP",
-        "Total patients - Total Geral",
-        this.getActivePatientsInARTByEndOfCurrentMonth(),
-        "");
+        "B13TP", "Total patients - Total Geral", getActivePatientsInARTByEndOfCurrentMonth(), "");
     addRow(
         dsd,
         "B13TA",
         "Patients over 15 years - adults",
-        this.getActivePatientsInARTByEndOfCurrentMonth(),
+        getActivePatientsInARTByEndOfCurrentMonth(),
         resumoMensalAandBdisaggregations.getAdultPatients());
     addRow(
         dsd,
         "B13TAD",
         "Adolescentes patients",
-        this.getActivePatientsInARTByEndOfCurrentMonth(),
+        getActivePatientsInARTByEndOfCurrentMonth(),
         resumoMensalAandBdisaggregations.getAdolescentesColumns());
     addRow(
         dsd,
         "B13TC",
         "Patients under 15 years",
-        this.getActivePatientsInARTByEndOfCurrentMonth(),
+        getActivePatientsInARTByEndOfCurrentMonth(),
         resumoMensalAandBdisaggregations.getUnder14YearsColumns());
 
     // C1 indicators
