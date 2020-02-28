@@ -36,6 +36,7 @@ import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterWithCodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
@@ -83,7 +84,7 @@ public class ResumoMensalCohortQueries {
         "A1II",
         map(
             getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA1(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            "onOrBefore=${startDate},location=${location}"));
     cd.addSearch(
         "A1III",
         map(
@@ -1086,21 +1087,11 @@ public class ResumoMensalCohortQueries {
    */
   private CohortDefinition
       getAllPatientsRegisteredInEncounterType5or7WithEncounterDatetimeLessThanStartDateA1() {
-    SqlCohortDefinition sqlPatientsRegisteredEncounterType5or7 = new SqlCohortDefinition();
-    sqlPatientsRegisteredEncounterType5or7.setName("patientsRegisteredEncounterType5or7");
-    sqlPatientsRegisteredEncounterType5or7.addParameter(
-        new Parameter("startDate", "Start Date", Date.class));
-    sqlPatientsRegisteredEncounterType5or7.addParameter(
-        new Parameter("endDate", "End Date", Date.class));
-    sqlPatientsRegisteredEncounterType5or7.addParameter(
-        new Parameter("location", "Location", Location.class));
-    sqlPatientsRegisteredEncounterType5or7.setQuery(
-        ResumoMensalQueries
-            .getAllPatientsRegisteredInEncounterType5or7WithEncounterDatetimeLessThanStartDate(
-                hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId()));
-
-    return sqlPatientsRegisteredEncounterType5or7;
+    EncounterCohortDefinition cd = new EncounterCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getARVPharmaciaEncounterType());
+    return cd;
   }
 
   /**
@@ -1114,7 +1105,6 @@ public class ResumoMensalCohortQueries {
     cd.setName(
         "Number of patients transferred-in from another HF during a period less than startDate");
     cd.setTypeOfPatientTransferredFromAnswer(hivMetadata.getPreTARVConcept());
-    cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     return cd;

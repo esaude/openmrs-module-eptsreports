@@ -477,39 +477,4 @@ public class ResumoMensalQueries {
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     return sub.replace(query);
   }
-
-  /**
-   * Type of Patient Transferred From in Pre-TARV
-   *
-   * @return String
-   */
-  public static String TypeofPatientTransferredFromTipodePacienteTransferidoInPreTARV(
-      int encounterType, int patientType, int preTARV, int transferredFrom, int yesAnswer) {
-    String query =
-        "SELECT p.patient_id "
-            + "FROM patient p "
-            + "INNER JOIN encounter e "
-            + "ON p.patient_id = e.patient_id "
-            + "INNER JOIN obs o "
-            + "ON e.encounter_id = o.encounter_id "
-            + "INNER JOIN obs oo "
-            + "ON e.encounter_id = oo.encounter_id "
-            + "WHERE p.voided = 0 "
-            + "AND e.voided = 0 "
-            + "AND o.voided = 0 "
-            + "AND oo.voided = 0 "
-            + "AND e.encounter_type = ${encounterType} "
-            + "AND ((o.concept_id = ${patientType} AND o.value_coded = ${preTARV}) "
-            + "AND (oo.concept_id = ${transferredFrom} AND oo.value_coded = ${yesAnswer}) "
-            + "AND (o.obs_datetime  < :startDate AND oo.obs_datetime  < :startDate))";
-
-    Map<String, Integer> valuesMap = new HashMap<>();
-    valuesMap.put("encounterType", encounterType);
-    valuesMap.put("patientType", patientType);
-    valuesMap.put("preTARV", preTARV);
-    valuesMap.put("transferredFrom", transferredFrom);
-    valuesMap.put("yesAnswer", yesAnswer);
-    StringSubstitutor sub = new StringSubstitutor(valuesMap);
-    return sub.replace(query);
-  }
 }
