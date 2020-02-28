@@ -83,12 +83,13 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Ignore
+  // B7A query in composition B12 contains DATE_ADD function not supported by BD H2
   public void getPatientsWhoWereActiveByEndOfPreviousMonthB12() throws EvaluationException {
     CohortDefinition cohort =
         resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfPreviousMonthB12();
     Map<Parameter, Object> params = new HashMap<>();
-    params.put(new Parameter("onOrAfter", "onOrAfter", Date.class), getStartDate());
-    params.put(new Parameter("onOrBefore", "onOrBefore", Date.class), getEndDate());
+    params.put(new Parameter("startDate", "onOrAfter", Date.class), getStartDate());
+    params.put(new Parameter("endDate", "onOrBefore", Date.class), getEndDate());
     params.put(new Parameter("location", "location", Location.class), getLocation());
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, params);
 

@@ -198,6 +198,10 @@
 					 <global_property property="eptsreports.artPickupConceptUuid"
                      property_value="e07fb227-7a5a-4edf-93e8-7633c9fd1ea0"
                      description="UUID for the ART" uuid="754b9578-5974-11ea-8247-a0a4c5d1c75c"/>
+
+					 <global_property property="eptsreports.transferOutToAnotherFacilityConceptUuid"
+                     property_value="e1de1cf6-1d5f-11e0-b929-000c29ad1d07"
+                     description="UUID for the TRANSFERIDO PARA concept" uuid="77e584e7-5a09-11ea-8247-a0a4c5d1c75c"/>
 					 
 	<concept concept_id="9999" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2012-02-27 11:30:21" uuid="f69b1fe0-a657-4225-a996-20b599132508" />
 
@@ -292,6 +296,8 @@
     <concept_name concept_id="6275" name="PRE-TARV" locale="pt" creator="1" date_created="2012-02-29 09:50:50" concept_name_id="7181" voided="0" uuid="11bda988-b5f5-439c-83fe-c8f3fd256878" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
 
 	<concept_name concept_id="1369" name="TRANSFERIDO DE" locale="pt" creator="1" date_created="2008-10-25 13:54:23" concept_name_id="3145" voided="0" uuid="e24e2ffa-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+
+<concept_name concept_id="1706" name="TRANSFERIDO PARA" locale="pt" creator="1" date_created="2008-10-25 13:54:23" concept_name_id="3140" voided="0" uuid="e24e2b72-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
 
   <concept_name concept_id="6274" name="ART SERVICE - TREATMENT" locale="en" creator="1" date_created="2008-10-13 05:58:15"
                   concept_name_id="7179" voided="0" uuid="d82b5012-6bec-4f68-95db-e12083e1a2ce"
