@@ -150,7 +150,7 @@ public class TbPrevCohortQueries {
         "transferred-out",
         EptsReportUtils.map(
                 hivCohortQueries.getPatientsTransferredOut(),
-                "onOrBefore=${onOrBefore-6m},location=${location}"));
+                "onOrBefore=${onOrBefore},location=${location}"));
     definition.addSearch(
         "completed-isoniazid",
         EptsReportUtils.map(
