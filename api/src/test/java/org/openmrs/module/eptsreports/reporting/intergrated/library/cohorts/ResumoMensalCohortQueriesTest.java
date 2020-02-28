@@ -101,6 +101,23 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     assertTrue(evaluatedCohort.getMemberIds().contains(1010));
   }
 
+  @Test
+  public void getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1()
+      throws EvaluationException {
+    CohortDefinition cd =
+        resumoMensalCohortQueries.getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1();
+
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+
+    assertEquals(1, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1933));
+  }
+
   @Ignore
   // TODO add some mappings on the dataset to properly test the whole query
   public void getPatientsWhoInitiatedPreArtDuringCurrentMonthWithConditions()
