@@ -550,12 +550,10 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    CohortDefinition a2 = getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2();
     CohortDefinition tb = getPatientsDiagnosedForActiveTB();
 
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
-    cd.addSearch("A2", mapStraightThrough(a2));
+    cd.addSearch("A2", map(getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthC1(), "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch("TB", map(tb, mappings));
 
     cd.setCompositionString("A2 AND TB");
