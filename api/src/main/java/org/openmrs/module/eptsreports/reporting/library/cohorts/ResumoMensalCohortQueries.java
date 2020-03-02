@@ -1220,7 +1220,7 @@ public class ResumoMensalCohortQueries {
 
     CohortDefinition B5E = getPatientsTransferredOutB5();
 
-    CohortDefinition B6E = getPatientsWhoSuspendedTreatment();
+    CohortDefinition B6E = getPatientsWhoSuspendedTreatmentB6();
     ;
 
     CohortDefinition B7E = getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A();
