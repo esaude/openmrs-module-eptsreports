@@ -372,19 +372,18 @@ public class TxMlCohortQueries {
         EptsReportUtils.map(
             txCurrCohortQueries.getPatientsWhoLeftARTProgramBeforeOrOnEndDate(),
             "onOrBefore=${endDate},location=${location}"));
-   
-    cd.addSearch("permanentStateTransferredOut", 
-    		EptsReportUtils.map(
-    			getPatientsWiithPermanentStateTransferredOut(), 
-			"endDate=${endDate},location=${location}"));
-   
+
+    cd.addSearch(
+        "permanentStateTransferredOut",
+        EptsReportUtils.map(
+            getPatientsWiithPermanentStateTransferredOut(),
+            "endDate=${endDate},location=${location}"));
+
     cd.addSearch(
         "patientsWithMissedVisitCard",
         EptsReportUtils.map(
             getPatientsWithMissedVisit(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    
-  
 
     cd.setCompositionString(
         "patientsWhoLeftARTProgramBeforeOrOnEndDate OR permanentStateTransferredOut OR patientsWithMissedVisitCard ");
@@ -717,7 +716,7 @@ public class TxMlCohortQueries {
 
     return cd;
   }
-  
+
   //  Patients Wiith Permanent State Transferred Out
   public CohortDefinition getPatientsWiithPermanentStateTransferredOut() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
