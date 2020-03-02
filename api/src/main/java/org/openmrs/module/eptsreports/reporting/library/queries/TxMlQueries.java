@@ -194,7 +194,7 @@ public class TxMlQueries {
         dead);
   }
 
-  public static String getPatientsWithMissedVisitOnMasterCard(
+  public static String getPatientsWithMissedVisit(
       int homeVisitCardEncounterTypeId,
       int reasonPatientMissedVisitConceptId,
       int transferredOutToAnotherFacilityConceptId,
@@ -655,4 +655,57 @@ public class TxMlQueries {
         patientFoundConcept,
         patientFoundAnswerConcept);
   }
+  
+  public static String getPatientsWiithPermanentStateTransferredOut(
+		  int  masterCardEncounterType,
+		  int  stateOfStayOfPreArtPatient,
+		  int  transferredOutConcept,
+		  int  adultoSeguimentoEncounterType,
+		  int  stateOfStayOfArtPatient) {
+	  
+	  Map<String, Integer> map  = new HashMap<>();
+	  map.put("masterCardEncounterType", masterCardEncounterType);
+	  map.put("stateOfStayOfPreArtPatient", stateOfStayOfPreArtPatient);
+	  map.put("transferredOutConcept", transferredOutConcept);
+	  map.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
+	  map.put("stateOfStayOfArtPatient", stateOfStayOfArtPatient);
+	  
+	  
+	    String query =
+	        " SELECT  p.patient_id " + 
+	        " FROM patient p  " + 
+	        "    INNER JOIN encounter e " + 
+	        "        ON e.patient_id=p.patient_id " + 
+	        "    INNER JOIN obs o " + 
+	        "        ON o.encounter_id=e.encounter_id " + 
+	        " WHERE  p.voided = 0 " +
+	        "    AND e.voided = 0 " +
+	        "    AND o.voided = 0 " + 
+	        "    AND e.encounter_type = ${masterCardEncounterType} " + 
+	        "    AND o.concept_id = ${stateOfStayOfPreArtPatient} " + 
+	        "    AND o.value_coded =  ${transferredOutConcept} " + 
+	        "    AND o.obs_datetime <=  :endDate " + 
+	        "    AND e.location_id =  :location " + 
+	        " UNION " + 
+	        " SELECT  p.patient_id " + 
+	        " FROM patient p  " + 
+	        "    INNER JOIN encounter e " + 
+	        "        ON e.patient_id=p.patient_id " + 
+	        "    INNER JOIN obs o " + 
+	        "        ON o.encounter_id=e.encounter_id " + 
+	        " WHERE  p.voided = 0 " + 
+	        "    AND e.voided = 0 " + 
+	        "    AND o.voided = 0 " + 
+	        "    AND e.encounter_type =${adultoSeguimentoEncounterType} " + 
+	        "    AND o.concept_id = ${stateOfStayOfArtPatient} " + 
+	        "    AND o.value_coded =  ${transferredOutConcept} " + 
+	        "    AND e.encounter_datetime <=  :endDate " + 
+	        "    AND e.location_id =  :location ";
+	    
+	    StringSubstitutor stringSubstitutor  = new StringSubstitutor(map);
+	    return stringSubstitutor.replace(query);
+	    
+
+	   
+	  }
 }

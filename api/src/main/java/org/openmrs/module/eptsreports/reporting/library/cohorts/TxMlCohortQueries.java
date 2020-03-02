@@ -372,14 +372,22 @@ public class TxMlCohortQueries {
         EptsReportUtils.map(
             txCurrCohortQueries.getPatientsWhoLeftARTProgramBeforeOrOnEndDate(),
             "onOrBefore=${endDate},location=${location}"));
+   
+    cd.addSearch("permanentStateTransferredOut", 
+    		EptsReportUtils.map(
+    			getPatientsWiithPermanentStateTransferredOut(), 
+			"endDate=${endDate},location=${location}"));
+   
     cd.addSearch(
-        "patientsWithMissedVisitOnMasterCard",
+        "patientsWithMissedVisitCard",
         EptsReportUtils.map(
-            getPatientsWithMissedVisitOnMasterCardQuery(),
+            getPatientsWithMissedVisit(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
+    
+  
 
     cd.setCompositionString(
-        "patientsWhoLeftARTProgramBeforeOrOnEndDate OR patientsWithMissedVisitOnMasterCard");
+        "patientsWhoLeftARTProgramBeforeOrOnEndDate OR permanentStateTransferredOut OR patientsWithMissedVisitCard ");
 
     return cd;
   }
@@ -576,7 +584,7 @@ public class TxMlCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getPatientsWithMissedVisitOnMasterCardQuery() {
+  public CohortDefinition getPatientsWithMissedVisit() {
     SqlCohortDefinition sql = new SqlCohortDefinition();
     sql.setName("Patients With Missed Visit On Master Card Query");
     sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -584,8 +592,8 @@ public class TxMlCohortQueries {
     sql.addParameter(new Parameter("location", "location", Location.class));
 
     sql.setQuery(
-        TxMlQueries.getPatientsWithMissedVisitOnMasterCard(
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+        TxMlQueries.getPatientsWithMissedVisit(
+            hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
             hivMetadata.getDefaultingMotiveConcept().getConceptId(),
             hivMetadata.getTransferredOutConcept().getConceptId(),
             hivMetadata.getAutoTransferConcept().getConceptId()));
@@ -708,5 +716,25 @@ public class TxMlCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     return cd;
+  }
+  
+  //  Patients Wiith Permanent State Transferred Out
+  public CohortDefinition getPatientsWiithPermanentStateTransferredOut() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+
+    sqlCohortDefinition.setName("Get patients traced (Unable to locate) and Found");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    sqlCohortDefinition.setQuery(
+        TxMlQueries.getPatientsWiithPermanentStateTransferredOut(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getStateOfStayOfPreArtPatient().getConceptId(),
+            hivMetadata.getTransferredOutConcept().getConceptId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getStateOfStayOfArtPatient().getConceptId()));
+
+    return sqlCohortDefinition;
   }
 }
