@@ -307,6 +307,35 @@ public class ResumoMensalQueries {
     return query;
   }
 
+  public static String getPatientsWhoAbandonedTratmentB7ExclusionEndDate() {
+    String query =
+        "select saida.patient_id from (select patient_id,max(data_estado) data_estado from ( "
+            + "select pg.patient_id, max(ps.start_date) data_estado from patient p "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and ps.state in (7,8,10) and ps.end_date is null and ps.start_date<=:endDate and location_id=:location "
+            + "group by pg.patient_id union "
+            + "select p.patient_id, max(o.obs_datetime) data_estado from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs  o on e.encounter_id=o.encounter_id "
+            + "where e.voided=0 and o.voided=0 and p.voided=0 and e.encounter_type in (53,6) and o.concept_id in (6272,6273) and o.value_coded in (1706,1366,1709) and o.obs_datetime<=:endDate and e.location_id=:location "
+            + "group by p.patient_id union "
+            + "select person_id as patient_id,death_date as data_estado from person where dead=1 and death_date is not null and death_date<=:endDate) allSaida "
+            + "group by patient_id) saida inner join( "
+            + "select patient_id,max(encounter_datetime) encounter_datetime from ( "
+            + "select p.patient_id,max(e.encounter_datetime) encounter_datetime from patient p "
+            + "inner join encounter e on e.patient_id=p.patient_id "
+            + "where p.voided=0 and e.voided=0 and e.encounter_datetime<=:endDate and e.location_id=:location and e.encounter_type in (18,6,9) group by p.patient_id "
+            + "union Select p.patient_id,max(value_datetime) encounter_datetime from  patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=52 and o.concept_id=23866 and o.value_datetime is not null and o.value_datetime<=:endDate and e.location_id=:location group by p.patient_id) consultaLev "
+            + "group by patient_id) consultaOuARV on saida.patient_id=consultaOuARV.patient_id "
+            + "where consultaOuARV.encounter_datetime<=saida.data_estado and saida.data_estado<=:endDate ";
+
+    return query;
+  }
+
   public static String getPatientsWhoDiedTratmentB8() {
 
     String query =
