@@ -1060,7 +1060,7 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getArtDatePickup().getConceptId()));
     return cd;
   }
-  
+
   /**
    * Get all patients enrolled in PRE-ART program id 1, with date enrolled less than startDate
    *
@@ -1152,7 +1152,7 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch("startedArt", map(startedArt, mappings));
 
-    cd.addSearch("fila", map(fila, "nOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch("fila", map(fila, "onOrBefore=${endDate},locationList=${location}"));
 
     cd.addSearch("masterCardPickup", map(masterCardPickup, mappingsOnOrBeforeLocationList));
 
