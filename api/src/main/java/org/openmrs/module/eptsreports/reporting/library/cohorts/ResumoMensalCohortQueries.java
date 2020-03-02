@@ -538,7 +538,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch("B2A", map(transferredIn, "onOrBefore=${startDate},location=${location}"));
     cd.addSearch("B3A", map(startDrugs, encounterWithCodedObsMappings));
     cd.addSearch("B5A", map(transferredOut, "onOrBefore=${startDate},location=${location}"));
-    cd.addSearch("B6A", map(suspended, encounterWithCodedObsMappings));
+    cd.addSearch("B6A", map(suspended, "onOrBefore=${startDate},location=${location}"));
     cd.addSearch(
         "B7A",
         map(
@@ -829,7 +829,7 @@ public class ResumoMensalCohortQueries {
         "B6",
         map(
             getPatientsWhoSuspendedTreatmentB6(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "B7",
         map(
