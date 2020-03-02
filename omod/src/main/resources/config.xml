@@ -84,6 +84,14 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>@MODULE_ID@.preTarvConceptUuid</property>
+		<defaultValue>44f812e8-c4c0-40cd-aef3-6b1ef76d43e1</defaultValue>
+		<description>
+			UUID for the Pre-Art concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>@MODULE_ID@.sTarvAdultoSeguimentoEncounterTypeUuid
 		</property>
 		<defaultValue>e278f956-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -1420,6 +1428,15 @@
 		<defaultValue>a7d3b5c9-8b8e-4f29-b332-8db47466fed3</defaultValue>
 		<description>
 			UUID for the STATE OF STAY ART PATIENT concept
+		</description>
+	</globalProperty>
+
+	<!--6275-->
+	<globalProperty>
+		<property>eptsreports.preTarvConceptUuid</property>
+		<defaultValue>44f812e8-c4c0-40cd-aef3-6b1ef76d43e1</defaultValue>
+		<description>
+			UUID for PRE-TARV concept
 		</description>
 	</globalProperty>
 

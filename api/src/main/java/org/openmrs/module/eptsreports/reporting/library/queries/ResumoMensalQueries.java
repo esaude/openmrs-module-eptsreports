@@ -37,11 +37,62 @@ public class ResumoMensalQueries {
    *
    * @return String
    */
-  public static String getAllPatientsWithPreArtStartDateWithBoundaries(
-      int encounterType, int conceptId) {
+  public static String getPatientsWhoInitiatedPreArtDuringCurrentMonthWithConditions(
+      int masterCardEncounterType,
+      int preArtStartDateConceptId,
+      int HIVCareProgramId,
+      int ARVAdultInitialEncounterType,
+      int ARVPediatriaInitialEncounterType) {
+    Map<String, Integer> map = new HashMap<>();
+    map.put("masterCardEncounterType", masterCardEncounterType);
+    map.put("preArtStartDateConceptId", preArtStartDateConceptId);
+    map.put("HIVCareProgramId", HIVCareProgramId);
+    map.put("ARVAdultInitialEncounterType", ARVAdultInitialEncounterType);
+    map.put("ARVPediatriaInitialEncounterType", ARVPediatriaInitialEncounterType);
+
     String query =
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND o.value_datetime IS NOT NULL  AND o.value_datetime BETWEEN :startDate AND :endDate AND o.concept_id=%d";
-    return String.format(query, encounterType, conceptId);
+        "SELECT res.patient_id FROM "
+            + "(SELECT results.patient_id, "
+            + "       Min(results.enrollment_date) enrollment_date "
+            + "FROM   (SELECT p.patient_id, "
+            + "               e.encounter_datetime AS enrollment_date "
+            + "        FROM   patient p "
+            + "               INNER JOIN encounter e "
+            + "                       ON p.patient_id = e.patient_id "
+            + "               INNER JOIN obs o "
+            + "                       ON o.encounter_id = e.encounter_id "
+            + "        WHERE  p.voided = 0 "
+            + "               AND e.voided = 0 "
+            + "               AND o.voided = 0 "
+            + "               AND e.encounter_type = ${masterCardEncounterType} "
+            + "               AND e.location_id =:location "
+            + "               AND o.value_datetime IS NOT NULL "
+            + "               AND o.concept_id =${preArtStartDateConceptId} "
+            + "        UNION ALL "
+            + "        SELECT p.patient_id, "
+            + "               date_enrolled AS enrollment_date "
+            + "        FROM   patient_program pp "
+            + "               JOIN patient p "
+            + "                 ON pp.patient_id = p.patient_id "
+            + "        WHERE  p.voided = 0 "
+            + "               AND pp.voided = 0 "
+            + "               AND pp.program_id =${HIVCareProgramId} "
+            + "               AND pp.location_id =:location "
+            + "        UNION ALL "
+            + "        SELECT p.patient_id, "
+            + "               enc.encounter_datetime AS enrollment_date "
+            + "        FROM   encounter enc "
+            + "               JOIN patient p "
+            + "                 ON p.patient_id = enc.patient_id "
+            + "        WHERE  p.voided = 0 "
+            + "               AND enc.encounter_type IN (${ARVAdultInitialEncounterType},${ARVPediatriaInitialEncounterType}) "
+            + "               AND enc.location_id =:location "
+            + "        ORDER  BY enrollment_date ASC) results "
+            + "        WHERE results.enrollment_date BETWEEN :startDate AND :endDate "
+            + "     GROUP  BY results.patient_id) res  ";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    return stringSubstitutor.replace(query);
   }
 
   public static String getPatientsTransferredFromAnotherHealthFacilityByEndOfPreviousMonth(
@@ -83,9 +134,13 @@ public class ResumoMensalQueries {
   }
 
   public static String getPatientsForF2ForExclusionFromMainQuery(
-      int encounterType, int tbSymptomsConcept, int yesConcept, int noConcept, int tbTreatmentPlanConcept) {
+      int adultoSeguimentoEncounterType,
+      int tbSymptomsConcept,
+      int yesConcept,
+      int noConcept,
+      int tbTreatmentPlanConcept) {
     String query =
-            "SELECT p.patient_id "
+        "SELECT p.patient_id "
             + "FROM   patient p "
             + " JOIN encounter e "
             + " ON p.patient_id = e.patient_id "
@@ -94,25 +149,24 @@ public class ResumoMensalQueries {
             + " JOIN (SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM encounter enc JOIN patient pat ON pat.patient_id=enc.patient_id "
             + " JOIN obs ob ON enc.encounter_id=ob.encounter_id WHERE pat.voided = 0 AND enc.voided = 0 AND ob.voided = 0 "
             + " AND enc.location_id = :location AND enc.encounter_datetime BETWEEN :startDate AND :endDate "
-            + " AND enc.encounter_type= ${encounterType} AND ob.concept_id=${tbSymptomsConcept} AND (ob.value_coded=${yesConcept} OR ob.value_coded=${noConcept})) ed "
+            + " AND enc.encounter_type= ${adultoSeguimentoEncounterType} AND ob.concept_id=${tbSymptomsConcept} AND (ob.value_coded=${yesConcept} OR ob.value_coded=${noConcept})) ed "
             + " ON p.patient_id=ed.patient_id"
             + " WHERE  p.voided = 0 "
             + " AND e.voided = 0 "
-            + " AND e.encounter_type = ${encounterType} "
+            + " AND e.encounter_type = ${adultoSeguimentoEncounterType} "
             + " AND e.location_id = :location "
             + " AND e.encounter_datetime = ed.endDate "
             + " AND o.voided = 0 "
             + " AND o.concept_id = ${tbTreatmentPlanConcept} ";
 
-            Map<String, Integer> valuesMap = new HashMap<>();
-            valuesMap.put("encounterType", encounterType);
-            valuesMap.put("tbSymptomsConcept", tbSymptomsConcept);
-            valuesMap.put("yesConcept", yesConcept);
-            valuesMap.put("noConcept", noConcept);
-            valuesMap.put("encounterType", encounterType);
-            valuesMap.put("tbTreatmentPlanConcept", tbTreatmentPlanConcept);
-            StringSubstitutor sub = new StringSubstitutor(valuesMap);
-            return sub.replace(query);
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
+    valuesMap.put("tbSymptomsConcept", tbSymptomsConcept);
+    valuesMap.put("yesConcept", yesConcept);
+    valuesMap.put("noConcept", noConcept);
+    valuesMap.put("tbTreatmentPlanConcept", tbTreatmentPlanConcept);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
   }
 
   /**
@@ -346,6 +400,7 @@ public class ResumoMensalQueries {
     return String.format(
         query, mastercardEncounterType, preArtStarConceptId, consultationEncounterType);
   }
+
   /**
    * Number of active patients in ART by end of previous month
    *
@@ -371,5 +426,55 @@ public class ResumoMensalQueries {
             + " ) final WHERE DATE_ADD(final.encounter_date, INTERVAL 90 DAY) < :onDate ";
     return String.format(
         query, pharmacyEncounterType, mastercardEncounterType, drugPickupConceptId);
+  }
+
+  /**
+   * Get all patients enrolled in PRE-ART program id 1, with date enrolled less than startDate
+   *
+   * @return String
+   */
+  public static String getAllPatientsEnrolledInPreArtProgramWithDateEnrolledLessThanStartDate(
+      int programId) {
+    String query =
+        "SELECT p.patient_id "
+            + "FROM   patient p "
+            + "       INNER JOIN patient_program pp "
+            + "               ON p.patient_id = pp.patient_id "
+            + "WHERE  p.voided = 0 "
+            + "       AND pp.voided = 0 "
+            + "       AND pp.location_id = :location "
+            + "       AND pp.program_id = ${programId} "
+            + "       AND pp.date_enrolled < :startDate";
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("programId", programId);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
+  }
+
+  /**
+   * Get all patients registered in encounterType 5 or 7, with date enrolled less than startDate
+   *
+   * @return String
+   */
+  public static String
+      getAllPatientsRegisteredInEncounterType5or7WithEncounterDatetimeLessThanStartDate(
+          int encounterType5, int encounterType7) {
+    String query =
+        "SELECT p.patient_id "
+            + "FROM patient p "
+            + "INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "WHERE p.voided = 0 "
+            + "AND e.voided = 0 "
+            + "AND e.location_id = :location "
+            + "AND e.encounter_type IN (${encounterType5}, ${encounterType7}) "
+            + "AND e.encounter_datetime < :startDate";
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("encounterType5", encounterType5);
+    valuesMap.put("encounterType7", encounterType7);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
   }
 }
