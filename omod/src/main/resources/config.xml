@@ -82,12 +82,12 @@
 			UUID for the SIM concept
 		</description>
 	</globalProperty>
-
+	<!--6275-->
 	<globalProperty>
-		<property>@MODULE_ID@.preTarvConceptUuid</property>
+		<property>eptsreports.hivCareConceptUuid</property>
 		<defaultValue>44f812e8-c4c0-40cd-aef3-6b1ef76d43e1</defaultValue>
 		<description>
-			UUID for the Pre-Art concept
+			UUID for HIV CARE concept
 		</description>
 	</globalProperty>
 
@@ -1847,15 +1847,6 @@
 		<defaultValue>558a66da-4900-4313-a02d-4ebb4f9948df</defaultValue>
 		<description>
 			UUID for the Absence of Health Provider in Health Unit concept
-		</description>
-	</globalProperty>
-
-	<!--6275-->
-	<globalProperty>
-		<property>eptsreports.hivCareConceptUuid</property>
-		<defaultValue>44f812e8-c4c0-40cd-aef3-6b1ef76d43e1</defaultValue>
-		<description>
-			UUID for HIV CARE concept
 		</description>
 	</globalProperty>
 

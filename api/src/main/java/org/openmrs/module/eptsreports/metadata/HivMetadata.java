@@ -1425,17 +1425,10 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(
         Context.getAdministrationService().getGlobalProperty("eptsreports.bPlusConceptUuid"));
   }
-
-
-  //6275
-  public Concept getHivCareConcept() {
-    return getConcept(
-            Context.getAdministrationService().getGlobalProperty("eptsreports.hivCareConceptUuid"));
-  }
   // concept_id = 6275
   public Concept getPreTarvConcept() {
     String uuid =
-        Context.getAdministrationService().getGlobalProperty("eptsreports.preTarvConceptUuid");
+        Context.getAdministrationService().getGlobalProperty("eptsreports.hivCareConceptUuid");
     return getConcept(uuid);
   }
 }

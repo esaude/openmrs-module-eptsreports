@@ -622,7 +622,7 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("locationList", "location", Location.class));
     cd.addEncounterType(hivMetadata.getMasterCardEncounterType());
     cd.setConcept(hivMetadata.getTypeOfPatientTransferredFrom());
-    cd.addIncludeCodedValue(hivMetadata.getHivCareConcept());
+    cd.addIncludeCodedValue(hivMetadata.getPreTarvConcept());
     return cd;
   }
 
