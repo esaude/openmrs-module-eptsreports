@@ -23,6 +23,7 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.resumomensal.ResumoMensalINHCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.resumomensal.ResumoMensalTBCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.resumomensal.ResumoMensalTbExclusionCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.BaseFghCalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxNewQueries;
@@ -724,6 +725,19 @@ public class ResumoMensalCohortQueries {
     return definition;
   }
 
+  @DocumentedDefinition(value = "F3")
+  public CohortDefinition findPatientWhoHaveTbSymthomsAndTbActive() {
+
+    BaseFghCalculationCohortDefinition cd =
+        new BaseFghCalculationCohortDefinition(
+            "F3", Context.getRegisteredComponents(ResumoMensalTbExclusionCalculation.class).get(0));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "end Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    return cd;
+  }
+
   @DocumentedDefinition(value = "F1")
   public CohortDefinition getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -753,12 +767,7 @@ public class ResumoMensalCohortQueries {
         EptsReportUtils.map(
             getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1(), mappings));
 
-    definition.addSearch(
-        "TB1",
-        map(
-            genericCohortQueries.generalSql(
-                "TB1", ResumoMensalQueries.findPatientWhoHaveTbSymthomsF2()),
-            mappings));
+    definition.addSearch("TB1", map(findPatientWhoHaveTbSymthomsAndTbActive(), mappings));
 
     definition.addSearch(
         "TB2",
