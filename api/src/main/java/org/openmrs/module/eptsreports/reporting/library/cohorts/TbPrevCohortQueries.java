@@ -12,18 +12,23 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.prev.CompletedIsoniazidProphylaticTreatmentCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,6 +40,8 @@ public class TbPrevCohortQueries {
   @Autowired private HivMetadata hivMetadata;
 
   @Autowired private GenericCohortQueries genericCohortQueries;
+  
+  @Autowired private HivCohortQueries hivCohortQueries;
 
   public CohortDefinition getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod() {
     Concept treatmentStartConcept = hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept();
@@ -42,7 +49,8 @@ public class TbPrevCohortQueries {
         StringUtils.join(
             Arrays.asList(
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getId()),
+                hivMetadata.getARVPediatriaSeguimentoEncounterType().getId(),
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId()),
             ",");
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Patient states based on end of reporting period");
@@ -134,21 +142,22 @@ public class TbPrevCohortQueries {
             getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod(),
             "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
     definition.addSearch(
+            "initiated-profilaxia",
+            EptsReportUtils.map(
+            		getPatientsThatInitiatedProfilaxia(),
+                "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
+    definition.addSearch(
         "transferred-out",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
-                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()),
-            "startDate=${onOrAfter-200y},endDate=${onOrBefore},location=${location}"));
+                hivCohortQueries.getPatientsTransferredOut(),
+                "onOrBefore=${onOrBefore},location=${location}"));
     definition.addSearch(
         "completed-isoniazid",
         EptsReportUtils.map(
             getPatientsThatCompletedIsoniazidProphylacticTreatment(),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
     definition.setCompositionString(
-        "started-by-end-previous-reporting-period AND (started-isoniazid NOT (transferred-out NOT completed-isoniazid))");
+        "started-by-end-previous-reporting-period AND ((started-isoniazid OR initiated-profilaxia) NOT (transferred-out NOT completed-isoniazid))");
     return definition;
   }
 
@@ -163,4 +172,30 @@ public class TbPrevCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     return cd;
   }
+  
+	/**
+	 * Patients who on “Ficha Clinica-MasterCard”, mastercard under “
+	 * Profilaxia INH” were marked with an “I” (inicio) in a clinical consultation
+	 * date occurred between ${onOrAfter} and ${onOrBefore}
+	 * 
+	 * @return the cohort definition
+	 */
+  public CohortDefinition getPatientsThatInitiatedProfilaxia() {
+      Concept profilaxiaINH = hivMetadata.getIsoniazidUsageConcept();
+      Concept inicio = hivMetadata.getStartDrugs();
+      EncounterType adultoSeguimentoEncounterType = hivMetadata.getAdultoSeguimentoEncounterType();
+
+      CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+      cd.setName("Initiated Profilaxia");
+      cd.addParameter(new Parameter("location", "Location", Location.class));
+      cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+      cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+      cd.setEncounterTypeList(Collections.singletonList(adultoSeguimentoEncounterType));
+      cd.setTimeModifier(TimeModifier.ANY);
+      cd.setQuestion(profilaxiaINH);
+      cd.setValueList(Collections.singletonList(inicio));
+      cd.setOperator(SetComparator.IN);
+      return cd;
+  }
+
 }

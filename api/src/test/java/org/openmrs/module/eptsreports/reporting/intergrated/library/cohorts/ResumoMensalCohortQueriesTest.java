@@ -85,6 +85,31 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     assertTrue(evaluatedCohort.getMemberIds().contains(1023));
   }
 
+  @Override
+  protected Date getStartDate() {
+    return DateUtil.getDateTime(2019, 9, 21);
+  }
+
+  @Override
+  protected Date getEndDate() {
+    return DateUtil.getDateTime(2019, 10, 20);
+  }
+
+  @Override
+  protected Location getLocation() {
+    return Context.getLocationService().getLocation(21);
+  }
+
+  @Override
+  protected void setParameters(
+      Date startDate, Date endDate, Location location, EvaluationContext context) {
+
+    context.addParameterValue("startDate", startDate);
+    context.addParameterValue("onOrAfter", startDate);
+    context.addParameterValue("onOrBefore", endDate);
+    context.addParameterValue("location", location);
+  }
+
   @Test
   public void getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2()
       throws EvaluationException {
@@ -98,6 +123,23 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, parameters);
     assertEquals(1, evaluatedCohort.getMemberIds().size());
     assertTrue(evaluatedCohort.getMemberIds().contains(1010));
+  }
+
+  @Test
+  public void getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1()
+      throws EvaluationException {
+    CohortDefinition cd =
+        resumoMensalCohortQueries.getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1();
+
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+
+    assertEquals(1, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1933));
   }
 
   @Ignore
