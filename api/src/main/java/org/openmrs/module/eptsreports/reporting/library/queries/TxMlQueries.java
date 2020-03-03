@@ -194,7 +194,7 @@ public class TxMlQueries {
         dead);
   }
 
-  public static String getPatientsWithMissedVisitOnMasterCard(
+  public static String getPatientsWithMissedVisit(
       int homeVisitCardEncounterTypeId,
       int reasonPatientMissedVisitConceptId,
       int transferredOutToAnotherFacilityConceptId,
