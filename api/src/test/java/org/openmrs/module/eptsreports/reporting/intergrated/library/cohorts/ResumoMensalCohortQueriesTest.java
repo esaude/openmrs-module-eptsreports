@@ -56,8 +56,8 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     context.addParameterValue("onOrBefore", endDate);
     context.addParameterValue("location", location);
   }
-  
-   @Test
+
+  @Test
   public void getDeadPatientsShouldReturn() throws EvaluationException {
 
     CohortDefinition cohort = resumoMensalCohortQueries.getPatientsWhoDied(true);
@@ -126,20 +126,5 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort);
 
     assertEquals(0, evaluatedCohort.getMemberIds().size());
-  }
-
-  @Ignore
-  // B7A query in composition B12 contains DATE_ADD function not supported by BD H2
-  public void getPatientsWhoWereActiveByEndOfPreviousMonthB12() throws EvaluationException {
-    CohortDefinition cohort =
-        resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfPreviousMonthB12();
-    Map<Parameter, Object> params = new HashMap<>();
-    params.put(new Parameter("startDate", "onOrAfter", Date.class), getStartDate());
-    params.put(new Parameter("endDate", "onOrBefore", Date.class), getEndDate());
-    params.put(new Parameter("location", "location", Location.class), getLocation());
-    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, params);
-
-    assertEquals(1, evaluatedCohort.size());
-    assertTrue(evaluatedCohort.contains(1003));
   }
 }

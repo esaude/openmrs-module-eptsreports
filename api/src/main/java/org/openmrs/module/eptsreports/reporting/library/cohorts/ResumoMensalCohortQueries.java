@@ -530,13 +530,10 @@ public class ResumoMensalCohortQueries {
 
     CohortDefinition transferredOut = getPatientsTransferredOutB5();
     CohortDefinition suspended = getPatientsWhoSuspendedTreatmentB6();
-    CohortDefinition missedDrugPickup = getLastArvPickupDateCohort();
     CohortDefinition patientsArt = getPatientsWhoStartedArtByEndOfPreviousMonthB10();
     CohortDefinition died = getPatientsWhoDied(false);
 
     String encounterWithCodedObsMappings = "onOrBefore=${startDate},locationList=${location}";
-    String drugPickupMappings =
-        "value1=${endDate-90d},value2=${endDate},onOrBefore=${startDate},locationList=${location}";
 
     cd.addSearch("B10", map(patientsArt, "startDate=${startDate},location=${location}"));
     cd.addSearch("B2A", map(transferredIn, "onOrBefore=${startDate},location=${location}"));
