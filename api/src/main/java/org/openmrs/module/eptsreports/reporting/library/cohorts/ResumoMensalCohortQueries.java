@@ -266,73 +266,73 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("location", "location", Location.class));
     StringBuilder sql = new StringBuilder();
     sql.append("SELECT patient_id ");
-    sql.append( "FROM (SELECT patient_id, ");
-    sql.append( "             Max(suspended_date) suspended_date ");
-    sql.append( "      FROM (SELECT p.patient_id, ");
-	sql.append( "                   ps.start_date suspended_date ");
-	sql.append( "            FROM patient p ");
-	sql.append( "                     JOIN patient_program pp ");
-	sql.append("                          ON p.patient_id = pp.patient_id ");
-	sql.append( "                     JOIN patient_state ps ");
-	sql.append( "                          ON pp.patient_program_id = ps.patient_program_id ");
-	sql.append( "            WHERE p.voided = 0 ");
-	sql.append( "              AND pp.voided = 0 ");
-	sql.append( "              AND pp.program_id = ${art} ");
-	sql.append( "              AND pp.location_id = :location ");
-	sql.append( "              AND ps.voided = 0 ");
-	sql.append( "              AND ps.state = ${suspendedState} ");
-	if(useBothDates) {
-		sql.append( "              AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ");
-	}else {
-		sql.append( "              AND ps.start_date  <= :onOrBefore ");
-	}
-   sql.append( "            UNION ");
-   sql.append( "            SELECT p.patient_id, ");
-   sql.append( "                   e.encounter_datetime suspended_date ");
-   sql.append( "            FROM patient p ");
-   sql.append( "                     JOIN encounter e ");
-	sql.append( "                          ON p.patient_id = e.patient_id ");
-	sql.append( "                     JOIN obs o ");
-	sql.append( "                          ON e.encounter_id = o.encounter_id ");
-	sql.append( "            WHERE p.voided = 0 ");
-	sql.append( "              AND e.voided = 0 ");
-	sql.append( "              AND e.location_id = :location ");
-	sql.append( "              AND e.encounter_type IN (${adultSeg}, ${masterCard}) ");
-	if(useBothDates) {
-		sql.append("              AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore ");
-	}else {
-		sql.append( "              AND e.encounter_datetime  <= :onOrBefore ");
-	}
-	sql.append( "              AND o.voided = 0 ");
-    sql.append( "              AND o.concept_id IN (${artStateOfStay}, ${preArtStateOfStay}) ");
-    sql.append( "              AND o.value_coded = ${suspendedConcept}) transferout ");
-    sql.append( "      GROUP BY patient_id) max_transferout ");
-    sql.append( "WHERE patient_id NOT IN (SELECT p.patient_id ");
-    sql.append( "                         FROM patient p ");
-    sql.append( "                                  JOIN encounter e ");
-    sql.append( "                                       ON p.patient_id = e.patient_id ");
-    sql.append( "                         WHERE p.voided = 0 ");
-    sql.append( "                           AND e.voided = 0 ");
-    sql.append( "                           AND e.encounter_type IN (${fila}) ");
-    sql.append( "                           AND e.location_id = :location ");
-    sql.append( "                           AND e.encounter_datetime > suspended_date ");
-    sql.append( "                           AND e.encounter_datetime <= :onOrBefore ");
-    sql.append( "                         UNION ");
-    sql.append( "                         SELECT p.patient_id ");
-    sql.append( "                         FROM patient p ");
-    sql.append( "                                  JOIN encounter e ");
-    sql.append( "                                       ON p.patient_id = e.patient_id ");
-    sql.append( "                                  JOIN obs o ");
-    sql.append( "                                       ON e.encounter_id = o.encounter_id ");
-    sql.append( "                         WHERE p.voided = 0 ");
-    sql.append( "                           AND e.voided = 0 ");
-    sql.append( "                           AND e.encounter_type = ${mcDrugPickup} ");
-    sql.append( "                           AND e.location_id = :location ");
-    sql.append( "                           AND o.concept_id = ${drugPickup} ");
-    sql.append( "                           AND o.value_datetime ");
-    sql.append( "                             > suspended_date");
-    sql.append( "                           AND o.value_datetime");
-    sql.append( "                             <= :onOrBefore);");
+    sql.append("FROM (SELECT patient_id, ");
+    sql.append("             Max(suspended_date) suspended_date ");
+    sql.append("      FROM (SELECT p.patient_id, ");
+    sql.append("                   ps.start_date suspended_date ");
+    sql.append("            FROM patient p ");
+    sql.append("                     JOIN patient_program pp ");
+    sql.append("                          ON p.patient_id = pp.patient_id ");
+    sql.append("                     JOIN patient_state ps ");
+    sql.append("                          ON pp.patient_program_id = ps.patient_program_id ");
+    sql.append("            WHERE p.voided = 0 ");
+    sql.append("              AND pp.voided = 0 ");
+    sql.append("              AND pp.program_id = ${art} ");
+    sql.append("              AND pp.location_id = :location ");
+    sql.append("              AND ps.voided = 0 ");
+    sql.append("              AND ps.state = ${suspendedState} ");
+    if (useBothDates) {
+      sql.append("              AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ");
+    } else {
+      sql.append("              AND ps.start_date  <= :onOrBefore ");
+    }
+    sql.append("            UNION ");
+    sql.append("            SELECT p.patient_id, ");
+    sql.append("                   e.encounter_datetime suspended_date ");
+    sql.append("            FROM patient p ");
+    sql.append("                     JOIN encounter e ");
+    sql.append("                          ON p.patient_id = e.patient_id ");
+    sql.append("                     JOIN obs o ");
+    sql.append("                          ON e.encounter_id = o.encounter_id ");
+    sql.append("            WHERE p.voided = 0 ");
+    sql.append("              AND e.voided = 0 ");
+    sql.append("              AND e.location_id = :location ");
+    sql.append("              AND e.encounter_type IN (${adultSeg}, ${masterCard}) ");
+    if (useBothDates) {
+      sql.append("              AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore ");
+    } else {
+      sql.append("              AND e.encounter_datetime  <= :onOrBefore ");
+    }
+    sql.append("              AND o.voided = 0 ");
+    sql.append("              AND o.concept_id IN (${artStateOfStay}, ${preArtStateOfStay}) ");
+    sql.append("              AND o.value_coded = ${suspendedConcept}) transferout ");
+    sql.append("      GROUP BY patient_id) max_transferout ");
+    sql.append("WHERE patient_id NOT IN (SELECT p.patient_id ");
+    sql.append("                         FROM patient p ");
+    sql.append("                                  JOIN encounter e ");
+    sql.append("                                       ON p.patient_id = e.patient_id ");
+    sql.append("                         WHERE p.voided = 0 ");
+    sql.append("                           AND e.voided = 0 ");
+    sql.append("                           AND e.encounter_type IN (${fila}) ");
+    sql.append("                           AND e.location_id = :location ");
+    sql.append("                           AND e.encounter_datetime > suspended_date ");
+    sql.append("                           AND e.encounter_datetime <= :onOrBefore ");
+    sql.append("                         UNION ");
+    sql.append("                         SELECT p.patient_id ");
+    sql.append("                         FROM patient p ");
+    sql.append("                                  JOIN encounter e ");
+    sql.append("                                       ON p.patient_id = e.patient_id ");
+    sql.append("                                  JOIN obs o ");
+    sql.append("                                       ON e.encounter_id = o.encounter_id ");
+    sql.append("                         WHERE p.voided = 0 ");
+    sql.append("                           AND e.voided = 0 ");
+    sql.append("                           AND e.encounter_type = ${mcDrugPickup} ");
+    sql.append("                           AND e.location_id = :location ");
+    sql.append("                           AND o.concept_id = ${drugPickup} ");
+    sql.append("                           AND o.value_datetime ");
+    sql.append("                             > suspended_date");
+    sql.append("                           AND o.value_datetime");
+    sql.append("                             <= :onOrBefore);");
 
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put("art", hivMetadata.getARTProgram().getProgramId());
