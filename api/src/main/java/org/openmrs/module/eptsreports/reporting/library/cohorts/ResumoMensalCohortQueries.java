@@ -258,73 +258,81 @@ public class ResumoMensalCohortQueries {
   }
 
   /** @return B6: Number of patients with ART suspension during the current month */
-  public CohortDefinition getPatientsWhoSuspendedTreatmentB6() {
+  public CohortDefinition getPatientsWhoSuspendedTreatmentB6(boolean useBothDates) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients with ART suspension during the current month");
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
-    String sql =
-        "SELECT patient_id "
-            + "FROM (SELECT patient_id, "
-            + "             Max(suspended_date) suspended_date "
-            + "      FROM (SELECT p.patient_id, "
-            + "                   ps.start_date suspended_date "
-            + "            FROM patient p "
-            + "                     JOIN patient_program pp "
-            + "                          ON p.patient_id = pp.patient_id "
-            + "                     JOIN patient_state ps "
-            + "                          ON pp.patient_program_id = ps.patient_program_id "
-            + "            WHERE p.voided = 0 "
-            + "              AND pp.voided = 0 "
-            + "              AND pp.program_id = ${art} "
-            + "              AND pp.location_id = :location "
-            + "              AND ps.voided = 0 "
-            + "              AND ps.state = ${suspendedState} "
-            + "              AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore "
-            + "            UNION "
-            + "            SELECT p.patient_id, "
-            + "                   e.encounter_datetime suspended_date "
-            + "            FROM patient p "
-            + "                     JOIN encounter e "
-            + "                          ON p.patient_id = e.patient_id "
-            + "                     JOIN obs o "
-            + "                          ON e.encounter_id = o.encounter_id "
-            + "            WHERE p.voided = 0 "
-            + "              AND e.voided = 0 "
-            + "              AND e.location_id = :location "
-            + "              AND e.encounter_type IN (${adultSeg}, ${masterCard}) "
-            + "              AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore "
-            + "              AND o.voided = 0 "
-            + "              AND o.concept_id IN (${artStateOfStay}, ${preArtStateOfStay}) "
-            + "              AND o.value_coded = ${suspendedConcept}) transferout "
-            + "      GROUP BY patient_id) max_transferout "
-            + "WHERE patient_id NOT IN (SELECT p.patient_id "
-            + "                         FROM patient p "
-            + "                                  JOIN encounter e "
-            + "                                       ON p.patient_id = e.patient_id "
-            + "                         WHERE p.voided = 0 "
-            + "                           AND e.voided = 0 "
-            + "                           AND e.encounter_type IN (${fila}) "
-            + "                           AND e.location_id = :location "
-            + "                           AND e.encounter_datetime > suspended_date "
-            + "                           AND e.encounter_datetime <= :onOrBefore "
-            + "                         UNION "
-            + "                         SELECT p.patient_id "
-            + "                         FROM patient p "
-            + "                                  JOIN encounter e "
-            + "                                       ON p.patient_id = e.patient_id "
-            + "                                  JOIN obs o "
-            + "                                       ON e.encounter_id = o.encounter_id "
-            + "                         WHERE p.voided = 0 "
-            + "                           AND e.voided = 0 "
-            + "                           AND e.encounter_type = ${mcDrugPickup} "
-            + "                           AND e.location_id = :location "
-            + "                           AND o.concept_id = ${drugPickup} "
-            + "                           AND o.value_datetime "
-            + "                             > suspended_date"
-            + "                           AND o.value_datetime"
-            + "                             <= :onOrBefore);";
+    StringBuilder sql = new StringBuilder();
+    sql.append("SELECT patient_id ");
+    sql.append( "FROM (SELECT patient_id, ");
+    sql.append( "             Max(suspended_date) suspended_date ");
+    sql.append( "      FROM (SELECT p.patient_id, ");
+	sql.append( "                   ps.start_date suspended_date ");
+	sql.append( "            FROM patient p ");
+	sql.append( "                     JOIN patient_program pp ");
+	sql.append("                          ON p.patient_id = pp.patient_id ");
+	sql.append( "                     JOIN patient_state ps ");
+	sql.append( "                          ON pp.patient_program_id = ps.patient_program_id ");
+	sql.append( "            WHERE p.voided = 0 ");
+	sql.append( "              AND pp.voided = 0 ");
+	sql.append( "              AND pp.program_id = ${art} ");
+	sql.append( "              AND pp.location_id = :location ");
+	sql.append( "              AND ps.voided = 0 ");
+	sql.append( "              AND ps.state = ${suspendedState} ");
+	if(useBothDates) {
+		sql.append( "              AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ");
+	}else {
+		sql.append( "              AND ps.start_date  <= :onOrBefore ");
+	}
+   sql.append( "            UNION ");
+   sql.append( "            SELECT p.patient_id, ");
+   sql.append( "                   e.encounter_datetime suspended_date ");
+   sql.append( "            FROM patient p ");
+   sql.append( "                     JOIN encounter e ");
+	sql.append( "                          ON p.patient_id = e.patient_id ");
+	sql.append( "                     JOIN obs o ");
+	sql.append( "                          ON e.encounter_id = o.encounter_id ");
+	sql.append( "            WHERE p.voided = 0 ");
+	sql.append( "              AND e.voided = 0 ");
+	sql.append( "              AND e.location_id = :location ");
+	sql.append( "              AND e.encounter_type IN (${adultSeg}, ${masterCard}) ");
+	if(useBothDates) {
+		sql.append("              AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore ");
+	}else {
+		sql.append( "              AND e.encounter_datetime  <= :onOrBefore ");
+	}
+	sql.append( "              AND o.voided = 0 ");
+    sql.append( "              AND o.concept_id IN (${artStateOfStay}, ${preArtStateOfStay}) ");
+    sql.append( "              AND o.value_coded = ${suspendedConcept}) transferout ");
+    sql.append( "      GROUP BY patient_id) max_transferout ");
+    sql.append( "WHERE patient_id NOT IN (SELECT p.patient_id ");
+    sql.append( "                         FROM patient p ");
+    sql.append( "                                  JOIN encounter e ");
+    sql.append( "                                       ON p.patient_id = e.patient_id ");
+    sql.append( "                         WHERE p.voided = 0 ");
+    sql.append( "                           AND e.voided = 0 ");
+    sql.append( "                           AND e.encounter_type IN (${fila}) ");
+    sql.append( "                           AND e.location_id = :location ");
+    sql.append( "                           AND e.encounter_datetime > suspended_date ");
+    sql.append( "                           AND e.encounter_datetime <= :onOrBefore ");
+    sql.append( "                         UNION ");
+    sql.append( "                         SELECT p.patient_id ");
+    sql.append( "                         FROM patient p ");
+    sql.append( "                                  JOIN encounter e ");
+    sql.append( "                                       ON p.patient_id = e.patient_id ");
+    sql.append( "                                  JOIN obs o ");
+    sql.append( "                                       ON e.encounter_id = o.encounter_id ");
+    sql.append( "                         WHERE p.voided = 0 ");
+    sql.append( "                           AND e.voided = 0 ");
+    sql.append( "                           AND e.encounter_type = ${mcDrugPickup} ");
+    sql.append( "                           AND e.location_id = :location ");
+    sql.append( "                           AND o.concept_id = ${drugPickup} ");
+    sql.append( "                           AND o.value_datetime ");
+    sql.append( "                             > suspended_date");
+    sql.append( "                           AND o.value_datetime");
+    sql.append( "                             <= :onOrBefore);");
 
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put("art", hivMetadata.getARTProgram().getProgramId());
@@ -526,7 +534,7 @@ public class ResumoMensalCohortQueries {
 
     CohortDefinition startDrugs = getPatientsWithStartDrugs();
     CohortDefinition transferredOut = getPatientsTransferredOutB5();
-    CohortDefinition suspended = getPatientsWhoSuspendedTreatmentB6();
+    CohortDefinition suspended = getPatientsWhoSuspendedTreatmentB6(true);
     CohortDefinition missedDrugPickup = getLastArvPickupDateCohort();
     CohortDefinition died = getPatientsWhoDied(false);
 
@@ -828,7 +836,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B6",
         map(
-            getPatientsWhoSuspendedTreatmentB6(),
+            getPatientsWhoSuspendedTreatmentB6(true),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "B7",
@@ -1220,7 +1228,7 @@ public class ResumoMensalCohortQueries {
 
     CohortDefinition B5E = getPatientsTransferredOutB5();
 
-    CohortDefinition B6E = getPatientsWhoSuspendedTreatmentB6();
+    CohortDefinition B6E = getPatientsWhoSuspendedTreatmentB6(false);
 
     CohortDefinition B7E = getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A();
 
