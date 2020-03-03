@@ -391,7 +391,7 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "MostRecentDateHaveFilaOrConsultation",
         EptsReportUtils.map(
-            getPatientsWithMostRecentDateHaveFilaOrConsultation(),
+        		getPatientWithFilaOrConsultationAfterTrasnferDiedMissed(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
@@ -725,8 +725,37 @@ public class TxMlCohortQueries {
 
     return cd;
   }
-
-  public CohortDefinition getPatientsWithMostRecentDateHaveFilaOrConsultation() {
+  /**
+	* <b>All patients who after the most recent date from below criterias:</b>
+	* <p>
+	* 		Patient_program.program_id =2 = SERVICO TARV-TRATAMENTO and
+	*		Patient_State.state = 7 (Transferred-out) or 
+	*		Patient_State.start_date <= endDate
+	*		Patient_state.end_date is null
+	*</p>
+	*	 and
+	* <p>
+	*	 	Encounter Type ID= 53
+	*		Estado de Permanencia (Concept Id 6272) = Transferred-out (Concept ID 1706)
+	*    	obs_datetime <= endDate		
+	*		OR
+	*		Encounter Type ID= 6
+	*		Estado de Permanencia (Concept Id 6273) = Transferred-out (Concept ID 1706)
+	*		Encounter_datetime <= endDate
+	* </p>
+	*	and 
+	* <p>
+	*		Encounter Type ID= 21, Last Encounter_datetime <=endDate
+	*		REASON PATIENT MISSED VISIT (Obs concept id = 2016)
+	*		Answers = TRANSFERRED OUT TO ANOTHER FACILITY (id=1706) OR AUTO TRANSFER 
+	*		(id=23863)
+	*</p>
+	*
+	* <b>have a drugs pick up or consultation</b>
+	* 
+	* @return CohortDefinition
+	*/
+  public CohortDefinition getPatientWithFilaOrConsultationAfterTrasnferDiedMissed() {
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
 
