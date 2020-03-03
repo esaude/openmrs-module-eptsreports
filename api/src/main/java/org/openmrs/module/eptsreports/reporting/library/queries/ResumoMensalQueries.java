@@ -442,7 +442,7 @@ public class ResumoMensalQueries {
             + "                                 AND obs.value_datetime IS NOT NULL   "
             + "                                 AND enc.encounter_type = ${arvPharmaciaEncounterType}   "
             + "                                 AND enc.location_id = :location   "
-            + "                                 AND enc.encounter_datetime <= :onDate   "
+            + "                                 AND enc.encounter_datetime <= :onOrBefore   "
             + "                             GROUP  BY pa.patient_id) fila   "
             + "                         INNER JOIN encounter e on  "
             + "                             e.patient_id = fila.patient_id and  "
@@ -469,11 +469,11 @@ public class ResumoMensalQueries {
             + "                             AND obs.value_datetime IS NOT NULL   "
             + "                             AND enc.encounter_type = ${masterCardDrugPickupEncounterType}   "
             + "                             AND enc.location_id = :location   "
-            + "                             AND obs.value_datetime <= :onDate   "
+            + "                             AND obs.value_datetime <= :onOrBefore   "
             + "                        GROUP  BY pa.patient_id   "
             + "                    ) most_recent   "
             + "                GROUP BY most_recent.patient_id   "
-            + "                HAVING final_encounter_date < :onDate   "
+            + "                HAVING final_encounter_date < :onOrBefore   "
             + "             ) final   "
             + "             GROUP BY final.patient_id;";
 
