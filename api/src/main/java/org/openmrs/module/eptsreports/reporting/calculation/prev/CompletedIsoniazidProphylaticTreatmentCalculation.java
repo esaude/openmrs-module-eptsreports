@@ -104,7 +104,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               cohort,
               Arrays.asList(location),
               Arrays.asList(hivMetadata.getStartDrugs()),
-              TimeQualifier.ANY,
+              TimeQualifier.FIRST,
               beginPeriodStartDate,
               beginPeriodEndDate,
               context);
@@ -125,7 +125,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               cohort,
               Arrays.asList(location),
               Arrays.asList(hivMetadata.getCompletedConcept()),
-              TimeQualifier.ANY,
+              TimeQualifier.LAST,
               beginPeriodStartDate,
               beginPeriodEndDate,
               context);
