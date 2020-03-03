@@ -85,31 +85,6 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     assertTrue(evaluatedCohort.getMemberIds().contains(1023));
   }
 
-  @Override
-  protected Date getStartDate() {
-    return DateUtil.getDateTime(2019, 9, 21);
-  }
-
-  @Override
-  protected Date getEndDate() {
-    return DateUtil.getDateTime(2019, 10, 20);
-  }
-
-  @Override
-  protected Location getLocation() {
-    return Context.getLocationService().getLocation(21);
-  }
-
-  @Override
-  protected void setParameters(
-      Date startDate, Date endDate, Location location, EvaluationContext context) {
-
-    context.addParameterValue("startDate", startDate);
-    context.addParameterValue("onOrAfter", startDate);
-    context.addParameterValue("onOrBefore", endDate);
-    context.addParameterValue("location", location);
-  }
-
   @Test
   public void getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2()
       throws EvaluationException {
