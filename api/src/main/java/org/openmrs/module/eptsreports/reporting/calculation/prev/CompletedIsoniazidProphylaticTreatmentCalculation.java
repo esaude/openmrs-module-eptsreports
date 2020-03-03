@@ -30,6 +30,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalcu
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -49,7 +50,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
 
   private static final int MONTHS_TO_CHECK_FOR_ISONIAZID_USAGE = 7;
 
-  private static final int MINIMUM_DURATION_IN_DAYS = 180;
+  private static final int MINIMUM_DURATION_IN_DAYS = 173;
 
   private static final String ON_OR_AFTER = "onOrAfter";
 
@@ -96,6 +97,17 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               null,
               cohort,
               context);
+      CalculationResultMap startDrugsObservations =
+          ePTSCalculationService.getObs(
+              hivMetadata.getIsoniazidUsageConcept(),
+              Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
+              cohort,
+              Arrays.asList(location),
+              Arrays.asList(hivMetadata.getStartDrugs()),
+              TimeQualifier.ANY,
+              beginPeriodStartDate,
+              beginPeriodEndDate,
+              context);
       CalculationResultMap endProfilaxiaObservations =
           ePTSCalculationService.lastObs(
               hivMetadata.getDataFinalizacaoProfilaxiaIsoniazidaConcept(),
@@ -105,6 +117,17 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               completionPeriodStartDate,
               completionPeriodEndDate,
               cohort,
+              context);
+      CalculationResultMap completedDrugsObservations =
+          ePTSCalculationService.getObs(
+              hivMetadata.getIsoniazidUsageConcept(),
+              Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
+              cohort,
+              Arrays.asList(location),
+              Arrays.asList(hivMetadata.getCompletedConcept()),
+              TimeQualifier.ANY,
+              beginPeriodStartDate,
+              beginPeriodEndDate,
               context);
       CalculationResultMap isoniazidUsageObservationsList =
           ePTSCalculationService.allObservations(
@@ -118,16 +141,20 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
       for (Integer patientId : cohort) {
         Obs startProfilaxiaObs =
             EptsCalculationUtils.resultForPatient(startProfilaxiaObservations, patientId);
+        Obs startDrugsObs =
+            EptsCalculationUtils.resultForPatient(startDrugsObservations, patientId);
         Obs endProfilaxiaObs =
             EptsCalculationUtils.resultForPatient(endProfilaxiaObservations, patientId);
+        Obs endDrugsObs =
+            EptsCalculationUtils.resultForPatient(completedDrugsObservations, patientId);
         Date startDate = getDateFromObs(startProfilaxiaObs);
         Date endDate = getDateFromObs(endProfilaxiaObs);
         boolean inconsistent =
             (startDate != null && endDate != null && startDate.compareTo(endDate) > 0)
                 || (startDate == null && endDate != null);
-        if (!inconsistent && startDate != null) {
+        if ((!inconsistent && startDate != null) || startDrugsObs != null) {
           boolean completed = startDate != null && endDate != null;
-          if (completed) {
+          if (completed || endDrugsObs != null) {
             int profilaxiaDuration =
                 Days.daysIn(new Interval(startDate.getTime(), endDate.getTime())).getDays();
             if (profilaxiaDuration >= MINIMUM_DURATION_IN_DAYS) {
