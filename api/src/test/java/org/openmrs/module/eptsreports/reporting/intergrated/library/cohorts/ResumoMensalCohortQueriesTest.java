@@ -59,8 +59,6 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     assertTrue(evaluatedCohort.getMemberIds().contains(1023));
   }
 
-  public void Test() {}
-
   @Override
   protected Date getStartDate() {
     return DateUtil.getDateTime(2019, 9, 21);
