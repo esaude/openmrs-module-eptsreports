@@ -285,7 +285,7 @@
                   concept_name_id="7179" voided="0" uuid="d82b5012-6bec-4f68-95db-e12083e1a2ce"
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
-	
+
     <concept_name concept_id="6276" name="TARV" locale="pt" creator="1" date_created="2012-02-29 10:06:33" concept_name_id="7187" voided="0" uuid="33f1a883-ebd0-4e5b-bb6a-a254d573877c" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
 
 	<concept_name concept_id="1707" name="ABANDONO" locale="pt" creator="1" date_created="2008-10-25 13:17:30" concept_name_id="3141" voided="0" uuid="e24e2c58-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
