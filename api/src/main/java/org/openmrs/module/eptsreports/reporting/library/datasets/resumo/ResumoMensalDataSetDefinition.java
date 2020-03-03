@@ -522,14 +522,13 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
   private Mapped<CohortIndicator> getSumOfA1AndA2() {
     return mapStraightThrough(
         eptsGeneralIndicator.getIndicator(
-            "Patients under 15 years",
-            mapStraightThrough(resumoMensalCohortQueries.getSumOfA1AndA2())));
+            "A1 and A2", mapStraightThrough(resumoMensalCohortQueries.getSumOfA1AndA2())));
   }
 
   private Mapped<CohortIndicator> getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2() {
     return mapStraightThrough(
         eptsGeneralIndicator.getIndicator(
-            "Patients under 15 years",
+            "A2",
             mapStraightThrough(
                 resumoMensalCohortQueries
                     .getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2())));
@@ -538,7 +537,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
   private Mapped<CohortIndicator> getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1() {
     return mapStraightThrough(
         eptsGeneralIndicator.getIndicator(
-            "Patients under 15 years",
+            "A1",
             mapStraightThrough(
                 resumoMensalCohortQueries
                     .getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1())));
@@ -547,7 +546,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
   private Mapped<CohortIndicator> getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1() {
     return mapStraightThrough(
         eptsGeneralIndicator.getIndicator(
-            "Patients under 15 years",
+            "Tx New For Month",
             mapStraightThrough(
                 resumoMensalCohortQueries
                     .getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1())));
@@ -557,7 +556,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
       getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2() {
     return mapStraightThrough(
         eptsGeneralIndicator.getIndicator(
-            "Patients under 15 years",
+            "Tx New For End Date",
             mapStraightThrough(
                 resumoMensalCohortQueries
                     .getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2())));
@@ -566,8 +565,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
   private Mapped<CohortIndicator> getSumPatientsB3() {
     return mapStraightThrough(
         eptsGeneralIndicator.getIndicator(
-            "Patients under 15 years",
-            mapStraightThrough(resumoMensalCohortQueries.getSumPatientsB3())));
+            "B3", mapStraightThrough(resumoMensalCohortQueries.getSumPatientsB3())));
   }
 
   private Mapped<CohortIndicator>

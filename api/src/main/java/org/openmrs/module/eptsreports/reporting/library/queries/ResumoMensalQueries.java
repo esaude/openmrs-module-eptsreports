@@ -267,42 +267,36 @@ public class ResumoMensalQueries {
 
   public static String getPatientsWhoAbandonedTratmentB7() {
     String query =
-        "select B7.patient_id from ( "
-            + "select  patient_id,max(data_proximo_levantamento) data_proximo_levantamento,date_add(max(data_proximo_levantamento), INTERVAL 60 day) data_proximo_levantamento60 from ( "
-            + "select p.patient_id, date_add(max(o.value_datetime), INTERVAL 30 day)  data_proximo_levantamento  from  patient p "
-            + "inner join encounter e on p.patient_id = e.patient_id "
+        "Select B7.patient_id from (select patient_id,max(data_levantamento) data_levantamento,max(data_proximo_levantamento) data_proximo_levantamento, date_add(max(data_proximo_levantamento), INTERVAL 60 day) data_proximo_levantamento60 "
+            + "from(select p.patient_id,max(o.value_datetime) data_levantamento, date_add(max(o.value_datetime), INTERVAL 30 day)  data_proximo_levantamento "
+            + "from patient p inner join encounter e on p.patient_id = e.patient_id "
             + "inner join obs o on o.encounter_id = e.encounter_id "
-            + "where e.voided = 0 and p.voided = 0 and o.value_datetime <= :endDate and o.voided = 0 and o.concept_id = 23866 and e.encounter_type = 52 and e.location_id=:location "
-            + "group by p.patient_id "
-            + "union "
-            + "select p.patient_id,max(o.value_datetime) as data_proximo_levantamento from  patient p "
-            + "inner join encounter e on p.patient_id=e.patient_id "
-            + "inner join obs o on o.encounter_id=e.encounter_id "
-            + "where encounter_type=18 and o.value_datetime <=:endDate  "
-            + "and e.location_id=:location and o.concept_id=5096 and o.voided=0  and e.voided=0 and p.voided=0 group by p.patient_id) maxFilaRecepcao "
-            + "group by patient_id "
-            + "having date_add(max(data_proximo_levantamento), INTERVAL 60 day)<:endDate)B7 ";
+            + "where  e.voided = 0 and p.voided = 0 and o.value_datetime <= :endDate and o.voided = 0 and o.concept_id = 23866 and e.encounter_type=52 and e.location_id=:location "
+            + "group by p.patient_id union "
+            + "select fila.patient_id, fila.data_levantamento,obs_fila.value_datetime data_proximo_levantamento from ( "
+            + "select p.patient_id,max(e.encounter_datetime) as data_levantamento from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id where encounter_type=18 and e.encounter_datetime <=:endDate and e.location_id=:location and e.voided=0 and p.voided=0 group by p.patient_id)fila "
+            + "inner join obs obs_fila on obs_fila.person_id=fila.patient_id "
+            + "where obs_fila.voided=0 and obs_fila.concept_id=5096 and fila.data_levantamento=obs_fila.obs_datetime) maxFilaRecepcao group by patient_id "
+            + "having date_add(max(data_proximo_levantamento), INTERVAL 60 day )<= :endDate )B7 ";
 
     return query;
   }
 
   public static String getPatientsWhoAbandonedTratmentB7Exclusion() {
     String query =
-        "select B7.patient_id from ( "
-            + "select  patient_id,max(data_proximo_levantamento) data_proximo_levantamento,date_add(max(data_proximo_levantamento), INTERVAL 60 day) data_proximo_levantamento60 from ( "
-            + "select p.patient_id, date_add(max(o.value_datetime), INTERVAL 30 day)  data_proximo_levantamento  from  patient p "
-            + "inner join encounter e on p.patient_id = e.patient_id "
+        "Select B7.patient_id from (select patient_id,max(data_levantamento) data_levantamento,max(data_proximo_levantamento) data_proximo_levantamento, date_add(max(data_proximo_levantamento), INTERVAL 60 day) data_proximo_levantamento60 "
+            + "from(select p.patient_id,max(o.value_datetime) data_levantamento, date_add(max(o.value_datetime), INTERVAL 30 day)  data_proximo_levantamento "
+            + "from patient p inner join encounter e on p.patient_id = e.patient_id "
             + "inner join obs o on o.encounter_id = e.encounter_id "
-            + "where e.voided = 0 and p.voided = 0 and o.value_datetime <:startDate and o.voided = 0 and o.concept_id = 23866 and e.encounter_type = 52 and e.location_id=:location "
-            + "group by p.patient_id "
-            + "union "
-            + "select p.patient_id,max(o.value_datetime) as data_proximo_levantamento from  patient p "
-            + "inner join encounter e on p.patient_id=e.patient_id "
-            + "inner join obs o on o.encounter_id=e.encounter_id "
-            + "where encounter_type=18 and o.value_datetime <:startDate "
-            + "and e.location_id=:location and o.concept_id=5096 and o.voided=0  and e.voided=0 and p.voided=0 group by p.patient_id) maxFilaRecepcao "
-            + "group by patient_id "
-            + "having date_add(max(data_proximo_levantamento), INTERVAL 60 day)<:startDate)B7 ";
+            + "where e.voided = 0 and p.voided = 0 and o.value_datetime < :startDate and o.voided = 0 and o.concept_id = 23866 and e.encounter_type=52 and e.location_id=:location "
+            + "group by p.patient_id union "
+            + "select fila.patient_id, fila.data_levantamento,obs_fila.value_datetime data_proximo_levantamento from ( "
+            + "select p.patient_id,max(e.encounter_datetime) as data_levantamento from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id where encounter_type=18 and e.encounter_datetime < :startDate and e.location_id=:location and e.voided=0 and p.voided=0 group by p.patient_id)fila "
+            + "inner join obs obs_fila on obs_fila.person_id=fila.patient_id "
+            + "where obs_fila.voided=0 and obs_fila.concept_id=5096 and fila.data_levantamento=obs_fila.obs_datetime) maxFilaRecepcao group by patient_id "
+            + "having date_add(max(data_proximo_levantamento), INTERVAL 60 day )< :startDate)B7 ";
 
     return query;
   }
