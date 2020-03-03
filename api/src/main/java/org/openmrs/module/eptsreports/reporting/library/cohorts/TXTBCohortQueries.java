@@ -116,7 +116,17 @@ public class TXTBCohortQueries {
             genericCohortQueries.getStartedArtBeforeDate(false),
             "onOrBefore=${endDate},location=${location}"));
 
-    cd.setCompositionString("started-by-end-reporting-period");
+    String mappings = "onOrBefore=${endDate},location=${location}";
+    cd.addSearch(
+        "trasnferedInProgram",
+        EptsReportUtils.map(hivCohortQueries.getTransferredInViaProgram(false), mappings));
+
+    cd.addSearch(
+        "trasnferedInMasterCard",
+        EptsReportUtils.map(hivCohortQueries.getTransferredInViaMastercard(), mappings));
+
+    cd.setCompositionString(
+        "started-by-end-reporting-period NOT (trasnferedInProgram AND trasnferedInMasterCard)");
     addGeneralParameters(cd);
     return cd;
   }
@@ -354,6 +364,7 @@ public class TXTBCohortQueries {
             genericCohortQueries.getStartedArtOnPeriod(false, true),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     definition.setCompositionString("started-on-period");
+
     return definition;
   }
 }
