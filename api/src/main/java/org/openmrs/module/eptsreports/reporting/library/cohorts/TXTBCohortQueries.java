@@ -311,10 +311,7 @@ public class TXTBCohortQueries {
     addGeneralParameters(definition);
     definition.setName("TxTB - Denominator");
     definition.addSearch(
-        "art-list",
-        EptsReportUtils.map(
-            genericCohortQueries.getStartedArtBeforeDate(false),
-            "onOrBefore=${endDate},location=${location}"));
+        "art-list", EptsReportUtils.map(artList(), "onOrBefore=${endDate},location=${location}"));
     definition.addSearch(
         "tb-screening", EptsReportUtils.map(yesOrNoInvestigationResult(), generalParameterMapping));
     definition.addSearch(
