@@ -1131,6 +1131,40 @@ public class ResumoMensalCohortQueries {
    * @retrun CohortDefinition
    */
   public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A() {
+
+    CompositionCohortDefinition ccd = new CompositionCohortDefinition();
+    ccd.setName("Number of patients who Abandoned the ART during the current month");
+    ccd.addParameter(new Parameter("location", "Location", Location.class));
+    ccd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    ccd.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+    ccd.addSearch(
+        "B7I",
+        map(
+            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    ccd.addSearch(
+        "B7II",
+        map(
+            getPatientsTransferredOutB5(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    ccd.addSearch(
+        "B7III",
+        map(
+            getPatientsWhoSuspendedTreatmentB6(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    ccd.addSearch(
+        "B7IV",
+        map(
+            getPatientsWhoDied(true),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    ccd.setCompositionString("B7I AND NOT (B7II OR B7III OR B7IV)");
+
+    return ccd;
+  }
+
+  public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients who Abandoned the ART during the current month");
     cd.addParameter(new Parameter("location", "Location", Location.class));
