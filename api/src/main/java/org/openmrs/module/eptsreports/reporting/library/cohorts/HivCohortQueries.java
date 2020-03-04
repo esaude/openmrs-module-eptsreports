@@ -335,13 +335,13 @@ public class HivCohortQueries {
             + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
             + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=${artProgram}"
             + " and ps.state=${transferStateId}"
-            + " and ps.start_date=pg.date_enrolled";
+            + " and ps.start_date=pg.date_enrolled ";
     if (hasStartDate == true) {
       query = query + "and ps.start_date between :onOrAfter and :onOrBefore ";
     } else {
       query = query + "and ps.start_date <= :onOrBefore ";
     }
-    query = query + "and location_id=:location " + "group by p.patient_id";
+    query = query + "and location_id= :location group by p.patient_id";
 
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put("artProgram", hivMetadata.getARTProgram().getProgramId());

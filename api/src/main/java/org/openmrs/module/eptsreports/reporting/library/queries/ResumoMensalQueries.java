@@ -113,24 +113,25 @@ public class ResumoMensalQueries {
             + "         ON type.encounter_id = e.encounter_id "
             + "WHERE  p.voided = 0 "
             + "       AND e.voided = 0 "
-            + "       AND e.encounter_type = %d "
+            + "       AND e.encounter_type = ${masterCardEncounter} "
             + "       AND e.location_id = :location "
             + "       AND e.encounter_datetime < :onOrBefore "
             + "       AND transf.voided = 0 "
-            + "       AND transf.concept_id = %d "
-            + "       AND transf.value_coded = %d "
+            + "       AND transf.concept_id = ${transferFromConcept} "
+            + "       AND transf.value_coded = ${yesConcept} "
             + "       AND transf.obs_datetime < :onOrBefore "
             + "       AND type.voided = 0 "
-            + "       AND type.concept_id = %d "
-            + "       AND type.value_coded = %d";
+            + "       AND type.concept_id = ${typeOfPantientConcept} "
+            + "       AND type.value_coded = ${tarvConcept}";
 
-    return String.format(
-        query,
-        masterCardEncounter,
-        transferFromConcept,
-        yesConcept,
-        typeOfPantientConcept,
-        tarvConcept);
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("masterCardEncounter", masterCardEncounter);
+    valuesMap.put("transferFromConcept", transferFromConcept);
+    valuesMap.put("yesConcept", yesConcept);
+    valuesMap.put("typeOfPantientConcept", typeOfPantientConcept);
+    valuesMap.put("tarvConcept", tarvConcept);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
   }
 
   public static String getPatientsForF2ForExclusionFromMainQuery(
