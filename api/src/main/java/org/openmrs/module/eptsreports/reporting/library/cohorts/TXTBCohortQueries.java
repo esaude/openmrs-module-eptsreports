@@ -31,7 +31,7 @@ public class TXTBCohortQueries {
   @Autowired private HivCohortQueries hivCohortQueries;
 
   private String generalParameterMapping =
-      "startDate=${startDate},endDate=${endDate},location=${location}";
+      "startDate=${startDate},endDate=${endDate},onOrBefore=${endDate},location=${location}";
 
   private String codedObsParameterMapping =
       "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
