@@ -539,7 +539,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch("B2A", map(transferredIn, "onOrBefore=${startDate},location=${location}"));
 
     cd.addSearch("B5A", map(transferredOut, "onOrBefore=${startDate},location=${location}"));
-    cd.addSearch("B6A", map(suspended, encounterWithCodedObsMappings));
+    cd.addSearch("B6A", map(suspended, "onOrBefore=${startDate},location=${location}"));
     cd.addSearch(
         "B7A",
         map(
