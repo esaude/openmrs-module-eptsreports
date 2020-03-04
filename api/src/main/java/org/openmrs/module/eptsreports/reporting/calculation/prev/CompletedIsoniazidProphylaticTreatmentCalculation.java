@@ -60,6 +60,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
 
   @Autowired private EPTSCalculationService ePTSCalculationService;
 
+  @SuppressWarnings("unused")
   @Override
   public CalculationResultMap evaluate(
       Collection<Integer> cohort,
@@ -106,7 +107,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               Arrays.asList(hivMetadata.getStartDrugs()),
               TimeQualifier.FIRST,
               beginPeriodStartDate,
-              beginPeriodEndDate,
+              onOrAfter,
               context);
       CalculationResultMap endProfilaxiaObservations =
           ePTSCalculationService.lastObs(
@@ -126,8 +127,8 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               Arrays.asList(location),
               Arrays.asList(hivMetadata.getCompletedConcept()),
               TimeQualifier.LAST,
-              beginPeriodStartDate,
-              beginPeriodEndDate,
+              onOrAfter,
+              completionPeriodEndDate,
               context);
       CalculationResultMap isoniazidUsageObservationsList =
           ePTSCalculationService.allObservations(
@@ -149,30 +150,113 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
             EptsCalculationUtils.resultForPatient(completedDrugsObservations, patientId);
         Date startDate = getDateFromObs(startProfilaxiaObs);
         Date endDate = getDateFromObs(endProfilaxiaObs);
+
+        // this is because user can type startdate after enddate
         boolean inconsistent =
             (startDate != null && endDate != null && startDate.compareTo(endDate) > 0)
                 || (startDate == null && endDate != null);
-        if ((!inconsistent && startDate != null) || startDrugsObs != null) {
-          boolean completed = startDate != null && endDate != null;
-          if (completed || endDrugsObs != null) {
-            int profilaxiaDuration =
-                Days.daysIn(new Interval(startDate.getTime(), endDate.getTime())).getDays();
-            if (profilaxiaDuration >= MINIMUM_DURATION_IN_DAYS) {
-              map.put(patientId, new BooleanResult(true, this));
-            }
+
+        Date earliestDate = null;
+        Date latestDate = null;
+
+        if ((startDate != null && startDrugsObs == null)
+            && (endDate != null && endDrugsObs == null)) {
+          earliestDate = startDate;
+          latestDate = endDate;
+        }
+
+        if ((startDate != null && startDrugsObs == null)
+            && (endDate == null && endDrugsObs != null)) {
+          earliestDate = startDate;
+          latestDate = endDrugsObs.getEncounter().getEncounterDatetime();
+        }
+        if ((startDate == null && startDrugsObs != null)
+            && (endDate != null && endDrugsObs == null)) {
+          earliestDate = startDrugsObs.getEncounter().getEncounterDatetime();
+          latestDate = endDate;
+        }
+
+        if ((startDate == null && startDrugsObs != null)
+            && (endDate == null && endDrugsObs != null)) {
+          earliestDate = startDrugsObs.getEncounter().getEncounterDatetime();
+          latestDate = endDrugsObs.getEncounter().getEncounterDatetime();
+        }
+
+        if ((startDate != null && startDrugsObs != null)
+            && (endDate != null && endDrugsObs == null)) {
+          if (startDate.compareTo(startDrugsObs.getEncounter().getEncounterDatetime()) > 0) {
+            earliestDate = startDrugsObs.getEncounter().getEncounterDatetime();
+          } else {
+            earliestDate = startDate;
           }
-          int yesAnswers =
-              calculateNumberOfYesAnswers(isoniazidUsageObservationsList, patientId, startDate);
-          if (yesAnswers >= NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED) {
-            map.put(patientId, new BooleanResult(true, this));
+          latestDate = endDate;
+        }
+        if ((startDate != null && startDrugsObs != null)
+            && (endDate == null && endDrugsObs != null)) {
+          if (startDate.compareTo(startDrugsObs.getEncounter().getEncounterDatetime()) > 0) {
+            earliestDate = startDrugsObs.getEncounter().getEncounterDatetime();
+          } else {
+            earliestDate = startDate;
+          }
+          latestDate = endDrugsObs.getEncounter().getEncounterDatetime();
+        }
+
+        if ((startDate != null && startDrugsObs == null)
+            && (endDate != null && endDrugsObs != null)) {
+          if (endDate.compareTo(endDrugsObs.getEncounter().getEncounterDatetime()) > 0) {
+            latestDate = endDate;
+          } else {
+            latestDate = endDrugsObs.getEncounter().getEncounterDatetime();
+          }
+          earliestDate = startDate;
+        }
+
+        if ((startDate == null && startDrugsObs != null)
+            && (endDate != null && endDrugsObs != null)) {
+          if (endDate.compareTo(endDrugsObs.getEncounter().getEncounterDatetime()) > 0) {
+            latestDate = endDate;
+          } else {
+            latestDate = endDrugsObs.getEncounter().getEncounterDatetime();
+          }
+          earliestDate = startDrugsObs.getEncounter().getEncounterDatetime();
+        }
+
+        if ((startDate != null && startDrugsObs != null)
+            && (endDate != null && endDrugsObs != null)) {
+          // get the earliest
+          if (startDate.compareTo(startDrugsObs.getEncounter().getEncounterDatetime()) > 0) {
+            earliestDate = startDrugsObs.getEncounter().getEncounterDatetime();
+          } else {
+            earliestDate = startDate;
+          }
+          // //get the latest
+
+          if (endDate.compareTo(endDrugsObs.getEncounter().getEncounterDatetime()) > 0) {
+            latestDate = endDate;
+          } else {
+            latestDate = endDrugsObs.getEncounter().getEncounterDatetime();
           }
         }
+
+        if (earliestDate == null && latestDate == null) {
+          continue;
+        }
+
+        int profilaxiaDuration12 =
+            Days.daysIn(new Interval(earliestDate.getTime(), latestDate.getTime())).getDays();
+
+        if (profilaxiaDuration12 >= MINIMUM_DURATION_IN_DAYS) {
+          map.put(patientId, new BooleanResult(true, this));
+        }
+
+        int yesAnswers =
+            calculateNumberOfYesAnswers(isoniazidUsageObservationsList, patientId, startDate);
+        if (yesAnswers >= NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED) {
+          map.put(patientId, new BooleanResult(true, this));
+        }
       }
-      return map;
-    } else {
-      throw new IllegalArgumentException(
-          String.format("Parameters %s and %s must be set", ON_OR_AFTER, ON_OR_BEFORE));
     }
+    return map;
   }
 
   private int calculateNumberOfYesAnswers(
