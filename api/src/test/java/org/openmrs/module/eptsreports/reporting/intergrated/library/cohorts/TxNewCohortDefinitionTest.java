@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.PvlsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
 
   @Autowired private ResumoMensalCohortQueries resumoMensalQueries;
+  @Autowired private PvlsCohortQueries pvlsCohortQueries;
 
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
@@ -31,7 +33,8 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
     // final Date reportingEndDate = DateUtil.getDateTime(2018, 9, 20);
 
     final CohortDefinition txNewCompositionCohort =
-        this.resumoMensalQueries.getPatientsWhoAbandonedTratmentUpB7();
+        this.pvlsCohortQueries
+            .findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months();
 
     final Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), startDate);
