@@ -31,7 +31,7 @@ public class TXTBCohortQueries {
   @Autowired private HivCohortQueries hivCohortQueries;
 
   private String generalParameterMapping =
-      "startDate=${startDate},endDate=${endDate},onOrBefore=${endDate},location=${location}";
+      "startDate=${startDate},endDate=${endDate},location=${location}";
 
   private String codedObsParameterMapping =
       "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
@@ -110,13 +110,12 @@ public class TXTBCohortQueries {
   public CohortDefinition artList() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
+    String mappings = "onOrBefore=${endDate},location=${location}";
+
     cd.addSearch(
         "started-by-end-reporting-period",
-        EptsReportUtils.map(
-            genericCohortQueries.getStartedArtBeforeDate(false),
-            "onOrBefore=${endDate},location=${location}"));
+        EptsReportUtils.map(genericCohortQueries.getStartedArtBeforeDate(false), mappings));
 
-    String mappings = "onOrBefore=${endDate},location=${location}";
     cd.addSearch(
         "trasnferedInProgram",
         EptsReportUtils.map(hivCohortQueries.getTransferredInViaProgram(false), mappings));
@@ -198,7 +197,7 @@ public class TXTBCohortQueries {
   public CohortDefinition txTbNumerator() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition A = txTbNumeratorA();
-    cd.addSearch("A", map(A, generalParameterMapping));
+    cd.addSearch("A", map(A, "onOrBefore=${endDate},locationList=${location}"));
 
     cd.addSearch(
         "started-tb-treatment-previous-period",
@@ -311,7 +310,8 @@ public class TXTBCohortQueries {
     addGeneralParameters(definition);
     definition.setName("TxTB - Denominator");
     definition.addSearch(
-        "art-list", EptsReportUtils.map(artList(), "onOrBefore=${endDate},location=${location}"));
+        "art-list",
+        EptsReportUtils.map(artList(), "onOrBefore=${endDate},locationList=${location}"));
     definition.addSearch(
         "tb-screening", EptsReportUtils.map(yesOrNoInvestigationResult(), generalParameterMapping));
     definition.addSearch(

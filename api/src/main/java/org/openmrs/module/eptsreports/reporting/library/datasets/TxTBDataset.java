@@ -41,8 +41,7 @@ public class TxTBDataset extends BaseDataSet {
   private AgeDimensionCohortInterface ageDimensionCohort;
 
   public DataSetDefinition constructTxTBDataset() {
-    String mappings =
-        "startDate=${startDate},endDate=${endDate},onOrBefore=${endDate},location=${location}";
+    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
     dataSetDefinition.setName("TX_TB Data Set");
     dataSetDefinition.addParameters(getParameters());
