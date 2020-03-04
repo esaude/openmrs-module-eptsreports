@@ -197,7 +197,7 @@ public class TXTBCohortQueries {
   public CohortDefinition txTbNumerator() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition A = txTbNumeratorA();
-    cd.addSearch("A", map(A, "onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch("A", map(A, generalParameterMapping));
 
     cd.addSearch(
         "started-tb-treatment-previous-period",
@@ -309,9 +309,7 @@ public class TXTBCohortQueries {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     addGeneralParameters(definition);
     definition.setName("TxTB - Denominator");
-    definition.addSearch(
-        "art-list",
-        EptsReportUtils.map(artList(), "onOrBefore=${endDate},locationList=${location}"));
+    definition.addSearch("art-list", EptsReportUtils.map(artList(), generalParameterMapping));
     definition.addSearch(
         "tb-screening", EptsReportUtils.map(yesOrNoInvestigationResult(), generalParameterMapping));
     definition.addSearch(
