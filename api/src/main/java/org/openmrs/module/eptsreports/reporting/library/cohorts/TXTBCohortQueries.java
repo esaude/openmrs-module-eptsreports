@@ -126,7 +126,7 @@ public class TXTBCohortQueries {
         EptsReportUtils.map(hivCohortQueries.getTransferredInViaMastercard(), mappings));
 
     cd.setCompositionString(
-        "started-by-end-reporting-period NOT (trasnferedInProgram AND trasnferedInMasterCard)");
+        "started-by-end-reporting-period NOT (trasnferedInProgram OR trasnferedInMasterCard)");
     addGeneralParameters(cd);
     return cd;
   }
