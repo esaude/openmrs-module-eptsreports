@@ -125,6 +125,26 @@ public class TXTBQueries {
         tbProgramId);
   }
 
+  /**
+   * Patients with Pulmonary TB Date in Patient Clinical Record of ART date TB
+   *
+   * @param encounterTypeId
+   * @param pulmonaryTBConcept
+   * @param yesConcept
+   * @return
+   */
+  public static String pulmonaryTB(
+      Integer encounterTypeId, Integer pulmonaryTBConcept, Integer yesConcept) {
+    return String.format(
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
+            + "ON p.patient_id = e.patient_id"
+            + "INNER JOIN obs o"
+            + "ON e.encounter_id = o.encounter_id"
+            + "WHERE e.location_id = %s AND o.concept_id = %s AND o.value_coded = %s AND o.obs_datetime >= :startDate and o.obs_datetime <= :endDate"
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
+        encounterTypeId, pulmonaryTBConcept, yesConcept);
+  }
+
   public static String dateObs(
       Integer questionId, List<Integer> encounterTypeIds, boolean startDate) {
     String sql =
