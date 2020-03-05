@@ -30,6 +30,17 @@ public class TbMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  /**
+   * pulmonaryTBUuid = 42
+   *
+   * @return
+   */
+  public Concept getPulmonaryTB() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.pulmonaryTBUuid");
+    return getConcept(uuid);
+  }
+
   public Concept getTBDrugTreatmentStartDate() {
     String uuid =
         Context.getAdministrationService()

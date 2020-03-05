@@ -77,6 +77,24 @@ public class TXTBCohortQueries {
     return definition;
   }
 
+  /**
+   * Patients with Pulmonary TB Date in Patient Clinical Record of ART date TB (Condicoes medicas
+   * importantes – Ficha Resumo Mastercard during reporting period
+   *
+   * @return cd
+   */
+  public CohortDefinition getPulmonaryTB() {
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "PULMONARYTB",
+            TXTBQueries.pulmonaryTB(
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                tbMetadata.getPulmonaryTB().getConceptId(),
+                commonMetadata.getYesConcept().getConceptId()));
+    addGeneralParameters(cd);
+    return cd;
+  }
+
   /** PACIENTES COM RASTREIO DE TUBERCULOSE NEGATIVO codes: RASTREIOTBNEG */
   public CohortDefinition codedNoTbScreening() {
     CohortDefinition cd =
@@ -317,6 +335,9 @@ public class TXTBCohortQueries {
         "in-tb-program", EptsReportUtils.map(getInTBProgram(), generalParameterMapping));
 
     definition.addSearch(
+        "pulmonary-tb", EptsReportUtils.map(getPulmonaryTB(), generalParameterMapping));
+
+    definition.addSearch(
         "started-tb-treatment-previous-period",
         EptsReportUtils.map(
             tbTreatmentStartDateWithinReportingDate(),
@@ -338,7 +359,7 @@ public class TXTBCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     definition.setCompositionString(
-        "(art-list AND (tb-screening OR tb-investigation OR started-tb-treatment OR in-tb-program)) "
+        "(art-list AND (tb-screening OR tb-investigation OR started-tb-treatment OR in-tb-program OR pulmonary-tb)) "
             + "NOT ((transferred-out NOT (started-tb-treatment OR in-tb-program)) OR started-tb-treatment-previous-period OR in-tb-program-previous-period)");
 
     return definition;
