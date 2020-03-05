@@ -100,29 +100,39 @@ public class ResumoMensalQueries {
       int transferFromConcept,
       int yesConcept,
       int typeOfPantientConcept,
-      int tarvConcept) {
+      int tarvConcept,
+      int artProgram,
+      int transferInState) {
 
     String query =
         "SELECT p.patient_id "
             + "FROM   patient p "
-            + "       JOIN encounter e "
-            + "         ON p.patient_id = e.patient_id "
-            + "       JOIN obs transf "
-            + "         ON transf.encounter_id = e.encounter_id "
-            + "       JOIN obs type "
-            + "         ON type.encounter_id = e.encounter_id "
+            + "       JOIN encounter e ON p.patient_id = e.patient_id "
+            + "       JOIN obs transf ON transf.encounter_id = e.encounter_id "
+            + "       JOIN obs type ON type.encounter_id = e.encounter_id "
             + "WHERE  p.voided = 0 "
             + "       AND e.voided = 0 "
             + "       AND e.encounter_type = ${masterCardEncounter} "
             + "       AND e.location_id = :location "
-            + "       AND e.encounter_datetime < :onOrBefore "
             + "       AND transf.voided = 0 "
             + "       AND transf.concept_id = ${transferFromConcept} "
             + "       AND transf.value_coded = ${yesConcept} "
-            + "       AND transf.obs_datetime < :onOrBefore "
             + "       AND type.voided = 0 "
             + "       AND type.concept_id = ${typeOfPantientConcept} "
-            + "       AND type.value_coded = ${tarvConcept}";
+            + "       AND type.value_coded = ${tarvConcept}"
+            + "       AND transf.obs_datetime < :onOrBefore"
+            + "UNION"
+            + "       SELECT pg.patient_id"
+            + "       FROM patient p"
+            + "       INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
+            + "       INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id"
+            + "       WHERE pg.voided=0"
+            + "       AND ps.voided=0"
+            + "       AND p.voided=0"
+            + "       AND pg.program_id=${artProgram}"
+            + "       AND ps.state=${transferInState}"
+            + "       AND ps.end_date is null"
+            + "       and ps.start_date < :onOrBefore";
 
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put("masterCardEncounter", masterCardEncounter);
@@ -130,6 +140,8 @@ public class ResumoMensalQueries {
     valuesMap.put("yesConcept", yesConcept);
     valuesMap.put("typeOfPantientConcept", typeOfPantientConcept);
     valuesMap.put("tarvConcept", tarvConcept);
+    valuesMap.put("artProgram", artProgram);
+    valuesMap.put("transferInState", transferInState);
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     return sub.replace(query);
   }

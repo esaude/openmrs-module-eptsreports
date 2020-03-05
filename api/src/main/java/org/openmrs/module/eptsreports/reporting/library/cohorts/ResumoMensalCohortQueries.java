@@ -498,7 +498,7 @@ public class ResumoMensalCohortQueries {
     String transferMappings = "onOrBefore=${startDate},location=${location}";
     cd.addSearch("transferredIn", map(transferredIn, transferMappings));
 
-    cd.addSearch("fila", map(fila, "locationList=${location},onOrBefore=${startDate-1d}"));
+    cd.addSearch("fila", map(fila, "onOrBefore=${startDate-1d},locationList=${location}"));
 
     cd.setCompositionString("(artStartDate AND (drugPickup OR fila)) AND NOT transferredIn");
 
@@ -522,23 +522,24 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
-            hivMetadata.getArtStatus().getConceptId()));
+            hivMetadata.getArtStatus().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getArtTransferredFromOtherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
 
-    CohortDefinition startDrugs = getPatientsWithStartDrugs();
     CohortDefinition transferredOut = getPatientsTransferredOutB5();
     CohortDefinition suspended = getPatientsWhoSuspendedTreatmentB6();
-    CohortDefinition missedDrugPickup = getLastArvPickupDateCohort();
+    CohortDefinition patientsArt = getPatientsWhoStartedArtByEndOfPreviousMonthB10();
     CohortDefinition died = getPatientsWhoDied(false);
 
     String encounterWithCodedObsMappings = "onOrBefore=${startDate},locationList=${location}";
-    String drugPickupMappings =
-        "value1=${endDate-90d},value2=${endDate},onOrBefore=${startDate},locationList=${location}";
 
-    cd.addSearch("B10", mapStraightThrough(getPatientsWhoStartedArtByEndOfPreviousMonthB10()));
+    cd.addSearch("B10", map(patientsArt, "startDate=${startDate},location=${location}"));
     cd.addSearch("B2A", map(transferredIn, "onOrBefore=${startDate},location=${location}"));
-    cd.addSearch("B3A", map(startDrugs, encounterWithCodedObsMappings));
+
     cd.addSearch("B5A", map(transferredOut, "onOrBefore=${startDate},location=${location}"));
-    cd.addSearch("B6A", map(suspended, encounterWithCodedObsMappings));
+    cd.addSearch("B6A", map(suspended, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "B7A",
         map(
@@ -546,7 +547,7 @@ public class ResumoMensalCohortQueries {
             "location=${location},onOrBefore=${startDate}"));
     cd.addSearch("B8A", map(died, encounterWithCodedObsMappings));
 
-    cd.setCompositionString("B10 OR B2A OR B3A AND NOT (B5A OR B6A OR B7A OR B8A)");
+    cd.setCompositionString("B10 OR B2A AND NOT (B5A OR B6A OR B7A OR B8A)");
 
     return cd;
   }
