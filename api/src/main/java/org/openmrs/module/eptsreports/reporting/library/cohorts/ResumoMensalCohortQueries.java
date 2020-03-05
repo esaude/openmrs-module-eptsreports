@@ -899,7 +899,7 @@ public class ResumoMensalCohortQueries {
         "B6",
         map(
             getPatientsWhoSuspendedTreatmentB6(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "B7",
         map(
