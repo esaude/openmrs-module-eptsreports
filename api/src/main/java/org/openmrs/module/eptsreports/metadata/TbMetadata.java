@@ -22,7 +22,11 @@ import org.springframework.stereotype.Component;
 @Component("tbMetadata")
 public class TbMetadata extends ProgramsMetadata {
 
-  // Concepts
+  /**
+   * Concept_id = 1268
+   *
+   * @return
+   */
   public Concept getTBTreatmentPlanConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -31,7 +35,7 @@ public class TbMetadata extends ProgramsMetadata {
   }
 
   /**
-   * pulmonaryTBUuid = 42
+   * Concept_id = 42
    *
    * @return
    */

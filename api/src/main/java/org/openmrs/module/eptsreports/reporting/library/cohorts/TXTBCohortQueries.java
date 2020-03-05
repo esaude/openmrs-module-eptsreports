@@ -95,6 +95,23 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /**
+   * Patients marked as “Tratamento TB = Inicio (I) ” in Ficha Clinica Master Card
+   *
+   * @return cd
+   */
+  public CohortDefinition getTBTreatmentStart() {
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "TBTREATMENTSTART",
+            TXTBQueries.tbTreatmentStart(
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                tbMetadata.getTBTreatmentPlanConcept().getConceptId(),
+                hivMetadata.getStartDrugs().getConceptId()));
+    addGeneralParameters(cd);
+    return cd;
+  }
+
   /** PACIENTES COM RASTREIO DE TUBERCULOSE NEGATIVO codes: RASTREIOTBNEG */
   public CohortDefinition codedNoTbScreening() {
     CohortDefinition cd =
@@ -333,10 +350,11 @@ public class TXTBCohortQueries {
         EptsReportUtils.map(tbTreatmentStartDateWithinReportingDate(), generalParameterMapping));
     definition.addSearch(
         "in-tb-program", EptsReportUtils.map(getInTBProgram(), generalParameterMapping));
-
     definition.addSearch(
         "pulmonary-tb", EptsReportUtils.map(getPulmonaryTB(), generalParameterMapping));
-
+    definition.addSearch(
+        "marked-as-tbtreatment-start",
+        EptsReportUtils.map(getTBTreatmentStart(), generalParameterMapping));
     definition.addSearch(
         "started-tb-treatment-previous-period",
         EptsReportUtils.map(
@@ -359,7 +377,7 @@ public class TXTBCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     definition.setCompositionString(
-        "(art-list AND (tb-screening OR tb-investigation OR started-tb-treatment OR in-tb-program OR pulmonary-tb)) "
+        "(art-list AND (tb-screening OR tb-investigation OR started-tb-treatment OR in-tb-program OR pulmonary-tb OR marked-as-tbtreatment-start)) "
             + "NOT ((transferred-out NOT (started-tb-treatment OR in-tb-program)) OR started-tb-treatment-previous-period OR in-tb-program-previous-period)");
 
     return definition;

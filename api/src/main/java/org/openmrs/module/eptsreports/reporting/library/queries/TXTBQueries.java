@@ -140,9 +140,29 @@ public class TXTBQueries {
             + "ON p.patient_id = e.patient_id"
             + "INNER JOIN obs o"
             + "ON e.encounter_id = o.encounter_id"
-            + "WHERE e.location_id = %s AND o.concept_id = %s AND o.value_coded = %s AND o.obs_datetime >= :startDate and o.obs_datetime <= :endDate"
+            + "WHERE e.location_id = :location AND o.concept_id = %s AND o.value_coded = %s AND o.obs_datetime >= :startDate and o.obs_datetime <= :endDate"
             + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
         encounterTypeId, pulmonaryTBConcept, yesConcept);
+  }
+
+  /**
+   * Patients marked as “Tratamento TB= Inicio (I) ” in Ficha Clinica Master Card
+   *
+   * @param encounterTypeId
+   * @param tbTreatmentPlan
+   * @param startDrugs
+   * @return
+   */
+  public static String tbTreatmentStart(
+      Integer encounterTypeId, Integer tbTreatmentPlan, Integer startDrugs) {
+    return String.format(
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
+            + "ON p.patient_id = e.patient_id"
+            + "INNER JOIN obs o"
+            + "ON e.encounter_id = o.encounter_id"
+            + "WHERE e.location_id = :location AND o.concept_id = %s  AND o.value_coded = %s AND o.obs_datetime >= :startDate and o.obs_datetime <= :endDate"
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
+        encounterTypeId, tbTreatmentPlan, startDrugs);
   }
 
   public static String dateObs(
