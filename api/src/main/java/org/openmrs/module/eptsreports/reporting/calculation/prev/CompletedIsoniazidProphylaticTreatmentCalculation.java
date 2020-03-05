@@ -157,12 +157,70 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
         boolean inconsistent =
             (startDate != null && endDate != null && startDate.compareTo(endDate) > 0)
                 || (startDate == null && endDate != null);
+        
+       Date [] dateBoundaries =  evaluateEarliestDateAndLatestDate(startDate, startDrugsObs, endDate, endDrugsObs);
+        
+        // if no  earliestDate and  latestDate is picked the the patient is skipped 
+        if (dateBoundaries[0] == null && dateBoundaries[1]  == null) {
+          continue;
+        }
 
-        Date earliestDate = null;
-        Date latestDate = null;
-        
-        
-        /*
+        int profilaxiaDuration12 =
+            Days.daysIn(new Interval(dateBoundaries[0].getTime(), dateBoundaries[1].getTime())).getDays();
+
+        if (profilaxiaDuration12 >= MINIMUM_DURATION_IN_DAYS) {
+          map.put(patientId, new BooleanResult(true, this));
+        }
+
+        int yesAnswers =
+            calculateNumberOfYesAnswers(isoniazidUsageObservationsList, patientId, startDate);
+        if (yesAnswers >= NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED) {
+          map.put(patientId, new BooleanResult(true, this));
+        }
+      }
+    }
+    return map;
+  }
+
+  private int calculateNumberOfYesAnswers(
+      CalculationResultMap isoniazidUsageObservationsList, Integer patientId, Date startDate) {
+    List<Obs> isoniazidUsageObservations =
+        EptsCalculationUtils.extractResultValues(
+            (ListResult) isoniazidUsageObservationsList.get(patientId));
+    int count = 0;
+    Date isoniazidUsageEndDate = getIsoniazidUsageEndDate(startDate);
+    for (Obs obs : isoniazidUsageObservations) {
+      Date date = obs.getObsDatetime();
+      if (date.compareTo(startDate) >= 0 && date.compareTo(isoniazidUsageEndDate) <= 0) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  private Date getIsoniazidUsageEndDate(Date startDate) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(startDate);
+    calendar.add(Calendar.MONTH, MONTHS_TO_CHECK_FOR_ISONIAZID_USAGE);
+    return calendar.getTime();
+  }
+
+  private Date getDateFromObs(Obs obs) {
+    if (obs != null) {
+      return obs.getValueDatetime();
+    }
+    return null;
+  }
+  private  Date [] evaluateEarliestDateAndLatestDate(
+		  Date startDate, 
+		  Obs startDrugsObs, 
+		  Date endDate, 
+		  Obs endDrugsObs
+		 ) {
+	  
+	  Date earliestDate = null;
+      Date latestDate = null;
+	  /*
          * Assuming that the  startdate of the old spec is not null and the startdate of the new spec is null
          * and enddate of the old spec is not null and the enddate of the new spec is null
          */
@@ -277,55 +335,8 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
             latestDate = endDrugsObs.getEncounter().getEncounterDatetime();
           }
         }
-        // if no  earliestDate and  latestDate is picked the the patient is skipped 
-        if (earliestDate == null && latestDate == null) {
-          continue;
-        }
-
-        int profilaxiaDuration12 =
-            Days.daysIn(new Interval(earliestDate.getTime(), latestDate.getTime())).getDays();
-
-        if (profilaxiaDuration12 >= MINIMUM_DURATION_IN_DAYS) {
-          map.put(patientId, new BooleanResult(true, this));
-        }
-
-        int yesAnswers =
-            calculateNumberOfYesAnswers(isoniazidUsageObservationsList, patientId, startDate);
-        if (yesAnswers >= NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED) {
-          map.put(patientId, new BooleanResult(true, this));
-        }
-      }
-    }
-    return map;
-  }
-
-  private int calculateNumberOfYesAnswers(
-      CalculationResultMap isoniazidUsageObservationsList, Integer patientId, Date startDate) {
-    List<Obs> isoniazidUsageObservations =
-        EptsCalculationUtils.extractResultValues(
-            (ListResult) isoniazidUsageObservationsList.get(patientId));
-    int count = 0;
-    Date isoniazidUsageEndDate = getIsoniazidUsageEndDate(startDate);
-    for (Obs obs : isoniazidUsageObservations) {
-      Date date = obs.getObsDatetime();
-      if (date.compareTo(startDate) >= 0 && date.compareTo(isoniazidUsageEndDate) <= 0) {
-        count++;
-      }
-    }
-    return count;
-  }
-
-  private Date getIsoniazidUsageEndDate(Date startDate) {
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTime(startDate);
-    calendar.add(Calendar.MONTH, MONTHS_TO_CHECK_FOR_ISONIAZID_USAGE);
-    return calendar.getTime();
-  }
-
-  private Date getDateFromObs(Obs obs) {
-    if (obs != null) {
-      return obs.getValueDatetime();
-    }
-    return null;
+	  
+	  return new Date [] {earliestDate,latestDate};
+	  
   }
 }
