@@ -71,6 +71,8 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
 
     Date onOrBefore = (Date) context.getFromCache(ON_OR_BEFORE);
     Date onOrAfter = (Date) context.getFromCache(ON_OR_AFTER);
+    
+    
 
     if (onOrAfter != null && onOrBefore != null) {
       Date beginPeriodStartDate =
@@ -158,30 +160,54 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
 
         Date earliestDate = null;
         Date latestDate = null;
+        
+        
+        /*
+         * Assuming that the  startdate of the old spec is not null and the startdate of the new spec is null
+         * and enddate of the old spec is not null and the enddate of the new spec is null
+         */
 
         if ((startDate != null && startDrugsObs == null)
             && (endDate != null && endDrugsObs == null)) {
           earliestDate = startDate;
           latestDate = endDate;
         }
+        
+        /*
+         * Assuming that the  startdate of the old spec is not null and the startdate of the new spec is null
+         * and enddate of the old spec is  null and the enddate of the new spec is not  null
+         */
 
         if ((startDate != null && startDrugsObs == null)
             && (endDate == null && endDrugsObs != null)) {
           earliestDate = startDate;
           latestDate = endDrugsObs.getEncounter().getEncounterDatetime();
         }
+        
+        /*
+         * Assuming that the  startdate of the old spec is  null and the startdate of the new spec is not null
+         * and enddate of the old spec is not null and the enddate of the new spec is   null
+         */
         if ((startDate == null && startDrugsObs != null)
             && (endDate != null && endDrugsObs == null)) {
           earliestDate = startDrugsObs.getEncounter().getEncounterDatetime();
           latestDate = endDate;
         }
+        
+        /*
+         * Assuming that the  startdate of the old spec is  null and the startdate of the new spec is not null
+         * and enddate of the old spec is  null and the enddate of the new spec is  not null
+         */
 
         if ((startDate == null && startDrugsObs != null)
             && (endDate == null && endDrugsObs != null)) {
           earliestDate = startDrugsObs.getEncounter().getEncounterDatetime();
           latestDate = endDrugsObs.getEncounter().getEncounterDatetime();
         }
-
+        /*
+         * Assuming that the 2 startdates are not null  and the old spec enddate  is not null
+         * for the startdates we pick the earliest  
+         */
         if ((startDate != null && startDrugsObs != null)
             && (endDate != null && endDrugsObs == null)) {
           if (startDate.compareTo(startDrugsObs.getEncounter().getEncounterDatetime()) > 0) {
@@ -191,6 +217,10 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
           }
           latestDate = endDate;
         }
+        /*
+         * Assuming that the 2 startdates are not null  and the new spec enddate  is not null
+         * for the startdates we pick the earliest  
+         */
         if ((startDate != null && startDrugsObs != null)
             && (endDate == null && endDrugsObs != null)) {
           if (startDate.compareTo(startDrugsObs.getEncounter().getEncounterDatetime()) > 0) {
@@ -200,7 +230,10 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
           }
           latestDate = endDrugsObs.getEncounter().getEncounterDatetime();
         }
-
+        /*
+         * Assuming that the 2 enddates are not null  and the old spec startdate  is not null
+         * for the enddates we pick the latest  
+         */
         if ((startDate != null && startDrugsObs == null)
             && (endDate != null && endDrugsObs != null)) {
           if (endDate.compareTo(endDrugsObs.getEncounter().getEncounterDatetime()) > 0) {
@@ -210,7 +243,10 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
           }
           earliestDate = startDate;
         }
-
+        /*
+         * Assuming that the 2 enddates are not null  and the new spec startdate  is not null
+         * for the enddates we pick the latest  
+         */
         if ((startDate == null && startDrugsObs != null)
             && (endDate != null && endDrugsObs != null)) {
           if (endDate.compareTo(endDrugsObs.getEncounter().getEncounterDatetime()) > 0) {
@@ -220,7 +256,11 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
           }
           earliestDate = startDrugsObs.getEncounter().getEncounterDatetime();
         }
-
+        
+        /*
+         * Assuming that the 2 startdate and the 2 and dates are not null
+         * for the startdate we pick the earliest and for the   last date we pick the  latest
+         */
         if ((startDate != null && startDrugsObs != null)
             && (endDate != null && endDrugsObs != null)) {
           // get the earliest
@@ -237,7 +277,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
             latestDate = endDrugsObs.getEncounter().getEncounterDatetime();
           }
         }
-
+        // if no  earliestDate and  latestDate is picked the the patient is skipped 
         if (earliestDate == null && latestDate == null) {
           continue;
         }
