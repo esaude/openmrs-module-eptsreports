@@ -149,8 +149,10 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    String transferBasedOnDateMappings="onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}";
+    String inProgramStatesMappings = "startDate=${onOrAfter},endDate=${onOrBefore},location=${locationList}";
     cd.addSearch("population", map(getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(), "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch("exclusion", map(getAdditionalExclusionCriteriaForC1(), "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch("exclusion", map(getAdditionalExclusionCriteriaForC1andC2(transferBasedOnDateMappings, inProgramStatesMappings), "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
     cd.setCompositionString("population AND NOT exclusion");
     return cd;
   }
@@ -624,9 +626,11 @@ public class ResumoMensalCohortQueries {
 
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
     String mappings1 = "startDate=${startDate-1m},endDate=${endDate},location=${location}";
+    String transferBasedOnDateMappings="onOrAfter=${onOrAfter-1m},onOrBefore=${onOrBefore},locationList=${locationList}";
+    String inProgramStatesMappings = "startDate=${onOrAfter-1m},endDate=${onOrBefore},location=${locationList}";
     cd.addSearch("A2", map(a2, mappings1));
     cd.addSearch("TPI", map(tpi, mappings));
-    cd.addSearch("exclusions", map(getAdditionalExclusionCriteriaForC2(), "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch("exclusions", map(getAdditionalExclusionCriteriaForC1andC2(transferBasedOnDateMappings, inProgramStatesMappings), "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
 
     cd.setCompositionString("(A2 AND TPI) AND NOT exclusions");
 
@@ -733,30 +737,16 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getAdditionalExclusionCriteriaForC1() {
+  public CohortDefinition getAdditionalExclusionCriteriaForC1andC2(String transferBasedOnDateMappings, String inProgramStatesMappings) {
     CompositionCohortDefinition cd  = new CompositionCohortDefinition();
     cd.setName("All patients to be excluded for the C1 definition");
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("locationList", "location", Location.class));
-    cd.addSearch("transferBasedOnObsDate", map(getPatientsTransferBasedOnObsDate(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}"));
+    cd.addSearch("transferBasedOnObsDate", map(getPatientsTransferBasedOnObsDate(), transferBasedOnDateMappings));
     cd.addSearch("getTypeOfPatientTransferredFrom", map(getTypeOfPatientTransferredFrom(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}"));
     cd.addSearch("inProgramState", map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata.getHIVCareProgram().getProgramId(),
-            hivMetadata.getPateintTransferedFromOtherFacilityWorkflowState().getProgramWorkflowStateId()), "startDate=${onOrAfter},endDate=${onOrBefore},location=${locationList}"));
-    cd.setCompositionString("transferBasedOnObsDate OR getTypeOfPatientTransferredFrom OR inProgramState");
-    return cd;
-  }
-
-  public CohortDefinition getAdditionalExclusionCriteriaForC2() {
-    CompositionCohortDefinition cd  = new CompositionCohortDefinition();
-    cd.setName("All patients to be excluded for the C2 definition");
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("locationList", "location", Location.class));
-    cd.addSearch("transferBasedOnObsDate", map(getPatientsTransferBasedOnObsDate(), "onOrAfter=${onOrAfter-1m},onOrBefore=${onOrBefore},locationList=${locationList}"));
-    cd.addSearch("getTypeOfPatientTransferredFrom", map(getTypeOfPatientTransferredFrom(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}"));
-    cd.addSearch("inProgramState", map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata.getHIVCareProgram().getProgramId(),
-            hivMetadata.getPateintTransferedFromOtherFacilityWorkflowState().getProgramWorkflowStateId()), "startDate=${onOrAfter-1m},endDate=${onOrBefore},location=${locationList}"));
+            hivMetadata.getPateintTransferedFromOtherFacilityWorkflowState().getProgramWorkflowStateId()), inProgramStatesMappings));
     cd.setCompositionString("transferBasedOnObsDate OR getTypeOfPatientTransferredFrom OR inProgramState");
     return cd;
   }
