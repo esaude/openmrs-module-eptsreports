@@ -539,7 +539,8 @@ public class ResumoMensalCohortQueries {
     cd.addSearch("B2A", map(transferredIn, "onOrBefore=${startDate},location=${location}"));
 
     cd.addSearch("B5A", map(transferredOut, "onOrBefore=${startDate},location=${location}"));
-    cd.addSearch("B6A", map(suspended, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "B6A", map(suspended, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "B7A",
         map(
@@ -1136,29 +1137,29 @@ public class ResumoMensalCohortQueries {
     CompositionCohortDefinition ccd = new CompositionCohortDefinition();
     ccd.setName("Number of patients who Abandoned the ART during the current month");
     ccd.addParameter(new Parameter("location", "Location", Location.class));
-    ccd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    ccd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    ccd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+    ccd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
 
     ccd.addSearch(
         "B7I",
         map(
             getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
     ccd.addSearch(
         "B7II",
         map(
             getPatientsTransferredOutB5(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
     ccd.addSearch(
         "B7III",
         map(
             getPatientsWhoSuspendedTreatmentB6(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
     ccd.addSearch(
         "B7IV",
         map(
             getPatientsWhoDied(true),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
 
     ccd.setCompositionString("B7I AND NOT (B7II OR B7III OR B7IV)");
 
@@ -1169,6 +1170,7 @@ public class ResumoMensalCohortQueries {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients who Abandoned the ART during the current month");
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.setQuery(
         ResumoMensalQueries.getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthB127A(
