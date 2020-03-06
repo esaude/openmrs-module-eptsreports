@@ -107,6 +107,10 @@ public class TxTBDataset extends BaseDataSet {
             "newOnARTNegativeScreening",
             EptsReportUtils.map(txTbCohortQueries.newOnARTNegativeScreening(), mappings));
 
+    CohortIndicator specimenSent =
+        eptsGeneralIndicator.getIndicator(
+            "specimenSent", EptsReportUtils.map(txTbCohortQueries.specimenSent(), mappings));
+
     dataSetDefinition.addColumn(
         "TXB_DEN",
         "TX_TB: Denominator total",

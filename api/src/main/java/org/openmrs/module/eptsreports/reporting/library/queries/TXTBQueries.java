@@ -1,8 +1,11 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.text.StringSubstitutor;
 
 public class TXTBQueries {
 
@@ -170,6 +173,116 @@ public class TXTBQueries {
             + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "WHERE p.voided=0 AND e.encounter_type=%s AND e.voided=0 AND e.encounter_datetime>=:startDate AND e.encounter_datetime<=:endDate AND e.location_id=:location GROUP BY p.patient_id",
         encounterTypeId);
+  }
+
+  /**
+   * Get patients who sent specimen within date boundaries
+   *
+   * @param encounterType
+   * @retrun CohortDefinition
+   */
+  public static String getPatientsWhoHaveSentSpecimen(
+      int laboratory,
+      int fichaClinica,
+      int basiloscopiaExam,
+      int genexpertTest,
+      int tbLamTest,
+      int positive,
+      int negative) {
+    String query =
+        "SELECT specimen.patient_id "
+            + "FROM   ( "
+            + "       SELECT p.patient_id "
+            + "           FROM  patient p "
+            + "                 INNER JOIN encounter e "
+            + "                         ON p.patient_id = e.patient_id "
+            + "                 INNER JOIN obs exam "
+            + "                         ON e.encounter_id = exam.encounter_id "
+            + "                 WHERE p.voided = 0 "
+            + "                 AND e.voided = 0 "
+            + "                 AND exam.voided = 0 "
+            + "                 AND e.encounter_type = ${laboratory} "
+            + "                 AND (exam.concept_id = ${basiloscopiaExam} "
+            + "                 AND (exam.value_coded = ${negative} OR exam.value_coded = ${positive}) "
+            + "                 AND e.encounter_datetime >= :startDate "
+            + "                 AND e.encounter_datetime <= :endDate "
+            + "           GROUP BY p.patient_id "
+            + "       UNION "
+            + "       SELECT p.patient_id "
+            + "           FROM  patient p "
+            + "                 INNER JOIN encounter e "
+            + "                 ON p.patient_id = e.patient_id "
+            + "                 INNER JOIN obs exam "
+            + "                 ON e.encounter_id = exam.encounter_id "
+            + "                 WHERE p.voided = 0 "
+            + "                 AND e.voided = 0 "
+            + "                 AND exam.voided = 0 "
+            + "                 AND e.encounter_type = ${fichaClinica} "
+            + "                 AND exam.concept_id = ${genexpertTest} "
+            + "                 AND (exam.value_coded = ${negative} OR exam.value_coded = ${positive}) "
+            + "                 AND e.encounter_datetime >= :startDate "
+            + "                 AND e.encounter_datetime <= :endDate "
+            + "           GROUP BY p.patient_id "
+            + "       UNION "
+            + "       SELECT p.patient_id "
+            + "           FROM  patient p "
+            + "                 INNER JOIN encounter e "
+            + "                 ON p.patient_id = e.patient_id "
+            + "                 INNER JOIN obs exam "
+            + "                 ON e.encounter_id = exam.encounter_id "
+            + "                 WHERE p.voided = 0 "
+            + "                 AND e.voided = 0 "
+            + "                 AND exam.voided = 0 "
+            + "                 AND e.encounter_type = ${fichaClinica} "
+            + "                 AND exam.concept_id = ${tbLamTest} "
+            + "                 AND (exam.value_coded = ${negative} OR exam.value_coded = ${positive}) "
+            + "                 AND e.encounter_datetime >= :startDate "
+            + "                 AND e.encounter_datetime <= :endDate "
+            + "                 GROUP BY p.patient_id "
+            + "       UNION "
+            + "       SELECT p.patient_id "
+            + "           FROM  patient p "
+            + "                 INNER JOIN encounter e "
+            + "                 ON p.patient_id = e.patient_id "
+            + "                 INNER JOIN obs exam "
+            + "                 ON e.encounter_id = exam.encounter_id "
+            + "                 WHERE p.voided = 0 "
+            + "                 AND e.voided = 0 "
+            + "                 AND exam.voided = 0 "
+            + "                 AND e.encounter_type = ${fichaClinica} "
+            + "                 AND exam.concept_id = ${cultureTest} "
+            + "                 AND (exam.value_coded = ${negative} OR exam.value_coded = ${positive}) "
+            + "                 AND e.encounter_datetime >= :startDate "
+            + "                 AND e.encounter_datetime <= :endDate "
+            + "                 GROUP BY p.patient_id "
+            + "       UNION "
+            + "       SELECT p.patient_id "
+            + "           FROM  patient p "
+            + "                 INNER JOIN encounter e "
+            + "                 ON p.patient_id = e.patient_id "
+            + "                 INNER JOIN obs exam "
+            + "                 ON e.encounter_id = exam.encounter_id "
+            + "                 WHERE p.voided = 0 "
+            + "                 AND e.voided = 0 "
+            + "                 AND exam.voided = 0 "
+            + "                 AND e.encounter_type = ${fichaClinica} "
+            + "                 AND exam.concept_id = 23722 "
+            + "                 AND (exam.value_coded = ${genexpertTest} OR exam.value_coded = ${cultureTest} OR exam.value_coded = ${tbLamTest}) "
+            + "                 AND e.encounter_datetime >= :startDate "
+            + "                 AND e.encounter_datetime <= :endDate "
+            + "                 GROUP BY p.patient_id "
+            + ") specimen";
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("encounterType", laboratory);
+    valuesMap.put("encounterType", fichaClinica);
+    valuesMap.put("encounterType", basiloscopiaExam);
+    valuesMap.put("encounterType", genexpertTest);
+    valuesMap.put("encounterType", tbLamTest);
+    valuesMap.put("encounterType", positive);
+    valuesMap.put("encounterType", negative);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
   }
 
   public static class AbandonedWithoutNotificationParams {

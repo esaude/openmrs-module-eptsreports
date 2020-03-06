@@ -419,6 +419,14 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id=307
+  public Concept getExameBasiloscopiaConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.exameBasiloscopiaConceptUuid");
+    return getConcept(uuid);
+  }
+
   // concept_id=1714
   public Concept getAdherence() {
     String uuid =
@@ -968,6 +976,33 @@ public class HivMetadata extends ProgramsMetadata {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.reasonPatientNotFoundByActivist2ndVisitConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 23723
+  public Concept getTbGenexpertTest() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.tbGenexpertTest");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 23951
+  public Concept getTbLamTest() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.getTbLamTest");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 703
+  public Concept getPositiveConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.positiveConceptUuid");
+    return getConcept(uuid);
+  }
+
+  // concept_id = 664
+  public Concept getNegativeConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.negativeConceptUuid");
     return getConcept(uuid);
   }
 

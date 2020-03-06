@@ -356,4 +356,44 @@ public class TXTBCohortQueries {
     definition.setCompositionString("started-on-period");
     return definition;
   }
+
+  /**
+   * Get patients with specimen sent
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getSpecimenSent() {
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "specimen-sent",
+            TXTBQueries.getPatientsWhoHaveSentSpecimen(
+                hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getExameBasiloscopiaConcept().getConceptId(),
+                hivMetadata.getTbGenexpertTest().getConceptId(),
+                hivMetadata.getTbLamTest().getConceptId(),
+                hivMetadata.getPositiveConcept().getConceptId(),
+                hivMetadata.getNegativeConcept().getConceptId()));
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  /**
+   * BR-8 Specimen Sent Get patients from denominator AND tb_screened AND specimen_sent
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition specimenSent() {
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("specimenSent()");
+    definition.addSearch(
+        "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
+    definition.addSearch(
+        "specimen-sent", EptsReportUtils.map(getSpecimenSent(), generalParameterMapping));
+    definition.addSearch(
+        "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
+    addGeneralParameters(definition);
+    definition.setCompositionString("denominator AND specimen-sent AND positive-screening");
+    return definition;
+  }
 }
