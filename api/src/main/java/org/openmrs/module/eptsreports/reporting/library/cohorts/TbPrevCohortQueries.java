@@ -40,7 +40,7 @@ public class TbPrevCohortQueries {
   @Autowired private HivMetadata hivMetadata;
 
   @Autowired private GenericCohortQueries genericCohortQueries;
-  
+
   @Autowired private HivCohortQueries hivCohortQueries;
 
   public CohortDefinition getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod() {
@@ -142,15 +142,15 @@ public class TbPrevCohortQueries {
             getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod(),
             "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
     definition.addSearch(
-            "initiated-profilaxia",
-            EptsReportUtils.map(
-            		getPatientsThatInitiatedProfilaxia(),
-                "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
+        "initiated-profilaxia",
+        EptsReportUtils.map(
+            getPatientsThatInitiatedProfilaxia(),
+            "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
     definition.addSearch(
         "transferred-out",
         EptsReportUtils.map(
-                hivCohortQueries.getPatientsTransferredOut(),
-                "onOrBefore=${onOrBefore},location=${location}"));
+            hivCohortQueries.getPatientsTransferredOut(),
+            "onOrBefore=${onOrBefore},location=${location}"));
     definition.addSearch(
         "completed-isoniazid",
         EptsReportUtils.map(
@@ -172,30 +172,28 @@ public class TbPrevCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     return cd;
   }
-  
-	/**
-	 * Patients who on “Ficha Clinica-MasterCard”, mastercard under “
-	 * Profilaxia INH” were marked with an “I” (inicio) in a clinical consultation
-	 * date occurred between ${onOrAfter} and ${onOrBefore}
-	 * 
-	 * @return the cohort definition
-	 */
+
+  /**
+   * Patients who on “Ficha Clinica-MasterCard”, mastercard under “ Profilaxia INH” were marked with
+   * an “I” (inicio) in a clinical consultation date occurred between ${onOrAfter} and ${onOrBefore}
+   *
+   * @return the cohort definition
+   */
   public CohortDefinition getPatientsThatInitiatedProfilaxia() {
-      Concept profilaxiaINH = hivMetadata.getIsoniazidUsageConcept();
-      Concept inicio = hivMetadata.getStartDrugs();
-      EncounterType adultoSeguimentoEncounterType = hivMetadata.getAdultoSeguimentoEncounterType();
+    Concept profilaxiaINH = hivMetadata.getIsoniazidUsageConcept();
+    Concept inicio = hivMetadata.getStartDrugs();
+    EncounterType adultoSeguimentoEncounterType = hivMetadata.getAdultoSeguimentoEncounterType();
 
-      CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-      cd.setName("Initiated Profilaxia");
-      cd.addParameter(new Parameter("location", "Location", Location.class));
-      cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-      cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-      cd.setEncounterTypeList(Collections.singletonList(adultoSeguimentoEncounterType));
-      cd.setTimeModifier(TimeModifier.ANY);
-      cd.setQuestion(profilaxiaINH);
-      cd.setValueList(Collections.singletonList(inicio));
-      cd.setOperator(SetComparator.IN);
-      return cd;
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.setName("Initiated Profilaxia");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.setEncounterTypeList(Collections.singletonList(adultoSeguimentoEncounterType));
+    cd.setTimeModifier(TimeModifier.ANY);
+    cd.setQuestion(profilaxiaINH);
+    cd.setValueList(Collections.singletonList(inicio));
+    cd.setOperator(SetComparator.IN);
+    return cd;
   }
-
 }
