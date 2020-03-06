@@ -661,7 +661,11 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // Concept 23722 APPLICATION FOR LABORATORY RESEARCH
+  /**
+   * Concept 23722 APPLICATION FOR LABORATORY RESEARCH
+   *
+   * @return
+   */
   public Concept getApplicationForLaboratoryResearch() {
     String uuid =
         Context.getAdministrationService()

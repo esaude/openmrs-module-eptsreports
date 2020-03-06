@@ -112,6 +112,102 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  public CohortDefinition getTuberculosisSymptoms() {
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "tuberculosisSymptoms",
+            TXTBQueries.tuberculosisSympots(
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                tbMetadata.getHasTbSymptomsConcept().getConceptId(),
+                commonMetadata.getYesConcept().getConceptId(),
+                commonMetadata.getNoConcept().getConceptId()));
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  public CohortDefinition getActiveTuberculosis() {
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "activeTuberculosis",
+            TXTBQueries.activeTuberculosis(
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getActiveTBConcept().getConceptId(),
+                commonMetadata.getYesConcept().getConceptId()));
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  public CohortDefinition getTBObservation() {
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "tbObservation",
+            TXTBQueries.tbObservation(
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                tbMetadata.getObservationTB().getConceptId(),
+                tbMetadata.getFeverLastingMoraThan3Weeks().getConceptId(),
+                tbMetadata.getWeightLossOfMoreThan3KgInLastMonth().getConceptId(),
+                tbMetadata.getNightsWeatsLastingMoraThan3Weeks().getConceptId(),
+                tbMetadata.getCoughLastingMoraThan3Weeks().getConceptId(),
+                tbMetadata.getAsthenia().getConceptId(),
+                tbMetadata.getCohabitantBeingTreatedForTB().getConceptId(),
+                tbMetadata.getLymphadenopathy().getConceptId()));
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  public CohortDefinition getApplicationForLaboratoryResearch() {
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "applicationForLaboratoryResearch",
+            TXTBQueries.applicationForLaboratoryResearch(
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
+                tbMetadata.getTBGenexpertTest().getConceptId(),
+                tbMetadata.getCultureTest().getConceptId(),
+                tbMetadata.getTestTBLAM().getConceptId()));
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  public CohortDefinition getTBGenexpertTest() {
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "TBGenexpertTest",
+            TXTBQueries.tbGenexpertTest(
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                tbMetadata.getTBGenexpertTest().getConceptId(),
+                commonMetadata.getPositive().getConceptId(),
+                commonMetadata.getNegative().getConceptId()));
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  public CohortDefinition getCultureTest() {
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "CultureTest",
+            TXTBQueries.cultureTest(
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                tbMetadata.getCultureTest().getConceptId(),
+                commonMetadata.getPositive().getConceptId(),
+                commonMetadata.getNegative().getConceptId()));
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  public CohortDefinition getTestTBLAM() {
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "TestTBLAM",
+            TXTBQueries.testTBLAM(
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                tbMetadata.getTestTBLAM().getConceptId(),
+                commonMetadata.getPositive().getConceptId(),
+                commonMetadata.getNegative().getConceptId()));
+    addGeneralParameters(cd);
+    return cd;
+  }
+
   /** PACIENTES COM RASTREIO DE TUBERCULOSE NEGATIVO codes: RASTREIOTBNEG */
   public CohortDefinition codedNoTbScreening() {
     CohortDefinition cd =
@@ -353,8 +449,33 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "pulmonary-tb", EptsReportUtils.map(getPulmonaryTB(), generalParameterMapping));
     definition.addSearch(
-        "marked-as-tbtreatment-start",
+        "marked-as-tb-treatment-start",
         EptsReportUtils.map(getTBTreatmentStart(), generalParameterMapping));
+
+    definition.addSearch(
+        "tuberculosis-symptomys",
+        EptsReportUtils.map(getTuberculosisSymptoms(), generalParameterMapping));
+
+    definition.addSearch(
+        "active-tuberculosis",
+        EptsReportUtils.map(getActiveTuberculosis(), generalParameterMapping));
+
+    definition.addSearch(
+        "tb-observations", EptsReportUtils.map(getTBObservation(), generalParameterMapping));
+
+    definition.addSearch(
+        "application-for-laboratory-research",
+        EptsReportUtils.map(getApplicationForLaboratoryResearch(), generalParameterMapping));
+
+    definition.addSearch(
+        "tb-genexpert-test", EptsReportUtils.map(getTBGenexpertTest(), generalParameterMapping));
+
+    definition.addSearch(
+        "culture-test", EptsReportUtils.map(getCultureTest(), generalParameterMapping));
+
+    definition.addSearch(
+        "test-tb-lam", EptsReportUtils.map(getTestTBLAM(), generalParameterMapping));
+
     definition.addSearch(
         "started-tb-treatment-previous-period",
         EptsReportUtils.map(
@@ -377,7 +498,8 @@ public class TXTBCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     definition.setCompositionString(
-        "(art-list AND (tb-screening OR tb-investigation OR started-tb-treatment OR in-tb-program OR pulmonary-tb OR marked-as-tbtreatment-start)) "
+        "(art-list AND (tb-screening OR tb-investigation OR started-tb-treatment OR in-tb-program OR pulmonary-tb OR marked-as-tb-treatment-start"
+            + "OR (tuberculosis-symptomys OR active-tuberculosis OR tb-observations OR application-for-laboratory-research OR tb-genexpert-test OR culture-test OR test-tb-lam)))"
             + "NOT ((transferred-out NOT (started-tb-treatment OR in-tb-program)) OR started-tb-treatment-previous-period OR in-tb-program-previous-period)");
 
     return definition;

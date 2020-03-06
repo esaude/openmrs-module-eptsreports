@@ -165,6 +165,193 @@ public class TXTBQueries {
         encounterTypeId, tbTreatmentPlan, startDrugs);
   }
 
+  /**
+   * TUBERCULOSIS SYMPTOMS
+   *
+   * @param encounterTypeId
+   * @param tbSymptomsId
+   * @param yesConcept
+   * @param noConcept
+   * @return
+   */
+  public static String tuberculosisSympots(
+      Integer encounterTypeId, Integer tbSymptomsId, Integer yesConcept, Integer noConcept) {
+    return String.format(
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
+            + "ON p.patient_id = e.patient_id"
+            + "INNER JOIN obs o"
+            + "ON e.encounter_id = o.encounter_id"
+            + "WHERE e.location_id = :location "
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s))"
+            + "AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate"
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
+        encounterTypeId, tbSymptomsId, yesConcept, noConcept);
+  }
+
+  /**
+   * ACTIVE TUBERCULOSIS
+   *
+   * @param encounterTypeId
+   * @param activeTuberculosis
+   * @param yesConcept
+   * @return
+   */
+  public static String activeTuberculosis(
+      Integer encounterTypeId, Integer activeTuberculosis, Integer yesConcept) {
+    return String.format(
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
+            + "ON p.patient_id = e.patient_id"
+            + "INNER JOIN obs o"
+            + "ON e.encounter_id = o.encounter_id"
+            + "WHERE e.location_id = :location "
+            + "AND o.concept_id = %s  AND o.value_coded = %s"
+            + "AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate"
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
+        encounterTypeId, activeTuberculosis, yesConcept);
+  }
+
+  /**
+   * TB OBSERVATIONS
+   *
+   * @param encounterTypeId
+   * @param tbObservation
+   * @param fever
+   * @param weight
+   * @param nightweats
+   * @param cough
+   * @param asthenia
+   * @param cohabitant
+   * @param lymphadenopathy
+   * @return
+   */
+  public static String tbObservation(
+      Integer encounterTypeId,
+      Integer tbObservation,
+      Integer fever,
+      Integer weight,
+      Integer nightweats,
+      Integer cough,
+      Integer asthenia,
+      Integer cohabitant,
+      Integer lymphadenopathy) {
+    return String.format(
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
+            + "ON p.patient_id = e.patient_id"
+            + "INNER JOIN obs o"
+            + "ON e.encounter_id = o.encounter_id"
+            + "WHERE e.location_id = :location "
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s"
+            + "OR o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s))"
+            + "AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate"
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
+        encounterTypeId,
+        tbObservation,
+        fever,
+        weight,
+        nightweats,
+        cough,
+        asthenia,
+        cohabitant,
+        lymphadenopathy);
+  }
+
+  /**
+   * APPLICATION FOR LABORATORY RESEARCH
+   *
+   * @param encounterTypeId
+   * @param applicationForLaboratory
+   * @param tbGenexpertTest
+   * @param cultureTest
+   * @param testTBLAM
+   * @return
+   */
+  public static String applicationForLaboratoryResearch(
+      Integer encounterTypeId,
+      Integer applicationForLaboratory,
+      Integer tbGenexpertTest,
+      Integer cultureTest,
+      Integer testTBLAM) {
+    return String.format(
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
+            + "ON p.patient_id = e.patient_id"
+            + "INNER JOIN obs o"
+            + "ON e.encounter_id = o.encounter_id"
+            + "WHERE e.location_id = :location "
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s))"
+            + "AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate"
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
+        encounterTypeId, applicationForLaboratory, tbGenexpertTest, cultureTest, testTBLAM);
+  }
+
+  /**
+   * TB GENEXPERT TEST
+   *
+   * @param encounterTypeId
+   * @param tbGenexpertTest
+   * @param positive
+   * @param negative
+   * @return
+   */
+  public static String tbGenexpertTest(
+      Integer encounterTypeId, Integer tbGenexpertTest, Integer positive, Integer negative) {
+    return String.format(
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
+            + "ON p.patient_id = e.patient_id"
+            + "INNER JOIN obs o"
+            + "ON e.encounter_id = o.encounter_id"
+            + "WHERE e.location_id = :location "
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s))"
+            + "AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate"
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
+        encounterTypeId, tbGenexpertTest, positive, negative);
+  }
+
+  /**
+   * CULTURE TEST
+   *
+   * @param encounterTypeId
+   * @param cultureTest
+   * @param positive
+   * @param negative
+   * @return
+   */
+  public static String cultureTest(
+      Integer encounterTypeId, Integer cultureTest, Integer positive, Integer negative) {
+    return String.format(
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
+            + "ON p.patient_id = e.patient_id"
+            + "INNER JOIN obs o"
+            + "ON e.encounter_id = o.encounter_id"
+            + "WHERE e.location_id = :location "
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s))"
+            + "AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate"
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
+        encounterTypeId, cultureTest, positive, negative);
+  }
+
+  /**
+   * Test TB LAM
+   *
+   * @param encounterTypeId
+   * @param testTBLAM
+   * @param positive
+   * @param negative
+   * @return
+   */
+  public static String testTBLAM(
+      Integer encounterTypeId, Integer testTBLAM, Integer positive, Integer negative) {
+    return String.format(
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
+            + "ON p.patient_id = e.patient_id"
+            + "INNER JOIN obs o"
+            + "ON e.encounter_id = o.encounter_id"
+            + "WHERE e.location_id = :location "
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s))"
+            + "AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate"
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
+        encounterTypeId, testTBLAM, positive, negative);
+  }
+
   public static String dateObs(
       Integer questionId, List<Integer> encounterTypeIds, boolean startDate) {
     String sql =
