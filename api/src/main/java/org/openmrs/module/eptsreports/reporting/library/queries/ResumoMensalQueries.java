@@ -222,7 +222,7 @@ public class ResumoMensalQueries {
             + "inner join encounter e on p.patient_id=e.patient_id "
             + "inner join obs o on e.encounter_id=o.encounter_id "
             + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=52 and o.concept_id=23866 and o.value_datetime is not null and o.value_datetime<=:endDate and e.location_id=:location group by p.patient_id) consultaLev group by patient_id) consultaOuARV on transferidopara.patient_id=consultaOuARV.patient_id "
-            + "where consultaOuARV.encounter_datetime<transferidopara.data_transferidopara and transferidopara.data_transferidopara between :startDate AND :endDate ";
+            + "where consultaOuARV.encounter_datetime<=transferidopara.data_transferidopara and transferidopara.data_transferidopara between :startDate AND :endDate ";
     return query;
   }
 
@@ -260,7 +260,7 @@ public class ResumoMensalQueries {
             + "where  p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=52 and o.concept_id=23866 "
             + "and o.value_datetime is not null and o.value_datetime<=:endDate and e.location_id=:location group by p.patient_id"
             + ") consultaLev group by patient_id) consultaOuARV on suspenso1.patient_id=consultaOuARV.patient_id "
-            + "where consultaOuARV.encounter_datetime<suspenso1.data_suspencao and suspenso1.data_suspencao between :startDate  AND :endDate ";
+            + "where consultaOuARV.encounter_datetime<=suspenso1.data_suspencao and suspenso1.data_suspencao between :startDate  AND :endDate ";
 
     return query;
   }
