@@ -368,15 +368,15 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
     dsd.addColumn(
         "C1TC",
         "Patients who initiated Pre-TARV during the current month and was screened for TB C1",
-            EptsReportUtils.map(
-                    eptsGeneralIndicator.getIndicator(
-                            "Patients who initiated Pre-TARV during the current month and was screened for TB C1",
-                            EptsReportUtils.map(
-                                    resumoMensalCohortQueries
-                                            .getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTbC1(),
-                                    mappings)),
-                    mappings),
-            "");
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Patients who initiated Pre-TARV during the current month and was screened for TB C1",
+                EptsReportUtils.map(
+                    resumoMensalCohortQueries
+                        .getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTbC1(),
+                    mappings)),
+            mappings),
+        "");
 
     // C2 indicators
     dsd.addColumn(
