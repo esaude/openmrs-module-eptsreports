@@ -558,7 +558,8 @@ public class HivMetadata extends ProgramsMetadata {
 
   // Concept 1256 Start Drugs
   public Concept getStartDrugs() {
-    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.startDrugs");
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.startDrugsConceptUuid");
     return getConcept(uuid);
   }
 
