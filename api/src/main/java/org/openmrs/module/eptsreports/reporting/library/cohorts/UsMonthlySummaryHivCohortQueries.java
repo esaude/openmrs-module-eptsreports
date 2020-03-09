@@ -660,12 +660,12 @@ public class UsMonthlySummaryHivCohortQueries {
             query,
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             hivMetadata.getStartDrugsConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
@@ -678,7 +678,7 @@ public class UsMonthlySummaryHivCohortQueries {
             hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId()));
 
@@ -863,7 +863,7 @@ public class UsMonthlySummaryHivCohortQueries {
 
     cd.addEncounterType(hivMetadata.getARVPharmaciaEncounterType());
     cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.addEncounterType(hivMetadata.getARVPediatriaSeguimentoEncounterType());
+    cd.addEncounterType(hivMetadata.getPediatriaSeguimentoEncounterType());
 
     cd.setOperator2(RangeComparator.LESS_EQUAL);
 
@@ -904,7 +904,7 @@ public class UsMonthlySummaryHivCohortQueries {
 
     cd.addEncounterType(hivMetadata.getARVPharmaciaEncounterType());
     cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.addEncounterType(hivMetadata.getARVPediatriaSeguimentoEncounterType());
+    cd.addEncounterType(hivMetadata.getPediatriaSeguimentoEncounterType());
 
     cd.setOperator(SetComparator.IN);
 
@@ -969,7 +969,7 @@ public class UsMonthlySummaryHivCohortQueries {
         String.format(
             query,
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata
                 .getTransferredFromOtherHealthFacilityWorkflowState()
@@ -999,7 +999,7 @@ public class UsMonthlySummaryHivCohortQueries {
         String.format(
             query,
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId()));
     return cd;
   }
 
@@ -1101,12 +1101,12 @@ public class UsMonthlySummaryHivCohortQueries {
         String.format(
             query,
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             hivMetadata.getStartDrugsConcept().getConceptId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),
@@ -1123,7 +1123,7 @@ public class UsMonthlySummaryHivCohortQueries {
 
     List<EncounterType> encounterTypes = new ArrayList<>();
     encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
-    encounterTypes.add(hivMetadata.getARVPediatriaSeguimentoEncounterType());
+    encounterTypes.add(hivMetadata.getPediatriaSeguimentoEncounterType());
     cd.setEncounterTypeList(encounterTypes);
 
     cd.setOperator1(RangeComparator.GREATER_EQUAL);
@@ -1144,7 +1144,7 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.setQuestion(commonMetadata.getCotrimoxazoleProphylaxisStartDateConcept());
 
     cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.addEncounterType(hivMetadata.getARVPediatriaSeguimentoEncounterType());
+    cd.addEncounterType(hivMetadata.getPediatriaSeguimentoEncounterType());
 
     cd.setOperator1(RangeComparator.GREATER_EQUAL);
     cd.setOperator2(RangeComparator.LESS_EQUAL);
@@ -1179,7 +1179,7 @@ public class UsMonthlySummaryHivCohortQueries {
             genericCohortQueries.hasCodedObs(null, TimeModifier.ANY, SetComparator.IN, null, null);
 
     cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.addEncounterType(hivMetadata.getARVPediatriaSeguimentoEncounterType());
+    cd.addEncounterType(hivMetadata.getPediatriaSeguimentoEncounterType());
     cd.setQuestion(commonMetadata.getStiScreeningConcept());
     cd.addValue(commonMetadata.getNoConcept());
     cd.addValue(commonMetadata.getYesConcept());
@@ -1200,7 +1200,7 @@ public class UsMonthlySummaryHivCohortQueries {
     cd.setTimeModifier(TimeModifier.ANY);
 
     cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.addEncounterType(hivMetadata.getARVPediatriaSeguimentoEncounterType());
+    cd.addEncounterType(hivMetadata.getPediatriaSeguimentoEncounterType());
 
     cd.setOperator(SetComparator.IN);
 
@@ -1234,7 +1234,7 @@ public class UsMonthlySummaryHivCohortQueries {
         SetComparator.IN,
         Arrays.asList(
             hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+            hivMetadata.getPediatriaSeguimentoEncounterType()),
         values);
   }
 
@@ -1390,7 +1390,7 @@ public class UsMonthlySummaryHivCohortQueries {
             hivMetadata.getArtAbandonedWorkflowState().getProgramWorkflowStateId(),
             hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
@@ -1595,14 +1595,14 @@ public class UsMonthlySummaryHivCohortQueries {
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getArtAconselhamentoEncounterType().getEncounterTypeId(),
             hivMetadata.getArtAconselhamentoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getEvaluationAndPrepForARTEncounterType().getEncounterTypeId(),
             hivMetadata.getPrevencaoPositivaInicialEncounterType().getEncounterTypeId(),
             hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getHIVCareProgram().getProgramId(),
             hivMetadata
@@ -1617,13 +1617,13 @@ public class UsMonthlySummaryHivCohortQueries {
             hivMetadata.getArtCareDeadWorkflowState().getProgramWorkflowStateId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             hivMetadata.getStartDrugsConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getArtActiveOnProgramWorkflowState().getProgramWorkflowStateId(),
@@ -1735,12 +1735,12 @@ public class UsMonthlySummaryHivCohortQueries {
         String.format(
             query,
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             hivMetadata.getStartDrugsConcept().getConceptId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),

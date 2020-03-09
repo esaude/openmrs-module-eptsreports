@@ -91,7 +91,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
       final List<EncounterType> consultationEncounterTypes =
           Arrays.asList(
               hivMetadata.getAdultoSeguimentoEncounterType(),
-              hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+              hivMetadata.getPediatriaSeguimentoEncounterType(),
               hivMetadata.getMasterCardEncounterType());
       CalculationResultMap startProfilaxiaObservations =
           ePTSCalculationService.firstObs(
