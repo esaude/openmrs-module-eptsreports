@@ -144,7 +144,6 @@ public class ResumoMensalQueries {
       int adultoSeguimentoEncounterType,
       int tbSymptomsConcept,
       int yesConcept,
-      int noConcept,
       int tbTreatmentPlanConcept) {
     String query =
         "SELECT p.patient_id "
@@ -156,7 +155,7 @@ public class ResumoMensalQueries {
             + " JOIN (SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM encounter enc JOIN patient pat ON pat.patient_id=enc.patient_id "
             + " JOIN obs ob ON enc.encounter_id=ob.encounter_id WHERE pat.voided = 0 AND enc.voided = 0 AND ob.voided = 0 "
             + " AND enc.location_id = :location AND enc.encounter_datetime BETWEEN :startDate AND :endDate "
-            + " AND enc.encounter_type= ${adultoSeguimentoEncounterType} AND ob.concept_id=${tbSymptomsConcept} AND (ob.value_coded=${yesConcept} OR ob.value_coded=${noConcept})) ed "
+            + " AND enc.encounter_type= ${adultoSeguimentoEncounterType} AND ob.concept_id=${tbSymptomsConcept} AND ob.value_coded=${yesConcept}) ed "
             + " ON p.patient_id=ed.patient_id"
             + " WHERE  p.voided = 0 "
             + " AND e.voided = 0 "
@@ -170,10 +169,28 @@ public class ResumoMensalQueries {
     valuesMap.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
     valuesMap.put("tbSymptomsConcept", tbSymptomsConcept);
     valuesMap.put("yesConcept", yesConcept);
-    valuesMap.put("noConcept", noConcept);
     valuesMap.put("tbTreatmentPlanConcept", tbTreatmentPlanConcept);
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     return sub.replace(query);
+  }
+
+  /**
+   * Patient screened for TB
+   *
+   * @param encounterType
+   * @param tbScreening
+   * @param yesConcept
+   * @param noConcept
+   * @return
+   */
+  public static String getPatientsWithTBScreening(
+      int encounterType, int tbScreening, int yesConcept, int noConcept) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + " AND e.location_id = :location AND e.encounter_datetime BETWEEN :startDate AND :endDate AND e.encounter_type=%d "
+            + " AND o.concept_id=%d AND (o.value_coded=%d OR o.value_coded=%d)";
+    return String.format(query, encounterType, tbScreening, yesConcept, noConcept);
   }
 
   /**
