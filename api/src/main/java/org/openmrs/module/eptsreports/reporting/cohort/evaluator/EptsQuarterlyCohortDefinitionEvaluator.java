@@ -45,8 +45,8 @@ public class EptsQuarterlyCohortDefinitionEvaluator implements CohortDefinitionE
   //  TODO
   private Map<String, Date> getRange(Integer year, EptsQuarterlyCohortDefinition.Quarter quarter) {
     HashMap<String, Date> range = new HashMap<>();
-    range.put("onOrAfter", DateUtil.getDateTime(2018, 1, 1));
-    range.put("onOrBefore", DateUtil.getDateTime(2018, 3, 31));
+    range.put("onOrAfter", DateUtil.getDateTime(2019, 9, 20));
+    range.put("onOrBefore", DateUtil.getDateTime(2019, 10, 21));
     return range;
   }
 }

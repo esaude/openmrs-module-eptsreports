@@ -21,7 +21,8 @@ public class EptsQuarterlyCohortDefinition extends BaseCohortDefinition {
   public enum Quarter {
     Q1("1st"),
     Q2("2nd"),
-    Q3("3rd");
+    Q3("3rd"),
+    Q4("4th");
 
     private String display;
 

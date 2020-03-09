@@ -37,15 +37,16 @@ public class ResumoTrimestralDataSetDefinition extends BaseDataSet {
   public DataSetDefinition constructResumoTrimestralDataset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     dsd.setName("Resumo trimestral data set");
-
+    dsd.addParameters(getParameters());
     dsd.addColumn("A", A, getInitiatedArt(), "");
     return dsd;
   }
 
   private Mapped<CohortIndicator> getInitiatedArt() {
     CohortDefinition cd = getInitiatedArtA();
-    CohortIndicator inidicator = eptsGeneralIndicator.getIndicator(A, mapStraightThrough(cd));
-    return mapStraightThrough(inidicator);
+    CohortIndicator indicator =
+        eptsGeneralIndicator.getIndicator(A, mapStraightThrough(cd), getParameters());
+    return mapStraightThrough(indicator);
   }
 
   public EptsQuarterlyCohortDefinition getInitiatedArtA() {
