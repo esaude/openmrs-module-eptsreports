@@ -14,6 +14,7 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,7 +114,7 @@ public class TxMlCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "missedAppointmentLessTransfers AND dead AND NOT patientWhoAfterMostRecentDateHaveDrugPickupOrConsultation");
+        "(missedAppointmentLessTransfers AND dead) AND NOT patientWhoAfterMostRecentDateHaveDrugPickupOrConsultation");
 
     return cd;
   }
@@ -473,8 +474,7 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "deadByPatientProgramState",
         EptsReportUtils.map(
-            txCurrCohortQueries
-                .getPatientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate(),
+            getPatientsDeadInProgramStateByReportingEndDate(),
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "deadByPatientDemographics",
@@ -896,5 +896,26 @@ public class TxMlCohortQueries {
     sqlCohortDefinition.setQuery(mappedQuery);
 
     return sqlCohortDefinition;
+  }
+  /**
+   * All deaths registered in Patient Program State by reporting end date Patient_program.program_id
+   * =2 = SERVICO TARV-TRATAMENTO and Patient_State.state = 10 (Died) and Patient_State.start_date
+   * <= endDate Patient_state.end_date is null
+   */
+  @DocumentedDefinition(value = "patientsDeadInProgramStateByReportingEndDate")
+  public CohortDefinition getPatientsDeadInProgramStateByReportingEndDate() {
+
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("patientsDeadInProgramStateByReportingEndDate");
+
+    definition.setQuery(
+        TxMlQueries.getPatientsDeadInProgramStateByReportingEndDate(
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId()));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
   }
 }
