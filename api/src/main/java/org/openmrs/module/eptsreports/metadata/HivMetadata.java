@@ -45,7 +45,6 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  
   /**
    * Fila Next pick up concept concept_id=5096
    *
@@ -66,9 +65,10 @@ public class HivMetadata extends ProgramsMetadata {
   }
   /**
    * concept_id=1190
-   * 
-   * Information gathered on encounter forms which describes the date of a particular drug's institution.
-   *  Most often "globbed" with another concept which describes the drug.
+   *
+   * <p>Information gathered on encounter forms which describes the date of a particular drug's
+   * institution. Most often "globbed" with another concept which describes the drug.
+   *
    * @return
    */
   public Concept getARVStartDateConcept() {
@@ -101,14 +101,11 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
   /**
-   * concept_id = 1707
-   * DROPPED FROM TREATMENT
-   * Sinónimos 	
-   * DROPPED FROM ANTI-RETROVIRAL THERAPY
-   * DROPPED FROM TUBERCULOSIS TREATMENT
-   * ABANDONED 
+   * concept_id = 1707 DROPPED FROM TREATMENT Sinónimos DROPPED FROM ANTI-RETROVIRAL THERAPY DROPPED
+   * FROM TUBERCULOSIS TREATMENT ABANDONED
+   *
    * @return
-  */
+   */
   public Concept getAbandonedConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.abandonedConceptUuid");
@@ -205,12 +202,7 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  /**
-   * concept id 1066 
-   * Generic Answer for a question 
-   *  
-   */ 
-  
+  /** concept id 1066 Generic Answer for a question */
   @Override
   public Concept getNoConcept() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.noConceptUuid");

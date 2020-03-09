@@ -154,7 +154,7 @@ public class TxMlCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "missedAppointmentLessTransfers AND refusedOrStoppedTreatment AND NOT (dead OR transferOut)");
+        "(missedAppointmentLessTransfers AND refusedOrStoppedTreatment) AND NOT (dead OR transferOut)");
 
     return cd;
   }
@@ -324,7 +324,7 @@ public class TxMlCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "missedAppointment AND ((untracedPatients OR tracedPatients) AND C1) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
+        "(missedAppointment AND ((untracedPatients OR tracedPatients) AND C1)) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
 
     return cd;
   }
