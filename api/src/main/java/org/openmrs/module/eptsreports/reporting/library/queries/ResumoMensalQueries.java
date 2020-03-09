@@ -30,13 +30,6 @@ public class ResumoMensalQueries {
         "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND o.value_datetime IS NOT NULL AND o.concept_id=%d AND o.value_datetime <:startDate";
     return String.format(query, encounterType, conceptId);
   }
-
-  /**
-   * All patients with encounter type 53, and Pre-ART Start Date that falls between startDate and
-   * enddate
-   *
-   * @return String
-   */
   public static String getPatientsWhoInitiatedPreArtDuringCurrentMonthWithConditions(
       int masterCardEncounterType,
       int preArtStartDateConceptId,
