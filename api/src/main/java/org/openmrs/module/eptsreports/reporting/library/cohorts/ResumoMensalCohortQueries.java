@@ -711,7 +711,7 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("locationList", "Location", Location.class));
     cd.addEncounterType(hivMetadata.getMasterCardEncounterType());
-    cd.setQuestion(hivMetadata.getARVStartDate());
+    cd.setQuestion(hivMetadata.getARVStartDateConcept());
     cd.setOperator1(RangeComparator.GREATER_EQUAL);
     cd.setOperator2(RangeComparator.LESS_EQUAL);
     return cd;

@@ -194,7 +194,7 @@ public class TxMlCohortQueries {
             getDeadPatientsComposition(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("missedAppointmentLessTransfers AND transferOut AND NOT dead ");
+    cd.setCompositionString("(missedAppointmentLessTransfers AND transferOut) AND NOT dead ");
 
     return cd;
   }
@@ -400,7 +400,7 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "LeftARTProgramBeforeOrOnEndDate",
         EptsReportUtils.map(
-            txCurrCohortQueries.getPatientsWhoLeftARTProgramBeforeOrOnEndDate(),
+            getPatientsTransferedOutInProgramBeforeOrOnEndDate(),
             "onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -909,9 +909,30 @@ public class TxMlCohortQueries {
     definition.setName("patientsDeadInProgramStateByReportingEndDate");
 
     definition.setQuery(
-        TxMlQueries.getPatientsDeadInProgramStateByReportingEndDate(
+        TxMlQueries.getPatientsListBasedOnProgramAndStateByReportingEndDate(
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId()));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
+  }
+  /**
+   * @return Cohort of patients who left ART program before or on end date(4). Includes: transferred
+   *     to, (patient state 7)
+   */
+  @DocumentedDefinition(value = "leftARTProgramBeforeOrOnEndDate")
+  public CohortDefinition getPatientsTransferedOutInProgramBeforeOrOnEndDate() {
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("leftARTProgramBeforeOrOnEndDate");
+
+    definition.setQuery(
+        TxMlQueries.getPatientsListBasedOnProgramAndStateByReportingEndDate(
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
 
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));

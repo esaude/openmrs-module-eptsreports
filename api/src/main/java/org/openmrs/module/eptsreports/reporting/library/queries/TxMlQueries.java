@@ -745,18 +745,25 @@ public class TxMlQueries {
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     return stringSubstitutor.replace(query);
   }
-
-  public static String getPatientsDeadInProgramStateByReportingEndDate(
-      int artProgram, int artDeadWorkflowState) {
+  /**
+   * Get the patient list based on the program and state in the program. by reporting end date
+   * ps.start_date<=:onOrBefore
+   *
+   * @param program
+   * @param stateOfProgram
+   * @return
+   */
+  public static String getPatientsListBasedOnProgramAndStateByReportingEndDate(
+      int program, int stateOfProgram) {
     Map<String, Integer> map = new HashMap<>();
-    map.put("artProgram", artProgram);
-    map.put("artDeadWorkflowState", artDeadWorkflowState);
+    map.put("program", program);
+    map.put("stateOfProgram", stateOfProgram);
     String query =
         " select p.patient_id from patient p "
             + " inner join patient_program pg on p.patient_id=pg.patient_id "
             + " inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + " where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=${artProgram} "
-            + " and ps.state =${artDeadWorkflowState} and ps.end_date is null and ps.start_date<=:onOrBefore "
+            + " where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=${program} "
+            + " and ps.state =${stateOfProgram} and ps.end_date is null and ps.start_date<=:onOrBefore "
             + "and pg.location_id=:location group by p.patient_id  ";
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     return stringSubstitutor.replace(query);
