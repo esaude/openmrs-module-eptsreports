@@ -49,7 +49,7 @@ public class TbPrevCohortQueries {
         StringUtils.join(
             Arrays.asList(
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getId(),
+                hivMetadata.getPediatriaSeguimentoEncounterType().getId(),
                 hivMetadata.getMasterCardEncounterType().getEncounterTypeId()),
             ",");
     SqlCohortDefinition cd = new SqlCohortDefinition();

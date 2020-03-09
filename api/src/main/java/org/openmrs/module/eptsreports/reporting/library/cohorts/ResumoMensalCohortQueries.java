@@ -337,11 +337,11 @@ public class ResumoMensalCohortQueries {
     valuesMap.put("preArtStateOfStay", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
     valuesMap.put("suspendedConcept", hivMetadata.getSuspendedTreatmentConcept().getConceptId());
     valuesMap.put(
-        "childSeg", hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId());
+        "childSeg", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
     valuesMap.put("fila", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
     valuesMap.put(
         "mcDrugPickup", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
-    valuesMap.put("drugPickup", hivMetadata.getArtDatePickup().getConceptId());
+    valuesMap.put("drugPickup", hivMetadata.getArtDatePickupMasterCard().getConceptId());
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     cd.setQuery(sub.replace(sql));
     return cd;
@@ -462,11 +462,11 @@ public class ResumoMensalCohortQueries {
     valuesMap.put("deadState", hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId());
     valuesMap.put(
         "pediatriaSeguimento",
-        hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId());
+        hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
     valuesMap.put("farmacia", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
     valuesMap.put(
         "arvLevantamento", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
-    valuesMap.put("arvLevantamentoDate", hivMetadata.getArtDatePickup().getConceptId());
+    valuesMap.put("arvLevantamentoDate", hivMetadata.getArtDatePickupMasterCard().getConceptId());
 
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     cd.setQuery(sub.replace(sql));
@@ -740,7 +740,7 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("locationList", "Location", Location.class));
     cd.addEncounterType(hivMetadata.getMasterCardDrugPickupEncounterType());
-    cd.setQuestion(hivMetadata.getArtDatePickup());
+    cd.setQuestion(hivMetadata.getArtDatePickupMasterCard());
     cd.setOperator1(RangeComparator.GREATER_EQUAL);
     cd.setOperator2(RangeComparator.LESS_EQUAL);
     return cd;
@@ -1141,7 +1141,7 @@ public class ResumoMensalCohortQueries {
         ResumoMensalQueries.getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthB127A(
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getArtDatePickup().getConceptId(),
+            hivMetadata.getArtDatePickupMasterCard().getConceptId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
     return cd;
   }

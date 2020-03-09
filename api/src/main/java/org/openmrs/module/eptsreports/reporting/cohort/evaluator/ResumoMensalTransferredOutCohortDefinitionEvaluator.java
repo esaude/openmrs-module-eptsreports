@@ -123,11 +123,11 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
     q.addParameter("preArtStateOfStay", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
     q.addParameter("transfOutConcept", hivMetadata.getTransferredOutConcept().getConceptId());
     q.addParameter(
-        "childSeg", hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId());
+        "childSeg", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
     q.addParameter("fila", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
     q.addParameter(
         "mcDrugPickup", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
-    q.addParameter("drugPickup", hivMetadata.getArtDatePickup().getConceptId());
+    q.addParameter("drugPickup", hivMetadata.getArtDatePickupMasterCard().getConceptId());
     q.addParameter("location", cd.getLocation());
     q.addParameter("onOrAfter", cd.getOnOrAfter());
     q.addParameter("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(cd.getOnOrBefore()));
