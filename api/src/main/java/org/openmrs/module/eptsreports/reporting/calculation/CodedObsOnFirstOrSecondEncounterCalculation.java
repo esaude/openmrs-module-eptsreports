@@ -1,5 +1,13 @@
 package org.openmrs.module.eptsreports.reporting.calculation;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
@@ -14,15 +22,6 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 @Component
 public class CodedObsOnFirstOrSecondEncounterCalculation extends AbstractPatientCalculation {
@@ -55,17 +54,26 @@ public class CodedObsOnFirstOrSecondEncounterCalculation extends AbstractPatient
     CalculationResultMap adultSegEncounters =
         eptsCalculationService.allEncounters(
             encounterTypes, cohort, location, onOrAfter, onOrBefore, context);
-    CalculationResultMap getObs = eptsCalculationService.getObs(concept, encounterTypes, cohort, Arrays.asList(location), Arrays.asList(valueCoded), TimeQualifier.ANY, null, context);
+    CalculationResultMap getObs =
+        eptsCalculationService.getObs(
+            concept,
+            encounterTypes,
+            cohort,
+            Arrays.asList(location),
+            Arrays.asList(valueCoded),
+            TimeQualifier.ANY,
+            null,
+            context);
 
     CalculationResultMap map = new CalculationResultMap();
     for (Integer pId : cohort) {
       List<Encounter> encounters = getFirstTwoEncounters(adultSegEncounters, pId);
       List<Obs> obsFoundList =
-              EptsCalculationUtils.extractResultValues((ListResult) getObs.get(pId));
+          EptsCalculationUtils.extractResultValues((ListResult) getObs.get(pId));
       boolean pass = false;
       for (Encounter e : encounters) {
-        for(Obs o: obsFoundList) {
-          if(e.getEncounterId().equals(o.getEncounter().getEncounterId())) {
+        for (Obs o : obsFoundList) {
+          if (e.getEncounterId().equals(o.getEncounter().getEncounterId())) {
             pass = true;
             break;
           }
