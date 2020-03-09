@@ -112,7 +112,7 @@ public class TxMlQueries {
             + "	GROUP BY pp.patient_id"
             + ")all_patients "
             + " WHERE "
-            + "	DATE_ADD(return_date, INTERVAL 28 DAY)  > :startDate "
+            + "	DATE_ADD(return_date, INTERVAL 28 DAY)  >= DATE_ADD(:startDate, INTERVAL -1 DAY) "
             + "	AND DATE_ADD(return_date, INTERVAL 28 DAY) < :endDate";
 
     return String.format(
@@ -194,7 +194,7 @@ public class TxMlQueries {
         dead);
   }
 
-  public static String getPatientsWithMissedVisitOnMasterCard(
+  public static String getPatientsWithMissedVisit(
       int homeVisitCardEncounterTypeId,
       int reasonPatientMissedVisitConceptId,
       int transferredOutToAnotherFacilityConceptId,

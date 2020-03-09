@@ -558,7 +558,8 @@ public class HivMetadata extends ProgramsMetadata {
 
   // Concept 1256 Start Drugs
   public Concept getStartDrugs() {
-    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.startDrugs");
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.startDrugsConceptUuid");
     return getConcept(uuid);
   }
 
@@ -591,6 +592,14 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // concept_id = 6272
+  public Concept getStateOfStayOfPreArtPatient() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.stateOfStayOfPreArtPatient");
+    return getConcept(uuid);
+  }
+
   // Concept 6273 patient state
   public Concept getStateOfStayOfArtPatient() {
     String uuid =
@@ -598,11 +607,10 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // concept_id = 6272
-  public Concept getStateOfStayOfPreArtPatient() {
+  // Concept 6275 PRE-TARV
+  public Concept getPreTARVConcept() {
     String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty("eptsreports.stateOfStayOfPreArtPatient");
+        Context.getAdministrationService().getGlobalProperty("eptsreports.preTarvConceptUuid");
     return getConcept(uuid);
   }
 

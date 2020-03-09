@@ -360,7 +360,11 @@ public class HivCohortQueries {
             hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
-            hivMetadata.getArtStatus().getConceptId()));
+            hivMetadata.getArtStatus().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getArtTransferredFromOtherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
     return cd;
   }
 

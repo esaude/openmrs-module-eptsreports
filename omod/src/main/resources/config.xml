@@ -82,12 +82,12 @@
 			UUID for the SIM concept
 		</description>
 	</globalProperty>
-
+	<!--6275-->
 	<globalProperty>
-		<property>@MODULE_ID@.preTarvConceptUuid</property>
+		<property>eptsreports.hivCareConceptUuid</property>
 		<defaultValue>44f812e8-c4c0-40cd-aef3-6b1ef76d43e1</defaultValue>
 		<description>
-			UUID for the Pre-Art concept
+			UUID for HIV CARE concept
 		</description>
 	</globalProperty>
 
@@ -1428,6 +1428,15 @@
 		<defaultValue>a7d3b5c9-8b8e-4f29-b332-8db47466fed3</defaultValue>
 		<description>
 			UUID for the STATE OF STAY ART PATIENT concept
+		</description>
+	</globalProperty>
+
+	<!--6275-->
+	<globalProperty>
+		<property>eptsreports.preTarvConceptUuid</property>
+		<defaultValue>44f812e8-c4c0-40cd-aef3-6b1ef76d43e1</defaultValue>
+		<description>
+			UUID for PRE-TARV concept
 		</description>
 	</globalProperty>
 

@@ -14,6 +14,7 @@ package org.openmrs.module.eptsreports.reporting.calculation.prev;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalcu
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -49,16 +51,22 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
 
   private static final int MONTHS_TO_CHECK_FOR_ISONIAZID_USAGE = 7;
 
-  private static final int MINIMUM_DURATION_IN_DAYS = 180;
+  private static final int MINIMUM_DURATION_IN_DAYS = 173;
 
   private static final String ON_OR_AFTER = "onOrAfter";
 
   private static final String ON_OR_BEFORE = "onOrBefore";
 
+  private enum Priority {
+    MIN,
+    MAX
+  };
+
   @Autowired private HivMetadata hivMetadata;
 
   @Autowired private EPTSCalculationService ePTSCalculationService;
 
+  @SuppressWarnings("unused")
   @Override
   public CalculationResultMap evaluate(
       Collection<Integer> cohort,
@@ -83,7 +91,8 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
       final List<EncounterType> consultationEncounterTypes =
           Arrays.asList(
               hivMetadata.getAdultoSeguimentoEncounterType(),
-              hivMetadata.getARVPediatriaSeguimentoEncounterType());
+              hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+              hivMetadata.getMasterCardEncounterType());
       CalculationResultMap startProfilaxiaObservations =
           ePTSCalculationService.firstObs(
               hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept(),
@@ -95,6 +104,17 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               null,
               cohort,
               context);
+      CalculationResultMap startDrugsObservations =
+          ePTSCalculationService.getObs(
+              hivMetadata.getIsoniazidUsageConcept(),
+              Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
+              cohort,
+              Arrays.asList(location),
+              Arrays.asList(hivMetadata.getStartDrugs()),
+              TimeQualifier.FIRST,
+              beginPeriodStartDate,
+              onOrAfter,
+              context);
       CalculationResultMap endProfilaxiaObservations =
           ePTSCalculationService.lastObs(
               hivMetadata.getDataFinalizacaoProfilaxiaIsoniazidaConcept(),
@@ -104,6 +124,17 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               completionPeriodStartDate,
               completionPeriodEndDate,
               cohort,
+              context);
+      CalculationResultMap completedDrugsObservations =
+          ePTSCalculationService.getObs(
+              hivMetadata.getIsoniazidUsageConcept(),
+              Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
+              cohort,
+              Arrays.asList(location),
+              Arrays.asList(hivMetadata.getCompletedConcept()),
+              TimeQualifier.LAST,
+              onOrAfter,
+              completionPeriodEndDate,
               context);
       CalculationResultMap isoniazidUsageObservationsList =
           ePTSCalculationService.allObservations(
@@ -117,10 +148,32 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
       for (Integer patientId : cohort) {
         Obs startProfilaxiaObs =
             EptsCalculationUtils.resultForPatient(startProfilaxiaObservations, patientId);
+        Obs startDrugsObs =
+            EptsCalculationUtils.resultForPatient(startDrugsObservations, patientId);
         Obs endProfilaxiaObs =
             EptsCalculationUtils.resultForPatient(endProfilaxiaObservations, patientId);
-        Date startDate = getDateFromObs(startProfilaxiaObs);
-        Date endDate = getDateFromObs(endProfilaxiaObs);
+        Obs endDrugsObs =
+            EptsCalculationUtils.resultForPatient(completedDrugsObservations, patientId);
+        /**
+         * If We can't find a startDate from Ficha de Seguimento (adults and children) / Ficha
+         * Resumo or Ficha Clinica-MasterCard, just move to the next patient. OR If We can't find an
+         * endDate from Ficha de Seguimento (adults and children) / Ficha Resumo or Ficha
+         * Clinica-MasterCard, just move to the next patient
+         */
+        if ((startProfilaxiaObs == null && startDrugsObs == null)
+            || (endProfilaxiaObs == null && endDrugsObs == null)) {
+          continue;
+        }
+        Date startDate =
+            getMinOrMaxObsDate(
+                startProfilaxiaObs,
+                startDrugsObs,
+                Priority.MIN); // Gets the earliest drugs start date using both sources
+        Date endDate =
+            getMinOrMaxObsDate(
+                endProfilaxiaObs,
+                endDrugsObs,
+                Priority.MAX); // Gets the most recent complete drugs date using both sources
         boolean inconsistent =
             (startDate != null && endDate != null && startDate.compareTo(endDate) > 0)
                 || (startDate == null && endDate != null);
@@ -175,5 +228,21 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
       return obs.getValueDatetime();
     }
     return null;
+  }
+  /**
+   * @param a The start drugs or end drugs Obs from Ficha de Seguimento (adults and children) or
+   *     Ficha Resumo
+   * @param b The start drugs or end drugs Obs from from Ficha Clinica-MasterCard
+   * @param priority MIN to retrieve the start drugs date, MAX to retrieve the end drugs date
+   * @return The earliest or most recent date according to the priority parameter
+   */
+  private Date getMinOrMaxObsDate(Obs a, Obs b, Priority priority) {
+    if (a != null && b != null) {
+
+      List<Date> dates = Arrays.asList(getDateFromObs(a), b.getObsDatetime());
+      return (priority == Priority.MIN) ? Collections.min(dates) : Collections.max(dates);
+    } else {
+      return (getDateFromObs(a) != null) ? getDateFromObs(a) : b.getObsDatetime();
+    }
   }
 }
