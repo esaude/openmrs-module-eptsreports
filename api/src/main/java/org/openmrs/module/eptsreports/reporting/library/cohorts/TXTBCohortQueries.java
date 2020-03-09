@@ -208,6 +208,19 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  public CohortDefinition getResultForBasiloscopia() {
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "TestTBLAM",
+            TXTBQueries.resultForBasiloscopia(
+                hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+                hivMetadata.getResultForBasiloscopia().getConceptId(),
+                commonMetadata.getPositive().getConceptId(),
+                commonMetadata.getNegative().getConceptId()));
+    addGeneralParameters(cd);
+    return cd;
+  }
+
   /** PACIENTES COM RASTREIO DE TUBERCULOSE NEGATIVO codes: RASTREIOTBNEG */
   public CohortDefinition codedNoTbScreening() {
     CohortDefinition cd =
@@ -477,6 +490,10 @@ public class TXTBCohortQueries {
         "test-tb-lam", EptsReportUtils.map(getTestTBLAM(), generalParameterMapping));
 
     definition.addSearch(
+        "result-for-basiloscopia",
+        EptsReportUtils.map(getResultForBasiloscopia(), generalParameterMapping));
+
+    definition.addSearch(
         "started-tb-treatment-previous-period",
         EptsReportUtils.map(
             tbTreatmentStartDateWithinReportingDate(),
@@ -499,7 +516,8 @@ public class TXTBCohortQueries {
 
     definition.setCompositionString(
         "(art-list AND (tb-screening OR tb-investigation OR started-tb-treatment OR in-tb-program OR pulmonary-tb OR marked-as-tb-treatment-start"
-            + "OR (tuberculosis-symptomys OR active-tuberculosis OR tb-observations OR application-for-laboratory-research OR tb-genexpert-test OR culture-test OR test-tb-lam)))"
+            + "OR (tuberculosis-symptomys OR active-tuberculosis OR tb-observations OR application-for-laboratory-research OR tb-genexpert-test OR culture-test"
+            + "OR test-tb-lam) OR result-for-basiloscopia))"
             + "NOT ((transferred-out NOT (started-tb-treatment OR in-tb-program)) OR started-tb-treatment-previous-period OR in-tb-program-previous-period)");
 
     return definition;
