@@ -230,8 +230,8 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
     return null;
   }
   /**
-   * @param a The start drugs or end drugs Obs from Ficha de Seguimento (adults and children)
-   *     or Ficha Resumo
+   * @param a The start drugs or end drugs Obs from Ficha de Seguimento (adults and children) or
+   *     Ficha Resumo
    * @param b The start drugs or end drugs Obs from from Ficha Clinica-MasterCard
    * @param priority MIN to retrieve the start drugs date, MAX to retrieve the end drugs date
    * @return The earliest or most recent date according to the priority parameter
