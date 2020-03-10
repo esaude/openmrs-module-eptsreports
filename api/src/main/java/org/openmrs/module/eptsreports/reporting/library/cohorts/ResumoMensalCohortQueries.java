@@ -564,16 +564,17 @@ public class ResumoMensalCohortQueries {
 
     String encounterWithCodedObsMappings = "onOrBefore=${startDate},locationList=${location}";
 
-    cd.addSearch("B10",map(patientsArt, "startDate=${startDate},location=${location}"));
+    cd.addSearch("B10", map(patientsArt, "startDate=${startDate},location=${location}"));
     cd.addSearch("B2A", map(transferredIn, "onOrBefore=${startDate},location=${location}"));
 
     cd.addSearch("B5A", map(transferredOut, "onOrBefore=${startDate},location=${location}"));
     cd.addSearch(
-            "B6A", map(suspended, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));        
-    cd.addSearch("B7A",
-                    map(
-                        getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A(),
-                        "location=${location},onOrBefore=${startDate}"));
+        "B6A", map(suspended, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "B7A",
+        map(
+            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A(),
+            "location=${location},onOrBefore=${startDate}"));
     cd.addSearch("B8A", map(died, encounterWithCodedObsMappings));
 
     cd.setCompositionString("B10 OR B2A AND NOT (B5A OR B6A OR B7A OR B8A)");
