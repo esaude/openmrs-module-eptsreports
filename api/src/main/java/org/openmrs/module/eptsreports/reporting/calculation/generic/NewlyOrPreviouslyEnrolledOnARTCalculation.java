@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.joda.time.DateTime;
 import org.joda.time.Months;
 import org.openmrs.Location;
@@ -90,10 +89,7 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
             false,
             null,
             endDate,
-            Arrays.asList(
-                    hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
-                    hivMetadata.getMasterCardEncounterType()),
+            null,
             cohort,
             context);
     CalculationResultMap startDrugsObservations =
