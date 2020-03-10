@@ -17,9 +17,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.joda.time.DateTime;
 import org.joda.time.Months;
-import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
@@ -82,11 +82,6 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
             cohort,
             parameterValues,
             context);
-    final List<EncounterType> consultationEncounterTypes =
-        Arrays.asList(
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType(),
-            hivMetadata.getMasterCardEncounterType());
     CalculationResultMap startProfilaxiaObservations =
         ePTSCalculationService.firstObs(
             hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept(),
@@ -95,7 +90,10 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
             false,
             null,
             endDate,
-            consultationEncounterTypes,
+            Arrays.asList(
+                    hivMetadata.getAdultoSeguimentoEncounterType(),
+                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getMasterCardEncounterType()),
             cohort,
             context);
     CalculationResultMap startDrugsObservations =
