@@ -136,11 +136,11 @@ public class TXTBQueries {
   public static String pulmonaryTB(
       Integer encounterTypeId, Integer pulmonaryTBConcept, Integer yesConcept) {
     return String.format(
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
-            + "ON p.patient_id = e.patient_id"
-            + "INNER JOIN obs o"
-            + "ON e.encounter_id = o.encounter_id"
-            + "WHERE e.location_id = :location AND e.encounter_type = %s AND o.concept_id = %s AND o.value_coded = %s AND o.obs_datetime BETWEEN :startDate AND :endDate"
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
+            + "WHERE e.location_id = :location AND e.encounter_type = %s AND o.concept_id = %s AND o.value_coded = %s AND o.obs_datetime BETWEEN :startDate AND :endDate "
             + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
         encounterTypeId, pulmonaryTBConcept, yesConcept);
   }
@@ -156,11 +156,11 @@ public class TXTBQueries {
   public static String tbTreatmentStart(
       Integer encounterTypeId, Integer tbTreatmentPlan, Integer startDrugs) {
     return String.format(
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
-            + "ON p.patient_id = e.patient_id"
-            + "INNER JOIN obs o"
-            + "ON e.encounter_id = o.encounter_id"
-            + "WHERE e.location_id = :location AND e.encounter_type = %s AND o.concept_id = %s  AND o.value_coded = %s AND o.obs_datetime BETWEEN :startDate AND :endDate"
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
+            + "WHERE e.location_id = :location AND e.encounter_type = %s AND o.concept_id = %s  AND o.value_coded = %s AND o.obs_datetime BETWEEN :startDate AND :endDate "
             + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
         encounterTypeId, tbTreatmentPlan, startDrugs);
   }
@@ -177,13 +177,13 @@ public class TXTBQueries {
   public static String tuberculosisSympots(
       Integer encounterTypeId, Integer tbSymptomsId, Integer yesConcept, Integer noConcept) {
     return String.format(
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
-            + "ON p.patient_id = e.patient_id"
-            + "INNER JOIN obs o"
-            + "ON e.encounter_id = o.encounter_id"
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
             + "WHERE e.location_id = :location AND e.encounter_type = %s "
-            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s))"
-            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate"
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s)) "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
             + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
         encounterTypeId, tbSymptomsId, yesConcept, noConcept);
   }
@@ -199,13 +199,13 @@ public class TXTBQueries {
   public static String activeTuberculosis(
       Integer encounterTypeId, Integer activeTuberculosis, Integer yesConcept) {
     return String.format(
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
-            + "ON p.patient_id = e.patient_id"
-            + "INNER JOIN obs o"
-            + "ON e.encounter_id = o.encounter_id"
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
             + "WHERE e.location_id = :location AND e.encounter_type = %s "
-            + "AND o.concept_id = %s  AND o.value_coded = %s"
-            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate"
+            + "AND o.concept_id = %s  AND o.value_coded = %s "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
             + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
         encounterTypeId, activeTuberculosis, yesConcept);
   }
@@ -235,14 +235,14 @@ public class TXTBQueries {
       Integer cohabitant,
       Integer lymphadenopathy) {
     return String.format(
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
-            + "ON p.patient_id = e.patient_id"
-            + "INNER JOIN obs o"
-            + "ON e.encounter_id = o.encounter_id"
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
             + "WHERE e.location_id = :location AND e.encounter_type = %s "
-            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s"
-            + "OR o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s))"
-            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate"
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s "
+            + "OR o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s)) "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
             + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
         encounterTypeId,
         tbObservation,
@@ -272,13 +272,13 @@ public class TXTBQueries {
       Integer cultureTest,
       Integer testTBLAM) {
     return String.format(
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
-            + "ON p.patient_id = e.patient_id"
-            + "INNER JOIN obs o"
-            + "ON e.encounter_id = o.encounter_id"
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
             + "WHERE e.location_id = :location AND e.encounter_type = %s "
-            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s))"
-            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate"
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s)) "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
             + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
         encounterTypeId, applicationForLaboratory, tbGenexpertTest, cultureTest, testTBLAM);
   }
@@ -295,13 +295,13 @@ public class TXTBQueries {
   public static String tbGenexpertTest(
       Integer encounterTypeId, Integer tbGenexpertTest, Integer positive, Integer negative) {
     return String.format(
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
-            + "ON p.patient_id = e.patient_id"
-            + "INNER JOIN obs o"
-            + "ON e.encounter_id = o.encounter_id"
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
             + "WHERE e.location_id = :location AND e.encounter_type = %s "
-            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s))"
-            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate"
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s)) "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
             + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
         encounterTypeId, tbGenexpertTest, positive, negative);
   }
@@ -318,13 +318,13 @@ public class TXTBQueries {
   public static String cultureTest(
       Integer encounterTypeId, Integer cultureTest, Integer positive, Integer negative) {
     return String.format(
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
-            + "ON p.patient_id = e.patient_id"
-            + "INNER JOIN obs o"
-            + "ON e.encounter_id = o.encounter_id"
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
             + "WHERE e.location_id = :location AND e.encounter_type = %s "
-            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s))"
-            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate"
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s)) "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
             + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
         encounterTypeId, cultureTest, positive, negative);
   }
@@ -341,13 +341,13 @@ public class TXTBQueries {
   public static String testTBLAM(
       Integer encounterTypeId, Integer testTBLAM, Integer positive, Integer negative) {
     return String.format(
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
-            + "ON p.patient_id = e.patient_id"
-            + "INNER JOIN obs o"
-            + "ON e.encounter_id = o.encounter_id"
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
             + "WHERE e.location_id = :location AND e.encounter_type = %s "
-            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s))"
-            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate"
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s)) "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
             + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
         encounterTypeId, testTBLAM, positive, negative);
   }
@@ -355,13 +355,13 @@ public class TXTBQueries {
   public static String resultForBasiloscopia(
       Integer encounterTypeId, Integer basiloscopia, Integer positive, Integer negative) {
     return String.format(
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e"
-            + "ON p.patient_id = e.patient_id"
-            + "INNER JOIN obs o"
-            + "ON e.encounter_id = o.encounter_id"
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
             + "WHERE e.location_id = :location AND e.encounter_type = %s "
-            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s))"
-            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate"
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s)) "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
             + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
         encounterTypeId, basiloscopia, positive, negative);
   }
