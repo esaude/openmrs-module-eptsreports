@@ -210,11 +210,6 @@ public class TxMlCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "missedAppointmentLessTransfers",
-        EptsReportUtils.map(
-            getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
         "patientsNotFound",
         EptsReportUtils.map(
             getPatientsTracedAndNotFound(),
@@ -224,14 +219,8 @@ public class TxMlCohortQueries {
         EptsReportUtils.map(
             getPatientTracedAndFound(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "dead",
-        EptsReportUtils.map(
-            getDeadPatientsComposition(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString(
-        "missedAppointmentLessTransfers AND (patientsNotFound AND NOT patientsFound) AND NOT dead");
+    cd.setCompositionString("patientsNotFound AND NOT patientsFound");
 
     return cd;
   }
@@ -248,11 +237,6 @@ public class TxMlCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "missedAppointmentLessTransfers",
-        EptsReportUtils.map(
-            getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
         "withoutVisitCard",
         EptsReportUtils.map(
             getPatientsWithoutVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(),
@@ -262,14 +246,7 @@ public class TxMlCohortQueries {
         EptsReportUtils.map(
             getPatientsWithVisitCardAndWithObs(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "dead",
-        EptsReportUtils.map(
-            getDeadPatientsComposition(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString(
-        "missedAppointmentLessTransfers AND (withoutVisitCard OR NOT withVisitCardandWithObs) AND NOT dead");
+    cd.setCompositionString("withoutVisitCard OR NOT withVisitCardandWithObs");
 
     return cd;
   }
@@ -365,7 +342,7 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
-            getDeadPatientsComposition(),
+            getPatientsWhoMissedNextAppointmentAndDiedDuringReportingPeriod(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "transferredOut",

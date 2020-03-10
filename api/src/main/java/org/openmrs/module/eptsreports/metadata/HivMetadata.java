@@ -915,8 +915,7 @@ public class HivMetadata extends ProgramsMetadata {
 
     return getConcept(uuid);
   }
-
-  // concept_id = 2005
+  /** concept_id = 2005 */
   public Concept getPatientForgotVisitDateConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -924,7 +923,11 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // concept_id = 2006
+  /**
+   * concept_id = 2006
+   *
+   * @return
+   */
   public Concept getPatientIsBedriddenAtHomeConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -1022,8 +1025,11 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.sTarvPediatriaSeguimentoEncounterTypeUuid");
     return getEncounterType(uuid);
   }
-
-  // encounterType_id= 21
+  /**
+   * encounterType_id= 21
+   *
+   * @return
+   */
   public EncounterType getBuscaActivaEncounterType() {
     String uuid =
         Context.getAdministrationService()
