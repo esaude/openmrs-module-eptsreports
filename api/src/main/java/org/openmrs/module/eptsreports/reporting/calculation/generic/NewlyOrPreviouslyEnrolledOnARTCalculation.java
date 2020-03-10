@@ -60,6 +60,7 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
 
   @Autowired private EPTSCalculationService ePTSCalculationService;
 
+  @SuppressWarnings("unused")
   @Override
   public CalculationResultMap evaluate(
       Collection<Integer> cohort,
