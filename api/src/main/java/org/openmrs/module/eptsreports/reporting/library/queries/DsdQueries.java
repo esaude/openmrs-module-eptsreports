@@ -67,7 +67,7 @@ public class DsdQueries {
     return String.format(
         query,
         new HivMetadata().getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-        new HivMetadata().getArtDatePickup().getConceptId());
+        new HivMetadata().getArtDatePickupMasterCard().getConceptId());
   }
 
   /**
@@ -360,7 +360,7 @@ public class DsdQueries {
     return String.format(
         query,
         new HivMetadata().getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-        new HivMetadata().getARVPediatriaSeguimentoEncounterType().getEncounterTypeId());
+        new HivMetadata().getPediatriaSeguimentoEncounterType().getEncounterTypeId());
   }
 
   public static String patientsWithNextApptmt6MonthsAfterConsultationDate() {
@@ -382,7 +382,7 @@ public class DsdQueries {
     return String.format(
         query,
         new HivMetadata().getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-        new HivMetadata().getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+        new HivMetadata().getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
         new CommonMetadata().getReturnVisitDateConcept().getConceptId());
   }
 }

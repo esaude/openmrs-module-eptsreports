@@ -147,16 +147,10 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addSearch(
-        "population",
-        map(
-            getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "exclusion",
-        map(
-            getAdditionalExclusionCriteriaForC1(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+    String transferBasedOnDateMappings="onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}";
+    String inProgramStatesMappings = "startDate=${onOrAfter},endDate=${onOrBefore},location=${locationList}";
+    cd.addSearch("population", map(getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch("exclusion", map(getAdditionalExclusionCriteriaForC1andC2(transferBasedOnDateMappings, inProgramStatesMappings), "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
     cd.setCompositionString("population AND NOT exclusion");
     return cd;
   }
@@ -279,73 +273,81 @@ public class ResumoMensalCohortQueries {
   }
 
   /** @return B6: Number of patients with ART suspension during the current month */
-  public CohortDefinition getPatientsWhoSuspendedTreatmentB6() {
+  public CohortDefinition getPatientsWhoSuspendedTreatmentB6(boolean useBothDates) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients with ART suspension during the current month");
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
-    String sql =
-        "SELECT patient_id "
-            + "FROM (SELECT patient_id, "
-            + "             Max(suspended_date) suspended_date "
-            + "      FROM (SELECT p.patient_id, "
-            + "                   ps.start_date suspended_date "
-            + "            FROM patient p "
-            + "                     JOIN patient_program pp "
-            + "                          ON p.patient_id = pp.patient_id "
-            + "                     JOIN patient_state ps "
-            + "                          ON pp.patient_program_id = ps.patient_program_id "
-            + "            WHERE p.voided = 0 "
-            + "              AND pp.voided = 0 "
-            + "              AND pp.program_id = ${art} "
-            + "              AND pp.location_id = :location "
-            + "              AND ps.voided = 0 "
-            + "              AND ps.state = ${suspendedState} "
-            + "              AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore "
-            + "            UNION "
-            + "            SELECT p.patient_id, "
-            + "                   e.encounter_datetime suspended_date "
-            + "            FROM patient p "
-            + "                     JOIN encounter e "
-            + "                          ON p.patient_id = e.patient_id "
-            + "                     JOIN obs o "
-            + "                          ON e.encounter_id = o.encounter_id "
-            + "            WHERE p.voided = 0 "
-            + "              AND e.voided = 0 "
-            + "              AND e.location_id = :location "
-            + "              AND e.encounter_type IN (${adultSeg}, ${masterCard}) "
-            + "              AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore "
-            + "              AND o.voided = 0 "
-            + "              AND o.concept_id IN (${artStateOfStay}, ${preArtStateOfStay}) "
-            + "              AND o.value_coded = ${suspendedConcept}) transferout "
-            + "      GROUP BY patient_id) max_transferout "
-            + "WHERE patient_id NOT IN (SELECT p.patient_id "
-            + "                         FROM patient p "
-            + "                                  JOIN encounter e "
-            + "                                       ON p.patient_id = e.patient_id "
-            + "                         WHERE p.voided = 0 "
-            + "                           AND e.voided = 0 "
-            + "                           AND e.encounter_type IN (${fila}) "
-            + "                           AND e.location_id = :location "
-            + "                           AND e.encounter_datetime > suspended_date "
-            + "                           AND e.encounter_datetime <= :onOrBefore "
-            + "                         UNION "
-            + "                         SELECT p.patient_id "
-            + "                         FROM patient p "
-            + "                                  JOIN encounter e "
-            + "                                       ON p.patient_id = e.patient_id "
-            + "                                  JOIN obs o "
-            + "                                       ON e.encounter_id = o.encounter_id "
-            + "                         WHERE p.voided = 0 "
-            + "                           AND e.voided = 0 "
-            + "                           AND e.encounter_type = ${mcDrugPickup} "
-            + "                           AND e.location_id = :location "
-            + "                           AND o.concept_id = ${drugPickup} "
-            + "                           AND o.value_datetime "
-            + "                             > suspended_date"
-            + "                           AND o.value_datetime"
-            + "                             <= :onOrBefore);";
+    StringBuilder sql = new StringBuilder();
+    sql.append("SELECT patient_id ");
+    sql.append("FROM (SELECT patient_id, ");
+    sql.append("             Max(suspended_date) suspended_date ");
+    sql.append("      FROM (SELECT p.patient_id, ");
+    sql.append("                   ps.start_date suspended_date ");
+    sql.append("            FROM patient p ");
+    sql.append("                     JOIN patient_program pp ");
+    sql.append("                          ON p.patient_id = pp.patient_id ");
+    sql.append("                     JOIN patient_state ps ");
+    sql.append("                          ON pp.patient_program_id = ps.patient_program_id ");
+    sql.append("            WHERE p.voided = 0 ");
+    sql.append("              AND pp.voided = 0 ");
+    sql.append("              AND pp.program_id = ${art} ");
+    sql.append("              AND pp.location_id = :location ");
+    sql.append("              AND ps.voided = 0 ");
+    sql.append("              AND ps.state = ${suspendedState} ");
+    if (useBothDates) {
+      sql.append("              AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ");
+    } else {
+      sql.append("              AND ps.start_date  <= :onOrBefore ");
+    }
+    sql.append("            UNION ");
+    sql.append("            SELECT p.patient_id, ");
+    sql.append("                   e.encounter_datetime suspended_date ");
+    sql.append("            FROM patient p ");
+    sql.append("                     JOIN encounter e ");
+    sql.append("                          ON p.patient_id = e.patient_id ");
+    sql.append("                     JOIN obs o ");
+    sql.append("                          ON e.encounter_id = o.encounter_id ");
+    sql.append("            WHERE p.voided = 0 ");
+    sql.append("              AND e.voided = 0 ");
+    sql.append("              AND e.location_id = :location ");
+    sql.append("              AND e.encounter_type IN (${adultSeg}, ${masterCard}) ");
+    if (useBothDates) {
+      sql.append("              AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore ");
+    } else {
+      sql.append("              AND e.encounter_datetime  <= :onOrBefore ");
+    }
+    sql.append("              AND o.voided = 0 ");
+    sql.append("              AND o.concept_id IN (${artStateOfStay}, ${preArtStateOfStay}) ");
+    sql.append("              AND o.value_coded = ${suspendedConcept}) transferout ");
+    sql.append("      GROUP BY patient_id) max_transferout ");
+    sql.append("WHERE patient_id NOT IN (SELECT p.patient_id ");
+    sql.append("                         FROM patient p ");
+    sql.append("                                  JOIN encounter e ");
+    sql.append("                                       ON p.patient_id = e.patient_id ");
+    sql.append("                         WHERE p.voided = 0 ");
+    sql.append("                           AND e.voided = 0 ");
+    sql.append("                           AND e.encounter_type IN (${fila}) ");
+    sql.append("                           AND e.location_id = :location ");
+    sql.append("                           AND e.encounter_datetime > suspended_date ");
+    sql.append("                           AND e.encounter_datetime <= :onOrBefore ");
+    sql.append("                         UNION ");
+    sql.append("                         SELECT p.patient_id ");
+    sql.append("                         FROM patient p ");
+    sql.append("                                  JOIN encounter e ");
+    sql.append("                                       ON p.patient_id = e.patient_id ");
+    sql.append("                                  JOIN obs o ");
+    sql.append("                                       ON e.encounter_id = o.encounter_id ");
+    sql.append("                         WHERE p.voided = 0 ");
+    sql.append("                           AND e.voided = 0 ");
+    sql.append("                           AND e.encounter_type = ${mcDrugPickup} ");
+    sql.append("                           AND e.location_id = :location ");
+    sql.append("                           AND o.concept_id = ${drugPickup} ");
+    sql.append("                           AND o.value_datetime ");
+    sql.append("                             > suspended_date");
+    sql.append("                           AND o.value_datetime");
+    sql.append("                             <= :onOrBefore);");
 
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put("art", hivMetadata.getARTProgram().getProgramId());
@@ -358,11 +360,11 @@ public class ResumoMensalCohortQueries {
     valuesMap.put("preArtStateOfStay", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
     valuesMap.put("suspendedConcept", hivMetadata.getSuspendedTreatmentConcept().getConceptId());
     valuesMap.put(
-        "childSeg", hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId());
+        "childSeg", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
     valuesMap.put("fila", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
     valuesMap.put(
         "mcDrugPickup", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
-    valuesMap.put("drugPickup", hivMetadata.getArtDatePickup().getConceptId());
+    valuesMap.put("drugPickup", hivMetadata.getArtDatePickupMasterCard().getConceptId());
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     cd.setQuery(sub.replace(sql));
     return cd;
@@ -483,11 +485,11 @@ public class ResumoMensalCohortQueries {
     valuesMap.put("deadState", hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId());
     valuesMap.put(
         "pediatriaSeguimento",
-        hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId());
+        hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
     valuesMap.put("farmacia", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
     valuesMap.put(
         "arvLevantamento", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
-    valuesMap.put("arvLevantamentoDate", hivMetadata.getArtDatePickup().getConceptId());
+    valuesMap.put("arvLevantamentoDate", hivMetadata.getArtDatePickupMasterCard().getConceptId());
 
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     cd.setQuery(sub.replace(sql));
@@ -550,7 +552,7 @@ public class ResumoMensalCohortQueries {
                 .getProgramWorkflowStateId()));
 
     CohortDefinition transferredOut = getPatientsTransferredOutB5();
-    CohortDefinition suspended = getPatientsWhoSuspendedTreatmentB6();
+    CohortDefinition suspended = getPatientsWhoSuspendedTreatmentB6(true);
     CohortDefinition patientsArt = getPatientsWhoStartedArtByEndOfPreviousMonthB10();
     CohortDefinition died = getPatientsWhoDied(false);
 
@@ -635,10 +637,11 @@ public class ResumoMensalCohortQueries {
 
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
     String mappings1 = "startDate=${startDate-1m},endDate=${endDate},location=${location}";
+    String transferBasedOnDateMappings="onOrAfter=${onOrAfter-1m},onOrBefore=${onOrBefore},locationList=${locationList}";
+    String inProgramStatesMappings = "startDate=${onOrAfter-1m},endDate=${onOrBefore},location=${locationList}";
     cd.addSearch("A2", map(a2, mappings1));
     cd.addSearch("TPI", map(tpi, mappings));
-    cd.addSearch("exclusions", map(getAdditionalExclusionCriteriaForC2(), "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
-
+    cd.addSearch("exclusions", map(getAdditionalExclusionCriteriaForC1andC2(transferBasedOnDateMappings, inProgramStatesMappings), "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
     cd.setCompositionString("(A2 AND TPI) AND NOT exclusions");
 
     return cd;
@@ -674,7 +677,6 @@ public class ResumoMensalCohortQueries {
     CodedObsOnFirstOrSecondEncounterCalculation calculation =
         Context.getRegisteredComponents(CodedObsOnFirstOrSecondEncounterCalculation.class).get(0);
     CalculationCohortDefinition cd = new CalculationCohortDefinition(calculation);
-    cd.setName("Patients diagnosed for active TB");
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
@@ -727,7 +729,6 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("locationList", "location", Location.class));
     cd.addEncounterType(hivMetadata.getMasterCardEncounterType());
-    cd.setConcept(hivMetadata.getTypeOfPatientTransferredFrom());
     cd.addIncludeCodedValue(hivMetadata.getPreTarvConcept());
     return cd;
   }
@@ -744,33 +745,17 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getAdditionalExclusionCriteriaForC1() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+  public CohortDefinition getAdditionalExclusionCriteriaForC1andC2(String transferBasedOnDateMappings, String inProgramStatesMappings) {
+    CompositionCohortDefinition cd  = new CompositionCohortDefinition();
     cd.setName("All patients to be excluded for the C1 definition");
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("locationList", "location", Location.class));
-    cd.addSearch(
-        "transferBasedOnObsDate",
-        map(
-            getPatientsTransferBasedOnObsDate(),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}"));
-    cd.addSearch(
-        "getTypeOfPatientTransferredFrom",
-        map(
-            getTypeOfPatientTransferredFrom(),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}"));
-    cd.addSearch(
-        "inProgramState",
-        map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getHIVCareProgram().getProgramId(),
-                hivMetadata
-                    .getPateintTransferedFromOtherFacilityWorkflowState()
-                    .getProgramWorkflowStateId()),
-            "startDate=${onOrAfter},endDate=${onOrBefore},location=${locationList}"));
-    cd.setCompositionString(
-        "transferBasedOnObsDate OR getTypeOfPatientTransferredFrom OR inProgramState");
+    cd.addSearch("transferBasedOnObsDate", map(getPatientsTransferBasedOnObsDate(), transferBasedOnDateMappings));
+    cd.addSearch("getTypeOfPatientTransferredFrom", map(getTypeOfPatientTransferredFrom(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}"));
+    cd.addSearch("inProgramState", map(genericCohortQueries.getPatientsBasedOnPatientStates(hivMetadata.getHIVCareProgram().getProgramId(),
+            hivMetadata.getPateintTransferedFromOtherFacilityWorkflowState().getProgramWorkflowStateId()), inProgramStatesMappings));
+    cd.setCompositionString("transferBasedOnObsDate OR getTypeOfPatientTransferredFrom OR inProgramState");
     return cd;
   }
   public CohortDefinition getAdditionalExclusionCriteriaForC2() {
@@ -847,7 +832,7 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("locationList", "Location", Location.class));
     cd.addEncounterType(hivMetadata.getMasterCardDrugPickupEncounterType());
-    cd.setQuestion(hivMetadata.getArtDatePickup());
+    cd.setQuestion(hivMetadata.getArtDatePickupMasterCard());
     cd.setOperator1(RangeComparator.GREATER_EQUAL);
     cd.setOperator2(RangeComparator.LESS_EQUAL);
     return cd;
@@ -862,7 +847,7 @@ public class ResumoMensalCohortQueries {
 
   /**
    * E1: Number of active patients in ART at the end of current month who performed Viral Load Test
-   * (Annual Notification) B12 OR (B1 OR B2 OR B3) AND NOT (B5 OR B6 OR B7 OR B8)
+   * (Annual Notification) B12 AND NOT (B5 OR B6 OR B7 OR B8)
    *
    * @return CohortDefinition
    */
@@ -902,17 +887,23 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /**
+   * B12 = B13 AND NOT (B4 OR B9), this common for the 3 E columns B4 = B1+B2+B3 B9 = B5+B6+B7+B8
+   * This just implementation of B12
+   *
+   * @return
+   */
   public CohortDefinition getStandardDefinitionForEcolumns() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("Standard columns for E1, E2 and E3");
+    cd.setName("Standard columns for E1, E2 and E3 implementation");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "B12",
+        "B13",
         map(
-            getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTB(),
+            getActivePatientsInARTByEndOfCurrentMonth(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "B1",
@@ -937,7 +928,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B6",
         map(
-            getPatientsWhoSuspendedTreatmentB6(),
+            getPatientsWhoSuspendedTreatmentB6(true),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "B7",
@@ -949,7 +940,7 @@ public class ResumoMensalCohortQueries {
         map(
             getPatientsWhoDied(true),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
-    cd.setCompositionString("(B12 OR (B1 OR B2 OR B3)) AND NOT (B5 OR B6 OR B7 OR B8)");
+    cd.setCompositionString("B13 AND NOT(B1 OR B2 OR B3 OR B5 OR B6 OR B7 OR B8)");
     return cd;
   }
 
@@ -1076,7 +1067,7 @@ public class ResumoMensalCohortQueries {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getActivePatientsOnArtWhoRecievedVldSuppressionResults() {
+  public CohortDefinition getActivePatientsOnArtWhoReceivedVldSuppressionResults() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
         "Number of active patients in ART at the end of current month who received supressed Viral Load Result (Annual Notification)");
@@ -1248,7 +1239,7 @@ public class ResumoMensalCohortQueries {
         ResumoMensalQueries.getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthB127A(
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getArtDatePickup().getConceptId(),
+            hivMetadata.getArtDatePickupMasterCard().getConceptId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
     return cd;
   }
@@ -1300,6 +1291,62 @@ public class ResumoMensalCohortQueries {
     cd.setTypeOfPatientTransferredFromAnswer(hivMetadata.getPreTARVConcept());
     cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    return cd;
+  }
+
+  /**
+   * B13 B.13: Number of active patients in ART by end of current month (PT: Nº activo em TARV no
+   * fim do mês automaticamente calculado através da seguinte formula)
+   *
+   * @retrun CompositionCohortDefinition
+   */
+  public CohortDefinition getActivePatientsInARTByEndOfCurrentMonth() {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("Number of active patients in ART by end of current month");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
+
+    CohortDefinition fila =
+        genericCohortQueries.hasEncounter(hivMetadata.getARVPharmaciaEncounterType());
+
+    CohortDefinition masterCardPickup = getPatientsWithMasterCardDrugPickUpDate();
+
+    CohortDefinition transferredIn =
+        getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2();
+
+    CohortDefinition B5E = getPatientsTransferredOutB5();
+
+    CohortDefinition B6E = getPatientsWhoSuspendedTreatmentB6(false);
+
+    CohortDefinition B7E = getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A();
+
+    CohortDefinition B8E = getPatientsWhoDied(false);
+
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+
+    String mappingsOnDate = "onDate=${endDate},location=${location}";
+    String mappingsOnOrBeforeLocationList = "onOrBefore=${endDate},locationList=${location}";
+
+    cd.addSearch("startedArt", map(startedArt, mappings));
+
+    cd.addSearch("fila", map(fila, "onOrBefore=${endDate},locationList=${location}"));
+
+    cd.addSearch("masterCardPickup", map(masterCardPickup, mappingsOnOrBeforeLocationList));
+
+    cd.addSearch("transferredIn", map(transferredIn, mappings));
+    cd.addSearch("B5E", map(B5E, mappings));
+    cd.addSearch("B6E", map(B6E, "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch("B7E", map(B7E, mappingsOnDate));
+    cd.addSearch("B8E", map(B8E, "onOrBefore=${endDate},locationList=${location}"));
+
+    cd.setCompositionString(
+        "startedArt AND (fila OR masterCardPickup) AND NOT  (transferredIn OR B5E  OR B6E  OR B7E OR B8E )");
+
     return cd;
   }
 }

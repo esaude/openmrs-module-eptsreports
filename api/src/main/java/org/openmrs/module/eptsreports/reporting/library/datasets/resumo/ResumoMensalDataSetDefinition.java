@@ -364,6 +364,28 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
         getPatientsWhoWereActiveByEndOfPreviousMonth(),
         resumoMensalAandBdisaggregations.getAdolescentesColumns());
 
+    // B13 Indicators
+    dsd.addColumn(
+        "B13TP", "Total patients - Total Geral", getActivePatientsInARTByEndOfCurrentMonth(), "");
+    addRow(
+        dsd,
+        "B13TA",
+        "Patients over 15 years - adults",
+        getActivePatientsInARTByEndOfCurrentMonth(),
+        resumoMensalAandBdisaggregations.getAdultPatients());
+    addRow(
+        dsd,
+        "B13TAD",
+        "Adolescentes patients",
+        getActivePatientsInARTByEndOfCurrentMonth(),
+        resumoMensalAandBdisaggregations.getAdolescentesColumns());
+    addRow(
+        dsd,
+        "B13TC",
+        "Patients under 15 years",
+        getActivePatientsInARTByEndOfCurrentMonth(),
+        resumoMensalAandBdisaggregations.getUnder14YearsColumns());
+
     // C1 indicators
     dsd.addColumn(
         "C1TC",
@@ -439,7 +461,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
                 "E3",
                 map(
                     resumoMensalCohortQueries
-                        .getActivePatientsOnArtWhoRecievedVldSuppressionResults(),
+                        .getActivePatientsOnArtWhoReceivedVldSuppressionResults(),
                     mappings)),
             mappings),
         resumoMensalAandBdisaggregations.disAggForE());
@@ -543,7 +565,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
   private Mapped<CohortIndicator> getPatientsWithArtSuspensionDuringCurrentMonth() {
     String name = "Patients with ART suspension during the current month";
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
-    CohortDefinition cohort = resumoMensalCohortQueries.getPatientsWhoSuspendedTreatmentB6();
+    CohortDefinition cohort = resumoMensalCohortQueries.getPatientsWhoSuspendedTreatmentB6(true);
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, map(cohort, mappings)));
   }
 
@@ -588,6 +610,15 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
         mapStraightThrough(
             resumoMensalCohortQueries
                 .getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTB());
+    return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
+  }
+
+  private Mapped<CohortIndicator> getActivePatientsInARTByEndOfCurrentMonth() {
+    String name = "Number of active patients in ART by end of current month";
+
+    Mapped<CohortDefinition> cohort =
+        mapStraightThrough(resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth());
+
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
   }
 }

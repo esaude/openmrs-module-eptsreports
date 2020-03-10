@@ -129,7 +129,7 @@ public class EriDSDCohortQueries {
                 SetComparator.IN,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+                    hivMetadata.getPediatriaSeguimentoEncounterType()),
                 Arrays.asList(
                     hivMetadata.getNeutropenia(),
                     hivMetadata.getPancreatitis(),
@@ -231,7 +231,7 @@ public class EriDSDCohortQueries {
                 null,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
@@ -246,7 +246,7 @@ public class EriDSDCohortQueries {
                 null,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
@@ -261,7 +261,7 @@ public class EriDSDCohortQueries {
                 null,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
@@ -298,7 +298,7 @@ public class EriDSDCohortQueries {
                 null,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
@@ -313,7 +313,7 @@ public class EriDSDCohortQueries {
                 null,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
@@ -431,7 +431,7 @@ public class EriDSDCohortQueries {
     sql.setQuery(
         DsdQueries.patientsWithTheRecentViralLoadEncounter(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
@@ -816,7 +816,7 @@ public class EriDSDCohortQueries {
     int upperBound = 190;
     Concept returnVisitDate = hivMetadata.getReturnVisitDateConcept();
     List<EncounterType> encounterTypes = new ArrayList<>();
-    encounterTypes.add(hivMetadata.getARVPediatriaSeguimentoEncounterType());
+    encounterTypes.add(hivMetadata.getPediatriaSeguimentoEncounterType());
     encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
     return getPatientsScheduled(returnVisitDate, encounterTypes, upperBound, lowerBound);
   }
@@ -1404,7 +1404,7 @@ public class EriDSDCohortQueries {
     cd.setQuery(
         DsdQueries.getPatientsOnSarcomaKarposi(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getOtherDiagnosis().getConceptId(),
             hivMetadata.getKaposiSarcomaConcept().getConceptId()));
 

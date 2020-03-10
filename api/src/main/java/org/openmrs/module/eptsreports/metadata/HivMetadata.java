@@ -45,7 +45,12 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // concept_id=5096
+  //
+  /**
+   * Fila Next pick up concept concept_id=5096
+   *
+   * @return
+   */
   public Concept getReturnVisitDateForArvDrugConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -80,7 +85,11 @@ public class HivMetadata extends ProgramsMetadata {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.regimeUuid");
     return getConcept(uuid);
   }
-
+  /**
+   * Concept id = 1705 Reinicio de terapia ou tratamento apos abandono ou recaida
+   *
+   * @return
+   */
   public Concept getRestartConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.restartConceptUuid");
@@ -88,7 +97,7 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   // concept_id = 1707
-  public Concept getAbandoned() {
+  public Concept getAbandonedConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.abandonedConceptUuid");
     return getConcept(uuid);
@@ -184,7 +193,8 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // concept id 1066
+  /** concept id 1066 Resposta generica de uma pergunta */
+  //
   @Override
   public Concept getNoConcept() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.noConceptUuid");
@@ -255,7 +265,11 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // concept_id = 1366
+  /**
+   * concept_id = 1366 patient is dead
+   *
+   * @return
+   */
   public Concept getPatientHasDiedConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -577,8 +591,13 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // Concept 23866 Date of ART Pickup
-  public Concept getArtDatePickup() {
+  //
+  /**
+   * Concept 23866 Date of ART Pickup Return date for ART pick up Master Card
+   *
+   * @return
+   */
+  public Concept getArtDatePickupMasterCard() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.preArtPickupDate");
     return getConcept(uuid);
@@ -990,7 +1009,7 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   // encounterType_id = 9
-  public EncounterType getARVPediatriaSeguimentoEncounterType() {
+  public EncounterType getPediatriaSeguimentoEncounterType() {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.sTarvPediatriaSeguimentoEncounterTypeUuid");
@@ -1355,7 +1374,7 @@ public class HivMetadata extends ProgramsMetadata {
 
   private ProgramWorkflowState getAbandonedWorkflowState(
       Program program, ProgramWorkflow programWorkflow) {
-    Concept abandoned = getAbandoned();
+    Concept abandoned = getAbandonedConcept();
     return getProgramWorkflowState(
         program.getUuid(), programWorkflow.getUuid(), abandoned.getUuid());
   }
@@ -1432,13 +1451,6 @@ public class HivMetadata extends ProgramsMetadata {
   public Concept getBPlusConcept() {
     return getConcept(
         Context.getAdministrationService().getGlobalProperty("eptsreports.bPlusConceptUuid"));
-  }
-
-
-  //6275
-  public Concept getHivCareConcept() {
-    return getConcept(
-            Context.getAdministrationService().getGlobalProperty("eptsreports.hivCareConceptUuid"));
   }
   // concept_id = 6275
   public Concept getPreTarvConcept() {
