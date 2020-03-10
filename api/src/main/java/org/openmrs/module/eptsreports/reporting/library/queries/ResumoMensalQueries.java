@@ -49,7 +49,7 @@ public class ResumoMensalQueries {
             + "(SELECT results.patient_id, "
             + "       Min(results.enrollment_date) enrollment_date "
             + "FROM   (SELECT p.patient_id, "
-            + "               e.encounter_datetime AS enrollment_date "
+            + "               o.value_datetime AS enrollment_date "
             + "        FROM   patient p "
             + "               INNER JOIN encounter e "
             + "                       ON p.patient_id = e.patient_id "
@@ -82,10 +82,11 @@ public class ResumoMensalQueries {
             + "               AND enc.encounter_type IN (${ARVAdultInitialEncounterType},${ARVPediatriaInitialEncounterType}) "
             + "               AND enc.location_id =:location "
             + "        ORDER  BY enrollment_date ASC) results "
-            + "        WHERE results.enrollment_date BETWEEN :startDate AND :endDate "
-            + "     GROUP  BY results.patient_id) res  ";
+            + "     GROUP  BY results.patient_id) res "
+            + "     WHERE res.enrollment_date BETWEEN :startDate AND :endDate ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    System.out.println(stringSubstitutor.replace(query));
     return stringSubstitutor.replace(query);
   }
 
@@ -137,6 +138,60 @@ public class ResumoMensalQueries {
     valuesMap.put("artProgram", artProgram);
     valuesMap.put("transferInState", transferInState);
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
+  }
+
+
+  public static String getPatientsTransferredFromAnotherHealthFacilityDuringCurrentMonth(
+          int masterCardEncounter,
+          int transferFromConcept,
+          int yesConcept,
+          int typeOfPantientConcept,
+          int preTarvConcept,
+          int hivProgram,
+          int transferInState) {
+
+    String query =
+            "SELECT p.patient_id "
+                    + "FROM   patient p "
+                    + "       JOIN encounter e ON p.patient_id = e.patient_id "
+                    + "       JOIN obs transf ON transf.encounter_id = e.encounter_id "
+                    + "       JOIN obs type ON type.encounter_id = e.encounter_id "
+                    + "WHERE  p.voided = 0 "
+                    + "       AND e.voided = 0 "
+                    + "       AND e.encounter_type = ${masterCardEncounter} "
+                    + "       AND e.location_id = :location "
+                    + "       AND transf.voided = 0 "
+                    + "       AND transf.concept_id = ${transferFromConcept} "
+                    + "       AND transf.value_coded = ${yesConcept} "
+                    + "       AND type.voided = 0 "
+                    + "       AND type.concept_id = ${typeOfPantientConcept} "
+                    + "       AND type.value_coded = ${preTarvConcept}"
+                    + "       AND transf.obs_datetime BETWEEN :onOrAfter AND :onOrBefore"
+                    + "UNION"
+                    + "       SELECT pg.patient_id"
+                    + "       FROM patient p"
+                    + "       INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
+                    + "       INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id"
+                    + "       WHERE pg.voided=0"
+                    + "       AND ps.voided=0"
+                    + "       AND p.voided=0"
+                    + "       AND pg.program_id=${hivProgram}"
+                    + "       AND ps.state=${transferInState}"
+                    + "       AND ps.end_date is null"
+                    + "       and ps.start_date  BETWEEN :onOrAfter AND :onOrBefore";
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("masterCardEncounter", masterCardEncounter);
+    valuesMap.put("transferFromConcept", transferFromConcept);
+    valuesMap.put("yesConcept", yesConcept);
+    valuesMap.put("typeOfPantientConcept", typeOfPantientConcept);
+    valuesMap.put("preTarvConcept", preTarvConcept);
+    valuesMap.put("hivProgram", hivProgram);
+    valuesMap.put("transferInState", transferInState);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+
+    //System.out.println(sub.replace(query));
     return sub.replace(query);
   }
 
