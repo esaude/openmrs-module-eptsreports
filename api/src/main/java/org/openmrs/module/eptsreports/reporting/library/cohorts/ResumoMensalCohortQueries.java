@@ -1078,7 +1078,7 @@ public class ResumoMensalCohortQueries {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getActivePatientsOnArtWhoRecievedVldSuppressionResults() {
+  public CohortDefinition getActivePatientsOnArtWhoReceivedVldSuppressionResults() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
         "Number of active patients in ART at the end of current month who received supressed Viral Load Result (Annual Notification)");
