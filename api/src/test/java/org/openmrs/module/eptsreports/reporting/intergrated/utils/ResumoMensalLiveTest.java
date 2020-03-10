@@ -21,7 +21,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
+@Ignore
 public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
 
   @Autowired private ResumoMensalCohortQueries resumoMensalCohortQueries;
@@ -43,9 +43,8 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
     CohortDefinition cd =
         resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2();
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd);
-      System.out.println(evaluatedCohort.getMemberIds());
     assertEquals(93, evaluatedCohort.size());
-    //assertTrue(evaluatedCohort.getMemberIds().containsAll(patients));
+    assertTrue(evaluatedCohort.getMemberIds().containsAll(patients));
   }
 
   @Test
