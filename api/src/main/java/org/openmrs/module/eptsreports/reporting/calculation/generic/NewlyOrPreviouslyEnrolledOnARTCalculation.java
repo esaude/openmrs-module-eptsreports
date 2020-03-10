@@ -153,7 +153,16 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
     }
     return null;
   }
-
+  /**
+   * Gets the earliest treatment start date by comparing the drugs start date obs from Seguimento
+   * (adults and children)” or “Ficha Resumo” and “Ficha Clinica-MasterCard”
+   *
+   * @param seguimentoOrFichaResumoDate The earliest drug start date obs from Seguimento (adults and
+   *     children)” or “Ficha Resumo”
+   * @param fichaClinicaMasterCardDate The earliest drug start date obs from Ficha
+   *     Clinica-MasterCard
+   * @return
+   */
   private Date getEarliestIptStartDate(
       Obs seguimentoOrFichaResumoDate, Obs fichaClinicaMasterCardDate) {
     if (seguimentoOrFichaResumoDate != null && fichaClinicaMasterCardDate != null) {
