@@ -1255,7 +1255,7 @@ public class ResumoMensalCohortQueries {
     ccd.addSearch(
         "B7III",
         map(
-            getPatientsWhoSuspendedTreatmentB6(),
+            getPatientsWhoSuspendedTreatmentB6(true),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
     ccd.addSearch(
         "B7IV",
