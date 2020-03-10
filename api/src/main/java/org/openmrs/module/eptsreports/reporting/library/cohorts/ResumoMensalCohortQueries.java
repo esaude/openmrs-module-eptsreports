@@ -564,16 +564,17 @@ public class ResumoMensalCohortQueries {
 
     String encounterWithCodedObsMappings = "onOrBefore=${startDate},locationList=${location}";
 
-    cd.addSearch("B10",map(patientsArt, "startDate=${startDate},location=${location}"));
+    cd.addSearch("B10", map(patientsArt, "startDate=${startDate},location=${location}"));
     cd.addSearch("B2A", map(transferredIn, "onOrBefore=${startDate},location=${location}"));
 
     cd.addSearch("B5A", map(transferredOut, "onOrBefore=${startDate},location=${location}"));
     cd.addSearch(
-            "B6A", map(suspended, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));        
-    cd.addSearch("B7A",
-                    map(
-                        getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A(),
-                        "location=${location},onOrBefore=${startDate}"));
+        "B6A", map(suspended, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "B7A",
+        map(
+            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A(),
+            "location=${location},onOrBefore=${startDate}"));
     cd.addSearch("B8A", map(died, encounterWithCodedObsMappings));
 
     cd.setCompositionString("B10 OR B2A AND NOT (B5A OR B6A OR B7A OR B8A)");
@@ -898,10 +899,9 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   *B12 = B13 AND NOT (B4 OR B9), this common for the 3 E columns
-   * B4 = B1+B2+B3
-   * B9 = B5+B6+B7+B8
+   * B12 = B13 AND NOT (B4 OR B9), this common for the 3 E columns B4 = B1+B2+B3 B9 = B5+B6+B7+B8
    * This just implementation of B12
+   *
    * @return
    */
   public CohortDefinition getStandardDefinitionForEcolumns() {
@@ -914,7 +914,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B13",
         map(
-                getActivePatientsInARTByEndOfCurrentMonth(),
+            getActivePatientsInARTByEndOfCurrentMonth(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "B1",
