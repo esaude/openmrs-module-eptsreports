@@ -102,7 +102,7 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
 
   @Test
   public void B6() throws EvaluationException {
-    CohortDefinition cd = resumoMensalCohortQueries.getPatientsWhoSuspendedTreatmentB6();
+    CohortDefinition cd = resumoMensalCohortQueries.getPatientsWhoSuspendedTreatmentB6(true);
     Map<Parameter, Object> mappings = new HashMap<>();
     mappings.put(new Parameter("onOrAfter", "value1", Date.class), getStartDate());
     mappings.put(new Parameter("onOrBefore", "value2", Date.class), getEndDate());
