@@ -189,6 +189,9 @@
 	<concept concept_id="23865" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2019-07-09 12:53:56" changed_by="1" date_changed="2019-07-09 12:53:56" uuid="e07fb227-7a5a-4edf-93e8-7633c9fd1ea0" />
 	<concept_name concept_id="23865" name="ART PICKUP" locale="en" creator="1" date_created="2019-07-09 12:53:56" concept_name_id="33689" voided="0" uuid="02dd0763-2269-431d-8531-fe438c15d0a1" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
 
+	<concept concept_id="1267" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1d9facc-1d5f-11e0-b929-000c29ad1d07"/>
+	<concept_name concept_name_id="1267" concept_id="1267" name="COMPLETED" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="e2405c04-1d5f-11e0-b929-000c29ad1d07"/>
+
 	<concept_set concept_set_id="8777008" concept_id="7777008" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777008"/>
 	<concept_set concept_set_id="8777009" concept_id="7777009" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777009"/>
 	<concept_set concept_set_id="8777010" concept_id="7777010" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777010"/>
@@ -231,6 +234,7 @@
 	<global_property property="eptsreports.artProgramUuid" property_value="efe2481f-9e75-4515-8d5a-86bfde2b5ad3" uuid="efe2481f-9e75-4515-8d5a-86bfde2b5ad3"/>
 	<global_property property="eptsreports.arvPlanConceptUuid" property_value="a09ab2c5-878e-4905-b25d-578417777002" uuid="a09ab2c5-878e-4905-b25d-578417777002"/>
 	<global_property property="eptsreports.startDrugsConceptUuid" property_value="a09ab2c5-878e-4905-b25d-578417777003" uuid="a09ab2c5-878e-4905-b25d-578417777003"/>
+	<global_property property="eptsreports.completedConceptUuid" property_value="e1d9facc-1d5f-11e0-b929-000c29ad1d07" uuid="ee89191a-d5ea-450f-9cf3-3eba99272055"/>
 	<global_property property="eptsreports.transferFromOtherFacilityConceptUuid" property_value="a09ab2c5-878e-4905-b25d-578417777004" uuid="a09ab2c5-878e-4905-b25d-578417777004"/>
 	<global_property property="eptsreports.historicalStartDateConceptUuid" property_value="a09ab2c5-878e-4905-b25d-578417777005" uuid="a09ab2c5-878e-4905-b25d-578417777005"/>
 	<global_property property="eptsreports.sTarvFarmaciaEncounterTypeUuid" property_value="02c533ab-b74b-4ee4-b6e5-ffb6d6777003" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777003"/>

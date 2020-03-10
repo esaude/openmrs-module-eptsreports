@@ -762,6 +762,7 @@ public class TxMlQueries {
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     return stringSubstitutor.replace(query);
   }
+
   /**
    * Get the patient list based on the program and state in the program. by reporting end date
    * ps.start_date<=:onOrBefore

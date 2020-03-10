@@ -31,12 +31,6 @@ public class ResumoMensalQueries {
     return String.format(query, encounterType, conceptId);
   }
 
-  /**
-   * All patients with encounter type 53, and Pre-ART Start Date that falls between startDate and
-   * enddate
-   *
-   * @return String
-   */
   public static String getPatientsWhoInitiatedPreArtDuringCurrentMonthWithConditions(
       int masterCardEncounterType,
       int preArtStartDateConceptId,
