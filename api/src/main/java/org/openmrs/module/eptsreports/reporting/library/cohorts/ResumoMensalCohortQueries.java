@@ -564,16 +564,17 @@ public class ResumoMensalCohortQueries {
 
     String encounterWithCodedObsMappings = "onOrBefore=${startDate},locationList=${location}";
 
-    cd.addSearch("B10",map(patientsArt, "startDate=${startDate},location=${location}"));
+    cd.addSearch("B10", map(patientsArt, "startDate=${startDate},location=${location}"));
     cd.addSearch("B2A", map(transferredIn, "onOrBefore=${startDate},location=${location}"));
 
     cd.addSearch("B5A", map(transferredOut, "onOrBefore=${startDate},location=${location}"));
     cd.addSearch(
-            "B6A", map(suspended, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));        
-    cd.addSearch("B7A",
-                    map(
-                        getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A(),
-                        "location=${location},onOrBefore=${startDate}"));
+        "B6A", map(suspended, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "B7A",
+        map(
+            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A(),
+            "location=${location},onOrBefore=${startDate}"));
     cd.addSearch("B8A", map(died, encounterWithCodedObsMappings));
 
     cd.setCompositionString("B10 OR B2A AND NOT (B5A OR B6A OR B7A OR B8A)");
@@ -857,7 +858,7 @@ public class ResumoMensalCohortQueries {
 
   /**
    * E1: Number of active patients in ART at the end of current month who performed Viral Load Test
-   * (Annual Notification) B12 OR (B1 OR B2 OR B3) AND NOT (B5 OR B6 OR B7 OR B8)
+   * (Annual Notification) B12 AND NOT (B5 OR B6 OR B7 OR B8)
    *
    * @return CohortDefinition
    */
@@ -897,17 +898,23 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /**
+   * B12 = B13 AND NOT (B4 OR B9), this common for the 3 E columns B4 = B1+B2+B3 B9 = B5+B6+B7+B8
+   * This just implementation of B12
+   *
+   * @return
+   */
   public CohortDefinition getStandardDefinitionForEcolumns() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("Standard columns for E1, E2 and E3");
+    cd.setName("Standard columns for E1, E2 and E3 implementation");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "B12",
+        "B13",
         map(
-            getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTB(),
+            getActivePatientsInARTByEndOfCurrentMonth(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "B1",
@@ -944,7 +951,7 @@ public class ResumoMensalCohortQueries {
         map(
             getPatientsWhoDied(true),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
-    cd.setCompositionString("(B12 OR (B1 OR B2 OR B3)) AND NOT (B5 OR B6 OR B7 OR B8)");
+    cd.setCompositionString("B13 AND NOT(B1 OR B2 OR B3 OR B5 OR B6 OR B7 OR B8)");
     return cd;
   }
 
@@ -1071,7 +1078,7 @@ public class ResumoMensalCohortQueries {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getActivePatientsOnArtWhoRecievedVldSuppressionResults() {
+  public CohortDefinition getActivePatientsOnArtWhoReceivedVldSuppressionResults() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
         "Number of active patients in ART at the end of current month who received supressed Viral Load Result (Annual Notification)");
