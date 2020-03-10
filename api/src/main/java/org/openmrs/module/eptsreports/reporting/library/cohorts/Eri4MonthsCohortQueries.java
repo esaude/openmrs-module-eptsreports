@@ -56,7 +56,7 @@ public class Eri4MonthsCohortQueries {
             .allPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120OfEncounterDate(
                 hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
                 hivMetadata.getARVPlanConcept().getConceptId(),
                 hivMetadata.getStartDrugsConcept().getConceptId(),
                 hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
@@ -66,7 +66,7 @@ public class Eri4MonthsCohortQueries {
                     .getProgramWorkflowStateId(),
                 hivMetadata.getArtPickupConcept().getConceptId(),
                 hivMetadata.getYesConcept().getConceptId(),
-                hivMetadata.getArtDatePickup().getConceptId(),
+                hivMetadata.getArtDatePickupMasterCard().getConceptId(),
                 hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
     return cd;
   }
@@ -110,7 +110,7 @@ public class Eri4MonthsCohortQueries {
     cd.setQuery(
         Eri4MonthsQueries.getPatientsLostToFollowUpOnConsultation(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
             daysThreshold));
     return cd;

@@ -82,7 +82,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("    JOIN patient_state ps  ");
     q.append("        ON ps.patient_program_id=pp.patient_program_id ");
     q.append("WHERE  pp.program_id = :artProgram ");
-    q.append("    AND ps.state = :transferOutState ");
+    q.append("    AND ps.state = :transferredInState ");
     if (cd.getOnOrAfter() == null) {
       q.append("     AND ps.start_date < :onOrBefore ");
     } else if (cd.getOnOrBefore() == null) {
@@ -106,7 +106,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.addParameter("answer", typeOfPatientTransferredFrom);
     q.addParameter("artProgram", hivMetadata.getARTProgram());
     q.addParameter(
-        "transferOutState", hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState());
+        "transferredInState", hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState());
     q.addParameter("location", cd.getLocation());
     q.addParameter("onOrAfter", cd.getOnOrAfter());
     q.addParameter("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(cd.getOnOrBefore()));

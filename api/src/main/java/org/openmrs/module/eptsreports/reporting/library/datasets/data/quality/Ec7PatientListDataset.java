@@ -44,7 +44,7 @@ public class Ec7PatientListDataset extends BaseDataSet {
                 .getTransferredOutToAnotherHealthFacilityWorkflowState()
                 .getProgramWorkflowStateId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId()));
 
     return dsd;
   }

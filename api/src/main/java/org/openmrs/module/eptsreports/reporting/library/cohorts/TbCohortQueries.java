@@ -30,7 +30,7 @@ public class TbCohortQueries {
     cd.setQuery(
         TbQueries.getPatientsOnTbTreatmentQuery(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getTBDrugStartDateConcept().getConceptId(),
             hivMetadata.getTBDrugEndDateConcept().getConceptId(),
             hivMetadata.getTBProgram().getProgramId(),

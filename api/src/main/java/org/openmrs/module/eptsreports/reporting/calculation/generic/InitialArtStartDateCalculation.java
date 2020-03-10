@@ -81,7 +81,7 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
     EncounterType encounterTypePharmacy = hivMetadata.getARVPharmaciaEncounterType();
     EncounterType masterCardFichaResumo = hivMetadata.getMasterCardEncounterType();
     EncounterType adultoSeguimento = hivMetadata.getAdultoSeguimentoEncounterType();
-    EncounterType arvPediatriaSeguimento = hivMetadata.getARVPediatriaSeguimentoEncounterType();
+    EncounterType arvPediatriaSeguimento = hivMetadata.getPediatriaSeguimentoEncounterType();
 
     List<EncounterType> encounterTypes =
         Arrays.asList(
@@ -214,7 +214,7 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
             hivMetadata.getArtPickupConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
-            hivMetadata.getArtDatePickup().getConceptId()));
+            hivMetadata.getArtDatePickupMasterCard().getConceptId()));
 
     Map<String, Object> params = new HashMap<>();
     params.put("location", context.getFromCache("location"));

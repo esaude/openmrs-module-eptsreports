@@ -42,7 +42,7 @@ public class Ec10PatientListDataset extends BaseDataSet {
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId()));
     return dsd;
   }
 }
