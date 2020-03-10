@@ -49,14 +49,14 @@ public class Eri2MonthsCohortQueries {
         Eri2MonthsQueries.getAllPatientsWhoReturnedFor2ndConsultationOR2ndDrugsPickUpWithin33Days(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             hivMetadata.getStartDrugsConcept().getConceptId(),
             hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getArtPickupConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
-            hivMetadata.getArtDatePickup().getConceptId(),
+            hivMetadata.getArtDatePickupMasterCard().getConceptId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
     return cd;
   }
