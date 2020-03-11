@@ -45,7 +45,6 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  //
   /**
    * Fila Next pick up concept concept_id=5096
    *
@@ -64,9 +63,15 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.dateOfHIVDiagnosis");
     return getConcept(uuid);
   }
-
-  // concept_id=1190
-  public Concept getARVStartDate() {
+  /**
+   * concept_id=1190
+   *
+   * <p>Information gathered on encounter forms which describes the date of a particular drug's
+   * institution. Most often "globbed" with another concept which describes the drug.
+   *
+   * @return
+   */
+  public Concept getARVStartDateConcept() {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.historicalStartDateConceptUuid");
@@ -96,7 +101,12 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // concept_id = 1707
+  /**
+   * concept_id = 1707 DROPPED FROM TREATMENT Sinónimos DROPPED FROM ANTI-RETROVIRAL THERAPY DROPPED
+   * FROM TUBERCULOSIS TREATMENT ABANDONED
+   *
+   * @return
+   */
   public Concept getAbandonedConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.abandonedConceptUuid");
@@ -193,8 +203,7 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  /** concept id 1066 Resposta generica de uma pergunta */
-  //
+  /** concept id 1066 Generic Answer for a question */
   @Override
   public Concept getNoConcept() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.noConceptUuid");
@@ -901,8 +910,7 @@ public class HivMetadata extends ProgramsMetadata {
 
     return getConcept(uuid);
   }
-
-  // concept_id = 2005
+  /** concept_id = 2005 */
   public Concept getPatientForgotVisitDateConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -910,7 +918,11 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // concept_id = 2006
+  /**
+   * concept_id = 2006
+   *
+   * @return
+   */
   public Concept getPatientIsBedriddenAtHomeConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -1008,8 +1020,11 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.sTarvPediatriaSeguimentoEncounterTypeUuid");
     return getEncounterType(uuid);
   }
-
-  // encounterType_id= 21
+  /**
+   * encounterType_id= 21
+   *
+   * @return
+   */
   public EncounterType getBuscaActivaEncounterType() {
     String uuid =
         Context.getAdministrationService()
@@ -1445,7 +1460,6 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(
         Context.getAdministrationService().getGlobalProperty("eptsreports.bPlusConceptUuid"));
   }
-
   // concept_id = 6275
   public Concept getPreTarvConcept() {
     String uuid =

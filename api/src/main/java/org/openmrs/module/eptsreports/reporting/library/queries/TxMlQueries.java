@@ -243,6 +243,38 @@ public class TxMlQueries {
       int masterCardDrugPickupEncounterTypeId,
       int artDatePickupConceptId) {
 
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("homeVisitCardEncounterTypeId", homeVisitCardEncounterTypeId);
+
+    valuesMap.put("reasonPatientMissedVisitConceptId", reasonPatientMissedVisitConceptId);
+    valuesMap.put("patientForgotVisitDateConceptId", patientForgotVisitDateConceptId);
+    valuesMap.put("patientIsBedriddenAtHomeConceptId", patientIsBedriddenAtHomeConceptId);
+    valuesMap.put(
+        "distanceOrMoneyForTransportIsToMuchForPatientConceptId",
+        distanceOrMoneyForTransportIsToMuchForPatientConceptId);
+    valuesMap.put(
+        "patientIsDissatifiedWithDayHospitalServicesConceptId",
+        patientIsDissatifiedWithDayHospitalServicesConceptId);
+    valuesMap.put("fearOfTheProviderConceptId", fearOfTheProviderConceptId);
+    valuesMap.put(
+        "absenceOfHealthProviderInHealthUnitConceptId",
+        absenceOfHealthProviderInHealthUnitConceptId);
+    valuesMap.put(
+        "patientDoesNotLikeArvTreatmentSideEffectsConceptId",
+        patientDoesNotLikeArvTreatmentSideEffectsConceptId);
+    valuesMap.put(
+        "patientIsTreatingHivWithTraditionalMedicineConceptId",
+        patientIsTreatingHivWithTraditionalMedicineConceptId);
+    valuesMap.put(
+        "otherReasonWhyPatientMissedVisitConceptId", otherReasonWhyPatientMissedVisitConceptId);
+    valuesMap.put("pharmacyEncounterTypeId", pharmacyEncounterTypeId);
+    valuesMap.put("returnVisitDateForDrugsConcept", returnVisitDateForDrugsConcept);
+    valuesMap.put("adultoSequimentoEncounterTypeId", adultoSequimentoEncounterTypeId);
+    valuesMap.put("arvPediatriaSeguimentoEncounterTypeId", arvPediatriaSeguimentoEncounterTypeId);
+    valuesMap.put("returnVisitDateConcept", returnVisitDateConcept);
+    valuesMap.put("masterCardDrugPickupEncounterTypeId", masterCardDrugPickupEncounterTypeId);
+    valuesMap.put("artDatePickupConceptId", artDatePickupConceptId);
+
     String query =
         "SELECT e.patient_id "
             + "FROM encounter e "
@@ -255,9 +287,9 @@ public class TxMlQueries {
             + "                             WHERE p.patient_id = e.patient_id "
             + "                               AND e.voided = 0 "
             + "                               AND o.voided = 0 "
-            + "                               AND e.encounter_type = %d "
+            + "                               AND e.encounter_type = ${pharmacyEncounterTypeId} "
             + "                               AND e.location_id = :location "
-            + "                               AND o.concept_id = %d "
+            + "                               AND o.concept_id = ${returnVisitDateForDrugsConcept} "
             + "                               AND e.encounter_datetime <= :endDate "
             + "                             ORDER BY e.encounter_datetime DESC "
             + "                             LIMIT 1) AS return_date "
@@ -270,9 +302,9 @@ public class TxMlQueries {
             + "                             WHERE p.patient_id = e.patient_id "
             + "                               AND e.voided = 0 "
             + "                               AND o.voided = 0 "
-            + "                               AND e.encounter_type IN (%d, %d) "
+            + "                               AND e.encounter_type IN (${adultoSequimentoEncounterTypeId},${arvPediatriaSeguimentoEncounterTypeId}) "
             + "                               AND e.location_id = :location "
-            + "                               AND o.concept_id = %d "
+            + "                               AND o.concept_id = ${returnVisitDateConcept} "
             + "                               AND e.encounter_datetime <= :endDate "
             + "                             ORDER BY e.encounter_datetime DESC "
             + "                             LIMIT 1) AS return_date "
@@ -285,41 +317,26 @@ public class TxMlQueries {
             + "                             WHERE p.patient_id = e.patient_id "
             + "                               AND e.voided = 0 "
             + "                               AND o.voided = 0 "
-            + "                               AND e.encounter_type = %d "
+            + "                               AND e.encounter_type = ${masterCardDrugPickupEncounterTypeId} "
             + "                               AND e.location_id = :location "
-            + "                               AND o.concept_id = %d "
+            + "                               AND o.concept_id = ${artDatePickupConceptId} "
             + "                               AND o.value_datetime <= :endDate "
-            + "                             ORDER BY e.encounter_datetime DESC "
+            + "                             ORDER BY o.value_datetime DESC "
             + "                             LIMIT 1) AS return_date "
             + "                     FROM patient p) e "
             + "               GROUP BY e.patient_id) lp ON e.patient_id = lp.patient_id "
-            + "WHERE o.concept_id = %d AND o.value_coded IN (%d,%d,%d,%d,%d,%d,%d,%d,%d) "
-            + "AND e.encounter_type = %d "
+            + "WHERE o.concept_id = ${reasonPatientMissedVisitConceptId} AND o.value_coded IN (${patientForgotVisitDateConceptId}, "
+            + "${patientIsBedriddenAtHomeConceptId},${distanceOrMoneyForTransportIsToMuchForPatientConceptId}, "
+            + "${patientIsDissatifiedWithDayHospitalServicesConceptId},${fearOfTheProviderConceptId}, "
+            + "${absenceOfHealthProviderInHealthUnitConceptId},${patientDoesNotLikeArvTreatmentSideEffectsConceptId}, "
+            + "${patientIsTreatingHivWithTraditionalMedicineConceptId},${otherReasonWhyPatientMissedVisitConceptId}) "
+            + "AND e.encounter_type = ${homeVisitCardEncounterTypeId} "
             + "AND e.encounter_datetime BETWEEN lp.return_date and :endDate "
             + "AND e.location_id = :location "
             + "AND e.voided=0 "
             + "AND o.voided=0 ";
-
-    return String.format(
-        query,
-        pharmacyEncounterTypeId,
-        returnVisitDateForDrugsConcept,
-        adultoSequimentoEncounterTypeId,
-        arvPediatriaSeguimentoEncounterTypeId,
-        returnVisitDateConcept,
-        masterCardDrugPickupEncounterTypeId,
-        artDatePickupConceptId,
-        reasonPatientMissedVisitConceptId,
-        patientForgotVisitDateConceptId,
-        patientIsBedriddenAtHomeConceptId,
-        distanceOrMoneyForTransportIsToMuchForPatientConceptId,
-        patientIsDissatifiedWithDayHospitalServicesConceptId,
-        fearOfTheProviderConceptId,
-        absenceOfHealthProviderInHealthUnitConceptId,
-        patientDoesNotLikeArvTreatmentSideEffectsConceptId,
-        patientIsTreatingHivWithTraditionalMedicineConceptId,
-        otherReasonWhyPatientMissedVisitConceptId,
-        homeVisitCardEncounterTypeId);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
   }
 
   /*
@@ -742,6 +759,30 @@ public class TxMlQueries {
             + "           ) fila ON ficha.patient_id=fila.patient_id ) filaficha on filaficha.patient_id=pm.patient_id "
             + "       )ps "
             + "       GROUP  BY ps.patient_id";
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    return stringSubstitutor.replace(query);
+  }
+
+  /**
+   * Get the patient list based on the program and state in the program. by reporting end date
+   * ps.start_date<=:onOrBefore
+   *
+   * @param program
+   * @param stateOfProgram
+   * @return
+   */
+  public static String getPatientsListBasedOnProgramAndStateByReportingEndDate(
+      int program, int stateOfProgram) {
+    Map<String, Integer> map = new HashMap<>();
+    map.put("program", program);
+    map.put("stateOfProgram", stateOfProgram);
+    String query =
+        " select p.patient_id from patient p "
+            + " inner join patient_program pg on p.patient_id=pg.patient_id "
+            + " inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + " where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=${program} "
+            + " and ps.state =${stateOfProgram} and ps.end_date is null and ps.start_date<=:onOrBefore "
+            + "and pg.location_id=:location group by p.patient_id  ";
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     return stringSubstitutor.replace(query);
   }
