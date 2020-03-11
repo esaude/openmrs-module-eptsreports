@@ -44,9 +44,7 @@ public class SummaryEc20DataQualityDataset extends BaseDataSet {
                     summaryEc20DataQualityCohorts.getPatientsNotEnrolledOnTARV(
                         Arrays.asList(
                             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-                            hivMetadata
-                                .getARVPediatriaSeguimentoEncounterType()
-                                .getEncounterTypeId(),
+                            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
                             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()),
                         hivMetadata.getARTProgram().getProgramId()),
                     "location=${location},endDate=${endDate}")),

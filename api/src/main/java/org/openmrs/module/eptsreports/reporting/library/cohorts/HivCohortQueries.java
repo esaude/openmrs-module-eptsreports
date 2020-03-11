@@ -72,7 +72,7 @@ public class HivCohortQueries {
         ViralLoadQueries.getPatientsWithViralLoadSuppression(
             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getFsrEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
@@ -97,7 +97,7 @@ public class HivCohortQueries {
         ViralLoadQueries.getPatientsHavingViralLoadInLast12Months(
             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getFsrEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
@@ -154,7 +154,7 @@ public class HivCohortQueries {
         hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
     map.put(
         "aRVPediatriaSeguimentoEncounterType",
-        hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId());
+        hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
     map.put(
         "masterCardEncounterType", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     map.put(
@@ -360,7 +360,11 @@ public class HivCohortQueries {
             hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
-            hivMetadata.getArtStatus().getConceptId()));
+            hivMetadata.getArtStatus().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getArtTransferredFromOtherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
     return cd;
   }
 
@@ -440,10 +444,10 @@ public class HivCohortQueries {
             hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
             transferedOutOrSuspendedConcept,
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-            hivMetadata.getArtDatePickup().getConceptId()));
+            hivMetadata.getArtDatePickupMasterCard().getConceptId()));
     return cd;
   }
 
@@ -462,7 +466,7 @@ public class HivCohortQueries {
     cd.setQuery(
         TbQueries.getPatientsOnTbTreatmentQuery(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getTBDrugStartDateConcept().getConceptId(),
             hivMetadata.getTBDrugEndDateConcept().getConceptId(),
             hivMetadata.getTBProgram().getProgramId(),

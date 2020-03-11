@@ -31,12 +31,6 @@ public class ResumoMensalQueries {
     return String.format(query, encounterType, conceptId);
   }
 
-  /**
-   * All patients with encounter type 53, and Pre-ART Start Date that falls between startDate and
-   * enddate
-   *
-   * @return String
-   */
   public static String getPatientsWhoInitiatedPreArtDuringCurrentMonthWithConditions(
       int masterCardEncounterType,
       int preArtStartDateConceptId,
@@ -100,37 +94,50 @@ public class ResumoMensalQueries {
       int transferFromConcept,
       int yesConcept,
       int typeOfPantientConcept,
-      int tarvConcept) {
+      int tarvConcept,
+      int artProgram,
+      int transferInState) {
 
     String query =
         "SELECT p.patient_id "
             + "FROM   patient p "
-            + "       JOIN encounter e "
-            + "         ON p.patient_id = e.patient_id "
-            + "       JOIN obs transf "
-            + "         ON transf.encounter_id = e.encounter_id "
-            + "       JOIN obs type "
-            + "         ON type.encounter_id = e.encounter_id "
+            + "       JOIN encounter e ON p.patient_id = e.patient_id "
+            + "       JOIN obs transf ON transf.encounter_id = e.encounter_id "
+            + "       JOIN obs type ON type.encounter_id = e.encounter_id "
             + "WHERE  p.voided = 0 "
             + "       AND e.voided = 0 "
-            + "       AND e.encounter_type = %d "
+            + "       AND e.encounter_type = ${masterCardEncounter} "
             + "       AND e.location_id = :location "
-            + "       AND e.encounter_datetime < :onOrBefore "
             + "       AND transf.voided = 0 "
-            + "       AND transf.concept_id = %d "
-            + "       AND transf.value_coded = %d "
-            + "       AND transf.obs_datetime < :onOrBefore "
+            + "       AND transf.concept_id = ${transferFromConcept} "
+            + "       AND transf.value_coded = ${yesConcept} "
             + "       AND type.voided = 0 "
-            + "       AND type.concept_id = %d "
-            + "       AND type.value_coded = %d";
+            + "       AND type.concept_id = ${typeOfPantientConcept} "
+            + "       AND type.value_coded = ${tarvConcept}"
+            + "       AND transf.obs_datetime < :onOrBefore"
+            + "UNION"
+            + "       SELECT pg.patient_id"
+            + "       FROM patient p"
+            + "       INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
+            + "       INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id"
+            + "       WHERE pg.voided=0"
+            + "       AND ps.voided=0"
+            + "       AND p.voided=0"
+            + "       AND pg.program_id=${artProgram}"
+            + "       AND ps.state=${transferInState}"
+            + "       AND ps.end_date is null"
+            + "       and ps.start_date < :onOrBefore";
 
-    return String.format(
-        query,
-        masterCardEncounter,
-        transferFromConcept,
-        yesConcept,
-        typeOfPantientConcept,
-        tarvConcept);
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("masterCardEncounter", masterCardEncounter);
+    valuesMap.put("transferFromConcept", transferFromConcept);
+    valuesMap.put("yesConcept", yesConcept);
+    valuesMap.put("typeOfPantientConcept", typeOfPantientConcept);
+    valuesMap.put("tarvConcept", tarvConcept);
+    valuesMap.put("artProgram", artProgram);
+    valuesMap.put("transferInState", transferInState);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
   }
 
   public static String getPatientsForF2ForExclusionFromMainQuery(
@@ -370,16 +377,12 @@ public class ResumoMensalQueries {
    */
   public static String getF3Exclusion(int encounterType) {
     String query =
-        " SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN ( "
-            + " SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM encounter enc JOIN patient pat "
-            + " ON enc.patient_id=pat.patient_id WHERE enc.encounter_type=%d AND enc.location_id=:location "
-            + " AND enc.encounter_datetime BETWEEN :startDate AND :endDate AND pat.voided=0 AND enc.voided=0) ed "
-            + " ON p.patient_id=ed.patient_id"
+        " SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id "
             + " WHERE e.encounter_type=%d AND e.location_id=:location "
-            + " AND e.encounter_datetime BETWEEN "
+            + " AND e.encounter_datetime >= "
             + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
-            + " AND ed.endDate "
-            + "AND p.voided=0 AND e.voided=0 ";
+            + " AND e.encounter_datetime < :startDate "
+            + " AND p.voided=0 AND e.voided=0 ";
     return String.format(query, encounterType, encounterType);
   }
 

@@ -60,7 +60,7 @@ public class TXTBCohortQueries {
                 tbMetadata.getTBDrugTreatmentStartDate().getConceptId(),
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType().getId(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getId()),
+                    hivMetadata.getPediatriaSeguimentoEncounterType().getId()),
                 true));
     addGeneralParameters(definition);
     return definition;
@@ -230,7 +230,7 @@ public class TXTBCohortQueries {
             SetComparator.IN,
             Arrays.asList(
                 hivMetadata.getAdultoSeguimentoEncounterType(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+                hivMetadata.getPediatriaSeguimentoEncounterType()),
             Arrays.asList(commonMetadata.getNoConcept()));
     addGeneralParameters(cd);
     return cd;
@@ -245,7 +245,7 @@ public class TXTBCohortQueries {
             SetComparator.IN,
             Arrays.asList(
                 hivMetadata.getAdultoSeguimentoEncounterType(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+                hivMetadata.getPediatriaSeguimentoEncounterType()),
             Arrays.asList(commonMetadata.getYesConcept()));
     addGeneralParameters(cd);
     return cd;
@@ -273,7 +273,7 @@ public class TXTBCohortQueries {
             SetComparator.IN,
             Arrays.asList(
                 hivMetadata.getAdultoSeguimentoEncounterType(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+                hivMetadata.getPediatriaSeguimentoEncounterType()),
             Arrays.asList(tbMetadata.getPositiveConcept()));
     addGeneralParameters(cd);
     return cd;
@@ -316,7 +316,7 @@ public class TXTBCohortQueries {
                 tbMetadata.getTBDrugTreatmentStartDate().getConceptId(),
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType().getId(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType().getId()),
+                    hivMetadata.getPediatriaSeguimentoEncounterType().getId()),
                 true));
     addGeneralParameters(i);
     cd.addSearch("i", map(i, generalParameterMapping));

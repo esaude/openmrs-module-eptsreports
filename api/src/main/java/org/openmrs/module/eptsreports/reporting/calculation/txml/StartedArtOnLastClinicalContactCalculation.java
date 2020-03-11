@@ -49,12 +49,11 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
           EptsCalculationUtils.resultForPatient(lastClinicalContactMap, patientId);
 
       if (artStartDate != null && lastClinicalContact != null) {
-        Date onArtForLessThan90Days = EptsCalculationUtils.addDays(artStartDate, 90);
+        int days = EptsCalculationUtils.daysSince(artStartDate, lastClinicalContact);
 
-        if (onArtForLessThan90Days.compareTo(lastClinicalContact) < 0) {
+        if (days < 90) {
           lessThan90DaysMap.put(patientId, new BooleanResult(true, this));
-        }
-        if (onArtForLessThan90Days.compareTo(lastClinicalContact) >= 0) {
+        } else {
           moreThan90DaysMap.put(patientId, new BooleanResult(true, this));
         }
       }
@@ -108,8 +107,8 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             commonMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getArtDatePickup().getConceptId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickupMasterCard().getConceptId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
 
     Map<String, Object> params = new HashMap<>();
