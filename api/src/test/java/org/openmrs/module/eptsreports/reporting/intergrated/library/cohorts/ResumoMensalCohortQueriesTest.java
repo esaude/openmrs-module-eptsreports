@@ -85,7 +85,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     assertTrue(evaluatedCohort.getMemberIds().contains(1023));
   }
 
-  @Test
+  @Ignore
   public void getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2()
       throws EvaluationException {
     CohortDefinition cohort =

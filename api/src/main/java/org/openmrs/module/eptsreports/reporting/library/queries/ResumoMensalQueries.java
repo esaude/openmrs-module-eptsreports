@@ -49,7 +49,7 @@ public class ResumoMensalQueries {
             + "(SELECT results.patient_id, "
             + "       Min(results.enrollment_date) enrollment_date "
             + "FROM   (SELECT p.patient_id, "
-            + "               e.encounter_datetime AS enrollment_date "
+            + "               o.value_datetime AS enrollment_date "
             + "        FROM   patient p "
             + "               INNER JOIN encounter e "
             + "                       ON p.patient_id = e.patient_id "
@@ -82,8 +82,8 @@ public class ResumoMensalQueries {
             + "               AND enc.encounter_type IN (${ARVAdultInitialEncounterType},${ARVPediatriaInitialEncounterType}) "
             + "               AND enc.location_id =:location "
             + "        ORDER  BY enrollment_date ASC) results "
-            + "        WHERE results.enrollment_date BETWEEN :startDate AND :endDate "
-            + "     GROUP  BY results.patient_id) res  ";
+            + "     GROUP  BY results.patient_id) res "
+            + "     WHERE res.enrollment_date BETWEEN :startDate AND :endDate ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     return stringSubstitutor.replace(query);
