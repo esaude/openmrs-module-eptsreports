@@ -142,9 +142,9 @@ public interface TxTbPrevQueriesInterface {
             + "o.voided=0 and o.concept_id=6122 and o.value_coded=1256 and e.encounter_type=6 and  e.location_id=:location group by p.patient_id) startTPI group by patient_id) inicio_tpi "
             + "inner join encounter e on e.patient_id=inicio_tpi.patient_id "
             + "inner join obs o on o.encounter_id=e.encounter_id "
-            + "where e.encounter_type in (6,9) and e.voided=0 and e.encounter_datetime between data_inicio_tpi and data_inicio_tpi + interval 7 month and "
+            + "where e.encounter_type in (6,9) and e.voided=0 and e.encounter_datetime between data_inicio_tpi and data_inicio_tpi + interval 6 month and "
             + "o.concept_id=6122 and o.value_coded in (1257,1065) and o.voided=0 and e.location_id=:location "
-            + "group by inicio_tpi.patient_id having count(*)>=6 ";
+            + "group by inicio_tpi.patient_id having count(*)>=5 ";
 
     public static final String findPatientsTransferredOut =
         "select transferidopara.patient_id from ( "

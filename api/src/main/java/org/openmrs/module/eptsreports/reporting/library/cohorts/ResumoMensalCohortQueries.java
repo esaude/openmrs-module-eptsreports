@@ -170,20 +170,16 @@ public class ResumoMensalCohortQueries {
    */
   public CohortDefinition getSumOfA1AndA2() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
     cd.setName("Sum of A1 and A2");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
-        "A1",
-        map(
-            getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1(),
-            "startDate=${startDate},location=${location}"));
+        "A1", map(getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1(), mappings));
     cd.addSearch(
-        "A2",
-        map(
-            getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "A2", map(getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(), mappings));
     cd.setCompositionString("A1 OR A2");
     return cd;
   }
@@ -231,7 +227,7 @@ public class ResumoMensalCohortQueries {
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     definition.addSearch(
-        "TRANSFERED-IN",
+        "TRANSFERED-IN-1",
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
                 "findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod",
@@ -239,7 +235,7 @@ public class ResumoMensalCohortQueries {
             mappings));
 
     definition.addSearch(
-        "TRANSFERED-IN-AND-IN-ART-MASTER-CARD",
+        "TRANSFERED-IN-AND-IN-ART-MASTER-CARD-1",
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
                 "findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard",
@@ -247,7 +243,34 @@ public class ResumoMensalCohortQueries {
                     .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard),
             mappings));
 
-    definition.setCompositionString("TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD");
+    definition.addSearch(
+        "TRANSFERED-IN-2",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "findPatientsWithAProgramStateMarkedAsTransferedInInAPeriodStartDateB2",
+                ResumoMensalQueries
+                    .findPatientsWithAProgramStateMarkedAsTransferedInInAPeriodStartDateB2),
+            mappings));
+
+    definition.addSearch(
+        "TRANSFERED-IN-AND-IN-ART-MASTER-CARD-2",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardStartDateB2",
+                ResumoMensalQueries
+                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardStartDateB2),
+            mappings));
+
+    definition.addSearch(
+        "TRANSFERED-OUT",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "findPatientsWhoWhereMarkedAsTransferedInAndOnARnOutAPeriodOnMasterCardStartDateB2",
+                ResumoMensalQueries.findPatientsWhoWhereMarkedAsTransferedOutAPeriodB2),
+            mappings));
+
+    definition.setCompositionString(
+        "(TRANSFERED-IN-1 OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD-1) NOT((TRANSFERED-IN-2 OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD-2) NOT(TRANSFERED-OUT))");
 
     return definition;
   }
@@ -363,7 +386,8 @@ public class ResumoMensalCohortQueries {
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
                 "EXCLUSION2",
-                ResumoMensalQueries.getPatientsWhoAbandonedTratmentB7ExclusionEndDate()),
+                ResumoMensalQueries
+                    .getPatientsWhoSuspendAndDiedAndTransferedOutTratmentB7ExclusionEndDate()),
             mappings));
 
     definition.setCompositionString("ABANDONED NOT (EXCLUSION1 OR EXCLUSION2)");
@@ -736,7 +760,7 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  @DocumentedDefinition(value = "F1")
+  @DocumentedDefinition(value = "F3")
   public CohortDefinition getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("F1: Number of patients who had clinical appointment during the reporting month");
@@ -794,8 +818,9 @@ public class ResumoMensalCohortQueries {
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     cd.addSearch(
-        "F1",
+        "F3",
         map(getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1(), mappings));
+
     cd.addSearch(
         "Fx3",
         map(
@@ -805,7 +830,14 @@ public class ResumoMensalCohortQueries {
                     hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
             mappings));
 
-    cd.setCompositionString("F1 AND NOT Fx3");
+    cd.addSearch(
+        "Fx4",
+        map(
+            genericCohortQueries.generalSql(
+                "Fx4", ResumoMensalQueries.getF3ExclusionTransferedIn()),
+            mappings));
+
+    cd.setCompositionString("F3 NOT(Fx3 OR Fx4)");
     return cd;
   }
 

@@ -16,11 +16,14 @@ public interface TxNewQueries {
 
     public static final String
         findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard =
-            "SELECT p.patient_id from patient p "
-                + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            "SELECT tr.patient_id from  ("
+                + "SELECT p.patient_id, MIN(obsData.value_datetime) from patient p  "
+                + "INNER JOIN encounter e ON p.patient_id=e.patient_id  "
                 + "INNER JOIN obs obsTrans ON e.encounter_id=obsTrans.encounter_id AND obsTrans.voided=0 AND obsTrans.concept_id=1369 AND obsTrans.value_coded=1065 "
                 + "INNER JOIN obs obsTarv ON e.encounter_id=obsTarv.encounter_id AND obsTarv.voided=0 AND obsTarv.concept_id=6300 AND obsTarv.value_coded=6276 "
-                + "WHERE p.voided=0 AND e.voided=0 AND e.encounter_type=53 AND obsTrans.obs_datetime BETWEEN :startDate AND :endDate AND e.location_id=:location";
+                + "INNER JOIN obs obsData ON e.encounter_id=obsData.encounter_id AND obsData.voided=0 AND obsData.concept_id=23891 "
+                + "WHERE p.voided=0 AND e.voided=0 AND e.encounter_type=53 AND obsData.value_datetime BETWEEN :startDate AND :endDate AND e.location_id=:location GROUP BY p.patient_id "
+                + ") tr GROUP BY tr.patient_id ";
 
     public static final String findPatientsWhoAreNewlyEnrolledOnART =
         "SELECT patient_id FROM "
