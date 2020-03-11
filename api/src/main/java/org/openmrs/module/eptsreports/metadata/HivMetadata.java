@@ -45,7 +45,6 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-
   /**
    * Fila Next pick up concept concept_id=5096
    *
@@ -92,8 +91,8 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
   /**
-   * Concept id = 1705
-   * Reinicio de terapia ou tratamento apos abandono ou recaida 
+   * Concept id = 1705 Reinicio de terapia ou tratamento apos abandono ou recaida
+   *
    * @return
    */
   public Concept getRestartConcept() {
@@ -204,10 +203,7 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  /**
-   * concept id 1066
-   * Generic Answer for a question 
-   */
+  /** concept id 1066 Generic Answer for a question */
   @Override
   public Concept getNoConcept() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.noConceptUuid");
