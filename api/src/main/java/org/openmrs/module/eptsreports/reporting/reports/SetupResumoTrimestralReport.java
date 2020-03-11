@@ -19,9 +19,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.LocationDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.ResumoTrimestralDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -33,10 +35,14 @@ public class SetupResumoTrimestralReport extends EptsDataExportManager {
 
   private ResumoTrimestralDataSetDefinition resumoTrimestralDataSetDefinition;
 
+  private GenericCohortQueries genericCohortQueries;
+
   @Autowired
   public SetupResumoTrimestralReport(
-      ResumoTrimestralDataSetDefinition resumoTrimestralDataSetDefinition) {
+      ResumoTrimestralDataSetDefinition resumoTrimestralDataSetDefinition,
+      GenericCohortQueries genericCohortQueries) {
     this.resumoTrimestralDataSetDefinition = resumoTrimestralDataSetDefinition;
+    this.genericCohortQueries = genericCohortQueries;
   }
 
   @Override
@@ -70,6 +76,8 @@ public class SetupResumoTrimestralReport extends EptsDataExportManager {
     rd.addDataSetDefinition(
         "R",
         mapStraightThrough(resumoTrimestralDataSetDefinition.constructResumoTrimestralDataset()));
+    rd.setBaseCohortDefinition(
+        EptsReportUtils.map(genericCohortQueries.getBaseCohort(), "location=${location}"));
     return rd;
   }
 

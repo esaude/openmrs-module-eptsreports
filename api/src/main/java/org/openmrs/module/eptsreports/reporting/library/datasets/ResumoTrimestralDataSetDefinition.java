@@ -1,19 +1,20 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
+import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsQuarterlyCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
+import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.module.reporting.cohort.definition.AllPatientsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
+import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,34 +39,42 @@ public class ResumoTrimestralDataSetDefinition extends BaseDataSet {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     dsd.setName("Resumo trimestral data set");
     dsd.addParameters(getParameters());
-    dsd.addColumn("A", A, getInitiatedArt(), "");
+    dsd.addDimension("month", mapStraightThrough(getADimension()));
+    addRow(dsd, "A", "A", getAllPatientsIndicator(), getColumns());
     return dsd;
   }
 
-  private Mapped<CohortIndicator> getInitiatedArt() {
-    CohortDefinition cd = getInitiatedArtA();
+  /**
+   * @return Return an indicator of all patients. Make sure the report definition uses a base
+   *     cohort.
+   */
+  private Mapped<CohortIndicator> getAllPatientsIndicator() {
+    CohortDefinition cd = new AllPatientsCohortDefinition();
     CohortIndicator indicator =
         eptsGeneralIndicator.getIndicator(A, mapStraightThrough(cd), getParameters());
     return mapStraightThrough(indicator);
   }
 
-  public EptsQuarterlyCohortDefinition getInitiatedArtA() {
-    EptsQuarterlyCohortDefinition cd = new EptsQuarterlyCohortDefinition();
-    cd.setCohortDefinition(genericCohortQueries.getStartedArtOnPeriod(false, true));
-    cd.addParameter(new Parameter("year", "Year", Integer.class));
-    cd.addParameter(
-        new Parameter("quarter", "Quarter", EptsQuarterlyCohortDefinition.Quarter.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    return cd;
+  private CohortDefinitionDimension getADimension() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.addParameter(ReportingConstants.START_DATE_PARAMETER);
+    dim.addParameter(ReportingConstants.END_DATE_PARAMETER);
+    dim.addParameter(ReportingConstants.LOCATION_PARAMETER);
+    CohortDefinition cd = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    dim.addCohortDefinition(
+        "m1", map(cd, "onOrAfter=${startDate},onOrBefore=${endDate-2m},location=${location}"));
+    dim.addCohortDefinition(
+        "m2", map(cd, "onOrAfter=${startDate+1m},onOrBefore=${endDate-1m},location=${location}"));
+    dim.addCohortDefinition(
+        "m3", map(cd, "onOrAfter=${startDate+2m},onOrBefore=${endDate},location=${location}"));
+    return dim;
   }
 
-  @Override
-  public List<Parameter> getParameters() {
-    ArrayList<Parameter> parameters = new ArrayList<>();
-    parameters.add(new Parameter("year", "Year", Integer.class));
-    parameters.add(
-        new Parameter("quarter", "Quarter", EptsQuarterlyCohortDefinition.Quarter.class));
-    parameters.add(new Parameter("location", "Location", Location.class));
-    return parameters;
+  private List<ColumnParameters> getColumns() {
+    ArrayList<ColumnParameters> cols = new ArrayList<>();
+    cols.add(new ColumnParameters("m1", "First month of quarter", "month=m1", "01"));
+    cols.add(new ColumnParameters("m2", "Second month of quarter", "month=m2", "02"));
+    cols.add(new ColumnParameters("m3", "Third month of quarter", "month=m3", "03"));
+    return cols;
   }
 }
