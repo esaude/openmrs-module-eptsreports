@@ -178,11 +178,11 @@ public class TXTBQueries {
   /**
    * Get patients who sent specimen within date boundaries
    *
-   * @param encounterType
-   * @retrun CohortDefinition
+   * @return String
    */
   public static String getPatientsWhoHaveSentSpecimen(
       int laboratory,
+      int applicationForLaboratoryResearch,
       int fichaClinica,
       int basiloscopiaExam,
       int genexpertTest,
@@ -198,7 +198,7 @@ public class TXTBQueries {
             + "                         ON p.patient_id = e.patient_id "
             + "                 INNER JOIN obs exam "
             + "                         ON e.encounter_id = exam.encounter_id "
-            + "                 WHERE p.voided = 0 "
+            + "           WHERE p.voided = 0 "
             + "                 AND e.voided = 0 "
             + "                 AND exam.voided = 0 "
             + "                 AND e.encounter_type = ${laboratory} "
@@ -214,7 +214,7 @@ public class TXTBQueries {
             + "                 ON p.patient_id = e.patient_id "
             + "                 INNER JOIN obs exam "
             + "                 ON e.encounter_id = exam.encounter_id "
-            + "                 WHERE p.voided = 0 "
+            + "           WHERE p.voided = 0 "
             + "                 AND e.voided = 0 "
             + "                 AND exam.voided = 0 "
             + "                 AND e.encounter_type = ${fichaClinica} "
@@ -230,7 +230,7 @@ public class TXTBQueries {
             + "                 ON p.patient_id = e.patient_id "
             + "                 INNER JOIN obs exam "
             + "                 ON e.encounter_id = exam.encounter_id "
-            + "                 WHERE p.voided = 0 "
+            + "           WHERE p.voided = 0 "
             + "                 AND e.voided = 0 "
             + "                 AND exam.voided = 0 "
             + "                 AND e.encounter_type = ${fichaClinica} "
@@ -238,7 +238,7 @@ public class TXTBQueries {
             + "                 AND (exam.value_coded = ${negative} OR exam.value_coded = ${positive}) "
             + "                 AND e.encounter_datetime >= :startDate "
             + "                 AND e.encounter_datetime <= :endDate "
-            + "                 GROUP BY p.patient_id "
+            + "           GROUP BY p.patient_id "
             + "       UNION "
             + "       SELECT p.patient_id "
             + "           FROM  patient p "
@@ -246,7 +246,7 @@ public class TXTBQueries {
             + "                 ON p.patient_id = e.patient_id "
             + "                 INNER JOIN obs exam "
             + "                 ON e.encounter_id = exam.encounter_id "
-            + "                 WHERE p.voided = 0 "
+            + "           WHERE p.voided = 0 "
             + "                 AND e.voided = 0 "
             + "                 AND exam.voided = 0 "
             + "                 AND e.encounter_type = ${fichaClinica} "
@@ -254,7 +254,7 @@ public class TXTBQueries {
             + "                 AND (exam.value_coded = ${negative} OR exam.value_coded = ${positive}) "
             + "                 AND e.encounter_datetime >= :startDate "
             + "                 AND e.encounter_datetime <= :endDate "
-            + "                 GROUP BY p.patient_id "
+            + "           GROUP BY p.patient_id "
             + "       UNION "
             + "       SELECT p.patient_id "
             + "           FROM  patient p "
@@ -262,25 +262,145 @@ public class TXTBQueries {
             + "                 ON p.patient_id = e.patient_id "
             + "                 INNER JOIN obs exam "
             + "                 ON e.encounter_id = exam.encounter_id "
-            + "                 WHERE p.voided = 0 "
+            + "           WHERE p.voided = 0 "
             + "                 AND e.voided = 0 "
             + "                 AND exam.voided = 0 "
             + "                 AND e.encounter_type = ${fichaClinica} "
-            + "                 AND exam.concept_id = 23722 "
+            + "                 AND exam.concept_id = ${applicationForLaboratoryResearch} "
             + "                 AND (exam.value_coded = ${genexpertTest} OR exam.value_coded = ${cultureTest} OR exam.value_coded = ${tbLamTest}) "
             + "                 AND e.encounter_datetime >= :startDate "
             + "                 AND e.encounter_datetime <= :endDate "
-            + "                 GROUP BY p.patient_id "
+            + "           GROUP BY p.patient_id "
             + ") specimen";
 
     Map<String, Integer> valuesMap = new HashMap<>();
-    valuesMap.put("encounterType", laboratory);
-    valuesMap.put("encounterType", fichaClinica);
-    valuesMap.put("encounterType", basiloscopiaExam);
-    valuesMap.put("encounterType", genexpertTest);
-    valuesMap.put("encounterType", tbLamTest);
-    valuesMap.put("encounterType", positive);
-    valuesMap.put("encounterType", negative);
+    valuesMap.put("laboratory", laboratory);
+    valuesMap.put("applicationForLaboratoryResearch", applicationForLaboratoryResearch);
+    valuesMap.put("fichaClinica", fichaClinica);
+    valuesMap.put("basiloscopiaExam", basiloscopiaExam);
+    valuesMap.put("genexpertTest", genexpertTest);
+    valuesMap.put("tbLamTest", tbLamTest);
+    valuesMap.put("positive", positive);
+    valuesMap.put("negative", negative);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
+  }
+
+  /**
+   * Get patients who have a GeneXpert Positivo or Negativo registered in the investigations - lab
+   * results - ficha clinica - mastercard OR Get patients who have a GeneXpert request registered in
+   * the investigations - lab results - ficha clinica - mastercard
+   *
+   * @return String
+   */
+  public static String getPatientsWhoHaveGeneXpert(
+      int applicationForLaboratoryResearch,
+      int fichaClinica,
+      int genexpertTest,
+      int positive,
+      int negative) {
+    String query =
+        "SELECT genexpert.patient_id "
+            + "FROM   ( "
+            + "       SELECT p.patient_id "
+            + "           FROM  patient p "
+            + "                 INNER JOIN encounter e "
+            + "                 ON p.patient_id = e.patient_id "
+            + "                 INNER JOIN obs exam "
+            + "                 ON e.encounter_id = exam.encounter_id "
+            + "           WHERE p.voided = 0 "
+            + "                 AND e.voided = 0 "
+            + "                 AND exam.voided = 0 "
+            + "                 AND e.encounter_type = ${fichaClinica} "
+            + "                 AND exam.concept_id = ${genexpertTest} "
+            + "                 AND (exam.value_coded = ${negative} OR exam.value_coded = ${positive}) "
+            + "                 AND e.encounter_datetime >= :startDate "
+            + "                 AND e.encounter_datetime <= :endDate "
+            + "           GROUP BY p.patient_id "
+            + "       UNION "
+            + "       SELECT p.patient_id "
+            + "           FROM  patient p "
+            + "                 INNER JOIN encounter e "
+            + "                 ON p.patient_id = e.patient_id "
+            + "                 INNER JOIN obs exam "
+            + "                 ON e.encounter_id = exam.encounter_id "
+            + "           WHERE p.voided = 0 "
+            + "                 AND e.voided = 0 "
+            + "                 AND exam.voided = 0 "
+            + "                 AND e.encounter_type = ${fichaClinica} "
+            + "                 AND exam.concept_id = ${applicationForLaboratoryResearch} "
+            + "                 AND exam.value_coded = ${genexpertTest} "
+            + "                 AND e.encounter_datetime >= :startDate "
+            + "                 AND e.encounter_datetime <= :endDate "
+            + "           GROUP BY p.patient_id "
+            + ") genexpert";
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("applicationForLaboratoryResearch", applicationForLaboratoryResearch);
+    valuesMap.put("fichaClinica", fichaClinica);
+    valuesMap.put("genexpertTest", genexpertTest);
+    valuesMap.put("positive", positive);
+    valuesMap.put("negative", negative);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
+  }
+
+  /**
+   * Get patients who have a Basiloscopia Positivo or Negativo registered in the laboratory form
+   * encounter type 13 Except patients identified in GeneXpert
+   *
+   * @return String
+   */
+  public static String getPatientsWhoHaveBasiloscopiaAndNotGeneXpert(
+      int laboratory,
+      int fichaClinica,
+      int basiloscopiaExam,
+      int genexpertTest,
+      int positive,
+      int negative) {
+    String query =
+        "SELECT smearmicroscopy.patient_id "
+            + "FROM ( "
+            + "    SELECT p.patient_id "
+            + "    FROM patient p "
+            + "        INNER JOIN encounter e "
+            + "        ON p.patient_id = e.patient_id "
+            + "        INNER JOIN obs exam "
+            + "        ON e.encounter_id = exam.encounter_id "
+            + "    WHERE p.voided = 0 "
+            + "        AND e.voided = 0 "
+            + "        AND exam.voided = 0 "
+            + "        AND e.encounter_type = ${laboratory} "
+            + "        AND exam.concept_id = ${basiloscopiaExam} "
+            + "        AND (exam.value_coded = ${negative} OR exam.value_coded = ${positive}) "
+            + "        AND e.encounter_datetime >= :startDate "
+            + "        AND e.encounter_datetime <= :endDate "
+            + "    GROUP BY p.patient_id "
+            + ") smearmicroscopy "
+            + "WHERE smearmicroscopy.patient_id NOT IN (SELECT p.patient_id "
+            + "                                         FROM patient p "
+            + "                                             INNER JOIN encounter e "
+            + "                                             ON p.patient_id = e.patient_id "
+            + "                                             INNER JOIN obs exam "
+            + "                                             ON e.encounter_id = exam.encounter_id "
+            + "                                         WHERE p.voided = 0 "
+            + "                                             AND e.voided = 0 "
+            + "                                             AND exam.voided = 0 "
+            + "                                             AND e.encounter_type = ${fichaClinica} "
+            + "                                             AND exam.concept_id = ${genexpertTest} "
+            + "                                             AND (exam.value_coded = ${negative} OR exam.value_coded = ${positive}) "
+            + "                                             AND e.encounter_datetime >= :startDate "
+            + "                                             AND e.encounter_datetime <= :endDate "
+            + "                                         GROUP BY p.patient_id) "
+            + "GROUP BY smearmicroscopy.patient_id";
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("laboratory", laboratory);
+    valuesMap.put("fichaClinica", fichaClinica);
+    valuesMap.put("basiloscopiaExam", basiloscopiaExam);
+    valuesMap.put("genexpertTest", genexpertTest);
+    valuesMap.put("positive", positive);
+    valuesMap.put("negative", negative);
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     return sub.replace(query);
   }

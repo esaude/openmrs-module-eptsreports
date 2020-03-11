@@ -368,6 +368,7 @@ public class TXTBCohortQueries {
             "specimen-sent",
             TXTBQueries.getPatientsWhoHaveSentSpecimen(
                 hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+                hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                 hivMetadata.getExameBasiloscopiaConcept().getConceptId(),
                 hivMetadata.getTbGenexpertTest().getConceptId(),
@@ -379,7 +380,48 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * BR-8 Specimen Sent Get patients from denominator AND tb_screened AND specimen_sent
+   * Get patients who have a GeneXpert Positivo or Negativo registered in the investigations - Ficha
+   * Clinica - Mastercard OR have a GeneXpert request registered in the investigations - Ficha
+   * Clinica - Mastercard
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getGenExpert() {
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "genExpert",
+            TXTBQueries.getPatientsWhoHaveGeneXpert(
+                hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getTbGenexpertTest().getConceptId(),
+                hivMetadata.getPositiveConcept().getConceptId(),
+                hivMetadata.getNegativeConcept().getConceptId()));
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  /**
+   * Get patients who have a Basiloscopia And Not GeneXpert registered
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getBasiloscopiaAndNotGeneXpert() {
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "basiloscopiaNotGeneXpert",
+            TXTBQueries.getPatientsWhoHaveBasiloscopiaAndNotGeneXpert(
+                hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getExameBasiloscopiaConcept().getConceptId(),
+                hivMetadata.getTbGenexpertTest().getConceptId(),
+                hivMetadata.getPositiveConcept().getConceptId(),
+                hivMetadata.getNegativeConcept().getConceptId()));
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  /**
+   * BR-8 Specimen Sent - Get patients from denominator AND tb_screened AND specimen_sent
    *
    * @return CohortDefinition
    */
@@ -394,6 +436,46 @@ public class TXTBCohortQueries {
         "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
     addGeneralParameters(definition);
     definition.setCompositionString("denominator AND specimen-sent AND positive-screening");
+    return definition;
+  }
+
+  /**
+   * BR-9 GenExpert MTB/RIF - Get patients from denominator AND tb_screened AND genexpert
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition genExpert() {
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("genExpert()");
+    definition.addSearch(
+        "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
+    definition.addSearch("genExpert", EptsReportUtils.map(getGenExpert(), generalParameterMapping));
+    definition.addSearch(
+        "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
+    addGeneralParameters(definition);
+    definition.setCompositionString("denominator AND genExpert AND positive-screening");
+    return definition;
+  }
+
+  /**
+   * BR-10 Get patients who have a Basiloscopia Positivo or Negativo registered in the laboratory
+   * form encounter type 13 Except patients identified in GeneXpert
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition basiloscopiaAndNotGeneXpert() {
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("genExpert()");
+    definition.addSearch(
+        "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
+    definition.addSearch(
+        "basiloscopiaAndNotGeneXpert",
+        EptsReportUtils.map(getBasiloscopiaAndNotGeneXpert(), generalParameterMapping));
+    definition.addSearch(
+        "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
+    addGeneralParameters(definition);
+    definition.setCompositionString(
+        "denominator AND basiloscopiaAndNotGeneXpert AND positive-screening");
     return definition;
   }
 }
