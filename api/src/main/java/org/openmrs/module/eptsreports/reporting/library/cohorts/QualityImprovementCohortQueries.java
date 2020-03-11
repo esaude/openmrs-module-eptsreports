@@ -65,7 +65,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             commonMetadata.getStartDrugsConcept().getConceptId(),
-            hivMetadata.getARVStartDate().getConceptId(),
+            hivMetadata.getARVStartDateConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getPtvEtvProgram().getProgramId(),
             commonMetadata.getNumberOfWeeksPregnant().getConceptId(),
@@ -220,7 +220,7 @@ public class QualityImprovementCohortQueries {
                 hivMetadata.getARVPlanConcept().getConceptId(),
                 commonMetadata.getStartDrugsConcept().getConceptId(),
                 hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata.getARVStartDate().getConceptId(),
+                hivMetadata.getARVStartDateConcept().getConceptId(),
                 commonMetadata.getYesConcept().getConceptId()));
 
     return sqlCohortDefinition;
@@ -905,7 +905,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             commonMetadata.getStartDrugsConcept().getConceptId(),
-            hivMetadata.getARVStartDate().getConceptId(),
+            hivMetadata.getARVStartDateConcept().getConceptId(),
             hivMetadata.getHIVCareProgram().getProgramId(),
             hivMetadata.getARTProgram().getProgramId()));
 
@@ -963,7 +963,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             commonMetadata.getStartDrugsConcept().getConceptId(),
-            hivMetadata.getARVStartDate().getConceptId(),
+            hivMetadata.getARVStartDateConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata
                 .getPateintTransferedFromOtherFacilityWorkflowState()
@@ -1030,7 +1030,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             commonMetadata.getStartDrugsConcept().getConceptId(),
-            hivMetadata.getARVStartDate().getConceptId(),
+            hivMetadata.getARVStartDateConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId()));
 
     return sqlCohortDefinition;
@@ -1095,7 +1095,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             commonMetadata.getStartDrugsConcept().getConceptId(),
-            hivMetadata.getARVStartDate().getConceptId(),
+            hivMetadata.getARVStartDateConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getCoucelingActivityConcept().getConceptId(),
             hivMetadata.getPrevencaoPositivaInicialEncounterType().getEncounterTypeId(),
@@ -1163,7 +1163,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             commonMetadata.getStartDrugsConcept().getConceptId(),
-            hivMetadata.getARVStartDate().getConceptId(),
+            hivMetadata.getARVStartDateConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId()));
 
     return sqlCohortDefinition;
@@ -1224,7 +1224,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             commonMetadata.getStartDrugsConcept().getConceptId(),
-            hivMetadata.getARVStartDate().getConceptId(),
+            hivMetadata.getARVStartDateConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getCoucelingActivityConcept().getConceptId(),
             hivMetadata.getPrevencaoPositivaInicialEncounterType().getEncounterTypeId(),
@@ -1393,7 +1393,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             hivMetadata.getStartDrugsConcept().getConceptId(),
-            hivMetadata.getARVStartDate().getConceptId(),
+            hivMetadata.getARVStartDateConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId()));
 
     return sqlCohortDefinition;
@@ -1406,7 +1406,7 @@ public class QualityImprovementCohortQueries {
   private CohortDefinition getPatientsInitializedTARVRegisteredInConceptStartDateInFollowingForm() {
     DateObsCohortDefinition cd = new DateObsCohortDefinition();
     cd.setName("patientsInitializedTARVRegisteredInConceptStartDateInFollowingForm");
-    cd.setQuestion(hivMetadata.getARVStartDate());
+    cd.setQuestion(hivMetadata.getARVStartDateConcept());
     cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
 
     List<EncounterType> encounterTypes = new ArrayList<EncounterType>();
@@ -2200,7 +2200,7 @@ public class QualityImprovementCohortQueries {
                 hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
                 hivMetadata.getARVPlanConcept().getConceptId(),
                 commonMetadata.getStartDrugsConcept().getConceptId(),
-                hivMetadata.getARVStartDate().getConceptId(),
+                hivMetadata.getARVStartDateConcept().getConceptId(),
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata.getHivViralLoadConcept().getConceptId()));
 
@@ -2278,7 +2278,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             hivMetadata.getStartDrugsConcept().getConceptId(),
-            hivMetadata.getARVStartDate().getConceptId(),
+            hivMetadata.getARVStartDateConcept().getConceptId(),
             hivMetadata.getCD4AbsoluteConcept().getConceptId(),
             hivMetadata.getCD4AbsoluteOBSConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId()));
@@ -2301,7 +2301,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPlanConcept().getConceptId(),
             hivMetadata.getStartDrugsConcept().getConceptId(),
-            hivMetadata.getARVStartDate().getConceptId(),
+            hivMetadata.getARVStartDateConcept().getConceptId(),
             hivMetadata.getCD4AbsoluteConcept().getConceptId(),
             hivMetadata.getCD4AbsoluteOBSConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),
