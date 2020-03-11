@@ -92,7 +92,6 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
   /**
-
    * Concept id = 1705
    * Reinicio de terapia ou tratamento apos abandono ou recaida 
 
@@ -206,6 +205,7 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+
   /**
    * concept id 1066
    * Generic Answer for a question 
@@ -281,8 +281,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   * concept_id = 1366
-   * patient is dead
+   * concept_id = 1366 patient is dead
+   *
    * @return
    */
   public Concept getPatientHasDiedConcept() {
@@ -1473,7 +1473,7 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(
         Context.getAdministrationService().getGlobalProperty("eptsreports.bPlusConceptUuid"));
   }
-
+  
   // concept_id = 6275
   public Concept getPreTarvConcept() {
     String uuid =
