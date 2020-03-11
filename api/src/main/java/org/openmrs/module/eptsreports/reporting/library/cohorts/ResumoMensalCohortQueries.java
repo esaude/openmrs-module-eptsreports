@@ -1387,7 +1387,7 @@ public class ResumoMensalCohortQueries {
 
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
 
-    String mappingsOnDate = "onDate=${endDate},location=${location}";
+    String mappingsOnDate = "onOrBefore=${endDate},location=${location}";
     String mappingsOnOrBeforeLocationList = "onOrBefore=${endDate},locationList=${location}";
 
     cd.addSearch("startedArt", map(startedArt, mappings));
