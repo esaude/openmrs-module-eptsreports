@@ -33,8 +33,7 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
     // final Date reportingEndDate = DateUtil.getDateTime(2018, 9, 20);
 
     final CohortDefinition txNewCompositionCohort =
-        this.pvlsCohortQueries
-            .findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months();
+        this.resumoMensalQueries.getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1();
 
     final Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), startDate);

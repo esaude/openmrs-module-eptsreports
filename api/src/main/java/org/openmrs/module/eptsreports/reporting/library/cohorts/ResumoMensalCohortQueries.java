@@ -44,8 +44,12 @@ public class ResumoMensalCohortQueries {
   private GenericCohortQueries genericCohortQueries;
   @Autowired private TxNewCohortQueries txNewCohortQueries;
 
-  private static int TRASFERED_FROM_STATE = 28;
+  private static int TRASFERED_FROM_STATE_PRE_TARV = 28;
+  private static int TRASFERED_FROM_STATE_TARV = 29;
+
   private static int PRE_TARV_CONCEPT = 6275;
+  private static int TARV_CONCEPT = 6276;
+  private static int ENROLMENT_DATE_CONCEPT = 23891;
 
   @Autowired
   public ResumoMensalCohortQueries(
@@ -88,12 +92,16 @@ public class ResumoMensalCohortQueries {
                 ResumoMensalQueries
                     .getPatientsTransferredFromAnotherHealthFacilityDuringTheCurrentMonth(
                         hivMetadata.getHIVCareProgram().getId(),
-                        TRASFERED_FROM_STATE,
+                        hivMetadata.getARTProgram().getId(),
+                        TRASFERED_FROM_STATE_PRE_TARV,
+                        TRASFERED_FROM_STATE_TARV,
                         hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
                         hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
                         PRE_TARV_CONCEPT,
+                        TARV_CONCEPT,
                         hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
-                        hivMetadata.getPatientFoundYesConcept().getConceptId())),
+                        hivMetadata.getPatientFoundYesConcept().getConceptId(),
+                        ENROLMENT_DATE_CONCEPT)),
             mappings));
 
     definition.setCompositionString("PRETARV NOT TRASFERED");
@@ -134,16 +142,20 @@ public class ResumoMensalCohortQueries {
         "TRASFERED",
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
-                "patientsTransferredFromAnotherHealthFacilityDuringTheCurrentStartDateEndDate",
+                "patientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2",
                 ResumoMensalQueries
                     .getPatientsTransferredFromAnotherHealthFacilityDuringTheCurrentStartDateEndDate(
                         hivMetadata.getHIVCareProgram().getId(),
-                        TRASFERED_FROM_STATE,
+                        hivMetadata.getARTProgram().getId(),
+                        TRASFERED_FROM_STATE_PRE_TARV,
+                        TRASFERED_FROM_STATE_TARV,
                         hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
                         hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
                         PRE_TARV_CONCEPT,
+                        TARV_CONCEPT,
                         hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
-                        hivMetadata.getPatientFoundYesConcept().getConceptId())),
+                        hivMetadata.getPatientFoundYesConcept().getConceptId(),
+                        ENROLMENT_DATE_CONCEPT)),
             mappings));
 
     definition.setCompositionString("PRETARV NOT TRASFERED");
