@@ -83,7 +83,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("        ON p.patient_id=pp.patient_id ");
     q.append("    JOIN patient_state ps  ");
     q.append("        ON ps.patient_program_id=pp.patient_program_id ");
-    q.append("WHERE  pp.program_id = :artProgram ");
+    q.append("WHERE  pp.program_id = :programEnrolled ");
     q.append("    AND ps.state = :transferredInState ");
     if (cd.getOnOrAfter() == null) {
       q.append("     AND ps.start_date < :onOrBefore ");
@@ -108,7 +108,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
           "Answer for TYPE OF PATIENT TRANSFERRED FROM concept cannot be null");
     }
     q.addParameter("answer", typeOfPatientTransferredFrom);
-    q.addParameter("artProgram", programEnrolled);
+    q.addParameter("programEnrolled", programEnrolled);
     q.addParameter("transferredInState", programWorkflowState);
     q.addParameter("location", cd.getLocation());
     q.addParameter("onOrAfter", cd.getOnOrAfter());
