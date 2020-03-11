@@ -562,13 +562,15 @@ public class ResumoMensalCohortQueries {
     cd.addSearch("B2A", map(transferredIn, "onOrBefore=${startDate},location=${location}"));
 
     cd.addSearch("B5A", map(transferredOut, "onOrBefore=${startDate},location=${location}"));
+    
     cd.addSearch(
         "B6A", map(suspended, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "B7A",
-        map(
-            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A(),
-            "location=${location},onOrBefore=${startDate}"));
+      
+    cd.addSearch("B7A",
+                    map(
+                        getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A(),
+                        "location=${location},onOrBefore=${startDate}"));
+
     cd.addSearch("B8A", map(died, encounterWithCodedObsMappings));
 
     cd.setCompositionString("B10 OR B2A AND NOT (B5A OR B6A OR B7A OR B8A)");
@@ -794,7 +796,7 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("locationList", "Location", Location.class));
     cd.addEncounterType(hivMetadata.getMasterCardEncounterType());
-    cd.setQuestion(hivMetadata.getARVStartDate());
+    cd.setQuestion(hivMetadata.getARVStartDateConcept());
     cd.setOperator1(RangeComparator.GREATER_EQUAL);
     cd.setOperator2(RangeComparator.LESS_EQUAL);
     return cd;
