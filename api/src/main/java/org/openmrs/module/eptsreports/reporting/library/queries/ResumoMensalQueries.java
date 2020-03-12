@@ -145,9 +145,9 @@ public class ResumoMensalQueries {
     String query =
         "SELECT p.patient_id "
             + "FROM patient p "
-            + " JOIN encounter e "
-            + " ON p.patient_id = e.patient_id "
-            + " JOIN obs o "
+            + " INNER JOIN encounter e "
+            + " 	ON p.patient_id = e.patient_id "
+            + " INNER JOIN obs o "
             + " ON o.encounter_id = e.encounter_id "
             + " WHERE e.location_id = :location AND e.encounter_type = ${adultoSeguimentoEncounterType} AND o.concept_id = ${tbTreatmentPlanConcept} "
             + " AND e.encounter_datetime BETWEEN :startDate AND :endDate "
@@ -174,10 +174,21 @@ public class ResumoMensalQueries {
   public static String getPatientsWithTBScreening(
       int encounterType, int tbScreening, int yesConcept, int noConcept) {
     String query =
-        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
-            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
-            + " AND e.location_id = :location AND e.encounter_datetime BETWEEN :startDate AND :endDate AND e.encounter_type=%d "
-            + " AND o.concept_id=%d AND (o.value_coded=%d OR o.value_coded=%d)";
+        " SELECT p.patient_id "
+        + " FROM patient p "
+        + " 	INNER  JOIN encounter e "
+        + "			ON p.patient_id=e.patient_id "
+        + "		INNER  JOIN obs o "
+        + "			ON e.encounter_id=o.encounter_id "
+        + " WHERE p.voided = 0 "
+        + "		AND e.voided = 0 "
+        + "		AND o.voided = 0 "
+            + " AND e.location_id = :location "
+            + "	AND e.encounter_datetime "
+            + "		BETWEEN :startDate AND :endDate "
+            + " AND e.encounter_type=%d "
+            + " AND o.concept_id=%d "
+            + "	AND (o.value_coded=%d OR o.value_coded=%d)";
     return String.format(query, encounterType, tbScreening, yesConcept, noConcept);
   }
 
