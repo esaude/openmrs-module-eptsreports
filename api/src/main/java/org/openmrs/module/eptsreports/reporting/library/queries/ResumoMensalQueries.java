@@ -49,7 +49,7 @@ public class ResumoMensalQueries {
             + "(SELECT results.patient_id, "
             + "       Min(results.enrollment_date) enrollment_date "
             + "FROM   (SELECT p.patient_id, "
-            + "               e.encounter_datetime AS enrollment_date "
+            + "               o.value_datetime AS enrollment_date "
             + "        FROM   patient p "
             + "               INNER JOIN encounter e "
             + "                       ON p.patient_id = e.patient_id "
@@ -82,8 +82,8 @@ public class ResumoMensalQueries {
             + "               AND enc.encounter_type IN (${ARVAdultInitialEncounterType},${ARVPediatriaInitialEncounterType}) "
             + "               AND enc.location_id =:location "
             + "        ORDER  BY enrollment_date ASC) results "
-            + "        WHERE results.enrollment_date BETWEEN :startDate AND :endDate "
-            + "     GROUP  BY results.patient_id) res  ";
+            + "     GROUP  BY results.patient_id) res "
+            + "     WHERE res.enrollment_date BETWEEN :startDate AND :endDate ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     return stringSubstitutor.replace(query);
@@ -377,16 +377,12 @@ public class ResumoMensalQueries {
    */
   public static String getF3Exclusion(int encounterType) {
     String query =
-        " SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN ( "
-            + " SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM encounter enc JOIN patient pat "
-            + " ON enc.patient_id=pat.patient_id WHERE enc.encounter_type=%d AND enc.location_id=:location "
-            + " AND enc.encounter_datetime BETWEEN :startDate AND :endDate AND pat.voided=0 AND enc.voided=0) ed "
-            + " ON p.patient_id=ed.patient_id"
+        " SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id "
             + " WHERE e.encounter_type=%d AND e.location_id=:location "
-            + " AND e.encounter_datetime BETWEEN "
+            + " AND e.encounter_datetime >= "
             + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
-            + " AND ed.endDate "
-            + "AND p.voided=0 AND e.voided=0 ";
+            + " AND e.encounter_datetime < :startDate "
+            + " AND p.voided=0 AND e.voided=0 ";
     return String.format(query, encounterType, encounterType);
   }
 

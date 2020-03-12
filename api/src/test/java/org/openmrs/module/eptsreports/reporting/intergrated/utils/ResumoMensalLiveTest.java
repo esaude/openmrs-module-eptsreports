@@ -43,7 +43,7 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
     CohortDefinition cd =
         resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2();
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd);
-    assertEquals(4, evaluatedCohort.size());
+    assertEquals(93, evaluatedCohort.size());
     assertTrue(evaluatedCohort.getMemberIds().containsAll(patients));
   }
 
@@ -173,7 +173,7 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
   @Test
   public void C2() throws EvaluationException {
     CohortDefinition cd =
-        resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTPI();
+        resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTpiC2();
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd);
     assertEquals(1, evaluatedCohort.size());
     assertTrue(evaluatedCohort.contains(1013));
