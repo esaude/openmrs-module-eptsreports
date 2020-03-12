@@ -401,7 +401,7 @@ public class EPTSCalculationService {
 
   public CalculationResultMap allObservations(
       Concept question,
-      Concept answer,
+      List<Concept> answers,
       List<EncounterType> encounterTypes,
       Location location,
       Collection<Integer> cohort,
@@ -410,7 +410,7 @@ public class EPTSCalculationService {
     definition.setName("all obs");
     definition.setEncounterTypeList(encounterTypes);
     definition.setQuestion(question);
-    definition.setValueCodedList(Arrays.asList(answer));
+    definition.setValueCodedList(answers);
     definition.setLocationList(Arrays.asList(location));
     definition.setWhich(TimeQualifier.ANY);
     return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);

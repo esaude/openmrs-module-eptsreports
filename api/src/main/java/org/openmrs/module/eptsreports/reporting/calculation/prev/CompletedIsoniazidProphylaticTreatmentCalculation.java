@@ -14,7 +14,6 @@ package org.openmrs.module.eptsreports.reporting.calculation.prev;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -47,20 +46,15 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
 
   private static final int TREATMENT_BEGIN_PERIOD_OFFSET = -6;
 
-  private static final int NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED = 6;
+  private static final int NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED = 5;
 
-  private static final int MONTHS_TO_CHECK_FOR_ISONIAZID_USAGE = 7;
+  private static final int MONTHS_TO_CHECK_FOR_ISONIAZID_USAGE = 6;
 
   private static final int MINIMUM_DURATION_IN_DAYS = 173;
 
   private static final String ON_OR_AFTER = "onOrAfter";
 
   private static final String ON_OR_BEFORE = "onOrBefore";
-
-  private enum Priority {
-    MIN,
-    MAX
-  };
 
   @Autowired private HivMetadata hivMetadata;
 
@@ -139,7 +133,10 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
       CalculationResultMap isoniazidUsageObservationsList =
           ePTSCalculationService.allObservations(
               hivMetadata.getIsoniazidUsageConcept(),
-              hivMetadata.getYesConcept(),
+              Arrays.asList(
+                  hivMetadata.getStartDrugs(),
+                  hivMetadata.getPatientFoundYesConcept(),
+                  hivMetadata.getContinueRegimen()),
               consultationEncounterTypes,
               location,
               cohort,
@@ -154,38 +151,38 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
             EptsCalculationUtils.resultForPatient(endProfilaxiaObservations, patientId);
         Obs endDrugsObs =
             EptsCalculationUtils.resultForPatient(completedDrugsObservations, patientId);
-        /**
-         * If We can't find a startDate from Ficha de Seguimento (adults and children) / Ficha
-         * Resumo or Ficha Clinica-MasterCard, just move to the next patient. OR If We can't find an
-         * endDate from Ficha de Seguimento (adults and children) / Ficha Resumo or Ficha
-         * Clinica-MasterCard, just move to the next patient
-         */
-        if ((startProfilaxiaObs == null && startDrugsObs == null)
-            || (endProfilaxiaObs == null && endDrugsObs == null)) {
-          continue;
-        }
-        Date startDate =
-            getMinOrMaxObsDate(
-                startProfilaxiaObs,
-                startDrugsObs,
-                Priority.MIN); // Gets the earliest drugs start date using both sources
-        Date endDate =
-            getMinOrMaxObsDate(
-                endProfilaxiaObs,
-                endDrugsObs,
-                Priority.MAX); // Gets the most recent complete drugs date using both sources
+        Date startDate = getDateFromObs(startProfilaxiaObs);
+        Date endDate = getDateFromObs(endProfilaxiaObs);
+
+        // this is because user can type startdate after enddate
         boolean inconsistent =
             (startDate != null && endDate != null && startDate.compareTo(endDate) > 0)
                 || (startDate == null && endDate != null);
-        if (!inconsistent && startDate != null) {
-          boolean completed = startDate != null && endDate != null;
-          if (completed) {
-            int profilaxiaDuration =
-                Days.daysIn(new Interval(startDate.getTime(), endDate.getTime())).getDays();
-            if (profilaxiaDuration >= MINIMUM_DURATION_IN_DAYS) {
-              map.put(patientId, new BooleanResult(true, this));
-            }
+
+        Date[] dateBoundaries =
+            evaluateEarliestDateAndLatestDate(startDate, startDrugsObs, endDate, endDrugsObs);
+
+        // if no  earliestDate and  latestDate is picked the the patient is skipped
+        if (dateBoundaries[0] == null && dateBoundaries[1] == null) {
+          continue;
+        }
+        // if the  patient has startdate and not  enddate
+        if (dateBoundaries[0] != null && dateBoundaries[1] == null) {
+          int yesAnswers =
+              calculateNumberOfYesAnswers(isoniazidUsageObservationsList, patientId, startDate);
+          if (yesAnswers >= NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED) {
+            map.put(patientId, new BooleanResult(true, this));
           }
+          continue;
+        }
+
+        int profilaxiaDuration12 =
+            Days.daysIn(new Interval(dateBoundaries[0].getTime(), dateBoundaries[1].getTime()))
+                .getDays();
+                if (profilaxiaDuration12 >= MINIMUM_DURATION_IN_DAYS) {
+          map.put(patientId, new BooleanResult(true, this));
+          continue;
+        } else {
           int yesAnswers =
               calculateNumberOfYesAnswers(isoniazidUsageObservationsList, patientId, startDate);
           if (yesAnswers >= NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED) {
@@ -193,11 +190,8 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
           }
         }
       }
-      return map;
-    } else {
-      throw new IllegalArgumentException(
-          String.format("Parameters %s and %s must be set", ON_OR_AFTER, ON_OR_BEFORE));
     }
+    return map;
   }
 
   private int calculateNumberOfYesAnswers(
@@ -209,7 +203,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
     Date isoniazidUsageEndDate = getIsoniazidUsageEndDate(startDate);
     for (Obs obs : isoniazidUsageObservations) {
       Date date = obs.getObsDatetime();
-      if (date.compareTo(startDate) >= 0 && date.compareTo(isoniazidUsageEndDate) <= 0) {
+      if (date.compareTo(startDate) > 0 && date.compareTo(isoniazidUsageEndDate) <= 0) {
         count++;
       }
     }
@@ -229,20 +223,132 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
     }
     return null;
   }
-  /**
-   * @param a The start drugs or end drugs Obs from Ficha de Seguimento (adults and children) or
-   *     Ficha Resumo
-   * @param b The start drugs or end drugs Obs from from Ficha Clinica-MasterCard
-   * @param priority MIN to retrieve the start drugs date, MAX to retrieve the end drugs date
-   * @return The earliest or most recent date according to the priority parameter
-   */
-  private Date getMinOrMaxObsDate(Obs a, Obs b, Priority priority) {
-    if (a != null && b != null) {
 
-      List<Date> dates = Arrays.asList(getDateFromObs(a), b.getObsDatetime());
-      return (priority == Priority.MIN) ? Collections.min(dates) : Collections.max(dates);
-    } else {
-      return (getDateFromObs(a) != null) ? getDateFromObs(a) : b.getObsDatetime();
+  private Date[] evaluateEarliestDateAndLatestDate(
+      Date startDate, Obs startDrugsObs, Date endDate, Obs endDrugsObs) {
+
+    Date earliestDate = null;
+    Date latestDate = null;
+    /*
+     * Assuming that the startdate of the old spec is not null and the startdate of
+     * the new spec is null and enddate of the old spec is not null and the enddate
+     * of the new spec is null
+     */
+
+    if ((startDate != null && startDrugsObs == null) && (endDate != null && endDrugsObs == null)) {
+      earliestDate = startDate;
+      latestDate = endDate;
     }
+
+    /*
+     * Assuming that the startdate of the old spec is not null and the startdate of
+     * the new spec is null and enddate of the old spec is null and the enddate of
+     * the new spec is not null
+     */
+
+    if ((startDate != null && startDrugsObs == null) && (endDate == null && endDrugsObs != null)) {
+      earliestDate = startDate;
+      latestDate = endDrugsObs.getEncounter().getEncounterDatetime();
+    }
+
+    /*
+     * Assuming that the startdate of the old spec is null and the startdate of the
+     * new spec is not null and enddate of the old spec is not null and the enddate
+     * of the new spec is null
+     */
+    if ((startDate == null && startDrugsObs != null) && (endDate != null && endDrugsObs == null)) {
+      earliestDate = startDrugsObs.getEncounter().getEncounterDatetime();
+      latestDate = endDate;
+    }
+
+    /*
+     * Assuming that the startdate of the old spec is null and the startdate of the
+     * new spec is not null and enddate of the old spec is null and the enddate of
+     * the new spec is not null
+     */
+
+    if ((startDate == null && startDrugsObs != null) && (endDate == null && endDrugsObs != null)) {
+      earliestDate = startDrugsObs.getEncounter().getEncounterDatetime();
+      latestDate = endDrugsObs.getEncounter().getEncounterDatetime();
+    }
+    /*
+     * Assuming that the 2 startdates are not null and the old spec enddate is not
+     * null for the startdates we pick the earliest
+     */
+    if ((startDate != null && startDrugsObs != null) && (endDate != null && endDrugsObs == null)) {
+      if (startDate.compareTo(startDrugsObs.getEncounter().getEncounterDatetime()) > 0) {
+        earliestDate = startDrugsObs.getEncounter().getEncounterDatetime();
+      } else {
+        earliestDate = startDate;
+      }
+      latestDate = endDate;
+    }
+    /*
+     * Assuming that the 2 startdates are not null and the new spec enddate is not
+     * null for the startdates we pick the earliest
+     */
+    if ((startDate != null && startDrugsObs != null) && (endDate == null && endDrugsObs != null)) {
+      if (startDate.compareTo(startDrugsObs.getEncounter().getEncounterDatetime()) > 0) {
+        earliestDate = startDrugsObs.getEncounter().getEncounterDatetime();
+      } else {
+        earliestDate = startDate;
+      }
+      latestDate = endDrugsObs.getEncounter().getEncounterDatetime();
+    }
+    /*
+     * Assuming that the 2 enddates are not null and the old spec startdate is not
+     * null for the enddates we pick the latest
+     */
+    if ((startDate != null && startDrugsObs == null) && (endDate != null && endDrugsObs != null)) {
+      if (endDate.compareTo(endDrugsObs.getEncounter().getEncounterDatetime()) > 0) {
+        latestDate = endDate;
+      } else {
+        latestDate = endDrugsObs.getEncounter().getEncounterDatetime();
+      }
+      earliestDate = startDate;
+    }
+    /*
+     * Assuming that the 2 enddates are not null and the new spec startdate is not
+     * null for the enddates we pick the latest
+     */
+    if ((startDate == null && startDrugsObs != null) && (endDate != null && endDrugsObs != null)) {
+      if (endDate.compareTo(endDrugsObs.getEncounter().getEncounterDatetime()) > 0) {
+        latestDate = endDate;
+      } else {
+        latestDate = endDrugsObs.getEncounter().getEncounterDatetime();
+      }
+      earliestDate = startDrugsObs.getEncounter().getEncounterDatetime();
+    }
+
+    /*
+     * Assuming that the 2 startdate and the 2 and dates are not null for the
+     * startdate we pick the earliest and for the last date we pick the latest
+     */
+    if ((startDate != null && startDrugsObs != null) && (endDate != null && endDrugsObs != null)) {
+      // get the earliest
+      if (startDate.compareTo(startDrugsObs.getEncounter().getEncounterDatetime()) > 0) {
+        earliestDate = startDrugsObs.getEncounter().getEncounterDatetime();
+      } else {
+        earliestDate = startDate;
+      }
+      // //get the latest
+
+      if (endDate.compareTo(endDrugsObs.getEncounter().getEncounterDatetime()) > 0) {
+        latestDate = endDate;
+      } else {
+        latestDate = endDrugsObs.getEncounter().getEncounterDatetime();
+      }
+    }
+
+    if ((startDate != null && startDrugsObs == null) && (endDate == null && endDrugsObs == null)) {
+
+      return new Date[] {startDate, null};
+    }
+    if ((startDate == null && startDrugsObs != null) && (endDate == null && endDrugsObs == null)) {
+
+      return new Date[] {startDrugsObs.getEncounter().getEncounterDatetime(), null};
+    }
+
+    return new Date[] {earliestDate, latestDate};
   }
 }
