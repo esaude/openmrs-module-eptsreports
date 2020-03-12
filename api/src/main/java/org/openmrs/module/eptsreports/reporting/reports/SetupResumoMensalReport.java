@@ -19,9 +19,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.LocationDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.resumo.ResumoMensalDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -32,10 +35,15 @@ import org.springframework.stereotype.Component;
 public class SetupResumoMensalReport extends EptsDataExportManager {
 
   private ResumoMensalDataSetDefinition resumoMensalDataSetDefinition;
+  
+  private GenericCohortQueries genericCohortQueries;
+
 
   @Autowired
-  public SetupResumoMensalReport(ResumoMensalDataSetDefinition resumoMensalDataSetDefinition) {
+  public SetupResumoMensalReport(ResumoMensalDataSetDefinition resumoMensalDataSetDefinition,
+		  GenericCohortQueries genericCohortQueries) {
     this.resumoMensalDataSetDefinition = resumoMensalDataSetDefinition;
+    this.genericCohortQueries =genericCohortQueries;
   }
 
   @Override
@@ -68,6 +76,8 @@ public class SetupResumoMensalReport extends EptsDataExportManager {
     rd.addDataSetDefinition("HF", mapStraightThrough(new LocationDataSetDefinition()));
     rd.addDataSetDefinition(
         "R", mapStraightThrough(resumoMensalDataSetDefinition.constructResumoMensalDataset()));
+    rd.setBaseCohortDefinition(EptsReportUtils.map(genericCohortQueries.getBaseCohort(), 
+    		"location=${location}"));
     return rd;
   }
 
