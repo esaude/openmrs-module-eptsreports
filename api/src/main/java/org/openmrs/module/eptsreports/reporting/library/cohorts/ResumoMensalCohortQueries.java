@@ -1406,11 +1406,6 @@ public class ResumoMensalCohortQueries {
 
     CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
 
-    CohortDefinition fila =
-        genericCohortQueries.hasEncounter(hivMetadata.getARVPharmaciaEncounterType());
-
-    CohortDefinition masterCardPickup = getPatientsWithMasterCardDrugPickUpDate();
-
     CohortDefinition transferredIn =
         getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2();
 
@@ -1440,7 +1435,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch("B8E", map(B8E, "onOrBefore=${endDate},locationList=${location}"));
 
     cd.setCompositionString(
-        "startedArt AND (fila OR masterCardPickup) AND NOT  (transferredIn OR B5E  OR B6E  OR B7E OR B8E )");
+        "startedArt AND NOT (transferredIn OR B5E  OR B6E  OR B7E OR B8E )");
 
     return cd;
   }
