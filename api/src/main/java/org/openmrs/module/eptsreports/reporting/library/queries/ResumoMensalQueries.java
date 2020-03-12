@@ -417,11 +417,12 @@ public class ResumoMensalQueries {
    * @param masterCardDrugPickupEncounterType
    * @return String
    */
-  public static String getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthB127A(
+  public static String getNumberOfPatientsWhoAbandonedArtBySpecifiedDateB127A(
       int returnVisitDateForArvDrugConcept,
       int arvPharmaciaEncounterType,
       int artDatePickup,
-      int masterCardDrugPickupEncounterType) {
+      int masterCardDrugPickupEncounterType,
+      boolean isStartDate) {
 
     Map<String, Integer> map = new HashMap<>();
     map.put("returnVisitDateForArvDrugConcept", returnVisitDateForArvDrugConcept);
@@ -448,9 +449,14 @@ public class ResumoMensalQueries {
             + "                                 AND obs.concept_id =  ${returnVisitDateForArvDrugConcept}   "
             + "                                 AND obs.value_datetime IS NOT NULL   "
             + "                                 AND enc.encounter_type = ${arvPharmaciaEncounterType}   "
-            + "                                 AND enc.location_id = :location   "
-            + "                                 AND enc.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore   "
-            + "                             GROUP  BY pa.patient_id) fila   "
+            + "                                 AND enc.location_id = :location   ";
+    if (isStartDate) {
+      query += "AND enc.encounter_datetime < :onOrBefore ";
+    } else {
+      query += "AND enc.encounter_datetime > :onOrAfter ";
+    }
+    query +=
+        "                             GROUP  BY pa.patient_id) fila   "
             + "                         INNER JOIN encounter e on  "
             + "                             e.patient_id = fila.patient_id and  "
             + "                             e.encounter_datetime = fila.encounter_datetime AND  "
@@ -475,17 +481,26 @@ public class ResumoMensalQueries {
             + "                             AND obs.concept_id = ${artDatePickup}   "
             + "                             AND obs.value_datetime IS NOT NULL   "
             + "                             AND enc.encounter_type = ${masterCardDrugPickupEncounterType}   "
-            + "                             AND enc.location_id = :location   "
-            + "                             AND obs.value_datetime BETWEEN :onOrAfter AND :onOrBefore   "
-            + "                        GROUP  BY pa.patient_id   "
+            + "                             AND enc.location_id = :location   ";
+    if (isStartDate) {
+      query += "AND obs.value_datetime < :onOrBefore ";
+    } else {
+      query += "AND obs.value_datetime > :onOrAfter ";
+    }
+    query +=
+        "                        GROUP  BY pa.patient_id   "
             + "                    ) most_recent   "
-            + "                GROUP BY most_recent.patient_id   "
-            + "                HAVING final_encounter_date > :onOrAfter AND final_encounter_date < :onOrBefore   "
-            + "             ) final   "
-            + "             GROUP BY final.patient_id ";
+            + "                GROUP BY most_recent.patient_id   ";
+
+    if (isStartDate) {
+      query += "HAVING final_encounter_date < :onOrBefore ";
+    } else {
+      query += "HAVING final_encounter_date > :onOrAfter ";
+    }
+
+    query += "             ) final   " + "             GROUP BY final.patient_id ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
-
     return stringSubstitutor.replace(query);
   }
 
@@ -509,32 +524,6 @@ public class ResumoMensalQueries {
 
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put("programId", programId);
-    StringSubstitutor sub = new StringSubstitutor(valuesMap);
-    return sub.replace(query);
-  }
-
-  /**
-   * Get all patients registered in encounterType 5 or 7, with date enrolled less than startDate
-   *
-   * @return String
-   */
-  public static String
-      getAllPatientsRegisteredInEncounterType5or7WithEncounterDatetimeLessThanStartDate(
-          int encounterType5, int encounterType7) {
-    String query =
-        "SELECT p.patient_id "
-            + "FROM patient p "
-            + "INNER JOIN encounter e "
-            + "ON p.patient_id = e.patient_id "
-            + "WHERE p.voided = 0 "
-            + "AND e.voided = 0 "
-            + "AND e.location_id = :location "
-            + "AND e.encounter_type IN (${encounterType5}, ${encounterType7}) "
-            + "AND e.encounter_datetime < :startDate";
-
-    Map<String, Integer> valuesMap = new HashMap<>();
-    valuesMap.put("encounterType5", encounterType5);
-    valuesMap.put("encounterType7", encounterType7);
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     return sub.replace(query);
   }

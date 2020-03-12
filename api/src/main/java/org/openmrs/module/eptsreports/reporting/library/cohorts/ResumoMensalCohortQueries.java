@@ -564,16 +564,17 @@ public class ResumoMensalCohortQueries {
 
     String encounterWithCodedObsMappings = "onOrBefore=${startDate},locationList=${location}";
 
-    cd.addSearch("B10",map(patientsArt, "startDate=${startDate},location=${location}"));
+    cd.addSearch("B10", map(patientsArt, "startDate=${startDate},location=${location}"));
     cd.addSearch("B2A", map(transferredIn, "onOrBefore=${startDate},location=${location}"));
 
     cd.addSearch("B5A", map(transferredOut, "onOrBefore=${startDate},location=${location}"));
     cd.addSearch(
-            "B6A", map(suspended, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));        
-    cd.addSearch("B7A",
-                    map(
-                        getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A(),
-                        "location=${location},onOrBefore=${startDate}"));
+        "B6A", map(suspended, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "B7A",
+        map(
+            getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB127A(),
+            "location=${location},onOrBefore=${startDate}"));
     cd.addSearch("B8A", map(died, encounterWithCodedObsMappings));
 
     cd.setCompositionString("B10 OR B2A AND NOT (B5A OR B6A OR B7A OR B8A)");
@@ -937,8 +938,8 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B7",
         map(
-            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A(),
-            "location=${location},onOrBefore=${endDate}"));
+            getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB127A(),
+            "location=${location},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "B8",
         map(
@@ -1210,31 +1211,11 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * Get number of patients who have a consultation on the same date as that of pre art
-   *
-   * @return CohortDefinition
-   */
-  private CohortDefinition
-      getPatientsWithFirstClinicalConsultationOnTheSameDateAsPreArtStartDate() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName(
-        "Get number of patients who have a consultation on the same date as that of pre art");
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.setQuery(
-        ResumoMensalQueries.getPatientsWithFirstClinicalConsultationOnTheSameDateAsPreArtStartDate(
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getPreArtStartDate().getConceptId()));
-    return cd;
-  }
-
-  /**
    * B12-B7A: Number of active patients in ART by end of previous/current month
    *
    * @retrun CohortDefinition
    */
-  public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A() {
+  public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB127A() {
 
     CompositionCohortDefinition ccd = new CompositionCohortDefinition();
     ccd.setName("Number of patients who Abandoned the ART during the current month");
@@ -1245,41 +1226,49 @@ public class ResumoMensalCohortQueries {
     ccd.addSearch(
         "B7I",
         map(
-            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127(),
+            getNumberOfPatientsWhoAbandonedArtBySpecifiedDateForB127(true),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+
     ccd.addSearch(
         "B7II",
         map(
-            getPatientsTransferredOutB5(),
+            getNumberOfPatientsWhoAbandonedArtBySpecifiedDateForB127(false),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
     ccd.addSearch(
         "B7III",
         map(
-            getPatientsWhoSuspendedTreatmentB6(true),
+            getPatientsTransferredOutB5(),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
     ccd.addSearch(
         "B7IV",
         map(
+            getPatientsWhoSuspendedTreatmentB6(true),
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+    ccd.addSearch(
+        "B7V",
+        map(
             getPatientsWhoDied(true),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
 
-    ccd.setCompositionString("B7I AND NOT (B7II OR B7III OR B7IV)");
+    ccd.setCompositionString("B7I AND NOT (B7II OR B7III OR B7IV OR B7V)");
 
     return ccd;
   }
 
-  public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127() {
+  public CohortDefinition getNumberOfPatientsWhoAbandonedArtBySpecifiedDateForB127(
+      boolean isStartDate) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients who Abandoned the ART during the current month");
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.setQuery(
-        ResumoMensalQueries.getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthB127A(
+        ResumoMensalQueries.getNumberOfPatientsWhoAbandonedArtBySpecifiedDateB127A(
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getArtDatePickupMasterCard().getConceptId(),
-            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            isStartDate));
     return cd;
   }
 
@@ -1362,7 +1351,7 @@ public class ResumoMensalCohortQueries {
 
     CohortDefinition B6E = getPatientsWhoSuspendedTreatmentB6(false);
 
-    CohortDefinition B7E = getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A();
+    CohortDefinition B7E = getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB127A();
 
     CohortDefinition B8E = getPatientsWhoDied(false);
 

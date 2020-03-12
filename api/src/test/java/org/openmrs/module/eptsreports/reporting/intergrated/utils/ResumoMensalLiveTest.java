@@ -112,6 +112,18 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
   }
 
   @Test
+  public void B7() throws EvaluationException {
+    CohortDefinition cd =
+        resumoMensalCohortQueries.getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB127A();
+    Map<Parameter, Object> mappings = new HashMap<>();
+    mappings.put(new Parameter("onOrAfter", "value1", Date.class), getStartDate());
+    mappings.put(new Parameter("onOrBefore", "value2", Date.class), getEndDate());
+    mappings.put(new Parameter("location", "location", Location.class), getLocation());
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, mappings);
+    assertEquals(4683, evaluatedCohort.size());
+  }
+
+  @Test
   public void B8() throws EvaluationException {
     CohortDefinition cd = resumoMensalCohortQueries.getPatientsWhoDied(true);
     CohortDefinition cf = resumoMensalCohortQueries.getPatientsWhoDied(false);
@@ -179,17 +191,17 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
 
   @Override
   protected Date getStartDate() {
-    return DateUtil.getDateTime(2018, 6, 21);
+    return DateUtil.getDateTime(2019, 11, 21);
   }
 
   @Override
   protected Date getEndDate() {
-    return DateUtil.getDateTime(2018, 7, 20);
+    return DateUtil.getDateTime(2019, 12, 20);
   }
 
   @Override
   protected Location getLocation() {
-    return Context.getLocationService().getLocation(540);
+    return Context.getLocationService().getLocation(221);
   }
 
   @Override
