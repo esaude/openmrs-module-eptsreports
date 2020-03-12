@@ -49,7 +49,7 @@ public class ResumoMensalQueries {
             + "(SELECT results.patient_id, "
             + "       Min(results.enrollment_date) enrollment_date "
             + "FROM   (SELECT p.patient_id, "
-            + "               e.encounter_datetime AS enrollment_date "
+            + "               o.value_datetime AS enrollment_date "
             + "        FROM   patient p "
             + "               INNER JOIN encounter e "
             + "                       ON p.patient_id = e.patient_id "
@@ -82,8 +82,8 @@ public class ResumoMensalQueries {
             + "               AND enc.encounter_type IN (${ARVAdultInitialEncounterType},${ARVPediatriaInitialEncounterType}) "
             + "               AND enc.location_id =:location "
             + "        ORDER  BY enrollment_date ASC) results "
-            + "        WHERE results.enrollment_date BETWEEN :startDate AND :endDate "
-            + "     GROUP  BY results.patient_id) res  ";
+            + "     GROUP  BY results.patient_id) res "
+            + "     WHERE res.enrollment_date BETWEEN :startDate AND :endDate ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     return stringSubstitutor.replace(query);
@@ -445,7 +445,7 @@ public class ResumoMensalQueries {
             + "                                 AND obs.value_datetime IS NOT NULL   "
             + "                                 AND enc.encounter_type = ${arvPharmaciaEncounterType}   "
             + "                                 AND enc.location_id = :location   "
-            + "                                 AND enc.encounter_datetime <= :onOrBefore   "
+            + "                                 AND enc.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore   "
             + "                             GROUP  BY pa.patient_id) fila   "
             + "                         INNER JOIN encounter e on  "
             + "                             e.patient_id = fila.patient_id and  "
@@ -472,13 +472,13 @@ public class ResumoMensalQueries {
             + "                             AND obs.value_datetime IS NOT NULL   "
             + "                             AND enc.encounter_type = ${masterCardDrugPickupEncounterType}   "
             + "                             AND enc.location_id = :location   "
-            + "                             AND obs.value_datetime <= :onOrBefore   "
+            + "                             AND obs.value_datetime BETWEEN :onOrAfter AND :onOrBefore   "
             + "                        GROUP  BY pa.patient_id   "
             + "                    ) most_recent   "
             + "                GROUP BY most_recent.patient_id   "
-            + "                HAVING final_encounter_date < :onOrBefore   "
+            + "                HAVING final_encounter_date > :onOrAfter AND final_encounter_date < :onOrBefore   "
             + "             ) final   "
-            + "             GROUP BY final.patient_id;";
+            + "             GROUP BY final.patient_id ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 

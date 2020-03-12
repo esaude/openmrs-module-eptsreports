@@ -3,6 +3,8 @@ package org.openmrs.module.eptsreports.reporting.cohort.evaluator;
 import java.util.HashSet;
 import java.util.List;
 import org.openmrs.Concept;
+import org.openmrs.Program;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition;
@@ -81,7 +83,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("        ON p.patient_id=pp.patient_id ");
     q.append("    JOIN patient_state ps  ");
     q.append("        ON ps.patient_program_id=pp.patient_program_id ");
-    q.append("WHERE  pp.program_id = :artProgram ");
+    q.append("WHERE  pp.program_id = :programEnrolled ");
     q.append("    AND ps.state = :transferredInState ");
     if (cd.getOnOrAfter() == null) {
       q.append("     AND ps.start_date < :onOrBefore ");
@@ -99,14 +101,15 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.addParameter("yes", hivMetadata.getYesConcept());
     q.addParameter("typeOfPatient", hivMetadata.getTypeOfPatientTransferredFrom());
     Concept typeOfPatientTransferredFrom = cd.getTypeOfPatientTransferredFromAnswer();
+    Program programEnrolled = cd.getProgramEnrolled();
+    ProgramWorkflowState programWorkflowState = cd.getPatientState();
     if (typeOfPatientTransferredFrom == null) {
       throw new NullPointerException(
           "Answer for TYPE OF PATIENT TRANSFERRED FROM concept cannot be null");
     }
     q.addParameter("answer", typeOfPatientTransferredFrom);
-    q.addParameter("artProgram", hivMetadata.getARTProgram());
-    q.addParameter(
-        "transferredInState", hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState());
+    q.addParameter("programEnrolled", programEnrolled);
+    q.addParameter("transferredInState", programWorkflowState);
     q.addParameter("location", cd.getLocation());
     q.addParameter("onOrAfter", cd.getOnOrAfter());
     q.addParameter("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(cd.getOnOrBefore()));

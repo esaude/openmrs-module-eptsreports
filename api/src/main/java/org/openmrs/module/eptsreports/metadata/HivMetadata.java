@@ -635,13 +635,6 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // Concept 6275 PRE-TARV
-  public Concept getPreTARVConcept() {
-    String uuid =
-        Context.getAdministrationService().getGlobalProperty("eptsreports.preTarvConceptUuid");
-    return getConcept(uuid);
-  }
-
   // Concept 2031 REASON PATIENT NOT FOUND BY ACTIVIST
   public Concept getReasonPatientNotFound() {
     String uuid =
