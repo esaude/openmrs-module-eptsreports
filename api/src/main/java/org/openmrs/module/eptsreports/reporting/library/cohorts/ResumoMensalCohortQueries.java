@@ -285,6 +285,21 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  public CohortDefinition getPatientsTransferredOutB5E() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Number of active patients in ART by end of current month");
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    cd.setQuery(
+        ResumoMensalQueries.getPatientsRegistredEncounter6TransferOutStateLessEndDate(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
+            hivMetadata.getTransferredOutConcept().getConceptId()));
+
+    return cd;
+  }
+
   /** @return B6: Number of patients with ART suspension during the current month */
   public CohortDefinition getPatientsWhoSuspendedTreatmentB6(boolean useBothDates) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1409,7 +1424,7 @@ public class ResumoMensalCohortQueries {
     CohortDefinition transferredIn =
         getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2();
 
-    CohortDefinition B5E = getPatientsTransferredOutB5();
+    CohortDefinition B5E = getPatientsTransferredOutB5E();
 
     CohortDefinition B6E = getPatientsWhoSuspendedTreatmentB6(false);
 
@@ -1424,7 +1439,7 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch("startedArt", map(startedArt, mappings));
     cd.addSearch("transferredIn", map(transferredIn, mappings));
-    cd.addSearch("B5E", map(B5E, mappings));
+    cd.addSearch("B5E", map(B5E, mappingsOnDate));
     cd.addSearch("B6E", map(B6E, "onOrBefore=${endDate},location=${location}"));
     cd.addSearch("B7E", map(B7E, mappingsOnDate));
     cd.addSearch("B8E", map(B8E, "onOrBefore=${endDate},locationList=${location}"));
