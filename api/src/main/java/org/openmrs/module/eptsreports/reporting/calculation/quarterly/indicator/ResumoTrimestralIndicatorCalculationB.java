@@ -37,9 +37,8 @@ public abstract class ResumoTrimestralIndicatorCalculationB
                   context, monthlExecutionPeriod));
       patientIds.retainAll(inclusions);
 
-      List<Integer> baseCohortQuery =
-          ResumoTrimestralQueries.getBaseCohortQuery(context, monthlExecutionPeriod);
-      inclusions.retainAll(baseCohortQuery);
+      patientIds.retainAll(ResumoTrimestralQueries.getBaseCohort(context, monthlExecutionPeriod));
+
       for (Integer patientId : patientIds) {
         resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
       }

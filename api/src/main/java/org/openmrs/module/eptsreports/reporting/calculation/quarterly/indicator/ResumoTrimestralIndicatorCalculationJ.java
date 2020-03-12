@@ -9,7 +9,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.quarterly.ResumoTrim
 import org.openmrs.module.eptsreports.reporting.calculation.quarterly.query.ResumoTrimestralQueries;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
-public abstract class ResumoTrimestralIndicatorCalculationA
+public abstract class ResumoTrimestralIndicatorCalculationJ
     extends ResumoTrimestralMonthPeriodCalculation {
 
   @Override
@@ -25,24 +25,22 @@ public abstract class ResumoTrimestralIndicatorCalculationA
     if (monthlExecutionPeriod != null) {
 
       List<Integer> patientIds =
-          ResumoTrimestralQueries.findPatientsWhoAreNewlyEnrolledOnART(
+          ResumoTrimestralQueries.findPatientsWhoAbandonedArtTreatment(
               context, monthlExecutionPeriod);
-
-      List<Integer> exclusions =
-          ResumoTrimestralQueries.findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod(
+      List<Integer> exlusions =
+          ResumoTrimestralQueries.findPatientsWhoAbandonedArtTreatmentToExcludeUntilStartDate(
               context, monthlExecutionPeriod);
-      exclusions.addAll(
-          ResumoTrimestralQueries
-              .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard(
-                  context, monthlExecutionPeriod));
-      patientIds.removeAll(exclusions);
+      exlusions.addAll(
+          ResumoTrimestralQueries.getPatientsWhoAbandonedTratmentUntilStartDateExclusion2(
+              context, monthlExecutionPeriod));
+      patientIds.removeAll(exlusions);
 
       patientIds.retainAll(ResumoTrimestralQueries.getBaseCohort(context, monthlExecutionPeriod));
+
       for (Integer patientId : patientIds) {
         resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
       }
     }
-
     return resultMap;
   }
 }

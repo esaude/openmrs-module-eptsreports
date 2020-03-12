@@ -9,7 +9,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.quarterly.ResumoTrim
 import org.openmrs.module.eptsreports.reporting.calculation.quarterly.query.ResumoTrimestralQueries;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
-public abstract class ResumoTrimestralIndicatorCalculationA
+public abstract class ResumoTrimestralIndicatorCalculationE
     extends ResumoTrimestralMonthPeriodCalculation {
 
   @Override
@@ -25,24 +25,12 @@ public abstract class ResumoTrimestralIndicatorCalculationA
     if (monthlExecutionPeriod != null) {
 
       List<Integer> patientIds =
-          ResumoTrimestralQueries.findPatientsWhoAreNewlyEnrolledOnART(
-              context, monthlExecutionPeriod);
-
-      List<Integer> exclusions =
-          ResumoTrimestralQueries.findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod(
-              context, monthlExecutionPeriod);
-      exclusions.addAll(
-          ResumoTrimestralQueries
-              .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard(
-                  context, monthlExecutionPeriod));
-      patientIds.removeAll(exclusions);
-
+          ResumoTrimestralQueries.findPatientsWhoStillInFirstLine(context, monthlExecutionPeriod);
       patientIds.retainAll(ResumoTrimestralQueries.getBaseCohort(context, monthlExecutionPeriod));
       for (Integer patientId : patientIds) {
         resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
       }
     }
-
     return resultMap;
   }
 }

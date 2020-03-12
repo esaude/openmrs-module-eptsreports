@@ -5,12 +5,13 @@ import java.util.Map;
 import org.openmrs.module.eptsreports.reporting.calculation.quarterly.MonthlyDateRange;
 import org.openmrs.module.eptsreports.reporting.calculation.quarterly.MonthlyDateRange.Month;
 import org.openmrs.module.eptsreports.reporting.calculation.quarterly.ResumoTrimestralMonthPeriodCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.quarterly.indicator.ResumoTrimestralIndicatorCalculationA;
+import org.openmrs.module.eptsreports.reporting.calculation.quarterly.indicator.ResumoTrimestralIndicatorCalculationB;
+import org.openmrs.module.eptsreports.reporting.calculation.quarterly.indicator.ResumoTrimestralIndicatorCalculationE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ResumoTrimestralIndicatorFactoryA {
+public class ResumoTrimestralIndicatorFactoryE {
 
   private JanuaryResumoTrimestralCalculation januaryResumoTrimestralCalculation;
 
@@ -39,7 +40,7 @@ public class ResumoTrimestralIndicatorFactoryA {
   Map<Month, ResumoTrimestralMonthPeriodCalculation> mapArtUtils = new HashMap<>();
 
   @Autowired
-  public ResumoTrimestralIndicatorFactoryA(
+  public ResumoTrimestralIndicatorFactoryE(
       JanuaryResumoTrimestralCalculation januaryResumoTrimestralCalculation,
       FebruaryResumoTrimestralCalculation februaryResumoTrimestralCalculation,
       MarchResumoTrimestralCalculation marchResumoTrimestralCalculation,
@@ -86,7 +87,7 @@ public class ResumoTrimestralIndicatorFactoryA {
 
   @Component
   public static class JanuaryResumoTrimestralCalculation
-      extends ResumoTrimestralIndicatorCalculationA {
+      extends ResumoTrimestralIndicatorCalculationE {
     @Override
     public MonthlyDateRange getMonthlExecutionPeriod(
         Map<Month, MonthlyDateRange> mapRangesByMonth) {
@@ -96,7 +97,7 @@ public class ResumoTrimestralIndicatorFactoryA {
 
   @Component
   public static class FebruaryResumoTrimestralCalculation
-      extends ResumoTrimestralIndicatorCalculationA {
+      extends ResumoTrimestralIndicatorCalculationE {
 
     @Override
     public MonthlyDateRange getMonthlExecutionPeriod(
@@ -107,7 +108,7 @@ public class ResumoTrimestralIndicatorFactoryA {
 
   @Component
   public static class MarchResumoTrimestralCalculation
-      extends ResumoTrimestralIndicatorCalculationA {
+      extends ResumoTrimestralIndicatorCalculationE {
     @Override
     public MonthlyDateRange getMonthlExecutionPeriod(
         Map<Month, MonthlyDateRange> mapRangesByMonth) {
@@ -117,7 +118,7 @@ public class ResumoTrimestralIndicatorFactoryA {
 
   @Component
   public static class AprilResumoTrimestralCalculation
-      extends ResumoTrimestralIndicatorCalculationA {
+      extends ResumoTrimestralIndicatorCalculationE {
     @Override
     public MonthlyDateRange getMonthlExecutionPeriod(
         Map<Month, MonthlyDateRange> mapRangesByMonth) {
@@ -126,7 +127,7 @@ public class ResumoTrimestralIndicatorFactoryA {
   }
 
   @Component
-  public static class MayResumoTrimestralCalculation extends ResumoTrimestralIndicatorCalculationA {
+  public static class MayResumoTrimestralCalculation extends ResumoTrimestralIndicatorCalculationE {
 
     @Override
     public MonthlyDateRange getMonthlExecutionPeriod(
@@ -137,7 +138,7 @@ public class ResumoTrimestralIndicatorFactoryA {
 
   @Component
   public static class JuneResumoTrimestralCalculation
-      extends ResumoTrimestralIndicatorCalculationA {
+      extends ResumoTrimestralIndicatorCalculationE {
     @Override
     public MonthlyDateRange getMonthlExecutionPeriod(
         Map<Month, MonthlyDateRange> mapRangesByMonth) {
@@ -147,7 +148,7 @@ public class ResumoTrimestralIndicatorFactoryA {
 
   @Component
   public static class JulyResumoTrimestralCalculation
-      extends ResumoTrimestralIndicatorCalculationA {
+      extends ResumoTrimestralIndicatorCalculationE {
     @Override
     public MonthlyDateRange getMonthlExecutionPeriod(
         Map<Month, MonthlyDateRange> mapRangesByMonth) {
@@ -157,7 +158,7 @@ public class ResumoTrimestralIndicatorFactoryA {
 
   @Component
   public static class AugustResumoTrimestralCalculation
-      extends ResumoTrimestralIndicatorCalculationA {
+      extends ResumoTrimestralIndicatorCalculationE {
     @Override
     public MonthlyDateRange getMonthlExecutionPeriod(
         Map<Month, MonthlyDateRange> mapRangesByMonth) {
@@ -167,7 +168,7 @@ public class ResumoTrimestralIndicatorFactoryA {
 
   @Component
   public static class SeptemberResumoTrimestralCalculation
-      extends ResumoTrimestralIndicatorCalculationA {
+      extends ResumoTrimestralIndicatorCalculationE {
     @Override
     public MonthlyDateRange getMonthlExecutionPeriod(
         Map<Month, MonthlyDateRange> mapRangesByMonth) {
@@ -177,7 +178,7 @@ public class ResumoTrimestralIndicatorFactoryA {
 
   @Component
   public static class OctoberResumoTrimestralCalculation
-      extends ResumoTrimestralIndicatorCalculationA {
+      extends ResumoTrimestralIndicatorCalculationE {
 
     @Override
     public MonthlyDateRange getMonthlExecutionPeriod(
@@ -188,7 +189,7 @@ public class ResumoTrimestralIndicatorFactoryA {
 
   @Component
   public static class NovemberResumoTrimestralCalculation
-      extends ResumoTrimestralIndicatorCalculationA {
+      extends ResumoTrimestralIndicatorCalculationB {
     @Override
     public MonthlyDateRange getMonthlExecutionPeriod(
         Map<Month, MonthlyDateRange> mapRangesByMonth) {
@@ -198,7 +199,7 @@ public class ResumoTrimestralIndicatorFactoryA {
 
   @Component
   public static class DecemberResumoTrimestralCalculation
-      extends ResumoTrimestralIndicatorCalculationA {
+      extends ResumoTrimestralIndicatorCalculationE {
     @Override
     public MonthlyDateRange getMonthlExecutionPeriod(
         Map<Month, MonthlyDateRange> mapRangesByMonth) {
