@@ -449,7 +449,7 @@ public class ResumoMensalQueries {
     if (isStartDate) {
       query += "AND enc.encounter_datetime < :onOrBefore ";
     } else {
-      query += "AND enc.encounter_datetime > :onOrAfter ";
+      query += "AND enc.encounter_datetime < :onOrAfter ";
     }
     query +=
         "                             GROUP  BY pa.patient_id) fila   "
@@ -481,7 +481,7 @@ public class ResumoMensalQueries {
     if (isStartDate) {
       query += "AND obs.value_datetime < :onOrBefore ";
     } else {
-      query += "AND obs.value_datetime > :onOrAfter ";
+      query += "AND obs.value_datetime < :onOrAfter ";
     }
     query +=
         "                        GROUP  BY pa.patient_id   "
@@ -491,7 +491,7 @@ public class ResumoMensalQueries {
     if (isStartDate) {
       query += "HAVING final_encounter_date < :onOrBefore ";
     } else {
-      query += "HAVING final_encounter_date > :onOrAfter ";
+      query += "HAVING final_encounter_date < :onOrAfter ";
     }
 
     query += "             ) final   " + "             GROUP BY final.patient_id ";
