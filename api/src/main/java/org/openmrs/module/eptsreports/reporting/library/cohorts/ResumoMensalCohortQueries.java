@@ -1423,19 +1423,13 @@ public class ResumoMensalCohortQueries {
     String mappingsOnOrBeforeLocationList = "onOrBefore=${endDate},locationList=${location}";
 
     cd.addSearch("startedArt", map(startedArt, mappings));
-
-    cd.addSearch("fila", map(fila, "onOrBefore=${endDate},locationList=${location}"));
-
-    cd.addSearch("masterCardPickup", map(masterCardPickup, mappingsOnOrBeforeLocationList));
-
     cd.addSearch("transferredIn", map(transferredIn, mappings));
     cd.addSearch("B5E", map(B5E, mappings));
     cd.addSearch("B6E", map(B6E, "onOrBefore=${endDate},location=${location}"));
     cd.addSearch("B7E", map(B7E, mappingsOnDate));
     cd.addSearch("B8E", map(B8E, "onOrBefore=${endDate},locationList=${location}"));
 
-    cd.setCompositionString(
-        "startedArt AND NOT (transferredIn OR B5E  OR B6E  OR B7E OR B8E )");
+    cd.setCompositionString("startedArt AND NOT (transferredIn OR B5E  OR B6E  OR B7E OR B8E )");
 
     return cd;
   }
