@@ -402,17 +402,17 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
 
     // C2 indicators
     dsd.addColumn(
-            "C2TC",
-            "Patients who initiated Pre-TARV during the current month and started TPI C2",
-            EptsReportUtils.map(
-                    eptsGeneralIndicator.getIndicator(
-                            "Patients who initiated Pre-TARV during the current month and started TPI C2",
-                            EptsReportUtils.map(
-                                    resumoMensalCohortQueries
-                                            .getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTpiC2(),
-                                    mappings)),
-                    mappings),
-            "");
+        "C2TC",
+        "Patients who initiated Pre-TARV during the current month and started TPI C2",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Patients who initiated Pre-TARV during the current month and started TPI C2",
+                EptsReportUtils.map(
+                    resumoMensalCohortQueries
+                        .getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTpiC2(),
+                    mappings)),
+            mappings),
+        "");
 
     // C3 indicators
     dsd.addColumn(
@@ -575,7 +575,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
         map(
             resumoMensalCohortQueries
                 .getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB127A(),
-            "onOrBefore=${endDate},location=${location}");
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}");
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(name, cohort));
   }
 
