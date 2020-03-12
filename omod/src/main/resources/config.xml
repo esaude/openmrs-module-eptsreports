@@ -1877,6 +1877,15 @@
 		</description>
 	</globalProperty>
 	
+	<!--23774-->
+	<globalProperty>
+		<property>@MODULE_ID@.cultureTest</property>
+		<defaultValue>a73de314-89fa-4feb-9085-c81e95c7d0dd</defaultValue>
+		<description>
+			UUID for the CULTURE TEST concept
+		</description>
+	</globalProperty>
+	
 	<!--23951-->
 	<globalProperty>
 		<property>@MODULE_ID@.getTbLamTest</property>

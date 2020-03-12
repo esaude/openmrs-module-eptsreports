@@ -187,6 +187,7 @@ public class TXTBQueries {
       int basiloscopiaExam,
       int genexpertTest,
       int tbLamTest,
+      int cultureTest,
       int positive,
       int negative) {
     String query =
@@ -202,7 +203,7 @@ public class TXTBQueries {
             + "                 AND e.voided = 0 "
             + "                 AND exam.voided = 0 "
             + "                 AND e.encounter_type = ${laboratory} "
-            + "                 AND (exam.concept_id = ${basiloscopiaExam} "
+            + "                 AND exam.concept_id = ${basiloscopiaExam} "
             + "                 AND (exam.value_coded = ${negative} OR exam.value_coded = ${positive}) "
             + "                 AND e.encounter_datetime >= :startDate "
             + "                 AND e.encounter_datetime <= :endDate "
@@ -280,6 +281,7 @@ public class TXTBQueries {
     valuesMap.put("basiloscopiaExam", basiloscopiaExam);
     valuesMap.put("genexpertTest", genexpertTest);
     valuesMap.put("tbLamTest", tbLamTest);
+    valuesMap.put("cultureTest", cultureTest);
     valuesMap.put("positive", positive);
     valuesMap.put("negative", negative);
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
@@ -403,6 +405,103 @@ public class TXTBQueries {
     valuesMap.put("negative", negative);
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     return sub.replace(query);
+  }
+
+  /**
+   * Get patients who have a Additional Test
+   *
+   * @return String
+   */
+  public static String getAdditionalTest(
+    int laboratory,
+    int applicationForLaboratoryResearch,
+    int fichaClinica,
+    int basiloscopiaExam,
+    int genexpertTest,
+    int tbLamTest,
+    int cultureTest,
+    int positive,
+    int negative) {
+  String query =
+      "SELECT tests.patient_id "
+          + "FROM   ( "
+          + "       SELECT p.patient_id "
+          + "           FROM  patient p "
+          + "                 INNER JOIN encounter e "
+          + "                         ON p.patient_id = e.patient_id "
+          + "                 INNER JOIN obs exam "
+          + "                         ON e.encounter_id = exam.encounter_id "
+          + "           WHERE p.voided = 0 "
+          + "                 AND e.voided = 0 "
+          + "                 AND exam.voided = 0 "
+          + "                 AND e.encounter_type = ${fichaClinica} "
+          + "                 AND exam.concept_id = ${tbLamTest} "
+          + "                 AND (exam.value_coded = ${negative} OR exam.value_coded = ${positive}) "
+          + "                 AND e.encounter_datetime >= :startDate "
+          + "                 AND e.encounter_datetime <= :endDate "
+          + "           GROUP BY p.patient_id "
+          + "       UNION "
+          + "       SELECT p.patient_id "
+          + "           FROM  patient p "
+          + "                 INNER JOIN encounter e "
+          + "                 ON p.patient_id = e.patient_id "
+          + "                 INNER JOIN obs exam "
+          + "                 ON e.encounter_id = exam.encounter_id "
+          + "           WHERE p.voided = 0 "
+          + "                 AND e.voided = 0 "
+          + "                 AND exam.voided = 0 "
+          + "                 AND e.encounter_type = ${fichaClinica} "
+          + "                 AND exam.concept_id = ${cultureTest} "
+          + "                 AND (exam.value_coded = ${negative} OR exam.value_coded = ${positive}) "
+          + "                 AND e.encounter_datetime >= :startDate "
+          + "                 AND e.encounter_datetime <= :endDate "
+          + "           GROUP BY p.patient_id "
+          + "       UNION "
+          + "       SELECT p.patient_id "
+          + "           FROM  patient p "
+          + "                 INNER JOIN encounter e "
+          + "                 ON p.patient_id = e.patient_id "
+          + "                 INNER JOIN obs exam "
+          + "                 ON e.encounter_id = exam.encounter_id "
+          + "           WHERE p.voided = 0 "
+          + "                 AND e.voided = 0 "
+          + "                 AND exam.voided = 0 "
+          + "                 AND e.encounter_type = ${fichaClinica} "
+          + "                 AND exam.concept_id = ${applicationForLaboratoryResearch} "
+          + "                 AND (exam.value_coded = ${cultureTest} OR exam.value_coded = ${tbLamTest}) "
+          + "                 AND e.encounter_datetime >= :startDate "
+          + "                 AND e.encounter_datetime <= :endDate "
+          + "           GROUP BY p.patient_id "
+          + ") tests"
+          + "WHERE tests.patient_id NOT IN (SELECT p.patient_id "
+          + "                                   FROM patient p "
+          + "                                       INNER JOIN encounter e "
+          + "                                       ON p.patient_id = e.patient_id "
+          + "                                       INNER JOIN obs exam "
+          + "                                       ON e.encounter_id = exam.encounter_id "
+          + "                                   WHERE p.voided = 0 "
+          + "                                       AND e.voided = 0 "
+          + "                                       AND exam.voided = 0 "
+          + "                                       AND e.encounter_type = ${fichaClinica} "
+          + "                                       AND exam.concept_id = ${genexpertTest} "
+          + "                                       AND (exam.value_coded = ${negative} OR exam.value_coded = ${positive}) "
+          + "                                       AND e.encounter_datetime >= :startDate "
+          + "                                       AND e.encounter_datetime <= :endDate "
+          + "                                   GROUP BY p.patient_id) "
+          + "GROUP BY tests.patient_id";
+
+  Map<String, Integer> valuesMap = new HashMap<>();
+  valuesMap.put("laboratory", laboratory);
+  valuesMap.put("applicationForLaboratoryResearch", applicationForLaboratoryResearch);
+  valuesMap.put("fichaClinica", fichaClinica);
+  valuesMap.put("basiloscopiaExam", basiloscopiaExam);
+  valuesMap.put("genexpertTest", genexpertTest);
+  valuesMap.put("tbLamTest", tbLamTest);
+  valuesMap.put("cultureTest", cultureTest);
+  valuesMap.put("positive", positive);
+  valuesMap.put("negative", negative);
+  StringSubstitutor sub = new StringSubstitutor(valuesMap);
+  return sub.replace(query);
   }
 
   public static class AbandonedWithoutNotificationParams {

@@ -373,6 +373,7 @@ public class TXTBCohortQueries {
                 hivMetadata.getExameBasiloscopiaConcept().getConceptId(),
                 hivMetadata.getTbGenexpertTest().getConceptId(),
                 hivMetadata.getTbLamTest().getConceptId(),
+                hivMetadata.getCultureTest().getConceptId(),
                 hivMetadata.getPositiveConcept().getConceptId(),
                 hivMetadata.getNegativeConcept().getConceptId()));
     addGeneralParameters(cd);
@@ -416,6 +417,29 @@ public class TXTBCohortQueries {
                 hivMetadata.getTbGenexpertTest().getConceptId(),
                 hivMetadata.getPositiveConcept().getConceptId(),
                 hivMetadata.getNegativeConcept().getConceptId()));
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  /**
+   * Get patients who have a Additional Test And Not GeneXpert And Not Smear Miscroscopy Only
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getAdditionalTest() {
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "additionalTest",
+            TXTBQueries.getAdditionalTest(
+              hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+              hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
+              hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+              hivMetadata.getExameBasiloscopiaConcept().getConceptId(),
+              hivMetadata.getTbGenexpertTest().getConceptId(),
+              hivMetadata.getTbLamTest().getConceptId(),
+              hivMetadata.getCultureTest().getConceptId(),
+              hivMetadata.getPositiveConcept().getConceptId(),
+              hivMetadata.getNegativeConcept().getConceptId()));
     addGeneralParameters(cd);
     return cd;
   }
@@ -465,7 +489,7 @@ public class TXTBCohortQueries {
    */
   public CohortDefinition basiloscopiaAndNotGeneXpert() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
-    definition.setName("genExpert()");
+    definition.setName("basiloscopiaAndNotGeneXpert()");
     definition.addSearch(
         "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
     definition.addSearch(
@@ -476,6 +500,27 @@ public class TXTBCohortQueries {
     addGeneralParameters(definition);
     definition.setCompositionString(
         "denominator AND basiloscopiaAndNotGeneXpert AND positive-screening");
+    return definition;
+  }
+
+  /**
+   * BR-11 Additional Test - Denominator AND Screened AND Additional AND NOT Genexpert AND NOT Microscopy
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition additionalTest() {
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("additionalTest()");
+    definition.addSearch(
+        "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
+    definition.addSearch(
+        "additionalTest",
+        EptsReportUtils.map(getAdditionalTest(), generalParameterMapping));
+    definition.addSearch(
+        "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
+    addGeneralParameters(definition);
+    definition.setCompositionString(
+        "denominator AND additionalTest AND positive-screening");
     return definition;
   }
 }

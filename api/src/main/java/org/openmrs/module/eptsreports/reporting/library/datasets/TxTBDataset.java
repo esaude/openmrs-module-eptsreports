@@ -113,6 +113,9 @@ public class TxTBDataset extends BaseDataSet {
     CohortIndicator genExpert =
         eptsGeneralIndicator.getIndicator(
             "genExpert", EptsReportUtils.map(txTbCohortQueries.genExpert(), mappings));
+    CohortIndicator smearMicroscopy =
+        eptsGeneralIndicator.getIndicator(
+            "smearMicroscopy", EptsReportUtils.map(txTbCohortQueries.basiloscopiaAndNotGeneXpert(), mappings));
 
     dataSetDefinition.addColumn(
         "TXB_DEN",
