@@ -591,7 +591,7 @@ public class ResumoMensalCohortQueries {
 
   public CohortDefinition getPatientsWhoMarkedINHC2A2() {
 
-    String mapping = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String mapping = "startDate=${startDate-1m},endDate=${endDate},location=${location}";
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("INH");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -611,7 +611,7 @@ public class ResumoMensalCohortQueries {
 
   public CohortDefinition getPatientsWhoMarkedTbActiveC3A2() {
 
-    String mapping = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String mapping = "startDate=${startDate-1m},endDate=${endDate},location=${location}";
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("TB Active");
 
