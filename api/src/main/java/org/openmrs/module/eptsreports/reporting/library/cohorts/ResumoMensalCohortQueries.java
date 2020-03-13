@@ -1271,6 +1271,16 @@ public class ResumoMensalCohortQueries {
         "Fx3",
         map(getExclusionForF3(),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+//    cd.addSearch(
+//            "Fx3",
+//            map(
+//                genericCohortQueries.generalSql(
+//                    "Fx3",
+//                    ResumoMensalQueries.getF3Exclusion(
+//                        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
+//                "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    
     cd.setCompositionString("F1 AND NOT Fx3");
     return cd;
   }

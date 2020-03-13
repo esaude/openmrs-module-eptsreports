@@ -184,7 +184,6 @@ public class ResumoMensalQueries {
         "    AND oo.voided =0       "
         + "  AND ee.location_id = :location  "
         + "  AND ee.encounter_type= ${adultoSeguimentoEncounterType} " + 
-        "    AND ee.encounter_datetime BETWEEN :startDate AND :endDate " + 
         "    AND oo.concept_id = ${tBTreatmentPlanConcept} " + 
         "    AND ee.encounter_datetime =  :endDate " + 
         "GROUP BY pp.patient_id " + 
@@ -590,4 +589,5 @@ public class ResumoMensalQueries {
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     return sub.replace(query);
   }
+  
 }
