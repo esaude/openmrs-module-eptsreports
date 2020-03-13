@@ -48,7 +48,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
 
   private static final int NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED = 5;
 
-  private static final int MONTHS_TO_CHECK_FOR_ISONIAZID_USAGE = 6;
+  private static final int MONTHS_TO_CHECK_FOR_ISONIAZID_USAGE = 7;
 
   private static final int MINIMUM_DURATION_IN_DAYS = 173;
 
@@ -179,7 +179,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
         int profilaxiaDuration12 =
             Days.daysIn(new Interval(dateBoundaries[0].getTime(), dateBoundaries[1].getTime()))
                 .getDays();
-                if (profilaxiaDuration12 >= MINIMUM_DURATION_IN_DAYS) {
+        if (profilaxiaDuration12 >= MINIMUM_DURATION_IN_DAYS) {
           map.put(patientId, new BooleanResult(true, this));
           continue;
         } else {

@@ -1185,7 +1185,11 @@ public class HivMetadata extends ProgramsMetadata {
     return getProgram(uuid);
   }
 
-  // Program Id 5 TB
+  // 
+  /**
+   * Program Id 5 TB
+   * @return
+   */
   public Program getTBProgram() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.tbProgramUuid");
     return getProgram(uuid);
