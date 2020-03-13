@@ -1224,11 +1224,11 @@ public class ResumoMensalCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
     sqlCohortDefinition.setQuery(
         ResumoMensalQueries.getPatientsForF2ForExclusionFromMainQuery(
-        		hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                tbMetadata.getHasTbSymptomsConcept().getConceptId(),
-                hivMetadata.getPatientFoundYesConcept().getConceptId(),
-                hivMetadata.getNoConcept().getConceptId(),
-                hivMetadata.getTBTreatmentPlanConcept().getConceptId()));
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            tbMetadata.getHasTbSymptomsConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getNoConcept().getConceptId(),
+            hivMetadata.getTBTreatmentPlanConcept().getConceptId()));
 
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
@@ -1260,42 +1260,42 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    
-   
+
     cd.addSearch(
         "F1",
         map(
             getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
+    //    cd.addSearch(
+    //        "Fx3",
+    //        map(getExclusionForF3(),
+    //            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "Fx3",
-        map(getExclusionForF3(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-//    cd.addSearch(
-//            "Fx3",
-//            map(
-//                genericCohortQueries.generalSql(
-//                    "Fx3",
-//                    ResumoMensalQueries.getF3Exclusion(
-//                        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
-//                "startDate=${startDate},endDate=${endDate},location=${location}"));
+        map(
+            genericCohortQueries.generalSql(
+                "Fx3",
+                ResumoMensalQueries.getF3Exclusion(
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    
     cd.setCompositionString("F1 AND NOT Fx3");
     return cd;
   }
-  
-  public  CohortDefinition getExclusionForF3() {
-	  CalculationCohortDefinition exclusionForF3 = new CalculationCohortDefinition(
-	    		Context.getRegisteredComponents(MoreThanOneEncounterInStatisticalYearCalculation.class).get(0));
-	    exclusionForF3.setName("Exclusions");
-	    exclusionForF3.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
-	    exclusionForF3.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
-	    exclusionForF3.addParameter(new Parameter("location", "Location", Location.class));
-	    exclusionForF3.addCalculationParameter("encounter_type", hivMetadata.getAdultoSeguimentoEncounterType());
-	    
-	    return  exclusionForF3;
 
+  public CohortDefinition getExclusionForF3() {
+    CalculationCohortDefinition exclusionForF3 =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(MoreThanOneEncounterInStatisticalYearCalculation.class)
+                .get(0));
+    exclusionForF3.setName("Exclusions");
+    exclusionForF3.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+    exclusionForF3.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+    exclusionForF3.addParameter(new Parameter("location", "Location", Location.class));
+    exclusionForF3.addCalculationParameter(
+        "encounter_type", hivMetadata.getAdultoSeguimentoEncounterType());
+
+    return exclusionForF3;
   }
 
   /**
