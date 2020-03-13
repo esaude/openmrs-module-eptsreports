@@ -32,6 +32,16 @@ public class HivMetadata extends ProgramsMetadata {
 
   private String getTBProgramUuid = "eptsreports.tbProgramUuid";
 
+  /**
+   * concept_id = 307
+   *
+   * @return
+   */
+  public Concept getResultForBasiloscopia() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.basiloscopiaUuid");
+    return getConcept(uuid);
+  }
   // Concepts Id = 856
   public Concept getHivViralLoadConcept() {
     String uuid =
@@ -635,13 +645,6 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // Concept 6275 PRE-TARV
-  public Concept getPreTARVConcept() {
-    String uuid =
-        Context.getAdministrationService().getGlobalProperty("eptsreports.preTarvConceptUuid");
-    return getConcept(uuid);
-  }
-
   // Concept 2031 REASON PATIENT NOT FOUND BY ACTIVIST
   public Concept getReasonPatientNotFound() {
     String uuid =
@@ -690,7 +693,11 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // Concept 23722 APPLICATION FOR LABORATORY RESEARCH
+  /**
+   * Concept 23722 APPLICATION FOR LABORATORY RESEARCH
+   *
+   * @return
+   */
   public Concept getApplicationForLaboratoryResearch() {
     String uuid =
         Context.getAdministrationService()

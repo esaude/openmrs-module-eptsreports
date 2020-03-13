@@ -166,6 +166,118 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>eptsreports.observationTBConceptUuid</property>
+		<defaultValue>e1de6d1e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for OBSERVATION TB
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.feverLastingMoraThan3WeeksUuid</property>
+		<defaultValue>e1de6878-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the FEVER AS LASTING MORE THAN 3 WEEKS
+		</description>
+	</globalProperty> 
+
+	<globalProperty>
+		<property>eptsreports.nightsWeatsLastingMoraThan3WeeksUuid</property>
+		<defaultValue>e1de66e8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			NIGHTSWEATS LASTING MORE THAN 3 WEEKS
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.coughLastingMoraThan3WeeksUuid</property>
+		<defaultValue>e1de63d2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			COUGH LASTING MORE THAN 3 WEEKS
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.weightLossOfMoreThan3KgInLastMonthUuid</property>
+		<defaultValue>e1de6a12-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the WEIGHT LOSS OF MORE THAN 3 KG IN LAST MONTH
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.astheniaUuid</property>
+		<defaultValue>44b63d4c-341b-48f0-baa0-ce88ed7afc71</defaultValue>
+		<description>
+			UUID for the ASTHENIA
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.cohabitantBeingTreatedForTBUuid</property>
+		<defaultValue>e1de6b98-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for COHABITANT BEING TREATED FOR TB
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.lymphadenopathyUuid</property>
+		<defaultValue>e1cfd43e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for LYMPHADENOPATHY
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.TBGenexpertTestUuid</property>
+		<defaultValue>b08eb89b-c609-4d15-ab81-53ad7c745332</defaultValue>
+		<description>
+			UUID for TB GENEXPERT TEST
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.cultureTestUuid</property>
+		<defaultValue>a73de314-89fa-4feb-9085-c81e95c7d0dd</defaultValue>
+		<description>
+			UUID for CULTURE TEST
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.testTBLAMUuid</property>
+		<defaultValue>ef139cb2-97c1-4c0f-9189-5e0711a45b8f</defaultValue>
+		<description>
+			UUID for Test TB LAM
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.positiveUuid</property>
+		<defaultValue>e1d47386-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for POSITIVE
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.negativeUuid</property>
+		<defaultValue>e1d446cc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for NEGATIVE
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.basiloscopiaUuid</property>
+		<defaultValue>e1d1564c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for BASILOSCOPI
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>eptsreports.tbLivroEncounterTypeUuid</property>
 		<defaultValue>e2791b98-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
@@ -227,6 +339,14 @@
 		<defaultValue>142d23c4-c29f-4799-8047-eb3af911fd21</defaultValue>
 		<description>
 			UUID for the Programa de Combate a Tuberculose
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.pulmonaryTBUuid</property>
+		<defaultValue>e1cdd38c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Pulmonary TB
 		</description>
 	</globalProperty>
 
