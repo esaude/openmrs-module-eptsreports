@@ -601,7 +601,7 @@ public class ResumoMensalCohortQueries {
     CohortDefinition a2 = getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2();
     CohortDefinition tb = getPatientScreenedForTb();
 
-    String mappings = "onOrAfter=${startDate},locationList=${location}";
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
     cd.addSearch("A2", mapStraightThrough(a2));
     cd.addSearch("TB", map(tb, mappings));
 
@@ -625,7 +625,7 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
     CohortDefinition tb = getPatientScreenedForTb();
 
-    String mappings = "onOrAfter=${startDate},locationList=${location}";
+    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
     cd.addSearch(
         "Pop",
         map(
@@ -734,6 +734,7 @@ public class ResumoMensalCohortQueries {
   private CohortDefinition getPatientScreenedForTb() {
     CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("locationList", "location", Location.class));
     cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
     cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.FIRST);
