@@ -110,13 +110,22 @@ public class TXTBCohortQueries {
   public CohortDefinition artList() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
+    String mappings = "onOrBefore=${endDate},location=${location}";
+
     cd.addSearch(
         "started-by-end-reporting-period",
-        EptsReportUtils.map(
-            genericCohortQueries.getStartedArtBeforeDate(false),
-            "onOrBefore=${endDate},location=${location}"));
+        EptsReportUtils.map(genericCohortQueries.getStartedArtBeforeDate(false), mappings));
 
-    cd.setCompositionString("started-by-end-reporting-period");
+    cd.addSearch(
+        "trasnferedInProgram",
+        EptsReportUtils.map(hivCohortQueries.getTransferredInViaProgram(false), mappings));
+
+    cd.addSearch(
+        "trasnferedInMasterCard",
+        EptsReportUtils.map(hivCohortQueries.getTransferredInViaMastercard(), mappings));
+
+    cd.setCompositionString(
+        "started-by-end-reporting-period NOT (trasnferedInProgram OR trasnferedInMasterCard)");
     addGeneralParameters(cd);
     return cd;
   }
@@ -300,11 +309,7 @@ public class TXTBCohortQueries {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     addGeneralParameters(definition);
     definition.setName("TxTB - Denominator");
-    definition.addSearch(
-        "art-list",
-        EptsReportUtils.map(
-            genericCohortQueries.getStartedArtBeforeDate(false),
-            "onOrBefore=${endDate},location=${location}"));
+    definition.addSearch("art-list", EptsReportUtils.map(artList(), generalParameterMapping));
     definition.addSearch(
         "tb-screening", EptsReportUtils.map(yesOrNoInvestigationResult(), generalParameterMapping));
     definition.addSearch(
@@ -354,6 +359,7 @@ public class TXTBCohortQueries {
             genericCohortQueries.getStartedArtOnPeriod(false, true),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     definition.setCompositionString("started-on-period");
+
     return definition;
   }
 }
