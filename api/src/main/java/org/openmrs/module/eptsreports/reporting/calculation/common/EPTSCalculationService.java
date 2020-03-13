@@ -22,6 +22,7 @@ import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiEncounterPatientDataDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiObsDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiPatientStateDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiProgramEnrollmentForPatientDefinition;
@@ -414,5 +415,28 @@ public class EPTSCalculationService {
     definition.setLocationList(Arrays.asList(location));
     definition.setWhich(TimeQualifier.ANY);
     return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
+  }
+
+  public CalculationResultMap allEncountersWhereEndDateIsLess(
+      Location location,
+      Date onOrAfter,
+      Date onOrBefore,
+      List<EncounterType> encounterTypes,
+      Collection<Integer> cohort,
+      PatientCalculationContext context) {
+    JembiEncounterPatientDataDefinition def = new JembiEncounterPatientDataDefinition();
+    def.setWhich(TimeQualifier.ANY);
+    def.setLocationList(Arrays.asList(location));
+    if (onOrAfter != null) {
+      def.setOnOrAfter(onOrAfter);
+    }
+    def.setOnOrBefore(onOrBefore);
+    if (encounterTypes != null) {
+      def.setName("all encounters ");
+      def.setTypes(encounterTypes);
+    } else {
+      def.setName("all encounters of any type");
+    }
+    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
   }
 }
