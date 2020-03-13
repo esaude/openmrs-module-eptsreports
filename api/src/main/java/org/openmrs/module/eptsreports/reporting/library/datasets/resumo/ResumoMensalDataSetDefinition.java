@@ -528,7 +528,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
   private Mapped<CohortIndicator> getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1() {
     return mapStraightThrough(
         eptsGeneralIndicator.getIndicator(
-            "Patients under 15 years",
+            "Total patients of A1",
             mapStraightThrough(
                 resumoMensalCohortQueries
                     .getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1())));

@@ -71,17 +71,11 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("A1I");
-    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
-    sqlCohortDefinition.setQuery(
-        getAllPatientsWithPreArtStartDateLessThanReportingStartDate(
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getPreArtStartDate().getConceptId()));
-
-    cd.addSearch("A1I", map(sqlCohortDefinition, "startDate=${startDate},location=${location}"));
+    cd.addSearch(
+        "A1I",
+        map(
+            getNumberOfPatientsInMasterCardWithArtLessThanStartDateA1(),
+            "startDate=${startDate},location=${location}"));
     cd.addSearch(
         "A1II",
         map(
@@ -101,6 +95,19 @@ public class ResumoMensalCohortQueries {
     cd.setCompositionString("(A1I OR A1III OR A1IV) AND NOT A1II");
 
     return cd;
+  }
+
+  public CohortDefinition getNumberOfPatientsInMasterCardWithArtLessThanStartDateA1() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("A1I");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinition.setQuery(
+        getAllPatientsWithPreArtStartDateLessThanReportingStartDate(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getPreArtStartDate().getConceptId()));
+    return sqlCohortDefinition;
   }
 
   /**
@@ -1342,7 +1349,7 @@ public class ResumoMensalCohortQueries {
    *
    * @return CohortDefinition
    */
-  private CohortDefinition
+  public CohortDefinition
       getAllPatientsEnrolledInPreArtProgramWithDateEnrolledLessThanStartDateA1() {
     SqlCohortDefinition sqlPatientsEnrolledInPreART = new SqlCohortDefinition();
     sqlPatientsEnrolledInPreART.setName("patientsEnrolledInPreART");
@@ -1361,12 +1368,12 @@ public class ResumoMensalCohortQueries {
    *
    * @return CohortDefinition
    */
-  private CohortDefinition
+  public CohortDefinition
       getAllPatientsRegisteredInEncounterType5or7WithEncounterDatetimeLessThanStartDateA1() {
     EncounterCohortDefinition cd = new EncounterCohortDefinition();
     cd.addParameter(new Parameter("onOrBefore", "Start Date", Date.class));
     cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.addEncounterType(hivMetadata.getARVPharmaciaEncounterType());
+    cd.addEncounterType(hivMetadata.getARVAdultInitialEncounterType());
     cd.addEncounterType(hivMetadata.getARVPediatriaInitialEncounterType());
     return cd;
   }
