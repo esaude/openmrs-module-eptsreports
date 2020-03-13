@@ -1427,7 +1427,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch("B5E", map(B5E, mappingsOnDate));
     cd.addSearch("B6E", map(B6E, mappingsOnDate));
     cd.addSearch("B7E", map(B7E, mappingsOnDate));
-    cd.addSearch("B8E", map(B8E, "onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch("B8E", map(B8E, mappingsOnOrBeforeLocationList));
 
     cd.setCompositionString("startedArt AND NOT (transferredIn OR B5E  OR B6E  OR B7E OR B8E )");
 
