@@ -534,34 +534,4 @@ public class ResumoMensalQueries {
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     return sub.replace(query);
   }
-
-  /**
-   * Get patients with encounters before end date
-   *
-   * @return String
-   */
-  public static String getPatientsRegistredEncounter6TransferOutStateLessEndDate(
-      int adultoSeguimentoEncounterType, int patientState, int transferOutState) {
-    String query =
-        "SELECT p.patient_id "
-            + "FROM   patient p "
-            + "       JOIN encounter e ON p.patient_id = e.patient_id "
-            + "       JOIN obs state ON state.encounter_id = e.encounter_id "
-            + "       WHERE  p.voided = 0 "
-            + "       AND e.voided = 0 "
-            + "       AND e.encounter_type = ${adultoSeguimentoEncounterType} "
-            + "       AND e.encounter_datetime <= :onOrBefore "
-            + "       AND e.location_id = :location "
-            + "       AND state.voided = 0 "
-            + "       AND state.concept_id = ${patientState} "
-            + "       AND state.value_coded = ${transferOutState} ";
-
-    Map<String, Integer> valuesMap = new HashMap<>();
-    valuesMap.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
-    valuesMap.put("patientState", patientState);
-    valuesMap.put("transferOutState", transferOutState);
-
-    StringSubstitutor sub = new StringSubstitutor(valuesMap);
-    return sub.replace(query);
-  }
 }
