@@ -1266,10 +1266,10 @@ public class ResumoMensalCohortQueries {
         map(
             getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    //    cd.addSearch(
-    //        "Fx3",
-    //        map(getExclusionForF3(),
-    //            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    //        cd.addSearch(
+    //            "Fx3",
+    //            map(getExclusionForF3(),
+    //                "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "Fx3",
         map(
