@@ -311,7 +311,7 @@ public class HivCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition transferredInViaProgram = getTransferredInViaProgram();
+    CohortDefinition transferredInViaProgram = getTransferredInViaProgram(true);
     CohortDefinition mastercard = getTransferredInViaMastercard();
 
     cd.addSearch("program", mapStraightThrough(transferredInViaProgram));
@@ -322,7 +322,7 @@ public class HivCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getTransferredInViaProgram() {
+  public CohortDefinition getTransferredInViaProgram(boolean hasStartDate) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("transferredFromOtherHealthFacility");
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
@@ -333,24 +333,31 @@ public class HivCohortQueries {
         "select p.patient_id from patient p "
             + "inner join patient_program pg on p.patient_id=pg.patient_id "
             + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%d"
-            + " and ps.state=%d"
-            + " and ps.start_date=pg.date_enrolled"
-            + " and ps.start_date between :onOrAfter and :onOrBefore and location_id=:location "
-            + "group by p.patient_id";
+            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=${artProgram}"
+            + " and ps.state=${transferStateId}"
+            + " and ps.start_date=pg.date_enrolled ";
+    if (hasStartDate == true) {
+      query = query + "and ps.start_date between :onOrAfter and :onOrBefore ";
+    } else {
+      query = query + "and ps.start_date <= :onOrBefore ";
+    }
+    query = query + "and location_id= :location group by p.patient_id";
 
-    cd.setQuery(
-        String.format(
-            query,
-            hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata
-                .getTransferredFromOtherHealthFacilityWorkflowState()
-                .getProgramWorkflowStateId()));
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("artProgram", hivMetadata.getARTProgram().getProgramId());
+    valuesMap.put(
+        "transferStateId",
+        hivMetadata
+            .getTransferredFromOtherHealthFacilityWorkflowState()
+            .getProgramWorkflowStateId());
+
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    cd.setQuery(sub.replace(query));
 
     return cd;
   }
 
-  private CohortDefinition getTransferredInViaMastercard() {
+  public CohortDefinition getTransferredInViaMastercard() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));

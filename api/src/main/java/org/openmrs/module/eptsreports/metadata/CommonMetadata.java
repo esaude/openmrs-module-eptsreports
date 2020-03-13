@@ -23,6 +23,25 @@ public class CommonMetadata extends Metadata {
   protected String gpTransferFromOtherFacilityConceptUuid =
       "eptsreports.transferFromOtherFacilityConceptUuid";
 
+  /**
+   * concept_id = 664
+   *
+   * @return
+   */
+  public Concept getNegative() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.NegativeUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * concept_id = 703
+   *
+   * @return
+   */
+  public Concept getPositive() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.positiveUuid");
+    return getConcept(uuid);
+  }
   // CONCEPTS
   // concept_id = 1065
   public Concept getYesConcept() {
