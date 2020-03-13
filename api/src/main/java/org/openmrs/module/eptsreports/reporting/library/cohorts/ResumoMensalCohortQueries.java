@@ -1409,7 +1409,7 @@ public class ResumoMensalCohortQueries {
     CohortDefinition transferredIn =
         getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2();
 
-    CohortDefinition B5E = getPatientsTransferredOutB5E();
+    CohortDefinition B5E = getPatientsTransferredOutB5();
 
     CohortDefinition B6E = getPatientsWhoSuspendedTreatmentB6(false);
 
@@ -1424,7 +1424,7 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch("startedArt", map(startedArt, mappings));
     cd.addSearch("transferredIn", map(transferredIn, mappings));
-    cd.addSearch("B5E", map(B5E, mappingsOnDate));
+    cd.addSearch("B5E", map(B5E, mappings));
     cd.addSearch("B6E", map(B6E, "onOrBefore=${endDate},location=${location}"));
     cd.addSearch("B7E", map(B7E, mappingsOnDate));
     cd.addSearch("B8E", map(B8E, "onOrBefore=${endDate},locationList=${location}"));
