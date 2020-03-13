@@ -739,7 +739,6 @@ public class ResumoMensalCohortQueries {
     cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.FIRST);
     cd.setQuestion(tbMetadata.getHasTbSymptomsConcept());
     cd.setOperator(SetComparator.IN);
-    cd.addValue(hivMetadata.getYesConcept());
     return cd;
   }
 
