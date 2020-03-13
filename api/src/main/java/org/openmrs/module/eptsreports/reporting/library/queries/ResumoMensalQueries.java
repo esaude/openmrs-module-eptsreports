@@ -141,23 +141,56 @@ public class ResumoMensalQueries {
   }
 
   public static String getPatientsForF2ForExclusionFromMainQuery(
-      int adultoSeguimentoEncounterType, int tbTreatmentPlanConcept) {
+		  int  adultoSeguimentoEncounterType,
+		  int  hasTbSymptomsConcept,
+		  int  patientFoundYesConcept,
+		  int  noConcept,
+		  int  tBTreatmentPlanConcept) {
+	  
+	  Map<String, Integer> valuesMap = new HashMap<>();
+	    valuesMap.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
+	    valuesMap.put("hasTbSymptomsConcept", hasTbSymptomsConcept);
+	    valuesMap.put("patientFoundYesConcept", patientFoundYesConcept);
+	    valuesMap.put("noConcept", noConcept);	    
+	    valuesMap.put("tBTreatmentPlanConcept", tBTreatmentPlanConcept);
     String query =
-        "SELECT p.patient_id "
-            + "FROM patient p "
-            + " INNER JOIN encounter e "
-            + " 	ON p.patient_id = e.patient_id "
-            + " INNER JOIN obs o "
-            + " ON o.encounter_id = e.encounter_id "
-            + " WHERE e.location_id = :location AND e.encounter_type = ${adultoSeguimentoEncounterType} AND o.concept_id = ${tbTreatmentPlanConcept} "
-            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate "
-            + " AND p.voided = 0 "
-            + " AND e.voided = 0 "
-            + " AND o.voided = 0 ";
+        "SELECT  pp.patient_id " + 
+        "FROM patient  pp " + 
+        "    INNER JOIN   ( " + 
+        "        SELECT p.patient_id,  e.encounter_datetime screening_date " + 
+        "        FROM patient p " + 
+        "            INNER  JOIN encounter e  " + 
+        "                ON p.patient_id=e.patient_id  " + 
+        "            INNER  JOIN obs o  " + 
+        "                ON e.encounter_id=o.encounter_id  " + 
+        "        WHERE p.voided = 0  " + 
+        "            AND e.voided = 0  " + 
+        "            AND o.voided = 0  " + 
+        "            AND e.location_id = :location  " + 
+        "            AND e.encounter_datetime  " + 
+        "                BETWEEN :startDate AND :endDate " + 
+        "            AND e.encounter_type= ${adultoSeguimentoEncounterType} " + 
+        "            AND o.concept_id= ${hasTbSymptomsConcept} " + 
+        "            AND (o.value_coded= ${patientFoundYesConcept} OR o.value_coded  = ${noConcept}) " + 
+        "        GROUP BY p.patient_id " + 
+        "    ) screening   " + 
+        "        ON screening.patient_id = pp.patient_id     " + 
+        "    INNER JOIN  encounter ee " + 
+        "        ON ee.patient_id = pp.patient_id " + 
+        "    INNER JOIN  obs oo " + 
+        "        ON ee.encounter_id = oo.encounter_id " + 
+        "WHERE  ee.voided = 0 " + 
+        "    AND pp.voided =0 " + 
+        "    AND oo.voided =0       "
+        + "  AND ee.location_id = :location  "
+        + "  AND ee.encounter_type= ${adultoSeguimentoEncounterType} " + 
+        "    AND ee.encounter_datetime BETWEEN :startDate AND :endDate " + 
+        "    AND oo.concept_id = ${tBTreatmentPlanConcept} " + 
+        "    AND ee.encounter_datetime =  :endDate " + 
+        "GROUP BY pp.patient_id " + 
+        "";
 
-    Map<String, Integer> valuesMap = new HashMap<>();
-    valuesMap.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
-    valuesMap.put("tbTreatmentPlanConcept", tbTreatmentPlanConcept);
+   
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     return sub.replace(query);
   }
@@ -200,9 +233,16 @@ public class ResumoMensalQueries {
    */
   public static String getPatientsWithGivenEncounterType(int encounterType) {
     String query =
-        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id "
-            + " WHERE e.encounter_type=%d AND e.location_id=:location "
-            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate AND p.voided=0 AND e.voided=0 ";
+        " SELECT p.patient_id "
+        + " FROM patient p "
+        + "	INNER JOIN encounter e "
+        + "		ON p.patient_id=e.patient_id "
+        + " WHERE e.encounter_type= %d "
+        + "		AND e.location_id=:location "
+        + " 	AND e.encounter_datetime "
+        + "			BETWEEN :startDate AND :endDate "
+        + "		AND p.voided=0 "
+        + "		AND e.voided=0 ";
     return String.format(query, encounterType);
   }
 

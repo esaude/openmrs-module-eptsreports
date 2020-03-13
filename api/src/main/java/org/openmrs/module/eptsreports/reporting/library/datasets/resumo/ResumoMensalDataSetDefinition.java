@@ -475,7 +475,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
                 "F1",
                 map(
                     resumoMensalCohortQueries
-                        .getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonth(),
+                        .getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1(),
                     mappings)),
             mappings),
         "");
@@ -488,7 +488,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
                 "F2",
                 map(
                     resumoMensalCohortQueries
-                        .getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthAndScreenedFoTb(),
+                        .getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthAndScreenedForTbF2(),
                     mappings)),
             mappings),
         "");
@@ -501,7 +501,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
                 "F3",
                 map(
                     resumoMensalCohortQueries
-                        .getNumberOfPatientsWithAtLeastOneClinicalAppointmentDuringTheYear(),
+                        .getNumberOfPatientsWithAtLeastOneClinicalAppointmentDuringTheYearF3(),
                     mappings)),
             mappings),
         "");
