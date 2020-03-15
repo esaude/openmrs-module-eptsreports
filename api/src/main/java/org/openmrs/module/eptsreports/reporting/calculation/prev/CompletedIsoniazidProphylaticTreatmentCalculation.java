@@ -49,7 +49,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
 
   private static final int NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED = 5;
 
-  private static final int MONTHS_TO_CHECK_FOR_ISONIAZID_USAGE = 6;
+  private static final int MONTHS_TO_CHECK_FOR_ISONIAZID_USAGE = 7;
 
   private static final int MINIMUM_DURATION_IN_DAYS = 173;
 
