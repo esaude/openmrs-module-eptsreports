@@ -197,7 +197,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
     Date isoniazidUsageEndDate = getIsoniazidUsageEndDate(startDate);
     for (Obs obs : isoniazidUsageObservations) {
       Date date = obs.getObsDatetime();
-      if (date.compareTo(startDate) >= 0 && date.compareTo(isoniazidUsageEndDate) <= 0) {
+      if (date.compareTo(startDate) > 0 && date.compareTo(isoniazidUsageEndDate) <= 0) {
         count++;
       }
     }
