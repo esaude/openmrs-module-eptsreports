@@ -109,34 +109,6 @@ public class ResumoTrimestralQueries {
         .evaluateToList(qb, Integer.class, context);
   }
 
-  public static List<Integer> findPatientsWhoAbandonedArtTreatmentToExcludeUntilStartDate(
-      EvaluationContext context, MonthlyDateRange monthlyDateRange) {
-    SqlQueryBuilder qb = new SqlQueryBuilder();
-    qb.append(
-        IResumoTrimestralQueries.QUERY.findPatientsWhoAbandonedArtTreatmentToExcludeUntilStartDate);
-    qb.addParameter("startDate", monthlyDateRange.getStartDate());
-    qb.addParameter("endDate", monthlyDateRange.getEndDate());
-    qb.addParameter("location", (Location) context.getParameterValue("location"));
-
-    return Context.getRegisteredComponents(EvaluationService.class)
-        .get(0)
-        .evaluateToList(qb, Integer.class, context);
-  }
-
-  public static List<Integer> getPatientsWhoAbandonedTratmentUntilStartDateExclusion2(
-      EvaluationContext context, MonthlyDateRange monthlyDateRange) {
-    SqlQueryBuilder qb = new SqlQueryBuilder();
-    qb.append(
-        IResumoTrimestralQueries.QUERY.findPatientsWhoAbandonedArtTreatmentToExcludeUntilStartDate);
-    qb.addParameter("startDate", monthlyDateRange.getStartDate());
-    qb.addParameter("endDate", monthlyDateRange.getEndDate());
-    qb.addParameter("location", (Location) context.getParameterValue("location"));
-
-    return Context.getRegisteredComponents(EvaluationService.class)
-        .get(0)
-        .evaluateToList(qb, Integer.class, context);
-  }
-
   public static List<Integer> findPatientsWhoStillInFirstLine(
       EvaluationContext context, MonthlyDateRange monthlyDateRange) {
     SqlQueryBuilder qb = new SqlQueryBuilder();

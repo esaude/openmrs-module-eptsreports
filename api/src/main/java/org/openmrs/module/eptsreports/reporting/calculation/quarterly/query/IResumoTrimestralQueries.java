@@ -14,12 +14,14 @@ public interface IResumoTrimestralQueries {
 
     public static final String
         findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard =
-            "SELECT p.patient_id from patient p "
-                + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            "SELECT tr.patient_id from  ("
+                + "SELECT p.patient_id, MIN(obsData.value_datetime) from patient p  "
+                + "INNER JOIN encounter e ON p.patient_id=e.patient_id  "
                 + "INNER JOIN obs obsTrans ON e.encounter_id=obsTrans.encounter_id AND obsTrans.voided=0 AND obsTrans.concept_id=1369 AND obsTrans.value_coded=1065 "
                 + "INNER JOIN obs obsTarv ON e.encounter_id=obsTarv.encounter_id AND obsTarv.voided=0 AND obsTarv.concept_id=6300 AND obsTarv.value_coded=6276 "
-                + "WHERE p.voided=0 AND e.voided=0 AND e.encounter_type=53 AND obsTrans.obs_datetime BETWEEN :startDate -interval 1 year AND :endDate AND e.location_id=:location";
-
+                + "INNER JOIN obs obsData ON e.encounter_id=obsData.encounter_id AND obsData.voided=0 AND obsData.concept_id=23891 "
+                + "WHERE p.voided=0 AND e.voided=0 AND e.encounter_type=53 AND obsData.value_datetime BETWEEN :startDate -interval 1 year AND :endDate AND e.location_id=:location GROUP BY p.patient_id "
+                + ") tr GROUP BY tr.patient_id ";
     public static final String findPatientsWhoAreNewlyEnrolledOnART =
         "SELECT patient_id FROM "
             + "(SELECT patient_id, MIN(art_start_date) art_start_date FROM "
@@ -71,7 +73,7 @@ public interface IResumoTrimestralQueries {
                 + "inner join encounter e on p.patient_id=e.patient_id "
                 + "inner join obs o on e.encounter_id=o.encounter_id "
                 + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=52 and o.concept_id=23866 and o.value_datetime is not null and o.value_datetime<=:endDate and e.location_id=:location group by p.patient_id) consultaLev group by patient_id) consultaOuARV on transferidopara.patient_id=consultaOuARV.patient_id "
-                + "where consultaOuARV.encounter_datetime<transferidopara.data_transferidopara and transferidopara.data_transferidopara between :startDate -interval 1 year AND :endDate ";
+                + "where consultaOuARV.encounter_datetime <= transferidopara.data_transferidopara and transferidopara.data_transferidopara between :startDate -interval 1 year AND :endDate ";
 
     public static String findPatientsWhoWereSuspendTreatment =
         "select suspenso1.patient_id from ( "
@@ -150,42 +152,14 @@ public interface IResumoTrimestralQueries {
             + "inner join encounter e on p.patient_id=e.patient_id where encounter_type=18 and e.encounter_datetime <=:endDate and e.location_id=:location and e.voided=0 and p.voided=0 group by p.patient_id)fila "
             + "inner join obs obs_fila on obs_fila.person_id=fila.patient_id "
             + "where obs_fila.voided=0 and obs_fila.concept_id=5096 and fila.data_levantamento=obs_fila.obs_datetime) maxFilaRecepcao group by patient_id "
-            + "having date_add(max(data_proximo_levantamento), INTERVAL 60 day )<= :endDate )B7 ";
-
-    public static String findPatientsWhoAbandonedArtTreatmentToExcludeUntilStartDate =
-        "Select B7.patient_id from (select patient_id,max(data_levantamento) data_levantamento,max(data_proximo_levantamento) data_proximo_levantamento, date_add(max(data_proximo_levantamento), INTERVAL 60 day) data_proximo_levantamento60 "
-            + "from(select p.patient_id,max(o.value_datetime) data_levantamento, date_add(max(o.value_datetime), INTERVAL 30 day)  data_proximo_levantamento "
-            + "from patient p inner join encounter e on p.patient_id = e.patient_id "
-            + "inner join obs o on o.encounter_id = e.encounter_id "
-            + "where e.voided = 0 and p.voided = 0 and o.value_datetime < :startDate -interval 1 year and o.voided = 0 and o.concept_id = 23866 and e.encounter_type=52 and e.location_id=:location "
-            + "group by p.patient_id union "
-            + "select fila.patient_id, fila.data_levantamento,obs_fila.value_datetime data_proximo_levantamento from ( "
-            + "select p.patient_id,max(e.encounter_datetime) as data_levantamento from patient p "
-            + "inner join encounter e on p.patient_id=e.patient_id where encounter_type=18 and e.encounter_datetime < :startDate -interval 1 year and e.location_id=:location and e.voided=0 and p.voided=0 group by p.patient_id)fila "
-            + "inner join obs obs_fila on obs_fila.person_id=fila.patient_id "
-            + "where obs_fila.voided=0 and obs_fila.concept_id=5096 and fila.data_levantamento=obs_fila.obs_datetime) maxFilaRecepcao group by patient_id "
-            + "having date_add(max(data_proximo_levantamento), INTERVAL 60 day )< :startDate -interval 1 year)B7 ";
-
-    public static String getPatientsWhoAbandonedTratmentUntilStartDateExclusion2 =
-        "Select B7.patient_id from (select patient_id,max(data_levantamento) data_levantamento,max(data_proximo_levantamento) data_proximo_levantamento, date_add(max(data_proximo_levantamento), INTERVAL 60 day) data_proximo_levantamento60 "
-            + "from(select p.patient_id,max(o.value_datetime) data_levantamento, date_add(max(o.value_datetime), INTERVAL 30 day)  data_proximo_levantamento "
-            + "from patient p inner join encounter e on p.patient_id = e.patient_id "
-            + "inner join obs o on o.encounter_id = e.encounter_id "
-            + "where e.voided = 0 and p.voided = 0 and o.value_datetime < :startDate -interval 1 year and o.voided = 0 and o.concept_id = 23866 and e.encounter_type=52 and e.location_id=:location "
-            + "group by p.patient_id union "
-            + "select fila.patient_id, fila.data_levantamento,obs_fila.value_datetime data_proximo_levantamento from ( "
-            + "select p.patient_id,max(e.encounter_datetime) as data_levantamento from patient p "
-            + "inner join encounter e on p.patient_id=e.patient_id where encounter_type=18 and e.encounter_datetime < :startDate -interval 1 year and e.location_id=:location and e.voided=0 and p.voided=0 group by p.patient_id)fila "
-            + "inner join obs obs_fila on obs_fila.person_id=fila.patient_id "
-            + "where obs_fila.voided=0 and obs_fila.concept_id=5096 and fila.data_levantamento=obs_fila.obs_datetime) maxFilaRecepcao group by patient_id "
-            + "having date_add(max(data_proximo_levantamento), INTERVAL 60 day )< :startDate -interval 1 year)B7 ";
+            + "having date_add(max(data_proximo_levantamento), INTERVAL 60 day )<:endDate )B7 ";
 
     public static String getPatientsWhoStillInFirstLine =
         "select table_result.patient_id from ( "
             + "select ultima_consulta.patient_id,ultima_consulta.data_ultima_linha "
             + "       , obs_primeira_linha.value_coded primeira_linha_value "
             + "       , obs_outra_linha.value_coded outra_linha_value from "
-            + "  ( select e.patient_id, max(e.encounter_datetime) data_ultima_linha, e.encounter_id "
+            + "  ( select e.patient_id, max(e.encounter_datetime) data_ultima_linha "
             + "   from encounter e join obs o on o.encounter_id = e.encounter_id "
             + "   where e.encounter_type = 6 and e.voided = 0 and o.voided = 0 "
             + "    and e.encounter_datetime <= :endDate and e.location_id = :location group by e.patient_id ) ultima_consulta "
@@ -193,14 +167,12 @@ public interface IResumoTrimestralQueries {
             + "        (obs_primeira_linha.person_id = ultima_consulta.patient_id "
             + "         and obs_primeira_linha.voided=0 "
             + "         and obs_primeira_linha.obs_datetime = ultima_consulta.data_ultima_linha "
-            + "         and obs_primeira_linha.encounter_id = ultima_consulta.encounter_id "
             + "         and obs_primeira_linha.concept_id =21151  "
             + "         and obs_primeira_linha.value_coded =21150 "
             + "         and obs_primeira_linha.location_id =:location) left join obs obs_outra_linha  on "
             + "        (obs_outra_linha.person_id = ultima_consulta.patient_id "
             + "         and obs_outra_linha.voided=0 "
             + "         and obs_outra_linha.obs_datetime = ultima_consulta.data_ultima_linha "
-            + "         and obs_outra_linha.encounter_id = ultima_consulta.encounter_id "
             + "         and obs_outra_linha.concept_id =21151 and obs_outra_linha.location_id =:location "
             + "         and obs_outra_linha.value_coded <> 21150) group by patient_id) table_result "
             + "         where (primeira_linha_value is not null and outra_linha_value is null) "
@@ -210,13 +182,13 @@ public interface IResumoTrimestralQueries {
         "select encounter.patient_id from  encounter "
             + " join obs on obs.encounter_id = encounter.encounter_id "
             + " where encounter.encounter_type =6 and obs.voided = 0 and encounter.voided =0 "
-            + " and obs.concept_id =856 and obs.value_numeric is not null "
+            + " and obs.concept_id in (856,1305) "
             + " and encounter.encounter_datetime  <= :endDate and encounter.location_id =:location";
 
     public static String findPatientsWhoAreInSecondLine =
         "select table_result.patient_id from ( "
             + "select ultima_consulta.patient_id,ultima_consulta.data_ultima_linha from "
-            + "( select e.patient_id, max(e.encounter_datetime) data_ultima_linha, e.encounter_id "
+            + "( select e.patient_id, max(e.encounter_datetime) data_ultima_linha "
             + " from encounter e join obs o on o.encounter_id = e.encounter_id "
             + " where e.encounter_type = 6 and e.voided = 0 and o.voided = 0 "
             + "  and e.encounter_datetime <=:endDate and e.location_id = :location group by e.patient_id) ultima_consulta "
@@ -224,7 +196,6 @@ public interface IResumoTrimestralQueries {
             + "      (obs_outra_linha.person_id = ultima_consulta.patient_id "
             + "       and obs_outra_linha.voided=0 "
             + "       and obs_outra_linha.obs_datetime = ultima_consulta.data_ultima_linha "
-            + "       and obs_outra_linha.encounter_id = ultima_consulta.encounter_id "
             + "       and obs_outra_linha.concept_id =21151 and obs_outra_linha.location_id =:location "
             + "       and obs_outra_linha.value_coded =21148) group by patient_id) table_result";
   }

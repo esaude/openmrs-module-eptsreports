@@ -5,7 +5,6 @@ import java.util.Map;
 import org.openmrs.module.eptsreports.reporting.calculation.quarterly.MonthlyDateRange;
 import org.openmrs.module.eptsreports.reporting.calculation.quarterly.MonthlyDateRange.Month;
 import org.openmrs.module.eptsreports.reporting.calculation.quarterly.ResumoTrimestralMonthPeriodCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.quarterly.indicator.ResumoTrimestralIndicatorCalculationB;
 import org.openmrs.module.eptsreports.reporting.calculation.quarterly.indicator.ResumoTrimestralIndicatorCalculationE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -189,7 +188,7 @@ public class ResumoTrimestralIndicatorFactoryE {
 
   @Component
   public static class NovemberResumoTrimestralCalculation
-      extends ResumoTrimestralIndicatorCalculationB {
+      extends ResumoTrimestralIndicatorCalculationE {
     @Override
     public MonthlyDateRange getMonthlExecutionPeriod(
         Map<Month, MonthlyDateRange> mapRangesByMonth) {

@@ -72,10 +72,33 @@ public class ResumoTrimestralCohortQueries {
     return cd;
   }
 
+  public CohortDefinition getPatientsWhoWereRegisteredAsDead(
+      Month month,
+      ResumoTrimestralMonthPeriodCalculation calculator,
+      CohortDefinition cohortDefinitionD) {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("L - Get patients who Were Registered as Dead month " + month);
+    cd.addParameter(new Parameter("year", "Year", String.class));
+    cd.addParameter(new Parameter("quarter", "Quarter", String.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    String mapping = "year=${year},quarter=${quarter},location=${location}";
+
+    cd.addSearch("D", EptsReportUtils.map(cohortDefinitionD, mapping));
+    cd.addSearch(
+        "Died",
+        EptsReportUtils.map(
+            this.getPatientsWhoHaveInitiatedArtTreatmentCalculation(month, calculator), mapping));
+
+    cd.setCompositionString("D AND Died");
+    return cd;
+  }
+
   public CohortDefinition getPatientsWhoAbandonedArtTreatment(
       Month month,
       ResumoTrimestralMonthPeriodCalculation calculatorJ,
-      CohortDefinition cohortDefinitionC,
       CohortDefinition cohortDefinitionD,
       CohortDefinition cohortDefinitionI,
       CohortDefinition cohortDefinitionL) {
@@ -90,12 +113,11 @@ public class ResumoTrimestralCohortQueries {
 
     cd.addSearch(
         "J", EptsReportUtils.map(this.getPatientsForMonthlyCohort(month, calculatorJ), mapping));
-    cd.addSearch("C", EptsReportUtils.map(cohortDefinitionC, mapping));
     cd.addSearch("D", EptsReportUtils.map(cohortDefinitionD, mapping));
     cd.addSearch("I", EptsReportUtils.map(cohortDefinitionI, mapping));
     cd.addSearch("L", EptsReportUtils.map(cohortDefinitionL, mapping));
 
-    cd.setCompositionString("(J AND D) NOT (C OR I OR L)");
+    cd.setCompositionString("(J AND D) NOT (I OR L)");
 
     return cd;
   }
@@ -152,6 +174,33 @@ public class ResumoTrimestralCohortQueries {
     cd.addSearch("L", EptsReportUtils.map(cohortDefinitionL, mapping));
 
     cd.setCompositionString("(D NOT (I OR J OR L)) AND G");
+
+    return cd;
+  }
+
+  public CohortDefinition findPatientsWhoHaveSuspendedTreatment(
+      Month month,
+      ResumoTrimestralMonthPeriodCalculation calculatoE,
+      ResumoTrimestralMonthPeriodCalculation calculatoI,
+      CohortDefinition cohortDefinitionD,
+      CohortDefinition cohortDefinitionL) {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("I - Patients Who Have Suspended Treatment " + month);
+    cd.addParameter(new Parameter("year", "Year", String.class));
+    cd.addParameter(new Parameter("quarter", "Quarter", String.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    String mapping = "year=${year},quarter=${quarter},location=${location}";
+
+    cd.addSearch("D", EptsReportUtils.map(cohortDefinitionD, mapping));
+    cd.addSearch(
+        "E", EptsReportUtils.map(this.getPatientsForMonthlyCohort(month, calculatoE), mapping));
+    cd.addSearch(
+        "I", EptsReportUtils.map(this.getPatientsForMonthlyCohort(month, calculatoI), mapping));
+    cd.addSearch("L", EptsReportUtils.map(cohortDefinitionL, mapping));
+
+    cd.setCompositionString("(D AND E NOT (L)) AND I");
 
     return cd;
   }

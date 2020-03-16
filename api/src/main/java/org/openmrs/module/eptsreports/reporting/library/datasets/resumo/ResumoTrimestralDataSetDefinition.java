@@ -152,23 +152,12 @@ public class ResumoTrimestralDataSetDefinition extends BaseDataSet {
           month,
           iteration,
           "D-month-",
-          "D: Transferidos para - ");
+          "D: Coorte Actual - ");
       listMap.putInList("D", definitionForSectionD);
 
-      CohortDefinition definitionForSectionI =
-          resumoTrimestralCohortQueries.getPatientsForMonthlyCohort(month, calculatorI);
-      this.addColumnForMonth(
-          dsd,
-          definitionForSectionI,
-          mappings,
-          month,
-          iteration,
-          "I-month-",
-          "I: Coorte actual - Suspensões ao completar 12 meses - ");
-      listMap.putInList("I", definitionForSectionI);
-
       CohortDefinition definitionForSectionL =
-          resumoTrimestralCohortQueries.getPatientsForMonthlyCohort(month, calculatorL);
+          resumoTrimestralCohortQueries.getPatientsWhoWereRegisteredAsDead(
+              month, calculatorL, definitionForSectionD);
       this.addColumnForMonth(
           dsd,
           definitionForSectionL,
@@ -179,11 +168,23 @@ public class ResumoTrimestralDataSetDefinition extends BaseDataSet {
           "L: Coorte actual - Suspensões ao completar 12 meses - ");
       listMap.putInList("L", definitionForSectionL);
 
+      CohortDefinition definitionForSectionI =
+          resumoTrimestralCohortQueries.findPatientsWhoHaveSuspendedTreatment(
+              month, calculatorE, calculatorI, definitionForSectionD, definitionForSectionL);
+      this.addColumnForMonth(
+          dsd,
+          definitionForSectionI,
+          mappings,
+          month,
+          iteration,
+          "I-month-",
+          "I: Coorte actual - Suspensões ao completar 12 meses - ");
+      listMap.putInList("I", definitionForSectionI);
+
       CohortDefinition definitionForSectionJ =
           resumoTrimestralCohortQueries.getPatientsWhoAbandonedArtTreatment(
               month,
               calculatorJ,
-              definitionForSectionC,
               definitionForSectionD,
               definitionForSectionI,
               definitionForSectionL);

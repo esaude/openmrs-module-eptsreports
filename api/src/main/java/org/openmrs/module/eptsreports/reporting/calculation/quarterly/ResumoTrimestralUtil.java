@@ -34,10 +34,10 @@ public class ResumoTrimestralUtil {
       calendar.setTime(date);
       int lastDayOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
       calendar.set(Calendar.DAY_OF_MONTH, lastDayOfMonth);
-      result.add(DateUtil.getEndOfDay(calendar.getTime()));
+      result.add(DateUtil.getStartOfDay(calendar.getTime()));
     }
     result.remove(allStartDates.size() - 1);
-    result.add(DateUtil.getEndOfDay(endDate));
+    result.add(DateUtil.getStartOfDay(endDate));
     return result;
   }
 

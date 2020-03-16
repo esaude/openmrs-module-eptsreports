@@ -95,8 +95,8 @@ public class SetupResumoTrimestralReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "Relatorio_Trimestral.xls",
-              "Relatorio Trimestral",
+              "Resumo_Trimestral.xls",
+              "Resumo Trimestral",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
