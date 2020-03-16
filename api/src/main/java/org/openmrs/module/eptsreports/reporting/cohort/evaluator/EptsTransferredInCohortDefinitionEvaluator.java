@@ -66,7 +66,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("       AND transf.value_coded = :yes ");
 
     q.append("       AND opening.voided = 0 ");
-    q.append("       AND opening.concept_id = :dateOfMasterCardFileOpening");
+    q.append("       AND opening.concept_id = :dateOfMasterCardFileOpening ");
 
     if (cd.getOnOrAfter() == null) {
       q.append("     AND opening.value_datetime < :onOrBefore ");
@@ -88,8 +88,13 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("        ON p.patient_id=pp.patient_id ");
     q.append("    JOIN patient_state ps  ");
     q.append("        ON ps.patient_program_id=pp.patient_program_id ");
-    q.append("WHERE  pp.program_id = :programEnrolled ");
-    q.append("    AND ps.state = :transferredInState ");
+    if (cd.getProgramEnrolled2() == null) {
+      q.append("WHERE  pp.program_id = :programEnrolled ");
+      q.append("    AND ps.state = :transferredInState ");
+    } else {
+      q.append("WHERE  (pp.program_id = :programEnrolled AND ps.state = :transferredInState) OR ");
+      q.append(" (pp.program_id = :programEnrolled2 AND ps.state = :transferredInState2) ");
+    }
     if (cd.getOnOrAfter() == null) {
       q.append("     AND ps.start_date <= :onOrBefore ");
     } else if (cd.getOnOrBefore() == null) {
@@ -106,13 +111,17 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.addParameter("yes", hivMetadata.getYesConcept());
     q.addParameter("typeOfPatient", hivMetadata.getTypeOfPatientTransferredFrom());
     Program programEnrolled = cd.getProgramEnrolled();
+    Program programEnrolled2 = cd.getProgramEnrolled2();
     ProgramWorkflowState programWorkflowState = cd.getPatientState();
+    ProgramWorkflowState programWorkflowState2 = cd.getPatientState2();
 
     q.addParameter("preTarv", hivMetadata.getPreTarvConcept());
     q.addParameter("tarv", hivMetadata.getArtStatus());
     q.addParameter("dateOfMasterCardFileOpening", hivMetadata.getDateOfMasterCardFileOpening());
     q.addParameter("programEnrolled", programEnrolled);
+    q.addParameter("programEnrolled2", programEnrolled2);
     q.addParameter("transferredInState", programWorkflowState);
+    q.addParameter("transferredInState2", programWorkflowState2);
     q.addParameter("location", cd.getLocation());
     q.addParameter("onOrAfter", cd.getOnOrAfter());
     q.addParameter("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(cd.getOnOrBefore()));

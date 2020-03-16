@@ -176,9 +176,11 @@ public class ResumoMensalCohortQueries {
       getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2() {
 
     EptsTransferredInCohortDefinition cd = new EptsTransferredInCohortDefinition();
-    cd.setTypeOfPatientTransferredFromAnswer(hivMetadata.getPreTarvConcept());
+    // cd.setTypeOfPatientTransferredFromAnswer(hivMetadata.getPreTarvConcept());
     cd.setProgramEnrolled(hivMetadata.getHIVCareProgram());
+    cd.setProgramEnrolled2(hivMetadata.getARTProgram());
     cd.setPatientState(hivMetadata.getArtCareTransferredFromOtherHealthFacilityWorkflowState());
+    cd.setPatientState2(hivMetadata.getArtTransferredFromOtherHealthFacilityWorkflowState());
     cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -1431,7 +1433,9 @@ public class ResumoMensalCohortQueries {
     cd.setName(
         "Number of patients transferred-in from another HF during a period less than startDate");
     cd.setProgramEnrolled(hivMetadata.getHIVCareProgram());
+    cd.setProgramEnrolled2(hivMetadata.getARTProgram());
     cd.setPatientState(hivMetadata.getArtCareTransferredFromOtherHealthFacilityWorkflowState());
+    cd.setPatientState2(hivMetadata.getArtTransferredFromOtherHealthFacilityWorkflowState());
     cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     return cd;
