@@ -437,7 +437,7 @@ public class ResumoMensalQueries {
             + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
             + " AND e.encounter_datetime < :startDate "
             + " AND p.voided=0 AND e.voided=0 ";
-    return String.format(query, encounterType, encounterType);
+    return String.format(query, encounterType);
   }
 
   /**

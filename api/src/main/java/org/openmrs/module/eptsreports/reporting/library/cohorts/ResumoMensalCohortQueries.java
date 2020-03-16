@@ -29,7 +29,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.CodedObsOnFirstOrSecondEncounterCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.resumo.MoreThanOneEncounterInStatisticalYearCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.ResumoMensalTransferredOutCohortDefinition;
@@ -1261,38 +1260,35 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
+    
+    String mappings ="startDate=${startDate},endDate=${endDate},location=${location}";
     cd.addSearch(
         "F1",
         map(
             getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            mappings));
 
-    cd.addSearch(
-        "Fx3",
-        map(
-            genericCohortQueries.generalSql(
-                "Fx3",
-                getF3Exclusion(
-                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch("Fx3",map(getExclusionForF3(),mappings));
+    
+    cd.addSearch("B2i", map(null, mappings));
+    
+    cd.addSearch("B2ii", map(null, mappings));
 
     cd.setCompositionString("F1 AND NOT Fx3");
     return cd;
   }
 
-  public CohortDefinition getExclusionForF3() {
-    CalculationCohortDefinition exclusionForF3 =
-        new CalculationCohortDefinition(
-            Context.getRegisteredComponents(MoreThanOneEncounterInStatisticalYearCalculation.class)
-                .get(0));
-    exclusionForF3.setName("Exclusions");
-    exclusionForF3.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
-    exclusionForF3.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
-    exclusionForF3.addParameter(new Parameter("location", "Location", Location.class));
-    exclusionForF3.addCalculationParameter(
-        "encounter_type", hivMetadata.getAdultoSeguimentoEncounterType());
-
-    return exclusionForF3;
+ 
+  
+  public  CohortDefinition getExclusionForF3() {
+	  SqlCohortDefinition sql  = new SqlCohortDefinition();
+	  sql.setName("Exclusions");
+	  sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
+	  sql.addParameter(new Parameter("endDate", "End Date", Date.class));
+	  sql.addParameter(new Parameter("location", "Location", Location.class));
+	  sql.setQuery(getF3Exclusion(hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
+	  
+	  return sql;
   }
 
   /**
