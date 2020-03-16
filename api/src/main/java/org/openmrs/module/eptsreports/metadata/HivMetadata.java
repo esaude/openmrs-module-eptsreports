@@ -596,8 +596,8 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // Concept 1257 Continue Regimen
-  public Concept getContinueRegimen() {
+  /** Concept 1257 Continue Regimen */
+  public Concept getContinueRegimenConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.continueRegimen");
     return getConcept(uuid);

@@ -40,7 +40,7 @@ public class DsdQueries {
         new HivMetadata().getSingleStop().getConceptId(), // pu
         new HivMetadata().getCommunityDispensation().getConceptId(), // dc
         new HivMetadata().getStartDrugs().getConceptId(),
-        new HivMetadata().getContinueRegimen().getConceptId());
+        new HivMetadata().getContinueRegimenConcept().getConceptId());
   }
 
   /**

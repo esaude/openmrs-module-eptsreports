@@ -1411,12 +1411,7 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
-
-    CohortDefinition fila =
-        genericCohortQueries.hasEncounter(hivMetadata.getARVPharmaciaEncounterType());
-
-    CohortDefinition masterCardPickup = getPatientsWithMasterCardDrugPickUpDate();
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtBeforeDate(false);
 
     CohortDefinition transferredIn =
         getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2();
@@ -1429,25 +1424,18 @@ public class ResumoMensalCohortQueries {
 
     CohortDefinition B8E = getPatientsWhoDied(false);
 
-    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
-
     String mappingsOnDate = "onOrBefore=${endDate},location=${location}";
     String mappingsOnOrBeforeLocationList = "onOrBefore=${endDate},locationList=${location}";
 
-    cd.addSearch("startedArt", map(startedArt, mappings));
-
-    cd.addSearch("fila", map(fila, "onOrBefore=${endDate},locationList=${location}"));
-
-    cd.addSearch("masterCardPickup", map(masterCardPickup, mappingsOnOrBeforeLocationList));
-
-    cd.addSearch("transferredIn", map(transferredIn, mappings));
-    cd.addSearch("B5E", map(B5E, mappings));
-    cd.addSearch("B6E", map(B6E, "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch("startedArt", map(startedArt, mappingsOnDate));
+    cd.addSearch("transferredIn", map(transferredIn, mappingsOnDate));
+    cd.addSearch("B5E", map(B5E, mappingsOnDate));
+    cd.addSearch("B6E", map(B6E, mappingsOnDate));
     cd.addSearch("B7E", map(B7E, mappingsOnDate));
-    cd.addSearch("B8E", map(B8E, "onOrBefore=${endDate},locationList=${location}"));
+    cd.addSearch("B8E", map(B8E, mappingsOnOrBeforeLocationList));
 
     cd.setCompositionString(
-        "startedArt AND (fila OR masterCardPickup) AND NOT  (transferredIn OR B5E  OR B6E  OR B7E OR B8E )");
+        "(startedArt AND NOT transferredIn) AND NOT (B5E  OR B6E  OR B7E OR B8E )");
 
     return cd;
   }
