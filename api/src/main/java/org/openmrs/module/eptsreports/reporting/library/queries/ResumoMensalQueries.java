@@ -449,7 +449,7 @@ public class ResumoMensalQueries {
     query.append(
         "                                 AND enc.encounter_type = ${arvPharmaciaEncounterType}   ");
     query.append("                                 AND enc.location_id = :location   ");
-    query.append("                                 AND enc.encounter_datetime < :date   ");
+    query.append("                                 AND enc.encounter_datetime <= :date   ");
     query.append("                             GROUP  BY pa.patient_id) fila   ");
     query.append("                         INNER JOIN encounter e on  ");
     query.append("                             e.patient_id = fila.patient_id and  ");
@@ -481,7 +481,7 @@ public class ResumoMensalQueries {
     query.append(
         "                             AND enc.encounter_type = ${masterCardDrugPickupEncounterType}   ");
     query.append("                             AND enc.location_id = :location   ");
-    query.append("                             AND obs.value_datetime <  :date   ");
+    query.append("                             AND obs.value_datetime <= :date   ");
     query.append("                        GROUP  BY pa.patient_id   ");
     query.append("                    ) most_recent   ");
     query.append("                GROUP BY most_recent.patient_id   ");
