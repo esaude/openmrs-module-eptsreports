@@ -2,7 +2,6 @@ package org.openmrs.module.eptsreports.reporting.cohort.evaluator;
 
 import java.util.HashSet;
 import java.util.List;
-import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.annotation.Handler;
@@ -48,6 +47,8 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("         ON transf.encounter_id = e.encounter_id ");
     q.append("       JOIN obs type ");
     q.append("         ON type.encounter_id = e.encounter_id ");
+    q.append("       JOIN obs opening ");
+    q.append("         ON opening.encounter_id = e.encounter_id");
     q.append("WHERE  p.voided = 0 ");
     q.append("       AND e.voided = 0 ");
     q.append("       AND e.encounter_type = :mastercard ");
@@ -63,17 +64,21 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("       AND transf.voided = 0 ");
     q.append("       AND transf.concept_id = :transferFromOther ");
     q.append("       AND transf.value_coded = :yes ");
+
+    q.append("       AND opening.voided = 0 ");
+    q.append("       AND opening.concept_id = :dateOfMasterCardFileOpening");
+
     if (cd.getOnOrAfter() == null) {
-      q.append("     AND transf.obs_datetime < :onOrBefore ");
+      q.append("     AND opening.value_datetime < :onOrBefore ");
     } else if (cd.getOnOrBefore() == null) {
-      q.append("     AND transf.obs_datetime > :onOrAfter ");
+      q.append("     AND opening.value_datetime > :onOrAfter ");
     } else {
-      q.append("     AND transf.obs_datetime BETWEEN :onOrAfter AND :onOrBefore ");
+      q.append("     AND opening.value_datetime BETWEEN :onOrAfter AND :onOrBefore ");
     }
 
     q.append("       AND type.voided = 0 ");
     q.append("       AND type.concept_id = :typeOfPatient ");
-    q.append("       AND type.value_coded = :answer ");
+    q.append("       AND type.value_coded in (:preTarv, :tarv) ");
 
     q.append("UNION ");
 
@@ -100,14 +105,12 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.addParameter("transferFromOther", hivMetadata.getTransferFromOtherFacilityConcept());
     q.addParameter("yes", hivMetadata.getYesConcept());
     q.addParameter("typeOfPatient", hivMetadata.getTypeOfPatientTransferredFrom());
-    Concept typeOfPatientTransferredFrom = cd.getTypeOfPatientTransferredFromAnswer();
     Program programEnrolled = cd.getProgramEnrolled();
     ProgramWorkflowState programWorkflowState = cd.getPatientState();
-    if (typeOfPatientTransferredFrom == null) {
-      throw new NullPointerException(
-          "Answer for TYPE OF PATIENT TRANSFERRED FROM concept cannot be null");
-    }
-    q.addParameter("answer", typeOfPatientTransferredFrom);
+
+    q.addParameter("preTarv", hivMetadata.getPreTarvConcept());
+    q.addParameter("tarv", hivMetadata.getArtStatus());
+    q.addParameter("dateOfMasterCardFileOpening", hivMetadata.getDateOfMasterCardFileOpening());
     q.addParameter("programEnrolled", programEnrolled);
     q.addParameter("transferredInState", programWorkflowState);
     q.addParameter("location", cd.getLocation());

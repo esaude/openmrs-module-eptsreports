@@ -351,6 +351,14 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>@MODULE_ID@.dateOfMasterCardFileOpeningUuid</property>
+		<defaultValue>68d65d0c-8fee-456b-8e95-caed990351e1</defaultValue>
+		<description>
+			Master Card File Open Date
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>@MODULE_ID@.sTarvAdultoInitialAEncounterTypeUuid</property>
 		<defaultValue>e278f820-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
