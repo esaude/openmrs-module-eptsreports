@@ -58,14 +58,6 @@
 			UUID for the INICIAR concept
 		</description>
 	</globalProperty>
-	
-	<globalProperty>
-		<property>eptsreports.continueRegimen</property>
-		<defaultValue>e1d9f036-1d5f-11e0-b929-000c29ad1d07</defaultValue>
-		<description>
-			UUID for the CONTINUE REGIMEN concept
-		</description>
-	</globalProperty>
 
 	<globalProperty>
 		<property>@MODULE_ID@.dateOfHIVDiagnosis</property>

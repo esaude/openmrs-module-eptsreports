@@ -829,7 +829,7 @@ public class TxCurrCohortQueries {
         "typeOfDispensationConcept", hivMetadata.getTypeOfDispensationConcept().getConceptId());
     valuesMap.put("quarterlyConcept", hivMetadata.getQuarterlyConcept().getConceptId());
     valuesMap.put("startDrugsConcept", hivMetadata.getStartDrugsConcept().getConceptId());
-    valuesMap.put("continueRegimen", hivMetadata.getContinueRegimen().getConceptId());
+    valuesMap.put("continueRegimen", hivMetadata.getContinueRegimenConcept().getConceptId());
 
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     patientsWithQuarterlyTypeOfDispensation.setQuery(sub.replace(sqlQuery));
@@ -865,7 +865,7 @@ public class TxCurrCohortQueries {
         "typeOfDispensationConcept", hivMetadata.getTypeOfDispensationConcept().getConceptId());
     valuesMap.put("semiannualDispensation", hivMetadata.getSemiannualDispensation().getConceptId());
     valuesMap.put("startDrugsConcept", hivMetadata.getStartDrugsConcept().getConceptId());
-    valuesMap.put("continueRegimen", hivMetadata.getContinueRegimen().getConceptId());
+    valuesMap.put("continueRegimen", hivMetadata.getContinueRegimenConcept().getConceptId());
 
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     patientsWithSemiAnnualTypeOfDispensation.setQuery(sub.replace(sqlQuery));
@@ -891,7 +891,7 @@ public class TxCurrCohortQueries {
     cd.setQuestion(hivMetadata.getQuarterlyDispensation());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugsConcept());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
     return cd;
   }
 
@@ -906,7 +906,7 @@ public class TxCurrCohortQueries {
     cd.setQuestion(hivMetadata.getSemiannualDispensation());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugsConcept());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
     return cd;
   }
 

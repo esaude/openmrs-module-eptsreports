@@ -50,13 +50,6 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
-  // concept_id = 1257
-  public Concept getContinueRegimenConcept() {
-    String uuid =
-        Context.getAdministrationService().getGlobalProperty("eptsreports.continueRegimen");
-    return getConcept(uuid);
-  }
-
   // concept_id=1066
   public Concept getNoConcept() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.noConceptUuid");
