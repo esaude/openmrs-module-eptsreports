@@ -100,7 +100,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               location,
               false,
               beginPeriodStartDate,
-              onOrAfter,
+              beginPeriodEndDate,
               consultationEncounterTypes,
               cohort,
               context);
@@ -121,7 +121,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               null,
               location,
               false,
-              onOrAfter,
+              completionPeriodStartDate,
               completionPeriodEndDate,
               consultationEncounterTypes,
               cohort,
