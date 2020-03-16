@@ -2,7 +2,10 @@ package org.openmrs.module.eptsreports.reporting.cohort.definition;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.openmrs.Location;
 import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -52,21 +55,20 @@ public class EptsQuarterlyCohortDefinition extends BaseCohortDefinition {
   }
 
   public void setCohortDefinition(CohortDefinition cohortDefinition) {
-    List<Parameter> parameters = new ArrayList<>();
-    parameters.add(new Parameter("onOrAfter", "After Date", Date.class));
-    parameters.add(new Parameter("onOrBefore", "Before Date", Date.class));
-    if (!cohortDefinition.getParameters().containsAll(parameters)) {
-      throw new IllegalArgumentException(
-          "CohortDefinition must have both onOrAfter and onOrBefore parameters");
-    }
-    parameters.clear();
-    parameters.add(new Parameter("startDate", "After Date", Date.class));
-    parameters.add(new Parameter("endDate", "Before Date", Date.class));
-    if (!cohortDefinition.getParameters().containsAll(parameters)) {
-      throw new IllegalArgumentException(
-              "CohortDefinition must have both startDate and endDate parameters");
-    }
+    validateParameters(cohortDefinition, "onOrAfter", "onOrBefore");
+    validateParameters(cohortDefinition, "startDate", "endDate");
     this.cohortDefinition = cohortDefinition;
+  }
+
+  private void validateParameters(
+          CohortDefinition cohortDefinition, String onOrAfter, String onOrBefore) {
+    List<Parameter> parameters = new ArrayList<>();
+    parameters.add(new Parameter(onOrAfter, "After Date", Date.class));
+    parameters.add(new Parameter(onOrBefore, "Before Date", Date.class));
+    if (!cohortDefinition.getParameters().containsAll(parameters)) {
+      throw new IllegalArgumentException(
+              "CohortDefinition must have both " + onOrAfter + " and " + onOrBefore + " parameters");
+    }
   }
 
   public Integer getYear() {
