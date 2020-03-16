@@ -229,9 +229,10 @@ public class ResumoMensalCohortQueries {
         getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2();
 
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+    String mappingsEndDate = "onOrBefore=${endDate},location=${location}";
     cd.addSearch("startedArt", map(startedArt, mappings));
 
-    cd.addSearch("transferredIn", map(transferredIn, mappings));
+    cd.addSearch("transferredIn", map(transferredIn, mappingsEndDate));
 
     cd.setCompositionString("startedArt AND NOT transferredIn");
     return cd;
@@ -244,11 +245,12 @@ public class ResumoMensalCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition
-      getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2() {
+      getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2E() {
     // TODO maybe we should be re-using
     // HivCohortQueries#getPatientsTransferredFromOtherHealthFacility
     // Waiting for BAs response
     EptsTransferredInCohortDefinition cd = new EptsTransferredInCohortDefinition();
+
     cd.setName("Number of patients transferred-in from another HFs during the current month");
     cd.setTypeOfPatientTransferredFromAnswer(hivMetadata.getArtStatus());
     cd.setPatientState(hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState());
@@ -256,6 +258,43 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    return cd;
+  }
+
+  /**
+   * B.2 Composition to exclude B5 (Patients Transferred Out): Number of patients transferred-in
+   * from another HFs during the current month
+   *
+   * @return Cohort
+   * @return CohortDefinition
+   */
+  public CohortDefinition
+      getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2() {
+    // TODO maybe we should be re-using
+    // HivCohortQueries#getPatientsTransferredFromOtherHealthFacility
+    // Waiting for BAs response
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    String mapping = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}";
+
+    CohortDefinition transferredIn =
+        getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2E();
+
+    cd.addSearch("B2", map(transferredIn, mapping));
+
+    cd.addSearch(
+        "B2Exlcusion", map(transferredIn, "onOrBefore=${onOrAfter-1d},location=${location}"));
+
+    CohortDefinition transferredOut = getPatientsTransferredOutB5();
+
+    cd.addSearch("B5", map(transferredOut, "onOrBefore=${onOrAfter-1d},location=${location}"));
+
+    cd.setCompositionString("B2 AND NOT ( B2Exlcusion AND NOT B5)");
+
     return cd;
   }
 
@@ -536,7 +575,9 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch("fila", map(fila, "onOrBefore=${startDate-1d},locationList=${location}"));
 
-    cd.setCompositionString("(artStartDate AND (drugPickup OR fila)) AND NOT transferredIn");
+    // cd.setCompositionString("(artStartDate AND (drugPickup OR fila)) AND NOT transferredIn");
+
+    cd.setCompositionString("(drugPickup)");
 
     return cd;
   }

@@ -64,7 +64,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("       AND transf.concept_id = :transferFromOther ");
     q.append("       AND transf.value_coded = :yes ");
     if (cd.getOnOrAfter() == null) {
-      q.append("     AND transf.obs_datetime < :onOrBefore ");
+      q.append("     AND transf.obs_datetime <= :onOrBefore ");
     } else if (cd.getOnOrBefore() == null) {
       q.append("     AND transf.obs_datetime > :onOrAfter ");
     } else {
@@ -86,7 +86,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("WHERE  pp.program_id = :programEnrolled ");
     q.append("    AND ps.state = :transferredInState ");
     if (cd.getOnOrAfter() == null) {
-      q.append("     AND ps.start_date < :onOrBefore ");
+      q.append("     AND ps.start_date <= :onOrBefore ");
     } else if (cd.getOnOrBefore() == null) {
       q.append("     AND ps.start_date > :onOrAfter ");
     } else {
