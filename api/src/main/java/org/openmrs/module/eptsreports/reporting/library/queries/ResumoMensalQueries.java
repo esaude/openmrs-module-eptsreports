@@ -490,7 +490,6 @@ public class ResumoMensalQueries {
     query.append("             GROUP BY final.patient_id ");
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
-
     return stringSubstitutor.replace(query.toString());
   }
 

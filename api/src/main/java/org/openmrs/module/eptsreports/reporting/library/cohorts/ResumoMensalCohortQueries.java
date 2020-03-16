@@ -1308,20 +1308,14 @@ public class ResumoMensalCohortQueries {
             "date=${onOrAfter},location=${location}"));
     ccd.addSearch(
         "B7III",
-        map(
-            getPatientsTransferredOutB5(),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+        map(getPatientsTransferredOutB5(), "onOrBefore=${onOrBefore},location=${location}"));
     ccd.addSearch(
         "B7IV",
         map(
-            getPatientsWhoSuspendedTreatmentB6(true),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+            getPatientsWhoSuspendedTreatmentB6(false),
+            "onOrBefore=${onOrBefore},location=${location}"));
     ccd.addSearch(
-        "B7V",
-        map(
-            getPatientsWhoDied(true),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
-
+        "B7V", map(getPatientsWhoDied(false), "onOrBefore=${onOrBefore},locationList=${location}"));
     ccd.setCompositionString("B7I AND NOT (B7II OR B7III OR B7IV OR B7V)");
 
     return ccd;
