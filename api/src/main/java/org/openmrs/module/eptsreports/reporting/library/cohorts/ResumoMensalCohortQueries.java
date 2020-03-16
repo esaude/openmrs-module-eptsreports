@@ -518,25 +518,14 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition patientsWithArtStartDate = genericCohortQueries.getStartedArtBeforeDate(false);
-    CohortDefinition patientsWithDrugPickup = getPatientsWithMasterCardDrugPickUpDate();
-    CohortDefinition fila =
-        genericCohortQueries.hasEncounter(hivMetadata.getARVPharmaciaEncounterType());
     CohortDefinition transferredIn =
         getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2();
 
-    cd.addSearch(
-        "artStartDate",
-        map(patientsWithArtStartDate, "onOrBefore=${startDate},location=${location}"));
+    String mappings = "onOrBefore=${startDate},location=${location}";
+    cd.addSearch("artStartDate", map(patientsWithArtStartDate, mappings));
+    cd.addSearch("transferredIn", map(transferredIn, mappings));
 
-    String mappings = "value2=${startDate},locationList=${location}";
-    cd.addSearch("drugPickup", map(patientsWithDrugPickup, mappings));
-
-    String transferMappings = "onOrBefore=${startDate},location=${location}";
-    cd.addSearch("transferredIn", map(transferredIn, transferMappings));
-
-    cd.addSearch("fila", map(fila, "onOrBefore=${startDate-1d},locationList=${location}"));
-
-    cd.setCompositionString("(artStartDate AND (drugPickup OR fila)) AND NOT transferredIn");
+    cd.setCompositionString("artStartDate NOT transferredIn");
 
     return cd;
   }
