@@ -53,11 +53,18 @@ public class EptsQuarterlyCohortDefinition extends BaseCohortDefinition {
 
   public void setCohortDefinition(CohortDefinition cohortDefinition) {
     List<Parameter> parameters = new ArrayList<>();
-    parameters.add(new Parameter("onOrBefore", "Before Date", Date.class));
     parameters.add(new Parameter("onOrAfter", "After Date", Date.class));
+    parameters.add(new Parameter("onOrBefore", "Before Date", Date.class));
     if (!cohortDefinition.getParameters().containsAll(parameters)) {
       throw new IllegalArgumentException(
-          "CohortDefinition must have onOrAfter and onOrBefore parameters");
+          "CohortDefinition must have both onOrAfter and onOrBefore parameters");
+    }
+    parameters.clear();
+    parameters.add(new Parameter("startDate", "After Date", Date.class));
+    parameters.add(new Parameter("endDate", "Before Date", Date.class));
+    if (!cohortDefinition.getParameters().containsAll(parameters)) {
+      throw new IllegalArgumentException(
+              "CohortDefinition must have both startDate and endDate parameters");
     }
     this.cohortDefinition = cohortDefinition;
   }
