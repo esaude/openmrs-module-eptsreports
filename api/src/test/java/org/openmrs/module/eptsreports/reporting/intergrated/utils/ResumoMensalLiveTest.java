@@ -171,7 +171,7 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
   public void C3() throws EvaluationException {
     CohortDefinition cd =
         resumoMensalCohortQueries
-            .getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTB();
+            .getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTBC3();
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd);
     assertEquals(1, evaluatedCohort.size());
     assertTrue(evaluatedCohort.contains(1014));
