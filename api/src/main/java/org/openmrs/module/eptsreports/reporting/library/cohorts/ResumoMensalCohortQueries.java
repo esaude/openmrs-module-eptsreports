@@ -1318,12 +1318,7 @@ public class ResumoMensalCohortQueries {
             getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(),
             "date=${onOrBefore},location=${location}"));
     ccd.addSearch(
-            "B7II",
-            map(
-                getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(false),
-                "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
-    ccd.addSearch(
-        "B7III",
+        "B7II",
         map(
             getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(),
             "date=${onOrAfter-1},location=${location}"));
@@ -1331,7 +1326,7 @@ public class ResumoMensalCohortQueries {
         "B7III",
         map(getPatientsTransferredOutB5(), "onOrBefore=${onOrBefore},location=${location}"));
     ccd.addSearch(
-        "B7V",
+        "B7IV",
         map(
             getPatientsWhoSuspendedTreatmentB6(false),
             "onOrBefore=${onOrBefore},location=${location}"));
@@ -1353,8 +1348,7 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getArtDatePickupMasterCard().getConceptId(),
-            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-            isEndDate));
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
     return cd;
   }
 
