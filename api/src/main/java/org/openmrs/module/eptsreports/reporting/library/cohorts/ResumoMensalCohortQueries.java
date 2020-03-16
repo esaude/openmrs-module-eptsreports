@@ -581,7 +581,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B7A",
         map(
-        		getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
+            getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
             "location=${location},onOrBefore=${startDate}"));
     cd.addSearch("B8A", map(died, encounterWithCodedObsMappings));
 
@@ -991,7 +991,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B7",
         map(
-        		getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
+            getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
             "location=${location},onOrBefore=${endDate}"));
     cd.addSearch(
         "B8",
@@ -1302,10 +1302,10 @@ public class ResumoMensalCohortQueries {
             getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(),
             "date=${onOrBefore},location=${location}"));
     ccd.addSearch(
-            "B7II",
-            map(
-                getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(),
-                "date=${onOrAfter},location=${location}"));
+        "B7II",
+        map(
+            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(),
+            "date=${onOrAfter},location=${location}"));
     ccd.addSearch(
         "B7III",
         map(
@@ -1331,11 +1331,10 @@ public class ResumoMensalCohortQueries {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients who Abandoned the ART during the current month");
     cd.addParameter(new Parameter("location", "Location", Location.class));
-     cd.addParameter(new Parameter("date", "specifiedDate", Date.class));
-
+    cd.addParameter(new Parameter("date", "specifiedDate", Date.class));
 
     cd.setQuery(
-    		getNumberOfPatientsWhoAbandonedArtBySpecifiedDateB7(
+        getNumberOfPatientsWhoAbandonedArtBySpecifiedDateB7(
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getArtDatePickupMasterCard().getConceptId(),
