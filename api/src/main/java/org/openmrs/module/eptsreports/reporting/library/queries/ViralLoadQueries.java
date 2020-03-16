@@ -29,29 +29,36 @@ public class ViralLoadQueries {
       int vlConceptQuestion,
       int vlQualitativeConceptQuestion) {
     String query =
-            "SELECT patient_id FROM( "
-            +" SELECT comb.patient_id,comb.value_numeric,comb.value_coded, MAX(comb.data_carga) FROM( "
-            +" SELECT ultima_carga.patient_id,ultima_carga.value_numeric,ultima_carga.value_coded,ultima_carga.data_carga FROM "
-              + " (SELECT p.patient_id,o.value_numeric AS value_numeric,o.value_coded AS value_coded,MAX(o.obs_datetime) data_carga"
-              + " FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id"
-              + " INNER JOIN obs o ON e.encounter_id=o.encounter_id"
-              + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type IN (%d, %d, %d, %d)"
-              + " AND  o.concept_id IN(%d, %d) "
-              + " AND (o.value_numeric IS NOT NULL OR o.value_coded IS NOT NULL) AND"
-              + " e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate AND"
-              + " e.location_id=:location GROUP BY p.patient_id"
-              + ") ultima_carga"
-                + " INNER JOIN obs ON obs.person_id=ultima_carga.patient_id AND obs.obs_datetime="
-                + "ultima_carga.data_carga  WHERE obs.voided=0 AND obs.concept_id IN (%d, %d) "
-                + " AND obs.location_id=:location AND"
-                + " (obs.value_numeric IS NOT NULL OR obs.value_coded IS NOT NULL) "
-              + " UNION "
-              + " SELECT p.patient_id, o.value_numeric AS value_numeric,o.value_coded AS value_coded, MAX(o.obs_datetime) AS data_carga FROM  patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN "
-              + " obs o ON e.encounter_id=o.encounter_id "
-              + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND "
-              + " e.encounter_type IN (%d) AND o.concept_id=%d AND o.value_numeric IS NOT NULL AND "
-              + " o.obs_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate AND e.location_id=:location GROUP BY p.patient_id) comb WHERE "
-            +"(value_numeric < 1000 OR value_coded IS NOT NULL) group by patient_id) fn ";
+            "SELECT fn1.patient_id FROM( "
+            +" SELECT  patient_id, MAX(data_carga) AS data_carga FROM( "
+            +" SELECT patient_id,data_carga FROM "
+                    +" (SELECT p.patient_id,MAX(o.obs_datetime) data_carga "
+                            +" FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
+                            +" INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+                            +" WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type IN (%d, %d, %d, %d) "
+                            +" AND  o.concept_id IN(%d, %d) "
+                            +" AND (o.value_numeric IS NOT NULL OR o.value_coded IS NOT NULL) AND "
+                            +" e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate AND "
+                            +" e.location_id=:location GROUP BY p.patient_id "
+                    +") ultima_carga "
+                    +" INNER JOIN obs ON obs.person_id=ultima_carga.patient_id AND obs.obs_datetime= "
+                    +" ultima_carga.data_carga  WHERE obs.voided=0 AND obs.concept_id IN (%d, %d) "
+                    +" AND obs.location_id=:location AND (obs.value_numeric IS NOT NULL OR obs.value_coded IS NOT NULL) "
+
+            +" UNION "
+
+            +" SELECT patient_id,data_carga FROM "
+            +" (SELECT p.patient_id, MAX(o.obs_datetime) AS data_carga FROM  patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN "
+                    +" obs o ON e.encounter_id=o.encounter_id "
+                    +" WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND "
+                    +" e.encounter_type IN (%d) AND o.concept_id=%d AND o.value_numeric IS NOT NULL AND "
+                    +" o.obs_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
+                    +" AND e.location_id=:location GROUP BY p.patient_id) comb INNER JOIN obs ON obs.person_id=comb.patient_id AND obs.obs_datetime= "
+                    +" comb.data_carga  WHERE obs.voided=0 AND obs.concept_id IN (%d) "
+                    +" AND obs.location_id=:location AND "
+                    +" (obs.value_numeric IS NOT NULL OR obs.value_coded IS NOT NULL) GROUP BY patient_id)fn GROUP BY patient_id)fn1 "
+                    +" INNER JOIN obs os ON os.person_id=fn1.patient_id WHERE fn1.data_carga=os.obs_datetime AND os.concept_id IN(%d, %d) "
+                    +" AND (os.value_numeric < 1000 OR os.value_coded IS NOT NULL) AND os.location_id=:location ";
 
     return String.format(
         query,
@@ -64,7 +71,7 @@ public class ViralLoadQueries {
         vlConceptQuestion,
         vlQualitativeConceptQuestion,
         mastercardEncounter,
-        vlConceptQuestion);
+        vlConceptQuestion, vlConceptQuestion, vlConceptQuestion,vlQualitativeConceptQuestion);
   }
 
   /**
