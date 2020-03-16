@@ -1259,12 +1259,34 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch("Fx3",map(getExclusionForF3(),mappings));
     
-    cd.addSearch("B2i", map(null, mappings));
-    
-    cd.addSearch("B2ii", map(null, mappings));
+    cd.addSearch("TransferredInStaticalYear", map(getPatientsRegisteredAsTransferredInDuringTheStatisticalYear(), 
+    		"onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
-    cd.setCompositionString("F1 AND NOT Fx3");
+    cd.setCompositionString("F1 AND NOT Fx3 AND NOT TransferredInStaticalYear");
     return cd;
+  }
+  public CohortDefinition getPatientsRegisteredAsTransferredInDuringTheStatisticalYear() {
+	  
+	  SqlCohortDefinition cd = new SqlCohortDefinition();
+	  cd.setName("Patients Registered As TransferredIn During The Statistical Year");
+	  cd.addParameter(new  Parameter("onOrAfter","onOrAfter",Date.class));
+	  cd.addParameter(new  Parameter("onOrBefore","onOrBefore",Date.class));
+	  cd.addParameter(new  Parameter("location","Locaton",Location.class));
+	  
+	  cd.setQuery(ResumoMensalQueries
+			  .getPatientsRegisteredAsTransferredInDuringTheStatisticalYear(
+					  hivMetadata.getMasterCardEncounterType().getEncounterTypeId(), 
+					  hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(), 
+					  hivMetadata.getYesConcept().getConceptId(), 
+					  hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+					  hivMetadata.getArtStatus().getConceptId(), 
+					  hivMetadata.getMasteCardFileOpenDateConcept().getConceptId(),
+					  hivMetadata.getARTProgram().getProgramId(), 
+					  hivMetadata
+					  	.getArtTransferredFromOtherHealthFacilityWorkflowState()
+					  	.getProgramWorkflowStateId()));
+	  
+	  return  cd;
   }
 
  

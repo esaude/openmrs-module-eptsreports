@@ -1480,4 +1480,12 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.preTarvConceptUuid");
     return getConcept(uuid);
   }
+  
+  // concept_id = 23891
+  public Concept getMasteCardFileOpenDateConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.masteCardFileOpenDateConceptUuid");
+    return getConcept(uuid);
+  }
 }
