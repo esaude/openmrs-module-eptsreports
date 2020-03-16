@@ -276,13 +276,12 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "new-on-art",
         EptsReportUtils.map(
-            tbPrevCohortQueries.getNewOnArt(),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+            tbPrevCohortQueries.getNewOnArt(), "onOrBefore=${onOrBefore},location=${location}"));
     dim.addCohortDefinition(
         "previously-on-art",
         EptsReportUtils.map(
             tbPrevCohortQueries.getPreviouslyOnArt(),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+            "onOrBefore=${onOrBefore},location=${location}"));
     return dim;
   }
 
