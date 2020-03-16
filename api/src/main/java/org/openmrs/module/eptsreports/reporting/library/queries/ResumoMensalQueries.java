@@ -614,7 +614,7 @@ public class ResumoMensalQueries {
 	  		+"        FROM   patient p  "  
 	  		+"           INNER JOIN encounter e  "  
 	  		+"             ON p.patient_id = e.patient_id  "  
-	  		+"           INNER OIN obs transf  "  
+	  		+"           INNER JOIN obs transf  "  
 	  		+"             ON transf.encounter_id = e.encounter_id  "  
 	  		+"           INNER JOIN obs type  " 
 	  		+"             ON type.encounter_id = e.encounter_id  "  
