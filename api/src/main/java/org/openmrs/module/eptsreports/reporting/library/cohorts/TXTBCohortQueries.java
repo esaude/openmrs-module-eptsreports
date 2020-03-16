@@ -211,7 +211,7 @@ public class TXTBCohortQueries {
   public CohortDefinition getResultForBasiloscopia() {
     CohortDefinition cd =
         genericCohortQueries.generalSql(
-            "TestTBLAM",
+            "ResultForBasiloscopia",
             TXTBQueries.resultForBasiloscopia(
                 hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
                 hivMetadata.getResultForBasiloscopia().getConceptId(),
@@ -520,9 +520,9 @@ public class TXTBCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     definition.setCompositionString(
-        "(art-list AND (tb-screening OR tb-investigation OR started-tb-treatment OR in-tb-program OR pulmonary-tb OR marked-as-tb-treatment-start"
-            + "OR (tuberculosis-symptomys OR active-tuberculosis OR tb-observations OR application-for-laboratory-research OR tb-genexpert-test OR culture-test"
-            + "OR test-tb-lam) OR result-for-basiloscopia))"
+        "(art-list AND (tb-screening OR tb-investigation OR started-tb-treatment OR in-tb-program OR pulmonary-tb OR marked-as-tb-treatment-start "
+            + "OR (tuberculosis-symptomys OR active-tuberculosis OR tb-observations OR application-for-laboratory-research OR tb-genexpert-test OR culture-test "
+            + "OR test-tb-lam) OR result-for-basiloscopia)) "
             + "NOT ((transferred-out NOT (started-tb-treatment OR in-tb-program)) OR started-tb-treatment-previous-period OR in-tb-program-previous-period)");
 
     return definition;
