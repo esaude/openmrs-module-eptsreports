@@ -69,7 +69,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("       AND opening.concept_id = :dateOfMasterCardFileOpening ");
 
     if (cd.getOnOrAfter() == null) {
-      q.append("     AND opening.value_datetime < :onOrBefore ");
+      q.append("     AND opening.value_datetime <= :onOrBefore ");
     } else if (cd.getOnOrBefore() == null) {
       q.append("     AND opening.value_datetime > :onOrAfter ");
     } else {
