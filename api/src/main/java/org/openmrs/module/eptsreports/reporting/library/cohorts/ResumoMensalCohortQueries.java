@@ -176,7 +176,7 @@ public class ResumoMensalCohortQueries {
       getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2() {
 
     EptsTransferredInCohortDefinition cd = new EptsTransferredInCohortDefinition();
-    cd.setTypeOfPatientTransferredFromAnswer(hivMetadata.getPreTarvConcept());
+    // cd.setTypeOfPatientTransferredFromAnswer(hivMetadata.getPreTarvConcept());
     cd.setProgramEnrolled(hivMetadata.getHIVCareProgram());
     cd.setPatientState(hivMetadata.getArtCareTransferredFromOtherHealthFacilityWorkflowState());
     cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
