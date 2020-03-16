@@ -807,7 +807,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getRapidFlow());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugsConcept());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
     return cd;
   }
 
@@ -1197,7 +1197,7 @@ public class EriDSDCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getFamilyApproach().getConceptId(),
             hivMetadata.getStartDrugs().getConceptId(),
-            hivMetadata.getContinueRegimen().getConceptId()));
+            hivMetadata.getContinueRegimenConcept().getConceptId()));
 
     return cd;
   }
@@ -1303,7 +1303,7 @@ public class EriDSDCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getCommunityDispensation().getConceptId(),
             hivMetadata.getStartDrugs().getConceptId(),
-            hivMetadata.getContinueRegimen().getConceptId()));
+            hivMetadata.getContinueRegimenConcept().getConceptId()));
 
     return cd;
   }
@@ -1421,7 +1421,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getGaac());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugsConcept());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
     return cd;
   }
 
@@ -1552,7 +1552,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getAccessionClubs());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugsConcept());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
     return cd;
   }
 
@@ -1768,7 +1768,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getQuarterlyDispensation());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugsConcept());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
     return cd;
   }
 
@@ -1884,7 +1884,7 @@ public class EriDSDCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getSingleStop().getConceptId(),
             hivMetadata.getStartDrugs().getConceptId(),
-            hivMetadata.getContinueRegimen().getConceptId()));
+            hivMetadata.getContinueRegimenConcept().getConceptId()));
     return sql;
   }
 
@@ -2263,7 +2263,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getQuarterlyDispensation());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugs());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
 
     return cd;
   }
@@ -2355,7 +2355,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getRapidFlow());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugs());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
 
     return cd;
   }
@@ -2433,7 +2433,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getGaac());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugs());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
 
     return cd;
   }

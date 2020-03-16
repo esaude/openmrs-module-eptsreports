@@ -62,7 +62,6 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
     } else {
       q.append("            AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ");
     }
-    q.append("              AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ");
     q.append("            UNION ");
     q.append("            SELECT p.patient_id, ");
     q.append("                   e.encounter_datetime transferout_date ");
