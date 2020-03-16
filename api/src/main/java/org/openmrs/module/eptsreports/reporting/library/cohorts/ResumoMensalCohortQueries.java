@@ -668,11 +668,13 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
- /**
-  * C3:  Number of patients who initiated Pre-TARV during the current month and was diagnosed for active TB.
-  * (PT: Dos inícios Pré-TARV durante o mês (A.2), subgrupo que foi diagnosticado como TB activa)
-  * @return CohortDefinition
-  */
+  /**
+   * C3: Number of patients who initiated Pre-TARV during the current month and was diagnosed for
+   * active TB. (PT: Dos inícios Pré-TARV durante o mês (A.2), subgrupo que foi diagnosticado como
+   * TB activa)
+   *
+   * @return CohortDefinition
+   */
   public CohortDefinition
       getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTBC3() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -685,7 +687,8 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch(
         "A2",
-        map(getPatientsWhoInitiatedPreTARVDuringTheCurrentMonth(),
+        map(
+            getPatientsWhoInitiatedPreTARVDuringTheCurrentMonth(),
             "startDate=${startDate-1m},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -700,22 +703,22 @@ public class ResumoMensalCohortQueries {
     cd.setCompositionString("(A2 AND NOT transferredin) AND TB");
     return cd;
   }
-  
-  private CohortDefinition getPatientsWhoInitiatedPreTARVDuringTheCurrentMonth () {
-	  SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-	    sqlCohortDefinition.setName("A2i");
-	    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-	    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
-	    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
-	    sqlCohortDefinition.setQuery(
-	        getPatientsWhoInitiatedPreArtDuringCurrentMonthWithConditions(
-	            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-	            hivMetadata.getPreArtStartDate().getConceptId(),
-	            hivMetadata.getHIVCareProgram().getProgramId(),
-	            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
-	            hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId()));
-	    
-	    return  sqlCohortDefinition;
+
+  private CohortDefinition getPatientsWhoInitiatedPreTARVDuringTheCurrentMonth() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("A2i");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinition.setQuery(
+        getPatientsWhoInitiatedPreArtDuringCurrentMonthWithConditions(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getPreArtStartDate().getConceptId(),
+            hivMetadata.getHIVCareProgram().getProgramId(),
+            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId()));
+
+    return sqlCohortDefinition;
   }
 
   /**
