@@ -681,7 +681,7 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     CohortDefinition tb = getPatientsDiagnosedForActiveTB();
-    
+
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("A2i");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -697,14 +697,18 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch(
         "A2",
-        map(sqlCohortDefinition, "startDate=${startDate-1m},endDate=${endDate},location=${location}"));
+        map(
+            sqlCohortDefinition,
+            "startDate=${startDate-1m},endDate=${endDate},location=${location}"));
 
-    
-    cd.addSearch("transferredin",
-        map(getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2(),
+    cd.addSearch(
+        "transferredin",
+        map(
+            getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2(),
             "onOrAfter=${startDate-1m},onOrBefore=${endDate},location=${location}"));
-   
-    cd.addSearch("TB", map(tb, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "TB", map(tb, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     cd.setCompositionString("A2 AND NOT transferredin AND TB");
     return cd;
@@ -785,8 +789,8 @@ public class ResumoMensalCohortQueries {
     cd.addIncludeCodedValue(hivMetadata.getYesConcept());
     return cd;
   }
-  public CohortDefinition getAdditionalExclusionCriteriaForC1andC2(
 
+  public CohortDefinition getAdditionalExclusionCriteriaForC1andC2(
       String transferBasedOnDateMappings, String inProgramStatesMappings) {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("All patients to be excluded for the C1 definition");
