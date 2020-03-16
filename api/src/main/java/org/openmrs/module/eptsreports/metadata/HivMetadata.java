@@ -596,8 +596,8 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // Concept 1257 Continue Regimen
-  public Concept getContinueRegimen() {
+  /** Concept 1257 Continue Regimen */
+  public Concept getContinueRegimenConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.continueRegimen");
     return getConcept(uuid);
@@ -1478,6 +1478,18 @@ public class HivMetadata extends ProgramsMetadata {
   public Concept getPreTarvConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.preTarvConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * Concept_id = 23891
+   *
+   * @return
+   */
+  public Concept getDateOfMasterCardFileOpening() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.dateOfMasterCardFileOpeningUuid");
     return getConcept(uuid);
   }
 }
