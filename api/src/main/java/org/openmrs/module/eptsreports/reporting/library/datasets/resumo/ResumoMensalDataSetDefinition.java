@@ -605,7 +605,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
   private Mapped<CohortIndicator>
       getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTBC3() {
     String name =
-        "Patientes who initiated Pre-TARV during the current month and were diagnosed for active TB";
+        "Patientes who initiated Pre-TARV during the current month and were diagnosed for active TB C3";
     Mapped<CohortDefinition> cohort =
         mapStraightThrough(
             resumoMensalCohortQueries
