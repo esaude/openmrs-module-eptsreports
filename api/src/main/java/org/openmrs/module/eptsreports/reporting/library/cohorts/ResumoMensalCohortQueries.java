@@ -658,11 +658,14 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * @return Patientes who initiated Pre-TARV during the current month and was diagnosed for active
-   *     TB
+   * C3: Number of patients who initiated Pre-TARV during the current month and was diagnosed for
+   * active TB. (PT: Dos inícios Pré-TARV durante o mês (A.2), subgrupo que foi diagnosticado como
+   * TB activa)
+   *
+   * @return CohortDefinition
    */
   public CohortDefinition
-      getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTB() {
+      getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTBC3() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
         "Patients who initiated Pre-TARV during the current month and started TPI - it has getPatientsDiagnosedForActiveTB with - CodedObsOnFirstOrSecondEncounterCalculation");
@@ -671,16 +674,40 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
     CohortDefinition tb = getPatientsDiagnosedForActiveTB();
 
-    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
     cd.addSearch(
         "A2",
         map(
-            getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthC1(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch("TB", map(tb, mappings));
+            getPatientsWhoInitiatedPreTARVDuringTheCurrentMonth(),
+            "startDate=${startDate-1m},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("A2 AND TB");
+    cd.addSearch(
+        "transferredin",
+        map(
+            getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2(),
+            "onOrAfter=${startDate-1m},onOrBefore=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "TB", map(tb, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    cd.setCompositionString("(A2 AND NOT transferredin) AND TB");
     return cd;
+  }
+
+  private CohortDefinition getPatientsWhoInitiatedPreTARVDuringTheCurrentMonth() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("A2i");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinition.setQuery(
+        getPatientsWhoInitiatedPreArtDuringCurrentMonthWithConditions(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getPreArtStartDate().getConceptId(),
+            hivMetadata.getHIVCareProgram().getProgramId(),
+            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId()));
+
+    return sqlCohortDefinition;
   }
 
   /**
@@ -1291,7 +1318,12 @@ public class ResumoMensalCohortQueries {
             getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(),
             "date=${onOrBefore},location=${location}"));
     ccd.addSearch(
-        "B7II",
+            "B7II",
+            map(
+                getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(false),
+                "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+    ccd.addSearch(
+        "B7III",
         map(
             getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(),
             "date=${onOrAfter-1},location=${location}"));
@@ -1299,7 +1331,7 @@ public class ResumoMensalCohortQueries {
         "B7III",
         map(getPatientsTransferredOutB5(), "onOrBefore=${onOrBefore},location=${location}"));
     ccd.addSearch(
-        "B7IV",
+        "B7V",
         map(
             getPatientsWhoSuspendedTreatmentB6(false),
             "onOrBefore=${onOrBefore},location=${location}"));
@@ -1321,7 +1353,8 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getArtDatePickupMasterCard().getConceptId(),
-            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            isEndDate));
     return cd;
   }
 
