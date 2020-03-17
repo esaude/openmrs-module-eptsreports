@@ -29,6 +29,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.CodedObsOnFirstOrSecondEncounterCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.resumo.PatientsWhoHadAtLeastDrugPickupCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.ResumoMensalTransferredOutCohortDefinition;
@@ -530,7 +531,7 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  /** @return Number of active patients in ART by end of previous month */
+  /** B12  @return Number of active patients in ART by end of previous month */
   public CohortDefinition getPatientsWhoWereActiveByEndOfPreviousMonthB12() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Number of active patients in ART by end of previous month");
@@ -574,9 +575,27 @@ public class ResumoMensalCohortQueries {
             "location=${location},onOrBefore=${startDate}"));
     cd.addSearch("B8A", map(died, encounterWithCodedObsMappings));
 
-    cd.setCompositionString("B10 OR B2A AND NOT (B5A OR B6A OR B7A OR B8A)");
+    
+    cd.addSearch("drugPick", 
+    		map(getPatientsWhoHadAtLeastDrugPickUpAs(), 
+    				"onOrAfter=${startDate},location=${location}"));
+    cd.setCompositionString("((B10 OR B2A) AND drugPick) AND NOT (B5A OR B6A OR B7A OR B8A)");
 
     return cd;
+  }
+  /**
+   * Patients who had a drug pick up as  Levantamento de ARV Master Card and FILA
+   * @return
+   */
+  public CohortDefinition getPatientsWhoHadAtLeastDrugPickUpAs() {
+	  CalculationCohortDefinition cd = new CalculationCohortDefinition();
+	    PatientsWhoHadAtLeastDrugPickupCalculation calculation 
+	    	= Context.getRegisteredComponents(PatientsWhoHadAtLeastDrugPickupCalculation.class).get(0);
+	    cd.setName("patients who had a drug pick up as  Levantamento de ARV Master Card and FILA");
+	    cd.setCalculation(calculation);
+	    cd.addParameter(new Parameter("onOrAfter", "start", Date.class));
+	    cd.addParameter(new Parameter("location", "location", Location.class));
+	    return cd;
   }
 
   /** @return Patients who initiated Pre-TARV during the current month and was screened for TB. */
