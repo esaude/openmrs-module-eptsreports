@@ -228,7 +228,7 @@ public class ResumoMensalCohortQueries {
     CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
 
     CohortDefinition transferredIn =
-        getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2();
+        getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2E();
 
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
     String mappingsEndDate = "onOrBefore=${endDate},location=${location}";
