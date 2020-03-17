@@ -954,6 +954,24 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
+   * Patients with Drug pickup - Encounter Type 18 (FILA) and Next Scheduled Pickup Date - Concept
+   * ID 5096 - value_datetime not null
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWithFILAEncounterAndNextVisitDate() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients with FILA drug pickup and Scheduled Next Pickup Date");
+    cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        gePatientsWithCodedObsValueDatetimeBeforeEndDate(
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
+    return cd;
+  }
+
+  /**
    * E1: Number of active patients in ART at the end of current month who performed Viral Load Test
    * (Annual Notification) B12 AND NOT (B5 OR B6 OR B7 OR B8)
    *
@@ -1455,8 +1473,7 @@ public class ResumoMensalCohortQueries {
 
     CohortDefinition startedArt = genericCohortQueries.getStartedArtBeforeDate(false);
 
-    CohortDefinition fila =
-        genericCohortQueries.hasEncounter(hivMetadata.getARVPharmaciaEncounterType());
+    CohortDefinition fila = getPatientsWithFILAEncounterAndNextVisitDate();
 
     CohortDefinition masterCardPickup =
         getPatientsWhoHavePickedUpDrugsMasterCardByEndReporingPeriod();
@@ -1473,7 +1490,7 @@ public class ResumoMensalCohortQueries {
     String mappingsOnOrBeforeLocationList = "onOrBefore=${endDate},locationList=${location}";
 
     cd.addSearch("startedArt", map(startedArt, mappingsOnDate));
-    cd.addSearch("fila", map(fila, mappingsOnOrBeforeLocationList));
+    cd.addSearch("fila", map(fila, mappingsOnDate));
     cd.addSearch("masterCardPickup", map(masterCardPickup, mappingsOnDate));
     cd.addSearch("B5E", map(B5E, mappingsOnDate));
     cd.addSearch("B6E", map(B6E, mappingsOnDate));

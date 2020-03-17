@@ -254,6 +254,27 @@ public class ResumoMensalQueries {
   }
 
   /**
+   * Get patients with any coded obs concept value_datetime not null before end date
+   *
+   * @return String
+   */
+  public static String gePatientsWithCodedObsValueDatetimeBeforeEndDate(
+      int encounterType, int conceptId) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + " AND e.location_id = :location AND e.encounter_datetime <= :onOrBefore AND e.encounter_type=${encounterType} "
+            + " AND o.concept_id=${conceptId} AND o.value_datetime is NOT NULL";
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("encounterType", encounterType);
+    map.put("conceptId", conceptId);
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    return stringSubstitutor.replace(query.toString());
+  }
+
+  /**
    * E1 exclusions
    *
    * @return String
