@@ -29,7 +29,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.CodedObsOnFirstOrSecondEncounterCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.resumo.PatientsWhoHadAtLeastDrugPickupCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.ResumoMensalTransferredOutCohortDefinition;
@@ -577,8 +576,8 @@ public class ResumoMensalCohortQueries {
 
     
     cd.addSearch("drugPick", 
-    		map(getPatientsWhoHadAtLeastDrugPickUpAs(), 
-    				"onOrAfter=${startDate},location=${location}"));
+    		map(getPatientsWhoHadAtLeastDrugPickUp(), 
+    				"onOrAfter=${startDate-1d},location=${location}"));
     cd.setCompositionString("((B10 OR B2A) AND drugPick) AND NOT (B5A OR B6A OR B7A OR B8A)");
 
     return cd;
@@ -587,14 +586,50 @@ public class ResumoMensalCohortQueries {
    * Patients who had a drug pick up as  Levantamento de ARV Master Card and FILA
    * @return
    */
-  public CohortDefinition getPatientsWhoHadAtLeastDrugPickUpAs() {
-	  CalculationCohortDefinition cd = new CalculationCohortDefinition();
-	    PatientsWhoHadAtLeastDrugPickupCalculation calculation 
-	    	= Context.getRegisteredComponents(PatientsWhoHadAtLeastDrugPickupCalculation.class).get(0);
-	    cd.setName("patients who had a drug pick up as  Levantamento de ARV Master Card and FILA");
-	    cd.setCalculation(calculation);
-	    cd.addParameter(new Parameter("onOrAfter", "start", Date.class));
+  public CohortDefinition getPatientsWhoHadAtLeastDrugPickUp() {
+ 
+	  SqlCohortDefinition cd = new SqlCohortDefinition();
+
+ 	    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
 	    cd.addParameter(new Parameter("location", "location", Location.class));
+	    
+	    String query =
+	            "    select p.patient_id " + 
+	            "    from patient p " + 
+	            "        inner join encounter e " + 
+	            "            on p.patient_id = e.patient_id " + 
+	            "        inner join obs o  " + 
+	            "            on o.encounter_id=e.encounter_id " + 
+	            "    where p.voided =0    " + 
+	            "    and e.voided = 0 " + 
+	            "    and  o.voided =0 " + 
+	            "    and e.encounter_type = %d " + 
+	            "    and o.concept_id= %d " + 
+	            "    and o.value_datetime <= :startDate " + 
+	            "    group by p.patient_id " + 
+	            "    union " + 
+	            "    select p.patient_id " + 
+	            "    from patient p " + 
+	            "        inner join encounter e " + 
+	            "            on p.patient_id = e.patient_id " + 
+	            "        inner join obs o  " + 
+	            "            on o.encounter_id=e.encounter_id " + 
+	            "    where p.voided =0    " + 
+	            "    and e.voided = 0 " + 
+	            "    and o.voided =0 " + 
+	            "    and e.encounter_type = %d " + 
+	            "    and o.concept_id= %d " + 
+	            "    and e.encounter_datetime <= :startDate " + 
+	            "    and o.value_datetime is not  null " + 
+	            "    group by p.patient_id";
+
+	        cd.setQuery(
+	            String.format(
+	                query,
+	                hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+	                hivMetadata.getArtDatePickupMasterCard().getConceptId(),
+	                hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+	                hivMetadata. getReturnVisitDateForArvDrugConcept().getConceptId()));
 	    return cd;
   }
 
