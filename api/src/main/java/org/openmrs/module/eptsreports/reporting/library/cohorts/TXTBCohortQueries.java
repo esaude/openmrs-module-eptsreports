@@ -1,5 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
+
 import java.util.Arrays;
 import java.util.Date;
 import org.openmrs.Location;
@@ -356,14 +358,14 @@ public class TXTBCohortQueries {
 
   public CohortDefinition positiveScreening() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.addSearch("A", EptsReportUtils.map(codedYesTbScreening(), codedObsParameterMapping));
-    cd.addSearch(
-        "B",
-        EptsReportUtils.map(positiveInvestigationResultComposition(), generalParameterMapping));
-    cd.addSearch(
-        "C",
-        EptsReportUtils.map(tbTreatmentStartDateWithinReportingDate(), generalParameterMapping));
-    cd.addSearch("D", EptsReportUtils.map(getInTBProgram(), generalParameterMapping));
+    CohortDefinition a = codedYesTbScreening();
+    CohortDefinition b = positiveInvestigationResultComposition();
+    CohortDefinition c = tbTreatmentStartDateWithinReportingDate();
+    CohortDefinition d = getInTBProgram();
+    cd.addSearch("A", EptsReportUtils.map(a, codedObsParameterMapping));
+    cd.addSearch("B", mapStraightThrough(b));
+    cd.addSearch("C", mapStraightThrough(c));
+    cd.addSearch("D", mapStraightThrough(d));
     cd.setCompositionString("A OR B OR C OR D");
     addGeneralParameters(cd);
     return cd;
