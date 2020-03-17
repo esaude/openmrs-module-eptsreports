@@ -530,7 +530,7 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  /** B12  @return Number of active patients in ART by end of previous month */
+  /** B12 @return Number of active patients in ART by end of previous month */
   public CohortDefinition getPatientsWhoWereActiveByEndOfPreviousMonthB12() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Number of active patients in ART by end of previous month");
@@ -570,67 +570,69 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B7A",
         map(
-        		getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
+            getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
             "location=${location},onOrBefore=${startDate}"));
     cd.addSearch("B8A", map(died, encounterWithCodedObsMappings));
 
-    
-    cd.addSearch("drugPick", 
-    		map(getPatientsWhoHadAtLeastDrugPickUp(), 
-    				"onOrAfter=${startDate-1d},location=${location}"));
+    cd.addSearch(
+        "drugPick",
+        map(
+            getPatientsWhoHadAtLeastDrugPickUp(),
+            "onOrAfter=${startDate-1d},location=${location}"));
     cd.setCompositionString("((B10 OR B2A) AND drugPick) AND NOT (B5A OR B6A OR B7A OR B8A)");
 
     return cd;
   }
   /**
-   * Patients who had a drug pick up as  Levantamento de ARV Master Card and FILA
+   * Patients who had a drug pick up as Levantamento de ARV Master Card and FILA
+   *
    * @return
    */
   public CohortDefinition getPatientsWhoHadAtLeastDrugPickUp() {
- 
-	  SqlCohortDefinition cd = new SqlCohortDefinition();
 
- 	    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
-	    cd.addParameter(new Parameter("location", "location", Location.class));
-	    
-	    String query =
-	            "    select p.patient_id " + 
-	            "    from patient p " + 
-	            "        inner join encounter e " + 
-	            "            on p.patient_id = e.patient_id " + 
-	            "        inner join obs o  " + 
-	            "            on o.encounter_id=e.encounter_id " + 
-	            "    where p.voided =0    " + 
-	            "    and e.voided = 0 " + 
-	            "    and  o.voided =0 " + 
-	            "    and e.encounter_type = %d " + 
-	            "    and o.concept_id= %d " + 
-	            "    and o.value_datetime <= :startDate " + 
-	            "    group by p.patient_id " + 
-	            "    union " + 
-	            "    select p.patient_id " + 
-	            "    from patient p " + 
-	            "        inner join encounter e " + 
-	            "            on p.patient_id = e.patient_id " + 
-	            "        inner join obs o  " + 
-	            "            on o.encounter_id=e.encounter_id " + 
-	            "    where p.voided =0    " + 
-	            "    and e.voided = 0 " + 
-	            "    and o.voided =0 " + 
-	            "    and e.encounter_type = %d " + 
-	            "    and o.concept_id= %d " + 
-	            "    and e.encounter_datetime <= :startDate " + 
-	            "    and o.value_datetime is not  null " + 
-	            "    group by p.patient_id";
+    SqlCohortDefinition cd = new SqlCohortDefinition();
 
-	        cd.setQuery(
-	            String.format(
-	                query,
-	                hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-	                hivMetadata.getArtDatePickupMasterCard().getConceptId(),
-	                hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-	                hivMetadata. getReturnVisitDateForArvDrugConcept().getConceptId()));
-	    return cd;
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    String query =
+        "    select p.patient_id "
+            + "    from patient p "
+            + "        inner join encounter e "
+            + "            on p.patient_id = e.patient_id "
+            + "        inner join obs o  "
+            + "            on o.encounter_id=e.encounter_id "
+            + "    where p.voided =0    "
+            + "    and e.voided = 0 "
+            + "    and  o.voided =0 "
+            + "    and e.encounter_type = %d "
+            + "    and o.concept_id= %d "
+            + "    and o.value_datetime <= :startDate "
+            + "    group by p.patient_id "
+            + "    union "
+            + "    select p.patient_id "
+            + "    from patient p "
+            + "        inner join encounter e "
+            + "            on p.patient_id = e.patient_id "
+            + "        inner join obs o  "
+            + "            on o.encounter_id=e.encounter_id "
+            + "    where p.voided =0    "
+            + "    and e.voided = 0 "
+            + "    and o.voided =0 "
+            + "    and e.encounter_type = %d "
+            + "    and o.concept_id= %d "
+            + "    and e.encounter_datetime <= :startDate "
+            + "    and o.value_datetime is not  null "
+            + "    group by p.patient_id";
+
+    cd.setQuery(
+        String.format(
+            query,
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickupMasterCard().getConceptId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
+    return cd;
   }
 
   /** @return Patients who initiated Pre-TARV during the current month and was screened for TB. */
@@ -1061,7 +1063,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B7",
         map(
-        		getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
+            getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
             "location=${location},onOrBefore=${endDate}"));
     cd.addSearch(
         "B8",
@@ -1372,10 +1374,10 @@ public class ResumoMensalCohortQueries {
             getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(true),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
     ccd.addSearch(
-            "B7II",
-            map(
-                getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(false),
-                "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+        "B7II",
+        map(
+            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(false),
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
     ccd.addSearch(
         "B7III",
         map(
@@ -1397,15 +1399,16 @@ public class ResumoMensalCohortQueries {
     return ccd;
   }
 
-  public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(boolean isEndDate) {
+  public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(
+      boolean isEndDate) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients who Abandoned the ART during the current month");
     cd.addParameter(new Parameter("location", "Location", Location.class));
-     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 
     cd.setQuery(
-    		getNumberOfPatientsWhoAbandonedArtBySpecifiedDateB7(
+        getNumberOfPatientsWhoAbandonedArtBySpecifiedDateB7(
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getArtDatePickupMasterCard().getConceptId(),
