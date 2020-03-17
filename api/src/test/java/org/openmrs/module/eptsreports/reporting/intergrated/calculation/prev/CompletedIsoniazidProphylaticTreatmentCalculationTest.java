@@ -97,7 +97,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
   }
 
   @Test
-  public void shouldBeFalseIfDoesNotHaveEndDateButAnsweredYesEnoughTimes() {
+  public void shouldBeTrueIfDoesNotHaveEndDateButAnsweredYesEnoughTimes() {
     Map<String, Object> parameterValues = new HashMap<String, Object>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
@@ -110,6 +110,6 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
     CalculationResultMap results =
         service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues, context);
     BooleanResult result = (BooleanResult) results.get(patientId);
-    Assert.assertNull(result);
+    Assert.assertEquals(Boolean.TRUE, result.getValue());
   }
 }

@@ -2,7 +2,8 @@ package org.openmrs.module.eptsreports.reporting.cohort.evaluator;
 
 import java.util.HashSet;
 import java.util.List;
-import org.openmrs.Concept;
+import org.openmrs.Program;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition;
@@ -46,6 +47,8 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("         ON transf.encounter_id = e.encounter_id ");
     q.append("       JOIN obs type ");
     q.append("         ON type.encounter_id = e.encounter_id ");
+    q.append("       JOIN obs opening ");
+    q.append("         ON opening.encounter_id = e.encounter_id");
     q.append("WHERE  p.voided = 0 ");
     q.append("       AND e.voided = 0 ");
     q.append("       AND e.encounter_type = :mastercard ");
@@ -61,17 +64,19 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("       AND transf.voided = 0 ");
     q.append("       AND transf.concept_id = :transferFromOther ");
     q.append("       AND transf.value_coded = :yes ");
-    if (cd.getOnOrAfter() == null) {
-      q.append("     AND transf.obs_datetime < :onOrBefore ");
-    } else if (cd.getOnOrBefore() == null) {
-      q.append("     AND transf.obs_datetime > :onOrAfter ");
-    } else {
-      q.append("     AND transf.obs_datetime BETWEEN :onOrAfter AND :onOrBefore ");
-    }
-
     q.append("       AND type.voided = 0 ");
     q.append("       AND type.concept_id = :typeOfPatient ");
-    q.append("       AND type.value_coded = :answer ");
+    q.append("       AND type.value_coded in (:preTarv, :tarv) ");
+
+    q.append("       AND opening.voided = 0 ");
+    q.append("       AND opening.concept_id = :dateOfMasterCardFileOpening ");
+    if (cd.getOnOrAfter() == null) {
+      q.append("     AND opening.value_datetime < :onOrBefore ");
+    } else if (cd.getOnOrBefore() == null) {
+      q.append("     AND opening.value_datetime > :onOrAfter ");
+    } else {
+      q.append("     AND opening.value_datetime BETWEEN :onOrAfter AND :onOrBefore ");
+    }
 
     q.append("UNION ");
 
@@ -81,8 +86,15 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("        ON p.patient_id=pp.patient_id ");
     q.append("    JOIN patient_state ps  ");
     q.append("        ON ps.patient_program_id=pp.patient_program_id ");
-    q.append("WHERE  pp.program_id = :artProgram ");
-    q.append("    AND ps.state = :transferredInState ");
+
+    if (cd.getProgramEnrolled2() == null) {
+      q.append("WHERE  pp.program_id = :programEnrolled ");
+      q.append("    AND ps.state = :transferredInState ");
+    } else {
+      q.append("WHERE  (pp.program_id = :programEnrolled AND ps.state = :transferredInState) OR ");
+      q.append(" (pp.program_id = :programEnrolled2 AND ps.state = :transferredInState2) ");
+    }
+
     if (cd.getOnOrAfter() == null) {
       q.append("     AND ps.start_date < :onOrBefore ");
     } else if (cd.getOnOrBefore() == null) {
@@ -93,20 +105,34 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("    AND p.voided = 0 ");
     q.append("    AND pp.voided = 0 ");
     q.append("    AND ps.voided = 0");
+    q.append("    AND p.patient_id NOT IN (SELECT p.patient_id ");
+    q.append("                             FROM patient p ");
+    q.append("                                      JOIN patient_program pp ");
+    q.append("                                           ON p.patient_id = pp.patient_id ");
+    q.append("                                      JOIN patient_state ps2 ");
+    q.append(
+        "                                                ON ps2.patient_program_id = pp.patient_program_id ");
+    q.append("                             WHERE pp.location_id = :location ");
+    q.append("                               AND pp.program_id = :programEnrolled ");
+    q.append("                               AND ps2.start_date < ps.start_date)");
 
     q.addParameter("mastercard", hivMetadata.getMasterCardEncounterType());
     q.addParameter("transferFromOther", hivMetadata.getTransferFromOtherFacilityConcept());
     q.addParameter("yes", hivMetadata.getYesConcept());
     q.addParameter("typeOfPatient", hivMetadata.getTypeOfPatientTransferredFrom());
-    Concept typeOfPatientTransferredFrom = cd.getTypeOfPatientTransferredFromAnswer();
-    if (typeOfPatientTransferredFrom == null) {
-      throw new NullPointerException(
-          "Answer for TYPE OF PATIENT TRANSFERRED FROM concept cannot be null");
-    }
-    q.addParameter("answer", typeOfPatientTransferredFrom);
-    q.addParameter("artProgram", hivMetadata.getARTProgram());
+    Program programEnrolled = cd.getProgramEnrolled();
+    Program programEnrolled2 = cd.getProgramEnrolled2();
+    ProgramWorkflowState programWorkflowState = cd.getPatientState();
+    ProgramWorkflowState programWorkflowState2 = cd.getPatientState2();
+
+    q.addParameter("preTarv", hivMetadata.getPreTarvConcept());
+    q.addParameter("tarv", hivMetadata.getArtStatus());
     q.addParameter(
-        "transferredInState", hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState());
+        "dateOfMasterCardFileOpening", hivMetadata.getDateOfMasterCardFileOpeningConcept());
+    q.addParameter("programEnrolled", programEnrolled);
+    q.addParameter("programEnrolled2", programEnrolled2);
+    q.addParameter("transferredInState", programWorkflowState);
+    q.addParameter("transferredInState2", programWorkflowState2);
     q.addParameter("location", cd.getLocation());
     q.addParameter("onOrAfter", cd.getOnOrAfter());
     q.addParameter("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(cd.getOnOrBefore()));

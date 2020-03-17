@@ -39,7 +39,7 @@ public class TbCohortQueries {
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getTBTreatmentPlanConcept().getConceptId(),
             hivMetadata.getStartDrugs().getConceptId(),
-            hivMetadata.getContinueRegimen().getConceptId()));
+            hivMetadata.getContinueRegimenConcept().getConceptId()));
 
     return cd;
   }

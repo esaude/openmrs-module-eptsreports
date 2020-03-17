@@ -43,7 +43,7 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
     CohortDefinition cd =
         resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2();
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd);
-    assertEquals(4, evaluatedCohort.size());
+    assertEquals(93, evaluatedCohort.size());
     assertTrue(evaluatedCohort.getMemberIds().containsAll(patients));
   }
 
@@ -171,7 +171,7 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
   public void C3() throws EvaluationException {
     CohortDefinition cd =
         resumoMensalCohortQueries
-            .getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTB();
+            .getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTBC3();
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd);
     assertEquals(1, evaluatedCohort.size());
     assertTrue(evaluatedCohort.contains(1014));
@@ -179,17 +179,17 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
 
   @Override
   protected Date getStartDate() {
-    return DateUtil.getDateTime(2018, 6, 21);
+    return DateUtil.getDateTime(2019, 11, 21);
   }
 
   @Override
   protected Date getEndDate() {
-    return DateUtil.getDateTime(2018, 7, 20);
+    return DateUtil.getDateTime(2019, 12, 20);
   }
 
   @Override
   protected Location getLocation() {
-    return Context.getLocationService().getLocation(540);
+    return Context.getLocationService().getLocation(221);
   }
 
   @Override

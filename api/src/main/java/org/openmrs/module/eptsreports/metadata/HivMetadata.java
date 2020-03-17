@@ -32,6 +32,16 @@ public class HivMetadata extends ProgramsMetadata {
 
   private String getTBProgramUuid = "eptsreports.tbProgramUuid";
 
+  /**
+   * concept_id = 307
+   *
+   * @return
+   */
+  public Concept getResultForBasiloscopia() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.basiloscopiaUuid");
+    return getConcept(uuid);
+  }
   // Concepts Id = 856
   public Concept getHivViralLoadConcept() {
     String uuid =
@@ -44,7 +54,6 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.criteriaForArtStartUuid");
     return getConcept(uuid);
   }
-
 
   /**
    * Fila Next pick up concept concept_id=5096
@@ -92,9 +101,8 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
   /**
-   * Concept id = 1705
-   * Reinicio de terapia ou tratamento apos abandono ou recaida 
-
+   * Concept id = 1705 Reinicio de terapia ou tratamento apos abandono ou recaida
+   *
    * @return
    */
   public Concept getRestartConcept() {
@@ -205,11 +213,7 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-
-  /**
-   * concept id 1066
-   * Generic Answer for a question 
-   */
+  /** concept id 1066 Generic Answer for a question */
   @Override
   public Concept getNoConcept() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.noConceptUuid");
@@ -592,8 +596,8 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // Concept 1257 Continue Regimen
-  public Concept getContinueRegimen() {
+  /** Concept 1257 Continue Regimen */
+  public Concept getContinueRegimenConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.continueRegimen");
     return getConcept(uuid);
@@ -638,13 +642,6 @@ public class HivMetadata extends ProgramsMetadata {
   public Concept getStateOfStayOfArtPatient() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.stateOfStayArtPatient");
-    return getConcept(uuid);
-  }
-
-  // Concept 6275 PRE-TARV
-  public Concept getPreTARVConcept() {
-    String uuid =
-        Context.getAdministrationService().getGlobalProperty("eptsreports.preTarvConceptUuid");
     return getConcept(uuid);
   }
 
@@ -696,7 +693,11 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // Concept 23722 APPLICATION FOR LABORATORY RESEARCH
+  /**
+   * Concept 23722 APPLICATION FOR LABORATORY RESEARCH
+   *
+   * @return
+   */
   public Concept getApplicationForLaboratoryResearch() {
     String uuid =
         Context.getAdministrationService()
@@ -1477,6 +1478,18 @@ public class HivMetadata extends ProgramsMetadata {
   public Concept getPreTarvConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.preTarvConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * Concept_id = 23891
+   *
+   * @return
+   */
+  public Concept getDateOfMasterCardFileOpeningConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.dateOfMasterCardFileOpeningConceptUuid");
     return getConcept(uuid);
   }
 }
