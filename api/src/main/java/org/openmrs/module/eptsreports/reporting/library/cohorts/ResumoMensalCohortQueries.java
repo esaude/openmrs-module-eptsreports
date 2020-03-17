@@ -1051,6 +1051,21 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  public CohortDefinition getPatientsWithTBScreening() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients with TB Screening");
+    cd.addParameter(new Parameter("startDate", "After Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "Before Date", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.setQuery(
+        ResumoMensalQueries.getPatientsWithTBScreening(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            tbMetadata.getHasTbSymptomsConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getNoConcept().getConceptId()));
+    return cd;
+  }
+
   /**
    * get patients who have viral load test done
    *
@@ -1214,7 +1229,7 @@ public class ResumoMensalCohortQueries {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonth() {
+  public CohortDefinition getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("F1: Number of patients who had clinical appointment during the reporting month");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1233,7 +1248,7 @@ public class ResumoMensalCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition
-      getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthAndScreenedFoTb() {
+      getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthAndScreenedForTbF2() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("Exclusions");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1243,9 +1258,9 @@ public class ResumoMensalCohortQueries {
         getPatientsForF2ForExclusionFromMainQuery(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             tbMetadata.getHasTbSymptomsConcept().getConceptId(),
-            hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
             hivMetadata.getNoConcept().getConceptId(),
-            tbMetadata.getTBTreatmentPlanConcept().getConceptId()));
+            hivMetadata.getTBTreatmentPlanConcept().getConceptId()));
 
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
@@ -1256,8 +1271,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "F2F",
         map(
-            getPatientsWithCodedObsAndAnswers(
-                tbMetadata.getHasTbSymptomsConcept(), hivMetadata.getYesConcept()),
+            getPatientsWithTBScreening(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "F2x",
@@ -1272,28 +1286,64 @@ public class ResumoMensalCohortQueries {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getNumberOfPatientsWithAtLeastOneClinicalAppointmentDuringTheYear() {
+  public CohortDefinition getNumberOfPatientsWithAtLeastOneClinicalAppointmentDuringTheYearF3() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Number of patients who had at least one clinical appointment during the year");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
+    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     cd.addSearch(
         "F1",
-        map(
-            getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonth(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+        map(getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1(), mappings));
+
+    cd.addSearch("Fx3", map(getExclusionForF3(), mappings));
+
     cd.addSearch(
-        "Fx3",
+        "TransferredInStaticalYear",
         map(
-            genericCohortQueries.generalSql(
-                "Fx3",
-                getF3Exclusion(
-                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.setCompositionString("F1 AND NOT Fx3");
+            getPatientsRegisteredAsTransferredInDuringTheStatisticalYear(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    cd.setCompositionString("F1 AND NOT Fx3 AND NOT TransferredInStaticalYear");
     return cd;
+  }
+
+  public CohortDefinition getPatientsRegisteredAsTransferredInDuringTheStatisticalYear() {
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients Registered As TransferredIn During The Statistical Year");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "Locaton", Location.class));
+
+    cd.setQuery(
+        ResumoMensalQueries.getPatientsRegisteredAsTransferredInDuringTheStatisticalYear(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId(),
+            hivMetadata.getDateOfMasterCardFileOpeningConcept().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getArtTransferredFromOtherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
+
+    return cd;
+  }
+
+  public CohortDefinition getExclusionForF3() {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("Exclusions");
+    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sql.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sql.addParameter(new Parameter("location", "Location", Location.class));
+    sql.setQuery(
+        getF3Exclusion(hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
+
+    return sql;
   }
 
   /**
