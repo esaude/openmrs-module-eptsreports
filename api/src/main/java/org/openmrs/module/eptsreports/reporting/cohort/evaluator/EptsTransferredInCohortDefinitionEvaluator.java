@@ -105,6 +105,16 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("    AND p.voided = 0 ");
     q.append("    AND pp.voided = 0 ");
     q.append("    AND ps.voided = 0");
+    q.append("    AND p.patient_id NOT IN (SELECT p.patient_id ");
+    q.append("                             FROM patient p ");
+    q.append("                                      JOIN patient_program pp ");
+    q.append("                                           ON p.patient_id = pp.patient_id ");
+    q.append("                                      JOIN patient_state ps2 ");
+    q.append(
+        "                                                ON ps2.patient_program_id = pp.patient_program_id ");
+    q.append("                             WHERE pp.location_id = :location ");
+    q.append("                               AND pp.program_id = :programEnrolled ");
+    q.append("                               AND ps2.start_date < ps.start_date)");
 
     q.addParameter("mastercard", hivMetadata.getMasterCardEncounterType());
     q.addParameter("transferFromOther", hivMetadata.getTransferFromOtherFacilityConcept());
