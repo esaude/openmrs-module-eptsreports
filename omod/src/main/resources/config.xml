@@ -351,6 +351,14 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>@MODULE_ID@.dateOfMasterCardFileOpeningConceptUuid</property>
+		<defaultValue>68d65d0c-8fee-456b-8e95-caed990351e1</defaultValue>
+		<description>
+			Master Card File Open Dates Concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>@MODULE_ID@.sTarvAdultoInitialAEncounterTypeUuid</property>
 		<defaultValue>e278f820-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
@@ -1971,13 +1979,7 @@
 		</description>
 	</globalProperty>
 	
-	<globalProperty>
-		<property>eptsreports.masteCardFileOpenDateConceptUuid</property>
-		<defaultValue>68d65d0c-8fee-456b-8e95-caed990351e1</defaultValue>
-		<description>
-			UUID for the Master Card File Open Date concept
-		</description>
-	</globalProperty>
+ 
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 

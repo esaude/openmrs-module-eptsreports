@@ -29,8 +29,12 @@ public class EptsTransferredInCohortDefinition extends BaseCohortDefinition {
   @ConfigurationProperty(required = true)
   private Program programEnrolled;
 
+  @ConfigurationProperty private Program programEnrolled2;
+
   @ConfigurationProperty(required = true)
   private ProgramWorkflowState patientState;
+
+  @ConfigurationProperty private ProgramWorkflowState patientState2;
 
   public Date getOnOrBefore() {
     return onOrBefore;
@@ -78,5 +82,21 @@ public class EptsTransferredInCohortDefinition extends BaseCohortDefinition {
 
   public void setPatientState(ProgramWorkflowState patientState) {
     this.patientState = patientState;
+  }
+
+  public Program getProgramEnrolled2() {
+    return programEnrolled2;
+  }
+
+  public void setProgramEnrolled2(Program programEnrolled) {
+    this.programEnrolled2 = programEnrolled;
+  }
+
+  public ProgramWorkflowState getPatientState2() {
+    return patientState2;
+  }
+
+  public void setPatientState2(ProgramWorkflowState patientState) {
+    this.patientState2 = patientState;
   }
 }
