@@ -568,15 +568,6 @@ public class ResumoMensalCohortQueries {
 
     cd.setCompositionString("artStartDate NOT transferredIn");
 
-    String transferMappings = "onOrBefore=${startDate},location=${location}";
-    cd.addSearch("transferredIn", map(transferredIn, transferMappings));
-
-    cd.addSearch("fila", map(fila, "onOrBefore=${startDate-1d},locationList=${location}"));
-
-    // cd.setCompositionString("(artStartDate AND (drugPickup OR fila)) AND NOT transferredIn");
-
-    cd.setCompositionString("(drugPickup)");
-
     return cd;
   }
 
@@ -609,7 +600,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B7A",
         map(
-        		getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
+            getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
             "location=${location},onOrBefore=${startDate}"));
     cd.addSearch("B8A", map(died, encounterWithCodedObsMappings));
 
@@ -1065,7 +1056,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B7",
         map(
-        		getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
+            getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
             "location=${location},onOrBefore=${endDate}"));
     cd.addSearch(
         "B8",
@@ -1376,10 +1367,10 @@ public class ResumoMensalCohortQueries {
             getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(true),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
     ccd.addSearch(
-            "B7II",
-            map(
-                getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(false),
-                "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+        "B7II",
+        map(
+            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(false),
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
     ccd.addSearch(
         "B7III",
         map(
@@ -1401,15 +1392,16 @@ public class ResumoMensalCohortQueries {
     return ccd;
   }
 
-  public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(boolean isEndDate) {
+  public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(
+      boolean isEndDate) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients who Abandoned the ART during the current month");
     cd.addParameter(new Parameter("location", "Location", Location.class));
-     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
 
     cd.setQuery(
-    		getNumberOfPatientsWhoAbandonedArtBySpecifiedDateB7(
+        getNumberOfPatientsWhoAbandonedArtBySpecifiedDateB7(
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getArtDatePickupMasterCard().getConceptId(),
