@@ -1486,10 +1486,10 @@ public class HivMetadata extends ProgramsMetadata {
    *
    * @return
    */
-  public Concept getDateOfMasterCardFileOpening() {
+  public Concept getDateOfMasterCardFileOpeningConcept() {
     String uuid =
         Context.getAdministrationService()
-            .getGlobalProperty("eptsreports.dateOfMasterCardFileOpeningUuid");
+            .getGlobalProperty("eptsreports.dateOfMasterCardFileOpeningConceptUuid");
     return getConcept(uuid);
   }
 }
