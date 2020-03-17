@@ -416,5 +416,4 @@ public class EPTSCalculationService {
     definition.setWhich(TimeQualifier.ANY);
     return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
   }
-
 }

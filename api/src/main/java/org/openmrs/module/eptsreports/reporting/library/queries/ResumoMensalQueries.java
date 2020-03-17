@@ -596,80 +596,78 @@ public class ResumoMensalQueries {
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     return sub.replace(query);
   }
-  
+
   public static String getPatientsRegisteredAsTransferredInDuringTheStatisticalYear(
-		  int mastercard,
-		  int transferFromOther,
-		  int yes, 
-		  int typeOfPatient,
-		  int answer,
-		  int masteCardFileOpenDate,
-		  int programEnrolled,
-		  int transferredInState) {
-	 
-	  Map<String , Integer> map  = new HashMap<>();
-	  map.put("mastercard",mastercard);
-	  map.put("transferFromOther", transferFromOther);
-	  map.put("yes", yes);
-	  map.put("typeOfPatient",  typeOfPatient);
-	  map.put("answer",  answer);
-	  map.put("masteCardFileOpenDate",  masteCardFileOpenDate);
-	  map.put("programEnrolled",  programEnrolled);
-	  map.put("transferredInState",  transferredInState);
-	  
-	  
-	  String query =" SELECT p.patient_id  "  
-	  		+"        FROM   patient p  "  
-	  		+"           INNER JOIN encounter e  "  
-	  		+"             ON p.patient_id = e.patient_id  "  
-	  		+"           INNER JOIN obs transf  "  
-	  		+"             ON transf.encounter_id = e.encounter_id  "  
-	  		+"           INNER JOIN obs type  " 
-	  		+"             ON type.encounter_id = e.encounter_id  "  
-	  		+"           INNER JOIN obs mastercardFile  " 
-	  		+"             ON mastercardFile.encounter_id = e.encounter_id  "  
-	  		+"        WHERE  p.voided = 0  "  
-	  		+"           AND e.voided = 0  " 
-	  		+"           AND e.encounter_type = ${mastercard}  "  
-	  		+"           AND e.location_id = :location  " 
-	  		+"  "  
-	  		+" "  
-	  		+"           AND transf.voided = 0  " 
-	  		+"           AND transf.concept_id = ${transferFromOther}  "  
-	  		+"           AND transf.value_coded = ${yes}  "  
-	  		+"     "  
-	  		+"           AND type.voided = 0  "  
-	  		+"           AND type.concept_id = ${typeOfPatient}  " 
-	  		+"           AND type.value_coded = ${answer}  "  
-	  		
-	  		+ "          AND mastercardFile.voided = 0 "  
-	  		+"           AND mastercardFile.concept_id = ${masteCardFileOpenDate}"
-	  		+ "	         AND mastercardFile.value_datetime BETWEEN  " 
-	  		+"	  		        IF(MONTH(:onOrAfter) = 12  && DAY(:onOrAfter) = 21, :onOrAfter, CONCAT(YEAR(:onOrAfter)-1, '-12','-21'))  " 
-	  		+"	  		          AND  "  
-	  		+"	  		         :onOrBefore   "
-	  	
-	  		+"    	UNION  "  
-	  		+" "  
-	  		+"   	SELECT p.patient_id  "  
-	  		+"    	FROM patient p    "  
-	  		+"        INNER JOIN patient_program pp   "  
-	  		+"            ON p.patient_id=pp.patient_id  "  
-	  		+"        INNER JOIN patient_state ps   " 
-	  		+"            ON ps.patient_program_id=pp.patient_program_id  "  
-	  		+"    	WHERE  pp.program_id = ${programEnrolled}  "  
-	  		+"        AND ps.state = ${transferredInState}  "  
-	  		+"    	  AND pp.location_id = :location"  
-	  		+"        AND ps.start_date BETWEEN "   
-	  		+"             IF(MONTH(:onOrAfter) = 12  && DAY(:onOrAfter) = 21, :onOrAfter, CONCAT(YEAR(:onOrAfter)-1, '-12','-21'))  " 
-	  		+"        AND  " 
-	  		+"            :onOrBefore  " 
-	  		+"        AND p.voided = 0  " 
-	  		+"        AND pp.voided = 0  " 
-	  		+"        AND ps.voided = 0 ";
-	  
-	  StringSubstitutor sb  = new StringSubstitutor(map);
-	  String  mappedQuery  = sb.replace(query);
-	  return mappedQuery;
+      int mastercard,
+      int transferFromOther,
+      int yes,
+      int typeOfPatient,
+      int answer,
+      int masteCardFileOpenDate,
+      int programEnrolled,
+      int transferredInState) {
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("mastercard", mastercard);
+    map.put("transferFromOther", transferFromOther);
+    map.put("yes", yes);
+    map.put("typeOfPatient", typeOfPatient);
+    map.put("answer", answer);
+    map.put("masteCardFileOpenDate", masteCardFileOpenDate);
+    map.put("programEnrolled", programEnrolled);
+    map.put("transferredInState", transferredInState);
+
+    String query =
+        " SELECT p.patient_id  "
+            + "        FROM   patient p  "
+            + "           INNER JOIN encounter e  "
+            + "             ON p.patient_id = e.patient_id  "
+            + "           INNER JOIN obs transf  "
+            + "             ON transf.encounter_id = e.encounter_id  "
+            + "           INNER JOIN obs type  "
+            + "             ON type.encounter_id = e.encounter_id  "
+            + "           INNER JOIN obs mastercardFile  "
+            + "             ON mastercardFile.encounter_id = e.encounter_id  "
+            + "        WHERE  p.voided = 0  "
+            + "           AND e.voided = 0  "
+            + "           AND e.encounter_type = ${mastercard}  "
+            + "           AND e.location_id = :location  "
+            + "  "
+            + " "
+            + "           AND transf.voided = 0  "
+            + "           AND transf.concept_id = ${transferFromOther}  "
+            + "           AND transf.value_coded = ${yes}  "
+            + "     "
+            + "           AND type.voided = 0  "
+            + "           AND type.concept_id = ${typeOfPatient}  "
+            + "           AND type.value_coded = ${answer}  "
+            + "          AND mastercardFile.voided = 0 "
+            + "           AND mastercardFile.concept_id = ${masteCardFileOpenDate}"
+            + "	         AND mastercardFile.value_datetime BETWEEN  "
+            + "	  		        IF(MONTH(:onOrAfter) = 12  && DAY(:onOrAfter) = 21, :onOrAfter, CONCAT(YEAR(:onOrAfter)-1, '-12','-21'))  "
+            + "	  		          AND  "
+            + "	  		         :onOrBefore   "
+            + "    	UNION  "
+            + " "
+            + "   	SELECT p.patient_id  "
+            + "    	FROM patient p    "
+            + "        INNER JOIN patient_program pp   "
+            + "            ON p.patient_id=pp.patient_id  "
+            + "        INNER JOIN patient_state ps   "
+            + "            ON ps.patient_program_id=pp.patient_program_id  "
+            + "    	WHERE  pp.program_id = ${programEnrolled}  "
+            + "        AND ps.state = ${transferredInState}  "
+            + "    	  AND pp.location_id = :location"
+            + "        AND ps.start_date BETWEEN "
+            + "             IF(MONTH(:onOrAfter) = 12  && DAY(:onOrAfter) = 21, :onOrAfter, CONCAT(YEAR(:onOrAfter)-1, '-12','-21'))  "
+            + "        AND  "
+            + "            :onOrBefore  "
+            + "        AND p.voided = 0  "
+            + "        AND pp.voided = 0  "
+            + "        AND ps.voided = 0 ";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    String mappedQuery = sb.replace(query);
+    return mappedQuery;
   }
 }
