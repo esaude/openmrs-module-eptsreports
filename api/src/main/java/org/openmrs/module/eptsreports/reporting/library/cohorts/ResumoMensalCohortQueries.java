@@ -43,6 +43,7 @@ import org.openmrs.module.reporting.cohort.definition.EncounterWithCodedObsCohor
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
+import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -912,6 +913,39 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /**
+   * All patients who have picked up drugs (Recepção Levantou ARV) – Master Card by end of reporting
+   * period Encounter Type Ids = 52 The earliest “Data de Levantamento” (Concept Id 23866
+   * value_datetime) <= endDate
+   *
+   * @return
+   */
+  @DocumentedDefinition(value = "patientsWhoHavePickedUpDrugsMasterCardByEndReporingPeriod")
+  public CohortDefinition getPatientsWhoHavePickedUpDrugsMasterCardByEndReporingPeriod() {
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("patientsWhoHavePickedUpDrugsMasterCardByEndReporingPeriod");
+
+    String query =
+        "select p.patient_id "
+            + " from patient p "
+            + " inner join encounter e on  e.patient_id=p.patient_id "
+            + " inner join obs o on  o.encounter_id=e.encounter_id "
+            + " where  e.encounter_type = %s and o.concept_id = %s "
+            + " and o.value_datetime <= :onOrBefore and e.location_id = :location "
+            + " and p.voided =0 and e.voided=0  and o.voided = 0 group by p.patient_id";
+
+    definition.setQuery(
+        String.format(
+            query,
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickupMasterCard().getConceptId()));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
+  }
+
   /** @return Patients with last Drug Pickup Date between boundaries */
   private DateObsCohortDefinition getLastArvPickupDateCohort() {
     DateObsCohortDefinition cd = getPatientsWithMasterCardDrugPickUpDate();
@@ -1424,7 +1458,8 @@ public class ResumoMensalCohortQueries {
     CohortDefinition fila =
         genericCohortQueries.hasEncounter(hivMetadata.getARVPharmaciaEncounterType());
 
-    CohortDefinition masterCardPickup = getPatientsWithMasterCardDrugPickUpDate();
+    CohortDefinition masterCardPickup =
+        getPatientsWhoHavePickedUpDrugsMasterCardByEndReporingPeriod();
 
     CohortDefinition B5E = getPatientsTransferredOutB5();
 
@@ -1439,7 +1474,7 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch("startedArt", map(startedArt, mappingsOnDate));
     cd.addSearch("fila", map(fila, mappingsOnOrBeforeLocationList));
-    cd.addSearch("masterCardPickup", map(masterCardPickup, mappingsOnOrBeforeLocationList));
+    cd.addSearch("masterCardPickup", map(masterCardPickup, mappingsOnDate));
     cd.addSearch("B5E", map(B5E, mappingsOnDate));
     cd.addSearch("B6E", map(B6E, mappingsOnDate));
     cd.addSearch("B7E", map(B7E, "date=${endDate},location=${location}"));
