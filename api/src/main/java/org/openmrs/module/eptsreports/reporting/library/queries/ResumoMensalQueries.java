@@ -417,8 +417,7 @@ public class ResumoMensalQueries {
       int returnVisitDateForArvDrugConcept,
       int arvPharmaciaEncounterType,
       int artDatePickup,
-      int masterCardDrugPickupEncounterType,
-      boolean useEndDate) {
+      int masterCardDrugPickupEncounterType) {
 
     Map<String, Integer> map = new HashMap<>();
     map.put("returnVisitDateForArvDrugConcept", returnVisitDateForArvDrugConcept);
@@ -450,12 +449,7 @@ public class ResumoMensalQueries {
     query.append(
         "                                 AND enc.encounter_type = ${arvPharmaciaEncounterType}   ");
     query.append("                                 AND enc.location_id = :location   ");
-    if (useEndDate) {
-      query.append("                                 AND enc.encounter_datetime <= :onOrBefore   ");
-    }
-    {
-      query.append("                                 AND enc.encounter_datetime < :onOrAfter   ");
-    }
+    query.append("                                 AND enc.encounter_datetime <= :date   ");
     query.append("                             GROUP  BY pa.patient_id) fila   ");
     query.append("                         INNER JOIN encounter e on  ");
     query.append("                             e.patient_id = fila.patient_id and  ");
@@ -487,25 +481,15 @@ public class ResumoMensalQueries {
     query.append(
         "                             AND enc.encounter_type = ${masterCardDrugPickupEncounterType}   ");
     query.append("                             AND enc.location_id = :location   ");
-    if (useEndDate) {
-      query.append("                             AND obs.value_datetime <=  :onOrBefore  ");
-    }
-    {
-      query.append("                             AND obs.value_datetime <  :onOrAfter   ");
-    }
+    query.append("                             AND obs.value_datetime <= :date   ");
     query.append("                        GROUP  BY pa.patient_id   ");
     query.append("                    ) most_recent   ");
     query.append("                GROUP BY most_recent.patient_id   ");
-    if (useEndDate) {
-      query.append("                HAVING final_encounter_date < :onOrBefore   ");
-    } else {
-      query.append("                HAVING final_encounter_date < :onOrAfter   ");
-    }
+    query.append("                HAVING final_encounter_date < :date   ");
     query.append("             ) final   ");
     query.append("             GROUP BY final.patient_id ");
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
-
     return stringSubstitutor.replace(query.toString());
   }
 
