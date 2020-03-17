@@ -283,17 +283,17 @@ public class ResumoMensalCohortQueries {
 
     String mapping = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}";
 
-    CohortDefinition transferredIn =
-        getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2E();
-
-    cd.addSearch("B2", map(transferredIn, mapping));
+    cd.addSearch("B2", map(getTransferredInPatients(false), mapping));
 
     cd.addSearch(
-        "B2Exlcusion", map(transferredIn, "onOrBefore=${onOrAfter-1d},location=${location}"));
+        "B2Exlcusion",
+        map(
+            getTransferredInPatients(true),
+            "onOrAfter={onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
 
     CohortDefinition transferredOut = getPatientsTransferredOutB5();
 
-    cd.addSearch("B5", map(transferredOut, "onOrBefore=${onOrAfter-1d},location=${location}"));
+    cd.addSearch("B5", map(transferredOut, "onOrBefore=${onOrAfter},location=${location}"));
 
     cd.setCompositionString("B2 AND NOT ( B2Exlcusion AND NOT B5)");
 
@@ -1504,6 +1504,29 @@ public class ResumoMensalCohortQueries {
     cd.setCompositionString(
         "(startedArt AND NOT transferredIn) AND NOT (B5E  OR B6E  OR B7E OR B8E )");
 
+    return cd;
+  }
+
+  /** Get transferred-in patients */
+  public CohortDefinition getTransferredInPatients(boolean isExclusion) {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Transferred-in patients");
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.setQuery(
+        ResumoMensalQueries.getTransferredIn(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getDateOfMasterCardFileOpening().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getTransferredFromOtherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId(),
+            isExclusion));
     return cd;
   }
 }

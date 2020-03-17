@@ -176,6 +176,73 @@ public class ResumoMensalQueries {
     return sub.replace(query);
   }
 
+  /** Get transferred-in patients as specified in Resumo Mensal */
+  public static String getTransferredIn(
+      int mastercard,
+      int transferFromOther,
+      int yes,
+      int dateOfMasterCardFileOpening,
+      int typeOfPatient,
+      int tarv,
+      int programEnrolled,
+      int transferredInState,
+      boolean isExclusion) {
+    String query =
+        "SELECT p.patient_id "
+            + "FROM   patient p "
+            + "       JOIN encounter e "
+            + "         ON p.patient_id = e.patient_id "
+            + "       JOIN obs transf "
+            + "         ON transf.encounter_id = e.encounter_id "
+            + "       JOIN obs type "
+            + "         ON type.encounter_id = e.encounter_id "
+            + "       JOIN obs opening "
+            + "         ON opening.encounter_id = e.encounter_id "
+            + "WHERE  p.voided = 0 "
+            + "        AND e.voided = 0 "
+            + "        AND e.encounter_type = ${mastercard} "
+            + "        AND e.location_id = :location "
+            + "        AND transf.voided = 0 "
+            + "        AND transf.concept_id = ${transferFromOther} "
+            + "        AND transf.value_coded = ${yes} "
+            + "        AND opening.voided = 0 "
+            + "        AND opening.concept_id = ${dateOfMasterCardFileOpening} "
+            + "        AND opening.value_datetime BETWEEN :onOrAfter AND :onOrBefore  ";
+    if (isExclusion == true) {
+      query = query + "OR opening.value_datetime < :onOrAfter ";
+    }
+      query = query
+            + "        AND type.voided = 0 "
+            + "        AND type.concept_id = ${typeOfPatient} "
+            + "        AND type.value_coded in (${tarv}) "
+            + "UNION "
+            + "SELECT p.patient_id "
+            + "FROM patient p   "
+            + "    JOIN patient_program pp  "
+            + "        ON p.patient_id=pp.patient_id "
+            + "    JOIN patient_state ps  "
+            + "        ON ps.patient_program_id=pp.patient_program_id "
+            + "WHERE  pp.program_id = ${programEnrolled} "
+            + "       AND ps.state = ${transferredInState} "
+            + "       AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ";
+    if (isExclusion == true) {
+      query = query + "    AND ps.start_date > :onOrAfter ";
+    }
+    query = query + "    AND p.voided = 0 " + "    AND pp.voided = 0 " + "    AND ps.voided = 0";
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("mastercard", mastercard);
+    valuesMap.put("transferFromOther", transferFromOther);
+    valuesMap.put("yes", yes);
+    valuesMap.put("dateOfMasterCardFileOpening", dateOfMasterCardFileOpening);
+    valuesMap.put("typeOfPatient", typeOfPatient);
+    valuesMap.put("tarv", tarv);
+    valuesMap.put("programEnrolled", programEnrolled);
+    valuesMap.put("transferredInState", transferredInState);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
+  }
+
   /**
    * Get patients with encounters within start and end date F1: Number of patients who had clinical
    * appointment during the reporting month
