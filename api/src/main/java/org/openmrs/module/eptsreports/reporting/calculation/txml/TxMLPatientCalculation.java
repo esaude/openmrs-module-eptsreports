@@ -140,7 +140,9 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
         if (numeratorNextExpectedDate != null) {
           Date candidateDate = deadInHomeVisitForm.get(patientId);
           if (candidateDate != null) {
-            if (candidateDate.compareTo(numeratorNextExpectedDate) >= 0) {
+            Date nextDatePlus28 =
+                CalculationProcessorUtils.adjustDaysInDate(numeratorNextExpectedDate, DAYS_TO_LTFU);
+            if (candidateDate.compareTo(nextDatePlus28) > 0) {
               result.put(patientId, candidateDate);
             }
           }
