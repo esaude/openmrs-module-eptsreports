@@ -1181,7 +1181,11 @@ public class HivMetadata extends ProgramsMetadata {
 
   // Programs
 
-  // program_id=2
+  /**
+   * program_id=2
+   *
+   * @return
+   */
   public Program getARTProgram() {
     String uuid = Context.getAdministrationService().getGlobalProperty(gpArtProgramUuid);
     return getProgram(uuid);
@@ -1192,7 +1196,11 @@ public class HivMetadata extends ProgramsMetadata {
     return getProgram(uuid);
   }
 
-  // program_id=1
+  /**
+   * program_id=1
+   *
+   * @return
+   */
   public Program getHIVCareProgram() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.hivCareProgramUuid");
@@ -1478,6 +1486,18 @@ public class HivMetadata extends ProgramsMetadata {
   public Concept getPreTarvConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.preTarvConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * Concept_id = 23891
+   *
+   * @return
+   */
+  public Concept getDateOfMasterCardFileOpeningConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.dateOfMasterCardFileOpeningConceptUuid");
     return getConcept(uuid);
   }
 }
