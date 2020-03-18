@@ -260,7 +260,6 @@ public class ResumoMensalQueries {
     valuesMap.put("programEnrolled", programEnrolled);
     valuesMap.put("transferredInState", transferredInState);
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
-    System.out.println(sub.replace(query));
     return sub.replace(query);
   }
 
