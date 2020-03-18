@@ -206,10 +206,11 @@ public class ResumoMensalQueries {
             + "        AND transf.concept_id = ${transferFromOther} "
             + "        AND transf.value_coded = ${yes} "
             + "        AND opening.voided = 0 "
-            + "        AND opening.concept_id = ${dateOfMasterCardFileOpening} "
-            + "        AND opening.value_datetime BETWEEN :onOrAfter AND :onOrBefore  ";
+            + "        AND opening.concept_id = ${dateOfMasterCardFileOpening} ";
     if (isExclusion == true) {
-      query = query + "OR opening.value_datetime < :onOrAfter ";
+      query = query + "AND opening.value_datetime < :onOrAfter ";
+    }else{
+      query = query + " AND opening.value_datetime BETWEEN :onOrAfter AND :onOrBefore  ";
     }
       query = query
             + "        AND type.voided = 0 "
@@ -223,10 +224,12 @@ public class ResumoMensalQueries {
             + "    JOIN patient_state ps  "
             + "        ON ps.patient_program_id=pp.patient_program_id "
             + "WHERE  pp.program_id = ${programEnrolled} "
-            + "       AND ps.state = ${transferredInState} "
-            + "       AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ";
+            + "       AND ps.state = ${transferredInState} ";            
     if (isExclusion == true) {
-      query = query + "    AND ps.start_date > :onOrAfter ";
+      query = query + "    AND ps.start_date < :onOrAfter ";
+    }else
+    {
+      query = query + "    AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ";
     }
     query = query + "    AND p.voided = 0 " + "    AND pp.voided = 0 " + "    AND ps.voided = 0";
 
@@ -240,6 +243,7 @@ public class ResumoMensalQueries {
     valuesMap.put("programEnrolled", programEnrolled);
     valuesMap.put("transferredInState", transferredInState);
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    System.out.println(sub.replace(query));
     return sub.replace(query);
   }
 

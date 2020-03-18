@@ -289,7 +289,7 @@ public class ResumoMensalCohortQueries {
         "B2Exlcusion",
         map(
             getTransferredInPatients(true),
-            "onOrAfter={onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+            "onOrAfter=${onOrAfter-1},location=${location}"));
 
     CohortDefinition transferredOut = getPatientsTransferredOutB5();
 
