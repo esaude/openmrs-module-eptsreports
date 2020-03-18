@@ -118,11 +118,24 @@ public class TXTBCohortQueries {
     CohortDefinition cd =
         genericCohortQueries.generalSql(
             "tuberculosisSymptoms",
-            TXTBQueries.tuberculosisSympots(
+            TXTBQueries.tuberculosisSymptoms(
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                 tbMetadata.getHasTbSymptomsConcept().getConceptId(),
                 commonMetadata.getYesConcept().getConceptId(),
                 commonMetadata.getNoConcept().getConceptId()));
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  public CohortDefinition getTuberculosisSymptomsPositiveScreening() {
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "tuberculosisSymptoms",
+            TXTBQueries.tuberculosisSymptoms(
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                tbMetadata.getHasTbSymptomsConcept().getConceptId(),
+                commonMetadata.getYesConcept().getConceptId(),
+                null));
     addGeneralParameters(cd);
     return cd;
   }
@@ -358,15 +371,15 @@ public class TXTBCohortQueries {
 
   public CohortDefinition positiveScreening() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition a = codedYesTbScreening();
-    CohortDefinition b = positiveInvestigationResultComposition();
-    CohortDefinition c = tbTreatmentStartDateWithinReportingDate();
-    CohortDefinition d = getInTBProgram();
-    cd.addSearch("A", EptsReportUtils.map(a, codedObsParameterMapping));
-    cd.addSearch("B", mapStraightThrough(b));
-    cd.addSearch("C", mapStraightThrough(c));
-    cd.addSearch("D", mapStraightThrough(d));
-    cd.setCompositionString("A OR B OR C OR D");
+    cd.addSearch("A", EptsReportUtils.map(codedYesTbScreening(), codedObsParameterMapping));
+    cd.addSearch("B", mapStraightThrough(positiveInvestigationResultComposition()));
+    cd.addSearch("C", mapStraightThrough(tbTreatmentStartDateWithinReportingDate()));
+    cd.addSearch("D", mapStraightThrough(getInTBProgram()));
+    cd.addSearch("E", mapStraightThrough(getResultForBasiloscopia()));
+    cd.addSearch("F", mapStraightThrough(getTBTreatmentStart()));
+    cd.addSearch("G", mapStraightThrough(getPulmonaryTB()));
+    cd.addSearch("H", mapStraightThrough(getPatientsWithAtLeastOneResponseForPositiveScreeningH()));
+    cd.setCompositionString("A OR B OR C OR D OR E OR F OR G OR H");
     addGeneralParameters(cd);
     return cd;
   }
@@ -542,5 +555,24 @@ public class TXTBCohortQueries {
     definition.setCompositionString("started-on-period");
 
     return definition;
+  }
+
+  private CompositionCohortDefinition getPatientsWithAtLeastOneResponseForPositiveScreeningH() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addSearch(
+        "tuberculosis-symptomys", mapStraightThrough(getTuberculosisSymptomsPositiveScreening()));
+    cd.addSearch("active-tuberculosis", mapStraightThrough(getActiveTuberculosis()));
+    cd.addSearch("tb-observations", mapStraightThrough(getTBObservation()));
+    cd.addSearch(
+        "application-for-laboratory-research",
+        mapStraightThrough(getApplicationForLaboratoryResearch()));
+    cd.addSearch("tb-genexpert-test", mapStraightThrough(getTBGenexpertTest()));
+    cd.addSearch("culture-test", mapStraightThrough(getCultureTest()));
+    cd.addSearch("test-tb-lam", mapStraightThrough(getTestTBLAM()));
+    cd.setCompositionString(
+        "tuberculosis-symptomys OR active-tuberculosis OR tb-observations "
+            + "OR application-for-laboratory-research OR tb-genexpert-test OR culture-test OR test-tb-lam");
+    addGeneralParameters(cd);
+    return cd;
   }
 }
