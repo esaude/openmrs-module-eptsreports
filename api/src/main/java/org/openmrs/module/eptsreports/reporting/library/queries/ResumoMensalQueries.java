@@ -142,38 +142,85 @@ public class ResumoMensalQueries {
 
   public static String getPatientsForF2ForExclusionFromMainQuery(
       int adultoSeguimentoEncounterType,
-      int tbSymptomsConcept,
-      int yesConcept,
+      int hasTbSymptomsConcept,
+      int patientFoundYesConcept,
       int noConcept,
-      int tbTreatmentPlanConcept) {
-    String query =
-        "SELECT p.patient_id "
-            + "FROM   patient p "
-            + " JOIN encounter e "
-            + " ON p.patient_id = e.patient_id "
-            + " JOIN obs o "
-            + " ON o.encounter_id = e.encounter_id "
-            + " JOIN (SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM encounter enc JOIN patient pat ON pat.patient_id=enc.patient_id "
-            + " JOIN obs ob ON enc.encounter_id=ob.encounter_id WHERE pat.voided = 0 AND enc.voided = 0 AND ob.voided = 0 "
-            + " AND enc.location_id = :location AND enc.encounter_datetime BETWEEN :startDate AND :endDate "
-            + " AND enc.encounter_type= ${adultoSeguimentoEncounterType} AND ob.concept_id=${tbSymptomsConcept} AND (ob.value_coded=${yesConcept} OR ob.value_coded=${noConcept})) ed "
-            + " ON p.patient_id=ed.patient_id"
-            + " WHERE  p.voided = 0 "
-            + " AND e.voided = 0 "
-            + " AND e.encounter_type = ${adultoSeguimentoEncounterType} "
-            + " AND e.location_id = :location "
-            + " AND e.encounter_datetime = ed.endDate "
-            + " AND o.voided = 0 "
-            + " AND o.concept_id = ${tbTreatmentPlanConcept} ";
+      int tBTreatmentPlanConcept) {
 
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
-    valuesMap.put("tbSymptomsConcept", tbSymptomsConcept);
-    valuesMap.put("yesConcept", yesConcept);
+    valuesMap.put("hasTbSymptomsConcept", hasTbSymptomsConcept);
+    valuesMap.put("patientFoundYesConcept", patientFoundYesConcept);
     valuesMap.put("noConcept", noConcept);
-    valuesMap.put("tbTreatmentPlanConcept", tbTreatmentPlanConcept);
+    valuesMap.put("tBTreatmentPlanConcept", tBTreatmentPlanConcept);
+    String query =
+        "SELECT  pp.patient_id "
+            + "FROM patient  pp "
+            + "    INNER JOIN   ( "
+            + "        SELECT p.patient_id,  e.encounter_datetime screening_date "
+            + "        FROM patient p "
+            + "            INNER  JOIN encounter e  "
+            + "                ON p.patient_id=e.patient_id  "
+            + "            INNER  JOIN obs o  "
+            + "                ON e.encounter_id=o.encounter_id  "
+            + "        WHERE p.voided = 0  "
+            + "            AND e.voided = 0  "
+            + "            AND o.voided = 0  "
+            + "            AND e.location_id = :location  "
+            + "            AND e.encounter_datetime  "
+            + "                BETWEEN :startDate AND :endDate "
+            + "            AND e.encounter_type= ${adultoSeguimentoEncounterType} "
+            + "            AND o.concept_id= ${hasTbSymptomsConcept} "
+            + "            AND (o.value_coded= ${patientFoundYesConcept} OR o.value_coded  = ${noConcept}) "
+            + "        GROUP BY p.patient_id "
+            + "    ) screening   "
+            + "        ON screening.patient_id = pp.patient_id     "
+            + "    INNER JOIN  encounter ee "
+            + "        ON ee.patient_id = pp.patient_id "
+            + "    INNER JOIN  obs oo "
+            + "        ON ee.encounter_id = oo.encounter_id "
+            + "WHERE  ee.voided = 0 "
+            + "    AND pp.voided =0 "
+            + "    AND oo.voided =0       "
+            + "  AND ee.location_id = :location  "
+            + "  AND ee.encounter_type= ${adultoSeguimentoEncounterType} "
+            + "    AND oo.concept_id = ${tBTreatmentPlanConcept} "
+            + "    AND ee.encounter_datetime =  :endDate "
+            + "GROUP BY pp.patient_id "
+            + "";
+
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     return sub.replace(query);
+  }
+
+  /**
+   * Patient screened for TB
+   *
+   * @param encounterType
+   * @param tbScreening
+   * @param yesConcept
+   * @param noConcept
+   * @return
+   */
+  public static String getPatientsWithTBScreening(
+      int encounterType, int tbScreening, int yesConcept, int noConcept) {
+    String query =
+        " SELECT p.patient_id "
+            + " FROM patient p "
+            + " 	INNER  JOIN encounter e "
+            + "			ON p.patient_id=e.patient_id "
+            + "		INNER  JOIN obs o "
+            + "			ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided = 0 "
+            + "		AND e.voided = 0 "
+            + "		AND o.voided = 0 "
+            + " AND e.location_id = :location "
+            + "	AND e.encounter_datetime "
+            + "		BETWEEN :startDate AND :endDate "
+            + " AND e.encounter_type=%d "
+            + " AND o.concept_id=%d "
+            + "	AND (o.value_coded=%d OR o.value_coded=%d)";
+    return String.format(query, encounterType, tbScreening, yesConcept, noConcept);
   }
 
   /**
@@ -184,9 +231,16 @@ public class ResumoMensalQueries {
    */
   public static String getPatientsWithGivenEncounterType(int encounterType) {
     String query =
-        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id "
-            + " WHERE e.encounter_type=%d AND e.location_id=:location "
-            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate AND p.voided=0 AND e.voided=0 ";
+        " SELECT p.patient_id "
+            + " FROM patient p "
+            + "	INNER JOIN encounter e "
+            + "		ON p.patient_id=e.patient_id "
+            + " WHERE e.encounter_type= %d "
+            + "		AND e.location_id=:location "
+            + " 	AND e.encounter_datetime "
+            + "			BETWEEN :startDate AND :endDate "
+            + "		AND p.voided=0 "
+            + "		AND e.voided=0 ";
     return String.format(query, encounterType);
   }
 
@@ -404,7 +458,7 @@ public class ResumoMensalQueries {
             + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
             + " AND e.encounter_datetime < :startDate "
             + " AND p.voided=0 AND e.voided=0 ";
-    return String.format(query, encounterType, encounterType);
+    return String.format(query, encounterType);
   }
 
   /**
@@ -567,5 +621,79 @@ public class ResumoMensalQueries {
     valuesMap.put("encounterType7", encounterType7);
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     return sub.replace(query);
+  }
+
+  public static String getPatientsRegisteredAsTransferredInDuringTheStatisticalYear(
+      int mastercard,
+      int transferFromOther,
+      int yes,
+      int typeOfPatient,
+      int answer,
+      int masteCardFileOpenDate,
+      int programEnrolled,
+      int transferredInState) {
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("mastercard", mastercard);
+    map.put("transferFromOther", transferFromOther);
+    map.put("yes", yes);
+    map.put("typeOfPatient", typeOfPatient);
+    map.put("answer", answer);
+    map.put("masteCardFileOpenDate", masteCardFileOpenDate);
+    map.put("programEnrolled", programEnrolled);
+    map.put("transferredInState", transferredInState);
+
+    String query =
+        " SELECT p.patient_id  "
+            + "        FROM   patient p  "
+            + "           INNER JOIN encounter e  "
+            + "             ON p.patient_id = e.patient_id  "
+            + "           INNER JOIN obs transf  "
+            + "             ON transf.encounter_id = e.encounter_id  "
+            + "           INNER JOIN obs type  "
+            + "             ON type.encounter_id = e.encounter_id  "
+            + "           INNER JOIN obs mastercardFile  "
+            + "             ON mastercardFile.encounter_id = e.encounter_id  "
+            + "        WHERE  p.voided = 0  "
+            + "           AND e.voided = 0  "
+            + "           AND e.encounter_type = ${mastercard}  "
+            + "           AND e.location_id = :location  "
+            + "  "
+            + " "
+            + "           AND transf.voided = 0  "
+            + "           AND transf.concept_id = ${transferFromOther}  "
+            + "           AND transf.value_coded = ${yes}  "
+            + "     "
+            + "           AND type.voided = 0  "
+            + "           AND type.concept_id = ${typeOfPatient}  "
+            + "           AND type.value_coded = ${answer}  "
+            + "          AND mastercardFile.voided = 0 "
+            + "           AND mastercardFile.concept_id = ${masteCardFileOpenDate}"
+            + "	         AND mastercardFile.value_datetime BETWEEN  "
+            + "	  		        IF(MONTH(:onOrAfter) = 12  && DAY(:onOrAfter) = 21, :onOrAfter, CONCAT(YEAR(:onOrAfter)-1, '-12','-21'))  "
+            + "	  		          AND  "
+            + "	  		         :onOrBefore   "
+            + "    	UNION  "
+            + " "
+            + "   	SELECT p.patient_id  "
+            + "    	FROM patient p    "
+            + "        INNER JOIN patient_program pp   "
+            + "            ON p.patient_id=pp.patient_id  "
+            + "        INNER JOIN patient_state ps   "
+            + "            ON ps.patient_program_id=pp.patient_program_id  "
+            + "    	WHERE  pp.program_id = ${programEnrolled}  "
+            + "        AND ps.state = ${transferredInState}  "
+            + "    	  AND pp.location_id = :location"
+            + "        AND ps.start_date BETWEEN "
+            + "             IF(MONTH(:onOrAfter) = 12  && DAY(:onOrAfter) = 21, :onOrAfter, CONCAT(YEAR(:onOrAfter)-1, '-12','-21'))  "
+            + "        AND  "
+            + "            :onOrBefore  "
+            + "        AND p.voided = 0  "
+            + "        AND pp.voided = 0  "
+            + "        AND ps.voided = 0 ";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    String mappedQuery = sb.replace(query);
+    return mappedQuery;
   }
 }
