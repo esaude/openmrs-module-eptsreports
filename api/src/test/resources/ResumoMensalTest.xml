@@ -119,9 +119,11 @@
                      description="UUID for the LEVANTAMENTO DE ARV concept"
                      uuid="087391f3-5895-11ea-8247-a0a4c5d1c75c"/>
 
+
 	<global_property property="@MODULE_ID@.dateOfMasterCardFileOpeningConceptUuid"
 			property_value="68d65d0c-8fee-456b-8e95-caed990351e1"
 			description="Master Card File Open Date Concept"
+
 			uuid="087691f3-5895-18ea-8247-a0a4c5d1c75c"/>
 
 
