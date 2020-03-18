@@ -44,17 +44,11 @@ public class ResumoMensalTbExclusionCalculation extends BaseFghCalculation {
     CalculationResultMap resultMap = new CalculationResultMap();
 
     ListMap<Integer, Object[]> resutls = this.getResutls(context);
-
     for (Integer patientId : resutls.keySet()) {
-
       List<Object[]> objects = resutls.get(patientId);
-
       if (!objects.isEmpty()) {
-
         for (int i = 0; i < objects.size(); i++) {
-
           Object[] ob = objects.get(i);
-
           if (ob[1] == null) {
             resultMap.put(patientId, new BooleanResult(true, this));
           }

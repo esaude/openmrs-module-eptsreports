@@ -95,96 +95,72 @@ public class ResumoMensalQueries {
    *
    * @return String
    */
-  public static String getPatientsTransferredFromAnotherHealthFacilityDuringTheCurrentMonth(
-      int preTarvProgram,
-      int tarvProgram,
-      int trasferedStatePreTarv,
-      int trasferedStateTarv,
-      int encouterTypeFichaResumo,
-      int typeOfPatientTransferedFromConcept,
-      int typeOfPatientTransferedFromAnswerPreTarv,
-      int typeOfPatientTransferedFromAnswerTarv,
-      int transferFromOtherFacility,
-      int transferFromOtherFacilityAnswer,
-      int enrolmentDateConcept) {
-
-    String query =
-        "SELECT trasferedPatients.patient_id FROM ("
-            + "SELECT pg.patient_id, MIN(ps.start_date) FROM  patient p "
-            + "inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "WHERE pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id in(%d,%d) and ps.state in(%d,%d) and ps.start_date=pg.date_enrolled and ps.start_date<:startDate  "
-            + "and location_id=:location GROUP BY p.patient_id "
-            + "UNION "
-            + "SELECT p.patient_id,MIN(obsData.value_datetime) AS initialDate  FROM patient p  "
-            + "INNER JOIN encounter e  ON e.patient_id=p.patient_id "
-            + "INNER JOIN obs o on o.encounter_id=e.encounter_id "
-            + "INNER JOIN obs obsPretarv on e.encounter_id=obsPretarv.encounter_id "
-            + "INNER JOIN obs obsData on e.encounter_id=obsData.encounter_id "
-            + "WHERE e.voided=0 AND o.voided=0 AND e.encounter_type=%d and obsPretarv.voided=0 and obsPretarv.concept_id=%d AND obsPretarv.value_coded in(%d,%d) "
-            + "AND e.location_id=:location  AND o.concept_id=%d AND o.value_coded=%d AND obsData.concept_id=%d AND obsData.voided=0 AND obsData.value_datetime<:startDate "
-            + "GROUP BY p.patient_id)trasferedPatients GROUP BY trasferedPatients.patient_id ";
-
-    return String.format(
-        query,
-        preTarvProgram,
-        tarvProgram,
-        trasferedStatePreTarv,
-        trasferedStateTarv,
-        encouterTypeFichaResumo,
-        typeOfPatientTransferedFromConcept,
-        typeOfPatientTransferedFromAnswerPreTarv,
-        typeOfPatientTransferedFromAnswerTarv,
-        transferFromOtherFacility,
-        transferFromOtherFacilityAnswer,
-        enrolmentDateConcept);
-  }
-
-  public static String
-      getPatientsTransferredFromAnotherHealthFacilityDuringTheCurrentStartDateEndDate(
-          int preTarvProgram,
-          int tarvProgram,
-          int trasferedStatePreTarv,
-          int trasferedStateTarv,
-          int encouterTypeFichaResumo,
-          int typeOfPatientTransferedFromConcept,
-          int typeOfPatientTransferedFromAnswerPreTarv,
-          int typeOfPatientTransferedFromAnswerTarv,
-          int transferFromOtherFacility,
-          int transferFromOtherFacilityAnswer,
-          int enrolmentDateConcept) {
+  public static String getPatientsTransferredFromAnotherHealthFacilityDuringTheCurrentMonth() {
 
     String query =
         "SELECT trasferedPatients.patient_id FROM ( "
-            + "SELECT pg.patient_id, MIN(ps.start_date) FROM  patient p "
-            + "inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "WHERE pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id in(%d,%d) and ps.state in(%d,%d) "
-            + "and ps.start_date=pg.date_enrolled and ps.start_date <= :endDate and location_id=:location GROUP BY p.patient_id "
-            + "UNION "
-            + "SELECT p.patient_id,MIN(obsData.value_datetime) AS initialDate  FROM patient p  "
+            + "select minState.patient_id,minState.minStateDate as initialDate from( "
+            + "SELECT p.patient_id, pg.patient_program_id, MIN(ps.start_date) as minStateDate FROM patient p  "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id  "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id  "
+            + "WHERE  pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=1 and location_id=:location and ps.start_date<:startDate "
+            + "GROUP BY pg.patient_program_id "
+            + ") minState  "
+            + "inner join patient_state ps on ps.patient_program_id=minState.patient_program_id  "
+            + "where ps.start_date=minState.minStateDate and ps.state=28 and ps.voided=0 "
+            + "union "
+            + "select minState.patient_id,minState.minStateDate as initialDate from( "
+            + "SELECT p.patient_id, pg.patient_program_id, MIN(ps.start_date) as minStateDate  FROM patient p  "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id  "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id  "
+            + "WHERE  pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and location_id=:location  and ps.start_date<:startDate    "
+            + "GROUP BY pg.patient_program_id) minState  "
+            + "inner join patient_state ps on ps.patient_program_id=minState.patient_program_id "
+            + "where ps.start_date=minState.minStateDate and ps.state=29 and ps.voided=0 UNION  "
+            + "SELECT p.patient_id,MIN(obsData.value_datetime) AS initialDate  FROM patient p "
             + "INNER JOIN encounter e  ON e.patient_id=p.patient_id "
             + "INNER JOIN obs o on o.encounter_id=e.encounter_id "
-            + "INNER JOIN obs obsPretarv on e.encounter_id=obsPretarv.encounter_id "
+            + "INNER JOIN obs obsPretarv on e.encounter_id=obsPretarv.encounter_id  "
             + "INNER JOIN obs obsData on e.encounter_id=obsData.encounter_id "
-            + "WHERE e.voided=0 AND o.voided=0 AND e.encounter_type=%d and obsPretarv.voided=0 and obsPretarv.concept_id=%d AND obsPretarv.value_coded in(%d,%d) "
-            + "AND e.location_id=:location AND o.concept_id=%d AND o.value_coded=%d "
-            + "AND obsData.concept_id=%d AND obsData.voided=0 AND obsData.value_datetime<=:endDate GROUP BY p.patient_id "
-            + ")trasferedPatients ";
+            + "WHERE e.voided=0 AND o.voided=0  AND e.encounter_type=53  AND obsPretarv.voided=0  AND obsPretarv.concept_id=6300  AND obsPretarv.value_coded in(6275,6276) AND obsData.concept_id=23891 "
+            + "AND obsData.voided=0 AND e.location_id=:location   AND o.concept_id=1369  AND o.value_coded=1065  AND obsData.value_datetime< :startDate GROUP BY p.patient_id)trasferedPatients  GROUP BY trasferedPatients.patient_id ";
 
-    return String.format(
-        query,
-        preTarvProgram,
-        tarvProgram,
-        trasferedStatePreTarv,
-        trasferedStateTarv,
-        encouterTypeFichaResumo,
-        typeOfPatientTransferedFromConcept,
-        typeOfPatientTransferedFromAnswerPreTarv,
-        typeOfPatientTransferedFromAnswerTarv,
-        transferFromOtherFacility,
-        transferFromOtherFacilityAnswer,
-        enrolmentDateConcept);
+    return query;
+  }
+
+  public static String
+      getPatientsTransferredFromAnotherHealthFacilityDuringTheCurrentStartDateEndDate() {
+
+    String query =
+        "SELECT trasferedPatients.patient_id FROM ( "
+            + "select minState.patient_id,minState.minStateDate as initialDate from( "
+            + "SELECT p.patient_id, pg.patient_program_id, MIN(ps.start_date) as minStateDate FROM patient p  "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id  "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id  "
+            + "WHERE  pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=1 and location_id=:location and ps.start_date<:endDate "
+            + "GROUP BY pg.patient_program_id "
+            + ") minState  "
+            + "inner join patient_state ps on ps.patient_program_id=minState.patient_program_id  "
+            + "where ps.start_date=minState.minStateDate and ps.state=28 and ps.voided=0 "
+            + "union "
+            + "select minState.patient_id,minState.minStateDate as initialDate from ( "
+            + "SELECT p.patient_id, pg.patient_program_id, MIN(ps.start_date) as minStateDate  FROM patient p  "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id  "
+            + "WHERE  pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and location_id=:location  and ps.start_date<:endDate "
+            + "GROUP BY pg.patient_program_id) minState  "
+            + "inner join patient_state ps on ps.patient_program_id=minState.patient_program_id "
+            + "where ps.start_date=minState.minStateDate and ps.state=29 and ps.voided=0 "
+            + "UNION  "
+            + "SELECT p.patient_id,MIN(obsData.value_datetime) AS initialDate  FROM patient p "
+            + "INNER JOIN encounter e  ON e.patient_id=p.patient_id "
+            + "INNER JOIN obs o on o.encounter_id=e.encounter_id "
+            + "INNER JOIN obs obsPretarv on e.encounter_id=obsPretarv.encounter_id  "
+            + "INNER JOIN obs obsData on e.encounter_id=obsData.encounter_id "
+            + "WHERE e.voided=0 AND o.voided=0  AND e.encounter_type=53  AND obsPretarv.voided=0  AND obsPretarv.concept_id=6300  AND obsPretarv.value_coded in(6275,6276) AND obsData.concept_id=23891 "
+            + "AND obsData.voided=0 AND e.location_id=:location   AND o.concept_id=1369  AND o.value_coded=1065  AND obsData.value_datetime< :endDate GROUP BY p.patient_id)trasferedPatients  GROUP BY trasferedPatients.patient_id ";
+
+    return query;
   }
 
   public static String getPatientsTransferredFromAnotherHealthFacilityB5() {
@@ -194,7 +170,7 @@ public class ResumoMensalQueries {
             + "select pg.patient_id,max(ps.start_date) data_transferidopara from  patient p "
             + "inner join patient_program pg on p.patient_id=pg.patient_id "
             + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id where pg.voided=0 and ps.voided=0 and p.voided=0 and "
-            + "pg.program_id=2 and ps.state=7 and ps.end_date is null and ps.start_date<=:endDate and location_id=:location group by p.patient_id "
+            + "pg.program_id=2 and ps.state=7 and ps.start_date<=:endDate and location_id=:location group by p.patient_id "
             + "union "
             + "select p.patient_id,max(o.obs_datetime) data_transferidopara from patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
@@ -300,7 +276,7 @@ public class ResumoMensalQueries {
             + "select pg.patient_id, max(ps.start_date) data_estado from patient p "
             + "inner join patient_program pg on p.patient_id=pg.patient_id "
             + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and ps.state in (7,8,10) and ps.end_date is null and ps.start_date<=:endDate and location_id=:location "
+            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and ps.state in (7,8,10) and ps.start_date<=:endDate and location_id=:location "
             + "group by pg.patient_id union "
             + "select p.patient_id, max(o.obs_datetime) data_estado from patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
@@ -370,12 +346,14 @@ public class ResumoMensalQueries {
   }
 
   public static final String findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod =
-      "SELECT pg.patient_id FROM patient p "
-          + "INNER JOIN patient_program pg ON p.patient_id=pg.patient_id "
-          + "INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
-          + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND pg.program_id=2 "
-          + "AND ps.state=29 AND ps.start_date=pg.date_enrolled "
-          + "AND ps.start_date <=:startDate AND location_id=:location";
+      "select minState.patient_id from ( "
+          + "SELECT p.patient_id, pg.patient_program_id, MIN(ps.start_date) as minStateDate  FROM patient p  "
+          + "inner join patient_program pg on p.patient_id=pg.patient_id  "
+          + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id  "
+          + "WHERE  pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and location_id=:location  and ps.start_date<=:startDate "
+          + "GROUP BY pg.patient_program_id) minState  "
+          + "inner join patient_state ps on ps.patient_program_id=minState.patient_program_id  "
+          + "where ps.start_date=minState.minStateDate and ps.state=29 and ps.voided=0 and ps.start_date <=:startDate ";
 
   public static final String
       findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard =
@@ -671,12 +649,14 @@ public class ResumoMensalQueries {
   }
 
   public static final String findPatientsWithAProgramStateMarkedAsTransferedInInAPeriodStartDateB2 =
-      "SELECT pg.patient_id FROM patient p "
-          + "INNER JOIN patient_program pg ON p.patient_id=pg.patient_id "
-          + "INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
-          + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND pg.program_id=2 "
-          + "AND ps.state=29 AND ps.start_date=pg.date_enrolled "
-          + "AND ps.start_date < :startDate AND location_id=:location";
+      "select minState.patient_id from ( "
+          + "SELECT p.patient_id, pg.patient_program_id, MIN(ps.start_date) as minStateDate  FROM patient p  "
+          + "inner join patient_program pg on p.patient_id=pg.patient_id  "
+          + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+          + "WHERE pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and location_id=:location  and ps.start_date<:startDate "
+          + "GROUP BY pg.patient_program_id) minState "
+          + "inner join patient_state ps on ps.patient_program_id=minState.patient_program_id "
+          + "where ps.start_date=minState.minStateDate and ps.state=29 and ps.voided=0 and ps.start_date <:startDate ";
 
   public static final String
       findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardStartDateB2 =
@@ -695,7 +675,7 @@ public class ResumoMensalQueries {
           + "select pg.patient_id,max(ps.start_date) data_transferidopara from  patient p  "
           + "inner join patient_program pg on p.patient_id=pg.patient_id  "
           + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-          + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and ps.state=7 and ps.end_date is null and  ps.start_date<:startDate group by p.patient_id  "
+          + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and ps.state=7 and  ps.start_date<:startDate group by p.patient_id  "
           + "union  "
           + "select p.patient_id,max(o.obs_datetime) data_transferidopara from patient p  "
           + "inner join encounter e on p.patient_id=e.patient_id  "
@@ -783,25 +763,32 @@ public class ResumoMensalQueries {
   public static String getF3ExclusionTransferedIn() {
     String query =
         "SELECT trasferedPatients.patient_id FROM ( "
-            + "SELECT pg.patient_id, MIN(ps.start_date) as initialDate FROM  patient p "
+            + "select minState.patient_id,minState.minStateDate as initialDate from  ("
+            + "SELECT p.patient_id, pg.patient_program_id, MIN(ps.start_date) as minStateDate  FROM  patient p  "
             + "inner join patient_program pg on p.patient_id=pg.patient_id  "
             + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id  "
-            + "WHERE pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id in(1,2) "
-            + "and ps.state in(28,29) and ps.start_date=pg.date_enrolled and  "
-            + "ps.start_date BETWEEN  IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) AND :endDate "
-            + "and location_id=:location GROUP BY p.patient_id "
+            + "WHERE  pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and location_id=:location "
+            + "and ps.start_date BETWEEN  IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) AND :endDate "
+            + "GROUP BY pg.patient_program_id) minState  "
+            + "inner join patient_state ps on ps.patient_program_id=minState.patient_program_id  "
+            + "where ps.start_date=minState.minStateDate and ps.state=29 and ps.voided=0 "
             + "UNION  "
-            + "SELECT p.patient_id,MIN(obsData.value_datetime) AS initialDate  FROM patient p "
+            + "SELECT p.patient_id,MIN(obsData.value_datetime) AS initialDate  FROM patient p   "
             + "INNER JOIN encounter e  ON e.patient_id=p.patient_id  "
             + "INNER JOIN obs o on o.encounter_id=e.encounter_id  "
             + "INNER JOIN obs obsPretarv on e.encounter_id=obsPretarv.encounter_id  "
             + "INNER JOIN obs obsData on e.encounter_id=obsData.encounter_id "
-            + "WHERE e.voided=0 AND o.voided=0  AND e.encounter_type=53  AND obsPretarv.voided=0  AND obsPretarv.concept_id=6300  AND obsPretarv.value_coded in(6275,6276) "
-            + "AND obsData.concept_id=23891 AND obsData.voided=0 AND e.location_id=:location "
-            + "AND o.concept_id=1369 AND o.value_coded=1065 "
-            + "AND obsData.value_datetime BETWEEN IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) AND :endDate "
-            + "GROUP BY p.patient_id "
-            + " ) trasferedPatients  GROUP BY trasferedPatients.patient_id ";
+            + "WHERE e.voided=0 AND o.voided=0  AND e.encounter_type=53  AND obsPretarv.voided=0  "
+            + "AND obsPretarv.concept_id=6300  "
+            + "AND obsPretarv.value_coded=6276 "
+            + "AND obsData.concept_id=23891 "
+            + "AND obsData.voided=0 "
+            + "AND e.location_id=:location   "
+            + "AND o.concept_id=1369  "
+            + "AND o.value_coded=1065  "
+            + "AND obsData.value_datetime BETWEEN  IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) AND :endDate "
+            + "GROUP BY p.patient_id)trasferedPatients  "
+            + "GROUP BY trasferedPatients.patient_id ";
 
     return query;
   }

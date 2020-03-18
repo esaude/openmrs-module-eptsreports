@@ -44,13 +44,6 @@ public class ResumoMensalCohortQueries {
   private GenericCohortQueries genericCohortQueries;
   @Autowired private TxNewCohortQueries txNewCohortQueries;
 
-  private static int TRASFERED_FROM_STATE_PRE_TARV = 28;
-  private static int TRASFERED_FROM_STATE_TARV = 29;
-
-  private static int PRE_TARV_CONCEPT = 6275;
-  private static int TARV_CONCEPT = 6276;
-  private static int ENROLMENT_DATE_CONCEPT = 23891;
-
   @Autowired
   public ResumoMensalCohortQueries(
       HivMetadata hivMetadata, TbMetadata tbMetadata, GenericCohortQueries genericCohortQueries) {
@@ -90,18 +83,7 @@ public class ResumoMensalCohortQueries {
             this.genericCohortQueries.generalSql(
                 "getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1",
                 ResumoMensalQueries
-                    .getPatientsTransferredFromAnotherHealthFacilityDuringTheCurrentMonth(
-                        hivMetadata.getHIVCareProgram().getId(),
-                        hivMetadata.getARTProgram().getId(),
-                        TRASFERED_FROM_STATE_PRE_TARV,
-                        TRASFERED_FROM_STATE_TARV,
-                        hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-                        hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
-                        PRE_TARV_CONCEPT,
-                        TARV_CONCEPT,
-                        hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
-                        hivMetadata.getPatientFoundYesConcept().getConceptId(),
-                        ENROLMENT_DATE_CONCEPT)),
+                    .getPatientsTransferredFromAnotherHealthFacilityDuringTheCurrentMonth()),
             mappings));
 
     definition.setCompositionString("PRETARV NOT TRASFERED");
@@ -142,20 +124,9 @@ public class ResumoMensalCohortQueries {
         "TRASFERED",
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
-                "patientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2",
+                "getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA2",
                 ResumoMensalQueries
-                    .getPatientsTransferredFromAnotherHealthFacilityDuringTheCurrentStartDateEndDate(
-                        hivMetadata.getHIVCareProgram().getId(),
-                        hivMetadata.getARTProgram().getId(),
-                        TRASFERED_FROM_STATE_PRE_TARV,
-                        TRASFERED_FROM_STATE_TARV,
-                        hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-                        hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
-                        PRE_TARV_CONCEPT,
-                        TARV_CONCEPT,
-                        hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
-                        hivMetadata.getPatientFoundYesConcept().getConceptId(),
-                        ENROLMENT_DATE_CONCEPT)),
+                    .getPatientsTransferredFromAnotherHealthFacilityDuringTheCurrentStartDateEndDate()),
             mappings));
 
     definition.setCompositionString("PRETARV NOT TRASFERED");
@@ -592,6 +563,8 @@ public class ResumoMensalCohortQueries {
   public CohortDefinition getPatientsWhoMarkedINHC2A2() {
 
     String mapping = "startDate=${startDate-1m},endDate=${endDate},location=${location}";
+    String mappingTPI = "startDate=${startDate},endDate=${endDate},location=${location}";
+
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("INH");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -603,7 +576,7 @@ public class ResumoMensalCohortQueries {
         EptsReportUtils.map(
             this.getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(), mapping));
 
-    cd.addSearch("C2", EptsReportUtils.map(this.getPatientsWhoMarkedINHC2(), mapping));
+    cd.addSearch("C2", EptsReportUtils.map(this.getPatientsWhoMarkedINHC2(), mappingTPI));
 
     cd.setCompositionString("A2 AND C2");
     return cd;
@@ -612,6 +585,8 @@ public class ResumoMensalCohortQueries {
   public CohortDefinition getPatientsWhoMarkedTbActiveC3A2() {
 
     String mapping = "startDate=${startDate-1m},endDate=${endDate},location=${location}";
+    String mappingTB = "startDate=${startDate},endDate=${endDate},location=${location}";
+
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("TB Active");
 
@@ -624,7 +599,7 @@ public class ResumoMensalCohortQueries {
         EptsReportUtils.map(
             this.getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(), mapping));
 
-    cd.addSearch("C3", EptsReportUtils.map(this.getPatientsWhoMarkedTbActiveC3(), mapping));
+    cd.addSearch("C3", EptsReportUtils.map(this.getPatientsWhoMarkedTbActiveC3(), mappingTB));
 
     cd.setCompositionString("A2 AND C3");
     return cd;
@@ -760,7 +735,7 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  @DocumentedDefinition(value = "F3")
+  @DocumentedDefinition(value = "F1")
   public CohortDefinition getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("F1: Number of patients who had clinical appointment during the reporting month");
@@ -773,7 +748,7 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  @DocumentedDefinition(value = "F1TB")
+  @DocumentedDefinition(value = "F2")
   public CohortDefinition
       getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthTbF2() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
@@ -785,20 +760,13 @@ public class ResumoMensalCohortQueries {
 
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     definition.addSearch(
-        "F1",
+        "F2",
         EptsReportUtils.map(
             getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1(), mappings));
 
     definition.addSearch("TB1", map(findPatientWhoHaveTbSymthomsAndTbActive(), mappings));
 
-    definition.addSearch(
-        "TB2",
-        map(
-            genericCohortQueries.generalSql(
-                "TB2", ResumoMensalQueries.findPatientWhoHaveTbActiveF2()),
-            mappings));
-
-    definition.setCompositionString("F1 AND (TB1 OR TB2)");
+    definition.setCompositionString("F2 AND TB1");
 
     return definition;
   }

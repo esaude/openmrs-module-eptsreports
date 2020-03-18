@@ -7,12 +7,14 @@ public interface TxNewQueries {
   class QUERY {
 
     public static final String findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod =
-        "SELECT pg.patient_id FROM patient p "
-            + "INNER JOIN patient_program pg ON p.patient_id=pg.patient_id "
-            + "INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
-            + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND pg.program_id=2 "
-            + "AND ps.state=29 AND ps.start_date=pg.date_enrolled "
-            + "AND ps.start_date BETWEEN :startDate AND :endDate AND location_id=:location";
+        "select minState.patient_id from  ("
+            + "SELECT p.patient_id, pg.patient_program_id, MIN(ps.start_date) as minStateDate  FROM patient p  "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + "WHERE pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and location_id=:location  and ps.start_date<=:endDate "
+            + "GROUP BY pg.patient_program_id) minState "
+            + "inner join patient_state ps on ps.patient_program_id=minState.patient_program_id "
+            + "where ps.start_date=minState.minStateDate and ps.state=29 and ps.voided=0 and ps.start_date BETWEEN :startDate and :endDate ";
 
     public static final String
         findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard =

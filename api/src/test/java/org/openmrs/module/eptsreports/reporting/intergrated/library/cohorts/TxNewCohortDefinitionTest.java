@@ -31,7 +31,7 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
     // final Date reportingEndDate = DateUtil.getDateTime(2018, 9, 20);
 
     final CohortDefinition txNewCompositionCohort =
-        this.resumoMensalQueries.getPatientsWhoMarkedINHC2A2();
+        this.resumoMensalQueries.getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1();
 
     final Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), startDate);
@@ -41,6 +41,10 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
     final EvaluatedCohort evaluateCohortDefinition =
         this.evaluateCohortDefinition(txNewCompositionCohort, parameters);
     assertFalse(evaluateCohortDefinition.getMemberIds().isEmpty());
+    //    System.out.println(evaluateCohortDefinition.getMemberIds().size());
+    for (int t : evaluateCohortDefinition.getMemberIds()) {
+      System.out.println(t);
+    }
   }
 
   @Override
