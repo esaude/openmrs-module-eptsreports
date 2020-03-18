@@ -64,6 +64,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("       AND transf.voided = 0 ");
     q.append("       AND transf.concept_id = :transferFromOther ");
     q.append("       AND transf.value_coded = :yes ");
+
     q.append("       AND type.voided = 0 ");
     q.append("       AND type.concept_id = :typeOfPatient ");
     q.append("       AND type.value_coded in (:preTarv, :tarv) ");
@@ -96,7 +97,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     }
 
     if (cd.getOnOrAfter() == null) {
-      q.append("     AND ps.start_date < :onOrBefore ");
+      q.append("     AND ps.start_date <= :onOrBefore ");
     } else if (cd.getOnOrBefore() == null) {
       q.append("     AND ps.start_date > :onOrAfter ");
     } else {
