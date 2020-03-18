@@ -22,7 +22,30 @@ import java.util.Properties;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.*;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryEc20DataQualityCohorts;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec10PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec11PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec12PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec13PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec14PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec15PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec16PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec17PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec18PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec19PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec1PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec20PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec2PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec3PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec4PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec5PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec6PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec7PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec8PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec9PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.GetCustomConfigurationDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.SummaryDataQualityDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.SummaryEc20DataQualityDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
@@ -79,6 +102,12 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   private Ec19PatientListDataset ec19PatientListDataset;
 
+  private SummaryEc20DataQualityCohorts summaryEc20DataQualityCohorts;
+
+  private SummaryEc20DataQualityDataset summaryEc20DataQualityDataset;
+
+  private Ec20PatientListDataset ec20PatientListDataset;
+
   private GetCustomConfigurationDataset getCustomConfigurationDataset;
 
   private HivMetadata hivMetadata;
@@ -106,6 +135,9 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       Ec17PatientListDataset ec17PatientListDataset,
       Ec18PatientListDataset ec18PatientListDataset,
       Ec19PatientListDataset ec19PatientListDataset,
+      Ec20PatientListDataset ec20PatientListDataset,
+      SummaryEc20DataQualityDataset summaryEc20DataQualityDataset,
+      SummaryEc20DataQualityCohorts summaryEc20DataQualityCohorts,
       GetCustomConfigurationDataset getCustomConfigurationDataset,
       HivMetadata hivMetadata) {
     this.summaryDataQualityDataset = summaryDataQualityDataset;
@@ -129,6 +161,10 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     this.ec17PatientListDataset = ec17PatientListDataset;
     this.ec18PatientListDataset = ec18PatientListDataset;
     this.ec19PatientListDataset = ec19PatientListDataset;
+    this.ec20PatientListDataset = ec20PatientListDataset;
+    this.summaryEc20DataQualityDataset = summaryEc20DataQualityDataset;
+    this.summaryEc20DataQualityCohorts = summaryEc20DataQualityCohorts;
+
     this.hivMetadata = hivMetadata;
     this.getCustomConfigurationDataset = getCustomConfigurationDataset;
   }
@@ -168,10 +204,18 @@ public class SetupDataQualityReport extends EptsDataExportManager {
             "startDate=${startDate},endDate=${endDate},location=${location},state=${state}"));
     // adding a data set to help us get configuration parameters
     // adding respective data sets for the reports
+
     rd.addDataSetDefinition(
         "S",
         Mapped.mapStraightThrough(
             summaryDataQualityDataset.constructSummaryDataQualityDatset(getDataParameters())));
+
+    rd.addDataSetDefinition(
+        "S20",
+        Mapped.mapStraightThrough(
+            summaryEc20DataQualityDataset.constructSummaryEc20DataQualityDatset(
+                getDataParametersEC20())));
+
     rd.addDataSetDefinition(
         "EC1",
         Mapped.mapStraightThrough(ec1PatientListDataset.ec1DataSetDefinition(getDataParameters())));
@@ -246,10 +290,21 @@ public class SetupDataQualityReport extends EptsDataExportManager {
         "EC19",
         Mapped.mapStraightThrough(
             ec19PatientListDataset.ec19PatientListDataset(getDataParameters())));
+
+    rd.addDataSetDefinition(
+        "EC20",
+        Mapped.mapStraightThrough(
+            ec20PatientListDataset.ec20PatientListDatset(getDataParametersEC20())));
+
     rd.addDataSetDefinition(
         "EC01",
         Mapped.mapStraightThrough(
             getCustomConfigurationDataset.configDataSetDefinition(getDataParameters())));
+
+    rd.setBaseCohortDefinition(
+        EptsReportUtils.map(
+            summaryEc20DataQualityCohorts.getEc20DataQualityReportBaseCohort(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     return rd;
   }
@@ -273,7 +328,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       Properties props = new Properties();
       props.put(
           "repeatingSections",
-          "sheet:2,row:7,dataset:EC1 | sheet:3,row:7,dataset:EC2 | sheet:4,row:7,dataset:EC3 | sheet:5,row:7,dataset:EC4 | sheet:6,row:7,dataset:EC5 | sheet:7,row:7,dataset:EC6 | sheet:8,row:7,dataset:EC7 | sheet:9,row:7,dataset:EC8 | sheet:10,row:7,dataset:EC9 | sheet:11,row:7,dataset:EC10 | sheet:12,row:7,dataset:EC11 | sheet:13,row:7,dataset:EC12 | sheet:14,row:7,dataset:EC13 | sheet:15,row:7,dataset:EC14 | sheet:16,row:7,dataset:EC15 | sheet:17,row:7,dataset:EC16 | sheet:18,row:7,dataset:EC17 | sheet:19,row:7,dataset:EC18 | sheet:20,row:7,dataset:EC19");
+          "sheet:2,row:7,dataset:EC1 | sheet:3,row:7,dataset:EC2 | sheet:4,row:7,dataset:EC3 | sheet:5,row:7,dataset:EC4 | sheet:6,row:7,dataset:EC5 | sheet:7,row:7,dataset:EC6 | sheet:8,row:7,dataset:EC7 | sheet:9,row:7,dataset:EC8 | sheet:10,row:7,dataset:EC9 | sheet:11,row:7,dataset:EC10 | sheet:12,row:7,dataset:EC11 | sheet:13,row:7,dataset:EC12 | sheet:14,row:7,dataset:EC13 | sheet:15,row:7,dataset:EC14 | sheet:16,row:7,dataset:EC15 | sheet:17,row:7,dataset:EC16 | sheet:18,row:7,dataset:EC17 | sheet:19,row:7,dataset:EC18 | sheet:20,row:7,dataset:EC19 |sheet:21,row:7,dataset:EC20");
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {
@@ -289,6 +344,14 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     parameters.add(ReportingConstants.END_DATE_PARAMETER);
     parameters.add(new Parameter("location", "Facilities", Location.class, List.class, null));
     parameters.add(EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()));
+    return parameters;
+  }
+
+  private List<Parameter> getDataParametersEC20() {
+    List<Parameter> parameters = new ArrayList<Parameter>();
+    parameters.add(ReportingConstants.START_DATE_PARAMETER);
+    parameters.add(ReportingConstants.END_DATE_PARAMETER);
+    parameters.add(new Parameter("location", "Facilities", Location.class, List.class, null));
     return parameters;
   }
 }

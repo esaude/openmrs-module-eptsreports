@@ -41,7 +41,7 @@ public class Ec9Queries {
             + encounterType
             + " AND e.location_id IN(:location) "
             + " AND pg.location_id IN(:location) "
-            + " AND e.encounter_datetime >= ps.start_date"
+            + " AND e.encounter_datetime > ps.start_date"
             + " AND ps.state="
             + stateId
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "

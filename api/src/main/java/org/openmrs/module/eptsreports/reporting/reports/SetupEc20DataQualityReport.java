@@ -22,6 +22,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+@Deprecated
 @Component
 public class SetupEc20DataQualityReport extends EptsDataExportManager {
 
@@ -81,6 +82,7 @@ public class SetupEc20DataQualityReport extends EptsDataExportManager {
         EptsReportUtils.map(
             summaryEc20DataQualityCohorts.getEc20DataQualityReportBaseCohort(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
+
     rd.addDataSetDefinition(
         "S20",
         Mapped.mapStraightThrough(
@@ -90,10 +92,11 @@ public class SetupEc20DataQualityReport extends EptsDataExportManager {
         "EC20",
         Mapped.mapStraightThrough(
             ec20PatientListDataset.ec20PatientListDatset(getDataParameters())));
-    //    rd.addDataSetDefinition(
-    //        "EC01",
-    //        Mapped.mapStraightThrough(
-    //            getCustomConfigurationDataset.configDataSetDefinition(getDataParameters())));
+
+    // rd.addDataSetDefinition(
+    // "EC01",
+    // Mapped.mapStraightThrough(
+    // getCustomConfigurationDataset.configDataSetDefinition(getDataParameters())));
 
     return rd;
   }
