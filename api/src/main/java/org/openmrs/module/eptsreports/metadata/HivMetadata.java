@@ -665,8 +665,8 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // Concept 6276 Date of ART Pickup
-  public Concept getArtStatus() {
+  /** Concept 6276 ART */
+  public Concept getArt() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.art");
     return getConcept(uuid);
   }
@@ -1482,7 +1482,8 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(
         Context.getAdministrationService().getGlobalProperty("eptsreports.bPlusConceptUuid"));
   }
-  // concept_id = 6275
+
+  /** concept_id = 6275 */
   public Concept getPreTarvConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.preTarvConceptUuid");

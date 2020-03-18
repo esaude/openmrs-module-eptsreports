@@ -12,6 +12,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsTest;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -88,14 +89,15 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   @Ignore
   public void getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2()
       throws EvaluationException {
-    CohortDefinition cohort =
-        resumoMensalCohortQueries
-            .getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2();
+    EptsTransferredInCohortDefinition cd = new EptsTransferredInCohortDefinition();
+    cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
     HashMap<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("onOrAfter", "", Date.class), getStartDate());
     parameters.put(new Parameter("onOrBefore", "", Date.class), getEndDate());
     parameters.put(new Parameter("location", "", Location.class), getLocation());
-    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, parameters);
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
     assertEquals(1, evaluatedCohort.getMemberIds().size());
     assertTrue(evaluatedCohort.getMemberIds().contains(1010));
   }

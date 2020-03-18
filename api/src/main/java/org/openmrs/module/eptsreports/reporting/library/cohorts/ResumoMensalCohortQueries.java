@@ -76,11 +76,16 @@ public class ResumoMensalCohortQueries {
         map(
             getNumberOfPatientsInMasterCardWithArtLessThanStartDateA1(),
             "startDate=${startDate},location=${location}"));
+
+    EptsTransferredInCohortDefinition transferredIn = new EptsTransferredInCohortDefinition();
+    transferredIn.setName(
+        "Number of patients transferred-in from another HF during a period less than startDate");
+    transferredIn.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+    transferredIn.addParameter(new Parameter("location", "Location", Location.class));
+
     cd.addSearch(
         "A1II",
-        map(
-            getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA1(),
-            "onOrBefore=${startDate},location=${location}"));
+        map((CohortDefinition) transferredIn, "onOrBefore=${startDate},location=${location}"));
     cd.addSearch(
         "A1III",
         map(
@@ -138,11 +143,14 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "A2I",
         map(sqlCohortDefinition, "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    EptsTransferredInCohortDefinition transferredIn = new EptsTransferredInCohortDefinition();
+    transferredIn.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+    transferredIn.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+    transferredIn.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "A2II",
-        map(
-            getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+        map((CohortDefinition) transferredIn, "onOrBefore=${endDate+1d},location=${location}"));
 
     cd.setCompositionString("A2I AND NOT A2II");
     return cd;
@@ -170,27 +178,6 @@ public class ResumoMensalCohortQueries {
                 transferBasedOnDateMappings, inProgramStatesMappings),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
     cd.setCompositionString("population AND NOT exclusion");
-    return cd;
-  }
-
-  /**
-   * A.2: Number of patients transferred-in from another HFs during the current month
-   *
-   * @return Cohort
-   * @return CohortDefinition
-   */
-  public CohortDefinition
-      getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2() {
-
-    EptsTransferredInCohortDefinition cd = new EptsTransferredInCohortDefinition();
-    // cd.setTypeOfPatientTransferredFromAnswer(hivMetadata.getPreTarvConcept());
-    cd.setProgramEnrolled(hivMetadata.getHIVCareProgram());
-    cd.setProgramEnrolled2(hivMetadata.getARTProgram());
-    cd.setPatientState(hivMetadata.getArtCareTransferredFromOtherHealthFacilityWorkflowState());
-    cd.setPatientState2(hivMetadata.getArtTransferredFromOtherHealthFacilityWorkflowState());
-    cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
     return cd;
   }
 
@@ -238,7 +225,7 @@ public class ResumoMensalCohortQueries {
         getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2E();
 
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
-    String mappingsEndDate = "onOrBefore=${endDate},location=${location}";
+    String mappingsEndDate = "onOrBefore=${endDate+1d},location=${location}";
     cd.addSearch("startedArt", map(startedArt, mappings));
 
     cd.addSearch("transferredIn", map(transferredIn, mappingsEndDate));
@@ -255,13 +242,9 @@ public class ResumoMensalCohortQueries {
    */
   public CohortDefinition
       getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2E() {
-    // TODO maybe we should be re-using
-    // HivCohortQueries#getPatientsTransferredFromOtherHealthFacility
-    // Waiting for BAs response
     EptsTransferredInCohortDefinition cd = new EptsTransferredInCohortDefinition();
-
     cd.setName("Number of patients transferred-in from another HFs during the current month");
-    cd.setTypeOfPatientTransferredFromAnswer(hivMetadata.getArtStatus());
+    cd.setTypeOfPatientTransferredFromAnswer(hivMetadata.getArt());
     cd.setPatientState(hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState());
     cd.setProgramEnrolled(hivMetadata.getARTProgram());
     cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
@@ -625,7 +608,7 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
-            hivMetadata.getArtStatus().getConceptId(),
+            hivMetadata.getArt().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata
                 .getArtTransferredFromOtherHealthFacilityWorkflowState()
@@ -734,11 +717,16 @@ public class ResumoMensalCohortQueries {
             getPatientsWhoInitiatedPreTARVDuringTheCurrentMonth(),
             "startDate=${startDate-1m},endDate=${endDate},location=${location}"));
 
+    EptsTransferredInCohortDefinition transferredIn = new EptsTransferredInCohortDefinition();
+    transferredIn.setTypeOfPatientTransferredFromAnswer(hivMetadata.getPreTarvConcept());
+    transferredIn.setProgramEnrolled(hivMetadata.getHIVCareProgram());
+    transferredIn.setPatientState(hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState());
+    transferredIn.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+    transferredIn.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+    transferredIn.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "transferredin",
-        map(
-            getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2(),
-            "onOrAfter=${startDate-1m},onOrBefore=${endDate},location=${location}"));
+        map(transferredIn, "onOrAfter=${startDate-1m},onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
         "TB", map(tb, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
@@ -1361,7 +1349,7 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
-            hivMetadata.getArtStatus().getConceptId(),
+            hivMetadata.getArt().getConceptId(),
             hivMetadata.getDateOfMasterCardFileOpeningConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata
@@ -1491,25 +1479,6 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * Number of patients transferred-in from another HF during a period less than startDate
-   *
-   * @return CohortDefinition
-   */
-  public CohortDefinition
-      getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA1() {
-    EptsTransferredInCohortDefinition cd = new EptsTransferredInCohortDefinition();
-    cd.setName(
-        "Number of patients transferred-in from another HF during a period less than startDate");
-    cd.setProgramEnrolled(hivMetadata.getHIVCareProgram());
-    cd.setProgramEnrolled2(hivMetadata.getARTProgram());
-    cd.setPatientState(hivMetadata.getArtCareTransferredFromOtherHealthFacilityWorkflowState());
-    cd.setPatientState2(hivMetadata.getArtTransferredFromOtherHealthFacilityWorkflowState());
-    cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    return cd;
-  }
-
-  /**
    * B13 B.13: Number of active patients in ART by end of current month (PT: Nº activo em TARV no
    * fim do mês automaticamente calculado através da seguinte formula)
    *
@@ -1567,7 +1536,7 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getDateOfMasterCardFileOpeningConcept().getConceptId(),
             hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
-            hivMetadata.getArtStatus().getConceptId(),
+            hivMetadata.getArt().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata
                 .getTransferredFromOtherHealthFacilityWorkflowState()
