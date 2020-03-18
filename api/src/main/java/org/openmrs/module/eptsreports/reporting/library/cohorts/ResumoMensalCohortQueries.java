@@ -1443,7 +1443,6 @@ public class ResumoMensalCohortQueries {
     ccd.addSearch(
         "B7II",
         map(
-
             getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(),
             "date=${onOrAfter-1},location=${location}"));
 
@@ -1461,7 +1460,6 @@ public class ResumoMensalCohortQueries {
 
     return ccd;
   }
-
 
   public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
