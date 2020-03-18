@@ -97,7 +97,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
       q.addParameter("tarvProgram", hivMetadata.getARTProgram());
       q.addParameter(
           "preTarvTransferredInState",
-          hivMetadata.getTransferredFromOtherHealthFacilityWorkflowState());
+          hivMetadata.getArtCareTransferredFromOtherHealthFacilityWorkflowState());
       q.addParameter(
           "tarvTransferredInState",
           hivMetadata.getArtTransferredFromOtherHealthFacilityWorkflowState());
