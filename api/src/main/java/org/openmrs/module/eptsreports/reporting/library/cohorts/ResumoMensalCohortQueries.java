@@ -1013,13 +1013,13 @@ public class ResumoMensalCohortQueries {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getPatientsWithFILAEncounterAndNextVisitDate() {
+  public CohortDefinition getPatientsWithFILAEncounterAndNextPickupDate() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Patients with FILA drug pickup and Scheduled Next Pickup Date");
     cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setQuery(
-        gePatientsWithCodedObsValueDatetimeBeforeEndDate(
+        GenericCohortQueries.getPatientsWithCodedObsValueDatetimeBeforeEndDate(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
     return cd;
@@ -1580,7 +1580,7 @@ public class ResumoMensalCohortQueries {
 
     CohortDefinition startedArt = genericCohortQueries.getStartedArtBeforeDate(false);
 
-    CohortDefinition fila = getPatientsWithFILAEncounterAndNextVisitDate();
+    CohortDefinition fila = getPatientsWithFILAEncounterAndNextPickupDate();
 
     CohortDefinition masterCardPickup =
         getPatientsWhoHavePickedUpDrugsMasterCardByEndReporingPeriod();
