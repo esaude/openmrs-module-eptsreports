@@ -585,28 +585,28 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition transferredOut = getPatientsTransferredOutB5();
-    CohortDefinition suspended = getPatientsWhoSuspendedTreatmentB6(true);
+    CohortDefinition suspended = getPatientsWhoSuspendedTreatmentB6(false);
     CohortDefinition patientsArt = getPatientsWhoStartedArtByEndOfPreviousMonthB10();
     CohortDefinition died = getPatientsWhoDied(false);
 
-    String encounterWithCodedObsMappings = "onOrBefore=${startDate},locationList=${location}";
+    String encounterWithCodedObsMappings = "onOrBefore=${startDate-1},locationList=${location}";
 
-    cd.addSearch("B10", map(patientsArt, "startDate=${startDate},location=${location}"));
+    cd.addSearch("B10", map(patientsArt, "startDate=${startDate-1},location=${location}"));
     cd.addSearch(
         "B2A",
         map(
-            getNumberOfPatientsTransferredFromAnotherHealthFacilityByEndOfPreviousMonthB12(),
-            "onOrBefore=${startDate},location=${location}"));
+        		getTransferredInPatients(true),
+            "onOrAfter=${startDate-1},location=${location}"));
 
-    cd.addSearch("B5A", map(transferredOut, "onOrBefore=${startDate},location=${location}"));
+    cd.addSearch("B5A", map(transferredOut, "onOrBefore=${startDate-1},location=${location}"));
 
     cd.addSearch(
-        "B6A", map(suspended, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+        "B6A", map(suspended, "onOrBefore=${startDate-1},location=${location}"));
     cd.addSearch(
         "B7A",
         map(
             getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
-            "location=${location},onOrBefore=${startDate}"));
+            "location=${location},onOrBefore=${startDate-1}"));
     cd.addSearch("B8A", map(died, encounterWithCodedObsMappings));
 
     cd.addSearch(
