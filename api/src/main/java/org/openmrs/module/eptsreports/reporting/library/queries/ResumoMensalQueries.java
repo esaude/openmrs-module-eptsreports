@@ -394,9 +394,9 @@ public class ResumoMensalQueries {
             + " ob.concept_id=%d AND ob.value_coded=%d) ed "
             + " ON p.patient_id=ed.patient_id "
             + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
-            + " AND e.location_id = :location AND (e.encounter_datetime >= "
+            + " AND e.location_id = :location AND e.encounter_datetime BETWEEN "
             + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
-            + " AND <= (:startDate)-1) AND e.encounter_type=%d "
+            + " AND :startDate AND e.encounter_type=%d "
             + " AND o.concept_id=%d AND o.value_coded=%d";
     return String.format(
         query,
@@ -427,9 +427,9 @@ public class ResumoMensalQueries {
             + " BETWEEN :startDate AND :endDate AND ob.concept_id IN(%d, %d) AND enc.encounter_type=%d) ed "
             + " ON p.patient_id=ed.patient_id "
             + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location "
-            + " AND (e.encounter_datetime >= "
+            + " AND e.encounter_datetime BETWEEN "
             + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
-            + " AND <= (:startDate)-1) "
+            + " AND :startDate "
             + " AND o.concept_id IN (%d, %d)"
             + " AND e.encounter_type=%d ";
     return String.format(
@@ -461,9 +461,9 @@ public class ResumoMensalQueries {
             + " AND ob.concept_id=%d AND enc.encounter_type=%d AND ob.value_numeric < 1000) ed "
             + " ON p.patient_id=ed.patient_id"
             + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location "
-            + " AND (e.encounter_datetime >= "
+            + " AND e.encounter_datetime BETWEEN "
             + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
-            + " AND <= (:startDate)-1) "
+            + " AND :startDate "
             + " AND o.value_numeric IS NOT NULL "
             + " AND o.concept_id=%d "
             + " AND e.encounter_type=%d "
@@ -476,9 +476,9 @@ public class ResumoMensalQueries {
             + " enc.encounter_datetime BETWEEN :startDate AND :endDate AND enc.encounter_type=%d AND ob.concept_id=%d) ed "
             + " ON p.patient_id=ed.patient_id "
             + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
-            + " AND e.location_id = :location AND (e.encounter_datetime >= "
+            + " AND e.location_id = :location AND e.encounter_datetime BETWEEN "
             + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
-            + " AND <= (:startDate)-1) "
+            + " AND :startDate "
             + " AND e.encounter_type=%d "
             + " AND o.concept_id=%d ";
 
