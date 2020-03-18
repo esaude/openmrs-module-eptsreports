@@ -294,9 +294,7 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch(
         "B2Exlcusion",
-        map(
-            getTransferredInPatients(true),
-            "onOrAfter=${onOrAfter-1},location=${location}"));
+        map(getTransferredInPatients(true), "onOrAfter=${onOrAfter-1},location=${location}"));
 
     CohortDefinition transferredOut = getPatientsTransferredOutB5();
 
@@ -1449,7 +1447,6 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("date", "specifiedDate", Date.class));
 
-
     cd.setQuery(
         getNumberOfPatientsWhoAbandonedArtBySpecifiedDateB7(
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
@@ -1568,7 +1565,7 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
-            hivMetadata.getDateOfMasterCardFileOpening().getConceptId(),
+            hivMetadata.getDateOfMasterCardFileOpeningConcept().getConceptId(),
             hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
             hivMetadata.getArtStatus().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),

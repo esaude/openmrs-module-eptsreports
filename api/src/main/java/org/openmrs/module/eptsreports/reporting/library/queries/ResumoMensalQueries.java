@@ -226,10 +226,11 @@ public class ResumoMensalQueries {
             + "        AND opening.concept_id = ${dateOfMasterCardFileOpening} ";
     if (isExclusion == true) {
       query = query + "AND opening.value_datetime < :onOrAfter ";
-    }else{
+    } else {
       query = query + " AND opening.value_datetime BETWEEN :onOrAfter AND :onOrBefore  ";
     }
-      query = query
+    query =
+        query
             + "        AND type.voided = 0 "
             + "        AND type.concept_id = ${typeOfPatient} "
             + "        AND type.value_coded in (${tarv}) "
@@ -241,11 +242,10 @@ public class ResumoMensalQueries {
             + "    JOIN patient_state ps  "
             + "        ON ps.patient_program_id=pp.patient_program_id "
             + "WHERE  pp.program_id = ${programEnrolled} "
-            + "       AND ps.state = ${transferredInState} ";            
+            + "       AND ps.state = ${transferredInState} ";
     if (isExclusion == true) {
       query = query + "    AND ps.start_date < :onOrAfter ";
-    }else
-    {
+    } else {
       query = query + "    AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ";
     }
     query = query + "    AND p.voided = 0 " + "    AND pp.voided = 0 " + "    AND ps.voided = 0";

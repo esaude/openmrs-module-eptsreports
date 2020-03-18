@@ -1494,7 +1494,6 @@ public class HivMetadata extends ProgramsMetadata {
    *
    * @return
    */
-
   public Concept getDateOfMasterCardFileOpeningConcept() {
     String uuid =
         Context.getAdministrationService()
