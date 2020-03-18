@@ -242,7 +242,8 @@ public class ResumoMensalQueries {
             + "    JOIN patient_state ps  "
             + "        ON ps.patient_program_id=pp.patient_program_id "
             + "WHERE  pp.program_id = ${programEnrolled} "
-            + "       AND ps.state = ${transferredInState} ";
+            + "       AND ps.state = ${transferredInState} "
+            + "       AND pp.location_id = :location ";
     if (isExclusion == true) {
       query = query + "    AND ps.start_date < :onOrAfter ";
     } else {
