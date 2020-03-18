@@ -351,10 +351,12 @@
 	</globalProperty>
 
 	<globalProperty>
+
 		<property>@MODULE_ID@.dateOfMasterCardFileOpeningConceptUuid</property>
 		<defaultValue>68d65d0c-8fee-456b-8e95-caed990351e1</defaultValue>
 		<description>
 			Master Card File Open Dates Concept
+
 		</description>
 	</globalProperty>
 
@@ -1978,6 +1980,8 @@
 			UUID for the Absence of Health Provider in Health Unit concept
 		</description>
 	</globalProperty>
+	
+ 
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
