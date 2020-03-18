@@ -59,15 +59,28 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     Concept criteriaForArtStart = hivMetadata.getCriteriaForArtStart();
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
     Date oneYearBefore = EptsCalculationUtils.addMonths(onOrBefore, -12);
+    Concept fileOpeningDate = hivMetadata.getFileOpeningDateConcept();
+
     CalculationResultMap lactatingMap =
         ePTSCalculationService.getObs(
             breastfeedingConcept,
-            Arrays.asList(fichaResumoEncounterType, adultFollowup),
+            Arrays.asList(adultFollowup),
             cohort,
             Arrays.asList(location),
             Arrays.asList(yes),
             TimeQualifier.ANY,
             null,
+            context);
+
+    CalculationResultMap fileOpeningObsMap =
+        ePTSCalculationService.getFileOpeningObs(
+            fichaResumoEncounterType,
+            fileOpeningDate,
+            breastfeedingConcept,
+            yes,
+            cohort,
+            location,
+            oneYearBefore,
             context);
 
     CalculationResultMap criteriaHivStartMap =
@@ -120,6 +133,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
       Date resultantDate =
           getResultantDate(
               lactatingMap,
+              fileOpeningObsMap,
               criteriaHivStartMap,
               deliveryDateMap,
               patientStateMap,
@@ -134,6 +148,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
 
   private Date getResultantDate(
       CalculationResultMap lactatingMap,
+      CalculationResultMap fileOpeningObsMap,
       CalculationResultMap criteriaHivStartMap,
       CalculationResultMap deliveryDateMap,
       CalculationResultMap patientStateMap,
@@ -159,6 +174,8 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
 
       ListResult lactatingResults = (ListResult) lactatingMap.get(pId);
       List<Obs> lactatingObs = EptsCalculationUtils.extractResultValues(lactatingResults);
+      ListResult fileOpeningResults = (ListResult) fileOpeningObsMap.get(pId);
+      List<Obs> fileOpeningObs = EptsCalculationUtils.extractResultValues(fileOpeningResults);
       Obs criteriaHivObs = EptsCalculationUtils.resultForPatient(criteriaHivStartMap, pId);
       ListResult deliveryDateResult = (ListResult) deliveryDateMap.get(pId);
       List<Obs> deliveryDateObsList = EptsCalculationUtils.extractResultValues(deliveryDateResult);
@@ -171,6 +188,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
       List<Date> allEligibleDates =
           Arrays.asList(
               this.isLactating(lastVlDate, lactatingObs),
+              this.isLactating(lastVlDate, fileOpeningObs),
               this.hasHIVStartDate(lastVlDate, criteriaHivObs),
               this.hasDeliveryDate(lastVlDate, deliveryDateObsList),
               this.isInBreastFeedingInProgram(lastVlDate, patientStateList),

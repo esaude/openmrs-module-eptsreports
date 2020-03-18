@@ -65,19 +65,30 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     Concept hivViraloadQualitative = hivMetadata.getHivViralLoadQualitative();
     Concept criteriaForArtStart = hivMetadata.getCriteriaForArtStart();
     Concept bPostive = hivMetadata.getBpostiveConcept();
-
+    Concept fileOpeningDate = hivMetadata.getFileOpeningDateConcept();
     // get female patients only
     Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);
 
     CalculationResultMap pregnantMap =
         ePTSCalculationService.getObs(
             pregnant,
-            Arrays.asList(fichaResumoEncounterType, adultFollowup, adultInitial),
+            Arrays.asList(adultFollowup, adultInitial),
             cohort,
             Arrays.asList(location),
             Arrays.asList(yes),
             TimeQualifier.ANY,
             null,
+            context);
+
+    CalculationResultMap fileOpeningObsMap =
+        ePTSCalculationService.getFileOpeningObs(
+            fichaResumoEncounterType,
+            fileOpeningDate,
+            pregnant,
+            yes,
+            cohort,
+            location,
+            oneYearBefore,
             context);
 
     CalculationResultMap markedPregnantByWeeks =
@@ -141,6 +152,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
           getRequiredDate(
               location,
               pregnantMap,
+              fileOpeningObsMap,
               markedPregnantByWeeks,
               markedPregnantDueDate,
               markedPregnantInProgram,
@@ -158,6 +170,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
   private Date getRequiredDate(
       Location location,
       CalculationResultMap pregnantMap,
+      CalculationResultMap fileOpeningObsMap,
       CalculationResultMap markedPregnantByWeeks,
       CalculationResultMap markedPregnantDueDate,
       CalculationResultMap markedPregnantInProgram,
@@ -180,6 +193,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
       Date lastVlDate = dateListForVl.get(dateListForVl.size() - 1);
 
       ListResult pregnantResult = (ListResult) pregnantMap.get(pId);
+      ListResult fileOpeningResult = (ListResult) fileOpeningObsMap.get(pId);
       ListResult pregnantByWeeksResullt = (ListResult) markedPregnantByWeeks.get(pId);
       ListResult pregnantDueDateResult = (ListResult) markedPregnantDueDate.get(pId);
       ListResult pregnantsInProgramResults = (ListResult) markedPregnantInProgram.get(pId);
@@ -187,6 +201,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
       ListResult onArtWhileBpos = (ListResult) artStartWhileBposMap.get(pId);
 
       List<Obs> pregnantObsList = EptsCalculationUtils.extractResultValues(pregnantResult);
+      List<Obs> fileOpeningObsList = EptsCalculationUtils.extractResultValues(fileOpeningResult);
       List<Obs> pregnantByWeeksObsList =
           EptsCalculationUtils.extractResultValues(pregnantByWeeksResullt);
       List<Obs> pregnantDueDateObsList =
@@ -200,6 +215,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
       List<Date> allPregnancyDates =
           Arrays.asList(
               isPregnantDate(lastVlDate, pregnantObsList),
+              isPregnantDate(lastVlDate, fileOpeningObsList),
               isPregnantByWeeks(lastVlDate, pregnantByWeeksObsList),
               isPregnantDueDate(lastVlDate, pregnantDueDateObsList),
               isPregnantInProgram(lastVlDate, patientProgams, location),

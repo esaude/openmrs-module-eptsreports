@@ -50,7 +50,14 @@
 		user to access Form Entry pages/functions</description> </privilege> /Required 
 		Privileges -->
 
-
+	<globalProperty>
+		<property>@MODULE_ID@.fileOpeningDateConceptUuid</property>
+		<defaultValue>68d65d0c-8fee-456b-8e95-caed990351e1</defaultValue>
+		<description>
+			UUID for the Master Card File Open Date concept
+		</description>
+	</globalProperty>
+	
 	<globalProperty>
 		<property>@MODULE_ID@.startDrugsConceptUuid</property>
 		<defaultValue>e1d9ef28-1d5f-11e0-b929-000c29ad1d07</defaultValue>

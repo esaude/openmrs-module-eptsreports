@@ -29,6 +29,7 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.springframework.stereotype.Service;
 
@@ -77,6 +78,65 @@ public class EPTSCalculationService {
       def.setLocationList(locationList);
     }
     return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
+  }
+
+  /**
+   * Evaluates the file opening date Obs
+   *
+   * @param fichaResumoEncounterType
+   * @param fileOpeningConcept
+   * @param pregnantOrLactatingConcept
+   * @param yesConcept
+   * @param cohort
+   * @param location
+   * @param startDate
+   * @param context
+   * @return
+   */
+  public CalculationResultMap getFileOpeningObs(
+      EncounterType fichaResumoEncounterType,
+      Concept fileOpeningConcept,
+      Concept pregnantOrLactatingConcept,
+      Concept yesConcept,
+      Collection<Integer> cohort,
+      Location location,
+      Date startDate,
+      PatientCalculationContext context) {
+    Date onOrBefore = (Date) context.getFromCache("onOrBefore");
+    String query =
+        ""
+            + "SELECT "
+            + "    file_opening_obs.person_id, file_opening_obs.value_datetime "
+            + "FROM "
+            + "    obs file_opening_obs "
+            + "        LEFT JOIN "
+            + "    obs breastfeeding_obs ON file_opening_obs.encounter_id = breastfeeding_obs.encounter_id "
+            + "        AND breastfeeding_obs.concept_id = "
+            + pregnantOrLactatingConcept.getConceptId()
+            + " "
+            + "        AND breastfeeding_obs.value_coded = "
+            + yesConcept.getConceptId()
+            + " "
+            + "        LEFT JOIN "
+            + "    encounter e ON file_opening_obs.encounter_id = e.encounter_id "
+            + "        AND e.encounter_type = "
+            + fichaResumoEncounterType
+            + " "
+            + "        AND e.location_id = "
+            + location
+            + " "
+            + "WHERE "
+            + "    file_opening_obs.concept_id = "
+            + fileOpeningConcept
+            + " "
+            + "        AND file_opening_obs.value_datetime BETWEEN +"
+            + startDate
+            + "+ AND "
+            + onOrBefore
+            + " ";
+    SqlPatientDataDefinition definition = new SqlPatientDataDefinition();
+    definition.setSql(query);
+    return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
   }
 
   /**
@@ -250,6 +310,7 @@ public class EPTSCalculationService {
     }
     return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
   }
+
   /**
    * Evaluates all encounters of a given type of each patient
    *
