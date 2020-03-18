@@ -35,7 +35,6 @@ public class EriDSDCohortQueries {
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
   @Autowired private TxNewCohortQueries txNewCohortQueries;
   @Autowired private GenericCohortQueries genericCohortQueries;
-  @Autowired private GenderCohortQueries genderCohorts;
   @Autowired private TbCohortQueries tbCohortQueries;
 
   @Autowired private AgeCohortQueries ageCohortQueries;

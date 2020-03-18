@@ -65,20 +65,19 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("       AND transf.concept_id = :transferFromOther ");
     q.append("       AND transf.value_coded = :yes ");
 
+    q.append("       AND type.voided = 0 ");
+    q.append("       AND type.concept_id = :typeOfPatient ");
+    q.append("       AND type.value_coded in (:preTarv, :tarv) ");
+
     q.append("       AND opening.voided = 0 ");
     q.append("       AND opening.concept_id = :dateOfMasterCardFileOpening ");
-
     if (cd.getOnOrAfter() == null) {
-      q.append("     AND opening.value_datetime <= :onOrBefore ");
+      q.append("     AND opening.value_datetime < :onOrBefore ");
     } else if (cd.getOnOrBefore() == null) {
       q.append("     AND opening.value_datetime > :onOrAfter ");
     } else {
       q.append("     AND opening.value_datetime BETWEEN :onOrAfter AND :onOrBefore ");
     }
-
-    q.append("       AND type.voided = 0 ");
-    q.append("       AND type.concept_id = :typeOfPatient ");
-    q.append("       AND type.value_coded in (:preTarv, :tarv) ");
 
     q.append("UNION ");
 
@@ -88,6 +87,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("        ON p.patient_id=pp.patient_id ");
     q.append("    JOIN patient_state ps  ");
     q.append("        ON ps.patient_program_id=pp.patient_program_id ");
+
     if (cd.getProgramEnrolled2() == null) {
       q.append("WHERE  pp.program_id = :programEnrolled ");
       q.append("    AND ps.state = :transferredInState ");
@@ -95,6 +95,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
       q.append("WHERE  (pp.program_id = :programEnrolled AND ps.state = :transferredInState) OR ");
       q.append(" (pp.program_id = :programEnrolled2 AND ps.state = :transferredInState2) ");
     }
+
     if (cd.getOnOrAfter() == null) {
       q.append("     AND ps.start_date <= :onOrBefore ");
     } else if (cd.getOnOrBefore() == null) {
@@ -127,7 +128,8 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
 
     q.addParameter("preTarv", hivMetadata.getPreTarvConcept());
     q.addParameter("tarv", hivMetadata.getArtStatus());
-    q.addParameter("dateOfMasterCardFileOpening", hivMetadata.getDateOfMasterCardFileOpening());
+    q.addParameter(
+        "dateOfMasterCardFileOpening", hivMetadata.getDateOfMasterCardFileOpeningConcept());
     q.addParameter("programEnrolled", programEnrolled);
     q.addParameter("programEnrolled2", programEnrolled2);
     q.addParameter("transferredInState", programWorkflowState);
