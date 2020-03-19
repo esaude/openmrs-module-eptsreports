@@ -599,36 +599,30 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    CohortDefinition transferredOut = getPatientsTransferredOutB5();
-    CohortDefinition suspended = getPatientsWhoSuspendedTreatmentB6(false);
-    CohortDefinition patientsArt = getPatientsWhoStartedArtByEndOfPreviousMonthB10();
-    CohortDefinition died = getPatientsWhoDied(false);
-
-    String encounterWithCodedObsMappings = "onOrBefore=${startDate-1},locationList=${location}";
-
-    cd.addSearch("B10", map(patientsArt, "startDate=${startDate-1},location=${location}"));
+ 
+    cd.addSearch("B10", map( getPatientsWhoStartedArtByEndOfPreviousMonthB10(), 
+    		"startDate=${startDate},location=${location}"));
     cd.addSearch(
         "B2A",
-        map(
-        		getTransferredInPatients(true),
-            "onOrAfter=${startDate-1},location=${location}"));
+        map(getTransferredInPatients(true), "onOrAfter=${startDate-1},location=${location}"));
 
-    cd.addSearch("B5A", map(transferredOut, "onOrBefore=${startDate-1},location=${location}"));
+    cd.addSearch("B5A", map(getPatientsTransferredOutB5(), "onOrBefore=${startDate-1},location=${location}"));
 
-    cd.addSearch(
-        "B6A", map(suspended, "onOrBefore=${startDate-1},location=${location}"));
+    cd.addSearch("B6A", map(getPatientsWhoSuspendedTreatmentB6(false),
+    		"onOrBefore=${startDate-1},location=${location}"));
     cd.addSearch(
         "B7A",
         map(
             getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
             "location=${location},onOrBefore=${startDate-1}"));
-    cd.addSearch("B8A", map(died, encounterWithCodedObsMappings));
+    cd.addSearch("B8A", map(getPatientsWhoDied(false), 
+    		"onOrBefore=${startDate-1},locationList=${location}"));
 
     cd.addSearch(
         "drugPick",
         map(
             getPatientsWhoHadAtLeastDrugPickUp(),
-            "startDate=${startDate-1d},location=${location}"));
+            "startDate=${startDate-1},location=${location}"));
     cd.setCompositionString("((B10 OR B2A) AND drugPick) AND NOT (B5A OR B6A OR B7A OR B8A)");
 
     return cd;
