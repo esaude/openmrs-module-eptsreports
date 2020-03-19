@@ -185,7 +185,7 @@ public class ResumoMensalQueries {
             + "  AND ee.location_id = :location  "
             + "  AND ee.encounter_type= ${adultoSeguimentoEncounterType} "
             + "    AND oo.concept_id = ${tBTreatmentPlanConcept} "
-            + "    AND ee.encounter_datetime =  :endDate "
+            + "    AND ee.encounter_datetime = screening_date "
             + "GROUP BY pp.patient_id "
             + "";
 
@@ -274,7 +274,7 @@ public class ResumoMensalQueries {
    * @return
    */
   public static String getPatientsWithTBScreening(
-      int encounterType, int tbScreening, int yesConcept, int noConcept) {
+      int adultoSeguimentoEncounterType, int tbScreening, int yesConcept, int noConcept, int tBTreatmentPlanConcept) {
     String query =
         "SELECT p.patient_id "
             + " FROM patient p "
