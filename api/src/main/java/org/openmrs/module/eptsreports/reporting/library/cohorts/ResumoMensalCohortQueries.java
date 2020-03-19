@@ -568,7 +568,7 @@ public class ResumoMensalCohortQueries {
         "artStartDate",
         map(
             genericCohortQueries.getStartedArtBeforeDate(false),
-            "onOrBefore=${startDate},location=${location}"));
+            "onOrBefore=${startDate-1},location=${location}"));
 
     cd.addSearch(
         "transferredIn",
