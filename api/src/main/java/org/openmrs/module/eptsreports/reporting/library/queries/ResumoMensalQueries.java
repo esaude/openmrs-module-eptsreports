@@ -280,7 +280,7 @@ public class ResumoMensalQueries {
       int noConcept,
       int tBTreatmentPlanConcept) {
     String query =
-        "  SELECT p.patient_id "
+        "SELECT p.patient_id "
             + " FROM patient p "
             + " 	INNER  JOIN encounter e "
             + "			ON p.patient_id=e.patient_id "
@@ -289,27 +289,27 @@ public class ResumoMensalQueries {
             + " WHERE p.voided = 0 "
             + "		AND e.voided = 0 "
             + "		AND o.voided = 0 "
-            + " AND e.location_id = :location "
-            + "	AND e.encounter_datetime "
-            + "		BETWEEN :startDate AND :endDate "
-            + " AND e.encounter_type=${adultoSeguimentoEncounterType} "
-            + " AND o.concept_id=${tbScreening} "
-            + "	AND (o.value_coded=${yesConcept} OR o.value_coded=${noConcept})"
-            + "   UNION "
-            + "     SELECT  pp.patient_id "
-            + "FROM patient  pp "
-            + "    INNER JOIN  encounter ee "
+            + "   AND e.location_id = :location "
+            + "	  AND e.encounter_datetime "
+            + "	BETWEEN :startDate AND :endDate "
+            + "   AND e.encounter_type=${adultoSeguimentoEncounterType} "
+            + "   AND o.concept_id=${tbScreening} "
+            + "	  AND (o.value_coded=${yesConcept} OR o.value_coded=${noConcept})"
+        + "   UNION "
+        + "   SELECT  pp.patient_id "
+            + " FROM patient  pp "
+            + "   INNER JOIN  encounter ee "
             + "        ON ee.patient_id = pp.patient_id "
-            + "    INNER JOIN  obs oo "
+            + "   INNER JOIN  obs oo "
             + "        ON ee.encounter_id = oo.encounter_id "
             + " WHERE  ee.voided = 0 "
             + "    AND pp.voided =0 "
             + "    AND oo.voided =0       "
-            + "  AND ee.location_id = :location  "
-            + " AND ee.encounter_datetime "
-            + "		BETWEEN :startDate AND :endDate "
-            + "  AND ee.encounter_type= ${adultoSeguimentoEncounterType} "
-            + "    AND oo.concept_id = ${tBTreatmentPlanConcept} ";
+            + "    AND ee.location_id = :location  "
+            + "    AND ee.encounter_datetime "
+            + "	BETWEEN :startDate AND :endDate "
+            + "    AND ee.encounter_type= ${adultoSeguimentoEncounterType} "
+            + "    AND oo.concept_id = ${tBTreatmentPlanConcept}";
 
     Map<String, Integer> map = new HashMap<>();
     map.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
