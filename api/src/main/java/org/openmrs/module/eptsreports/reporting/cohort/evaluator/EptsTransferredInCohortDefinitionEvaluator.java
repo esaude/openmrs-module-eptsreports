@@ -75,9 +75,9 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("UNION ");
 
     if (cd.getProgramEnrolled2() == null) {
-      q.append("select inicio.patient_id from( ");
+      q.append("select pgEnrollment.patient_id from( ");
       q.append(
-          "SELECT p.patient_id, pg.patient_program_id, MIN(ps.start_date) as inicioDate FROM patient p ");
+          "SELECT p.patient_id, pg.patient_program_id, min(ps.start_date) as pgEnrollmentDate FROM patient p ");
       q.append("inner join patient_program pg on p.patient_id=pg.patient_id ");
       q.append("inner join patient_state ps on pg.patient_program_id=ps.patient_program_id ");
       q.append(
@@ -88,13 +88,13 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
         q.append(" ps.start_date<= :onOrBefore ");
       }
       q.append("GROUP BY pg.patient_program_id ");
-      q.append(") inicio ");
-      q.append("inner join patient_state ps on ps.patient_program_id=inicio.patient_program_id ");
-      q.append("where ps.start_date=inicio.inicioDate and ps.state=28 and ps.voided=0 ");
+      q.append(") pgEnrollment ");
+      q.append("inner join patient_state ps on ps.patient_program_id=pgEnrollment.patient_program_id ");
+      q.append("where ps.start_date=pgEnrollment.pgEnrollmentDate and ps.state=28 and ps.voided=0 ");
     } else {
-      q.append("select inicio.patient_id from( ");
+      q.append("select pgEnrollment.patient_id from( ");
       q.append(
-          "SELECT p.patient_id, pg.patient_program_id, MIN(ps.start_date) as inicioDate FROM patient p ");
+          "SELECT p.patient_id, pg.patient_program_id, min(ps.start_date) as pgEnrollmentDate FROM patient p ");
       q.append("inner join patient_program pg on p.patient_id=pg.patient_id ");
       q.append("inner join patient_state ps on pg.patient_program_id=ps.patient_program_id ");
       q.append(
@@ -105,15 +105,15 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
         q.append(" and ps.start_date<= :onOrBefore ");
       }
       q.append("GROUP BY pg.patient_program_id ");
-      q.append(") inicio ");
-      q.append("inner join patient_state ps on ps.patient_program_id=inicio.patient_program_id ");
-      q.append("where ps.start_date=inicio.inicioDate and ps.state=28 and ps.voided=0 ");
+      q.append(") pgEnrollment ");
+      q.append("inner join patient_state ps on ps.patient_program_id=pgEnrollment.patient_program_id ");
+      q.append("where ps.start_date=pgEnrollment.pgEnrollmentDate and ps.state=28 and ps.voided=0 ");
 
       q.append("union ");
 
-      q.append("select inicio.patient_id from( ");
+      q.append("select pgEnrollment.patient_id from( ");
       q.append(
-          "SELECT p.patient_id, pg.patient_program_id, MIN(ps.start_date) as inicioDate  FROM patient p ");
+          "SELECT p.patient_id, pg.patient_program_id, min(ps.start_date) as pgEnrollmentDate  FROM patient p ");
       q.append("inner join patient_program pg on p.patient_id=pg.patient_id ");
       q.append("inner join patient_state ps on pg.patient_program_id=ps.patient_program_id ");
       q.append(
@@ -123,9 +123,9 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
       } else {
         q.append(" and ps.start_date<= :onOrBefore ");
       }
-      q.append("GROUP BY pg.patient_program_id) inicio ");
-      q.append("inner join patient_state ps on ps.patient_program_id=inicio.patient_program_id ");
-      q.append("where ps.start_date=inicio.inicioDate and ps.state=29 and ps.voided=0 ");
+      q.append("GROUP BY pg.patient_program_id) pgEnrollment ");
+      q.append("inner join patient_state ps on ps.patient_program_id=pgEnrollment.patient_program_id ");
+      q.append("where ps.start_date=pgEnrollment.pgEnrollmentDate and ps.state=29 and ps.voided=0 ");
     }
 
     q.addParameter("mastercard", hivMetadata.getMasterCardEncounterType());
