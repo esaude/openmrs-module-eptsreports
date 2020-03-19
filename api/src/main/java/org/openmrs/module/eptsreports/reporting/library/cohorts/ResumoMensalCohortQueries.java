@@ -81,7 +81,7 @@ public class ResumoMensalCohortQueries {
         "A1II",
         map(
             getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA1(),
-            "onOrBefore=${startDate},location=${location}"));
+            "onOrAfter=${startDate-1},location=${location}"));
     cd.addSearch(
         "A1III",
         map(
@@ -123,6 +123,22 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
+    cd.addSearch(
+        "A2I",
+        map(
+            getNumberOfPatientInitiedPreArtDuringCurrentMothA2(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "A2II",
+        map(
+            getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    cd.setCompositionString("A2I AND NOT A2II");
+    return cd;
+  }
+
+  public CohortDefinition getNumberOfPatientInitiedPreArtDuringCurrentMothA2() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("A2i");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -135,18 +151,7 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getHIVCareProgram().getProgramId(),
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId()));
-
-    cd.addSearch(
-        "A2I",
-        map(sqlCohortDefinition, "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "A2II",
-        map(
-            getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-
-    cd.setCompositionString("A2I AND NOT A2II");
-    return cd;
+    return sqlCohortDefinition;
   }
 
   public CohortDefinition getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthC1() {
@@ -1558,8 +1563,9 @@ public class ResumoMensalCohortQueries {
     cd.setProgramEnrolled2(hivMetadata.getARTProgram());
     cd.setPatientState(hivMetadata.getArtCareTransferredFromOtherHealthFacilityWorkflowState());
     cd.setPatientState2(hivMetadata.getArtTransferredFromOtherHealthFacilityWorkflowState());
-    cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+
     return cd;
   }
 

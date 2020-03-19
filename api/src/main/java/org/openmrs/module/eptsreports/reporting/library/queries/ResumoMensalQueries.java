@@ -185,7 +185,7 @@ public class ResumoMensalQueries {
             + "  AND ee.location_id = :location  "
             + "  AND ee.encounter_type= ${adultoSeguimentoEncounterType} "
             + "    AND oo.concept_id = ${tBTreatmentPlanConcept} "
-            + "    AND ee.encounter_datetime =  :endDate "
+            + "    AND ee.encounter_datetime = screening_date "
             + "GROUP BY pp.patient_id "
             + "";
 
@@ -274,9 +274,9 @@ public class ResumoMensalQueries {
    * @return
    */
   public static String getPatientsWithTBScreening(
-      int encounterType, int tbScreening, int yesConcept, int noConcept) {
+      int adultoSeguimentoEncounterType, int tbScreening, int yesConcept, int noConcept) {
     String query =
-        " SELECT p.patient_id "
+        "SELECT p.patient_id "
             + " FROM patient p "
             + " 	INNER  JOIN encounter e "
             + "			ON p.patient_id=e.patient_id "
@@ -285,13 +285,21 @@ public class ResumoMensalQueries {
             + " WHERE p.voided = 0 "
             + "		AND e.voided = 0 "
             + "		AND o.voided = 0 "
-            + " AND e.location_id = :location "
-            + "	AND e.encounter_datetime "
-            + "		BETWEEN :startDate AND :endDate "
-            + " AND e.encounter_type=%d "
-            + " AND o.concept_id=%d "
-            + "	AND (o.value_coded=%d OR o.value_coded=%d)";
-    return String.format(query, encounterType, tbScreening, yesConcept, noConcept);
+            + "   AND e.location_id = :location "
+            + "	  AND e.encounter_datetime "
+            + "	BETWEEN :startDate AND :endDate "
+            + "   AND e.encounter_type=${adultoSeguimentoEncounterType} "
+            + "   AND o.concept_id=${tbScreening} "
+            + "	  AND (o.value_coded=${yesConcept} OR o.value_coded=${noConcept})";
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
+    map.put("tbScreening", tbScreening);
+    map.put("yesConcept", yesConcept);
+    map.put("noConcept", noConcept);
+
+    StringSubstitutor sub = new StringSubstitutor(map);
+    return sub.replace(query);
   }
 
   /**
@@ -396,7 +404,7 @@ public class ResumoMensalQueries {
             + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
             + " AND e.location_id = :location AND e.encounter_datetime BETWEEN "
             + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
-            + " AND ed.endDate AND e.encounter_type=%d "
+            + " AND DATE_ADD(:startDate, INTERVAL -1 DAY) AND e.encounter_type=%d "
             + " AND o.concept_id=%d AND o.value_coded=%d";
     return String.format(
         query,
@@ -429,7 +437,7 @@ public class ResumoMensalQueries {
             + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location "
             + " AND e.encounter_datetime BETWEEN "
             + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
-            + " AND ed.endDate "
+            + " AND DATE_ADD(:startDate, INTERVAL -1 DAY)"
             + " AND o.concept_id IN (%d, %d)"
             + " AND e.encounter_type=%d ";
     return String.format(
@@ -463,7 +471,7 @@ public class ResumoMensalQueries {
             + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location "
             + " AND e.encounter_datetime BETWEEN "
             + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
-            + " AND ed.endDate "
+            + " AND DATE_ADD(:startDate, INTERVAL -1 DAY)"
             + " AND o.value_numeric IS NOT NULL "
             + " AND o.concept_id=%d "
             + " AND e.encounter_type=%d "
@@ -478,7 +486,7 @@ public class ResumoMensalQueries {
             + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
             + " AND e.location_id = :location AND e.encounter_datetime BETWEEN "
             + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
-            + " AND ed.endDate "
+            + " AND DATE_ADD(:startDate, INTERVAL -1 DAY) "
             + " AND e.encounter_type=%d "
             + " AND o.concept_id=%d ";
 
