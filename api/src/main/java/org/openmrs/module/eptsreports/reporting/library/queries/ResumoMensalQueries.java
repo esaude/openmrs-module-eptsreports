@@ -396,7 +396,7 @@ public class ResumoMensalQueries {
             + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
             + " AND e.location_id = :location AND e.encounter_datetime BETWEEN "
             + " IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) "
-            + " AND DATE_ADD(:startDate, INTERVAL -1 DAY)AND e.encounter_type=%d "
+            + " AND DATE_ADD(:startDate, INTERVAL -1 DAY) AND e.encounter_type=%d "
             + " AND o.concept_id=%d AND o.value_coded=%d";
     return String.format(
         query,
