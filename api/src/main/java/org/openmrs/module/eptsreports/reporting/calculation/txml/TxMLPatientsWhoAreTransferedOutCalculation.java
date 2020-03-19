@@ -38,16 +38,25 @@ public class TxMLPatientsWhoAreTransferedOutCalculation extends BaseFghCalculati
             hivMetadata.getARTProgram(),
             hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState());
 
-    Map<Integer, Date> deadFichaClinicaAndFichaResumo =
-        queryDisaggregation.findMapMaxObsDatetimeByEncountersAndQuestionsAndAnswerAndEndDate(
-            context,
-            Arrays.asList(
+    Map<Integer, Date> deadFichaClinica =
+        queryDisaggregation
+            .findMapMaxEncounterDatetimeByEncountersAndQuestionsAndAnswerAndEndOfReportingPeriod(
+                context,
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                Arrays.asList(
+                    hivMetadata.getStateOfStayPriorArtPatient().getConceptId(),
+                    hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
+                hivMetadata.getTransferOutToAnotherFacilityConcept());
+
+    Map<Integer, Date> deadFichaResumo =
+        queryDisaggregation
+            .findMapMaxObsDatetimeByEncountersAndQuestionsAndAnswerAndEndOfReportingPeriod(
+                context,
                 hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()),
-            Arrays.asList(
-                hivMetadata.getStateOfStayPriorArtPatient().getConceptId(),
-                hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
-            hivMetadata.getTransferOutToAnotherFacilityConcept());
+                Arrays.asList(
+                    hivMetadata.getStateOfStayPriorArtPatient().getConceptId(),
+                    hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
+                hivMetadata.getPatientHasDiedConcept());
 
     Map<Integer, Date> deadInHomeVisitForm =
         queryDisaggregation.findMapMaxObsDatetimeByEncounterAndQuestionsAndAnswersInPeriod(
@@ -64,7 +73,7 @@ public class TxMLPatientsWhoAreTransferedOutCalculation extends BaseFghCalculati
 
     Map<Integer, Date> maxResultFromAllSources =
         CalculationProcessorUtils.getMaxMapDateByPatient(
-            transferedOutByProgram, deadInHomeVisitForm, deadFichaClinicaAndFichaResumo);
+            transferedOutByProgram, deadInHomeVisitForm, deadFichaClinica, deadFichaResumo);
 
     // Excluir todos pacientes com consulta ou levantamento apos terem sido marcados
     // como transferidos para

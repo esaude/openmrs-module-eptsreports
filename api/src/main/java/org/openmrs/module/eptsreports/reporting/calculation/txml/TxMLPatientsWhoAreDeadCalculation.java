@@ -46,16 +46,25 @@ public class TxMLPatientsWhoAreDeadCalculation extends BaseFghCalculation {
     Map<Integer, Date> deadInDemographicModule =
         queryDisaggregation.findPatientAndDateInDemographicModule(context);
 
-    Map<Integer, Date> deadFichaClinicaAndFichaResumo =
-        queryDisaggregation.findMapMaxObsDatetimeByEncountersAndQuestionsAndAnswerAndEndDate(
-            context,
-            Arrays.asList(
+    Map<Integer, Date> deadFichaClinica =
+        queryDisaggregation
+            .findMapMaxEncounterDatetimeByEncountersAndQuestionsAndAnswerAndEndOfReportingPeriod(
+                context,
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                Arrays.asList(
+                    hivMetadata.getStateOfStayPriorArtPatient().getConceptId(),
+                    hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
+                hivMetadata.getPatientHasDiedConcept());
+
+    Map<Integer, Date> deadFichaResumo =
+        queryDisaggregation
+            .findMapMaxObsDatetimeByEncountersAndQuestionsAndAnswerAndEndOfReportingPeriod(
+                context,
                 hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()),
-            Arrays.asList(
-                hivMetadata.getStateOfStayPriorArtPatient().getConceptId(),
-                hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
-            hivMetadata.getPatientHasDiedConcept());
+                Arrays.asList(
+                    hivMetadata.getStateOfStayPriorArtPatient().getConceptId(),
+                    hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
+                hivMetadata.getPatientHasDiedConcept());
 
     CalculationResultMap numerator =
         Context.getRegisteredComponents(TxMLPatientsWhoMissedNextApointmentCalculation.class)
@@ -71,7 +80,8 @@ public class TxMLPatientsWhoAreDeadCalculation extends BaseFghCalculation {
             patientsDeadInArtProgram,
             deadInHomeVisitForm,
             deadInDemographicModule,
-            deadFichaClinicaAndFichaResumo);
+            deadFichaClinica,
+            deadFichaResumo);
 
     // Excluir pacientes q fizeram consulta/levantamento apos serem marcados como
     // mortos
