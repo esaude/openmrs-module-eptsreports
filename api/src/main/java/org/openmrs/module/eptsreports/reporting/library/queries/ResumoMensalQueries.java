@@ -430,7 +430,7 @@ public class ResumoMensalQueries {
             + "select pg.patient_id,max(ps.start_date) data_estado from patient p  "
             + "inner join patient_program pg on p.patient_id=pg.patient_id "
             + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and  pg.program_id=2 and ps.state in (7,8,10) and ps.end_date is null and  ps.start_date<:startDate and location_id=:location "
+            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and  pg.program_id=2 and ps.state in (7,8,10) and  ps.start_date<:startDate and location_id=:location "
             + "group by pg.patient_id "
             + "union "
             + "select p.patient_id, max(o.obs_datetime) data_estado from patient p  "
