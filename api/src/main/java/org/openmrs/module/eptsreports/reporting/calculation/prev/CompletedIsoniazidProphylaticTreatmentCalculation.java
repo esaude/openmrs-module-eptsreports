@@ -251,7 +251,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
    * @return the interval, 0 otherwise
    */
   private int getProfilaxiaDuration(Date startDate, Date endDate) {
-    if (startDate != null && endDate != null) {
+    if (startDate != null && endDate != null && endDate.compareTo(startDate) > 0) {
       return Days.daysIn(new Interval(startDate.getTime(), endDate.getTime())).getDays();
     } else {
       return 0;
