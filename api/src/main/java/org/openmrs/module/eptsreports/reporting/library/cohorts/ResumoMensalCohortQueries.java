@@ -575,6 +575,7 @@ public class ResumoMensalCohortQueries {
             genericCohortQueries.getStartedArtBeforeDate(false),
             "onOrBefore=${startDate-1},location=${location}"));
 
+
     cd.addSearch(
         "transferredIn",
         map(getTransferredInForB10(), "onOrAfter=${startDate-1},location=${location}"));
@@ -1116,7 +1117,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "common",
         map(
-            getStandardDefinitionForEcolumns(),
+            getActivePatientsInARTByEndOfCurrentMonth(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -1308,7 +1309,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "C",
         map(
-            getStandardDefinitionForEcolumns(),
+            getActivePatientsInARTByEndOfCurrentMonth(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "VL",
@@ -1346,7 +1347,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "C",
         map(
-            getStandardDefinitionForEcolumns(),
+            getActivePatientsInARTByEndOfCurrentMonth(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "SUPP",
