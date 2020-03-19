@@ -1151,8 +1151,7 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             tbMetadata.getHasTbSymptomsConcept().getConceptId(),
             hivMetadata.getPatientFoundYesConcept().getConceptId(),
-            hivMetadata.getNoConcept().getConceptId(),
-            hivMetadata.getTBTreatmentPlanConcept().getConceptId()));
+            hivMetadata.getNoConcept().getConceptId()));
     return cd;
   }
 

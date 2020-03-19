@@ -274,7 +274,7 @@ public class ResumoMensalQueries {
    * @return
    */
   public static String getPatientsWithTBScreening(
-      int adultoSeguimentoEncounterType, int tbScreening, int yesConcept, int noConcept, int tBTreatmentPlanConcept) {
+      int adultoSeguimentoEncounterType, int tbScreening, int yesConcept, int noConcept) {
     String query =
         "SELECT p.patient_id "
             + " FROM patient p "
@@ -290,29 +290,13 @@ public class ResumoMensalQueries {
             + "	BETWEEN :startDate AND :endDate "
             + "   AND e.encounter_type=${adultoSeguimentoEncounterType} "
             + "   AND o.concept_id=${tbScreening} "
-            + "	  AND (o.value_coded=${yesConcept} OR o.value_coded=${noConcept})"
-        + "   UNION "
-        + "   SELECT  pp.patient_id "
-            + " FROM patient  pp "
-            + "   INNER JOIN  encounter ee "
-            + "        ON ee.patient_id = pp.patient_id "
-            + "   INNER JOIN  obs oo "
-            + "        ON ee.encounter_id = oo.encounter_id "
-            + " WHERE  ee.voided = 0 "
-            + "    AND pp.voided =0 "
-            + "    AND oo.voided =0       "
-            + "    AND ee.location_id = :location  "
-            + "    AND ee.encounter_datetime "
-            + "	BETWEEN :startDate AND :endDate "
-            + "    AND ee.encounter_type= ${adultoSeguimentoEncounterType} "
-            + "    AND oo.concept_id = ${tBTreatmentPlanConcept}";
+            + "	  AND (o.value_coded=${yesConcept} OR o.value_coded=${noConcept})";
 
     Map<String, Integer> map = new HashMap<>();
     map.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
     map.put("tbScreening", tbScreening);
     map.put("yesConcept", yesConcept);
     map.put("noConcept", noConcept);
-    map.put("tBTreatmentPlanConcept", tBTreatmentPlanConcept);
 
     StringSubstitutor sub = new StringSubstitutor(map);
     return sub.replace(query);
