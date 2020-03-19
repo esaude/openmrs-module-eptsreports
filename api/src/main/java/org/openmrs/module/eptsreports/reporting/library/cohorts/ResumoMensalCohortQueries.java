@@ -81,7 +81,7 @@ public class ResumoMensalCohortQueries {
         "A1II",
         map(
             getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA1(),
-            "onOrBefore=${startDate},location=${location}"));
+            "onOrAfter=${startDate-1},location=${location}"));
     cd.addSearch(
         "A1III",
         map(
@@ -1558,8 +1558,9 @@ public class ResumoMensalCohortQueries {
     cd.setProgramEnrolled2(hivMetadata.getARTProgram());
     cd.setPatientState(hivMetadata.getArtCareTransferredFromOtherHealthFacilityWorkflowState());
     cd.setPatientState2(hivMetadata.getArtTransferredFromOtherHealthFacilityWorkflowState());
-    cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+
     return cd;
   }
 
