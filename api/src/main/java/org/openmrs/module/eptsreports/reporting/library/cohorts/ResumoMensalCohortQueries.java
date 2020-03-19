@@ -574,8 +574,8 @@ public class ResumoMensalCohortQueries {
         "transferredIn",
         map(getTransferredInForB10(), "onOrAfter=${startDate-1},location=${location}"));
 
-    //cd.setCompositionString("artStartDate AND NOT transferredIn");
-     cd.setCompositionString("transferredIn");
+    // cd.setCompositionString("artStartDate AND NOT transferredIn");
+    cd.setCompositionString("transferredIn");
 
     return cd;
   }
