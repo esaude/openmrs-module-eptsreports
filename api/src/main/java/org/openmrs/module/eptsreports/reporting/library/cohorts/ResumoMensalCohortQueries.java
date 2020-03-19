@@ -711,7 +711,7 @@ public class ResumoMensalCohortQueries {
         map(
             genericCohortQueries.generalSql(
                 "Ex3",
-                ResumoMensalQueries.getE2ExclusionCriteria(
+                ResumoMensalQueries.getE3ExclusionCriteria(
                     hivMetadata.getHivViralLoadConcept().getConceptId(),
                     hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                     hivMetadata.getHivViralLoadQualitative().getConceptId())),
