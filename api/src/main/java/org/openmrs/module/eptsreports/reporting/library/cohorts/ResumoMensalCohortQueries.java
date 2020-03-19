@@ -569,15 +569,29 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    CohortDefinition patientsWithArtStartDate = genericCohortQueries.getStartedArtBeforeDate(false);
-    CohortDefinition transferredIn =
-        getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2();
+    cd.addSearch(
+        "artStartDate",
+        map(
+            genericCohortQueries.getStartedArtBeforeDate(false),
+            "onOrBefore=${startDate-1},location=${location}"));
 
-    String mappings = "onOrBefore=${startDate},location=${location}";
-    cd.addSearch("artStartDate", map(patientsWithArtStartDate, mappings));
-    cd.addSearch("transferredIn", map(transferredIn, mappings));
+    cd.addSearch(
+        "transferredIn",
+        map(getTransferredInForB10(), "onOrAfter=${startDate-1},location=${location}"));
 
-    cd.setCompositionString("artStartDate NOT transferredIn");
+    cd.setCompositionString("artStartDate AND NOT transferredIn");
+
+    return cd;
+  }
+
+  private CohortDefinition getTransferredInForB10() {
+    EptsTransferredInCohortDefinition cd = new EptsTransferredInCohortDefinition();
+    cd.setName(
+        "Number of patients transferred-in from another HF during a period less than startDate B10 ");
+    cd.setProgramEnrolled(hivMetadata.getARTProgram());
+    cd.setPatientState(hivMetadata.getArtTransferredFromOtherHealthFacilityWorkflowState());
+    cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
 
     return cd;
   }
