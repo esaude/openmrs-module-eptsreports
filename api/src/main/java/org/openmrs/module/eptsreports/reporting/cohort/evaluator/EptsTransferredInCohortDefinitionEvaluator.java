@@ -81,7 +81,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
       q.append("inner join patient_program pg on p.patient_id=pg.patient_id ");
       q.append("inner join patient_state ps on pg.patient_program_id=ps.patient_program_id ");
       q.append(
-          "WHERE  pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=1 and location_id= :location and  ");
+          "WHERE  pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=:programEnrolled and location_id= :location and  ");
       if (cd.getOnOrBefore() == null) {
         q.append(" ps.start_date<:onOrAfter ");
       } else {
@@ -90,7 +90,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
       q.append("GROUP BY pg.patient_program_id ");
       q.append(") pgEnrollment ");
       q.append("inner join patient_state ps on ps.patient_program_id=pgEnrollment.patient_program_id ");
-      q.append("where ps.start_date=pgEnrollment.pgEnrollmentDate and ps.state=28 and ps.voided=0 ");
+      q.append("where ps.start_date=pgEnrollment.pgEnrollmentDate and ps.state = :transferredInState and ps.voided=0 ");
     } else {
       q.append("select pgEnrollment.patient_id from( ");
       q.append(
@@ -98,7 +98,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
       q.append("inner join patient_program pg on p.patient_id=pg.patient_id ");
       q.append("inner join patient_state ps on pg.patient_program_id=ps.patient_program_id ");
       q.append(
-          "WHERE  pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=1 and location_id= :location");
+          "WHERE  pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=:programEnrolled and location_id= :location");
       if (cd.getOnOrBefore() == null) {
         q.append(" and ps.start_date<:onOrAfter ");
       } else {
@@ -107,7 +107,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
       q.append("GROUP BY pg.patient_program_id ");
       q.append(") pgEnrollment ");
       q.append("inner join patient_state ps on ps.patient_program_id=pgEnrollment.patient_program_id ");
-      q.append("where ps.start_date=pgEnrollment.pgEnrollmentDate and ps.state=28 and ps.voided=0 ");
+      q.append("where ps.start_date=pgEnrollment.pgEnrollmentDate and ps.state = :transferredInState and ps.voided=0 ");
 
       q.append("union ");
 
@@ -117,7 +117,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
       q.append("inner join patient_program pg on p.patient_id=pg.patient_id ");
       q.append("inner join patient_state ps on pg.patient_program_id=ps.patient_program_id ");
       q.append(
-          "WHERE  pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and location_id= :location ");
+          "WHERE  pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=:programEnrolled2 and location_id= :location ");
       if (cd.getOnOrBefore() == null) {
         q.append(" and ps.start_date<:onOrAfter ");
       } else {
@@ -125,7 +125,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
       }
       q.append("GROUP BY pg.patient_program_id) pgEnrollment ");
       q.append("inner join patient_state ps on ps.patient_program_id=pgEnrollment.patient_program_id ");
-      q.append("where ps.start_date=pgEnrollment.pgEnrollmentDate and ps.state=29 and ps.voided=0 ");
+      q.append("where ps.start_date=pgEnrollment.pgEnrollmentDate and ps.state=:transferredInState2 and ps.voided=0 ");
     }
 
     q.addParameter("mastercard", hivMetadata.getMasterCardEncounterType());
