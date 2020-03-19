@@ -1061,7 +1061,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "common",
         map(
-            getStandardDefinitionForEcolumns(),
+            getActivePatientsInARTByEndOfCurrentMonth(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -1253,7 +1253,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "C",
         map(
-            getStandardDefinitionForEcolumns(),
+            getActivePatientsInARTByEndOfCurrentMonth(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "VL",
@@ -1291,7 +1291,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "C",
         map(
-            getStandardDefinitionForEcolumns(),
+            getActivePatientsInARTByEndOfCurrentMonth(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "SUPP",
