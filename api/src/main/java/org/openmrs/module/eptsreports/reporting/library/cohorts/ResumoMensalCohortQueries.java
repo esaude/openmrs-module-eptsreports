@@ -26,6 +26,7 @@ import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.CodedObsOnFirstOrSecondEncounterCalculation;
@@ -563,17 +564,84 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    CohortDefinition patientsWithArtStartDate = genericCohortQueries.getStartedArtBeforeDate(false);
-    CohortDefinition transferredIn =
-        getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2();
+     
 
-    String mappings = "onOrBefore=${startDate},location=${location}";
-    cd.addSearch("artStartDate", map(patientsWithArtStartDate, mappings));
-    cd.addSearch("transferredIn", map(transferredIn, mappings));
+    cd.addSearch("artStartDate", 
+    			map(genericCohortQueries.getStartedArtBeforeDate(false), 
+    					"onOrBefore=${startDate},location=${location}"));
+    
+    cd.addSearch("transferredIn", 
+    		map(getTransferredInForB10() , "startDate=${startDate},location=${location}"));
 
-    cd.setCompositionString("artStartDate NOT transferredIn");
+    cd.setCompositionString("artStartDate AND NOT transferredIn");
 
     return cd;
+  }
+  
+  private CohortDefinition getTransferredInForB10() {
+	  SqlCohortDefinition definition  = new SqlCohortDefinition();
+	  
+	  definition.setName("Transferred In For B10");
+	  definition.addParameter(new Parameter("startDate","startDate",Date.class));
+	  definition.addParameter(new Parameter("location","Location",Location.class));
+	  Map<String, Integer> map   = new HashMap<>();
+	  map.put("masterCardEncounterType", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+	  map.put("transferFromOtherFacilityConcept",  hivMetadata.getTransferFromOtherFacilityConcept().getConceptId());
+	  map.put("yesConcept",  hivMetadata.getPatientFoundYesConcept().getConceptId());
+	  map.put("typeOfPatientTransferredFrom",  hivMetadata.getTypeOfPatientTransferredFrom().getConceptId());
+	  map.put("artStatus", hivMetadata.getArtStatus().getConceptId());
+	  map.put("artProgram", hivMetadata.getARTProgram().getProgramId());
+	  map.put("artTransferredFromOtherHealthFacilityWorkflowState", hivMetadata
+			  .getArtTransferredFromOtherHealthFacilityWorkflowState()
+			  .getProgramWorkflowStateId());
+	  
+	  
+	  String query="SELECT p.patient_id " + 
+	  		"FROM patient p " + 
+	  		"    INNER JOIN encounter e " + 
+	  		"        ON p.patient_id=e.patient_id " + 
+	  		"    INNER JOIN obs transfer " + 
+	  		"        ON e.encounter_id = transfer.encounter_id " + 
+	  		"    INNER JOIN obs typeofP " + 
+	  		"        ON e.encounter_id = typeofP.encounter_id " + 
+	  		"    INNER JOIN obs dateTrans " + 
+	  		"        ON e.encounter_id = dateTrans.encounter_id " + 
+	  		"WHERE  " + 
+	  		"    p.voided = 0  " + 
+	  		"    AND e.voided = 0  " + 
+	  		"    AND transfer.voided = 0  " + 
+	  		"    AND typeofP.voided = 0  " + 
+	  		"    AND dateTrans.voided = 0 " + 
+	  		"    AND e.location_id = :location  " + 
+	  		"    AND e.encounter_type = ${masterCardEncounterType}  " + 
+	  		"    AND ((transfer.concept_id= ${transferFromOtherFacilityConcept} AND transfer.value_coded=${yesConcept}) " + 
+	  		"        OR " + 
+	  		"         (typeofP.concept_id= ${typeOfPatientTransferredFrom} AND typeofP.value_coded=${artStatus}) " + 
+	  		"        OR " + 
+	  		"        (dateTrans.concept_id=${transferFromOtherFacilityConcept}  AND dateTrans.value_datetime < :startDate )) " + 
+	  		"GROUP BY p.patient_id " + 
+	  		"UNION " + 
+	  		"SELECT p.patient_id  " + 
+	  		"FROM patient p     " + 
+	  		"    INNER JOIN patient_program pp   " + 
+	  		"        ON p.patient_id=pp.patient_id  " + 
+	  		"    INNER JOIN patient_state ps   " + 
+	  		"        ON ps.patient_program_id=pp.patient_program_id  " + 
+	  		"WHERE pp.voided = 0 " + 
+	  		"    AND ps.voided = 0 " + 
+	  		"    AND p.voided = 0 " + 
+	  		"    AND pp.program_id = ${artProgram}  " + 
+	  		"    AND ps.state = ${artTransferredFromOtherHealthFacilityWorkflowState}  " + 
+	  		"    AND pp.location_id = :location  " + 
+	  		"    AND ps.start_date < :startDate " + 
+	  		"GROUP BY p.patient_id";
+	  
+	  StringSubstitutor sb = new  StringSubstitutor(map);
+	  String replaceQuery = sb.replace(query);
+	  
+	  definition.setQuery(replaceQuery);
+	  
+	  return definition;
   }
 
   /** @return Number of active patients in ART by end of previous month */
