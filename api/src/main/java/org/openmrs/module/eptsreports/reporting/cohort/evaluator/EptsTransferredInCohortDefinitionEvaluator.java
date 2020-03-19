@@ -77,24 +77,24 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
 
         if (cd.getProgramEnrolled2() == null) {
             q.append("select pgEnrollment.patient_id ");
-            q.append("FROM(SELECT p.patient_id, pg.patient_program_id,");
+            q.append("FROM(SELECT p.patient_id, pp.patient_program_id,");
             q.append(" min(ps.start_date) as pgEnrollmentDate ");
             q.append("FROM patient p ");
-            q.append("    JOIN patient_program pg ");
-            q.append("    ON p.patient_id=pg.patient_id ");
+            q.append("    JOIN patient_program pp ");
+            q.append("    ON p.patient_id=pp.patient_id ");
             q.append("    JOIN patient_state ps ");
-            q.append("    ON pg.patient_program_id=ps.patient_program_id ");
-            q.append("    WHERE  pg.voided=0 ");
+            q.append("    ON pp.patient_program_id=ps.patient_program_id ");
+            q.append("    WHERE  pp.voided=0 ");
             q.append("    AND ps.voided=0 ");
             q.append("    AND p.voided=0 ");
-            q.append("    AND pg.program_id=:programEnrolled ");
+            q.append("    AND pp.program_id=:programEnrolled ");
             q.append("    AND location_id= :location AND  ");
             if (cd.getOnOrBefore() == null) {
                 q.append(" ps.start_date < :onOrAfter ");
             } else {
                 q.append(" ps.start_date <= :onOrBefore ");
             }
-            q.append("GROUP BY pg.patient_program_id) pgEnrollment ");
+            q.append("GROUP BY pp.patient_program_id) pgEnrollment ");
             q.append("  JOIN patient_state ps ");
             q.append("  ON ps.patient_program_id=pgEnrollment.patient_program_id ");
             q.append("  where ps.start_date=pgEnrollment.pgEnrollmentDate ");
@@ -102,42 +102,42 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
             q.append("  AND ps.voided=0 ");
         } else {
             q.append("SELECT pgEnrollment.patient_id  ");
-            q.append("FROM(SELECT p.patient_id, pg.patient_program_id, min(ps.start_date) as pgEnrollmentDate ");
+            q.append("FROM(SELECT p.patient_id, pp.patient_program_id, min(ps.start_date) as pgEnrollmentDate ");
             q.append("FROM patient p ");
-            q.append("    JOIN patient_program pg on p.patient_id=pg.patient_id ");
-            q.append("    JOIN patient_state ps on pg.patient_program_id=ps.patient_program_id ");
-            q.append("    WHERE  pg.voided=0 ");
+            q.append("    JOIN patient_program pp on p.patient_id=pp.patient_id ");
+            q.append("    JOIN patient_state ps on pp.patient_program_id=ps.patient_program_id ");
+            q.append("    WHERE  pp.voided=0 ");
             q.append("    AND ps.voided=0 ");
             q.append("    AND p.voided=0 ");
-            q.append("    AND pg.program_id=:programEnrolled");
+            q.append("    AND pp.program_id=:programEnrolled");
             q.append("    AND location_id= :location");
             if (cd.getOnOrBefore() == null) {
                 q.append(" AND ps.start_date<:onOrAfter ");
             } else {
                 q.append(" AND ps.start_date<= :onOrBefore ");
             }
-            q.append("GROUP BY pg.patient_program_id) pgEnrollment  ");
+            q.append("GROUP BY pp.patient_program_id) pgEnrollment  ");
             q.append("JOIN patient_state ps on ps.patient_program_id=pgEnrollment.patient_program_id ");
             q.append("  WHERE ps.start_date=pgEnrollment.pgEnrollmentDate ");
             q.append("  AND ps.state = :transferredInState ");
             q.append("  AND ps.voided=0 ");
             q.append("UNION SELECT pgEnrollment.patient_id ");
             q.append(" FROM( ");
-            q.append("SELECT p.patient_id, pg.patient_program_id, min(ps.start_date) as pgEnrollmentDate  ");
+            q.append("SELECT p.patient_id, pp.patient_program_id, min(ps.start_date) as pgEnrollmentDate  ");
             q.append("FROM patient p ");
-            q.append("  JOIN patient_program pg on p.patient_id=pg.patient_id ");
-            q.append("  JOIN patient_state ps on pg.patient_program_id=ps.patient_program_id ");
-            q.append("  WHERE  pg.voided=0 ");
+            q.append("  JOIN patient_program pp on p.patient_id=pp.patient_id ");
+            q.append("  JOIN patient_state ps on pp.patient_program_id=ps.patient_program_id ");
+            q.append("  WHERE  pp.voided=0 ");
             q.append("  AND ps.voided=0 ");
             q.append("  AND p.voided=0 ");
-            q.append("  AND pg.program_id=:programEnrolled2 ");
+            q.append("  AND pp.program_id=:programEnrolled2 ");
             q.append("  AND location_id= :location ");
             if (cd.getOnOrBefore() == null) {
                 q.append(" AND ps.start_date <:onOrAfter ");
             } else {
                 q.append(" AND ps.start_date <= :onOrBefore ");
             }
-            q.append("GROUP BY pg.patient_program_id) pgEnrollment ");
+            q.append("GROUP BY pp.patient_program_id) pgEnrollment ");
             q.append("JOIN patient_state ps on ps.patient_program_id = pgEnrollment.patient_program_id ");
             q.append("where ps.start_date = pgEnrollment.pgEnrollmentDate ");
             q.append("AND ps.state=:transferredInState2 ");
