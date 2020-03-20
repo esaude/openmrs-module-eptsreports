@@ -431,15 +431,42 @@ public class TXTBCohortQueries {
         genericCohortQueries.generalSql(
             "additionalTest",
             TXTBQueries.getAdditionalTest(
-              hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
-              hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
-              hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-              hivMetadata.getExameBasiloscopiaConcept().getConceptId(),
-              hivMetadata.getTbGenexpertTest().getConceptId(),
-              hivMetadata.getTbLamTest().getConceptId(),
-              hivMetadata.getCultureTest().getConceptId(),
-              hivMetadata.getPositiveConcept().getConceptId(),
-              hivMetadata.getNegativeConcept().getConceptId()));
+                hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+                hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getExameBasiloscopiaConcept().getConceptId(),
+                hivMetadata.getTbGenexpertTest().getConceptId(),
+                hivMetadata.getTbLamTest().getConceptId(),
+                hivMetadata.getCultureTest().getConceptId(),
+                hivMetadata.getPositiveConcept().getConceptId(),
+                hivMetadata.getNegativeConcept().getConceptId()));
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  /**
+   * Get patients from denominator who have positive results returned registered during the period
+   * Have a ‘GeneXpert Positivo’ registered in the investigacoes – resultados laboratoriais - ficha
+   * clinica – mastercard OR Have a ‘resultado baciloscopia positive’ registered in the laboratory
+   * form OR Have a TB LAM positivo registered in the investigacoes – resultados laboratoriais ficha
+   * clinica – mastercard OR Have a cultura positiva registered in the investigacoes – resultados
+   * laboratoriais ficha clinica – mastercard
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPositiveResultsReturned() {
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "positiveResultsReturned",
+            TXTBQueries.getPositiveResultsReturned(
+                hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getExameBasiloscopiaConcept().getConceptId(),
+                hivMetadata.getTbGenexpertTest().getConceptId(),
+                hivMetadata.getTbLamTest().getConceptId(),
+                hivMetadata.getCultureTest().getConceptId(),
+                hivMetadata.getPositiveConcept().getConceptId(),
+                hivMetadata.getNegativeConcept().getConceptId()));
     addGeneralParameters(cd);
     return cd;
   }
@@ -504,7 +531,8 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * BR-11 Additional Test - Denominator AND Screened AND Additional AND NOT Genexpert AND NOT Microscopy
+   * BR-11 Additional Test - Denominator AND Screened AND Additional AND NOT Genexpert AND NOT
+   * Microscopy
    *
    * @return CohortDefinition
    */
@@ -514,13 +542,29 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
     definition.addSearch(
-        "additionalTest",
-        EptsReportUtils.map(getAdditionalTest(), generalParameterMapping));
+        "additionalTest", EptsReportUtils.map(getAdditionalTest(), generalParameterMapping));
     definition.addSearch(
         "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
     addGeneralParameters(definition);
-    definition.setCompositionString(
-        "denominator AND additionalTest AND positive-screening");
+    definition.setCompositionString("denominator AND additionalTest AND positive-screening");
+    return definition;
+  }
+
+  /**
+   * BR-12 Positive Results Returned
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition positiveResultsReturned() {
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("positiveResultsReturned()");
+    definition.addSearch(
+        "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
+    definition.addSearch(
+        "positiveResultsReturned",
+        EptsReportUtils.map(getPositiveResultsReturned(), generalParameterMapping));
+    addGeneralParameters(definition);
+    definition.setCompositionString("denominator AND positiveResultsReturned");
     return definition;
   }
 }
