@@ -217,7 +217,7 @@ public class TxNewCohortQueries {
             mappings));
 
     txNewCompositionCohort.setCompositionString(
-        "START-ART AND (TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD)");
+        "START-ART NOT (TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD)");
 
     return txNewCompositionCohort;
   }
