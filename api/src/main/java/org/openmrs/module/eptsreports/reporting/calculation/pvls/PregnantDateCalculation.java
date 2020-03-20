@@ -65,9 +65,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     Concept hivViraloadQualitative = hivMetadata.getHivViralLoadQualitative();
     Concept criteriaForArtStart = hivMetadata.getCriteriaForArtStart();
     Concept bPostive = hivMetadata.getBpostiveConcept();
-
-    // get female patients only
-    Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);
+    Concept pregnantRegistered = hivMetadata.getDateOfMasterCardFileOpeningConcept();
 
     CalculationResultMap pregnantMap =
         ePTSCalculationService.getObs(
@@ -82,7 +80,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
 
     CalculationResultMap pregnantRegistrationMap =
             ePTSCalculationService.getObs(
-                    pregnant,
+                    pregnantRegistered,
                     Arrays.asList(fichaResumoEncounterType),
                     cohort,
                     Arrays.asList(location),
