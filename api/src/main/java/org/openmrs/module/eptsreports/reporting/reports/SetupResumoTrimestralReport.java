@@ -125,6 +125,7 @@ public class SetupResumoTrimestralReport extends EptsDataExportManager {
     parameter.setLabel("Ano");
     parameter.setType(String.class);
     parameter.setCollectionType(List.class);
+    parameter.setRequired(Boolean.TRUE);
 
     Properties props = new Properties();
     Calendar currentDate = Calendar.getInstance();
@@ -153,6 +154,7 @@ public class SetupResumoTrimestralReport extends EptsDataExportManager {
     parameter.setLabel("Trimestre");
     parameter.setType(String.class);
     parameter.setCollectionType(List.class);
+    parameter.setRequired(Boolean.TRUE);
 
     Properties props = new Properties();
     props.put(
