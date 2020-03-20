@@ -748,16 +748,14 @@ public class ResumoMensalCohortQueries {
         map(
             getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(),
             mappings));
-    cd.addSearch("TB", map(tbScreening(), mappings));
+    cd.addSearch("TB", map(getNumberOfPatientTbScreenedInFirstEncounter(), mappings));
 
     cd.setCompositionString("A2 AND TB");
-    //cd.setCompositionString("TB");
-
-
+   
     return cd;
   }
   
-  private CohortDefinition tbScreening() {
+  private CohortDefinition getNumberOfPatientTbScreenedInFirstEncounter() {
 	  SqlCohortDefinition definition  = new SqlCohortDefinition();
 	  definition.addParameter(new Parameter("startDate","startDate",Date.class));
 	  definition.addParameter(new Parameter("endDate","endDate",Date.class));
@@ -925,7 +923,6 @@ public class ResumoMensalCohortQueries {
     cd.setQuestion(tbMetadata.getHasTbSymptomsConcept());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getYesConcept());
-    cd.addValue(hivMetadata.getNoConcept());
     return cd;
   }
 
