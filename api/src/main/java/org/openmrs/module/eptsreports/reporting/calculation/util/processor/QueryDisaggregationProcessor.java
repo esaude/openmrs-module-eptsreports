@@ -24,7 +24,7 @@ public class QueryDisaggregationProcessor {
         new SqlQueryBuilder(
             String.format(
                 IQueryDisaggregationProcessor.QUERY
-                    .findMaxPatientStateDateByProgramAndPatientStateAndEndDate,
+                    .findMaxPatientStateDateByProgramAndPatientStateAndReportingPeriod,
                 program.getProgramId(),
                 state.getProgramWorkflowStateId()),
             context.getParameterValues());
@@ -55,18 +55,41 @@ public class QueryDisaggregationProcessor {
         .evaluateToMap(qb, Integer.class, Date.class, context);
   }
 
-  public Map<Integer, Date> findMapMaxObsDatetimeByEncountersAndQuestionsAndAnswerAndEndDate(
-      EvaluationContext context,
-      List<Integer> encounterIds,
-      List<Integer> questions,
-      Concept answer) {
+  public Map<Integer, Date>
+      findMapMaxEncounterDatetimeByEncountersAndQuestionsAndAnswerAndEndOfReportingPeriod(
+          EvaluationContext context,
+          Integer encounterTypeId,
+          List<Integer> questions,
+          Concept answer) {
 
     SqlQueryBuilder qb =
         new SqlQueryBuilder(
             String.format(
                 IQueryDisaggregationProcessor.QUERY
-                    .findMaxObsDateTimeByEncounterTypesAndConceptsAndAnswerAndEndDate,
-                StringUtils.join(encounterIds, ","),
+                    .findMaxEncounterDateTimeByEncounterTypesAndConceptsAndAnswerAndEndOfReportingPeriod,
+                encounterTypeId,
+                StringUtils.join(questions, ","),
+                answer.getConceptId()),
+            context.getParameterValues());
+
+    return Context.getRegisteredComponents(EvaluationService.class)
+        .get(0)
+        .evaluateToMap(qb, Integer.class, Date.class, context);
+  }
+
+  public Map<Integer, Date>
+      findMapMaxObsDatetimeByEncountersAndQuestionsAndAnswerAndEndOfReportingPeriod(
+          EvaluationContext context,
+          Integer encounterTypeId,
+          List<Integer> questions,
+          Concept answer) {
+
+    SqlQueryBuilder qb =
+        new SqlQueryBuilder(
+            String.format(
+                IQueryDisaggregationProcessor.QUERY
+                    .findMaxObsDateTimeByEncounterTypesAndConceptsAndAnswerAndEndOfReportingPeriod,
+                encounterTypeId,
                 StringUtils.join(questions, ","),
                 answer.getConceptId()),
             context.getParameterValues());
