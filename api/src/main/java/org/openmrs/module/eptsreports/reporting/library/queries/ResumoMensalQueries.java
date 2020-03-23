@@ -39,7 +39,7 @@ public class ResumoMensalQueries {
             + "UNION "
             + "SELECT pg.patient_id, min(pg.date_enrolled)  AS initialDate FROM patient p "
             + "INNER JOIN patient_program pg on pg.patient_id=p.patient_id "
-            + "WHERE pg.program_id=%d AND pg.voided=0 AND pg.date_enrolled<:startDate GROUP BY patient_id"
+            + "WHERE pg.program_id=%d AND pg.location_id=:location AND pg.voided=0 AND pg.date_enrolled<:startDate GROUP BY patient_id"
             + ") InitArt";
 
     return String.format(
@@ -76,7 +76,7 @@ public class ResumoMensalQueries {
             + "AND e.encounter_datetime<=:endDate GROUP BY p.patient_id "
             + "UNION SELECT pg.patient_id, MIN(pg.date_enrolled) AS initialDate FROM patient p "
             + "INNER JOIN patient_program pg on pg.patient_id=p.patient_id "
-            + "WHERE pg.program_id=%s AND pg.voided=0 AND pg.date_enrolled<=:endDate  GROUP BY patient_id "
+            + "WHERE pg.program_id=%s AND pg.location_id=:location AND pg.voided=0 AND pg.date_enrolled<=:endDate  GROUP BY patient_id "
             + " ) preTarv "
             + "GROUP BY preTarv.patient_id) "
             + "preTarvFinal WHERE preTarvFinal.initialDate BETWEEN :startDate AND :endDate";
@@ -247,7 +247,7 @@ public class ResumoMensalQueries {
             + "inner join encounter e on p.patient_id=e.patient_id where encounter_type=18 and e.encounter_datetime <=:endDate and e.location_id=:location and e.voided=0 and p.voided=0 group by p.patient_id)fila "
             + "inner join obs obs_fila on obs_fila.person_id=fila.patient_id "
             + "where obs_fila.voided=0 and obs_fila.concept_id=5096 and fila.data_levantamento=obs_fila.obs_datetime) maxFilaRecepcao group by patient_id "
-            + "having date_add(max(data_proximo_levantamento), INTERVAL 60 day )<= :endDate )B7 ";
+            + "having date_add(max(data_proximo_levantamento), INTERVAL 60 day )< :endDate )B7 ";
 
     return query;
   }
@@ -858,7 +858,7 @@ public class ResumoMensalQueries {
             + "inner join encounter e on p.patient_id=e.patient_id "
             + "inner join obs o on o.encounter_id=e.encounter_id "
             + "where e.encounter_type=6 and o.concept_id=23758 and  o.value_coded in (1065,1066) and e.location_id=:location "
-            + "and e.voided=0 and p.voided=0 and e.encounter_datetime between :startDate and :endDate)TbSynthoms "
+            + "and e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_datetime between :startDate and :endDate)TbSynthoms "
             + "left join( "
             + "select p.patient_id,o.concept_id as tb_active_concept,e.encounter_datetime as data_tb from patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
