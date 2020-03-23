@@ -766,27 +766,28 @@ public class ResumoMensalCohortQueries {
 	  map.put("tbSymptomsConcept", tbMetadata.getHasTbSymptomsConcept().getConceptId());
 	  map.put("yesConcept", hivMetadata.getPatientFoundYesConcept().getConceptId());
 	  map.put("noConcept",  hivMetadata.getNoConcept().getConceptId());
-	  String query = "SELECT pt.patient_id " + 
-	  		"FROM patient pt  " + 
-	  		"    INNER JOIN  " + 
-	  		"    (SELECT p.patient_id, MIN(e.encounter_datetime) " + 
-	  		"    FROM  patient p " + 
-	  		"        INNER JOIN encounter e  " + 
-	  		"            ON e.patient_id = p.patient_id " + 
-	  		"    WHERE  e.encounter_type = ${adultoSeguimentoEncounterType} " + 
-	  		"        AND e.location_id = :location " + 
-	  		"        AND e.encounter_datetime BETWEEN :startDate AND :endDate  " + 
-	  		"        AND p.voided = 0 " + 
-	  		"        AND e.voided = 0 " + 
-	  		"    GROUP BY p.patient_id) min_encounter " + 
-	  		"        ON pt.patient_id = min_encounter.patient_id " + 
-	  		"    INNER JOIN obs o  " + 
-	  		"            ON o.person_id = pt.patient_id " + 
-	  		"WHERE o.voided = 0 " + 
-	  		"    AND pt.voided = 0 " + 
-	  		"AND o.concept_id   = ${tbSymptomsConcept} " + 
-	  		"AND o.value_coded  IN   (${yesConcept}, ${noConcept}) " + 
-	  		"GROUP BY pt.patient_id;  ";
+	  String query =
+              "SELECT pt.patient_id "
+              + "FROM patient pt  "
+              + "    INNER JOIN  "
+              + "    (SELECT p.patient_id, MIN(e.encounter_datetime), encounter_id as enc_id "
+              + "    FROM  patient p "
+              + "        INNER JOIN encounter e  "
+              + "            ON e.patient_id = p.patient_id "
+              + "    WHERE  e.encounter_type = ${adultoSeguimentoEncounterType} "
+              + "        AND e.location_id = :location "
+              + "        AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
+              + "        AND p.voided = 0 "
+              + "        AND e.voided = 0 "
+              + "    GROUP BY p.patient_id) min_encounter "
+              + "        ON pt.patient_id = min_encounter.patient_id "
+              + "    INNER JOIN obs o  "
+              + "            ON o.encounter_id = min_encounter.enc_id "
+              + "WHERE o.voided = 0 "
+              + "    AND pt.voided = 0 "
+              + "AND o.concept_id   = ${tbSymptomsConcept} "
+              + "AND o.value_coded  IN   (${yesConcept}, ${noConcept}) "
+              + "GROUP BY pt.patient_id;  ";
 	  
 	  StringSubstitutor sb = new StringSubstitutor(map);
 	  String replacedQuery  = sb.replace(query);
