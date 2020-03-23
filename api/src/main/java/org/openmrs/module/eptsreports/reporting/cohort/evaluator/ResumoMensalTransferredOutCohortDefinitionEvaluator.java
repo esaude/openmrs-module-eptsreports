@@ -80,6 +80,26 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
       q.append("            AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore ");
     }
     q.append("              AND o.voided = 0 ");
+    q.append("              AND o.concept_id = :artStateOfStay ");
+    q.append("              AND o.value_coded = :transfOutConcept) transferout ");
+    q.append("            UNION ");
+    q.append("            SELECT p.patient_id, ");
+    q.append("                   e.encounter_datetime transferout_date ");
+    q.append("            FROM patient p ");
+    q.append("                     JOIN encounter e ");
+    q.append("                          ON p.patient_id = e.patient_id ");
+    q.append("                     JOIN obs o ");
+    q.append("                          ON e.encounter_id = o.encounter_id ");
+    q.append("            WHERE p.voided = 0 ");
+    q.append("              AND e.voided = 0 ");
+    q.append("              AND e.location_id = :location ");
+    q.append("              AND e.encounter_type = :masterCard ");
+    if (cd.getOnOrAfter() == null) {
+      q.append("            AND o.obs_datetime <= :onOrBefore ");
+    } else {
+      q.append("            AND o.obs_datetime BETWEEN :onOrAfter AND :onOrBefore ");
+    }
+    q.append("              AND o.voided = 0 ");
     q.append("              AND o.concept_id IN (:artStateOfStay, :preArtStateOfStay) ");
     q.append("              AND o.value_coded = :transfOutConcept) transferout ");
     q.append("      GROUP BY patient_id) max_transferout ");
