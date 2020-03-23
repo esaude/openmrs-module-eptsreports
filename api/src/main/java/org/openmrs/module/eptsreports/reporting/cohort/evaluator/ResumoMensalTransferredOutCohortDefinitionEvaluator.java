@@ -73,7 +73,7 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
     q.append("            WHERE p.voided = 0 ");
     q.append("              AND e.voided = 0 ");
     q.append("              AND e.location_id = :location ");
-    q.append("              AND e.encounter_type IN (:adultSeg, :masterCard) ");
+    q.append("              AND e.encounter_type = :adultSeg ");
     if (cd.getOnOrAfter() == null) {
       q.append("            AND e.encounter_datetime <= :onOrBefore ");
     } else {
@@ -81,7 +81,7 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
     }
     q.append("              AND o.voided = 0 ");
     q.append("              AND o.concept_id = :artStateOfStay ");
-    q.append("              AND o.value_coded = :transfOutConcept) transferout ");
+    q.append("              AND o.value_coded = :transfOutConcept ");
     q.append("            UNION ");
     q.append("            SELECT p.patient_id, ");
     q.append("                   e.encounter_datetime transferout_date ");
@@ -100,7 +100,7 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
       q.append("            AND o.obs_datetime BETWEEN :onOrAfter AND :onOrBefore ");
     }
     q.append("              AND o.voided = 0 ");
-    q.append("              AND o.concept_id IN (:artStateOfStay, :preArtStateOfStay) ");
+    q.append("              AND o.concept_id = :preArtStateOfStay ");
     q.append("              AND o.value_coded = :transfOutConcept) transferout ");
     q.append("      GROUP BY patient_id) max_transferout ");
     q.append("WHERE patient_id NOT IN (SELECT p.patient_id ");
