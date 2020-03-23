@@ -575,7 +575,6 @@ public class ResumoMensalCohortQueries {
             genericCohortQueries.getStartedArtBeforeDate(false),
             "onOrBefore=${startDate-1},location=${location}"));
 
-
     cd.addSearch(
         "transferredIn",
         map(getTransferredInForB10(), "onOrAfter=${startDate-1},location=${location}"));
@@ -742,19 +741,57 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    CohortDefinition tb = getPatientScreenedForTb();
 
-    String mappings = "onOrAfter=${startDate},locationList=${location}";
+    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     cd.addSearch(
-        "Pop",
+        "A2",
         map(
-            getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthC1(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch("TB", map(tb, mappings));
+            getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(),
+            mappings));
+    cd.addSearch("TB", map(getNumberOfPatientTbScreenedInFirstEncounter(), mappings));
 
-    cd.setCompositionString("Pop AND TB");
-
+    cd.setCompositionString("A2 AND TB");
+   
     return cd;
+  }
+  
+  private CohortDefinition getNumberOfPatientTbScreenedInFirstEncounter() {
+	  SqlCohortDefinition definition  = new SqlCohortDefinition();
+	  definition.addParameter(new Parameter("startDate","startDate",Date.class));
+	  definition.addParameter(new Parameter("endDate","endDate",Date.class));
+	  definition.addParameter(new Parameter("location","location",Location.class));
+	  
+	  Map<String, Integer> map = new HashMap<>();
+	  map.put("adultoSeguimentoEncounterType", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+	  map.put("tbSymptomsConcept", tbMetadata.getHasTbSymptomsConcept().getConceptId());
+	  map.put("yesConcept", hivMetadata.getPatientFoundYesConcept().getConceptId());
+	  map.put("noConcept",  hivMetadata.getNoConcept().getConceptId());
+	  String query = "SELECT pt.patient_id " + 
+	  		"FROM patient pt  " + 
+	  		"    INNER JOIN  " + 
+	  		"    (SELECT p.patient_id, MIN(e.encounter_datetime) " + 
+	  		"    FROM  patient p " + 
+	  		"        INNER JOIN encounter e  " + 
+	  		"            ON e.patient_id = p.patient_id " + 
+	  		"    WHERE  e.encounter_type = ${adultoSeguimentoEncounterType} " + 
+	  		"        AND e.location_id = :location " + 
+	  		"        AND e.encounter_datetime BETWEEN :startDate AND :endDate  " + 
+	  		"        AND p.voided = 0 " + 
+	  		"        AND e.voided = 0 " + 
+	  		"    GROUP BY p.patient_id) min_encounter " + 
+	  		"        ON pt.patient_id = min_encounter.patient_id " + 
+	  		"    INNER JOIN obs o  " + 
+	  		"            ON o.person_id = pt.patient_id " + 
+	  		"WHERE o.voided = 0 " + 
+	  		"    AND pt.voided = 0 " + 
+	  		"AND o.concept_id   = ${tbSymptomsConcept} " + 
+	  		"AND o.value_coded  IN   (${yesConcept}, ${noConcept}) " + 
+	  		"GROUP BY pt.patient_id;  ";
+	  
+	  StringSubstitutor sb = new StringSubstitutor(map);
+	  String replacedQuery  = sb.replace(query);
+	  definition.setQuery(replacedQuery);
+	  return definition;
   }
 
   /** @return Patients who initiated Pre-TARV during the current month and started TPI. */
