@@ -632,8 +632,9 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch(
         "drugPick",
-        map(getPatientsWhoHadAtLeastDrugPickUp(), "startDate=${startDate-1},location=${location}"));
+        map(getPatientsWhoHadAtLeastDrugPickUp(), "startDate=${startDate-1d},location=${location}"));
     cd.setCompositionString("((B10 OR B2A) AND drugPick) AND NOT (B5A OR B6A OR B7A OR B8A)");
+    //cd.setCompositionString("drugPick");
 
     return cd;
   }
@@ -645,39 +646,41 @@ public class ResumoMensalCohortQueries {
   public CohortDefinition getPatientsWhoHadAtLeastDrugPickUp() {
 
     SqlCohortDefinition cd = new SqlCohortDefinition();
-
+    cd.setName(" ");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
     String query =
-        "    select p.patient_id "
-            + "    from patient p "
-            + "        inner join encounter e "
-            + "            on p.patient_id = e.patient_id "
-            + "        inner join obs o  "
-            + "            on o.encounter_id=e.encounter_id "
-            + "    where p.voided =0    "
-            + "    and e.voided = 0 "
-            + "    and  o.voided =0 "
-            + "    and e.encounter_type = %d "
-            + "    and o.concept_id= %d "
-            + "    and o.value_datetime <= :startDate "
-            + "    group by p.patient_id "
-            + "    union "
-            + "    select p.patient_id "
-            + "    from patient p "
-            + "        inner join encounter e "
-            + "            on p.patient_id = e.patient_id "
-            + "        inner join obs o  "
-            + "            on o.encounter_id=e.encounter_id "
-            + "    where p.voided =0    "
-            + "    and e.voided = 0 "
-            + "    and o.voided =0 "
-            + "    and e.encounter_type = %d "
-            + "    and o.concept_id= %d "
-            + "    and e.encounter_datetime <= :startDate "
-            + "    and o.value_datetime is not  null "
-            + "    group by p.patient_id";
+            "                   select p.patient_id " + 
+            "                from patient p " + 
+            "                    inner join encounter e " + 
+            "                        on p.patient_id = e.patient_id " + 
+            "                    inner join obs o  " + 
+            "                        on o.encounter_id=e.encounter_id " + 
+            "                where p.voided =0    " + 
+            "                and e.voided = 0 " + 
+            "                and  o.voided =0 " + 
+            "                and e.location_id = :location " + 
+            "                and e.encounter_type = %d " + 
+            "                and o.concept_id= %d " + 
+            "                and o.value_datetime <= :startDate " + 
+            "                group by p.patient_id " +
+            "                union " + 
+            "                select p.patient_id " + 
+            "                from patient p " + 
+            "                    inner join encounter e " + 
+            "                        on p.patient_id = e.patient_id " + 
+            "                    inner join obs o  " + 
+            "                        on o.encounter_id=e.encounter_id " + 
+            "                where p.voided =0    " + 
+            "                and e.voided = 0 " + 
+            "                and o.voided =0  " + 
+            "                and e.encounter_type = %d  " + 
+            "                and e.location_id = :location  " + 
+            "                and o.concept_id= %d  " + 
+            "                and e.encounter_datetime <= :startDate  " + 
+            "                and o.value_datetime is not  null  " + 
+            "                group by p.patient_id " ;
 
     cd.setQuery(
         String.format(

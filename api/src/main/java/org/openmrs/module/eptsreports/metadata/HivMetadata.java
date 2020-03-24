@@ -1064,10 +1064,10 @@ public class HivMetadata extends ProgramsMetadata {
 
   // encounterType_id = 18
   public EncounterType getARVPharmaciaEncounterType() {
-    String uuid =
-        Context.getAdministrationService().getGlobalProperty(gpSTarvFarmaciaEncounterTypeUuid);
-    return getEncounterType(uuid);
-  }
+	String uuid =
+	     Context.getAdministrationService().getGlobalProperty(gpSTarvFarmaciaEncounterTypeUuid);
+	return getEncounterType(uuid);
+  }	  
 
   // encounter_type_id = 29
   public EncounterType getEvaluationAndPrepForARTEncounterType() {
