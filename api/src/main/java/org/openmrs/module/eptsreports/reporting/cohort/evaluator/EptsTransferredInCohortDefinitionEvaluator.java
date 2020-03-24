@@ -59,7 +59,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
 
     q.append("       AND type.voided = 0 ");
     q.append("       AND type.concept_id = :typeOfPatient ");
-    q.append("       AND type.value_coded in (:preTarv, :tarv) ");
+    q.append("       AND type.value_coded = :tarv ");
 
     q.append("       AND opening.voided = 0 ");
     q.append("       AND opening.concept_id = :dateOfMasterCardFileOpening ");
