@@ -80,7 +80,7 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
       q.append("            AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore ");
     }
     q.append("              AND o.voided = 0 ");
-    q.append("              AND o.concept_id = :artStateOfStay ");
+    q.append("              AND o.concept_id = :preArtStateOfStay ");
     q.append("              AND o.value_coded = :transfOutConcept ");
     q.append("            UNION ");
     q.append("            SELECT p.patient_id, ");
@@ -100,7 +100,7 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
       q.append("            AND o.obs_datetime BETWEEN :onOrAfter AND :onOrBefore ");
     }
     q.append("              AND o.voided = 0 ");
-    q.append("              AND o.concept_id = :preArtStateOfStay ");
+    q.append("              AND o.concept_id = :artStateOfStay ");
     q.append("              AND o.value_coded = :transfOutConcept) transferout ");
     q.append("      GROUP BY patient_id) max_transferout ");
     q.append("WHERE patient_id NOT IN (SELECT p.patient_id ");
