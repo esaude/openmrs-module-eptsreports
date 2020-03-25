@@ -348,12 +348,12 @@ public class TXTBQueries {
   }
 
   /**
-   * Get patients who have a Basiloscopia Positivo or Negativo registered in the laboratory form
-   * encounter type 13 Except patients identified in GeneXpert
+   * Smear Microscopy - Get patients who have a Basiloscopia Positivo or Negativo registered in the
+   * laboratory form encounter type 13 Except patients identified in GeneXpert
    *
    * @return String
    */
-  public static String getPatientsWhoHaveBasiloscopiaAndNotGeneXpert(
+  public static String getSmearMicroscopyOnly(
       int laboratory,
       int fichaClinica,
       int basiloscopiaExam,
@@ -408,7 +408,7 @@ public class TXTBQueries {
   }
 
   /**
-   * Get patients who have a Additional Test
+   * Get patients who have a Additional Test AND Not GeneXpert AND Not Smear Microscopy Only
    *
    * @return String
    */

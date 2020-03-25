@@ -106,22 +106,24 @@ public class TxTBDataset extends BaseDataSet {
         eptsGeneralIndicator.getIndicator(
             "newOnARTNegativeScreening",
             EptsReportUtils.map(txTbCohortQueries.newOnARTNegativeScreening(), mappings));
-
     CohortIndicator specimenSent =
         eptsGeneralIndicator.getIndicator(
             "specimenSent", EptsReportUtils.map(txTbCohortQueries.specimenSent(), mappings));
+    CohortIndicator smearMicroscopyOnly =
+        eptsGeneralIndicator.getIndicator(
+            "smearMicroscopyOnly",
+            EptsReportUtils.map(txTbCohortQueries.smearMicroscopyOnly(), mappings));
     CohortIndicator genExpert =
         eptsGeneralIndicator.getIndicator(
             "genExpert", EptsReportUtils.map(txTbCohortQueries.genExpert(), mappings));
-    CohortIndicator smearMicroscopy =
+    CohortIndicator otherAdditionalTest =
         eptsGeneralIndicator.getIndicator(
-            "smearMicroscopy",
-            EptsReportUtils.map(txTbCohortQueries.basiloscopiaAndNotGeneXpert(), mappings));
-
+            "otherAdditionalTest",
+            EptsReportUtils.map(txTbCohortQueries.otherAdditionalTest(), mappings));
     CohortIndicator positiveResultsReturned =
         eptsGeneralIndicator.getIndicator(
-            "smearMicroscopy",
-            EptsReportUtils.map(txTbCohortQueries.getPositiveResultsReturned(), mappings));
+            "positiveInvestigationResult",
+            EptsReportUtils.map(txTbCohortQueries.positiveInvestigationResult(), mappings));
 
     dataSetDefinition.addColumn(
         "TXB_DEN",
@@ -157,6 +159,36 @@ public class TxTBDataset extends BaseDataSet {
         "Denominator (previouslyOnARTNegativeScreening)",
         EptsReportUtils.map(previouslyOnARTNegativeScreening, mappings),
         dissagregations());
+
+    dataSetDefinition.addColumn(
+        "TXB_DEN_SPEC_SENT",
+        "TX_TB: Denominator (Specimen Sent)",
+        EptsReportUtils.map(specimenSent, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "TXB_DEN_SMEAR_ONLY",
+        "TX_TB: Denominator (Diagnostic Test - Smear Only)",
+        EptsReportUtils.map(smearMicroscopyOnly, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "TXB_DEN_GENE_EXPERT",
+        "TX_TB: Denominator (Diagnostic Test - Gene Xpert MTB/RIF Assay)",
+        EptsReportUtils.map(genExpert, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "TXB_DEN_OTHER",
+        "TX_TB: Denominator (Diagnostic Test - Other No Xpert)",
+        EptsReportUtils.map(otherAdditionalTest, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "TXB_DEN_POS_RES_RET",
+        "TX_TB: Denominator (Positive Result Returned)",
+        EptsReportUtils.map(positiveResultsReturned, mappings),
+        "");
   }
 
   private List<ColumnParameters> dissagregations() {

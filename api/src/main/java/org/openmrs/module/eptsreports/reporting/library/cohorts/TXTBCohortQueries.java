@@ -406,11 +406,11 @@ public class TXTBCohortQueries {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getBasiloscopiaAndNotGeneXpert() {
+  public CohortDefinition getSmearMicroscopyOnly() {
     CohortDefinition cd =
         genericCohortQueries.generalSql(
-            "basiloscopiaNotGeneXpert",
-            TXTBQueries.getPatientsWhoHaveBasiloscopiaAndNotGeneXpert(
+            "smearMicroscopyOnly",
+            TXTBQueries.getSmearMicroscopyOnly(
                 hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                 hivMetadata.getExameBasiloscopiaConcept().getConceptId(),
@@ -422,14 +422,14 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * Get patients who have a Additional Test And Not GeneXpert And Not Smear Miscroscopy Only
+   * Get patients who have a Additional Test AND Not GeneXpert AND Not Smear Microscopy Only
    *
    * @return CohortDefinition
    */
   public CohortDefinition getAdditionalTest() {
     CohortDefinition cd =
         genericCohortQueries.generalSql(
-            "additionalTest",
+            "otherAdditionalTest",
             TXTBQueries.getAdditionalTest(
                 hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
                 hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
@@ -514,19 +514,18 @@ public class TXTBCohortQueries {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition basiloscopiaAndNotGeneXpert() {
+  public CohortDefinition smearMicroscopyOnly() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
-    definition.setName("basiloscopiaAndNotGeneXpert()");
+    definition.setName("smearMicroscopyOnly()");
     definition.addSearch(
         "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
     definition.addSearch(
-        "basiloscopiaAndNotGeneXpert",
-        EptsReportUtils.map(getBasiloscopiaAndNotGeneXpert(), generalParameterMapping));
+        "smearMicroscopyOnly",
+        EptsReportUtils.map(getSmearMicroscopyOnly(), generalParameterMapping));
     definition.addSearch(
         "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
     addGeneralParameters(definition);
-    definition.setCompositionString(
-        "denominator AND basiloscopiaAndNotGeneXpert AND positive-screening");
+    definition.setCompositionString("denominator AND smearMicroscopyOnly AND positive-screening");
     return definition;
   }
 
@@ -536,17 +535,17 @@ public class TXTBCohortQueries {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition additionalTest() {
+  public CohortDefinition otherAdditionalTest() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
-    definition.setName("additionalTest()");
+    definition.setName("otherAdditionalTest()");
     definition.addSearch(
         "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
     definition.addSearch(
-        "additionalTest", EptsReportUtils.map(getAdditionalTest(), generalParameterMapping));
+        "otherAdditionalTest", EptsReportUtils.map(getAdditionalTest(), generalParameterMapping));
     definition.addSearch(
         "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
     addGeneralParameters(definition);
-    definition.setCompositionString("denominator AND additionalTest AND positive-screening");
+    definition.setCompositionString("denominator AND otherAdditionalTest AND positive-screening");
     return definition;
   }
 
