@@ -54,7 +54,6 @@ public class SetupUSMonthlySummaryHivReport extends EptsDataExportManager {
     rd.addDataSetDefinition(
         "S", mapStraightThrough(usMonthlySummaryHivDataset.constructUsMonthlySummaryHivDataset()));
     rd.addDataSetDefinition("location", mapStraightThrough(new LocationDataSetDefinition()));
-    rd.addDataSetDefinition("endDate", mapStraightThrough(new Da));
     return rd;
   }
 

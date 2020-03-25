@@ -76,7 +76,8 @@ public class SetupTxCurr21 extends EptsDataExportManager {
 
     // add a base cohort here to help in calculations running
     reportDefinition.setBaseCohortDefinition(
-        EptsReportUtils.map(genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+        EptsReportUtils.map(
+            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
 
     return reportDefinition;
   }

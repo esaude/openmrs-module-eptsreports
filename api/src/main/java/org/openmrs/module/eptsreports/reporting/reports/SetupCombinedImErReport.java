@@ -69,7 +69,8 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
         "ERI4", Mapped.mapStraightThrough(eri4MonthsDataset.constructEri4MonthsDataset()));
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(
-        EptsReportUtils.map(genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+        EptsReportUtils.map(
+            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
 
     return rd;
   }

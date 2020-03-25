@@ -76,7 +76,8 @@ public class SetupResumoMensalReport extends EptsDataExportManager {
     rd.addDataSetDefinition(
         "R", mapStraightThrough(resumoMensalDataSetDefinition.constructResumoMensalDataset()));
     rd.setBaseCohortDefinition(
-        EptsReportUtils.map(genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+        EptsReportUtils.map(
+            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
     return rd;
   }
 

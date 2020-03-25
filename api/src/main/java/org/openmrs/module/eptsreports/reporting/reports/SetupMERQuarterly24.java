@@ -103,7 +103,8 @@ public class SetupMERQuarterly24 extends EptsDataExportManager {
     rd.addDataSetDefinition("R", Mapped.mapStraightThrough(txRttDataset.constructTxRttDataset()));
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(
-        EptsReportUtils.map(genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+        EptsReportUtils.map(
+            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
 
     return rd;
   }
