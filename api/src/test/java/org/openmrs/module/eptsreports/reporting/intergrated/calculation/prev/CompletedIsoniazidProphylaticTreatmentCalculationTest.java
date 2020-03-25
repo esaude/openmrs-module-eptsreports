@@ -110,7 +110,6 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
     CalculationResultMap results =
         service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues, context);
     BooleanResult result = (BooleanResult) results.get(patientId);
-    Assert.assertNotNull(result);
     Assert.assertEquals(Boolean.TRUE, result.getValue());
   }
 }

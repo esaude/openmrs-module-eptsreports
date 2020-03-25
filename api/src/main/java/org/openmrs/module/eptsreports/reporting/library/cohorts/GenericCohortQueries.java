@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
@@ -29,6 +30,7 @@ import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.AgeOnArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.NewlyOrPreviouslyEnrolledOnARTCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtBeforeDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtOnPeriodCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
@@ -324,10 +326,10 @@ public class GenericCohortQueries {
             hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
             hivMetadata.getPatientHasDiedConcept().getConceptId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-            hivMetadata.getArtDatePickup().getConceptId()));
+            hivMetadata.getArtDatePickupMasterCard().getConceptId()));
 
     return cd;
   }
@@ -399,6 +401,18 @@ public class GenericCohortQueries {
             Context.getRegisteredComponents(StartedArtBeforeDateCalculation.class).get(0));
     cd.setName("Art start date");
     cd.addCalculationParameter("considerTransferredIn", considerTransferredIn);
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    return cd;
+  }
+
+  public CohortDefinition getNewlyOrPreviouslyEnrolledOnART(boolean isNewlyEnrolledOnArtSearch) {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(NewlyOrPreviouslyEnrolledOnARTCalculation.class)
+                .get(0));
+    cd.setName("Newly Or Previously Enrolled On ART");
+    cd.addCalculationParameter("isNewlyEnrolledOnArtSearch", isNewlyEnrolledOnArtSearch);
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     return cd;
@@ -487,5 +501,26 @@ public class GenericCohortQueries {
       cd.setEncounterTypeList(Arrays.asList(types));
     }
     return cd;
+  }
+
+  /**
+   * Get patients with any coded obs concept value_datetime not null before end date
+   *
+   * @return String
+   */
+  public static String getPatientsWithCodedObsValueDatetimeBeforeEndDate(
+      int encounterType, int conceptId) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + " AND e.location_id = :location AND e.encounter_datetime <= :onOrBefore AND e.encounter_type=${encounterType} "
+            + " AND o.concept_id=${conceptId} AND o.value_datetime is NOT NULL";
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("encounterType", encounterType);
+    map.put("conceptId", conceptId);
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    return stringSubstitutor.replace(query.toString());
   }
 }
