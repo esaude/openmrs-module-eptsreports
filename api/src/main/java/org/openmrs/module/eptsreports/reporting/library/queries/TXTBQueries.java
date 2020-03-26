@@ -1,8 +1,11 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.text.StringSubstitutor;
 
 public class TXTBQueries {
 
@@ -174,18 +177,31 @@ public class TXTBQueries {
    * @param noConcept
    * @return
    */
-  public static String tuberculosisSympots(
+  public static String tuberculosisSymptoms(
       Integer encounterTypeId, Integer tbSymptomsId, Integer yesConcept, Integer noConcept) {
-    return String.format(
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
-            + "ON p.patient_id = e.patient_id "
-            + "INNER JOIN obs o "
-            + "ON e.encounter_id = o.encounter_id "
-            + "WHERE e.location_id = :location AND e.encounter_type = %s "
-            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s)) "
-            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
-            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
-        encounterTypeId, tbSymptomsId, yesConcept, noConcept);
+
+    StringBuilder s = new StringBuilder();
+    s.append("SELECT p.patient_id FROM patient p INNER JOIN encounter e ");
+    s.append("ON p.patient_id = e.patient_id ");
+    s.append("INNER JOIN obs o ");
+    s.append("ON e.encounter_id = o.encounter_id ");
+    s.append("WHERE e.location_id = :location AND e.encounter_type = ${encounterTypeId} ");
+    s.append("AND (o.concept_id = ${tbSymptomsId}  ");
+    s.append("AND (o.value_coded = ${yesConcept} ");
+    if (noConcept != null) {
+      s.append("OR o.value_coded = ${noConcept} ");
+    }
+    s.append(")) ");
+    s.append("AND e.encounter_datetime BETWEEN :startDate AND :endDate ");
+    s.append("AND p.voided = 0 AND e.voided = 0 AND o.voided = 0");
+
+    Map<String, Integer> values = new HashMap<>();
+    values.put("encounterTypeId", encounterTypeId);
+    values.put("tbSymptomsId", tbSymptomsId);
+    values.put("yesConcept", yesConcept);
+    values.put("noConcept", noConcept);
+    StringSubstitutor sb = new StringSubstitutor(values);
+    return sb.replace(s.toString());
   }
 
   /**
