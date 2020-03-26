@@ -142,20 +142,15 @@ public class GenericCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getBaseCohort() {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put(
-        "arvAdultInitialEncounterTypeId",
-        String.valueOf(hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId()));
-    parameters.put(
-        "arvPediatriaInitialEncounterTypeId",
-        String.valueOf(hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId()));
-    parameters.put(
-        "masterCardResumoMensalEncounterTypeId",
-        String.valueOf(hivMetadata.getMasterCardEncounterType().getEncounterTypeId()));
-    parameters.put(
-        "hivCareProgramId", String.valueOf(hivMetadata.getHIVCareProgram().getProgramId()));
-    parameters.put("artProgramId", String.valueOf(hivMetadata.getARTProgram().getProgramId()));
-    return generalSql("baseCohort", BaseQueries.getBaseCohortQuery(parameters));
+    return generalSql(
+        "baseCohort",
+        BaseQueries.getBaseCohortQuery(
+            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getHIVCareProgram().getProgramId(),
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata.getDateOfMasterCardFileOpeningConcept().getConceptId()));
   }
 
   /**
