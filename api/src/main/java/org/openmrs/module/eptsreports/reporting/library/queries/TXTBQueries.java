@@ -713,7 +713,7 @@ public class TXTBQueries {
             + "                 AND e.encounter_datetime >= :startDate "
             + "                 AND e.encounter_datetime <= :endDate "
             + "           GROUP BY p.patient_id "
-            + ") tests"
+            + ") tests "
             + "WHERE tests.patient_id NOT IN (SELECT p.patient_id "
             + "                                   FROM patient p "
             + "                                       INNER JOIN encounter e "
