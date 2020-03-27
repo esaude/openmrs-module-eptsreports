@@ -1,21 +1,11 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
-import org.openmrs.Concept;
-import org.openmrs.EncounterType;
-import org.openmrs.Location;
-import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
-import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.common.SetComparator;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 public class TXTBQueries {
 
@@ -438,36 +428,7 @@ public class TXTBQueries {
             + "WHERE p.voided=0 AND e.encounter_type=%s AND e.voided=0 AND e.encounter_datetime>=:startDate AND e.encounter_datetime<=:endDate AND e.location_id=:location GROUP BY p.patient_id",
         encounterTypeId);
   }
-  
-  /**
-   * Patients who have a {questionConcept} Obs with {valueCodedConcept} value between ${onOrAfter}
-   * and ${onOrBefore}
-   *
-   * @param cohortDefinitionName Name for the cohort definition to return
-   * @param questionConcept The question concept
-   * @param valueCodedConcept The valueCoded concept
-   * @param encounterTypesList The encounter types to consider
-   * @return The cohort definition
-   */
-  public static CohortDefinition getPatientsWithObsBetweenDates(
-      String cohortDefinitionName,
-      Concept questionConcept,
-      Concept valueCodedConcept,
-      List<EncounterType> encounterTypesList) {
 
-    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-    cd.setName(cohortDefinitionName);
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.setQuestion(questionConcept);
-    cd.setValueList(Collections.singletonList(valueCodedConcept));
-    cd.setOperator(SetComparator.IN);
-    cd.setTimeModifier(TimeModifier.ANY);
-    cd.setEncounterTypeList(encounterTypesList);
-    return cd;
-  }
-  
   public static class AbandonedWithoutNotificationParams {
     protected Integer programId;
     protected Integer returnVisitDateConceptId;
