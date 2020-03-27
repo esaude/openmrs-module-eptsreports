@@ -855,7 +855,7 @@ public class ResumoMensalCohortQueries {
             "startDate=${startDate-1m},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
-        "TB", map(tb, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+        "TB", map(tb, "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("A2 AND TB");
     return cd;
