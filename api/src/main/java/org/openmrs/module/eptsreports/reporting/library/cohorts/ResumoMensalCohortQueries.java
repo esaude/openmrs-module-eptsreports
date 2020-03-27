@@ -854,8 +854,7 @@ public class ResumoMensalCohortQueries {
             getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(),
             "startDate=${startDate-1m},endDate=${endDate},location=${location}"));
 
-    cd.addSearch(
-        "TB", map(tb, "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch("TB", map(tb, "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("A2 AND TB");
     return cd;
