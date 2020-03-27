@@ -197,6 +197,7 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setB10Flag(false);
     return cd;
   }
 
@@ -273,6 +274,7 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setB10Flag(false);
     return cd;
   }
 
@@ -592,6 +594,7 @@ public class ResumoMensalCohortQueries {
     cd.setPatientState(hivMetadata.getArtTransferredFromOtherHealthFacilityWorkflowState());
     cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setB10Flag(true);
 
     return cd;
   }
@@ -1673,6 +1676,7 @@ public class ResumoMensalCohortQueries {
     cd.setPatientState2(hivMetadata.getArtTransferredFromOtherHealthFacilityWorkflowState());
     cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setB10Flag(false);
 
     return cd;
   }

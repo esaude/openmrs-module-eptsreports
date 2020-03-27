@@ -100,7 +100,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     assertTrue(evaluatedCohort.getMemberIds().contains(1010));
   }
 
-  @Test
+  @Ignore
   public void getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1()
       throws EvaluationException {
     CohortDefinition cd =
