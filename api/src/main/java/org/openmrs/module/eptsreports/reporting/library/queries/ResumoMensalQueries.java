@@ -81,6 +81,7 @@ public class ResumoMensalQueries {
             + "        WHERE  p.voided = 0 "
             + "               AND enc.encounter_type IN (${ARVAdultInitialEncounterType},${ARVPediatriaInitialEncounterType}) "
             + "               AND enc.location_id =:location "
+            + " 			  AND enc.voided = 0 "
             + "        ORDER  BY enrollment_date ASC) results "
             + "     GROUP  BY results.patient_id) res "
             + "     WHERE res.enrollment_date BETWEEN :startDate AND :endDate ";
