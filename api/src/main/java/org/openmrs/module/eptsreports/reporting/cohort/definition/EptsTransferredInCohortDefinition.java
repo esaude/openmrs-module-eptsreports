@@ -36,7 +36,7 @@ public class EptsTransferredInCohortDefinition extends BaseCohortDefinition {
 
   @ConfigurationProperty private ProgramWorkflowState patientState2;
 
-  @ConfigurationProperty private Boolean B10Flag;
+  @ConfigurationProperty private Boolean b10Flag;
 
   public Date getOnOrBefore() {
     return onOrBefore;
@@ -103,10 +103,10 @@ public class EptsTransferredInCohortDefinition extends BaseCohortDefinition {
   }
 
   public Boolean getB10Flag() {
-    return B10Flag;
+    return this.b10Flag;
   }
 
-  public void setB10Flag(Boolean B10Flag) {
-    this.B10Flag = B10Flag;
+  public void setB10Flag(Boolean b10Flag) {
+    this.b10Flag = b10Flag;
   }
 }
