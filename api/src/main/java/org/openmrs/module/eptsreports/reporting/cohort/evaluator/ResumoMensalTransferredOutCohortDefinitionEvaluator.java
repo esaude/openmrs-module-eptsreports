@@ -58,11 +58,10 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
     q.append("              AND ps.voided = 0 ");
     q.append("              AND ps.state = :transferOutState ");
     if (cd.getOnOrAfter() == null) {
-      q.append("            AND ps.start_date < :onOrBefore ");
+      q.append("            AND ps.start_date <= :onOrBefore ");
     } else {
       q.append("            AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ");
     }
-    q.append("              AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ");
     q.append("            UNION ");
     q.append("            SELECT p.patient_id, ");
     q.append("                   e.encounter_datetime transferout_date ");
@@ -76,7 +75,7 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
     q.append("              AND e.location_id = :location ");
     q.append("              AND e.encounter_type IN (:adultSeg, :masterCard) ");
     if (cd.getOnOrAfter() == null) {
-      q.append("            AND e.encounter_datetime < :onOrBefore ");
+      q.append("            AND e.encounter_datetime <= :onOrBefore ");
     } else {
       q.append("            AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore ");
     }
@@ -109,7 +108,7 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
     q.append("                           AND o.value_datetime ");
     q.append("                             > transferout_date ");
     q.append("                           AND o.value_datetime ");
-    q.append("                             < :onOrBefore)");
+    q.append("                             <= :onOrBefore)");
 
     q.addParameter("art", hivMetadata.getARTProgram().getProgramId());
 
