@@ -351,7 +351,7 @@ public class TXTBCohortQueries {
     CohortDefinition patientswithPulmonaryTbDate =
         TXTBQueries.getPatientsWithObsBetweenDates(
             "Patients with Pulmonary TB Date",
-            hivMetadata.getPulmonaryTBConceptUuid(),
+            tbMetadata.getPulmonaryTB(),
             hivMetadata.getPatientFoundYesConcept(),
             Arrays.asList(hivMetadata.getMasterCardEncounterType()));
     cd.addSearch(
