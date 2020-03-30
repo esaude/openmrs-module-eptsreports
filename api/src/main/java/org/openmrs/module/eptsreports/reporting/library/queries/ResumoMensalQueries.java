@@ -27,7 +27,7 @@ public class ResumoMensalQueries {
   public static String getAllPatientsWithPreArtStartDateLessThanReportingStartDate(
       int encounterType, int conceptId) {
     String query =
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND o.value_datetime IS NOT NULL AND o.concept_id=%d AND o.value_datetime <:startDate";
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=%d AND e.location_id=:location AND o.value_datetime IS NOT NULL AND o.concept_id=%d AND o.value_datetime <=:startDate";
     return String.format(query, encounterType, conceptId);
   }
 
@@ -636,7 +636,7 @@ public class ResumoMensalQueries {
             + "       AND pp.voided = 0 "
             + "       AND pp.location_id = :location "
             + "       AND pp.program_id = ${programId} "
-            + "       AND pp.date_enrolled < :startDate";
+            + "       AND pp.date_enrolled <= :startDate";
 
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put("programId", programId);
