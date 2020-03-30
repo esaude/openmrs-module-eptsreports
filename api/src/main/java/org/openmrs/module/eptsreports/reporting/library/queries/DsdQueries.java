@@ -40,7 +40,7 @@ public class DsdQueries {
         new HivMetadata().getSingleStop().getConceptId(), // pu
         new HivMetadata().getCommunityDispensation().getConceptId(), // dc
         new HivMetadata().getStartDrugs().getConceptId(),
-        new HivMetadata().getContinueRegimen().getConceptId());
+        new HivMetadata().getContinueRegimenConcept().getConceptId());
   }
 
   /**
@@ -67,7 +67,7 @@ public class DsdQueries {
     return String.format(
         query,
         new HivMetadata().getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-        new HivMetadata().getArtDatePickup().getConceptId());
+        new HivMetadata().getArtDatePickupMasterCard().getConceptId());
   }
 
   /**
@@ -360,7 +360,7 @@ public class DsdQueries {
     return String.format(
         query,
         new HivMetadata().getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-        new HivMetadata().getARVPediatriaSeguimentoEncounterType().getEncounterTypeId());
+        new HivMetadata().getPediatriaSeguimentoEncounterType().getEncounterTypeId());
   }
 
   public static String patientsWithNextApptmt6MonthsAfterConsultationDate() {
@@ -382,7 +382,7 @@ public class DsdQueries {
     return String.format(
         query,
         new HivMetadata().getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-        new HivMetadata().getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+        new HivMetadata().getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
         new CommonMetadata().getReturnVisitDateConcept().getConceptId());
   }
 }

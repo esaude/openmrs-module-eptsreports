@@ -226,8 +226,8 @@ public class TxPvlsCohortQueries {
     sql.setQuery(
         ViralLoadQueries.getPatientsHavingRoutineViralLoadTestsUsingFsr(
             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
-            hivMetadata.getHivViralLoadQualitative().getConceptId(),
-            hivMetadata.getHivViralLoadConcept().getConceptId(),
+            hivMetadata.getReasonForRequestingViralLoadConcept().getConceptId(),
+            hivMetadata.getRoutineForRequestingViralLoadConcept().getConceptId(),
             hivMetadata.getUnkownConcept().getConceptId()));
     cd.addSearch(
         "results",

@@ -18,9 +18,13 @@ import static org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPo
 import static org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulationCalculation.KeyPop.PRISONER;
 import static org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulationCalculation.KeyPop.SEX_WORKER;
 import static org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulationCalculation.TYPE;
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
@@ -29,9 +33,11 @@ import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulationCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
+import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.TbQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -66,7 +72,7 @@ public class HivCohortQueries {
         ViralLoadQueries.getPatientsWithViralLoadSuppression(
             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getFsrEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
@@ -91,7 +97,7 @@ public class HivCohortQueries {
         ViralLoadQueries.getPatientsHavingViralLoadInLast12Months(
             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getFsrEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
@@ -137,21 +143,42 @@ public class HivCohortQueries {
   public CohortDefinition getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate() {
     SqlCohortDefinition patientWithHistoricalDrugStartDateObs = new SqlCohortDefinition();
     patientWithHistoricalDrugStartDateObs.setName("patientWithHistoricalDrugStartDateObs");
+
+    Map<String, Integer> map = new HashMap<>();
+
+    map.put(
+        "aRVPharmaciaEncounterType",
+        hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    map.put(
+        "adultoSeguimentoEncounterType",
+        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put(
+        "aRVPediatriaSeguimentoEncounterType",
+        hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    map.put(
+        "masterCardEncounterType", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put(
+        "historicalDrugStartDateConcept",
+        hivMetadata.getHistoricalDrugStartDateConcept().getConceptId());
     String query =
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
-            + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
-            + "WHERE p.voided=0 and e.voided=0 AND o.voided=0 AND e.encounter_type IN (%d, %d, %d,%d) "
-            + "AND o.concept_id=%d "
-            + "AND e.encounter_datetime<=:onOrBefore "
-            + "AND o.value_datetime IS NOT NULL AND o.value_datetime <= :onOrBefore AND e.location_id=:location GROUP BY p.patient_id";
-    patientWithHistoricalDrugStartDateObs.setQuery(
-        String.format(
-            query,
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getHistoricalDrugStartDateConcept().getConceptId()));
+        "SELECT p.patient_id  "
+            + "FROM patient p  "
+            + "    INNER JOIN encounter e  "
+            + "        ON p.patient_id=e.patient_id  "
+            + "    INNER JOIN obs o  "
+            + "        ON e.encounter_id=o.encounter_id  "
+            + "WHERE p.voided=0 and e.voided= 0  "
+            + "    AND o.voided=0  "
+            + "    AND e.encounter_type IN (${aRVPharmaciaEncounterType}, ${adultoSeguimentoEncounterType}, ${aRVPediatriaSeguimentoEncounterType},${masterCardEncounterType})  "
+            + "    AND o.concept_id= ${historicalDrugStartDateConcept}  "
+            + "    AND o.value_datetime IS NOT NULL  "
+            + "    AND o.value_datetime <= :onOrBefore  "
+            + "    AND e.location_id= :location "
+            + "GROUP BY p.patient_id";
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    patientWithHistoricalDrugStartDateObs.setQuery(stringSubstitutor.replace(query));
+
     patientWithHistoricalDrugStartDateObs.addParameter(
         new Parameter("onOrBefore", "onOrBefore", Date.class));
     patientWithHistoricalDrugStartDateObs.addParameter(
@@ -269,6 +296,85 @@ public class HivCohortQueries {
     return getPatientsTransferredOutOrSuspended(suspended, suspendedState);
   }
 
+  /**
+   * Looks for patients enrolled on ART program (program 2=SERVICO TARV - TRATAMENTO), transferred
+   * from other health facility (program workflow state is 29=TRANSFER FROM OTHER FACILITY) or
+   * marked as transferred in via mastercard between start date and end date
+   *
+   * @return CohortDefinition
+   */
+  @DocumentedDefinition(value = "transferredFromOtherHealthFacility")
+  public CohortDefinition getPatientsTransferredFromOtherHealthFacility() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("transferredFromOtherHealthFacility");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    CohortDefinition transferredInViaProgram = getTransferredInViaProgram(true);
+    CohortDefinition mastercard = getTransferredInViaMastercard();
+
+    cd.addSearch("program", mapStraightThrough(transferredInViaProgram));
+    cd.addSearch("mastercard", mapStraightThrough(mastercard));
+
+    cd.setCompositionString("program or mastercard");
+
+    return cd;
+  }
+
+  public CohortDefinition getTransferredInViaProgram(boolean hasStartDate) {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("transferredFromOtherHealthFacility");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    String query =
+        "select p.patient_id from patient p "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=${artProgram}"
+            + " and ps.state=${transferStateId}"
+            + " and ps.start_date=pg.date_enrolled ";
+    if (hasStartDate == true) {
+      query = query + "and ps.start_date between :onOrAfter and :onOrBefore ";
+    } else {
+      query = query + "and ps.start_date <= :onOrBefore ";
+    }
+    query = query + "and location_id= :location group by p.patient_id";
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("artProgram", hivMetadata.getARTProgram().getProgramId());
+    valuesMap.put(
+        "transferStateId",
+        hivMetadata
+            .getTransferredFromOtherHealthFacilityWorkflowState()
+            .getProgramWorkflowStateId());
+
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    cd.setQuery(sub.replace(query));
+
+    return cd;
+  }
+
+  public CohortDefinition getTransferredInViaMastercard() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.setQuery(
+        ResumoMensalQueries.getPatientsTransferredFromAnotherHealthFacilityByEndOfPreviousMonth(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getArtTransferredFromOtherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
+    return cd;
+  }
+
   private CohortDefinition getPatientsTransferredOutOrSuspended(
       int transferedOutOrSuspendedConcept, int patientStateId) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -345,10 +451,10 @@ public class HivCohortQueries {
             hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
             transferedOutOrSuspendedConcept,
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-            hivMetadata.getArtDatePickup().getConceptId()));
+            hivMetadata.getArtDatePickupMasterCard().getConceptId()));
     return cd;
   }
 
@@ -367,7 +473,7 @@ public class HivCohortQueries {
     cd.setQuery(
         TbQueries.getPatientsOnTbTreatmentQuery(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getTBDrugStartDateConcept().getConceptId(),
             hivMetadata.getTBDrugEndDateConcept().getConceptId(),
             hivMetadata.getTBProgram().getProgramId(),
@@ -376,7 +482,7 @@ public class HivCohortQueries {
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getTBTreatmentPlanConcept().getConceptId(),
             hivMetadata.getStartDrugs().getConceptId(),
-            hivMetadata.getContinueRegimen().getConceptId()));
+            hivMetadata.getContinueRegimenConcept().getConceptId()));
 
     return cd;
   }

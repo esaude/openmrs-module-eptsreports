@@ -48,7 +48,7 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
     Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
     EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
     EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
-    EncounterType childFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
+    EncounterType childFollowup = hivMetadata.getPediatriaSeguimentoEncounterType();
     EncounterType masterCard = hivMetadata.getMasterCardEncounterType();
     Concept qualitativeViralLoadResults = hivMetadata.getHivViralLoadQualitative();
 

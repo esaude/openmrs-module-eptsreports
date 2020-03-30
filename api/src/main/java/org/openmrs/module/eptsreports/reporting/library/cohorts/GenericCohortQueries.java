@@ -17,10 +17,12 @@ import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
@@ -28,6 +30,7 @@ import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.AgeOnArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.NewlyOrPreviouslyEnrolledOnARTCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtBeforeDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtOnPeriodCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
@@ -37,11 +40,13 @@ import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.Ti
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,20 +142,15 @@ public class GenericCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getBaseCohort() {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put(
-        "arvAdultInitialEncounterTypeId",
-        String.valueOf(hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId()));
-    parameters.put(
-        "arvPediatriaInitialEncounterTypeId",
-        String.valueOf(hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId()));
-    parameters.put(
-        "masterCardResumoMensalEncounterTypeId",
-        String.valueOf(hivMetadata.getMasterCardEncounterType().getEncounterTypeId()));
-    parameters.put(
-        "hivCareProgramId", String.valueOf(hivMetadata.getHIVCareProgram().getProgramId()));
-    parameters.put("artProgramId", String.valueOf(hivMetadata.getARTProgram().getProgramId()));
-    return generalSql("baseCohort", BaseQueries.getBaseCohortQuery(parameters));
+    return generalSql(
+        "baseCohort",
+        BaseQueries.getBaseCohortQuery(
+            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getHIVCareProgram().getProgramId(),
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata.getDateOfMasterCardFileOpeningConcept().getConceptId()));
   }
 
   /**
@@ -321,10 +321,10 @@ public class GenericCohortQueries {
             hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
             hivMetadata.getPatientHasDiedConcept().getConceptId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-            hivMetadata.getArtDatePickup().getConceptId()));
+            hivMetadata.getArtDatePickupMasterCard().getConceptId()));
 
     return cd;
   }
@@ -401,6 +401,18 @@ public class GenericCohortQueries {
     return cd;
   }
 
+  public CohortDefinition getNewlyOrPreviouslyEnrolledOnART(boolean isNewlyEnrolledOnArtSearch) {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(NewlyOrPreviouslyEnrolledOnARTCalculation.class)
+                .get(0));
+    cd.setName("Newly Or Previously Enrolled On ART");
+    cd.addCalculationParameter("isNewlyEnrolledOnArtSearch", isNewlyEnrolledOnArtSearch);
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    return cd;
+  }
+
   public CohortDefinition hasNumericObs(
       Concept question,
       TimeModifier timeModifier,
@@ -427,12 +439,14 @@ public class GenericCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getPatientsWhoToLostToFollowUp() {
+  public CohortDefinition getPatientsWhoToLostToFollowUp(int numDays) {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.addSearch(
         "31",
-        mapStraightThrough(txCurrCohortQueries.getPatientHavingLastScheduledDrugPickupDate()));
+        mapStraightThrough(
+            txCurrCohortQueries.getPatientHavingLastScheduledDrugPickupDateDaysBeforeEndDate(
+                numDays)));
 
     definition.addSearch(
         "32",
@@ -447,24 +461,61 @@ public class GenericCohortQueries {
   }
 
   /**
-   * Get lost to follow up patients who are not dead, transferred out or stopped treatment
+   * Get patients who have encounter of a specific type within date boundaries
    *
-   * @return @{@link CohortDefinition}
+   * @param encounterType
+   * @retrun CohortDefinition
    */
-  public CohortDefinition getPatientsLostToFollowUpAndNotDeadTransferredOrStoppedTreatment() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName(
-        "Patients who are lost to follow up and not dead, transferred out or stopped treatment");
-
-    cd.addSearch("ltfu", mapStraightThrough(getPatientsWhoToLostToFollowUp()));
-    cd.addSearch("dead", mapStraightThrough(getDeceasedPatients()));
-    cd.addSearch("transferOut", mapStraightThrough(hivCohortQueries.getPatientsTransferredOut()));
-    cd.addSearch(
-        "stoppedTreatment", mapStraightThrough(hivCohortQueries.getPatientsWhoStoppedTreatment()));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-    cd.setCompositionString("ltfu and not (stoppedTreatment or transferOut or dead) ");
-
+  public CohortDefinition getPatientsHavingEncounterWithinDateBoundaries(int encounterType) {
+    // TODO: #hasEncounter should be used here
+    // (https://github.com/esaude/openmrs-module-eptsreports/pull/185#discussion_r370630968)
+    String query =
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE e.voided=0 AND p.voided=0 AND e.encounter_type = %d AND e.encounter_datetime BETWEEN :startDate AND :endDate";
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients having encounter type " + encounterType);
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.setQuery(String.format(query, encounterType));
     return cd;
+  }
+
+  /**
+   * Patients who have an encounter between ${onOrAfter} and ${onOrBefore}
+   *
+   * @param types the encounter types
+   * @return the cohort definition
+   */
+  public CohortDefinition hasEncounter(EncounterType... types) {
+    EncounterCohortDefinition cd = new EncounterCohortDefinition();
+    cd.setName("has encounter between dates");
+    cd.setTimeQualifier(TimeQualifier.ANY);
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    if (types.length > 0) {
+      cd.setEncounterTypeList(Arrays.asList(types));
+    }
+    return cd;
+  }
+
+  /**
+   * Get patients with any coded obs concept value_datetime not null before end date
+   *
+   * @return String
+   */
+  public static String getPatientsWithCodedObsValueDatetimeBeforeEndDate(
+      int encounterType, int conceptId) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + " AND e.location_id = :location AND e.encounter_datetime <= :onOrBefore AND e.encounter_type=${encounterType} "
+            + " AND o.concept_id=${conceptId} AND o.value_datetime is NOT NULL";
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("encounterType", encounterType);
+    map.put("conceptId", conceptId);
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    return stringSubstitutor.replace(query.toString());
   }
 }

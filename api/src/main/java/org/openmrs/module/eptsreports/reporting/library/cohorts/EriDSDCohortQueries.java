@@ -35,7 +35,6 @@ public class EriDSDCohortQueries {
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
   @Autowired private TxNewCohortQueries txNewCohortQueries;
   @Autowired private GenericCohortQueries genericCohortQueries;
-  @Autowired private GenderCohortQueries genderCohorts;
   @Autowired private TbCohortQueries tbCohortQueries;
 
   @Autowired private AgeCohortQueries ageCohortQueries;
@@ -129,7 +128,7 @@ public class EriDSDCohortQueries {
                 SetComparator.IN,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+                    hivMetadata.getPediatriaSeguimentoEncounterType()),
                 Arrays.asList(
                     hivMetadata.getNeutropenia(),
                     hivMetadata.getPancreatitis(),
@@ -231,7 +230,7 @@ public class EriDSDCohortQueries {
                 null,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
@@ -246,7 +245,7 @@ public class EriDSDCohortQueries {
                 null,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
@@ -261,7 +260,7 @@ public class EriDSDCohortQueries {
                 null,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
@@ -298,7 +297,7 @@ public class EriDSDCohortQueries {
                 null,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
@@ -313,7 +312,7 @@ public class EriDSDCohortQueries {
                 null,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
@@ -431,7 +430,7 @@ public class EriDSDCohortQueries {
     sql.setQuery(
         DsdQueries.patientsWithTheRecentViralLoadEncounter(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
@@ -643,7 +642,7 @@ public class EriDSDCohortQueries {
             "scheduledPatients",
             Context.getRegisteredComponents(NextAndPrevDatesCalculation.class).get(0));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Location.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addCalculationParameter("conceptId", conceptId);
     cd.addCalculationParameter("encounterTypes", encounterTypes);
     cd.addCalculationParameter("upperBound", upperBound);
@@ -686,7 +685,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingN2Stable() {
+  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingDTStable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("N2 Patients who are NOT pregnant and NOT breastfeeding");
@@ -715,7 +714,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingN2Unstable() {
+  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingDTUnstable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("N2 Patients who are NOT pregnant and NOT breastfeeding");
@@ -807,7 +806,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getRapidFlow());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugsConcept());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
     return cd;
   }
 
@@ -816,7 +815,7 @@ public class EriDSDCohortQueries {
     int upperBound = 190;
     Concept returnVisitDate = hivMetadata.getReturnVisitDateConcept();
     List<EncounterType> encounterTypes = new ArrayList<>();
-    encounterTypes.add(hivMetadata.getARVPediatriaSeguimentoEncounterType());
+    encounterTypes.add(hivMetadata.getPediatriaSeguimentoEncounterType());
     encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
     return getPatientsScheduled(returnVisitDate, encounterTypes, upperBound, lowerBound);
   }
@@ -898,7 +897,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingN3Unstable() {
+  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingFRUnstable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("N3 Patients who are NOT pregnant and NOT breastfeeding");
@@ -938,7 +937,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingN3Stable() {
+  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingFRStable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("N3 Patients who are NOT pregnant and NOT breastfeeding");
@@ -1080,7 +1079,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingN4Stable() {
+  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingGAACStable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("N4 Patients who are NOT pregnant and NOT breastfeeding");
@@ -1114,7 +1113,7 @@ public class EriDSDCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingN4Unstable() {
+  public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingGAACUnstable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("N4 Patients who are NOT pregnant and NOT breastfeeding");
@@ -1197,7 +1196,7 @@ public class EriDSDCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getFamilyApproach().getConceptId(),
             hivMetadata.getStartDrugs().getConceptId(),
-            hivMetadata.getContinueRegimen().getConceptId()));
+            hivMetadata.getContinueRegimenConcept().getConceptId()));
 
     return cd;
   }
@@ -1303,7 +1302,7 @@ public class EriDSDCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getCommunityDispensation().getConceptId(),
             hivMetadata.getStartDrugs().getConceptId(),
-            hivMetadata.getContinueRegimen().getConceptId()));
+            hivMetadata.getContinueRegimenConcept().getConceptId()));
 
     return cd;
   }
@@ -1404,7 +1403,7 @@ public class EriDSDCohortQueries {
     cd.setQuery(
         DsdQueries.getPatientsOnSarcomaKarposi(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getOtherDiagnosis().getConceptId(),
             hivMetadata.getKaposiSarcomaConcept().getConceptId()));
 
@@ -1421,7 +1420,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getGaac());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugsConcept());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
     return cd;
   }
 
@@ -1435,6 +1434,124 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getGaac());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getCompletedConcept());
+    return cd;
+  }
+
+  @DocumentedDefinition(
+      "Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in CA")
+  public CohortDefinition getPatientsWhoAreActiveAndParticipatingInAccessionClubs() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition txCurr = txCurrCohortQueries.getTxCurrCompositionCohort("TX_CURR", true);
+    CohortDefinition startOrContinueCA = getPatientsWithStartOrContinueCA();
+
+    String mappings = "onOrBefore=${endDate},location=${location}";
+    cd.addSearch("txCurr", EptsReportUtils.map(txCurr, mappings));
+
+    String caMappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
+    cd.addSearch("startOrContinueCA", EptsReportUtils.map(startOrContinueCA, caMappings));
+
+    cd.setCompositionString("txCurr AND startOrContinueCA");
+
+    return cd;
+  }
+
+  @DocumentedDefinition(
+      "Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in CA and stable")
+  public CohortDefinition getPatientsWhoAreActiveParticipatingInAccessionClubsAndStable() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition ca = getPatientsWhoAreActiveAndParticipatingInAccessionClubs();
+    CohortDefinition stable = getPatientsWhoAreStable();
+
+    cd.addSearch("ca", mapStraightThrough(ca));
+    cd.addSearch("stable", mapStraightThrough(stable));
+
+    cd.setCompositionString("ca AND stable");
+
+    return cd;
+  }
+
+  @DocumentedDefinition(
+      "Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in CA and unstable")
+  public CohortDefinition getPatientsWhoAreActiveParticipatingInAccessionClubsAndUnstable() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition ca = getPatientsWhoAreActiveAndParticipatingInAccessionClubs();
+    CohortDefinition stable = getPatientsWhoAreStable();
+
+    cd.addSearch("ca", mapStraightThrough(ca));
+    cd.addSearch("stable", mapStraightThrough(stable));
+
+    cd.setCompositionString("ca NOT stable");
+
+    return cd;
+  }
+
+  @DocumentedDefinition(
+      "Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in CA and stable not pregnant or breastfeeding")
+  public CohortDefinition getCAStableNonPregnantNonBreastfeeding() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition caStable = getPatientsWhoAreActiveParticipatingInAccessionClubsAndUnstable();
+    CohortDefinition pregnant = txNewCohortQueries.getPatientsPregnantEnrolledOnART();
+    CohortDefinition breastfeeding =
+        txNewCohortQueries.getPatientsWhoGaveBirthWithinReportingPeriod();
+
+    cd.addSearch("caStable", mapStraightThrough(caStable));
+    cd.addSearch("pregnant", mapStraightThrough(pregnant));
+    cd.addSearch("breastfeeding", mapStraightThrough(breastfeeding));
+
+    cd.setCompositionString("caStable NOT (pregnant OR breastfeeding)");
+
+    return cd;
+  }
+
+  @DocumentedDefinition(
+      "Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in CA and unstable not pregnant or breastfeeding")
+  public CohortDefinition getCAUnstableNonPregnantNonBreastfeeding() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition caUnstable = getPatientsWhoAreActiveParticipatingInAccessionClubsAndUnstable();
+    CohortDefinition pregnant = txNewCohortQueries.getPatientsPregnantEnrolledOnART();
+    CohortDefinition breastfeeding =
+        txNewCohortQueries.getPatientsWhoGaveBirthWithinReportingPeriod();
+
+    cd.addSearch("caUnstable", mapStraightThrough(caUnstable));
+    cd.addSearch("pregnant", mapStraightThrough(pregnant));
+    cd.addSearch("breastfeeding", mapStraightThrough(breastfeeding));
+
+    cd.setCompositionString("caUnstable NOT (pregnant OR breastfeeding)");
+
+    return cd;
+  }
+
+  private CohortDefinition getPatientsWithStartOrContinueCA() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getAccessionClubs());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getStartDrugsConcept());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
     return cd;
   }
 
@@ -1650,7 +1767,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getQuarterlyDispensation());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugsConcept());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
     return cd;
   }
 
@@ -1766,7 +1883,7 @@ public class EriDSDCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getSingleStop().getConceptId(),
             hivMetadata.getStartDrugs().getConceptId(),
-            hivMetadata.getContinueRegimen().getConceptId()));
+            hivMetadata.getContinueRegimenConcept().getConceptId()));
     return sql;
   }
 
@@ -2145,7 +2262,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getQuarterlyDispensation());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugs());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
 
     return cd;
   }
@@ -2237,7 +2354,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getRapidFlow());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugs());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
 
     return cd;
   }
@@ -2315,7 +2432,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getGaac());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugs());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
 
     return cd;
   }
