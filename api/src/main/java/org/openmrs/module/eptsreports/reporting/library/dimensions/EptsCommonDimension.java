@@ -135,6 +135,10 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "20+", ageDimensionCohort.createXtoYAgeCohort("patients with age over 20 years", 20, null));
 
+    dim.addCohortDefinition(
+        "10-19",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 10 and 19", 10, 19));
+
     return dim;
   }
 
@@ -272,13 +276,12 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "new-on-art",
         EptsReportUtils.map(
-            tbPrevCohortQueries.getNewOnArt(),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+            tbPrevCohortQueries.getNewOnArt(), "onOrBefore=${onOrBefore},location=${location}"));
     dim.addCohortDefinition(
         "previously-on-art",
         EptsReportUtils.map(
             tbPrevCohortQueries.getPreviouslyOnArt(),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+            "onOrBefore=${onOrBefore},location=${location}"));
     return dim;
   }
 

@@ -14,6 +14,7 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,18 +44,45 @@ public class TxMlCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition missedAppointment = getAllPatientsWhoMissedNextAppointment();
-    CohortDefinition noScheduled =
-        txCurrCohortQueries.getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup();
+    CohortDefinition noScheduled = getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup();
     CohortDefinition startedArt = genericCohortQueries.getStartedArtBeforeDate(false);
 
     cd.addSearch("missedAppointment", Mapped.mapStraightThrough(missedAppointment));
 
     String mappings = "onOrBefore=${endDate},location=${location}";
-    cd.addSearch("noScheduled", EptsReportUtils.map(noScheduled, mappings));
+    String mappings2 = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+    cd.addSearch("noScheduled", EptsReportUtils.map(noScheduled, mappings2));
     cd.addSearch("startedArt", EptsReportUtils.map(startedArt, mappings));
 
     cd.setCompositionString("(missedAppointment OR noScheduled) AND startedArt");
     return cd;
+  }
+  /**
+   * 14. All patients who do not have the next scheduled drug pick up date (Fila) and next scheduled
+   * consultation date (Ficha de Seguimento or Ficha Clinica – Master Card) and ART Pickup date
+   * (Recepção – Levantou ARV).
+   *
+   * @return
+   */
+  public CohortDefinition getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup() {
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("patientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup");
+
+    definition.setQuery(
+        TxMlQueries.getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getReturnVisitDateConcept().getConceptId(),
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+            hivMetadata.getArtDatePickupMasterCard().getConceptId()));
+
+    definition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
   }
 
   /**
@@ -86,7 +114,7 @@ public class TxMlCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "missedAppointmentLessTransfers AND dead AND NOT patientWhoAfterMostRecentDateHaveDrugPickupOrConsultation");
+        "(missedAppointmentLessTransfers AND dead) AND NOT patientWhoAfterMostRecentDateHaveDrugPickupOrConsultation");
 
     return cd;
   }
@@ -126,7 +154,7 @@ public class TxMlCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "missedAppointmentLessTransfers AND refusedOrStoppedTreatment AND NOT (dead OR transferOut)");
+        "(missedAppointmentLessTransfers AND refusedOrStoppedTreatment) AND NOT (dead OR transferOut)");
 
     return cd;
   }
@@ -166,7 +194,7 @@ public class TxMlCohortQueries {
             getDeadPatientsComposition(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("missedAppointmentLessTransfers AND transferOut AND NOT dead ");
+    cd.setCompositionString("(missedAppointmentLessTransfers AND transferOut) AND NOT dead ");
 
     return cd;
   }
@@ -182,11 +210,6 @@ public class TxMlCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "missedAppointmentLessTransfers",
-        EptsReportUtils.map(
-            getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
         "patientsNotFound",
         EptsReportUtils.map(
             getPatientsTracedAndNotFound(),
@@ -196,14 +219,8 @@ public class TxMlCohortQueries {
         EptsReportUtils.map(
             getPatientTracedAndFound(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "dead",
-        EptsReportUtils.map(
-            getDeadPatientsComposition(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString(
-        "missedAppointmentLessTransfers AND (patientsNotFound AND NOT patientsFound) AND NOT dead");
+    cd.setCompositionString("patientsNotFound AND NOT patientsFound");
 
     return cd;
   }
@@ -220,11 +237,6 @@ public class TxMlCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "missedAppointmentLessTransfers",
-        EptsReportUtils.map(
-            getPatientsWhoMissedNextAppointmentAndNotTransferredOut(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
         "withoutVisitCard",
         EptsReportUtils.map(
             getPatientsWithoutVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(),
@@ -234,14 +246,7 @@ public class TxMlCohortQueries {
         EptsReportUtils.map(
             getPatientsWithVisitCardAndWithObs(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "dead",
-        EptsReportUtils.map(
-            getDeadPatientsComposition(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString(
-        "missedAppointmentLessTransfers AND (withoutVisitCard OR NOT withVisitCardandWithObs) AND NOT dead");
+    cd.setCompositionString("withoutVisitCard OR NOT withVisitCardandWithObs");
 
     return cd;
   }
@@ -296,7 +301,7 @@ public class TxMlCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "missedAppointment AND ((untracedPatients OR tracedPatients) AND C1) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
+        "(missedAppointment AND ((untracedPatients OR tracedPatients) AND C1)) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
 
     return cd;
   }
@@ -337,7 +342,7 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
-            getDeadPatientsComposition(),
+            getPatientsWhoMissedNextAppointmentAndDiedDuringReportingPeriod(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "transferredOut",
@@ -372,7 +377,7 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "LeftARTProgramBeforeOrOnEndDate",
         EptsReportUtils.map(
-            txCurrCohortQueries.getPatientsWhoLeftARTProgramBeforeOrOnEndDate(),
+            getPatientsTransferedOutInProgramBeforeOrOnEndDate(),
             "onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -446,8 +451,7 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "deadByPatientProgramState",
         EptsReportUtils.map(
-            txCurrCohortQueries
-                .getPatientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate(),
+            getPatientsDeadInProgramStateByReportingEndDate(),
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "deadByPatientDemographics",
@@ -505,7 +509,7 @@ public class TxMlCohortQueries {
         TxMlQueries.getPatientsWithVisitCardAndWithObs(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
@@ -524,7 +528,7 @@ public class TxMlCohortQueries {
             hivMetadata.getWhoGaveInformationConcept().getConceptId(),
             hivMetadata.getCardDeliveryDateConcept().getConceptId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-            hivMetadata.getArtDatePickup().getConceptId()));
+            hivMetadata.getArtDatePickupMasterCard().getConceptId()));
 
     return sqlCohortDefinition;
   }
@@ -548,14 +552,14 @@ public class TxMlCohortQueries {
         TxMlQueries.getPatientsWithoutVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
             hivMetadata.getVisitaApoioReintegracaoParteAEncounterType().getEncounterTypeId(),
             hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-            hivMetadata.getArtDatePickup().getConceptId()));
+            hivMetadata.getArtDatePickupMasterCard().getConceptId()));
 
     return sqlCohortDefinition;
   }
@@ -579,9 +583,9 @@ public class TxMlCohortQueries {
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-            hivMetadata.getArtDatePickup().getConceptId()));
+            hivMetadata.getArtDatePickupMasterCard().getConceptId()));
   }
 
   /**
@@ -637,10 +641,10 @@ public class TxMlCohortQueries {
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-            hivMetadata.getArtDatePickup().getConceptId()));
+            hivMetadata.getArtDatePickupMasterCard().getConceptId()));
 
     return sql;
   }
@@ -658,7 +662,7 @@ public class TxMlCohortQueries {
         TxMlQueries.getPatientsTracedWithVisitCard(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
@@ -669,7 +673,7 @@ public class TxMlCohortQueries {
             hivMetadata.getBuscaConcept().getConceptId(),
             hivMetadata.getPatientFoundConcept().getConceptId(),
             hivMetadata.getNoConcept().getConceptId(),
-            hivMetadata.getArtDatePickup().getConceptId()));
+            hivMetadata.getArtDatePickupMasterCard().getConceptId()));
 
     return sqlCohortDefinition;
   }
@@ -687,7 +691,7 @@ public class TxMlCohortQueries {
         TxMlQueries.getPatientsTracedWithVisitCard(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
@@ -698,7 +702,7 @@ public class TxMlCohortQueries {
             hivMetadata.getBuscaConcept().getConceptId(),
             hivMetadata.getPatientFoundConcept().getConceptId(),
             hivMetadata.getPatientFoundYesConcept().getConceptId(),
-            hivMetadata.getArtDatePickup().getConceptId()));
+            hivMetadata.getArtDatePickupMasterCard().getConceptId()));
 
     return sqlCohortDefinition;
   }
@@ -756,13 +760,13 @@ public class TxMlCohortQueries {
         hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
     map.put(
         "pediatriaSeguimentoEncounterType",
-        hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId());
+        hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
     map.put(
         "pharmaciaEncounterType", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
     map.put(
         "masterCardDrugPickupEncounterType",
         hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
-    map.put("artDatePickup", hivMetadata.getArtDatePickup().getConceptId());
+    map.put("artDatePickup", hivMetadata.getArtDatePickupMasterCard().getConceptId());
     map.put(
         "masterCardEncounterType", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     map.put(
@@ -869,5 +873,47 @@ public class TxMlCohortQueries {
     sqlCohortDefinition.setQuery(mappedQuery);
 
     return sqlCohortDefinition;
+  }
+  /**
+   * All deaths registered in Patient Program State by reporting end date Patient_program.program_id
+   * =2 = SERVICO TARV-TRATAMENTO and Patient_State.state = 10 (Died) and Patient_State.start_date
+   * <= endDate Patient_state.end_date is null
+   */
+  @DocumentedDefinition(value = "patientsDeadInProgramStateByReportingEndDate")
+  public CohortDefinition getPatientsDeadInProgramStateByReportingEndDate() {
+
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("patientsDeadInProgramStateByReportingEndDate");
+
+    definition.setQuery(
+        TxMlQueries.getPatientsListBasedOnProgramAndStateByReportingEndDate(
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId()));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
+  }
+  /**
+   * @return Cohort of patients who left ART program before or on end date(4). Includes: transferred
+   *     to, (patient state 7)
+   */
+  @DocumentedDefinition(value = "leftARTProgramBeforeOrOnEndDate")
+  public CohortDefinition getPatientsTransferedOutInProgramBeforeOrOnEndDate() {
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("leftARTProgramBeforeOrOnEndDate");
+
+    definition.setQuery(
+        TxMlQueries.getPatientsListBasedOnProgramAndStateByReportingEndDate(
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId()));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
   }
 }

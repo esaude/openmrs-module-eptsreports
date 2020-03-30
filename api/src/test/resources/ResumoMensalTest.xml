@@ -120,6 +120,13 @@
                      uuid="087391f3-5895-11ea-8247-a0a4c5d1c75c"/>
 
 
+	<global_property property="@MODULE_ID@.dateOfMasterCardFileOpeningConceptUuid"
+			property_value="68d65d0c-8fee-456b-8e95-caed990351e1"
+			description="Master Card File Open Date Concept"
+
+			uuid="087691f3-5895-18ea-8247-a0a4c5d1c75c"/>
+
+
 	<global_property property="eptsreports.suspendedTreatmentConceptUuid" property_value="e1de1fee-1d5f-11e0-b929-000c29ad1d07" description="UUID for the SUSPENDER TRATAMENTO concept" uuid="5bd1b98b-5972-11ea-8247-a0a4c5d1c75c" />
 
 	<global_property property="eptsreports.preArtStartDate" property_value="f69b1fe0-a657-4225-a996-20b599132508" description="UUID for the PRE-ART START DATE concept" uuid="26b9f568-7d4f-4496-b372-939978af7ddc" />
@@ -205,6 +212,8 @@
                      description="UUID for the TRANSFERIDO PARA concept" uuid="77e584e7-5a09-11ea-8247-a0a4c5d1c75c"/>
 					 
 	<concept concept_id="9999" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2012-02-27 11:30:21" uuid="f69b1fe0-a657-4225-a996-20b599132508" />
+
+	<concept concept_id="23891" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1" date_created="2019-08-08 14:51:38" changed_by="1" date_changed="2019-08-08 14:51:38" uuid="68d65d0c-8fee-456b-8e95-caed990351e1" />
 
 	<concept concept_id="8888" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2012-02-27 11:30:21" uuid="4f139c0a-9843-4dc4-b3e5-5aa00812e605" />
 

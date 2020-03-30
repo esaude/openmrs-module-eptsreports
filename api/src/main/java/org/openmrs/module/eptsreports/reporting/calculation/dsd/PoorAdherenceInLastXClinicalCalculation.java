@@ -35,7 +35,7 @@ public class PoorAdherenceInLastXClinicalCalculation extends AbstractPatientCalc
     List<Encounter> finalListWithNoOption = new ArrayList<>();
 
     EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
-    EncounterType childFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
+    EncounterType childFollowup = hivMetadata.getPediatriaSeguimentoEncounterType();
 
     CalculationResultMap allEncountersMap =
         ePTSCalculationService.allEncounters(

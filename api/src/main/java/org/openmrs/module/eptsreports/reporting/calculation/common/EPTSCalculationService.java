@@ -80,6 +80,51 @@ public class EPTSCalculationService {
   }
 
   /**
+   * Evaluate for obs based on the time modifier
+   *
+   * @param concept
+   * @param encounterTypes
+   * @param cohort
+   * @param locationList
+   * @param valueCodedList
+   * @param timeQualifier
+   * @param startDate
+   * @param context
+   * @return
+   */
+  public CalculationResultMap getObs(
+      Concept concept,
+      List<EncounterType> encounterTypes,
+      Collection<Integer> cohort,
+      List<Location> locationList,
+      List<Concept> valueCodedList,
+      TimeQualifier timeQualifier,
+      Date startDate,
+      Date endDate,
+      PatientCalculationContext context) {
+    ObsForPersonDataDefinition def = new ObsForPersonDataDefinition();
+    def.setName(timeQualifier.name() + "obs");
+    def.setWhich(timeQualifier);
+    def.setQuestion(concept);
+    if (encounterTypes != null) {
+      def.setEncounterTypeList(encounterTypes);
+    }
+    if (startDate != null) {
+      def.setOnOrAfter(startDate);
+    }
+    if (endDate != null) {
+      def.setOnOrBefore(endDate);
+    }
+    if (valueCodedList != null && !valueCodedList.isEmpty()) {
+      def.setValueCodedList(valueCodedList);
+    }
+    if (!locationList.isEmpty()) {
+      def.setLocationList(locationList);
+    }
+    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
+  }
+
+  /**
    * Evaluates the last patient state for the specified programWorkflowState
    *
    * @param cohort
@@ -289,6 +334,7 @@ public class EPTSCalculationService {
       boolean sortByDatetime,
       Date valueDateTimeOnOrAfter,
       Date valueDateTimeOnOrBefore,
+      List<EncounterType> encounterTypeList,
       Collection<Integer> cohort,
       PatientCalculationContext context) {
     JembiObsDefinition definition = new JembiObsDefinition("JembiObsDefinition");
@@ -356,7 +402,7 @@ public class EPTSCalculationService {
 
   public CalculationResultMap allObservations(
       Concept question,
-      Concept answer,
+      List<Concept> answers,
       List<EncounterType> encounterTypes,
       Location location,
       Collection<Integer> cohort,
@@ -365,7 +411,7 @@ public class EPTSCalculationService {
     definition.setName("all obs");
     definition.setEncounterTypeList(encounterTypes);
     definition.setQuestion(question);
-    definition.setValueCodedList(Arrays.asList(answer));
+    definition.setValueCodedList(answers);
     definition.setLocationList(Arrays.asList(location));
     definition.setWhich(TimeQualifier.ANY);
     return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
