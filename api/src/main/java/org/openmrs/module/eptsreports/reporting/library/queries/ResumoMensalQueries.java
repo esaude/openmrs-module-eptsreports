@@ -610,7 +610,7 @@ public class ResumoMensalQueries {
     query.append("                    ) most_recent   ");
     query.append("                GROUP BY most_recent.patient_id   ");
     if (untilEndDate == true) {
-      query.append("                HAVING final_encounter_date <= :date   ");
+      query.append("                HAVING final_encounter_date < :date   ");
     } else {
       query.append("                HAVING final_encounter_date < :date   ");
     }
