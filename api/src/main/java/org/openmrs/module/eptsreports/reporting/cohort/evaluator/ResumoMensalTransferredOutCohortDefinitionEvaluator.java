@@ -84,7 +84,7 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
     q.append("              AND o.value_coded = :transfOutConcept ");
     q.append("            UNION ");
     q.append("            SELECT p.patient_id, ");
-    q.append("                   e.encounter_datetime transferout_date ");
+    q.append("                    o.obs_datetime transferout_date ");
     q.append("            FROM patient p ");
     q.append("                     JOIN encounter e ");
     q.append("                          ON p.patient_id = e.patient_id ");
