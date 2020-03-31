@@ -589,12 +589,12 @@ public class TXTBCohortQueries {
                 hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
                 hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getExameBasiloscopiaConcept().getConceptId(),
-                hivMetadata.getTbGenexpertTest().getConceptId(),
-                hivMetadata.getTbLamTest().getConceptId(),
-                hivMetadata.getCultureTest().getConceptId(),
-                hivMetadata.getPositiveConcept().getConceptId(),
-                hivMetadata.getNegativeConcept().getConceptId()));
+                hivMetadata.getResultForBasiloscopia().getConceptId(),
+                tbMetadata.getTBGenexpertTest().getConceptId(),
+                tbMetadata.getTestTBLAM().getConceptId(),
+                tbMetadata.getCultureTest().getConceptId(),
+                commonMetadata.getPositive().getConceptId(),
+                commonMetadata.getNegative().getConceptId()));
     addGeneralParameters(cd);
     return cd;
   }
@@ -613,9 +613,9 @@ public class TXTBCohortQueries {
             TXTBQueries.getPatientsWhoHaveGeneXpert(
                 hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getTbGenexpertTest().getConceptId(),
-                hivMetadata.getPositiveConcept().getConceptId(),
-                hivMetadata.getNegativeConcept().getConceptId()));
+                tbMetadata.getTBGenexpertTest().getConceptId(),
+                commonMetadata.getPositive().getConceptId(),
+                commonMetadata.getNegative().getConceptId()));
     addGeneralParameters(cd);
     return cd;
   }
@@ -632,10 +632,10 @@ public class TXTBCohortQueries {
             TXTBQueries.getSmearMicroscopyOnly(
                 hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getExameBasiloscopiaConcept().getConceptId(),
-                hivMetadata.getTbGenexpertTest().getConceptId(),
-                hivMetadata.getPositiveConcept().getConceptId(),
-                hivMetadata.getNegativeConcept().getConceptId()));
+                hivMetadata.getResultForBasiloscopia().getConceptId(),
+                tbMetadata.getTBGenexpertTest().getConceptId(),
+                commonMetadata.getPositive().getConceptId(),
+                commonMetadata.getNegative().getConceptId()));
     addGeneralParameters(cd);
     return cd;
   }
@@ -653,12 +653,12 @@ public class TXTBCohortQueries {
                 hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
                 hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getExameBasiloscopiaConcept().getConceptId(),
-                hivMetadata.getTbGenexpertTest().getConceptId(),
-                hivMetadata.getTbLamTest().getConceptId(),
-                hivMetadata.getCultureTest().getConceptId(),
-                hivMetadata.getPositiveConcept().getConceptId(),
-                hivMetadata.getNegativeConcept().getConceptId()));
+                hivMetadata.getResultForBasiloscopia().getConceptId(),
+                tbMetadata.getTBGenexpertTest().getConceptId(),
+                tbMetadata.getTestTBLAM().getConceptId(),
+                tbMetadata.getCultureTest().getConceptId(),
+                commonMetadata.getPositive().getConceptId(),
+                commonMetadata.getNegative().getConceptId()));
     addGeneralParameters(cd);
     return cd;
   }
@@ -680,12 +680,12 @@ public class TXTBCohortQueries {
             TXTBQueries.getPositiveResultsReturned(
                 hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getExameBasiloscopiaConcept().getConceptId(),
-                hivMetadata.getTbGenexpertTest().getConceptId(),
-                hivMetadata.getTbLamTest().getConceptId(),
-                hivMetadata.getCultureTest().getConceptId(),
-                hivMetadata.getPositiveConcept().getConceptId(),
-                hivMetadata.getNegativeConcept().getConceptId()));
+                hivMetadata.getResultForBasiloscopia().getConceptId(),
+                tbMetadata.getTBGenexpertTest().getConceptId(),
+                tbMetadata.getTestTBLAM().getConceptId(),
+                tbMetadata.getCultureTest().getConceptId(),
+                commonMetadata.getPositive().getConceptId(),
+                commonMetadata.getNegative().getConceptId()));
     addGeneralParameters(cd);
     return cd;
   }
