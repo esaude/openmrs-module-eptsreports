@@ -25,106 +25,88 @@ public class TxMlQueries {
     valuesMap.put("masterCardDrugPickupEncounterType", masterCardDrugPickupEncounterType);
     valuesMap.put("artPickupDateMasterCardConcept", artPickupDateMasterCardConcept);
     String query =
-        "SELECT "
-            + "	patient_id "
-            + "FROM "
-            + "("
-            + "	SELECT "
-            + "		pp.patient_id, MAX(pp.return_date) AS return_date"
-            + "	FROM"
-            + "	("
-            + "		SELECT "
-            + "			p.patient_id, "
-            + "			o.value_datetime AS return_date,"
-            + "			e.encounter_id"
-            + "		FROM patient p "
-            + "		INNER JOIN encounter e ON e.patient_id = p.patient_id"
-            + "		INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
-            + "		WHERE "
-            + "			p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
-            + "			AND e.encounter_type IN (${adultoSequimentoEncounterType},${pediatriaSeguimentoEncounterType}) "
-            + "			AND o.concept_id = ${returnVisitDateConcept} "
-            + "			AND e.encounter_datetime <=:endDate AND e.location_id=:location "
-            + "		UNION"
-            + "		SELECT "
-            + "			p.patient_id, "
-            + "			o.value_datetime AS return_date,"
-            + "			e.encounter_id"
-            + "		FROM patient p "
-            + "		INNER JOIN encounter e ON e.patient_id = p.patient_id"
-            + "		INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
-            + "		WHERE "
-            + "			p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
-            + "			AND e.encounter_type IN (${pharmacyEncounterType}) "
-            + "			AND o.concept_id = ${returnVisitDateForDrugsConcept} "
-            + "			AND e.encounter_datetime <=:endDate AND e.location_id=:location "
-            + "		UNION"
-            + "		SELECT"
-            + "			p.patient_id, "
-            + "			DATE_ADD(o.value_datetime, INTERVAL 30 DAY) AS return_date,"
-            + "			e.encounter_id			"
-            + "		FROM patient p"
-            + "		INNER JOIN encounter e ON e.patient_id = p.patient_id"
-            + "		INNER JOIN obs o ON o.encounter_id = e.encounter_id"
-            + "		WHERE"
-            + "			p.voided = 0 AND e.voided = 0 AND o.voided = 0"
-            + "			AND e.encounter_type = ${masterCardDrugPickupEncounterType} "
-            + "			AND o.concept_id = ${artPickupDateMasterCardConcept}"
-            + "			AND o.value_datetime <=:endDate AND e.location_id=:location "
-            + "	) pp"
-            + "	INNER JOIN ("
-            + "		SELECT p.patient_id, "
-            + "			("
-            + "				SELECT "
-            + "					e.encounter_id "
-            + "				FROM encounter e"
-            + "				INNER JOIN obs o ON e.encounter_id = o.encounter_id"
-            + "				WHERE "
-            + "					e.patient_id = p.patient_id"
-            + "					AND e.voided = 0"
-            + "					AND o.voided = 0"
-            + "					AND e.encounter_datetime <= :endDate"
-            + "					AND e.encounter_type IN (${adultoSequimentoEncounterType},${pediatriaSeguimentoEncounterType})"
-            + "				ORDER BY e.encounter_datetime DESC"
-            + "				LIMIT 1"
-            + "			) last_cl_encounter,"
-            + "			("
-            + "				SELECT "
-            + "					e.encounter_id "
-            + "				FROM encounter e"
-            + "				INNER JOIN obs o ON e.encounter_id = o.encounter_id"
-            + "				WHERE "
-            + "					e.patient_id = p.patient_id"
-            + "					AND e.voided = 0"
-            + "					AND o.voided = 0"
-            + "					AND e.encounter_datetime <= :endDate"
-            + "					AND e.encounter_type = ${pharmacyEncounterType}"
-            + "				ORDER BY e.encounter_datetime DESC"
-            + "				LIMIT 1"
-            + "			) AS latest_pharm_encounter_id,"
-            + "			("
-            + "					SELECT "
-            + "						e.encounter_id "
-            + "					FROM encounter e"
-            + "					INNER JOIN obs o ON e.encounter_id = o.encounter_id"
-            + "					WHERE "
-            + "						e.patient_id = p.patient_id"
-            + "						AND e.voided = 0"
-            + "						AND o.voided = 0"
-            + "						AND o.value_datetime <= :endDate"
-            + "						AND e.encounter_type = ${masterCardDrugPickupEncounterType}"
-            + "						AND o.concept_id = ${artPickupDateMasterCardConcept}"
-            + "					ORDER BY o.value_datetime DESC"
-            + "					LIMIT 1"
-            + "			) AS latest_dp_encounter_id				"
-            + "		FROM patient p"
-            + "	) last_encounters ON last_encounters.patient_id = pp.patient_id"
-            + "	WHERE pp.encounter_id IN (last_cl_encounter, latest_pharm_encounter_id, latest_dp_encounter_id)"
-            + "	GROUP BY pp.patient_id"
-            + ")all_patients "
-            + " WHERE "
-            + "	DATE_ADD(return_date, INTERVAL 28 DAY)  >= DATE_ADD(:startDate, INTERVAL -1 DAY) "
-            + "	AND DATE_ADD(return_date, INTERVAL 28 DAY) < :endDate";
+        "  SELECT final.patient_id    " + 
+        "             from(    " + 
+        "                 SELECT    " + 
+        "                     most_recent.patient_id, Max(most_recent.value_datetime) final_encounter_date    " + 
+        "                 FROM   (SELECT fila.patient_id, o.value_datetime from (   " + 
+        "                             SELECT enc.patient_id,    " + 
+        "                                 Max(obs.value_datetime)  obs_datetime   " + 
+        "                             FROM   patient pa    " + 
+        "                                 inner join encounter enc    " + 
+        "                                     ON enc.patient_id =  pa.patient_id    " + 
+        "                                 inner join obs obs    " + 
+        "                                     ON obs.encounter_id = enc.encounter_id    " + 
+        "                             WHERE  pa.voided = 0    " + 
+        "                                 AND enc.voided = 0    " + 
+        "                                 AND obs.voided = 0    " + 
+        "                                 AND obs.concept_id =  5096  " + 
+        "                                 AND obs.value_datetime IS NOT NULL    " + 
+        "                                 AND enc.encounter_type = 18  " + 
+        "                                 AND enc.location_id = 271    " + 
+        "                                 AND enc.encounter_datetime <= '2020-01-20'    " + 
+        "                             GROUP  BY pa.patient_id) fila    " + 
+        "                         INNER JOIN encounter e on   " + 
+        "                             e.patient_id = fila.patient_id and   " + 
+        "                             e.encounter_type = 18 and  " + 
+        "                             e.location_id = 271 and   " + 
+        "                             e.voided = 0   " + 
+        "                         INNER JOIN obs o on   " + 
+        "                             o.encounter_id = e.encounter_id and   " + 
+        "                             o.value_datetime=fila.obs_datetime and  " + 
+        "                             o.concept_id = 5096 and   " + 
+        "                             o.voided = 0   " + 
+        "                         UNION    " + 
+        "                         SELECT ficha.patient_id, o.value_datetime FROM (  " + 
+        "                             SELECT enc.patient_id,    " + 
+        "                                 Max(obs.value_datetime) obs_datetime   " + 
+        "                             FROM   patient pa    " + 
+        "                                 inner join encounter enc    " + 
+        "                                     ON enc.patient_id = pa.patient_id    " + 
+        "                                 inner join obs obs    " + 
+        "                                     ON obs.encounter_id = enc.encounter_id    " + 
+        "                             WHERE  pa.voided = 0    " + 
+        "                                 AND enc.voided = 0    " + 
+        "                                 AND obs.voided = 0    " + 
+        "                                 AND obs.concept_id = 1410  " + 
+        "                                 AND obs.value_datetime IS NOT NULL    " + 
+        "                                 AND enc.encounter_type IN ( 6,9 )    " + 
+        "                                 AND enc.location_id = 271    " + 
+        "                                 AND enc.encounter_datetime <= '2020-01-20'    " + 
+        "                             GROUP  BY pa.patient_id) ficha   " + 
+        "                         INNER JOIN encounter e on   " + 
+        "                             e.patient_id = ficha.patient_id and   " + 
+        "                             e.encounter_type IN (6,9) and   " + 
+        "                             e.location_id = 271 and   " + 
+        "                             e.voided = 0   " + 
+        "                         INNER JOIN obs o on   " + 
+        "                             o.encounter_id = e.encounter_id and   " + 
+        "                             o.value_datetime = ficha.obs_datetime and  " + 
+        "                             o.concept_id = 1410 and   " + 
+        "                             o.voided = 0   " + 
+        "                         UNION    " + 
+        "                         SELECT enc.patient_id,    " + 
+        "                             Date_add(Max(obs.value_datetime), interval 30 day) value_datetime   " + 
+        "                         FROM   patient pa    " + 
+        "                             inner join encounter enc    " + 
+        "                                 ON enc.patient_id = pa.patient_id    " + 
+        "                             inner join obs obs    " + 
+        "                                 ON obs.encounter_id = enc.encounter_id    " + 
+        "                         WHERE  pa.voided = 0    " + 
+        "                             AND enc.voided = 0    " + 
+        "                             AND obs.voided = 0    " + 
+        "                             AND obs.concept_id = 23866    " + 
+        "                             AND obs.value_datetime IS NOT NULL    " + 
+        "                             AND enc.encounter_type =  52   " + 
+        "                             AND enc.location_id = 271    " + 
+        "                             AND obs.value_datetime <= '2020-01-20'    " + 
+        "                        GROUP  BY pa.patient_id    " + 
+        "                    ) most_recent    " + 
+        "                GROUP BY most_recent.patient_id    " + 
+        "                HAVING  DATE_ADD(final_encounter_date, INTERVAL 28 DAY) <  '2020-01-20'AND   " + 
+        "                        DATE_ADD(final_encounter_date, INTERVAL 28 DAY) >= DATE_ADD('2019-10-21', INTERVAL -1 DAY)   " + 
+        "             ) final    " + 
+        "             GROUP BY final.patient_id;";
 
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     return sub.replace(query);
