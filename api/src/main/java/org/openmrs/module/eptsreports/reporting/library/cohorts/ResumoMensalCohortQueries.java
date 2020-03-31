@@ -76,22 +76,22 @@ public class ResumoMensalCohortQueries {
         "A1I",
         map(
             getNumberOfPatientsInMasterCardWithArtLessThanStartDateA1(),
-            "startDate=${startDate-1},location=${location}"));
+            "startDate=${startDate-1d},location=${location}"));
     cd.addSearch(
         "A1II",
         map(
             getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA1(),
-            "onOrAfter=${startDate-1},location=${location}"));
+            "onOrAfter=${startDate-1d},location=${location}"));
     cd.addSearch(
         "A1III",
         map(
             getAllPatientsEnrolledInPreArtProgramWithDateEnrolledLessThanStartDateA1(),
-            "startDate=${startDate-1},location=${location}"));
+            "startDate=${startDate-1d},location=${location}"));
     cd.addSearch(
         "A1IV",
         map(
             getAllPatientsRegisteredInEncounterType5or7WithEncounterDatetimeLessThanStartDateA1(),
-            "onOrBefore=${startDate-1},locationList=${location}"));
+            "onOrBefore=${startDate-1d},locationList=${location}"));
 
     cd.setCompositionString("(A1I OR A1III OR A1IV) AND NOT A1II");
 
@@ -575,11 +575,11 @@ public class ResumoMensalCohortQueries {
         "artStartDate",
         map(
             genericCohortQueries.getStartedArtBeforeDate(false),
-            "onOrBefore=${startDate-1},location=${location}"));
+            "onOrBefore=${startDate-1d},location=${location}"));
 
     cd.addSearch(
         "transferredIn",
-        map(getTransferredInForB10(), "onOrAfter=${startDate-1},location=${location}"));
+        map(getTransferredInForB10(), "onOrAfter=${startDate-1d},location=${location}"));
 
     cd.setCompositionString("artStartDate AND NOT transferredIn");
 
