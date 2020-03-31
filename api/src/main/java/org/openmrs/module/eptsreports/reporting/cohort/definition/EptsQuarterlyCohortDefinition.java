@@ -56,23 +56,6 @@ public class EptsQuarterlyCohortDefinition extends BaseCohortDefinition {
     this.cohortDefinition = cohortDefinition;
   }
 
-  private void validateParameters(CohortDefinition cohortDefinition) {
-    String[][] valid = {{"onOrAfter", "onOrBefore"}, {"startDate", "endDate"}};
-    List<Parameter> cohortParams = cohortDefinition.getParameters();
-    boolean contains;
-    for (String[] v : valid) {
-      List<Parameter> params = new ArrayList<>();
-      params.add(new Parameter(v[0], "Start Date", Date.class));
-      params.add(new Parameter(v[1], "Start Date", Date.class));
-      contains = cohortParams.containsAll(params);
-      if (!contains) {
-        throw new IllegalArgumentException(
-            "CohortDefinition must have both " + v[0] + " and " + v[1] + " parameters");
-      }
-      break;
-    }
-  }
-
   public Integer getYear() {
     return year;
   }
@@ -87,5 +70,33 @@ public class EptsQuarterlyCohortDefinition extends BaseCohortDefinition {
 
   public void setLocation(Location location) {
     this.location = location;
+  }
+
+  private void validateParameters(CohortDefinition cohortDefinition) {
+    String[][] valid = {{"onOrAfter", "onOrBefore"}, {"startDate", "endDate"}};
+    List<Parameter> cohortParams = cohortDefinition.getParameters();
+    boolean contains = false;
+    for (String[] v : valid) {
+      List<Parameter> params = new ArrayList<>();
+      params.add(new Parameter(v[0], "Start Date", Date.class));
+      params.add(new Parameter(v[1], "Start Date", Date.class));
+      contains = cohortParams.containsAll(params);
+      if (contains) break;
+    }
+    if (!contains) {
+      throw new IllegalArgumentException(getMessage(valid));
+    }
+  }
+
+  private String getMessage(String[][] valid) {
+    return "CohortDefinition must have one of "
+        + valid[0][0]
+        + "/"
+        + valid[0][1]
+        + " or "
+        + valid[1][0]
+        + "/"
+        + valid[1][1]
+        + " parameters.";
   }
 }
