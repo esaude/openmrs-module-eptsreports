@@ -69,9 +69,9 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     q.append("       AND opening.voided = 0 ");
     q.append("       AND opening.concept_id = :dateOfMasterCardFileOpening ");
     if (cd.getOnOrBefore() == null) {
-      q.append("     AND opening.value_datetime < :onOrAfter ");
+      q.append("     AND opening.value_datetime <= :onOrAfter ");
     } else if (cd.getOnOrAfter() == null) {
-      q.append("     AND opening.value_datetime < :onOrBefore ");
+      q.append("     AND opening.value_datetime <= :onOrBefore ");
     } else {
       q.append("     AND opening.value_datetime <= :onOrBefore ");
     }
@@ -93,7 +93,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
       q.append("    AND pp.program_id=:programEnrolled ");
       q.append("    AND location_id= :location AND  ");
       if (cd.getOnOrBefore() == null) {
-        q.append(" ps.start_date < :onOrAfter ");
+        q.append(" ps.start_date <= :onOrAfter ");
       } else {
         q.append(" ps.start_date <= :onOrBefore ");
       }
@@ -116,7 +116,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
       q.append("    AND pp.program_id=:programEnrolled");
       q.append("    AND location_id= :location");
       if (cd.getOnOrBefore() == null) {
-        q.append(" AND ps.start_date<:onOrAfter ");
+        q.append(" AND ps.start_date<=:onOrAfter ");
       } else {
         q.append(" AND ps.start_date<= :onOrBefore ");
       }
@@ -138,7 +138,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
       q.append("  AND pp.program_id=:programEnrolled2 ");
       q.append("  AND location_id= :location ");
       if (cd.getOnOrBefore() == null) {
-        q.append(" AND ps.start_date <:onOrAfter ");
+        q.append(" AND ps.start_date <=:onOrAfter ");
       } else {
         q.append(" AND ps.start_date <= :onOrBefore ");
       }
