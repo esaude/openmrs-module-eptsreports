@@ -283,7 +283,7 @@ public class TXTBCohortQueries {
         "started-art-before-startDate-including-transferred-in",
         EptsReportUtils.map(
             genericCohortQueries.getStartedArtBeforeDate(true),
-            "onOrAfter=${startDate-1d},location=${location}"));
+            "onOrBefore=${startDate-1d},location=${location}"));
 
     cd.setCompositionString(
         "started-art-on-period-including-transferred-in OR started-art-before-startDate-including-transferred-in");
