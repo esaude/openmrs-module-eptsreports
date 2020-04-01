@@ -266,28 +266,31 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /*
+  * Patients who started art on period considering the transferred in for that same period
+  * and patients who started art before period also considering the transferred in for that same period
+  */
   public CohortDefinition artList() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
-    String mappings = "onOrBefore=${endDate},location=${location}";
+    cd.addSearch(
+        "started-art-on-period-including-transferred-in",
+        EptsReportUtils.map(
+            genericCohortQueries.getStartedArtOnPeriod(true, true),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
-        "started-by-end-reporting-period",
-        EptsReportUtils.map(genericCohortQueries.getStartedArtBeforeDate(false), mappings));
-
-    cd.addSearch(
-        "trasnferedInProgram",
-        EptsReportUtils.map(hivCohortQueries.getTransferredInViaProgram(false), mappings));
-
-    cd.addSearch(
-        "trasnferedInMasterCard",
-        EptsReportUtils.map(hivCohortQueries.getTransferredInViaMastercard(), mappings));
+        "started-art-before-startDate-including-transferred-in",
+        EptsReportUtils.map(
+            genericCohortQueries.getStartedArtBeforeDate(true),
+            "onOrAfter=${startDate-1d},location=${location}"));
 
     cd.setCompositionString(
-        "started-by-end-reporting-period NOT (trasnferedInProgram OR trasnferedInMasterCard)");
+        "started-art-on-period-including-transferred-in OR started-art-before-startDate-including-transferred-in");
     addGeneralParameters(cd);
     return cd;
   }
+
 
   public CohortDefinition positiveInvestigationResult() {
     CohortDefinition cd =
