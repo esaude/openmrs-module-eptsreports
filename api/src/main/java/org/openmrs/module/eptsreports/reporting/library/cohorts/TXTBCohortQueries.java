@@ -3,7 +3,11 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -11,6 +15,7 @@ import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.TXTBQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
@@ -583,19 +588,16 @@ public class TXTBCohortQueries {
    */
   public CohortDefinition getSpecimenSent() {
     CohortDefinition cd =
-        genericCohortQueries.generalSql(
-            "specimen-sent",
-            TXTBQueries.getPatientsWhoHaveSentSpecimen(
-                hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
-                hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getResultForBasiloscopia().getConceptId(),
-                tbMetadata.getTBGenexpertTest().getConceptId(),
-                tbMetadata.getTestTBLAM().getConceptId(),
-                tbMetadata.getCultureTest().getConceptId(),
-                commonMetadata.getPositive().getConceptId(),
-                commonMetadata.getNegative().getConceptId()));
-    addGeneralParameters(cd);
+        getPatientsWhoHaveSentSpecimen(
+            hivMetadata.getMisauLaboratorioEncounterType(),
+            hivMetadata.getApplicationForLaboratoryResearch(),
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getResultForBasiloscopia(),
+            tbMetadata.getTBGenexpertTest(),
+            tbMetadata.getTestTBLAM(),
+            tbMetadata.getCultureTest(),
+            commonMetadata.getPositive(),
+            commonMetadata.getNegative());
     return cd;
   }
 
@@ -784,5 +786,76 @@ public class TXTBCohortQueries {
     addGeneralParameters(definition);
     definition.setCompositionString("denominator AND positiveResultsReturned");
     return definition;
+  }
+
+  /**
+   * Get patients who sent specimen within date boundaries
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoHaveSentSpecimen(
+      EncounterType laboratory,
+      Concept applicationForLaboratoryResearch,
+      EncounterType fichaClinica,
+      Concept basiloscopiaExam,
+      Concept genexpertTest,
+      Concept tbLamTest,
+      Concept cultureTest,
+      Concept positive,
+      Concept negative) {
+
+    CohortDefinition basiloscopiaExamCohort =
+        getPatientsWithCodedObsBetweenDates(
+            laboratory, basiloscopiaExam, Arrays.asList(negative, positive));
+    CohortDefinition genexpertTestCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, genexpertTest, Arrays.asList(negative, positive));
+    CohortDefinition tbLamTestCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, tbLamTest, Arrays.asList(negative, positive));
+    CohortDefinition cultureTestCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, cultureTest, Arrays.asList(negative, positive));
+    CohortDefinition applicationForLaboratoryResearchCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica,
+            applicationForLaboratoryResearch,
+            Arrays.asList(genexpertTest, cultureTest, tbLamTest));
+
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("specimenSent()");
+    addGeneralParameters(definition);
+
+    definition.addSearch(
+        "basiloscopiaExamCohort",
+        EptsReportUtils.map(basiloscopiaExamCohort, generalParameterMapping));
+    definition.addSearch(
+        "genexpertTestCohort", EptsReportUtils.map(genexpertTestCohort, generalParameterMapping));
+    definition.addSearch(
+        "tbLamTestCohort", EptsReportUtils.map(tbLamTestCohort, generalParameterMapping));
+    definition.addSearch(
+        "cultureTestCohort", EptsReportUtils.map(cultureTestCohort, generalParameterMapping));
+    definition.addSearch(
+        "applicationForLaboratoryResearchCohort",
+        EptsReportUtils.map(applicationForLaboratoryResearchCohort, generalParameterMapping));
+
+    definition.setCompositionString(
+        "basiloscopiaExamCohort OR genexpertTestCohort OR tbLamTestCohort OR cultureTestCohort OR applicationForLaboratoryResearchCohort");
+    return definition;
+  }
+
+  public CohortDefinition getPatientsWithCodedObsBetweenDates(
+      EncounterType encounterType, Concept question, List<Concept> answers) {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.setName("Patients With Coded Obs Between Dates");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.setEncounterTypeList(Collections.singletonList(encounterType));
+    cd.setTimeModifier(TimeModifier.ANY);
+    cd.setQuestion(question);
+    cd.setValueList(answers);
+    cd.setOperator(SetComparator.IN);
+    return cd;
   }
 }
