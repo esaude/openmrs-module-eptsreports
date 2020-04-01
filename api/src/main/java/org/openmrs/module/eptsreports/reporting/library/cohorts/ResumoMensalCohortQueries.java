@@ -639,6 +639,7 @@ public class ResumoMensalCohortQueries {
             getPatientsWhoHadAtLeastDrugPickUp(),
             "startDate=${startDate-1d},location=${location}"));
     cd.setCompositionString("((B10 OR B2A) AND drugPick) AND NOT (B5A OR B6A OR B7A OR B8A)");
+    // cd.setCompositionString("drugPick");
 
     return cd;
   }
