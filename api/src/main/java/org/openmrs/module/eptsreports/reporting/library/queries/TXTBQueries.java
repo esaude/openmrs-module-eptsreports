@@ -430,65 +430,6 @@ public class TXTBQueries {
   }
 
   /**
-   * Get patients who have a GeneXpert Positivo or Negativo registered in the investigations - lab
-   * results - ficha clinica - mastercard OR Get patients who have a GeneXpert request registered in
-   * the investigations - lab results - ficha clinica - mastercard
-   *
-   * @return String
-   */
-  public static String getPatientsWhoHaveGeneXpert(
-      int applicationForLaboratoryResearch,
-      int fichaClinica,
-      int genexpertTest,
-      int positive,
-      int negative) {
-    String query =
-        "SELECT genexpert.patient_id "
-            + "FROM   ( "
-            + "       SELECT p.patient_id "
-            + "           FROM  patient p "
-            + "                 INNER JOIN encounter e "
-            + "                 ON p.patient_id = e.patient_id "
-            + "                 INNER JOIN obs exam "
-            + "                 ON e.encounter_id = exam.encounter_id "
-            + "           WHERE p.voided = 0 "
-            + "                 AND e.voided = 0 "
-            + "                 AND exam.voided = 0 "
-            + "                 AND e.encounter_type = ${fichaClinica} "
-            + "                 AND exam.concept_id = ${genexpertTest} "
-            + "                 AND (exam.value_coded = ${negative} OR exam.value_coded = ${positive}) "
-            + "                 AND e.encounter_datetime >= :startDate "
-            + "                 AND e.encounter_datetime <= :endDate "
-            + "           GROUP BY p.patient_id "
-            + "       UNION "
-            + "       SELECT p.patient_id "
-            + "           FROM  patient p "
-            + "                 INNER JOIN encounter e "
-            + "                 ON p.patient_id = e.patient_id "
-            + "                 INNER JOIN obs exam "
-            + "                 ON e.encounter_id = exam.encounter_id "
-            + "           WHERE p.voided = 0 "
-            + "                 AND e.voided = 0 "
-            + "                 AND exam.voided = 0 "
-            + "                 AND e.encounter_type = ${fichaClinica} "
-            + "                 AND exam.concept_id = ${applicationForLaboratoryResearch} "
-            + "                 AND exam.value_coded = ${genexpertTest} "
-            + "                 AND e.encounter_datetime >= :startDate "
-            + "                 AND e.encounter_datetime <= :endDate "
-            + "           GROUP BY p.patient_id "
-            + ") genexpert";
-
-    Map<String, Integer> valuesMap = new HashMap<>();
-    valuesMap.put("applicationForLaboratoryResearch", applicationForLaboratoryResearch);
-    valuesMap.put("fichaClinica", fichaClinica);
-    valuesMap.put("genexpertTest", genexpertTest);
-    valuesMap.put("positive", positive);
-    valuesMap.put("negative", negative);
-    StringSubstitutor sub = new StringSubstitutor(valuesMap);
-    return sub.replace(query);
-  }
-
-  /**
    * Smear Microscopy - Get patients who have a Basiloscopia Positivo or Negativo registered in the
    * laboratory form encounter type 13 Except patients identified in GeneXpert
    *

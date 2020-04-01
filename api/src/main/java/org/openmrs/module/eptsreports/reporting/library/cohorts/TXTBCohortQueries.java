@@ -610,15 +610,12 @@ public class TXTBCohortQueries {
    */
   public CohortDefinition getGenExpert() {
     CohortDefinition cd =
-        genericCohortQueries.generalSql(
-            "genExpert",
-            TXTBQueries.getPatientsWhoHaveGeneXpert(
-                hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                tbMetadata.getTBGenexpertTest().getConceptId(),
-                commonMetadata.getPositive().getConceptId(),
-                commonMetadata.getNegative().getConceptId()));
-    addGeneralParameters(cd);
+        getPatientsWhoHaveGeneXpert(
+            hivMetadata.getApplicationForLaboratoryResearch(),
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            tbMetadata.getTBGenexpertTest(),
+            commonMetadata.getPositive(),
+            commonMetadata.getNegative());
     return cd;
   }
 
@@ -841,6 +838,43 @@ public class TXTBCohortQueries {
 
     definition.setCompositionString(
         "basiloscopiaExamCohort OR genexpertTestCohort OR tbLamTestCohort OR cultureTestCohort OR applicationForLaboratoryResearchCohort");
+    return definition;
+  }
+
+  /**
+   * Get patients who have a GeneXpert Positivo or Negativo registered in the investigations - lab
+   * results - ficha clinica - mastercard OR Get patients who have a GeneXpert request registered in
+   * the investigations - lab results - ficha clinica - mastercard
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoHaveGeneXpert(
+      Concept applicationForLaboratoryResearch,
+      EncounterType fichaClinica,
+      Concept genexpertTest,
+      Concept positive,
+      Concept negative) {
+
+    CohortDefinition genexpertTestCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, genexpertTest, Arrays.asList(negative, positive));
+
+    CohortDefinition applicationForLaboratoryResearchCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, applicationForLaboratoryResearch, Arrays.asList(genexpertTest));
+
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("haveGeneXpert()");
+    addGeneralParameters(definition);
+
+    definition.addSearch(
+        "genexpertTestCohort", EptsReportUtils.map(genexpertTestCohort, generalParameterMapping));
+    definition.addSearch(
+        "applicationForLaboratoryResearchCohort",
+        EptsReportUtils.map(applicationForLaboratoryResearchCohort, generalParameterMapping));
+
+    definition.setCompositionString(
+        "genexpertTestCohort OR applicationForLaboratoryResearchCohort");
     return definition;
   }
 
