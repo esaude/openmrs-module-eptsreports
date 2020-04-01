@@ -55,6 +55,12 @@ public class TXTBCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
   }
 
+  private void addCodedObsParameters(CohortDefinition cd) {
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Dat", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+  }
+
   /**
    * INICIO DE TRATAMENTO DE TUBERCULOSE DATA NOTIFICADA NAS FICHAS DE: SEGUIMENTO, RASTREIO E LIVRO
    * TB. codes: DATAINICIO
@@ -686,7 +692,7 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
     definition.addSearch(
-        "specimen-sent", EptsReportUtils.map(getSpecimenSent(), generalParameterMapping));
+        "specimen-sent", EptsReportUtils.map(getSpecimenSent(), codedObsParameterMapping));
     definition.addSearch(
         "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
     addGeneralParameters(definition);
@@ -704,7 +710,8 @@ public class TXTBCohortQueries {
     definition.setName("genExpert()");
     definition.addSearch(
         "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
-    definition.addSearch("genExpert", EptsReportUtils.map(getGenExpert(), generalParameterMapping));
+    definition.addSearch(
+        "genExpert", EptsReportUtils.map(getGenExpert(), codedObsParameterMapping));
     definition.addSearch(
         "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
     addGeneralParameters(definition);
@@ -725,7 +732,7 @@ public class TXTBCohortQueries {
         "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
     definition.addSearch(
         "smearMicroscopyOnly",
-        EptsReportUtils.map(getSmearMicroscopyOnly(), generalParameterMapping));
+        EptsReportUtils.map(getSmearMicroscopyOnly(), codedObsParameterMapping));
     definition.addSearch(
         "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
     addGeneralParameters(definition);
@@ -745,7 +752,7 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
     definition.addSearch(
-        "otherAdditionalTest", EptsReportUtils.map(getAdditionalTest(), generalParameterMapping));
+        "otherAdditionalTest", EptsReportUtils.map(getAdditionalTest(), codedObsParameterMapping));
     definition.addSearch(
         "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
     addGeneralParameters(definition);
@@ -765,7 +772,7 @@ public class TXTBCohortQueries {
         "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
     definition.addSearch(
         "positiveResultsReturned",
-        EptsReportUtils.map(getPositiveResultsReturned(), generalParameterMapping));
+        EptsReportUtils.map(getPositiveResultsReturned(), codedObsParameterMapping));
     addGeneralParameters(definition);
     definition.setCompositionString("denominator AND positiveResultsReturned");
     return definition;
@@ -807,20 +814,20 @@ public class TXTBCohortQueries {
 
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("specimenSent()");
-    addGeneralParameters(definition);
+    addCodedObsParameters(definition);
 
     definition.addSearch(
         "basiloscopiaExamCohort",
-        EptsReportUtils.map(basiloscopiaExamCohort, generalParameterMapping));
+        EptsReportUtils.map(basiloscopiaExamCohort, codedObsParameterMapping));
     definition.addSearch(
-        "genexpertTestCohort", EptsReportUtils.map(genexpertTestCohort, generalParameterMapping));
+        "genexpertTestCohort", EptsReportUtils.map(genexpertTestCohort, codedObsParameterMapping));
     definition.addSearch(
-        "tbLamTestCohort", EptsReportUtils.map(tbLamTestCohort, generalParameterMapping));
+        "tbLamTestCohort", EptsReportUtils.map(tbLamTestCohort, codedObsParameterMapping));
     definition.addSearch(
-        "cultureTestCohort", EptsReportUtils.map(cultureTestCohort, generalParameterMapping));
+        "cultureTestCohort", EptsReportUtils.map(cultureTestCohort, codedObsParameterMapping));
     definition.addSearch(
         "applicationForLaboratoryResearchCohort",
-        EptsReportUtils.map(applicationForLaboratoryResearchCohort, generalParameterMapping));
+        EptsReportUtils.map(applicationForLaboratoryResearchCohort, codedObsParameterMapping));
 
     definition.setCompositionString(
         "basiloscopiaExamCohort OR genexpertTestCohort OR tbLamTestCohort OR cultureTestCohort OR applicationForLaboratoryResearchCohort");
@@ -851,13 +858,13 @@ public class TXTBCohortQueries {
 
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("haveGeneXpert()");
-    addGeneralParameters(definition);
+    addCodedObsParameters(definition);
 
     definition.addSearch(
-        "genexpertTestCohort", EptsReportUtils.map(genexpertTestCohort, generalParameterMapping));
+        "genexpertTestCohort", EptsReportUtils.map(genexpertTestCohort, codedObsParameterMapping));
     definition.addSearch(
         "applicationForLaboratoryResearchCohort",
-        EptsReportUtils.map(applicationForLaboratoryResearchCohort, generalParameterMapping));
+        EptsReportUtils.map(applicationForLaboratoryResearchCohort, codedObsParameterMapping));
 
     definition.setCompositionString(
         "genexpertTestCohort OR applicationForLaboratoryResearchCohort");
@@ -879,12 +886,12 @@ public class TXTBCohortQueries {
 
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("haveBasiloscopia()");
-    addGeneralParameters(definition);
+    addCodedObsParameters(definition);
 
     definition.addSearch(
-        "basiloscopiaCohort", EptsReportUtils.map(basiloscopiaCohort, generalParameterMapping));
+        "basiloscopiaCohort", EptsReportUtils.map(basiloscopiaCohort, codedObsParameterMapping));
     definition.addSearch(
-        "genExpertCohort", EptsReportUtils.map(getGenExpert(), generalParameterMapping));
+        "genExpertCohort", EptsReportUtils.map(getGenExpert(), codedObsParameterMapping));
 
     definition.setCompositionString("basiloscopiaCohort NOT genExpertCohort");
     return definition;
@@ -915,20 +922,20 @@ public class TXTBCohortQueries {
 
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("additionalTest()");
-    addGeneralParameters(definition);
+    addCodedObsParameters(definition);
 
     definition.addSearch(
-        "tbLamTestCohort", EptsReportUtils.map(tbLamTestCohort, generalParameterMapping));
+        "tbLamTestCohort", EptsReportUtils.map(tbLamTestCohort, codedObsParameterMapping));
     definition.addSearch(
-        "cultureTestCohort", EptsReportUtils.map(cultureTestCohort, generalParameterMapping));
+        "cultureTestCohort", EptsReportUtils.map(cultureTestCohort, codedObsParameterMapping));
     definition.addSearch(
         "applicationForLaboratoryResearchCohort",
-        EptsReportUtils.map(applicationForLaboratoryResearchCohort, generalParameterMapping));
+        EptsReportUtils.map(applicationForLaboratoryResearchCohort, codedObsParameterMapping));
     definition.addSearch(
-        "genExpertCohort", EptsReportUtils.map(getGenExpert(), generalParameterMapping));
+        "genExpertCohort", EptsReportUtils.map(getGenExpert(), codedObsParameterMapping));
     definition.addSearch(
         "smearMicroscopyOnlyCohort",
-        EptsReportUtils.map(getSmearMicroscopyOnly(), generalParameterMapping));
+        EptsReportUtils.map(getSmearMicroscopyOnly(), codedObsParameterMapping));
 
     definition.setCompositionString(
         "(tbLamTestCohort OR cultureTestCohort OR applicationForLaboratoryResearchCohort) NOT genExpertCohort NOT smearMicroscopyOnlyCohort");
@@ -965,17 +972,17 @@ public class TXTBCohortQueries {
 
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("positiveResultsReturned()");
-    addGeneralParameters(definition);
+    addCodedObsParameters(definition);
 
     definition.addSearch(
-        "genexpertTestCohort", EptsReportUtils.map(genexpertTestCohort, generalParameterMapping));
+        "genexpertTestCohort", EptsReportUtils.map(genexpertTestCohort, codedObsParameterMapping));
     definition.addSearch(
         "basiloscopiaExamCohort",
-        EptsReportUtils.map(basiloscopiaExamCohort, generalParameterMapping));
+        EptsReportUtils.map(basiloscopiaExamCohort, codedObsParameterMapping));
     definition.addSearch(
-        "tbLamTestCohort", EptsReportUtils.map(tbLamTestCohort, generalParameterMapping));
+        "tbLamTestCohort", EptsReportUtils.map(tbLamTestCohort, codedObsParameterMapping));
     definition.addSearch(
-        "cultureTestCohort", EptsReportUtils.map(cultureTestCohort, generalParameterMapping));
+        "cultureTestCohort", EptsReportUtils.map(cultureTestCohort, codedObsParameterMapping));
 
     definition.setCompositionString(
         "genexpertTestCohort OR basiloscopiaExamCohort OR tbLamTestCohort OR cultureTestCohort");
@@ -986,7 +993,7 @@ public class TXTBCohortQueries {
       EncounterType encounterType, Concept question, List<Concept> answers) {
     CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
     cd.setName("Patients With Coded Obs Between Dates");
-    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.setEncounterTypeList(Collections.singletonList(encounterType));
