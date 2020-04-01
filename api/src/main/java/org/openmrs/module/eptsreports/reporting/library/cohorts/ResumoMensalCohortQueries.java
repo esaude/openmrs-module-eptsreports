@@ -773,27 +773,22 @@ public class ResumoMensalCohortQueries {
     map.put("yesConcept", hivMetadata.getPatientFoundYesConcept().getConceptId());
     map.put("noConcept", hivMetadata.getNoConcept().getConceptId());
     String query =
-        "SELECT pt.patient_id "
-            + "FROM patient pt  "
-            + "    INNER JOIN  "
-            + "    (SELECT p.patient_id, MIN(e.encounter_datetime) "
-            + "    FROM  patient p "
-            + "        INNER JOIN encounter e  "
-            + "            ON e.patient_id = p.patient_id "
-            + "    WHERE  e.encounter_type = ${adultoSeguimentoEncounterType} "
-            + "        AND e.location_id = :location "
-            + "        AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
-            + "        AND p.voided = 0 "
-            + "        AND e.voided = 0 "
-            + "    GROUP BY p.patient_id) min_encounter "
-            + "        ON pt.patient_id = min_encounter.patient_id "
-            + "    INNER JOIN obs o  "
-            + "            ON o.person_id = pt.patient_id "
-            + "WHERE o.voided = 0 "
-            + "    AND pt.voided = 0 "
-            + "AND o.concept_id   = ${tbSymptomsConcept} "
-            + "AND o.value_coded  IN   (${yesConcept}, ${noConcept}) "
-            + "GROUP BY pt.patient_id;  ";
+                "SELECT tbl.patient_id FROM (SELECT p.patient_id,(SELECT e.encounter_id "
+                        +"                    FROM encounter e "
+                        +"                    WHERE  e.encounter_type = ${adultoSeguimentoEncounterType} "
+                        +"                    AND p.patient_id = e.patient_id "
+                        +"                    AND e.location_id = :location "
+                        +"                    AND e.voided = 0 "
+                        +"                    ORDER BY e.encounter_datetime ASC LIMIT 1)min_encounter "
+                        +"                    FROM patient p WHERE p.voided = 0)tbl "
+                        +"                    INNER JOIN encounter enc "
+                        +"                    ON enc.encounter_id = tbl.min_encounter "
+                        +"                    INNER JOIN obs o  "
+                        +"                        ON o.encounter_id = enc.encounter_id "
+                        +"            AND o.voided = 0 "
+                        +"            AND o.concept_id   = ${tbSymptomsConcept} "
+                        +"            AND o.value_coded  IN   (${yesConcept}, ${noConcept}) "
+                        +"             AND enc.encounter_datetime BETWEEN :startDate AND :endDate  ";
 
     StringSubstitutor sb = new StringSubstitutor(map);
     String replacedQuery = sb.replace(query);
