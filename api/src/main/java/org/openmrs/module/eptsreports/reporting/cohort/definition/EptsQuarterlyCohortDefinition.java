@@ -78,8 +78,8 @@ public class EptsQuarterlyCohortDefinition extends BaseCohortDefinition {
     boolean contains = false;
     for (String[] v : valid) {
       List<Parameter> params = new ArrayList<>();
-      params.add(new Parameter(v[0], "Start Date", Date.class));
-      params.add(new Parameter(v[1], "Start Date", Date.class));
+      params.add(new Parameter(v[0], "", Date.class));
+      params.add(new Parameter(v[1], "", Date.class));
       contains = cohortParams.containsAll(params);
       if (contains) break;
     }

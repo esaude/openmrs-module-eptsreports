@@ -1,14 +1,13 @@
 package org.openmrs.module.eptsreports.reporting.unit.cohort.definition;
 
+import static org.junit.Assert.*;
+
+import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsQuarterlyCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.StaticCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-
-import java.util.Date;
-
-import static org.junit.Assert.*;
 
 public class EptsQuarterlyCohortDefinitionTest {
 
