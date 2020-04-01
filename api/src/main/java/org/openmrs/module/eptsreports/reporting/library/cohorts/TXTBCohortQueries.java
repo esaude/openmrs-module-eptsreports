@@ -663,18 +663,15 @@ public class TXTBCohortQueries {
    */
   public CohortDefinition getPositiveResultsReturned() {
     CohortDefinition cd =
-        genericCohortQueries.generalSql(
-            "positiveResultsReturned",
-            TXTBQueries.getPositiveResultsReturned(
-                hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getResultForBasiloscopia().getConceptId(),
-                tbMetadata.getTBGenexpertTest().getConceptId(),
-                tbMetadata.getTestTBLAM().getConceptId(),
-                tbMetadata.getCultureTest().getConceptId(),
-                commonMetadata.getPositive().getConceptId(),
-                commonMetadata.getNegative().getConceptId()));
-    addGeneralParameters(cd);
+        getPositiveResultsReturned(
+            hivMetadata.getMisauLaboratorioEncounterType(),
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getResultForBasiloscopia(),
+            tbMetadata.getTBGenexpertTest(),
+            tbMetadata.getTestTBLAM(),
+            tbMetadata.getCultureTest(),
+            commonMetadata.getPositive(),
+            commonMetadata.getNegative());
     return cd;
   }
 
@@ -935,6 +932,53 @@ public class TXTBCohortQueries {
 
     definition.setCompositionString(
         "(tbLamTestCohort OR cultureTestCohort OR applicationForLaboratoryResearchCohort) NOT genExpertCohort NOT smearMicroscopyOnlyCohort");
+    return definition;
+  }
+
+  /**
+   * Get patients who have positive results returned
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPositiveResultsReturned(
+      EncounterType laboratory,
+      EncounterType fichaClinica,
+      Concept basiloscopiaExam,
+      Concept genexpertTest,
+      Concept tbLamTest,
+      Concept cultureTest,
+      Concept positive,
+      Concept negative) {
+
+    CohortDefinition genexpertTestCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, genexpertTest, Arrays.asList(negative, positive));
+    CohortDefinition basiloscopiaExamCohort =
+        getPatientsWithCodedObsBetweenDates(
+            laboratory, basiloscopiaExam, Arrays.asList(negative, positive));
+    CohortDefinition tbLamTestCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, tbLamTest, Arrays.asList(negative, positive));
+    CohortDefinition cultureTestCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, cultureTest, Arrays.asList(negative, positive));
+
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("positiveResultsReturned()");
+    addGeneralParameters(definition);
+
+    definition.addSearch(
+        "genexpertTestCohort", EptsReportUtils.map(genexpertTestCohort, generalParameterMapping));
+    definition.addSearch(
+        "basiloscopiaExamCohort",
+        EptsReportUtils.map(basiloscopiaExamCohort, generalParameterMapping));
+    definition.addSearch(
+        "tbLamTestCohort", EptsReportUtils.map(tbLamTestCohort, generalParameterMapping));
+    definition.addSearch(
+        "cultureTestCohort", EptsReportUtils.map(cultureTestCohort, generalParameterMapping));
+
+    definition.setCompositionString(
+        "genexpertTestCohort OR basiloscopiaExamCohort OR tbLamTestCohort OR cultureTestCohort");
     return definition;
   }
 
