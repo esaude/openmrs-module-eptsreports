@@ -641,19 +641,13 @@ public class TXTBCohortQueries {
    */
   public CohortDefinition getAdditionalTest() {
     CohortDefinition cd =
-        genericCohortQueries.generalSql(
-            "otherAdditionalTest",
-            TXTBQueries.getAdditionalTest(
-                hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
-                hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getResultForBasiloscopia().getConceptId(),
-                tbMetadata.getTBGenexpertTest().getConceptId(),
-                tbMetadata.getTestTBLAM().getConceptId(),
-                tbMetadata.getCultureTest().getConceptId(),
-                commonMetadata.getPositive().getConceptId(),
-                commonMetadata.getNegative().getConceptId()));
-    addGeneralParameters(cd);
+        getAdditionalTest(
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            tbMetadata.getTestTBLAM(),
+            tbMetadata.getCultureTest(),
+            hivMetadata.getApplicationForLaboratoryResearch(),
+            commonMetadata.getPositive(),
+            commonMetadata.getNegative());
     return cd;
   }
 
@@ -896,6 +890,51 @@ public class TXTBCohortQueries {
         "genExpertCohort", EptsReportUtils.map(getGenExpert(), generalParameterMapping));
 
     definition.setCompositionString("basiloscopiaCohort NOT genExpertCohort");
+    return definition;
+  }
+
+  /**
+   * Get patients who have a Additional Test AND Not GeneXpert AND Not Smear Microscopy Only
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getAdditionalTest(
+      EncounterType fichaClinica,
+      Concept tbLamTest,
+      Concept cultureTest,
+      Concept applicationForLaboratoryResearch,
+      Concept positive,
+      Concept negative) {
+
+    CohortDefinition tbLamTestCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, tbLamTest, Arrays.asList(negative, positive));
+    CohortDefinition cultureTestCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, cultureTest, Arrays.asList(negative, positive));
+    CohortDefinition applicationForLaboratoryResearchCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, applicationForLaboratoryResearch, Arrays.asList(cultureTest, tbLamTest));
+
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("additionalTest()");
+    addGeneralParameters(definition);
+
+    definition.addSearch(
+        "tbLamTestCohort", EptsReportUtils.map(tbLamTestCohort, generalParameterMapping));
+    definition.addSearch(
+        "cultureTestCohort", EptsReportUtils.map(cultureTestCohort, generalParameterMapping));
+    definition.addSearch(
+        "applicationForLaboratoryResearchCohort",
+        EptsReportUtils.map(applicationForLaboratoryResearchCohort, generalParameterMapping));
+    definition.addSearch(
+        "genExpertCohort", EptsReportUtils.map(getGenExpert(), generalParameterMapping));
+    definition.addSearch(
+        "smearMicroscopyOnlyCohort",
+        EptsReportUtils.map(getSmearMicroscopyOnly(), generalParameterMapping));
+
+    definition.setCompositionString(
+        "(tbLamTestCohort OR cultureTestCohort OR applicationForLaboratoryResearchCohort) NOT genExpertCohort NOT smearMicroscopyOnlyCohort");
     return definition;
   }
 
