@@ -626,16 +626,11 @@ public class TXTBCohortQueries {
    */
   public CohortDefinition getSmearMicroscopyOnly() {
     CohortDefinition cd =
-        genericCohortQueries.generalSql(
-            "smearMicroscopyOnly",
-            TXTBQueries.getSmearMicroscopyOnly(
-                hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getResultForBasiloscopia().getConceptId(),
-                tbMetadata.getTBGenexpertTest().getConceptId(),
-                commonMetadata.getPositive().getConceptId(),
-                commonMetadata.getNegative().getConceptId()));
-    addGeneralParameters(cd);
+        getSmearMicroscopyOnly(
+            hivMetadata.getMisauLaboratorioEncounterType(),
+            hivMetadata.getResultForBasiloscopia(),
+            commonMetadata.getPositive(),
+            commonMetadata.getNegative());
     return cd;
   }
 
@@ -875,6 +870,32 @@ public class TXTBCohortQueries {
 
     definition.setCompositionString(
         "genexpertTestCohort OR applicationForLaboratoryResearchCohort");
+    return definition;
+  }
+
+  /**
+   * Smear Microscopy - Get patients who have a Basiloscopia Positivo or Negativo registered in the
+   * laboratory form encounter type 13 Except patients identified in GeneXpert
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getSmearMicroscopyOnly(
+      EncounterType laboratory, Concept basiloscopiaExam, Concept positive, Concept negative) {
+
+    CohortDefinition basiloscopiaCohort =
+        getPatientsWithCodedObsBetweenDates(
+            laboratory, basiloscopiaExam, Arrays.asList(negative, positive));
+
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("haveBasiloscopia()");
+    addGeneralParameters(definition);
+
+    definition.addSearch(
+        "basiloscopiaCohort", EptsReportUtils.map(basiloscopiaCohort, generalParameterMapping));
+    definition.addSearch(
+        "genExpertCohort", EptsReportUtils.map(getGenExpert(), generalParameterMapping));
+
+    definition.setCompositionString("basiloscopiaCohort NOT genExpertCohort");
     return definition;
   }
 
