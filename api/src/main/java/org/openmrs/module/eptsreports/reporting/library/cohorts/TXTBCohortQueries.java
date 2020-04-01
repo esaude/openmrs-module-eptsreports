@@ -266,28 +266,31 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /*
+  * Patients who started art on period considering the transferred in for that same period
+  * and patients who started art before period also considering the transferred in for that same period
+  */
   public CohortDefinition artList() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
-    String mappings = "onOrBefore=${endDate},location=${location}";
+    cd.addSearch(
+        "started-art-on-period-including-transferred-in",
+        EptsReportUtils.map(
+            genericCohortQueries.getStartedArtOnPeriod(true, true),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
-        "started-by-end-reporting-period",
-        EptsReportUtils.map(genericCohortQueries.getStartedArtBeforeDate(false), mappings));
-
-    cd.addSearch(
-        "trasnferedInProgram",
-        EptsReportUtils.map(hivCohortQueries.getTransferredInViaProgram(false), mappings));
-
-    cd.addSearch(
-        "trasnferedInMasterCard",
-        EptsReportUtils.map(hivCohortQueries.getTransferredInViaMastercard(), mappings));
+        "started-art-before-startDate-including-transferred-in",
+        EptsReportUtils.map(
+            genericCohortQueries.getStartedArtBeforeDate(true),
+            "onOrAfter=${startDate-1d},location=${location}"));
 
     cd.setCompositionString(
-        "started-by-end-reporting-period NOT (trasnferedInProgram OR trasnferedInMasterCard)");
+        "started-art-on-period-including-transferred-in OR started-art-before-startDate-including-transferred-in");
     addGeneralParameters(cd);
     return cd;
   }
+
 
   public CohortDefinition positiveInvestigationResult() {
     CohortDefinition cd =
@@ -344,11 +347,35 @@ public class TXTBCohortQueries {
                 true));
     addGeneralParameters(i);
     cd.addSearch("i", map(i, generalParameterMapping));
+
     CohortDefinition ii = getInTBProgram();
     cd.addSearch("ii", map(ii, generalParameterMapping));
+
+    CohortDefinition patientswithPulmonaryTbDate =
+        TXTBQueries.getPatientsWithObsBetweenDates(
+            "Patients with Pulmonary TB Date",
+            tbMetadata.getPulmonaryTB(),
+            hivMetadata.getPatientFoundYesConcept(),
+            Arrays.asList(hivMetadata.getMasterCardEncounterType()));
+    cd.addSearch(
+        "patientswithPulmonaryTbDate", map(patientswithPulmonaryTbDate, codedObsParameterMapping));
+
+    CohortDefinition patientsWhoInitiatedTbTreatment =
+        TXTBQueries.getPatientsWithObsBetweenDates(
+            "Patients marked as Tratamento TB– Inicio (I)",
+            hivMetadata.getTBTreatmentPlanConcept(),
+            hivMetadata.getStartDrugs(),
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                hivMetadata.getPediatriaSeguimentoEncounterType()));
+    cd.addSearch(
+        "patientsWhoInitiatedTbTreatment",
+        map(patientsWhoInitiatedTbTreatment, codedObsParameterMapping));
+
     CohortDefinition artList = artList();
     cd.addSearch("artList", map(artList, generalParameterMapping));
-    cd.setCompositionString("(i OR ii) AND artList");
+    cd.setCompositionString(
+        "(i OR ii OR patientswithPulmonaryTbDate OR patientsWhoInitiatedTbTreatment) AND artList");
     addGeneralParameters(cd);
     return cd;
   }
