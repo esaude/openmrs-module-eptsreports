@@ -60,9 +60,18 @@ public class ResumoTrimestralDataSetDefinition extends BaseDataSet {
   }
 
   private Mapped<CohortIndicator> getA(EptsQuarterlyCohortDefinition.Month month) {
-    CohortDefinition wrap = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    CohortDefinition transferredIn =
+        hivCohortQueries.getPatientsTransferredFromOtherHealthFacility();
+    CompositionCohortDefinition wrap = new CompositionCohortDefinition();
+    wrap.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    wrap.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    wrap.addParameter(new Parameter("location", "location", Location.class));
+    wrap.addSearch("startedArt", mapStraightThrough(startedArt));
+    wrap.addSearch("transferredIn", mapStraightThrough(transferredIn));
+    wrap.setCompositionString("startedArt NOT transferredIn");
     CohortDefinition quarterly = getQuarterlyCohort(wrap, month);
-    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+    String mappings = "onOrAfter=${startDate-12m},onOrBefore=${endDate-12m},location=${location}";
     return mapStraightThrough(eptsGeneralIndicator.getIndicator(A, map(quarterly, mappings)));
   }
 
