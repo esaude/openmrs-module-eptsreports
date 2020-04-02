@@ -3,6 +3,8 @@ package org.openmrs.module.eptsreports.reporting.cohort.definition;
 import java.util.Date;
 import org.openmrs.Concept;
 import org.openmrs.Location;
+import org.openmrs.Program;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyAndParameterCachingStrategy;
@@ -23,6 +25,18 @@ public class EptsTransferredInCohortDefinition extends BaseCohortDefinition {
 
   @ConfigurationProperty(required = true)
   private Concept typeOfPatientTransferredFromAnswer;
+
+  @ConfigurationProperty(required = true)
+  private Program programEnrolled;
+
+  @ConfigurationProperty private Program programEnrolled2;
+
+  @ConfigurationProperty(required = true)
+  private ProgramWorkflowState patientState;
+
+  @ConfigurationProperty private ProgramWorkflowState patientState2;
+
+  @ConfigurationProperty private Boolean b10Flag;
 
   public Date getOnOrBefore() {
     return onOrBefore;
@@ -54,5 +68,45 @@ public class EptsTransferredInCohortDefinition extends BaseCohortDefinition {
 
   public void setTypeOfPatientTransferredFromAnswer(Concept typeOfPatientTransferredFromAnswer) {
     this.typeOfPatientTransferredFromAnswer = typeOfPatientTransferredFromAnswer;
+  }
+
+  public Program getProgramEnrolled() {
+    return programEnrolled;
+  }
+
+  public void setProgramEnrolled(Program programEnrolled) {
+    this.programEnrolled = programEnrolled;
+  }
+
+  public ProgramWorkflowState getPatientState() {
+    return patientState;
+  }
+
+  public void setPatientState(ProgramWorkflowState patientState) {
+    this.patientState = patientState;
+  }
+
+  public Program getProgramEnrolled2() {
+    return programEnrolled2;
+  }
+
+  public void setProgramEnrolled2(Program programEnrolled) {
+    this.programEnrolled2 = programEnrolled;
+  }
+
+  public ProgramWorkflowState getPatientState2() {
+    return patientState2;
+  }
+
+  public void setPatientState2(ProgramWorkflowState patientState) {
+    this.patientState2 = patientState;
+  }
+
+  public Boolean getB10Flag() {
+    return this.b10Flag;
+  }
+
+  public void setB10Flag(Boolean b10Flag) {
+    this.b10Flag = b10Flag;
   }
 }

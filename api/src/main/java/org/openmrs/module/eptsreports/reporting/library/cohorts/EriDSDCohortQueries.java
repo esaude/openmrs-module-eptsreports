@@ -35,7 +35,6 @@ public class EriDSDCohortQueries {
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
   @Autowired private TxNewCohortQueries txNewCohortQueries;
   @Autowired private GenericCohortQueries genericCohortQueries;
-  @Autowired private GenderCohortQueries genderCohorts;
   @Autowired private TbCohortQueries tbCohortQueries;
 
   @Autowired private AgeCohortQueries ageCohortQueries;
@@ -129,7 +128,7 @@ public class EriDSDCohortQueries {
                 SetComparator.IN,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType()),
+                    hivMetadata.getPediatriaSeguimentoEncounterType()),
                 Arrays.asList(
                     hivMetadata.getNeutropenia(),
                     hivMetadata.getPancreatitis(),
@@ -231,7 +230,7 @@ public class EriDSDCohortQueries {
                 null,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
@@ -246,7 +245,7 @@ public class EriDSDCohortQueries {
                 null,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
@@ -261,7 +260,7 @@ public class EriDSDCohortQueries {
                 null,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
@@ -298,7 +297,7 @@ public class EriDSDCohortQueries {
                 null,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
@@ -313,7 +312,7 @@ public class EriDSDCohortQueries {
                 null,
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMisauLaboratorioEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
@@ -431,7 +430,7 @@ public class EriDSDCohortQueries {
     sql.setQuery(
         DsdQueries.patientsWithTheRecentViralLoadEncounter(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
@@ -807,7 +806,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getRapidFlow());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugsConcept());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
     return cd;
   }
 
@@ -816,7 +815,7 @@ public class EriDSDCohortQueries {
     int upperBound = 190;
     Concept returnVisitDate = hivMetadata.getReturnVisitDateConcept();
     List<EncounterType> encounterTypes = new ArrayList<>();
-    encounterTypes.add(hivMetadata.getARVPediatriaSeguimentoEncounterType());
+    encounterTypes.add(hivMetadata.getPediatriaSeguimentoEncounterType());
     encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
     return getPatientsScheduled(returnVisitDate, encounterTypes, upperBound, lowerBound);
   }
@@ -1197,7 +1196,7 @@ public class EriDSDCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getFamilyApproach().getConceptId(),
             hivMetadata.getStartDrugs().getConceptId(),
-            hivMetadata.getContinueRegimen().getConceptId()));
+            hivMetadata.getContinueRegimenConcept().getConceptId()));
 
     return cd;
   }
@@ -1303,7 +1302,7 @@ public class EriDSDCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getCommunityDispensation().getConceptId(),
             hivMetadata.getStartDrugs().getConceptId(),
-            hivMetadata.getContinueRegimen().getConceptId()));
+            hivMetadata.getContinueRegimenConcept().getConceptId()));
 
     return cd;
   }
@@ -1404,7 +1403,7 @@ public class EriDSDCohortQueries {
     cd.setQuery(
         DsdQueries.getPatientsOnSarcomaKarposi(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getOtherDiagnosis().getConceptId(),
             hivMetadata.getKaposiSarcomaConcept().getConceptId()));
 
@@ -1421,7 +1420,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getGaac());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugsConcept());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
     return cd;
   }
 
@@ -1552,7 +1551,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getAccessionClubs());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugsConcept());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
     return cd;
   }
 
@@ -1768,7 +1767,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getQuarterlyDispensation());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugsConcept());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
     return cd;
   }
 
@@ -1884,7 +1883,7 @@ public class EriDSDCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getSingleStop().getConceptId(),
             hivMetadata.getStartDrugs().getConceptId(),
-            hivMetadata.getContinueRegimen().getConceptId()));
+            hivMetadata.getContinueRegimenConcept().getConceptId()));
     return sql;
   }
 
@@ -2263,7 +2262,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getQuarterlyDispensation());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugs());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
 
     return cd;
   }
@@ -2355,7 +2354,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getRapidFlow());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugs());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
 
     return cd;
   }
@@ -2433,7 +2432,7 @@ public class EriDSDCohortQueries {
     cd.setQuestion(hivMetadata.getGaac());
     cd.setOperator(SetComparator.IN);
     cd.addValue(hivMetadata.getStartDrugs());
-    cd.addValue(hivMetadata.getContinueRegimen());
+    cd.addValue(hivMetadata.getContinueRegimenConcept());
 
     return cd;
   }

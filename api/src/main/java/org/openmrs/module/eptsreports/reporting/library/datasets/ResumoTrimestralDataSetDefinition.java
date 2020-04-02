@@ -30,6 +30,7 @@ public class ResumoTrimestralDataSetDefinition extends BaseDataSet {
   private static final String B =
       "Nº de pacientes Transferidos de (+) outras US em TARV durante o mês";
 
+
   private EptsGeneralIndicator eptsGeneralIndicator;
 
   private GenericCohortQueries genericCohortQueries;

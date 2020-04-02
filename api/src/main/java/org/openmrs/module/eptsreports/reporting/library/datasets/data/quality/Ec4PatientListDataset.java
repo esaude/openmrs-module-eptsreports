@@ -43,7 +43,7 @@ public class Ec4PatientListDataset extends BaseDataSet {
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             EptsReportConstants.getProgramWorkflowStateIds(hivMetadata.getARTProgram())));
     return dsd;
   }
