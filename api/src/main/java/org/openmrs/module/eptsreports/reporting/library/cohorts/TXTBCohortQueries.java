@@ -278,9 +278,9 @@ public class TXTBCohortQueries {
   }
 
   /*
-  * Patients who started art on period considering the transferred in for that same period
-  * and patients who started art before period also considering the transferred in for that same period
-  */
+   * Patients who started art on period considering the transferred in for that same period
+   * and patients who started art before period also considering the transferred in for that same period
+   */
   public CohortDefinition artList() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
@@ -301,7 +301,6 @@ public class TXTBCohortQueries {
     addGeneralParameters(cd);
     return cd;
   }
-
 
   public CohortDefinition positiveInvestigationResult() {
     CohortDefinition cd =
