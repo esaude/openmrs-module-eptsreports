@@ -30,42 +30,34 @@ public class EptsQuarterlyCohortDefinitionEvaluator implements CohortDefinitionE
       throws EvaluationException {
     EptsQuarterlyCohortDefinition cd = (EptsQuarterlyCohortDefinition) cohortDefinition;
     EvaluatedCohort ret = new EvaluatedCohort(cohortDefinition, context);
-    Date onOrAfter = (Date) context.getParameterValue("onOrAfter");
-    Date onOrBefore = (Date) context.getParameterValue("onOrBefore");
+    Integer year = cd.getYear();
+    EptsQuarterlyCohortDefinition.Quarter quarter = cd.getQuarter();
     EptsQuarterlyCohortDefinition.Month month = cd.getMonth();
-    context.getParameterValues().putAll(getRange(month, onOrAfter, onOrBefore));
+    Map<String, Date> range = getRange(year, quarter, month);
+    context.getParameterValues().putAll(range);
     Cohort c = cohortDefinitionService.evaluate(cd.getCohortDefinition(), context);
     ret.getMemberIds().addAll(c.getMemberIds());
     return ret;
   }
 
   private Map<String, Date> getRange(
-      EptsQuarterlyCohortDefinition.Month month, Date onOrAfter, Date onOrBefore) {
-    Date startOfMonth1 = DateUtil.getStartOfMonth(onOrAfter);
-    Date startOfMonth2 = DateUtil.getStartOfMonth(onOrBefore);
+      Integer year,
+      EptsQuarterlyCohortDefinition.Quarter quarter,
+      EptsQuarterlyCohortDefinition.Month month) {
+    Map<String, Date> periodDates = DateUtil.getPeriodDates(year, quarter.ordinal() + 1, null);
     int monthAdjustment = 0;
-    int monthsBetween = DateUtil.monthsBetween(startOfMonth1, startOfMonth2);
-    if (monthsBetween != 2) {
-      throw new IllegalArgumentException(getMessage(onOrAfter, onOrBefore));
-    } else if (EptsQuarterlyCohortDefinition.Month.M2.equals(month)) {
+    if (EptsQuarterlyCohortDefinition.Month.M2.equals(month)) {
       monthAdjustment = 1;
     } else if (EptsQuarterlyCohortDefinition.Month.M3.equals(month)) {
       monthAdjustment = 2;
     }
     HashMap<String, Date> range = new HashMap<>();
-    Date start = DateUtil.getStartOfMonth(onOrAfter, monthAdjustment);
+    Date start = DateUtil.getStartOfMonth(periodDates.get("startDate"), monthAdjustment);
     Date end = DateUtil.getEndOfMonth(start);
     range.put("startDate", start);
     range.put("onOrAfter", start);
     range.put("endDate", end);
     range.put("onOrBefore", end);
     return range;
-  }
-
-  private String getMessage(Date onOrAfter, Date onOrBefore) {
-    return DateUtil.formatDate(onOrAfter, "dd MM yyyy")
-        + " to "
-        + DateUtil.formatDate(onOrBefore, "dd MM yyyy")
-        + " is not a valid quarter";
   }
 }
