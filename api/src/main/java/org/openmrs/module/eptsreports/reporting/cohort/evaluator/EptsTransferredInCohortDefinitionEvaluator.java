@@ -37,6 +37,8 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
     EptsTransferredInCohortDefinition cd = (EptsTransferredInCohortDefinition) cohortDefinition;
     EvaluatedCohort ret = new EvaluatedCohort(null, cd, context);
 
+    // Boolean B10Flag = cd.getB10Flag();
+
     SqlQueryBuilder q = new SqlQueryBuilder();
     q.append("SELECT p.patient_id ");
     q.append("FROM   patient p ");
@@ -59,14 +61,17 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
 
     q.append("       AND type.voided = 0 ");
     q.append("       AND type.concept_id = :typeOfPatient ");
-    q.append("       AND type.value_coded in (:preTarv, :tarv) ");
-
+    if (cd.getB10Flag() == true) {
+      q.append("       AND type.value_coded = :tarv ");
+    } else {
+      q.append("       AND type.value_coded in (:tarv,:preTarv) ");
+    }
     q.append("       AND opening.voided = 0 ");
     q.append("       AND opening.concept_id = :dateOfMasterCardFileOpening ");
     if (cd.getOnOrBefore() == null) {
-      q.append("     AND opening.value_datetime < :onOrAfter ");
+      q.append("     AND opening.value_datetime <= :onOrAfter ");
     } else if (cd.getOnOrAfter() == null) {
-      q.append("     AND opening.value_datetime < :onOrBefore ");
+      q.append("     AND opening.value_datetime <= :onOrBefore ");
     } else {
       q.append("     AND opening.value_datetime <= :onOrBefore ");
     }
@@ -88,7 +93,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
       q.append("    AND pp.program_id=:programEnrolled ");
       q.append("    AND location_id= :location AND  ");
       if (cd.getOnOrBefore() == null) {
-        q.append(" ps.start_date < :onOrAfter ");
+        q.append(" ps.start_date <= :onOrAfter ");
       } else {
         q.append(" ps.start_date <= :onOrBefore ");
       }
@@ -111,7 +116,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
       q.append("    AND pp.program_id=:programEnrolled");
       q.append("    AND location_id= :location");
       if (cd.getOnOrBefore() == null) {
-        q.append(" AND ps.start_date<:onOrAfter ");
+        q.append(" AND ps.start_date<=:onOrAfter ");
       } else {
         q.append(" AND ps.start_date<= :onOrBefore ");
       }
@@ -133,7 +138,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
       q.append("  AND pp.program_id=:programEnrolled2 ");
       q.append("  AND location_id= :location ");
       if (cd.getOnOrBefore() == null) {
-        q.append(" AND ps.start_date <:onOrAfter ");
+        q.append(" AND ps.start_date <=:onOrAfter ");
       } else {
         q.append(" AND ps.start_date <= :onOrBefore ");
       }
