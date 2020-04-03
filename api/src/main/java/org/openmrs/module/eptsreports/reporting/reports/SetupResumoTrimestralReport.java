@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.LocationDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.ResumoTrimestralDataSetDefinition;
+import org.openmrs.module.eptsreports.reporting.library.datasets.ResumoTrimestralStartDateDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
@@ -76,8 +77,10 @@ public class SetupResumoTrimestralReport extends EptsDataExportManager {
     rd.addDataSetDefinition(
         "R",
         mapStraightThrough(resumoTrimestralDataSetDefinition.constructResumoTrimestralDataset()));
+    rd.addDataSetDefinition("D", mapStraightThrough(new ResumoTrimestralStartDateDataset()));
     rd.setBaseCohortDefinition(
-        EptsReportUtils.map(genericCohortQueries.getBaseCohort(), "location=${location},endDate=${endDate}"));
+        EptsReportUtils.map(
+            genericCohortQueries.getBaseCohort(), "location=${location},endDate=${endDate}"));
     return rd;
   }
 

@@ -3,12 +3,15 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsQuarterlyCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -25,7 +28,7 @@ public class ResumoTrimestralDataSetDefinition extends BaseDataSet {
   public static final String NO_DIMENSION_OPTIONS = "";
 
   public static final String A =
-          "Nº de pacientes que iniciou TARV nesta unidade sanitária durante o mês";
+      "Nº de pacientes que iniciou TARV nesta unidade sanitária durante o mês";
 
   private EptsGeneralIndicator eptsGeneralIndicator;
 
@@ -35,9 +38,9 @@ public class ResumoTrimestralDataSetDefinition extends BaseDataSet {
 
   @Autowired
   public ResumoTrimestralDataSetDefinition(
-          EptsGeneralIndicator eptsGeneralIndicator,
-          GenericCohortQueries genericCohortQueries,
-          HivCohortQueries hivCohortQueries) {
+      EptsGeneralIndicator eptsGeneralIndicator,
+      GenericCohortQueries genericCohortQueries,
+      HivCohortQueries hivCohortQueries) {
     this.eptsGeneralIndicator = eptsGeneralIndicator;
     this.genericCohortQueries = genericCohortQueries;
     this.hivCohortQueries = hivCohortQueries;
@@ -56,7 +59,7 @@ public class ResumoTrimestralDataSetDefinition extends BaseDataSet {
   private Mapped<CohortIndicator> getA(EptsQuarterlyCohortDefinition.Month month) {
     CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
     CohortDefinition transferredIn =
-            hivCohortQueries.getPatientsTransferredFromOtherHealthFacility();
+        hivCohortQueries.getPatientsTransferredFromOtherHealthFacility();
     CompositionCohortDefinition wrap = new CompositionCohortDefinition();
     wrap.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     wrap.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
@@ -65,16 +68,31 @@ public class ResumoTrimestralDataSetDefinition extends BaseDataSet {
     wrap.addSearch("transferredIn", mapStraightThrough(transferredIn));
     wrap.setCompositionString("startedArt NOT transferredIn");
     CohortDefinition quarterly = getQuarterlyCohort(wrap, month);
-    String mappings = "onOrAfter=${startDate-12m},onOrBefore=${endDate-12m},location=${location}";
-    return mapStraightThrough(eptsGeneralIndicator.getIndicator(A, map(quarterly, mappings)));
+    String mappings = "year=${year-1},quarter=${quarter},location=${location}";
+    return mapStraightThrough(getCohortIndicator(map(quarterly, mappings)));
+  }
+
+  private CohortIndicator getCohortIndicator(Mapped<CohortDefinition> cohort) {
+    CohortIndicator indicator = new CohortIndicator(A);
+    indicator.setCohortDefinition(cohort);
+    indicator.addParameters(getParameters());
+    return indicator;
   }
 
   private EptsQuarterlyCohortDefinition getQuarterlyCohort(
-          CohortDefinition wrap, EptsQuarterlyCohortDefinition.Month month) {
+      CohortDefinition wrap, EptsQuarterlyCohortDefinition.Month month) {
     EptsQuarterlyCohortDefinition cd = new EptsQuarterlyCohortDefinition(wrap, month);
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.addParameters(getParameters());
     return cd;
+  }
+
+  @Override
+  public List<Parameter> getParameters() {
+    List<Parameter> parameters = new ArrayList<>();
+    parameters.add(new Parameter("year", "Year", Integer.class));
+    parameters.add(
+        new Parameter("quarter", "Quarter", EptsQuarterlyCohortDefinition.Quarter.class));
+    parameters.add(ReportingConstants.LOCATION_PARAMETER);
+    return parameters;
   }
 }

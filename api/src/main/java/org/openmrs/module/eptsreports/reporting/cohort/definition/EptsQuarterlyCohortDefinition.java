@@ -18,11 +18,20 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 @Caching(strategy = ConfigurationPropertyAndParameterCachingStrategy.class)
 public class EptsQuarterlyCohortDefinition extends BaseCohortDefinition {
 
+  public enum Quarter {
+    Q1,
+    Q2,
+    Q3,
+    Q4;
+  }
+
   public enum Month {
     M1,
     M2,
     M3
   };
+
+  @ConfigurationProperty private Quarter quarter;
 
   @ConfigurationProperty private Month month;
 
@@ -70,6 +79,14 @@ public class EptsQuarterlyCohortDefinition extends BaseCohortDefinition {
 
   public void setLocation(Location location) {
     this.location = location;
+  }
+
+  public Quarter getQuarter() {
+    return quarter;
+  }
+
+  public void setQuarter(Quarter quarter) {
+    this.quarter = quarter;
   }
 
   private void validateParameters(CohortDefinition cohortDefinition) {
