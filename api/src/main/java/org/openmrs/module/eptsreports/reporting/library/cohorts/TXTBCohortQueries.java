@@ -3,7 +3,11 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -11,6 +15,7 @@ import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.TXTBQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
@@ -48,6 +53,12 @@ public class TXTBCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+  }
+
+  private void addCodedObsParameters(CohortDefinition cd) {
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Dat", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
   }
 
   /**
@@ -266,25 +277,27 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /*
+   * Patients who started art on period considering the transferred in for that same period
+   * and patients who started art before period also considering the transferred in for that same period
+   */
   public CohortDefinition artList() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
-    String mappings = "onOrBefore=${endDate},location=${location}";
+    cd.addSearch(
+        "started-art-on-period-including-transferred-in",
+        EptsReportUtils.map(
+            genericCohortQueries.getStartedArtOnPeriod(true, true),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
-        "started-by-end-reporting-period",
-        EptsReportUtils.map(genericCohortQueries.getStartedArtBeforeDate(false), mappings));
-
-    cd.addSearch(
-        "trasnferedInProgram",
-        EptsReportUtils.map(hivCohortQueries.getTransferredInViaProgram(false), mappings));
-
-    cd.addSearch(
-        "trasnferedInMasterCard",
-        EptsReportUtils.map(hivCohortQueries.getTransferredInViaMastercard(), mappings));
+        "started-art-before-startDate-including-transferred-in",
+        EptsReportUtils.map(
+            genericCohortQueries.getStartedArtBeforeDate(true),
+            "onOrBefore=${startDate-1d},location=${location}"));
 
     cd.setCompositionString(
-        "started-by-end-reporting-period NOT (trasnferedInProgram OR trasnferedInMasterCard)");
+        "started-art-on-period-including-transferred-in OR started-art-before-startDate-including-transferred-in");
     addGeneralParameters(cd);
     return cd;
   }
@@ -344,11 +357,35 @@ public class TXTBCohortQueries {
                 true));
     addGeneralParameters(i);
     cd.addSearch("i", map(i, generalParameterMapping));
+
     CohortDefinition ii = getInTBProgram();
     cd.addSearch("ii", map(ii, generalParameterMapping));
+
+    CohortDefinition patientswithPulmonaryTbDate =
+        TXTBQueries.getPatientsWithObsBetweenDates(
+            "Patients with Pulmonary TB Date",
+            tbMetadata.getPulmonaryTB(),
+            hivMetadata.getPatientFoundYesConcept(),
+            Arrays.asList(hivMetadata.getMasterCardEncounterType()));
+    cd.addSearch(
+        "patientswithPulmonaryTbDate", map(patientswithPulmonaryTbDate, codedObsParameterMapping));
+
+    CohortDefinition patientsWhoInitiatedTbTreatment =
+        TXTBQueries.getPatientsWithObsBetweenDates(
+            "Patients marked as Tratamento TB– Inicio (I)",
+            hivMetadata.getTBTreatmentPlanConcept(),
+            hivMetadata.getStartDrugs(),
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                hivMetadata.getPediatriaSeguimentoEncounterType()));
+    cd.addSearch(
+        "patientsWhoInitiatedTbTreatment",
+        map(patientsWhoInitiatedTbTreatment, codedObsParameterMapping));
+
     CohortDefinition artList = artList();
     cd.addSearch("artList", map(artList, generalParameterMapping));
-    cd.setCompositionString("(i OR ii) AND artList");
+    cd.setCompositionString(
+        "(i OR ii OR patientswithPulmonaryTbDate OR patientsWhoInitiatedTbTreatment) AND artList");
     addGeneralParameters(cd);
     return cd;
   }
@@ -573,6 +610,423 @@ public class TXTBCohortQueries {
         "tuberculosis-symptomys OR active-tuberculosis OR tb-observations "
             + "OR application-for-laboratory-research OR tb-genexpert-test OR culture-test OR test-tb-lam");
     addGeneralParameters(cd);
+    return cd;
+  }
+
+  /**
+   * Get patients with specimen sent
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getSpecimenSent() {
+    CohortDefinition cd =
+        getPatientsWhoHaveSentSpecimen(
+            hivMetadata.getMisauLaboratorioEncounterType(),
+            hivMetadata.getApplicationForLaboratoryResearch(),
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getResultForBasiloscopia(),
+            tbMetadata.getTBGenexpertTest(),
+            tbMetadata.getTestTBLAM(),
+            tbMetadata.getCultureTest(),
+            commonMetadata.getPositive(),
+            commonMetadata.getNegative());
+    return cd;
+  }
+
+  /**
+   * Get patients who have a GeneXpert Positivo or Negativo registered in the investigations - Ficha
+   * Clinica - Mastercard OR have a GeneXpert request registered in the investigations - Ficha
+   * Clinica - Mastercard
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getGenExpert() {
+    CohortDefinition cd =
+        getPatientsWhoHaveGeneXpert(
+            hivMetadata.getApplicationForLaboratoryResearch(),
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            tbMetadata.getTBGenexpertTest(),
+            commonMetadata.getPositive(),
+            commonMetadata.getNegative());
+    return cd;
+  }
+
+  /**
+   * Get patients who have a Basiloscopia And Not GeneXpert registered
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getSmearMicroscopyOnly() {
+    CohortDefinition cd =
+        getSmearMicroscopyOnly(
+            hivMetadata.getMisauLaboratorioEncounterType(),
+            hivMetadata.getResultForBasiloscopia(),
+            commonMetadata.getPositive(),
+            commonMetadata.getNegative());
+    return cd;
+  }
+
+  /**
+   * Get patients who have a Additional Test AND Not GeneXpert AND Not Smear Microscopy Only
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getAdditionalTest() {
+    CohortDefinition cd =
+        getAdditionalTest(
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            tbMetadata.getTestTBLAM(),
+            tbMetadata.getCultureTest(),
+            hivMetadata.getApplicationForLaboratoryResearch(),
+            commonMetadata.getPositive(),
+            commonMetadata.getNegative());
+    return cd;
+  }
+
+  /**
+   * Get patients from denominator who have positive results returned registered during the period
+   * Have a ‘GeneXpert Positivo’ registered in the investigacoes – resultados laboratoriais - ficha
+   * clinica – mastercard OR Have a ‘resultado baciloscopia positive’ registered in the laboratory
+   * form OR Have a TB LAM positivo registered in the investigacoes – resultados laboratoriais ficha
+   * clinica – mastercard OR Have a cultura positiva registered in the investigacoes – resultados
+   * laboratoriais ficha clinica – mastercard
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPositiveResultsReturned() {
+    CohortDefinition cd =
+        getPositiveResultsReturned(
+            hivMetadata.getMisauLaboratorioEncounterType(),
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getResultForBasiloscopia(),
+            tbMetadata.getTBGenexpertTest(),
+            tbMetadata.getTestTBLAM(),
+            tbMetadata.getCultureTest(),
+            commonMetadata.getPositive(),
+            commonMetadata.getNegative());
+    return cd;
+  }
+
+  /**
+   * BR-8 Specimen Sent - Get patients from denominator AND tb_screened AND specimen_sent
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition specimenSent() {
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("specimenSent()");
+    definition.addSearch(
+        "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
+    definition.addSearch(
+        "specimen-sent", EptsReportUtils.map(getSpecimenSent(), codedObsParameterMapping));
+    definition.addSearch(
+        "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
+    addGeneralParameters(definition);
+    definition.setCompositionString("denominator AND specimen-sent AND positive-screening");
+    return definition;
+  }
+
+  /**
+   * BR-9 GenExpert MTB/RIF - Get patients from denominator AND tb_screened AND genexpert
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition genExpert() {
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("genExpert()");
+    definition.addSearch(
+        "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
+    definition.addSearch(
+        "genExpert", EptsReportUtils.map(getGenExpert(), codedObsParameterMapping));
+    definition.addSearch(
+        "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
+    addGeneralParameters(definition);
+    definition.setCompositionString("denominator AND genExpert AND positive-screening");
+    return definition;
+  }
+
+  /**
+   * BR-10 Get patients who have a Basiloscopia Positivo or Negativo registered in the laboratory
+   * form encounter type 13 Except patients identified in GeneXpert
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition smearMicroscopyOnly() {
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("smearMicroscopyOnly()");
+    definition.addSearch(
+        "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
+    definition.addSearch(
+        "smearMicroscopyOnly",
+        EptsReportUtils.map(getSmearMicroscopyOnly(), codedObsParameterMapping));
+    definition.addSearch(
+        "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
+    addGeneralParameters(definition);
+    definition.setCompositionString("denominator AND smearMicroscopyOnly AND positive-screening");
+    return definition;
+  }
+
+  /**
+   * BR-11 Additional Test - Denominator AND Screened AND Additional AND NOT Genexpert AND NOT
+   * Microscopy
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition otherAdditionalTest() {
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("otherAdditionalTest()");
+    definition.addSearch(
+        "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
+    definition.addSearch(
+        "otherAdditionalTest", EptsReportUtils.map(getAdditionalTest(), codedObsParameterMapping));
+    definition.addSearch(
+        "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
+    addGeneralParameters(definition);
+    definition.setCompositionString("denominator AND otherAdditionalTest AND positive-screening");
+    return definition;
+  }
+
+  /**
+   * BR-12 Positive Results Returned
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition positiveResultsReturned() {
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("positiveResultsReturned()");
+    definition.addSearch(
+        "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
+    definition.addSearch(
+        "positiveResultsReturned",
+        EptsReportUtils.map(getPositiveResultsReturned(), codedObsParameterMapping));
+    addGeneralParameters(definition);
+    definition.setCompositionString("denominator AND positiveResultsReturned");
+    return definition;
+  }
+
+  /**
+   * Get patients who sent specimen within date boundaries
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoHaveSentSpecimen(
+      EncounterType laboratory,
+      Concept applicationForLaboratoryResearch,
+      EncounterType fichaClinica,
+      Concept basiloscopiaExam,
+      Concept genexpertTest,
+      Concept tbLamTest,
+      Concept cultureTest,
+      Concept positive,
+      Concept negative) {
+
+    CohortDefinition basiloscopiaExamCohort =
+        getPatientsWithCodedObsBetweenDates(
+            laboratory, basiloscopiaExam, Arrays.asList(negative, positive));
+    CohortDefinition genexpertTestCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, genexpertTest, Arrays.asList(negative, positive));
+    CohortDefinition tbLamTestCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, tbLamTest, Arrays.asList(negative, positive));
+    CohortDefinition cultureTestCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, cultureTest, Arrays.asList(negative, positive));
+    CohortDefinition applicationForLaboratoryResearchCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica,
+            applicationForLaboratoryResearch,
+            Arrays.asList(genexpertTest, cultureTest, tbLamTest));
+
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("specimenSent()");
+    addCodedObsParameters(definition);
+
+    definition.addSearch(
+        "basiloscopiaExamCohort",
+        EptsReportUtils.map(basiloscopiaExamCohort, codedObsParameterMapping));
+    definition.addSearch(
+        "genexpertTestCohort", EptsReportUtils.map(genexpertTestCohort, codedObsParameterMapping));
+    definition.addSearch(
+        "tbLamTestCohort", EptsReportUtils.map(tbLamTestCohort, codedObsParameterMapping));
+    definition.addSearch(
+        "cultureTestCohort", EptsReportUtils.map(cultureTestCohort, codedObsParameterMapping));
+    definition.addSearch(
+        "applicationForLaboratoryResearchCohort",
+        EptsReportUtils.map(applicationForLaboratoryResearchCohort, codedObsParameterMapping));
+
+    definition.setCompositionString(
+        "basiloscopiaExamCohort OR genexpertTestCohort OR tbLamTestCohort OR cultureTestCohort OR applicationForLaboratoryResearchCohort");
+    return definition;
+  }
+
+  /**
+   * Get patients who have a GeneXpert Positivo or Negativo registered in the investigations - lab
+   * results - ficha clinica - mastercard OR Get patients who have a GeneXpert request registered in
+   * the investigations - lab results - ficha clinica - mastercard
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoHaveGeneXpert(
+      Concept applicationForLaboratoryResearch,
+      EncounterType fichaClinica,
+      Concept genexpertTest,
+      Concept positive,
+      Concept negative) {
+
+    CohortDefinition genexpertTestCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, genexpertTest, Arrays.asList(negative, positive));
+
+    CohortDefinition applicationForLaboratoryResearchCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, applicationForLaboratoryResearch, Arrays.asList(genexpertTest));
+
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("haveGeneXpert()");
+    addCodedObsParameters(definition);
+
+    definition.addSearch(
+        "genexpertTestCohort", EptsReportUtils.map(genexpertTestCohort, codedObsParameterMapping));
+    definition.addSearch(
+        "applicationForLaboratoryResearchCohort",
+        EptsReportUtils.map(applicationForLaboratoryResearchCohort, codedObsParameterMapping));
+
+    definition.setCompositionString(
+        "genexpertTestCohort OR applicationForLaboratoryResearchCohort");
+    return definition;
+  }
+
+  /**
+   * Smear Microscopy - Get patients who have a Basiloscopia Positivo or Negativo registered in the
+   * laboratory form encounter type 13 Except patients identified in GeneXpert
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getSmearMicroscopyOnly(
+      EncounterType laboratory, Concept basiloscopiaExam, Concept positive, Concept negative) {
+
+    CohortDefinition basiloscopiaCohort =
+        getPatientsWithCodedObsBetweenDates(
+            laboratory, basiloscopiaExam, Arrays.asList(negative, positive));
+
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("haveBasiloscopia()");
+    addCodedObsParameters(definition);
+
+    definition.addSearch(
+        "basiloscopiaCohort", EptsReportUtils.map(basiloscopiaCohort, codedObsParameterMapping));
+    definition.addSearch(
+        "genExpertCohort", EptsReportUtils.map(getGenExpert(), codedObsParameterMapping));
+
+    definition.setCompositionString("basiloscopiaCohort NOT genExpertCohort");
+    return definition;
+  }
+
+  /**
+   * Get patients who have a Additional Test AND Not GeneXpert AND Not Smear Microscopy Only
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getAdditionalTest(
+      EncounterType fichaClinica,
+      Concept tbLamTest,
+      Concept cultureTest,
+      Concept applicationForLaboratoryResearch,
+      Concept positive,
+      Concept negative) {
+
+    CohortDefinition tbLamTestCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, tbLamTest, Arrays.asList(negative, positive));
+    CohortDefinition cultureTestCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, cultureTest, Arrays.asList(negative, positive));
+    CohortDefinition applicationForLaboratoryResearchCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, applicationForLaboratoryResearch, Arrays.asList(cultureTest, tbLamTest));
+
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("additionalTest()");
+    addCodedObsParameters(definition);
+
+    definition.addSearch(
+        "tbLamTestCohort", EptsReportUtils.map(tbLamTestCohort, codedObsParameterMapping));
+    definition.addSearch(
+        "cultureTestCohort", EptsReportUtils.map(cultureTestCohort, codedObsParameterMapping));
+    definition.addSearch(
+        "applicationForLaboratoryResearchCohort",
+        EptsReportUtils.map(applicationForLaboratoryResearchCohort, codedObsParameterMapping));
+    definition.addSearch(
+        "genExpertCohort", EptsReportUtils.map(getGenExpert(), codedObsParameterMapping));
+    definition.addSearch(
+        "smearMicroscopyOnlyCohort",
+        EptsReportUtils.map(getSmearMicroscopyOnly(), codedObsParameterMapping));
+
+    definition.setCompositionString(
+        "(tbLamTestCohort OR cultureTestCohort OR applicationForLaboratoryResearchCohort) NOT genExpertCohort NOT smearMicroscopyOnlyCohort");
+    return definition;
+  }
+
+  /**
+   * Get patients who have positive results returned
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPositiveResultsReturned(
+      EncounterType laboratory,
+      EncounterType fichaClinica,
+      Concept basiloscopiaExam,
+      Concept genexpertTest,
+      Concept tbLamTest,
+      Concept cultureTest,
+      Concept positive,
+      Concept negative) {
+
+    CohortDefinition genexpertTestCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, genexpertTest, Arrays.asList(negative, positive));
+    CohortDefinition basiloscopiaExamCohort =
+        getPatientsWithCodedObsBetweenDates(
+            laboratory, basiloscopiaExam, Arrays.asList(negative, positive));
+    CohortDefinition tbLamTestCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, tbLamTest, Arrays.asList(negative, positive));
+    CohortDefinition cultureTestCohort =
+        getPatientsWithCodedObsBetweenDates(
+            fichaClinica, cultureTest, Arrays.asList(negative, positive));
+
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName("positiveResultsReturned()");
+    addCodedObsParameters(definition);
+
+    definition.addSearch(
+        "genexpertTestCohort", EptsReportUtils.map(genexpertTestCohort, codedObsParameterMapping));
+    definition.addSearch(
+        "basiloscopiaExamCohort",
+        EptsReportUtils.map(basiloscopiaExamCohort, codedObsParameterMapping));
+    definition.addSearch(
+        "tbLamTestCohort", EptsReportUtils.map(tbLamTestCohort, codedObsParameterMapping));
+    definition.addSearch(
+        "cultureTestCohort", EptsReportUtils.map(cultureTestCohort, codedObsParameterMapping));
+
+    definition.setCompositionString(
+        "genexpertTestCohort OR basiloscopiaExamCohort OR tbLamTestCohort OR cultureTestCohort");
+    return definition;
+  }
+
+  public CohortDefinition getPatientsWithCodedObsBetweenDates(
+      EncounterType encounterType, Concept question, List<Concept> answers) {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.setName("Patients With Coded Obs Between Dates");
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.setEncounterTypeList(Collections.singletonList(encounterType));
+    cd.setTimeModifier(TimeModifier.ANY);
+    cd.setQuestion(question);
+    cd.setValueList(answers);
+    cd.setOperator(SetComparator.IN);
     return cd;
   }
 }
