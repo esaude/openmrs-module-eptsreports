@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.joda.time.Months;
 import org.openmrs.Location;
 import org.openmrs.Obs;
@@ -115,23 +116,24 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
             || artStartDate == null) {
           continue;
         }
-        int artMinusIptStartDate =
-            Months.monthsBetween(
-                    new DateTime(artStartDate.getTime()),
-                    new DateTime(
-                        getEarliestIptStartDate(
-                                seguimentoOrFichaResumo, fichaClinicaMasterCardStartDrugsObs)
-                            .getTime()))
-                .getMonths();
+
+        DateTime artStartDateTime = new DateTime(artStartDate.getTime());
+        DateTime iptStartDateTime =
+            new DateTime(
+                getEarliestIptStartDate(
+                        seguimentoOrFichaResumo, fichaClinicaMasterCardStartDrugsObs)
+                    .getTime());
+        boolean isDiffMoreThanSix =
+            isDateDiffGreaterThanSixMonths(artStartDateTime, iptStartDateTime);
         if (artStartDate != null
             && artStartDate.compareTo(endDate) <= 0
-            && artMinusIptStartDate <= MINIMUM_DURATION_IN_MONTHS
+            && isDiffMoreThanSix == false
             && isNewlyEnrolledOnArtSearch == true) {
           map.put(patientId, new BooleanResult(true, this));
         }
         if (artStartDate != null
             && artStartDate.compareTo(endDate) <= 0
-            && artMinusIptStartDate > MINIMUM_DURATION_IN_MONTHS
+            && isDiffMoreThanSix == true
             && isNewlyEnrolledOnArtSearch == false) {
           map.put(patientId, new BooleanResult(true, this));
         }
@@ -171,6 +173,33 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
           ? getDateFromObs(seguimentoOrFichaResumoDate)
           : fichaClinicaMasterCardDate.getObsDatetime();
     }
+  }
+  /**
+   * Checks if the difference between ART start date and IPT start date is greater than six months,
+   * considering days if the difference in months is equal to 6 months
+   *
+   * @param artStartDateTime The ART start date
+   * @param iptStartDateTime The IPT start date
+   * @return true if the difference is greater to six months, false otherwise.
+   */
+  public boolean isDateDiffGreaterThanSixMonths(
+      DateTime artStartDateTime, DateTime iptStartDateTime) {
+    int artMinusIptStartDate =
+        Months.monthsBetween(new DateTime(artStartDateTime), new DateTime(iptStartDateTime))
+            .getMonths();
+    if (artMinusIptStartDate > MINIMUM_DURATION_IN_MONTHS) {
+      return true;
+    }
+    if (artMinusIptStartDate
+        == MINIMUM_DURATION_IN_MONTHS) { // Check if there are some days after the six months (eg. 6
+                                         // Months and 4 days)
+      DateTime newEnd = iptStartDateTime.minusMonths(artMinusIptStartDate);
+      int days = Days.daysBetween(artStartDateTime, newEnd).getDays();
+      if (days > 0) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private boolean getBooleanParameter(Map<String, Object> parameterValues, String parameterName) {
