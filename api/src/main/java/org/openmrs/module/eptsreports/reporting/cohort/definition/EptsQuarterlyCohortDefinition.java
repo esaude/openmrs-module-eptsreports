@@ -7,15 +7,15 @@ import org.openmrs.Location;
 import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
-import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyAndParameterCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
+import org.openmrs.module.reporting.evaluation.caching.NoCachingStrategy;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 /**
  * A cohort definition that computes date ranges for a specific month of a quarter of a year and
  * evaluates another wrapped cohort definition with the computed dates as parameter values.
  */
-@Caching(strategy = ConfigurationPropertyAndParameterCachingStrategy.class)
+@Caching(strategy = NoCachingStrategy.class)
 public class EptsQuarterlyCohortDefinition extends BaseCohortDefinition {
 
   public enum Quarter {
