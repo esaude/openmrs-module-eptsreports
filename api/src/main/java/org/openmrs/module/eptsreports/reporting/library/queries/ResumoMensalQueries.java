@@ -265,7 +265,7 @@ public class ResumoMensalQueries {
             + "inner join encounter e on p.patient_id=e.patient_id where encounter_type=18 and e.encounter_datetime < :startDate and e.location_id=:location and e.voided=0 and p.voided=0 group by p.patient_id)fila "
             + "inner join obs obs_fila on obs_fila.person_id=fila.patient_id "
             + "where obs_fila.voided=0 and obs_fila.concept_id=5096 and fila.data_levantamento=obs_fila.obs_datetime) maxFilaRecepcao group by patient_id "
-            + "having date_add(max(data_proximo_levantamento), INTERVAL 60 day )< :startDate)B7 ";
+            + "having date_add(max(data_proximo_levantamento), INTERVAL 60 day )< (:startDate - INTERVAL 1 day))B7 ";
 
     return query;
   }
