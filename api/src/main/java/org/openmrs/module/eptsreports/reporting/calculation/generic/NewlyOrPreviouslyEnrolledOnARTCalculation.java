@@ -12,6 +12,7 @@
 package org.openmrs.module.eptsreports.reporting.calculation.generic;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -83,6 +84,8 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
       endDate = (Date) context.getFromCache(ON_OR_BEFORE);
     }
 
+    // Start ART date is always checked against endDate, not endDate - 6m
+    parameterValues.put("onOrBefore", addMonths(endDate, 6));
     CalculationResultMap artStartDates =
         calculate(
             Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0),
@@ -207,6 +210,19 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
       }
     }
     return false;
+  }
+  /**
+   * Adds a number of months to the passed-in date
+   *
+   * @param date the date to increment
+   * @param monthsToAdd the number of months to add
+   * @return date incremented by {monthsToAdd} months
+   */
+  public static Date addMonths(Date date, int monthsToAdd) {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(date);
+    cal.add(Calendar.MONTH, monthsToAdd);
+    return cal.getTime();
   }
 
   private boolean getBooleanParameter(Map<String, Object> parameterValues, String parameterName) {
