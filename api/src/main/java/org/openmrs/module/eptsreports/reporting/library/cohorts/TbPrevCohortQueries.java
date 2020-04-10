@@ -78,7 +78,7 @@ public class TbPrevCohortQueries {
         "started-by-end-previous-reporting-period",
         EptsReportUtils.map(
             genericCohortQueries.getStartedArtBeforeDate(false),
-            "onOrBefore=${onOrBefore-6m},location=${location}"));
+            "onOrBefore=${onOrBefore},location=${location}"));
     definition.addSearch(
         "completed-isoniazid",
         EptsReportUtils.map(
@@ -129,7 +129,7 @@ public class TbPrevCohortQueries {
         "started-by-end-previous-reporting-period",
         EptsReportUtils.map(
             genericCohortQueries.getStartedArtBeforeDate(false),
-            "onOrBefore=${onOrBefore-6m},location=${location}"));
+            "onOrBefore=${onOrBefore},location=${location}"));
     definition.addSearch(
         "started-isoniazid",
         EptsReportUtils.map(
