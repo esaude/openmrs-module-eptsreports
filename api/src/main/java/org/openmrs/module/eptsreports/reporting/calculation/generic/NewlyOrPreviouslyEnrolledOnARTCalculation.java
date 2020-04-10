@@ -54,6 +54,8 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
 
   private static final int MINIMUM_DURATION_IN_MONTHS = 6;
 
+  private static final String ON_OR_AFTER = "onOrAfter";
+
   private static final String ON_OR_BEFORE = "onOrBefore";
 
   @Autowired private HivMetadata hivMetadata;
@@ -70,7 +72,12 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
     boolean isNewlyEnrolledOnArtSearch =
         getBooleanParameter(parameterValues, "isNewlyEnrolledOnArtSearch");
     Location location = (Location) context.getFromCache("location");
+    Date startDate = (Date) parameterValues.get(ON_OR_AFTER);
     Date endDate = (Date) parameterValues.get(ON_OR_BEFORE);
+
+    if (startDate == null) {
+      startDate = (Date) context.getFromCache(ON_OR_AFTER);
+    }
 
     if (endDate == null) {
       endDate = (Date) context.getFromCache(ON_OR_BEFORE);
@@ -88,7 +95,7 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
             null,
             location,
             false,
-            null,
+            startDate,
             endDate,
             null,
             cohort,
@@ -101,7 +108,7 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
             Arrays.asList(location),
             Arrays.asList(hivMetadata.getStartDrugs()),
             TimeQualifier.FIRST,
-            null,
+            startDate,
             endDate,
             context);
     if (endDate != null) {
@@ -192,7 +199,7 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
     }
     if (artMinusIptStartDate
         == MINIMUM_DURATION_IN_MONTHS) { // Check if there are some days after the six months (eg. 6
-                                         // Months and 4 days)
+      // Months and 4 days)
       DateTime newEnd = iptStartDateTime.minusMonths(artMinusIptStartDate);
       int days = Days.daysBetween(artStartDateTime, newEnd).getDays();
       if (days > 0) {

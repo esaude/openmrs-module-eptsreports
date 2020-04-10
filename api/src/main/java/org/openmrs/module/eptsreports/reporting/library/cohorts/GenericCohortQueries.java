@@ -409,6 +409,7 @@ public class GenericCohortQueries {
     cd.setName("Newly Or Previously Enrolled On ART");
     cd.addCalculationParameter("isNewlyEnrolledOnArtSearch", isNewlyEnrolledOnArtSearch);
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     return cd;
   }
