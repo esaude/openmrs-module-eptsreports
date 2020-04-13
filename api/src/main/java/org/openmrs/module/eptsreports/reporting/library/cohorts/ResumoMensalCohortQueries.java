@@ -26,7 +26,6 @@ import org.openmrs.module.eptsreports.reporting.calculation.resumomensal.ResumoM
 import org.openmrs.module.eptsreports.reporting.calculation.resumomensal.ResumoMensalTbExclusionCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.BaseFghCalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
-import org.openmrs.module.eptsreports.reporting.library.queries.TxNewQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -202,7 +201,7 @@ public class ResumoMensalCohortQueries {
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
                 "findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod",
-                TxNewQueries.QUERY.findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod),
+                ResumoMensalQueries.findPatientsWithAProgramStateMarkedAsTransferedInInAPeriodB2),
             mappings));
 
     definition.addSearch(
@@ -210,8 +209,8 @@ public class ResumoMensalCohortQueries {
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
                 "findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard",
-                TxNewQueries.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard),
+                ResumoMensalQueries
+                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardB2),
             mappings));
 
     definition.addSearch(
