@@ -5,7 +5,10 @@ import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraig
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
@@ -18,6 +21,7 @@ import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.Ti
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -558,17 +562,12 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "in-tb-program-previous-period",
         EptsReportUtils.map(
-            getInTBProgram(),
+            getPatientsInTBProgramInThePreviousPeriod(),
             "startDate=${startDate-6m},endDate=${startDate-1d},location=${location}"));
-
     definition.addSearch(
         "transferred-out",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
-                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()),
+            getPatientTransferredOutWithNODrugPickAfterTheTransferredDate(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     definition.setCompositionString(
@@ -578,6 +577,142 @@ public class TXTBCohortQueries {
             + "NOT ((transferred-out NOT (started-tb-treatment OR in-tb-program)) OR started-tb-treatment-previous-period OR in-tb-program-previous-period)");
 
     return definition;
+  }
+
+  public CohortDefinition getPatientTransferredOutWithNODrugPickAfterTheTransferredDate() {
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patient Transferred Out With No Drug Pick After TheTransferred out Date");
+
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("artProgram", hivMetadata.getARTProgram().getProgramId());
+    map.put(
+        "transferredOutToAnotherHealthFacilityWorkflowState",
+        hivMetadata
+            .getTransferredOutToAnotherHealthFacilityWorkflowState()
+            .getProgramWorkflowStateId());
+    map.put(
+        "pharmaciaEncounterType", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    map.put(
+        "masterCardDrugPickupEncounterType",
+        hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    map.put(
+        "masterCardEncounterType", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("transferredOutConcept", hivMetadata.getTransferredOutConcept().getConceptId());
+    map.put(
+        "adultoSeguimentoEncounterType",
+        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put(
+        "stateOfStayOfPreArtPatient", hivMetadata.getStateOfStayOfPreArtPatient().getConceptId());
+    map.put("stateOfStayOfArtPatient", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
+    String sql =
+        "SELECT  transferred_out.patient_id  "
+            + " FROM  "
+            + " (SELECT pg.patient_id AS patient_id, ps.start_date AS start_date "
+            + " FROM patient p "
+            + "    INNER JOIN patient_program pg  "
+            + "        ON p.patient_id=pg.patient_id "
+            + "    INNER JOIN patient_state ps  "
+            + "        ON pg.patient_program_id=ps.patient_program_id  "
+            + " WHERE pg.voided=0  "
+            + "    AND ps.voided=0  "
+            + "    AND p.voided=0  "
+            + "    AND pg.program_id = ${artProgram}  "
+            + "    AND ps.state = ${transferredOutToAnotherHealthFacilityWorkflowState} "
+            + "    AND ps.end_date IS NULL  "
+            + "    AND ps.start_date  "
+            + "        BETWEEN :startDate AND :endDate  "
+            + "        AND location_id= :location "
+            + " GROUP BY pg.patient_id"
+            + " UNION  "
+            + " SELECT p.patient_id, e.encounter_datetime AS transferred_out_date  "
+            + " FROM patient p   "
+            + "    JOIN encounter e   "
+            + "        ON p.patient_id = e.patient_id   "
+            + "    JOIN obs o   "
+            + "        ON e.encounter_id = o.encounter_id   "
+            + " WHERE p.voided = 0   "
+            + "    AND e.voided = 0  "
+            + "    AND e.location_id = :location   "
+            + "    AND e.encounter_type IN (${adultoSeguimentoEncounterType}, ${masterCardEncounterType})   "
+            + "    AND e.encounter_datetime <= :endDate   "
+            + "    AND o.voided = 0   "
+            + "    AND o.concept_id IN (${stateOfStayOfPreArtPatient}, ${stateOfStayOfArtPatient})  "
+            + "    AND o.value_coded = ${transferredOutConcept}  "
+            + " GROUP BY p.patient_id "
+            + " ) transferred_out "
+            + " WHERE  transferred_out.patient_id NOT IN "
+            + "    (SELECT p.patient_id  "
+            + "     FROM  patient p  "
+            + "        INNER JOIN  encounter e  "
+            + "            ON e.patient_id = p.patient_id "
+            + "     WHERE  e.encounter_type = ${pharmaciaEncounterType} "
+            + "        AND e.encounter_datetime > transferred_out.start_date  "
+            + "        AND e.encounter_datetime <= :endDate  "
+            + "        AND e.location_id = :location "
+            + "        AND p.voided = 0 "
+            + "        AND e.voided = 0 "
+            + " UNION "
+            + "         SELECT p.patient_id  "
+            + "     FROM  patient p  "
+            + "        INNER JOIN  encounter e  "
+            + "            ON  e.patient_id = p.patient_id "
+            + "            INNER JOIN  obs o "
+            + "            ON  e.encounter_id = o.encounter_id "
+            + "     WHERE  e.encounter_type  = ${masterCardDrugPickupEncounterType} "
+            + "        AND o.value_datetime > transferred_out.start_date  "
+            + "        AND o.value_datetime <= :endDate  "
+            + "        AND e.location_id = :location  "
+            + "        AND p.voided = 0  "
+            + "        AND e.voided = 0 "
+            + "        AND o.voided = 0 )"
+            + " GROUP BY transferred_out.patient_id ";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    String replacedStrinbg = sb.replace(sql).toString();
+
+    cd.setQuery(replacedStrinbg);
+    return cd;
+  }
+  /**
+   * in tb in the previeus period
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsInTBProgramInThePreviousPeriod() {
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("in tb in the previeus period");
+
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("tbProgram", tbMetadata.getTBProgram().getProgramId());
+    String sql =
+        " SELECT pg.patient_id "
+            + " FROM patient p "
+            + "    INNER JOIN patient_program pg "
+            + "        ON p.patient_id=pg.patient_id "
+            + " WHERE pg.voided=0 "
+            + "    AND p.voided=0 "
+            + "    AND program_id= ${tbProgram}"
+            + "    AND date_enrolled "
+            + "        BETWEEN :startDate AND :endDate "
+            + "    AND location_id= :location "
+            + " GROUP BY pg.patient_id ";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    String replacedStrinbg = sb.replace(sql).toString();
+
+    cd.setQuery(replacedStrinbg);
+
+    return cd;
   }
 
   public CohortDefinition getNewOnArt() {
