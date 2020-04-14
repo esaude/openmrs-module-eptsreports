@@ -138,7 +138,7 @@ public class TbMetadata extends ProgramsMetadata {
    *
    * @return
    */
-  public Concept getTBGenexpertTest() {
+  public Concept getTBGenexpertTestConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.TBGenexpertTestUuid");
     return getConcept(uuid);
@@ -213,7 +213,11 @@ public class TbMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.tbRastreioEncounterTypeUuid");
     return getEncounterType(uuid);
   }
-
+  /**
+   * concept_id 6257
+   *
+   * @return
+   */
   public Concept getTbScreeningConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.tbScreeningConceptUuid");

@@ -320,16 +320,39 @@ public class TXTBQueries {
    */
   public static String tbGenexpertTest(
       Integer encounterTypeId, Integer tbGenexpertTest, Integer positive, Integer negative) {
-    return String.format(
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
-            + "ON p.patient_id = e.patient_id "
-            + "INNER JOIN obs o "
-            + "ON e.encounter_id = o.encounter_id "
-            + "WHERE e.location_id = :location AND e.encounter_type = %s "
-            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s)) "
-            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
-            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
-        encounterTypeId, tbGenexpertTest, positive, negative);
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("encounterTypeId", encounterTypeId);
+    map.put("tbGenexpertTest", tbGenexpertTest);
+    map.put("positive", positive);
+    map.put("negative", negative);
+
+    StringBuilder query = new StringBuilder();
+    query.append(" SELECT p.patient_id ");
+    query.append(" FROM patient p ");
+    query.append("		INNER JOIN encounter e ");
+    query.append("			ON p.patient_id = e.patient_id ");
+    query.append("		INNER JOIN obs o ");
+    query.append("			ON e.encounter_id = o.encounter_id ");
+    query.append(" WHERE e.location_id = :location ");
+    query.append("       AND e.encounter_type = ${encounterTypeId} ");
+    query.append("		AND o.concept_id = ${tbGenexpertTest}   ");
+    if (positive != null && negative != null) {
+      query.append("   AND o.value_coded IN (${positive} , ${negative} ) ");
+    }
+    if (positive != null) {
+      query.append("   AND o.value_coded = ${positive}  ");
+    }
+    if (negative != null) {
+      query.append("   AND o.value_coded = ${negative} ");
+    }
+    query.append("		AND e.encounter_datetime BETWEEN :startDate AND :endDate ");
+    query.append("		AND p.voided = 0 AND e.voided = 0 AND o.voided = 0");
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    String replacedQuery = sb.replace(query.toString());
+
+    return replacedQuery;
   }
 
   /**

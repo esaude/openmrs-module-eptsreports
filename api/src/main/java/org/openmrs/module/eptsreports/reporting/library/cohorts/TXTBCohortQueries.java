@@ -192,20 +192,20 @@ public class TXTBCohortQueries {
             TXTBQueries.applicationForLaboratoryResearch(
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                 hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
-                tbMetadata.getTBGenexpertTest().getConceptId(),
+                tbMetadata.getTBGenexpertTestConcept().getConceptId(),
                 tbMetadata.getCultureTest().getConceptId(),
                 tbMetadata.getTestTBLAM().getConceptId()));
     addGeneralParameters(cd);
     return cd;
   }
 
-  public CohortDefinition getTBGenexpertTest() {
+  public CohortDefinition getTBGenexpertTestCohort() {
     CohortDefinition cd =
         genericCohortQueries.generalSql(
             "TBGenexpertTest",
             TXTBQueries.tbGenexpertTest(
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                tbMetadata.getTBGenexpertTest().getConceptId(),
+                tbMetadata.getTBGenexpertTestConcept().getConceptId(),
                 commonMetadata.getPositive().getConceptId(),
                 commonMetadata.getNegative().getConceptId()));
     addGeneralParameters(cd);
@@ -303,6 +303,42 @@ public class TXTBCohortQueries {
     cd.setCompositionString(
         "started-art-on-period-including-transferred-in OR started-art-before-startDate-including-transferred-in");
     addGeneralParameters(cd);
+    return cd;
+  }
+  /**
+   * BR-12 All patients from denominator who have the following requests/results registered during
+   * the period:
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsPositiveResultsReturnedComposition() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    CohortDefinition genexpertTestPositive =
+        genericCohortQueries.generalSql(
+            "genexpert-positivo",
+            TXTBQueries.tbGenexpertTest(
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                tbMetadata.getTBGenexpertTestConcept().getConceptId(),
+                commonMetadata.getPositive().getConceptId(),
+                null));
+
+    cd.addSearch("genexpert-positivo", EptsReportUtils.map(genexpertTestPositive, mappings));
+
+    cd.addSearch("result-basiloscopia", EptsReportUtils.map(getResultForBasiloscopia(), mappings));
+
+    cd.addSearch("test-tb-lam", EptsReportUtils.map(getTestTBLAM(), mappings));
+
+    cd.addSearch("culture-test", EptsReportUtils.map(getCultureTest(), mappings));
+
+    cd.setCompositionString(
+        "genexpert-positivo OR result-basiloscopia OR test-tb-lam OR culture-test");
+
     return cd;
   }
 
@@ -412,16 +448,156 @@ public class TXTBCohortQueries {
 
   public CohortDefinition positiveScreening() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.addSearch("A", EptsReportUtils.map(codedYesTbScreening(), codedObsParameterMapping));
-    cd.addSearch("B", mapStraightThrough(positiveInvestigationResultComposition()));
-    cd.addSearch("C", mapStraightThrough(tbTreatmentStartDateWithinReportingDate()));
-    cd.addSearch("D", mapStraightThrough(getInTBProgram()));
+    cd.addSearch("A", mapStraightThrough(getPatientsWithAtLeastOneYesForTBScreening()));
+    cd.addSearch("B", mapStraightThrough(getPatientsWithAtLeastPosNegInvestigationResultTB()));
+    cd.addSearch("C", mapStraightThrough(getPatientsStartTBTreatment()));
+    cd.addSearch("D", mapStraightThrough(getPatientsInTBProgramInThePreviousPeriod()));
     cd.addSearch("E", mapStraightThrough(getResultForBasiloscopia()));
     cd.addSearch("F", mapStraightThrough(getTBTreatmentStart()));
     cd.addSearch("G", mapStraightThrough(getPulmonaryTB()));
     cd.addSearch("H", mapStraightThrough(getPatientsWithAtLeastOneResponseForPositiveScreeningH()));
     cd.setCompositionString("A OR B OR C OR D OR E OR F OR G OR H");
     addGeneralParameters(cd);
+    return cd;
+  }
+
+  /** TB Treatment Start Date ( Ficha de Seguimento) within reporting period */
+  public CohortDefinition getPatientsStartTBTreatment() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
+    cd.setName("Patients With At Least One Yes For TB Screening During the reporting  period");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    Map<String, Integer> map = new HashMap<String, Integer>();
+    map.put(
+        "adultoSeguimentoEncounterType",
+        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put(
+        "pediatriaSeguimentoEncounterType",
+        hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    map.put("tbDrugTreatmentStartDate", tbMetadata.getTBDrugTreatmentStartDate().getConceptId());
+
+    String query =
+        "SELECT p.patient_id "
+            + "FROM patient p "
+            + "    INNER JOIN encounter e "
+            + "        ON e.patient_id = p.patient_id "
+            + "    INNER JOIN obs o "
+            + "        ON o.encounter_id = e.encounter_id "
+            + "WHERE "
+            + "    p.voided = 0 AND "
+            + "    e.voided = 0 AND  "
+            + "    o.voided = 0 AND "
+            + "    e.encounter_type IN (${adultoSeguimentoEncounterType},${pediatriaSeguimentoEncounterType})  AND "
+            + "    o.concept_id = ${tbDrugTreatmentStartDate} AND "
+            + "    e.encounter_datetime BETWEEN :startDate AND :endDate AND "
+            + "    e.location_id  = :location "
+            + "GROUP BY p.patient_id;";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    String replaceQuery = sb.replace(query);
+
+    cd.setQuery(replaceQuery);
+
+    return cd;
+  }
+  /**
+   * all patients with at least one “POS” or “NEG” selected for “Resultado da Investigação para TB
+   * de BK e/ou RX?” (Ficha de Seguimento) during reporting period
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWithAtLeastPosNegInvestigationResultTB() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
+    cd.setName("Patients With At Least One Yes For TB Screening During the reporting  period");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    Map<String, Integer> map = new HashMap<String, Integer>();
+    map.put(
+        "adultoSeguimentoEncounterType",
+        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put(
+        "pediatriaSeguimentoEncounterType",
+        hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    map.put("researchResultConcept", tbMetadata.getResearchResultConcept().getConceptId());
+    map.put("positiveConcept", tbMetadata.getPositiveConcept().getConceptId());
+    map.put("negativeConcept", tbMetadata.getNegativeConcept().getConceptId());
+
+    String query =
+        "SELECT p.patient_id "
+            + "FROM patient p "
+            + "    INNER JOIN encounter e "
+            + "        ON e.patient_id = p.patient_id "
+            + "    INNER JOIN obs o "
+            + "        ON o.encounter_id = e.encounter_id "
+            + "WHERE "
+            + "    p.voided = 0 AND "
+            + "    e.voided = 0 AND  "
+            + "    o.voided = 0 AND "
+            + "    e.encounter_type IN (${adultoSeguimentoEncounterType},${pediatriaSeguimentoEncounterType})  AND "
+            + "    o.concept_id = ${researchResultConcept} AND "
+            + "    o.value_coded IN (${positiveConcept},${negativeConcept}) AND "
+            + "    e.encounter_datetime BETWEEN :startDate AND :endDate AND "
+            + "    e.location_id  = :location "
+            + "GROUP BY p.patient_id;";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    String replaceQuery = sb.replace(query);
+
+    cd.setQuery(replaceQuery);
+
+    return cd;
+  }
+  /**
+   * all patients with at least one “S” (Yes) selected for TB Screening “Rastreio TB” (Ficha de
+   * Seguimento Adult or Pediatric) during the reporting period;
+   */
+  public CohortDefinition getPatientsWithAtLeastOneYesForTBScreening() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
+    cd.setName("Patients With At Least One Yes For TB Screening During the reporting  period");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    Map<String, Integer> map = new HashMap<String, Integer>();
+    map.put(
+        "adultoSeguimentoEncounterType",
+        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put(
+        "pediatriaSeguimentoEncounterType",
+        hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    map.put("tbScreeningConcept", tbMetadata.getTbScreeningConcept().getConceptId());
+    map.put("getYesConcept", commonMetadata.getYesConcept().getConceptId());
+
+    String query =
+        "SELECT p.patient_id "
+            + "FROM patient p "
+            + "    INNER JOIN encounter e "
+            + "        ON e.patient_id = p.patient_id "
+            + "    INNER JOIN obs o "
+            + "        ON o.encounter_id = e.encounter_id "
+            + "WHERE "
+            + "    p.voided = 0 AND "
+            + "    e.voided = 0 AND  "
+            + "    o.voided = 0 AND "
+            + "    e.encounter_type IN (${adultoSeguimentoEncounterType},${pediatriaSeguimentoEncounterType})  AND "
+            + "    o.concept_id = ${tbScreeningConcept} AND "
+            + "    o.value_coded = ${getYesConcept} AND "
+            + "    e.encounter_datetime BETWEEN :startDate AND :endDate AND "
+            + "    e.location_id  = :location "
+            + "GROUP BY p.patient_id;";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    String replaceQuery = sb.replace(query);
+
+    cd.setQuery(replaceQuery);
+
     return cd;
   }
 
@@ -542,7 +718,8 @@ public class TXTBCohortQueries {
         EptsReportUtils.map(getApplicationForLaboratoryResearch(), generalParameterMapping));
 
     definition.addSearch(
-        "tb-genexpert-test", EptsReportUtils.map(getTBGenexpertTest(), generalParameterMapping));
+        "tb-genexpert-test",
+        EptsReportUtils.map(getTBGenexpertTestCohort(), generalParameterMapping));
 
     definition.addSearch(
         "culture-test", EptsReportUtils.map(getCultureTest(), generalParameterMapping));
@@ -738,7 +915,7 @@ public class TXTBCohortQueries {
     cd.addSearch(
         "application-for-laboratory-research",
         mapStraightThrough(getApplicationForLaboratoryResearch()));
-    cd.addSearch("tb-genexpert-test", mapStraightThrough(getTBGenexpertTest()));
+    cd.addSearch("tb-genexpert-test", mapStraightThrough(getTBGenexpertTestCohort()));
     cd.addSearch("culture-test", mapStraightThrough(getCultureTest()));
     cd.addSearch("test-tb-lam", mapStraightThrough(getTestTBLAM()));
     cd.setCompositionString(
@@ -760,7 +937,7 @@ public class TXTBCohortQueries {
             hivMetadata.getApplicationForLaboratoryResearch(),
             hivMetadata.getAdultoSeguimentoEncounterType(),
             hivMetadata.getResultForBasiloscopia(),
-            tbMetadata.getTBGenexpertTest(),
+            tbMetadata.getTBGenexpertTestConcept(),
             tbMetadata.getTestTBLAM(),
             tbMetadata.getCultureTest(),
             commonMetadata.getPositive(),
@@ -780,7 +957,7 @@ public class TXTBCohortQueries {
         getPatientsWhoHaveGeneXpert(
             hivMetadata.getApplicationForLaboratoryResearch(),
             hivMetadata.getAdultoSeguimentoEncounterType(),
-            tbMetadata.getTBGenexpertTest(),
+            tbMetadata.getTBGenexpertTestConcept(),
             commonMetadata.getPositive(),
             commonMetadata.getNegative());
     return cd;
@@ -834,7 +1011,7 @@ public class TXTBCohortQueries {
             hivMetadata.getMisauLaboratorioEncounterType(),
             hivMetadata.getAdultoSeguimentoEncounterType(),
             hivMetadata.getResultForBasiloscopia(),
-            tbMetadata.getTBGenexpertTest(),
+            tbMetadata.getTBGenexpertTestConcept(),
             tbMetadata.getTestTBLAM(),
             tbMetadata.getCultureTest(),
             commonMetadata.getPositive(),
