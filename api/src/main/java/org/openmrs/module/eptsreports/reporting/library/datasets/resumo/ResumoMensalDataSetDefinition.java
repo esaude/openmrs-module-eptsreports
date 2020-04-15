@@ -205,29 +205,6 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
         "Adolescentes patients",
         getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2(),
         resumoMensalAandBdisaggregations.getAdolescentesColumns());
-    // B3 indicators
-    addRow(
-        dsd,
-        "B3TC",
-        "Patients under 15 years",
-        getSumPatientsB3(),
-        resumoMensalAandBdisaggregations.getUnder14YearsColumns());
-
-    addRow(
-        dsd,
-        "B3TA",
-        "Patients over 15 years - adults",
-        getSumPatientsB3(),
-        resumoMensalAandBdisaggregations.getAdultPatients());
-
-    dsd.addColumn("B3TP", "Total patients - Total Geral", getSumPatientsB3(), "");
-
-    addRow(
-        dsd,
-        "B3TAD",
-        "Adolescentes patients",
-        getSumPatientsB3(),
-        resumoMensalAandBdisaggregations.getAdolescentesColumns());
 
     // B5 indicators
     addRow(
@@ -560,12 +537,6 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
             mapStraightThrough(
                 resumoMensalCohortQueries
                     .getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2())));
-  }
-
-  private Mapped<CohortIndicator> getSumPatientsB3() {
-    return mapStraightThrough(
-        eptsGeneralIndicator.getIndicator(
-            "B3", mapStraightThrough(resumoMensalCohortQueries.getSumPatientsB3())));
   }
 
   private Mapped<CohortIndicator>

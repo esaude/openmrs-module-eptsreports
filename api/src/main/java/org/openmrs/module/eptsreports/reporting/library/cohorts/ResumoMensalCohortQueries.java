@@ -245,44 +245,6 @@ public class ResumoMensalCohortQueries {
     return definition;
   }
 
-  @DocumentedDefinition(value = "B3")
-  public CohortDefinition getSumPatientsB3() {
-
-    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
-
-    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-
-    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-    definition.setName("Sum B9");
-
-    definition.addSearch(
-        "B13", EptsReportUtils.map(findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(), mappings));
-
-    definition.addSearch("B9", EptsReportUtils.map(getSumPatientsB9(), mappings));
-
-    definition.addSearch(
-        "B12",
-        EptsReportUtils.map(
-            this.findPatientsWhoAreCurrentlyEnrolledOnArtMOHLastMonthB12(), mappings));
-
-    definition.addSearch(
-        "B1",
-        EptsReportUtils.map(
-            getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(), mappings));
-
-    definition.addSearch(
-        "B2",
-        EptsReportUtils.map(
-            getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2(),
-            mappings));
-
-    definition.setCompositionString("(B13 OR B9) NOT (B12 OR B1 OR B2)");
-
-    return definition;
-  }
-
   /**
    * B.5: Number of patients transferred-out from another HFs during the current month
    *
