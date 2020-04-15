@@ -154,8 +154,17 @@ public class ResumoTrimestralCohortQueries {
 
   /** @return Number of Deceased patients in the actual cohort */
   public CohortDefinition getL() {
-    AllPatientsCohortDefinition cd = new AllPatientsCohortDefinition();
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    CohortDefinition cohortA = getA();
+    CohortDefinition cohortB = getB();
+    CohortDefinition cohortC = getC();
+    CohortDefinition dead = genericCohortQueries.getDeceasedPatients();
     cd.setParameters(getParameters());
+    cd.addSearch("A", mapStraightThrough(cohortA));
+    cd.addSearch("B", mapStraightThrough(cohortB));
+    cd.addSearch("C", mapStraightThrough(cohortC));
+    cd.addSearch("dead", mapStraightThrough(dead));
+    cd.setCompositionString("((A OR B) AND NOT C) AND dead");
     return cd;
   }
 
