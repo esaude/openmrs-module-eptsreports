@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.Arrays;
@@ -10,9 +11,12 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsQuarterlyCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.AllPatientsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -124,9 +128,29 @@ public class ResumoTrimestralCohortQueries {
 
   /** @return Number of patients who is in the 2nd line treatment during the cohort month */
   public CohortDefinition getG() {
-    AllPatientsCohortDefinition cd = new AllPatientsCohortDefinition();
-    cd.setParameters(getParameters());
-    return cd;
+    CohortDefinition indicatorA = getA();
+    CohortDefinition indicatorB = getB();
+    CohortDefinition indicatorC = getC();
+    CohortDefinition indicatorI = getI();
+    CohortDefinition indicatorJ = getJ();
+    CohortDefinition indicatorL = getL();
+    CohortDefinition lastSecondTherapeuticLine =
+        getPatientsWithLastCodedObsInSecondTherapeuticLineInMasterCardBeforeMonthEndDate();
+
+    CompositionCohortDefinition comp = new CompositionCohortDefinition();
+    comp.setParameters(getParameters());
+    comp.addSearch("A", mapStraightThrough(indicatorA));
+    comp.addSearch("B", mapStraightThrough(indicatorB));
+    comp.addSearch("C", mapStraightThrough(indicatorC));
+    comp.addSearch("I", mapStraightThrough(indicatorI));
+    comp.addSearch("J", mapStraightThrough(indicatorJ));
+    comp.addSearch("L", mapStraightThrough(indicatorL));
+    comp.addSearch(
+        "lastSecondTherapeuticLine",
+        map(lastSecondTherapeuticLine, "onOrBefore=${onOrBefore}, locationList=${location}"));
+    comp.setCompositionString(
+        "((A OR B) AND NOT (C OR I OR J OR L)) AND lastSecondTherapeuticLine");
+    return comp;
   }
 
   /**
@@ -194,6 +218,25 @@ public class ResumoTrimestralCohortQueries {
     cd.addSearch("C", mapStraightThrough(cohortC));
     cd.addSearch("dead", mapStraightThrough(dead));
     cd.setCompositionString("((A OR B) AND NOT C) AND dead");
+    return cd;
+  }
+
+  /**
+   * All patients with last observation registered in Second Therapeutic Line in Master Card before
+   * MonthEndDate
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition
+      getPatientsWithLastCodedObsInSecondTherapeuticLineInMasterCardBeforeMonthEndDate() {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.addParameter(new Parameter("onOrBefore", "End date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addEncounterType(hivMetadata.getMasterCardEncounterType());
+    cd.setTimeModifier(TimeModifier.LAST);
+    cd.setQuestion(hivMetadata.getTherapeuticLineConcept());
+    cd.setOperator(SetComparator.IN);
+    cd.addValue(hivMetadata.getSecondLineConcept());
     return cd;
   }
 

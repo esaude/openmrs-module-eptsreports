@@ -351,12 +351,10 @@
 	</globalProperty>
 
 	<globalProperty>
-
 		<property>@MODULE_ID@.dateOfMasterCardFileOpeningConceptUuid</property>
 		<defaultValue>68d65d0c-8fee-456b-8e95-caed990351e1</defaultValue>
 		<description>
 			Master Card File Open Dates Concept
-
 		</description>
 	</globalProperty>
 
@@ -1978,6 +1976,15 @@
 		<defaultValue>558a66da-4900-4313-a02d-4ebb4f9948df</defaultValue>
 		<description>
 			UUID for the Absence of Health Provider in Health Unit concept
+		</description>
+	</globalProperty>
+
+<!-- 21151 -->
+	<globalProperty>
+		<property>eptsreports.therapeuticLineConceptUuid</property>
+		<defaultValue>fdff0637-b36f-4dce-90c7-fe9f1ec586f0</defaultValue>
+		<description>
+			UUID for THERAPEUTIC LINE concept
 		</description>
 	</globalProperty>
 	

@@ -1501,4 +1501,19 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.dateOfMasterCardFileOpeningConceptUuid");
     return getConcept(uuid);
   }
+
+  /** Concept_id = 21148 SECOND LINE - THERAPEUTIC LINE */
+  public Concept getSecondLineConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.artSecondLineSwitchUuid");
+    return getConcept(uuid);
+  }
+
+  /** Concept_id = 21151 THERAPEUTIC LINE */
+  public Concept getTherapeuticLineConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.therapeuticLineConceptUuid");
+    return getConcept(uuid);
+  }
 }
