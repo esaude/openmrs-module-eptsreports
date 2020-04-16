@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsQuarterlyCohortDefinition;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.AllPatientsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -199,5 +201,38 @@ public class ResumoTrimestralCohortQueries {
         new Parameter("onOrAfter", "Start date", Date.class),
         new Parameter("onOrBefore", "End date", Date.class),
         new Parameter("location", "Location", Location.class));
+  }
+
+  /** @return ((A+B) - C) */
+  public CohortDefinition getD() {
+    CompositionCohortDefinition cdAbc = new CompositionCohortDefinition();
+    cdAbc.setName("Indicators A, B and C parameters");
+    cdAbc.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cdAbc.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cdAbc.addParameter(new Parameter("location", "location", Location.class));
+    cdAbc.addSearch(
+        "A",
+        EptsReportUtils.map(
+            getA(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+    cdAbc.addSearch(
+        "B",
+        EptsReportUtils.map(
+            getB(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+    cdAbc.addSearch(
+        "C",
+        EptsReportUtils.map(
+            getC(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+    cdAbc.setCompositionString("((A OR B) AND NOT C)");
+
+    return cdAbc;
+  }
+
+  public EptsQuarterlyCohortDefinition getQuarterlyCohort(
+      List<Parameter> getParameters,
+      CohortDefinition wrap,
+      EptsQuarterlyCohortDefinition.Month month) {
+    EptsQuarterlyCohortDefinition cd = new EptsQuarterlyCohortDefinition(wrap, month);
+    cd.addParameters(getParameters);
+    return cd;
   }
 }
