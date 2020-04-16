@@ -8,6 +8,26 @@ import org.springframework.stereotype.Component;
 @Component
 public class ResumoTrimestralQueries {
 
+  public static String getPatientsWhoReceivedOneViralLoadResult(
+      int adultoSeguimentoEncounterType, int viralLoadConcept, int viralLoadQualitativeConcept) {
+    String query =
+        "SELECT p.patient_id FROM "
+            + "patient p JOIN encounter e "
+            + "ON p.patient_id = e.patient_id JOIN obs o "
+            + "ON o.encounter_id = e.encounter_id "
+            + "WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND "
+            + "e.encounter_type = ${adultoSeguimentoEncounterType} AND (o.concept_id = ${viralLoadConcept} AND o.value_numeric IS NOT NULL) "
+            + "OR (o.concept_id = ${viralLoadQualitativeConcept} AND o.value_numeric IS NOT NULL) "
+            + "AND e.encounter_datetime <= :onOrBefore group by patient_id";
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
+    valuesMap.put("viralLoadConcept", viralLoadConcept);
+    valuesMap.put("viralLoadQualitativeConcept", viralLoadQualitativeConcept);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
+  }
+
   /**
    * Number of patients with ART suspension during the current month with LAST patient state
    *
