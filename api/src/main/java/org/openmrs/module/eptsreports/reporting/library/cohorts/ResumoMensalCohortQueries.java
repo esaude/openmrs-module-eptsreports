@@ -379,14 +379,34 @@ public class ResumoMensalCohortQueries {
     sql.append("            WHERE p.voided = 0 ");
     sql.append("              AND e.voided = 0 ");
     sql.append("              AND e.location_id = :location ");
-    sql.append("              AND e.encounter_type IN (${adultSeg}, ${masterCard}) ");
+    sql.append("              AND e.encounter_type = ${adultSeg} ");
     if (useBothDates) {
       sql.append("              AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore ");
     } else {
       sql.append("              AND e.encounter_datetime  <= :onOrBefore ");
     }
     sql.append("              AND o.voided = 0 ");
-    sql.append("              AND o.concept_id IN (${artStateOfStay}, ${preArtStateOfStay}) ");
+    sql.append("              AND o.concept_id = ${artStateOfStay} ");
+    sql.append("              AND o.value_coded = ${suspendedConcept} ");
+    sql.append("            UNION ");
+    sql.append("            SELECT p.patient_id, ");
+    sql.append("                   o.obs_datetime suspended_date ");
+    sql.append("            FROM patient p ");
+    sql.append("                     JOIN encounter e ");
+    sql.append("                          ON p.patient_id = e.patient_id ");
+    sql.append("                     JOIN obs o ");
+    sql.append("                          ON e.encounter_id = o.encounter_id ");
+    sql.append("            WHERE p.voided = 0 ");
+    sql.append("              AND e.voided = 0 ");
+    sql.append("              AND e.location_id = :location ");
+    sql.append("              AND e.encounter_type = ${masterCard} ");
+    if (useBothDates) {
+      sql.append("              AND o.obs_datetime BETWEEN :onOrAfter AND :onOrBefore ");
+    } else {
+      sql.append("              AND o.obs_datetime  <= :onOrBefore ");
+    }
+    sql.append("              AND o.voided = 0 ");
+    sql.append("              AND o.concept_id = ${preArtStateOfStay} ");
     sql.append("              AND o.value_coded = ${suspendedConcept}) transferout ");
     sql.append("      GROUP BY patient_id) max_transferout ");
     sql.append("WHERE patient_id NOT IN (SELECT p.patient_id ");
