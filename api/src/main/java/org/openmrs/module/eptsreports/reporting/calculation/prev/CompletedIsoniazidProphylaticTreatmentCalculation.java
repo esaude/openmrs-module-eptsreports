@@ -43,7 +43,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractPatientCalculation {
 
-  private static final int COMPLETION_PERIOD_OFFSET = 1;
+  private static final int COMPLETION_PERIOD_OFFSET = 0;
 
   private static final int TREATMENT_BEGIN_PERIOD_OFFSET = -6;
 
@@ -148,13 +148,13 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
 
       for (Integer patientId : cohort) {
         Obs startProfilaxiaObs =
-            EptsCalculationUtils.resultForPatient(startProfilaxiaObservations, patientId);
+            EptsCalculationUtils.obsResultForPatient(startProfilaxiaObservations, patientId);
         Obs startDrugsObs =
-            EptsCalculationUtils.resultForPatient(startDrugsObservations, patientId);
+            EptsCalculationUtils.obsResultForPatient(startDrugsObservations, patientId);
         Obs endProfilaxiaObs =
-            EptsCalculationUtils.resultForPatient(endProfilaxiaObservations, patientId);
+            EptsCalculationUtils.obsResultForPatient(endProfilaxiaObservations, patientId);
         Obs endDrugsObs =
-            EptsCalculationUtils.resultForPatient(completedDrugsObservations, patientId);
+            EptsCalculationUtils.obsResultForPatient(completedDrugsObservations, patientId);
         /**
          * If We can't find a startDate from Ficha de Seguimento (adults and children) / Ficha
          * Resumo or Ficha Clinica-MasterCard, we can't do the calculations. -Just move to the next

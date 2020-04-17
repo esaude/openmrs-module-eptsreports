@@ -165,7 +165,7 @@ public class ResumoTrimestralCohortQueries {
     cd.addSearch("cohortG", mapStraightThrough(cohortG));
     cd.addSearch("viralLoadResult", mapStraightThrough(viralLoadResult));
     cd.setCompositionString("cohortG AND viralLoadResult");
-    
+
     return cd;
   }
 
