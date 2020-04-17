@@ -477,10 +477,10 @@ public class ResumoMensalCohortQueries {
             + "              AND e.voided = 0 "
             + "              AND e.location_id = :locationList "
             + "              AND e.encounter_type = ${adultoSeguimento} ";
-    if (hasStartDate == true) {
-      sql = sql + "AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore ";
+    if (hasStartDate) {
+      sql += "AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore ";
     } else {
-      sql = sql + "AND e.encounter_datetime <= :onOrBefore ";
+      sql += "AND e.encounter_datetime <= :onOrBefore ";
     }
     sql =
         sql
@@ -499,10 +499,10 @@ public class ResumoMensalCohortQueries {
             + "              AND e.voided = 0 "
             + "              AND e.location_id = :locationList "
             + "              AND e.encounter_type = ${masterCard} ";
-    if (hasStartDate == true) {
-      sql = sql + "AND o.obs_datetime BETWEEN :onOrAfter AND :onOrBefore ";
+    if (hasStartDate) {
+      sql += "AND o.obs_datetime BETWEEN :onOrAfter AND :onOrBefore ";
     } else {
-      sql = sql + "AND o.obs_datetime <= :onOrBefore ";
+      sql += "AND o.obs_datetime <= :onOrBefore ";
     }
     sql =
         sql
@@ -511,28 +511,29 @@ public class ResumoMensalCohortQueries {
             + "              AND o.value_coded = ${patientDeadConcept} "
             + "      GROUP BY p.patient_id"
             + "            UNION"
-            + "       SELECT pg.patient_id, ps.start_date"
+            + "       SELECT pg.patient_id, MAX(ps.start_date) AS death_date"
             + "       FROM patient p"
             + "         INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
             + "         INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
             + "       WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 "
             + "         AND pg.program_id=${arvProgram}  AND ps.state=${deadState} AND ps.end_date is null ";
-    if (hasStartDate == true) {
-      sql = sql + "AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ";
+    if (hasStartDate) {
+      sql += "AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ";
     } else {
-      sql = sql + "AND ps.start_date <= :onOrBefore ";
+      sql += "AND ps.start_date <= :onOrBefore ";
     }
     sql =
         sql
-            + "AND location_id=:locationList"
+            + "AND location_id = :locationList "
+            + "GROUP BY p.patient_id "
             + "            UNION"
-            + "        SELECT p.person_id patient_id, p.death_date "
+            + "        SELECT p.person_id patient_id, p.death_date AS death_date"
             + "      FROM person p "
-            + "      WHERE p.dead=1 ";
-    if (hasStartDate == true) {
-      sql = sql + "AND p.death_date BETWEEN :onOrAfter AND :onOrBefore ";
+            + "      WHERE p.dead=1 AND p.voided = 0 ";
+    if (hasStartDate) {
+      sql += " AND p.death_date BETWEEN :onOrAfter AND :onOrBefore ";
     } else {
-      sql = sql + "AND p.death_date <= :onOrBefore ";
+      sql += " AND p.death_date <= :onOrBefore ";
     }
     sql =
         sql
@@ -546,7 +547,7 @@ public class ResumoMensalCohortQueries {
             + "       AND e.voided = 0 "
             + "       AND e.encounter_type IN ( ${adultoSeguimento}, ${pediatriaSeguimento}, ${farmacia} )  "
             + "       AND e.location_id = :locationList "
-            + "       AND e.encounter_datetime > death_date "
+            + "       AND e.encounter_datetime > all_dead.death_date "
             + "       UNION "
             + "       SELECT p.patient_id "
             + "       FROM   patient p "
@@ -559,7 +560,7 @@ public class ResumoMensalCohortQueries {
             + "       AND e.encounter_type = ${arvLevantamento} "
             + "       AND e.location_id = :locationList "
             + "       AND o.concept_id = ${arvLevantamentoDate} "
-            + "       AND o.value_datetime > death_date)";
+            + "       AND o.value_datetime > all_dead.death_date)";
 
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put(
