@@ -105,7 +105,7 @@ public class ResumoTrimestralCohortQueries {
         ResumoTrimestralQueries.getPatientsWhoReceivedOneViralLoadResult(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
-            hivMetadata.getBeyondDetectableLimitConcept().getConceptId()));
+            hivMetadata.getHivViralLoadQualitative().getConceptId()));
 
     return sqlCohortDefinition;
   }
