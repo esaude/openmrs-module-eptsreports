@@ -28,13 +28,17 @@ public class ResumoTrimestralCohortQueries {
   private HivCohortQueries hivCohortQueries;
   private HivMetadata hivMetadata;
 
+  private ResumoMensalCohortQueries resumoMensalCohortQueries;
+
   @Autowired
   public ResumoTrimestralCohortQueries(
       GenericCohortQueries genericCohortQueries,
       HivCohortQueries hivCohortQueries,
+      ResumoMensalCohortQueries resumoMensalCohortQueries,
       HivMetadata hivMetadata) {
     this.genericCohortQueries = genericCohortQueries;
     this.hivCohortQueries = hivCohortQueries;
+    this.resumoMensalCohortQueries = resumoMensalCohortQueries;
     this.hivMetadata = hivMetadata;
   }
 
@@ -206,8 +210,17 @@ public class ResumoTrimestralCohortQueries {
 
   /** @return Number of Abandoned Patients in the actual cohort */
   public CohortDefinition getJ() {
-    AllPatientsCohortDefinition cd = new AllPatientsCohortDefinition();
+    CohortDefinition abandoned =
+        resumoMensalCohortQueries.getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(true);
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setParameters(getParameters());
+    cd.addSearch("A", mapStraightThrough(getA()));
+    cd.addSearch("B", mapStraightThrough(getB()));
+    cd.addSearch("abandoned", map(abandoned, "date=${onOrBefore},location=${location}"));
+    cd.addSearch("C", mapStraightThrough(getC()));
+    cd.addSearch("I", mapStraightThrough(getI()));
+    cd.addSearch("L", mapStraightThrough(getL()));
+    cd.setCompositionString("(A OR B) AND abandoned NOT (C OR I OR L)");
     return cd;
   }
 
