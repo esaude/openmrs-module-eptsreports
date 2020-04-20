@@ -560,7 +560,8 @@ public class ResumoMensalCohortQueries {
             + "       AND e.encounter_type = ${arvLevantamento} "
             + "       AND e.location_id = :locationList "
             + "       AND o.concept_id = ${arvLevantamentoDate} "
-            + "       AND o.value_datetime > all_dead.death_date)";
+            + "       AND o.value_datetime > all_dead.death_date"
+            + "       AND o.value_datetime <= :onOrBefore )";
 
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put(
