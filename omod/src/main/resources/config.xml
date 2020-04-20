@@ -869,7 +869,28 @@
 		</description>
 	</globalProperty>
 
-	<!-- 2nd line ARV Concepts -->
+	<!-- Therapeutic Line Concept (21151) -->
+
+	<globalProperty>
+		<property>@MODULE_ID@.therapeuticLineConceptUuid
+		</property>
+		<defaultValue>fdff0637-b36f-4dce-90c7-fe9f1ec586f0</defaultValue>
+		<description>
+			UUID Therapeutic Line Concept
+		</description>
+	</globalProperty>
+
+
+	<!-- Therapeutic Line Concept (21150) -->
+
+	<globalProperty>
+		<property>@MODULE_ID@.firstLineConceptUuid
+		</property>
+		<defaultValue>a6bbe1ac-5243-40e4-98cb-7d4a1467dfbe</defaultValue>
+		<description>
+			UUID First Line Concept
+		</description>
+	</globalProperty>
 
 	<globalProperty>
 		<property>@MODULE_ID@.apssPrevencaoPositivaInicialInicialEncounterTypeUuid

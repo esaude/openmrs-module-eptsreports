@@ -88,9 +88,28 @@ public class ResumoTrimestralCohortQueries {
 
   /** @return Number of patients who is in the 1st line treatment during the cohort month */
   public CohortDefinition getE() {
-    AllPatientsCohortDefinition cd = new AllPatientsCohortDefinition();
-    cd.setParameters(getParameters());
-    return cd;
+    CohortDefinition preTarv = getA();
+    CohortDefinition transferredIn = getB();
+    CohortDefinition transferredOut = getC();
+    CohortDefinition suspended = getI();
+    CohortDefinition abandoned = getJ();
+    CohortDefinition dead = getL();
+    CohortDefinition inTheFirstLineOrNull =
+        getPatientsWithLastTherapeuticLineEqualsToFirstLineOrNull();
+
+    CompositionCohortDefinition wrapper = new CompositionCohortDefinition();
+    wrapper.setParameters(getParameters());
+    wrapper.addSearch("preTarv", mapStraightThrough(preTarv));
+    wrapper.addSearch("transferredIn", mapStraightThrough(transferredIn));
+    wrapper.addSearch("transferredOut", mapStraightThrough(transferredOut));
+    wrapper.addSearch("suspended", mapStraightThrough(suspended));
+    wrapper.addSearch("abandoned", mapStraightThrough(abandoned));
+    wrapper.addSearch("dead", mapStraightThrough(dead));
+    wrapper.addSearch("inTheFirstLineOrNull", mapStraightThrough(inTheFirstLineOrNull));
+
+    wrapper.setCompositionString(
+        "((preTarv OR transferredIn) NOT (transferredOut AND suspended AND abandoned AND dead)) AND inTheFirstLine ");
+    return wrapper;
   }
 
   /**
@@ -151,7 +170,7 @@ public class ResumoTrimestralCohortQueries {
     comp.addSearch("L", mapStraightThrough(indicatorL));
     comp.addSearch(
         "lastSecondTherapeuticLine",
-        map(lastSecondTherapeuticLine, "onOrBefore=${onOrBefore}, locationList=${location}"));
+        map(lastSecondTherapeuticLine, "onOrBefore=${onOrBefore}, location=${location}"));
     comp.setCompositionString(
         "((A OR B) AND NOT (C OR I OR J OR L)) AND lastSecondTherapeuticLine");
     return comp;
@@ -221,6 +240,25 @@ public class ResumoTrimestralCohortQueries {
     cd.addSearch("I", mapStraightThrough(getI()));
     cd.addSearch("L", mapStraightThrough(getL()));
     cd.setCompositionString("(A OR B) AND abandoned NOT (C OR I OR L)");
+    return cd;
+  }
+
+  /**
+   * Fetches Patients with Last registered Line Treatment equals to (1st Line)
+   *
+   * @return SqlCohortDefinition
+   */
+  private CohortDefinition getPatientsWithLastTherapeuticLineEqualsToFirstLineOrNull() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients in the first Line of treatment during a period");
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.setQuery(
+        ResumoTrimestralQueries.getPatientsWithLastTherapeuticLineEqualsToFirstLineOrNull(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getTherapeuticLineConcept().getConceptId(),
+            hivMetadata.getFirstLineConcept().getConceptId()));
     return cd;
   }
 
