@@ -389,7 +389,7 @@ public class ResumoMensalCohortQueries {
       sql.append("              AND e.encounter_datetime  <= :onOrBefore ");
     }
     sql.append("              AND o.voided = 0 ");
-    sql.append("              AND o.concept_id = ${artStateOfStay} ");
+    sql.append("              AND o.concept_id IN (${artStateOfStay}, ${preArtStateOfStay}) ");
     sql.append("              AND o.value_coded = ${suspendedConcept} ");
     sql.append("            UNION ");
     sql.append("            SELECT p.patient_id, ");
@@ -409,7 +409,7 @@ public class ResumoMensalCohortQueries {
       sql.append("              AND o.obs_datetime  <= :onOrBefore ");
     }
     sql.append("              AND o.voided = 0 ");
-    sql.append("              AND o.concept_id = ${preArtStateOfStay} ");
+    sql.append("              AND o.concept_id IN (${artStateOfStay}, ${preArtStateOfStay}) ");
     sql.append("              AND o.value_coded = ${suspendedConcept}) transferout ");
     sql.append("      GROUP BY patient_id) max_transferout ");
     sql.append("WHERE patient_id NOT IN (SELECT p.patient_id ");
