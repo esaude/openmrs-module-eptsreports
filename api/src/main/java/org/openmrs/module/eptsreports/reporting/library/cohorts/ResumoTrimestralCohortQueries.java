@@ -156,7 +156,7 @@ public class ResumoTrimestralCohortQueries {
     wrapper.addSearch("inTheFirstLineOrNull", mapStraightThrough(inTheFirstLineOrNull));
 
     wrapper.setCompositionString(
-        "((preTarv OR transferredIn) NOT (transferredOut AND suspended AND abandoned AND dead)) AND inTheFirstLine ");
+        "((preTarv OR transferredIn) NOT (transferredOut AND suspended AND abandoned AND dead)) AND inTheFirstLineOrNull ");
     return wrapper;
   }
 
@@ -203,7 +203,7 @@ public class ResumoTrimestralCohortQueries {
     comp.addSearch("L", mapStraightThrough(indicatorL));
     comp.addSearch(
         "lastSecondTherapeuticLine",
-        map(lastSecondTherapeuticLine, "onOrBefore=${onOrBefore}, location=${location}"));
+        map(lastSecondTherapeuticLine, "onOrBefore=${onOrBefore},locationList=${location}"));
     comp.setCompositionString(
         "((A OR B) AND NOT (C OR I OR J OR L)) AND lastSecondTherapeuticLine");
     return comp;
