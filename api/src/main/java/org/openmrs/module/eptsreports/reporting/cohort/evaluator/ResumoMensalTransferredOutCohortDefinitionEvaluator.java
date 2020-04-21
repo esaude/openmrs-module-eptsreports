@@ -45,7 +45,11 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
     q.append("FROM (SELECT transferout.patient_id, ");
     q.append("             Max(transferout.transferout_date) transferout_date ");
     q.append("      FROM (SELECT p.patient_id, ");
-    q.append("                   Max(ps.start_date) AS transferout_date ");
+    if (cd.getMaxDates()) {
+      q.append("                   Max(ps.start_date) AS transferout_date ");
+    } else {
+      q.append("                   ps.start_date AS transferout_date ");
+    }
     q.append("            FROM patient p ");
     q.append("                     JOIN patient_program pp ");
     q.append("                          ON p.patient_id = pp.patient_id ");
@@ -57,16 +61,21 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
     q.append("              AND pp.location_id = :location ");
     q.append("              AND ps.voided = 0 ");
     q.append("              AND ps.state = :transferOutState ");
-    q.append("              AND ps.end_date is null     ");
     if (cd.getOnOrAfter() == null) {
       q.append("            AND ps.start_date <= :onOrBefore ");
     } else {
       q.append("            AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ");
     }
-    q.append("            GROUP BY p.patient_id");
+    if (cd.getMaxDates()) {
+      q.append("            GROUP BY p.patient_id");
+    }
     q.append("            UNION ");
     q.append("            SELECT p.patient_id, ");
-    q.append("                   Max(e.encounter_datetime) AS transferout_date ");
+    if (cd.getMaxDates()) {
+      q.append("                   Max(e.encounter_datetime) AS transferout_date ");
+    } else {
+      q.append("                   e.encounter_datetime AS transferout_date ");
+    }
     q.append("            FROM patient p ");
     q.append("                     JOIN encounter e ");
     q.append("                          ON p.patient_id = e.patient_id ");
@@ -84,10 +93,17 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
     q.append("              AND o.voided = 0 ");
     q.append("              AND o.concept_id = :artStateOfStay ");
     q.append("              AND o.value_coded = :transfOutConcept ");
-    q.append("            GROUP BY p.patient_id");
+    if (cd.getMaxDates()) {
+      q.append("            GROUP BY p.patient_id");
+    }
     q.append("            UNION ");
     q.append("            SELECT p.patient_id, ");
-    q.append("                   Max(o.obs_datetime) AS transferout_date ");
+    if (cd.getMaxDates()) {
+      q.append("                   Max(o.obs_datetime) AS transferout_date ");
+
+    } else {
+      q.append("                   o.obs_datetime AS transferout_date ");
+    }
     q.append("            FROM patient p ");
     q.append("                     JOIN encounter e ");
     q.append("                          ON p.patient_id = e.patient_id ");
@@ -105,7 +121,10 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
     q.append("              AND o.voided = 0 ");
     q.append("              AND o.concept_id = :preArtStateOfStay ");
     q.append("              AND o.value_coded = :transfOutConcept ");
-    q.append("            GROUP BY p.patient_id) transferout ");
+    if (cd.getMaxDates()) {
+      q.append("            GROUP BY p.patient_id ");
+    }
+    q.append(") transferout");
     q.append("      GROUP BY transferout.patient_id) max_transferout ");
     q.append("WHERE max_transferout.patient_id NOT IN (SELECT p.patient_id ");
     q.append("                         FROM patient p ");

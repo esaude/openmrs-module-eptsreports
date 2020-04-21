@@ -17,6 +17,8 @@ public class ResumoMensalTransferredOutCohortDefinition extends BaseCohortDefini
 
   @ConfigurationProperty private Location location;
 
+  @ConfigurationProperty private Boolean maxDates;
+
   public Date getOnOrAfter() {
     return onOrAfter;
   }
@@ -39,5 +41,13 @@ public class ResumoMensalTransferredOutCohortDefinition extends BaseCohortDefini
 
   public void setLocation(Location location) {
     this.location = location;
+  }
+
+  public Boolean getMaxDates() {
+    return maxDates;
+  }
+
+  public void setMaxDates(Boolean maxDates) {
+    this.maxDates = maxDates;
   }
 }

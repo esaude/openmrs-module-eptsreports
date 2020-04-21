@@ -304,7 +304,7 @@ public class ResumoMensalCohortQueries {
         "B2Exlcusion",
         map(getTransferredInPatients(true), "onOrAfter=${onOrAfter-1},location=${location}"));
 
-    CohortDefinition transferredOut = getPatientsTransferredOutB5();
+    CohortDefinition transferredOut = getPatientsTransferredOutB5(false);
 
     cd.addSearch("B5", map(transferredOut, "onOrBefore=${onOrAfter},location=${location}"));
 
@@ -330,12 +330,15 @@ public class ResumoMensalCohortQueries {
    *
    * @return B.5 Number of patients transferred out during the current month
    */
-  public CohortDefinition getPatientsTransferredOutB5() {
+  public CohortDefinition getPatientsTransferredOutB5(boolean maxDates) {
+
     ResumoMensalTransferredOutCohortDefinition cd =
         new ResumoMensalTransferredOutCohortDefinition();
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.setMaxDates(maxDates);
+
     return cd;
   }
 
@@ -516,7 +519,7 @@ public class ResumoMensalCohortQueries {
             + "         INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
             + "         INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
             + "       WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 "
-            + "         AND pg.program_id=${arvProgram}  AND ps.state=${deadState} AND ps.end_date is null ";
+            + "         AND pg.program_id=${arvProgram}  AND ps.state=${deadState}  ";
     if (hasStartDate) {
       sql += "AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ";
     } else {
@@ -639,7 +642,7 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch(
         "B5A",
-        map(getPatientsTransferredOutB5(), "onOrBefore=${startDate-1d},location=${location}"));
+        map(getPatientsTransferredOutB5(true), "onOrBefore=${startDate-1d},location=${location}"));
 
     cd.addSearch(
         "B6A",
@@ -1302,7 +1305,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B5",
         map(
-            getPatientsTransferredOutB5(),
+            getPatientsTransferredOutB5(false),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "B6",
@@ -1680,7 +1683,7 @@ public class ResumoMensalCohortQueries {
 
     ccd.addSearch(
         "B7III",
-        map(getPatientsTransferredOutB5(), "onOrBefore=${onOrBefore},location=${location}"));
+        map(getPatientsTransferredOutB5(true), "onOrBefore=${onOrBefore},location=${location}"));
     ccd.addSearch(
         "B7IV",
         map(
@@ -1787,7 +1790,7 @@ public class ResumoMensalCohortQueries {
     CohortDefinition masterCardPickup =
         getPatientsWhoHavePickedUpDrugsMasterCardByEndReporingPeriod();
 
-    CohortDefinition B5E = getPatientsTransferredOutB5();
+    CohortDefinition B5E = getPatientsTransferredOutB5(true);
 
     CohortDefinition B6E = getPatientsWhoSuspendedTreatmentB6(false);
 
