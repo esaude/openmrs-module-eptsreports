@@ -28,6 +28,96 @@ public class ResumoTrimestralQueries {
     return sub.replace(query);
   }
 
+  public static String getTransferedOutPatients(
+      int artProgramConcept,
+      int transferredOutToAnotherHealthFacilityWorkflowStateConcept,
+      int adultoSeguimentoEncounterType,
+      int masterCardEncounterType,
+      int stateOfStayOfPreArtPatient,
+      int stateOfStayOfArtPatient,
+      int transferredOutConcept,
+      int pediatriaSeguimentoEncounterType,
+      int ARVPharmaciaEncounterType,
+      int masterCardDrugPickupEncounterType,
+      int ArtDatePickupMasterCard) {
+    String query =
+        "SELECT patient_id "
+            + "FROM (SELECT patient_id, "
+            + "             Max(transferout_date) transferout_date "
+            + "      FROM (SELECT p.patient_id, "
+            + "                   ps.start_date transferout_date "
+            + "            FROM patient p "
+            + "                     JOIN patient_program pp "
+            + "                          ON p.patient_id = pp.patient_id "
+            + "                     JOIN patient_state ps "
+            + "                          ON pp.patient_program_id = ps.patient_program_id "
+            + "            WHERE p.voided = 0 "
+            + "              AND pp.voided = 0 "
+            + "              AND pp.program_id = ${artProgramConcept} "
+            + "              AND pp.location_id = :location "
+            + "              AND ps.voided = 0 "
+            + "              AND ps.state = ${transferredOutToAnotherHealthFacilityWorkflowStateConcept} "
+            + "              AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore "
+            + "              AND ps.end_date IS NULL "
+            + "            UNION "
+            + "            SELECT p.patient_id, "
+            + "                   e.encounter_datetime transferout_date "
+            + "            FROM patient p "
+            + "                     JOIN encounter e "
+            + "                          ON p.patient_id = e.patient_id "
+            + "                     JOIN obs o "
+            + "                          ON e.encounter_id = o.encounter_id "
+            + "            WHERE p.voided = 0 "
+            + "              AND e.voided = 0 "
+            + "              AND e.location_id = :location "
+            + "              AND e.encounter_type IN (${adultoSeguimentoEncounterType}, ${masterCardEncounterType}) "
+            + "              AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore "
+            + "              AND o.voided = 0 "
+            + "              AND o.concept_id IN (${stateOfStayOfPreArtPatient}, ${stateOfStayOfArtPatient}) "
+            + "              AND o.value_coded = ${transferredOutConcept}) transferout "
+            + "      GROUP BY patient_id) max_transferout "
+            + "WHERE patient_id NOT IN (SELECT p.patient_id "
+            + "                         FROM patient p "
+            + "                                  JOIN encounter e "
+            + "                                       ON p.patient_id = e.patient_id "
+            + "                         WHERE p.voided = 0 "
+            + "                           AND e.voided = 0 "
+            + "                           AND e.encounter_type IN (${adultoSeguimentoEncounterType}, ${pediatriaSeguimentoEncounterType}, ${ARVPharmaciaEncounterType}) "
+            + "                           AND e.location_id = :location "
+            + "                           AND e.encounter_datetime > transferout_date "
+            + "                         UNION "
+            + "                         SELECT p.patient_id "
+            + "                         FROM patient p "
+            + "                                  JOIN encounter e "
+            + "                                       ON p.patient_id = e.patient_id "
+            + "                                  JOIN obs o "
+            + "                                       ON e.encounter_id = o.encounter_id "
+            + "                         WHERE p.voided = 0 "
+            + "                           AND e.voided = 0 "
+            + "                           AND e.encounter_type = ${masterCardDrugPickupEncounterType} "
+            + "                           AND e.location_id = :location "
+            + "                           AND o.concept_id = ${ArtDatePickupMasterCard} "
+            + "                           AND o.value_datetime "
+            + "                             > transferout_date);";
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("artProgramConcept", artProgramConcept);
+    valuesMap.put(
+        "transferredOutToAnotherHealthFacilityWorkflowStateConcept",
+        transferredOutToAnotherHealthFacilityWorkflowStateConcept);
+    valuesMap.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
+    valuesMap.put("masterCardEncounterType", masterCardEncounterType);
+    valuesMap.put("stateOfStayOfPreArtPatient", stateOfStayOfPreArtPatient);
+    valuesMap.put("stateOfStayOfArtPatient", stateOfStayOfArtPatient);
+    valuesMap.put("transferredOutConcept", transferredOutConcept);
+    valuesMap.put("pediatriaSeguimentoEncounterType", pediatriaSeguimentoEncounterType);
+    valuesMap.put("ARVPharmaciaEncounterType", ARVPharmaciaEncounterType);
+    valuesMap.put("masterCardDrugPickupEncounterType", masterCardDrugPickupEncounterType);
+    valuesMap.put("ArtDatePickupMasterCard", ArtDatePickupMasterCard);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
+    return sub.replace(query);
+  }
+
   /**
    * Number of patients with ART suspension during the current month with LAST patient state
    *

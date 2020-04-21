@@ -91,14 +91,20 @@ public class ResumoTrimestralCohortQueries {
    */
   public CohortDefinition getC() {
     CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
-    CohortDefinition transferredOut = hivCohortQueries.getPatientsTransferredOut();
+    CohortDefinition transferredOut = getPatientsTransferredOut();
+
     CompositionCohortDefinition wrap = new CompositionCohortDefinition();
     wrap.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     wrap.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     wrap.addParameter(new Parameter("location", "location", Location.class));
     wrap.addSearch("startedArt", mapStraightThrough(startedArt));
-    wrap.addSearch("transferredOut", mapStraightThrough(transferredOut));
+    wrap.addSearch(
+        "transferredOut",
+        map(
+            transferredOut,
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore+12m},location=${location}"));
     wrap.setCompositionString("startedArt AND transferredOut");
+
     return wrap;
   }
 
@@ -390,6 +396,40 @@ public class ResumoTrimestralCohortQueries {
         new Parameter("onOrAfter", "Start date", Date.class),
         new Parameter("onOrBefore", "End date", Date.class),
         new Parameter("location", "Location", Location.class));
+  }
+
+  /**
+   * Number of transferred-out patients in TARV at this HF during the cohort month.
+   *
+   * <p>This is the same as {@link HivCohortQueries#getPatientsTransferredOut()} except that it
+   * filters for both {@code onOrAfter} and {@code onOrBefore}.
+   *
+   * <p>It was duplicated here because the spec pointed to an incompatible query
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getPatientsTransferredOut() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("transferredOutPatients");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.setQuery(
+        ResumoTrimestralQueries.getTransferedOutPatients(
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata
+                .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                .getProgramWorkflowStateId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getStateOfStayOfPreArtPatient().getConceptId(),
+            hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
+            hivMetadata.getTransferredOutConcept().getConceptId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickupMasterCard().getConceptId()));
+    return cd;
   }
 
   public EptsQuarterlyCohortDefinition getQuarterlyCohort(
