@@ -400,15 +400,11 @@ public class HivCohortQueries {
         "masterCardEncounterType", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     map.put(
         "stateOfStayOfPreArtPatient", hivMetadata.getStateOfStayOfPreArtPatient().getConceptId());
-    map.put("transferredOutConcept", hivMetadata.getTransferredOutConcept().getConceptId());
+    map.put("transferedOutOrSuspendedConcept", transferedOutOrSuspendedConcept);
     map.put("autoTransferConcept", hivMetadata.getAutoTransferConcept().getConceptId());
     map.put("stateOfStayOfArtPatient", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
     map.put("artProgram", hivMetadata.getARTProgram().getProgramId());
-    map.put(
-        "transferredOutToAnotherHealthFacilityWorkflowState",
-        hivMetadata
-            .getTransferredOutToAnotherHealthFacilityWorkflowState()
-            .getProgramWorkflowStateId());
+    map.put("transferredOutToAnotherHealthFacilityWorkflowState", patientStateId);
 
     String query =
         "  SELECT mostrecent.patient_id "
@@ -443,7 +439,7 @@ public class HivCohortQueries {
             + "        AND o.voided = 0   "
             + "        AND e.encounter_type = ${masterCardEncounterType}   "
             + "        AND o.concept_id = ${stateOfStayOfPreArtPatient}  "
-            + "        AND o.value_coded =  ${transferredOutConcept}   "
+            + "        AND o.value_coded =  ${transferedOutOrSuspendedConcept}   "
             + "        AND o.obs_datetime <= :onOrBefore   "
             + "        AND e.location_id =  :location   "
             + "    UNION   "
@@ -458,7 +454,7 @@ public class HivCohortQueries {
             + "        AND o.voided = 0   "
             + "        AND e.encounter_type = ${adultoSeguimentoEncounterType}  "
             + "        AND o.concept_id = ${stateOfStayOfArtPatient}  "
-            + "        AND o.value_coded = ${transferredOutConcept}   "
+            + "        AND o.value_coded = ${transferedOutOrSuspendedConcept}   "
             + "        AND e.encounter_datetime <= :onOrBefore   "
             + "        AND e.location_id =  :location  "
             + ") lastest   "
