@@ -611,7 +611,7 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getTransferredInForB10() {
+  public CohortDefinition getTransferredInForB10() {
     EptsTransferredInCohortDefinition cd = new EptsTransferredInCohortDefinition();
     cd.setName(
         "Number of patients transferred-in from another HF during a period less than startDate B10 ");
@@ -652,8 +652,8 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B7A",
         map(
-            getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
-            "location=${location},onOrBefore=${startDate-1d}"));
+            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(),
+            "location=${location},date=${startDate-1d}"));
     cd.addSearch(
         "B8A",
         map(getPatientsWhoDied(false), "onOrBefore=${startDate-1d},locationList=${location}"));
@@ -785,7 +785,7 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getNumberOfPatientTbScreenedInFirstEncounter() {
+  public CohortDefinition getNumberOfPatientTbScreenedInFirstEncounter() {
     SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.addParameter(new Parameter("startDate", "startDate", Date.class));
     definition.addParameter(new Parameter("endDate", "endDate", Date.class));
@@ -799,22 +799,32 @@ public class ResumoMensalCohortQueries {
     map.put("yesConcept", hivMetadata.getPatientFoundYesConcept().getConceptId());
     map.put("noConcept", hivMetadata.getNoConcept().getConceptId());
     String query =
-        "SELECT tbl.patient_id FROM (SELECT p.patient_id,(SELECT e.encounter_id "
-            + "                    FROM encounter e "
-            + "                    WHERE  e.encounter_type = ${adultoSeguimentoEncounterType} "
-            + "                    AND p.patient_id = e.patient_id "
-            + "                    AND e.location_id = :location "
-            + "                    AND e.voided = 0 "
-            + "                    ORDER BY e.encounter_datetime ASC LIMIT 1)min_encounter "
-            + "                    FROM patient p WHERE p.voided = 0)tbl "
-            + "                    INNER JOIN encounter enc "
-            + "                    ON enc.encounter_id = tbl.min_encounter "
-            + "                    INNER JOIN obs o  "
-            + "                        ON o.encounter_id = enc.encounter_id "
-            + "            AND o.voided = 0 "
-            + "            AND o.concept_id   = ${tbSymptomsConcept} "
-            + "            AND o.value_coded  IN   (${yesConcept}, ${noConcept}) "
-            + "             AND enc.encounter_datetime BETWEEN :startDate AND :endDate  ";
+        "SELECT p.patient_id FROM patient p"
+            + "  INNER JOIN"
+            + "  (SELECT p.patient_id,e.encounter_id,min(e.encounter_datetime)"
+            + "  					FROM encounter e "
+            + "                              inner join patient p on p.patient_id = e.patient_id"
+            + "                              INNER JOIN obs o  "
+            + "                                  ON o.encounter_id = e.encounter_id"
+            + "                              WHERE  e.encounter_type = ${adultoSeguimentoEncounterType}"
+            + "                              AND e.location_id = :location "
+            + "                              AND e.voided = 0 "
+            + "                              and p.voided = 0"
+            + "                               and o.voided = 0"
+            + "                       AND e.encounter_datetime BETWEEN :startDate AND :endDate"
+            + "                              group by p.patient_id,e.encounter_id) min_encounter "
+            + "  							on p.patient_id = min_encounter.patient_id"
+            + "                              inner join encounter e"
+            + "  							on e.encounter_id = min_encounter.encounter_id"
+            + "                              inner join obs o"
+            + "  							on o.encounter_id = e.encounter_id"
+            + "  						WHERE e.encounter_type = ${adultoSeguimentoEncounterType}"
+            + "                              AND e.location_id = :location "
+            + "                              AND e.voided = 0 "
+            + "                              AND p.voided = 0"
+            + "  						AND o.voided = 0 "
+            + "                      AND o.concept_id   = ${tbSymptomsConcept}"
+            + "                      AND o.value_coded  IN (${yesConcept}, ${noConcept})";
 
     StringSubstitutor sb = new StringSubstitutor(map);
     String replacedQuery = sb.replace(query);
@@ -1353,7 +1363,8 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             tbMetadata.getHasTbSymptomsConcept().getConceptId(),
             hivMetadata.getPatientFoundYesConcept().getConceptId(),
-            hivMetadata.getNoConcept().getConceptId()));
+            hivMetadata.getNoConcept().getConceptId(),
+            tbMetadata.getTBTreatmentPlanConcept().getConceptId()));
     return cd;
   }
 
@@ -1540,19 +1551,6 @@ public class ResumoMensalCohortQueries {
    */
   public CohortDefinition
       getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthAndScreenedForTbF2() {
-    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("Exclusions");
-    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
-    sqlCohortDefinition.setQuery(
-        getPatientsForF2ForExclusionFromMainQuery(
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            tbMetadata.getHasTbSymptomsConcept().getConceptId(),
-            hivMetadata.getPatientFoundYesConcept().getConceptId(),
-            hivMetadata.getNoConcept().getConceptId(),
-            hivMetadata.getTBTreatmentPlanConcept().getConceptId()));
-
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
         "Number of patients who had clinical appointment during the reporting month and were screened for TB");
@@ -1564,11 +1562,7 @@ public class ResumoMensalCohortQueries {
         map(
             getPatientsWithTBScreening(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "F2x",
-        map(sqlCohortDefinition, "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString("F2F AND NOT F2x");
+    cd.setCompositionString("F2F");
     return cd;
   }
 
@@ -1673,12 +1667,12 @@ public class ResumoMensalCohortQueries {
     ccd.addSearch(
         "B7I",
         map(
-            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(false),
+            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(),
             "date=${onOrBefore},location=${location}"));
     ccd.addSearch(
         "B7II",
         map(
-            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(false),
+            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(),
             "date=${onOrAfter-1},location=${location}"));
 
     ccd.addSearch(
@@ -1696,8 +1690,7 @@ public class ResumoMensalCohortQueries {
     return ccd;
   }
 
-  public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(
-      boolean untilEndDate) {
+  public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients who Abandoned the ART during the current month");
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -1708,8 +1701,7 @@ public class ResumoMensalCohortQueries {
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getArtDatePickupMasterCard().getConceptId(),
-            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-            untilEndDate));
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
     return cd;
   }
 
@@ -1794,7 +1786,7 @@ public class ResumoMensalCohortQueries {
 
     CohortDefinition B6E = getPatientsWhoSuspendedTreatmentB6(false);
 
-    CohortDefinition B7E = getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(true);
+    CohortDefinition B7E = getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7();
 
     CohortDefinition B8E = getPatientsWhoDied(false);
 
