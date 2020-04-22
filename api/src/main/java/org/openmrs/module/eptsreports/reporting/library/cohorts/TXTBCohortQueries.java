@@ -357,8 +357,8 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * at least one “POS” or “NEG” selected for “Resultado da Investigação para TB de BK e/ou RX?”
-   * during the reporting period consultations; ( response 703: POS or 664: NEG for question: 6277)
+   * at least one “POS” selected for “Resultado da Investigação para TB de BK e/ou RX?”
+   * during the reporting period consultations; ( response 703: POS for question: 6277)
    */
   public CohortDefinition positiveInvestigationResultComposition() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
