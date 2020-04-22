@@ -278,4 +278,139 @@ public class ResumoTrimestralQueries {
     StringSubstitutor sub = new StringSubstitutor(map);
     return sub.replace(query);
   }
+
+  public static String getDeceasedPatients(
+      Integer artProgram,
+      Integer patientHasDiedWorkflowState,
+      Integer buscaActivaEncounterType,
+      Integer visitaApoioReintegracaoParteAEncounterType,
+      Integer visitApoioReintegracaoBEncounterType,
+      Integer patientFoundConcept,
+      Integer noConcept,
+      Integer reasonPatientNotFoundConcept,
+      Integer patientIsDeadConcept,
+      Integer adultoSeguimentoEncounterType,
+      Integer masterCardDrugPickupEncounterType,
+      Integer stateOfStayOfPreArtPatientConcept,
+      Integer stateOfStayOfArtPatientConcept,
+      Integer patientHasDiedConcept,
+      Integer pediatriaSeguimentoEncounterType,
+      Integer arvFarmaciaEncounterType,
+      Integer artDatePickupMasterCardConcept) {
+
+    String sql =
+        "SELECT patient_id "
+            + "FROM   (SELECT patient_id, "
+            + "               Max(death_date) death_date "
+            + "        FROM   (SELECT p.patient_id, "
+            + "                       ps.start_date death_date "
+            + "                FROM   patient p "
+            + "                       JOIN patient_program pp "
+            + "                         ON p.patient_id = pp.patient_id "
+            + "                       JOIN patient_state ps "
+            + "                         ON pp.patient_program_id = ps.patient_program_id "
+            + "                WHERE  p.voided = 0 "
+            + "                       AND pp.voided = 0 "
+            + "                       AND pp.program_id = ${artProgram} "
+            + "                       AND pp.location_id = :location "
+            + "                       AND ps.voided = 0 "
+            + "                       AND ps.state = ${patientHasDiedWorkflowState} "
+            + "                       AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore "
+            + "                       AND ps.end_date IS NULL "
+            + "                UNION "
+            + "                SELECT p.person_id, "
+            + "                       p.death_date "
+            + "                FROM   person p "
+            + "                WHERE  p.voided = 0"
+            + "                   AND p.dead = 1 "
+            + "                   AND p.death_date BETWEEN :onOrAfter AND :onOrBefore "
+            + "                UNION "
+            + "                SELECT e.patient_id, "
+            + "                       visit_card.death_date "
+            + "                FROM   (SELECT p.patient_id, "
+            + "                               Max(e.encounter_datetime) death_date "
+            + "                        FROM   patient p "
+            + "                               JOIN encounter e "
+            + "                                 ON p.patient_id = e.patient_id "
+            + "                               JOIN obs notfound "
+            + "                                 ON e.encounter_id = notfound.encounter_id "
+            + "                               JOIN obs reason "
+            + "                                 ON e.encounter_id = reason.encounter_id "
+            + "                        WHERE  p.voided = 0 "
+            + "                               AND e.voided = 0 "
+            + "                               AND e.encounter_type IN ( ${buscaActivaEncounterType}, ${visitaApoioReintegracaoParteAEncounterType}, ${visitApoioReintegracaoBEncounterType} ) "
+            + "                               AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore "
+            + "                               AND notfound.voided = 0 "
+            + "                               AND notfound.concept_id = ${patientFoundConcept} "
+            + "                               AND notfound.value_coded = ${noConcept} "
+            + "                               AND reason.voided = 0 "
+            + "                               AND reason.concept_id = ${reasonPatientNotFoundConcept} "
+            + "                               AND reason.value_coded = ${patientIsDeadConcept} "
+            + "                        GROUP  BY p.patient_id) visit_card "
+            + "                       JOIN encounter e "
+            + "                         ON visit_card.patient_id = e.patient_id "
+            + "                            AND visit_card.death_date = e.encounter_datetime "
+            + "                UNION "
+            + "                SELECT p.patient_id, "
+            + "                       e.encounter_datetime death_date "
+            + "                FROM   patient p "
+            + "                       JOIN encounter e "
+            + "                         ON p.patient_id = e.patient_id "
+            + "                       JOIN obs o "
+            + "                         ON e.encounter_id = o.encounter_id "
+            + "                WHERE  p.voided = 0 "
+            + "                       AND e.voided = 0 "
+            + "                       AND e.location_id = :location "
+            + "                       AND e.encounter_type IN ( ${adultoSeguimentoEncounterType}, ${masterCardDrugPickupEncounterType} ) "
+            + "                       AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore "
+            + "                       AND o.voided = 0 "
+            + "                       AND o.concept_id IN ( ${stateOfStayOfPreArtPatientConcept}, ${stateOfStayOfArtPatientConcept} ) "
+            + "                       AND o.value_coded = ${patientHasDiedConcept}) dead "
+            + "        GROUP  BY patient_id) max_dead "
+            + "WHERE  patient_id NOT IN (SELECT p.patient_id "
+            + "                          FROM   patient p "
+            + "                                 JOIN encounter e "
+            + "                                   ON p.patient_id = e.patient_id "
+            + "                          WHERE  p.voided = 0 "
+            + "                                 AND e.voided = 0 "
+            + "                                 AND e.encounter_type IN ( ${adultoSeguimentoEncounterType}, ${pediatriaSeguimentoEncounterType}, ${arvFarmaciaEncounterType} ) "
+            + "                                 AND e.location_id = :location "
+            + "                                 AND e.encounter_datetime > death_date "
+            + "                          UNION "
+            + "                          SELECT p.patient_id "
+            + "                          FROM   patient p "
+            + "                                 JOIN encounter e "
+            + "                                   ON p.patient_id = e.patient_id "
+            + "                                 JOIN obs o "
+            + "                                   ON e.encounter_id = o.encounter_id "
+            + "                          WHERE  p.voided = 0 "
+            + "                                 AND e.voided = 0 "
+            + "                                 AND e.encounter_type = ${masterCardDrugPickupEncounterType} "
+            + "                                 AND e.location_id = :location "
+            + "                                 AND o.concept_id = ${artDatePickupMasterCardConcept} "
+            + "                                 AND o.value_datetime > death_date); ";
+
+    Map<String, Integer> map = new HashMap<>();
+
+    StringSubstitutor sub = new StringSubstitutor(map);
+    map.put("artProgram", artProgram);
+    map.put("patientHasDiedWorkflowState", patientHasDiedWorkflowState);
+    map.put("buscaActivaEncounterType", buscaActivaEncounterType);
+    map.put(
+        "visitaApoioReintegracaoParteAEncounterType", visitaApoioReintegracaoParteAEncounterType);
+    map.put("visitApoioReintegracaoBEncounterType", visitApoioReintegracaoBEncounterType);
+    map.put("patientFoundConcept", patientFoundConcept);
+    map.put("noConcept", noConcept);
+    map.put("reasonPatientNotFoundConcept", reasonPatientNotFoundConcept);
+    map.put("patientIsDeadConcept", patientIsDeadConcept);
+    map.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
+    map.put("masterCardDrugPickupEncounterType", masterCardDrugPickupEncounterType);
+    map.put("stateOfStayOfPreArtPatientConcept", stateOfStayOfPreArtPatientConcept);
+    map.put("stateOfStayOfArtPatientConcept", stateOfStayOfArtPatientConcept);
+    map.put("patientHasDiedConcept", patientHasDiedConcept);
+    map.put("pediatriaSeguimentoEncounterType", pediatriaSeguimentoEncounterType);
+    map.put("arvFarmaciaEncounterType", arvFarmaciaEncounterType);
+    map.put("artDatePickupMasterCardConcept", artDatePickupMasterCardConcept);
+    return sub.replace(sql);
+  }
 }

@@ -1,6 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ResumoTrimestralDataSetDefinition extends BaseDataSet {
 
-  public static final String NO_DIMENSION_OPTIONS = "";
+  private static final String NO_DIMENSION_OPTIONS = "";
 
   public static final String A =
       "Nº de pacientes que iniciou TARV nesta unidade sanitária durante o mês";
@@ -102,101 +101,6 @@ public class ResumoTrimestralDataSetDefinition extends BaseDataSet {
     return dsd;
   }
 
-  private Mapped<CohortIndicator> getA(EptsQuarterlyCohortDefinition.Month month) {
-    CohortDefinition a = resumoTrimestralCohortQueries.getA();
-    CohortDefinition quarterly =
-        resumoTrimestralCohortQueries.getQuarterlyCohort(getParameters(), a, month);
-    String mappings = "year=${year-1},quarter=${quarter},location=${location}";
-    return mapStraightThrough(getCohortIndicator(A, map(quarterly, mappings)));
-  }
-
-  private Mapped<CohortIndicator> getB(EptsQuarterlyCohortDefinition.Month month) {
-    CohortDefinition wrap = resumoTrimestralCohortQueries.getB();
-    CohortDefinition quarterly =
-        resumoTrimestralCohortQueries.getQuarterlyCohort(getParameters(), wrap, month);
-    String mappings = "year=${year-1},quarter=${quarter},location=${location}";
-    return mapStraightThrough(getCohortIndicator(B, map(quarterly, mappings)));
-  }
-
-  private Mapped<CohortIndicator> getC(EptsQuarterlyCohortDefinition.Month month) {
-    CohortDefinition wrap = resumoTrimestralCohortQueries.getC();
-    CohortDefinition quarterly =
-        resumoTrimestralCohortQueries.getQuarterlyCohort(getParameters(), wrap, month);
-    String mappings = "year=${year-1},quarter=${quarter},location=${location}";
-    return mapStraightThrough(getCohortIndicator(C, map(quarterly, mappings)));
-  }
-
-  private Mapped<CohortIndicator> getD(EptsQuarterlyCohortDefinition.Month month) {
-    CohortDefinition wrap = resumoTrimestralCohortQueries.getD();
-    CohortDefinition quarterly =
-        resumoTrimestralCohortQueries.getQuarterlyCohort(getParameters(), wrap, month);
-    String mappings = "year=${year-1},quarter=${quarter},location=${location}";
-    return mapStraightThrough(getCohortIndicator(D, map(quarterly, mappings)));
-  }
-
-  private Mapped<CohortIndicator> getE(EptsQuarterlyCohortDefinition.Month month) {
-    CohortDefinition wrap = resumoTrimestralCohortQueries.getE();
-    CohortDefinition quarterly =
-        resumoTrimestralCohortQueries.getQuarterlyCohort(getParameters(), wrap, month);
-    String mappings = "year=${year-1},quarter=${quarter},location=${location}";
-    return mapStraightThrough(getCohortIndicator(E, map(quarterly, mappings)));
-  }
-
-  private Mapped<CohortIndicator> getF(EptsQuarterlyCohortDefinition.Month month) {
-    CohortDefinition wrap = resumoTrimestralCohortQueries.getF();
-    CohortDefinition quarterly =
-        resumoTrimestralCohortQueries.getQuarterlyCohort(getParameters(), wrap, month);
-    String mappings = "year=${year-1},quarter=${quarter},location=${location}";
-    return mapStraightThrough(getCohortIndicator(F, map(quarterly, mappings)));
-  }
-
-  private Mapped<CohortIndicator> getG(EptsQuarterlyCohortDefinition.Month month) {
-    CohortDefinition wrap = resumoTrimestralCohortQueries.getG();
-    CohortDefinition quarterly =
-        resumoTrimestralCohortQueries.getQuarterlyCohort(getParameters(), wrap, month);
-    String mappings = "year=${year-1},quarter=${quarter},location=${location}";
-    return mapStraightThrough(getCohortIndicator(G, map(quarterly, mappings)));
-  }
-
-  private Mapped<CohortIndicator> getH(EptsQuarterlyCohortDefinition.Month month) {
-    CohortDefinition wrap = resumoTrimestralCohortQueries.getH();
-    CohortDefinition quarterly =
-        resumoTrimestralCohortQueries.getQuarterlyCohort(getParameters(), wrap, month);
-    String mappings = "year=${year-1},quarter=${quarter},location=${location}";
-    return mapStraightThrough(getCohortIndicator(H, map(quarterly, mappings)));
-  }
-
-  private Mapped<CohortIndicator> getI(EptsQuarterlyCohortDefinition.Month month) {
-    CohortDefinition wrap = resumoTrimestralCohortQueries.getI();
-    CohortDefinition quarterly =
-        resumoTrimestralCohortQueries.getQuarterlyCohort(getParameters(), wrap, month);
-    String mappings = "year=${year-1},quarter=${quarter},location=${location}";
-    return mapStraightThrough(getCohortIndicator(I, map(quarterly, mappings)));
-  }
-
-  private Mapped<CohortIndicator> getJ(EptsQuarterlyCohortDefinition.Month month) {
-    CohortDefinition wrap = resumoTrimestralCohortQueries.getJ();
-    CohortDefinition quarterly =
-        resumoTrimestralCohortQueries.getQuarterlyCohort(getParameters(), wrap, month);
-    String mappings = "year=${year-1},quarter=${quarter},location=${location}";
-    return mapStraightThrough(getCohortIndicator(J, map(quarterly, mappings)));
-  }
-
-  private Mapped<CohortIndicator> getL(EptsQuarterlyCohortDefinition.Month month) {
-    CohortDefinition wrap = resumoTrimestralCohortQueries.getL();
-    CohortDefinition quarterly =
-        resumoTrimestralCohortQueries.getQuarterlyCohort(getParameters(), wrap, month);
-    String mappings = "year=${year-1},quarter=${quarter},location=${location}";
-    return mapStraightThrough(getCohortIndicator(L, map(quarterly, mappings)));
-  }
-
-  private CohortIndicator getCohortIndicator(String name, Mapped<CohortDefinition> cohort) {
-    CohortIndicator indicator = new CohortIndicator(name);
-    indicator.setCohortDefinition(cohort);
-    indicator.addParameters(getParameters());
-    return indicator;
-  }
-
   @Override
   public List<Parameter> getParameters() {
     List<Parameter> parameters = new ArrayList<>();
@@ -205,5 +109,89 @@ public class ResumoTrimestralDataSetDefinition extends BaseDataSet {
         new Parameter("quarter", "Quarter", EptsQuarterlyCohortDefinition.Quarter.class));
     parameters.add(ReportingConstants.LOCATION_PARAMETER);
     return parameters;
+  }
+
+  private Mapped<CohortIndicator> getA(EptsQuarterlyCohortDefinition.Month month) {
+    CohortDefinition a = resumoTrimestralCohortQueries.getA();
+    CohortDefinition quarterly =
+        resumoTrimestralCohortQueries.getQuarterlyCohort(a, month, getParameters());
+    return mapStraightThrough(getCohortIndicator(A, mapStraightThrough(quarterly)));
+  }
+
+  private Mapped<CohortIndicator> getB(EptsQuarterlyCohortDefinition.Month month) {
+    CohortDefinition wrap = resumoTrimestralCohortQueries.getB();
+    CohortDefinition quarterly =
+        resumoTrimestralCohortQueries.getQuarterlyCohort(wrap, month, getParameters());
+    return mapStraightThrough(getCohortIndicator(B, mapStraightThrough(quarterly)));
+  }
+
+  private Mapped<CohortIndicator> getC(EptsQuarterlyCohortDefinition.Month month) {
+    CohortDefinition wrap = resumoTrimestralCohortQueries.getC();
+    CohortDefinition quarterly =
+        resumoTrimestralCohortQueries.getQuarterlyCohort(wrap, month, getParameters());
+    return mapStraightThrough(getCohortIndicator(C, mapStraightThrough(quarterly)));
+  }
+
+  private Mapped<CohortIndicator> getD(EptsQuarterlyCohortDefinition.Month month) {
+    CohortDefinition wrap = resumoTrimestralCohortQueries.getD();
+    CohortDefinition quarterly =
+        resumoTrimestralCohortQueries.getQuarterlyCohort(wrap, month, getParameters());
+    return mapStraightThrough(getCohortIndicator(D, mapStraightThrough(quarterly)));
+  }
+
+  private Mapped<CohortIndicator> getE(EptsQuarterlyCohortDefinition.Month month) {
+    CohortDefinition wrap = resumoTrimestralCohortQueries.getE();
+    CohortDefinition quarterly =
+        resumoTrimestralCohortQueries.getQuarterlyCohort(wrap, month, getParameters());
+    return mapStraightThrough(getCohortIndicator(E, mapStraightThrough(quarterly)));
+  }
+
+  private Mapped<CohortIndicator> getF(EptsQuarterlyCohortDefinition.Month month) {
+    CohortDefinition wrap = resumoTrimestralCohortQueries.getF();
+    CohortDefinition quarterly =
+        resumoTrimestralCohortQueries.getQuarterlyCohort(wrap, month, getParameters());
+    return mapStraightThrough(getCohortIndicator(F, mapStraightThrough(quarterly)));
+  }
+
+  private Mapped<CohortIndicator> getG(EptsQuarterlyCohortDefinition.Month month) {
+    CohortDefinition wrap = resumoTrimestralCohortQueries.getG();
+    CohortDefinition quarterly =
+        resumoTrimestralCohortQueries.getQuarterlyCohort(wrap, month, getParameters());
+    return mapStraightThrough(getCohortIndicator(G, mapStraightThrough(quarterly)));
+  }
+
+  private Mapped<CohortIndicator> getH(EptsQuarterlyCohortDefinition.Month month) {
+    CohortDefinition wrap = resumoTrimestralCohortQueries.getH();
+    CohortDefinition quarterly =
+        resumoTrimestralCohortQueries.getQuarterlyCohort(wrap, month, getParameters());
+    return mapStraightThrough(getCohortIndicator(H, mapStraightThrough(quarterly)));
+  }
+
+  private Mapped<CohortIndicator> getI(EptsQuarterlyCohortDefinition.Month month) {
+    CohortDefinition wrap = resumoTrimestralCohortQueries.getI();
+    CohortDefinition quarterly =
+        resumoTrimestralCohortQueries.getQuarterlyCohort(wrap, month, getParameters());
+    return mapStraightThrough(getCohortIndicator(I, mapStraightThrough(quarterly)));
+  }
+
+  private Mapped<CohortIndicator> getJ(EptsQuarterlyCohortDefinition.Month month) {
+    CohortDefinition wrap = resumoTrimestralCohortQueries.getJ();
+    CohortDefinition quarterly =
+        resumoTrimestralCohortQueries.getQuarterlyCohort(wrap, month, getParameters());
+    return mapStraightThrough(getCohortIndicator(J, mapStraightThrough(quarterly)));
+  }
+
+  private Mapped<CohortIndicator> getL(EptsQuarterlyCohortDefinition.Month month) {
+    CohortDefinition wrap = resumoTrimestralCohortQueries.getL();
+    CohortDefinition quarterly =
+        resumoTrimestralCohortQueries.getQuarterlyCohort(wrap, month, getParameters());
+    return mapStraightThrough(getCohortIndicator(L, mapStraightThrough(quarterly)));
+  }
+
+  private CohortIndicator getCohortIndicator(String name, Mapped<CohortDefinition> cohort) {
+    CohortIndicator indicator = new CohortIndicator(name);
+    indicator.setCohortDefinition(cohort);
+    indicator.addParameters(getParameters());
+    return indicator;
   }
 }
