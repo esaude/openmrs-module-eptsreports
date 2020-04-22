@@ -279,7 +279,7 @@ public class ResumoTrimestralCohortQueries {
    */
   public CohortDefinition getJ() {
     CohortDefinition abandoned =
-        resumoMensalCohortQueries.getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(true);
+        resumoMensalCohortQueries.getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7();
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setParameters(getParameters());
     cd.addSearch("A", mapStraightThrough(getA()));
