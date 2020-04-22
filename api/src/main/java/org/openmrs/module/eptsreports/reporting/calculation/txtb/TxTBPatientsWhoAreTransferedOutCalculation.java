@@ -45,29 +45,28 @@ public class TxTBPatientsWhoAreTransferedOutCalculation extends BaseFghCalculati
                 hivMetadata.getTransferOutToAnotherFacilityConcept().getConceptId(),
                 hivMetadata.getAutoTransfer().getConceptId()));
 
-    Map<Integer, Date> deadInFichaClinica =
+    Map<Integer, Date> transferedOutInFichaClinica =
         queryDisaggregation
             .findMapMaxEncounterDatetimeByEncountersAndQuestionsAndAnswerAndEndOfReportingPeriod(
                 context,
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                Arrays.asList(
-                    hivMetadata.getStateOfStayPriorArtPatient().getConceptId(),
-                    hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
+                Arrays.asList(hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
                 hivMetadata.getTransferOutToAnotherFacilityConcept());
 
-    Map<Integer, Date> deadInFichaResumo =
+    Map<Integer, Date> transferredOutInFichaResumo =
         queryDisaggregation
             .findMapMaxObsDatetimeByEncountersAndQuestionsAndAnswerAndEndOfReportingPeriod(
                 context,
                 hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-                Arrays.asList(
-                    hivMetadata.getStateOfStayPriorArtPatient().getConceptId(),
-                    hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
-                hivMetadata.getPatientHasDiedConcept());
+                Arrays.asList(hivMetadata.getStateOfStayPriorArtPatient().getConceptId()),
+                hivMetadata.getTransferOutToAnotherFacilityConcept());
 
     Map<Integer, Date> maxResultFromAllSources =
         CalculationProcessorUtils.getMaxMapDateByPatient(
-            transferedOutByProgram, deadInHomeVisitForm, deadInFichaClinica, deadInFichaResumo);
+            transferedOutByProgram,
+            deadInHomeVisitForm,
+            transferedOutInFichaClinica,
+            transferredOutInFichaResumo);
 
     CalculationResultMap exclusionsToUse =
         Context.getRegisteredComponents(MaxLastDateFromFilaSeguimentoRecepcaoCalculation.class)
