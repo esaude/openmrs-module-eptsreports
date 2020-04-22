@@ -55,7 +55,7 @@ public interface TxTbPrevQueriesInterface {
             + "select p.patient_id,min(value_datetime) data_inicio from patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
             + "inner join obs o on e.encounter_id=o.encounter_id "
-            + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=:location2 and "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=52 and "
             + "o.concept_id=23866 and o.value_datetime is not null and  o.value_datetime<=:endDate and e.location_id=:location group by p.patient_id) inicio_real group by patient_id) "
             + "inicioTarv on inicioTarv.patient_id=inicio_tpi.patient_id and inicio_tpi.data_inicio_tpi <= DATE_ADD(inicioTarv.data_inicio, INTERVAL 6 MONTH) ";
 
@@ -95,7 +95,7 @@ public interface TxTbPrevQueriesInterface {
             + "select p.patient_id,min(value_datetime) data_inicio from patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
             + "inner join obs o on e.encounter_id=o.encounter_id "
-            + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=:location2 and "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=52 and "
             + "o.concept_id=23866 and o.value_datetime is not null and  o.value_datetime<=:endDate and e.location_id=:location group by p.patient_id) inicio_real group by patient_id) "
             + "inicioTarv on inicioTarv.patient_id=inicio_tpi.patient_id and inicio_tpi.data_inicio_tpi > DATE_ADD(inicioTarv.data_inicio, INTERVAL 6 MONTH) ";
 

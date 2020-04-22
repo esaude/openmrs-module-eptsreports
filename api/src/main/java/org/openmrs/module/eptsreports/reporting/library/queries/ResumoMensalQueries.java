@@ -265,7 +265,7 @@ public class ResumoMensalQueries {
             + "inner join encounter e on p.patient_id=e.patient_id where encounter_type=18 and e.encounter_datetime < :startDate and e.location_id=:location and e.voided=0 and p.voided=0 group by p.patient_id)fila "
             + "inner join obs obs_fila on obs_fila.person_id=fila.patient_id "
             + "where obs_fila.voided=0 and obs_fila.concept_id=5096 and fila.data_levantamento=obs_fila.obs_datetime) maxFilaRecepcao group by patient_id "
-            + "having date_add(max(data_proximo_levantamento), INTERVAL 60 day )< :startDate)B7 ";
+            + "having date_add(max(data_proximo_levantamento), INTERVAL 60 day )< (:startDate - INTERVAL 1 day))B7 ";
 
     return query;
   }
@@ -648,20 +648,33 @@ public class ResumoMensalQueries {
         answerConceptId);
   }
 
-  public static final String findPatientsWithAProgramStateMarkedAsTransferedInInAPeriodStartDateB2 =
-      "select minState.patient_id from ( "
-          + "SELECT p.patient_id, pg.patient_program_id, MIN(ps.start_date) as minStateDate  FROM patient p  "
-          + "inner join patient_program pg on p.patient_id=pg.patient_id  "
+  public static final String findPatientsWithAProgramStateMarkedAsTransferedInInAPeriodB2 =
+      "SELECT p.patient_id FROM	patient p "
+          + "inner join patient_program pg on p.patient_id=pg.patient_id "
           + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-          + "WHERE pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and location_id=:location  and ps.start_date<:startDate "
-          + "GROUP BY pg.patient_program_id) minState "
-          + "inner join patient_state ps on ps.patient_program_id=minState.patient_program_id "
-          + "where ps.start_date=minState.minStateDate and ps.state=29 and ps.voided=0 and ps.start_date <:startDate ";
+          + "WHERE pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and pg.location_id=:location  and ps.state=29 and ps.start_date BETWEEN :startDate and :endDate ";
+
+  public static final String
+      findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardB2 =
+          "SELECT tr.patient_id from  ("
+              + "SELECT p.patient_id,obsData.value_datetime from patient p  "
+              + "INNER JOIN encounter e ON p.patient_id=e.patient_id  "
+              + "INNER JOIN obs obsTrans ON e.encounter_id=obsTrans.encounter_id AND obsTrans.voided=0 AND obsTrans.concept_id=1369 AND obsTrans.value_coded=1065 "
+              + "INNER JOIN obs obsTarv ON e.encounter_id=obsTarv.encounter_id AND obsTarv.voided=0 AND obsTarv.concept_id=6300 AND obsTarv.value_coded=6276 "
+              + "INNER JOIN obs obsData ON e.encounter_id=obsData.encounter_id AND obsData.voided=0 AND obsData.concept_id=23891 "
+              + "WHERE p.voided=0 AND e.voided=0 AND e.encounter_type=53 AND obsData.value_datetime BETWEEN :startDate AND :endDate AND e.location_id=:location GROUP BY p.patient_id "
+              + ") tr GROUP BY tr.patient_id ";
+
+  public static final String findPatientsWithAProgramStateMarkedAsTransferedInInAPeriodStartDateB2 =
+      "SELECT p.patient_id FROM	patient p "
+          + "inner join patient_program pg on p.patient_id=pg.patient_id "
+          + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+          + "WHERE pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and pg.location_id=:location  and ps.state=29 and ps.start_date<:startDate ";
 
   public static final String
       findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardStartDateB2 =
-          "SELECT tr.patient_id from  ("
-              + "SELECT p.patient_id, MIN(obsData.value_datetime) from patient p  "
+          "SELECT tr.patient_id from  ( "
+              + "SELECT p.patient_id, obsData.value_datetime from patient p  "
               + "INNER JOIN encounter e ON p.patient_id=e.patient_id  "
               + "INNER JOIN obs obsTrans ON e.encounter_id=obsTrans.encounter_id AND obsTrans.voided=0 AND obsTrans.concept_id=1369 AND obsTrans.value_coded=1065 "
               + "INNER JOIN obs obsTarv ON e.encounter_id=obsTarv.encounter_id AND obsTarv.voided=0 AND obsTarv.concept_id=6300 AND obsTarv.value_coded=6276 "
