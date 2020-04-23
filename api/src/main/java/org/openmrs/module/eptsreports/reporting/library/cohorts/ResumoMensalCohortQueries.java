@@ -551,6 +551,7 @@ public class ResumoMensalCohortQueries {
             + "       AND e.encounter_type IN ( ${adultoSeguimento}, ${pediatriaSeguimento}, ${farmacia} )  "
             + "       AND e.location_id = :locationList "
             + "       AND e.encounter_datetime > all_dead.death_date "
+            + "       AND e.encounter_datetime <= :onOrBefore "
             + "       UNION "
             + "       SELECT p.patient_id "
             + "       FROM   patient p "
