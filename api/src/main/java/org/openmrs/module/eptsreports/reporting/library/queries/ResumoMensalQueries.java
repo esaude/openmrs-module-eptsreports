@@ -913,7 +913,7 @@ public class ResumoMensalQueries {
             + "select p.patient_id,o.concept_id as tb_active_concept,e.encounter_datetime as data_tb from patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
             + "inner join obs o on o.encounter_id=e.encounter_id "
-            + "where e.encounter_type=6 and o.concept_id=1268 and o.value_coded in (1256,1257,1267) and e.location_id=:location and e.voided=0 and p.voided=0 and e.encounter_datetime between :startDate and :endDate) "
+            + "where e.encounter_type=6 and o.concept_id=1268 and o.value_coded in (1256,1257,1267) and e.location_id=:location and e.voided=0 and o.voided=0 and p.voided=0 and e.encounter_datetime between :startDate and :endDate) "
             + "TbActive on TbSynthoms.patient_id=TbActive.patient_id and TbSynthoms.data_tb=TbActive.data_tb ";
 
     return query;
