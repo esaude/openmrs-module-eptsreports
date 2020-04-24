@@ -44,15 +44,14 @@ public class ResumoTrimestralCohortQueries {
     CohortDefinition transferredIn =
         getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonth();
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-    cd.addSearch("startedArt", mapStraightThrough(startedArt));
-    cd.addSearch(
-        "transferredIn",
-        map(
-            transferredIn,
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore+12m},location=${location}"));
+    cd.addParameters(getParameters());
+    
+    String yearBefore =
+        "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore-12m},location=${location}";
+    cd.addSearch("startedArt", map(startedArt, yearBefore));
+
+    String less12m = "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore},location=${location}";
+    cd.addSearch("transferredIn", map(transferredIn, less12m));
     cd.setCompositionString("startedArt NOT transferredIn");
     return cd;
   }

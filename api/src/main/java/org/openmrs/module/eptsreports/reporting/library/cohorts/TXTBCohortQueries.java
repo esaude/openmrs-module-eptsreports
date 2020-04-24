@@ -357,8 +357,8 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * at least one “POS” selected for “Resultado da Investigação para TB de BK e/ou RX?”
-   * during the reporting period consultations; ( response 703: POS for question: 6277)
+   * at least one “POS” selected for “Resultado da Investigação para TB de BK e/ou RX?” during the
+   * reporting period consultations; ( response 703: POS for question: 6277)
    */
   public CohortDefinition positiveInvestigationResultComposition() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -449,8 +449,8 @@ public class TXTBCohortQueries {
   public CohortDefinition positiveScreening() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addSearch("A", mapStraightThrough(getPatientsWithAtLeastOneYesForTBScreening()));
-    cd.addSearch("B", mapStraightThrough(getPatientsWithAtLeastPosNegInvestigationResultTB()));
-    cd.addSearch("C", mapStraightThrough(getPatientsStartTBTreatment()));
+    cd.addSearch("B", mapStraightThrough(getPatientsWithAtLeastPosInvestigationResultTB()));
+    cd.addSearch("C", mapStraightThrough(getPatientsWithAtLeastNegInvestigationResultTB()));
     cd.addSearch("D", mapStraightThrough(getPatientsInTBProgramInThePreviousPeriod()));
     cd.addSearch("E", mapStraightThrough(getResultForBasiloscopia()));
     cd.addSearch("F", mapStraightThrough(getTBTreatmentStart()));
@@ -461,55 +461,13 @@ public class TXTBCohortQueries {
     return cd;
   }
 
-  /** TB Treatment Start Date ( Ficha de Seguimento) within reporting period */
-  public CohortDefinition getPatientsStartTBTreatment() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-
-    cd.setName("Patients With At Least One Yes For TB Screening During the reporting  period");
-    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
-    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-
-    Map<String, Integer> map = new HashMap<String, Integer>();
-    map.put(
-        "adultoSeguimentoEncounterType",
-        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
-    map.put(
-        "pediatriaSeguimentoEncounterType",
-        hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
-    map.put("tbDrugTreatmentStartDate", tbMetadata.getTBDrugTreatmentStartDate().getConceptId());
-
-    String query =
-        "SELECT p.patient_id "
-            + "FROM patient p "
-            + "    INNER JOIN encounter e "
-            + "        ON e.patient_id = p.patient_id "
-            + "    INNER JOIN obs o "
-            + "        ON o.encounter_id = e.encounter_id "
-            + "WHERE "
-            + "    p.voided = 0 AND "
-            + "    e.voided = 0 AND  "
-            + "    o.voided = 0 AND "
-            + "    e.encounter_type IN (${adultoSeguimentoEncounterType},${pediatriaSeguimentoEncounterType})  AND "
-            + "    o.concept_id = ${tbDrugTreatmentStartDate} AND "
-            + "    e.encounter_datetime BETWEEN :startDate AND :endDate AND "
-            + "    e.location_id  = :location "
-            + "GROUP BY p.patient_id;";
-
-    StringSubstitutor sb = new StringSubstitutor(map);
-    String replaceQuery = sb.replace(query);
-
-    cd.setQuery(replaceQuery);
-
-    return cd;
-  }
   /**
-   * all patients with at least one “POS” or “NEG” selected for “Resultado da Investigação para TB
-   * de BK e/ou RX?” (Ficha de Seguimento) during reporting period
+   * all patients with at least one “POS” selected for “Resultado da Investigação para TB de BK e/ou
+   * RX?” (Ficha de Seguimento) during reporting period
    *
    * @return
    */
-  public CohortDefinition getPatientsWithAtLeastPosNegInvestigationResultTB() {
+  public CohortDefinition getPatientsWithAtLeastPosInvestigationResultTB() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
 
     cd.setName("Patients With At Least One Yes For TB Screening During the reporting  period");
@@ -537,14 +495,14 @@ public class TXTBCohortQueries {
             + "        ON o.encounter_id = e.encounter_id "
             + "WHERE "
             + "    p.voided = 0 AND "
-            + "    e.voided = 0 AND  "
+            + "    e.voided = 0 AND "
             + "    o.voided = 0 AND "
             + "    e.encounter_type IN (${adultoSeguimentoEncounterType},${pediatriaSeguimentoEncounterType})  AND "
             + "    o.concept_id = ${researchResultConcept} AND "
-            + "    o.value_coded IN (${positiveConcept},${negativeConcept}) AND "
+            + "    o.value_coded = ${positiveConcept} AND "
             + "    e.encounter_datetime BETWEEN :startDate AND :endDate AND "
             + "    e.location_id  = :location "
-            + "GROUP BY p.patient_id;";
+            + "GROUP BY p.patient_id";
 
     StringSubstitutor sb = new StringSubstitutor(map);
     String replaceQuery = sb.replace(query);
@@ -553,6 +511,75 @@ public class TXTBCohortQueries {
 
     return cd;
   }
+
+  /**
+   * all patients with at least one “NEG” selected for “Resultado da Investigação para TB de BK e/ou
+   * RX?” (Ficha de Seguimento) AND “N” selected for TB Screening “Rastreio TB” in same encounter
+   * occurred during reporting period during reporting period
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsWithAtLeastNegInvestigationResultTB() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
+    cd.setName("Patients With At Least One Yes For TB Screening During the reporting  period");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    Map<String, Integer> map = new HashMap<String, Integer>();
+    map.put(
+        "adultoSeguimentoEncounterType",
+        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put(
+        "pediatriaSeguimentoEncounterType",
+        hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    map.put("researchResultConcept", tbMetadata.getResearchResultConcept().getConceptId());
+    map.put("tbScreening", tbMetadata.getTbScreeningConcept().getConceptId());
+    map.put("negativeConcept", tbMetadata.getNegativeConcept().getConceptId());
+
+    String query =
+        "SELECT patient_id FROM ( "
+            + "SELECT p.patient_id, e.encounter_id "
+            + "FROM patient p "
+            + "    INNER JOIN encounter e "
+            + "        ON e.patient_id = p.patient_id "
+            + "    INNER JOIN obs o "
+            + "        ON o.encounter_id = e.encounter_id "
+            + "    INNER JOIN"
+            + "    (SELECT p.patient_id, e.encounter_id "
+            + "FROM patient p "
+            + "    INNER JOIN encounter e "
+            + "        ON e.patient_id = p.patient_id "
+            + "    INNER JOIN obs o "
+            + "        ON o.encounter_id = e.encounter_id "
+            + "WHERE "
+            + "    p.voided = 0 AND "
+            + "    e.voided = 0 AND "
+            + "    o.voided = 0 AND "
+            + "    o.concept_id = ${tbScreening} AND "
+            + "    o.value_coded = ${negativeConcept} "
+            + ") as screening "
+            + "ON e.encounter_id = screening.encounter_id "
+            + "WHERE "
+            + "    p.voided = 0 AND "
+            + "    e.voided = 0 AND "
+            + "    o.voided = 0 AND "
+            + "    e.encounter_type IN (${adultoSeguimentoEncounterType},${pediatriaSeguimentoEncounterType})  AND "
+            + "    o.concept_id = ${researchResultConcept} AND "
+            + "    o.value_coded = ${negativeConcept} AND "
+            + "    e.encounter_datetime BETWEEN :startDate AND :endDate AND "
+            + "    e.location_id  = :location "
+            + "    GROUP BY p.patient_id) as list";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    String replaceQuery = sb.replace(query);
+
+    cd.setQuery(replaceQuery);
+
+    return cd;
+  }
+
   /**
    * all patients with at least one “S” (Yes) selected for TB Screening “Rastreio TB” (Ficha de
    * Seguimento Adult or Pediatric) during the reporting period;
@@ -591,7 +618,7 @@ public class TXTBCohortQueries {
             + "    o.value_coded = ${getYesConcept} AND "
             + "    e.encounter_datetime BETWEEN :startDate AND :endDate AND "
             + "    e.location_id  = :location "
-            + "GROUP BY p.patient_id;";
+            + "GROUP BY p.patient_id";
 
     StringSubstitutor sb = new StringSubstitutor(map);
     String replaceQuery = sb.replace(query);
