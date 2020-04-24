@@ -77,13 +77,24 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
             null,
             context);
 
-    CalculationResultMap pregnantRegistrationMap =
+    CalculationResultMap pregnantRegistrationOnEncounter53Map =
         ePTSCalculationService.getObs(
             pregnantRegistered,
             Arrays.asList(fichaResumoEncounterType),
             cohort,
             Arrays.asList(location),
             null,
+            TimeQualifier.ANY,
+            null,
+            context);
+
+    CalculationResultMap pregnantOnEncounter53Map =
+        ePTSCalculationService.getObs(
+            pregnant,
+            Arrays.asList(fichaResumoEncounterType),
+            cohort,
+            Arrays.asList(location),
+            Arrays.asList(yes),
             TimeQualifier.ANY,
             null,
             context);
@@ -157,7 +168,8 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
               lastHivVlObs,
               lastVlQualitativeObs,
               startArtBeingBpostiveMap,
-              pregnantRegistrationMap);
+              pregnantRegistrationOnEncounter53Map,
+              pregnantOnEncounter53Map);
       resultMap.put(pId, new SimpleResult(requiredDate, this));
     }
 
@@ -175,7 +187,8 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
       Obs lastVlObs,
       Obs lastVlQualitative,
       CalculationResultMap artStartWhileBposMap,
-      CalculationResultMap registeredPregnant) {
+      CalculationResultMap registeredPregnantValueDateBasedOnEncounter53,
+      CalculationResultMap getRegisteredPregnantBasedOnEncounter53) {
     Date requiredDate = null;
     // check of the 2 dates passed for viral load and pick the latest
     List<Date> dateListForVl = new ArrayList<>();
@@ -195,7 +208,10 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
       ListResult pregnantsInProgramResults = (ListResult) markedPregnantInProgram.get(pId);
       ListResult lastMenstralResults = (ListResult) markedAsMenstralMap.get(pId);
       ListResult onArtWhileBpos = (ListResult) artStartWhileBposMap.get(pId);
-      ListResult registeredPregnantListResult = (ListResult) registeredPregnant.get(pId);
+      ListResult registeredPregnantListResultBasedOnEncounter53ValueDate =
+          (ListResult) registeredPregnantValueDateBasedOnEncounter53.get(pId);
+      ListResult getRegisteredPregnantBasedOnEncounter53ListResults =
+          (ListResult) getRegisteredPregnantBasedOnEncounter53.get(pId);
 
       List<Obs> pregnantObsList = EptsCalculationUtils.extractResultValues(pregnantResult);
       List<Obs> pregnantByWeeksObsList =
@@ -206,8 +222,12 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
           EptsCalculationUtils.extractResultValues(pregnantsInProgramResults);
       List<Obs> lastMensObsList = EptsCalculationUtils.extractResultValues(lastMenstralResults);
       List<Obs> artWhileBpos = EptsCalculationUtils.extractResultValues(onArtWhileBpos);
-      List<Obs> pregRegList =
-          EptsCalculationUtils.extractResultValues(registeredPregnantListResult);
+      List<Obs> pregRegListBasedOnValueDateAndEncounter53 =
+          EptsCalculationUtils.extractResultValues(
+              registeredPregnantListResultBasedOnEncounter53ValueDate);
+      List<Obs> getRegisteredPregnantBasedOnEncounter53ListResultsObsList =
+          EptsCalculationUtils.extractResultValues(
+              getRegisteredPregnantBasedOnEncounter53ListResults);
 
       // add a list to contains all the dates that can be sorted and pick the most recent one
       List<Date> allPregnancyDates =
@@ -218,7 +238,10 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
               isPregnantInProgram(lastVlDate, patientProgams, location),
               isPregnantWithLastMens(lastVlDate, lastMensObsList),
               getWhenOnARTWhileBpostive(lastVlDate, artWhileBpos),
-              getPregnantRegistrationDate(lastVlDate, pregRegList));
+              getPregnantRegistrationDateBasedOnEncounter53(
+                  lastVlDate,
+                  pregRegListBasedOnValueDateAndEncounter53,
+                  getRegisteredPregnantBasedOnEncounter53ListResultsObsList));
       // have a resultant list of dates
       List<Date> resultantList = new ArrayList<>();
       if (allPregnancyDates.size() > 0) {
@@ -303,12 +326,20 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     return requiredDate;
   }
 
-  private Date getPregnantRegistrationDate(
-      Date lastVlDate, List<Obs> pregnantRegistrationValueDateList) {
+  private Date getPregnantRegistrationDateBasedOnEncounter53(
+      Date lastVlDate,
+      List<Obs> pregnantRegistrationValueDateListBasedOnEncounter53,
+      List<Obs> registeredPregnancyBasedOnEncounter53) {
     Date requiredDate = null;
-    for (Obs obs : pregnantRegistrationValueDateList) {
-      if (this.isInPregnantViralLoadRange(lastVlDate, obs.getValueDatetime())) {
-        requiredDate = obs.getValueDatetime();
+
+    for (Obs pregnantRegistered : registeredPregnancyBasedOnEncounter53) {
+      for (Obs pregnantValueDate : pregnantRegistrationValueDateListBasedOnEncounter53) {
+        if (pregnantRegistered.getPerson().equals(pregnantValueDate.getPerson())
+            && pregnantRegistered.getEncounter().equals(pregnantValueDate.getEncounter())
+            && isInPregnantViralLoadRange(lastVlDate, pregnantValueDate.getValueDatetime())) {
+          requiredDate = pregnantValueDate.getValueDatetime();
+          break;
+        }
       }
     }
 

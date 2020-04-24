@@ -56,7 +56,7 @@ public class ViralLoadQueries {
             + " AND obs.location_id=:location AND "
             + " (obs.value_numeric IS NOT NULL OR obs.value_coded IS NOT NULL) GROUP BY patient_id)fn GROUP BY patient_id)fn1 "
             + " INNER JOIN obs os ON os.person_id=fn1.patient_id WHERE fn1.data_carga=os.obs_datetime AND os.concept_id IN(%d, %d) "
-            + " AND (os.value_numeric < 1000 OR os.value_coded IS NOT NULL) AND os.location_id=:location ";
+            + " AND (os.value_numeric < 1000 OR os.value_coded IS NOT NULL) AND os.location_id=:location AND voided=0 ";
 
     return String.format(
         query,
