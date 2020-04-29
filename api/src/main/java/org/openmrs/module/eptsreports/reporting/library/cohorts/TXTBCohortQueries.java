@@ -537,6 +537,7 @@ public class TXTBCohortQueries {
     map.put("researchResultConcept", tbMetadata.getResearchResultConcept().getConceptId());
     map.put("tbScreening", tbMetadata.getTbScreeningConcept().getConceptId());
     map.put("negativeConcept", tbMetadata.getNegativeConcept().getConceptId());
+    map.put("noConcept", commonMetadata.getNoConcept().getConceptId());
 
     String query =
         "SELECT patient_id FROM ( "
@@ -558,7 +559,7 @@ public class TXTBCohortQueries {
             + "    e.voided = 0 AND "
             + "    o.voided = 0 AND "
             + "    o.concept_id = ${tbScreening} AND "
-            + "    o.value_coded = ${negativeConcept} "
+            + "    o.value_coded = ${noConcept} "
             + ") as screening "
             + "ON e.encounter_id = screening.encounter_id "
             + "WHERE "
