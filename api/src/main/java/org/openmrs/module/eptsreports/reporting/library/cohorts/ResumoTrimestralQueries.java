@@ -16,9 +16,9 @@ public class ResumoTrimestralQueries {
             + "ON p.patient_id = e.patient_id JOIN obs o "
             + "ON o.encounter_id = e.encounter_id "
             + "WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND "
-            + "e.encounter_type = ${adultoSeguimentoEncounterType} AND (o.concept_id = ${viralLoadConcept} AND o.value_numeric IS NOT NULL) "
-            + "OR (o.concept_id = ${viralLoadQualitativeConcept} AND o.value_numeric IS NOT NULL) "
-            + "AND e.encounter_datetime <= :onOrBefore group by patient_id";
+            + "e.encounter_type = ${adultoSeguimentoEncounterType} AND ((o.concept_id = ${viralLoadConcept} AND o.value_numeric IS NOT NULL) "
+            + "OR (o.concept_id = ${viralLoadQualitativeConcept} AND o.value_coded IS NOT NULL)) "
+            + "AND e.encounter_datetime <= :onOrBefore ";
 
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
