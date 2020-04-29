@@ -45,7 +45,7 @@ public class ResumoTrimestralCohortQueries {
         getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonth();
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameters(getParameters());
-    
+
     String yearBefore =
         "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore-12m},location=${location}";
     cd.addSearch("startedArt", map(startedArt, yearBefore));

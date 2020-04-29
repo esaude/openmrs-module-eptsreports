@@ -165,7 +165,8 @@ public class ResumoTrimestralQueries {
     sql.append("              AND ps.voided = 0 ");
     sql.append("              AND ps.state = ${suspendedState} ");
     sql.append("            AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ");
-    sql.append("              AND ps.end_date = NULL ");
+    sql.append("              AND ps.end_date IS NULL ");
+    sql.append("              GROUP BY p.patient_id ");
     sql.append("            UNION ");
     sql.append("            SELECT p.patient_id, ");
     sql.append("                   Max(e.encounter_datetime) suspended_date ");
@@ -182,6 +183,7 @@ public class ResumoTrimestralQueries {
     sql.append("              AND o.voided = 0 ");
     sql.append("              AND o.concept_id = ${artStateOfStay} ");
     sql.append("              AND o.value_coded = ${suspendedConcept} ");
+    sql.append("              GROUP BY p.patient_id ");
     sql.append("            UNION ");
     sql.append("            SELECT p.patient_id, ");
     sql.append("                   Max(o.obs_datetime) suspended_date ");
