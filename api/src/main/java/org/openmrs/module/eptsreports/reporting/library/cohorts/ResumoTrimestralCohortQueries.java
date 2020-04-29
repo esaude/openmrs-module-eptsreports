@@ -124,9 +124,8 @@ public class ResumoTrimestralCohortQueries {
     CohortDefinition suspended = getI();
     CohortDefinition abandoned = getJ();
     CohortDefinition dead = getL();
-    CohortDefinition inTheFirstLineOrNull =
-        getPatientsWithLastTherapeuticLineEqualsToFirstLineOrNull();
-
+    CohortDefinition lastFirstTherapeuticLine =
+        getPatientsWithLastTherapeuticLineEqualsToFirstLineOrWithoutInformation();
     CompositionCohortDefinition wrapper = new CompositionCohortDefinition();
     wrapper.setParameters(getParameters());
     wrapper.addSearch("preTarv", mapStraightThrough(preTarv));
@@ -135,10 +134,10 @@ public class ResumoTrimestralCohortQueries {
     wrapper.addSearch("suspended", mapStraightThrough(suspended));
     wrapper.addSearch("abandoned", mapStraightThrough(abandoned));
     wrapper.addSearch("dead", mapStraightThrough(dead));
-    wrapper.addSearch("inTheFirstLineOrNull", mapStraightThrough(inTheFirstLineOrNull));
+    wrapper.addSearch("lastFirstTherapeuticLine", mapStraightThrough(lastFirstTherapeuticLine));
 
     wrapper.setCompositionString(
-        "((preTarv OR transferredIn) NOT (transferredOut AND suspended AND abandoned AND dead)) AND inTheFirstLineOrNull ");
+        "((preTarv OR transferredIn) NOT (transferredOut OR suspended OR abandoned OR dead)) AND lastFirstTherapeuticLine ");
     return wrapper;
   }
 
@@ -253,17 +252,22 @@ public class ResumoTrimestralCohortQueries {
     return cd;
   }
 
-  /** Fetches Patients with Last registered Line Treatment equals to (1st Line) */
-  private CohortDefinition getPatientsWithLastTherapeuticLineEqualsToFirstLineOrNull() {
+  /**
+   * Fetches Patients with Last registered Line Treatment equals to (1st Line) or without
+   * information regarding Therapeutic Line
+   */
+  private CohortDefinition
+      getPatientsWithLastTherapeuticLineEqualsToFirstLineOrWithoutInformation() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Patients in the first Line of treatment during a period");
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.setQuery(
-        ResumoTrimestralQueries.getPatientsWithLastTherapeuticLineEqualsToFirstLineOrNull(
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getTherapeuticLineConcept().getConceptId(),
-            hivMetadata.getFirstLineConcept().getConceptId()));
+        ResumoTrimestralQueries
+            .getPatientsWithLastTherapeuticLineEqualsToFirstLineOrWithoutInformation(
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getTherapeuticLineConcept().getConceptId(),
+                hivMetadata.getFirstLineConcept().getConceptId()));
     return cd;
   }
 
