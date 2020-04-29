@@ -411,16 +411,19 @@ public class TXTBCohortQueries {
         "patientswithPulmonaryTbDate", map(patientswithPulmonaryTbDate, codedObsParameterMapping));
 
     CohortDefinition patientsWhoInitiatedTbTreatment =
-        TXTBQueries.getPatientsWithObsBetweenDates(
-            "Patients marked as Tratamento TB– Inicio (I)",
-            hivMetadata.getTBTreatmentPlanConcept(),
-            hivMetadata.getStartDrugs(),
-            Arrays.asList(
-                hivMetadata.getAdultoSeguimentoEncounterType(),
-                hivMetadata.getPediatriaSeguimentoEncounterType()));
+        genericCohortQueries.generalSql(
+            "patientsWhoInitiatedTbTreatment",
+            TXTBQueries.getPatientsWithObsBetweenDates(
+                hivMetadata.getTBTreatmentPlanConcept().getConceptId(),
+                hivMetadata.getStartDrugs().getConceptId(),
+                Arrays.asList(
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId())));
+    addGeneralParameters(patientsWhoInitiatedTbTreatment);
+
     cd.addSearch(
         "patientsWhoInitiatedTbTreatment",
-        map(patientsWhoInitiatedTbTreatment, codedObsParameterMapping));
+        map(patientsWhoInitiatedTbTreatment, generalParameterMapping));
 
     CohortDefinition artList = artList();
     cd.addSearch("artList", map(artList, generalParameterMapping));
