@@ -357,7 +357,6 @@ public class TxMlCohortQueries {
 
     cd.setCompositionString(
         "missedAppointment AND ((untracedPatients OR tracedPatients) AND C2) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
-
     return cd;
   }
 

@@ -97,7 +97,7 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
             + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
             + "WHERE p.voided =0 AND e.voided=0 AND o.voided=0 AND o.concept_id=%d AND o.value_datetime IS NOT NULL AND e.encounter_type =%d AND e.location_id= :location "
-            + "AND e.encounter_datetime <= :onOrBefore GROUP BY p.patient_id "
+            + "AND o.value_datetime <= :onOrBefore GROUP BY p.patient_id "
             + ")lcc GROUP BY patient_id ";
 
     sqlPatientDataDefinition.setSql(
