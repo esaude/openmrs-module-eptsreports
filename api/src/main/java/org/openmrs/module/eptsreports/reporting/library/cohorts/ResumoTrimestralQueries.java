@@ -426,4 +426,34 @@ public class ResumoTrimestralQueries {
     map.put("artDatePickupMasterCardConcept", artDatePickupMasterCardConcept);
     return sub.replace(sql);
   }
+
+  /**
+   * all patients with last registered Line Treatment (PT: “Linha Terapeutica”) (Concept id 21151)
+   * equal to “Second Line” (PT: “Segunda Linha”) (Concept id 21148 ) and encounter date < =
+   * MonthEndDate in encounter “Master Card – Ficha Clinica” (encounter id 6)
+   *
+   * @return String
+   */
+  public static String
+      getPatientsWithLastObsInSecondTherapeuticLineInMasterCardFichaClinicaBeforeMonthEndDate(
+          int adultoSeguimentoEncounterType, int therapeuticLineConcept, int secondLineConcept) {
+    String sql =
+        "SELECT patient_id FROM( "
+            + " SELECT p.patient_id,MAX(o.obs_datetime) last_obs"
+            + " FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + " INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type = ${adultoSeguimentoEncounterType} "
+            + " AND  o.concept_id = ${therapeuticLineConcept} "
+            + " AND o.value_coded = ${secondLineConcept} "
+            + " AND e.encounter_datetime <= :endDate"
+            + " AND e.location_id= :location GROUP BY p.patient_id) tt ";
+
+    Map<String, Integer> map = new HashMap<>();
+
+    StringSubstitutor sub = new StringSubstitutor(map);
+    map.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
+    map.put("therapeuticLineConcept", therapeuticLineConcept);
+    map.put("secondLineConcept", secondLineConcept);
+    return sub.replace(sql);
+  }
 }
