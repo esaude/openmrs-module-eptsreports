@@ -272,16 +272,23 @@ public class ResumoTrimestralQueries {
             + " UNION "
             + "(SELECT enc.patient_id "
             + " FROM   encounter enc "
-            + "        JOIN obs o "
-            + "          ON o.encounter_id = enc.encounter_id "
-            + "             AND enc.encounter_datetime <= :onOrBefore "
-            + "             AND enc.location_id = :location "
-            + "             AND enc.encounter_type = ${adultoSeguimentoEncounterType} "
-            + "             AND enc.voided = 0 "
-            + "             AND o.location_id = :location "
-            + "             AND o.concept_id NOT IN ( ${therapeuticLineConcept} ) "
-            + "             AND o.voided = 0 "
-            + " GROUP  BY enc.patient_id)  ";
+            + " JOIN patient p "
+            + " ON p.patient_id = enc.patient_id "
+            + " WHERE  enc.patient_id NOT IN (SELECT enc.patient_id "
+            + "         FROM   encounter enc "
+            + "         JOIN obs o "
+            + "         ON o.encounter_id = enc.encounter_id "
+            + "         WHERE o.concept_id = ${therapeuticLineConcept} "
+            + "         AND enc.location_id = :location "
+            + "         AND enc.voided = 0 "
+            + "         AND o.location_id = :location "
+            + "         AND o.voided = 0"
+            + "         AND enc.encounter_datetime <= :onOrBefore) "
+            + " AND enc.encounter_type = ${adultoSeguimentoEncounterType} "
+            + " AND enc.encounter_datetime <= :onOrBefore "
+            + " AND enc.voided = 0 "
+            + " AND enc.location_id = :location "
+            + " AND p.voided = 0 GROUP  BY patient_id  )";
 
     Map<String, Integer> map = new HashMap<>();
     map.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
