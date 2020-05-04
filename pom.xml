@@ -9,7 +9,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>eptsreports</artifactId>
-	<version>2.0.0</version>
+	<version>2.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>EPTS reports</name>
 	<description>PEPFAR reports for EPTS project in Mozambique</description>
@@ -28,7 +28,7 @@
 		<connection>scm:git:git@github.com:jembi/openmrs-module-eptsreports.git</connection>
 		<developerConnection>scm:git:git@github.com:jembi/openmrs-module-eptsreports.git</developerConnection>
 		<url>https://github.com/jembi/openmrs-module-eptsreports/</url>
-	  <tag>v2.0.0</tag>
+	  <tag>1.6.1</tag>
   	</scm>
 
 	<modules>
