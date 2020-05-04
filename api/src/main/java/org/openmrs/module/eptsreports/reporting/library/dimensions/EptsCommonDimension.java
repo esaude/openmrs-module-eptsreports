@@ -11,6 +11,8 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.dimensions;
 
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
+
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -19,9 +21,13 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri4MonthsCohort
 import org.openmrs.module.eptsreports.reporting.library.cohorts.EriCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TbPrevCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +51,12 @@ public class EptsCommonDimension {
   @Autowired private EriCohortQueries eriCohortQueries;
 
   @Autowired private TbPrevCohortQueries tbPrevCohortQueries;
+
+  @Autowired private HivCohortQueries hivCohortQueries;
+
+  @Autowired private TxPvlsCohortQueries txPvlsQueries;
+
+  @Autowired private TxCurrCohortQueries txCurrCohortQueries;
 
   /**
    * Gender dimension
@@ -71,10 +83,15 @@ public class EptsCommonDimension {
 
     dim.addCohortDefinition("UK", ageDimensionCohort.createUnknownAgeCohort());
     dim.addCohortDefinition(
-        "<1", ageDimensionCohort.createXtoYAgeCohort("patients with age bellow 1", 0, 0));
+        "<1", ageDimensionCohort.createXtoYAgeCohort("patients with age below 1", 0, 0));
+    dim.addCohortDefinition(
+        "<2", ageDimensionCohort.createXtoYAgeCohort("patients with age below 2 years", 0, 1));
     dim.addCohortDefinition(
         "0-4",
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 4 years", 0, 4));
+    dim.addCohortDefinition(
+        "0-14",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 14 years", 0, 14));
     dim.addCohortDefinition(
         "0-15",
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 15 years", 0, 15));
@@ -117,6 +134,10 @@ public class EptsCommonDimension {
 
     dim.addCohortDefinition(
         "20+", ageDimensionCohort.createXtoYAgeCohort("patients with age over 20 years", 20, null));
+
+    dim.addCohortDefinition(
+        "10-19",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 10 and 19", 10, 19));
 
     return dim;
   }
@@ -172,31 +193,26 @@ public class EptsCommonDimension {
         "DP",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            "onOrBefore=${reportingEndDate},location=${location}"));
 
     dim.addCohortDefinition(
         "LTFU",
         EptsReportUtils.map(
-            eri4MonthsCohortQueries.getAllPatientsWhoAreLostToFollowUpDuringPeriod(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
+            eri4MonthsCohortQueries
+                .getPatientsLostToFollowUpAndNotDeadTransferredOrStoppedTreatment(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
 
     dim.addCohortDefinition(
         "TOP",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
-                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            hivCohortQueries.getPatientsTransferredOut(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
 
     dim.addCohortDefinition(
         "STP",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            hivCohortQueries.getPatientsWhoStoppedTreatment(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
 
     dim.addCohortDefinition(
         "ANIT",
@@ -236,18 +252,18 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "DP",
         EptsReportUtils.map(
-            eri2MonthsCohortQueries.getPatientsWhoInitiatedArtAndDead(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
+            genericCohortQueries.getDeceasedPatients(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
     dim.addCohortDefinition(
         "TOP",
         EptsReportUtils.map(
-            eri2MonthsCohortQueries.getPatientsWhoInitiatedArtButTransferredOut(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
+            hivCohortQueries.getPatientsTransferredOut(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
     dim.addCohortDefinition(
         "STP",
         EptsReportUtils.map(
-            eri2MonthsCohortQueries.getPatientsWhoInitiatedArtButSuspendedTreatment(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
+            hivCohortQueries.getPatientsWhoStoppedTreatment(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
     return dim;
   }
 
@@ -267,6 +283,54 @@ public class EptsCommonDimension {
         EptsReportUtils.map(
             tbPrevCohortQueries.getPreviouslyOnArt(),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+    return dim;
+  }
+
+  public CohortDefinitionDimension getKeyPopsDimension() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setName("Key Population Dimension");
+    dim.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    dim.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
+    dim.addParameter(new Parameter("locationList", "Location", Location.class));
+    CohortDefinition drugUserKeyPopCohort = hivCohortQueries.getDrugUserKeyPopCohort();
+    CohortDefinition homosexualKeyPopCohort = hivCohortQueries.getHomosexualKeyPopCohort();
+    CohortDefinition imprisonmentKeyPopCohort = hivCohortQueries.getImprisonmentKeyPopCohort();
+    CohortDefinition sexWorkerKeyPopCohort = hivCohortQueries.getSexWorkerKeyPopCohort();
+    dim.addCohortDefinition("PID", mapStraightThrough(drugUserKeyPopCohort));
+    dim.addCohortDefinition("MSM", mapStraightThrough(homosexualKeyPopCohort));
+    dim.addCohortDefinition("CSW", mapStraightThrough(sexWorkerKeyPopCohort));
+    dim.addCohortDefinition("PRI", mapStraightThrough(imprisonmentKeyPopCohort));
+    return dim;
+  }
+
+  public CohortDefinitionDimension getViralLoadRoutineTargetReasonsDimension() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.addParameter(new Parameter("startDate", "onOrAfter", Date.class));
+    dim.addParameter(new Parameter("endDate", "onOrBefore", Date.class));
+    dim.addParameter(new Parameter("location", "Location", Location.class));
+    CohortDefinition routineViralLoadCohort = txPvlsQueries.getPatientsWhoAreOnRoutine();
+    CohortDefinition targetedViralLoadCohort = txPvlsQueries.getPatientsWhoAreOnTarget();
+    dim.addCohortDefinition("VLR", mapStraightThrough(routineViralLoadCohort));
+    dim.addCohortDefinition("VLT", mapStraightThrough(targetedViralLoadCohort));
+    return dim;
+  }
+
+  public CohortDefinitionDimension getDispensingQuantityDimension() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setName("ARV Dispensing quantity dimension");
+    dim.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    dim.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
+    dim.addParameter(new Parameter("locationList", "Location", Location.class));
+    CohortDefinition less3m =
+        txCurrCohortQueries.getPatientsWithLessThan3MonthsDispensationQuantity();
+    CohortDefinition threeTo5m =
+        txCurrCohortQueries.getPatientsWith3to5MonthsOfDispensationQuantity();
+    CohortDefinition more6m =
+        txCurrCohortQueries.getPatientsWithMoreThan6MonthsOfDispensationQuantity();
+    String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${locationList}";
+    dim.addCohortDefinition("<3m", EptsReportUtils.map(less3m, mappings));
+    dim.addCohortDefinition("3-5m", EptsReportUtils.map(threeTo5m, mappings));
+    dim.addCohortDefinition(">6m", EptsReportUtils.map(more6m, mappings));
     return dim;
   }
 }

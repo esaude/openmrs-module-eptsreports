@@ -13,32 +13,61 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringSubstitutor;
 
 public class BaseQueries {
 
   // State ids are left as hard coded for now because all reference same
   // concept
   // they map to concept_id=1369 - TRANSFER FROM OTHER FACILITY
-  // TODO: Query needs to be refactored
-  public static String getBaseCohortQuery(Map<String, String> parameters) {
+  /**
+   * Get the most basic base cohort query
+   *
+   * @param arvAdultInitialEncounterTypeId Id of Encounter ID 5
+   * @param arvPediatriaInitialEncounterTypeId Id of Encounter ID 7
+   * @param masterCardResumoMensalEncounterTypeId Id of Encounter ID 53
+   * @param hivCareProgramId Id of Program 1
+   * @param artProgramId Id of program 2
+   * @return base cohort
+   */
+  public static String getBaseCohortQuery(
+      int arvAdultInitialEncounterTypeId,
+      int arvPediatriaInitialEncounterTypeId,
+      int masterCardResumoMensalEncounterTypeId,
+      int hivCareProgramId,
+      int artProgramId,
+      int masterCardFileOpeningConceptId) {
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("arvAdultInitialEncounterTypeId", arvAdultInitialEncounterTypeId);
+    valuesMap.put("arvPediatriaInitialEncounterTypeId", arvPediatriaInitialEncounterTypeId);
+    valuesMap.put("masterCardResumoMensalEncounterTypeId", masterCardResumoMensalEncounterTypeId);
+    valuesMap.put("hivCareProgramId", hivCareProgramId);
+    valuesMap.put("artProgramId", artProgramId);
+    valuesMap.put("masterCardFileOpeningConceptId", masterCardFileOpeningConceptId);
+    StringSubstitutor sub = new StringSubstitutor(valuesMap);
     String query =
         "SELECT p.patient_id FROM patient p JOIN encounter e ON e.patient_id=p.patient_id "
-            + "WHERE e.voided=0 AND p.voided=0 AND e.encounter_type IN (%s) AND e.encounter_datetime<=:endDate AND e.location_id = :location "
+            + "WHERE e.voided=0 AND p.voided=0 AND "
+            + "e.encounter_type IN (${arvAdultInitialEncounterTypeId},${arvPediatriaInitialEncounterTypeId}) "
+            + "AND e.encounter_datetime <= :endDate "
+            + "AND e.location_id = :location "
+            + "UNION  "
+            + "SELECT p.patient_id FROM patient p "
+            + "JOIN encounter e ON e.patient_id=p.patient_id "
+            + "JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "WHERE e.voided=0 AND p.voided=0 AND o.voided=0 AND "
+            + "e.encounter_type = ${masterCardResumoMensalEncounterTypeId} "
+            + "AND o.concept_id =${masterCardFileOpeningConceptId} "
+            + "AND o.value_datetime <= :endDate "
+            + "AND e.location_id = :location "
             + "UNION "
-            + "SELECT pg.patient_id FROM patient p JOIN patient_program pg ON p.patient_id=pg.patient_id WHERE pg.voided=0 AND p.voided=0 AND program_id IN (%s) AND date_enrolled<=:endDate AND location_id=:location ";
-    String encounterTypes =
-        StringUtils.join(
-            Arrays.asList(
-                parameters.get("arvAdultInitialEncounterTypeId"),
-                parameters.get("arvPediatriaInitialEncounterTypeId")),
-            ',');
-    String programs =
-        StringUtils.join(
-            Arrays.asList(parameters.get("hivCareProgramId"), parameters.get("artProgramId")), ',');
-    return String.format(query, encounterTypes, programs);
+            + "SELECT pg.patient_id FROM patient p JOIN patient_program pg ON p.patient_id=pg.patient_id "
+            + "WHERE pg.voided=0 AND p.voided=0 AND program_id IN (${hivCareProgramId},${artProgramId}) AND pg.date_enrolled <= :endDate AND location_id= :location";
+
+    return sub.replace(query);
   }
 
   /**

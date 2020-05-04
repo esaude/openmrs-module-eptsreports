@@ -48,7 +48,9 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
     Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
     EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
     EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
-    EncounterType childFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
+    EncounterType childFollowup = hivMetadata.getPediatriaSeguimentoEncounterType();
+    EncounterType masterCard = hivMetadata.getMasterCardEncounterType();
+    Concept qualitativeViralLoadResults = hivMetadata.getHivViralLoadQualitative();
 
     // get data inicio TARV
     // TODO: pass in as a parameter and only recalculate if parameter is
@@ -62,8 +64,17 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
     Date oneYearBefore = EptsCalculationUtils.addMonths(onOrBefore, -12);
     CalculationResultMap lastVl =
         ePTSCalculationService.lastObs(
-            Arrays.asList(labEncounterType, adultFollowup, childFollowup),
+            Arrays.asList(labEncounterType, adultFollowup, childFollowup, masterCard),
             viralLoadConcept,
+            location,
+            oneYearBefore,
+            onOrBefore,
+            cohort,
+            context);
+    CalculationResultMap qViralLoadResultsMap =
+        ePTSCalculationService.lastObs(
+            Arrays.asList(labEncounterType, adultFollowup, childFollowup, masterCard),
+            qualitativeViralLoadResults,
             location,
             oneYearBefore,
             onOrBefore,
@@ -73,12 +84,25 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
     for (Integer ptId : cohort) {
       boolean isOnArtForMoreThan3Months = false;
       SimpleResult artStartDateResult = (SimpleResult) arvsInitiationDateMap.get(ptId);
-      Obs lastVlObs = EptsCalculationUtils.resultForPatient(lastVl, ptId);
-      if (checkNotNull(artStartDateResult, lastVlObs)) {
-        Date artStartDate = (Date) artStartDateResult.getValue();
-        Date lastVlDate = lastVlObs.getObsDatetime();
-        if (checkNotNull(artStartDate) && isAtLeastThreeMonthsLater(artStartDate, lastVlDate)) {
-          isOnArtForMoreThan3Months = true;
+      Date artStartDate;
+      if (artStartDateResult != null) {
+        artStartDate = (Date) artStartDateResult.getValue();
+        Obs lastVlObs = EptsCalculationUtils.resultForPatient(lastVl, ptId);
+        Obs lastQualitativeResults =
+            EptsCalculationUtils.resultForPatient(qViralLoadResultsMap, ptId);
+        if (checkNotNull(artStartDateResult, lastVlObs)) {
+          if (checkNotNull(artStartDate)
+              && lastVlObs != null
+              && isAtLeastThreeMonthsLater(artStartDate, lastVlObs.getObsDatetime())) {
+            isOnArtForMoreThan3Months = true;
+          }
+        }
+        if (artStartDate != null
+            && lastQualitativeResults != null
+            && lastQualitativeResults.getObsDatetime() != null) {
+          if (isAtLeastThreeMonthsLater(artStartDate, lastQualitativeResults.getObsDatetime())) {
+            isOnArtForMoreThan3Months = true;
+          }
         }
       }
       map.put(ptId, new BooleanResult(isOnArtForMoreThan3Months, this));

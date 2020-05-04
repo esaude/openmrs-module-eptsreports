@@ -48,24 +48,36 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     Location location = (Location) context.getFromCache("location");
 
     Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
-    EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
     EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
-    EncounterType childFollowup = hivMetadata.getARVPediatriaSeguimentoEncounterType();
+    EncounterType fichaResumoEncounterType = hivMetadata.getMasterCardEncounterType();
 
     Concept breastfeedingConcept = hivMetadata.getBreastfeeding();
     Concept yes = hivMetadata.getYesConcept();
     Concept criteriaForHivStart = hivMetadata.getCriteriaForArtStart();
     Concept priorDeliveryDate = hivMetadata.getPriorDeliveryDateConcept();
+    Concept hivViraloadQualitative = hivMetadata.getHivViralLoadQualitative();
+    Concept criteriaForArtStart = hivMetadata.getCriteriaForArtStart();
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
     Date oneYearBefore = EptsCalculationUtils.addMonths(onOrBefore, -12);
+    Concept pregnantRegistered = hivMetadata.getDateOfMasterCardFileOpeningConcept();
 
     CalculationResultMap lactatingMap =
         ePTSCalculationService.getObs(
             breastfeedingConcept,
-            null,
+            Arrays.asList(adultFollowup),
             cohort,
             Arrays.asList(location),
             Arrays.asList(yes),
+            TimeQualifier.ANY,
+            null,
+            context);
+    CalculationResultMap breastfeedingRegistrationBasedOnValueDateAndEncounter53Map =
+        ePTSCalculationService.getObs(
+            pregnantRegistered,
+            Arrays.asList(fichaResumoEncounterType),
+            cohort,
+            Arrays.asList(location),
+            null,
             TimeQualifier.ANY,
             null,
             context);
@@ -94,23 +106,52 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
 
     CalculationResultMap patientStateMap =
         ePTSCalculationService.allPatientStates(
-            cohort, location, hivMetadata.getPatientIsBreastfeedingWorkflowState(), context);
+            cohort, location, hivMetadata.getPatientGaveBirthWorkflowState(), context);
 
     CalculationResultMap lastVl =
         ePTSCalculationService.lastObs(
-            Arrays.asList(labEncounterType, adultFollowup, childFollowup),
-            viralLoadConcept,
-            location,
-            oneYearBefore,
-            onOrBefore,
+            null, viralLoadConcept, location, oneYearBefore, onOrBefore, cohort, context);
+    CalculationResultMap lastHivVlQualitative =
+        ePTSCalculationService.lastObs(
+            null, hivViraloadQualitative, location, oneYearBefore, onOrBefore, cohort, context);
+
+    CalculationResultMap startArtBeingBpostiveMap =
+        ePTSCalculationService.getObs(
+            criteriaForArtStart,
+            null,
             cohort,
+            Arrays.asList(location),
+            Arrays.asList(breastfeedingConcept),
+            TimeQualifier.ANY,
+            null,
+            context);
+    // get calculation map based on breastfeeding on encounter type 53
+    CalculationResultMap lactatingBasedOnEncounter53Map =
+        ePTSCalculationService.getObs(
+            breastfeedingConcept,
+            Arrays.asList(fichaResumoEncounterType),
+            cohort,
+            Arrays.asList(location),
+            Arrays.asList(yes),
+            TimeQualifier.ANY,
+            null,
             context);
 
     for (Integer pId : cohort) {
       Obs lastVlObs = EptsCalculationUtils.resultForPatient(lastVl, pId);
+      Obs lastVlQualitativeObs = EptsCalculationUtils.resultForPatient(lastHivVlQualitative, pId);
       Date resultantDate =
           getResultantDate(
-              lactatingMap, criteriaHivStartMap, deliveryDateMap, patientStateMap, pId, lastVlObs);
+              lactatingMap,
+              criteriaHivStartMap,
+              deliveryDateMap,
+              patientStateMap,
+              pId,
+              lastVlObs,
+              lastVlQualitativeObs,
+              startArtBeingBpostiveMap,
+              breastfeedingRegistrationBasedOnValueDateAndEncounter53Map,
+              lactatingBasedOnEncounter53Map);
       resultMap.put(pId, new SimpleResult(resultantDate, this));
     }
     return resultMap;
@@ -122,10 +163,24 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
       CalculationResultMap deliveryDateMap,
       CalculationResultMap patientStateMap,
       Integer pId,
-      Obs lastVlObs) {
+      Obs lastVlObs,
+      Obs lastVlQualitative,
+      CalculationResultMap startArtBeingBpostiveMap,
+      CalculationResultMap registeredBreastfeedingValueDate53,
+      CalculationResultMap registeredBreastfeedingEncounterType53) {
     Date resultantDate = null;
+    // check of the 2 dates passed for viral load and pick the latest
+    List<Date> dateListForVl = new ArrayList<>();
     if (lastVlObs != null && lastVlObs.getObsDatetime() != null) {
-      Date lastVlDate = lastVlObs.getObsDatetime();
+      dateListForVl.add(lastVlObs.getObsDatetime());
+    }
+    if (lastVlQualitative != null && lastVlQualitative.getObsDatetime() != null) {
+      dateListForVl.add(lastVlQualitative.getObsDatetime());
+    }
+
+    if (dateListForVl.size() > 0) {
+      Collections.sort(dateListForVl);
+      Date lastVlDate = dateListForVl.get(dateListForVl.size() - 1);
 
       ListResult patientResult = (ListResult) patientStateMap.get(pId);
 
@@ -135,6 +190,19 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
       ListResult deliveryDateResult = (ListResult) deliveryDateMap.get(pId);
       List<Obs> deliveryDateObsList = EptsCalculationUtils.extractResultValues(deliveryDateResult);
       List<PatientState> patientStateList = EptsCalculationUtils.extractResultValues(patientResult);
+      ListResult startArtBeingBptv = (ListResult) startArtBeingBpostiveMap.get(pId);
+      List<Obs> startArtBeingBptvObsList =
+          EptsCalculationUtils.extractResultValues(startArtBeingBptv);
+      ListResult registeredBreastfeedingListResultsBasedOnValueDate53 =
+          (ListResult) registeredBreastfeedingValueDate53.get(pId);
+      List<Obs> registeredBreastfeedingListResultsListBasedOnValueDate53 =
+          EptsCalculationUtils.extractResultValues(
+              registeredBreastfeedingListResultsBasedOnValueDate53);
+      ListResult getRegisteredBreastFeedingBasedOnEncounter53ListResults =
+          (ListResult) registeredBreastfeedingEncounterType53.get(pId);
+      List<Obs> getRegisteredBreastFeedingBasedOnEncounter53ObsList =
+          EptsCalculationUtils.extractResultValues(
+              getRegisteredBreastFeedingBasedOnEncounter53ListResults);
 
       // get a list of all eligible dates
       List<Date> allEligibleDates =
@@ -142,7 +210,12 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
               this.isLactating(lastVlDate, lactatingObs),
               this.hasHIVStartDate(lastVlDate, criteriaHivObs),
               this.hasDeliveryDate(lastVlDate, deliveryDateObsList),
-              this.isInBreastFeedingInProgram(lastVlDate, patientStateList));
+              this.isInBreastFeedingInProgram(lastVlDate, patientStateList),
+              this.getWhenOnARTWhileBpostive(lastVlDate, startArtBeingBptvObsList),
+              this.getBreastFeedingRegistrationDate(
+                  lastVlDate,
+                  registeredBreastfeedingListResultsListBasedOnValueDate53,
+                  getRegisteredBreastFeedingBasedOnEncounter53ObsList));
 
       // have a resultant list of dates
       List<Date> resultantList = new ArrayList<>();
@@ -212,5 +285,36 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     Date startDate = EptsCalculationUtils.addMonths(viralLoadDate, -18);
     return breastFeedingDate.compareTo(startDate) >= 0
         && breastFeedingDate.compareTo(viralLoadDate) <= 0;
+  }
+
+  private Date getWhenOnARTWhileBpostive(Date lastVlDate, List<Obs> pregnantWithLastDateObsList) {
+    Date requiredDate = null;
+    for (Obs obs : pregnantWithLastDateObsList) {
+      if (this.isInBreastFeedingViralLoadRange(
+          lastVlDate, obs.getEncounter().getEncounterDatetime())) {
+        requiredDate = obs.getEncounter().getEncounterDatetime();
+      }
+    }
+
+    return requiredDate;
+  }
+
+  private Date getBreastFeedingRegistrationDate(
+      Date lastVlDate,
+      List<Obs> breastfeedingRegistrationValueDateList,
+      List<Obs> registeredBreastfeeding) {
+    Date requiredDate = null;
+    for (Obs breastFeedingRegistered : registeredBreastfeeding) {
+      for (Obs breastfeedingValueDate : breastfeedingRegistrationValueDateList) {
+        if (breastFeedingRegistered.getPerson().equals(breastfeedingValueDate.getPerson())
+            && breastFeedingRegistered.getEncounter().equals(breastfeedingValueDate.getEncounter())
+            && isInBreastFeedingViralLoadRange(
+                lastVlDate, breastfeedingValueDate.getValueDatetime())) {
+          requiredDate = breastfeedingValueDate.getValueDatetime();
+          break;
+        }
+      }
+    }
+    return requiredDate;
   }
 }

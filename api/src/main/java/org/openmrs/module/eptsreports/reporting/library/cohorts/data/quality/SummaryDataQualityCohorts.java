@@ -37,7 +37,7 @@ public class SummaryDataQualityCohorts {
     pCd.setQuery(
         SummaryQueries.getPregnantPatients(
             hivMetadata.getPregnantConcept().getConceptId(),
-            hivMetadata.getGestationConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getNumberOfWeeksPregnant().getConceptId(),
             hivMetadata.getPregnancyDueDate().getConceptId(),
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
@@ -63,7 +63,7 @@ public class SummaryDataQualityCohorts {
             hivMetadata.getBreastfeeding().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getPtvEtvProgram().getProgramId(),
-            hivMetadata.getPatientIsBreastfeedingWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getPatientGaveBirthWorkflowState().getProgramWorkflowStateId(),
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
 

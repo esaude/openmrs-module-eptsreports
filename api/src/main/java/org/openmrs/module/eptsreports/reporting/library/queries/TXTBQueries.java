@@ -1,8 +1,22 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.text.StringSubstitutor;
+import org.openmrs.Concept;
+import org.openmrs.EncounterType;
+import org.openmrs.Location;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.common.SetComparator;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 public class TXTBQueries {
 
@@ -125,6 +139,283 @@ public class TXTBQueries {
         tbProgramId);
   }
 
+  /**
+   * Patients with Pulmonary TB Date in Patient Clinical Record of ART date TB
+   *
+   * @param encounterTypeId
+   * @param pulmonaryTBConcept
+   * @param yesConcept
+   * @return
+   */
+  public static String pulmonaryTB(
+      Integer encounterTypeId, Integer pulmonaryTBConcept, Integer yesConcept) {
+    return String.format(
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
+            + "WHERE e.location_id = :location AND e.encounter_type = %s AND o.concept_id = %s AND o.value_coded = %s AND o.obs_datetime BETWEEN :startDate AND :endDate "
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
+        encounterTypeId, pulmonaryTBConcept, yesConcept);
+  }
+
+  /**
+   * Patients marked as “Tratamento TB= Inicio (I) ” in Ficha Clinica Master Card
+   *
+   * @param encounterTypeId
+   * @param tbTreatmentPlan
+   * @param startDrugs
+   * @return
+   */
+  public static String tbTreatmentStart(
+      Integer encounterTypeId, Integer tbTreatmentPlan, Integer startDrugs) {
+    return String.format(
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
+            + "WHERE e.location_id = :location AND e.encounter_type = %s AND o.concept_id = %s  AND o.value_coded = %s AND o.obs_datetime BETWEEN :startDate AND :endDate "
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
+        encounterTypeId, tbTreatmentPlan, startDrugs);
+  }
+
+  /**
+   * TUBERCULOSIS SYMPTOMS
+   *
+   * @param encounterTypeId
+   * @param tbSymptomsId
+   * @param yesConcept
+   * @param noConcept
+   * @return
+   */
+  public static String tuberculosisSymptoms(
+      Integer encounterTypeId, Integer tbSymptomsId, Integer yesConcept, Integer noConcept) {
+
+    StringBuilder s = new StringBuilder();
+    s.append("SELECT p.patient_id FROM patient p INNER JOIN encounter e ");
+    s.append("ON p.patient_id = e.patient_id ");
+    s.append("INNER JOIN obs o ");
+    s.append("ON e.encounter_id = o.encounter_id ");
+    s.append("WHERE e.location_id = :location AND e.encounter_type = ${encounterTypeId} ");
+    s.append("AND (o.concept_id = ${tbSymptomsId}  ");
+    s.append("AND (o.value_coded = ${yesConcept} ");
+    if (noConcept != null) {
+      s.append("OR o.value_coded = ${noConcept} ");
+    }
+    s.append(")) ");
+    s.append("AND e.encounter_datetime BETWEEN :startDate AND :endDate ");
+    s.append("AND p.voided = 0 AND e.voided = 0 AND o.voided = 0");
+
+    Map<String, Integer> values = new HashMap<>();
+    values.put("encounterTypeId", encounterTypeId);
+    values.put("tbSymptomsId", tbSymptomsId);
+    values.put("yesConcept", yesConcept);
+    values.put("noConcept", noConcept);
+    StringSubstitutor sb = new StringSubstitutor(values);
+    return sb.replace(s.toString());
+  }
+
+  /**
+   * ACTIVE TUBERCULOSIS
+   *
+   * @param encounterTypeId
+   * @param activeTuberculosis
+   * @param yesConcept
+   * @return
+   */
+  public static String activeTuberculosis(
+      Integer encounterTypeId, Integer activeTuberculosis, Integer yesConcept) {
+    return String.format(
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
+            + "WHERE e.location_id = :location AND e.encounter_type = %s "
+            + "AND o.concept_id = %s  AND o.value_coded = %s "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
+        encounterTypeId, activeTuberculosis, yesConcept);
+  }
+
+  /**
+   * TB OBSERVATIONS
+   *
+   * @param encounterTypeId
+   * @param tbObservation
+   * @param fever
+   * @param weight
+   * @param nightweats
+   * @param cough
+   * @param asthenia
+   * @param cohabitant
+   * @param lymphadenopathy
+   * @return
+   */
+  public static String tbObservation(
+      Integer encounterTypeId,
+      Integer tbObservation,
+      Integer fever,
+      Integer weight,
+      Integer nightweats,
+      Integer cough,
+      Integer asthenia,
+      Integer cohabitant,
+      Integer lymphadenopathy) {
+    return String.format(
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
+            + "WHERE e.location_id = :location AND e.encounter_type = %s "
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s "
+            + "OR o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s)) "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
+        encounterTypeId,
+        tbObservation,
+        fever,
+        weight,
+        nightweats,
+        cough,
+        asthenia,
+        cohabitant,
+        lymphadenopathy);
+  }
+
+  /**
+   * APPLICATION FOR LABORATORY RESEARCH
+   *
+   * @param encounterTypeId
+   * @param applicationForLaboratory
+   * @param tbGenexpertTest
+   * @param cultureTest
+   * @param testTBLAM
+   * @return
+   */
+  public static String applicationForLaboratoryResearch(
+      Integer encounterTypeId,
+      Integer applicationForLaboratory,
+      Integer tbGenexpertTest,
+      Integer cultureTest,
+      Integer testTBLAM) {
+    return String.format(
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
+            + "WHERE e.location_id = :location AND e.encounter_type = %s "
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s)) "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
+        encounterTypeId, applicationForLaboratory, tbGenexpertTest, cultureTest, testTBLAM);
+  }
+
+  /**
+   * TB GENEXPERT TEST
+   *
+   * @param encounterTypeId
+   * @param tbGenexpertTest
+   * @param positive
+   * @param negative
+   * @return
+   */
+  public static String tbGenexpertTest(
+      Integer encounterTypeId, Integer tbGenexpertTest, Integer positive, Integer negative) {
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("encounterTypeId", encounterTypeId);
+    map.put("tbGenexpertTest", tbGenexpertTest);
+    map.put("positive", positive);
+    map.put("negative", negative);
+
+    StringBuilder query = new StringBuilder();
+    query.append(" SELECT p.patient_id ");
+    query.append(" FROM patient p ");
+    query.append("		INNER JOIN encounter e ");
+    query.append("			ON p.patient_id = e.patient_id ");
+    query.append("		INNER JOIN obs o ");
+    query.append("			ON e.encounter_id = o.encounter_id ");
+    query.append(" WHERE e.location_id = :location ");
+    query.append("       AND e.encounter_type = ${encounterTypeId} ");
+    query.append("		AND o.concept_id = ${tbGenexpertTest}   ");
+    if (positive != null && negative != null) {
+      query.append("   AND o.value_coded IN (${positive} , ${negative} ) ");
+    }
+    if (positive != null) {
+      query.append("   AND o.value_coded = ${positive}  ");
+    }
+    if (negative != null) {
+      query.append("   AND o.value_coded = ${negative} ");
+    }
+    query.append("		AND e.encounter_datetime BETWEEN :startDate AND :endDate ");
+    query.append("		AND p.voided = 0 AND e.voided = 0 AND o.voided = 0");
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    String replacedQuery = sb.replace(query.toString());
+
+    return replacedQuery;
+  }
+
+  /**
+   * CULTURE TEST
+   *
+   * @param encounterTypeId
+   * @param cultureTest
+   * @param positive
+   * @param negative
+   * @return
+   */
+  public static String cultureTest(
+      Integer encounterTypeId, Integer cultureTest, Integer positive, Integer negative) {
+    return String.format(
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
+            + "WHERE e.location_id = :location AND e.encounter_type = %s "
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s)) "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
+        encounterTypeId, cultureTest, positive, negative);
+  }
+
+  /**
+   * Test TB LAM
+   *
+   * @param encounterTypeId
+   * @param testTBLAM
+   * @param positive
+   * @param negative
+   * @return
+   */
+  public static String testTBLAM(
+      Integer encounterTypeId, Integer testTBLAM, Integer positive, Integer negative) {
+    return String.format(
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
+            + "WHERE e.location_id = :location AND e.encounter_type = %s "
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s)) "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
+        encounterTypeId, testTBLAM, positive, negative);
+  }
+
+  public static String resultForBasiloscopia(
+      Integer encounterTypeId, Integer basiloscopia, Integer positive, Integer negative) {
+    return String.format(
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
+            + "WHERE e.location_id = :location AND e.encounter_type = %s "
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s)) "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
+        encounterTypeId, basiloscopia, positive, negative);
+  }
+
   public static String dateObs(
       Integer questionId, List<Integer> encounterTypeIds, boolean startDate) {
     String sql =
@@ -170,6 +461,95 @@ public class TXTBQueries {
             + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "WHERE p.voided=0 AND e.encounter_type=%s AND e.voided=0 AND e.encounter_datetime>=:startDate AND e.encounter_datetime<=:endDate AND e.location_id=:location GROUP BY p.patient_id",
         encounterTypeId);
+  }
+
+  /**
+   * Patients who have a {questionConcept} Obs with {valueCodedConcept} value between ${onOrAfter}
+   * and ${onOrBefore}
+   *
+   * @param cohortDefinitionName Name for the cohort definition to return
+   * @param questionConcept The question concept
+   * @param valueCodedConcept The valueCoded concept
+   * @param encounterTypesList The encounter types to consider
+   * @return The cohort definition
+   */
+  public static CohortDefinition getPatientsWithObsBetweenDates(
+      String cohortDefinitionName,
+      Concept questionConcept,
+      Concept valueCodedConcept,
+      List<EncounterType> encounterTypesList) {
+    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    cd.setName(cohortDefinitionName);
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.setQuestion(questionConcept);
+    cd.setValueList(Collections.singletonList(valueCodedConcept));
+    cd.setOperator(SetComparator.IN);
+    cd.setTimeModifier(TimeModifier.ANY);
+    cd.setEncounterTypeList(encounterTypesList);
+    return cd;
+  }
+
+  /**
+   * Gets patients with a coded obs between dates. This method though might seem like a duplicate of
+   * the above method, We are adding it because we faced a situation where a patient had an obs with
+   * a wrong obs date time format (0209-10-22 00:00:00) Using CodedObsCohortDefinition from the
+   * above method was counting this patient. We had to resort to using an SQL query to get around
+   * this issue.
+   *
+   * @param questionId the obs concept Id
+   * @param valueId the obs value coded Id
+   * @param encounterTypeIds the obs's encounter enounter-type
+   * @return the query to execute. TODO Investigate why CodedObsCohortDefinition was not able to
+   *     handle this wrong date time format (0209-10-22 00:00:00)
+   */
+  public static String getPatientsWithObsBetweenDates(
+      Integer questionId, Integer valueId, List<Integer> encounterTypeIds) {
+    StringBuilder s = new StringBuilder();
+    s.append("SELECT p.patient_id FROM patient p INNER JOIN encounter e ");
+    s.append("ON p.patient_id = e.patient_id ");
+    s.append("INNER JOIN obs o ");
+    s.append("ON e.encounter_id = o.encounter_id ");
+    s.append("WHERE e.location_id = :location AND e.encounter_type in (${encounterTypeIds}) ");
+    s.append("AND o.concept_id = ${questionId}  ");
+    s.append("AND o.value_coded = ${valueId} ");
+    s.append("AND o.obs_datetime >= :startDate AND o.obs_datetime <= :endDate ");
+    s.append("AND p.voided = 0 AND e.voided = 0 AND o.voided = 0");
+
+    Map<String, String> values = new HashMap<>();
+    values.put("encounterTypeIds", StringUtils.join(encounterTypeIds, ","));
+    // Just convert the conceptId to String so it can be added to the map
+    values.put("questionId", String.valueOf(questionId));
+    values.put("valueId", String.valueOf(valueId));
+    StringSubstitutor sb = new StringSubstitutor(values);
+    return sb.replace(s.toString());
+  }
+
+  public static String getPatientsWithObsBetweenDates(
+      EncounterType encounterType, Concept question, List<Concept> answers) {
+    List<Integer> answerIds = new ArrayList<Integer>();
+    for (Concept concept : answers) {
+      answerIds.add(concept.getConceptId());
+    }
+    StringBuilder s = new StringBuilder();
+    s.append("SELECT p.patient_id FROM patient p INNER JOIN encounter e ");
+    s.append("ON p.patient_id = e.patient_id ");
+    s.append("INNER JOIN obs o ");
+    s.append("ON e.encounter_id = o.encounter_id ");
+    s.append("WHERE e.location_id = :location AND e.encounter_type = ${encounterType} ");
+    s.append("AND o.concept_id = ${question}  ");
+    s.append("AND o.value_coded in (${answers}) ");
+    s.append("AND o.obs_datetime >= :startDate AND o.obs_datetime <= :endDate ");
+    s.append("AND p.voided = 0 AND e.voided = 0 AND o.voided = 0");
+
+    Map<String, String> values = new HashMap<>();
+    values.put("encounterType", String.valueOf(encounterType.getEncounterTypeId()));
+    // Just convert the conceptId to String so it can be added to the map
+    values.put("question", String.valueOf(question.getConceptId()));
+    values.put("answers", StringUtils.join(answerIds, ","));
+    StringSubstitutor sb = new StringSubstitutor(values);
+    return sb.replace(s.toString());
   }
 
   public static class AbandonedWithoutNotificationParams {

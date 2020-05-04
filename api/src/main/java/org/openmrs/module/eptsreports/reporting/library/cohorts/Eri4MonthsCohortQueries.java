@@ -11,6 +11,8 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
+
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -36,6 +38,8 @@ public class Eri4MonthsCohortQueries {
 
   @Autowired private EriCohortQueries eriCohortQueries;
 
+  @Autowired private HivCohortQueries hivCohortQueries;
+
   /**
    * C Get all patients who initiated treatment and had a drug pick up or had a consultation between
    * 61 and 120 days from the encounter date
@@ -52,14 +56,18 @@ public class Eri4MonthsCohortQueries {
             .allPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120OfEncounterDate(
                 hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
                 hivMetadata.getARVPlanConcept().getConceptId(),
                 hivMetadata.getStartDrugsConcept().getConceptId(),
                 hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata
                     .getTransferredFromOtherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()));
+                    .getProgramWorkflowStateId(),
+                hivMetadata.getArtPickupConcept().getConceptId(),
+                hivMetadata.getYesConcept().getConceptId(),
+                hivMetadata.getArtDatePickupMasterCard().getConceptId(),
+                hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
     return cd;
   }
 
@@ -102,7 +110,7 @@ public class Eri4MonthsCohortQueries {
     cd.setQuery(
         Eri4MonthsQueries.getPatientsLostToFollowUpOnConsultation(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
             daysThreshold));
     return cd;
@@ -148,7 +156,7 @@ public class Eri4MonthsCohortQueries {
         "dead",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            "onOrBefore=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
@@ -188,7 +196,7 @@ public class Eri4MonthsCohortQueries {
         "dead",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            "onOrBefore=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
@@ -229,7 +237,7 @@ public class Eri4MonthsCohortQueries {
         "dead",
         EptsReportUtils.map(
             genericCohortQueries.getDeceasedPatients(),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            "onOrBefore=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
@@ -240,6 +248,29 @@ public class Eri4MonthsCohortQueries {
                     .getProgramWorkflowStateId()),
             "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
     cd.setCompositionString("initiatedArt AND NOT (consultation OR dead OR transfersOut)");
+    return cd;
+  }
+
+  /**
+   * Get lost to follow up patients who are not dead, transferred out or stopped treatment
+   *
+   * @return @{@link CohortDefinition}
+   */
+  public CohortDefinition getPatientsLostToFollowUpAndNotDeadTransferredOrStoppedTreatment() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName(
+        "Patients who are lost to follow up and not dead, transferred out or stopped treatment");
+
+    cd.addSearch(
+        "ltfu", mapStraightThrough(genericCohortQueries.getPatientsWhoToLostToFollowUp(60)));
+    cd.addSearch("dead", mapStraightThrough(genericCohortQueries.getDeceasedPatients()));
+    cd.addSearch("transferOut", mapStraightThrough(hivCohortQueries.getPatientsTransferredOut()));
+    cd.addSearch(
+        "stoppedTreatment", mapStraightThrough(hivCohortQueries.getPatientsWhoStoppedTreatment()));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.setCompositionString("ltfu and not (stoppedTreatment or transferOut or dead) ");
+
     return cd;
   }
 }

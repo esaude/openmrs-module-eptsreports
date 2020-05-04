@@ -13,11 +13,16 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
@@ -25,21 +30,23 @@ import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.AgeOnArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.NewlyOrPreviouslyEnrolledOnARTCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtBeforeDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtOnPeriodCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +56,10 @@ import org.springframework.stereotype.Component;
 public class GenericCohortQueries {
 
   @Autowired private HivMetadata hivMetadata;
+
+  @Autowired private TxCurrCohortQueries txCurrCohortQueries;
+
+  @Autowired private HivCohortQueries hivCohortQueries;
 
   /**
    * Generic Coded Observation cohort
@@ -131,17 +142,15 @@ public class GenericCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getBaseCohort() {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put(
-        "arvAdultInitialEncounterTypeId",
-        String.valueOf(hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId()));
-    parameters.put(
-        "arvPediatriaInitialEncounterTypeId",
-        String.valueOf(hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId()));
-    parameters.put(
-        "hivCareProgramId", String.valueOf(hivMetadata.getHIVCareProgram().getProgramId()));
-    parameters.put("artProgramId", String.valueOf(hivMetadata.getARTProgram().getProgramId()));
-    return generalSql("baseCohort", BaseQueries.getBaseCohortQuery(parameters));
+    return generalSql(
+        "baseCohort",
+        BaseQueries.getBaseCohortQuery(
+            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getHIVCareProgram().getProgramId(),
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata.getDateOfMasterCardFileOpeningConcept().getConceptId()));
   }
 
   /**
@@ -199,27 +208,124 @@ public class GenericCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getDeceasedPatients() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Get deceased patients based on patient states and person object");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    String sql =
+        "SELECT patient_id "
+            + "FROM   (SELECT patient_id, "
+            + "               Max(death_date) death_date "
+            + "        FROM   (SELECT p.patient_id, "
+            + "                       ps.start_date death_date "
+            + "                FROM   patient p "
+            + "                       JOIN patient_program pp "
+            + "                         ON p.patient_id = pp.patient_id "
+            + "                       JOIN patient_state ps "
+            + "                         ON pp.patient_program_id = ps.patient_program_id "
+            + "                WHERE  p.voided = 0 "
+            + "                       AND pp.voided = 0 "
+            + "                       AND pp.program_id = %d "
+            + "                       AND pp.location_id = :location "
+            + "                       AND ps.voided = 0 "
+            + "                       AND ps.state = %d "
+            + "                       AND ps.start_date <= :onOrBefore "
+            + "                       AND ps.end_date IS NULL "
+            + "                UNION "
+            + "                SELECT p.person_id, "
+            + "                       p.death_date "
+            + "                FROM   person p "
+            + "                WHERE  p.voided = 0"
+            + "                   AND p.dead = 1 "
+            + "                   AND p.death_date <= :onOrBefore "
+            + "                UNION "
+            + "                SELECT e.patient_id, "
+            + "                       visit_card.death_date "
+            + "                FROM   (SELECT p.patient_id, "
+            + "                               Max(e.encounter_datetime) death_date "
+            + "                        FROM   patient p "
+            + "                               JOIN encounter e "
+            + "                                 ON p.patient_id = e.patient_id "
+            + "                               JOIN obs notfound "
+            + "                                 ON e.encounter_id = notfound.encounter_id "
+            + "                               JOIN obs reason "
+            + "                                 ON e.encounter_id = reason.encounter_id "
+            + "                        WHERE  p.voided = 0 "
+            + "                               AND e.voided = 0 "
+            + "                               AND e.encounter_type IN ( %d, %d, %d ) "
+            + "                               AND e.encounter_datetime <= :onOrBefore "
+            + "                               AND notfound.voided = 0 "
+            + "                               AND notfound.concept_id = %d "
+            + "                               AND notfound.value_coded = %d "
+            + "                               AND reason.voided = 0 "
+            + "                               AND reason.concept_id = %d "
+            + "                               AND reason.value_coded = %d "
+            + "                        GROUP  BY p.patient_id) visit_card "
+            + "                       JOIN encounter e "
+            + "                         ON visit_card.patient_id = e.patient_id "
+            + "                            AND visit_card.death_date = e.encounter_datetime "
+            + "                UNION "
+            + "                SELECT p.patient_id, "
+            + "                       e.encounter_datetime death_date "
+            + "                FROM   patient p "
+            + "                       JOIN encounter e "
+            + "                         ON p.patient_id = e.patient_id "
+            + "                       JOIN obs o "
+            + "                         ON e.encounter_id = o.encounter_id "
+            + "                WHERE  p.voided = 0 "
+            + "                       AND e.voided = 0 "
+            + "                       AND e.location_id = :location "
+            + "                       AND e.encounter_type IN ( %d, %d ) "
+            + "                       AND e.encounter_datetime <= :onOrBefore "
+            + "                       AND o.voided = 0 "
+            + "                       AND o.concept_id IN ( %d, %d ) "
+            + "                       AND o.value_coded = %d) dead "
+            + "        GROUP  BY patient_id) max_dead "
+            + "WHERE  patient_id NOT IN (SELECT p.patient_id "
+            + "                          FROM   patient p "
+            + "                                 JOIN encounter e "
+            + "                                   ON p.patient_id = e.patient_id "
+            + "                          WHERE  p.voided = 0 "
+            + "                                 AND e.voided = 0 "
+            + "                                 AND e.encounter_type IN ( %d, %d, %d ) "
+            + "                                 AND e.location_id = :location "
+            + "                                 AND e.encounter_datetime > death_date "
+            + "                          UNION "
+            + "                          SELECT p.patient_id "
+            + "                          FROM   patient p "
+            + "                                 JOIN encounter e "
+            + "                                   ON p.patient_id = e.patient_id "
+            + "                                 JOIN obs o "
+            + "                                   ON e.encounter_id = o.encounter_id "
+            + "                          WHERE  p.voided = 0 "
+            + "                                 AND e.voided = 0 "
+            + "                                 AND e.encounter_type = %d "
+            + "                                 AND e.location_id = :location "
+            + "                                 AND o.concept_id = 23866 "
+            + "                                 AND o.value_datetime > death_date); ";
+    cd.setQuery(
+        String.format(
+            sql,
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+            hivMetadata.getVisitaApoioReintegracaoParteAEncounterType().getEncounterTypeId(),
+            hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId(),
+            hivMetadata.getPatientFoundConcept().getConceptId(),
+            hivMetadata.getNoConcept().getConceptId(),
+            hivMetadata.getReasonPatientNotFound().getConceptId(),
+            hivMetadata.getPatientIsDead().getConceptId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getStateOfStayOfPreArtPatient().getConceptId(),
+            hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
+            hivMetadata.getPatientHasDiedConcept().getConceptId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickupMasterCard().getConceptId()));
 
-    cd.addSearch(
-        "dead",
-        EptsReportUtils.map(
-            getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "deceased",
-        EptsReportUtils.map(
-            generalSql(
-                "deceased",
-                "SELECT patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id AND pe.dead=1 WHERE pe.death_date <=:endDate"),
-            "startDate=${startDate},endDate=${endDate}"));
-    cd.setCompositionString("dead OR deceased");
     return cd;
   }
 
@@ -236,14 +342,14 @@ public class GenericCohortQueries {
 
     cd.addSearch(
         "dead",
-        EptsReportUtils.map(
+        map(
             getPatientsBasedOnPatientStatesBeforeDate(
                 hivMetadata.getARTProgram().getProgramId(),
                 hivMetadata.getPatientHasDiedWorkflowState().getProgramWorkflowStateId()),
             "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "deceased",
-        EptsReportUtils.map(
+        map(
             generalSql(
                 "deceased",
                 "SELECT patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id AND pe.dead=1 WHERE pe.death_date <=:endDate"),
@@ -295,6 +401,19 @@ public class GenericCohortQueries {
     return cd;
   }
 
+  public CohortDefinition getNewlyOrPreviouslyEnrolledOnART(boolean isNewlyEnrolledOnArtSearch) {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(NewlyOrPreviouslyEnrolledOnARTCalculation.class)
+                .get(0));
+    cd.setName("Newly Or Previously Enrolled On ART");
+    cd.addCalculationParameter("isNewlyEnrolledOnArtSearch", isNewlyEnrolledOnArtSearch);
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    return cd;
+  }
+
   public CohortDefinition hasNumericObs(
       Concept question,
       TimeModifier timeModifier,
@@ -319,5 +438,85 @@ public class GenericCohortQueries {
     cd.addParameter(new Parameter("locationList", "Location", Location.class));
 
     return cd;
+  }
+
+  public CohortDefinition getPatientsWhoToLostToFollowUp(int numDays) {
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.addSearch(
+        "31",
+        mapStraightThrough(
+            txCurrCohortQueries.getPatientHavingLastScheduledDrugPickupDateDaysBeforeEndDate(
+                numDays)));
+
+    definition.addSearch(
+        "32",
+        mapStraightThrough(
+            txCurrCohortQueries.getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup()));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+    definition.setCompositionString("31 OR  32");
+
+    return definition;
+  }
+
+  /**
+   * Get patients who have encounter of a specific type within date boundaries
+   *
+   * @param encounterType
+   * @retrun CohortDefinition
+   */
+  public CohortDefinition getPatientsHavingEncounterWithinDateBoundaries(int encounterType) {
+    // TODO: #hasEncounter should be used here
+    // (https://github.com/esaude/openmrs-module-eptsreports/pull/185#discussion_r370630968)
+    String query =
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE e.voided=0 AND p.voided=0 AND e.encounter_type = %d AND e.encounter_datetime BETWEEN :startDate AND :endDate";
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients having encounter type " + encounterType);
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.setQuery(String.format(query, encounterType));
+    return cd;
+  }
+
+  /**
+   * Patients who have an encounter between ${onOrAfter} and ${onOrBefore}
+   *
+   * @param types the encounter types
+   * @return the cohort definition
+   */
+  public CohortDefinition hasEncounter(EncounterType... types) {
+    EncounterCohortDefinition cd = new EncounterCohortDefinition();
+    cd.setName("has encounter between dates");
+    cd.setTimeQualifier(TimeQualifier.ANY);
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("locationList", "Location", Location.class));
+    if (types.length > 0) {
+      cd.setEncounterTypeList(Arrays.asList(types));
+    }
+    return cd;
+  }
+
+  /**
+   * Get patients with any coded obs concept value_datetime not null before end date
+   *
+   * @return String
+   */
+  public static String getPatientsWithCodedObsValueDatetimeBeforeEndDate(
+      int encounterType, int conceptId) {
+    String query =
+        "SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + " AND e.location_id = :location AND e.encounter_datetime <= :onOrBefore AND e.encounter_type=${encounterType} "
+            + " AND o.concept_id=${conceptId} AND o.value_datetime is NOT NULL";
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("encounterType", encounterType);
+    map.put("conceptId", conceptId);
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    return stringSubstitutor.replace(query.toString());
   }
 }

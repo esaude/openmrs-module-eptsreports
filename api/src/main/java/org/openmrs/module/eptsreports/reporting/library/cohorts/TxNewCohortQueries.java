@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -32,7 +34,6 @@ import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -46,6 +47,8 @@ public class TxNewCohortQueries {
   @Autowired private CommonMetadata commonMetadata;
 
   @Autowired private GenericCohortQueries genericCohorts;
+
+  @Autowired private GenderCohortQueries genderCohorts;
 
   @Autowired private HivCohortQueries hivCohortQueries;
 
@@ -94,12 +97,16 @@ public class TxNewCohortQueries {
     cd.setQuery(
         PregnantQueries.getPregnantWhileOnArt(
             commonMetadata.getPregnantConcept().getConceptId(),
-            hivMetadata.getGestationConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getNumberOfWeeksPregnant().getConceptId(),
             hivMetadata.getPregnancyDueDate().getConceptId(),
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getPtvEtvProgram().getProgramId()));
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getDateOfLastMenstruationConcept().getConceptId(),
+            hivMetadata.getPtvEtvProgram().getProgramId(),
+            hivMetadata.getCriteriaForArtStart().getConceptId(),
+            hivMetadata.getBPlusConcept().getConceptId()));
     return cd;
   }
 
@@ -135,6 +142,8 @@ public class TxNewCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
+    cd.addSearch("FEMININO", EptsReportUtils.map(genderCohorts.femaleCohort(), ""));
+
     cd.addSearch(
         "DATAPARTO",
         EptsReportUtils.map(
@@ -166,9 +175,43 @@ public class TxNewCohortQueries {
                 Arrays.asList(commonMetadata.getYesConcept())),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
 
-    String compositionString = "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE)";
+    CohortDefinition breastfeedingInMastercard = getBreastfeedingInMastercard();
+    cd.addSearch("MASTERCARD", mapStraightThrough(breastfeedingInMastercard));
+
+    String compositionString =
+        "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE OR MASTERCARD) AND FEMININO";
 
     cd.setCompositionString(compositionString);
+    return cd;
+  }
+
+  private CohortDefinition getBreastfeedingInMastercard() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("breastfeedingInMastercard");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    String sql =
+        "SELECT p.patient_id "
+            + "FROM   patient p "
+            + "       JOIN encounter e "
+            + "         ON p.patient_id = e.patient_id "
+            + "       JOIN obs o "
+            + "         ON e.encounter_id = o.encounter_id "
+            + "WHERE  p.voided = 0 "
+            + "       AND e.voided = 0 "
+            + "       AND e.encounter_type = %d "
+            + "       AND e.location_id = :location "
+            + "       AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore "
+            + "       AND o.voided = 0 "
+            + "       AND o.concept_id = %d "
+            + "       AND o.value_coded = %d ";
+    cd.setQuery(
+        String.format(
+            sql,
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getBreastfeeding().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId()));
     return cd;
   }
 
@@ -185,17 +228,12 @@ public class TxNewCohortQueries {
     txNewComposition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     txNewComposition.addParameter(new Parameter("location", "location", Location.class));
 
-    Mapped<CohortDefinition> startedART =
-        Mapped.map(
-            genericCohorts.getStartedArtOnPeriod(false, true),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}");
-    Mapped<CohortDefinition> transferredIn =
-        Mapped.map(
-            hivCohortQueries.getPatientsTransferredFromOtherHealthFacility(),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}");
+    CohortDefinition startedART = genericCohorts.getStartedArtOnPeriod(false, true);
+    CohortDefinition transferredIn =
+        hivCohortQueries.getPatientsTransferredFromOtherHealthFacility();
 
-    txNewComposition.getSearches().put("startedART", startedART);
-    txNewComposition.getSearches().put("transferredIn", transferredIn);
+    txNewComposition.getSearches().put("startedART", mapStraightThrough(startedART));
+    txNewComposition.getSearches().put("transferredIn", mapStraightThrough(transferredIn));
 
     txNewComposition.setCompositionString("startedART NOT transferredIn");
     return txNewComposition;

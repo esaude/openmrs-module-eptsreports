@@ -184,6 +184,28 @@ public class EptsCalculationUtils {
   }
 
   /**
+   * Convenience method to fetch a patient result value
+   *
+   * @param results the calculation result map
+   * @param patientId the patient id
+   * @return the result value
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> T obsResultForPatient(CalculationResultMap results, Integer patientId) {
+    CalculationResult result = results.get(patientId);
+    if (result != null && !result.isEmpty()) {
+      if ((T) result.getValue() instanceof Obs) {
+        Obs o = (Obs) result.getValue();
+        if (o.getEncounter().getVoided() == true) {
+          return null;
+        }
+      }
+      return (T) result.getValue();
+    }
+    return null;
+  }
+
+  /**
    * Extracts patients from calculation result map with matching results
    *
    * @param results calculation result map

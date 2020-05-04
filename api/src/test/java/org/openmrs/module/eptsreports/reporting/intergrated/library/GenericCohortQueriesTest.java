@@ -43,6 +43,7 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
 
   @Before
   public void init() throws Exception {
+    executeDataSet("calculationsTest.xml");
     executeLargeDataSet("genericCohortQueriesTest.xml");
     conceptService = Context.getConceptService();
     encounterService = Context.getEncounterService();
@@ -251,8 +252,8 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
   private void testDeathCohort(CohortDefinition cohortDefinition) throws EvaluationException {
     Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(
-        new Parameter("startDate", "start date", Date.class),
-        testsHelper.getDate("2016-05-06 12:26:00.0"));
+        new Parameter("onOrBefore", "end date", Date.class),
+        testsHelper.getDate("2019-05-06 12:26:00.0"));
     parameters.put(
         new Parameter("endDate", "end date", Date.class),
         testsHelper.getDate("2019-05-06 12:26:00.0"));

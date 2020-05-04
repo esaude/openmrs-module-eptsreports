@@ -28,8 +28,6 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
 
   @Autowired private TxCurrDataset txCurrDataset;
 
-  @Autowired private EriDSDDataset eriDSDDataset;
-
   @Override
   public String getExcelDesignUuid() {
     return "f6a597ba-5fa2-47d4-ab45-da128cabe7ac";
@@ -69,9 +67,6 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
 
     rd.addDataSetDefinition(
         "ERI4", Mapped.mapStraightThrough(eri4MonthsDataset.constructEri4MonthsDataset()));
-    rd.addDataSetDefinition(
-        "ERIDSD", Mapped.mapStraightThrough(eriDSDDataset.constructEriDSDDataset()));
-
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
@@ -91,7 +86,7 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
     try {
       reportDesign =
           createXlsReportDesign(
-              reportDefinition, "IM_ER_Report.xls", "ERI-Report", getExcelDesignUuid(), null);
+              reportDefinition, "IM_ER_Report.xls", "IM_ER-Report", getExcelDesignUuid(), null);
       Properties props = new Properties();
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);

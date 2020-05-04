@@ -23,13 +23,34 @@ public class CommonMetadata extends Metadata {
   protected String gpTransferFromOtherFacilityConceptUuid =
       "eptsreports.transferFromOtherFacilityConceptUuid";
 
+  /**
+   * concept_id = 664
+   *
+   * @return
+   */
+  public Concept getNegative() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.NegativeUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * concept_id = 703
+   *
+   * @return
+   */
+  public Concept getPositive() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.positiveUuid");
+    return getConcept(uuid);
+  }
   // CONCEPTS
+  // concept_id = 1065
   public Concept getYesConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.yesConceptUuid");
     return getConcept(uuid);
   }
 
+  // concept_id=1066
   public Concept getNoConcept() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.noConceptUuid");
     return getConcept(uuid);
@@ -41,7 +62,7 @@ public class CommonMetadata extends Metadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.startDrugsConceptUuid");
     return getConcept(uuid);
   }
-
+  // concept_id=1369
   public Concept getTransferFromOtherFacilityConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -68,12 +89,6 @@ public class CommonMetadata extends Metadata {
   public Concept getPregnantConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.pregnantConceptUuid");
-    return getConcept(uuid);
-  }
-
-  public Concept getGestationConcept() {
-    String uuid =
-        Context.getAdministrationService().getGlobalProperty("eptsreports.gestationConceptUuid");
     return getConcept(uuid);
   }
 

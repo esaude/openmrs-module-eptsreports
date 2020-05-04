@@ -50,7 +50,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
 
     calendar.set(2018, Calendar.JULY, 1);
     context.addToCache("onOrAfter", calendar.getTime());
-    calendar.set(2018, Calendar.JULY, 2);
+    calendar.set(2019, Calendar.JULY, 2);
     context.addToCache("onOrBefore", calendar.getTime());
 
     final int patientId = 90;
@@ -110,7 +110,6 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
     CalculationResultMap results =
         service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues, context);
     BooleanResult result = (BooleanResult) results.get(patientId);
-    Assert.assertNotNull(result);
     Assert.assertEquals(Boolean.TRUE, result.getValue());
   }
 }

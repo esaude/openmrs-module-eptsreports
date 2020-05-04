@@ -22,11 +22,107 @@ import org.springframework.stereotype.Component;
 @Component("tbMetadata")
 public class TbMetadata extends ProgramsMetadata {
 
-  // Concepts
+  /**
+   * Concept_id = 161
+   *
+   * @return
+   */
+  public Concept getLymphadenopathy() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.lymphadenopathyUuid");
+    return getConcept(uuid);
+  }
+  /**
+   * concept_id = 1760
+   *
+   * @return
+   */
+  public Concept getCoughLastingMoraThan3Weeks() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.coughLastingMoraThan3WeeksUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * concept_id = 1762
+   *
+   * @return
+   */
+  public Concept getNightsWeatsLastingMoraThan3Weeks() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.nightsWeatsLastingMoraThan3WeeksUuid");
+    return getConcept(uuid);
+  }
+  /**
+   * concept_id = 1763
+   *
+   * @return
+   */
+  public Concept getFeverLastingMoraThan3Weeks() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.feverLastingMoraThan3WeeksUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * concept_id = 1764
+   *
+   * @return
+   */
+  public Concept getWeightLossOfMoreThan3KgInLastMonth() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.weightLossOfMoreThan3KgInLastMonthUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * Concept_id = 1765
+   *
+   * @return
+   */
+  public Concept getCohabitantBeingTreatedForTB() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.cohabitantBeingTreatedForTBUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * Concept_id = 1268
+   *
+   * @return
+   */
   public Concept getTBTreatmentPlanConcept() {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.tuberculosisTreatmentPlanConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * concept_id = 1766
+   *
+   * @return
+   */
+  public Concept getObservationTB() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.observationTBConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * Concept_id = 42
+   *
+   * @return
+   */
+  public Concept getPulmonaryTB() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.pulmonaryTBUuid");
     return getConcept(uuid);
   }
 
@@ -37,9 +133,56 @@ public class TbMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  /**
+   * concept_id = 23723
+   *
+   * @return
+   */
+  public Concept getTBGenexpertTestConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.TBGenexpertTestUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * concept_id = 23774
+   *
+   * @return
+   */
+  public Concept getCultureTest() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.cultureTestUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * Concept_id = 23760
+   *
+   * @return
+   */
+  public Concept getAsthenia() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.astheniaUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * Concept_id = 23761
+   *
+   * @return
+   */
   public Concept getActiveTBConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.activeTBConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * Concept_id = 23951
+   *
+   * @return
+   */
+  public Concept getTestTBLAM() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.testTBLAMUuid");
     return getConcept(uuid);
   }
 
@@ -70,7 +213,11 @@ public class TbMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.tbRastreioEncounterTypeUuid");
     return getEncounterType(uuid);
   }
-
+  /**
+   * concept_id 6257
+   *
+   * @return
+   */
   public Concept getTbScreeningConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.tbScreeningConceptUuid");
@@ -103,7 +250,11 @@ public class TbMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // concept_id=23758
+  /**
+   * concept_id=23758
+   *
+   * @return
+   */
   public Concept getHasTbSymptomsConcept() {
     String uuid =
         Context.getAdministrationService()

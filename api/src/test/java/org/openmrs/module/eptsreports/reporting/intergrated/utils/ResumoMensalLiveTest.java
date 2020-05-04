@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +12,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -25,6 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
 
   @Autowired private ResumoMensalCohortQueries resumoMensalCohortQueries;
+
+  @Autowired private HivCohortQueries hivCohortQueries;
 
   @Test
   public void A1() throws EvaluationException {
@@ -41,7 +43,7 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
     CohortDefinition cd =
         resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2();
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd);
-    assertEquals(4, evaluatedCohort.size());
+    assertEquals(93, evaluatedCohort.size());
     assertTrue(evaluatedCohort.getMemberIds().containsAll(patients));
   }
 
@@ -87,7 +89,7 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
 
   @Test
   public void B5() throws EvaluationException {
-    CohortDefinition cd = resumoMensalCohortQueries.getPatientsTransferredOut();
+    CohortDefinition cd = resumoMensalCohortQueries.getPatientsTransferredOutB5(true);
     Map<Parameter, Object> mappings = new HashMap<>();
     mappings.put(new Parameter("onOrAfter", "value1", Date.class), getStartDate());
     mappings.put(new Parameter("onOrBefore", "value2", Date.class), getEndDate());
@@ -99,7 +101,7 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
 
   @Test
   public void B6() throws EvaluationException {
-    CohortDefinition cd = resumoMensalCohortQueries.getPatientsWhoSuspendedTreatment();
+    CohortDefinition cd = resumoMensalCohortQueries.getPatientsWhoSuspendedTreatmentB6(true);
     Map<Parameter, Object> mappings = new HashMap<>();
     mappings.put(new Parameter("onOrAfter", "value1", Date.class), getStartDate());
     mappings.put(new Parameter("onOrBefore", "value2", Date.class), getEndDate());
@@ -110,33 +112,22 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
   }
 
   @Test
-  public void B7() throws EvaluationException {
-    CohortDefinition cd =
-        resumoMensalCohortQueries.getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthB7();
-
-    Calendar endDateMinus90Days = Calendar.getInstance();
-    endDateMinus90Days.setTime(getEndDate());
-    endDateMinus90Days.add(Calendar.DAY_OF_MONTH, -90);
-    Map<Parameter, Object> mappings = new HashMap<>();
-    mappings.put(new Parameter("value1", "value1", Date.class), endDateMinus90Days.getTime());
-    mappings.put(new Parameter("value2", "value2", Date.class), getEndDate());
-    mappings.put(new Parameter("locationList", "locationList", Location.class), getLocation());
-    mappings.put(new Parameter("onOrBefore", "onOrBefore", Date.class), getEndDate());
-    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, mappings);
-    assertEquals(1, evaluatedCohort.size());
-    assertTrue(evaluatedCohort.contains(1007));
-  }
-
-  @Test
   public void B8() throws EvaluationException {
-    CohortDefinition cd = resumoMensalCohortQueries.getPatientsWhoDied();
+    CohortDefinition cd = resumoMensalCohortQueries.getPatientsWhoDied(true);
+    CohortDefinition cf = resumoMensalCohortQueries.getPatientsWhoDied(false);
+
     Map<Parameter, Object> mappings = new HashMap<>();
     mappings.put(new Parameter("onOrAfter", "value1", Date.class), getStartDate());
     mappings.put(new Parameter("onOrBefore", "value2", Date.class), getEndDate());
     mappings.put(new Parameter("locationList", "locationList", Location.class), getLocation());
+
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, mappings);
     assertEquals(1, evaluatedCohort.size());
     assertTrue(evaluatedCohort.contains(1008));
+
+    EvaluatedCohort evaluatedCohort2 = evaluateCohortDefinition(cf, mappings);
+    assertEquals(1, evaluatedCohort2.size());
+    assertTrue(evaluatedCohort2.contains(1008));
   }
 
   @Test
@@ -170,7 +161,7 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
   @Test
   public void C2() throws EvaluationException {
     CohortDefinition cd =
-        resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTPI();
+        resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTpiC2();
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd);
     assertEquals(1, evaluatedCohort.size());
     assertTrue(evaluatedCohort.contains(1013));
@@ -180,7 +171,7 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
   public void C3() throws EvaluationException {
     CohortDefinition cd =
         resumoMensalCohortQueries
-            .getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTB();
+            .getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTBC3();
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd);
     assertEquals(1, evaluatedCohort.size());
     assertTrue(evaluatedCohort.contains(1014));
@@ -188,17 +179,17 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
 
   @Override
   protected Date getStartDate() {
-    return DateUtil.getDateTime(2018, 6, 21);
+    return DateUtil.getDateTime(2019, 11, 21);
   }
 
   @Override
   protected Date getEndDate() {
-    return DateUtil.getDateTime(2018, 7, 20);
+    return DateUtil.getDateTime(2019, 12, 20);
   }
 
   @Override
   protected Location getLocation() {
-    return Context.getLocationService().getLocation(540);
+    return Context.getLocationService().getLocation(221);
   }
 
   @Override

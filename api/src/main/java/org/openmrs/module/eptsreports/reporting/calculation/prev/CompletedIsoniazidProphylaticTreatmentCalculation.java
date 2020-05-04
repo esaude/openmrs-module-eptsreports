@@ -14,6 +14,7 @@ package org.openmrs.module.eptsreports.reporting.calculation.prev;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalcu
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
+import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,24 +43,30 @@ import org.springframework.stereotype.Component;
 @Component
 public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractPatientCalculation {
 
-  private static final int COMPLETION_PERIOD_OFFSET = 1;
+  private static final int COMPLETION_PERIOD_OFFSET = 0;
 
   private static final int TREATMENT_BEGIN_PERIOD_OFFSET = -6;
 
-  private static final int NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED = 6;
+  private static final int NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED = 5;
 
   private static final int MONTHS_TO_CHECK_FOR_ISONIAZID_USAGE = 7;
 
-  private static final int MINIMUM_DURATION_IN_DAYS = 180;
+  private static final int MINIMUM_DURATION_IN_DAYS = 173;
 
   private static final String ON_OR_AFTER = "onOrAfter";
 
   private static final String ON_OR_BEFORE = "onOrBefore";
 
+  private enum Priority {
+    MIN,
+    MAX
+  };
+
   @Autowired private HivMetadata hivMetadata;
 
   @Autowired private EPTSCalculationService ePTSCalculationService;
 
+  @SuppressWarnings("unused")
   @Override
   public CalculationResultMap evaluate(
       Collection<Integer> cohort,
@@ -83,7 +91,8 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
       final List<EncounterType> consultationEncounterTypes =
           Arrays.asList(
               hivMetadata.getAdultoSeguimentoEncounterType(),
-              hivMetadata.getARVPediatriaSeguimentoEncounterType());
+              hivMetadata.getPediatriaSeguimentoEncounterType(),
+              hivMetadata.getMasterCardEncounterType());
       CalculationResultMap startProfilaxiaObservations =
           ePTSCalculationService.firstObs(
               hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept(),
@@ -92,8 +101,19 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               false,
               beginPeriodStartDate,
               beginPeriodEndDate,
-              null,
+              consultationEncounterTypes,
               cohort,
+              context);
+      CalculationResultMap startDrugsObservations =
+          ePTSCalculationService.getObs(
+              hivMetadata.getIsoniazidUsageConcept(),
+              Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
+              cohort,
+              Arrays.asList(location),
+              Arrays.asList(hivMetadata.getStartDrugs()),
+              TimeQualifier.FIRST,
+              beginPeriodStartDate,
+              onOrAfter,
               context);
       CalculationResultMap endProfilaxiaObservations =
           ePTSCalculationService.lastObs(
@@ -103,12 +123,24 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               false,
               completionPeriodStartDate,
               completionPeriodEndDate,
+              consultationEncounterTypes,
               cohort,
+              context);
+      CalculationResultMap completedDrugsObservations =
+          ePTSCalculationService.getObs(
+              hivMetadata.getIsoniazidUsageConcept(),
+              Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
+              cohort,
+              Arrays.asList(location),
+              Arrays.asList(hivMetadata.getCompletedConcept()),
+              TimeQualifier.LAST,
+              onOrAfter,
+              completionPeriodEndDate,
               context);
       CalculationResultMap isoniazidUsageObservationsList =
           ePTSCalculationService.allObservations(
               hivMetadata.getIsoniazidUsageConcept(),
-              hivMetadata.getYesConcept(),
+              Arrays.asList(hivMetadata.getYesConcept(), hivMetadata.getContinueRegimenConcept()),
               consultationEncounterTypes,
               location,
               cohort,
@@ -116,28 +148,37 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
 
       for (Integer patientId : cohort) {
         Obs startProfilaxiaObs =
-            EptsCalculationUtils.resultForPatient(startProfilaxiaObservations, patientId);
+            EptsCalculationUtils.obsResultForPatient(startProfilaxiaObservations, patientId);
+        Obs startDrugsObs =
+            EptsCalculationUtils.obsResultForPatient(startDrugsObservations, patientId);
         Obs endProfilaxiaObs =
-            EptsCalculationUtils.resultForPatient(endProfilaxiaObservations, patientId);
-        Date startDate = getDateFromObs(startProfilaxiaObs);
-        Date endDate = getDateFromObs(endProfilaxiaObs);
-        boolean inconsistent =
-            (startDate != null && endDate != null && startDate.compareTo(endDate) > 0)
-                || (startDate == null && endDate != null);
-        if (!inconsistent && startDate != null) {
-          boolean completed = startDate != null && endDate != null;
-          if (completed) {
-            int profilaxiaDuration =
-                Days.daysIn(new Interval(startDate.getTime(), endDate.getTime())).getDays();
-            if (profilaxiaDuration >= MINIMUM_DURATION_IN_DAYS) {
-              map.put(patientId, new BooleanResult(true, this));
-            }
-          }
-          int yesAnswers =
-              calculateNumberOfYesAnswers(isoniazidUsageObservationsList, patientId, startDate);
-          if (yesAnswers >= NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED) {
-            map.put(patientId, new BooleanResult(true, this));
-          }
+            EptsCalculationUtils.obsResultForPatient(endProfilaxiaObservations, patientId);
+        Obs endDrugsObs =
+            EptsCalculationUtils.obsResultForPatient(completedDrugsObservations, patientId);
+        /**
+         * If We can't find a startDate from Ficha de Seguimento (adults and children) / Ficha
+         * Resumo or Ficha Clinica-MasterCard, we can't do the calculations. -Just move to the next
+         * patient.
+         */
+        if (startProfilaxiaObs == null && startDrugsObs == null) {
+          continue;
+        }
+        Date startDate =
+            getMinOrMaxObsDate(
+                startProfilaxiaObs,
+                startDrugsObs,
+                Priority.MIN); // Gets the earliest drugs start date using both sources
+        Date endDate =
+            getMinOrMaxObsDate(
+                endProfilaxiaObs,
+                endDrugsObs,
+                Priority.MAX); // Gets the most recent complete drugs date using both sources
+
+        int yesAnswers =
+            calculateNumberOfYesAnswers(isoniazidUsageObservationsList, patientId, startDate);
+        if (getProfilaxiaDuration(startDate, endDate) >= MINIMUM_DURATION_IN_DAYS
+            || yesAnswers >= NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED) {
+          map.put(patientId, new BooleanResult(true, this));
         }
       }
       return map;
@@ -156,7 +197,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
     Date isoniazidUsageEndDate = getIsoniazidUsageEndDate(startDate);
     for (Obs obs : isoniazidUsageObservations) {
       Date date = obs.getObsDatetime();
-      if (date.compareTo(startDate) >= 0 && date.compareTo(isoniazidUsageEndDate) <= 0) {
+      if (date.compareTo(startDate) > 0 && date.compareTo(isoniazidUsageEndDate) <= 0) {
         count++;
       }
     }
@@ -175,5 +216,45 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
       return obs.getValueDatetime();
     }
     return null;
+  }
+  /**
+   * @param seguimentoOrFichaResumoDate The start drugs or end drugs Obs from Ficha de Seguimento
+   *     (adults and children) or Ficha Resumo
+   * @param fichaClinicaMasterCardDate The start drugs or end drugs Obs from from Ficha
+   *     Clinica-MasterCard
+   * @param priority MIN to retrieve the start drugs date, MAX to retrieve the end drugs date
+   * @return The earliest or most recent date according to the priority parameter
+   */
+  private Date getMinOrMaxObsDate(
+      Obs seguimentoOrFichaResumoDate, Obs fichaClinicaMasterCardDate, Priority priority) {
+    if (seguimentoOrFichaResumoDate == null && fichaClinicaMasterCardDate == null) {
+      return null;
+    }
+    if (seguimentoOrFichaResumoDate != null && fichaClinicaMasterCardDate != null) {
+
+      List<Date> dates =
+          Arrays.asList(
+              getDateFromObs(seguimentoOrFichaResumoDate),
+              fichaClinicaMasterCardDate.getObsDatetime());
+      return (priority == Priority.MIN) ? Collections.min(dates) : Collections.max(dates);
+    } else {
+      return (getDateFromObs(seguimentoOrFichaResumoDate) != null)
+          ? getDateFromObs(seguimentoOrFichaResumoDate)
+          : fichaClinicaMasterCardDate.getObsDatetime();
+    }
+  }
+  /**
+   * Calculate the interval in days between two dates
+   *
+   * @param startDate
+   * @param endDate
+   * @return the interval, 0 otherwise
+   */
+  private int getProfilaxiaDuration(Date startDate, Date endDate) {
+    if (startDate != null && endDate != null && endDate.compareTo(startDate) > 0) {
+      return Days.daysIn(new Interval(startDate.getTime(), endDate.getTime())).getDays();
+    } else {
+      return 0;
+    }
   }
 }

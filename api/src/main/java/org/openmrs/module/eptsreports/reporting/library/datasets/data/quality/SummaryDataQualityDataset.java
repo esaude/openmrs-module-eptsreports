@@ -95,7 +95,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                         Arrays.asList(
                             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                             hivMetadata
-                                .getARVPediatriaSeguimentoEncounterType()
+                                .getPediatriaSeguimentoEncounterType()
                                 .getEncounterTypeId())),
                     "location=${location}"),
                 Arrays.asList(
@@ -154,9 +154,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                             .getTransferredOutToAnotherHealthFacilityWorkflowState()
                             .getProgramWorkflowStateId(),
                         Arrays.asList(
-                            hivMetadata
-                                .getARVPediatriaSeguimentoEncounterType()
-                                .getEncounterTypeId(),
+                            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
                             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
                     "location=${location}"),
                 Arrays.asList(
@@ -215,7 +213,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                         Arrays.asList(
                             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                             hivMetadata
-                                .getARVPediatriaSeguimentoEncounterType()
+                                .getPediatriaSeguimentoEncounterType()
                                 .getEncounterTypeId())),
                     "location=${location}"),
                 Arrays.asList(
@@ -307,7 +305,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                         Arrays.asList(
                             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                             hivMetadata
-                                .getARVPediatriaSeguimentoEncounterType()
+                                .getPediatriaSeguimentoEncounterType()
                                 .getEncounterTypeId())),
                     "location=${location},endDate=${endDate}"),
                 Arrays.asList(
@@ -340,9 +338,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getPatientsWhoseEncounterIsBefore1985(
                         Arrays.asList(
-                            hivMetadata
-                                .getARVPediatriaSeguimentoEncounterType()
-                                .getEncounterTypeId(),
+                            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
                             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId())),
                     "location=${location},endDate=${endDate}"),
                 Arrays.asList(

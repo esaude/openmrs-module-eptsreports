@@ -28,13 +28,13 @@ public class ResumoMensalAandBdisaggregations {
         new ColumnParameters("fiveTo9years", "5 to  9 years patients", "age=5-9", "02");
     ColumnParameters tenTo14yearsMale =
         new ColumnParameters(
-            "tenTo14yearsMale", "10 to  14 years male patients", "gender=M|age=10-15", "03");
+            "tenTo14yearsMale", "10 to  14 years male patients", "gender=M|age=10-14", "03");
     ColumnParameters tenTo14yearsFemale =
         new ColumnParameters(
-            "tenTo14yearsFemale", "10 to  14 years female patients", "gender=F|age=10-15", "04");
+            "tenTo14yearsFemale", "10 to  14 years female patients", "gender=F|age=10-14", "04");
     ColumnParameters under14yearsTotal =
         new ColumnParameters(
-            "under14yearsTotal", "Under 15 years patients - Totals", "age=0-15", "05");
+            "under14yearsTotal", "Under 15 years patients - Totals", "age=0-14", "05");
 
     return Arrays.asList(
         under4years, fiveTo9years, tenTo14yearsMale, tenTo14yearsFemale, under14yearsTotal);
@@ -62,18 +62,30 @@ public class ResumoMensalAandBdisaggregations {
 
   public List<ColumnParameters> getAdolescentesColumns() {
     ColumnParameters tenTo14Male =
-        new ColumnParameters("tenTo14Male", "10 to 14 years male", "gender=M|age=10-15", "01");
+        new ColumnParameters("tenTo14Male", "10 to 14 years male", "gender=M|age=10-14", "01");
     ColumnParameters tenTo14Female =
-        new ColumnParameters("tenTo14Female", "10 to 14 years female", "gender=F|age=10-15", "02");
+        new ColumnParameters("tenTo14Female", "10 to 14 years female", "gender=F|age=10-14", "02");
     ColumnParameters fifteenTo19Female =
         new ColumnParameters(
             "fifteenTo19Female", "15 to 19 years female", "gender=F|age=15-19", "03");
     ColumnParameters fifteenTo19Male =
         new ColumnParameters("fifteenTo19Male", "15 to 19 years male", "gender=M|age=15-19", "04");
     ColumnParameters adolescentTotals =
-        new ColumnParameters("adolescentTotals", "15 to 19 years Totals", "age=15-19", "05");
+        new ColumnParameters("adolescentTotals", "10 to 19 years Totals", "age=10-19", "05");
 
     return Arrays.asList(
         tenTo14Male, tenTo14Female, fifteenTo19Female, fifteenTo19Male, adolescentTotals);
+  }
+
+  /**
+   * Get teh disaggregations for the patients under 14 years and those above 14 yeara
+   *
+   * @return List of ColumnParameters
+   */
+  public List<ColumnParameters> disAggForE() {
+    ColumnParameters under14Years =
+        new ColumnParameters("under14", "Under 14 years", "age=0-14", "01");
+    ColumnParameters over14Years = new ColumnParameters("over14", "15+ years", "age=15+", "02");
+    return Arrays.asList(under14Years, over14Years);
   }
 }
