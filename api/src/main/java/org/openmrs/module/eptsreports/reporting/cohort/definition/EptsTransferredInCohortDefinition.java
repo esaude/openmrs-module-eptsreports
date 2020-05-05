@@ -13,7 +13,10 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 /**
  * Cohort for transferred-in patients as specified in Resumo Mensal. Should e used by other reports
  * in the future.
+ *
+ * @deprecated use {@link EptsTransferredInCohortDefinition2} instead.
  */
+@Deprecated
 @Caching(strategy = ConfigurationPropertyAndParameterCachingStrategy.class)
 public class EptsTransferredInCohortDefinition extends BaseCohortDefinition {
 
