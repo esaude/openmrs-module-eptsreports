@@ -134,7 +134,7 @@ public class TXTBQueries {
     return String.format(
         "select pg.patient_id from patient p inner join "
             + "patient_program pg on p.patient_id=pg.patient_id "
-            + "where pg.voided=0 and p.voided=0 and program_id=%s AND pg.date_completed is null "
+            + "where pg.voided=0 and p.voided=0 and program_id=%s "
             + "  and date_enrolled between :startDate and :endDate and location_id=:location",
         tbProgramId);
   }
