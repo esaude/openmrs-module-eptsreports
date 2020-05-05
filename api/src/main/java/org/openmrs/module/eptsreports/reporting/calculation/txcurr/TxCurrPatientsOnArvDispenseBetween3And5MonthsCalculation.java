@@ -41,6 +41,12 @@ public class TxCurrPatientsOnArvDispenseBetween3And5MonthsCalculation
         }
       }
       for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
+        if (DisaggregationSourceTypes.DISPENSA_MENSAL.equals(
+            patientDisaggregated.getDisaggregationSourceType())) {
+          return;
+        }
+      }
+      for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
         if (DisaggregationSourceTypes.DISPENSA_TRIMESTRAL.equals(
             patientDisaggregated.getDisaggregationSourceType())) {
           resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
