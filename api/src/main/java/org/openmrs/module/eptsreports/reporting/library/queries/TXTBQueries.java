@@ -3,6 +3,8 @@ package org.openmrs.module.eptsreports.reporting.library.queries;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 
 public class TXTBQueries {
 
@@ -206,6 +208,27 @@ public class TXTBQueries {
             + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "WHERE p.voided=0 AND e.encounter_type=%s AND e.voided=0 AND e.encounter_datetime>=:startDate AND e.encounter_datetime<=:endDate AND e.location_id=:location GROUP BY p.patient_id",
         encounterTypeId);
+  }
+
+  public static String findNegativeInvestigationResultAndAnyResultForTBScreening(
+      EncounterType artAdultFollowupEncounterType,
+      EncounterType artPedInicioEncounterType,
+      Concept screeningForTBConcept,
+      Concept yesConcept,
+      Concept noConcept,
+      Concept resultForResearchInvestigationConcept,
+      Concept negativeResultConcept) {
+
+    return String.format(
+        "select p.patient_id from patient p inner join encounter e on p.patient_id=e.patient_id"
+            + "	  inner join obs oRastreio on e.encounter_id=oRastreio.encounter_id and oRastreio.concept_id=6257 and oRastreio.voided=0 and oRastreio.value_coded in (1065,1066)"
+            + "	  inner join obs oInvestigacao on e.encounter_id=oInvestigacao.encounter_id and oInvestigacao.concept_id=6277 and oInvestigacao.voided=0 and oInvestigacao.value_coded=664"
+            + "	 where e.encounter_type in (6,9) and e.voided=0 and e.location_id=:location and e.encounter_datetime between :startDate and :endDate group by p.patient_id",
+        screeningForTBConcept.getId(),
+        Arrays.asList(yesConcept.getId(), noConcept.getId()),
+        resultForResearchInvestigationConcept.getId(),
+        negativeResultConcept.getId(),
+        Arrays.asList(artAdultFollowupEncounterType.getId(), artPedInicioEncounterType.getId()));
   }
 
   public static class AbandonedWithoutNotificationParams {
