@@ -86,10 +86,10 @@ public class TXTBCohortQueries {
             "SputumForAcidFastBacilli",
             TXTBQueries.dateObsForEncounterAndQuestionAndAnswers(
                 this.hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+                Arrays.asList(tbMetadata.getSputumForAcidFastBacilli().getConceptId()),
                 Arrays.asList(
-                    tbMetadata.getSputumForAcidFastBacilli().getConceptId(),
-                    this.tbMetadata.getNegativeConcept().getConceptId()),
-                Arrays.asList(this.tbMetadata.getPositiveConcept().getConceptId())));
+                    this.tbMetadata.getPositiveConcept().getConceptId(),
+                    this.tbMetadata.getNegativeConcept().getConceptId())));
     this.addGeneralParameters(definition);
     return definition;
   }
