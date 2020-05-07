@@ -35,8 +35,9 @@ public class CommonCohortQueries {
         getMohTransferredOutPatientsByEndOfPeriod();
 
     cd.addSearch("current", mapStraightThrough(transferredInCurrentPeriod));
+    String byEndOfPreviousExclusive = "onOrBefore=${onOrAfter-1d},location=${location}";
+    cd.addSearch("previous", map(transferredInPreviousMonth, byEndOfPreviousExclusive));
     String byEndOfPrevious = "onOrBefore=${onOrAfter},location=${location}";
-    cd.addSearch("previous", map(transferredInPreviousMonth, byEndOfPrevious));
     cd.addSearch("transferredOut", map(transferredOutPreviousMonth, byEndOfPrevious));
     cd.setCompositionString("current NOT (previous NOT transferredOut)");
 
