@@ -302,42 +302,6 @@ public class TXTBCohortQueries {
     addGeneralParameters(cd);
     return cd;
   }
-  /**
-   * BR-12 All patients from denominator who have the following requests/results registered during
-   * the period:
-   *
-   * @return
-   */
-  public CohortDefinition getPatientsPositiveResultsReturnedComposition() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
-    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-
-    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-
-    CohortDefinition genexpertTestPositive =
-        genericCohortQueries.generalSql(
-            "genexpert-positivo",
-            TXTBQueries.tbGenexpertTest(
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                tbMetadata.getTBGenexpertTestConcept().getConceptId(),
-                commonMetadata.getPositive().getConceptId(),
-                null));
-
-    cd.addSearch("genexpert-positivo", EptsReportUtils.map(genexpertTestPositive, mappings));
-
-    cd.addSearch("result-basiloscopia", EptsReportUtils.map(getResultForBasiloscopia(), mappings));
-
-    cd.addSearch("test-tb-lam", EptsReportUtils.map(getTestTBLAM(), mappings));
-
-    cd.addSearch("culture-test", EptsReportUtils.map(getCultureTest(), mappings));
-
-    cd.setCompositionString(
-        "genexpert-positivo OR result-basiloscopia OR test-tb-lam OR culture-test");
-
-    return cd;
-  }
 
   public CohortDefinition positiveInvestigationResult() {
     CohortDefinition cd =
@@ -784,19 +748,18 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-
   /**
-   * 
-   * Get patients who where Transferred Out (and had no registred drug pickup) 
-   * after the transferred out date within reporting period
-   * 
+   * Get patients who where Transferred Out (and had no registred drug pickup) after the transferred
+   * out date within reporting period
+   *
    * @return CohortDefinition
    */
   public CohortDefinition getPatientsTransferredOut() {
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
 
-    sqlCohortDefinition.setName("Patient Transferred Out With No Drug Pick After The Transferred out Date ");
+    sqlCohortDefinition.setName(
+        "Patient Transferred Out With No Drug Pick After The Transferred out Date ");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
@@ -1190,7 +1153,8 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * BR-12 Positive Results Returned
+   * BR-12 Positive Results Returned All patients from denominator who have the following
+   * requests/results registered during the period:
    *
    * @return CohortDefinition
    */
@@ -1226,35 +1190,35 @@ public class TXTBCohortQueries {
     CohortDefinition basiloscopiaExamCohort =
         genericCohortQueries.generalSql(
             "basiloscopiaExamCohort",
-            TXTBQueries.getPatientsWithObsBetweenDates(
+            genericCohortQueries.getPatientsWithObsBetweenDates(
                 laboratory, basiloscopiaExam, Arrays.asList(negative, positive)));
     addGeneralParameters(basiloscopiaExamCohort);
 
     CohortDefinition genexpertTestCohort =
         genericCohortQueries.generalSql(
             "genexpertTestCohort",
-            TXTBQueries.getPatientsWithObsBetweenDates(
+            genericCohortQueries.getPatientsWithObsBetweenDates(
                 fichaClinica, genexpertTest, Arrays.asList(negative, positive)));
     addGeneralParameters(genexpertTestCohort);
 
     CohortDefinition tbLamTestCohort =
         genericCohortQueries.generalSql(
             "tbLamTestCohort",
-            TXTBQueries.getPatientsWithObsBetweenDates(
+            genericCohortQueries.getPatientsWithObsBetweenDates(
                 fichaClinica, tbLamTest, Arrays.asList(negative, positive)));
     addGeneralParameters(tbLamTestCohort);
 
     CohortDefinition cultureTestCohort =
         genericCohortQueries.generalSql(
             "cultureTestCohort",
-            TXTBQueries.getPatientsWithObsBetweenDates(
+            genericCohortQueries.getPatientsWithObsBetweenDates(
                 fichaClinica, cultureTest, Arrays.asList(negative, positive)));
     addGeneralParameters(cultureTestCohort);
 
     CohortDefinition applicationForLaboratoryResearchCohort =
         genericCohortQueries.generalSql(
             "applicationForLaboratoryResearchCohort",
-            TXTBQueries.getPatientsWithObsBetweenDates(
+            genericCohortQueries.getPatientsWithObsBetweenDates(
                 fichaClinica,
                 applicationForLaboratoryResearch,
                 Arrays.asList(genexpertTest, cultureTest, tbLamTest)));
@@ -1299,14 +1263,14 @@ public class TXTBCohortQueries {
     CohortDefinition genexpertTestCohort =
         genericCohortQueries.generalSql(
             "genexpertTestCohort",
-            TXTBQueries.getPatientsWithObsBetweenDates(
+            genericCohortQueries.getPatientsWithObsBetweenDates(
                 fichaClinica, genexpertTest, Arrays.asList(negative, positive)));
     addGeneralParameters(genexpertTestCohort);
 
     CohortDefinition applicationForLaboratoryResearchCohort =
         genericCohortQueries.generalSql(
             "applicationForLaboratoryResearchCohort",
-            TXTBQueries.getPatientsWithObsBetweenDates(
+            genericCohortQueries.getPatientsWithObsBetweenDates(
                 fichaClinica, applicationForLaboratoryResearch, Arrays.asList(genexpertTest)));
     addGeneralParameters(applicationForLaboratoryResearchCohort);
 
@@ -1337,7 +1301,7 @@ public class TXTBCohortQueries {
     CohortDefinition basiloscopiaCohort =
         genericCohortQueries.generalSql(
             "basiloscopiaCohort",
-            TXTBQueries.getPatientsWithObsBetweenDates(
+            genericCohortQueries.getPatientsWithObsBetweenDates(
                 laboratory, basiloscopiaExam, Arrays.asList(negative, positive)));
     addGeneralParameters(basiloscopiaCohort);
 
@@ -1370,21 +1334,21 @@ public class TXTBCohortQueries {
     CohortDefinition tbLamTestCohort =
         genericCohortQueries.generalSql(
             "tbLamTestCohort",
-            TXTBQueries.getPatientsWithObsBetweenDates(
+            genericCohortQueries.getPatientsWithObsBetweenDates(
                 fichaClinica, tbLamTest, Arrays.asList(negative, positive)));
     addGeneralParameters(tbLamTestCohort);
 
     CohortDefinition cultureTestCohort =
         genericCohortQueries.generalSql(
             "cultureTestCohort",
-            TXTBQueries.getPatientsWithObsBetweenDates(
+            genericCohortQueries.getPatientsWithObsBetweenDates(
                 fichaClinica, cultureTest, Arrays.asList(negative, positive)));
     addGeneralParameters(cultureTestCohort);
 
     CohortDefinition applicationForLaboratoryResearchCohort =
         genericCohortQueries.generalSql(
             "applicationForLaboratoryResearchCohort",
-            TXTBQueries.getPatientsWithObsBetweenDates(
+            genericCohortQueries.getPatientsWithObsBetweenDates(
                 fichaClinica,
                 applicationForLaboratoryResearch,
                 Arrays.asList(cultureTest, tbLamTest)));
@@ -1430,29 +1394,29 @@ public class TXTBCohortQueries {
     CohortDefinition genexpertTestCohort =
         genericCohortQueries.generalSql(
             "genexpertTestCohort",
-            TXTBQueries.getPatientsWithObsBetweenDates(
-                fichaClinica, genexpertTest, Arrays.asList(negative, positive)));
+            genericCohortQueries.getPatientsWithObsBetweenDates(
+                fichaClinica, genexpertTest, Arrays.asList(positive)));
     addGeneralParameters(genexpertTestCohort);
 
     CohortDefinition basiloscopiaExamCohort =
         genericCohortQueries.generalSql(
             "basiloscopiaExamCohort",
-            TXTBQueries.getPatientsWithObsBetweenDates(
-                laboratory, basiloscopiaExam, Arrays.asList(negative, positive)));
+            genericCohortQueries.getPatientsWithObsBetweenDates(
+                laboratory, basiloscopiaExam, Arrays.asList(positive)));
     addGeneralParameters(basiloscopiaExamCohort);
 
     CohortDefinition tbLamTestCohort =
         genericCohortQueries.generalSql(
             "tbLamTestCohort",
-            TXTBQueries.getPatientsWithObsBetweenDates(
-                fichaClinica, tbLamTest, Arrays.asList(negative, positive)));
+            genericCohortQueries.getPatientsWithObsBetweenDates(
+                fichaClinica, tbLamTest, Arrays.asList(positive)));
     addGeneralParameters(tbLamTestCohort);
 
     CohortDefinition cultureTestCohort =
         genericCohortQueries.generalSql(
             "cultureTestCohort",
-            TXTBQueries.getPatientsWithObsBetweenDates(
-                fichaClinica, cultureTest, Arrays.asList(negative, positive)));
+            genericCohortQueries.getPatientsWithObsBetweenDates(
+                fichaClinica, cultureTest, Arrays.asList(positive)));
     addGeneralParameters(cultureTestCohort);
 
     CompositionCohortDefinition definition = new CompositionCohortDefinition();

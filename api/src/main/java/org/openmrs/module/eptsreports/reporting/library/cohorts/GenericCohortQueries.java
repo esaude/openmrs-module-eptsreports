@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
@@ -518,5 +519,30 @@ public class GenericCohortQueries {
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     return stringSubstitutor.replace(query.toString());
+  }
+
+  public String getPatientsWithObsBetweenDates(
+      EncounterType encounterType, Concept question, List<Concept> answers) {
+    List<Integer> answerIds = new ArrayList<Integer>();
+    for (Concept concept : answers) {
+      answerIds.add(concept.getConceptId());
+    }
+    StringBuilder s = new StringBuilder();
+    s.append("SELECT p.patient_id FROM patient p INNER JOIN encounter e ");
+    s.append("ON p.patient_id = e.patient_id ");
+    s.append("INNER JOIN obs o ");
+    s.append("ON e.encounter_id = o.encounter_id ");
+    s.append("WHERE e.location_id = :location AND e.encounter_type = ${encounterType} ");
+    s.append("AND o.concept_id = ${question}  ");
+    s.append("AND o.value_coded in (${answers}) ");
+    s.append("AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate ");
+    s.append("AND p.voided = 0 AND e.voided = 0 AND o.voided = 0");
+    Map<String, String> values = new HashMap<>();
+    values.put("encounterType", String.valueOf(encounterType.getEncounterTypeId()));
+    // Just convert the conceptId to String so it can be added to the map
+    values.put("question", String.valueOf(question.getConceptId()));
+    values.put("answers", StringUtils.join(answerIds, ","));
+    StringSubstitutor sb = new StringSubstitutor(values);
+    return sb.replace(s.toString());
   }
 }
