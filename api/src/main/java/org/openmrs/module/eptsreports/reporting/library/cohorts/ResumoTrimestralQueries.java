@@ -58,7 +58,6 @@ public class ResumoTrimestralQueries {
             + "              AND ps.voided = 0 "
             + "              AND ps.state = ${transferredOutToAnotherHealthFacilityWorkflowStateConcept} "
             + "              AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore "
-            + "              AND ps.end_date IS NULL "
             + "            UNION "
             + "            SELECT p.patient_id, "
             + "                   e.encounter_datetime transferout_date "

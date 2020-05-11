@@ -19,14 +19,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsQuarterlyCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.LocationDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.ResumoTrimestralDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.ResumoTrimestralStartDateDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingException;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -80,16 +78,8 @@ public class SetupResumoTrimestralReport extends EptsDataExportManager {
         resumoTrimestralDataSetDefinition.constructResumoTrimestralDataset();
     rd.addDataSetDefinition("R", mapStraightThrough(dataset));
     rd.addDataSetDefinition("D", mapStraightThrough(new ResumoTrimestralStartDateDataset()));
-    rd.setBaseCohortDefinition(mapStraightThrough(getBaseCohort()));
+    // base cohort is run on EptsQuarterlyCohortDefinitionEvaluator
     return rd;
-  }
-
-  private CohortDefinition getBaseCohort() {
-    CohortDefinition baseCohort = genericCohortQueries.getBaseCohort();
-    EptsQuarterlyCohortDefinition quarterly = new EptsQuarterlyCohortDefinition();
-    quarterly.addParameters(resumoTrimestralDataSetDefinition.getParameters());
-    quarterly.setCohortDefinition(baseCohort);
-    return quarterly;
   }
 
   @Override

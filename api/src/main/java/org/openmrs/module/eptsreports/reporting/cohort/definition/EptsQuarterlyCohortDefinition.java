@@ -14,6 +14,9 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 /**
  * A cohort definition that computes date ranges for a specific month of a quarter of a year and
  * evaluates another wrapped cohort definition with the computed dates as parameter values.
+ *
+ * <p>Implementation is very specific to resumo trimestral as it requires that base cohort is run
+ * for each month and not the whole reporting period.
  */
 @Caching(strategy = NoCachingStrategy.class)
 public class EptsQuarterlyCohortDefinition extends BaseCohortDefinition {
@@ -22,14 +25,14 @@ public class EptsQuarterlyCohortDefinition extends BaseCohortDefinition {
     Q1,
     Q2,
     Q3,
-    Q4;
+    Q4
   }
 
   public enum Month {
     M1,
     M2,
     M3
-  };
+  }
 
   @ConfigurationProperty private Quarter quarter;
 
