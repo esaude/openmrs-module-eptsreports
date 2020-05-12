@@ -86,10 +86,10 @@ public class TXTBCohortQueries {
             "SputumForAcidFastBacilli",
             TXTBQueries.dateObsForEncounterAndQuestionAndAnswers(
                 this.hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+                Arrays.asList(tbMetadata.getSputumForAcidFastBacilli().getConceptId()),
                 Arrays.asList(
-                    tbMetadata.getSputumForAcidFastBacilli().getConceptId(),
-                    this.tbMetadata.getNegativeConcept().getConceptId()),
-                Arrays.asList(this.tbMetadata.getPositiveConcept().getConceptId())));
+                    this.tbMetadata.getPositiveConcept().getConceptId(),
+                    this.tbMetadata.getNegativeConcept().getConceptId())));
     this.addGeneralParameters(definition);
     return definition;
   }
@@ -282,18 +282,22 @@ public class TXTBCohortQueries {
     return cd;
   }
 
-  @DocumentedDefinition(value = "negativeInvestigationResultAndAnyResultForTBScreeningComposition")
+  @DocumentedDefinition(value = "findNegativeInvestigationResultAndAnyResultForTBScreening")
   public CohortDefinition negativeInvestigationResultAndAnyResultForTBScreeningComposition() {
-    final CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("TxTB - negativeInvestigationResultAndAnyResultForTBScreeningComposition");
-    final CohortDefinition N = this.negativeInvestigationResult();
-    CohortDefinition YN = this.yesOrNoInvestigationResult();
-    cd.addSearch("N", this.map(N, this.codedObsParameterMapping));
-    cd.addSearch("YN", this.map(YN, this.generalParameterMapping));
+    CohortDefinition cohortDefinition =
+        this.genericCohortQueries.generalSql(
+            "findNegativeInvestigationResultAndAnyResultForTBScreening",
+            TXTBQueries.findNegativeInvestigationResultAndAnyResultForTBScreening(
+                this.hivMetadata.getAdultoSeguimentoEncounterType(),
+                this.hivMetadata.getARVPediatriaSeguimentoEncounterType(),
+                this.tbMetadata.getTbScreeningConcept(),
+                this.commonMetadata.getYesConcept(),
+                this.commonMetadata.getNoConcept(),
+                tbMetadata.getResearchResultConcept(),
+                this.tbMetadata.getNegativeConcept()));
 
-    cd.setCompositionString("N AND YN");
-    this.addGeneralParameters(cd);
-    return cd;
+    this.addGeneralParameters(cohortDefinition);
+    return cohortDefinition;
   }
 
   /**
