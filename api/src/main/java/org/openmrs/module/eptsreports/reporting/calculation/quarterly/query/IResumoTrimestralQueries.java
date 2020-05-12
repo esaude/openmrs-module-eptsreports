@@ -5,12 +5,14 @@ public interface IResumoTrimestralQueries {
   class QUERY {
 
     public static final String findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod =
-        "SELECT pg.patient_id FROM patient p "
-            + "INNER JOIN patient_program pg ON p.patient_id=pg.patient_id "
-            + "INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
-            + "WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND pg.program_id=2 "
-            + "AND ps.state=29 AND ps.start_date=pg.date_enrolled "
-            + "AND ps.start_date BETWEEN :startDate -interval 1 year AND :endDate AND location_id=:location";
+        "select minState.patient_id from  ("
+            + "SELECT p.patient_id, pg.patient_program_id, MIN(ps.start_date) as minStateDate  FROM patient p  "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + "WHERE pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and location_id=:location  and ps.start_date BETWEEN :startDate -interval 1 year and :endDate "
+            + "GROUP BY pg.patient_program_id) minState "
+            + "inner join patient_state ps on ps.patient_program_id=minState.patient_program_id "
+            + "where ps.start_date=minState.minStateDate and ps.state=29 and ps.voided=0 ";
 
     public static final String
         findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard =
@@ -56,7 +58,7 @@ public interface IResumoTrimestralQueries {
                 + "select pg.patient_id,max(ps.start_date) data_transferidopara from  patient p "
                 + "inner join patient_program pg on p.patient_id=pg.patient_id "
                 + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id where pg.voided=0 and ps.voided=0 and p.voided=0 and "
-                + "pg.program_id=2 and ps.state=7 and ps.end_date is null and ps.start_date<=:endDate and location_id=:location group by p.patient_id "
+                + "pg.program_id=2 and ps.state=7 and ps.start_date<=:endDate and location_id=:location group by p.patient_id "
                 + "union select p.patient_id,max(o.obs_datetime) data_transferidopara from patient p "
                 + "inner join encounter e on p.patient_id=e.patient_id "
                 + "inner join obs o on o.encounter_id=e.encounter_id "
@@ -81,7 +83,7 @@ public interface IResumoTrimestralQueries {
             + "select pg.patient_id,max(ps.start_date) data_suspencao from  patient p "
             + "inner join patient_program pg on p.patient_id=pg.patient_id "
             + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id where pg.voided=0 "
-            + "and ps.voided=0 and p.voided=0 and pg.program_id=2 and ps.state=8 and ps.end_date is null and ps.start_date<=:endDate and location_id=:location "
+            + "and ps.voided=0 and p.voided=0 and pg.program_id=2 and ps.state=8 and ps.start_date<=:endDate and location_id=:location "
             + "group by p.patient_id union "
             + " select p.patient_id,max(o.obs_datetime) data_suspencao from  patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
@@ -112,7 +114,7 @@ public interface IResumoTrimestralQueries {
             + "inner join patient_program pg on p.patient_id=pg.patient_id "
             + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
             + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and ps.state=10 "
-            + "and ps.end_date is null and ps.start_date<=:endDate and location_id=:location "
+            + "and ps.start_date<=:endDate and location_id=:location "
             + "group by p.patient_id union select p.patient_id,max(o.obs_datetime) data_obito from	patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
             + "inner join obs o on o.encounter_id=e.encounter_id "

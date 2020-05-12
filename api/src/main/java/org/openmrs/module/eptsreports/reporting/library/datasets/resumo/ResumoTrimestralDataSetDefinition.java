@@ -254,7 +254,7 @@ public class ResumoTrimestralDataSetDefinition extends BaseDataSet {
                   month, calculatorF, definitionForSectionG);
       this.addColumnForMonth(
           dsd,
-          definitionForSectionG,
+          definitionForSectionH,
           mappings,
           month,
           iteration,
