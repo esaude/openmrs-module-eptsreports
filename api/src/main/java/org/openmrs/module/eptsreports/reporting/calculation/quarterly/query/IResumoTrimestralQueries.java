@@ -9,7 +9,7 @@ public interface IResumoTrimestralQueries {
             + "SELECT p.patient_id, pg.patient_program_id, MIN(ps.start_date) as minStateDate  FROM patient p  "
             + "inner join patient_program pg on p.patient_id=pg.patient_id "
             + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "WHERE pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and location_id=:location  and ps.start_date BETWEEN :startDate -interval 1 year and :endDate "
+            + "WHERE pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and location_id=:location  and ps.start_date <= :endDate "
             + "GROUP BY pg.patient_program_id) minState "
             + "inner join patient_state ps on ps.patient_program_id=minState.patient_program_id "
             + "where ps.start_date=minState.minStateDate and ps.state=29 and ps.voided=0 ";
@@ -22,7 +22,7 @@ public interface IResumoTrimestralQueries {
                 + "INNER JOIN obs obsTrans ON e.encounter_id=obsTrans.encounter_id AND obsTrans.voided=0 AND obsTrans.concept_id=1369 AND obsTrans.value_coded=1065 "
                 + "INNER JOIN obs obsTarv ON e.encounter_id=obsTarv.encounter_id AND obsTarv.voided=0 AND obsTarv.concept_id=6300 AND obsTarv.value_coded=6276 "
                 + "INNER JOIN obs obsData ON e.encounter_id=obsData.encounter_id AND obsData.voided=0 AND obsData.concept_id=23891 "
-                + "WHERE p.voided=0 AND e.voided=0 AND e.encounter_type=53 AND obsData.value_datetime BETWEEN :startDate -interval 1 year AND :endDate AND e.location_id=:location GROUP BY p.patient_id "
+                + "WHERE p.voided=0 AND e.voided=0 AND e.encounter_type=53 AND obsData.value_datetime <=:endDate AND e.location_id=:location GROUP BY p.patient_id "
                 + ") tr GROUP BY tr.patient_id ";
     public static final String findPatientsWhoAreNewlyEnrolledOnART =
         "SELECT patient_id FROM "
