@@ -25,27 +25,12 @@ public class ResumoTrimestralQueries {
         .evaluateToList(qb, Integer.class, context);
   }
 
-  public static List<Integer> findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod(
+  public static List<Integer> findPatientsWhoWhereMarkedAsTransferreInByMinTransferredDate(
       EvaluationContext context, MonthlyDateRange monthlyDateRange) {
     SqlQueryBuilder qb = new SqlQueryBuilder();
     qb.append(
-        IResumoTrimestralQueries.QUERY.findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod);
-    qb.addParameter("startDate", monthlyDateRange.getStartDate());
-    qb.addParameter("endDate", monthlyDateRange.getEndDate());
-    qb.addParameter("location", (Location) context.getParameterValue("location"));
-
-    return Context.getRegisteredComponents(EvaluationService.class)
-        .get(0)
-        .evaluateToList(qb, Integer.class, context);
-  }
-
-  public static List<Integer>
-      findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard(
-          EvaluationContext context, MonthlyDateRange monthlyDateRange) {
-    SqlQueryBuilder qb = new SqlQueryBuilder();
-    qb.append(
         IResumoTrimestralQueries.QUERY
-            .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard);
+            .findPatientsWhoWhereMarkedAsTransferreInByMinTransferredDate);
     qb.addParameter("startDate", monthlyDateRange.getStartDate());
     qb.addParameter("endDate", monthlyDateRange.getEndDate());
     qb.addParameter("location", (Location) context.getParameterValue("location"));

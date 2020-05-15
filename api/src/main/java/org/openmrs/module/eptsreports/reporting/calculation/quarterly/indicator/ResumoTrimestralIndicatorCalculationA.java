@@ -29,12 +29,8 @@ public abstract class ResumoTrimestralIndicatorCalculationA
               context, monthlExecutionPeriod);
 
       List<Integer> exclusions =
-          ResumoTrimestralQueries.findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod(
+          ResumoTrimestralQueries.findPatientsWhoWhereMarkedAsTransferreInByMinTransferredDate(
               context, monthlExecutionPeriod);
-      exclusions.addAll(
-          ResumoTrimestralQueries
-              .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard(
-                  context, monthlExecutionPeriod));
       patientIds.removeAll(exclusions);
 
       patientIds.retainAll(ResumoTrimestralQueries.getBaseCohort(context, monthlExecutionPeriod));
