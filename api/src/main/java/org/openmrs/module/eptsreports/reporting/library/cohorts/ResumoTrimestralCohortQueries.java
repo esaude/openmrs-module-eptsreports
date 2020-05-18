@@ -42,8 +42,7 @@ public class ResumoTrimestralCohortQueries {
   /** Indicator A - Nº de pacientes que iniciou TARV nesta unidade sanitária durante o mês */
   public CohortDefinition getA() {
     CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
-    CohortDefinition transferredIn =
-        getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonth();
+    CohortDefinition transferredIn = commonCohortQueries.getMohTransferredInPatients();
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameters(getParameters());
 
