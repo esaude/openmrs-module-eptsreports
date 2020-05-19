@@ -11,7 +11,6 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsQuarterlyCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition2;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition2.ARTProgram;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -93,50 +92,50 @@ public class ResumoTrimestralCohortQueries {
 
   /** Indicator D - ((A+B) - C) */
   public CohortDefinition getD() {
-    CompositionCohortDefinition cdAbc = new CompositionCohortDefinition();
-    cdAbc.setName("Indicators A, B and C parameters");
-    cdAbc.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cdAbc.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cdAbc.addParameter(new Parameter("location", "location", Location.class));
-    cdAbc.addSearch(
-        "A",
-        EptsReportUtils.map(
-            getA(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
-    cdAbc.addSearch(
-        "B",
-        EptsReportUtils.map(
-            getB(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
-    cdAbc.addSearch(
-        "C",
-        EptsReportUtils.map(
-            getC(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
-    cdAbc.setCompositionString("((A OR B) AND NOT C)");
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    CohortDefinition transferredOut = getPatientsTransferredOut();
 
-    return cdAbc;
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameters(getParameters());
+
+    String yearBefore =
+        "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore-12m},location=${location}";
+    cd.addSearch("startedArt", map(startedArt, yearBefore));
+
+    String less12m = "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore},location=${location}";
+    cd.addSearch("transferredOut", map(transferredOut, less12m));
+    cd.setCompositionString("startedArt NOT transferredOut");
+
+    return cd;
   }
 
   /** Indicator E - Number of patients who is in the 1st line treatment during the cohort month */
   public CohortDefinition getE() {
-    CohortDefinition preTarv = getA();
-    CohortDefinition transferredIn = getB();
-    CohortDefinition transferredOut = getC();
-    CohortDefinition suspended = getI();
-    CohortDefinition abandoned = getJ();
-    CohortDefinition dead = getL();
+
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    CohortDefinition transferredOut = getPatientsTransferredOut();
+    CohortDefinition indicatorI = getI();
+    CohortDefinition indicatorJ = getJ();
+    CohortDefinition indicatorL = getL();
     CohortDefinition lastFirstTherapeuticLine =
         getPatientsWithLastTherapeuticLineEqualsToFirstLineOrWithoutInformation();
     CompositionCohortDefinition wrapper = new CompositionCohortDefinition();
     wrapper.setParameters(getParameters());
-    wrapper.addSearch("preTarv", mapStraightThrough(preTarv));
-    wrapper.addSearch("transferredIn", mapStraightThrough(transferredIn));
-    wrapper.addSearch("transferredOut", mapStraightThrough(transferredOut));
-    wrapper.addSearch("suspended", mapStraightThrough(suspended));
-    wrapper.addSearch("abandoned", mapStraightThrough(abandoned));
-    wrapper.addSearch("dead", mapStraightThrough(dead));
+
+    String yearBefore =
+        "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore-12m},location=${location}";
+    wrapper.addSearch("startedArt", map(startedArt, yearBefore));
+
+    String less12m = "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore},location=${location}";
+    wrapper.addSearch("transferredOut", map(transferredOut, less12m));
+
+    wrapper.addSearch("I", mapStraightThrough(indicatorI));
+    wrapper.addSearch("J", mapStraightThrough(indicatorJ));
+    wrapper.addSearch("L", mapStraightThrough(indicatorL));
     wrapper.addSearch("lastFirstTherapeuticLine", mapStraightThrough(lastFirstTherapeuticLine));
 
     wrapper.setCompositionString(
-        "((preTarv OR transferredIn) NOT (transferredOut OR suspended OR abandoned OR dead)) AND lastFirstTherapeuticLine ");
+        "((startedArt NOT transferredOut) NOT (I OR J OR L)) AND lastFirstTherapeuticLine ");
     return wrapper;
   }
 
@@ -158,9 +157,8 @@ public class ResumoTrimestralCohortQueries {
 
   /** Indicator G - Number of patients who is in the 2nd line treatment during the cohort month */
   public CohortDefinition getG() {
-    CohortDefinition indicatorA = getA();
-    CohortDefinition indicatorB = getB();
-    CohortDefinition indicatorC = getC();
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    CohortDefinition transferredOut = getPatientsTransferredOut();
     CohortDefinition indicatorI = getI();
     CohortDefinition indicatorJ = getJ();
     CohortDefinition indicatorL = getL();
@@ -169,9 +167,14 @@ public class ResumoTrimestralCohortQueries {
 
     CompositionCohortDefinition comp = new CompositionCohortDefinition();
     comp.setParameters(getParameters());
-    comp.addSearch("A", mapStraightThrough(indicatorA));
-    comp.addSearch("B", mapStraightThrough(indicatorB));
-    comp.addSearch("C", mapStraightThrough(indicatorC));
+
+    String yearBefore =
+        "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore-12m},location=${location}";
+    comp.addSearch("startedArt", map(startedArt, yearBefore));
+
+    String less12m = "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore},location=${location}";
+    comp.addSearch("transferredOut", map(transferredOut, less12m));
+
     comp.addSearch("I", mapStraightThrough(indicatorI));
     comp.addSearch("J", mapStraightThrough(indicatorJ));
     comp.addSearch("L", mapStraightThrough(indicatorL));
@@ -179,7 +182,7 @@ public class ResumoTrimestralCohortQueries {
         "lastSecondTherapeuticLine",
         map(lastSecondTherapeuticLine, "endDate=${onOrBefore},location=${location}"));
     comp.setCompositionString(
-        "((A OR B) AND NOT (C OR I OR J OR L)) AND lastSecondTherapeuticLine");
+        "((startedArt NOT transferredOut) AND NOT (I OR J OR L)) AND lastSecondTherapeuticLine");
     return comp;
   }
 
@@ -201,9 +204,8 @@ public class ResumoTrimestralCohortQueries {
 
   /** Indicator I - Number of Suspended patients in the actual cohort */
   public CohortDefinition getI() {
-    CohortDefinition indicatorA = getA();
-    CohortDefinition indicatorB = getB();
-    CohortDefinition indicatorC = getC();
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    CohortDefinition transferredOut = getPatientsTransferredOut();
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("Number of patients with ART suspension during the current month");
@@ -224,14 +226,17 @@ public class ResumoTrimestralCohortQueries {
     CompositionCohortDefinition comp = new CompositionCohortDefinition();
     comp.setName("I indicator - Suspended Patients");
     comp.setParameters(getParameters());
-    comp.addSearch("A", mapStraightThrough(indicatorA));
-    comp.addSearch("B", mapStraightThrough(indicatorB));
-    comp.addSearch("C", mapStraightThrough(indicatorC));
+    String yearBefore =
+        "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore-12m},location=${location}";
+    comp.addSearch("startedArt", map(startedArt, yearBefore));
 
     String less12m = "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore},location=${location}";
+    comp.addSearch("transferredOut", map(transferredOut, less12m));
+
     comp.addSearch("Suspended", map(sqlCohortDefinition, less12m));
 
-    comp.setCompositionString("((A OR B) AND NOT C) AND Suspended");
+    // comp.setCompositionString("((A OR B) AND NOT C) AND Suspended");
+    comp.setCompositionString("(startedArt NOT transferredOut) AND Suspended");
     return comp;
   }
 
@@ -239,15 +244,24 @@ public class ResumoTrimestralCohortQueries {
   public CohortDefinition getJ() {
     CohortDefinition abandoned =
         resumoMensalCohortQueries.getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7();
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    CohortDefinition transferredOut = getPatientsTransferredOut();
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setParameters(getParameters());
-    cd.addSearch("A", mapStraightThrough(getA()));
-    cd.addSearch("B", mapStraightThrough(getB()));
+
+    String yearBefore =
+        "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore-12m},location=${location}";
+    cd.addSearch("startedArt", map(startedArt, yearBefore));
+
+    String less12m = "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore},location=${location}";
+    cd.addSearch("transferredOut", map(transferredOut, less12m));
+
     cd.addSearch("abandoned", map(abandoned, "date=${onOrBefore},location=${location}"));
-    cd.addSearch("C", mapStraightThrough(getC()));
     cd.addSearch("I", mapStraightThrough(getI()));
     cd.addSearch("L", mapStraightThrough(getL()));
-    cd.setCompositionString("(A OR B) AND abandoned NOT (C OR I OR L)");
+    // cd.setCompositionString("(A OR B) AND abandoned NOT (C OR I OR L)");
+    cd.setCompositionString("(startedArt NOT transferredOut) AND abandoned NOT (I OR L)");
+
     return cd;
   }
 
@@ -273,17 +287,18 @@ public class ResumoTrimestralCohortQueries {
   /** Indicator L - Number of Deceased patients in the actual cohort */
   public CohortDefinition getL() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition cohortA = getA();
-    CohortDefinition cohortB = getB();
-    CohortDefinition cohortC = getC();
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    CohortDefinition transferredOut = getPatientsTransferredOut();
     CohortDefinition dead = getDeceasedPatients();
     cd.setParameters(getParameters());
-    cd.addSearch("A", mapStraightThrough(cohortA));
-    cd.addSearch("B", mapStraightThrough(cohortB));
-    cd.addSearch("C", mapStraightThrough(cohortC));
+    String yearBefore =
+        "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore-12m},location=${location}";
+    cd.addSearch("startedArt", map(startedArt, yearBefore));
+
     String less12m = "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore},location=${location}";
+    cd.addSearch("transferredOut", map(transferredOut, less12m));
     cd.addSearch("dead", map(dead, less12m));
-    cd.setCompositionString("((A OR B) AND NOT C) AND dead");
+    cd.setCompositionString("(startedArt NOT transferredOut) AND dead");
     return cd;
   }
 
