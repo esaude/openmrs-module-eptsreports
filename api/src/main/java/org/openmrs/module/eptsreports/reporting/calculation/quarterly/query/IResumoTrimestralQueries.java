@@ -4,26 +4,29 @@ public interface IResumoTrimestralQueries {
 
   class QUERY {
 
-    public static final String findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod =
-        "select minState.patient_id from  ("
-            + "SELECT p.patient_id, pg.patient_program_id, MIN(ps.start_date) as minStateDate  FROM patient p  "
-            + "inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "WHERE pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and location_id=:location  and ps.start_date <= :endDate "
-            + "GROUP BY pg.patient_program_id) minState "
-            + "inner join patient_state ps on ps.patient_program_id=minState.patient_program_id "
-            + "where ps.start_date=minState.minStateDate and ps.state=29 and ps.voided=0 ";
+    public static final String findPatientsWhoWhereMarkedAsTransferreInByMinTransferredDate =
+        "select patient_id from(        "
+            + "	select patient_id, dataTransfer from( "
+            + "		select transferredIn.patient_id, min(transferredIn.minDate) dataTransfer from ( "
+            + "				select minState.patient_id, minState.minDate from  (                          "
+            + "   			select p.patient_id, pg.patient_program_id, MIN(ps.start_date) as minDate  FROM patient p   "
+            + "           		inner join patient_program pg on p.patient_id=pg.patient_id						"
+            + "   				inner join patient_state ps on pg.patient_program_id=ps.patient_program_id   	"
+            + "   			where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and location_id=:location  and ps.start_date <= :endDate	"
+            + "   			group by pg.patient_program_id) minState											    "
+            + "   			inner join patient_state ps on ps.patient_program_id=minState.patient_program_id	    "
+            + "   			where ps.start_date=minState.minDate and ps.state=29 and ps.voided=0				    "
+            + "		union 																							"
+            + "		select tr.patient_id,minDate from(                  										    "
+            + "  			select p.patient_id, min(obsData.value_datetime) as minDate from patient p				"
+            + "  				inner join encounter e on p.patient_id=e.patient_id									"
+            + "  				inner join obs obsTrans on e.encounter_id=obsTrans.encounter_id and obsTrans.voided=0 and obsTrans.concept_id=1369 and obsTrans.value_coded=1065	"
+            + "  				inner join obs obsTarv on e.encounter_id=obsTarv.encounter_id and obsTarv.voided=0 and obsTarv.concept_id=6300 and obsTarv.value_coded=6276	"
+            + "  				inner join obs obsData on e.encounter_id=obsData.encounter_id and obsData.voided=0 and obsData.concept_id=23891								"
+            + "  			where p.voided=0 and e.voided=0 and e.encounter_type=53 and obsData.value_datetime <= :endDate and e.location_id=:location group by p.patient_id	"
+            + "  			) tr group by tr.patient_id ) transferredIn group by transferredIn.patient_id		"
+            + "	)result where result.dataTransfer between :startDate -interval 1 year and :endDate) d ";
 
-    public static final String
-        findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard =
-            "SELECT tr.patient_id from  ("
-                + "SELECT p.patient_id, MIN(obsData.value_datetime) from patient p  "
-                + "INNER JOIN encounter e ON p.patient_id=e.patient_id  "
-                + "INNER JOIN obs obsTrans ON e.encounter_id=obsTrans.encounter_id AND obsTrans.voided=0 AND obsTrans.concept_id=1369 AND obsTrans.value_coded=1065 "
-                + "INNER JOIN obs obsTarv ON e.encounter_id=obsTarv.encounter_id AND obsTarv.voided=0 AND obsTarv.concept_id=6300 AND obsTarv.value_coded=6276 "
-                + "INNER JOIN obs obsData ON e.encounter_id=obsData.encounter_id AND obsData.voided=0 AND obsData.concept_id=23891 "
-                + "WHERE p.voided=0 AND e.voided=0 AND e.encounter_type=53 AND obsData.value_datetime <=:endDate AND e.location_id=:location GROUP BY p.patient_id "
-                + ") tr GROUP BY tr.patient_id ";
     public static final String findPatientsWhoAreNewlyEnrolledOnART =
         "SELECT patient_id FROM "
             + "(SELECT patient_id, MIN(art_start_date) art_start_date FROM "
