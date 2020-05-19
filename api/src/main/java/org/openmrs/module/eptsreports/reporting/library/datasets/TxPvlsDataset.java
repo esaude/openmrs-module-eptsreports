@@ -41,7 +41,7 @@ public class TxPvlsDataset extends BaseDataSet {
 
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-    String mappingsKp = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
+    String mappingsKp = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
     dsd.setName("TxPvls");
     dsd.addParameters(getParameters());
 

@@ -53,11 +53,12 @@ public class TxCurrDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
 
-    String dimMappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
+    String keyPopMappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+    String dispMappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
     CohortDefinitionDimension keyPopsDimension = eptsCommonDimension.getKeyPopsDimension();
     CohortDefinitionDimension qtyDimension = eptsCommonDimension.getDispensingQuantityDimension();
-    dataSetDefinition.addDimension("keypop", EptsReportUtils.map(keyPopsDimension, dimMappings));
-    dataSetDefinition.addDimension("disp", EptsReportUtils.map(qtyDimension, dimMappings));
+    dataSetDefinition.addDimension("keypop", EptsReportUtils.map(keyPopsDimension, keyPopMappings));
+    dataSetDefinition.addDimension("disp", EptsReportUtils.map(qtyDimension, dispMappings));
 
     CohortDefinition txCurrCompositionCohort =
         txCurrCohortQueries.getTxCurrCompositionCohort("compositionCohort", currentSpec);
