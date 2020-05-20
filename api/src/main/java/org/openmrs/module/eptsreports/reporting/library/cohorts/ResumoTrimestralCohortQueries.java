@@ -235,7 +235,6 @@ public class ResumoTrimestralCohortQueries {
 
     comp.addSearch("Suspended", map(sqlCohortDefinition, less12m));
 
-    // comp.setCompositionString("((A OR B) AND NOT C) AND Suspended");
     comp.setCompositionString("(startedArt NOT transferredOut) AND Suspended");
     return comp;
   }
@@ -259,7 +258,6 @@ public class ResumoTrimestralCohortQueries {
     cd.addSearch("abandoned", map(abandoned, "date=${onOrBefore},location=${location}"));
     cd.addSearch("I", mapStraightThrough(getI()));
     cd.addSearch("L", mapStraightThrough(getL()));
-    // cd.setCompositionString("(A OR B) AND abandoned NOT (C OR I OR L)");
     cd.setCompositionString("(startedArt NOT transferredOut) AND abandoned NOT (I OR L)");
 
     return cd;
