@@ -53,7 +53,7 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
       } else if (concept.equals(hivMetadata.getSexWorkerConcept())) {
         return SEX_WORKER;
       }
-      throw new IllegalArgumentException();
+      return null;
     }
 
     public static KeyPop of(PersonAttribute personAttribute) {
@@ -70,8 +70,8 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
         case "TS":
           return SEX_WORKER;
         default:
-          throw new IllegalArgumentException();
       }
+      return null;
     }
   }
 
@@ -117,12 +117,11 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
 
     for (Integer pId : cohort) {
       boolean equals = false;
-      try {
-        equals =
-            type.equals(
-                getAssignedKeyPop(pId, adultoSeguimento, apssPrevencaoPositiva, personAttribute));
-      } catch (Exception e) {
-        // do nothing
+
+      KeyPop patientKeyPop =
+          getAssignedKeyPop(pId, adultoSeguimento, apssPrevencaoPositiva, personAttribute);
+      if (type != null && type.equals(patientKeyPop)) {
+        equals = true;
       }
       resultMap.put(pId, new BooleanResult(equals, this));
     }
