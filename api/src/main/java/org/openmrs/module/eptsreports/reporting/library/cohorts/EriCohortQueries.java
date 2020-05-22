@@ -13,7 +13,6 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -26,11 +25,9 @@ public class EriCohortQueries {
 
   @Autowired private TxNewCohortQueries txNewCohortQueries;
 
-  @Autowired private HivMetadata hivMetadata;
-
   @Autowired private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private HivCohortQueries hivCohortQueries;
+  @Autowired private CommonCohortQueries commonCohortQueries;
 
   /**
    * Get all patients who initiated ART 2 months from ART initiation less transfer ins return the
@@ -47,7 +44,7 @@ public class EriCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition startedArtOnPeriod = genericCohortQueries.getStartedArtOnPeriod(false, true);
-    CohortDefinition transferIns = hivCohortQueries.getPatientsTransferredFromOtherHealthFacility();
+    CohortDefinition transferIns = commonCohortQueries.getMohTransferredInPatients();
 
     String mappings =
         "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}";
