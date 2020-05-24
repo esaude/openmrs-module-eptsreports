@@ -133,11 +133,11 @@ public class TxPvlsDataset extends BaseDataSet {
     // Routine for Adults & Children denominator KP
     addRow(
         dsd,
-        "KP",
-        "Key population patients and are on routine and target",
+        "KPD",
+        "Key population patients and are on routine and target Denominator",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Key population patients and are on routine and target",
+                "Key population patients and are on routine and target Denominator",
                 EptsReportUtils.map(
                     txPvls.getPatientsWithViralLoadResultsAndOnArtForMoreThan3Months(), mappings)),
             mappings),
@@ -210,7 +210,7 @@ public class TxPvlsDataset extends BaseDataSet {
     // Routine for Adults & Children Numerator KP
     addRow(
         dsd,
-        "KP",
+        "KPN",
         "Key population patients and are on routine and target Numerator",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
