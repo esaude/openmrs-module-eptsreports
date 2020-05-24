@@ -42,7 +42,7 @@ public class TxNewCohortQueriesTest extends DefinitionsTest {
 
   @Override
   protected Location getLocation() {
-    return Context.getLocationService().getLocation(1);
+    return Context.getLocationService().getLocation(244);
   }
 
   @Override

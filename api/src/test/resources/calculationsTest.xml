@@ -8,6 +8,20 @@
 
 <dataset>
 	<!-- TODO rename file to metadata, keep all metadata here -->
+
+
+	<concept concept_id="1706" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2012-02-29 09:50:50" changed_by="1" date_changed="2012-02-29 10:13:25" uuid="e1de1cf6-1d5f-11e0-b929-000c29ad1d07" />
+	<global_property property="eptsreports.transferOutToAnotherFacilityConceptUuid" property_value="e1de1cf6-1d5f-11e0-b929-000c29ad1d07" description="UUID for the TRANSFERIDO PARA concept" uuid="0b156ca0-fc27-4efb-76b2-1b30p0278b2e" />
+	<concept_name concept_id="1706" name="TRANSFERRED OUT TO ANOTHER FACILITY" locale="en" creator="1" date_created="2012-02-29 09:50:50" concept_name_id="1706" voided="0" uuid="11bda988-b5f5-439c-83fe-c8f3fd296878" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
+
+
+	<concept concept_id="23891" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2012-02-29 09:50:50" changed_by="1" date_changed="2012-02-29 10:13:25" uuid="68d65d0c-8fee-456b-8e95-caed990351e1" />
+
+	<global_property property="eptsreports.dateOfMasterCardFileOpeningConceptUuid" property_value="68d65d0c-8fee-456b-8e95-caed990351e1" description="Master Card File Open Dates Concept" uuid="0b156ca0-fc27-4efb-86b2-1b30p0278b2e" />
+
+	<concept concept_id="6275" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2012-02-29 09:50:50" changed_by="1" date_changed="2012-02-29 10:13:25" uuid="44f812e8-c4c0-40cd-aef3-6b1ef76d43e1" />
+	<concept_name concept_id="6275" name="PRE-TARV" locale="pt" creator="1" date_created="2012-02-29 09:50:50" concept_name_id="7181" voided="0" uuid="11bda988-b5f5-439c-83fe-c8f3fd256878" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
+
 	<concept concept_id="7777001" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1d6247e-1d5f-11e0-b929-000c29ad1d07"/>
 	<concept_name concept_id="7777001" name="Viral Load" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_id="5777001" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777001"/>
 	<concept_numeric concept_id="7777001" hi_normal="1497.0" low_absolute="40.0" low_critical="75.0" hi_critical="500" hi_absolute="1600" units="cells/mmL" precise="1"/>
@@ -216,6 +230,10 @@
 
 	<program_workflow_state program_workflow_state_id="29" program_workflow_id="2" concept_id="7777004" initial="1" terminal="0" creator="1" date_created="2013-07-24 11:45:49" retired="0" />
 
+	<program_workflow_state program_workflow_state_id="7" program_workflow_id="2" concept_id="1706" initial="0" terminal="0" creator="1" date_created="2012-02-29 10:20:45" retired="0" changed_by="1" date_changed="2013-07-24 11:45:49" uuid="9f2f86e9-303c-4b98-a6ae-37e8806a6f47" />
+	<concept_name concept_id="1706" name="TRANSFERRED OUT TO ANOTHER FACILITY" locale="en" creator="1" date_created="2008-10-25 14:58:24" concept_name_id="3139" voided="0" uuid="e24e2a8c-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
+	<concept concept_id="1706" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2008-10-25 14:58:24" changed_by="1" date_changed="2018-10-08 12:04:33" uuid="e1de1cf6-1d5f-11e0-b929-000c29ad1d07" />
+
 	<encounter_type encounter_type_id="6777001" name="Child Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777001"/>
 	<encounter_type encounter_type_id="6777002" name="Adult Followup" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777002"/>
 	<encounter_type encounter_type_id="6777003" name="ARV Pharmacia" creator="1" date_created="2019-01-29 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d6777003"/>
@@ -290,5 +308,6 @@
 	<global_property property="eptsreports.artPickupConceptUuid" property_value="e07fb227-7a5a-4edf-93e8-7633c9fd1ea0" description="UUID for the LEVANTOU ARV concept" uuid="5a7969d8-1a3f-4e80-9dff-d63a56bc2329" />
 	<global_property property="eptsreports.apssPrevencaoPositivaSeguimentoEncounterTypeUuid" property_value="f4aa93fe-8737-4f70-9532-542b768459d7" description="UUID for the APSS: PREVENÇÃO POSITIVA - SEGUIMENTO encounter type" uuid="50729743-4196-4dfa-b43a-accefa6eb937" />
 	<global_property property="eptsreports.identificadorDefinidoLocalment01Uuid" property_value="c89c90eb-5b03-4899-ab9f-06fecd123511" />
+	<global_property property="eptsreports.preTarvConceptUuid" property_value="44f812e8-c4c0-40cd-aef3-6b1ef76d43e1" description="UUID for PRE-TARV concept" uuid="0b156ca0-fc27-4efb-86b2-1b30e0278b2e" />
 
 </dataset>
