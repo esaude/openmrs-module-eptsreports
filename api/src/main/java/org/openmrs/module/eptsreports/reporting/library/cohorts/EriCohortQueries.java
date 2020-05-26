@@ -33,7 +33,7 @@ public class EriCohortQueries {
    * Get all patients who initiated ART 2 months from ART initiation less transfer ins return the
    * patient who initiated ART A and B
    *
-   * @retrun CohortDefinition
+   * @return CohortDefinition
    */
   public CohortDefinition getAllPatientsWhoInitiatedArt() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -52,6 +52,36 @@ public class EriCohortQueries {
 
     String transferInMappings =
         "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}";
+    cd.addSearch("transferIns", EptsReportUtils.map(transferIns, transferInMappings));
+
+    cd.setCompositionString("initiatedArt AND NOT transferIns");
+
+    return cd;
+  }
+
+  /**
+   * Get all patients who initiated ART 2 months from ART initiation less transferredIn between
+   * cohort startDate and reportingEndDate
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getAllPatientsWhoInitiatedArtNOTTransferredInBeforeReportingEndDate() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("All patients who initiated ART less transfer ins");
+    cd.addParameter(new Parameter("cohortStartDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("cohortEndDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("reportingEndDate", "Reporting End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition startedArtOnPeriod = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    CohortDefinition transferIns = commonCohortQueries.getMohTransferredInPatients();
+
+    String mappings =
+        "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}";
+    cd.addSearch("initiatedArt", EptsReportUtils.map(startedArtOnPeriod, mappings));
+
+    String transferInMappings =
+        "onOrAfter=${cohortStartDate},onOrBefore=${reportingEndDate},location=${location}";
     cd.addSearch("transferIns", EptsReportUtils.map(transferIns, transferInMappings));
 
     cd.setCompositionString("initiatedArt AND NOT transferIns");
