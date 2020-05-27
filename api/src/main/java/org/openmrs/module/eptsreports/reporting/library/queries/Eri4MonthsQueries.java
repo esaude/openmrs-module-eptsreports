@@ -22,7 +22,6 @@ public class Eri4MonthsQueries {
           int startDrugsConcept,
           int historicalDrugsConcept,
           int artProgram,
-          int transferFromStates,
           int artPickupConcept,
           int yesConcept,
           int artPickupDateConcept,
@@ -92,7 +91,7 @@ public class Eri4MonthsQueries {
             + "                        GROUP  BY p.patient_id "
             + "                        UNION "
             + "                        SELECT e.patient_id, "
-            + "                               Min(e.encounter_datetime) AS data_inicio"
+            + "                               Min(pickupdate.value_datetime) AS data_inicio"
             + "                        FROM   patient p "
             + "                               JOIN encounter e "
             + "                                 ON p.patient_id = e.patient_id "
@@ -109,38 +108,31 @@ public class Eri4MonthsQueries {
             + "                               AND pickupdate.value_datetime <= :endDate "
             + "                               AND e.encounter_type = %d "
             + "                               AND e.voided = 0 "
-            + "                               AND e.location_id = :location) inicio "
+            + "                               AND e.location_id = :location"
+            + "                          GROUP  BY e.patient_id ) inicio "
             + "                GROUP  BY patient_id) inicio1 "
             + "        WHERE  data_inicio BETWEEN :startDate AND :endDate) inicio_real "
             + "       INNER JOIN encounter e "
             + "               ON e.patient_id = inicio_real.patient_id "
+            + "       INNER JOIN obs o "
+            + "               ON e.encounter_id = o.encounter_id "
             + "WHERE  e.voided = 0 "
-            + "       AND e.encounter_type IN( %d, %d, %d ) "
+            + "       AND o.voided = 0 "
             + "       AND e.location_id = :location "
+            + "       AND ((e.encounter_type IN( %d, %d, %d ) "
             + "       AND e.encounter_datetime BETWEEN Date_add(inicio_real.data_inicio, "
             + "                                        INTERVAL 61 day) "
             + "                                        AND "
             + "                                            Date_add( "
             + "                                            inicio_real.data_inicio, INTERVAL "
-            + "                                            120 day) "
-            + "       AND inicio_real.patient_id NOT IN (SELECT pg.patient_id "
-            + "                                          FROM   patient p "
-            + "                                                 INNER JOIN patient_program pg "
-            + "                                                         ON "
-            + "                                                 p.patient_id = pg.patient_id "
-            + "                                                 INNER JOIN patient_state ps "
-            + "                                                         ON "
-            + "           pg.patient_program_id = ps.patient_program_id "
-            + "                                          WHERE  pg.voided = 0 "
-            + "                                                 AND ps.voided = 0 "
-            + "                                                 AND p.voided = 0 "
-            + "                                                 AND pg.program_id = %d "
-            + "                                                 AND ps.state = %d "
-            + "                                                 AND "
-            + "                                         ps.start_date = pg.date_enrolled "
-            + "                                                 AND ps.start_date BETWEEN "
-            + "                                                     :startDate AND :endDate "
-            + "                                                 AND location_id = :location) "
+            + "                                            120 day))"
+            + "       OR (e.encounter_type = %d "
+            + "       AND o.value_datetime BETWEEN Date_add(inicio_real.data_inicio, "
+            + "                                        INTERVAL 61 day) "
+            + "                                        AND "
+            + "                                            Date_add( "
+            + "                                            inicio_real.data_inicio, INTERVAL "
+            + "                                            120 day)))"
             + "GROUP  BY inicio_real.patient_id ";
 
     return String.format(
@@ -163,8 +155,7 @@ public class Eri4MonthsQueries {
         arvPharmaciaEncounter,
         arvAdultoSeguimentoEncounter,
         arvPediatriaSeguimentoEncounter,
-        artProgram,
-        transferFromStates);
+        mastercardDrugPickupEncounterType);
   }
 
   // TODO: harmonise with LTFU queries from TxCurr
