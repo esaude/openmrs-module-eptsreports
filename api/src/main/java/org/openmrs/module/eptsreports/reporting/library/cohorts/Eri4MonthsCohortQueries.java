@@ -157,12 +157,8 @@ public class Eri4MonthsCohortQueries {
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
-                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            hivCohortQueries.getPatientsTransferredOut(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
     cd.setCompositionString("(initiatedArt AND consultation) AND NOT (dead OR transfersOut)");
     return cd;
   }
@@ -208,8 +204,8 @@ public class Eri4MonthsCohortQueries {
   }
 
   /**
-   * Get patients who are alive and on treatment - probably all those who have been on ART for more
-   * than 3 months excluding the dead, transfers or suspended (A AND NOT B) AND C
+   * Get patients who are alive and not on treatment - probably all those who have been on ART for
+   * more than 3 months excluding the dead, transfers or suspended (A AND NOT B) AND C
    *
    * @return CohortDefinition
    */
@@ -238,12 +234,8 @@ public class Eri4MonthsCohortQueries {
     cd.addSearch(
         "transfersOut",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
-                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            hivCohortQueries.getPatientsTransferredOut(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
     cd.setCompositionString("initiatedArt AND NOT (consultation OR dead OR transfersOut)");
     return cd;
   }
