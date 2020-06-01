@@ -65,9 +65,12 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
           return DRUG_USER;
         case "Prisoner":
         case "RC":
+        case "REC":
           return PRISONER;
         case "CSW":
         case "TS":
+        case "MTS":
+        case "FSW":
           return SEX_WORKER;
         default:
       }
@@ -104,13 +107,12 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
     CalculationResultMap resultMap = new CalculationResultMap();
 
     Location location = (Location) context.getFromCache("location");
-    Date onOrAfter = (Date) context.getFromCache("onOrAfter");
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
 
     CalculationResultMap adultoSeguimento =
-        getAdultoSeguimento(cohort, context, location, onOrAfter, onOrBefore);
+        getAdultoSeguimento(cohort, context, location, onOrBefore);
     CalculationResultMap apssPrevencaoPositiva =
-        getApssPrevencaoPositiva(cohort, context, location, onOrAfter, onOrBefore);
+        getApssPrevencaoPositiva(cohort, context, location, onOrBefore);
     CalculationResultMap personAttribute = getPersonAttribute(cohort, context);
 
     KeyPop type = (KeyPop) parameterValues.get(TYPE);
@@ -200,7 +202,6 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
       Collection<Integer> cohort,
       PatientCalculationContext context,
       Location location,
-      Date startDate,
       Date endDate) {
     EPTSCalculationService eptsCalculationService =
         Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
@@ -209,14 +210,13 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
     encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
     Concept keyPop = hivMetadata.getKeyPopulationConcept();
     return eptsCalculationService.lastObs(
-        encounterTypes, keyPop, location, startDate, endDate, cohort, context);
+        encounterTypes, keyPop, location, null, endDate, cohort, context);
   }
 
   private CalculationResultMap getApssPrevencaoPositiva(
       Collection<Integer> cohort,
       PatientCalculationContext context,
       Location location,
-      Date startDate,
       Date endDate) {
     EPTSCalculationService eptsCalculationService =
         Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
@@ -225,6 +225,6 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
     encounterTypes.add(hivMetadata.getPrevencaoPositivaSeguimentoEncounterType());
     Concept keyPop = hivMetadata.getKeyPopulationConcept();
     return eptsCalculationService.lastObs(
-        encounterTypes, keyPop, location, startDate, endDate, cohort, context);
+        encounterTypes, keyPop, location, null, endDate, cohort, context);
   }
 }
