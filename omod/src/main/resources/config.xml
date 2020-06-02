@@ -1605,6 +1605,16 @@
 		</description>
 	</globalProperty>
 	
+		<!--person_attribute_type_id 24 -->
+	<globalProperty>
+		<property>eptsreports.personAttributeType24uuid</property>
+		<defaultValue>c89c90eb-5b03-4899-ab9f-06fecd123511</defaultValue>
+		<description>
+				UUID for person_attribute_type_id 24
+		</description>
+	</globalProperty>
+	
+	
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 

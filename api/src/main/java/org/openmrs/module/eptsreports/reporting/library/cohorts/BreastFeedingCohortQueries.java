@@ -2,9 +2,9 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
+
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
-import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -35,15 +35,7 @@ public class BreastFeedingCohortQueries {
                 BreastfeedingQueries.findPatientsWhoAreBreastfeeding()),
             "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
 
-    definition.addSearch(
-        "PREGNANT",
-        EptsReportUtils.map(
-            this.genericCohortQueries.generalSql(
-                "patientsWhoArePregnantInAPeriod",
-                PregnantQueries.findPatientsWhoArePregnantInAPeriod()),
-            "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
-
-    definition.setCompositionString("BREASTFEEDING NOT PREGNANT");
+    definition.setCompositionString("BREASTFEEDING");
 
     return definition;
   }
