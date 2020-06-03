@@ -1,6 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
-
 public class Eri4MonthsQueries {
 
   // TODO: harmonise with LTFU queries from TxCurr

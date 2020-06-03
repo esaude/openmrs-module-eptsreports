@@ -181,7 +181,7 @@ public class EptsCommonDimension {
         "IART",
         EptsReportUtils.map(
             eriCohortQueries.getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
 
     dim.addCohortDefinition(
         "AIT",
@@ -238,7 +238,7 @@ public class EptsCommonDimension {
         "IART",
         EptsReportUtils.map(
             eriCohortQueries.getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     dim.addCohortDefinition(
         "DNPUD",
         EptsReportUtils.map(

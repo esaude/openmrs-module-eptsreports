@@ -51,7 +51,7 @@ public class EriCohortQueries {
     cd.addSearch("initiatedArt", EptsReportUtils.map(startedArtOnPeriod, mappings));
 
     String transferInMappings =
-        "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}";
+        "onOrAfter=${cohortStartDate},onOrBefore=${reportingEndDate},location=${location}";
     cd.addSearch("transferIns", EptsReportUtils.map(transferIns, transferInMappings));
 
     cd.setCompositionString("initiatedArt AND NOT transferIns");
@@ -105,7 +105,7 @@ public class EriCohortQueries {
         "initiatedART",
         EptsReportUtils.map(
             getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
@@ -131,7 +131,7 @@ public class EriCohortQueries {
         "initiatedART",
         EptsReportUtils.map(
             getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
@@ -162,7 +162,7 @@ public class EriCohortQueries {
         "initiatedART",
         EptsReportUtils.map(
             getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "children",
         EptsReportUtils.map(
@@ -182,7 +182,7 @@ public class EriCohortQueries {
   }
 
   /**
-   * Get Adults (14+, excluding pregnant and breastfeeding women)
+   * Get Adults (15+, excluding pregnant and breastfeeding women)
    *
    * @return CohortDefinition
    */
@@ -197,7 +197,7 @@ public class EriCohortQueries {
         "initiatedART",
         EptsReportUtils.map(
             getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "adults",
         EptsReportUtils.map(

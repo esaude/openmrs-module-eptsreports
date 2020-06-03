@@ -77,7 +77,7 @@ public class Eri2MonthsCohortQueries {
         "initiatedArt",
         EptsReportUtils.map(
             eriCohortQueries.getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${startDate},cohortEndDate=${endDate},location=${location}"));
+            "cohortStartDate=${startDate},cohortEndDate=${endDate},reportingEndDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "pickedDrugs",
         EptsReportUtils.map(
@@ -103,7 +103,7 @@ public class Eri2MonthsCohortQueries {
         "initiatedArt",
         EptsReportUtils.map(
             eriCohortQueries.getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "pickedDrugs",
         EptsReportUtils.map(
@@ -180,7 +180,7 @@ public class Eri2MonthsCohortQueries {
         "initiatedArtAndNotTransferIns",
         EptsReportUtils.map(
             eriCohortQueries.getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
@@ -207,7 +207,7 @@ public class Eri2MonthsCohortQueries {
         "initiatedArtAndNotTransferIns",
         EptsReportUtils.map(
             eriCohortQueries.getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "suspendedTreatment",
         EptsReportUtils.map(
@@ -236,7 +236,7 @@ public class Eri2MonthsCohortQueries {
         "initiatedArtAndNotTransferIns",
         EptsReportUtils.map(
             eriCohortQueries.getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "transferredOut",
         EptsReportUtils.map(
