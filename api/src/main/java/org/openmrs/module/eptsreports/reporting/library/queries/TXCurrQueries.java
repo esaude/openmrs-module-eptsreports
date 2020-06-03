@@ -301,11 +301,22 @@ public class TXCurrQueries {
       int artDatePickup,
       int msterCardDrugPickupEncounterType,
       int numDays) {
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("returnVisitDateForArvDrugConcept", returnVisitDateForArvDrugConcept);
+    map.put("ARVPharmaciaEncounterType", ARVPharmaciaEncounterType);
+    map.put("returnVisitDateConcept", returnVisitDateConcept);
+    map.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
+    map.put("aRVPediatriaSeguimentoEncounterType", aRVPediatriaSeguimentoEncounterType);
+    map.put("artDatePickup", artDatePickup);
+    map.put("msterCardDrugPickupEncounterType", msterCardDrugPickupEncounterType);
+    map.put("numDays", numDays);
+
     String query =
         "SELECT final.patient_id  "
             + " from(  "
             + "     SELECT  "
-            + "         most_recent.patient_id, Date_add(Max(most_recent.value_datetime), interval %d day) final_encounter_date  "
+            + "         most_recent.patient_id, Date_add(Max(most_recent.value_datetime), interval ${numDays} day) final_encounter_date  "
             + "     FROM   (SELECT fila.patient_id, o.value_datetime from ( "
             + "                 SELECT enc.patient_id,  "
             + "                     Max(enc.encounter_datetime)  encounter_datetime "
@@ -317,21 +328,20 @@ public class TXCurrQueries {
             + "                 WHERE  pa.voided = 0  "
             + "                     AND enc.voided = 0  "
             + "                     AND obs.voided = 0  "
-            + "                     AND obs.concept_id =  %s  "
             + "                     AND obs.value_datetime IS NOT NULL  "
-            + "                     AND enc.encounter_type = %s  "
+            + "                     AND enc.encounter_type = ${ARVPharmaciaEncounterType}  "
             + "                     AND enc.location_id = :location  "
             + "                     AND enc.encounter_datetime <= :onOrBefore  "
             + "                 GROUP  BY pa.patient_id) fila  "
             + "             INNER JOIN encounter e on "
             + "                 e.patient_id = fila.patient_id and "
             + "                 e.encounter_datetime = fila.encounter_datetime and "
-            + "                 e.encounter_type = %s and "
+            + "                 e.encounter_type =  ${ARVPharmaciaEncounterType} and "
             + "                 e.location_id = :location and "
             + "                 e.voided = 0 "
             + "             INNER JOIN obs o on "
             + "                 o.encounter_id = e.encounter_id and "
-            + "                 o.concept_id = %s and "
+            + "                 o.concept_id = ${returnVisitDateForArvDrugConcept} and "
             + "                 o.voided = 0 "
             + "             UNION  "
             + "             SELECT ficha.patient_id, o.value_datetime FROM ("
@@ -345,21 +355,20 @@ public class TXCurrQueries {
             + "                 WHERE  pa.voided = 0  "
             + "                     AND enc.voided = 0  "
             + "                     AND obs.voided = 0  "
-            + "                     AND obs.concept_id = %s "
             + "                     AND obs.value_datetime IS NOT NULL  "
-            + "                     AND enc.encounter_type IN ( %s,%s )  "
+            + "                     AND enc.encounter_type IN ( ${adultoSeguimentoEncounterType},${aRVPediatriaSeguimentoEncounterType} )  "
             + "                     AND enc.location_id = :location  "
             + "                     AND enc.encounter_datetime <= :onOrBefore  "
             + "                 GROUP  BY pa.patient_id) ficha "
             + "             INNER JOIN encounter e on "
             + "                 e.patient_id = ficha.patient_id and "
             + "                 e.encounter_datetime = ficha.encounter_datetime and "
-            + "                 e.encounter_type IN (%s,%s) and "
+            + "                 e.encounter_type IN (${adultoSeguimentoEncounterType},${aRVPediatriaSeguimentoEncounterType}) and "
             + "                 e.location_id = :location and "
             + "                 e.voided = 0 "
             + "             INNER JOIN obs o on "
             + "                 o.encounter_id = e.encounter_id and "
-            + "                 o.concept_id = %s and "
+            + "                 o.concept_id = ${returnVisitDateConcept} and "
             + "                 o.voided = 0 "
             + "             UNION  "
             + "             SELECT enc.patient_id,  "
@@ -372,9 +381,9 @@ public class TXCurrQueries {
             + "             WHERE  pa.voided = 0  "
             + "                 AND enc.voided = 0  "
             + "                 AND obs.voided = 0  "
-            + "                 AND obs.concept_id = %s  "
+            + "                 AND obs.concept_id = ${artDatePickup}  "
             + "                 AND obs.value_datetime IS NOT NULL  "
-            + "                 AND enc.encounter_type = %s  "
+            + "                 AND enc.encounter_type = ${msterCardDrugPickupEncounterType}  "
             + "                 AND enc.location_id = :location  "
             + "                 AND obs.value_datetime <= :onOrBefore  "
             + "            GROUP  BY pa.patient_id  "
@@ -383,23 +392,7 @@ public class TXCurrQueries {
             + "    HAVING final_encounter_date < :onOrBefore  "
             + " ) final  "
             + " GROUP BY final.patient_id;";
-
-    return String.format(
-        query,
-        numDays,
-        returnVisitDateForArvDrugConcept,
-        ARVPharmaciaEncounterType,
-        ARVPharmaciaEncounterType,
-        returnVisitDateForArvDrugConcept,
-        returnVisitDateConcept,
-        adultoSeguimentoEncounterType,
-        aRVPediatriaSeguimentoEncounterType,
-        adultoSeguimentoEncounterType,
-        aRVPediatriaSeguimentoEncounterType,
-        returnVisitDateConcept,
-        artDatePickup,
-        msterCardDrugPickupEncounterType,
-        returnVisitDateConcept);
+    return new StringSubstitutor(map).replace(query);
   }
 
   public static String getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(
