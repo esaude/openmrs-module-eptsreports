@@ -92,6 +92,10 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
+  /**
+   * Number of weeks pregnant 1279
+   * @return
+   */
   public Concept getNumberOfWeeksPregnant() {
     String uuid =
         Context.getAdministrationService()
@@ -99,6 +103,10 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
+  /**
+   * Pregnancy due date  conceptId=1600
+   * @return
+   */
   public Concept getPregnancyDueDate() {
     String uuid =
         Context.getAdministrationService()

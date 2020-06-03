@@ -49,6 +49,11 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  /**
+   * Criterio para inicio de tarv
+   *  Concept Id = 6334
+   * @return
+   */
   public Concept getCriteriaForArtStart() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.criteriaForArtStartUuid");
@@ -758,6 +763,11 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   // Concept  1465
+
+  /**
+   *  Last Menstruation Date Concept_id = 1465
+   * @return
+   */
   public Concept getDateOfLastMenstruationConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -1002,7 +1012,11 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-  // concept_id = 6331
+
+  /**
+   * B+ concept = 6331
+   * @return
+   */
   public Concept getBpostiveConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.bPlusConceptUuid");
@@ -1198,6 +1212,10 @@ public class HivMetadata extends ProgramsMetadata {
     return getProgram(uuid);
   }
 
+  /**
+   * ETV ProgramId = 8
+   * @return
+   */
   public Program getPtvEtvProgram() {
     String uuid = Context.getAdministrationService().getGlobalProperty(gpPtvEtvProgramUuid);
     return getProgram(uuid);
