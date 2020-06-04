@@ -50,8 +50,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   * Criterio para inicio de tarv
-   *  Concept Id = 6334
+   * Criterio para inicio de tarv Concept Id = 6334
+   *
    * @return
    */
   public Concept getCriteriaForArtStart() {
@@ -765,7 +765,8 @@ public class HivMetadata extends ProgramsMetadata {
   // Concept  1465
 
   /**
-   *  Last Menstruation Date Concept_id = 1465
+   * Last Menstruation Date Concept_id = 1465
+   *
    * @return
    */
   public Concept getDateOfLastMenstruationConcept() {
@@ -1012,9 +1013,9 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-
   /**
    * B+ concept = 6331
+   *
    * @return
    */
   public Concept getBpostiveConcept() {
@@ -1214,6 +1215,7 @@ public class HivMetadata extends ProgramsMetadata {
 
   /**
    * ETV ProgramId = 8
+   *
    * @return
    */
   public Program getPtvEtvProgram() {

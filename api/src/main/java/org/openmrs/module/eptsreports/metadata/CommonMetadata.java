@@ -94,6 +94,7 @@ public class CommonMetadata extends Metadata {
 
   /**
    * Number of weeks pregnant 1279
+   *
    * @return
    */
   public Concept getNumberOfWeeksPregnant() {
@@ -104,7 +105,8 @@ public class CommonMetadata extends Metadata {
   }
 
   /**
-   * Pregnancy due date  conceptId=1600
+   * Pregnancy due date conceptId=1600
+   *
    * @return
    */
   public Concept getPregnancyDueDate() {

@@ -57,13 +57,13 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
     }
 
     public static KeyPop of(PersonAttribute personAttribute) {
-      switch (personAttribute.getValue()) {
+      switch (personAttribute.getValue().toUpperCase()) {
         case "MSM":
         case "HSH":
           return HOMOSEXUAL;
         case "PID":
           return DRUG_USER;
-        case "Prisoner":
+        case "PRISONER":
         case "RC":
         case "REC":
           return PRISONER;
