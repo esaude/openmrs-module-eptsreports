@@ -54,6 +54,8 @@ public class TxNewCohortQueries {
 
   @Autowired private CommonCohortQueries commonCohortQueries;
 
+  @Autowired private ResumoMensalCohortQueries resumoMensalCohortQueries;
+
   /**
    * PATIENTS WITH UPDATED DATE OF DEPARTURE IN THE ART SERVICE Are patients with date of delivery
    * updated in the tarv service. Note that the 'Start Date' and 'End Date' parameters refer to the
@@ -231,7 +233,9 @@ public class TxNewCohortQueries {
     txNewComposition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition startedART = genericCohorts.getStartedArtOnPeriod(false, true);
-    CohortDefinition transferredIn = commonCohortQueries.getMohTransferredInPatients();
+    CohortDefinition transferredIn =
+        resumoMensalCohortQueries
+            .getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2E();
 
     txNewComposition.getSearches().put("startedART", mapStraightThrough(startedART));
     txNewComposition.getSearches().put("transferredIn", mapStraightThrough(transferredIn));
