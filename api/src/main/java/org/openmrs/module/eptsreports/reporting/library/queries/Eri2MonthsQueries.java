@@ -197,7 +197,7 @@ public class Eri2MonthsQueries {
         + artPickupDateConcept
         + "   AND pickupdate.value_datetime IS NOT NULL   "
         + "   AND pickupdate.value_datetime BETWEEN :startDate AND DATE_ADD(:endDate,INTERVAL 33 DAY)   "
-        + "   ) AS first_real   "
+        + "   ) AS first_real ON inicio_real.patient_id = first_real.patient_id  "
         + "   INNER JOIN    "
         + "   (SELECT  "
         + "   e.patient_id, e.encounter_type, e.encounter_datetime AS second_visit   "
@@ -239,10 +239,9 @@ public class Eri2MonthsQueries {
         + "    AND pickupdate.value_datetime BETWEEN :startDate AND DATE_ADD(:endDate,INTERVAL 33 DAY)   "
         + "   ) AS second_real ON inicio_real.patient_id = second_real.patient_id   "
         + "   WHERE   "
-        + "   first_visit > inicio_real.data_inicio   "
+        + "   first_visit >= inicio_real.data_inicio   "
         + "   AND first_visit <= DATE_ADD(inicio_real.data_inicio,INTERVAL 33 DAY)  "
         + "   AND first_visit < second_visit  "
-        + "   AND second_visit > inicio_real.data_inicio    "
         + "   AND second_visit <= DATE_ADD(inicio_real.data_inicio,INTERVAL 33 DAY)   "
         + "   AND first_real.encounter_type = second_real.encounter_type   "
         + "   GROUP  BY inicio_real.patient_id ";
