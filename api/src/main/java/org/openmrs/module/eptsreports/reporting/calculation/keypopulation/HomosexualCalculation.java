@@ -13,7 +13,7 @@ public class HomosexualCalculation extends KeyPopulationCalculation {
   public void keyPopulation(
       final CalculationResultMap resultMap, final Integer patientId, final String value) {
 
-    if (value.equals("HSH") || value.equals("MSM") || value.equals("1377")) {
+    if (value.equalsIgnoreCase("HSH") || value.equalsIgnoreCase("MSM") || value.equals("1377")) {
       resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
     }
   }

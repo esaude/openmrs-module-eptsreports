@@ -13,7 +13,7 @@ public class DrugsUserCalculation extends KeyPopulationCalculation {
   public void keyPopulation(
       final CalculationResultMap resultMap, final Integer patientId, final String value) {
 
-    if (value.equals("PID") || value.equals("20454")) {
+    if (value.equalsIgnoreCase("PID") || value.equals("20454")) {
       resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
     }
   }

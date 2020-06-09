@@ -21,7 +21,7 @@ public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
 
-    final Location location = Context.getLocationService().getLocation(224);
+    final Location location = Context.getLocationService().getLocation(244);
     final Date startDate = DateUtil.getDateTime(2019, 10, 21);
     final Date endDate = DateUtil.getDateTime(2020, 1, 20);
 

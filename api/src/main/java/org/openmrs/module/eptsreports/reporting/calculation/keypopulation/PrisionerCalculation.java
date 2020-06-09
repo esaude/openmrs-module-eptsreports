@@ -13,9 +13,9 @@ public class PrisionerCalculation extends KeyPopulationCalculation {
   public void keyPopulation(
       final CalculationResultMap resultMap, final Integer patientId, final String value) {
 
-    if (value.equals("PRISONER")
-        || value.equals("REC")
-        || value.equals("RC")
+    if (value.equalsIgnoreCase("PRISONER")
+        || value.equalsIgnoreCase("REC")
+        || value.equalsIgnoreCase("RC")
         || value.equals("20426")) {
       resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
     }
