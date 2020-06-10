@@ -210,7 +210,7 @@ public class PregnantQueries {
             + "     ON max_pregnant.patient_id = max_breastfeeding.patient_id "
             + "     WHERE (max_pregnant.pregnancy_date Is NOT NULL AND max_pregnant.pregnancy_date >= max_breastfeeding.breastfeeding_date) "
             + "     OR (max_breastfeeding.breastfeeding_date Is NULL)";
- return query;
+    return query;
   }
 
   /** LACTANTES INSCRITAS NO SERVIÇO TARV */
