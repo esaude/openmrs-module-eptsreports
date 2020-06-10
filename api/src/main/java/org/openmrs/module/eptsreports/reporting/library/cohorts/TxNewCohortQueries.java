@@ -16,7 +16,6 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.openmrs.EncounterType;
@@ -25,15 +24,12 @@ import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
-import org.openmrs.module.reporting.common.SetComparator;
-import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -53,8 +49,6 @@ public class TxNewCohortQueries {
   @Autowired private HivCohortQueries hivCohortQueries;
 
   @Autowired private CommonCohortQueries commonCohortQueries;
-
-  @Autowired private ResumoMensalCohortQueries resumoMensalCohortQueries;
 
   /**
    * PATIENTS WITH UPDATED DATE OF DEPARTURE IN THE ART SERVICE Are patients with date of delivery
@@ -142,84 +136,28 @@ public class TxNewCohortQueries {
    *
    * @return CohortDefinition
    */
-  @DocumentedDefinition(value = "txNewBreastfeedingComposition")
   public CohortDefinition getTxNewBreastfeedingComposition() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setDescription("breastfeedingComposition");
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-
-    cd.addSearch("FEMININO", EptsReportUtils.map(genderCohorts.femaleCohort(), ""));
-
-    cd.addSearch(
-        "DATAPARTO",
-        EptsReportUtils.map(
-            getPatientsWithUpdatedDepartureInART(),
-            "value1=${onOrAfter},value2=${onOrBefore},locationList=${location}"));
-    cd.addSearch(
-        "INICIOLACTANTE",
-        EptsReportUtils.map(
-            genericCohorts.hasCodedObs(
-                hivMetadata.getCriteriaForArtStart(),
-                BaseObsCohortDefinition.TimeModifier.FIRST,
-                SetComparator.IN,
-                Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
-                Arrays.asList(commonMetadata.getBreastfeeding())),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
-    cd.addSearch(
-        "LACTANTEPROGRAMA",
-        EptsReportUtils.map(
-            getPatientsWhoGaveBirthWithinReportingPeriod(),
-            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
-    cd.addSearch(
-        "LACTANTE",
-        EptsReportUtils.map(
-            genericCohorts.hasCodedObs(
-                commonMetadata.getBreastfeeding(),
-                BaseObsCohortDefinition.TimeModifier.LAST,
-                SetComparator.IN,
-                Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
-                Arrays.asList(commonMetadata.getYesConcept())),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
-
-    CohortDefinition breastfeedingInMastercard = getBreastfeedingInMastercard();
-    cd.addSearch("MASTERCARD", mapStraightThrough(breastfeedingInMastercard));
-
-    String compositionString =
-        "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE OR MASTERCARD) AND FEMININO";
-
-    cd.setCompositionString(compositionString);
-    return cd;
-  }
-
-  private CohortDefinition getBreastfeedingInMastercard() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("breastfeedingInMastercard");
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-    String sql =
-        "SELECT p.patient_id "
-            + "FROM   patient p "
-            + "       JOIN encounter e "
-            + "         ON p.patient_id = e.patient_id "
-            + "       JOIN obs o "
-            + "         ON e.encounter_id = o.encounter_id "
-            + "WHERE  p.voided = 0 "
-            + "       AND e.voided = 0 "
-            + "       AND e.encounter_type = %d "
-            + "       AND e.location_id = :location "
-            + "       AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore "
-            + "       AND o.voided = 0 "
-            + "       AND o.concept_id = %d "
-            + "       AND o.value_coded = %d ";
+    cd.setName("patientsBreastfeedingEnrolledOnART");
+    cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setQuery(
-        String.format(
-            sql,
+        PregnantQueries.getBreastfeedingWhileOnArt(
+            commonMetadata.getBreastfeeding().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getPriorDeliveryDateConcept().getConceptId(),
+            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getCriteriaForArtStart().getConceptId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getBreastfeeding().getConceptId(),
-            hivMetadata.getYesConcept().getConceptId()));
+            hivMetadata.getPtvEtvProgram().getProgramId(),
+            hivMetadata.getPatientGaveBirthWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
+            commonMetadata.getPregnantConcept().getConceptId(),
+            hivMetadata.getNumberOfWeeksPregnant().getConceptId(),
+            hivMetadata.getBPlusConcept().getConceptId(),
+            hivMetadata.getDateOfLastMenstruationConcept().getConceptId()));
     return cd;
   }
 
@@ -237,9 +175,7 @@ public class TxNewCohortQueries {
     txNewComposition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition startedART = genericCohorts.getStartedArtOnPeriod(false, true);
-    CohortDefinition transferredIn =
-        resumoMensalCohortQueries
-            .getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2E();
+    CohortDefinition transferredIn = commonCohortQueries.getMohTransferredInPatients();
 
     txNewComposition.getSearches().put("startedART", mapStraightThrough(startedART));
     txNewComposition.getSearches().put("transferredIn", mapStraightThrough(transferredIn));
