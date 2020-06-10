@@ -101,7 +101,6 @@ public class TxNewCohortQueries {
     cd.setQuery(
         PregnantQueries.getPregnantWhileOnArt(
             commonMetadata.getPregnantConcept().getConceptId(),
-            hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getNumberOfWeeksPregnant().getConceptId(),
             hivMetadata.getPregnancyDueDate().getConceptId(),
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
@@ -110,7 +109,12 @@ public class TxNewCohortQueries {
             hivMetadata.getDateOfLastMenstruationConcept().getConceptId(),
             hivMetadata.getPtvEtvProgram().getProgramId(),
             hivMetadata.getCriteriaForArtStart().getConceptId(),
-            hivMetadata.getBPlusConcept().getConceptId()));
+            hivMetadata.getBPlusConcept().getConceptId(),
+            hivMetadata.getARVStartDateConcept().getConceptId(),
+            commonMetadata.getPriorDeliveryDateConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getBreastfeeding().getConceptId(),
+            hivMetadata.getPatientGaveBirthWorkflowState().getProgramWorkflowStateId()));
     return cd;
   }
 

@@ -17,90 +17,200 @@ public class PregnantQueries {
   /** GRAVIDAS INSCRITAS NO SERVIÇO TARV */
   public static String getPregnantWhileOnArt(
       int pregnantConcept,
-      int yesConcept,
       int weeksPregnantConcept,
-      int eddConcept,
-      int adultInitailEncounter,
+      int pregnancyDueDateConcept,
+      int adultInitialEncounter,
       int adultSegEncounter,
       int fichaResumo,
       int lastMenstrualPeriod,
       int etvProgram,
       int startARVCriteriaConcept,
-      int bPLusConcept) {
+      int bPLusConcept,
+      int historicalARTStartDate,
+      int deliveryDateConcept,
+      int yesConcept,
+      int breastFeedingConcept,
+      int gaveBirthPatientState) {
 
-    return "Select     p.patient_id"
-        + " from patient p"
-        + " inner join person pe on p.patient_id=pe.person_id"
-        + " inner join encounter e on p.patient_id=e.patient_id"
-        + " inner join obs o on e.encounter_id=o.encounter_id"
-        + " where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
-        + pregnantConcept
-        + " and value_coded="
-        + yesConcept
-        + " and e.encounter_type in ("
-        + adultInitailEncounter
-        + ","
-        + adultSegEncounter
-        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location and pe.gender='F' "
-        + " union"
-        + " Select     p.patient_id"
-        + " from patient p"
-        + " inner join person pe on p.patient_id=pe.person_id"
-        + " inner join encounter e on p.patient_id=e.patient_id"
-        + " inner join obs o on e.encounter_id=o.encounter_id"
-        + " where p.voided=0 and pe.voided=0 and e.voided=0 and o.voided=0 and concept_id="
-        + startARVCriteriaConcept
-        + " and value_coded="
-        + bPLusConcept
-        + " and e.encounter_type in ("
-        + adultInitailEncounter
-        + ","
-        + adultSegEncounter
-        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location and pe.gender='F' "
-        + " union"
-        + " Select p.patient_id"
-        + " from patient p"
-        + " inner join person pe on p.patient_id=pe.person_id"
-        + " inner join encounter e on p.patient_id=e.patient_id"
-        + " inner join obs o on e.encounter_id=o.encounter_id"
-        + " where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
-        + weeksPregnantConcept
-        + " and"
-        + " e.encounter_type in ("
-        + adultInitailEncounter
-        + ","
-        + adultSegEncounter
-        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location and pe.gender='F' "
-        + " union"
-        + " Select p.patient_id"
-        + " from patient p"
-        + " inner join person pe on p.patient_id=pe.person_id"
-        + " inner join encounter e on p.patient_id=e.patient_id"
-        + " inner join obs o on e.encounter_id=o.encounter_id"
-        + " where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
-        + eddConcept
-        + " and"
-        + " e.encounter_type in ("
-        + adultInitailEncounter
-        + ","
-        + adultSegEncounter
-        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location and pe.gender='F' "
-        + " union"
-        + " select pp.patient_id from patient_program pp"
-        + " inner join person pe on pp.patient_id=pe.person_id"
-        + " where pp.program_id="
-        + etvProgram
-        + " and pp.voided=0 and pp.date_enrolled between :startDate and :endDate and pp.location_id=:location and pe.gender='F' "
-        + "union "
-        + " SELECT p.patient_id FROM patient p "
-        + " inner join person pe on p.patient_id=pe.person_id "
-        + " inner join encounter e on p.patient_id=e.patient_id "
-        + " inner join obs o on e.encounter_id=o.encounter_id "
-        + "  where p.voided=0 and e.voided=0 and o.voided=0 and concept_id= "
-        + lastMenstrualPeriod
-        + " AND e.encounter_type IN ( "
-        + fichaResumo
-        + ") "
-        + " AND o.value_datetime BETWEEN :startDate AND :endDate ";
+    String query =
+        "Select max_pregnant.patient_id from "
+            + "(SELECT pregnant.patient_id, MAX(pregnant.pregnancy_date) AS pregnancy_date FROM "
+            + " (SELECT p.patient_id , MAX(e.encounter_datetime) AS pregnancy_date "
+            + "     FROM patient p "
+            + "     INNER JOIN person pe ON p.patient_id=pe.person_id "
+            + "     INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "     INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "     WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id=  "
+            + pregnantConcept
+            + "     AND value_coded= "
+            + yesConcept
+            + "     AND e.encounter_type in ("
+            + adultInitialEncounter
+            + ","
+            + adultSegEncounter
+            + ") AND e.encounter_datetime between :startDate AND :endDate AND e.location_id=:location AND pe.gender='F' GROUP BY p.patient_id "
+            + "     UNION "
+            + "     select p.patient_id, MAX(historical_date.value_datetime) as pregnancy_date FROM patient p "
+            + "     INNER JOIN person pe ON p.patient_id=pe.person_id "
+            + "     INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "     INNER JOIN obs pregnancy ON e.encounter_id=pregnancy.encounter_id "
+            + "     INNER JOIN obs historical_date ON e.encounter_id = historical_date.encounter_id "
+            + "     WHERE p.voided=0 AND e.voided=0 AND pregnancy.voided=0 AND pregnancy.concept_id= "
+            + pregnantConcept
+            + "     AND pregnancy.value_coded= "
+            + yesConcept
+            + "     AND historical_date.voided=0 AND historical_date.concept_id= "
+            + historicalARTStartDate
+            + "     AND historical_date.value_datetime IS NOT NULL "
+            + "     AND e.encounter_type = "
+            + fichaResumo
+            + " AND historical_date.value_datetime between :startDate AND :endDate AND e.location_id=:location AND pe.gender='F' GROUP BY p.patient_id "
+            + "     UNION "
+            + "     Select p.patient_id,  MAX(e.encounter_datetime) as pregnancy_date "
+            + "     FROM patient p "
+            + "     INNER JOIN person pe ON p.patient_id=pe.person_id "
+            + "     INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "     INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "     WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id= "
+            + weeksPregnantConcept
+            + "     and "
+            + "     e.encounter_type in ("
+            + adultInitialEncounter
+            + ","
+            + adultSegEncounter
+            + ") AND e.encounter_datetime between :startDate AND :endDate AND e.location_id=:location  AND pe.gender='F' GROUP BY p.patient_id "
+            + "     UNION "
+            + "     Select p.patient_id,  e.encounter_datetime as pregnancy_date "
+            + "     FROM patient p "
+            + "     INNER JOIN person pe ON p.patient_id=pe.person_id "
+            + "     INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "     INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "     WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id= "
+            + pregnancyDueDateConcept
+            + "     and "
+            + "     e.encounter_type in ("
+            + adultInitialEncounter
+            + ","
+            + adultSegEncounter
+            + ") AND e.encounter_datetime between :startDate AND :endDate AND e.location_id=:location AND pe.gender='F' GROUP BY p.patient_id "
+            + "     UNION "
+            + "     Select p.patient_id, MAX(e.encounter_datetime) as pregnancy_date "
+            + "     FROM patient p "
+            + "     INNER JOIN person pe ON p.patient_id=pe.person_id "
+            + "     INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "     INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "     WHERE p.voided=0 AND pe.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id= "
+            + startARVCriteriaConcept
+            + "     AND value_coded= "
+            + bPLusConcept
+            + "     AND e.encounter_type in ("
+            + adultInitialEncounter
+            + ","
+            + adultSegEncounter
+            + ") AND e.encounter_datetime between :startDate AND :endDate AND e.location_id=:location AND pe.gender='F' GROUP BY p.patient_id "
+            + "     UNION "
+            + "     select pp.patient_id,  MAX(pp.date_enrolled) as pregnancy_date "
+            + "     FROM patient_program pp "
+            + "     INNER JOIN person pe ON pp.patient_id=pe.person_id "
+            + "     WHERE pp.program_id= "
+            + etvProgram
+            + "     AND pp.voided=0 AND pp.date_enrolled between  :startDate AND :endDate AND pp.location_id=:location AND pe.gender='F' GROUP BY pp.patient_id "
+            + "     UNION "
+            + "     SELECT p.patient_id,  MAX(o.value_datetime) as pregnancy_date  FROM patient p "
+            + "     INNER JOIN person pe ON p.patient_id=pe.person_id "
+            + "     INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "     INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "      WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id= "
+            + lastMenstrualPeriod
+            + "     AND e.encounter_type = "
+            + adultSegEncounter
+            + "     AND o.value_datetime BETWEEN :startDate AND :endDate GROUP BY p.patient_id) as pregnant "
+            + "     GROUP BY patient_id) max_pregnant "
+            + "     LEFT JOIN "
+            + "     (SELECT breastfeeding.patient_id, max(breastfeeding.last_date) as breastfeeding_date FROM ( "
+            + "      SELECT p.patient_id, MAX(o.value_datetime) AS last_date "
+            + "      FROM patient p "
+            + "      INNER JOIN person pe ON p.patient_id=pe.person_id "
+            + "      INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "      INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "      WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id=  "
+            + deliveryDateConcept
+            + "      AND "
+            + "      e.encounter_type in ("
+            + adultInitialEncounter
+            + ","
+            + adultSegEncounter
+            + ") "
+            + "     AND o.value_datetime BETWEEN :startDate AND :endDate AND e.location_id=:location AND pe.gender='F' "
+            + "      GROUP BY p.patient_id "
+            + "      UNION "
+            + "     SELECT     p.patient_id, MAX(e.encounter_datetime) AS last_date "
+            + "      FROM patient p "
+            + "      INNER JOIN person pe ON p.patient_id=pe.person_id "
+            + "      INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "      INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "      WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND o.concept_id= "
+            + breastFeedingConcept
+            + "      AND o.value_coded=  "
+            + yesConcept
+            + "      AND e.encounter_type in ("
+            + adultInitialEncounter
+            + ","
+            + adultSegEncounter
+            + ") "
+            + "      AND e.encounter_datetime BETWEEN :startDate AND :endDate AND e.location_id=:location AND pe.gender='F' "
+            + "      GROUP BY p.patient_id "
+            + "      UNION "
+            + "      SELECT     p.patient_id, MAX(e.encounter_datetime) AS last_date "
+            + "      FROM patient p "
+            + "      INNER JOIN person pe ON p.patient_id=pe.person_id "
+            + "      INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "      INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "      WHERE p.voided=0 AND pe.voided=0 AND e.voided=0 AND o.voided=0 AND o.concept_id= "
+            + startARVCriteriaConcept
+            + "      AND o.value_coded= "
+            + breastFeedingConcept
+            + "      AND e.encounter_type in ("
+            + adultInitialEncounter
+            + ","
+            + adultSegEncounter
+            + ")"
+            + "      AND e.encounter_datetime BETWEEN :startDate AND :endDate AND e.location_id=:location AND pe.gender='F' "
+            + "      GROUP BY p.patient_id "
+            + "      UNION "
+            + "      SELECT pp.patient_id, pp.date_enrolled AS last_date "
+            + "      FROM patient_program pp "
+            + "      INNER JOIN person pe ON pp.patient_id=pe.person_id "
+            + "      INNER JOIN patient_state ps ON pp.patient_program_id=ps.patient_program_id "
+            + "      WHERE pp.program_id= "
+            + etvProgram
+            + "      AND ps.state= "
+            + gaveBirthPatientState
+            + "      AND pp.voided=0 AND pp.date_enrolled AND pp.date_enrolled BETWEEN :startDate AND :endDate AND pp.location_id=:location AND pe.gender='F' "
+            + "     UNION "
+            + "      SELECT p.patient_id, hist.value_datetime AS last_date "
+            + "      FROM patient p "
+            + "      INNER JOIN person pe ON p.patient_id=pe.person_id "
+            + "      INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "      INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "      INNER JOIN obs hist ON e.encounter_id=hist.encounter_id "
+            + "       WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND o.concept_id= "
+            + breastFeedingConcept
+            + "      AND o.value_coded= "
+            + yesConcept
+            + "      AND e.encounter_type = "
+            + fichaResumo
+            + "      AND hist.concept_id= "
+            + historicalARTStartDate
+            + "      AND hist.value_datetime IS NOT NULL "
+            + "      AND hist.value_datetime BETWEEN :startDate AND :endDate "
+            + "      GROUP BY p.patient_id "
+            + "      ) AS breastfeeding "
+            + "      GROUP BY patient_id) max_breastfeeding "
+            + "     ON max_pregnant.patient_id = max_breastfeeding.patient_id "
+            + "     WHERE (max_pregnant.pregnancy_date Is NOT NULL AND max_pregnant.pregnancy_date >= max_breastfeeding.breastfeeding_date) "
+            + "     OR (max_breastfeeding.breastfeeding_date Is NULL)";
+
+    return query;
   }
 }

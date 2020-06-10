@@ -1376,6 +1376,16 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.currentWHOHIVStageConceptUuid"));
   }
 
+  /**
+   * FETCH PREGNANCY CONCEPT ConceptId = 44
+   *
+   * @return
+   */
+  public Concept getPregnancyResponseConcept() {
+    return getConcept(
+        Context.getAdministrationService().getGlobalProperty("eptsreports.pregnancyConceptUuid"));
+  }
+
   // Concept 23818
   public Concept getReasonForRequestingViralLoadConcept() {
     return getConcept(
