@@ -177,7 +177,12 @@ public class Eri2MonthsQueries {
         + ")  "
         + "   AND e.encounter_datetime BETWEEN :startDate AND DATE_ADD(:endDate,INTERVAL 33 DAY)    "
         + "    UNION SELECT   "
-        + "    e.patient_id,  e.encounter_type, pickupdate.value_datetime AS first_visit   "
+        + "    e.patient_id,  CASE "
+        + " WHEN e.encounter_type ="
+        + mastercardDrugPickupEncounterType
+        + " THEN "
+        + arvPharmaciaEncounter
+        + " END AS encounter_type, pickupdate.value_datetime AS first_visit   "
         + "   FROM    "
         + " patient p   "
         + "   INNER JOIN encounter e ON e.patient_id = p.patient_id   "
@@ -200,7 +205,7 @@ public class Eri2MonthsQueries {
         + "   ) AS first_real ON inicio_real.patient_id = first_real.patient_id  "
         + "   INNER JOIN    "
         + "   (SELECT  "
-        + "   e.patient_id, e.encounter_type, e.encounter_datetime AS second_visit   "
+        + "   e.patient_id,  e.encounter_type, e.encounter_datetime AS second_visit   "
         + "   FROM    "
         + "   patient p   "
         + "   INNER JOIN encounter e ON e.patient_id = p.patient_id   "
@@ -217,7 +222,12 @@ public class Eri2MonthsQueries {
         + ")    "
         + "   AND e.encounter_datetime BETWEEN :startDate AND DATE_ADD(:endDate,INTERVAL 33 DAY)    "
         + "   UNION SELECT  "
-        + "   e.patient_id, e.encounter_type, pickupdate.value_datetime AS second_visit   "
+        + "   e.patient_id,  CASE "
+        + " WHEN e.encounter_type ="
+        + mastercardDrugPickupEncounterType
+        + " THEN "
+        + arvPharmaciaEncounter
+        + " END AS encounter_type, pickupdate.value_datetime AS second_visit   "
         + "   FROM    "
         + "   patient p   "
         + "   INNER JOIN encounter e ON e.patient_id = p.patient_id   "
