@@ -672,7 +672,63 @@
 			UUID for the REASON PATIENT MISSED VISIT concept
 		</description>
 	</globalProperty>
+	
+    <globalProperty>
+		<property>@MODULE_ID@.reasonForStoppedTakingArvDrugsDuringLast7Days</property>
+		<defaultValue>06ae2acc-ffcb-49da-9e3c-69bc1604282e</defaultValue>
+		<description>
+			UUID for the REASON FOR STOPPED TAKING ARV DRUGS DURING LAST 7 Days concept
+		</description>
+	</globalProperty>
 
+    <globalProperty>
+		<property>@MODULE_ID@.reasonForStoppedTakingArvDrugsDuringLastMonth</property>
+		<defaultValue>73e45941-601f-4fdd-9fe2-a730e3255f2f</defaultValue>
+		<description>
+			UUID for the REASON FOR STOPPED TAKING ARV DRUGS DURING LAST MONTH concept
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>@MODULE_ID@.mainReasonForDelayInTakingArv</property>
+		<defaultValue>87a25d19-761c-4a8c-9dbb-c4ee83eb1c04</defaultValue>
+		<description>
+			UUID for the Main Reason For Delay In Taking Arv concept
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>@MODULE_ID@.patientRecordHasWrongAddress</property>
+		<defaultValue>e1e087de-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Patient Record Has WrongAddress concept
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>@MODULE_ID@.patientMovedHouses</property>
+		<defaultValue>e1e08d6a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Patient Moved Houses concept
+		</description>
+	</globalProperty>
+	
+    <globalProperty>
+		<property>@MODULE_ID@.patientTookATrip</property>
+		<defaultValue>e1e07adc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Patient Took a Trip concept
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>@MODULE_ID@.otherReasonsWhyPatientWasNotLocatedByActivist</property>
+		<defaultValue>e1e09526-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Other Reasons Why Patient Was Not Located By Activist concept
+		</description>
+	</globalProperty>
+	
 	<globalProperty>
 		<property>@MODULE_ID@.reportOfVisitSupport</property>
 		<defaultValue>e1e20be0-1d5f-11e0-b929-000c29ad1d07</defaultValue>

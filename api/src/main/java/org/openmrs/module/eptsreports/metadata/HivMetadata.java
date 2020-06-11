@@ -351,8 +351,57 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.defaultingMotive");
     return getConcept(uuid);
   }
+  
+  // concept_id = 6201
+  public Concept getReasonForStoppedTakingArvDrugsDuringLast7DaysConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.reasonForStoppedTakingArvDrugsDuringLast7Days");
+    return getConcept(uuid);
+  }
+  
+  // concept_id = 6202
+  public Concept getReasonForStoppedTakingArvDrugsDuringLastMonthConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.reasonForStoppedTakingArvDrugsDuringLastMonth");
+    return getConcept(uuid);
+  }
+  
+  // concept_id = 6217
+  public Concept getMainReasonForDelayInTakingArvConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.mainReasonForDelayInTakingArv");
+    return getConcept(uuid);
+  }
+  
+  // concept_id = 2024
+  public Concept getPatientRecordHasWrongAddressConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.patientRecordHasWrongAddress");
+    return getConcept(uuid);
+  }
+  
+  // concept_id = 2026
+  public Concept getPatientMovedHousesConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.patientMovedHouses");
+    return getConcept(uuid);
+  }
+  
+  // concept_id = 2011
+  public Concept getPatientTookATripConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.patientTookATrip");
+    return getConcept(uuid);
+  }
+  
+  // concept_id = 2032
+  public Concept getOtherReasonsWhyPatientWasNotLocatedByActivistConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.otherReasonsWhyPatientWasNotLocatedByActivist");
+    return getConcept(uuid);
+  }
 
-  // concept_id = 2158
+  // concept_id = 2032
   public Concept getReportOfVisitSupportConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.reportOfVisitSupport");

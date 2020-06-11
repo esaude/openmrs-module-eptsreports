@@ -748,7 +748,7 @@ public class TxMlCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        TxMlQueries.getPatientsTracedWithVisitCard(
+        TxMlQueries.getPatientsTracedWithReasonNotFound(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
@@ -760,8 +760,15 @@ public class TxMlCohortQueries {
             hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId(),
             hivMetadata.getTypeOfVisitConcept().getConceptId(),
             hivMetadata.getBuscaConcept().getConceptId(),
-            hivMetadata.getPatientFoundConcept().getConceptId(),
-            hivMetadata.getNoConcept().getConceptId(),
+            hivMetadata.getReasonPatientNotFound().getConceptId(),
+            hivMetadata.getDefaultingMotiveConcept().getConceptId(),
+            hivMetadata.getReasonForStoppedTakingArvDrugsDuringLast7DaysConcept().getConceptId(),
+            hivMetadata.getReasonForStoppedTakingArvDrugsDuringLastMonthConcept().getConceptId(),
+            hivMetadata.getMainReasonForDelayInTakingArvConcept().getConceptId(),
+            hivMetadata.getPatientRecordHasWrongAddressConcept().getConceptId(),
+            hivMetadata.getPatientMovedHousesConcept().getConceptId(),
+            hivMetadata.getPatientTookATripConcept().getConceptId(),
+            hivMetadata.getOtherReasonsWhyPatientWasNotLocatedByActivistConcept().getConceptId(),
             hivMetadata.getArtDatePickupMasterCard().getConceptId()));
 
     return sqlCohortDefinition;
