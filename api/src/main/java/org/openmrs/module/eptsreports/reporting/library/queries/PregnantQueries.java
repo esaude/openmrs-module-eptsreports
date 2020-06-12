@@ -186,7 +186,7 @@ public class PregnantQueries {
             + etvProgram
             + "      AND ps.state= "
             + gaveBirthPatientState
-            + "      AND pp.voided=0 AND pp.date_enrolled AND pp.date_enrolled BETWEEN :startDate AND :endDate AND pp.location_id=:location AND pe.gender='F' "
+            + "      AND pp.voided=0 AND pp.date_enrolled BETWEEN :startDate AND :endDate AND pp.location_id=:location AND pe.gender='F' "
             + "     UNION "
             + "      SELECT p.patient_id, MAX(hist.value_datetime) AS last_date "
             + "      FROM patient p "
@@ -287,7 +287,7 @@ public class PregnantQueries {
         + etvProgram
         + " AND ps.state="
         + etvProgramState
-        + " AND pp.voided=0 AND pp.date_enrolled AND pp.date_enrolled BETWEEN :onOrAfter AND :onOrBefore AND pp.location_id=:location AND pe.gender='F' "
+        + " AND pp.voided=0 AND pp.date_enrolled BETWEEN :onOrAfter AND :onOrBefore AND pp.location_id=:location AND pe.gender='F' "
         + " UNION "
         + " SELECT p.patient_id, MAX(hist.value_datetime) AS last_date"
         + " FROM patient p "
