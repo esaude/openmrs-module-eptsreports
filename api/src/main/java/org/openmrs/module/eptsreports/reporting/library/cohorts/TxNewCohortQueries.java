@@ -145,6 +145,7 @@ public class TxNewCohortQueries {
             commonMetadata.getBreastfeeding().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getPriorDeliveryDateConcept().getConceptId(),
+            hivMetadata.getPregnancyDueDate().getConceptId(),
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getCriteriaForArtStart().getConceptId(),
@@ -152,7 +153,7 @@ public class TxNewCohortQueries {
             hivMetadata.getPtvEtvProgram().getProgramId(),
             hivMetadata.getPatientGaveBirthWorkflowState().getProgramWorkflowStateId(),
             hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
-            commonMetadata.getPregnantConcept().getConceptId(),
+            commonMetadata.getPregnantStatusConcept().getConceptId(),
             hivMetadata.getNumberOfWeeksPregnant().getConceptId(),
             hivMetadata.getBPlusConcept().getConceptId(),
             hivMetadata.getDateOfLastMenstruationConcept().getConceptId()));
