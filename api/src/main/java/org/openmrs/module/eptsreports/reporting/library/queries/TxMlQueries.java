@@ -540,7 +540,7 @@ public class TxMlQueries {
         apoioReintegracaoParteAEncounterTypeId,
         apoioReintegracaoParteBEncounterTypeId);
   }
-  
+
   // Traced Patients (Unable to locate)
   public static String getPatientsTracedWithReasonNotFound(
       int pharmacyEncounterTypeId,
@@ -649,13 +649,19 @@ public class TxMlQueries {
     valuesMap.put("buscaConcept", buscaConcept);
     valuesMap.put("reasonPatientNotFound", reasonPatientNotFound);
     valuesMap.put("defaultingMotiveConcept", defaultingMotiveConcept);
-    valuesMap.put("reasonForStoppedTakingArvDrugsDuringLast7DaysConcept", reasonForStoppedTakingArvDrugsDuringLast7DaysConcept);
-    valuesMap.put("reasonForStoppedTakingArvDrugsDuringLastMonthConcept", reasonForStoppedTakingArvDrugsDuringLastMonthConcept);
+    valuesMap.put(
+        "reasonForStoppedTakingArvDrugsDuringLast7DaysConcept",
+        reasonForStoppedTakingArvDrugsDuringLast7DaysConcept);
+    valuesMap.put(
+        "reasonForStoppedTakingArvDrugsDuringLastMonthConcept",
+        reasonForStoppedTakingArvDrugsDuringLastMonthConcept);
     valuesMap.put("mainReasonForDelayInTakingArvConcept", mainReasonForDelayInTakingArvConcept);
     valuesMap.put("patientRecordHasWrongAddressConcept", patientRecordHasWrongAddressConcept);
     valuesMap.put("patientMovedHousesConcept", patientMovedHousesConcept);
     valuesMap.put("patientTookATripConcept", patientTookATripConcept);
-    valuesMap.put("otherReasonsWhyPatientWasNotLocatedByActivistConcept", otherReasonsWhyPatientWasNotLocatedByActivistConcept);
+    valuesMap.put(
+        "otherReasonsWhyPatientWasNotLocatedByActivistConcept",
+        otherReasonsWhyPatientWasNotLocatedByActivistConcept);
 
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     return sub.replace(query);

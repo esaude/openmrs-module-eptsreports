@@ -92,17 +92,6 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
-  /** 
-   * concept_id=5282
-   * 
-   * @return
-   * */ 
-  public Concept getPregnantStatusConcept() {
-    String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty("eptsreports.pregnantStatusConceptUuid");
-    return getConcept(uuid);
-  }
 
   /**
    * Number of weeks pregnant 1279

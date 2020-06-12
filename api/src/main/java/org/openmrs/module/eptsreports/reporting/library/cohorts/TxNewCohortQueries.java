@@ -153,7 +153,7 @@ public class TxNewCohortQueries {
             hivMetadata.getPtvEtvProgram().getProgramId(),
             hivMetadata.getPatientGaveBirthWorkflowState().getProgramWorkflowStateId(),
             hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
-            commonMetadata.getPregnantStatusConcept().getConceptId(),
+            commonMetadata.getPregnantConcept().getConceptId(),
             hivMetadata.getNumberOfWeeksPregnant().getConceptId(),
             hivMetadata.getBPlusConcept().getConceptId(),
             hivMetadata.getDateOfLastMenstruationConcept().getConceptId()));

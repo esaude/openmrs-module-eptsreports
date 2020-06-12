@@ -202,7 +202,7 @@ public class PregnantQueries {
             + fichaResumo
             + "      AND hist.concept_id= "
             + historicalARTStartDate
-            + "      AND hist.value_datetime IS NOT NULL "
+            + "      AND pe.gender='F' AND hist.value_datetime IS NOT NULL "
             + "      AND hist.value_datetime BETWEEN :startDate AND :endDate "
             + "      GROUP BY p.patient_id "
             + "      ) AS breastfeeding "
@@ -306,7 +306,7 @@ public class PregnantQueries {
             + fichaResumo
             + " AND hist.concept_id="
             + historicalARTStartDate
-            + " AND hist.value_datetime BETWEEN :onOrAfter AND :onOrBefore "
+            + " AND pe.gender='F' AND hist.value_datetime BETWEEN :onOrAfter AND :onOrBefore "
             + " GROUP BY p.patient_id"
             + " ) AS breastfeeding "
             + " LEFT JOIN "
@@ -400,14 +400,13 @@ public class PregnantQueries {
             + lastMenstrualPeriod
             + " AND e.encounter_type =  "
             + adultSegEncounter
-            + " AND o.value_datetime BETWEEN :onOrAfter AND :onOrBefore GROUP BY p.patient_id) as pregnancy  "
+            + " AND pe.gender='F' AND o.value_datetime BETWEEN :onOrAfter AND :onOrBefore GROUP BY p.patient_id) as pregnancy  "
             + " GROUP BY pregnancy.patient_id) AS pregnant_table "
             + " ON pregnant_table.patient_id = breastfeeding.patient_id "
             + " WHERE (breastfeeding.last_date > pregnant_table.pregnancy_date "
             + " OR pregnant_table.pregnancy_date IS NULL)"
             + " GROUP BY breastfeeding.patient_id) AS list ";
 
-    System.out.println(query);
     return query;
   }
 }

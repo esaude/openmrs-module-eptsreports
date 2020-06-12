@@ -141,12 +141,7 @@ public class EriCohortQueries {
         EptsReportUtils.map(
             txNewCohortQueries.getTxNewBreastfeedingComposition(),
             "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}"));
-    cd.addSearch(
-        "pregnant",
-        EptsReportUtils.map(
-            getPregnantWomenRetainedOnArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
-    cd.setCompositionString("initiatedART AND (breastfeeding NOT pregnant)");
+    cd.setCompositionString("initiatedART AND breastfeeding");
     return cd;
   }
 
