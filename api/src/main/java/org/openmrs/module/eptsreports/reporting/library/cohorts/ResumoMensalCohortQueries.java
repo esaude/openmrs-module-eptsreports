@@ -274,7 +274,7 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.setB10Flag(new Boolean("false"));
+    cd.setB10Flag(new Boolean("true"));
     return cd;
   }
 

@@ -63,7 +63,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
 
     q.append("       AND type.voided = 0 ");
     q.append("       AND type.concept_id = :typeOfPatient ");
-    if (cd.getB10Flag() == true) {
+    if (cd.getB10Flag()) {
       q.append("       AND type.value_coded = :tarv ");
     } else {
       q.append("       AND type.value_coded in (:tarv,:preTarv) ");
