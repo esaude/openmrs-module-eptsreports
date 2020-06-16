@@ -178,7 +178,7 @@ public class PregnantQueries {
             + "      AND e.encounter_datetime BETWEEN :startDate AND :endDate AND e.location_id=:location AND pe.gender='F' "
             + "      GROUP BY p.patient_id "
             + "      UNION "
-            + "      SELECT pp.patient_id, MAX(pp.date_enrolled) AS last_date "
+            + "      SELECT pp.patient_id, MAX(ps.start_date) AS last_date "
             + "      FROM patient_program pp "
             + "      INNER JOIN person pe ON pp.patient_id=pe.person_id "
             + "      INNER JOIN patient_state ps ON pp.patient_program_id=ps.patient_program_id "
@@ -186,7 +186,8 @@ public class PregnantQueries {
             + etvProgram
             + "      AND ps.state= "
             + gaveBirthPatientState
-            + "      AND pp.voided=0 AND pp.date_enrolled BETWEEN :startDate AND :endDate AND pp.location_id=:location AND pe.gender='F' "
+            + "      AND pp.voided=0 AND ps.start_date BETWEEN :startDate AND :endDate AND pp.location_id=:location AND pe.gender='F' "
+            + "      GROUP BY pp.patient_id "
             + "     UNION "
             + "      SELECT p.patient_id, MAX(hist.value_datetime) AS last_date "
             + "      FROM patient p "
@@ -281,7 +282,7 @@ public class PregnantQueries {
             + ") AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore AND e.location_id=:location AND pe.gender='F' "
             + " GROUP BY p.patient_id"
             + " UNION "
-            + " SELECT pp.patient_id, MAX(pp.date_enrolled) AS last_date "
+            + " SELECT pp.patient_id, MAX(ps.start_date) AS last_date "
             + " FROM patient_program pp"
             + " INNER JOIN person pe ON pp.patient_id=pe.person_id"
             + " INNER JOIN patient_state ps ON pp.patient_program_id=ps.patient_program_id"
@@ -289,7 +290,7 @@ public class PregnantQueries {
             + etvProgram
             + " AND ps.state="
             + etvProgramState
-            + " AND pp.voided=0 AND pp.date_enrolled BETWEEN :onOrAfter AND :onOrBefore AND pp.location_id=:location AND pe.gender='F' "
+            + " AND pp.voided=0 AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore AND pp.location_id=:location AND pe.gender='F' "
             + " GROUP BY pp.patient_id"
             + " UNION "
             + " SELECT p.patient_id, MAX(hist.value_datetime) AS last_date"
