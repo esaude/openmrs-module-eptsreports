@@ -15,10 +15,10 @@ import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraig
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri2MonthsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri4MonthsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.EriCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.EriDSDCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
@@ -42,8 +42,6 @@ public class EptsCommonDimension {
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private HivMetadata hivMetadata;
-
   @Autowired private Eri4MonthsCohortQueries eri4MonthsCohortQueries;
 
   @Autowired private Eri2MonthsCohortQueries eri2MonthsCohortQueries;
@@ -57,6 +55,8 @@ public class EptsCommonDimension {
   @Autowired private TxPvlsCohortQueries txPvlsQueries;
 
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
+
+  @Autowired private EriDSDCohortQueries eriDSDCohortQueries;
 
   /**
    * Gender dimension
@@ -331,6 +331,32 @@ public class EptsCommonDimension {
     dim.addCohortDefinition("<3m", EptsReportUtils.map(less3m, mappings));
     dim.addCohortDefinition("3-5m", EptsReportUtils.map(threeTo5m, mappings));
     dim.addCohortDefinition(">6m", EptsReportUtils.map(more6m, mappings));
+    return dim;
+  }
+
+  /** Dimension for DSD eligible and not eligible patients */
+  public CohortDefinitionDimension getDSDEligibleDimension() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setName("DSD Eligible dimension");
+    dim.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    dim.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dim.addParameter(new Parameter("location", "Location", Location.class));
+    CohortDefinition eligible = eriDSDCohortQueries.getAllPatientsWhoAreActiveAndStable();
+    CohortDefinition notEligible = eriDSDCohortQueries.getPatientsWhoAreActiveAndUnstable();
+    dim.addCohortDefinition("E", mapStraightThrough(eligible));
+    dim.addCohortDefinition("NE", mapStraightThrough(notEligible));
+    return dim;
+  }
+
+  /** Dimension for DSD Non-Pregnant and Non-Breastfeeding */
+  public CohortDefinitionDimension getDSDNonPregnantAndNonBreastfeedingDimension() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setName("DSD Non-Pregnant and Non-Breastfeeding dimension");
+    dim.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dim.addParameter(new Parameter("location", "Location", Location.class));
+    CohortDefinition nonPregnantAndNonBreastfeeding =
+        eriDSDCohortQueries.getNonPregnantAndNonBreastfeeding();
+    dim.addCohortDefinition("NPNB", mapStraightThrough(nonPregnantAndNonBreastfeeding));
     return dim;
   }
 }
