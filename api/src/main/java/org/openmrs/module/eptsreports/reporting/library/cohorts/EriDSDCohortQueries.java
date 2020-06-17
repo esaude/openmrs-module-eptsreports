@@ -78,7 +78,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "6",
         EptsReportUtils.map(
-            hivCohortQueries.getPatientsOnTbTreatment(),
+            tbCohortQueries.getPatientsOnTbTreatment(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "7",
@@ -1633,7 +1633,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "6",
         EptsReportUtils.map(
-            hivCohortQueries.getPatientsOnTbTreatment(),
+            tbCohortQueries.getPatientsOnTbTreatment(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("(1 AND 2 AND NOT (3 OR 4 OR 5 OR 6))");
