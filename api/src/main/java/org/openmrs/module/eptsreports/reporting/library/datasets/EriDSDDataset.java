@@ -137,10 +137,7 @@ public class EriDSDDataset extends BaseDataSet {
         "DSD DT Total",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "DTT",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getN1(),
-                    mappings)),
+                "DTT", EptsReportUtils.map(eriDSDCohortQueries.getN1(), mappings)),
             mappings),
         "");
     dsd.addColumn(

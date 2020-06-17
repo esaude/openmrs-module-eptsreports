@@ -602,13 +602,14 @@ public class EriDSDCohortQueries {
     CohortDefinition patientsScheduled =
         getPatientsScheduled(
             hivMetadata.getReturnVisitDateForArvDrugConcept(),
-            Arrays.asList(hivMetadata.getARVPharmaciaEncounterType(),hivMetadata.getMasterCardDrugPickupEncounterType()),
+            Arrays.asList(
+                hivMetadata.getARVPharmaciaEncounterType(),
+                hivMetadata.getMasterCardDrugPickupEncounterType()),
             97,
             83);
     CohortDefinition quarterly = getPatientsWithQuarterlyTypeOfDispensation();
     CohortDefinition startOrContinue = getPatientsWithStartOrContinueOnQuarterlyDispensation();
     CohortDefinition completed = getPatientsWithCompletedOnQuarterlyDispensation();
-    CohortDefinition pregnantOrBreastfeedingOrTBTreatment = getPregnantAndBreastfeedingAndOnTBTreatment();
 
     String mappings = "onOrBefore=${endDate},location=${location}";
     String dispensationMappings =
@@ -620,9 +621,14 @@ public class EriDSDCohortQueries {
     cd.addSearch("quarterly", EptsReportUtils.map(quarterly, dispensationMappings));
     cd.addSearch("startOrContinue", EptsReportUtils.map(startOrContinue, dispensationMappings));
     cd.addSearch("completed", EptsReportUtils.map(completed, dispensationMappings));
-    cd.addSearch("pregnantOrBreastfeedingOrTBTreatment",EptsReportUtils.map(pregnantOrBreastfeedingOrTBTreatment,genericMappinggs));
+    cd.addSearch(
+        "pregnantOrBreastfeedingOrTBTreatment",
+        EptsReportUtils.map(
+            getPregnantAndBreastfeedingAndOnTBTreatment(),
+            "endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("TxCurr AND (scheduled OR quarterly OR startOrContinue) NOT (completed OR pregnantOrBreastfeedingOrTBTreatment");
+    cd.setCompositionString(
+        "TxCurr AND (scheduled OR quarterly OR startOrContinue) NOT (completed OR pregnantOrBreastfeedingOrTBTreatment");
 
     return cd;
   }
@@ -666,9 +672,7 @@ public class EriDSDCohortQueries {
 
     cd.addSearch(
         "patientsWithNextPickupAs3Months",
-        EptsReportUtils.map(
-            getN1(),
-            "endDate=${endDate},location=${location}"));
+        EptsReportUtils.map(getN1(), "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "patientsWhoAreStable",
         EptsReportUtils.map(
@@ -696,8 +700,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "activeAndStableN1",
         EptsReportUtils.map(
-            getN1AndStable(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            getN1AndStable(), "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "eligiblePatientsD1",
         EptsReportUtils.map(
@@ -724,14 +727,11 @@ public class EriDSDCohortQueries {
 
     cd.addSearch(
         "patientsWithNextPickupDate",
-        EptsReportUtils.map(
-            getN1(),
-            "endDate=${endDate},location=${location}"));
+        EptsReportUtils.map(getN1(), "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "patientsWhoAreStable",
         EptsReportUtils.map(
-            getN1AndStable(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            getN1AndStable(), "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
@@ -1155,7 +1155,6 @@ public class EriDSDCohortQueries {
   }
 
   /**
-
    * 1.Select all patients (adults and children) currently receiving treatment, included in Tx-Curr
    * for selected Location and reporting period (Tx-Curr)
    *
@@ -1428,7 +1427,7 @@ public class EriDSDCohortQueries {
     String caMappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
     cd.addSearch("startOrContinueCA", EptsReportUtils.map(startOrContinueCA, caMappings));
 
-   cd.addSearch(
+    cd.addSearch(
         "PregnantAndBreastfeedingAndOnTBTreatment",
         EptsReportUtils.map(
             getPregnantAndBreastfeedingAndOnTBTreatment(),
