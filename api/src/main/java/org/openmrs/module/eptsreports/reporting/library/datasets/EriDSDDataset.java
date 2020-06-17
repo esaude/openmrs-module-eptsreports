@@ -286,9 +286,7 @@ public class EriDSDDataset extends BaseDataSet {
         "DSD GAAC Total",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "GAACT",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticpatingInGaac(), mappings)),
+                "GAACT", EptsReportUtils.map(eriDSDCohortQueries.getN3(), mappings)),
             mappings),
         "");
     dsd.addColumn(
