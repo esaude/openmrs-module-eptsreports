@@ -1,5 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
+
 import java.util.Arrays;
 import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.EriDSDCohortQueries;
@@ -9,12 +11,16 @@ import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIn
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EriDSDDataset extends BaseDataSet {
+
+  private static final String N7 =
+      "N7 Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in DC";
 
   @Autowired private EriDSDCohortQueries eriDSDCohortQueries;
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
@@ -34,6 +40,10 @@ public class EriDSDDataset extends BaseDataSet {
         "age",
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
+    dsd.addDimension("eligible", mapStraightThrough(eptsCommonDimension.getDSDEligibleDimension()));
+    dsd.addDimension(
+        "pregnantBreastfeeding",
+        mapStraightThrough(eptsCommonDimension.getDSDNonPregnantAndNonBreastfeedingDimension()));
 
     dsd.setName("total");
     dsd.addColumn(
@@ -430,74 +440,8 @@ public class EriDSDDataset extends BaseDataSet {
                     eriDSDCohortQueries.getPatientsOnMasterCardAFWhoAreNotEligible(), mappings)),
             mappings),
         getChildrenColumn());
-    dsd.addColumn(
-        "DCT",
-        "DC: Total",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "DCT",
-                EptsReportUtils.map(eriDSDCohortQueries.getActivePatientsOnARTDC(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "DCEST",
-        "DC : Eligible Sub Total",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "DCEST",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getActiveARTEligiblePatientsDC(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "DCENPNBA",
-        "DC: Eligible Non-Pregnant Non-Breastfeeding adults (>=15)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "DCENPNBA",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getActiveARTEligiblePatientsDC(), mappings)),
-            mappings),
-        "age=15+");
-    addRow(
-        dsd,
-        "DCENPNBAC",
-        "DC: Eligible Non-Pregnant Non-Breastfeeding adults (>=15)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "DCENPNBAC",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getActiveARTEligiblePatientsDC(), mappings)),
-            mappings),
-        getChildrenColumn());
-    dsd.addColumn(
-        "DCNEST",
-        "DC : Non-Eligible Sub-Total",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "DCNEST",
-                EptsReportUtils.map(eriDSDCohortQueries.getActiveInARTUnstableDC(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "DCNENPNBA",
-        "DC : Non-Eligible Non-Pregnant Non-Breastfeeding Adults (>=15)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "DCNENPNBA",
-                EptsReportUtils.map(eriDSDCohortQueries.getActiveInARTUnstableDC(), mappings)),
-            mappings),
-        "age=15+");
-    addRow(
-        dsd,
-        "DCNENPNBC",
-        "DC : Non-eligible Non Pregnant Non Breast Feeding Children",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "DCNENPNBC",
-                EptsReportUtils.map(eriDSDCohortQueries.getActiveInARTUnstableDC(), mappings)),
-            mappings),
-        getChildrenColumn());
+
+    addRow(dsd, "N7", N7, mapStraightThrough(getN7()), getDisags());
 
     dsd.addColumn(
         "AnyDSDModel-T",
@@ -678,5 +622,56 @@ public class EriDSDDataset extends BaseDataSet {
     ColumnParameters lesThan2 = new ColumnParameters("lesThan2", "<2", "age=<2", "04");
 
     return Arrays.asList(lesThan2, twoTo4, fiveTo9, tenTo14);
+  }
+
+  private CohortIndicator getN7() {
+    return eptsGeneralIndicator.getIndicator("N7", mapStraightThrough(eriDSDCohortQueries.getN7()));
+  }
+
+  private List<ColumnParameters> getDisags() {
+    return Arrays.asList(
+        new ColumnParameters("Total", "Total", "", "01"),
+        new ColumnParameters("Eligible Sub-Total", "Eligible Sub-Total", "eligible=E", "02"),
+        new ColumnParameters(
+            "Eligible Adults",
+            "Eligible Adults",
+            "eligible=E|pregnantBreastfeeding=NPNB|age=15+",
+            "03"),
+        new ColumnParameters(
+            "Eligible 2-4", "Eligible 2-4", "eligible=E|pregnantBreastfeeding=NPNB|age=2-4", "04"),
+        new ColumnParameters(
+            "Eligible 5-9", "Eligible 5-9", "eligible=E|pregnantBreastfeeding=NPNB|age=5-9", "05"),
+        new ColumnParameters(
+            "Eligible 10-14",
+            "Eligible 10-14",
+            "eligible=E|pregnantBreastfeeding=NPNB|age=10-14",
+            "06"),
+        new ColumnParameters(
+            "Not Eligible Sub-Total", "Not Eligible Sub-Total", "eligible=NE", "07"),
+        new ColumnParameters(
+            "Not Eligible Adults",
+            "Not Eligible Adults",
+            "eligible=NE|pregnantBreastfeeding=NPNB|age=15+",
+            "08"),
+        new ColumnParameters(
+            "Not Eligible <2",
+            "Not Eligible <2",
+            "eligible=NE|pregnantBreastfeeding=NPNB|age=<2",
+            "09"),
+        new ColumnParameters(
+            "Not Eligible 2-4",
+            "Not Eligible 2-4",
+            "eligible=NE|pregnantBreastfeeding=NPNB|age=2-4",
+            "10"),
+        new ColumnParameters(
+            "Not Eligible 5-9",
+            "Not Eligible 5-9",
+            "eligible=NE|pregnantBreastfeeding=NPNB|age=5-9",
+            "11"),
+        new ColumnParameters(
+            "Not Eligible 10-14",
+            "Not Eligible 10-14",
+            "eligible=NE|pregnantBreastfeeding=NPNB|age=10-14",
+            "12"));
   }
 }
