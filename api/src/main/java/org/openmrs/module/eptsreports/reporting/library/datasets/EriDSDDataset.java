@@ -527,10 +527,7 @@ public class EriDSDDataset extends BaseDataSet {
         "DSD CA Total",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "CAT",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticipatingInAccessionClubs(),
-                    mappings)),
+                "CAT", EptsReportUtils.map(eriDSDCohortQueries.getN5(), mappings)),
             mappings),
         "");
     dsd.addColumn(
@@ -552,7 +549,9 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "CASNPNBA",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getCAStableNonPregnantNonBreastfeeding(), mappings)),
+                    eriDSDCohortQueries
+                        .getPatientsWhoAreActiveParticipatingInAccessionClubsAndStable(),
+                    mappings)),
             mappings),
         "age=15+");
     addRow(
@@ -563,7 +562,9 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "CASNPNBC",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getCAStableNonPregnantNonBreastfeeding(), mappings)),
+                    eriDSDCohortQueries
+                        .getPatientsWhoAreActiveParticipatingInAccessionClubsAndStable(),
+                    mappings)),
             mappings),
         getChildrenColumn());
     dsd.addColumn(
@@ -585,7 +586,9 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "CAUNPNBA",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getCAUnstableNonPregnantNonBreastfeeding(), mappings)),
+                    eriDSDCohortQueries
+                        .getPatientsWhoAreActiveParticipatingInAccessionClubsAndUnstable(),
+                    mappings)),
             mappings),
         "age=15+");
     addRow(
@@ -596,7 +599,9 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "CAUNPNBC",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getCAUnstableNonPregnantNonBreastfeeding(), mappings)),
+                    eriDSDCohortQueries
+                        .getPatientsWhoAreActiveParticipatingInAccessionClubsAndUnstable(),
+                    mappings)),
             mappings),
         getChildrenColumn());
 
