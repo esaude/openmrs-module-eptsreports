@@ -1,5 +1,8 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 
@@ -297,19 +300,33 @@ public class DsdQueries {
       int lastFamilyApproachConceptId,
       int startDrugsConceptId,
       int continueRegimenConceptId) {
+    Map<String, Integer> map = new HashMap<>();
+    map.put("adultSeguimentoEncounterTypeId", adultSeguimentoEncounterTypeId);
+    map.put("lastFamilyApproachConceptId", lastFamilyApproachConceptId);
+    map.put("startDrugsConceptId", startDrugsConceptId);
+    map.put("continueRegimenConceptId", continueRegimenConceptId);
     String query =
-        "SELECT p.patient_id FROM patient p "
-            + "JOIN encounter e ON p.patient_id=e.patient_id "
-            + "JOIN obs o ON p.patient_id=o.person_id "
-            + "WHERE e.encounter_type=%d AND o.concept_id=%d AND o.value_coded IN (%d, %d) AND e.location_id=:location "
-            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate  AND e.voided=0 AND o.voided=0 AND p.voided=0 ";
+        "SELECT last_abordagem_familiar.patient_id "
+            + "FROM ( "
+            + "      SELECT p.patient_id, max(e.encounter_datetime)  "
+            + "      FROM patient p  "
+            + "        JOIN encounter e ON p.patient_id=e.patient_id  "
+            + "        JOIN obs o ON p.patient_id=o.person_id  "
+            + "      WHERE e.encounter_type= ${adultSeguimentoEncounterTypeId}  "
+            + "        AND o.concept_id= ${lastFamilyApproachConceptId}  "
+            + "        AND o.value_coded IN (${startDrugsConceptId},${continueRegimenConceptId})  "
+            + "        AND e.location_id= :location  "
+            + "        AND e.encounter_datetime <= :endDate   "
+            + "        AND e.voided=0  "
+            + "        AND o.voided=0  "
+            + "        AND p.voided=0  "
+            + "      GROUP BY p.patient_id "
+            + "      ) last_abordagem_familiar";
 
-    return String.format(
-        query,
-        adultSeguimentoEncounterTypeId,
-        lastFamilyApproachConceptId,
-        startDrugsConceptId,
-        continueRegimenConceptId);
+    StringSubstitutor sb = new StringSubstitutor(map);
+    String replacedQuery = sb.replace(query);
+
+    return replacedQuery;
   }
   /**
    * Get All Patients On Sarcoma Karposi
