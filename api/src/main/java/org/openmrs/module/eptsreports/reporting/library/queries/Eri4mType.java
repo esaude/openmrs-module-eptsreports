@@ -11,5 +11,6 @@ public enum Eri4mType {
 
   TRANFERED_OUT,
 
-  SPTOPPED_TREATMENT
+  SPTOPPED_TREATMENT,
+  LFTU
 }

@@ -2,6 +2,7 @@ package org.openmrs.module.eptsreports.reporting.library.queries;
 
 public interface Eri2MonthsQueriesInterface {
   class QUERY {
+    @SuppressWarnings("incomplete-switch")
     public static final String
         findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickup33DaysForASpecificPatientType(
             final Eri4mType eri4mType) {
@@ -88,7 +89,7 @@ public interface Eri2MonthsQueriesInterface {
               + "INNER JOIN patient_program pg on p.patient_id=pg.patient_id "
               + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
               + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and ps.state=29 and "
-              + "ps.start_date between (:endDate - INTERVAL 2 MONTH  + INTERVAL 1 DAY) AND (:endDate - INTERVAL  1 MONTH) and pg.location_id=:location "
+              + "ps.start_date <=:endDate and pg.location_id=:location "
               + "UNION "
               + "SELECT p.patient_id from patient p "
               + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
@@ -96,7 +97,7 @@ public interface Eri2MonthsQueriesInterface {
               + "INNER JOIN obs obsTarv ON e.encounter_id=obsTarv.encounter_id AND obsTarv.voided=0 AND obsTarv.concept_id=6300 AND obsTarv.value_coded=6276 "
               + "INNER JOIN obs obsData ON e.encounter_id=obsData.encounter_id AND obsData.voided=0 AND obsData.concept_id=23891 "
               + "WHERE p.voided=0 AND e.voided=0 AND e.encounter_type=53 AND "
-              + "obsData.value_datetime BETWEEN (:endDate - INTERVAL 2 MONTH  + INTERVAL 1 DAY) AND (:endDate - INTERVAL  1 MONTH) AND e.location_id=:location "
+              + "obsData.value_datetime <=:endDate AND e.location_id=:location "
               + ") transferedIn on inicio_real.patient_id=transferedIn.patient_id "
               + "WHERE transferedIn.patient_id is null "
               + "group by inicio_real.patient_id "

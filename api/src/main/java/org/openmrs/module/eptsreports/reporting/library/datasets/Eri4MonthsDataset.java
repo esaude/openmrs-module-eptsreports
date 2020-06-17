@@ -15,7 +15,6 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.Arrays;
 import java.util.List;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri4MonthsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.Eri4MonthsDimensions;
@@ -40,8 +39,6 @@ public class Eri4MonthsDataset extends BaseDataSet {
   @Autowired private TxNewCohortQueries txNewCohortQueries;
 
   @Autowired private GenericCohortQueries genericCohortQueries;
-
-  @Autowired private Eri4MonthsCohortQueries eri4MonthsCohortQueries;
 
   public DataSetDefinition constructEri4MonthsDataset() {
 
@@ -111,10 +108,14 @@ public class Eri4MonthsDataset extends BaseDataSet {
         "04",
         EptsReportUtils.map(
             this.eptsGeneralIndicator.getIndicator(
-                "all patients who are lost follow up",
+                "all patients lftu",
                 EptsReportUtils.map(
-                    this.eri4MonthsCohortQueries.findPatientsWhoAreLostFollowUp(),
-                    cohortPeriodMappings + ",reportingEndDate=${endDate}")),
+                    this.genericCohortQueries.generalSql(
+                        "patientsLftu",
+                        Eri4MonthsQueries
+                            .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
+                                Eri4mType.LFTU)),
+                    "endDate=${endDate},location=${location}")),
             reportingPeriodMappings),
         this.get4MonthsRetentionColumns());
 
