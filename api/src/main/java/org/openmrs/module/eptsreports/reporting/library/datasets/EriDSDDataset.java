@@ -139,7 +139,7 @@ public class EriDSDDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "DTT",
                 EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveWithNextPickupAs3Months(),
+                    eriDSDCohortQueries.getN1(),
                     mappings)),
             mappings),
         "");
