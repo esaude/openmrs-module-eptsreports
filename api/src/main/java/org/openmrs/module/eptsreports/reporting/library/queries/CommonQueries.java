@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 
-public class TbQueries {
+public class CommonQueries {
 
   /**
    * Patients on TB Treatment
@@ -20,7 +20,6 @@ public class TbQueries {
    * @param tbTreatmentPlanConceptId
    * @param startDrugsConceptId
    * @param continueRegimenConceptId
-   * @return
    */
   public static String getPatientsOnTbTreatmentQuery(
       int adultoSeguimentoEncounterTypeId,

@@ -10,7 +10,6 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.NextAndPrevDatesCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.OnArtForAtleastXmonthsCalculation;
@@ -34,12 +33,11 @@ public class EriDSDCohortQueries {
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
   @Autowired private TxNewCohortQueries txNewCohortQueries;
   @Autowired private GenericCohortQueries genericCohortQueries;
-  @Autowired private TbCohortQueries tbCohortQueries;
+  @Autowired private CommonCohortQueries commonCohortQueries;
 
   @Autowired private AgeCohortQueries ageCohortQueries;
   @Autowired private HivCohortQueries hivCohortQueries;
   @Autowired private HivMetadata hivMetadata;
-  @Autowired private CommonMetadata commonMetadata;
 
   /** D1: Number of active, stable, patients on ART. Combinantion of Criteria 1,2,3,4,5 */
   public CohortDefinition getAllPatientsWhoAreActiveAndStable() {
@@ -78,7 +76,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "6",
         EptsReportUtils.map(
-            tbCohortQueries.getPatientsOnTbTreatment(),
+            commonCohortQueries.getPatientsOnTbTreatment(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "7",
@@ -479,7 +477,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "tbPatient",
         EptsReportUtils.map(
-            tbCohortQueries.getPatientsOnTbTreatment(),
+            commonCohortQueries.getPatientsOnTbTreatment(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
@@ -1633,7 +1631,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "6",
         EptsReportUtils.map(
-            tbCohortQueries.getPatientsOnTbTreatment(),
+            commonCohortQueries.getPatientsOnTbTreatment(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("(1 AND 2 AND NOT (3 OR 4 OR 5 OR 6))");

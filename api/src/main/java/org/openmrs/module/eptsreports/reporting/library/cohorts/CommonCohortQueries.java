@@ -5,15 +5,51 @@ import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraig
 
 import java.util.Date;
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition2;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.ResumoMensalTransferredOutCohortDefinition;
+import org.openmrs.module.eptsreports.reporting.library.queries.CommonQueries;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CommonCohortQueries {
+
+  private HivMetadata hivMetadata;
+
+  @Autowired
+  public CommonCohortQueries(HivMetadata hivMetadata) {
+    this.hivMetadata = hivMetadata;
+  }
+
+  /** 9. Patients on TB Treatment */
+  public CohortDefinition getPatientsOnTbTreatment() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("patientsOnTbTreatment");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    cd.setQuery(
+        CommonQueries.getPatientsOnTbTreatmentQuery(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getTBDrugStartDateConcept().getConceptId(),
+            hivMetadata.getTBDrugEndDateConcept().getConceptId(),
+            hivMetadata.getTBProgram().getProgramId(),
+            hivMetadata.getPatientActiveOnTBProgramWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getActiveTBConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getTBTreatmentPlanConcept().getConceptId(),
+            hivMetadata.getStartDrugs().getConceptId(),
+            hivMetadata.getContinueRegimenConcept().getConceptId()));
+
+    return cd;
+  }
 
   /** 15 MOH Transferred-in patients */
   public CohortDefinition getMohTransferredInPatients() {
