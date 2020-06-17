@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+	License, v. 2.0. If a copy of the MPL was not distributed with this file,
+	You can obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed
+	under the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+	Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+	graphic logo is a trademark of OpenMRS Inc. -->
+
+<dataset>
+    <location location_id="221" name="Foo" description="NA" address2="NA" state_province="NA"
+              country="Kepler" creator="1" date_created="2015-08-20 18:11:14" county_district="NA" address6="NA"
+              address5="Foo" retired="0" uuid="c9c8c8bb-67b3-41f7-948a-c58ae02dca46"/>
+
+    <!--    getNonPregnantAndNonBreastfeedingShouldReturnNonBreastfeedingPatients -->
+    <person person_id="1933" gender="F" birthdate="1992-04-06" birthdate_estimated="0" dead="0" creator="1"
+            date_created="2015-09-09 09:30:10" voided="0" uuid="c925115e-2226-4227-95dd-8f7ff317dd75"
+            deathdate_estimated="0"/>
+
+    <patient patient_id="1933" creator="1" date_created="2015-09-09 09:30:10" voided="0"/>
+
+    <encounter encounter_id="543358" encounter_type="6777004" patient_id="1933" location_id="221"
+               encounter_datetime="2019-12-30 00:00:00" creator="1" date_created="2020-01-07 09:14:29" voided="0"
+               uuid="5efd185c-a8e6-4cde-9a11-732c029ff551"/>
+
+    <obs obs_id="4287901" person_id="1933" concept_id="7777025" encounter_id="543358" obs_datetime="2019-12-30 00:00:00"
+         location_id="221" value_coded="7777020" creator="1" date_created="2020-01-07 09:14:29" voided="0"
+         uuid="10793851-a29e-499c-b606-0dfdac58ceca"/>
+
+    <!--    -->
+
+    <!--    getNonPregnantAndNonBreastfeedingShouldReturnNonPregnantPatients-->
+    <person person_id="574" gender="F" birthdate="1986-04-10" birthdate_estimated="0" dead="0" creator="1"
+            date_created="2015-09-09 08:19:01" voided="0" uuid="43b3df58-d857-40c4-b08d-06f4d8817de9"
+            deathdate_estimated="0"/>
+
+    <patient patient_id="574" creator="1" date_created="2015-09-09 08:19:01" voided="0"/>
+
+    <patient_program patient_program_id="24035" patient_id="574" program_id="8" date_enrolled="2019-12-27 00:00:00"
+                     creator="1" date_created="2020-01-06 08:55:28" voided="0"
+                     uuid="5fe3bf7c-eb4f-4fd0-8d57-5c66f571ad93" location_id="221"/>
+
+    <!--    -->
+</dataset>

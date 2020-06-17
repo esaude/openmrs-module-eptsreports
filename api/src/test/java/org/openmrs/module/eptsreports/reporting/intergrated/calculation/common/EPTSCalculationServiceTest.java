@@ -49,7 +49,7 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
     eptsCalculationService = Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
     context.setNow(new Date());
 
-    executeDataSet("calculationsTest.xml");
+    executeDataSet("metadata.xml");
     executeDataSet("pvlsTest.xml");
   }
 

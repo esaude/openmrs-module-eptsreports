@@ -7,17 +7,27 @@
 	graphic logo is a trademark of OpenMRS Inc. -->
 
 <dataset>
-	<!-- TODO rename file to metadata, keep all metadata here -->
+	<concept concept_id="6331" retired="0" datatype_id="4" class_id="2" is_set="0" creator="1" date_created="2013-09-12 10:12:06" changed_by="1" date_changed="2013-09-12 10:12:06" uuid="8ace1eb2-656b-46e0-933b-670fc975ea19" />
+	<concept concept_id="1465" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1" date_created="2008-10-13 08:26:15" changed_by="1" date_changed="2018-10-08 12:48:44" uuid="e1dc0dd0-1d5f-11e0-b929-000c29ad1d07" />
+	<concept concept_id="1113" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1" date_created="2005-01-11 23:00:00" changed_by="1" date_changed="2018-10-08 11:55:59" uuid="e1d85906-1d5f-11e0-b929-000c29ad1d07" />
+    <concept concept_id="6120" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1" date_created="2011-01-26 11:54:51" changed_by="1" date_changed="2018-10-08 11:55:59" uuid="0ef94b67-b202-40ad-b542-7b2016524335" />
+    <concept concept_id="1782" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2008-11-05 14:35:25" changed_by="1" date_changed="2016-10-31 17:09:41" uuid="e1de7e58-1d5f-11e0-b929-000c29ad1d07" />
+    <concept concept_id="1268" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2005-02-22 20:07:06" changed_by="1" date_changed="2016-10-31 17:09:42" uuid="e1d9fbda-1d5f-11e0-b929-000c29ad1d07" />
+
+    <concept concept_id="6281" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2012-02-29 16:56:21" uuid="65f1c995-eb54-40c2-aa8e-68a5190a6e5b" />
+    <concept_name concept_id="6281" name="ESTADO TB" locale="pt" creator="1" date_created="2012-02-29 16:56:21" concept_name_id="7208" voided="0" uuid="8528ef58-b3f3-496a-af5e-588b37badedf" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
+
+    <concept concept_id="6269" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2012-02-28 15:41:25" changed_by="1" date_changed="2018-10-08 12:04:32" uuid="4a7bec6f-8f27-4da5-b78d-40134c30d3ee" />
+    <concept_name concept_id="6269" name="ACTIVE ON PROGRAM" locale="en" creator="1" date_created="2012-02-28 15:41:25" concept_name_id="7203" voided="0" uuid="1e2abd02-acf0-443b-a85f-004bb98378ee" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
 
 
-	<concept concept_id="1706" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2012-02-29 09:50:50" changed_by="1" date_changed="2012-02-29 10:13:25" uuid="e1de1cf6-1d5f-11e0-b929-000c29ad1d07" />
-	<global_property property="eptsreports.transferOutToAnotherFacilityConceptUuid" property_value="e1de1cf6-1d5f-11e0-b929-000c29ad1d07" description="UUID for the TRANSFERIDO PARA concept" uuid="0b156ca0-fc27-4efb-76b2-1b30p0278b2e" />
+    <concept concept_id="23761" retired="0" datatype_id="2" class_id="4" is_set="0" creator="1" date_created="2018-10-24 09:22:44" changed_by="1" date_changed="2019-01-07 23:01:13" uuid="63b15479-5a05-4bdc-a6e5-eab175743122" />
+
+
+    <concept concept_id="1706" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2012-02-29 09:50:50" changed_by="1" date_changed="2012-02-29 10:13:25" uuid="e1de1cf6-1d5f-11e0-b929-000c29ad1d07" />
 	<concept_name concept_id="1706" name="TRANSFERRED OUT TO ANOTHER FACILITY" locale="en" creator="1" date_created="2012-02-29 09:50:50" concept_name_id="1706" voided="0" uuid="11bda988-b5f5-439c-83fe-c8f3fd296878" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
 
-
 	<concept concept_id="23891" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2012-02-29 09:50:50" changed_by="1" date_changed="2012-02-29 10:13:25" uuid="68d65d0c-8fee-456b-8e95-caed990351e1" />
-
-	<global_property property="eptsreports.dateOfMasterCardFileOpeningConceptUuid" property_value="68d65d0c-8fee-456b-8e95-caed990351e1" description="Master Card File Open Dates Concept" uuid="0b156ca0-fc27-4efb-86b2-1b30p0278b2e" />
 
 	<concept concept_id="6275" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2012-02-29 09:50:50" changed_by="1" date_changed="2012-02-29 10:13:25" uuid="44f812e8-c4c0-40cd-aef3-6b1ef76d43e1" />
 	<concept_name concept_id="6275" name="PRE-TARV" locale="pt" creator="1" date_created="2012-02-29 09:50:50" concept_name_id="7181" voided="0" uuid="11bda988-b5f5-439c-83fe-c8f3fd256878" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
@@ -225,12 +235,19 @@
 
 	<program program_id="8" concept_id="7777023" creator="1" date_created="2019-03-02 11:30:33.0" retired="false" name="PTV" description="Programa de representa o estado de gravidez de uma mulher" uuid="06057245-ca21-43ab-a02f-e861d7e54593"/>
 	<program program_id="9" concept_id="7777030" creator="1" date_created="2012-02-29 09:46:38.0" changed_by="1" date_changed="2013-07-24 11:45:49.0" retired="false" name="SERVICO TARV - TRATAMENTO" description="Programa de seguimento e tratamento aos pacientes HIV+" uuid="efe2481f-9e75-4515-8d5a-86bfde2b5ad3"/>
+    <program program_id="5" concept_id="1782" creator="1" date_created="2012-02-29 10:03:57" changed_by="1" date_changed="2013-07-24 11:46:08" retired="0" name="TUBERCULOSE" description="Programa de Combate a Tuberculose" uuid="142d23c4-c29f-4799-8047-eb3af911fd21" />
 
-	<program_workflow program_workflow_id="2" program_id="9" concept_id="6276" creator="1" date_created="2012-02-29 10:17:25" retired="0"  />
+
+    <program_workflow program_workflow_id="2" program_id="9" concept_id="6276" creator="1" date_created="2012-02-29 10:17:25" retired="0"  />
+    <program_workflow program_workflow_id="4" program_id="5" concept_id="6281" creator="1" date_created="2012-02-29 17:00:42" retired="0" changed_by="1" date_changed="2013-07-24 11:46:08" uuid="8ac84757-6fb0-4b56-ac51-50d5efb004af" />
+    <program_workflow program_workflow_id="5" program_id="8" concept_id="7777024" creator="1" date_created="2012-06-26 11:39:12" retired="0" changed_by="1" date_changed="2013-07-24 07:56:14" uuid="38b2c29f-496c-4b3d-b792-e2f7cdc7c8b7" />
 
 	<program_workflow_state program_workflow_state_id="29" program_workflow_id="2" concept_id="7777004" initial="1" terminal="0" creator="1" date_created="2013-07-24 11:45:49" retired="0" />
-
 	<program_workflow_state program_workflow_state_id="7" program_workflow_id="2" concept_id="1706" initial="0" terminal="0" creator="1" date_created="2012-02-29 10:20:45" retired="0" changed_by="1" date_changed="2013-07-24 11:45:49" uuid="9f2f86e9-303c-4b98-a6ae-37e8806a6f47" />
+
+	<program_workflow_state program_workflow_state_id="27" program_workflow_id="5" concept_id="7777028" initial="0" terminal="1" creator="1" date_created="2012-06-26 11:40:22" retired="0" changed_by="1" date_changed="2013-07-24 07:56:14" uuid="1fa545c3-ba8b-4979-b6eb-62a96ad844af" />
+    <program_workflow_state program_workflow_state_id="16" program_workflow_id="4" concept_id="6269" initial="1" terminal="0" creator="1" date_created="2012-02-29 17:02:45" retired="0" changed_by="1" date_changed="2013-07-24 11:46:08" uuid="d3fd193f-19aa-42cb-85db-cf9113d9cf4a" />
+
 	<concept_name concept_id="1706" name="TRANSFERRED OUT TO ANOTHER FACILITY" locale="en" creator="1" date_created="2008-10-25 14:58:24" concept_name_id="3139" voided="0" uuid="e24e2a8c-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
 	<concept concept_id="1706" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2008-10-25 14:58:24" changed_by="1" date_changed="2018-10-08 12:04:33" uuid="e1de1cf6-1d5f-11e0-b929-000c29ad1d07" />
 
@@ -273,7 +290,7 @@
 	<global_property property="eptsreports.TDF_3TC_LPV_ConceptUuid" property_value="a09ab2c5-878e-4905-b25d-578417777018" uuid="a09ab2c5-878e-4905-b25d-578417777018"/>
 	<global_property property="eptsreports.pregnantConceptUuid" property_value="e1e056a6-1d5f-11e0-b929-000c29ad1d07" uuid="f7e1206c-303d-11e9-9b14-4b7c940be819"/>
 	<global_property property="eptsreports.yesConceptUuid" property_value="e1d81b62-1d5f-11e0-b929-000c29ad1d07" uuid="3c78e4d0-303e-11e9-9f67-5bb21c8782f4"/>
-	<global_property property="eptsreports.continueRegimen" property_value="e1d9f036-1d5f-11e0-b929-000c29ad1d07" uuid="d40e347b-19f2-45f1-903e-08a4a0acdca1"/>	
+	<global_property property="eptsreports.continueRegimen" property_value="e1d9f036-1d5f-11e0-b929-000c29ad1d07" uuid="d40e347b-19f2-45f1-903e-08a4a0acdca1"/>
 	<global_property property="eptsreports.numberOfWeeksPregnantConceptUuid" property_value="e1da0788-1d5f-11e0-b929-000c29ad1d07" uuid="843bdc64-303e-11e9-9eb8-f7ec59695ca6"/>
 	<global_property property="eptsreports.pregnancyDueDateConceptUuid" property_value="e1dca8ee-1d5f-11e0-b929-000c29ad1d07" uuid="b96aed76-303e-11e9-8c2c-7f0ff2500278"/>
 	<global_property property="eptsreports.ptvEtvProgramUuid" property_value="06057245-ca21-43ab-a02f-e861d7e54593" uuid="e85ad3e4-303e-11e9-bc40-bb68b233ca93"/>
@@ -309,5 +326,14 @@
 	<global_property property="eptsreports.apssPrevencaoPositivaSeguimentoEncounterTypeUuid" property_value="f4aa93fe-8737-4f70-9532-542b768459d7" description="UUID for the APSS: PREVENÇÃO POSITIVA - SEGUIMENTO encounter type" uuid="50729743-4196-4dfa-b43a-accefa6eb937" />
 	<global_property property="eptsreports.identificadorDefinidoLocalment01Uuid" property_value="c89c90eb-5b03-4899-ab9f-06fecd123511" />
 	<global_property property="eptsreports.preTarvConceptUuid" property_value="44f812e8-c4c0-40cd-aef3-6b1ef76d43e1" description="UUID for PRE-TARV concept" uuid="0b156ca0-fc27-4efb-86b2-1b30e0278b2e" />
+	<global_property property="eptsreports.bPlusConceptUuid" property_value="8ace1eb2-656b-46e0-933b-670fc975ea19" description="UUID for the B plus concept" uuid="05fef9e5-497e-43c1-b557-1eaad96fe8d7" />
+	<global_property property="eptsreports.dateOfMasterCardFileOpeningConceptUuid" property_value="68d65d0c-8fee-456b-8e95-caed990351e1" description="Master Card File Open Dates Concept" uuid="0b156ca0-fc27-4efb-86b2-1b30p0278b2e" />
+	<global_property property="eptsreports.transferOutToAnotherFacilityConceptUuid" property_value="e1de1cf6-1d5f-11e0-b929-000c29ad1d07" description="UUID for the TRANSFERIDO PARA concept" uuid="0b156ca0-fc27-4efb-76b2-1b30p0278b2e" />
+	<global_property property="eptsreports.dateOfLastMenstruationConcept" property_value="e1dc0dd0-1d5f-11e0-b929-000c29ad1d07" description="UUID for DATE OF LAST MENSTRATION concept" uuid="3b69a530-f893-4ade-b454-58b96643c508" />
+	<global_property property="eptsreports.tuberculosisTreatmentStartDateConceptUuid" property_value="e1d85906-1d5f-11e0-b929-000c29ad1d07" description="UUID for the TRATAMENTO start date DE TUBERCULOSE concept" uuid="d70d8dad-53c0-432e-b80f-b5fe863171d3" />
+    <global_property property="eptsreports.tbDgrusTreatmentEndDateUuid" property_value="0ef94b67-b202-40ad-b542-7b2016524335" description="UUID for the TUBERCULOSIS DRUG TREATMENT END DATE    concept" uuid="3fceb7da-4bc8-4b96-9abb-17ce879f2ecd" />
+    <global_property property="eptsreports.tbProgramUuid" property_value="142d23c4-c29f-4799-8047-eb3af911fd21" description="UUID for the Programa de Combate a Tuberculose" uuid="265a83ae-dee2-4134-9259-113ecd11201d" />
+    <global_property property="eptsreports.activeTBConceptUuid" property_value="63b15479-5a05-4bdc-a6e5-eab175743122" description="UUID for the TUBERCULOSE ACTIVO concept" uuid="763a4102-1d49-47ae-b19e-aba7e9d86b52" />
+    <global_property property="eptsreports.tuberculosisTreatmentPlanConceptUuid" property_value="e1d9fbda-1d5f-11e0-b929-000c29ad1d07" description="UUID for the TRATAMENTO DE TUBERCULOSE concept" uuid="78a16b62-05fd-4b4e-83e0-8a3659c69981" />
 
 </dataset>

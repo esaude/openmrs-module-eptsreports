@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,7 +44,7 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
 
   @Before
   public void init() throws Exception {
-    executeDataSet("calculationsTest.xml");
+    executeDataSet("metadata.xml");
     executeLargeDataSet("genericCohortQueriesTest.xml");
     conceptService = Context.getConceptService();
     encounterService = Context.getEncounterService();
@@ -56,7 +57,8 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
     assertEquals(
         new HashSet<>(Arrays.asList(7)),
         evaluateCohortDefinition(
-                genericCohortQueries.hasCodedObs(conceptService.getConcept(18), null), null)
+                genericCohortQueries.hasCodedObs(conceptService.getConcept(18), null),
+                Collections.<Parameter, Object>emptyMap())
             .getMemberIds());
   }
 
@@ -67,7 +69,7 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
         evaluateCohortDefinition(
                 genericCohortQueries.hasCodedObs(
                     conceptService.getConcept(18), Arrays.asList(conceptService.getConcept(7))),
-                null)
+                Collections.<Parameter, Object>emptyMap())
             .getMemberIds());
   }
 
@@ -82,7 +84,7 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
                     null,
                     Arrays.asList(encounterService.getEncounterType(1)),
                     null),
-                null)
+                Collections.<Parameter, Object>emptyMap())
             .getMemberIds());
   }
 
@@ -97,7 +99,7 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
                     SetComparator.IN,
                     Arrays.asList(encounterService.getEncounterType(1)),
                     Arrays.asList(conceptService.getConcept(7))),
-                null)
+                Collections.<Parameter, Object>emptyMap())
             .getMemberIds());
   }
 
@@ -142,14 +144,14 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
         new HashSet<>(Arrays.asList(2, 6, 7, 8, 999, 432, 100, 101)),
         evaluateCohortDefinition(
                 genericCohortQueries.generalSql("allPatients", "select patient_id from patient"),
-                null)
+                Collections.<Parameter, Object>emptyMap())
             .getMemberIds());
     assertEquals(
         new HashSet<>(Arrays.asList(2, 6, 7, 8, 100, 101)),
         evaluateCohortDefinition(
                 genericCohortQueries.generalSql(
                     "nonVoidedPatients", "select patient_id from patient where voided = false"),
-                null)
+                Collections.<Parameter, Object>emptyMap())
             .getMemberIds());
   }
 
@@ -292,7 +294,7 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
                     null,
                     null,
                     Arrays.asList(encounterService.getEncounterType(1))),
-                null)
+                Collections.<Parameter, Object>emptyMap())
             .getMemberIds());
     assertEquals(
         new HashSet<>(Arrays.asList()),
@@ -305,7 +307,7 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
                     null,
                     null,
                     Arrays.asList(encounterService.getEncounterType(1))),
-                null)
+                Collections.<Parameter, Object>emptyMap())
             .getMemberIds());
   }
 

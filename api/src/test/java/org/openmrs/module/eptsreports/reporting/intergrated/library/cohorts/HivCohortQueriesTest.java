@@ -18,7 +18,7 @@ public class HivCohortQueriesTest extends DefinitionsTest {
 
   @Before
   public void setUp() throws Exception {
-    executeDataSet("calculationsTest.xml");
+    executeDataSet("metadata.xml");
     executeDataSet("hivCohortQueriesTest.xml");
   }
 
