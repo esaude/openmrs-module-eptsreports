@@ -124,7 +124,7 @@ public class PregnantQueries {
             + lastMenstrualPeriod
             + "     AND e.encounter_type = "
             + adultSegEncounter
-            + "     AND o.value_datetime BETWEEN :startDate AND :endDate GROUP BY p.patient_id) as pregnant "
+            + "     AND pe.gender='F' AND o.value_datetime BETWEEN :startDate AND :endDate GROUP BY p.patient_id) as pregnant "
             + "     GROUP BY patient_id) max_pregnant "
             + "     LEFT JOIN "
             + "     (SELECT breastfeeding.patient_id, max(breastfeeding.last_date) as breastfeeding_date FROM ( "
