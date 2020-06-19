@@ -16,11 +16,10 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 import java.util.Arrays;
 import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.Eri4MonthsDimensions;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.library.queries.Eri4MonthsQueries;
-import org.openmrs.module.eptsreports.reporting.library.queries.Eri4mType;
+import org.openmrs.module.eptsreports.reporting.library.queries.ErimType;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -35,8 +34,6 @@ public class Eri4MonthsDataset extends BaseDataSet {
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
 
   @Autowired private Eri4MonthsDimensions eri4MonthsDimensions;
-
-  @Autowired private TxNewCohortQueries txNewCohortQueries;
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
@@ -66,8 +63,12 @@ public class Eri4MonthsDataset extends BaseDataSet {
             this.eptsGeneralIndicator.getIndicator(
                 "all patients",
                 EptsReportUtils.map(
-                    this.txNewCohortQueries.getTxNewCompositionCohort("patientNewlyEnrolledInART"),
-                    "startDate=${endDate-5m+1d},endDate=${endDate-4m},location=${location}")),
+                    this.genericCohortQueries.generalSql(
+                        "patientsAll",
+                        Eri4MonthsQueries
+                            .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
+                                ErimType.TOTAL)),
+                    "endDate=${endDate},location=${location}")),
             reportingPeriodMappings),
         this.get4MonthsRetentionColumns());
 
@@ -82,7 +83,7 @@ public class Eri4MonthsDataset extends BaseDataSet {
                         "patientsInTreatment",
                         Eri4MonthsQueries
                             .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
-                                Eri4mType.IN_TREATMENT)),
+                                ErimType.IN_TREATMENT)),
                     "endDate=${endDate},location=${location}")),
             reportingPeriodMappings),
         this.get4MonthsRetentionColumns());
@@ -98,7 +99,7 @@ public class Eri4MonthsDataset extends BaseDataSet {
                         "patientsDead",
                         Eri4MonthsQueries
                             .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
-                                Eri4mType.DEAD)),
+                                ErimType.DEAD)),
                     "endDate=${endDate},location=${location}")),
             reportingPeriodMappings),
         this.get4MonthsRetentionColumns());
@@ -114,7 +115,7 @@ public class Eri4MonthsDataset extends BaseDataSet {
                         "patientsLftu",
                         Eri4MonthsQueries
                             .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
-                                Eri4mType.LFTU)),
+                                ErimType.LFTU)),
                     "endDate=${endDate},location=${location}")),
             reportingPeriodMappings),
         this.get4MonthsRetentionColumns());
@@ -130,7 +131,7 @@ public class Eri4MonthsDataset extends BaseDataSet {
                         "patientsTransferredOut",
                         Eri4MonthsQueries
                             .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
-                                Eri4mType.TRANFERED_OUT)),
+                                ErimType.TRANFERED_OUT)),
                     "endDate=${endDate},location=${location}")),
             reportingPeriodMappings),
         this.get4MonthsRetentionColumns());
@@ -146,7 +147,7 @@ public class Eri4MonthsDataset extends BaseDataSet {
                         "patientsStoppedTreatment",
                         Eri4MonthsQueries
                             .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
-                                Eri4mType.SPTOPPED_TREATMENT)),
+                                ErimType.SPTOPPED_TREATMENT)),
                     "endDate=${endDate},location=${location}")),
             reportingPeriodMappings),
         this.get4MonthsRetentionColumns());
@@ -162,7 +163,7 @@ public class Eri4MonthsDataset extends BaseDataSet {
                         "patientsDefaulters",
                         Eri4MonthsQueries
                             .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
-                                Eri4mType.DEFAULTER)),
+                                ErimType.DEFAULTER)),
                     "endDate=${endDate},location=${location}")),
             reportingPeriodMappings),
         this.get4MonthsRetentionColumns());

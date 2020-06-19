@@ -25,7 +25,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.TxTbPrevCohortQu
 import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.DsdQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.library.queries.Eri2MonthsQueriesInterface;
-import org.openmrs.module.eptsreports.reporting.library.queries.Eri4mType;
+import org.openmrs.module.eptsreports.reporting.library.queries.ErimType;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxCurrQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxNewQueries;
 import org.openmrs.module.eptsreports.reporting.utils.AgeRange;
@@ -300,7 +300,7 @@ public class EptsCommonDimension {
                 "findPatientsWhoStartedArtAtAPeriodAndDidNotHaveASecondPickupsOrClinicalConsultationWithin33DaysAfterArtInitiation",
                 Eri2MonthsQueriesInterface.QUERY
                     .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickup33DaysForASpecificPatientType(
-                        Eri4mType.DEFAULTER)),
+                        ErimType.DEFAULTER)),
             mappings));
 
     dimension.addCohortDefinition(
@@ -310,7 +310,7 @@ public class EptsCommonDimension {
                 "findPatientsStartedArtLastMonthWith2PickupsOrConsultationWithin33DaysExcludingDeadAndTransferedOutAndIn",
                 Eri2MonthsQueriesInterface.QUERY
                     .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickup33DaysForASpecificPatientType(
-                        Eri4mType.IN_TREATMENT)),
+                        ErimType.IN_TREATMENT)),
             mappings));
 
     dimension.addCohortDefinition(
@@ -320,7 +320,7 @@ public class EptsCommonDimension {
                 "findPatientsWhoStartedArtInAPeriodAndAreDeath33DaysAfterArtInitiation",
                 Eri2MonthsQueriesInterface.QUERY
                     .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickup33DaysForASpecificPatientType(
-                        Eri4mType.DEAD)),
+                        ErimType.DEAD)),
             mappings));
 
     dimension.addCohortDefinition(
@@ -330,7 +330,7 @@ public class EptsCommonDimension {
                 "findPatientsWhoStartedArtInAPeriodAndAreTrasferedOut33DaysAfterInitiation",
                 Eri2MonthsQueriesInterface.QUERY
                     .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickup33DaysForASpecificPatientType(
-                        Eri4mType.TRANFERED_OUT)),
+                        ErimType.TRANFERED_OUT)),
             mappings));
 
     dimension.addCohortDefinition(
@@ -340,7 +340,7 @@ public class EptsCommonDimension {
                 "findPatientsWhoStartedArtInAPeriodAndSuspendTratement33DaysAfterInitiation",
                 Eri2MonthsQueriesInterface.QUERY
                     .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickup33DaysForASpecificPatientType(
-                        Eri4mType.SPTOPPED_TREATMENT)),
+                        ErimType.SPTOPPED_TREATMENT)),
             mappings));
 
     return dimension;

@@ -148,7 +148,7 @@ public class Eri4MonthsQueries {
 
   public static final String
       findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickupBetween61And120ForASpecificPatientType(
-          final Eri4mType eri4mType) {
+          final ErimType eri4mType) {
 
     String query =
         "SELECT patient_id FROM (SELECT inicio_real.patient_id, "
@@ -286,6 +286,10 @@ public class Eri4MonthsQueries {
 
       case SPTOPPED_TREATMENT:
         query = query + " WHERE final_state = 8";
+        break;
+
+      case TOTAL:
+        query = query + "";
         break;
     }
 

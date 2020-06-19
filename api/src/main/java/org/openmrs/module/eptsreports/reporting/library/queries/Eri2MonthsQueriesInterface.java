@@ -5,7 +5,7 @@ public interface Eri2MonthsQueriesInterface {
     @SuppressWarnings("incomplete-switch")
     public static final String
         findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickup33DaysForASpecificPatientType(
-            final Eri4mType eri4mType) {
+            final ErimType eri4mType) {
 
       String query =
           "SELECT patient_id FROM ( SELECT inicio_real.patient_id,inicio_real.data_inicio,"
@@ -122,6 +122,10 @@ public interface Eri2MonthsQueriesInterface {
 
         case SPTOPPED_TREATMENT:
           query = query + " WHERE final_state = 8";
+          break;
+
+        case TOTAL:
+          query = query + "";
           break;
       }
 

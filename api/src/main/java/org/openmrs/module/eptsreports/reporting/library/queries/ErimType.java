@@ -2,7 +2,7 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
 /** @author Stélio Moiane */
-public enum Eri4mType {
+public enum ErimType {
   DEFAULTER,
 
   IN_TREATMENT,
@@ -12,5 +12,8 @@ public enum Eri4mType {
   TRANFERED_OUT,
 
   SPTOPPED_TREATMENT,
-  LFTU
+
+  LFTU,
+
+  TOTAL
 }

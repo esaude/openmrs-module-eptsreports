@@ -14,7 +14,10 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.Eri2MonthsQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.Eri2MonthsQueriesInterface;
+import org.openmrs.module.eptsreports.reporting.library.queries.ErimType;
 import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
 import org.openmrs.module.eptsreports.reporting.utils.AgeRange;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -37,8 +40,6 @@ public class Eri2MonthsCohortQueries {
   @Autowired private GenericCohortQueries genericCohorts;
 
   @Autowired private TxNewCohortQueries txNewCohortQueries;
-
-  @Autowired private BreastFeedingCohortQueries breastFeedingCohortQueries;
 
   /**
    * C
@@ -268,11 +269,17 @@ public class Eri2MonthsCohortQueries {
     eri2MonthsCompositionCohort.addParameter(new Parameter("location", "location", Location.class));
 
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    final String cohortMappings =
+        "startDate=${endDate-2m+1d},endDate=${endDate-1m},location=${location}";
 
     eri2MonthsCompositionCohort.addSearch(
         "START-ART-2-MONTHS",
         EptsReportUtils.map(
-            this.txNewCohortQueries.getTxNewCompositionCohort("patientEnrolledInART2Months"),
+            this.genericCohortQueries.generalSql(
+                "All patients",
+                Eri2MonthsQueriesInterface.QUERY
+                    .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickup33DaysForASpecificPatientType(
+                        ErimType.TOTAL)),
             mappings));
 
     eri2MonthsCompositionCohort.addSearch(
@@ -281,7 +288,7 @@ public class Eri2MonthsCohortQueries {
             this.genericCohorts.generalSql(
                 "patientsThatAreFemaleAndWereMarkedAsPregnantInTheInitialConsultationOrFollowUpConsultationAndMasterCard",
                 PregnantQueries.findPatientsWhoArePregnantInAPeriod()),
-            mappings));
+            cohortMappings));
 
     eri2MonthsCompositionCohort.setCompositionString("START-ART-2-MONTHS AND PREGNANT");
 
@@ -299,18 +306,26 @@ public class Eri2MonthsCohortQueries {
 
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
+    final String cohortMappings =
+        "startDate=${endDate-2m+1d},endDate=${endDate-1m},location=${location}";
+
     eri2MonthsCompositionCohort.addSearch(
         "START-ART-2-MONTHS",
         EptsReportUtils.map(
-            this.txNewCohortQueries.getTxNewCompositionCohort("patientEnrolledInART2Months"),
+            this.genericCohortQueries.generalSql(
+                "All patients",
+                Eri2MonthsQueriesInterface.QUERY
+                    .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickup33DaysForASpecificPatientType(
+                        ErimType.TOTAL)),
             mappings));
 
     eri2MonthsCompositionCohort.addSearch(
         "BREASTFEEDING",
         EptsReportUtils.map(
-            this.breastFeedingCohortQueries
-                .findPatientsWhoAreBreastFeedingExcludingPregnantsInAPeriod(),
-            "cohortStartDate=${startDate},cohortEndDate=${endDate},location=${location}"));
+            this.genericCohorts.generalSql(
+                "patientsWhoAreBreasfeedingInAPeriod",
+                BreastfeedingQueries.findPatientsWhoAreBreastfeeding()),
+            cohortMappings));
 
     eri2MonthsCompositionCohort.setCompositionString("START-ART-2-MONTHS AND BREASTFEEDING");
 
@@ -328,18 +343,26 @@ public class Eri2MonthsCohortQueries {
 
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
+    final String cohortMappings =
+        "startDate=${endDate-2m+1d},endDate=${endDate-1m},location=${location}";
+
     eri2MonthsCompositionCohort.addSearch(
         "START-ART-2-MONTHS",
         EptsReportUtils.map(
-            this.txNewCohortQueries.getTxNewCompositionCohort("patientEnrolledInART2Months"),
+            this.genericCohortQueries.generalSql(
+                "All patients",
+                Eri2MonthsQueriesInterface.QUERY
+                    .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickup33DaysForASpecificPatientType(
+                        ErimType.TOTAL)),
             mappings));
 
     eri2MonthsCompositionCohort.addSearch(
         "BREASTFEEDING",
         EptsReportUtils.map(
-            this.breastFeedingCohortQueries
-                .findPatientsWhoAreBreastFeedingExcludingPregnantsInAPeriod(),
-            "cohortStartDate=${startDate},cohortEndDate=${endDate},location=${location}"));
+            this.genericCohorts.generalSql(
+                "patientsWhoAreBreasfeedingInAPeriod",
+                BreastfeedingQueries.findPatientsWhoAreBreastfeeding()),
+            cohortMappings));
 
     eri2MonthsCompositionCohort.addSearch(
         "PREGNANT",
@@ -347,13 +370,13 @@ public class Eri2MonthsCohortQueries {
             this.genericCohorts.generalSql(
                 "patientsWhoArePregnantInAPeriod",
                 PregnantQueries.findPatientsWhoArePregnantInAPeriod()),
-            mappings));
+            cohortMappings));
 
     eri2MonthsCompositionCohort.addSearch(
         "ADULT",
         EptsReportUtils.map(
             this.txNewCohortQueries.findPatientsWhoAreNewlyEnrolledOnArtByAgeRange(AgeRange.ADULT),
-            mappings));
+            cohortMappings));
 
     eri2MonthsCompositionCohort.setCompositionString(
         "(START-ART-2-MONTHS AND ADULT) NOT (PREGNANT OR BREASTFEEDING)");
@@ -372,18 +395,26 @@ public class Eri2MonthsCohortQueries {
 
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
+    final String cohortMappings =
+        "startDate=${endDate-2m+1d},endDate=${endDate-1m},location=${location}";
+
     eri2MonthsCompositionCohort.addSearch(
         "START-ART-2-MONTHS",
         EptsReportUtils.map(
-            this.txNewCohortQueries.getTxNewCompositionCohort("patientEnrolledInART2Months"),
+            this.genericCohortQueries.generalSql(
+                "All patients",
+                Eri2MonthsQueriesInterface.QUERY
+                    .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickup33DaysForASpecificPatientType(
+                        ErimType.TOTAL)),
             mappings));
 
     eri2MonthsCompositionCohort.addSearch(
         "BREASTFEEDING",
         EptsReportUtils.map(
-            this.breastFeedingCohortQueries
-                .findPatientsWhoAreBreastFeedingExcludingPregnantsInAPeriod(),
-            "cohortStartDate=${startDate},cohortEndDate=${endDate},location=${location}"));
+            this.genericCohorts.generalSql(
+                "patientsWhoAreBreasfeedingInAPeriod",
+                BreastfeedingQueries.findPatientsWhoAreBreastfeeding()),
+            cohortMappings));
 
     eri2MonthsCompositionCohort.addSearch(
         "PREGNANT",
@@ -391,14 +422,14 @@ public class Eri2MonthsCohortQueries {
             this.genericCohorts.generalSql(
                 "patientsWhoArePregnantInAPeriod",
                 PregnantQueries.findPatientsWhoArePregnantInAPeriod()),
-            mappings));
+            cohortMappings));
 
     eri2MonthsCompositionCohort.addSearch(
         "CHILDREN",
         EptsReportUtils.map(
             this.txNewCohortQueries.findPatientsWhoAreNewlyEnrolledOnArtByAgeRange(
                 AgeRange.CHILDREN),
-            mappings));
+            cohortMappings));
 
     eri2MonthsCompositionCohort.setCompositionString(
         "(START-ART-2-MONTHS AND CHILDREN) NOT (PREGNANT OR BREASTFEEDING)");
