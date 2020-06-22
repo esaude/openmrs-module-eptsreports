@@ -436,10 +436,7 @@ public class EriDSDCohortQueries {
     return sql;
   }
 
-  /**
-   * D2: Number of active patients on ART Not Eligible for DSD D1
-   *
-   */
+  /** D2: Number of active patients on ART Not Eligible for DSD D1 */
   public CohortDefinition getD2() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     String cohortName =
@@ -694,11 +691,8 @@ public class EriDSDCohortQueries {
     cd.addSearch("TxCurr", EptsReportUtils.map(txCurr, mappings));
     cd.addSearch("scheduledN2", EptsReportUtils.map(patientsScheduled, mappings));
 
-    String rapidFlowMappings =
-        "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
-    cd.addSearch("rapidFlow", EptsReportUtils.map(rapidFlow, rapidFlowMappings));
-    cd.addSearch(
-        "completed", EptsReportUtils.map(getPatientsWhoCompletedRapidFlow(), rapidFlowMappings));
+    cd.addSearch("rapidFlow", EptsReportUtils.map(rapidFlow, mappings));
+    cd.addSearch("completed", EptsReportUtils.map(getPatientsWhoCompletedRapidFlow(), mappings));
 
     cd.addSearch(
         "nonPregnantNonBreastFeedingNonTb",
@@ -711,30 +705,31 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getPatientsWhoCompletedRapidFlow() {
-    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+  public CohortDefinition getPatientsWhoCompletedRapidFlow() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
-    cd.setQuestion(hivMetadata.getRapidFlow());
-    cd.setOperator(SetComparator.IN);
-    cd.addValue(hivMetadata.getCompletedConcept());
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        GenericCohortQueries.getLastCodedObsBeforeDate(
+            Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()),
+            hivMetadata.getRapidFlow().getConceptId(),
+            Arrays.asList(hivMetadata.getCompletedConcept().getConceptId())));
     return cd;
   }
 
-  private CohortDefinition getPatientsWithStartOrContinueOnRapidFlow() {
-    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+  public CohortDefinition getPatientsWithStartOrContinueOnRapidFlow() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
-    cd.setQuestion(hivMetadata.getRapidFlow());
-    cd.setOperator(SetComparator.IN);
-    cd.addValue(hivMetadata.getStartDrugsConcept());
-    cd.addValue(hivMetadata.getContinueRegimenConcept());
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        GenericCohortQueries.getLastCodedObsBeforeDate(
+            Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()),
+            hivMetadata.getRapidFlow().getConceptId(),
+            Arrays.asList(
+                hivMetadata.getStartDrugsConcept().getConceptId(),
+                hivMetadata.getContinueRegimenConcept().getConceptId())));
     return cd;
   }
 
@@ -898,36 +893,29 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    CohortDefinition txCurr = txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true);
     CohortDefinition patientsEnrolledOnGaac = getAllPatientsEnrolledOnGaac();
     CohortDefinition startOrContinueGAAC = getPatientsWithStartOrContinueGAAC();
     CohortDefinition completedGAAC = getPatientsWhoCompletedGAAC();
 
     cd.addSearch(
-        "TxCurr", EptsReportUtils.map(txCurr, "onOrBefore=${endDate},location=${location}"));
+        "TxCurr",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
+            "onOrBefore=${endDate},location=${location}"));
+
     cd.addSearch("patientsEnrolledOnGaac", mapStraightThrough(patientsEnrolledOnGaac));
 
-    String gaacMappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
+    String gaacMappings = "onOrBefore=${endDate},location=${location}";
     cd.addSearch("startOrContinueGAAC", EptsReportUtils.map(startOrContinueGAAC, gaacMappings));
+
     cd.addSearch("completedGAAC", EptsReportUtils.map(completedGAAC, gaacMappings));
     cd.addSearch(
-        "pregnant",
+        "PregnantAndBreastfeedingAndOnTBTreatment",
         EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "breastfeeding",
-        EptsReportUtils.map(
-            getBreastfeedingComposition(),
-            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "tbTreatment",
-        EptsReportUtils.map(
-            commonCohortQueries.getPatientsOnTbTreatment(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
+            getPregnantAndBreastfeedingAndOnTBTreatment(),
+            "endDate=${endDate},location=${location}"));
     cd.setCompositionString(
-        "TxCurr AND (patientsEnrolledOnGaac OR startOrContinueGAAC) NOT (completedGAAC OR pregnant OR breastfeeding OR tbTreatment)");
+        "TxCurr AND (patientsEnrolledOnGaac OR startOrContinueGAAC) NOT (completedGAAC OR PregnantAndBreastfeedingAndOnTBTreatment)");
 
     return cd;
   }
@@ -1296,29 +1284,30 @@ public class EriDSDCohortQueries {
   }
 
   private CohortDefinition getPatientsWithStartOrContinueGAAC() {
-    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
-    cd.setQuestion(hivMetadata.getGaac());
-    cd.setOperator(SetComparator.IN);
-    cd.addValue(hivMetadata.getStartDrugsConcept());
-    cd.addValue(hivMetadata.getContinueRegimenConcept());
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        GenericCohortQueries.getLastCodedObsBeforeDate(
+            Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()),
+            hivMetadata.getGaac().getConceptId(),
+            Arrays.asList(
+                hivMetadata.getStartDrugsConcept().getConceptId(),
+                hivMetadata.getContinueRegimenConcept().getConceptId())));
     return cd;
   }
 
   private CohortDefinition getPatientsWhoCompletedGAAC() {
-    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
-    cd.setQuestion(hivMetadata.getGaac());
-    cd.setOperator(SetComparator.IN);
-    cd.addValue(hivMetadata.getCompletedConcept());
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        GenericCohortQueries.getLastCodedObsBeforeDate(
+            Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()),
+            hivMetadata.getGaac().getConceptId(),
+            Arrays.asList(hivMetadata.getCompletedConcept().getConceptId())));
     return cd;
   }
 

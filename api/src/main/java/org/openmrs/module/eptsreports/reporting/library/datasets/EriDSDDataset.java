@@ -200,10 +200,7 @@ public class EriDSDDataset extends BaseDataSet {
         "DSD FR Stable subtotal",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "FRSST",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingFRStable(),
-                    mappings)),
+                "FRSST", EptsReportUtils.map(eriDSDCohortQueries.getN2Stable(), mappings)),
             mappings),
         "");
     dsd.addColumn(
