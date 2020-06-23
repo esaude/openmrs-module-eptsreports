@@ -341,8 +341,9 @@ public class EptsCommonDimension {
     dim.addParameter(new Parameter("startDate", "Start Date", Date.class));
     dim.addParameter(new Parameter("endDate", "End Date", Date.class));
     dim.addParameter(new Parameter("location", "Location", Location.class));
-    CohortDefinition eligible = eriDSDCohortQueries.getAllPatientsWhoAreActiveAndStable();
+    CohortDefinition eligible = eriDSDCohortQueries.getD1();
     CohortDefinition notEligible = eriDSDCohortQueries.getD2();
+
     dim.addCohortDefinition("E", mapStraightThrough(eligible));
     dim.addCohortDefinition("NE", mapStraightThrough(notEligible));
     return dim;

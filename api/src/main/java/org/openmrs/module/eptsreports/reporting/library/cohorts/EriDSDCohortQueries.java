@@ -40,7 +40,7 @@ public class EriDSDCohortQueries {
   @Autowired private HivMetadata hivMetadata;
 
   /** D1: Number of active, stable, patients on ART. Combinantion of Criteria 1,2,3,4,5 */
-  public CohortDefinition getAllPatientsWhoAreActiveAndStable() {
+  public CohortDefinition getD1() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     String cohortName = "Number of active, stable, patients on ART";
 
@@ -58,33 +58,26 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             ageCohortQueries.createXtoYAgeCohort("moreThanOrEqual2Years", 2, 200),
             "effectiveDate=${endDate}"));
+
     cd.addSearch(
-        "3",
+        "pregnantBreastfeedingTB",
         EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
+            getPregnantAndBreastfeedingAndOnTBTreatment(),
+            "endDate=${endDate},location=${location}"));
+
     cd.addSearch(
-        "4",
-        EptsReportUtils.map(
-            getBreastfeedingComposition(),
-            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "5",
+        "sarcomaKarposi",
         EptsReportUtils.map(
             getAllPatientsOnSarcomaKarposi(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "6",
-        EptsReportUtils.map(
-            commonCohortQueries.getPatientsOnTbTreatment(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
     cd.addSearch(
         "7",
         EptsReportUtils.map(
             getPatientsWhoAreStable(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(1 AND 2 AND NOT (3 OR 4 OR 5 OR 6) AND 7)");
+    cd.setCompositionString("(1 AND 2 AND NOT (pregnantBreastfeedingTB OR sarcomaKarposi) AND 7)");
 
     return cd;
   }
@@ -228,7 +221,8 @@ public class EriDSDCohortQueries {
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getPediatriaSeguimentoEncounterType(),
-                    hivMetadata.getMisauLaboratorioEncounterType())),
+                    hivMetadata.getMisauLaboratorioEncounterType(),
+                    hivMetadata.getFsrEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "Cd4Lab",
@@ -243,7 +237,8 @@ public class EriDSDCohortQueries {
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getPediatriaSeguimentoEncounterType(),
-                    hivMetadata.getMisauLaboratorioEncounterType())),
+                    hivMetadata.getMisauLaboratorioEncounterType(),
+                    hivMetadata.getFsrEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "Cd4Percent",
@@ -258,7 +253,8 @@ public class EriDSDCohortQueries {
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getPediatriaSeguimentoEncounterType(),
-                    hivMetadata.getMisauLaboratorioEncounterType())),
+                    hivMetadata.getMisauLaboratorioEncounterType(),
+                    hivMetadata.getFsrEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "Age",
@@ -295,7 +291,8 @@ public class EriDSDCohortQueries {
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getPediatriaSeguimentoEncounterType(),
-                    hivMetadata.getMisauLaboratorioEncounterType())),
+                    hivMetadata.getMisauLaboratorioEncounterType(),
+                    hivMetadata.getFsrEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "Cd4Lab",
@@ -310,7 +307,8 @@ public class EriDSDCohortQueries {
                 Arrays.asList(
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getPediatriaSeguimentoEncounterType(),
-                    hivMetadata.getMisauLaboratorioEncounterType())),
+                    hivMetadata.getMisauLaboratorioEncounterType(),
+                    hivMetadata.getFsrEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "Age",
@@ -349,8 +347,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "activeAndStable",
         EptsReportUtils.map(
-            getAllPatientsWhoAreActiveAndStable(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            getD1(), "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("activeAndStable AND NOT pregnant AND NOT breastfeeding");
 
@@ -371,14 +368,15 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "patientsWithViralLoadConcepts",
-        EptsReportUtils.map(
-            getPatientsWithViralLoadConcepts(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
         "patientsWithRecentViralLoadEncounter",
         EptsReportUtils.map(
             getPatientsWithTheRecentViralLoadEncounter(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "patientsWithViralLoadConcepts",
+        EptsReportUtils.map(
+            getPatientsWithViralLoadConcepts(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
@@ -429,6 +427,7 @@ public class EriDSDCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+            hivMetadata.getFsrEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getHivViralLoadQualitative().getConceptId()));
@@ -455,8 +454,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "activeAndStablePatients",
         EptsReportUtils.map(
-            getAllPatientsWhoAreActiveAndStable(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            getD1(), "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
         "pregnantOrBreastfeedingOrTBTreatment",
@@ -623,8 +621,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "eligiblePatientsD1",
         EptsReportUtils.map(
-            getAllPatientsWhoAreActiveAndStable(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            getD1(), "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("activeAndStableN1 AND eligiblePatientsD1");
 
@@ -1153,8 +1150,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "eligiblePatientsD1",
         EptsReportUtils.map(
-            getAllPatientsWhoAreActiveAndStable(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            getD1(), "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "masterCardAndTxCurrPatients",
         EptsReportUtils.map(

@@ -51,9 +51,7 @@ public class EriDSDDataset extends BaseDataSet {
         "DSD D1 Total",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "DSD D1 Total",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getAllPatientsWhoAreActiveAndStable(), mappings)),
+                "DSD D1 Total", EptsReportUtils.map(eriDSDCohortQueries.getD1(), mappings)),
             mappings),
         "");
     dsd.addColumn(
