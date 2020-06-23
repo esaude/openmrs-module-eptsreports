@@ -35,7 +35,7 @@ public class DsdQueries {
             + "FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "INNER JOIN obs o ON p.patient_id=o.person_id "
             + "WHERE e.encounter_id = %d "
-            + "	AND o.concept_id IN (%d, %d, %d, %d) "
+            + "	AND o.concept_id IN (%d, %d, %d) "
             + "	AND o.value_coded IN (%d, %d) "
             + " AND e.encounter_datetime BETWEEN :startDate AND :endDate "
             + "	AND e.location_id = :location";
@@ -45,7 +45,6 @@ public class DsdQueries {
         new HivMetadata().getAdultoSeguimentoEncounterType().getEncounterTypeId(),
         new HivMetadata().getFamilyApproach().getConceptId(), // fa
         new HivMetadata().getAccessionClubs().getConceptId(), // ca
-        new HivMetadata().getSingleStop().getConceptId(), // pu
         new HivMetadata().getCommunityDispensation().getConceptId(), // dc
         new HivMetadata().getStartDrugs().getConceptId(),
         new HivMetadata().getContinueRegimenConcept().getConceptId());

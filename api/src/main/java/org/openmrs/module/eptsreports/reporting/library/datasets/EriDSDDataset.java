@@ -406,21 +406,18 @@ public class EriDSDDataset extends BaseDataSet {
         getChildrenColumn());
 
     addRow(dsd, "N7", N7, mapStraightThrough(getN7()), getDisags());
-
+    // N8 data columns starts here
     dsd.addColumn(
         "AnyDSDModel-T",
-        "Active patients on ART who participate in at least one measured DSD model)",
+        "Active patients on ART who participate in at least one measured DSD model N8)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "AnyDSDModelT",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModel(),
-                    mappings)),
+                "AnyDSDModelT", EptsReportUtils.map(eriDSDCohortQueries.getN8(), mappings)),
             mappings),
         "");
     dsd.addColumn(
         "AnyDSDModelE-ST",
-        "Active patients on ART who participate in at least one measured DSD model - Eligible(Stable)",
+        "Active patients on ART who participate in at least one measured DSD model - Eligible(Stable) N8",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "AnyDSDModelE-ST",
@@ -432,7 +429,7 @@ public class EriDSDDataset extends BaseDataSet {
         "");
     dsd.addColumn(
         "AnyDSDModelE-05",
-        "Adult Active patients on ART who participate in at least one measured DSD model - Eligible(Stable)",
+        "Adult Active patients on ART who participate in at least one measured DSD model - Eligible(Stable) N8",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "AnyDSDModelE-05",
@@ -445,7 +442,7 @@ public class EriDSDDataset extends BaseDataSet {
     addRow(
         dsd,
         "AnyDSDModelE",
-        "Active patients on ART who participate in at least one measured DSD model - Eligible(Stable)",
+        "Active patients on ART who participate in at least one measured DSD model - Eligible(Stable) N8",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "AnyDSDModelE",
@@ -457,7 +454,7 @@ public class EriDSDDataset extends BaseDataSet {
         getChildrenColumn());
     dsd.addColumn(
         "AnyDSDModelNE-ST",
-        "Active patients on ART who participate in at least one measured DSD model - Not-Eligible(UnStable)",
+        "Active patients on ART who participate in at least one measured DSD model - Not-Eligible(UnStable) N8",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "AnyDSDModelNE-ST",
@@ -469,7 +466,7 @@ public class EriDSDDataset extends BaseDataSet {
         "");
     dsd.addColumn(
         "AnyDSDModelNE-05",
-        "Adult Active patients on ART who participate in at least one measured DSD model - Not-Eligible(UnStable)",
+        "Adult Active patients on ART who participate in at least one measured DSD model - Not-Eligible(UnStable) N8",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "AnyDSDModelNE-05",
@@ -482,7 +479,7 @@ public class EriDSDDataset extends BaseDataSet {
     addRow(
         dsd,
         "AnyDSDModelNE",
-        "Active patients on ART who participate in at least one measured DSD model - Not-Eligible(UnStable)",
+        "Active patients on ART who participate in at least one measured DSD model - Not-Eligible(UnStable) N8",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "AnyDSDModelNE",

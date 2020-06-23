@@ -137,7 +137,7 @@ public class EriDSDCohortQueries {
                     hivMetadata.getStevensJonhsonSyndromeConcept(),
                     hivMetadata.getHypersensitivityToAbcOrRailConcept(),
                     hivMetadata.getHepaticSteatosisWithHyperlactataemiaConcept())),
-            "onOrAfter=${endDate - 6m},onOrBefore=${endDate},locationList=${location}"));
+            "onOrAfter=${endDate-6m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "patientsWithViralLoad",
         EptsReportUtils.map(
@@ -1677,14 +1677,15 @@ public class EriDSDCohortQueries {
             commonCohortQueries.getPatientsOnTbTreatment(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(1 AND 2 AND NOT (3 OR 4 OR 5 OR 6))");
+    // cd.setCompositionString("(1 AND 2 AND NOT (3 OR 4 OR 5 OR 6))");
+    cd.setCompositionString("1");
 
     return cd;
   }
 
   /*
    * Get number of patients participating in at least one DSD model
-   *
+   *(N1+N2+N3+N4+n5+N7)
    * @return CohortDefinition
    * */
   public CohortDefinition getPatientsParticipatingInAtLeastOneDsdModel() {
@@ -1695,36 +1696,28 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "1",
+        "N1",
         EptsReportUtils.map(
-            getPatientsParticipatingInAfCaPuFrDcDsdModels(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            getN1(), "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "2",
+        "N2",
         EptsReportUtils.map(
-            getAllPatientsWhoseDPIsScheduled83To97DaysAfterLastDrugPickupDate(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            getN2(), "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "3",
+        "N3",
         EptsReportUtils.map(
-            getPatientsWhoseClinicalAppointmentScheduledFor175To190DaysAfterClinicalConsultation(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            getN3(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch("N4", EptsReportUtils.map(getN4(), "endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "4",
+        "N5",
         EptsReportUtils.map(
-            getAllPatientsEnrolledOnGaac(), "endDate=${endDate},location=${location}"));
+            getN5(), "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "5",
+        "N7",
         EptsReportUtils.map(
-            getPatientsMarkedInLastGaaCAsIniciarOrContinuaOnFichaClinica(),
-            "onOrBefore=${startDate},onOrAfter=${endDate},location=${location}"));
-    cd.addSearch(
-        "6",
-        EptsReportUtils.map(
-            getPatientsMarkedCompletedForLastGaac(),
-            "onOrBefore=${startDate},onOrAfter=${endDate},location=${location}"));
+            getN7(), "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(1 OR 2 OR 3 OR 4 OR 5) AND NOT 6");
+    cd.setCompositionString("(N1 OR N2 OR N3 OR N4 OR N5 OR N7)");
 
     return cd;
   }
@@ -1742,10 +1735,10 @@ public class EriDSDCohortQueries {
 
   /*
    * Get number of active patients on ART who participate in at least one DSD model
-   *
+   *N8
    * @return CohortDefinition
    * */
-  public CohortDefinition getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModel() {
+  public CohortDefinition getN8() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -1781,8 +1774,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "1",
         EptsReportUtils.map(
-            getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModel(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            getN8(), "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "2",
         EptsReportUtils.map(
@@ -1808,8 +1800,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "1",
         EptsReportUtils.map(
-            getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModel(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            getN8(), "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "2",
         EptsReportUtils.map(
