@@ -576,6 +576,79 @@ public class EriDSDDataset extends BaseDataSet {
             mappings),
         getChildrenColumn());
 
+    dsd.addColumn(
+        "DS",
+        "DSD DS Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "DST", EptsReportUtils.map(eriDSDCohortQueries.getN9(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "DSSST",
+        "DSD DS Stable subtotal",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "DSSST",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingDSStable(),
+                    mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "DSSNPNBA",
+        "DSD DS Stable Non-pregnant and Non-Breastfeeding Adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "DSSNPNBA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingDSStable(),
+                    mappings)),
+            mappings),
+        "age=15+");
+    addRow(
+        dsd,
+        "DSSNPNBC",
+        " DSD DS Stable Non-pregnant and Non-Breastfeeding Children (2-4, 5-9, 10-14)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "DSSNPNBC",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingDSStable(),
+                    mappings)),
+            mappings),
+        getChildrenColumn());
+    dsd.addColumn(
+        "DSUST",
+        "DSD DS Unstable subtotal",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "DSUST", EptsReportUtils.map(eriDSDCohortQueries.getN9Unstable(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "DSUNPNBA",
+        "DSD DS Unstable Non-pregnant and Non-Breastfeeding Adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "DSUNPNBA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingFRUnstable(),
+                    mappings)),
+            mappings),
+        "age=15+");
+    addRow(
+        dsd,
+        "DSUNPNBC",
+        " DSD DS Unstable Non-pregnant and Non-Breastfeeding Children (2-4, 5-9, 10-14)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "DSUNPNBC",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingFRUnstable(),
+                    mappings)),
+            mappings),
+        getChildrenColumn());
     return dsd;
   }
 
