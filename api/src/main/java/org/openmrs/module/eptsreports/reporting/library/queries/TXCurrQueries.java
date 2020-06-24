@@ -421,7 +421,7 @@ public class TXCurrQueries {
             + "						  AND o.value_datetime <= :onOrBefore  "
             + "						  AND o.concept_id = %s) "
             + "       UNION "
-            + "       Select ficha.patient_id "
+            + "       Select tabela.patient_id "
             + "       from ( "
             + "           SELECT q1.patient_id "
             + "           from "
@@ -442,8 +442,8 @@ public class TXCurrQueries {
             + "               GROUP  BY p.patient_id ) q1 "
             + "               left join obs o2 on o2.encounter_id=q1.encounter_id and "
             + "                   o2.concept_id = %s and o2.voided=0 "
-            + "               where  o2.obs_id  is null) ficha "
-            + "           INNER JOIN ( "
+            + "               where  o2.obs_id  is null "
+            + "           UNION  "
             + "               SELECT q2.patient_id "
             + "               from ( "
             + "                   SELECT p.patient_id, "
@@ -464,7 +464,7 @@ public class TXCurrQueries {
             + "               left join obs o1 on o1.encounter_id=q2.encounter_id and "
             + "                       o1.concept_id = %s and o1.voided=0 "
             + "               where  o1.obs_id is null "
-            + "           ) fila ON ficha.patient_id=fila.patient_id "
+            + "           ) tabela "
             + "       )ps "
             + "       GROUP  BY ps.patient_id";
 

@@ -70,7 +70,7 @@ public class SetupTxCurr21 extends EptsDataExportManager {
     reportDefinition.setParameters(txCurrDataset.getParameters());
 
     reportDefinition.addDataSetDefinition(
-        txCurrDataset.constructTxCurrDataset(false),
+        txCurrDataset.constructTxCurrDataset(true),
         ParameterizableUtil.createParameterMappings(
             "endDate=${endDate},startDate=${startDate},location=${location}"));
 
