@@ -584,4 +584,58 @@ public class GenericCohortQueries {
 
     return replaced;
   }
+
+
+
+  /**
+   * Gets last obs with value coded before enDate
+   *
+   * @param encounterTypeId The Obs encounter Type
+   * @param question The Obs quetion concept
+   * @param answers The third value coded
+   * @return String
+   */
+  public static String getLastCodedObservationBeforeDate(
+          List<Integer> encounterTypes, Integer question, List<Integer> answers) {
+
+    Map<String, String> map = new HashMap<>();
+
+    map.put("encounterTypes", StringUtils.join(encounterTypes, ","));
+    map.put("question", String.valueOf(question));
+    map.put("answers", StringUtils.join(answers, ","));
+
+    String query = " SELECT patient_id  "
+            +"FROM   (SELECT p.patient_id,  "
+            +"               (SELECT e.encounter_id  "
+            +"                FROM   encounter e  "
+            +"                       INNER JOIN obs o  "
+            +"                               ON e.encounter_id = o.encounter_id  "
+            +"                                  AND e.location_id = :location  "
+            +"                                  AND e.encounter_type IN (${encounterTypes})  "
+            +"                                  AND o.concept_id = ${question}  "
+            +"                                  AND e.encounter_datetime <= :onOrBefore  "
+            +"                                  AND e.voided = 0  "
+            +"                                  AND o.voided = 0  "
+            +"                WHERE  e.patient_id = p.patient_id  "
+            +"                ORDER  BY e.encounter_datetime DESC  "
+            +"                LIMIT  1) last_encounter_of_question  "
+            +"        FROM   patient p  "
+            +"        WHERE  p.voided = 0) base_tbl  "
+            +"       JOIN (SELECT obs.encounter_id  "
+            +"             FROM   obs  "
+            +"             WHERE  obs.concept_id = ${question}  "
+            +"                    AND obs.value_coded IN (${answers})  "
+            +"                    AND obs.location_id =:location  "
+            +"                    AND obs.voided = 0) AS answers_tbl  "
+            +"         ON base_tbl.last_encounter_of_question = answers_tbl.encounter_id  "
+            +"GROUP  BY patient_id  ";
+
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    String replaced = sb.replace(query);
+
+    return replaced;
+  }
 }
+
+
