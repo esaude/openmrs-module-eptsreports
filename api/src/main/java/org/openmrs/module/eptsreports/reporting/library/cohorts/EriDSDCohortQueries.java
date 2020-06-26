@@ -2,7 +2,6 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -675,7 +674,12 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition txCurr = txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true);
-    CohortDefinition patientsScheduled = getPatientsScheduled175to190days();
+    CohortDefinition patientsScheduled =
+        getPatientsScheduled175to190days(
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                hivMetadata.getPediatriaSeguimentoEncounterType()),
+            hivMetadata.getReturnVisitDateConcept());
     CohortDefinition rapidFlow = getPatientsWithStartOrContinueOnRapidFlow();
 
     String mappings = "onOrBefore=${endDate},location=${location}";
@@ -726,14 +730,11 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getPatientsScheduled175to190days() {
+  private CohortDefinition getPatientsScheduled175to190days(
+      List<EncounterType> encounterTypes, Concept concept) {
     int lowerBound = 175;
     int upperBound = 190;
-    Concept returnVisitDate = hivMetadata.getReturnVisitDateConcept();
-    List<EncounterType> encounterTypes = new ArrayList<>();
-    encounterTypes.add(hivMetadata.getPediatriaSeguimentoEncounterType());
-    encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
-    return getPatientsScheduled(returnVisitDate, encounterTypes, upperBound, lowerBound);
+    return getPatientsScheduled(concept, encounterTypes, upperBound, lowerBound);
   }
 
   /**
@@ -1445,7 +1446,10 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition txCurr = txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true);
-    CohortDefinition patientsScheduled = getPatientsScheduled175to190days();
+    CohortDefinition patientsScheduled =
+        getPatientsScheduled175to190days(
+            Arrays.asList(hivMetadata.getARVPharmaciaEncounterType()),
+            hivMetadata.getReturnVisitDateForArvDrugConcept());
     CohortDefinition semestralDispensation =
         getPatientsWithStartOrContinueOnSemestralDispensation();
     CohortDefinition semestral = getPatientsWithSemestralTypeOfDispensation();
