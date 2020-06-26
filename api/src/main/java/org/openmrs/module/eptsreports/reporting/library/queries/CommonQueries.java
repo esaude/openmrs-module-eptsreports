@@ -1,9 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
 
 public class CommonQueries {
@@ -151,7 +149,3 @@ public class CommonQueries {
     return replaced;
   }
 }
-
-
-
-

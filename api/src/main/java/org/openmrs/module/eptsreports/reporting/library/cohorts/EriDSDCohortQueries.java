@@ -14,7 +14,6 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.NextAndPrevDatesCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.OnArtForAtleastXmonthsCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
-import org.openmrs.module.eptsreports.reporting.library.queries.CommonQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.DsdQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
@@ -520,8 +519,7 @@ public class EriDSDCohortQueries {
     CohortDefinition patientsScheduled =
         getPatientsScheduled(
             hivMetadata.getReturnVisitDateForArvDrugConcept(),
-            Arrays.asList(
-                hivMetadata.getARVPharmaciaEncounterType()),
+            Arrays.asList(hivMetadata.getARVPharmaciaEncounterType()),
             97,
             83);
     CohortDefinition quarterly = getPatientsWithQuarterlyTypeOfDispensation();
@@ -1412,7 +1410,7 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.setQuery(
-            GenericCohortQueries.getLastCodedObservationBeforeDate(
+        GenericCohortQueries.getLastCodedObservationBeforeDate(
             Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()),
             hivMetadata.getQuarterlyDispensation().getConceptId(),
             Arrays.asList(
@@ -1426,7 +1424,7 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setQuery(
-            GenericCohortQueries.getLastCodedObservationBeforeDate(
+        GenericCohortQueries.getLastCodedObservationBeforeDate(
             Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()),
             hivMetadata.getTypeOfDispensationConcept().getConceptId(),
             Arrays.asList(hivMetadata.getQuarterlyConcept().getConceptId())));
