@@ -9,7 +9,7 @@ public interface Eri2MonthsQueriesInterface {
 
       String query =
           "SELECT patient_id FROM ( SELECT inicio_real.patient_id,inicio_real.data_inicio,"
-              + "IF(MIN(lev_seg.encounter_datetime) < MAX(lev_seg.encounter_datetime),MAX(lev_seg.encounter_datetime),null) last_encounter, "
+              + "MAX(lev_seg.encounter_datetime) last_encounter, "
               + "IF(saida.data_estado is not null and max(lev_seg.encounter_datetime)>saida.data_estado,null,saida.state_id) final_state, "
               + "IF(saida.data_estado is not null and max(lev_seg.encounter_datetime)>saida.data_estado,null,saida.data_estado) final_statedate FROM ( "
               + "SELECT patient_id,data_inicio FROM ( "
@@ -57,7 +57,7 @@ public interface Eri2MonthsQueriesInterface {
               + "inner join obs o on e.encounter_id=o.encounter_id "
               + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=52 AND o.concept_id=23866 and o.value_datetime is not null and o.value_datetime between  (:endDate - INTERVAL 2 MONTH + INTERVAL 1 DAY) and :endDate and e.location_id=:location "
               + ") lev_seg "
-              + "ON lev_seg.patient_id = inicio_real.patient_id and lev_seg.encounter_datetime BETWEEN inicio_real.data_inicio AND (inicio_real.data_inicio + INTERVAL 33 DAY) "
+              + "ON lev_seg.patient_id = inicio_real.patient_id and lev_seg.encounter_datetime BETWEEN (inicio_real.data_inicio + INTERVAL 5 DAY) AND (inicio_real.data_inicio + INTERVAL 33 DAY) "
               + "LEFT JOIN ( "
               + "SELECT patient_id,max(data_estado) data_estado,state_id FROM ( "
               + "select pg.patient_id, max(ps.start_date) data_estado, ps.state as state_id from patient p "
