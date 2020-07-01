@@ -48,7 +48,7 @@ public class Ec7Queries {
             + ","
             + childFollowUp
             + ")"
-            + " AND e.encounter_datetime > ps.start_date"
+            + " AND e.encounter_datetime >= ps.start_date"
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
             + " ) ec7 GROUP BY ec7.patient_id";
     return query;

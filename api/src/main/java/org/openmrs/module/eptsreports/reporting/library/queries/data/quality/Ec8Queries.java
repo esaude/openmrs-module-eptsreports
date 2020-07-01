@@ -44,7 +44,7 @@ public class Ec8Queries {
             + " AND ps.voided=0 "
             + " AND e.location_id IN(:location) "
             + " AND pg.location_id IN(:location) "
-            + " AND e.encounter_datetime > ps.start_date"
+            + " AND e.encounter_datetime >= ps.start_date"
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
             + ") ec8 GROUP BY ec8.patient_id";
     return query;

@@ -44,7 +44,7 @@ public class Ec6Queries {
             + " AND e.voided=0 "
             + " AND e.encounter_type="
             + drugPickupEncounterType
-            + " AND e.encounter_datetime > ps.start_date"
+            + " AND e.encounter_datetime >= ps.start_date"
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
             + ") f_ec6 GROUP BY f_ec6.patient_id";
     return query;
