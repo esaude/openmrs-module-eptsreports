@@ -200,55 +200,9 @@ public class Eri2MonthsQueries {
         + "   AND pickupdate.value_datetime IS NOT NULL   "
         + "   AND pickupdate.value_datetime BETWEEN :startDate AND DATE_ADD(:endDate,INTERVAL 33 DAY)   "
         + "   ) AS first_real ON inicio_real.patient_id = first_real.patient_id  "
-        + "   INNER JOIN    "
-        + "   (SELECT  "
-        + "   e.patient_id, e.encounter_datetime AS second_visit, e.encounter_type "
-        + "   FROM    "
-        + "   patient p   "
-        + "   INNER JOIN encounter e ON e.patient_id = p.patient_id   "
-        + "   INNER JOIN obs o ON o.encounter_id = e.encounter_id   "
         + "   WHERE   "
-        + "   e.voided = 0 AND o.voided = 0   "
-        + "   AND e.location_id = :location   "
-        + "   AND e.encounter_type IN (    "
-        + arvPharmaciaEncounter
-        + ",  "
-        + arvAdultoSeguimentoEncounter
-        + ",  "
-        + arvPediatriaSeguimentoEncounter
-        + ")    "
-        + "   AND e.encounter_datetime BETWEEN :startDate AND DATE_ADD(:endDate,INTERVAL 33 DAY)    "
-        + "   UNION SELECT  "
-        + "   e.patient_id, pickupdate.value_datetime AS second_visit, CASE " 
-        + "   WHEN e.encounter_type=52 THEN 18  "
-        + "   ELSE e.encounter_type END AS encounter_type"
-        + "   FROM    "
-        + "   patient p   "
-        + "   INNER JOIN encounter e ON e.patient_id = p.patient_id   "
-        + "   INNER JOIN obs o ON o.encounter_id = e.encounter_id   "
-        + "   INNER JOIN obs pickupdate ON e.encounter_id = pickupdate.encounter_id   "
-        + "   WHERE    "
-        + "   e.voided = 0 AND o.voided = 0   "
-        + "   AND pickupdate.voided = 0    "
-        + "   AND e.location_id = :location    "
-        + "   AND e.encounter_type =    "
-        + mastercardDrugPickupEncounterType
-        + "   AND o.concept_id =    "
-        + artPickupConcept
-        + "   AND o.value_coded =   "
-        + yesConcept
-        + "   AND pickupdate.concept_id =   "
-        + artPickupDateConcept
-        + "   AND pickupdate.value_datetime IS NOT NULL   "
-        + "    AND pickupdate.value_datetime BETWEEN :startDate AND DATE_ADD(:endDate,INTERVAL 33 DAY)   "
-        + "   ) AS second_real ON inicio_real.patient_id = second_real.patient_id   "
-        + "   WHERE   "
-        + "   first_visit >= inicio_real.data_inicio   "
+        + "   first_visit >= DATE_ADD(inicio_real.data_inicio,INTERVAL 5 DAY)   "
         + "   AND first_visit <= DATE_ADD(inicio_real.data_inicio,INTERVAL 33 DAY)  "
-        + "   AND ((first_real.encounter_type = second_real.encounter_type AND first_visit < second_visit) OR  "
-        + "   (first_real.encounter_type != second_real.encounter_type AND first_visit = second_visit))  "
-        + "   AND DATE_ADD(inicio_real.data_inicio,INTERVAL 5 DAY) <= second_visit  "
-        + "   AND second_visit <= DATE_ADD(inicio_real.data_inicio,INTERVAL 33 DAY)   "
         + "   GROUP  BY inicio_real.patient_id ";
   }
 }
