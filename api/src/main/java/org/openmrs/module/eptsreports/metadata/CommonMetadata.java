@@ -233,12 +233,4 @@ public class CommonMetadata extends Metadata {
             .getGlobalProperty("eptsreports.cotrimoxazoleProphylaxisStartDateConceptUuid");
     return getConcept(uuid);
   }
-
-  //  concept_id=6128
-  public Concept getIsoniazidProphylaxisStartDateConcept() {
-    String uuid =
-        Context.getAdministrationService()
-            .getGlobalProperty("eptsreports.isoniazidProphylaxisStartDateConceptUuid");
-    return getConcept(uuid);
-  }
 }

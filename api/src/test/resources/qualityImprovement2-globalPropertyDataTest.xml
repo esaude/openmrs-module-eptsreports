@@ -170,12 +170,6 @@
 		description="UUID for the GESTANTE concept"
 		uuid="2c5bd76c-305b-49f6-aceb-4ef30e32c658" />
 
-	<global_property
-		property="eptsreports.gestationConceptUuid"
-		property_value="e1cdd58a-1d5f-11e0-b929-000c29ad1d07"
-		description="UUID for the GESTANTE concept"
-		uuid="81c2b4a8-48b2-43a4-b1a3-a386b135dd5a" />
-
 	<global_property property="eptsreports.tbProgramUuid"
 		property_value="142d23c4-c29f-4799-8047-eb3af911fd21"
 		description="UUID for the Programa de Combate a Tuberculose"

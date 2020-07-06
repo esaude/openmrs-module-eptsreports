@@ -1118,7 +1118,7 @@ public class UsMonthlySummaryHivCohortQueries {
   private CohortDefinition getStartedIsoniazidProphylaxis() {
     DateObsCohortDefinition cd = new DateObsCohortDefinition();
     cd.setName("startedIsoniazidProphylaxis");
-    cd.setQuestion(commonMetadata.getIsoniazidProphylaxisStartDateConcept());
+    cd.setQuestion(hivMetadata.getIsoniazidUsageConcept());
     cd.setTimeModifier(TimeModifier.FIRST);
 
     List<EncounterType> encounterTypes = new ArrayList<>();

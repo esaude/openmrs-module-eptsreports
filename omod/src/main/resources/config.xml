@@ -440,15 +440,6 @@
 		</description>
 	</globalProperty>
 
-
-	<globalProperty>
-		<property>@MODULE_ID@.gestationConceptUuid</property>
-		<defaultValue>e1cdd58a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
-		<description>
-			UUID for the GESTACAO concept
-		</description>
-	</globalProperty>
-
 	<globalProperty>
 		<property>@MODULE_ID@.numberOfWeeksPregnantConceptUuid</property>
 		<defaultValue>e1da0788-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -1344,14 +1335,6 @@
 		<defaultValue>56a0216c-cd4b-45d3-9f2b-258e6c021d32</defaultValue>
 		<description>
 			UUID for the DATA DE INICIO DA PROFILAXIA COM COTRIMOXAZOL concept
-		</description>
-	</globalProperty>
-
-	<globalProperty>
-		<property>eptsreports.isoniazidProphylaxisStartDateConceptUuid</property>
-		<defaultValue>6fa92ac9-0a96-4372-9e10-dd9683c19135</defaultValue>
-		<description>
-			UUID for the DATA DE INICIO DA PROFILAXIA COM ISONIAZIDA concept
 		</description>
 	</globalProperty>
 
