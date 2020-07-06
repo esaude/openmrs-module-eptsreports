@@ -177,7 +177,7 @@ public class Eri2MonthsQueries {
         + ")  "
         + "   AND e.encounter_datetime BETWEEN :startDate AND DATE_ADD(:endDate,INTERVAL 33 DAY)    "
         + "    UNION SELECT   "
-        + "    e.patient_id, pickupdate.value_datetime AS first_visit, CASE " 
+        + "    e.patient_id, pickupdate.value_datetime AS first_visit, CASE "
         + "   WHEN e.encounter_type=52 THEN 18  "
         + "   ELSE e.encounter_type END AS encounter_type"
         + "   FROM    "
