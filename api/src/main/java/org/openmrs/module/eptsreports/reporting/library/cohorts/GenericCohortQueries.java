@@ -375,10 +375,6 @@ public class GenericCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getAgeOnArtStartDate(Integer minAge, Integer maxAge) {
-    return getAgeOnArtStartDate(minAge, maxAge, false);
-  }
-
   public CohortDefinition getStartedArtOnPeriod(
       boolean considerTransferredIn, boolean considerPharmacyEncounter) {
     CalculationCohortDefinition cd =

@@ -165,7 +165,8 @@ public class EriCohortQueries {
     cd.addSearch(
         "children",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeOnArtStartDate(null, 14), "location=${location}"));
+            genericCohortQueries.getAgeOnArtStartDate(null, 14, false),
+            "onOrBefore=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
@@ -193,14 +194,14 @@ public class EriCohortQueries {
     cd.addParameter(new Parameter("reportingEndDate", "Reporting End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
-        "initiatedART",
-        EptsReportUtils.map(
-            getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
+    "initiatedART",
+    EptsReportUtils.map(
+        getAllPatientsWhoInitiatedArt(),
+        "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "adults",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeOnArtStartDate(15, null), "location=${location}"));
+            genericCohortQueries.getAgeOnArtStartDate(15, null, false),"onOrBefore=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(

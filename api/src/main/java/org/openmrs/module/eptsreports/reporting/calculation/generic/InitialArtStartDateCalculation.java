@@ -54,6 +54,8 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 
   @Autowired private EPTSCalculationService ePTSCalculationService;
 
+  private static final String ON_OR_BEFORE = "onOrBefore";
+
   /**
    * @should return null for patients who have not started ART
    * @should return start date for patients who have started ART
@@ -65,6 +67,12 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
       Collection<Integer> cohort,
       Map<String, Object> parameterValues,
       PatientCalculationContext context) {
+
+    Date onOrBefore = (Date) context.getFromCache(ON_OR_BEFORE);
+
+    if (onOrBefore == null) {
+      throw new IllegalArgumentException(String.format("Parameter %s must be set", ON_OR_BEFORE));
+    }
 
     CalculationResultMap map = new CalculationResultMap();
     Location location = (Location) context.getFromCache("location");
