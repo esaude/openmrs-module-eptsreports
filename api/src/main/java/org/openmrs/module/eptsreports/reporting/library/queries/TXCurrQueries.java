@@ -28,19 +28,16 @@ public class TXCurrQueries {
         startDrugsConcept);
   }
 
-  public static String getPatientEnrolledInArtProgramByEndReportingPeriod(
-      int aRTProgram, int artTransferredFromOtherHealthFacilityWorkflowState) {
+  public static String getPatientEnrolledInArtProgramByEndReportingPeriod(int aRTProgram) {
 
     String query =
-        "select p.patient_id  "
-            + "from patient p "
-            + "inner join patient_program pg on pg.patient_id=p.patient_id "
-            + "inner  join patient_state ps on ps.patient_program_id=pg.patient_program_id "
-            + "where p.voided=0 and  pg.voided=0  and ps.voided=0 "
-            + "and pg.program_id=%s and  ps.state=%s and pg.date_enrolled <= :onOrBefore  "
-            + "and pg.location_id= :location group by p.patient_id ";
-
-    return String.format(query, aRTProgram, artTransferredFromOtherHealthFacilityWorkflowState);
+        "SELECT p.patient_id  "
+            + "FROM patient p "
+            + "INNER JOIN patient_program pg ON pg.patient_id=p.patient_id "
+            + "WHERE p.voided=0 AND pg.voided=0 "
+            + "AND pg.program_id=%s AND pg.date_enrolled <= :onOrBefore  "
+            + "AND pg.location_id= :location ";
+    return String.format(query, aRTProgram);
   }
 
   public static String getPatientWithFirstDrugPickupEncounterBeforeOrOnEndDate(

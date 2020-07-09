@@ -265,7 +265,7 @@ public class TxCurrCohortQueries {
 
   /**
    * 3.All patients enrolled in ART Program by end of reporting period. (3) Table: patient_program
-   * Criterias: program_id=2, patient_state_id=29 and date_enrolled <= endDate
+   * Criterias: program_id=2, and date_enrolled <= endDate
    */
   @DocumentedDefinition(value = "patientEnrolledInArtProgramByEndReportingPeriod")
   public CohortDefinition getPatientEnrolledInArtProgramByEndReportingPeriod() {
@@ -274,10 +274,7 @@ public class TxCurrCohortQueries {
 
     definition.setQuery(
         TXCurrQueries.getPatientEnrolledInArtProgramByEndReportingPeriod(
-            hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata
-                .getArtTransferredFromOtherHealthFacilityWorkflowState()
-                .getProgramWorkflowStateId()));
+            hivMetadata.getARTProgram().getProgramId()));
 
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
