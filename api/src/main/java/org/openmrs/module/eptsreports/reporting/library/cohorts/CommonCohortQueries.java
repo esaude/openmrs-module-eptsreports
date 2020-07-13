@@ -6,6 +6,7 @@ import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraig
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition2;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.ResumoMensalTransferredOutCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.CommonQueries;
@@ -21,9 +22,12 @@ public class CommonCohortQueries {
 
   private HivMetadata hivMetadata;
 
+  private TbMetadata tbMetadata;
+
   @Autowired
-  public CommonCohortQueries(HivMetadata hivMetadata) {
+  public CommonCohortQueries(HivMetadata hivMetadata, TbMetadata tbMetadata) {
     this.hivMetadata = hivMetadata;
+    this.tbMetadata = tbMetadata;
   }
 
   /** 9. Patients on TB Treatment */
@@ -46,7 +50,9 @@ public class CommonCohortQueries {
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getTBTreatmentPlanConcept().getConceptId(),
             hivMetadata.getStartDrugs().getConceptId(),
-            hivMetadata.getContinueRegimenConcept().getConceptId()));
+            hivMetadata.getContinueRegimenConcept().getConceptId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            tbMetadata.getPulmonaryTB().getConceptId()));
 
     return cd;
   }

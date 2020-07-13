@@ -32,7 +32,9 @@ public class CommonQueries {
       int yesConceptId,
       int tbTreatmentPlanConceptId,
       int startDrugsConceptId,
-      int continueRegimenConceptId) {
+      int continueRegimenConceptId,
+      int masterCardEncounterType,
+      int pulmonaryTBConceptId) {
     Map<String, Integer> map = new HashMap<>();
     map.put("adultoSeguimentoEncounterTypeId", adultoSeguimentoEncounterTypeId);
     map.put("arvPediatriaSeguimentoEncounterTypeId", arvPediatriaSeguimentoEncounterTypeId);
@@ -45,6 +47,8 @@ public class CommonQueries {
     map.put("tbTreatmentPlanConceptId", tbTreatmentPlanConceptId);
     map.put("startDrugsConceptId", startDrugsConceptId);
     map.put("continueRegimenConceptId", continueRegimenConceptId);
+    map.put("masterCardEncounterType", masterCardEncounterType);
+    map.put("pulmonaryTBConceptId", pulmonaryTBConceptId);
 
     String query =
         "SELECT p.patient_id "
@@ -139,8 +143,22 @@ public class CommonQueries {
             + "  AND e.voided=0 "
             + "  AND o.voided=0 "
             + "  AND p.voided=0 "
-            + "  AND e.location_id =   :location ; "
-            + "";
+            + "  AND e.location_id =   :location  "
+            + " UNION "
+            + "  SELECT p.patient_id "
+            + "  FROM patient p "
+            + "       INNER JOIN encounter e "
+            + "             ON p.patient_id = e.patient_id "
+            + "       INNER JOIN obs o "
+            + "             ON e.encounter_id = o.encounter_id "
+            + " WHERE o.concept_id = ${pulmonaryTBConceptId} "
+            + "       AND e.location_id =   :location  "
+            + "       AND e.encounter_type = ${masterCardEncounterType} "
+            + "       AND o.obs_datetime BETWEEN date_sub(:endDate, INTERVAL 6 MONTH) AND :endDate "
+            + "       AND p.voided = 0 "
+            + "       AND e.voided = 0 "
+            + "       AND o.voided = 0 "
+            + "       AND o.value_coded = ${yesConceptId}";
 
     StringSubstitutor sb = new StringSubstitutor(map);
     String replaced = sb.replace(query);
