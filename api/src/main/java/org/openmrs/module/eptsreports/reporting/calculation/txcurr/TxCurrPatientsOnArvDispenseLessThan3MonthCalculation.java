@@ -1,9 +1,12 @@
 package org.openmrs.module.eptsreports.reporting.calculation.txcurr;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
+import org.openmrs.module.eptsreports.reporting.calculation.txcurr.TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation.DisaggregationSourceTypes;
+import org.openmrs.module.eptsreports.reporting.calculation.txcurr.TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation.PatientDisaggregated;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.springframework.stereotype.Component;
@@ -26,7 +29,9 @@ public class TxCurrPatientsOnArvDispenseLessThan3MonthCalculation
       CalculationResultMap resultMap,
       List<PatientDisaggregated> allPatientDisaggregated) {
 
-    if (this.havePatientDisagregatedSameDates(allPatientDisaggregated)) {
+    allPatientDisaggregated = super.getMaximumPatientDisaggregatedByDate(allPatientDisaggregated);
+
+    if (allPatientDisaggregated.size() > 1) {
 
       for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
         if (DisaggregationSourceTypes.FILA.equals(
@@ -40,15 +45,27 @@ public class TxCurrPatientsOnArvDispenseLessThan3MonthCalculation
       }
 
       for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
+        if (Arrays.asList(
+                DisaggregationSourceTypes.DISPENSA_SEMESTRAL,
+                DisaggregationSourceTypes.DISPENSA_TRIMESTRAL,
+                DisaggregationSourceTypes.MODELO_DIFERENCIADO_SEMESTRAL,
+                DisaggregationSourceTypes.MODELO_DIFERENCIADO_TRIMESTRAL)
+            .contains(patientDisaggregated.getDisaggregationSourceType())) {
+          return;
+        }
+      }
+
+      for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
         if (DisaggregationSourceTypes.DISPENSA_MENSAL.equals(
             patientDisaggregated.getDisaggregationSourceType())) {
           resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
           return;
         }
       }
-    } else {
-      PatientDisaggregated maxPatientDisaggregated =
-          this.getMaxPatientDisaggregated(allPatientDisaggregated);
+
+    } else if (!allPatientDisaggregated.isEmpty()) {
+
+      PatientDisaggregated maxPatientDisaggregated = allPatientDisaggregated.iterator().next();
 
       if (maxPatientDisaggregated != null) {
         if (DisaggregationSourceTypes.FILA.equals(

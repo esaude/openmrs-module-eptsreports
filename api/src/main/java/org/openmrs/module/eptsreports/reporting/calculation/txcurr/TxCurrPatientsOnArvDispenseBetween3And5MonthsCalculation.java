@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
+import org.openmrs.module.eptsreports.reporting.calculation.txcurr.TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation.DisaggregationSourceTypes;
+import org.openmrs.module.eptsreports.reporting.calculation.txcurr.TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation.PatientDisaggregated;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.springframework.stereotype.Component;
@@ -28,7 +30,9 @@ public class TxCurrPatientsOnArvDispenseBetween3And5MonthsCalculation
       CalculationResultMap resultMap,
       List<PatientDisaggregated> allPatientDisaggregated) {
 
-    if (super.havePatientDisagregatedSameDates(allPatientDisaggregated)) {
+    allPatientDisaggregated = super.getMaximumPatientDisaggregatedByDate(allPatientDisaggregated);
+
+    if (allPatientDisaggregated.size() > 1) {
 
       for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
         if (DisaggregationSourceTypes.FILA.equals(
@@ -40,12 +44,16 @@ public class TxCurrPatientsOnArvDispenseBetween3And5MonthsCalculation
           return;
         }
       }
+
       for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
-        if (DisaggregationSourceTypes.DISPENSA_MENSAL.equals(
-            patientDisaggregated.getDisaggregationSourceType())) {
+        if (Arrays.asList(
+                DisaggregationSourceTypes.DISPENSA_SEMESTRAL,
+                DisaggregationSourceTypes.MODELO_DIFERENCIADO_SEMESTRAL)
+            .contains(patientDisaggregated.getDisaggregationSourceType())) {
           return;
         }
       }
+
       for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
         if (DisaggregationSourceTypes.DISPENSA_TRIMESTRAL.equals(
             patientDisaggregated.getDisaggregationSourceType())) {
@@ -62,9 +70,10 @@ public class TxCurrPatientsOnArvDispenseBetween3And5MonthsCalculation
         }
       }
 
-    } else {
-      PatientDisaggregated maxPatientDisaggregated =
-          super.getMaxPatientDisaggregated(allPatientDisaggregated);
+    } else if (!allPatientDisaggregated.isEmpty()) {
+
+      PatientDisaggregated maxPatientDisaggregated = allPatientDisaggregated.iterator().next();
+
       if (maxPatientDisaggregated != null) {
         if (DisaggregationSourceTypes.FILA.equals(
             maxPatientDisaggregated.getDisaggregationSourceType())) {

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.apache.commons.lang3.time.DateUtils;
 import org.openmrs.api.context.Context;
@@ -216,6 +217,43 @@ public abstract class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation
       return this.hasSameDates(allDates);
     }
     return false;
+  }
+
+  protected List<PatientDisaggregated> getMaximumPatientDisaggregatedByDate(
+      List<PatientDisaggregated> patients) {
+
+    List<PatientDisaggregated> result = new ArrayList<>();
+    Map<Date, List<PatientDisaggregated>> mapDisaggregated =
+        groupPatienDisaggregatedByDate(patients);
+
+    Date maxDate = DateUtil.getDateTime(Integer.MAX_VALUE, 1, 1);
+
+    for (Entry<Date, List<PatientDisaggregated>> entry : mapDisaggregated.entrySet()) {
+
+      Date dateIteration = entry.getKey();
+
+      if (dateIteration.after(maxDate)) {
+        maxDate = dateIteration;
+        result = entry.getValue();
+      }
+    }
+    return result;
+  }
+
+  private Map<Date, List<PatientDisaggregated>> groupPatienDisaggregatedByDate(
+      List<PatientDisaggregated> data) {
+
+    Map<Date, List<PatientDisaggregated>> result = new HashMap<>();
+
+    for (PatientDisaggregated pd : data) {
+      List<PatientDisaggregated> list = result.get(pd.getDate());
+      if (list == null) {
+        list = new ArrayList<>();
+      }
+      list.add(pd);
+      result.put(pd.getDate(), list);
+    }
+    return result;
   }
 
   private boolean hasSameDates(List<Date> allDates) {
