@@ -1,7 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.calculation.txcurr;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.apache.commons.lang3.time.DateUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.calculation.BaseFghCalculation;
@@ -179,19 +177,6 @@ public abstract class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation
     return result;
   }
 
-  protected PatientDisaggregated getMaxPatientDisaggregated(List<PatientDisaggregated> patients) {
-    Date maxDate = DateUtil.getDateTime(Integer.MAX_VALUE, 1, 1);
-    PatientDisaggregated auxDisaggregated = null;
-
-    for (PatientDisaggregated pDisaggregated : patients) {
-      if (pDisaggregated.getDate().compareTo(maxDate) > 0) {
-        maxDate = pDisaggregated.getDate();
-        auxDisaggregated = pDisaggregated;
-      }
-    }
-    return auxDisaggregated;
-  }
-
   @SuppressWarnings("unchecked")
   protected List<PatientDisaggregated> getNonNullPatientDisaggregated(
       Integer patientId, Map<Integer, PatientDisaggregated>... allMaps) {
@@ -205,18 +190,6 @@ public abstract class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation
       }
     }
     return result;
-  }
-
-  protected boolean havePatientDisagregatedSameDates(List<PatientDisaggregated> patients) {
-    List<Date> allDates = new ArrayList<Date>();
-
-    for (PatientDisaggregated pDisaggregated : patients) {
-      allDates.add(pDisaggregated.getDate());
-    }
-    if (!allDates.isEmpty()) {
-      return this.hasSameDates(allDates);
-    }
-    return false;
   }
 
   protected List<PatientDisaggregated> getMaximumPatientDisaggregatedByDate(
@@ -254,27 +227,6 @@ public abstract class TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation
       result.put(pd.getDate(), list);
     }
     return result;
-  }
-
-  private boolean hasSameDates(List<Date> allDates) {
-    Date firstDate = allDates.get(0);
-    for (Date date : allDates) {
-      if (!this.isSameDay(firstDate, date)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private boolean isSameDay(Date date1, Date date2) {
-    if (date1 == null || date2 == null) {
-      return false;
-    }
-    Calendar cal1 = Calendar.getInstance();
-    cal1.setTime(date1);
-    Calendar cal2 = Calendar.getInstance();
-    cal2.setTime(date2);
-    return DateUtils.isSameDay(cal1, cal2);
   }
 
   public enum DisaggregationSourceTypes {
