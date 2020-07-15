@@ -25,6 +25,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.TxTbPrevCohortQu
 import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.DsdQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.library.queries.Eri2MonthsQueriesInterface;
+import org.openmrs.module.eptsreports.reporting.library.queries.ErimType;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxCurrQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxNewQueries;
 import org.openmrs.module.eptsreports.reporting.utils.AgeRange;
@@ -298,7 +299,8 @@ public class EptsCommonDimension {
             this.genericCohorts.generalSql(
                 "findPatientsWhoStartedArtAtAPeriodAndDidNotHaveASecondPickupsOrClinicalConsultationWithin33DaysAfterArtInitiation",
                 Eri2MonthsQueriesInterface.QUERY
-                    .findPatientsWhoStartedArtAtAPeriodAndDidNotHaveASecondPickupsOrClinicalConsultationWithin33DaysAfterArtInitiation),
+                    .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickup33DaysForASpecificPatientType(
+                        ErimType.DEFAULTER)),
             mappings));
 
     dimension.addCohortDefinition(
@@ -307,7 +309,8 @@ public class EptsCommonDimension {
             this.genericCohorts.generalSql(
                 "findPatientsStartedArtLastMonthWith2PickupsOrConsultationWithin33DaysExcludingDeadAndTransferedOutAndIn",
                 Eri2MonthsQueriesInterface.QUERY
-                    .findPatientsStartedArtLastMonthWith2PickupsOrConsultationWithin33DaysExcludingDeadAndTransferedOutAndIn),
+                    .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickup33DaysForASpecificPatientType(
+                        ErimType.IN_TREATMENT)),
             mappings));
 
     dimension.addCohortDefinition(
@@ -316,7 +319,8 @@ public class EptsCommonDimension {
             this.genericCohorts.generalSql(
                 "findPatientsWhoStartedArtInAPeriodAndAreDeath33DaysAfterArtInitiation",
                 Eri2MonthsQueriesInterface.QUERY
-                    .findPatientsWhoStartedArtInAPeriodAndAreDeath33DaysAfterArtInitiation),
+                    .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickup33DaysForASpecificPatientType(
+                        ErimType.DEAD)),
             mappings));
 
     dimension.addCohortDefinition(
@@ -325,7 +329,8 @@ public class EptsCommonDimension {
             this.genericCohorts.generalSql(
                 "findPatientsWhoStartedArtInAPeriodAndAreTrasferedOut33DaysAfterInitiation",
                 Eri2MonthsQueriesInterface.QUERY
-                    .findPatientsWhoStartedArtInAPeriodAndAreTrasferedOut33DaysAfterInitiation),
+                    .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickup33DaysForASpecificPatientType(
+                        ErimType.TRANFERED_OUT)),
             mappings));
 
     dimension.addCohortDefinition(
@@ -334,7 +339,8 @@ public class EptsCommonDimension {
             this.genericCohorts.generalSql(
                 "findPatientsWhoStartedArtInAPeriodAndSuspendTratement33DaysAfterInitiation",
                 Eri2MonthsQueriesInterface.QUERY
-                    .findPatientsWhoStartedArtInAPeriodAndSuspendTratement33DaysAfterInitiation),
+                    .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickup33DaysForASpecificPatientType(
+                        ErimType.SPTOPPED_TREATMENT)),
             mappings));
 
     return dimension;

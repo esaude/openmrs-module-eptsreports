@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.Map;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.BaseFghCalculation;
 import org.openmrs.module.eptsreports.reporting.library.queries.KeyPopulationQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /** @author Stélio Moiane */
 public abstract class KeyPopulationCalculation extends BaseFghCalculation {
@@ -19,6 +21,8 @@ public abstract class KeyPopulationCalculation extends BaseFghCalculation {
   private static final int MEDICAL_RECORD = 6;
 
   private static final int APSS_RECORD = 35;
+
+  @Autowired private HivMetadata hivMetadata;
 
   @Override
   public CalculationResultMap evaluate(
@@ -29,12 +33,14 @@ public abstract class KeyPopulationCalculation extends BaseFghCalculation {
     final EvaluationService evaluationService =
         Context.getRegisteredComponents(EvaluationService.class).get(0);
 
+    final String kp =
+        String.format(
+            KeyPopulationQueries.QUERY.findKeyPopulationPatients,
+            hivMetadata.getPersonAttributeType().getId());
+
     final List<Integer> keyPopulationPatients =
         evaluationService.evaluateToList(
-            new SqlQueryBuilder(
-                KeyPopulationQueries.QUERY.findKeyPopulationPatients, context.getParameterValues()),
-            Integer.class,
-            context);
+            new SqlQueryBuilder(kp, context.getParameterValues()), Integer.class, context);
 
     if (context.getBaseCohort() != null) {
       keyPopulationPatients.retainAll(context.getBaseCohort().getMemberIds());
@@ -44,7 +50,10 @@ public abstract class KeyPopulationCalculation extends BaseFghCalculation {
 
       final String query =
           String.format(
-              KeyPopulationQueries.QUERY.findFilledKeyPopulationByPatient, patientId, patientId);
+              KeyPopulationQueries.QUERY.findFilledKeyPopulationByPatient,
+              patientId,
+              hivMetadata.getPersonAttributeType().getId(),
+              patientId);
 
       final List<Object[]> evaluateToList =
           evaluationService.evaluateToList(

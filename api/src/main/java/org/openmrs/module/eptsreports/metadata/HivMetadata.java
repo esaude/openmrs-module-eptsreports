@@ -14,6 +14,7 @@ package org.openmrs.module.eptsreports.metadata;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
@@ -78,6 +79,13 @@ public class HivMetadata extends ProgramsMetadata {
     final String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.regimeUuid");
     return getConcept(uuid);
+  }
+  // person_attribute_type_id=24
+  public PersonAttributeType getPersonAttributeType() {
+    final String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.personAttributeType24uuid");
+    return getPersonAttributeType(uuid);
   }
 
   public Concept getRestartConcept() {

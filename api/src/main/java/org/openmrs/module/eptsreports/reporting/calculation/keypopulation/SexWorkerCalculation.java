@@ -12,7 +12,10 @@ public class SexWorkerCalculation extends KeyPopulationCalculation {
   @Override
   public void keyPopulation(
       final CalculationResultMap resultMap, final Integer patientId, final String value) {
-    if (value.equals("MTS") || value.equals("CSW") || value.equals("TS") || value.equals("1901")) {
+    if (value.equalsIgnoreCase("MTS")
+        || value.equalsIgnoreCase("CSW")
+        || value.equalsIgnoreCase("TS")
+        || value.equals("1901")) {
       resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
     }
   }

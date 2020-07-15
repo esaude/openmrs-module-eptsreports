@@ -16,9 +16,11 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 import java.util.Arrays;
 import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri2MonthsCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
+import org.openmrs.module.eptsreports.reporting.library.queries.Eri2MonthsQueriesInterface;
+import org.openmrs.module.eptsreports.reporting.library.queries.ErimType;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -34,15 +36,13 @@ public class Eri2MonthsDataset extends BaseDataSet {
 
   @Autowired private Eri2MonthsCohortQueries eri2MonthsCohortQueries;
 
-  @Autowired private TxNewCohortQueries txNewCohortQueries;
+  @Autowired private GenericCohortQueries genericCohortQueries;
 
   public DataSetDefinition constructEri2MonthsDatset() {
 
     final CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-    final String cohortMappings =
-        "startDate=${endDate-2m+1d},endDate=${endDate-1m},location=${location}";
 
     dsd.setName("ERI-2months Data Set");
     dsd.addParameters(this.getParameters());
@@ -58,8 +58,12 @@ public class Eri2MonthsDataset extends BaseDataSet {
             this.eptsGeneralIndicator.getIndicator(
                 "All patients",
                 EptsReportUtils.map(
-                    this.txNewCohortQueries.getTxNewCompositionCohort("Eri2Months"),
-                    cohortMappings)),
+                    this.genericCohortQueries.generalSql(
+                        "All patients",
+                        Eri2MonthsQueriesInterface.QUERY
+                            .findPatientsWhoHaveEitherClinicalConsultationOrDrugsPickup33DaysForASpecificPatientType(
+                                ErimType.TOTAL)),
+                    mappings)),
             mappings),
         this.get2MonthsRetentionColumns());
 
@@ -72,7 +76,7 @@ public class Eri2MonthsDataset extends BaseDataSet {
                 "Pregnant women",
                 EptsReportUtils.map(
                     this.eri2MonthsCohortQueries.getEri2MonthsPregnatCompositionCohort("Pregnant"),
-                    cohortMappings)),
+                    mappings)),
             mappings),
         this.get2MonthsRetentionColumns());
 
@@ -86,7 +90,7 @@ public class Eri2MonthsDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     this.eri2MonthsCohortQueries.getEri2MonthsBrestfeetingCompositionCohort(
                         "BrestFeeting"),
-                    cohortMappings)),
+                    mappings)),
             mappings),
         this.get2MonthsRetentionColumns());
 
@@ -99,7 +103,7 @@ public class Eri2MonthsDataset extends BaseDataSet {
                 "Children",
                 EptsReportUtils.map(
                     this.eri2MonthsCohortQueries.getEri2MonthsChildCompositionCohort("Children"),
-                    cohortMappings)),
+                    mappings)),
             mappings),
         this.get2MonthsRetentionColumns());
 
@@ -112,7 +116,7 @@ public class Eri2MonthsDataset extends BaseDataSet {
                 "Adult",
                 EptsReportUtils.map(
                     this.eri2MonthsCohortQueries.getEri2MonthsAdultCompositionCohort("Adult"),
-                    cohortMappings)),
+                    mappings)),
             mappings),
         this.get2MonthsRetentionColumns());
 
