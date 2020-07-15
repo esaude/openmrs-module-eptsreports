@@ -63,4 +63,68 @@
     <program_workflow program_workflow_id="2" program_id="11" concept_id="12" creator="1" date_created="2008-08-15 17:01:00.0" retired="false" changed_by="1" date_changed="2008-08-15 17:04:50.0" uuid="c67c8713-7df4-40de-96f6-dc4cce3432da"/>
     <program_workflow_state program_workflow_state_id="30" program_workflow_id="2" concept_id="777003" initial="false" terminal="true" creator="1" date_created="2019-04-30 17:04:02.0" retired="false" uuid="e938129e-248a-482a-acea-f85127251402"/>
     <patient_state patient_state_id="12" patient_program_id="13" state="30" start_date="2017-05-30" creator="1" date_created="2017-05-30 12:29:29.0" voided="false" uuid="ua89deaa-23cc-4840-92fe-63d199c37e6e"/>
+
+<!--    getStartedArtBeforeDateShouldReturnPatientsStartedArtBeforeDate-->
+    <person person_id="372" gender="M" birthdate="1980-03-18" birthdate_estimated="0" dead="0" creator="1"
+            date_created="2015-09-09 08:05:24" voided="0" uuid="a7c40965-fd2c-450f-80d1-6c5f295f9c40"
+            deathdate_estimated="0"/>
+
+    <patient patient_id="372" creator="1" date_created="2015-09-09 08:05:25" voided="0"/>
+
+    <location location_id="12345" name="Java" description="NA" address2="NA" state_province="NA" country="Ganymade"
+              creator="1" date_created="2015-08-20 18:03:30" county_district="NA" address6="NA"
+              address5="Bairro de Namicopo" retired="0" uuid="83be89c2-25b2-48b5-ae2e-f739922542e2"/>
+
+    <patient_program patient_program_id="17062" patient_id="372" program_id="11" date_enrolled="2015-02-19 00:00:00"
+                     creator="1" date_created="2017-07-17 12:06:09" voided="0"
+                     uuid="121b9c32-4164-4cd4-8d87-b69f916c6a12" location_id="12345"/>
+    <!--    -->
+
+    <!-- getNewlyOrPreviouslyEnrolledOnARTShouldReturnNewlyEnrolledPatients-->
+    <person person_id="11968" gender="F" birthdate="1995-09-06" birthdate_estimated="0" dead="0" creator="1"
+            date_created="2019-07-26 12:28:26" voided="0" uuid="cda35387-c623-45db-b882-51a70d889c11"
+            deathdate_estimated="0"/>
+    <patient patient_id="11968" creator="1" date_created="2019-07-26 12:28:26" voided="0"/>
+
+    <!-- art start date -->
+    <location location_id="333" name="CS 24 de Julho" description="NA" address2="NA" state_province="NA"
+              country="Kepler" creator="1" date_created="2015-08-20 18:11:14" county_district="NA" address6="NA"
+              address5="24 de Julho" retired="0" parent_location="220" uuid="c9c8c8bb-67b3-41f7-948a-c58ae02dca46"/>
+
+    <encounter encounter_id="509380" encounter_type="6777002" patient_id="11968" location_id="333"
+               encounter_datetime="2019-07-26 00:00:00" creator="1" date_created="2019-07-29 10:20:29" voided="0"
+               uuid="7c2f9bfd-32a5-4784-88c2-d32d7a662a93" visit_id="397745"/>
+    <obs obs_id="4019469" person_id="11968" concept_id="7777002" encounter_id="509380" obs_datetime="2019-07-26 00:00:00"
+         location_id="333" value_coded="7777003" creator="1" date_created="2019-07-29 10:20:29" voided="0"
+         uuid="5fb5647a-389e-4759-9378-269c5146e441"/>
+
+    <!-- isoniazid use -->
+    <encounter encounter_id="528427" encounter_type="6777002" patient_id="11968" location_id="333"
+               encounter_datetime="2019-10-28 00:00:00" creator="1" date_created="2019-10-31 12:11:26" voided="0"
+               uuid="62165eb9-02de-4090-88f3-18dfc4fc0add"/>
+
+    <obs obs_id="4179999" person_id="11968" concept_id="7777031" encounter_id="528427" obs_datetime="2019-10-28 00:00:00"
+         location_id="333" value_coded="7777003" creator="1" date_created="2019-10-31 12:11:27" voided="0"
+         uuid="d1db5894-22dc-4706-8b2f-7cf68a5c4001"/>
+    <!--    -->
+
+    <!--    getPatientsWhoToLostToFollowUpShouldReturnPatientsWithReturnVisitDateDaysBeforeEndDate-->
+    <location location_id="456" name="CS 24 de Julho" description="NA" address2="NA" state_province="NA"
+              country="Kepler" creator="1" date_created="2015-08-20 18:11:14" county_district="NA" address6="NA"
+              address5="24 de Julho" retired="0" parent_location="220" uuid="70d002ce-8aaa-41a6-a3e3-69b40bb906d2"/>
+
+    <person person_id="372" gender="M" birthdate="1980-03-18" birthdate_estimated="0" dead="0" creator="1"
+            date_created="2015-09-09 08:05:24" voided="0" uuid="a7c40965-fd2c-450f-80d1-6c5f295f9c40"
+            deathdate_estimated="0"/>
+
+    <patient patient_id="372" creator="1" date_created="2015-09-09 08:05:25" voided="0"/>
+
+    <encounter encounter_id="118982" encounter_type="6" patient_id="372" location_id="456"
+               encounter_datetime="2015-02-26 00:00:00" creator="1" date_created="2015-07-31 23:09:04" voided="0"
+               uuid="9f7dcefb-f523-477d-8576-22da8cb5c2d6" visit_id="112012"/>
+
+    <obs obs_id="1009538" person_id="372" concept_id="1410" encounter_id="118982" obs_datetime="2015-02-26 00:00:00"
+         location_id="456" value_datetime="2015-03-26 00:00:00" creator="1" date_created="2015-07-31 23:09:04"
+         voided="0" uuid="df6c3cf6-8f18-41bf-912c-aa18acb590d7"/>
+    <!---->
 </dataset>

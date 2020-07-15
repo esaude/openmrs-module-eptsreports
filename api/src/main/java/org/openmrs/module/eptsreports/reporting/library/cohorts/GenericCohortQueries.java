@@ -17,7 +17,6 @@ import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -41,13 +40,11 @@ import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.Ti
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -458,44 +455,6 @@ public class GenericCohortQueries {
     definition.setCompositionString("31 OR  32");
 
     return definition;
-  }
-
-  /**
-   * Get patients who have encounter of a specific type within date boundaries
-   *
-   * @param encounterType
-   * @retrun CohortDefinition
-   */
-  public CohortDefinition getPatientsHavingEncounterWithinDateBoundaries(int encounterType) {
-    // TODO: #hasEncounter should be used here
-    // (https://github.com/esaude/openmrs-module-eptsreports/pull/185#discussion_r370630968)
-    String query =
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE e.voided=0 AND p.voided=0 AND e.encounter_type = %d AND e.encounter_datetime BETWEEN :startDate AND :endDate";
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Patients having encounter type " + encounterType);
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.setQuery(String.format(query, encounterType));
-    return cd;
-  }
-
-  /**
-   * Patients who have an encounter between ${onOrAfter} and ${onOrBefore}
-   *
-   * @param types the encounter types
-   * @return the cohort definition
-   */
-  public CohortDefinition hasEncounter(EncounterType... types) {
-    EncounterCohortDefinition cd = new EncounterCohortDefinition();
-    cd.setName("has encounter between dates");
-    cd.setTimeQualifier(TimeQualifier.ANY);
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    if (types.length > 0) {
-      cd.setEncounterTypeList(Arrays.asList(types));
-    }
-    return cd;
   }
 
   /**

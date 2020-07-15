@@ -1,7 +1,10 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.library;
 
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.ConceptService;
@@ -20,6 +24,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsTest;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -141,16 +146,18 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
   @Test
   public void generalSqlShouldMatchAGivenQuery() throws EvaluationException {
     assertEquals(
-        new HashSet<>(Arrays.asList(2, 6, 7, 8, 999, 432, 100, 101)),
+        new HashSet<>(Arrays.asList(100, 101)),
         evaluateCohortDefinition(
-                genericCohortQueries.generalSql("allPatients", "select patient_id from patient"),
+                genericCohortQueries.generalSql(
+                    "allPatients", "select patient_id from patient where patient_id in(100, 101)"),
                 Collections.<Parameter, Object>emptyMap())
             .getMemberIds());
     assertEquals(
-        new HashSet<>(Arrays.asList(2, 6, 7, 8, 100, 101)),
+        new HashSet<>(Arrays.asList(100, 101)),
         evaluateCohortDefinition(
                 genericCohortQueries.generalSql(
-                    "nonVoidedPatients", "select patient_id from patient where voided = false"),
+                    "nonVoidedPatients",
+                    "select patient_id from patient where voided = false and patient_id in(100, 101)"),
                 Collections.<Parameter, Object>emptyMap())
             .getMemberIds());
   }
@@ -335,5 +342,49 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
                     Arrays.asList(encounterService.getEncounterType(1))),
                 parameters)
             .getMemberIds());
+  }
+
+  @Test
+  public void getStartedArtBeforeDateShouldReturnPatientsStartedArtBeforeDate()
+      throws EvaluationException {
+    Date date = DateUtil.getDateTime(2020, 7, 8);
+    CohortDefinition startedArtBeforeDate = genericCohortQueries.getStartedArtBeforeDate(false);
+    Map<Parameter, Object> params = new HashMap<>();
+    params.put(new Parameter("location", "location", Location.class), new Location(12345));
+    params.put(new Parameter("onOrBefore", "onOrBefore", Date.class), date);
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(startedArtBeforeDate, params);
+    assertThat(evaluatedCohort.getMemberIds(), hasSize(1));
+    assertThat(evaluatedCohort.getMemberIds(), contains(372));
+  }
+
+  @Test
+  public void getNewlyOrPreviouslyEnrolledOnARTShouldReturnNewlyEnrolledPatients()
+      throws EvaluationException {
+    Date onOrAfter = DateUtil.getDateTime(2019, 10, 21);
+    Date onOrBefore = DateUtil.getDateTime(2020, 1, 20);
+    CohortDefinition enrolledOnART = genericCohortQueries.getNewlyOrPreviouslyEnrolledOnART(true);
+    Map<Parameter, Object> params = new HashMap<>();
+    params.put(new Parameter("location", "location", Location.class), new Location(333));
+    params.put(new Parameter("onOrAfter", "onOrAfter", Date.class), onOrAfter);
+    params.put(new Parameter("onOrBefore", "onOrBefore", Date.class), onOrBefore);
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(enrolledOnART, params);
+    assertThat(evaluatedCohort.getMemberIds(), hasSize(1));
+    assertThat(evaluatedCohort.getMemberIds(), contains(11968));
+  }
+
+  @Test
+  @Ignore("Query using DATE_ADD not available in H2")
+  public void
+      getPatientsWhoToLostToFollowUpShouldReturnPatientsWithReturnVisitDateDaysBeforeEndDate()
+          throws EvaluationException {
+    int numDays = 60;
+    Date onOrBefore = DateUtil.getDateTime(2020, 1, 20);
+    CohortDefinition cd = genericCohortQueries.getPatientsWhoToLostToFollowUp(numDays);
+    Map<Parameter, Object> params = new HashMap<>();
+    params.put(new Parameter("location", "location", Location.class), new Location(456));
+    params.put(new Parameter("onOrBefore", "onOrBefore", Date.class), onOrBefore);
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, params);
+    assertThat(evaluatedCohort.getMemberIds(), hasSize(1));
+    assertThat(evaluatedCohort.getMemberIds(), contains(372));
   }
 }
