@@ -4,7 +4,10 @@ import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraig
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
@@ -359,79 +362,89 @@ public class EriDSDCohortQueries {
    * @return
    */
   public CohortDefinition getPatientsWithViralLoadLessThan1000Within12Months() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    SqlCohortDefinition cd = new SqlCohortDefinition();
 
     cd.setName("LAST Viral Load Result is < 1000 copies/ml in last ART year (only if VL exists)");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    cd.addSearch(
-        "patientsWithRecentViralLoadEncounter",
-        EptsReportUtils.map(
-            getPatientsWithTheRecentViralLoadEncounter(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    Map<String, Integer> map = new HashMap<>();
+    map.put(
+        "adultoSeguimento", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put(
+        "pediatriaSeguimento",
+        hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    map.put(
+        "misauLaboratorio", hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId());
+    map.put("fsr", hivMetadata.getFsrEncounterType().getEncounterTypeId());
+    map.put("masterCard", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("hivViralLoad", hivMetadata.getHivViralLoadConcept().getConceptId());
+    map.put("hivViralLoadQualitative", hivMetadata.getHivViralLoadQualitative().getConceptId());
+    map.put("beyondDetectableLimit", hivMetadata.getBeyondDetectableLimitConcept().getConceptId());
+    map.put("undetectableViralLoad", hivMetadata.getUndetectableViralLoadConcept().getConceptId());
+    map.put("lessThan10Copies", hivMetadata.getLessThan10CopiesConcept().getConceptId());
+    map.put("lessThan20Copies", hivMetadata.getLessThan20CopiesConcept().getConceptId());
+    map.put("lessThan40Copies", hivMetadata.getLessThan40CopiesConcept().getConceptId());
+    map.put("lessThan400Copies", hivMetadata.getLessThan400CopiesConcept().getConceptId());
 
-    cd.addSearch(
-        "patientsWithViralLoadConcepts",
-        EptsReportUtils.map(
-            getPatientsWithViralLoadConcepts(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    String query =
+        "SELECT vl_max.patient_id from( "
+            + "    SELECT vl.patient_id, MAX(vl.latest_date) date FROM (  "
+            + "        SELECT p.patient_id, MAX(e.encounter_datetime) latest_date  "
+            + "        FROM patient p  "
+            + "            INNER JOIN encounter e  "
+            + "                    ON p.patient_id=e.patient_id  "
+            + "            INNER JOIN obs o  "
+            + "                    ON e.encounter_id=o.encounter_id  "
+            + "        WHERE e.encounter_type IN (${adultoSeguimento},${pediatriaSeguimento},${misauLaboratorio},${fsr} )  "
+            + "            AND  o.concept_id IN (${hivViralLoad},${hivViralLoadQualitative} )  "
+            + "            AND e.encounter_datetime  "
+            + "                        BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
+            + "            AND e.location_id=  :location "
+            + "            AND p.voided=0  "
+            + "            AND e.voided=0  "
+            + "            AND o.voided=0  "
+            + "        GROUP BY p.patient_id  "
+            + "        UNION  "
+            + "        SELECT p.patient_id, MAX(o.obs_datetime) latest_date   "
+            + "        FROM patient p  "
+            + "            INNER JOIN encounter e  "
+            + "                    ON p.patient_id=e.patient_id  "
+            + "            INNER JOIN obs o  "
+            + "                    ON o.encounter_id=o.encounter_id  "
+            + "        WHERE e.encounter_type=${masterCard} "
+            + "            AND o.concept_id = ${hivViralLoad} "
+            + "            AND  o.obs_datetime  "
+            + "                        BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate  "
+            + "            AND e.location_id=  :location  "
+            + "            AND p.voided=0  "
+            + "            AND e.voided=0  "
+            + "            AND o.voided=0  "
+            + "        GROUP BY p.patient_id) vl "
+            + "        INNER JOIN encounter e "
+            + "            ON e.patient_id = vl.patient_id "
+            + "        INNER JOIN obs o "
+            + "            ON o.encounter_id = e.encounter_id "
+            + "    WHERE  e.voided=0  "
+            + "        AND o.voided=0  "
+            + "        AND( "
+            + "                (o.concept_id=${hivViralLoad} AND o.value_numeric < 1000) "
+            + "                OR "
+            + "                (o.concept_id=${hivViralLoadQualitative} AND o.value_coded IN (${beyondDetectableLimit},${undetectableViralLoad},${lessThan10Copies},${lessThan20Copies},${lessThan40Copies},${lessThan400Copies})) "
+            + "            )  "
+            + "        AND e.location_id= :location  "
+            + "        AND e.encounter_datetime  "
+            + "                BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
+            + "        AND e.encounter_datetime = vl.latest_date "
+            + "    GROUP BY   vl.patient_id) vl_max ";
 
-    cd.setCompositionString(
-        "patientsWithViralLoadConcepts AND patientsWithRecentViralLoadEncounter");
+    StringSubstitutor sb = new StringSubstitutor(map);
+    String replaceQuery = sb.replace(query);
+
+    cd.setQuery(replaceQuery);
 
     return cd;
-  }
-
-  /**
-   * Get Patients with Viral Load less than 1000 in the last 12 months.
-   *
-   * @return
-   */
-  private CohortDefinition getPatientsWithViralLoadConcepts() {
-    SqlCohortDefinition sql = new SqlCohortDefinition();
-    sql.setName("Viral Load Less Than 1000 Within 12Months");
-    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    sql.addParameter(new Parameter("endDate", "End Date", Date.class));
-    sql.addParameter(new Parameter("location", "Location", Location.class));
-    sql.setQuery(
-        DsdQueries.patientsWithViralLoadLessThan1000(
-            hivMetadata.getHivViralLoadConcept().getConceptId(),
-            hivMetadata.getHivViralLoadQualitative().getConceptId(),
-            hivMetadata.getBeyondDetectableLimitConcept().getConceptId(),
-            hivMetadata.getUndetectableViralLoadConcept().getConceptId(),
-            hivMetadata.getLessThan10CopiesConcept().getConceptId(),
-            hivMetadata.getLessThan20CopiesConcept().getConceptId(),
-            hivMetadata.getLessThan40CopiesConcept().getConceptId(),
-            hivMetadata.getLessThan400CopiesConcept().getConceptId()));
-
-    return sql;
-  }
-
-  /**
-   * Patients with The Recent VL Encounter
-   *
-   * @return
-   */
-  private CohortDefinition getPatientsWithTheRecentViralLoadEncounter() {
-    SqlCohortDefinition sql = new SqlCohortDefinition();
-    sql.setName("Patients with The Recent VL Encounter");
-    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    sql.addParameter(new Parameter("endDate", "End Date", Date.class));
-    sql.addParameter(new Parameter("location", "Location", Location.class));
-
-    sql.setQuery(
-        DsdQueries.patientsWithTheRecentViralLoadEncounter(
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
-            hivMetadata.getFsrEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getHivViralLoadConcept().getConceptId(),
-            hivMetadata.getHivViralLoadQualitative().getConceptId()));
-
-    return sql;
   }
 
   /** D2: Number of active patients on ART Not Eligible for DSD D1 */
