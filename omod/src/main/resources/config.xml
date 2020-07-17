@@ -1567,7 +1567,7 @@
 		</description>
 	</globalProperty>
 	
-	<!-- 51 -->
+	<!-- 51 - ENCOUNTER TYPE NOT YET IMPLEMENTED SO ENCOUNTER TYPE 13 - LABORATORY UUID BEING REUSED-->
 	<globalProperty>
 		<property>eptsreports.fsrEncounterType</property>
 		<defaultValue>e2790f68-1d5f-11e0-b929-000c29ad1d07</defaultValue>

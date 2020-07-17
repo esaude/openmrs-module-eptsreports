@@ -317,8 +317,21 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             ageCohortQueries.createXtoYAgeCohort("greaterThan5", 5, 900),
             "effectiveDate=${endDate}"));
+            cd.addSearch(
+        "B",
+        EptsReportUtils.map(
+            genericCohortQueries.hasNumericObs(
+                hivMetadata.getCD4AbsoluteOBSConcept(),
+                BaseObsCohortDefinition.TimeModifier.LAST,
+                RangeComparator.GREATER_THAN,
+                200.0,
+                null,
+                null,
+                Arrays.asList(
+                    hivMetadata.getMasterCardEncounterType())),
+            "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
 
-    cd.setCompositionString("((CD4Abs OR Cd4Lab) AND Age)");
+    cd.setCompositionString("((CD4Abs OR Cd4Lab OR B) AND Age)");
 
     return cd;
   }
