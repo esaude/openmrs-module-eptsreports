@@ -1713,8 +1713,12 @@ public class EriDSDCohortQueries {
         "N7",
         EptsReportUtils.map(
             getN7(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "N9",
+        EptsReportUtils.map(
+            getN9(), "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(N1 OR N2 OR N3 OR N4 OR N5 OR N7)");
+    cd.setCompositionString("(N1 OR N2 OR N3 OR N4 OR N5 OR N7 OR N9)");
 
     return cd;
   }
