@@ -400,6 +400,7 @@ public class EriDSDCohortQueries {
     map.put("lessThan20Copies", hivMetadata.getLessThan20CopiesConcept().getConceptId());
     map.put("lessThan40Copies", hivMetadata.getLessThan40CopiesConcept().getConceptId());
     map.put("lessThan400Copies", hivMetadata.getLessThan400CopiesConcept().getConceptId());
+    map.put("lessThan839Copies", hivMetadata.getLessThan839CopiesConcept().getConceptId());
 
     String query =
         "SELECT vl_max.patient_id from( "
@@ -444,12 +445,11 @@ public class EriDSDCohortQueries {
             + "        AND( "
             + "                (o.concept_id=${hivViralLoad} AND o.value_numeric < 1000) "
             + "                OR "
-            + "                (o.concept_id=${hivViralLoadQualitative} AND o.value_coded IN (${beyondDetectableLimit},${undetectableViralLoad},${lessThan10Copies},${lessThan20Copies},${lessThan40Copies},${lessThan400Copies})) "
+            + "                (o.concept_id=${hivViralLoadQualitative} AND o.value_coded IN (${beyondDetectableLimit},${undetectableViralLoad},${lessThan10Copies},${lessThan20Copies},${lessThan40Copies},${lessThan400Copies},${lessThan839Copies})) "
             + "            )  "
             + "        AND e.location_id= :location  "
-            + "        AND e.encounter_datetime  "
-            + "                BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
-            + "        AND e.encounter_datetime = vl.latest_date "
+       
+            + "        "
             + "    GROUP BY   vl.patient_id) vl_max ";
 
     StringSubstitutor sb = new StringSubstitutor(map);

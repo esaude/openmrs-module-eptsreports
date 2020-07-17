@@ -1886,6 +1886,14 @@
 			UUID for the UNDETECTABLE VIRAL LOAD concept
 		</description>
 	</globalProperty>
+		<!-- 23904 -->
+	<globalProperty>
+		<property>eptsreports.lessThan839CopiesConceptUuid</property>
+		<defaultValue>7c8e0a9b-3606-4a72-b8cc-89566521fac2</defaultValue>
+		<description>
+			UUID for the LESS THAN 839 COPIES/ML concept
+		</description>
+	</globalProperty>
 	<!-- 23905 -->
 	<globalProperty>
 		<property>eptsreports.lessThan10CopiesConceptUuid</property>
