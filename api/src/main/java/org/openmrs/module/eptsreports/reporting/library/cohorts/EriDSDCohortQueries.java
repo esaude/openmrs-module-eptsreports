@@ -317,7 +317,7 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             ageCohortQueries.createXtoYAgeCohort("greaterThan5", 5, 900),
             "effectiveDate=${endDate}"));
-            cd.addSearch(
+    cd.addSearch(
         "B",
         EptsReportUtils.map(
             genericCohortQueries.hasNumericObs(
@@ -327,8 +327,7 @@ public class EriDSDCohortQueries {
                 200.0,
                 null,
                 null,
-                Arrays.asList(
-                    hivMetadata.getMasterCardEncounterType())),
+                Arrays.asList(hivMetadata.getMasterCardEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
 
     cd.setCompositionString("((CD4Abs OR Cd4Lab OR B) AND Age)");
@@ -426,7 +425,7 @@ public class EriDSDCohortQueries {
             + "            INNER JOIN encounter e  "
             + "                    ON p.patient_id=e.patient_id  "
             + "            INNER JOIN obs o  "
-            + "                    ON o.encounter_id=o.encounter_id  "
+            + "                    ON o.encounter_id=e.encounter_id  "
             + "        WHERE e.encounter_type=${masterCard} "
             + "            AND o.concept_id = ${hivViralLoad} "
             + "            AND  o.obs_datetime  "
@@ -447,8 +446,18 @@ public class EriDSDCohortQueries {
             + "                OR "
             + "                (o.concept_id=${hivViralLoadQualitative} AND o.value_coded IN (${beyondDetectableLimit},${undetectableViralLoad},${lessThan10Copies},${lessThan20Copies},${lessThan40Copies},${lessThan400Copies},${lessThan839Copies})) "
             + "            )  "
-            + "        AND e.location_id= :location  "
-       
+            + "        AND e.location_id= :location "
+            + "AND (  "
+            + "                                       (e.encounter_type IN (${adultoSeguimento},${pediatriaSeguimento},${misauLaboratorio},${fsr})   "
+            + "                                             AND e.encounter_datetime    "
+            + "                        BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate  "
+            + "                                           AND e.encounter_datetime = vl.latest_date )  "
+            + "                           OR   "
+            + "                                       (e.encounter_type =${masterCard}  "
+            + "                                             AND o.obs_datetime      "
+            + "                        BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate  "
+            + "                                             AND o.obs_datetime = vl.latest_date       )  "
+            + "                                 )  "
             + "        "
             + "    GROUP BY   vl.patient_id) vl_max ";
 
