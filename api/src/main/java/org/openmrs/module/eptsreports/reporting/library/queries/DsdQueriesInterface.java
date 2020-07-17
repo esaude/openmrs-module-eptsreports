@@ -16,7 +16,7 @@ public interface DsdQueriesInterface {
         "SELECT p.patient_id FROM patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
             + "INNER JOIN obs o ON e.encounter_id = o.encounter_id "
-            + "WHERE o.concept_id=1406 AND o.value_coded = 507 AND encounter_type=6 AND p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND e.location_id =:location AND e.encounter_datetime<=:endDate group by p.patient_id ";
+            + "WHERE o.concept_id=1406 AND o.value_coded = 507 AND encounter_type in (6,9) AND p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND e.location_id =:location AND e.encounter_datetime<=:endDate group by p.patient_id ";
 
     public static final String findPatientsInArtWhoAreStable =
         "select patient_id from(select inicio.patient_id, inicio.data_inicio, timestampdiff(year,per.birthdate,:endDate) idade, timestampdiff(month,inicio.data_inicio,:endDate) idadeEmTarv, cd4Absoluto.value_numeric cd4Abs, cd4Percentual.value_numeric cd4Per, cvmenor1000.patient_id pidcv12meses,cvmenor1000.person_id pidcvmenor100 from ( "
