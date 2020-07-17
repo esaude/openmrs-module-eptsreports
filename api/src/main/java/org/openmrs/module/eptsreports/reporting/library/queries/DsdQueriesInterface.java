@@ -8,7 +8,7 @@ public interface DsdQueriesInterface {
             "Select p.patient_id From patient p "
                 + "inner join encounter e on p.patient_id=e.patient_id "
                 + "inner join obs o on e.encounter_id=o.encounter_id "
-                + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=2015 and e.encounter_type=6 and e.encounter_datetime "
+                + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=2015 and e.encounter_type in (6,9) and e.encounter_datetime "
                 + "between (:endDate - INTERVAL 6 MONTH) AND :endDate and e.location_id=:location and o.value_coded "
                 + "IN (23748,6293,23749,29,23750,23751,6299,23752) group by p.patient_id ";
 
