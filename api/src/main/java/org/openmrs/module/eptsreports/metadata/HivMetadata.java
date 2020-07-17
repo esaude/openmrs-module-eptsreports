@@ -43,7 +43,8 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
   /**
-   *  Concepts Id = 856
+   * Concepts Id = 856
+   *
    * @return
    */
   public Concept getHivViralLoadConcept() {
@@ -76,7 +77,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  concept_id=6123
+   * concept_id=6123
+   *
    * @return
    */
   public Concept getDateOfHivDiagnosisConcept() {
@@ -100,7 +102,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  concept_id=1255
+   * concept_id=1255
+   *
    * @return
    */
   public Concept getARVPlanConcept() {
@@ -110,7 +113,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  concept_id=1088
+   * concept_id=1088
+   *
    * @return
    */
   public Concept getRegimeConcept() {
@@ -141,10 +145,10 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  6328 Second line ARV concepts
+   * 6328 Second line ARV concepts
+   *
    * @return
    */
-  
   public Concept getAzt3tcAbcEfvConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -153,7 +157,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   * concept  6327
+   * concept 6327
+   *
    * @return
    */
   public Concept getD4t3tcAbcEfvConcept() {
@@ -164,7 +169,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  6326
+   * 6326
+   *
    * @return
    */
   public Concept getAzt3tcAbcLpvConcept() {
@@ -671,7 +677,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept 23732 Other Model
+   * Concept 23732 Other Model
+   *
    * @return
    */
   public Concept getAnotherModel() {
@@ -680,7 +687,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept 1256 Start Drugs
+   * Concept 1256 Start Drugs
+   *
    * @return
    */
   public Concept getStartDrugs() {
@@ -697,7 +705,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept 23808 Pre-ART Start Date
+   * Concept 23808 Pre-ART Start Date
+   *
    * @return
    */
   public Concept getPreArtStartDate() {
@@ -719,7 +728,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept 6300 Date of ART Pickup
+   * Concept 6300 Date of ART Pickup
+   *
    * @return
    */
   public Concept getTypeOfPatientTransferredFrom() {
@@ -730,7 +740,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  concept_id = 6272
+   * concept_id = 6272
+   *
    * @return
    */
   public Concept getStateOfStayOfPreArtPatient() {
@@ -741,7 +752,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept 6273 patient state
+   * Concept 6273 patient state
+   *
    * @return
    */
   public Concept getStateOfStayOfArtPatient() {
@@ -751,7 +763,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept 2031 REASON PATIENT NOT FOUND BY ACTIVIST
+   * Concept 2031 REASON PATIENT NOT FOUND BY ACTIVIST
+   *
    * @return
    */
   public Concept getReasonPatientNotFound() {
@@ -761,7 +774,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept 1383 PATIENT IS DEAD - Incorrect
+   * Concept 1383 PATIENT IS DEAD - Incorrect
+   *
    * @return
    */
   public Concept getPatientIsDead() {
@@ -855,7 +869,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  concept_id = 23865
+   * concept_id = 23865
+   *
    * @return
    */
   public Concept getArtPickupConcept() {
@@ -863,7 +878,6 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.artPickupConceptUuid");
     return getConcept(uuid);
   }
-
 
   /**
    * Last Menstruation Date Concept_id = 1465
@@ -878,7 +892,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  concept_id = 23739
+   * concept_id = 23739
+   *
    * @return
    */
   public Concept getTypeOfDispensationConcept() {
@@ -889,7 +904,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  concept_id = 23720
+   * concept_id = 23720
+   *
    * @return
    */
   public Concept getQuarterlyConcept() {
@@ -899,7 +915,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  concept_id = 1267
+   * concept_id = 1267
+   *
    * @return
    */
   public Concept getCompletedConcept() {
@@ -909,7 +926,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept 23748
+   * Concept 23748
+   *
    * @return
    */
   public Concept getCytopeniaConcept() {
@@ -919,7 +937,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept 23749
+   * Concept 23749
+   *
    * @return
    */
   public Concept getNephrotoxicityConcept() {
@@ -930,7 +949,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept 29
+   * Concept 29
+   *
    * @return
    */
   public Concept getHepatitisConcept() {
@@ -940,7 +960,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept 23750 STEVENS-JOHNSON SYNDROME
+   * Concept 23750 STEVENS-JOHNSON SYNDROME
+   *
    * @return
    */
   public Concept getStevensJonhsonSyndromeConcept() {
@@ -951,7 +972,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept 23751 HYPERSENSITIVITY TO ABC/RAL
+   * Concept 23751 HYPERSENSITIVITY TO ABC/RAL
+   *
    * @return
    */
   public Concept getHypersensitivityToAbcOrRailConcept() {
@@ -962,7 +984,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept 23752 HEPATIC STEATOSIS WITH HYPERLACTATAEMIA
+   * Concept 23752 HEPATIC STEATOSIS WITH HYPERLACTATAEMIA
+   *
    * @return
    */
   public Concept getHepaticSteatosisWithHyperlactataemiaConcept() {
@@ -973,7 +996,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept Id 1113
+   * Concept Id 1113
+   *
    * @return
    */
   public Concept getTBDrugStartDateConcept() {
@@ -984,7 +1008,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept 6120
+   * Concept 6120
+   *
    * @return
    */
   public Concept getTBDrugEndDateConcept() {
@@ -995,7 +1020,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept ID 23761
+   * Concept ID 23761
+   *
    * @return
    */
   public Concept getActiveTBConcept() {
@@ -1005,7 +1031,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept ID 1268
+   * Concept ID 1268
+   *
    * @return
    */
   public Concept getTBTreatmentPlanConcept() {
@@ -1016,7 +1043,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept ID 1306
+   * Concept ID 1306
+   *
    * @return
    */
   public Concept getBeyondDetectableLimitConcept() {
@@ -1027,7 +1055,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept ID 23814
+   * Concept ID 23814
+   *
    * @return
    */
   public Concept getUndetectableViralLoadConcept() {
@@ -1038,7 +1067,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept ID 23904
+   * Concept ID 23904
+   *
    * @return
    */
   public Concept getLessThan839CopiesConcept() {
@@ -1049,7 +1079,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept ID 23905
+   * Concept ID 23905
+   *
    * @return
    */
   public Concept getLessThan10CopiesConcept() {
@@ -1060,7 +1091,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept ID 23906
+   * Concept ID 23906
+   *
    * @return
    */
   public Concept getLessThan20CopiesConcept() {
@@ -1071,7 +1103,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept ID 23907
+   * Concept ID 23907
+   *
    * @return
    */
   public Concept getLessThan40CopiesConcept() {
@@ -1082,7 +1115,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  Concept ID 23908
+   * Concept ID 23908
+   *
    * @return
    */
   public Concept getLessThan400CopiesConcept() {
@@ -1092,7 +1126,8 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
   /**
-   *  Concept ID 1067
+   * Concept ID 1067
+   *
    * @return
    */
   public Concept getUnkownConcept() {
@@ -1102,7 +1137,8 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   *  concept_id = 23720
+   * concept_id = 23720
+   *
    * @return
    */
   public Concept getMonthlyConcept() {
