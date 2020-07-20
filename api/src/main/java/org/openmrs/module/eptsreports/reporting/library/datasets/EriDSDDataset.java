@@ -25,6 +25,9 @@ public class EriDSDDataset extends BaseDataSet {
   private static final String N2 =
       "N2: Number of active patients on ART whose next clinical consultation is scheduled 175-190 days after the date of the last clinical consultation";
 
+  private static final String N3 =
+      "N3: Number of active patients on ART that are participating in GAAC at the end of the month prior to month of results submission deadline.";
+
   @Autowired private EriDSDCohortQueries eriDSDCohortQueries;
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
   @Autowired private EptsCommonDimension eptsCommonDimension;
@@ -191,85 +194,8 @@ public class EriDSDDataset extends BaseDataSet {
         getChildrenColumn());
 
     addRow(dsd, "N2", N2, mapStraightThrough(getN2()), getDisags());
+    addRow(dsd, "N3", N3, mapStraightThrough(getN3()), getDisags());
 
-    dsd.addColumn(
-        "GAACT",
-        "DSD GAAC Total",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "GAACT", EptsReportUtils.map(eriDSDCohortQueries.getN3(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "GAACSST",
-        "DSD GAAC Stable subtotal",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "GAACSST",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingGAACStable(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "GAACSNPNBA",
-        "DSD GAAC Stable Non-pregnant and Non-Breastfeeding Adults (>=15)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "GAACSNPNBA",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingGAACStable(),
-                    mappings)),
-            mappings),
-        "age=15+");
-    addRow(
-        dsd,
-        "GAACSNPNBC",
-        " DSD GAAC Stable Non-pregnant and Non-Breastfeeding Children (2-4, 5-9, 10-14)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "GAACSNPNBC",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingGAACStable(),
-                    mappings)),
-            mappings),
-        getChildrenColumn());
-    dsd.addColumn(
-        "GAACUST",
-        "DSD GAAC Unstable subtotal",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "GAACUST",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreActiveAndParticpatingInGaacUnstable(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "GAACUNPNBA",
-        "DSD GAAC Unstable Non-pregnant and Non-Breastfeeding Adults (>=15)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "GAACUNPNBA",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries
-                        .getPatientsWhoAreNotPregnantAndNotBreastfeedingGAACUnstable(),
-                    mappings)),
-            mappings),
-        "age=15+");
-    addRow(
-        dsd,
-        "GAACUNPNBC",
-        " DSD GAAC Unstable Non-pregnant and Non-Breastfeeding Children (2-4, 5-9, 10-14)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "GAACUNPNBC",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries
-                        .getPatientsWhoAreNotPregnantAndNotBreastfeedingGAACUnstable(),
-                    mappings)),
-            mappings),
-        getChildrenColumn());
     // N4
     dsd.addColumn(
         "AFT",
@@ -601,6 +527,10 @@ public class EriDSDDataset extends BaseDataSet {
 
   private CohortIndicator getN2() {
     return eptsGeneralIndicator.getIndicator("N2", mapStraightThrough(eriDSDCohortQueries.getN2()));
+  }
+
+  private CohortIndicator getN3() {
+    return eptsGeneralIndicator.getIndicator("N3", mapStraightThrough(eriDSDCohortQueries.getN3()));
   }
 
   private CohortIndicator getN7() {

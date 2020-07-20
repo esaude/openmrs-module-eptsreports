@@ -783,26 +783,16 @@ public class EriDSDCohortQueries {
     CohortDefinition patientsEnrolledOnGaac = getAllPatientsEnrolledOnGaac();
     CohortDefinition startOrContinueGAAC = getPatientsWithStartOrContinueGAAC();
     CohortDefinition completedGAAC = getPatientsWhoCompletedGAAC();
+    CohortDefinition txCurr = txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true);
 
-    cd.addSearch(
-        "TxCurr",
-        EptsReportUtils.map(
-            txCurrCohortQueries.getTxCurrCompositionCohort(cohortName, true),
-            "onOrBefore=${endDate},location=${location}"));
-
+    String mappings = "onOrBefore=${endDate},location=${location}";
+    cd.addSearch("TxCurr", EptsReportUtils.map(txCurr, mappings));
     cd.addSearch("patientsEnrolledOnGaac", mapStraightThrough(patientsEnrolledOnGaac));
+    cd.addSearch("startOrContinueGAAC", EptsReportUtils.map(startOrContinueGAAC, mappings));
+    cd.addSearch("completedGAAC", EptsReportUtils.map(completedGAAC, mappings));
 
-    String gaacMappings = "onOrBefore=${endDate},location=${location}";
-    cd.addSearch("startOrContinueGAAC", EptsReportUtils.map(startOrContinueGAAC, gaacMappings));
-
-    cd.addSearch("completedGAAC", EptsReportUtils.map(completedGAAC, gaacMappings));
-    cd.addSearch(
-        "PregnantAndBreastfeedingAndOnTBTreatment",
-        EptsReportUtils.map(
-            getPregnantAndBreastfeedingAndOnTBTreatment(),
-            "endDate=${endDate},location=${location}"));
     cd.setCompositionString(
-        "TxCurr AND (patientsEnrolledOnGaac OR startOrContinueGAAC) NOT (completedGAAC OR PregnantAndBreastfeedingAndOnTBTreatment)");
+        "TxCurr AND (patientsEnrolledOnGaac OR startOrContinueGAAC) NOT (completedGAAC)");
 
     return cd;
   }
