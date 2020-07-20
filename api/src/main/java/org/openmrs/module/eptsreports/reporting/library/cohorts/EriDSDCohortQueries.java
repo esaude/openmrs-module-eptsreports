@@ -669,26 +669,14 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    cd.addSearch(
-        "patientsWithNextPickupDate",
-        EptsReportUtils.map(getN1(), "endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "patientsWhoAreStable",
-        EptsReportUtils.map(
-            getN1AndStable(), "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "pregnant",
-        EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "breastfeeding",
-        EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch("N1", EptsReportUtils.map(getN1(), "endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString(
-        "patientsWithNextPickupDate AND NOT patientsWhoAreStable AND NOT pregnant AND NOT breastfeeding");
+    cd.addSearch(
+        "D1",
+        EptsReportUtils.map(
+            getD1(), "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("N1 AND NOT D1");
 
     return cd;
   }
