@@ -31,6 +31,8 @@ public class EriDSDDataset extends BaseDataSet {
   private static final String N8 =
       "N8: Number of active patients on ART who participate in at least one DSD";
 
+  private static final String N9 = "N9 : Number of active patients on ART who are on DS";
+
   @Autowired private EriDSDCohortQueries eriDSDCohortQueries;
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
   @Autowired private EptsCommonDimension eptsCommonDimension;
@@ -357,77 +359,7 @@ public class EriDSDDataset extends BaseDataSet {
             mappings),
         getChildrenColumn());
 
-    dsd.addColumn(
-        "DST",
-        "DSD DS Total",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "DST", EptsReportUtils.map(eriDSDCohortQueries.getN9(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "DSSST",
-        "DSD DS Stable subtotal",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "DSSST", EptsReportUtils.map(eriDSDCohortQueries.getN9Stable(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "DSSNPNBA",
-        "DSD DS Stable Non-pregnant and Non-Breastfeeding Adults (>=15)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "DSSNPNBA",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingDSStable(),
-                    mappings)),
-            mappings),
-        "age=15+");
-    addRow(
-        dsd,
-        "DSSNPNBC",
-        " DSD DS Stable Non-pregnant and Non-Breastfeeding Children (2-4, 5-9, 10-14)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "DSSNPNBC",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingDSStable(),
-                    mappings)),
-            mappings),
-        getChildrenColumn());
-    dsd.addColumn(
-        "DSUST",
-        "DSD DS Unstable subtotal",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "DSUST", EptsReportUtils.map(eriDSDCohortQueries.getN9Unstable(), mappings)),
-            mappings),
-        "");
-
-    dsd.addColumn(
-        "DSUNPNBA",
-        "DSD DS Unstable Non-pregnant and Non-Breastfeeding Adults (>=15)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "DSUNPNBA",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingDSUnstable(),
-                    mappings)),
-            mappings),
-        "age=15+");
-    addRow(
-        dsd,
-        "DSUNPNBC",
-        " DSD DS Unstable Non-pregnant and Non-Breastfeeding Children (2-4, 5-9, 10-14)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "DSUNPNBC",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreNotPregnantAndNotBreastfeedingDSUnstable(),
-                    mappings)),
-            mappings),
-        getChildrenColumn());
+    addRow(dsd, "N9", N9, mapStraightThrough(getN9()), getDisags());
 
     return dsd;
   }
@@ -460,6 +392,10 @@ public class EriDSDDataset extends BaseDataSet {
 
   private CohortIndicator getN8() {
     return eptsGeneralIndicator.getIndicator("N8", mapStraightThrough(eriDSDCohortQueries.getN8()));
+  }
+
+  private CohortIndicator getN9() {
+    return eptsGeneralIndicator.getIndicator("N9", mapStraightThrough(eriDSDCohortQueries.getN9()));
   }
 
   private List<ColumnParameters> getDisags() {
@@ -512,6 +448,11 @@ public class EriDSDDataset extends BaseDataSet {
             "Not Eligible 10-14",
             "Not Eligible 10-14",
             "eligible=NE|pregnantBreastfeedingTb=NPNBNTB|age=10-14",
-            "12"));
+            "12"),
+            new ColumnParameters(
+            "Eligible <2",
+            "Eligible <2",
+            "eligible=E|pregnantBreastfeedingTb=NPNBNTB|age=<2",
+            "13"));
   }
 }
