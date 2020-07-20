@@ -1572,58 +1572,6 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  /*
-   * Get all patients who participated in at least 1 DSD model and are stable
-   *
-   * @return CohortDefifnition
-   * */
-  public CohortDefinition getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndStable() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    cd.addSearch(
-        "1",
-        EptsReportUtils.map(
-            getN8(), "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "2",
-        EptsReportUtils.map(
-            getPatientsWhoAreStable(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString("(1 AND 2)");
-
-    return cd;
-  }
-
-  /*
-   * Get number of patients who participated in at least 1 DSD model and are unstable
-   *
-   * @return CohortDefinition
-   * */
-  public CohortDefinition getActivePatientsOnArtWhoParticipatedInAtLeastOneDsdModelAndUnStable() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    cd.addSearch(
-        "1",
-        EptsReportUtils.map(
-            getN8(), "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "2",
-        EptsReportUtils.map(
-            getPatientsWhoAreStable(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString("(1 AND NOT 2)");
-
-    return cd;
-  }
-
   /**
    * Patients who are not pregnant 9 months before end date and not breastfeeding at 18 months
    * before end date
