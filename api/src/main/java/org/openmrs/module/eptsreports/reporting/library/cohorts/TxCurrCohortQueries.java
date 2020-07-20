@@ -30,6 +30,7 @@ import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -238,6 +239,24 @@ public class TxCurrCohortQueries {
 
     txCurrComposition.setCompositionString(compositionString);
     return txCurrComposition;
+  }
+
+  @DocumentedDefinition("TX_CURR base cohort")
+  public CohortDefinition getTxCurrBaseCohort() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Facility", Location.class));
+
+    CohortDefinition baseCohort = genericCohortQueries.getBaseCohort();
+    CohortDefinition txCurr = getTxCurrCompositionCohort("tx_curr", true);
+
+    cd.addSearch("baseCohort", Mapped.mapStraightThrough(baseCohort));
+
+    String txCurrMappings = "onOrBefore=${endDate},location=${location},locations=${location}";
+    cd.addSearch("txCurr", EptsReportUtils.map(txCurr, txCurrMappings));
+
+    cd.setCompositionString("baseCohort AND txCurr");
+    return cd;
   }
 
   /**

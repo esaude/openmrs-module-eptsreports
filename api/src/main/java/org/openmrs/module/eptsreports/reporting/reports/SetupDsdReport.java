@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.EriDSDDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -33,12 +33,12 @@ public class SetupDsdReport extends EptsDataExportManager {
 
   private EriDSDDataset eriDSDDataset;
 
-  private GenericCohortQueries genericCohortQueries;
+  private TxCurrCohortQueries txCurrCohortQueries;
 
   @Autowired
-  public SetupDsdReport(EriDSDDataset eriDSDDataset, GenericCohortQueries genericCohortQueries) {
+  public SetupDsdReport(EriDSDDataset eriDSDDataset, TxCurrCohortQueries txCurrCohortQueries) {
     this.eriDSDDataset = eriDSDDataset;
-    this.genericCohortQueries = genericCohortQueries;
+    this.txCurrCohortQueries = txCurrCohortQueries;
   }
 
   @Override
@@ -74,7 +74,7 @@ public class SetupDsdReport extends EptsDataExportManager {
         "ERIDSD", Mapped.mapStraightThrough(eriDSDDataset.constructEriDSDDataset()));
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
-            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+            txCurrCohortQueries.getTxCurrBaseCohort(), "endDate=${endDate},location=${location}"));
     return rd;
   }
 
