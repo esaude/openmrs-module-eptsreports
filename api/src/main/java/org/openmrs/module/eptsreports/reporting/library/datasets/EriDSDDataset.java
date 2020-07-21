@@ -36,6 +36,9 @@ public class EriDSDDataset extends BaseDataSet {
 
   private static final String N9 = "N9 : Number of active patients on ART who are on DS";
 
+  private static final String N5 =
+      "N5 : Number of all patients marked in last “Clubes de Adesão (CA)”";
+
   @Autowired private EriDSDCohortQueries eriDSDCohortQueries;
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
   @Autowired private EptsCommonDimension eptsCommonDimension;
@@ -205,91 +208,9 @@ public class EriDSDDataset extends BaseDataSet {
     addRow(dsd, "N3", N3, mapStraightThrough(getN3()), getDisags());
     addRow(dsd, "N4", N4, mapStraightThrough(getN4()), getDisags());
 
+    addRow(dsd, "N5", N5, mapStraightThrough(getN5()), getDisags());
     addRow(dsd, "N7", N7, mapStraightThrough(getN7()), getDisags());
     addRow(dsd, "N8", N8, mapStraightThrough(getN8()), getDisags());
-
-    dsd.addColumn(
-        "CAT",
-        "DSD CA Total",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "CAT", EptsReportUtils.map(eriDSDCohortQueries.getN5(), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "CASST",
-        "DSD CA Stable subtotal",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "CASST",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries
-                        .getPatientsWhoAreActiveParticipatingInAccessionClubsAndStable(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "CASNPNBA",
-        "DSD CA Stable Non-pregnant and Non-Breastfeeding Adults (>=15)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "CASNPNBA",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries
-                        .getPatientsWhoAreActiveParticipatingInAccessionClubsAndStable(),
-                    mappings)),
-            mappings),
-        "age=15+");
-    addRow(
-        dsd,
-        "CASNPNBC",
-        " DSD CA Stable Non-pregnant and Non-Breastfeeding Children (2-4, 5-9, 10-14)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "CASNPNBC",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries
-                        .getPatientsWhoAreActiveParticipatingInAccessionClubsAndStable(),
-                    mappings)),
-            mappings),
-        getChildrenColumn());
-    dsd.addColumn(
-        "CAUST",
-        "DSD CA Unstable subtotal",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "CAUST",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries
-                        .getPatientsWhoAreActiveParticipatingInAccessionClubsAndUnstable(),
-                    mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "CAUNPNBA",
-        "DSD CA Unstable Non-pregnant and Non-Breastfeeding Adults (>=15)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "CAUNPNBA",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries
-                        .getPatientsWhoAreActiveParticipatingInAccessionClubsAndUnstable(),
-                    mappings)),
-            mappings),
-        "age=15+");
-    addRow(
-        dsd,
-        "CAUNPNBC",
-        " DSD CA Unstable Non-pregnant and Non-Breastfeeding Children (2-4, 5-9, 10-14)",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "CAUNPNBC",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries
-                        .getPatientsWhoAreActiveParticipatingInAccessionClubsAndUnstable(),
-                    mappings)),
-            mappings),
-        getChildrenColumn());
 
     addRow(dsd, "N9", N9, mapStraightThrough(getN9()), getDisags());
 
@@ -332,6 +253,10 @@ public class EriDSDDataset extends BaseDataSet {
 
   private CohortIndicator getN9() {
     return eptsGeneralIndicator.getIndicator("N9", mapStraightThrough(eriDSDCohortQueries.getN9()));
+  }
+
+  private CohortIndicator getN5() {
+    return eptsGeneralIndicator.getIndicator("N5", mapStraightThrough(eriDSDCohortQueries.getN5()));
   }
 
   private List<ColumnParameters> getDisags() {

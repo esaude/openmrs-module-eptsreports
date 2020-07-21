@@ -1077,44 +1077,6 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  @DocumentedDefinition(
-      "N5: Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in CA and stable")
-  public CohortDefinition getPatientsWhoAreActiveParticipatingInAccessionClubsAndStable() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    CohortDefinition ca = getN5();
-    CohortDefinition stable = getPatientsWhoAreStable();
-
-    cd.addSearch("ca", mapStraightThrough(ca));
-    cd.addSearch("stable", mapStraightThrough(stable));
-
-    cd.setCompositionString("ca AND stable");
-
-    return cd;
-  }
-
-  @DocumentedDefinition(
-      "N5: Number of active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in CA and unstable")
-  public CohortDefinition getPatientsWhoAreActiveParticipatingInAccessionClubsAndUnstable() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    CohortDefinition ca = getN5();
-    CohortDefinition stable = getPatientsWhoAreStable();
-
-    cd.addSearch("ca", mapStraightThrough(ca));
-    cd.addSearch("stable", mapStraightThrough(stable));
-
-    cd.setCompositionString("ca NOT stable");
-
-    return cd;
-  }
-
   private CohortDefinition getPatientsWithStartOrContinueCA() {
     CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
