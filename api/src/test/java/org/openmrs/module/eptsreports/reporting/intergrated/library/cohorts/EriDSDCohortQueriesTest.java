@@ -1,11 +1,10 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.library.cohorts;
 
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
@@ -34,20 +33,20 @@ public class EriDSDCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getNonPregnantAndNonBreastfeedingShouldReturnNonBreastfeedingPatients()
+  @Ignore("Using DATE_SUB on tb query")
+  public void getPregnantAndBreastfeedingAndOnTBTreatmentShouldReturnBreastfeedingPatients()
       throws EvaluationException {
-    CohortDefinition cd = eriDSDCohortQueries.getNonPregnantAndNonBreastfeeding();
+    CohortDefinition cd = eriDSDCohortQueries.getPregnantAndBreastfeedingAndOnTBTreatment();
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, baseCohort);
-    assertThat(evaluatedCohort.getMemberIds(), empty());
-    assertThat(evaluatedCohort.getMemberIds(), not(contains(1933)));
+    assertThat(evaluatedCohort.getMemberIds(), contains(1933));
   }
 
   @Test
-  public void getNonPregnantAndNonBreastfeedingShouldReturnNonPregnantPatients()
+  @Ignore("Using DATE_SUB on tb query")
+  public void getPregnantAndBreastfeedingAndOnTBTreatmentShouldReturnPregnantPatients()
       throws EvaluationException {
-    CohortDefinition cd = eriDSDCohortQueries.getNonPregnantAndNonBreastfeeding();
+    CohortDefinition cd = eriDSDCohortQueries.getPregnantAndBreastfeedingAndOnTBTreatment();
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, baseCohort);
-    assertThat(evaluatedCohort.getMemberIds(), empty());
-    assertThat(evaluatedCohort.getMemberIds(), not(contains(574)));
+    assertThat(evaluatedCohort.getMemberIds(), contains(574));
   }
 }

@@ -28,6 +28,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueri
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.InverseCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -349,15 +350,16 @@ public class EptsCommonDimension {
     return dim;
   }
 
-  /** Dimension for DSD Non-Pregnant and Non-Breastfeeding */
-  public CohortDefinitionDimension getDSDNonPregnantAndNonBreastfeedingDimension() {
+  /** Dimension for DSD Non-Pregnant, Non-Breastfeeding and Not on TB treatment */
+  public CohortDefinitionDimension getDSDNonPregnantNonBreastfeedingAndNotOnTbDimension() {
     CohortDefinitionDimension dim = new CohortDefinitionDimension();
-    dim.setName("DSD Non-Pregnant and Non-Breastfeeding dimension");
+    dim.setName("DSD Non-Pregnant, Non-Breastfeeding and Non-Tb dimension");
     dim.addParameter(new Parameter("endDate", "End Date", Date.class));
     dim.addParameter(new Parameter("location", "Location", Location.class));
-    CohortDefinition nonPregnantAndNonBreastfeeding =
-        eriDSDCohortQueries.getNonPregnantAndNonBreastfeeding();
-    dim.addCohortDefinition("NPNB", mapStraightThrough(nonPregnantAndNonBreastfeeding));
+    CohortDefinition pregnantBreastfeedingTb =
+        eriDSDCohortQueries.getPregnantAndBreastfeedingAndOnTBTreatment();
+    CohortDefinition inverse = new InverseCohortDefinition(pregnantBreastfeedingTb);
+    dim.addCohortDefinition("NPNBNTB", mapStraightThrough(inverse));
     return dim;
   }
 }
