@@ -246,7 +246,7 @@ public class TxCurrCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Facility", Location.class));
-
+    cd.setName("TX_CURR base cohort");
     CohortDefinition baseCohort = genericCohortQueries.getBaseCohort();
     CohortDefinition txCurr = getTxCurrCompositionCohort("tx_curr", true);
 
