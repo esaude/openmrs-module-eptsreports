@@ -912,54 +912,22 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * 1.Select all patients (adults and children) currently receiving treatment, included in Tx-Curr
-   * for selected Location and reporting period (Tx-Curr)
-   *
-   * <p>2.Filter all patients marked in last “Abordagem Familiar (AF)” as Iniciar (I) or Continua
-   * (C) on Ficha Clinica – Master Card Encounter Type Id = 6 Last Family Approach Concept
-   * (id=23725) Value.coded= START DRUGS (id=1256) OR Value.coded= (CONTINUE REGIMEN id=1257)
-   *
-   * <p>3.Exclude patients who are registered as pregnant during the following period: a.startDate =
-   * reporting endDate – 9 months b.endDate = reporting endDate *4.Exclude patients who are
-   * registered as breastfeeding during the following period: a.startDate = reporting endDate – 18
-   * months b.endDate = reporting endDate 5.Exclude patients who are on TB Treatment (see common
-   * queries for the specs on 9. Patients on TB Treatment)
-   *
-   * @return
+   * Active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in AF
    */
   public CohortDefinition getN4() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    String cohortName = "Active patients on ART  who are in AF";
-
     cd.setName(
         "Active patients on ART (Non-pregnant and Non-Breastfeeding not on TB treatment) who are in AF");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    cd.addSearch(
-        "masterCardPatients",
-        EptsReportUtils.map(
-            getPatientsOnMasterCardAFQuery(), "endDate=${endDate},location=${location}"));
-
-    cd.addSearch(
-        "PregnantAndBreastfeedingAndOnTBTreatment",
-        EptsReportUtils.map(
-            getPregnantAndBreastfeedingAndOnTBTreatment(),
-            "endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString(
-        "(masterCardPatients) AND NOT  PregnantAndBreastfeedingAndOnTBTreatment");
-
+    cd.addSearch("masterCardPatients", mapStraightThrough(getPatientsOnMasterCardAF()));
+    cd.setCompositionString("masterCardPatients");
     return cd;
   }
 
-  /**
-   * Active patients on ART MasterCard who are in AF Cohort Definition Query
-   *
-   * @return
-   */
-  private CohortDefinition getPatientsOnMasterCardAFQuery() {
+  /** Active patients on ART MasterCard who are in AF Cohort Definition Query */
+  private CohortDefinition getPatientsOnMasterCardAF() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
 
     cd.setName("Active patients on ART MasterCard who are in AF Query");
@@ -973,60 +941,6 @@ public class EriDSDCohortQueries {
             hivMetadata.getFamilyApproach().getConceptId(),
             hivMetadata.getStartDrugs().getConceptId(),
             hivMetadata.getContinueRegimenConcept().getConceptId()));
-
-    return cd;
-  }
-
-  /**
-   * Active patients on ART who are in AF and Eligible
-   *
-   * @return
-   */
-  public CohortDefinition getPatientsOnMasterCardAFWhoAreEligible() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-
-    cd.setName("Active patients on ART who are in AF and Eligible");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    cd.addSearch(
-        "eligiblePatientsD1",
-        EptsReportUtils.map(
-            getD1(), "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "masterCardAndTxCurrPatients",
-        EptsReportUtils.map(
-            getN4(), "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString("eligiblePatientsD1 AND masterCardAndTxCurrPatients");
-
-    return cd;
-  }
-
-  /**
-   * Active patients on ART who are in AF and Not Eligible
-   *
-   * @return
-   */
-  public CohortDefinition getPatientsOnMasterCardAFWhoAreNotEligible() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-
-    cd.setName("Active patients on ART who are in AF and Not Eligible");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    cd.addSearch(
-        "masterCardAndTxCurrPatients",
-        EptsReportUtils.map(
-            getN4(), "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "patientsNotEligibleD2",
-        EptsReportUtils.map(
-            getD2(), "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString("patientsNotEligibleD2 AND masterCardAndTxCurrPatients");
 
     return cd;
   }
