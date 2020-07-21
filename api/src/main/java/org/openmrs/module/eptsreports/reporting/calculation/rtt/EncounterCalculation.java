@@ -102,14 +102,16 @@ public class EncounterCalculation extends BaseFghCalculation {
         final Date followUpDate = followUpResult.get(0);
         final Date pickUpDate = pickUpResult.get(0);
 
-        final long followUpDays =
-            EptsReportUtils.getDifferenceInDaysBetweenDates(encounterDate, followUpDate);
-        final long pickUpDays =
-            EptsReportUtils.getDifferenceInDaysBetweenDates(encounterDate, pickUpDate);
+        if (followUpDate != null && pickUpDate != null) {
+          final long followUpDays =
+              EptsReportUtils.getDifferenceInDaysBetweenDates(encounterDate, followUpDate);
+          final long pickUpDays =
+              EptsReportUtils.getDifferenceInDaysBetweenDates(encounterDate, pickUpDate);
 
-        if (this.isOnRTT(followUpDays, pickUpDays)) {
-          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-          break;
+          if (this.isOnRTT(followUpDays, pickUpDays)) {
+            resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+            break;
+          }
         }
       }
     }
