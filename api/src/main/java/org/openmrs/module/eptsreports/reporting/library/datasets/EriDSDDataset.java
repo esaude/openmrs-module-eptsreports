@@ -448,11 +448,6 @@ public class EriDSDDataset extends BaseDataSet {
             "Not Eligible 10-14",
             "Not Eligible 10-14",
             "eligible=NE|pregnantBreastfeedingTb=NPNBNTB|age=10-14",
-            "12"),
-            new ColumnParameters(
-            "Eligible <2",
-            "Eligible <2",
-            "eligible=E|pregnantBreastfeedingTb=NPNBNTB|age=<2",
-            "13"));
+            "12"));
   }
 }
