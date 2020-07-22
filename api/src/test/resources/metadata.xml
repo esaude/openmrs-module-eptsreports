@@ -368,6 +368,9 @@
 	<concept concept_id="1267" retired="false" datatype_id="11" class_id="3" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1d9facc-1d5f-11e0-b929-000c29ad1d07"/>
 	<concept_name concept_name_id="1267" concept_id="1267" name="COMPLETED" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="e2405c04-1d5f-11e0-b929-000c29ad1d07"/>
 
+	<concept concept_id="1369" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2008-10-13 05:59:00" uuid="e1da7d3a-1d5f-11e0-b929-000c29ad1d07" />
+	<concept_name concept_id="1369" name="TRANSFERIDO DE" locale="pt" creator="1" date_created="2008-10-25 13:54:23" concept_name_id="3145" voided="0" uuid="e24e2ffa-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+
 	<concept_set concept_set_id="8777008" concept_id="7777008" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777008"/>
 	<concept_set concept_set_id="8777009" concept_id="7777009" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777009"/>
 	<concept_set concept_set_id="8777010" concept_id="7777010" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777010"/>
@@ -387,6 +390,8 @@
 	<program program_id="9" concept_id="7777030" creator="1" date_created="2012-02-29 09:46:38.0" changed_by="1" date_changed="2013-07-24 11:45:49.0" retired="false" name="SERVICO TARV - TRATAMENTO" description="Programa de seguimento e tratamento aos pacientes HIV+" uuid="efe2481f-9e75-4515-8d5a-86bfde2b5ad3"/>
     <program program_id="5" concept_id="1782" creator="1" date_created="2012-02-29 10:03:57" changed_by="1" date_changed="2013-07-24 11:46:08" retired="0" name="TUBERCULOSE" description="Programa de Combate a Tuberculose" uuid="142d23c4-c29f-4799-8047-eb3af911fd21" />
 
+	<program_workflow program_workflow_id="1" program_id="1" concept_id="1781" creator="1" date_created="2012-02-29 10:11:08" retired="0" uuid="beea7be9-cbf5-4a15-923a-ff193eea9d50" />
+	<program_workflow_state program_workflow_state_id="28" program_workflow_id="1" concept_id="7777004" initial="1" terminal="0" creator="1" date_created="2013-07-24 11:45:26" retired="0" uuid="b227d4ff-2dc3-4c18-9a58-d4de8d077746" />
 
     <program_workflow program_workflow_id="2" program_id="9" concept_id="6276" creator="1" date_created="2012-02-29 10:17:25" retired="0"  />
     <program_workflow program_workflow_id="4" program_id="5" concept_id="6281" creator="1" date_created="2012-02-29 17:00:42" retired="0" changed_by="1" date_changed="2013-07-24 11:46:08" uuid="8ac84757-6fb0-4b56-ac51-50d5efb004af" />
@@ -693,6 +698,5 @@
 	<global_property property="eptsreports.who3AdultStageUuid" property_value="e1d9077a-1d5f-11e0-b929-000c29ad1d07" description="UUID for the     WHO STAGE 3 ADULT  concept" uuid="2f109e37-72ca-44e6-bbea-b2f738d9272c" />
 	<global_property property="eptsreports.who4AdultStageUuid" property_value="e1d90888-1d5f-11e0-b929-000c29ad1d07" description="UUID for the     WHO STAGE 4 ADULT  concept" uuid="90691d44-0a23-42bc-8fb8-2ec9803eb41f" />
 	<global_property property="eptsreports.whoGaveInformation" property_value="e1e09d8c-1d5f-11e0-b929-000c29ad1d07" description="UUID for the REASON PATIENT NOT FOUND PROVIDED BY concept" uuid="578bbc77-5aea-4d0d-9133-1f887cf5936f" />
-
 
 </dataset>
