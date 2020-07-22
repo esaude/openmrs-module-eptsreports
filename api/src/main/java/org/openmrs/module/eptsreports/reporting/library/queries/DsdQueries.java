@@ -280,7 +280,7 @@ public class DsdQueries {
             + "      SELECT p.patient_id, max(e.encounter_datetime)  "
             + "      FROM patient p  "
             + "        JOIN encounter e ON p.patient_id=e.patient_id  "
-            + "        JOIN obs o ON p.patient_id=o.person_id  "
+            + "        JOIN obs o ON e.encounter_id = o.encounter_id  "
             + "      WHERE e.encounter_type= ${adultSeguimentoEncounterTypeId}  "
             + "        AND o.concept_id= ${lastFamilyApproachConceptId}  "
             + "        AND o.value_coded IN (${startDrugsConceptId},${continueRegimenConceptId})  "
