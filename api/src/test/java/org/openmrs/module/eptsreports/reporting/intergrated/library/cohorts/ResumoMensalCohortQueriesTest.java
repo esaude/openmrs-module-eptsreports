@@ -28,6 +28,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
 
   @Before
   public void setup() throws Exception {
+    // executeDataSet("metadata.xml");
     executeDataSet("ResumoMensalTest.xml");
   }
 
@@ -40,7 +41,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
 
   @Override
   protected Date getEndDate() {
-    return DateUtil.getDateTime(2019, 10, 20);
+    return DateUtil.getDateTime(2019, 12, 20);
   }
 
   @Override
@@ -117,14 +118,52 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     assertTrue(evaluatedCohort.getMemberIds().contains(1933));
   }
 
-  @Ignore
-  // TODO add some mappings on the dataset to properly test the whole query
-  public void getPatientsWhoInitiatedPreArtDuringCurrentMonthWithConditions()
+  @Test
+  public void getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2()
       throws EvaluationException {
-    CohortDefinition cohort =
+    CohortDefinition cd =
         resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2();
-    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort);
 
-    assertEquals(0, evaluatedCohort.getMemberIds().size());
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+
+    assertEquals(2, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1003));
+  }
+
+  @Test
+  public void getNumberOfPatientInitiedPreArtDuringCurrentMothA2() throws EvaluationException {
+    CohortDefinition cd =
+        resumoMensalCohortQueries.getNumberOfPatientInitiedPreArtDuringCurrentMothA2();
+
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+
+    assertEquals(2, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1003));
+  }
+
+  @Test
+  public void getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthC1()
+      throws EvaluationException {
+    CohortDefinition cd =
+        resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthC1();
+
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+    assertEquals(2, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1003));
   }
 }

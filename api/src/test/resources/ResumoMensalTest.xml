@@ -11,7 +11,6 @@
 	<location location_id="4" name="6 Azure" description="NA" address2="NA" state_province="NA" country="NetBeans" creator="1" date_created="2008-10-13 11:32:52" county_district="NA" address6="NA" retired="0" uuid="e3b32fc2-1d5f-11e0-b929-000c29ad1d07" />
 	<location location_id="21" name="24 de Julho" description="NA" address2="NA" state_province="NA" country="MA" date_created="2008-10-13 11:32:52" county_district="NA" address6="NA" retired="0" uuid="e2b32fc2-1d5f-11e0-b929-000c29ad1d07" />
 
-
 <person person_id="1020" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="true"
             creator="1" date_created="2005-01-01 00:00:00.0" voided="false" death_date="2019-09-30"
             uuid="8b6657b8-57dc-11ea-8247-a0a4c5d1c75c"/>
@@ -307,6 +306,7 @@
 
 	<concept_name concept_id="1369" name="TRANSFERIDO DE" locale="pt" creator="1" date_created="2008-10-25 13:54:23" concept_name_id="3145" voided="0" uuid="e24e2ffa-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
 
+	<concept_name concept_id="1369" name="TRANSFER FROM OTHER FACILITY" locale="en" creator="1" date_created="2008-10-25 13:54:23" concept_name_id="2465" voided="0" uuid="e249fb4c-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
 
 <concept_name concept_id="1706" name="TRANSFERIDO PARA" locale="pt" creator="1" date_created="2008-10-25 13:54:23" concept_name_id="3140" voided="0" uuid="e24e2b72-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
 
@@ -326,7 +326,12 @@
 	<concept_name concept_id="1707" name="ABANDONED" locale="en" creator="1" date_created="2008-10-25 13:17:30" concept_name_id="5369" voided="0" uuid="e25e3a80-1d5f-11e0-b929-000c29ad1d07" locale_preferred="0" />
 
 	<concept_name concept_id="1366" name="PATIENT HAS DIED" locale="en" creator="1" date_created="2008-10-13 05:58:15" concept_name_id="2462" voided="0" uuid="e249f6c4-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
- 
+
+	<concept_name concept_id="16" name="FOLLOWING" locale="en" creator="1" date_created="2008-10-13 05:58:15" concept_name_id="2463" voided="0" uuid="e249f6c4-1d5f-11e0-b929-000c29ad1d08" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+
+	<concept_name concept_id="14" name="NONE" locale="en" creator="1" date_created="2008-10-13 05:58:15" concept_name_id="2467" voided="0" uuid="e249f6c4-1d5f-11e0-b929-000c29ad1d09" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+
+
  <concept_name concept_id="23866" name="Date of ART Pickup" locale="en" creator="1" date_created="2008-10-13 05:58:15"
                   concept_name_id="7185" voided="0" uuid="58316739-bdba-4f65-9661-ddd04e089f49"
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
@@ -344,9 +349,9 @@
 	 <program_workflow program_workflow_id="2" program_id="2" concept_id="6274" creator="1"
                       date_created="2012-02-29 10:17:25" retired="0" uuid="a59bd818-d2f0-4a9a-a2f2-0a54af4ce04e"/>
 
-	<program_workflow_state program_workflow_state_id="28" program_workflow_id="1" concept_id="1369" initial="1" terminal="0" creator="1" date_created="2013-07-24 11:45:26" retired="0" uuid="b227d4ff-2dc3-4c18-9a58-d4de8d077746" />
+	<program_workflow_state program_workflow_state_id="28" program_workflow_id="1" concept_id="1369" initial="0" terminal="0" creator="1" date_created="2013-07-24 11:45:26" retired="0" uuid="b227d4ff-2dc3-4c18-9a58-d4de8d077746" />
 
-	<program_workflow_state program_workflow_state_id="29" program_workflow_id="2" concept_id="1369" initial="1" terminal="0" creator="1" date_created="2013-07-24 11:45:49" retired="0" uuid="ef06e6df-6026-4d5a-88f9-b2c3e0495dc8" />
+	<program_workflow_state program_workflow_state_id="29" program_workflow_id="2" concept_id="1369" initial="0" terminal="0" creator="1" date_created="2013-07-24 11:45:49" retired="0" uuid="ef06e6df-6026-4d5a-88f9-b2c3e0495dc8" />
 
 	<program_workflow_state program_workflow_state_id="9" program_workflow_id="2" concept_id="1707" initial="0" terminal="0" creator="1" date_created="2012-02-29 10:20:45" retired="0" uuid="06124f77-4a49-49f8-8655-fa1fe5262936" />
 
@@ -474,8 +479,8 @@
 
 	<obs obs_id="161899" person_id="1010" concept_id="8888" encounter_id="32682" obs_datetime="2019-09-26 00:00:00" value_coded="6275" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="6d6371cc-45b5-4731-b6d1-8e69cb882cd7" location_id="21" />
 
-	<obs obs_id="161999" person_id="1004" concept_id="9999" encounter_id="33683" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-09-27 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="6d6371cc-45b5-5751-b6d1-8e69cb882cd7" location_id="21" />
-
+	<obs obs_id="161999" person_id="1004" concept_id="9999" encounter_id="33683" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-09-27 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="6d6371cc-45b5-5751-b6d1-8e69cb882cd7" location_id="21" /> 
+ 
 
 	<!-- testGetNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1 -->
 	<person person_id="1933" gender="F" birthdate="1992-04-06" birthdate_estimated="0" dead="0" creator="1"
@@ -488,5 +493,21 @@
 	<obs obs_id="4129302" person_id="1933" concept_id="9999" encounter_id="522431" obs_datetime="2019-09-26 00:00:00"
 		 location_id="21" value_datetime="2012-05-07 00:00:00" comments="24 de julho" creator="1"
 		 date_created="2019-09-26 09:05:35" voided="0" uuid="fc4fa73c-f591-4e6e-9861-a8de95b30cc2"/>
+	<!---->
+ 
+	<!-- testGetPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2 -->
+	<person person_id="41584" gender="F" birthdate="2000-10-06" birthdate_estimated="false" dead="false" creator="1"
+			date_created="2000-10-06 09:30:10" voided="false" uuid="75d5cf82-ca66-4eb1-b217-9808fdc97818"
+			deathdate_estimated="false"/>
+
+	<patient patient_id="41584" creator="1" date_created="2019-02-06 09:56:39" voided="false"/>
+
+	<encounter encounter_id="1135178" encounter_type="6" patient_id="41584" location_id="21"
+			   encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+			   uuid="51eebe5e-109a-47e7-9553-1ba2799c799a" />
+
+	<obs obs_id="9316926" person_id="41584" concept_id="1781" encounter_id="1135178" obs_datetime="2019-12-09 00:00:00"
+		 location_id="21" value_datetime="2019-12-16 00:00:00" comments="24 de julho" creator="1"
+		 date_created="2019-12-09 10:00:33" voided="0" uuid="d9dcaadf-3ed1-444e-a8db-61755469e062"/>
 	<!---->
 </dataset>
