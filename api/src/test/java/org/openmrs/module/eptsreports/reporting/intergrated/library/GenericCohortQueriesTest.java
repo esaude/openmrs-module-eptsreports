@@ -345,6 +345,40 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
+  public void getAgeOnArtStartDateShouldReturnPatientsAgeOnArtStartDate()
+      throws EvaluationException {
+    int minAge = 0;
+    int maxAge = 14;
+    Date onOrAfter = DateUtil.getDateTime(2019, 7, 21);
+    Date onOrBefore = DateUtil.getDateTime(2020, 1, 20);
+    CohortDefinition startedArtBeforeDate =
+        genericCohortQueries.getAgeOnArtStartDate(minAge, maxAge, false);
+    Map<Parameter, Object> params = new HashMap<>();
+    params.put(new Parameter("location", "location", Location.class), new Location(336));
+    params.put(new Parameter("onOrAfter", "onOrAfter", Date.class), onOrAfter);
+    params.put(new Parameter("onOrBefore", "onOrBefore", Date.class), onOrBefore);
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(startedArtBeforeDate, params);
+    assertThat(evaluatedCohort.getMemberIds(), hasSize(1));
+    assertThat(evaluatedCohort.getMemberIds(), contains(420));
+  }
+
+  @Test
+  public void getStartedArtOnPeriodShouldReturnPatientsStartedArtOnPeriod()
+      throws EvaluationException {
+    Date onOrAfter = DateUtil.getDateTime(2019, 7, 21);
+    Date onOrBefore = DateUtil.getDateTime(2020, 1, 20);
+    CohortDefinition startedArtBeforeDate =
+        genericCohortQueries.getStartedArtOnPeriod(false, false);
+    Map<Parameter, Object> params = new HashMap<>();
+    params.put(new Parameter("location", "location", Location.class), new Location(331));
+    params.put(new Parameter("onOrAfter", "onOrAfter", Date.class), onOrAfter);
+    params.put(new Parameter("onOrBefore", "onOrBefore", Date.class), onOrBefore);
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(startedArtBeforeDate, params);
+    assertThat(evaluatedCohort.getMemberIds(), hasSize(1));
+    assertThat(evaluatedCohort.getMemberIds(), contains(374));
+  }
+
+  @Test
   public void getStartedArtBeforeDateShouldReturnPatientsStartedArtBeforeDate()
       throws EvaluationException {
     Date date = DateUtil.getDateTime(2020, 7, 8);

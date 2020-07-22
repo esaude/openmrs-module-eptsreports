@@ -94,6 +94,7 @@
     <encounter encounter_id="509380" encounter_type="6777002" patient_id="11968" location_id="333"
                encounter_datetime="2019-07-26 00:00:00" creator="1" date_created="2019-07-29 10:20:29" voided="0"
                uuid="7c2f9bfd-32a5-4784-88c2-d32d7a662a93" visit_id="397745"/>
+               
     <obs obs_id="4019469" person_id="11968" concept_id="7777002" encounter_id="509380" obs_datetime="2019-07-26 00:00:00"
          location_id="333" value_coded="7777003" creator="1" date_created="2019-07-29 10:20:29" voided="0"
          uuid="5fb5647a-389e-4759-9378-269c5146e441"/>
@@ -127,4 +128,56 @@
          location_id="456" value_datetime="2015-03-26 00:00:00" creator="1" date_created="2015-07-31 23:09:04"
          voided="0" uuid="df6c3cf6-8f18-41bf-912c-aa18acb590d7"/>
     <!---->
+
+    <!-- getStartedArtOnPeriodShouldReturnPatientsStartedArtOnPeriod  -->
+        
+    <person person_id="374" gender="F" birthdate="1995-09-06" birthdate_estimated="0" dead="0" creator="1"
+                date_created="2015-09-09 08:05:46" voided="0" uuid="b49bf196-ca8e-11ea-9fb1-77b16f93c2bc"
+                deathdate_estimated="0"/>
+    <patient patient_id="374" creator="1" date_created="2015-09-09 08:05:46" voided="0"/>
+
+        <!-- art start date -->
+        <location location_id="331" name="CS 24 de Julho" description="NA" address2="NA" state_province="NA"
+                country="Kepler" creator="1" date_created="2015-08-20 18:11:14" county_district="NA" address6="NA"
+                address5="24 de Julho" retired="0" parent_location="220" uuid="035d0b80-ca8f-11ea-ad7b-3b8bcb3de632"/>
+
+        <encounter encounter_id="523607" encounter_type="6777002" patient_id="374" location_id="331"
+                encounter_datetime="2019-09-30 00:00:00" creator="1" date_created="2019-10-03 13:48:16" voided="0"
+                uuid="d3c48f75-6ef5-4f43-951d-bcab539bfa45" visit_id="404833"/>
+        
+        <encounter encounter_id="516314" encounter_type="6777003" patient_id="374" location_id="331"
+                encounter_datetime="2019-08-28 00:00:00" creator="1" date_created="2019-08-28 08:39:27" voided="0"
+                uuid="0e7eb55f-460d-4532-ac43-5188bf0808ba" visit_id="401373"/>
+        
+        <obs obs_id="4138576" person_id="374" concept_id="7777004" encounter_id="523607" obs_datetime="2019-09-30 00:00:00"
+                location_id="331" value_coded="7777002" creator="1" date_created="2019-10-03 13:48:16" voided="0"
+                uuid="82d367ac-6e9a-433e-bf46-1ce440cedd52"/>
+        
+        <obs obs_id="4079407" person_id="374" concept_id="7777002" encounter_id="516314" obs_datetime="2019-08-28 00:00:00"
+                location_id="331" value_coded="7777003" creator="1" date_created="2019-08-28 08:39:27" voided="0"
+                uuid="0ebf4536-8e5b-4efe-b687-918546c68f9b"/>     
+            
+    <!-- -->
+
+    <!-- getAgeOnArtStartDateShouldReturnPatientsAgeOnArtStartDate-->
+    <person person_id="420" gender="M" birthdate="2005-08-21" birthdate_estimated="0" dead="0" creator="1"
+                date_created="2015-09-09 08:08:33" voided="0" uuid="d9bbaa09-d0b3-4bcc-ae01-08b58361d64e"
+                deathdate_estimated="0"/>
+    <patient patient_id="420" creator="1" date_created="2015-09-09 08:08:33" voided="0"/>
+
+        <!-- -->
+        <location location_id="336" name="CS 24 de Julho" description="NA" address2="NA" state_province="NA"
+                country="Kepler" creator="1" date_created="2015-08-20 18:11:14" county_district="NA" address6="NA"
+                address5="24 de Julho" retired="0" parent_location="220" uuid="1f4a6774-cabd-11ea-9bf8-d3295aa499fe"/>
+        
+        <encounter encounter_id="512729" encounter_type="6777001" patient_id="420" location_id="336"
+                encounter_datetime="2019-08-09 00:00:00" creator="1" date_created="2019-10-03 13:48:16" voided="0"
+                uuid="1245e237-7080-4b23-b949-9390967aeaf8" visit_id="399327"/>
+        
+        <obs obs_id="512729" person_id="420" concept_id="7777002" encounter_id="516314" obs_datetime="2019-08-09 00:00:00"
+                location_id="336" value_coded="7777003" creator="1" date_created="2019-08-12 13:35:30" voided="0"
+                uuid="ee12f2fb-cd34-4191-a845-e1f39d9a2c23"/>
+        
+    <!-- -->
+
 </dataset>
