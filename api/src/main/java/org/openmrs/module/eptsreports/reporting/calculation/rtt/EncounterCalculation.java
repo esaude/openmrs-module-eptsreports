@@ -76,6 +76,9 @@ public class EncounterCalculation extends BaseFghCalculation {
 
       for (final Date encounterDate : encounters) {
 
+        Date pickUpDate = null;
+        Date followUpDate = null;
+
         final List<Date> followUpResult =
             this.findResults(
                 context,
@@ -84,10 +87,6 @@ public class EncounterCalculation extends BaseFghCalculation {
                 TxRttQueries.QUERY
                     .findLastNextEncounterScheduledDateOnThePreviousFolloupEncounterByPatient);
 
-        if (followUpResult.isEmpty()) {
-          break;
-        }
-
         final List<Date> pickUpResult =
             this.findResults(
                 context,
@@ -95,20 +94,46 @@ public class EncounterCalculation extends BaseFghCalculation {
                 encounterDate,
                 TxRttQueries.QUERY.findLastNextPickupDateOnThePreviousPickupEncounterByPatient);
 
-        if (pickUpResult.isEmpty()) {
+        if (followUpResult.isEmpty() && pickUpResult.isEmpty()) {
           break;
         }
 
-        final Date followUpDate = followUpResult.get(0);
-        final Date pickUpDate = pickUpResult.get(0);
+        if (!followUpResult.isEmpty()) {
+          followUpDate = followUpResult.get(0);
+        }
+        if (!pickUpResult.isEmpty()) {
+          pickUpDate = pickUpResult.get(0);
+        }
+
+        if (followUpDate == null && pickUpDate == null) {
+          break;
+        }
 
         if (followUpDate != null && pickUpDate != null) {
+
           final long followUpDays =
               EptsReportUtils.getDifferenceInDaysBetweenDates(encounterDate, followUpDate);
           final long pickUpDays =
               EptsReportUtils.getDifferenceInDaysBetweenDates(encounterDate, pickUpDate);
 
           if (this.isOnRTT(followUpDays, pickUpDays)) {
+            resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+            break;
+          }
+        } else if (followUpDate != null) {
+
+          final long followUpDays =
+              EptsReportUtils.getDifferenceInDaysBetweenDates(encounterDate, followUpDate);
+          if (isOnRTTPPickupOrFolowUp(followUpDays)) {
+            resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+            break;
+          }
+        } else if (pickUpDate != null) {
+
+          final long pickUpDays =
+              EptsReportUtils.getDifferenceInDaysBetweenDates(encounterDate, pickUpDate);
+
+          if (this.isOnRTTPPickupOrFolowUp(pickUpDays)) {
             resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
             break;
           }
@@ -149,6 +174,10 @@ public class EncounterCalculation extends BaseFghCalculation {
     final List<Date> result =
         this.evaluationService.evaluateToList(queryBuilder, Date.class, context);
     return result;
+  }
+
+  private boolean isOnRTTPPickupOrFolowUp(final long isRtt) {
+    return isRtt > RTT_DAYS;
   }
 
   private boolean isOnRTT(final long followUpDays, final long pickUpDays) {
