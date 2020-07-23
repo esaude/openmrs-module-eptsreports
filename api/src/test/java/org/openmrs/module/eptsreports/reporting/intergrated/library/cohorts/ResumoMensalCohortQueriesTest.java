@@ -166,4 +166,37 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     assertEquals(2, evaluatedCohort.getMemberIds().size());
     assertTrue(evaluatedCohort.getMemberIds().contains(1003));
   }
+
+  @Test
+  public void
+      getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1ShouldReturnPatientsWhoInitiatedTarv()
+          throws EvaluationException {
+    CohortDefinition cd =
+        resumoMensalCohortQueries.getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1();
+
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+
+    assertEquals(1, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1021));
+  }
+
+  @Test
+  public void getSumOfA1AndA2ShouldReturnSumOfA1AndA2() throws EvaluationException {
+    CohortDefinition cd = resumoMensalCohortQueries.getSumOfA1AndA2();
+
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+
+    assertEquals(3, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(1933));
+  }
 }

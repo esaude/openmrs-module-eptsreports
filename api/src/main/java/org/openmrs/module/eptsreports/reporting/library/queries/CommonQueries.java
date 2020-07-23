@@ -59,6 +59,8 @@ public class CommonQueries {
             + "WHERE e.encounter_type IN (${adultoSeguimentoEncounterTypeId}, "
             + "                           ${arvPediatriaSeguimentoEncounterTypeId}) "
             + "  AND start.concept_id = ${tbStartDateConceptId} "
+            + "  AND start.voided = 0"
+            + "  AND e.voided = 0"
             + "  AND start.value_datetime IS NOT NULL "
             + "  AND start.value_datetime BETWEEN date_sub(:endDate, INTERVAL 6 MONTH) AND :endDate "
             + "  AND e.location_id=  :location  "
