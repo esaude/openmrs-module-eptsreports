@@ -1,10 +1,16 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.calculation.pvls;
 
+import static org.junit.Assert.*;
+
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -13,7 +19,6 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.BreastfeedingDateCalculation;
 import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
 
-@Ignore
 public class BreastFeedingDateCalculationTest extends BasePatientCalculationTest {
 
   @Override
@@ -23,7 +28,7 @@ public class BreastFeedingDateCalculationTest extends BasePatientCalculationTest
 
   @Override
   public Collection<Integer> getCohort() {
-    return Arrays.asList(new Integer[] {7, 90, 91, 501});
+    return Arrays.asList(new Integer[] {7, 90, 91});
   }
 
   @Override
@@ -35,28 +40,19 @@ public class BreastFeedingDateCalculationTest extends BasePatientCalculationTest
     PatientCalculationContext evaluationContext = getEvaluationContext();
     evaluationContext.setNow(testsHelper.getDate("2019-02-28 00:00:00.0"));
 
-    // Date marked as breastFeeding : 2018-01-21
-    map.put(
-        501,
-        new SimpleResult(
-            new Timestamp(testsHelper.getDate("2018-01-21 00:00:00.0").getTime()),
-            calculation,
-            evaluationContext));
-    // BreastfeedingCalculation.hasHIVStartDate(2018-06-20 00:00:00.0, List<Obs>)
     map.put(
         7,
         new SimpleResult(
             new Timestamp(testsHelper.getDate("2018-06-20 00:00:00.0").getTime()),
             calculation,
             evaluationContext));
-    // BreastfeedingCalculation.hasDeliveryDate(2018-07-01 00:00:00.0, List<Obs>)
     map.put(
         91,
         new SimpleResult(
             new Timestamp(testsHelper.getDate("2018-07-01 00:00:00.0").getTime()),
             calculation,
             evaluationContext));
-    /// BreastfeedingCalculation.isBreastFeedingInProgram(2018-08-10, List<PatientState>)
+
     map.put(
         90,
         new SimpleResult(
@@ -68,6 +64,54 @@ public class BreastFeedingDateCalculationTest extends BasePatientCalculationTest
 
   @Before
   public void initialise() throws Exception {
+    executeDataSet("metadata.xml");
     executeDataSet("pvlsTest.xml");
+  }
+
+  @Test
+  public void shouldGetAtLeastOnePatientInBreastFeedingDate() throws ParseException {
+
+    List<Integer> patientsIDs = Arrays.asList(7);
+
+    CalculationResultMap calculationResultMap =
+        service.evaluate(patientsIDs, this.getCalculation(), getEvaluationContext());
+
+    SimpleResult result = (SimpleResult) calculationResultMap.get(7);
+
+    assertNotNull(result);
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+    Date expeted = sdf.parse("2018-06-20 00:00:00");
+    Date resultDate = (Date) result.getValue();
+    assertEquals(expeted, resultDate);
+  }
+
+  @Test
+  public void shouldNotGetAnyDateForBreastFeedingDate() {
+
+    List<Integer> patientsIDs = Arrays.asList(501);
+
+    CalculationResultMap calculationResultMap =
+        service.evaluate(patientsIDs, this.getCalculation(), getEvaluationContext());
+
+    SimpleResult result = (SimpleResult) calculationResultMap.get(501);
+
+    assertNotNull(result);
+    assertNull(result.getValue());
+  }
+
+  @Test(expected = Exception.class)
+  public void shouldFailWithNullListOfPatientIds() {
+
+    List<Integer> patientsIDs = null;
+
+    CalculationResultMap calculationResultMap =
+        service.evaluate(patientsIDs, this.getCalculation(), getEvaluationContext());
+
+    SimpleResult result = (SimpleResult) calculationResultMap.get(7);
+
+    assertNotNull(result);
+    assertNull(result.getValue());
   }
 }
