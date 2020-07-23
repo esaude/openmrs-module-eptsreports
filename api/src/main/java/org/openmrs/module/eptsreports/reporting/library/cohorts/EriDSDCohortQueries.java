@@ -361,7 +361,7 @@ public class EriDSDCohortQueries {
         "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}";
     cd.addSearch("breastfeeding", EptsReportUtils.map(breastfeeding, breastfeedingMappings));
 
-    String tbMappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String tbMappings = "endDate=${endDate},location=${location}";
     cd.addSearch("tb", EptsReportUtils.map(tb, tbMappings));
 
     cd.setCompositionString("pregnant OR breastfeeding OR tb");
