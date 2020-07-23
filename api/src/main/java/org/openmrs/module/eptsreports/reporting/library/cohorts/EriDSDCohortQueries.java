@@ -655,8 +655,12 @@ public class EriDSDCohortQueries {
     map.put("lessThan839Copies", hivMetadata.getLessThan839CopiesConcept().getConceptId());
 
     String query =
-        "SELECT vl_max.patient_id from( "
-            + "    SELECT vl.patient_id, MAX(vl.latest_date) date FROM (  "
+        " SELECT vl_max.patient_id "
+            + "FROM "
+            + "( "
+            + "SELECT vl.patient_id, MAX(vl.latest_date) max_date "
+            + "FROM "
+            + "(  "
             + "        SELECT p.patient_id, MAX(e.encounter_datetime) latest_date  "
             + "        FROM patient p  "
             + "            INNER JOIN encounter e  "
@@ -687,9 +691,12 @@ public class EriDSDCohortQueries {
             + "            AND p.voided=0  "
             + "            AND e.voided=0  "
             + "            AND o.voided=0  "
-            + "        GROUP BY p.patient_id) vl "
+            + "        GROUP BY p.patient_id"
+            + "		) vl "
+            + " GROUP BY   vl.patient_id "
+            + ") vl_max"
             + "        INNER JOIN encounter e "
-            + "            ON e.patient_id = vl.patient_id "
+            + "            ON e.patient_id = vl_max.patient_id "
             + "        INNER JOIN obs o "
             + "            ON o.encounter_id = e.encounter_id "
             + "    WHERE  e.voided=0  "
@@ -704,15 +711,15 @@ public class EriDSDCohortQueries {
             + "                                       (e.encounter_type IN (${adultoSeguimento},${pediatriaSeguimento},${misauLaboratorio},${fsr})   "
             + "                                             AND e.encounter_datetime    "
             + "                        BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate  "
-            + "                                           AND e.encounter_datetime = vl.latest_date )  "
+            + "                                           AND e.encounter_datetime = vl_max.max_date )  "
             + "                           OR   "
             + "                                       (e.encounter_type =${masterCard}  "
             + "                                             AND o.obs_datetime      "
             + "                        BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate  "
-            + "                                             AND o.obs_datetime = vl.latest_date       )  "
+            + "                                             AND o.obs_datetime = vl_max.max_date       )  "
             + "                                 )  "
             + "        "
-            + "    GROUP BY   vl.patient_id) vl_max ";
+            + "   ORDER BY vl_max.patient_id ";
 
     StringSubstitutor sb = new StringSubstitutor(map);
     String replaceQuery = sb.replace(query);
