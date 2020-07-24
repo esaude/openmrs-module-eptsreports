@@ -570,56 +570,113 @@ public class EriDSDCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "CD4Abs",
-        EptsReportUtils.map(
-            genericCohortQueries.hasNumericObs(
-                hivMetadata.getCD4AbsoluteOBSConcept(),
-                BaseObsCohortDefinition.TimeModifier.LAST,
-                RangeComparator.GREATER_THAN,
-                200.0,
-                null,
-                null,
-                Arrays.asList(
-                    hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getPediatriaSeguimentoEncounterType(),
-                    hivMetadata.getMisauLaboratorioEncounterType(),
-                    hivMetadata.getFsrEncounterType())),
-            "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
-    cd.addSearch(
-        "Cd4Lab",
-        EptsReportUtils.map(
-            genericCohortQueries.hasNumericObs(
-                hivMetadata.getCD4AbsoluteConcept(),
-                BaseObsCohortDefinition.TimeModifier.LAST,
-                RangeComparator.GREATER_THAN,
-                200.0,
-                null,
-                null,
-                Arrays.asList(
-                    hivMetadata.getAdultoSeguimentoEncounterType(),
-                    hivMetadata.getPediatriaSeguimentoEncounterType(),
-                    hivMetadata.getMisauLaboratorioEncounterType(),
-                    hivMetadata.getFsrEncounterType())),
-            "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
-    cd.addSearch(
         "Age",
         EptsReportUtils.map(
             ageCohortQueries.createXtoYAgeCohort("greaterThan5", 5, 900),
             "effectiveDate=${endDate}"));
-    cd.addSearch(
-        "B",
-        EptsReportUtils.map(
-            genericCohortQueries.hasNumericObs(
-                hivMetadata.getCD4AbsoluteOBSConcept(),
-                BaseObsCohortDefinition.TimeModifier.LAST,
-                RangeComparator.GREATER_THAN,
-                200.0,
-                null,
-                null,
-                Arrays.asList(hivMetadata.getMasterCardEncounterType())),
-            "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
 
-    cd.setCompositionString("((CD4Abs OR Cd4Lab OR B) AND Age)");
+    cd.addSearch(
+        "CD4CountAndCD4Percent2Part1",
+        EptsReportUtils.map(
+            getCD4CountAndCD4Percent2Part1(), "endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("CD4CountAndCD4Percent2Part1 AND Age");
+
+    return cd;
+  }
+  /** LAST CD4 result > 200 cels/mm3 in last ART year (if patients age >=5 */
+  private CohortDefinition getCD4CountAndCD4Percent2Part1() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("LAST CD4 result > 200 cels/mm3 in last ART year (if patients age >=5");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("9", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    map.put("13", hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId());
+    map.put("51", hivMetadata.getFsrEncounterType().getEncounterTypeId());
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("1695", hivMetadata.getCD4AbsoluteOBSConcept().getConceptId());
+    map.put("5497", hivMetadata.getCD4AbsoluteConcept().getConceptId());
+
+    String query =
+        "SELECT  cd4_max.patient_id "
+            + "FROM "
+            + "( "
+            + "    SELECT  most_recent.patient_id, MAX(most_recent.last_date) cd4_max_date "
+            + "    FROM "
+            + "    ( "
+            + "        SELECT p.patient_id, MAX(e.encounter_datetime) last_date "
+            + "        FROM  patient p "
+            + "            INNER JOIN encounter e  "
+            + "                ON e.patient_id=p.patient_id "
+            + "            INNER JOIN obs o  "
+            + "                ON o.encounter_id=e.encounter_id "
+            + "        WHERE  "
+            + "            e.encounter_type IN (${6},${9},${13},${51})   "
+            + "            AND  o.concept_id IN (${1695},${5497})   "
+            + "            AND e.encounter_datetime   "
+            + "                    BETWEEN date_add(date_add( :endDate, interval -12 MONTH), interval 1 day)  "
+            + "                        AND  :endDate  "
+            + "            AND e.location_id=   :location   "
+            + "            AND o.voided = 0  "
+            + "            AND e.voided = 0 "
+            + "            AND p.voided = 0 "
+            + "        GROUP BY p.patient_id "
+            + "        UNION "
+            + "        SELECT p.patient_id, MAX(o.obs_datetime) latest_date    "
+            + "        FROM patient p   "
+            + "            INNER JOIN encounter e   "
+            + "                    ON p.patient_id=e.patient_id   "
+            + "            INNER JOIN obs o   "
+            + "                    ON o.encounter_id=e.encounter_id   "
+            + "        WHERE e.encounter_type=${53}  "
+            + "            AND o.concept_id = ${1695}   "
+            + "            AND  o.obs_datetime   "
+            + "                        BETWEEN date_add(date_add( :endDate, interval -12 MONTH), interval 1 day)  "
+            + "                            AND  :endDate   "
+            + "            AND e.location_id=   :location   "
+            + "            AND p.voided=0   "
+            + "            AND e.voided=0   "
+            + "            AND o.voided=0   "
+            + "        GROUP BY p.patient_id "
+            + "    )most_recent "
+            + "    GROUP BY most_recent.patient_id "
+            + ")cd4_max "
+            + "    INNER JOIN encounter e  "
+            + "        ON e.patient_id = cd4_max.patient_id  "
+            + "    INNER JOIN obs o  "
+            + "        ON o.encounter_id = e.encounter_id  "
+            + "WHERE  e.voided=0   "
+            + "    AND o.voided=0   "
+            + "    AND "
+            + "    (  "
+            + "        (o.concept_id IN (${1695} ,${5497}) AND o.value_numeric > 200)  "
+            + "          "
+            + "    )   "
+            + "    AND e.location_id=  :location   "
+            + "    AND  "
+            + "    ( "
+            + "        (e.encounter_type IN (${6},${9},${13},${51})  "
+            + "            AND e.encounter_datetime   "
+            + "                BETWEEN date_add(date_add( :endDate, interval -12 MONTH), interval 1 day) AND  :endDate "
+            + "            AND e.encounter_datetime = cd4_max.cd4_max_date  "
+            + "        ) "
+            + "        OR  "
+            + "        (e.encounter_type = ${53} "
+            + "            AND o.obs_datetime     "
+            + "                BETWEEN date_add(date_add( :endDate, interval -12 MONTH), interval 1 day) AND  :endDate "
+            + "            AND o.obs_datetime = cd4_max.cd4_max_date  "
+            + "        ) "
+            + "    )  "
+            + " "
+            + "ORDER BY cd4_max.patient_id";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    String replaceQuery = sb.replace(query);
+
+    cd.setQuery(replaceQuery);
 
     return cd;
   }
