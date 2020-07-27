@@ -125,6 +125,11 @@ public class CommonMetadata extends Metadata {
   }
 
   // concept_id=1410
+  /**
+   * concept_id=1410
+   *
+   * @return
+   */
   public Concept getReturnVisitDateConcept() {
     String uuid =
         Context.getAdministrationService()
