@@ -269,16 +269,18 @@ public class EriDSDCohortQueries {
 
   /** N5 - Number of active patients on ART who are in CA */
   public CohortDefinition getN5() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("N5 - Number of active patients on ART who are in CA");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    CohortDefinition startOrContinueCA = getPatientsWithStartOrContinueCA();
-    String caMappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
-    cd.addSearch("startOrContinueCA", EptsReportUtils.map(startOrContinueCA, caMappings));
-    cd.setCompositionString("startOrContinueCA");
-    return cd;
+    CodedObsCohortDefinition cd1 = new CodedObsCohortDefinition();
+    cd1.setName("N5 - Number of active patients on ART who are in CA");
+    cd1.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd1.addParameter(new Parameter("locationList", "Location", Location.class));
+    cd1.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
+    cd1.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+    cd1.setQuestion(hivMetadata.getAccessionClubs());
+    cd1.setOperator(SetComparator.IN);
+    cd1.addValue(hivMetadata.getStartDrugsConcept());
+    cd1.addValue(hivMetadata.getContinueRegimenConcept());
+    return new MappedParametersCohortDefinition(
+        cd1, "onOrBefore", "endDate", "locationList", "location");
   }
 
   /** N7 - Number of active patients on ART who are in DC */
@@ -889,20 +891,6 @@ public class EriDSDCohortQueries {
             Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()),
             hivMetadata.getGaac().getConceptId(),
             Arrays.asList(hivMetadata.getCompletedConcept().getConceptId())));
-    return cd;
-  }
-
-  private CohortDefinition getPatientsWithStartOrContinueCA() {
-    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
-    cd.setQuestion(hivMetadata.getAccessionClubs());
-    cd.setOperator(SetComparator.IN);
-    cd.addValue(hivMetadata.getStartDrugsConcept());
-    cd.addValue(hivMetadata.getContinueRegimenConcept());
     return cd;
   }
 
