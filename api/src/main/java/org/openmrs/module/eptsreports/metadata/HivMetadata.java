@@ -555,9 +555,7 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
-
   /** concept_id=2015 */
-
   public Concept getAdverseReaction() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.adverseReactionUuid");
