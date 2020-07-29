@@ -1,7 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.calculation.txml;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
@@ -45,16 +43,8 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
 
     for (Integer patientId : cohort) {
       Date artStartDate = InitialArtStartDateCalculation.getArtStartDate(patientId, artStartDates);
-      Date lastClinicalContact = null;
-      String randomVal =
-          EptsCalculationUtils.resultForPatient(lastClinicalContactMap, patientId).toString();
-      if (!randomVal.equals("0")) {
-        try {
-          lastClinicalContact = new SimpleDateFormat("yyyy-MM-dd").parse(randomVal);
-        } catch (ParseException ex) {
-          ex.printStackTrace();
-        }
-      }
+      Date lastClinicalContact =
+          EptsCalculationUtils.resultForPatient(lastClinicalContactMap, patientId);
 
       if (artStartDate != null && lastClinicalContact != null) {
         int days = EptsCalculationUtils.daysSince(artStartDate, lastClinicalContact);
@@ -90,7 +80,11 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
 
     String query =
         " SELECT   patient_id,"
-            + "         Greatest(COALESCE(return_date_fila,0),COALESCE(return_date_consulta,0),COALESCE(return_date_master,0)) AS return_date"
+            + "         CASE"
+            + "             WHEN Greatest(COALESCE(return_date_fila,0),COALESCE(return_date_consulta,0),COALESCE(return_date_master,0)) = 0 "
+            + "         THEN NULL "
+            + "         ELSE DATE(Greatest(COALESCE(return_date_fila,0),COALESCE(return_date_consulta,0),COALESCE(return_date_master,0)))"
+            + "         END AS return_date"
             + " FROM     ("
             + "                SELECT p.patient_id,"
             + "                       ("
