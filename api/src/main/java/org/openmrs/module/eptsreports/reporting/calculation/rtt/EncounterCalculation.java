@@ -120,23 +120,6 @@ public class EncounterCalculation extends BaseFghCalculation {
             resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
             break;
           }
-        } else if (followUpDate != null) {
-
-          final long followUpDays =
-              EptsReportUtils.getDifferenceInDaysBetweenDates(encounterDate, followUpDate);
-          if (isOnRTTPickupOrFolowUp(followUpDays)) {
-            resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-            break;
-          }
-        } else if (pickUpDate != null) {
-
-          final long pickUpDays =
-              EptsReportUtils.getDifferenceInDaysBetweenDates(encounterDate, pickUpDate);
-
-          if (this.isOnRTTPickupOrFolowUp(pickUpDays)) {
-            resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-            break;
-          }
         }
       }
     }
@@ -174,10 +157,6 @@ public class EncounterCalculation extends BaseFghCalculation {
     final List<Date> result =
         this.evaluationService.evaluateToList(queryBuilder, Date.class, context);
     return result;
-  }
-
-  private boolean isOnRTTPickupOrFolowUp(final long isRttPickUpOrtFolowUpDays) {
-    return isRttPickUpOrtFolowUpDays > RTT_DAYS;
   }
 
   private boolean isOnRTT(final long followUpDays, final long pickUpDays) {
