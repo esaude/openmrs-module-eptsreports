@@ -13,7 +13,6 @@ import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.THIRTY_TO_
 import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.TWENTY_FIVE_TO_TWENTY_NINE;
 import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.TWENTY_TO_TWENTY_FOUR;
 import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.UNDER_ONE;
-import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.UNKNOWN;
 
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxRTTCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
@@ -121,7 +120,22 @@ public class TxRttDataset extends BaseDataSet {
         FORTY_FIVE_TO_FORTY_NINE,
         ABOVE_FIFTY);
 
-    this.addColums(definition, "", patientOnRttIndicator, UNKNOWN);
+
+    definition.addColumn(
+        "R-malesUnknownM",
+        "unknownM",
+        EptsReportUtils.map(patientOnRttIndicator, mappings),
+        this.getColumnName(AgeRange.UNKNOWN, Gender.MALE)
+            + "="
+            + this.getColumnName(AgeRange.UNKNOWN, Gender.MALE));
+
+    definition.addColumn(
+        "R-femalesUnknownF",
+        "unknownF",
+        EptsReportUtils.map(patientOnRttIndicator, mappings),
+        this.getColumnName(AgeRange.UNKNOWN, Gender.FEMALE)
+            + "="
+            + this.getColumnName(AgeRange.UNKNOWN, Gender.FEMALE));
 
     definition.addColumn(
         "R-MSM",
