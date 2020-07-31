@@ -11,6 +11,9 @@ import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
+import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -57,49 +60,158 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
       Encounter lastEncounter = EptsCalculationUtils.resultForPatient(lastEncounterMap, pId);
       Obs lastReturnVisitObs = null;
 
-      // Step 2.2: identify last return visit obs record
-      Iterator<Obs> iterator = returnVisitList.iterator();
-      while (iterator.hasNext()) {
-        Obs obs = iterator.next();
-        if (obs.getVoided()
-            || obs.getValueDate() == null
-            || obs.getEncounter() == null
-            || (obs.getEncounter() != null
-                && (obs.getEncounter().getEncounterId() != lastEncounter.getEncounterId()))) {
-          iterator.remove();
+      /*for another last encounter that may occur in the same date*/
+      if (lastEncounter != null) {
+
+        List<Encounter> anotherLastEncounters =
+            getAnotherLastEncounter(
+                lastEncounter.getEncounterDatetime(),
+                lastEncounter.getEncounterDatetime(),
+                lastEncounter.getLocation(),
+                lastEncounter,
+                pId,
+                context);
+        List<Obs> copyOfReturnVisitList = new ArrayList<>(returnVisitList);
+        for (Encounter e : anotherLastEncounters) {
+
+          Obs obs = getLastObs(copyOfReturnVisitList, e);
+          if (obs != null) {
+            scheduled = compareAgainstBoundaries(e, obs, lowerBound, upperBound);
+            if (scheduled) {
+              map.put(pId, new BooleanResult(scheduled, this));
+              break;
+            }
+          }
         }
       }
 
-      Collections.sort(
-          returnVisitList,
-          new Comparator<Obs>() {
-            @Override
-            public int compare(Obs obs, Obs t1) {
-              return t1.getValueDate().compareTo(obs.getValueDatetime());
-            }
-          });
-      if (returnVisitList.size() > 0) {
-        lastReturnVisitObs = returnVisitList.get(returnVisitList.size() - 1);
+      if (scheduled) {
+        continue;
       }
+      // Step 2.2: identify last return visit obs record
+      lastReturnVisitObs = getLastObs(returnVisitList, lastEncounter);
 
       // Step 3: compare against boundaries
-      if (lastEncounter != null
-          && lastReturnVisitObs != null
-          && lastReturnVisitObs.getValueDate() != null) {
-
-        Date lowerBoundary =
-            EptsCalculationUtils.addDays(lastEncounter.getEncounterDatetime(), lowerBound);
-        Date upperBoundary =
-            EptsCalculationUtils.addDays(lastEncounter.getEncounterDatetime(), upperBound);
-
-        if (lastReturnVisitObs.getValueDate().compareTo(lowerBoundary) >= 0
-            && lastReturnVisitObs.getValueDate().compareTo(upperBoundary) <= 0) {
-          scheduled = true;
-        }
-      }
+      scheduled =
+          compareAgainstBoundaries(lastEncounter, lastReturnVisitObs, lowerBound, upperBound);
 
       map.put(pId, new BooleanResult(scheduled, this));
     }
     return map;
+  }
+
+  private List<Encounter> getAnotherLastEncounter(
+      Date onOrAfter,
+      Date onOrBefore,
+      Location location,
+      Encounter encounter,
+      Integer patientId,
+      PatientCalculationContext context) {
+    EncountersForPatientDataDefinition def = new EncountersForPatientDataDefinition();
+    def.setWhich(TimeQualifier.ANY);
+    def.setOnOrAfter(onOrAfter);
+    def.setOnOrBefore(onOrBefore);
+    def.setLocationList(Arrays.asList(location));
+    def.setTypes(Arrays.asList(encounter.getEncounterType()));
+    def.setName("another encounter of type=" + encounter.getEncounterType());
+    List<Encounter> anotherlastEncounters = new ArrayList<>();
+
+    CalculationResultMap encountersMap =
+        EptsCalculationUtils.evaluateWithReporting(
+            def, Arrays.asList(patientId), null, null, context);
+
+    ListResult listResult = (ListResult) encountersMap.get(patientId);
+    List<Encounter> lastEncounters = EptsCalculationUtils.extractResultValues(listResult);
+    if (lastEncounters.size() > 1) {
+      try {
+        for (Encounter e : lastEncounters) {
+          if (e.getEncounterId() != encounter.getEncounterId()) {
+            anotherlastEncounters.add(e);
+          }
+        }
+      } catch (ClassCastException e) {
+        // in some cases it raises ClassCastException
+      }
+    }
+    return anotherlastEncounters;
+  }
+
+  private Obs getLastObs(List<Obs> returnVisitList, Encounter lastEncounter) {
+    Obs lastReturnVisitObs = null;
+
+    Iterator<Obs> iterator = returnVisitList.iterator();
+    while (iterator.hasNext()) {
+      Obs obs = iterator.next();
+      if (obs.getVoided()
+          || obs.getValueDate() == null
+          || obs.getEncounter() == null
+          || (obs.getEncounter() != null
+              && (obs.getEncounter().getEncounterId() != lastEncounter.getEncounterId()))) {
+        iterator.remove();
+      }
+    }
+
+    Collections.sort(
+        returnVisitList,
+        new Comparator<Obs>() {
+          @Override
+          public int compare(Obs obs, Obs t1) {
+            return t1.getValueDate().compareTo(obs.getValueDatetime());
+          }
+        });
+    if (returnVisitList.size() > 0) {
+      lastReturnVisitObs = returnVisitList.get(returnVisitList.size() - 1);
+    }
+    return lastReturnVisitObs;
+  }
+
+  private boolean compareAgainstBoundaries(
+      Encounter lastEncounter, Obs lastReturnVisitObs, Integer lowerBound, Integer upperBound) {
+
+    if (lastEncounter != null
+        && lastReturnVisitObs != null
+        && lastReturnVisitObs.getValueDate() != null) {
+
+      Date lowerBoundary =
+          EptsCalculationUtils.addDays(lastEncounter.getEncounterDatetime(), lowerBound);
+      Date upperBoundary =
+          EptsCalculationUtils.addDays(lastEncounter.getEncounterDatetime(), upperBound);
+
+      if (lastReturnVisitObs.getValueDate().compareTo(lowerBoundary) >= 0
+          && lastReturnVisitObs.getValueDate().compareTo(upperBoundary) <= 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+  // TODO
+  private CalculationResultMap getAllEncounterFromPatientResultMap(
+      Integer patientId,
+      Integer encounterType,
+      Date encounterDatetime,
+      PatientCalculationContext context) {
+    SqlPatientDataDefinition sqlPatientDataDefinition = new SqlPatientDataDefinition();
+    sqlPatientDataDefinition.addParameter(new Parameter("location", "location", Location.class));
+    sqlPatientDataDefinition.addParameter(
+        new Parameter("encounter_datetime", "encounter_datetime", Date.class));
+
+    String query =
+        "SELECT e.patient_id  "
+            + " FROM encounter e"
+            + " WHERE e.patient_id= "
+            + patientId
+            + " AND e.encounter_type = "
+            + encounterType
+            + " AND e.encounter_datetime = :encounter_datetime"
+            + " AND e.voided = 0"
+            + " AND e.location_id= :location";
+
+    sqlPatientDataDefinition.setQuery(query);
+    Map<String, Object> params = new HashMap<>();
+    params.put("location", context.getFromCache("location"));
+    params.put("encounter_datetime", encounterDatetime);
+
+    return EptsCalculationUtils.evaluateWithReporting(
+        sqlPatientDataDefinition, Arrays.asList(patientId), params, null, context);
   }
 }
