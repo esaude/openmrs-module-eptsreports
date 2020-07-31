@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
+import org.openmrs.module.eptsreports.reporting.calculation.txcurr.TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation.DisaggregationSourceTypes;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.springframework.stereotype.Component;
 
@@ -40,8 +41,17 @@ public class TxCurrPatientsOnArvDispense6OrMoreMonthsCalculation
           return;
         }
       }
-
       for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
+
+        if (Arrays.asList(
+                DisaggregationSourceTypes.DISPENSA_TRIMESTRAL,
+                DisaggregationSourceTypes.DISPENSA_MENSAL)
+            .contains(patientDisaggregated.getDisaggregationSourceType())) {
+          return;
+        }
+      }
+      for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
+
         if (DisaggregationSourceTypes.MODELO_DIFERENCIADO_SEMESTRAL.equals(
             patientDisaggregated.getDisaggregationSourceType())) {
           resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
@@ -61,10 +71,20 @@ public class TxCurrPatientsOnArvDispense6OrMoreMonthsCalculation
           }
           return;
         }
+        if (DisaggregationSourceTypes.DISPENSA_SEMESTRAL.equals(
+            maxPatientDisaggregated.getDisaggregationSourceType())) {
+          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+        }
+
         if (Arrays.asList(
-                DisaggregationSourceTypes.DISPENSA_SEMESTRAL,
-                DisaggregationSourceTypes.MODELO_DIFERENCIADO_SEMESTRAL)
-            .contains((maxPatientDisaggregated.getDisaggregationSourceType()))) {
+                DisaggregationSourceTypes.DISPENSA_TRIMESTRAL,
+                DisaggregationSourceTypes.DISPENSA_MENSAL)
+            .contains(maxPatientDisaggregated.getDisaggregationSourceType())) {
+          return;
+        }
+
+        if (DisaggregationSourceTypes.MODELO_DIFERENCIADO_SEMESTRAL.equals(
+            maxPatientDisaggregated.getDisaggregationSourceType())) {
           resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
         }
       }
