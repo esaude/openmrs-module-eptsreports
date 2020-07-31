@@ -8,7 +8,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.eptsreports.reporting.calculation.keypopulation.KeyPopulationCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.rtt.TxRttCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.BaseFghCalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -21,7 +21,7 @@ public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
 
-    final Location location = Context.getLocationService().getLocation(244);
+    final Location location = Context.getLocationService().getLocation(208);
     final Date startDate = DateUtil.getDateTime(2019, 10, 21);
     final Date endDate = DateUtil.getDateTime(2020, 1, 20);
 
@@ -32,8 +32,7 @@ public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
 
     final BaseFghCalculationCohortDefinition rttCohortDefinition =
         new BaseFghCalculationCohortDefinition(
-            "patientsOnRTT",
-            Context.getRegisteredComponents(KeyPopulationCalculation.class).get(0));
+            "patientsOnRTT", Context.getRegisteredComponents(TxRttCalculation.class).get(0));
 
     rttCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     rttCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
