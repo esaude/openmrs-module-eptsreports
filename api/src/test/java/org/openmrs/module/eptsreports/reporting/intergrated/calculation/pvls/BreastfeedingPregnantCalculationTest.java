@@ -55,7 +55,7 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
   }
 
   @Test
-  public void shouldReturnPregnantIfMostRecent() {
+  public void evaluateShouldReturnPregnantIfMostRecent() {
     setEvaluationContext(testsHelper.getDate("2018-09-20 00:00:00.0"));
     params.put("state", PregnantOrBreastfeedingWomen.PREGNANTWOMEN);
 
@@ -68,7 +68,7 @@ public class BreastfeedingPregnantCalculationTest extends BasePatientCalculation
   }
 
   @Test
-  public void shouldReturnBreastfeedingIfMostRecent() {
+  public void evaluateShouldReturnBreastfeedingIfMostRecent() {
     HashMap<String, Object> cacheEntries = new HashMap<>();
     cacheEntries.put("onOrBefore", testsHelper.getDate("2018-09-20 00:00:00.0"));
     setEvaluationContext(cacheEntries);

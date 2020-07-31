@@ -69,7 +69,7 @@ public class BreastFeedingDateCalculationTest extends BasePatientCalculationTest
   }
 
   @Test
-  public void shouldGetAtLeastOnePatientInBreastFeedingDate() throws ParseException {
+  public void evaluateShouldGetAtLeastOnePatientInBreastFeedingDate() throws ParseException {
 
     List<Integer> patientsIDs = Arrays.asList(7);
 
@@ -88,7 +88,7 @@ public class BreastFeedingDateCalculationTest extends BasePatientCalculationTest
   }
 
   @Test
-  public void shouldNotGetAnyDateForBreastFeedingDate() {
+  public void evaluateShouldNotGetAnyDateForBreastFeedingDate() {
 
     List<Integer> patientsIDs = Arrays.asList(501);
 
@@ -102,7 +102,7 @@ public class BreastFeedingDateCalculationTest extends BasePatientCalculationTest
   }
 
   @Test(expected = Exception.class)
-  public void shouldFailWithNullListOfPatientIds() {
+  public void evaluateShouldFailWithNullListOfPatientIds() {
 
     List<Integer> patientsIDs = null;
 

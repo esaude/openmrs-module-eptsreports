@@ -60,7 +60,7 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
    *     TimeQualifier, Date, PatientCalculationContext)
    */
   @Test
-  public void shouldGetFirstObs() {
+  public void getObsShouldGetFirstObs() {
 
     Concept concept = new Concept(5089);
     List<Integer> cohort = Arrays.asList(7);
@@ -84,7 +84,7 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
    *     PatientCalculationContext)
    */
   @Test
-  public void shouldGetLastObs() {
+  public void getObsShouldGetLastObs() {
 
     Concept concept = new Concept(5089);
     List<Integer> cohort = Arrays.asList(7);
@@ -109,7 +109,7 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void shouldGetAllObsByAnyTimeQualifier() {
+  public void getObsShouldGetAllObsByAnyTimeQualifier() {
 
     Concept concept = new Concept(5089);
     List<Integer> cohort = Arrays.asList(7);
@@ -137,7 +137,7 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
    *     ProgramWorkflowState, PatientCalculationContext)
    */
   @Test
-  public void shouldGetAllPatientState() {
+  public void allPatientStatesShouldGetAllPatientState() {
     List<Integer> cohort = Arrays.asList(2);
 
     ProgramWorkflowState programWorkflowState =
@@ -170,7 +170,7 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
    *     PatientCalculationContext)
    */
   @Test
-  public void shouldGetAllProgramEnrollment() {
+  public void allProgramEnrollmentShouldGetAllProgramEnrollment() {
     List<Integer> cohort = Arrays.asList(2, 4, 7, 8);
 
     Program program = new Program(2);
@@ -220,7 +220,7 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
    *     PatientCalculationContext)
    */
   @Test
-  public void shouldGetFirstEncounter() {
+  public void firstEncounterShouldGetFirstEncounter() {
 
     List<Integer> cohort = Arrays.asList(999);
     EncounterType encounterType = new EncounterType(6777002);
@@ -246,7 +246,7 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
    *     Collection, PatientCalculationContext)
    */
   @Test
-  public void shouldGetFirstObsByMethodFirstObs() {
+  public void firstObsShouldGetFirstObsByMethodFirstObs() {
 
     Concept concept = new Concept(5089);
     List<Integer> cohort = Arrays.asList(7);
@@ -270,7 +270,7 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
    * @throws Exception
    */
   @Test
-  public void shouldGetFirstPatientProgram() {
+  public void firstPatientProgramShouldGetFirstPatientProgram() {
 
     Program program = new Program(2);
     Location location = new Location(1);
@@ -303,7 +303,7 @@ public class EPTSCalculationServiceTest extends BaseModuleContextSensitiveTest {
    * @throws Exception
    */
   @Test
-  public void shouldGetLastObsByMethodLastObs() throws Exception {
+  public void lastObsShouldGetLastObsByMethodLastObs() throws Exception {
 
     List<EncounterType> encounterTypes = Arrays.asList(new EncounterType(6777002));
     Concept concept = new Concept(7777001);

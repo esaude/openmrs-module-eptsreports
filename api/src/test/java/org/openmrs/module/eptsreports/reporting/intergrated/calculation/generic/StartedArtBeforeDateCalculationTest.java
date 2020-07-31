@@ -36,7 +36,7 @@ public class StartedArtBeforeDateCalculationTest extends BasePatientCalculationT
   }
 
   @Test
-  public void shouldBeTrueIfStartDateIsTheSameAsBeforeDate() {
+  public void evaluateShouldBeTrueIfStartDateIsTheSameAsBeforeDate() {
     Map<String, Object> parameterValues = new HashMap<String, Object>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
@@ -51,7 +51,7 @@ public class StartedArtBeforeDateCalculationTest extends BasePatientCalculationT
   }
 
   @Test
-  public void shouldBeNullIfStartDateOneDayAfterBeforeDate() {
+  public void evaluateShouldBeNullIfStartDateOneDayAfterBeforeDate() {
     Map<String, Object> parameterValues = new HashMap<String, Object>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
@@ -65,7 +65,7 @@ public class StartedArtBeforeDateCalculationTest extends BasePatientCalculationT
   }
 
   @Test
-  public void shouldBeNullIfThereIsNoStartDate() {
+  public void evaluateShouldBeNullIfThereIsNoStartDate() {
     Map<String, Object> parameterValues = new HashMap<String, Object>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);

@@ -59,7 +59,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getDeadPatientsShouldReturn() throws EvaluationException {
+  public void getPatientsWhoDiedShouldReturn() throws EvaluationException {
 
     CohortDefinition cohort = resumoMensalCohortQueries.getPatientsWhoDied(true);
 
@@ -87,8 +87,9 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Ignore
-  public void getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2()
-      throws EvaluationException {
+  public void
+      getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2ShouldPass()
+          throws EvaluationException {
     CohortDefinition cohort =
         resumoMensalCohortQueries
             .getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2();
@@ -102,7 +103,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1()
+  public void getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1ShouldPass()
       throws EvaluationException {
     CohortDefinition cd =
         resumoMensalCohortQueries.getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1();
@@ -119,7 +120,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2()
+  public void getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2ShouldPass()
       throws EvaluationException {
     CohortDefinition cd =
         resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2();
@@ -136,7 +137,8 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getNumberOfPatientInitiedPreArtDuringCurrentMothA2() throws EvaluationException {
+  public void getNumberOfPatientInitiedPreArtDuringCurrentMothA2ShouldPass()
+      throws EvaluationException {
     CohortDefinition cd =
         resumoMensalCohortQueries.getNumberOfPatientInitiedPreArtDuringCurrentMothA2();
 
@@ -152,7 +154,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthC1()
+  public void getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthC1ShouldPass()
       throws EvaluationException {
     CohortDefinition cd =
         resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthC1();
@@ -169,7 +171,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
 
   @Test
   public void
-      getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1ShouldReturnPatientsWhoInitiatedTarv()
+      getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1ShouldReturnPatientsWhoInitiatedTarvShouldPass()
           throws EvaluationException {
     CohortDefinition cd =
         resumoMensalCohortQueries.getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1();
@@ -186,7 +188,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getSumOfA1AndA2ShouldReturnSumOfA1AndA2() throws EvaluationException {
+  public void getSumOfA1AndA2ShouldReturnSumOfA1AndA2ShouldPass() throws EvaluationException {
     CohortDefinition cd = resumoMensalCohortQueries.getSumOfA1AndA2();
 
     HashMap<Parameter, Object> parameters = new HashMap<>();

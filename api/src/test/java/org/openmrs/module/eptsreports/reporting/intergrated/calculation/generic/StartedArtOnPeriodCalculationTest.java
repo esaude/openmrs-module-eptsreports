@@ -36,7 +36,7 @@ public class StartedArtOnPeriodCalculationTest extends BasePatientCalculationTes
   }
 
   @Test
-  public void shouldBeTrueIfPatientStartedOnFirstDayOfCohortPeriod() {
+  public void evaluateShouldBeTrueIfPatientStartedOnFirstDayOfCohortPeriod() {
     Map<String, Object> parameterValues = new HashMap<String, Object>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
@@ -53,7 +53,7 @@ public class StartedArtOnPeriodCalculationTest extends BasePatientCalculationTes
   }
 
   @Test
-  public void shouldBeFalseIfPatientStartedOnBeforeFirstDayOfCohortPeriod() {
+  public void evaluateShouldBeFalseIfPatientStartedOnBeforeFirstDayOfCohortPeriod() {
     Map<String, Object> parameterValues = new HashMap<String, Object>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
@@ -70,7 +70,7 @@ public class StartedArtOnPeriodCalculationTest extends BasePatientCalculationTes
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void shouldRaiseExceptionIfPeriodStartDateIsNotProvided() {
+  public void evaluateShouldRaiseExceptionIfPeriodStartDateIsNotProvided() {
     Map<String, Object> parameterValues = new HashMap<String, Object>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
@@ -81,7 +81,7 @@ public class StartedArtOnPeriodCalculationTest extends BasePatientCalculationTes
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void shouldRaiseExceptionIfPeriodEndDateIsNotProvided() {
+  public void evaluateShouldRaiseExceptionIfPeriodEndDateIsNotProvided() {
     Map<String, Object> parameterValues = new HashMap<String, Object>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
@@ -98,7 +98,7 @@ public class StartedArtOnPeriodCalculationTest extends BasePatientCalculationTes
   }
 
   @Test
-  public void shouldBeNullIfPatientDidNotStartArt() {
+  public void evaluateShouldBeNullIfPatientDidNotStartArt() {
     Map<String, Object> parameterValues = new HashMap<String, Object>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);

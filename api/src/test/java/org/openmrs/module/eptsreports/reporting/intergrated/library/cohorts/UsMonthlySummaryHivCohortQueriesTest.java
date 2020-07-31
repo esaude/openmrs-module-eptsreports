@@ -50,7 +50,7 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getEnrolledInArtsShouldReturnEnrolledInArt() throws EvaluationException {
+  public void getEnrolledInArtShouldReturnEnrolledInArt() throws EvaluationException {
 
     EvaluatedCohort evaluatedCohort =
         evaluateCohortDefinition(usMonthlySummaryHivCohortQueries.getEnrolledInArt());
