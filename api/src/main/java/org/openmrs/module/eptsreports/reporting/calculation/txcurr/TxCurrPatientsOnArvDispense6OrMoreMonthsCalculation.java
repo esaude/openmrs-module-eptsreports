@@ -40,8 +40,15 @@ public class TxCurrPatientsOnArvDispense6OrMoreMonthsCalculation
           return;
         }
       }
-
       for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
+
+        if (DisaggregationSourceTypes.DISPENSA_MENSAL.equals(
+            patientDisaggregated.getDisaggregationSourceType())) {
+          return;
+        }
+      }
+      for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
+
         if (DisaggregationSourceTypes.MODELO_DIFERENCIADO_SEMESTRAL.equals(
             patientDisaggregated.getDisaggregationSourceType())) {
           resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
@@ -59,6 +66,10 @@ public class TxCurrPatientsOnArvDispense6OrMoreMonthsCalculation
               (FilaPatientDisaggregated) maxPatientDisaggregated)) {
             resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
           }
+          return;
+        }
+        if (DisaggregationSourceTypes.DISPENSA_MENSAL.equals(
+            maxPatientDisaggregated.getDisaggregationSourceType())) {
           return;
         }
         if (Arrays.asList(
