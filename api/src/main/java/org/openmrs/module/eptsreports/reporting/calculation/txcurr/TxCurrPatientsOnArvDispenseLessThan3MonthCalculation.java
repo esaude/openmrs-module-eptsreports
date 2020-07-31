@@ -45,9 +45,7 @@ public class TxCurrPatientsOnArvDispenseLessThan3MonthCalculation
       for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
         if (Arrays.asList(
                 DisaggregationSourceTypes.DISPENSA_SEMESTRAL,
-                DisaggregationSourceTypes.DISPENSA_TRIMESTRAL,
-                DisaggregationSourceTypes.MODELO_DIFERENCIADO_SEMESTRAL,
-                DisaggregationSourceTypes.MODELO_DIFERENCIADO_TRIMESTRAL)
+                DisaggregationSourceTypes.DISPENSA_TRIMESTRAL)
             .contains(patientDisaggregated.getDisaggregationSourceType())) {
           return;
         }
@@ -76,9 +74,7 @@ public class TxCurrPatientsOnArvDispenseLessThan3MonthCalculation
         }
         if (Arrays.asList(
                 DisaggregationSourceTypes.DISPENSA_SEMESTRAL,
-                DisaggregationSourceTypes.DISPENSA_TRIMESTRAL,
-                DisaggregationSourceTypes.MODELO_DIFERENCIADO_SEMESTRAL,
-                DisaggregationSourceTypes.MODELO_DIFERENCIADO_TRIMESTRAL)
+                DisaggregationSourceTypes.DISPENSA_TRIMESTRAL)
             .contains(maxPatientDisaggregated.getDisaggregationSourceType())) {
           return;
         }
