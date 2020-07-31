@@ -57,19 +57,16 @@ public class TxCurrPatientsOnArvDispenseBetween3And5MonthsCalculation
           return;
         }
       }
-      for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
-        if (DisaggregationSourceTypes.MODELO_DIFERENCIADO_SEMESTRAL.equals(
-            patientDisaggregated.getDisaggregationSourceType())) {
-          return;
-        }
-      }
-      for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
 
-        if (DisaggregationSourceTypes.DISPENSA_MENSAL.equals(
-            patientDisaggregated.getDisaggregationSourceType())) {
+      for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
+        if (Arrays.asList(
+                DisaggregationSourceTypes.DISPENSA_MENSAL,
+                DisaggregationSourceTypes.MODELO_DIFERENCIADO_SEMESTRAL)
+            .contains(patientDisaggregated.getDisaggregationSourceType())) {
           return;
         }
       }
+
       for (PatientDisaggregated patientDisaggregated : allPatientDisaggregated) {
 
         if (DisaggregationSourceTypes.MODELO_DIFERENCIADO_TRIMESTRAL.equals(
@@ -101,12 +98,10 @@ public class TxCurrPatientsOnArvDispenseBetween3And5MonthsCalculation
           resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
         }
 
-        if (DisaggregationSourceTypes.MODELO_DIFERENCIADO_SEMESTRAL.equals(
-            maxPatientDisaggregated.getDisaggregationSourceType())) {
-          return;
-        }
-        if (DisaggregationSourceTypes.DISPENSA_MENSAL.equals(
-            maxPatientDisaggregated.getDisaggregationSourceType())) {
+        if (Arrays.asList(
+                DisaggregationSourceTypes.DISPENSA_MENSAL,
+                DisaggregationSourceTypes.MODELO_DIFERENCIADO_SEMESTRAL)
+            .contains(maxPatientDisaggregated.getDisaggregationSourceType())) {
           return;
         }
 
