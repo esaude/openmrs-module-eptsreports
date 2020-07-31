@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
-import org.openmrs.module.eptsreports.reporting.calculation.txcurr.TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation.DisaggregationSourceTypes;
-import org.openmrs.module.eptsreports.reporting.calculation.txcurr.TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation.PatientDisaggregated;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.springframework.stereotype.Component;
@@ -81,6 +79,12 @@ public class TxCurrPatientsOnArvDispenseBetween3And5MonthsCalculation
               (FilaPatientDisaggregated) maxPatientDisaggregated)) {
             resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
           }
+          return;
+        }
+        if (Arrays.asList(
+                DisaggregationSourceTypes.DISPENSA_SEMESTRAL,
+                DisaggregationSourceTypes.MODELO_DIFERENCIADO_SEMESTRAL)
+            .contains(maxPatientDisaggregated.getDisaggregationSourceType())) {
           return;
         }
         if (Arrays.asList(
