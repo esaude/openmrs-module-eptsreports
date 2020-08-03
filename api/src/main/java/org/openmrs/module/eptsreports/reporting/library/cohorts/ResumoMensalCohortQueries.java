@@ -135,6 +135,7 @@ public class ResumoMensalCohortQueries {
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     cd.setCompositionString("A2I AND NOT A2II");
+
     return cd;
   }
 

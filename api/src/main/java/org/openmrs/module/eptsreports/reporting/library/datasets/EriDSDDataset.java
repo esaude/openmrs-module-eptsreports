@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 public class EriDSDDataset extends BaseDataSet {
 
   private static final String N1 =
-      "N1 - Number of active on ART whose next ART pick-up is schedule for 83-97 days after the date of their last ART drug pick-up (Fluxo Rápido)";
+      "N1 - Number of active on ART whose next ART pick-up is schedule for 83-97 days after the date of their last ART drug pick-up (DT)";
 
   private static final String N2 =
       "N2 - Number of active patients on ART whose next clinical consultation is scheduled 175-190 days after the date of the last clinical consultation";

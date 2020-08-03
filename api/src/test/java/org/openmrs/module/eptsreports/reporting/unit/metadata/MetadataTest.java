@@ -128,7 +128,7 @@ public class MetadataTest extends PowerMockBaseContextTest {
   }
 
   @Test
-  public void getConceptListWithSeparatorShouldLookupConceptsByNameOrUuidOrMappingOrId() {
+  public void getConceptListxShouldLookupConceptsByNameOrUuidOrMappingOrIdWithSeparator() {
     Concept weight = mock(Concept.class);
     Concept sbp = mock(Concept.class);
     Concept dbp = mock(Concept.class);
@@ -143,13 +143,13 @@ public class MetadataTest extends PowerMockBaseContextTest {
   }
 
   @Test
-  public void getConceptListWithSeparatorShouldLookupOneConceptWithoutSeparator() {
+  public void getConceptListShouldLookupOneConceptWithoutSeparator() {
     when(conceptService.getConceptByName("height")).thenReturn(concept);
     assertEquals(Arrays.asList(concept), Metadata.getConceptList("height", null));
   }
 
   @Test(expected = MetadataLookupException.class)
-  public void getConceptListWithSeparatorShouldThrowMetadataLookupExceptionIfOneIsNotFound()
+  public void getConceptListShouldThrowMetadataLookupExceptionIfOneIsNotFoundWithSeparator()
       throws MetadataLookupException {
     Concept weight = mock(Concept.class);
     when(conceptService.getConceptByName("weight")).thenReturn(weight);

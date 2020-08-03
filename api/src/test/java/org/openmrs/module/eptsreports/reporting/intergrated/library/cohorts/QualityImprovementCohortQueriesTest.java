@@ -31,7 +31,7 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getPacientsEnrolledInTBProgram() throws EvaluationException {
+  public void getPacientsEnrolledInTBProgramShouldPass() throws EvaluationException {
 
     CohortDefinition cohortDefinition =
         qualityImprovementCohortQueries.getPacientsEnrolledInTBProgram();
@@ -47,7 +47,7 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getPatientWithAtLeastOneEncounterInPeriod() throws EvaluationException {
+  public void getPatientWithAtLeastOneEncounterInPeriodShouldPass() throws EvaluationException {
 
     CohortDefinition cohortDefinition =
         qualityImprovementCohortQueries.getPatientWithAtLeastOneEncounterInPeriod();
@@ -63,7 +63,7 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getPatientsNotifiedSarcomaKaposi() throws EvaluationException {
+  public void getPatientsNotifiedSarcomaKaposiShouldPass() throws EvaluationException {
     CohortDefinition cohortDefinition =
         qualityImprovementCohortQueries.getPatientsNotifiedSarcomaKaposi();
 
@@ -78,7 +78,7 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getPatientWhoCameOutARTProgramFinalPeriod() throws EvaluationException {
+  public void getPatientWhoCameOutARTProgramFinalPeriodShouldPass() throws EvaluationException {
 
     CohortDefinition cohortDefinition =
         qualityImprovementCohortQueries.getPatientWhoCameOutARTProgramFinalPeriod();
@@ -93,7 +93,7 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getPatientEnrolledARTProgramFinalPeriod() throws EvaluationException {
+  public void getPatientEnrolledARTProgramFinalPeriodShouldPass() throws EvaluationException {
     CohortDefinition cohortDefinition =
         qualityImprovementCohortQueries.getPatientEnrolledARTProgramFinalPeriod();
 
@@ -107,7 +107,7 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriodAndCompleted()
+  public void getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriodAndCompletedShouldPass()
       throws EvaluationException {
     CohortDefinition cohortDefinition =
         qualityImprovementCohortQueries
@@ -128,7 +128,7 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getPatientWhoWereInARVTreatmentFinalPeriod() throws EvaluationException {
+  public void getPatientWhoWereInARVTreatmentFinalPeriodShouldPass() throws EvaluationException {
 
     CohortDefinition cohortDefinition =
         qualityImprovementCohortQueries.getPatientWhoWereInARVTreatmentFinalPeriod();
@@ -144,7 +144,7 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getInfantPatientsEnrolledInTarvSample() throws EvaluationException {
+  public void getInfantPatientsEnrolledInTarvSampleShouldPass() throws EvaluationException {
 
     CohortDefinition cohortDefinition =
         qualityImprovementCohortQueries.getInfantPatientsEnrolledInTarvSample();
@@ -160,7 +160,7 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getPregnantPatientEnrolledInTARVService() throws EvaluationException {
+  public void getPregnantPatientEnrolledInTARVServiceShouldPass() throws EvaluationException {
     CohortDefinition cohortDefinition =
         qualityImprovementCohortQueries.getPregnantPatientEnrolledInTARVService();
 
