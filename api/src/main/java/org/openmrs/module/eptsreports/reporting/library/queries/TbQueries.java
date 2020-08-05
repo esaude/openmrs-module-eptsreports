@@ -40,7 +40,7 @@ public interface TbQueries {
             + "group by p.patient_id "
             + ") max_tb "
             + "inner join obs on obs.person_id=max_tb.patient_id and max_tb.max_datatb=obs.obs_datetime "
-            + "where obs.concept_id=1268 and obs.value_coded in (1256,1257) and obs.location_id=:location "
+            + "where obs.concept_id=1268 and obs.value_coded in (1256,1257) and obs.voided=0 and obs.location_id=:location "
             + "union "
             + "select maxdiagnostico.patient_id from ( "
             + "select p.patient_id,max(e.encounter_datetime) max_datadiagnostico from patient p "
