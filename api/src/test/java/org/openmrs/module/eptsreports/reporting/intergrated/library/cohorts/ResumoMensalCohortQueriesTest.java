@@ -355,7 +355,8 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getPatientsWhoHadAtLeastDrugPickUpShouldReturnPatientsWhoHadAtLeastDrugPickUp() throws EvaluationException {
+  public void getPatientsWhoHadAtLeastDrugPickUpShouldReturnPatientsWhoHadAtLeastDrugPickUp()
+      throws EvaluationException {
     CohortDefinition cd = resumoMensalCohortQueries.getPatientsWhoHadAtLeastDrugPickUp();
 
     HashMap<Parameter, Object> parameters = new HashMap<>();
@@ -369,8 +370,12 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getNumberOfPatientsTransferredFromByEndOfPreviousMonthB12ShouldReturnPatientsTransferredFrom() throws EvaluationException {
-    CohortDefinition cd = resumoMensalCohortQueries.getNumberOfPatientsTransferredFromAnotherHealthFacilityByEndOfPreviousMonthB12();
+  public void
+      getNumberOfPatientsTransferredFromByEndOfPreviousMonthB12ShouldReturnPatientsTransferredFrom()
+          throws EvaluationException {
+    CohortDefinition cd =
+        resumoMensalCohortQueries
+            .getNumberOfPatientsTransferredFromAnotherHealthFacilityByEndOfPreviousMonthB12();
 
     HashMap<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("onOrBefore", "End Date", Date.class), this.getEndDate());
@@ -383,8 +388,10 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getPatientsPreTarvScreenedTBShouldReturnPatientsPreTarvTB() throws EvaluationException {
-    CohortDefinition cd = resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTB();
+  public void getPatientsPreTarvScreenedTBShouldReturnPatientsPreTarvTB()
+      throws EvaluationException {
+    CohortDefinition cd =
+        resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTB();
 
     HashMap<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
@@ -398,8 +405,10 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getPatientsPreTarvDuringCurrentMonthAndScreenedTbC1ShouldReturnPatientsPreTarvTbC1() throws EvaluationException {
-    CohortDefinition cd = resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTbC1();
+  public void getPatientsPreTarvDuringCurrentMonthAndScreenedTbC1ShouldReturnPatientsPreTarvTbC1()
+      throws EvaluationException {
+    CohortDefinition cd =
+        resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTbC1();
 
     HashMap<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
@@ -413,7 +422,9 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getNumberOfPatientTbScreenedInFirstEncounterShouldReturnPatientsTbScreenedInFirstEncounter() throws EvaluationException {
+  public void
+      getNumberOfPatientTbScreenedInFirstEncounterShouldReturnPatientsTbScreenedInFirstEncounter()
+          throws EvaluationException {
     CohortDefinition cd = resumoMensalCohortQueries.getNumberOfPatientTbScreenedInFirstEncounter();
 
     HashMap<Parameter, Object> parameters = new HashMap<>();
@@ -428,8 +439,11 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTpiC2ShouldReturnPatientsTpiC2() throws EvaluationException {
-    CohortDefinition cd = resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTpiC2();
+  public void
+      getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTpiC2ShouldReturnPatientsTpiC2()
+          throws EvaluationException {
+    CohortDefinition cd =
+        resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTpiC2();
 
     HashMap<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
