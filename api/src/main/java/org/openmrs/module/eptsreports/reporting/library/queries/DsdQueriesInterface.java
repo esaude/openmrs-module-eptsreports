@@ -114,7 +114,7 @@ public interface DsdQueriesInterface {
             + "inner join obs o on o.encounter_id=e.encounter_id "
             + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23730 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id "
             + ") max_dt "
-            + " inner join encounter e on e.patient_id=max_dt.patient_id "
+            + "inner join encounter e on e.patient_id=max_dt.patient_id "
             + "inner join obs on obs.encounter_id=e.encounter_id "
             + "where max_dt.max_datadt=obs.obs_datetime and obs.concept_id=23730 and obs.value_coded in (1256,1257) and obs.voided=0 and obs.location_id=:location and e.encounter_type=6 and e.voided=0 "
             + ") dt "
@@ -122,9 +122,12 @@ public interface DsdQueriesInterface {
             + "select p.patient_id,max(o.obs_datetime) max_datadts from patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
             + "inner join obs o on o.encounter_id=e.encounter_id "
-            + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23730 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id) max_dts "
-            + "inner join obs on obs.person_id=max_dts.patient_id and max_dts.max_datadts=obs.obs_datetime "
-            + "where obs.concept_id=23730 and obs.value_coded=1267 and obs.voided=0 and obs.location_id=:location) ";
+            + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23730 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id "
+            + ") max_dts "
+            + "inner join encounter e on e.patient_id=max_dts.patient_id "
+            + "inner join obs on obs.encounter_id=e.encounter_id "
+            + "where max_dts.max_datadts=obs.obs_datetime and obs.concept_id=23730 and obs.value_coded=1267 and obs.voided=0 and obs.location_id=:location and e.encounter_type=6 and e.voided=0 "
+            + ") ";
 
     public static final String findPatientsWhoAreFastTrack =
         "select patient_id from( "
@@ -149,9 +152,12 @@ public interface DsdQueriesInterface {
             + "select p.patient_id,max(o.obs_datetime) max_datafr from patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
             + "inner join obs o on o.encounter_id=e.encounter_id "
-            + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23729 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id) max_fr "
-            + "inner join obs on obs.person_id=max_fr.patient_id and max_fr.max_datafr=obs.obs_datetime "
-            + "where obs.concept_id=23729 and obs.value_coded=1267 and obs.voided=0 and obs.location_id=:location) ";
+            + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23729 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id "
+            + ") max_fr "
+            + "inner join encounter e on e.patient_id=max_fr.patient_id "
+            + "inner join obs on obs.encounter_id=e.encounter_id "
+            + "where max_fr.max_datafr=obs.obs_datetime and obs.concept_id=23729 and obs.value_coded=1267 and obs.voided=0 and obs.location_id=:location and e.encounter_type=6 and e.voided=0 "
+            + ") ";
 
     public static final String findPatientsWhoAreInCommunityDrugsDistribution =
         "SELECT max_dc.patient_id from  (	"
@@ -178,7 +184,7 @@ public interface DsdQueriesInterface {
             + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23724 and e.location_id=:location and o.obs_datetime<=:endDate "
             + "group by p.patient_id "
             + ") max_gaac "
-            + " inner join encounter e on e.patient_id=max_gaac.patient_id "
+            + "inner join encounter e on e.patient_id=max_gaac.patient_id "
             + "inner join obs on obs.encounter_id=e.encounter_id "
             + "where  max_gaac.max_datagaac=obs.obs_datetime and obs.concept_id=23724 and obs.value_coded in (1256,1257) and obs.voided=0 and obs.location_id=:location and e.encounter_type=6 and e.voided=0 "
             + ") gaac  "
@@ -187,9 +193,12 @@ public interface DsdQueriesInterface {
             + "select p.patient_id,max(o.obs_datetime) max_datagaac from patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
             + "inner join obs o on o.encounter_id=e.encounter_id "
-            + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23724 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id)max_gaac "
-            + "inner join obs on obs.person_id=max_gaac.patient_id and max_gaac.max_datagaac=obs.obs_datetime "
-            + "where obs.concept_id=23724 and obs.value_coded=1267 and obs.voided=0 and obs.location_id=:location)";
+            + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23724 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id "
+            + ")max_gaac "
+            + "inner join encounter e on e.patient_id=max_gaac.patient_id "
+            + "inner join obs on obs.encounter_id=e.encounter_id  "
+            + "where max_gaac.max_datagaac=obs.obs_datetime and obs.concept_id=23724 and obs.value_coded=1267 and obs.voided=0 and obs.location_id=:location and e.encounter_type=6 and e.voided=0 "
+            + ") ";
 
     public static final String findPatientsWhoAreFamilyAproach =
         "select max_af.patient_id from ("
@@ -235,9 +244,11 @@ public interface DsdQueriesInterface {
             + "select p.patient_id,max(o.obs_datetime) max_datadts from patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
             + "inner join obs o on o.encounter_id=e.encounter_id "
-            + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23888 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id) max_dts "
-            + "inner join obs on obs.person_id=max_dts.patient_id and max_dts.max_datadts=obs.obs_datetime "
-            + "where obs.concept_id=23888 and obs.voided=0 and obs.value_coded=1267 and obs.location_id=:location)";
+            + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 and o.concept_id=23888 and e.location_id=:location and o.obs_datetime<=:endDate group by p.patient_id "
+            + ") max_dts "
+            + "inner join encounter e on max_dts.patient_id=e.patient_id "
+            + "inner join obs on obs.encounter_id=e.encounter_id "
+            + "where max_dts.max_datadts=obs.obs_datetime and obs.concept_id=23888 and obs.voided=0 and obs.value_coded=1267 and obs.location_id=:location and e.encounter_type=6 and e.voided=0 )";
 
     public static final String findPatientsAgeRange =
         "SELECT patient_id FROM patient "
