@@ -44,7 +44,7 @@ public class DSDCohortQueries {
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
                 "patientsWhoArePregnantInAPeriod",
-                PregnantQueries.findPatientsWhoArePregnantInAPeriod()),
+                PregnantQueries.findPatientsWhoArePregnantInAPeriodNotCheckingBreastfeeding()),
             "startDate=${endDate-9m},endDate=${endDate},location=${location}"));
 
     dataSetDefinitio.addSearch(
@@ -52,7 +52,7 @@ public class DSDCohortQueries {
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
                 "patientsWhoAreBreastfeeding",
-                BreastfeedingQueries.findPatientsWhoAreBreastfeeding()),
+                BreastfeedingQueries.findPatientsWhoAreBreastfeedingNotCheckingPregnant()),
             "startDate=${endDate-18m},endDate=${endDate},location=${location}"));
 
     dataSetDefinitio.addSearch(

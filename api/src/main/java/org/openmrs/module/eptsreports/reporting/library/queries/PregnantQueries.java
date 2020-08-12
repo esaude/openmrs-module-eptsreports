@@ -167,4 +167,51 @@ public class PregnantQueries {
 
     return query;
   }
+
+  public static final String findPatientsWhoArePregnantInAPeriodNotCheckingBreastfeeding() {
+
+    final String query =
+        "Select gravida_real.patient_id from ( "
+            + "select p.patient_id,e.encounter_datetime data_gravida from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=1982 and value_coded=1065 "
+            + "and e.encounter_type in (5,6) and e.encounter_datetime  between :startDate and :endDate and e.location_id=:location "
+            + "union "
+            + "select p.patient_id,e.encounter_datetime data_gravida from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=1279 and e.encounter_type in (5,6) "
+            + "and e.encounter_datetime between :startDate and :endDate and e.location_id=:location "
+            + "union "
+            + "select p.patient_id,e.encounter_datetime data_gravida from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=1600 and e.encounter_type in (5,6) and e.encounter_datetime between :startDate and :endDate and e.location_id=:location "
+            + "union "
+            + "select p.patient_id,e.encounter_datetime data_gravida from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=6334 and value_coded=6331 "
+            + "and e.encounter_type in (5,6) and e.encounter_datetime between :startDate and :endDate and e.location_id=:location "
+            + "union "
+            + "select pp.patient_id,pp.date_enrolled data_gravida from patient_program pp "
+            + "where pp.program_id=8 and pp.voided=0 and pp.date_enrolled between :startDate and :endDate and pp.location_id=:location "
+            + "union "
+            + "select p.patient_id,obsART.value_datetime data_gravida from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "inner join obs obsART on e.encounter_id=obsART.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and o.concept_id=1982 and o.value_coded=1065 and "
+            + "e.encounter_type=53 and obsART.value_datetime between :startDate and :endDate and e.location_id=:location and obsART.concept_id=1190 and obsART.voided=0 "
+            + "union "
+            + "Select p.patient_id,o.value_datetime data_gravida from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and o.concept_id=1465 and e.encounter_type=6 and o.value_datetime between :startDate and :endDate and e.location_id=:location "
+            + ") gravida_real "
+            + "inner join person pe on pe.person_id=gravida_real.patient_id "
+            + "where pe.voided=0 and pe.gender='F' ";
+    return query;
+  }
 }
