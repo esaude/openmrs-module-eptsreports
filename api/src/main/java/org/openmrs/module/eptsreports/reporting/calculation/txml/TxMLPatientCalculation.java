@@ -23,8 +23,6 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 public abstract class TxMLPatientCalculation extends BaseFghCalculation {
 
-  public static int DAYS_TO_LTFU = 28;
-
   @Override
   public CalculationResultMap evaluate(
       Map<String, Object> parameterValues, EvaluationContext context) {
@@ -140,9 +138,7 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
         if (numeratorNextExpectedDate != null) {
           Date candidateDate = deadInHomeVisitForm.get(patientId);
           if (candidateDate != null) {
-            Date nextDatePlus28 =
-                CalculationProcessorUtils.adjustDaysInDate(numeratorNextExpectedDate, DAYS_TO_LTFU);
-            if (candidateDate.compareTo(nextDatePlus28) > 0) {
+            if (candidateDate.compareTo(numeratorNextExpectedDate) > 0) {
               result.put(patientId, candidateDate);
             }
           }
