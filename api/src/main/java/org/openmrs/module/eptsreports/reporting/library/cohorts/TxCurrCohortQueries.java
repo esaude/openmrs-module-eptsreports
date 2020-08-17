@@ -18,8 +18,13 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.calculation.txcurr.LessThan3MonthsOfArvDispensationCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.txcurr.SixMonthsAndAboveOnArvDispensationCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.txcurr.ThreeToFiveMonthsOnArtDispensationCalculation;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.TXCurrQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
@@ -756,19 +761,46 @@ public class TxCurrCohortQueries {
     return defintion;
   }
 
-  @DocumentedDefinition("<3 month of ARVs Dispensed")
-  public CohortDefinition getPatientsWithLessThan3MonthsDispensationQuantity() {
-    return getPatientsWithMonthlyTypeOfDispensation();
-  }
+  @DocumentedDefinition("<3, 3-5, >6 months of ARVs Dispensed")
+  public CohortDefinition getPatientsWithMonthsRangeOfArvDispensationQuantity(String range) {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("<3, 3-5, >6 months of ARVs Dispensed");
+    cd.addParameter(new Parameter("onOrBefore", "On or before Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
 
-  @DocumentedDefinition("3-5 months of ARVs dispensed")
-  public CohortDefinition getPatientsWith3to5MonthsOfDispensationQuantity() {
-    return getPatientsWithQuarterlyTypeOfDispensation();
-  }
+    CalculationCohortDefinition cd1 =
+        new CalculationCohortDefinition(
+            "<3 months on ART",
+            Context.getRegisteredComponents(LessThan3MonthsOfArvDispensationCalculation.class)
+                .get(0));
+    cd1.addParameter(new Parameter("onOrBefore", "On or before Date", Date.class));
+    cd1.addParameter(new Parameter("location", "Location", Location.class));
+    CalculationCohortDefinition cd2 =
+        new CalculationCohortDefinition(
+            "3-5 months of ARVs dispensed",
+            Context.getRegisteredComponents(ThreeToFiveMonthsOnArtDispensationCalculation.class)
+                .get(0));
+    cd2.addParameter(new Parameter("onOrBefore", "On or before Date", Date.class));
+    cd2.addParameter(new Parameter("location", "Location", Location.class));
+    CalculationCohortDefinition cd3 =
+        new CalculationCohortDefinition(
+            "6 or more months of ARV dispensed",
+            Context.getRegisteredComponents(SixMonthsAndAboveOnArvDispensationCalculation.class)
+                .get(0));
+    cd3.addParameter(new Parameter("onOrBefore", "On or before Date", Date.class));
+    cd3.addParameter(new Parameter("location", "Location", Location.class));
 
-  @DocumentedDefinition("6 or more months of ARV dispensed")
-  public CohortDefinition getPatientsWithMoreThan6MonthsOfDispensationQuantity() {
-    return getPatientsWithSemiAnnualTypeOfDispensation();
+    cd.addSearch("1", EptsReportUtils.map(cd1, "onOrBefore=${onOrBefore},location=${location}"));
+    cd.addSearch("2", EptsReportUtils.map(cd2, "onOrBefore=${onOrBefore},location=${location}"));
+    cd.addSearch("3", EptsReportUtils.map(cd3, "onOrBefore=${onOrBefore},location=${location}"));
+    if (range.equals("<3")) {
+      cd.setCompositionString("1 AND NOT (2 OR 3)");
+    } else if (range.equals("3-5")) {
+      cd.setCompositionString("2 AND NOT 3");
+    } else if (range.equals(">6")) {
+      cd.setCompositionString("3");
+    }
+    return cd;
   }
 
   @DocumentedDefinition(
@@ -789,10 +821,10 @@ public class TxCurrCohortQueries {
     return getPatientsWithNextPickupBetweenDaysAfterLastPharmacyEncounter(null, 83);
   }
 
-  @DocumentedDefinition(
-      "Patients marked as DM on Ficha Clinica Mastercard on last Tipo de Levantamento")
-  public SqlCohortDefinition getPatientsWithMonthlyTypeOfDispensation() {
+  @DocumentedDefinition("For <3 months of ARVs dispense to active patient’s on ART ")
+  public CohortDefinition getPatientsWithLessThan3MonthlyTypeOfDispensation() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("For <3 months of ARVs dispense to active patient’s on ART ");
     String sqlQuery =
         "SELECT pp.patient_id "
             + "FROM   ( "
