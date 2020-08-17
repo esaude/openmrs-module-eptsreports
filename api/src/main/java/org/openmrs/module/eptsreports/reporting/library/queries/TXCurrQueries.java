@@ -862,4 +862,22 @@ public class TXCurrQueries {
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     return stringSubstitutor.replace(query);
   }
+
+  /**
+   * For <3 months of ARVs dispense to active patient’s on ART
+   *
+   * @return String
+   */
+  public static String getLessThan3MonthsOfArvDispensation(
+      int pharmacyEncounterType,
+      int fichaClinicaEncounterType,
+      int drugPickupDateConcept,
+      int returnVisitDateConcept) {
+    String query =
+        "SELECT pa.patient_id, MAX(e1.encounter_datetime) FROM patient pa INNER JOIN encounter e1 WHERE pa.voided=0 AND e1.voided=0 AND e1.encounter_datetime<=:endDate AND e1.encounter_type IN (${pharmacyEncounterType})";
+    Map<String, Integer> map = new HashMap<>();
+    map.put("pharmacyEncounterType", pharmacyEncounterType);
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    return stringSubstitutor.replace(query);
+  }
 }

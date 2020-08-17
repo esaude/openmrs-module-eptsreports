@@ -1096,7 +1096,7 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   * concept_id = 23720
+   * concept_id = 1098
    *
    * @return
    */
