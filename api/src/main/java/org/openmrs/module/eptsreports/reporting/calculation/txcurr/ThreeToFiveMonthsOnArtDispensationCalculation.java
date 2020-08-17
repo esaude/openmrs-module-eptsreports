@@ -470,6 +470,7 @@ public class ThreeToFiveMonthsOnArtDispensationCalculation extends AbstractPatie
           && obsListForAllFila.size() > 0) {
         for (Obs obs : obsListForAllFila) {
           if (lastFilaEncounter.equals(obs.getEncounter())
+              && obs.getValueDatetime() != null
               && EptsCalculationUtils.daysSince(
                       obs.getEncounter().getEncounterDatetime(), obs.getValueDatetime())
                   >= 83
