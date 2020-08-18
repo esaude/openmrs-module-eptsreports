@@ -8,6 +8,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.LastRecepcaoLevantamentoCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.util.processor.CalculationProcessorUtils;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,6 +17,7 @@ public class TxMLPatientsWhoMissedNextApointmentCalculation extends TxMLPatientC
   public static int DAYS_TO_LTFU = 28;
 
   protected CalculationResultMap evaluateUsingCalculationRules(
+      EvaluationContext context,
       Set<Integer> cohort,
       Date startDate,
       Date endDate,

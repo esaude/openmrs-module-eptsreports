@@ -3,10 +3,11 @@ package org.openmrs.module.eptsreports.reporting.calculation.txml;
 import java.util.Date;
 import java.util.Set;
 import org.openmrs.calculation.result.CalculationResultMap;
-import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
+import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.LastRecepcaoLevantamentoCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.util.processor.CalculationProcessorUtils;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,6 +18,7 @@ public class TxMLPatientsWhoAreLTFULessThan3MonthsCalculation extends TxMLPatien
 
   @Override
   protected CalculationResultMap evaluateUsingCalculationRules(
+      EvaluationContext context,
       Set<Integer> cohort,
       Date startDate,
       Date endDate,
@@ -43,7 +45,7 @@ public class TxMLPatientsWhoAreLTFULessThan3MonthsCalculation extends TxMLPatien
         Date nextDatePlus28 = CalculationProcessorUtils.adjustDaysInDate(maxNextDate, DAYS_TO_LTFU);
         if (nextDatePlus28.compareTo(CalculationProcessorUtils.adjustDaysInDate(startDate, -1)) >= 0
             && nextDatePlus28.compareTo(endDate) < 0) {
-          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+          resultMap.put(patientId, new SimpleResult(maxNextDate, this));
         }
       } else {
         super.checkConsultationsOrFilaWithoutNextConsultationDate(
@@ -52,6 +54,6 @@ public class TxMLPatientsWhoAreLTFULessThan3MonthsCalculation extends TxMLPatien
             patientId, resultMap, endDate, lastSeguimentoCalculationResult, nextSeguimentoResult);
       }
     }
-    return resultMap;
+    return checkUntracedAndTracedPatients(context, resultMap);
   }
 }

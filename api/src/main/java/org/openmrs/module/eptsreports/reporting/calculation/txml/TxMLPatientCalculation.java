@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.result.CalculationResult;
@@ -18,6 +19,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.generic.NextFilaDate
 import org.openmrs.module.eptsreports.reporting.calculation.generic.NextSeguimentoDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.OnArtInitiatedArvDrugsCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.util.processor.CalculationProcessorUtils;
+import org.openmrs.module.eptsreports.reporting.calculation.util.processor.QueryDisaggregationProcessor;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
@@ -61,6 +63,7 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
             .evaluate(lastSeguimentoCalculationResult.keySet(), parameterValues, context);
 
     return this.evaluateUsingCalculationRules(
+        context,
         cohort,
         startDate,
         endDate,
@@ -81,6 +84,7 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
   }
 
   protected abstract CalculationResultMap evaluateUsingCalculationRules(
+      EvaluationContext context,
       Set<Integer> cohort,
       Date startDate,
       Date endDate,
@@ -107,7 +111,7 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
       if (calculationLastResult != null) {
         Date lastDate = (Date) calculationLastResult.getValue();
         if (DateUtil.getDaysBetween(lastDate, endDate) >= 0) {
-          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+          resultMap.put(patientId, new SimpleResult(lastDate, this));
         }
       }
     }
@@ -150,5 +154,39 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
       }
     }
     return result;
+  }
+
+  protected CalculationResultMap checkUntracedAndTracedPatients(
+      EvaluationContext context, CalculationResultMap resultMap) {
+    CalculationResultMap returnMap = new CalculationResultMap();
+    QueryDisaggregationProcessor queryDisaggregation =
+        Context.getRegisteredComponents(QueryDisaggregationProcessor.class).get(0);
+
+    Map<Integer, Date> untracedPatients =
+        queryDisaggregation.findUntracedPatientsWithinReportingPeriod(context);
+    Map<Integer, Date> unTracedByNoDataInVisitSection =
+        queryDisaggregation.findUntracedByNotHavefilledDataInVisitSection(context);
+    Map<Integer, Date> tracedPatients =
+        queryDisaggregation.findTracedPatientsWithinReportingPeriod(context);
+
+    for (Entry<Integer, CalculationResult> entry : resultMap.entrySet()) {
+      Integer patientId = entry.getKey();
+      Date maxNextDate = (Date) entry.getValue().getValue();
+
+      if (untracedPatients.get(patientId) != null) {
+        returnMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+      }
+
+      Date untracedDate = unTracedByNoDataInVisitSection.get(patientId);
+      if (untracedDate != null && untracedDate.compareTo(maxNextDate) > 0) {
+        returnMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+      }
+
+      Date tracedDate = tracedPatients.get(patientId);
+      if (tracedDate != null && tracedDate.compareTo(maxNextDate) >= 0) {
+        returnMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+      }
+    }
+    return returnMap;
   }
 }

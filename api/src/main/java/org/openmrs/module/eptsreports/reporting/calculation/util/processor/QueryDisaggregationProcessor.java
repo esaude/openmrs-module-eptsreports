@@ -110,4 +110,41 @@ public class QueryDisaggregationProcessor {
         .get(0)
         .evaluateToMap(qb, Integer.class, Date.class, context);
   }
+
+  public Map<Integer, Date> findUntracedPatientsWithinReportingPeriod(EvaluationContext context) {
+
+    SqlQueryBuilder qb =
+        new SqlQueryBuilder(
+            IQueryDisaggregationProcessor.QUERY.findUntrackedPatientsWithinReportingPeriod,
+            context.getParameterValues());
+
+    return Context.getRegisteredComponents(EvaluationService.class)
+        .get(0)
+        .evaluateToMap(qb, Integer.class, Date.class, context);
+  }
+
+  public Map<Integer, Date> findUntracedByNotHavefilledDataInVisitSection(
+      EvaluationContext context) {
+
+    SqlQueryBuilder qb =
+        new SqlQueryBuilder(
+            IQueryDisaggregationProcessor.QUERY.findUntracedByNotHavefilledData,
+            context.getParameterValues());
+
+    return Context.getRegisteredComponents(EvaluationService.class)
+        .get(0)
+        .evaluateToMap(qb, Integer.class, Date.class, context);
+  }
+
+  public Map<Integer, Date> findTracedPatientsWithinReportingPeriod(EvaluationContext context) {
+
+    SqlQueryBuilder qb =
+        new SqlQueryBuilder(
+            IQueryDisaggregationProcessor.QUERY.findTrackedPatientsWithinReportingPeriod,
+            context.getParameterValues());
+
+    return Context.getRegisteredComponents(EvaluationService.class)
+        .get(0)
+        .evaluateToMap(qb, Integer.class, Date.class, context);
+  }
 }

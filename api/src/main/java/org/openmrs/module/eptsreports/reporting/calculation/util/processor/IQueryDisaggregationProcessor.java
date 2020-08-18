@@ -41,5 +41,47 @@ public interface IQueryDisaggregationProcessor {
     public static final String findPatientAndDateInDemographicModule =
         "select person_id as patient_id,death_date as data_estado from person "
             + "	  where dead=1 and death_date is not null and death_date<= :endDate ";
+
+    public static final String findUntrackedPatientsWithinReportingPeriod =
+        "select e.patient_id, e.encounter_datetime from encounter e "
+            + " where not exists ( select * from encounter "
+            + "	join patient on patient.patient_id = encounter.patient_id "
+            + "     join obs on obs.encounter_id = encounter.encounter_id  "
+            + "     where patient.voided = 0 and encounter.voided = 0 and obs.voided = 0 "
+            + "     and encounter.encounter_type =21 and encounter.patient_id = e.patient_id "
+            + "     and encounter.encounter_id = e.encounter_id and encounter.location_id =:location "
+            + "     and encounter.encounter_datetime  >= :startDate "
+            + "     and encounter.encounter_datetime  <= :endDate) "
+            + "     and e.encounter_type in (6, 9, 18, 52) and e.location_id =:location group by e.patient_id ";
+
+    public static final String findUntracedByNotHavefilledData =
+        "select e.patient_id, e.encounter_datetime from encounter e where not exists ( "
+            + "  select * from encounter    "
+            + "	join patient  on patient.patient_id = encounter.patient_id  "
+            + "     join obs on obs.encounter_id = encounter.encounter_id     "
+            + "     where patient.voided = 0 and encounter.voided = 0 and obs.voided = 0  "
+            + "     and encounter.encounter_type =21                          "
+            + "     and encounter.patient_id = e.patient_id                   "
+            + "     and encounter.encounter_id = e.encounter_id               "
+            + "     and obs.concept_id in(1981, 6254, 6255, 2016, 2017, 2158, 2157, 1748, 2031, 23944, 23945, 2032, 2037, 2038, 1272, 2040, 23923, 23933, 23934, 23934, 23935, 2180) "
+            + "     and (obs.value_coded is null and obs.value_text is null and obs.value_datetime is null )                                                                         "
+            + "     and encounter.encounter_datetime  >= :startDate                         "
+            + "     and encounter.encounter_datetime  <= :endDate                           "
+            + "     and encounter.location_id =:location )                                  "
+            + "     and e.encounter_type =21 and e.location_id =:location group by e.patient_id                          ";
+
+    public static final String findTrackedPatientsWithinReportingPeriod =
+        "select e.patient_id, e.encounter_datetime from encounter e "
+            + " where exists ( select * from encounter "
+            + "	join patient  on patient.patient_id = encounter.patient_id "
+            + "     join obs on obs.encounter_id = encounter.encounter_id "
+            + "     where patient.voided = 0 and encounter.voided = 0 and obs.voided = 0 "
+            + "     and encounter.encounter_type =21 and encounter.patient_id = e.patient_id "
+            + "     and encounter.encounter_id = e.encounter_id "
+            + "     and obs.concept_id in(2031, 23944, 23945) "
+            + "     and (obs.value_coded in(2024, 2026, 2011, 2032) ) "
+            + "     and encounter.encounter_datetime  >= :startDate "
+            + "     and encounter.encounter_datetime  <= :endDate and encounter.location_id =:location ) "
+            + "     and e.encounter_type =21  group by e.patient_id ";
   }
 }
