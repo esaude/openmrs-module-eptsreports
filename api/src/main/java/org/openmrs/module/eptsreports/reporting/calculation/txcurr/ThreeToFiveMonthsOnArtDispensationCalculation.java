@@ -522,11 +522,16 @@ public class ThreeToFiveMonthsOnArtDispensationCalculation extends AbstractPatie
       // exclude   patients   who   have   the   last   SEMESTRAL   QUARTERLY (concept   id=23730
       // with value_coded as value_coded=1267)
       if (lastFichaEncounter != null
+          && lastFilaEncounter != null
           && lastQuartelyObsWithCompleted != null
           && lastQuartelyObsWithCompleted.getEncounter() != null
           && lastQuartelyObsWithCompleted.getValueCoded() != null
           && lastFichaEncounter.equals(lastQuartelyObsWithCompleted.getEncounter())
-          && lastQuartelyObsWithCompleted.getValueCoded().equals(completedConcept)) {
+          && lastQuartelyObsWithCompleted.getValueCoded().equals(completedConcept)
+          && lastFichaEncounter
+                  .getEncounterDatetime()
+                  .compareTo(lastFilaEncounter.getEncounterDatetime())
+              > 0) {
         found = false;
       }
       // exclude all patients who have ficha with 1098 which is after recent fila and ficha of
