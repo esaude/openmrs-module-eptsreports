@@ -156,34 +156,36 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
     return result;
   }
 
-  protected CalculationResultMap checkUntracedAndTracedPatients(
+  protected CalculationResultMap filterUntracedAndTracedPatients(
       EvaluationContext context, CalculationResultMap resultMap) {
     CalculationResultMap returnMap = new CalculationResultMap();
     QueryDisaggregationProcessor queryDisaggregation =
         Context.getRegisteredComponents(QueryDisaggregationProcessor.class).get(0);
 
-    Map<Integer, Date> untracedPatients =
-        queryDisaggregation.findUntracedPatientsWithinReportingPeriod(context);
-    Map<Integer, Date> unTracedByNoDataInVisitSection =
-        queryDisaggregation.findUntracedByNotHavefilledDataInVisitSection(context);
-    Map<Integer, Date> tracedPatients =
-        queryDisaggregation.findTracedPatientsWithinReportingPeriod(context);
-
     for (Entry<Integer, CalculationResult> entry : resultMap.entrySet()) {
       Integer patientId = entry.getKey();
       Date maxNextDate = (Date) entry.getValue().getValue();
 
-      if (untracedPatients.get(patientId) != null) {
+      Map<Integer, Date> criteriaOne =
+          queryDisaggregation.findUntracedPatientsWithinReportingPeriodCriteriaOne(
+              context, patientId, maxNextDate);
+      if (criteriaOne == null || criteriaOne.isEmpty()) {
         returnMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+        continue;
       }
 
-      Date untracedDate = unTracedByNoDataInVisitSection.get(patientId);
-      if (untracedDate != null && untracedDate.compareTo(maxNextDate) > 0) {
+      Map<Integer, Date> criteriaTwo =
+          queryDisaggregation.findUntracedByNotHavefilledDataInVisitSectionCriteriaTwo(
+              context, patientId, maxNextDate);
+      if (criteriaTwo != null && !criteriaTwo.isEmpty()) {
         returnMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+        continue;
       }
 
-      Date tracedDate = tracedPatients.get(patientId);
-      if (tracedDate != null && tracedDate.compareTo(maxNextDate) >= 0) {
+      Map<Integer, Date> criteriaThree =
+          queryDisaggregation.findTracedPatientsWithinReportingPeriodCriteriaThree(
+              context, patientId, maxNextDate);
+      if (criteriaThree != null && !criteriaThree.isEmpty()) {
         returnMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
       }
     }

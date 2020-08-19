@@ -111,37 +111,47 @@ public class QueryDisaggregationProcessor {
         .evaluateToMap(qb, Integer.class, Date.class, context);
   }
 
-  public Map<Integer, Date> findUntracedPatientsWithinReportingPeriod(EvaluationContext context) {
+  public Map<Integer, Date> findUntracedPatientsWithinReportingPeriodCriteriaOne(
+      EvaluationContext context, Integer patientId, Date maxNextAppintmentDate) {
 
     SqlQueryBuilder qb =
         new SqlQueryBuilder(
-            IQueryDisaggregationProcessor.QUERY.findUntrackedPatientsWithinReportingPeriod,
+            IQueryDisaggregationProcessor.QUERY
+                .findUntrackedPatientsWithinReportingPeriodCriteriaOne,
             context.getParameterValues());
+    qb.addParameter("patientId", patientId);
+    qb.addParameter("nextAppointmentDate", maxNextAppintmentDate);
 
     return Context.getRegisteredComponents(EvaluationService.class)
         .get(0)
         .evaluateToMap(qb, Integer.class, Date.class, context);
   }
 
-  public Map<Integer, Date> findUntracedByNotHavefilledDataInVisitSection(
-      EvaluationContext context) {
+  public Map<Integer, Date> findUntracedByNotHavefilledDataInVisitSectionCriteriaTwo(
+      EvaluationContext context, Integer patientId, Date maxNextAppintmentDate) {
 
     SqlQueryBuilder qb =
         new SqlQueryBuilder(
-            IQueryDisaggregationProcessor.QUERY.findUntracedByNotHavefilledData,
+            IQueryDisaggregationProcessor.QUERY.findUntracedByNotHavefilledDataCriteriaTwo,
             context.getParameterValues());
+    qb.addParameter("patientId", patientId);
+    qb.addParameter("nextAppointmentDate", maxNextAppintmentDate);
 
     return Context.getRegisteredComponents(EvaluationService.class)
         .get(0)
         .evaluateToMap(qb, Integer.class, Date.class, context);
   }
 
-  public Map<Integer, Date> findTracedPatientsWithinReportingPeriod(EvaluationContext context) {
+  public Map<Integer, Date> findTracedPatientsWithinReportingPeriodCriteriaThree(
+      EvaluationContext context, Integer patientId, Date maxNextAppintmentDate) {
 
     SqlQueryBuilder qb =
         new SqlQueryBuilder(
-            IQueryDisaggregationProcessor.QUERY.findTrackedPatientsWithinReportingPeriod,
+            IQueryDisaggregationProcessor.QUERY
+                .findTrackedPatientsWithinReportingPeriodCriteriaThree,
             context.getParameterValues());
+    qb.addParameter("patientId", patientId);
+    qb.addParameter("nextAppointmentDate", maxNextAppintmentDate);
 
     return Context.getRegisteredComponents(EvaluationService.class)
         .get(0)

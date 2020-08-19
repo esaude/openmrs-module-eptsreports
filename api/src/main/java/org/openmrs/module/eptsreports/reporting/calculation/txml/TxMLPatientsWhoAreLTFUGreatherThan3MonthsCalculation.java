@@ -54,6 +54,6 @@ public class TxMLPatientsWhoAreLTFUGreatherThan3MonthsCalculation extends TxMLPa
             patientId, resultMap, endDate, lastSeguimentoCalculationResult, nextSeguimentoResult);
       }
     }
-    return checkUntracedAndTracedPatients(context, resultMap);
+    return filterUntracedAndTracedPatients(context, resultMap);
   }
 }

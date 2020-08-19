@@ -120,7 +120,6 @@ public class TxRttDataset extends BaseDataSet {
         FORTY_FIVE_TO_FORTY_NINE,
         ABOVE_FIFTY);
 
-
     definition.addColumn(
         "R-malesUnknownM",
         "unknownM",
