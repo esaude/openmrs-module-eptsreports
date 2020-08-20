@@ -3,6 +3,7 @@ package org.openmrs.module.eptsreports.reporting.calculation.txml;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -21,6 +22,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.generic.OnArtInitiat
 import org.openmrs.module.eptsreports.reporting.calculation.util.processor.CalculationProcessorUtils;
 import org.openmrs.module.eptsreports.reporting.calculation.util.processor.QueryDisaggregationProcessor;
 import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.reporting.common.ListMap;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 public abstract class TxMLPatientCalculation extends BaseFghCalculation {
@@ -158,33 +160,88 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
     QueryDisaggregationProcessor queryDisaggregation =
         Context.getRegisteredComponents(QueryDisaggregationProcessor.class).get(0);
 
+    Map<Integer, Date> criteriaOneData =
+        queryDisaggregation.findUntracedPatientsWithinReportingPeriodCriteriaOne(context);
+    ListMap<Integer, Date> criteriaTwoData =
+        queryDisaggregation.findUntracedByNotHavefilledDataInVisitSectionCriteriaTwo(context);
+    ListMap<Integer, Date> criteriaThreeData =
+        queryDisaggregation.findTracedPatientsWithinReportingPeriodCriteriaThree(context);
+
+    ListMap<Integer, Date> criteriaThreeNegationData =
+        queryDisaggregation.findTracedPatientsWithinReportingPeriodCriteriaThree(context);
+
     for (Entry<Integer, CalculationResult> entry : resultMap.entrySet()) {
       Integer patientId = entry.getKey();
       Date maxNextDate = (Date) entry.getValue().getValue();
 
-      Map<Integer, Date> criteriaOne =
-          queryDisaggregation.findUntracedPatientsWithinReportingPeriodCriteriaOne(
-              context, patientId, maxNextDate);
-      if (criteriaOne == null || criteriaOne.isEmpty()) {
+      if (this.matchCriteriaOne(criteriaOneData, patientId, maxNextDate)) {
         returnMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
         continue;
       }
 
-      Map<Integer, Date> criteriaTwo =
-          queryDisaggregation.findUntracedByNotHavefilledDataInVisitSectionCriteriaTwo(
-              context, patientId, maxNextDate);
-      if (criteriaTwo != null && !criteriaTwo.isEmpty()) {
+      if (this.matchCriteriaTwo(criteriaTwoData, patientId, maxNextDate)) {
         returnMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
         continue;
       }
 
-      Map<Integer, Date> criteriaThree =
-          queryDisaggregation.findTracedPatientsWithinReportingPeriodCriteriaThree(
-              context, patientId, maxNextDate);
-      if (criteriaThree != null && !criteriaThree.isEmpty()) {
+      if (this.matchCriteriaThree(
+          criteriaThreeData, criteriaThreeNegationData, patientId, maxNextDate)) {
         returnMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+        continue;
       }
     }
     return returnMap;
+  }
+
+  private boolean matchCriteriaOne(
+      Map<Integer, Date> criteriaOneData, Integer patientId, Date maxNextDate) {
+    Date maxHomeCardVist = criteriaOneData.get(patientId);
+    if (maxHomeCardVist == null
+        || (maxHomeCardVist != null && maxHomeCardVist.compareTo(maxNextDate) < 0)) {
+      return true;
+    }
+    return false;
+  }
+
+  private boolean matchCriteriaTwo(
+      ListMap<Integer, Date> criteriaTwoData, Integer patientId, Date maxNextDate) {
+    List<Date> homeCardVisitDates = criteriaTwoData.get(patientId);
+
+    if (homeCardVisitDates == null || homeCardVisitDates.isEmpty()) {
+      return false;
+    }
+    for (Date homeCardVisitDate : homeCardVisitDates) {
+      if (homeCardVisitDate != null
+          && DateUtil.getDaysBetween(homeCardVisitDate, maxNextDate) >= 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean matchCriteriaThree(
+      ListMap<Integer, Date> criteriaThreeData,
+      ListMap<Integer, Date> criteriaThreeNegationData,
+      Integer patientId,
+      Date maxNextDate) {
+    List<Date> homeCardVisitDates = criteriaThreeData.get(patientId);
+    List<Date> homeCardVisitDatesNegation = criteriaThreeNegationData.get(patientId);
+
+    if (homeCardVisitDates != null
+        && !homeCardVisitDates.isEmpty()
+        && homeCardVisitDatesNegation != null
+        && !homeCardVisitDatesNegation.isEmpty()) {
+      return false;
+    }
+
+    if (homeCardVisitDates != null && !homeCardVisitDates.isEmpty()) {
+      for (Date homeCardVisitDate : homeCardVisitDates) {
+        if (homeCardVisitDate != null
+            && DateUtil.getDaysBetween(homeCardVisitDate, maxNextDate) >= 0) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }
