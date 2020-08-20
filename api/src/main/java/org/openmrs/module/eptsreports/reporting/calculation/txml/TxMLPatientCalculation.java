@@ -166,9 +166,8 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
         queryDisaggregation.findUntracedByNotHavefilledDataInVisitSectionCriteriaTwo(context);
     ListMap<Integer, Date> criteriaThreeData =
         queryDisaggregation.findTracedPatientsWithinReportingPeriodCriteriaThree(context);
-
     ListMap<Integer, Date> criteriaThreeNegationData =
-        queryDisaggregation.findTracedPatientsWithinReportingPeriodCriteriaThree(context);
+        queryDisaggregation.findTracedPatientsWithinReportingPeriodCriteriaThreeNegation(context);
 
     for (Entry<Integer, CalculationResult> entry : resultMap.entrySet()) {
       Integer patientId = entry.getKey();
@@ -211,8 +210,7 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
       return false;
     }
     for (Date homeCardVisitDate : homeCardVisitDates) {
-      if (homeCardVisitDate != null
-          && DateUtil.getDaysBetween(homeCardVisitDate, maxNextDate) >= 0) {
+      if (homeCardVisitDate != null && homeCardVisitDate.compareTo(maxNextDate) >= 0) {
         return true;
       }
     }
@@ -236,8 +234,7 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
 
     if (homeCardVisitDates != null && !homeCardVisitDates.isEmpty()) {
       for (Date homeCardVisitDate : homeCardVisitDates) {
-        if (homeCardVisitDate != null
-            && DateUtil.getDaysBetween(homeCardVisitDate, maxNextDate) >= 0) {
+        if (homeCardVisitDate != null && homeCardVisitDate.compareTo(maxNextDate) >= 0) {
           return true;
         }
       }

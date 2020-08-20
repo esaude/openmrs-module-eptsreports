@@ -142,10 +142,6 @@ public class QueryDisaggregationProcessor {
       listPatientDates.putInList((Integer) row[0], (Date) row[1]);
     }
     return listPatientDates;
-
-    //		return Context.getRegisteredComponents(EvaluationService.class).get(0).evaluateToMap(qb,
-    // Integer.class,
-    //				Date.class, context);
   }
 
   public ListMap<Integer, Date> findTracedPatientsWithinReportingPeriodCriteriaThree(
@@ -164,9 +160,6 @@ public class QueryDisaggregationProcessor {
       listPatientDates.putInList((Integer) row[0], (Date) row[1]);
     }
     return listPatientDates;
-    //		return Context.getRegisteredComponents(EvaluationService.class).get(0).evaluateToMap(qb,
-    // Integer.class,
-    //				Date.class, context);
   }
 
   public ListMap<Integer, Date> findTracedPatientsWithinReportingPeriodCriteriaThreeNegation(
@@ -185,8 +178,5 @@ public class QueryDisaggregationProcessor {
       listPatientDates.putInList((Integer) row[0], (Date) row[1]);
     }
     return listPatientDates;
-    //		return Context.getRegisteredComponents(EvaluationService.class).get(0).evaluateToMap(qb,
-    // Integer.class,
-    //				Date.class, context);
   }
 }
