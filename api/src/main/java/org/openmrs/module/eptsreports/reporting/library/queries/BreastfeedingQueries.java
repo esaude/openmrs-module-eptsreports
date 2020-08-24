@@ -165,4 +165,44 @@ public class BreastfeedingQueries {
 
     return query;
   }
+
+  public static String findPatientsWhoAreBreastfeedingNotCheckingPregnant() {
+    final String query =
+        "select lactante_real.patient_id from ( "
+            + "Select p.patient_id,o.value_datetime data_parto from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=5599 "
+            + "and e.encounter_type in (5,6) and o.value_datetime between :startDate and :endDate and e.location_id=:location "
+            + "union "
+            + "Select p.patient_id, e.encounter_datetime data_parto from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=6332 and value_coded=1065 and e.encounter_type=6 "
+            + "and e.encounter_datetime between :startDate and :endDate and e.location_id=:location "
+            + "union "
+            + "Select p.patient_id, obsART.value_datetime data_parto from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "inner join obs obsART on e.encounter_id=obsART.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and o.concept_id=6332 and o.value_coded=1065 and e.encounter_type=53 and e.location_id=:location and "
+            + "obsART.value_datetime between :startDate and :endDate and obsART.concept_id=1190 and obsART.voided=0 "
+            + "union "
+            + "Select p.patient_id, e.encounter_datetime data_parto from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=6334 and value_coded=6332 and "
+            + "e.encounter_type in (5,6) and e.encounter_datetime between :startDate and :endDate and e.location_id=:location "
+            + "union "
+            + "select pg.patient_id,ps.start_date data_parto from patient p "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=8 and ps.state=27 and ps.end_date is null "
+            + "and ps.start_date between :startDate and :endDate and location_id=:location "
+            + ") lactante_real "
+            + "inner join person pe on pe.person_id=lactante_real.patient_id "
+            + "where pe.voided=0 and pe.gender='F' ";
+
+    return query;
+  }
 }
