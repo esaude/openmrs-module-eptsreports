@@ -687,7 +687,23 @@ public class TxMlQueries {
             + "        (patientNotFound.concept_id IN (${reasonPatientNotFound}, ${defaultingMotiveConcept}, ${reasonForStoppedTakingArvDrugsDuringLast7DaysConcept},${reasonForStoppedTakingArvDrugsDuringLastMonthConcept}, ${mainReasonForDelayInTakingArvConcept})"
             + " AND patientNotFound.value_coded IN (${patientRecordHasWrongAddressConcept}, ${patientMovedHousesConcept}, ${patientTookATripConcept}, ${otherReasonsWhyPatientWasNotLocatedByActivistConcept})) "
             + " WHERE patientNotFound.obs_id IS NOT NULL "
-            + " ORDER BY pa.patient_id ";
+            + " AND lp.patient_id NOT IN "
+            + "             ("
+            + "       SELECT  p.patient_id"
+            + "               FROM patient p"
+            + "       INNER JOIN encounter e ON e.patient_id = p.patient_id"
+            + "       INNER JOIN obs visitType ON p.patient_id = visitType.person_id"
+            + "               AND visitType.encounter_id = e.encounter_id AND"
+            + "                  (visitType.concept_id= ${typeOfVisitConcept} AND visitType.value_coded= ${buscaConcept}) "
+            + "        LEFT JOIN obs patientNotFound ON "
+            + "                  p.patient_id=patientNotFound.person_id AND "
+            + "                  patientNotFound.encounter_id=e.encounter_id AND "
+            + "                  (patientNotFound.concept_id IN (${reasonPatientNotFound}, ${defaultingMotiveConcept}, ${reasonForStoppedTakingArvDrugsDuringLast7DaysConcept},${reasonForStoppedTakingArvDrugsDuringLastMonthConcept}, ${mainReasonForDelayInTakingArvConcept})"
+            + "               AND patientNotFound.value_coded IN (${patientRecordHasWrongAddressConcept}, ${patientMovedHousesConcept}, ${patientTookATripConcept}, ${otherReasonsWhyPatientWasNotLocatedByActivistConcept})) "
+            + "        WHERE "
+            + "                   e.encounter_datetime BETWEEN lp.return_date AND :endDate"
+            + "               AND patientNotFound.obs_id IS NULL)"
+            + "     ORDER BY pa.patient_id ";
 
     Map<String, Integer> valuesMap = new HashMap<>();
 
