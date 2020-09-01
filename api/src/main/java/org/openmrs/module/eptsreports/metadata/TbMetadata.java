@@ -23,19 +23,28 @@ import org.springframework.stereotype.Component;
 public class TbMetadata extends ProgramsMetadata {
 
   /**
-   * Concept_id = 161
+   * <b>concept_id = 161</b>
    *
-   * @return
+   * <p><b>Name:</b> LYMPHADENOPATHY
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
    */
   public Concept getLymphadenopathy() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.lymphadenopathyUuid");
     return getConcept(uuid);
   }
+
   /**
-   * concept_id = 1760
+   * <b>concept_id = 1760</b>
    *
-   * @return
+   * <p><b>Name:</b> COUGH LASTING MORE THAN 3 WEEKS
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
    */
   public Concept getCoughLastingMoraThan3Weeks() {
     String uuid =
@@ -45,9 +54,13 @@ public class TbMetadata extends ProgramsMetadata {
   }
 
   /**
-   * concept_id = 1762
+   * <b>concept_id = 1762</b>
    *
-   * @return
+   * <p><b>Name:</b> NIGHTSWEATS LASTING MORE THAN 3 WEEKS
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
    */
   public Concept getNightsWeatsLastingMoraThan3Weeks() {
     String uuid =
@@ -55,10 +68,15 @@ public class TbMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.nightsWeatsLastingMoraThan3WeeksUuid");
     return getConcept(uuid);
   }
+
   /**
-   * concept_id = 1763
+   * <b>concept_id = 1763</b>
    *
-   * @return
+   * <p><b>Name:</b> FEVER LASTING MORE THAN 3 WEEKS
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
    */
   public Concept getFeverLastingMoraThan3Weeks() {
     String uuid =
@@ -68,9 +86,13 @@ public class TbMetadata extends ProgramsMetadata {
   }
 
   /**
-   * concept_id = 1764
+   * <b>concept_id = 1764</b>
    *
-   * @return
+   * <p><b>Name:</b> WEIGHT LOSS OF MORE THAN 3 KG IN LAST MONTH
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
    */
   public Concept getWeightLossOfMoreThan3KgInLastMonth() {
     String uuid =
@@ -80,9 +102,13 @@ public class TbMetadata extends ProgramsMetadata {
   }
 
   /**
-   * Concept_id = 1765
+   * <b>concept_id = 1765</b>
    *
-   * @return
+   * <p><b>Name:</b> COHABITANT BEING TREATED FOR TB
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
    */
   public Concept getCohabitantBeingTreatedForTB() {
     String uuid =
@@ -92,9 +118,14 @@ public class TbMetadata extends ProgramsMetadata {
   }
 
   /**
-   * Concept_id = 1268
+   * <b>concept_id = 1268</b>
    *
-   * @return
+   * <p><b>Name:</b> TUBERCULOSIS TREATMENT PLAN
+   *
+   * <p><b>Description:</b> Question on encounter form. Collects information related to tuberculosis
+   * drug therapy plans.
+   *
+   * @return {@link Concept}
    */
   public Concept getTBTreatmentPlanConcept() {
     String uuid =
@@ -104,9 +135,13 @@ public class TbMetadata extends ProgramsMetadata {
   }
 
   /**
-   * concept_id = 1766
+   * <b>concept_id = 1766</b>
    *
-   * @return
+   * <p><b>Name:</b> TB OBSERVATIONS
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
    */
   public Concept getObservationTB() {
     String uuid =
@@ -116,9 +151,13 @@ public class TbMetadata extends ProgramsMetadata {
   }
 
   /**
-   * Concept_id = 42
+   * <b>concept_id = 42</b>
    *
-   * @return
+   * <p><b>Name:</b> TB OBSERVATIONS
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
    */
   public Concept getPulmonaryTB() {
     String uuid =
@@ -134,9 +173,13 @@ public class TbMetadata extends ProgramsMetadata {
   }
 
   /**
-   * concept_id = 23723
+   * <b>concept_id = 23723</b>
    *
-   * @return
+   * <p><b>Name:</b> TB GENEXPERT TEST
+   *
+   * <p><b>Description:</b> Test for the diagnosis of tuberculosis
+   *
+   * @return {@link Concept}
    */
   public Concept getTBGenexpertTestConcept() {
     String uuid =
@@ -145,9 +188,13 @@ public class TbMetadata extends ProgramsMetadata {
   }
 
   /**
-   * concept_id = 23774
+   * <b>concept_id = 23774</b>
    *
-   * @return
+   * <p><b>Name:</b> CULTURE TEST
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
    */
   public Concept getCultureTest() {
     String uuid =
@@ -156,9 +203,13 @@ public class TbMetadata extends ProgramsMetadata {
   }
 
   /**
-   * Concept_id = 23760
+   * <b>concept_id = 23760</b>
    *
-   * @return
+   * <p><b>Name:</b> ASTHENIA
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
    */
   public Concept getAsthenia() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.astheniaUuid");
@@ -166,9 +217,13 @@ public class TbMetadata extends ProgramsMetadata {
   }
 
   /**
-   * Concept_id = 23761
+   * <b>concept_id = 23761</b>
    *
-   * @return
+   * <p><b>Name:</b> ACTIVE TB
+   *
+   * <p><b>Description:</b> Active TB diagnosis
+   *
+   * @return {@link Concept}
    */
   public Concept getActiveTBConcept() {
     String uuid =
@@ -177,9 +232,13 @@ public class TbMetadata extends ProgramsMetadata {
   }
 
   /**
-   * Concept_id = 23951
+   * <b>concept_id = 23951</b>
    *
-   * @return
+   * <p><b>Name:</b> TB LAM
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
    */
   public Concept getTestTBLAM() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.testTBLAMUuid");
@@ -187,12 +246,32 @@ public class TbMetadata extends ProgramsMetadata {
   }
 
   // Programs
+
+  /**
+   * <b>program_id = 5</b>
+   *
+   * <p><b>Name:</b> TUBERCULOSIS
+   *
+   * <p><b>Description:</b> Programa de Combate a Tuberculose
+   *
+   * @return {@link Program}
+   */
   public Program getTBProgram() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.tbProgramUuid");
     return getProgram(uuid);
   }
 
   // encounter types
+
+  /**
+   * <b>encounterType_id = 25</b>
+   *
+   * <p><b>Name:</b> TUBERCULOSE: LIVRO
+   *
+   * <p><b>Description:</b> Livro de registo de doentes com Tuberculose
+   *
+   * @return {@link EncounterType}
+   */
   public EncounterType getTBLivroEncounterType() {
     String uuid =
         Context.getAdministrationService()
@@ -200,6 +279,15 @@ public class TbMetadata extends ProgramsMetadata {
     return getEncounterType(uuid);
   }
 
+  /**
+   * <b>encounterType_id = 26</b>
+   *
+   * <p><b>Name:</b> TUBERCULOSE: PROCESSO
+   *
+   * <p><b>Description:</b> Tratamento de Tuberculose
+   *
+   * @return {@link EncounterType}
+   */
   public EncounterType getTBProcessoEncounterType() {
     String uuid =
         Context.getAdministrationService()
@@ -207,16 +295,30 @@ public class TbMetadata extends ProgramsMetadata {
     return getEncounterType(uuid);
   }
 
+  /**
+   * <b>encounterType_id = 20</b>
+   *
+   * <p><b>Name:</b> TUBERCULOSE: RASTREIO
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link EncounterType}
+   */
   public EncounterType getTBRastreioEncounterType() {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.tbRastreioEncounterTypeUuid");
     return getEncounterType(uuid);
   }
+
   /**
-   * concept_id 6257
+   * <b>concept_id = 6257</b>
    *
-   * @return
+   * <p><b>Name:</b> SCREENING FOR TB
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
    */
   public Concept getTbScreeningConcept() {
     String uuid =
@@ -224,6 +326,15 @@ public class TbMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  /**
+   * <b>concept_id = 6277</b>
+   *
+   * <p><b>Name:</b> RESEARCH RESULT FOR TB
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
   public Concept getResearchResultConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -231,18 +342,45 @@ public class TbMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  /**
+   * <b>concept_id = 703</b>
+   *
+   * <p><b>Name:</b> POSITIVE
+   *
+   * <p><b>Description:</b> General finding of a positive result.
+   *
+   * @return {@link Concept}
+   */
   public Concept getPositiveConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.positiveConceptUuid");
     return getConcept(uuid);
   }
 
+  /**
+   * <b>concept_id = 664</b>
+   *
+   * <p><b>Name:</b> NEGATIVE
+   *
+   * <p><b>Description:</b> General finding of a negative result.
+   *
+   * @return {@link Concept}
+   */
   public Concept getNegativeConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.negativeConceptUuid");
     return getConcept(uuid);
   }
 
+  /**
+   * <b>concept_id = 6120</b>
+   *
+   * <p><b>Name:</b> TB DRUGS TREATMENT END DATE
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
   public Concept gettbDgrusTreatmentEndDateConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -251,9 +389,13 @@ public class TbMetadata extends ProgramsMetadata {
   }
 
   /**
-   * concept_id=23758
+   * <b>concept_id = 23758</b>
    *
-   * @return
+   * <p><b>Name:</b> TB SYMPTOMS
+   *
+   * <p><b>Description:</b> has TB symptoms
+   *
+   * @return {@link Concept}
    */
   public Concept getHasTbSymptomsConcept() {
     String uuid =
