@@ -24,9 +24,13 @@ public class CommonMetadata extends Metadata {
       "eptsreports.transferFromOtherFacilityConceptUuid";
 
   /**
-   * concept_id = 664
+   * <b>concept_id = 664</b>
    *
-   * @return
+   * <p><b>Name:</b> NEGATIVE
+   *
+   * <p><b>Description:</b> General finding of a negative result.
+   *
+   * @return {@link Concept}
    */
   public Concept getNegative() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.NegativeUuid");
@@ -34,18 +38,27 @@ public class CommonMetadata extends Metadata {
   }
 
   /**
-   * concept_id = 703
+   * <b>concept_id = 703</b>
    *
-   * @return
+   * <p><b>Name:</b> POSITIVE
+   *
+   * <p><b>Description:</b> General finding of a positive result.
+   *
+   * @return {@link Concept}
    */
   public Concept getPositive() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.positiveUuid");
     return getConcept(uuid);
   }
+
   /**
-   * CONCEPTS
+   * <b>concept_id = 1065</b>
    *
-   * <p>concept_id = 1065
+   * <p><b>Name:</b> YES
+   *
+   * <p><b>Description:</b> Generic answer to a question.
+   *
+   * @return {@link Concept}
    */
   public Concept getYesConcept() {
     String uuid =
@@ -53,19 +66,45 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
-  // concept_id=1066
+  /**
+   * <b>concept_id = 1066</b>
+   *
+   * <p><b>Name:</b> NO
+   *
+   * <p><b>Description:</b> Generic answer to a question.
+   *
+   * @return {@link Concept}
+   */
   public Concept getNoConcept() {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.noConceptUuid");
     return getConcept(uuid);
   }
 
-  // concept_id=1256
+  /**
+   * <b>concept_id = 1256</b>
+   *
+   * <p><b>Name:</b> START DRUGS
+   *
+   * <p><b>Description:</b> Answer on encounter form. Implies that a patient will be started on
+   * drugs for that particular encounter.
+   *
+   * @return {@link Concept}
+   */
   public Concept getStartDrugsConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.startDrugsConceptUuid");
     return getConcept(uuid);
   }
-  // concept_id=1369
+
+  /**
+   * <b>concept_id = 1369</b>
+   *
+   * <p><b>Name:</b> TRANSFER FROM OTHER FACILITY
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
   public Concept getTransferFromOtherFacilityConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -73,6 +112,15 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
+  /**
+   * <b>concept_id = 1706</b>
+   *
+   * <p><b>Name:</b> TRANSFER OUT TO ANOTHER FACILITY
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
   public Concept getTransferOutToAnotherFacilityConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -80,7 +128,15 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
-  // concept_id=1190
+  /**
+   * <b>concept_id = 1190</b>
+   *
+   * <p><b>Name:</b> HISTORICAL DRUG START DATE
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
   public Concept getHistoricalDrugStartDateConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -88,7 +144,15 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
-  // concept_id=1982
+  /**
+   * <b>concept_id = 1982</b>
+   *
+   * <p><b>Name:</b> PREGANT
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
   public Concept getPregnantConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.pregnantConceptUuid");
@@ -96,9 +160,13 @@ public class CommonMetadata extends Metadata {
   }
 
   /**
-   * Number of weeks pregnant 1279
+   * <b>concept_id = 1279</b>
    *
-   * @return
+   * <p><b>Name:</b> NUMBER OF WEEKS PREGNANT
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
    */
   public Concept getNumberOfWeeksPregnant() {
     String uuid =
@@ -108,9 +176,13 @@ public class CommonMetadata extends Metadata {
   }
 
   /**
-   * Pregnancy due date conceptId=1600
+   * <b>concept_id = 1600</b>
    *
-   * @return
+   * <p><b>Name:</b> PREGNANCY DUE DATE
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
    */
   public Concept getPregnancyDueDate() {
     String uuid =
@@ -119,7 +191,16 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
-  // concept_id=6332
+  /**
+   * <b>concept_id = 6332</b>
+   *
+   * <p><b>Name:</b> BREASTFEEDING
+   *
+   * <p><b>Description:</b> Describes the secretion of milk from the mammary glands and the period
+   * of time that a mother lactates to feed her young
+   *
+   * @return {@link Concept}
+   */
   public Concept getBreastfeeding() {
     String uuid =
         Context.getAdministrationService()
@@ -127,11 +208,14 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
-  // concept_id=1410
   /**
-   * concept_id=1410
+   * <b>concept_id = 1410</b>
    *
-   * @return
+   * <p><b>Name:</b> RETURN VISIT DATE
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
    */
   public Concept getReturnVisitDateConcept() {
     String uuid =
@@ -140,7 +224,15 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
-  // concept_id=5599
+  /**
+   * <b>concept_id = 5599</b>
+   *
+   * <p><b>Name:</b> PRIOR DELIVERY DATE
+   *
+   * <p><b>Description:</b> Date in which a mother delivered her child.
+   *
+   * @return {@link Concept}
+   */
   public Concept getPriorDeliveryDateConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -148,14 +240,30 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
-  // concept_id=6258
+  /**
+   * <b>concept_id = 6258</b>
+   *
+   * <p><b>Name:</b> SCREENING FOR STI
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
   public Concept getScreeningForSTIConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.screeningForSTIIuid");
     return getConcept(uuid);
   }
 
-  // concept_id=2066
+  /**
+   * <b>concept_id = 2066</b>
+   *
+   * <p><b>Name:</b> STAGE 4 PEDIATRIC, MOZAMBIQUE
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
   public Concept getStage4PediatricMozambiqueConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -163,7 +271,15 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
-  // concept_id=1670
+  /**
+   * <b>concept_id = 1670</b>
+   *
+   * <p><b>Name:</b> ADULT CLINICAL HISTORY
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
   public Concept getAdultClinicalHistoryConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -171,14 +287,30 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
-  // concept_id=1120
+  /**
+   * <b>concept_id = 1120</b>
+   *
+   * <p><b>Name:</b> SKIN EXAM FINDINGS
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
   public Concept getSkimExamFindingsConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.skimExamFindingsUuid");
     return getConcept(uuid);
   }
 
-  // concept_id=1127
+  /**
+   * <b>concept_id = 1127</b>
+   *
+   * <p><b>Name:</b> EXTREMITY EXAM FINDINGS
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
   public Concept getExtremityExamFindingsConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -186,7 +318,15 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
-  // concept_id=1569
+  /**
+   * <b>concept_id = 1569</b>
+   *
+   * <p><b>Name:</b> STAGE 4 ADULT, MOZAMBIQUE
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
   public Concept getStateAdultMozambiqueConcept() {
     String uuid =
         Context.getAdministrationService()
@@ -194,47 +334,106 @@ public class CommonMetadata extends Metadata {
     return getConcept(uuid);
   }
 
-  // concept_id=507
+  /**
+   * <b>concept_id = 507</b>
+   *
+   * <p><b>Name:</b> KAPOSI'S SARCOMA
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
   public Concept getKaposiSarcomaConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.kaposiSarcomaUuid");
     return getConcept(uuid);
   }
-  // concept_id=6336
+
+  /**
+   * <b>concept_id = 6336</b>
+   *
+   * <p><b>Name:</b> CLASSIFICATION OF MALNUTRITION
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
   public Concept getClassificationOfMalnutritionConcept() {
     return getConcept(
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.classificationOfMalnutritionConceptUuid"));
   }
 
-  // concept_id=6335
+  /**
+   * <b>concept_id = 6335</b>
+   *
+   * <p><b>Name:</b> MALNUTRITION LIGHT
+   *
+   * <p><b>Description:</b> Slightly malnourished
+   *
+   * @return {@link Concept}
+   */
   public Concept getMalnutritionLightConcept() {
     return getConcept(
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.malnutritionLightConceptUuid"));
   }
 
-  // concept_id=68
+  /**
+   * <b>concept_id = 68</b>
+   *
+   * <p><b>Name:</b> MALNUTRITION
+   *
+   * <p><b>Description:</b> Inadequate oral intake of unspecified nutrients (eg, calories, protein,
+   * vitamins, etc.)
+   *
+   * @return {@link Concept}
+   */
   public Concept getMalnutritionConcept() {
     return getConcept(
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.malnutritionConceptUuid"));
   }
 
+  /**
+   * <b>concept_id = 1844</b>
+   *
+   * <p><b>Name:</b> CHRONIC MALNUTRITION
+   *
+   * <p><b>Description:</b> Slightly malnourished
+   *
+   * @return {@link Concept}
+   */
   public Concept getChronicMalnutritionConcept() {
     return getConcept(
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.chronicMalnutritionConceptUuid"));
   }
 
-  // concept_id=5599
+  /**
+   * <b>concept_id = 6258</b>
+   *
+   * <p><b>Name:</b> SCREENING FOR STI
+   *
+   * <p><b>Description:</b> Slightly malnourished
+   *
+   * @return {@link Concept}
+   */
   public Concept getStiScreeningConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.stiScreeningConceptUuid");
     return getConcept(uuid);
   }
 
-  // concept_id=6126
+  /**
+   * <b>concept_id = 6126</b>
+   *
+   * <p><b>Name:</b> COTRIMOXAZOLE PROPHYLAXIS START DATE
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
   public Concept getCotrimoxazoleProphylaxisStartDateConcept() {
     String uuid =
         Context.getAdministrationService()
