@@ -24,7 +24,6 @@ import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.THIRTY_TO_
 import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.TWENTY_FIVE_TO_TWENTY_NINE;
 import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.TWENTY_TO_TWENTY_FOUR;
 import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.UNDER_ONE;
-import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.UNKNOWN;
 
 import java.util.Arrays;
 import java.util.List;
@@ -174,7 +173,21 @@ public class TxCurrDataset extends BaseDataSet {
         FORTY_FIVE_TO_FORTY_NINE,
         ABOVE_FIFTY);
 
-    this.addColums(dataSetDefinition, "", txCurrIndicator, UNKNOWN);
+    dataSetDefinition.addColumn(
+        "C-malesUnknownM",
+        "unknownM",
+        EptsReportUtils.map(txCurrIndicator, mappings),
+        this.getName(Gender.MALE, AgeRange.UNKNOWN)
+            + "="
+            + this.getName(Gender.MALE, AgeRange.UNKNOWN));
+
+    dataSetDefinition.addColumn(
+        "C-femalesUnknownF",
+        "unknownF",
+        EptsReportUtils.map(txCurrIndicator, mappings),
+        this.getName(Gender.FEMALE, AgeRange.UNKNOWN)
+            + "="
+            + this.getName(Gender.FEMALE, AgeRange.UNKNOWN));
 
     dataSetDefinition.addColumn(
         "C-MSM",

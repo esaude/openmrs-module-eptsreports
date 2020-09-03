@@ -77,16 +77,22 @@ public class LastFilaProcessor {
 
     SqlQueryBuilder qb =
         new SqlQueryBuilder(
-            " select patient_id, last_levantamento, max(proximo_levantamento) from( select last_fila.patient_id, last_fila.last_levantamento, obs_proximo_levantamento.value_datetime proximo_levantamento from "
-                + "	(select p.patient_id, max(e.encounter_datetime) last_levantamento from patient p "
-                + "	inner join encounter e on e.patient_id = p.patient_id "
-                + "	where p.voided = 0 and e.voided = 0 and e.encounter_type = 18 "
-                + "	   and e.location_id =:location and e.encounter_datetime <=:endDate "
-                + "	   group by p.patient_id) last_fila "
-                + "	   inner join obs obs_proximo_levantamento on obs_proximo_levantamento.person_id = last_fila.patient_id "
-                + "	   and obs_proximo_levantamento.obs_datetime = last_fila.last_levantamento and "
-                + "	   obs_proximo_levantamento.concept_id = 5096 and obs_proximo_levantamento.voided = 0 "
-                + "	   order by last_fila.patient_id ) plastiFila group by patient_id ",
+            "select patient_id, last_levantamento, max(proximo_levantamento) from ( "
+                + "select pickup.patient_id, pickup.last_levantamento, obs_proximo_levantamento.value_datetime proximo_levantamento from (  "
+                + "select maxpkp.patient_id,e.encounter_datetime last_levantamento,e.encounter_id from  ( "
+                + "SELECT p.patient_id, MAX(e.encounter_datetime) last_levantamento FROM patient p   "
+                + "INNER JOIN encounter e ON e.patient_id = p.patient_id   "
+                + "WHERE p.voided = 0  AND e.voided = 0  AND e.encounter_type = 18  and e.location_id =:location  and e.encounter_datetime <=:endDate  "
+                + "GROUP BY p.patient_id   "
+                + ") maxpkp   "
+                + "inner join encounter e on e.patient_id=maxpkp.patient_id   "
+                + "where e.encounter_datetime=maxpkp.last_levantamento and  e.encounter_type=18 and e.location_id=:location and e.voided=0   "
+                + ") pickup   "
+                + "inner join obs obs_proximo_levantamento on obs_proximo_levantamento.person_id = pickup.patient_id  "
+                + "and obs_proximo_levantamento.concept_id = 5096  and obs_proximo_levantamento.voided = 0  and pickup.encounter_id=obs_proximo_levantamento.encounter_id  "
+                + "order by pickup.patient_id  "
+                + ") plastiFila  "
+                + "group by patient_id ",
             context.getParameterValues());
 
     return Context.getRegisteredComponents(EvaluationService.class)
