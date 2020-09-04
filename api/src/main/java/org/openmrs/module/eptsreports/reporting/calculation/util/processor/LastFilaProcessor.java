@@ -82,7 +82,7 @@ public class LastFilaProcessor {
                 + "select maxpkp.patient_id,e.encounter_datetime last_levantamento,e.encounter_id from  ( "
                 + "SELECT p.patient_id, MAX(e.encounter_datetime) last_levantamento FROM patient p   "
                 + "INNER JOIN encounter e ON e.patient_id = p.patient_id   "
-                + "WHERE p.voided = 0  AND e.voided = 0  AND e.encounter_type = 18  and e.location_id =:location  and e.encounter_datetime <=:endDate  "
+                + "WHERE p.voided = 0  AND e.voided = 0  AND e.encounter_type = 18  and e.location_id =:location  and date(e.encounter_datetime) <=:endDate  "
                 + "GROUP BY p.patient_id   "
                 + ") maxpkp   "
                 + "inner join encounter e on e.patient_id=maxpkp.patient_id   "
