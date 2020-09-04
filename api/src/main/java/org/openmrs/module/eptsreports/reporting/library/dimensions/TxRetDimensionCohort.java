@@ -48,7 +48,7 @@ public class TxRetDimensionCohort {
     dim.addCohortDefinition(
         "GRAVIDAS",
         EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(false),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     return dim;
   }

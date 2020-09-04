@@ -152,11 +152,10 @@ public class GenericCohortQueries {
   }
 
   /**
-   * Get patients states based on program, state and end of reporting period
+   * <b>Description:</b> Get patients states based on program, state and end of reporting period
    *
-   * @param program
-   * @param state
-   * @return
+   * @param
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsBasedOnPatientStates(int program, int state) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -458,9 +457,9 @@ public class GenericCohortQueries {
   }
 
   /**
-   * Get patients with any coded obs concept value_datetime not null before end date
+   * <b>Description:</b> Get patients with any coded obs before end date
    *
-   * @return String
+   * @return {@link String}
    */
   public static String getPatientsWithCodedObsValueDatetimeBeforeEndDate(
       int encounterType, int conceptId) {

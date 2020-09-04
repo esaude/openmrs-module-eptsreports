@@ -159,7 +159,7 @@ public class TXRetCohortQueries {
     cd.addSearch(
         "GRAVIDAS",
         EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(false),
             "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
     cd.addSearch(
         "LACTANTEPROGRAMA",
