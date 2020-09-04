@@ -113,7 +113,7 @@ public class EriCohortQueries {
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(false),
             "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
     cd.setCompositionString("initiatedART AND pregnant");
     return cd;
@@ -139,7 +139,7 @@ public class EriCohortQueries {
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
+            txNewCohortQueries.getTxNewBreastfeedingComposition(false),
             "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}"));
     cd.setCompositionString("initiatedART AND breastfeeding");
     return cd;
@@ -170,12 +170,12 @@ public class EriCohortQueries {
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(false),
             "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
+            txNewCohortQueries.getTxNewBreastfeedingComposition(false),
             "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}"));
     cd.setCompositionString("(initiatedART AND children) AND NOT (pregnant OR breastfeeding)");
     return cd;
@@ -206,12 +206,12 @@ public class EriCohortQueries {
     cd.addSearch(
         "pregnant",
         EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(false),
             "startDate=${cohortStartDate},endDate=${cohortEndDate},location=${location}"));
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
+            txNewCohortQueries.getTxNewBreastfeedingComposition(false),
             "onOrAfter=${cohortStartDate},onOrBefore=${cohortEndDate},location=${location}"));
     cd.setCompositionString("(initiatedART AND adults) AND NOT (pregnant OR breastfeeding)");
     return cd;

@@ -51,7 +51,7 @@ public class TxNewCohortQueriesTest extends DefinitionsTest {
   @Test
   public void getTxNewBreastfeedingCompositionShouldReturnBreastfeedingPatients()
       throws EvaluationException {
-    CohortDefinition cd = txNewCohortQueries.getTxNewBreastfeedingComposition();
+    CohortDefinition cd = txNewCohortQueries.getTxNewBreastfeedingComposition(false);
     Map<Parameter, Object> params = new HashMap<>();
     params.put(new Parameter("onOrAfter", "onOrAfter", Date.class), getStartDate());
     params.put(new Parameter("onOrBefore", "onOrBefore", Date.class), getEndDate());
@@ -64,7 +64,7 @@ public class TxNewCohortQueriesTest extends DefinitionsTest {
   @Test
   public void getPatientsPregnantEnrolledOnARTShouldReturnPregnantPatients()
       throws EvaluationException {
-    CohortDefinition cd = txNewCohortQueries.getPatientsPregnantEnrolledOnART();
+    CohortDefinition cd = txNewCohortQueries.getPatientsPregnantEnrolledOnART(false);
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd);
     assertThat(evaluatedCohort.size(), is(1));
     assertThat(evaluatedCohort.getMemberIds(), contains(574));
