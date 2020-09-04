@@ -20,9 +20,9 @@ import org.apache.commons.text.StringSubstitutor;
 public class ResumoMensalQueries {
 
   /**
-   * All patients with encounter type 53, and Pre-ART Start Date that is less than startDate
+   * <b>Description:</b> All patients who have Pre-ART Start Date that is less than startDate
    *
-   * @return String
+   * @return {@link String}
    */
   public static String getAllPatientsWithPreArtStartDateLessThanReportingStartDate(
       int encounterType, int conceptId) {
@@ -31,6 +31,11 @@ public class ResumoMensalQueries {
     return String.format(query, encounterType, conceptId);
   }
 
+  /**
+   * <b>Description:</b> Patients who initiated Pre-ART during current Month with conditions
+   *
+   * @return {@link String}
+   */
   public static String getPatientsWhoInitiatedPreArtDuringCurrentMonthWithConditions(
       int masterCardEncounterType,
       int preArtStartDateConceptId,
@@ -90,6 +95,12 @@ public class ResumoMensalQueries {
     return stringSubstitutor.replace(query);
   }
 
+  /**
+   * <b>Description:</b> Number of patients transferred from another health facility by end of
+   * previous month
+   *
+   * @return {@link String}
+   */
   public static String getPatientsTransferredFromAnotherHealthFacilityByEndOfPreviousMonth(
       int masterCardEncounter,
       int transferFromConcept,
@@ -141,7 +152,11 @@ public class ResumoMensalQueries {
     return sub.replace(query);
   }
 
-  /** Get transferred-in patients as specified in Resumo Mensal */
+  /**
+   * <b>Description:</b> Get transferred-in patients as specified in Resumo Mensal
+   *
+   * @return {@link String}
+   */
   public static String getTransferredIn(
       int mastercard,
       int transferFromOther,
@@ -213,14 +228,9 @@ public class ResumoMensalQueries {
   }
 
   /**
-   * Patient screened for TB
+   * <b>Description:</b>Number of Patients screened for TB
    *
-   * @param encounterType
-   * @param tbScreening
-   * @param yesConcept
-   * @param noConcept
-   * @param tbTreatment
-   * @return
+   * @return {@link String}
    */
   public static String getPatientsWithTBScreening(
       int adultoSeguimentoEncounterType,
@@ -277,10 +287,9 @@ public class ResumoMensalQueries {
   }
 
   /**
-   * Get patients with encounters within start and end date F1: Number of patients who had clinical
-   * appointment during the reporting month
+   * <b>Description:</b> Number of patients with encounters within start and end date F1
    *
-   * @return String
+   * @return {@link String}
    */
   public static String getPatientsWithGivenEncounterType(int encounterType) {
     String query =
@@ -298,9 +307,9 @@ public class ResumoMensalQueries {
   }
 
   /**
-   * Get patients with viral load suppression
+   * <b>Description:</b> Number of patients with viral load suppression
    *
-   * @return String
+   * @return {@link String}
    */
   public static String getPatientsHavingViralLoadSuppression(
       int viralLoadConcept, int encounterType) {
@@ -316,9 +325,9 @@ public class ResumoMensalQueries {
   }
 
   /**
-   * getPatientsWithCodedObsAndAnswers
+   * <b>Description:</b> Number of Patients With Coded Obs And Answers
    *
-   * @return String
+   * @return {@link String}
    */
   public static String getPatientsWithCodedObsAndAnswers(
       int encounterType, int questionConceptId, int answerConceptId) {
@@ -331,9 +340,9 @@ public class ResumoMensalQueries {
   }
 
   /**
-   * Get patients with viral load suppression
+   * <b>Description:</b> Number of patients with viral load suppression
    *
-   * @return String
+   * @return {@link String}
    */
   public static String getPatientsHavingViralLoadResults(int viralLoadConcept, int encounterType) {
     String query =
@@ -347,9 +356,9 @@ public class ResumoMensalQueries {
   }
 
   /**
-   * Get patients with any coded obs value
+   * <b>Description</b> Number of patients with any coded obs value
    *
-   * @return String
+   * @return {@link String}
    */
   public static String gePatientsWithCodedObs(int encounterType, int conceptId) {
     String query =
@@ -361,9 +370,9 @@ public class ResumoMensalQueries {
   }
 
   /**
-   * E1 exclusions
+   * <b>Description: E1</b> exclusion criteria
    *
-   * @return String
+   * @return {@link String}
    */
   public static String getE1ExclusionCriteria(
       int encounterType, int questionConceptId, int answerConceptId) {
@@ -391,12 +400,9 @@ public class ResumoMensalQueries {
   }
 
   /**
-   * E2 exclusions
+   * <b>Description: E2</b> exclusion criteria
    *
-   * @param viralLoadConcept
-   * @param encounterType
-   * @param qualitativeConcept
-   * @return String
+   * @return {@link String}
    */
   public static String getE2ExclusionCriteria(
       int viralLoadConcept, int encounterType, int qualitativeConcept) {
@@ -425,12 +431,9 @@ public class ResumoMensalQueries {
   }
 
   /**
-   * E3 exclusion
+   * <b>Description: E3</b> exclusion criteria
    *
-   * @param viralLoadConcept
-   * @param encounterType
-   * @param qualitativeConcept
-   * @return
+   * @return {@link String}
    */
   public static String getE3ExclusionCriteria(
       int viralLoadConcept, int adultoSeguimentoEncounterType, int qualitativeConcept) {
@@ -463,10 +466,10 @@ public class ResumoMensalQueries {
   }
 
   /**
-   * F3 exclusions
+   * <b>Description: F3</b> exclusion criteria
    *
    * @param encounterType
-   * @return
+   * @return {@link String}
    */
   public static String getF3Exclusion(int encounterType) {
     String query =
@@ -480,9 +483,9 @@ public class ResumoMensalQueries {
   }
 
   /**
-   * Patients with first clinical consultation 6 on the same Pre-ART Start date() Concept ID 23808
+   * <b>Description:</b> Patients with first clinical consultation 6 on the same Pre-ART Start date
    *
-   * @return String
+   * @return {@link String}
    */
   public static String getPatientsWithFirstClinicalConsultationOnTheSameDateAsPreArtStartDate(
       int mastercardEncounterType, int consultationEncounterType, int preArtStarConceptId) {
@@ -498,13 +501,9 @@ public class ResumoMensalQueries {
   }
 
   /**
-   * B7
+   * <b>Description:</b> Number of patients who abandoned ART by specified date
    *
-   * @param returnVisitDateForArvDrugConcept
-   * @param arvPharmaciaEncounterType
-   * @param artDatePickup
-   * @param masterCardDrugPickupEncounterType
-   * @return String
+   * @return {@link String}
    */
   public static String getNumberOfPatientsWhoAbandonedArtBySpecifiedDateB7(
       int returnVisitDateForArvDrugConcept,
@@ -591,9 +590,10 @@ public class ResumoMensalQueries {
   }
 
   /**
-   * Get all patients enrolled in PRE-ART program id 1, with date enrolled less than startDate
+   * <b>Description:</b> Get all patients enrolled in PRE-ART program id 1, with date enrolled less
+   * than startDate
    *
-   * @return String
+   * @return {@link String}
    */
   public static String getAllPatientsEnrolledInPreArtProgramWithDateEnrolledLessThanStartDate(
       int programId) {
@@ -615,9 +615,10 @@ public class ResumoMensalQueries {
   }
 
   /**
-   * Get all patients registered in encounterType 5 or 7, with date enrolled less than startDate
+   * <b>Description:</b> Number of patients registered in <b>encounterType 5 or 7</b>, with date
+   * enrolled less than startDate
    *
-   * @return String
+   * @return {@link String}
    */
   public static String
       getAllPatientsRegisteredInEncounterType5or7WithEncounterDatetimeLessThanStartDate(
@@ -640,6 +641,11 @@ public class ResumoMensalQueries {
     return sub.replace(query);
   }
 
+  /**
+   * <b>Description:</b> Number of patients registered as transferred in during the statistical year
+   *
+   * @return {@link String}
+   */
   public static String getPatientsRegisteredAsTransferredInDuringTheStatisticalYear(
       int mastercard,
       int transferFromOther,
