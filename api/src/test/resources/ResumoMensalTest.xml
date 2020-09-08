@@ -442,6 +442,8 @@
     
     <encounter encounter_id="33683" encounter_type="53" patient_id="1004" encounter_datetime="2019-09-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="d012e5e6-06ff-4a1c-9896-7ad705f0e4e1" location_id="21" />
 
+    <encounter encounter_id="44683" encounter_type="52" patient_id="1004" encounter_datetime="2019-09-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="d012e5e6-06ff-4a1c-9897-8ad705f0e4e1" location_id="21" />
+
 	<encounter encounter_id="32682" encounter_type="53" patient_id="1010" encounter_datetime="2019-09-25 00:00:00" creator="1" date_created="2019-09-25 00:00:00" voided="0" uuid="d012e4e6-05ff-4a1c-8896-7ad705f0e4e1" location_id="21" />
 
 	<encounter encounter_id="32672" encounter_type="6" patient_id="2" encounter_datetime="2013-06-17 00:00:00" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="d012e4e6-05ff-4a1c-8896-7fd705f0e4e1" location_id="1" />
@@ -482,6 +484,8 @@
 
 
 	<obs obs_id="274088" person_id="6" concept_id="6263" encounter_id="32673" obs_datetime="2013-06-17 00:00:00" value_coded="6260" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="28297084-dd14-4a4c-9e85-4b0bf149795b" location_id="1" />
+
+	<obs obs_id="294088" person_id="1004" concept_id="23866" encounter_id="44683" obs_datetime="2019-09-27 00:00:00" value_datetime="2019-10-19 12:55:48" creator="1" date_created="2019-10-19 12:55:48" voided="0" uuid="28297084-dd14-4a4c-9e96-5b0bf149795b" location_id="1" />
 
 	<obs obs_id="273788" person_id="8" concept_id="6264" encounter_id="32643" obs_datetime="2013-05-03 00:00:00" value_coded="6261" creator="1" date_created="2013-06-19 10:03:01" voided="0" uuid="c0a0d917-ea43-443c-8924-31fbd88f2410" location_id="1" />
 

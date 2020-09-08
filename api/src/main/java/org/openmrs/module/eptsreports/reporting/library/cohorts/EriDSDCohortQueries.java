@@ -18,7 +18,6 @@ import org.openmrs.module.eptsreports.reporting.calculation.dsd.NextAndPrevDates
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.OnArtForAtleastXmonthsCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.DsdQueries;
-import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
@@ -148,7 +147,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-          txNewCohortQueries.getTxNewBreastfeedingComposition(true),
+            txNewCohortQueries.getTxNewBreastfeedingComposition(true),
             "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "pregnant",
