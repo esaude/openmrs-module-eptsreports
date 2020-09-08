@@ -86,7 +86,7 @@ public class LastFilaProcessor {
                 + "GROUP BY p.patient_id   "
                 + ") maxpkp   "
                 + "inner join encounter e on e.patient_id=maxpkp.patient_id   "
-                + "where e.encounter_datetime=maxpkp.last_levantamento and  e.encounter_type=18 and e.location_id=:location and e.voided=0   "
+                + "where date(e.encounter_datetime)=maxpkp.last_levantamento and  e.encounter_type=18 and e.location_id=:location and e.voided=0   "
                 + ") pickup   "
                 + "inner join obs obs_proximo_levantamento on obs_proximo_levantamento.person_id = pickup.patient_id  "
                 + "and obs_proximo_levantamento.concept_id = 5096  and obs_proximo_levantamento.voided = 0  and pickup.encounter_id=obs_proximo_levantamento.encounter_id  "
