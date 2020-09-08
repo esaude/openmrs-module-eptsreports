@@ -15,10 +15,10 @@
             creator="1" date_created="2005-01-01 00:00:00.0" voided="false" death_date="2019-09-30"
             uuid="8b6657b8-57dc-11ea-8247-a0a4c5d1c75c"/>
 
-
 			<person person_id="1021" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="true"
             creator="1" date_created="2005-01-01 00:00:00.0" voided="false" death_date="2019-09-25"
             uuid="bb9df255-57dc-11ea-8247-a0a4c5d1c75c"/>
+
 
 
 			<person person_id="1022" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
@@ -772,6 +772,32 @@
 	<obs obs_id="166599" person_id="15236" concept_id="6122" value_coded="1256" encounter_id="354899" 
 		obs_datetime="2019-12-09 00:00:00" location_id="21" comments="24 de julho" creator="1"
 		 date_created="2019-12-09 10:00:33" voided="0" uuid="91bfa633-d18c-11ea-9518-0242ac120002"/>
-		
+
+	<!--PatientsWithTBScreening-->
+	<person person_id="23264" gender="F" birthdate="1988-10-21" birthdate_estimated="0" dead="false"
+            creator="1" date_created="2017-07-10 13:18:02" voided="false"
+            uuid="80396e48-1654-4273-b9eb-c554f771ace1"/>
+
+	<patient patient_id="23264" creator="1" date_created="2017-07-10 13:18:02" changed_by="1" date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+    <concept concept_id="1268" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2005-02-22 20:07:06" changed_by="1" date_changed="2016-10-31 17:09:42" uuid="e1d9fbda-1d5f-11e0-b929-000c29ad1d07" />
+
+    <global_property property="eptsreports.tuberculosisTreatmentPlanConceptUuid" property_value="e1d9fbda-1d5f-11e0-b929-000c29ad1d07" description="UUID for the TRATAMENTO DE TUBERCULOSE concept" uuid="78a16b62-05fd-4b4e-83e0-8a3659c69981" />
+
+	<encounter encounter_id="403205" encounter_type="6" patient_id="23264" location_id="21"
+			   encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+			   uuid="f18bc002-2d57-418b-b6f4-8022c4f64bdf" />
+
+	<obs obs_id="9000006" person_id="23264" concept_id="23758" encounter_id="403205" obs_datetime="2019-12-09 00:00:00"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	uuid="0e6ffe7e-d223-11ea-acaa-8fdc7c2a8a10" location_id="21" value_coded="1065"/>
+
+	<obs obs_id="9000007" person_id="23264" concept_id="23758" encounter_id="403205" obs_datetime="2019-12-09 00:00:00"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	uuid="0e6ffe7e-d223-11ea-acaa-8fdc7c2a8a11" location_id="21" value_coded="1066"/>
+
+	<obs obs_id="9000008" person_id="23264" concept_id="1268" encounter_id="403205" obs_datetime="2019-12-09 00:00:00"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	uuid="0e6ffe7e-d223-11ea-acaa-8fdc7c2a8a12" location_id="21"/>
 
 </dataset>
