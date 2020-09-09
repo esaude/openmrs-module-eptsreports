@@ -2,9 +2,9 @@ package org.openmrs.module.eptsreports.reporting.calculation.txcurr;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
-import org.openmrs.module.eptsreports.reporting.calculation.txcurr.TxCurrPatientsOnArtOnArvDispenseIntervalsCalculation.DisaggregationSourceTypes;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.springframework.stereotype.Component;
 
