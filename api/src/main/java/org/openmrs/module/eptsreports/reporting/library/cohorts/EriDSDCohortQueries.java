@@ -18,7 +18,6 @@ import org.openmrs.module.eptsreports.reporting.calculation.dsd.NextAndPrevDates
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.OnArtForAtleastXmonthsCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.DsdQueries;
-import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
@@ -148,7 +147,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-          txNewCohortQueries.getTxNewBreastfeedingComposition(true),
+            txNewCohortQueries.getTxNewBreastfeedingComposition(true),
             "onOrAfter=${endDate-18m},onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "pregnant",
@@ -438,7 +437,7 @@ public class EriDSDCohortQueries {
         EptsReportUtils.map(
             hivCohortQueries.getPatientsViralLoadWithin12Months(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.setCompositionString("A AND (B OR (NOT patientsWithViralLoad AND C))  AND NOT F");
+    cd.setCompositionString("A AND (B OR (C AND NOT patientsWithViralLoad)) AND NOT F");
 
     return cd;
   }
@@ -511,7 +510,8 @@ public class EriDSDCohortQueries {
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMisauLaboratorioEncounterType(),
-                    hivMetadata.getFsrEncounterType())),
+                    hivMetadata.getFsrEncounterType(),
+                    hivMetadata.getMasterCardEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "Cd4Lab",
@@ -527,7 +527,8 @@ public class EriDSDCohortQueries {
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMisauLaboratorioEncounterType(),
-                    hivMetadata.getFsrEncounterType())),
+                    hivMetadata.getFsrEncounterType(),
+                    hivMetadata.getMasterCardEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "Cd4Percent",
@@ -543,7 +544,8 @@ public class EriDSDCohortQueries {
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMisauLaboratorioEncounterType(),
-                    hivMetadata.getFsrEncounterType())),
+                    hivMetadata.getFsrEncounterType(),
+                    hivMetadata.getMasterCardEncounterType())),
             "onOrAfter=${endDate-12m},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "Age",

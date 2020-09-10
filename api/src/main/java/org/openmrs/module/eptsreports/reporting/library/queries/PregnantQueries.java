@@ -142,14 +142,15 @@ public class PregnantQueries {
             + ","
             + adultSegEncounter
             + ") ";
-            if (dsd == true) {
-              query += "   AND o.value_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 18 MONTH) AND :endDate ";
-              
-            } 
-            else {
-              query += "     AND o.value_datetime BETWEEN :startDate AND :endDate ";
-            }
-            query += "       AND e.location_id=:location AND pe.gender='F' "
+    if (dsd == true) {
+      query +=
+          "   AND o.value_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 18 MONTH) AND :endDate ";
+
+    } else {
+      query += "     AND o.value_datetime BETWEEN :startDate AND :endDate ";
+    }
+    query +=
+        "       AND e.location_id=:location AND pe.gender='F' "
             + "      GROUP BY p.patient_id "
             + "      UNION "
             + "     SELECT     p.patient_id, MAX(e.encounter_datetime) AS last_date "
@@ -166,13 +167,14 @@ public class PregnantQueries {
             + ","
             + adultSegEncounter
             + ") ";
-            if (dsd == true) {
-              query +=  "           AND e.encounter_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 18 MONTH) AND :endDate";
-            }
-            else {
-              query +=  "      AND e.encounter_datetime BETWEEN :startDate AND :endDate";
-          }
-              query += " AND e.location_id=:location AND pe.gender='F' "
+    if (dsd == true) {
+      query +=
+          "           AND e.encounter_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 18 MONTH) AND :endDate";
+    } else {
+      query += "      AND e.encounter_datetime BETWEEN :startDate AND :endDate";
+    }
+    query +=
+        " AND e.location_id=:location AND pe.gender='F' "
             + "      GROUP BY p.patient_id "
             + "      UNION "
             + "      SELECT     p.patient_id, MAX(e.encounter_datetime) AS last_date "
@@ -189,13 +191,14 @@ public class PregnantQueries {
             + ","
             + adultSegEncounter
             + ")";
-            if (dsd == true) {
-              query += "      AND e.encounter_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 18 MONTH) AND :endDate ";
-            }
-            else {
-              query += "      AND e.encounter_datetime BETWEEN :startDate AND :endDate ";
-            }
-            query += "  AND e.location_id=:location AND pe.gender='F' GROUP BY p.patient_id "
+    if (dsd == true) {
+      query +=
+          "      AND e.encounter_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 18 MONTH) AND :endDate ";
+    } else {
+      query += "      AND e.encounter_datetime BETWEEN :startDate AND :endDate ";
+    }
+    query +=
+        "  AND e.location_id=:location AND pe.gender='F' GROUP BY p.patient_id "
             + "      UNION "
             + "      SELECT pp.patient_id, MAX(ps.start_date) AS last_date "
             + "      FROM patient_program pp "
@@ -206,13 +209,13 @@ public class PregnantQueries {
             + "      AND ps.state= "
             + gaveBirthPatientState
             + "      AND pp.voided=0 AND ";
-            if (dsd == true) {
-              query += " ps.start_date BETWEEN DATE_SUB(:endDate, INTERVAL 18 MONTH) AND :endDate ";
-            }
-            else {
-              query += " ps.start_date BETWEEN :startDate AND :endDate ";
-            }
-            query += " AND pp.location_id=:location AND pe.gender='F' "
+    if (dsd == true) {
+      query += " ps.start_date BETWEEN DATE_SUB(:endDate, INTERVAL 18 MONTH) AND :endDate ";
+    } else {
+      query += " ps.start_date BETWEEN :startDate AND :endDate ";
+    }
+    query +=
+        " AND pp.location_id=:location AND pe.gender='F' "
             + "      GROUP BY pp.patient_id "
             + "     UNION "
             + "      SELECT p.patient_id, MAX(hist.value_datetime) AS last_date "
@@ -230,13 +233,14 @@ public class PregnantQueries {
             + "      AND hist.concept_id= "
             + historicalARTStartDate
             + "      AND pe.gender='F' AND hist.value_datetime IS NOT NULL ";
-            if (dsd == true) {
-              query += "      AND hist.value_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 18 MONTH) AND :endDate ";
-            }
-            else {
-            query += "      AND hist.value_datetime BETWEEN :startDate AND :endDate ";
-            }
-            query += "      GROUP BY p.patient_id "
+    if (dsd == true) {
+      query +=
+          "      AND hist.value_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 18 MONTH) AND :endDate ";
+    } else {
+      query += "      AND hist.value_datetime BETWEEN :startDate AND :endDate ";
+    }
+    query +=
+        "      GROUP BY p.patient_id "
             + "      ) AS breastfeeding "
             + "      GROUP BY patient_id) max_breastfeeding "
             + "     ON max_pregnant.patient_id = max_breastfeeding.patient_id "
@@ -357,13 +361,14 @@ public class PregnantQueries {
             + adultInitailEncounter
             + ","
             + adultSegEncounter;
-            if (dsd == true) {
-              query += ") AND e.encounter_datetime between DATE_SUB(:onOrBefore, INTERVAL 9 MONTH) AND :onOrBefore";
-            }
-            else {
-              query += ") AND e.encounter_datetime between :onOrAfter AND :onOrBefore";
-            }
-            query += "  AND e.location_id= :location AND pe.gender='F' GROUP BY p.patient_id "
+    if (dsd == true) {
+      query +=
+          ") AND e.encounter_datetime between DATE_SUB(:onOrBefore, INTERVAL 9 MONTH) AND :onOrBefore";
+    } else {
+      query += ") AND e.encounter_datetime between :onOrAfter AND :onOrBefore";
+    }
+    query +=
+        "  AND e.location_id= :location AND pe.gender='F' GROUP BY p.patient_id "
             + " UNION "
             + " select p.patient_id, MAX(historical_date.value_datetime) as pregnancy_date FROM patient p "
             + " INNER JOIN person pe ON p.patient_id=pe.person_id "
@@ -378,13 +383,14 @@ public class PregnantQueries {
             + historicalARTStartDate
             + " AND e.encounter_type = "
             + fichaResumo;
-            if (dsd == true) {
-              query += "      AND historical_date.value_datetime between DATE_SUB(:onOrBefore, INTERVAL 9 MONTH) AND :onOrBefore";
-            }
-            else {
-              query += "      AND historical_date.value_datetime between :onOrAfter AND :onOrBefore";
-            }
-            query += "  AND e.location_id= :location AND pe.gender='F' GROUP BY p.patient_id "
+    if (dsd == true) {
+      query +=
+          "      AND historical_date.value_datetime between DATE_SUB(:onOrBefore, INTERVAL 9 MONTH) AND :onOrBefore";
+    } else {
+      query += "      AND historical_date.value_datetime between :onOrAfter AND :onOrBefore";
+    }
+    query +=
+        "  AND e.location_id= :location AND pe.gender='F' GROUP BY p.patient_id "
             + " UNION "
             + " Select p.patient_id,  MAX(e.encounter_datetime) as pregnancy_date "
             + " FROM patient p "
@@ -398,13 +404,14 @@ public class PregnantQueries {
             + adultInitailEncounter
             + ","
             + adultSegEncounter;
-            if (dsd == true) {
-              query +=  " ) AND e.encounter_datetime between DATE_SUB(:onOrBefore, INTERVAL 9 MONTH) AND :onOrBefore ";
-            }
-            else {
-              query +=  " ) AND e.encounter_datetime between :onOrAfter AND :onOrBefore ";
-            }
-            query +=  "     AND e.location_id= :location  AND pe.gender='F' GROUP BY p.patient_id "
+    if (dsd == true) {
+      query +=
+          " ) AND e.encounter_datetime between DATE_SUB(:onOrBefore, INTERVAL 9 MONTH) AND :onOrBefore ";
+    } else {
+      query += " ) AND e.encounter_datetime between :onOrAfter AND :onOrBefore ";
+    }
+    query +=
+        "     AND e.location_id= :location  AND pe.gender='F' GROUP BY p.patient_id "
             + " UNION "
             + " Select p.patient_id,  MAX(e.encounter_datetime) as pregnancy_date "
             + " FROM patient p "
@@ -418,13 +425,14 @@ public class PregnantQueries {
             + adultInitailEncounter
             + ","
             + adultSegEncounter;
-            if (dsd == true) {
-              query += " ) AND e.encounter_datetime between DATE_SUB(:onOrBefore, INTERVAL 9 MONTH) AND :onOrBefore ";
-            }
-            else {
-              query += " ) AND e.encounter_datetime between :onOrAfter AND :onOrBefore ";
-            }
-            query += " AND e.location_id= :location AND pe.gender='F' GROUP BY p.patient_id "
+    if (dsd == true) {
+      query +=
+          " ) AND e.encounter_datetime between DATE_SUB(:onOrBefore, INTERVAL 9 MONTH) AND :onOrBefore ";
+    } else {
+      query += " ) AND e.encounter_datetime between :onOrAfter AND :onOrBefore ";
+    }
+    query +=
+        " AND e.location_id= :location AND pe.gender='F' GROUP BY p.patient_id "
             + " UNION "
             + " Select p.patient_id, MAX(e.encounter_datetime) as pregnancy_date "
             + " FROM patient p "
@@ -440,26 +448,28 @@ public class PregnantQueries {
             + adultInitailEncounter
             + ","
             + adultSegEncounter;
-            if (dsd == true) {
-              query += " ) AND e.encounter_datetime BETWEEN DATE_SUB(:onOrBefore, INTERVAL 9 MONTH) AND :onOrBefore ";
-            }
-            else {
-              query += " ) AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore ";
-            }
-            query += " AND e.location_id= :location AND pe.gender='F' GROUP BY p.patient_id "
+    if (dsd == true) {
+      query +=
+          " ) AND e.encounter_datetime BETWEEN DATE_SUB(:onOrBefore, INTERVAL 9 MONTH) AND :onOrBefore ";
+    } else {
+      query += " ) AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore ";
+    }
+    query +=
+        " AND e.location_id= :location AND pe.gender='F' GROUP BY p.patient_id "
             + " UNION "
             + " SELECT pp.patient_id,  MAX(pp.date_enrolled) AS pregnancy_date "
             + " FROM patient_program pp "
             + " INNER JOIN person pe ON pp.patient_id=pe.person_id "
             + " WHERE pp.program_id=  "
             + etvProgram;
-            if (dsd == true) {
-              query += " AND pp.voided=0 AND pp.date_enrolled between  DATE_SUB(:onOrBefore, INTERVAL 9 MONTH) AND :onOrBefore ";
-            }
-            else {
-              query += " AND pp.voided=0 AND pp.date_enrolled between :onOrAfter AND :onOrBefore ";
-            }
-            query += "    AND pp.location_id= :location AND pe.gender='F' GROUP BY pp.patient_id "
+    if (dsd == true) {
+      query +=
+          " AND pp.voided=0 AND pp.date_enrolled between  DATE_SUB(:onOrBefore, INTERVAL 9 MONTH) AND :onOrBefore ";
+    } else {
+      query += " AND pp.voided=0 AND pp.date_enrolled between :onOrAfter AND :onOrBefore ";
+    }
+    query +=
+        "    AND pp.location_id= :location AND pe.gender='F' GROUP BY pp.patient_id "
             + " UNION "
             + " SELECT p.patient_id,  MAX(o.value_datetime) as pregnancy_date  FROM patient p "
             + " INNER JOIN person pe ON p.patient_id=pe.person_id "
@@ -469,13 +479,14 @@ public class PregnantQueries {
             + lastMenstrualPeriod
             + " AND e.encounter_type =  "
             + adultSegEncounter;
-            if (dsd == true) {
-            query += " AND o.value_datetime BETWEEN DATE_SUB(:onOrBefore, INTERVAL 9 MONTH) AND :onOrBefore ";
-            }
-            else {
-              query += " AND o.value_datetime BETWEEN :onOrAfter AND :onOrBefore  ";
-            }
-            query += " AND pe.gender='F' AND :onOrBefore GROUP BY p.patient_id) as pregnancy  "
+    if (dsd == true) {
+      query +=
+          " AND o.value_datetime BETWEEN DATE_SUB(:onOrBefore, INTERVAL 9 MONTH) AND :onOrBefore ";
+    } else {
+      query += " AND o.value_datetime BETWEEN :onOrAfter AND :onOrBefore  ";
+    }
+    query +=
+        " AND pe.gender='F' AND :onOrBefore GROUP BY p.patient_id) as pregnancy  "
             + " GROUP BY pregnancy.patient_id) AS pregnant_table "
             + " ON pregnant_table.patient_id = breastfeeding.patient_id "
             + " WHERE (breastfeeding.last_date > pregnant_table.pregnancy_date "

@@ -1189,6 +1189,7 @@ public class ResumoMensalCohortQueries {
    * <b>Description:</b> Number of Patients transferred from other HF = YES
    *
    * @return {@link CohortDefinition}
+   * TODO : method is never called
    */
   private CohortDefinition getPatientsWithTransferFromOtherHF() {
     EncounterWithCodedObsCohortDefinition cd = new EncounterWithCodedObsCohortDefinition();
@@ -1243,6 +1244,8 @@ public class ResumoMensalCohortQueries {
    * <b>Description:</b> Additional exclusion criteria for <b>C2</b>
    *
    * @return {@link CohortDefinition}
+   *
+   * TODO : method is never called
    */
   public CohortDefinition getAdditionalExclusionCriteriaForC2() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
