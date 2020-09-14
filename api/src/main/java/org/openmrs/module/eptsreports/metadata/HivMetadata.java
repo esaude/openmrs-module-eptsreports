@@ -2776,7 +2776,15 @@ public class HivMetadata extends ProgramsMetadata {
     return getProgramWorkflowState(artProgramUuid, "2", "PATIENT HAS DIED");
   }
 
-  // TODO: Missing program_workflow_state_id
+  /**
+   * <b>program_workflow_state_id = 27 </b>
+   *
+   * <p><b>Name:</b> GAVE BIRTH
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link ProgramWorkflowState}
+   */
   public ProgramWorkflowState getPatientGaveBirthWorkflowState() {
     String ptvProgramUuid =
         Context.getAdministrationService().getGlobalProperty(gpPtvEtvProgramUuid);
