@@ -804,4 +804,69 @@
 	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
 	uuid="0e6ffe7e-d223-11ea-acaa-8fdc7c2a8a12" location_id="21"/>
 
+	<!-- getNumberOfActivePatientsInArtAtTheEndOfTheCurrentMonthHavingVlTestResults-->
+	 <concept concept_id="856" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2005-02-22 20:07:06" changed_by="1" date_changed="2016-10-31 17:09:42" uuid="e1d6247e-1d5f-11e0-b929-000c29ad1d07" />
+	 <concept concept_id="1305" retired="0" datatype_id="2" class_id="1" is_set="0" creator="1" date_created="2005-02-22 20:07:06" changed_by="1" date_changed="2016-10-31 17:09:42" uuid="e1da2704-1d5f-11e0-b929-000c29ad1d07" />
+
+    <global_property property="eptsreports.hivViralLoadConceptUuid" property_value="e1d6247e-1d5f-11e0-b929-000c29ad1d07" description="UUID for HIV VIRAL LOAD concept" uuid="25a16b62-05fd-4b4e-83e0-8a3659c69981" />
+    <global_property property="eptsreports.viralLoadQualitativeConceptUuid" property_value="e1da2704-1d5f-11e0-b929-000c29ad1d07" description="UUID for HIV VIRAL LOAD QUALITATIVE concept" uuid="28a16b62-05fd-4b4e-83e0-8a3659c69981" />
+
+	<person person_id="25000" gender="F" birthdate="2000-10-06" birthdate_estimated="false" dead="false" creator="1"
+			date_created="2000-10-06 09:30:10" voided="false" uuid="75d5cf82-ca66-4eb1-b217-9808fdc97819"
+			deathdate_estimated="false"/>
+
+	<patient patient_id="25000" creator="1" date_created="2019-02-06 09:56:39" voided="false"/>
+
+	<encounter encounter_id="2500012" encounter_type="6" patient_id="25000" location_id="21"
+			   encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+			   uuid="51eebe5e-109a-47e7-9553-1ba2799c799k" />
+	
+	<obs obs_id="9316975" person_id="25000" concept_id="1305" encounter_id="2500012" obs_datetime="2019-12-09 00:00:00"
+		location_id="21" comments="24 de julho" creator="1"
+		date_created="2019-12-09 10:00:33" voided="0" uuid="7f9bf9a4-165b-4b52-8f91-9eeac6fca4f8"/>
+
+	<!-- getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1 -->
+	<encounter encounter_id="2500013" encounter_type="6" patient_id="25000" location_id="21"
+		encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+		uuid="71eebe5e-109a-47e7-9553-1ba2799c799k" />
+
+	<!-- getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthAndScreenedForTbF2 -->
+	<encounter encounter_id="2500014" encounter_type="6" patient_id="25000" location_id="21"
+		encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+		uuid="71eebe5e-109a-47e7-9553-1ba2799c799p" />
+
+	<obs obs_id="1700000" person_id="25000" concept_id="23758" encounter_id="2500014" obs_datetime="2019-12-09 00:00:00"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	uuid="7e6ffe7e-d223-11ea-acaa-8fdc7c2a8a10" location_id="21" value_coded="1065"/>
+
+	<obs obs_id="1700001" person_id="25000" concept_id="23758" encounter_id="2500014" obs_datetime="2019-12-09 00:00:00"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	uuid="7e6ffe7e-d223-11ea-acaa-8fdc7c2a8a11" location_id="21" value_coded="1066"/>
+
+	<obs obs_id="1700002" person_id="25000" concept_id="1268" encounter_id="2500014" obs_datetime="2019-12-09 00:00:00"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	uuid="8e6ffe7e-d223-11ea-acaa-8fdc7c2a8a12" location_id="21"/>
+
+	<!-- getPatientsRegisteredAsTransferredInDuringTheStatisticalYear -->
+	<encounter encounter_id="2500015" encounter_type="53" patient_id="25000" location_id="21"
+		encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+		uuid="72eebe5e-109a-47e7-9553-1ba2799c799p" />
+
+	<obs obs_id="1700003" person_id="25000" concept_id="1369" encounter_id="2500015" obs_datetime="2019-12-09 00:00:00"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	uuid="8e6ffe7e-d223-11ea-acaa-8fdc7c2a8a1p" location_id="21" value_coded="1065" />
+
+	<obs obs_id="1700004" person_id="25000" concept_id="23866" encounter_id="2500015" obs_datetime="2019-12-09 00:00:00"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+		uuid="7e6ffe7e-d223-11ea-acaa-8fdc7c2a8a70" location_id="21" value_coded="6276" />
+
+	<obs obs_id="1700005" person_id="25000" concept_id="23891" encounter_id="2500015" obs_datetime="2019-12-09 00:00:00"
+		creator="1" date_created="2019-12-09 00:00:00" voided="0"
+		uuid="7e6ffe7e-d223-11ea-acaa-8fdc7c2a8c70" location_id="21" value_coded="6276" />
+
+	<!-- getExclusionForF3 -->	
+	<encounter encounter_id="2500015" encounter_type="6" patient_id="25000" location_id="21"
+		encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+		uuid="71eebe5e-109a-47e7-9553-1ba2799c769p" />	
+
 </dataset>
