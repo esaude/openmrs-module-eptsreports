@@ -30,7 +30,40 @@ public class CommonCohortQueries {
     this.tbMetadata = tbMetadata;
   }
 
-  /** 9. Patients on TB Treatment */
+  /**
+   * <b>Description:</b> Number of patients who are on TB treatment
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * <p>Patients who in patient clinical record for ART in follow-up, adults and children
+   * <b>(encounterType_id = 6 or 9)</b> have a TB Start Date <b>((obs concept_id = 1113)</b> >
+   * (reporting_end_date - 6 months) and <= reporting_end_date)
+   *
+   * <p>Have TB treatment End Date <b>((concept_id = 6120)</b> null or > reporting_end_date)
+   *
+   * <p>Enrolled in TB program <b>(program_id = 5 and patient_state_id =6269)</b>, with Start_date
+   * >= (reporting end date - 6 months) and <= reporting end date and endDate is null or is >
+   * reporting end date
+   *
+   * <p>Active TB <b>(concept_id = 23761)</b> value_coded "Yes <b>(concept_id = 1065)</b>" or
+   * treatment plan in ficha clinica MasterCard and encounter_datetime between reporting_end_date
+   *
+   * <p>Marked LAST TB Treatment Plan <b>(concept_id = 1268)</b> with valued_coded "start Drugs"
+   * <b>(concept_id = 1256)</b> or continue regimen (concept_id = 1258)</b> and LAST Date <b>(obs
+   * datetime)>= (reporting_end_date -6 months) and <= reporting_end_date</b>
+   *
+   * <p>Pulmonary TB <b>(obs concept_id = 42)</b> with value_coded "Yes" in ficha resumo -
+   * mastercard <b>(encounterType_id = 53)</b> and <b>(obs_datetime) >=(reporting_end_date - 6
+   * monts) and < = reporting_end_date
+   *
+   * <p></b>
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getPatientsOnTbTreatment() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("patientsOnTbTreatment");

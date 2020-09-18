@@ -7,19 +7,9 @@ import org.apache.commons.text.StringSubstitutor;
 public class CommonQueries {
 
   /**
-   * Patients on TB Treatment
+   * <b>Description:</b> Number of patients on TB Treatment
    *
-   * @param adultoSeguimentoEncounterTypeId
-   * @param arvPediatriaSeguimentoEncounterTypeId
-   * @param tbStartDateConceptId
-   * @param tbEndDateConceptId
-   * @param tbProgramId
-   * @param patientStateId
-   * @param activeTBConceptId
-   * @param yesConceptId
-   * @param tbTreatmentPlanConceptId
-   * @param startDrugsConceptId
-   * @param continueRegimenConceptId
+   * @return {@link String}
    */
   public static String getPatientsOnTbTreatmentQuery(
       int adultoSeguimentoEncounterTypeId,

@@ -80,10 +80,10 @@ public class HivCohortQueries {
   }
 
   /**
-   * Number of adult and pediatric ART patients with a viral load result documented in the patient
-   * medical record and/ or laboratory records in the past 12 months.
+   * <b>Description:</b> Number of adult and pediatric ART patients with a viral load result
+   * documented in the patient medical record and/ or laboratory records in the past 12 months.
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   @DocumentedDefinition(value = "viralLoadWithin12Months")
   public CohortDefinition getPatientsViralLoadWithin12Months() {

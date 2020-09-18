@@ -43,11 +43,19 @@ public class EriDSDCohortQueries {
   @Autowired private HivMetadata hivMetadata;
   @Autowired private CommonMetadata commonMetadata;
 
-  /** D1 - Number of active, stable, patients on ART. Combinantion of Criteria 1,2,3,4,5 */
+  /**
+   * <b>Name: D1</b>
+   *
+   * <p><b>Description:</b> Number of active patients on ART Eligible for DSD”
+   *
+   * <p><b>NOTE:</b> Excluding patients registered as pregnant, breastfeeding, in TB Treatment and
+   * were ever on Sarcoma Karposi
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getD1() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName(
-        "D1 - Number of active, stable, patients on ART. Combinantion of Criteria 1,2,3,4,5");
+    cd.setName("D1 - Number of active, stable, patients on ART. Combination of Criteria 1,2,3,4,5");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -81,7 +89,12 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  /** D1 - Patients who are Non-pregnant and Non-Breastfeeding */
+  /**
+   * <b>Description:</b> Active and stable Patients who are Non-Pregnant and Non-Breastfeeding for
+   * <b>D1</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingD1() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
@@ -110,7 +123,13 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  /** D2 - Number of active patients on ART Not Eligible for DSD D1 */
+  /**
+   * <b>Name: D2</b>
+   *
+   * <p><b>Description:</b> Number of active patients on ART Not Eligible for <b>D1</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getD2() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
@@ -136,6 +155,11 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Patients who are Non-Pregnant and Non-Breastfeeding for <b>D2</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getPatientsWhoAreNotPregnantAndNotBreastfeedingD2() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
@@ -165,8 +189,12 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * N1 - Number of active on ART whose next ART pick-up is schedule for 83-97 days after the date
-   * of their last ART drug pick-up (Fluxo Rápido)
+   * <b>Name: N1</b>
+   *
+   * <p><b>Description:</b> Number of active on ART whose next ART pick-up is schedule for 83-97
+   * days after the date of their last ART drug pick-up (Fluxo Rápido)
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getN1() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -199,8 +227,12 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * N2 - Number of active patients on ART whose next clinical consultation is scheduled 175-190
-   * days after the date of the last clinical consultation
+   * <b>Name: N2</b>
+   *
+   * <p><b>Description:</b> Number of active patients on ART whose next clinical consultation is
+   * scheduled 175-190 days after the date of the last clinical consultation
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getN2() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -231,8 +263,12 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * N3 - Number of active patients on ART that are participating in GAAC at the end of the month
-   * prior to month of results submission deadline.
+   * <b>Name: N3</b>
+   *
+   * <p><b>Description:</b> Number of active patients on ART that are participating in <b>GAAC</b>
+   * at the end of the month prior to month of results submission deadline.
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getN3() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -256,10 +292,17 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  /** N4 - Active patients on ART who are in AF */
+  /**
+   * <b>Name: N4</b>
+   *
+   * <p><b>Description:</b> Number of active patients on ART who are in <b>AF</b> (Abordagem
+   * Familiar)
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getN4() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("n4 - Active patients on ART  who are in AF");
+    cd.setName("N4 - Active patients on ART  who are in AF");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -268,7 +311,13 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  /** N5 - Number of active patients on ART who are in CA */
+  /**
+   * <b>Name: N5</b>
+   *
+   * <p><b>Description:</b> Number of active patients on ART who are in <b>CA</b> (Clubes de Adesao)
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getN5() {
     CodedObsCohortDefinition cd1 = new CodedObsCohortDefinition();
     cd1.setName("N5 - Number of active patients on ART who are in CA");
@@ -284,7 +333,14 @@ public class EriDSDCohortQueries {
         cd1, "onOrBefore", "endDate", "locationList", "location");
   }
 
-  /** N7 - Number of active patients on ART who are in DC */
+  /**
+   * <b>Name: N7</b>
+   *
+   * <p><b>Description:</b> Number of active patients on ART who are in <b>DC</b> (Dispensa
+   * Comunitaria)
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getN7() {
     CodedObsCohortDefinition cd1 = new CodedObsCohortDefinition();
     cd1.setName("N7 - Active patients in ART marked in last DC as start or continue regimen");
@@ -300,7 +356,14 @@ public class EriDSDCohortQueries {
         cd1, "endDate", "onOrBefore", "location", "locationList");
   }
 
-  /** N8 - Number of active patients on ART who participate in at least one DSD model */
+  /**
+   * <b>Name: N8</b>
+   *
+   * <p><b>Description:</b> Number of active patients on ART who participate in at least one DSD
+   * model
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getN8() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("participatingInDsdModel");
@@ -318,7 +381,14 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  /** N9 - Number of active patients on ART who are on DS */
+  /**
+   * <b>Name: N9</b>
+   *
+   * <p><b>Description:</b> Number of active patients on ART who are on <b>DS</b> (Dispensa
+   * semestral)
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getN9() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("N9: Number of active patients on ART who are on DS");
@@ -347,6 +417,12 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Patients who are registered as pregnant, as breastfeeding or who are on TB
+   * treatment
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getPregnantAndBreastfeedingAndOnTBTreatment() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("endDate", "After Date", Date.class));
@@ -371,7 +447,23 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  /** Patients who are on Sarcoma Karposi */
+  /**
+   * <b>Description:</b> Number of patients who are on Sarcoma Karposi
+   *
+   * <p><b>Techinal Specs</b>
+   *
+   * <blockquote>
+   *
+   * <pre>
+   * <p>Include patients who have Sarcoma Kaposi <b>(concept_id = 507)</b> registered
+   * in the follow-up (Adults <b>(encounterType = 6)</b> and Children <b>(encounterType = 9)</b>))
+   * consultation and <b>encounter_datetime <= reporting_end_date</b>
+   * </pre>
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getAllPatientsOnSarcomaKarposi() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("sarcomaKarposiPatients");
@@ -389,7 +481,12 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  /** Filter patients (from 4) who are considered stable according to criteria 5: a,b,c,d,e,f */
+  /**
+   * <b>Description:</b> Filter patients (from 4) who are considered stable according to criteria 5:
+   * <b>a, b, c, d, e, f</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getPatientsWhoAreStable() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
@@ -443,8 +540,19 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * 5A Patients who are on ART for at least 12 months (if patients age >=2 and <=9) or On ART for
-   * at least 6 months (if patients age >=10)
+   * <b>Name: 5A</b>
+   *
+   * <p><b>Description:</b> Patients on ART for at least 12 months <b>(if patients age >=2 and
+   * <=9)</b> or On ART for at least 6 months <b>(if patients age >=10)</b>
+   *
+   * <p><b>Technical Specs</b>
+   * <blockquote>
+   * <pre>
+   * <p>On ART for at least x months means: <b>(patient_art_initiation date–
+   * reporting end date) >= x months</b>
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
    */
   private CohortDefinition getPatientsWhoAreStableA() {
     CalculationCohortDefinition cd =
@@ -458,8 +566,13 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * 5C One CD4 Lab result > 750 cels/mm3 or > 15% in last ART year (if patients age >=2 and <=4) or
-   * One CD4 result > 200 cels/mm3 in last ART year (if patients age >=5 and <=9) 5C (i) 5C (ii)
+   * <b>Name: 5C</b>
+   *
+   * <p><b>Description:</b> One CD4 Lab result > 750 cels/mm3 or > 15% in last ART year <b>(if
+   * patients age >=2 and <=4)</b> or One CD4 result > 200 cels/mm3 in last ART year <b>(if patients
+   * age >=5 and <=9)</b> 5C (i) 5C (ii)
+   *
+   * @return {@link CohortDefinition}
    */
   private CohortDefinition getCD4CountAndCD4PercentCombined() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -486,8 +599,36 @@ public class EriDSDCohortQueries {
   }
 
   /**
-   * 5C (i) One CD4 Lab result > 750 cels/mm3 or > 15% in last ART year (if patients age >=2 and
-   * <=4)
+   * <b>Name: 5C (i)</b>
+   *
+   * <p><b>Description:</b> One CD4 Lab result > 750 cels/mm3 or > 15% in last ART year (if patients
+   * age >=2 and <=4)
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * <ol>
+   *   <li>Get the most recent encounter between A and B: <div>A. The last Encounter of type 6,9,13
+   *       or 51 occurred (Encounter_date) between reporting end date and (reporting end date – 12
+   *       months) which contains one of the following concept:
+   *       <p>
+   *       <ul>
+   *         <li>CD4 Abs Result <b>(Concept id 1695 or Concept id 5497)</b> or
+   *         <li>CD4 % Result <b>(Concept id 730)</b>
+   *       </ul>
+   *       <div>B. The last obs.datetime of obs concept id 1695 occurred between reporting end date
+   *       and (reporting end date – 12 months) recorded in Encounter of type 53.
+   *   <li>Check If the most recent encounter between A and B contains:
+   *       <ul>
+   *         <li>CD4 Abs Result <b>(Concept id 1695 or Concept id 5497) >750</b> or
+   *         <li>CD4 % Result <b>(Concept id 730) >15%</b>
+   *       </ul>
+   * </ol>
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
    */
   private CohortDefinition getCD4CountAndCD4Percent1() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -557,7 +698,14 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  /** 5C (ii) One CD4 result > 200 cels/mm3 in last ART year (if patients age >=5 years) */
+  /**
+   * <b>Name: 5C (ii)</b>
+   *
+   * <p><b>Description:</b> One CD4 result > 200 cels/mm3 in last ART year (if patients age >=5
+   * years)
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getCD4CountAndCD4Percent2() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
@@ -581,7 +729,36 @@ public class EriDSDCohortQueries {
 
     return cd;
   }
-  /** LAST CD4 result > 200 cels/mm3 in last ART year (if patients age >=5 */
+  /**
+   * <b>Description:</b> LAST CD4 result > 200 cels/mm3 in last ART year (if patients age >=5)
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * <ol>
+   *   <li>Get the most recent encounter between A and B: <div>A. The last Encounter of type 6,9,13
+   *       or 51 occurred (Encounter_date) between reporting end date and (reporting end date–12
+   *       months) which contains one of the following concept:
+   *       <p>
+   *       <ul>
+   *         <li>CD4 Abs Result <b>(Concept id 1695 or Concept id 5497)</b>
+   *       </ul>
+   *       <div>B. The last obs.datetime of obs concept id 1695 occurred between reporting end date
+   *       and (reporting end date – 12 months) recorded in Encounter of type 53.
+   *   <li>Check If the most recent encounter between A and B contains:
+   *       <ul>
+   *         <li>CD4 Abs Result <b>(Concept id 1695 or Concept id 5497) >200</b> or
+   *             <ul>
+   *               <li>No active clinical condition of WHO stage III or IV in last clinical
+   *                   appointment and
+   *               <li>No adverse reactions to medications in last six months that require regular
+   *                   monitoring
+   *             </ol>
+   *             </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getCD4CountAndCD4Percent2Part1() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("LAST CD4 result > 200 cels/mm3 in last ART year (if patients age >=5");
@@ -678,7 +855,38 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  /** Patients with LAST Viral Load Result < 1000 copies/ml in last ART year (only if VL exists) */
+  /**
+   * <b>Name: 5B </b>
+   *
+   * <p><b>Description:</b> Patients with LAST Viral Load Result < 1000 copies/ml in last ART year
+   * (only if VL exists)
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * <ol>
+   *   <li>Get the most recent encounter between A and B: <div>A. The last Encounter of type 6,9,13
+   *       or 51 occurred (Encounter_date) between reporting end date and (reporting end date – 12
+   *       months) which contains one of the following concept:
+   *       <p>
+   *       <ul>
+   *         <li>HIV VIRAL LOAD OBS Concept id = 856</b>or
+   *         <li>HIV VIRAL LOAD OBS Concept id = 1305</b>
+   *       </ul>
+   *       <div>B. The last obs.datetime of obs concept id 1695 occurred between reporting end date
+   *       and (reporting end date – 12 months) recorded in Encounter of type 53.
+   *   <li>Check If the most recent encounter between A and B contains:
+   *       <ul>
+   *         <li><b>Concept id 856 and OBS VALUE_NUMERIC is > 1000</b> or
+   *         <li><b>Concept id 1305 and value_coded in</b> { See in Specs DSD D1 Indicator}
+   *       </ul>
+   * </ol>
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getPatientsWithViralLoadLessThan1000Within12Months() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
 
@@ -783,7 +991,12 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  /** Patients who are scheduled for the next pickup. */
+  /**
+   * <b>Description:</b> Patients whose next drugs pickup appointment is scheduled for 83-97 after
+   * the date of their last drugs pickup
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getPatientsScheduled(
       Concept conceptId,
       List<EncounterType> encounterTypes,
@@ -803,6 +1016,11 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Patients who are marked <b>Completed</b> for their last <b>Rapid Flow</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getPatientsWhoCompletedRapidFlow() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
 
@@ -817,6 +1035,12 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Patients marked in last <b>Rapid Flow</b> as <b>Start Drugs or Continue
+   * Regimen</b> on (ficha clinica - Master Card)
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getPatientsWithStartOrContinueOnRapidFlow() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
 
@@ -833,6 +1057,12 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Patients whose next clinical appointment is scheduled for 175-190 days
+   * after the date of their last clinical consultant
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getPatientsScheduled175to190days(
       List<EncounterType> encounterTypes, Concept concept) {
     int lowerBound = 175;
@@ -840,7 +1070,11 @@ public class EriDSDCohortQueries {
     return getPatientsScheduled(concept, encounterTypes, upperBound, lowerBound);
   }
 
-  /** Active patients on ART MasterCard who are in AF Cohort Definition Query */
+  /**
+   * <b>Description:</b> Active patients on ART MasterCard who are in AF (Abordagem Familiar)
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getPatientsOnMasterCardAF() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
 
@@ -859,7 +1093,11 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
-  /** Get All patients who have been enrolled in the GAAC program */
+  /**
+   * <b>Description:</b> Patients who have been enrolled in the <b>GAAC</b> program
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getAllPatientsEnrolledOnGaac() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("All Patients Enrolled On GAAC");
@@ -870,6 +1108,12 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Patients marked in last <b>GAAC</b> as <b>Start Drugs or Continue
+   * Regimen</b> on (ficha clinica - Master Card)
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getPatientsWithStartOrContinueGAAC() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
 
@@ -885,6 +1129,11 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Patients who are marked <b>Completed</b> for their last <b>GAAC</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getPatientsWhoCompletedGAAC() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
 
@@ -898,6 +1147,12 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Patients who are marked <b>Completed</b> for their last <b>Quartely
+   * Dispensation</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getPatientsWithCompletedOnQuarterlyDispensation() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("patientsWithCompletedOnQuarterlyDispensation");
@@ -911,6 +1166,12 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Patients marked in last <b>Quartely Dispensation</b> as <b>Start Drugs or
+   * Continue Regimen</b> on (ficha clinica - Master Card)
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getPatientsWithStartOrContinueOnQuarterlyDispensation() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("patientsWithStartOrContinueOnQuarterlyDispensation");
@@ -927,6 +1188,12 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Patients marked as <b>Quartely Dispensation</b> on Tipo de Levantamento
+   * (ficha clinica - Master Card)
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getPatientsWithQuarterlyTypeOfDispensation() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("patientsWithQuarterlyTypeOfDispensation");
@@ -940,6 +1207,12 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Patients marked in last <b>Semestral Dispensation</b> as <b>Start Drugs</b>
+   * or <b>Continue Regimen</b> on (ficha clinica - Master Card)
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getPatientsWithStartOrContinueOnSemestralDispensation() {
     CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
@@ -953,6 +1226,12 @@ public class EriDSDCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Patients who are marked <b>Completed</b> for their last <b>Semestral
+   * Dispensation</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getPatientsWithSemestralTypeOfDispensation() {
     CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));

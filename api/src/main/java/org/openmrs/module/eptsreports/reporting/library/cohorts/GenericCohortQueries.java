@@ -503,7 +503,7 @@ public class GenericCohortQueries {
   }
 
   /**
-   * Gets last obs with value coded before enDate
+   * <b>Description:</b> Gets last obs with value coded before enDate
    *
    * @param encounterTypeId The Obs encounter Type
    * @param question The Obs quetion concept
@@ -540,7 +540,7 @@ public class GenericCohortQueries {
   }
 
   /**
-   * Gets last obs with value coded before enDate
+   * <b>Description: </b>Gets last obs with value coded before enDate
    *
    * @param encounterTypeId The Obs encounter Type
    * @param question The Obs quetion concept
