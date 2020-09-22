@@ -1377,9 +1377,9 @@ public class HivMetadata extends ProgramsMetadata {
   /**
    * <b>concept_id = 23866</b>
    *
-   * <p><b>Name:</b> PRE ART PICKUP DATE
+   * <p><b>Name:</b> ART PICKUP DATE
    *
-   * <p><b>Description:</b> Date of PRE ART Pickup
+   * <p><b>Description:</b> Date of ART Pickup
    *
    * @return {@link Concept}
    */
