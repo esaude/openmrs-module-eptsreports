@@ -25,7 +25,8 @@ import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.stereotype.Component;
 
 /**
- * Calculates for patient eligibility to be breastfeeding
+ * <b>Description</b>Calculates for patient eligibility to be breastfeeding Based on ART start date,
+ * the date is obtained by 18 months from last viral date
  *
  * @return CalculationResultMap
  */

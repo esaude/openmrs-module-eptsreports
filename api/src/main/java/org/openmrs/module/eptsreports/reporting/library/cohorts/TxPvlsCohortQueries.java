@@ -44,8 +44,8 @@ public class TxPvlsCohortQueries {
   }
 
   /**
-   * Patients who have NOT been on ART for 3 months based on the ART initiation date and date of
-   * last viral load registered
+   * <b>Description</b> On ART more than 3 months <blockqoute> Patients who have NOT been on ART for
+   * 3 months based on the ART initiation date and date of last viral load registered </blockqoute>
    *
    * @return CohortDefinition
    */
@@ -60,7 +60,8 @@ public class TxPvlsCohortQueries {
   }
 
   /**
-   * Breast feeding women with viral load suppression and on ART for more than 3 months
+   * <b>Description</b>Breast feeding women with viral load suppression and on ART for more than 3
+   * months
    *
    * @return CohortDefinition
    */
@@ -90,7 +91,7 @@ public class TxPvlsCohortQueries {
   }
 
   /**
-   * Breast feeding women with viral load suppression
+   * <b>Description</b> Breast feeding women with viral load suppression
    *
    * @return CohortDefinition
    */
@@ -120,8 +121,16 @@ public class TxPvlsCohortQueries {
   }
 
   /**
+   * <b>Description</b> Viral load suppression
+   *
+   * <blockquote>
+   *
    * Patients with viral suppression of <1000 in the last 12 months excluding dead, LTFU,
    * transferred out, stopped ART
+   *
+   * </blockquote>
+   *
+   * @return CohortDefinition
    */
   public CohortDefinition getPatientsWithViralLoadSuppressionWhoAreOnArtMoreThan3Months() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -142,8 +151,16 @@ public class TxPvlsCohortQueries {
   }
 
   /**
+   * <b>Description</b> Viral load results composition
+   *
+   * <blockquote>
+   *
    * Patients with viral results recorded in the last 12 months excluding dead, LTFU, transferred
    * out, stopped ARTtxNewCohortQueries Only filter out patients who are on routine
+   *
+   * </blockquote>
+   *
+   * @return CohortDefinition
    */
   public CohortDefinition getPatientsWithViralLoadResultsAndOnArtForMoreThan3Months() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -162,8 +179,17 @@ public class TxPvlsCohortQueries {
     return cd;
   }
   /**
+   * <b>Description</b> Viral load results and on routine composition
+   *
+   * <blockquote>
+   *
    * Patients with viral results recorded in the last 12 months excluding dead, LTFU, transferred
    * out, stopped ARTtxNewCohortQueries Only filter out patients who are on routine
+   *
+   * </blockquote>
+   *
+   * @return Cohort
+   * @return CohortDefinition
    */
   public CohortDefinition getPatientsWithViralLoadResultsAndOnRoutine() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -184,8 +210,16 @@ public class TxPvlsCohortQueries {
   }
 
   /**
+   * <b>Description</b Viral load results and on target
+   *
+   * <blockquote>
+   *
    * Patients with viral results recorded in the last 12 months excluding dead, LTFU, transferred
    * out, stopped ARTtxNewCohortQueries Only filter out patients who are on target
+   *
+   * </blockquote>
+   *
+   * @return CohortDefinition
    */
   public CohortDefinition getPatientsWithViralLoadResultsAndOnTarget() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -206,7 +240,7 @@ public class TxPvlsCohortQueries {
   }
 
   /**
-   * Get patients who are on routine
+   * <b>Description</b>Get patients who are on routine Composition
    *
    * @return CohortDefinition
    */
@@ -242,7 +276,7 @@ public class TxPvlsCohortQueries {
   }
 
   /**
-   * Get patients who are on target
+   * <b>Description</b> Get patients who are on target Composition
    *
    * @return CohortDefinition
    */
@@ -267,7 +301,8 @@ public class TxPvlsCohortQueries {
   }
 
   /**
-   * Get patients having viral load suppression and routine for adults and children - Numerator
+   * <b>Description</b>Get patients having viral load suppression and routine for adults and
+   * children - Numerator
    *
    * @retrun CohortDefinition
    */
@@ -288,7 +323,8 @@ public class TxPvlsCohortQueries {
   }
 
   /**
-   * Get patients having viral load suppression and target for adults and children - Numerator
+   * <b>Description</b>Get patients having viral load suppression and target for adults and children
+   * - Numerator
    *
    * @retrun CohortDefinition
    */
@@ -309,7 +345,7 @@ public class TxPvlsCohortQueries {
   }
 
   /**
-   * Get pregnant women Numerator
+   * <b>Description</b> Get pregnant women Numerator
    *
    * @return CohortDefinition
    */
@@ -335,7 +371,7 @@ public class TxPvlsCohortQueries {
   }
 
   /**
-   * Get pregnant women Denominator
+   * <b>Description</b>Get pregnant women Denominator
    *
    * @return CohortDefinition
    */
@@ -360,7 +396,7 @@ public class TxPvlsCohortQueries {
   }
 
   /**
-   * Get patients who are breastfeeding or pregnant controlled by parameter
+   * <b>Description</b>Get patients who are breastfeeding or pregnant controlled by parameter
    *
    * @return CohortDefinition
    */

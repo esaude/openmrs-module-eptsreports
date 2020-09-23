@@ -26,7 +26,14 @@ import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.stereotype.Component;
 
 /**
- * Calculates for patient eligibility to be pregnant
+ * <b>Description</b>Calculates for patient eligibility to be pregnant
+ *
+ * <blockquote>
+ *
+ * Based on ART start date, pregnancy date is calculated based on 9 months from the last viral load
+ * date
+ *
+ * </blockquote>
  *
  * @return CalculationResultMap
  */

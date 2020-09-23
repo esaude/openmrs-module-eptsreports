@@ -13,6 +13,12 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PregnantOrBreastfeedingWomen;
 import org.springframework.stereotype.Component;
 
+/**
+ * <b>Description</b> Combines Pregancy and breastfeeding calculation Filters the results based on
+ * the state passed as a calculation variable
+ *
+ * @return CalculationResultMap
+ */
 @Component
 public class BreastfeedingPregnantCalculation extends AbstractPatientCalculation {
 
