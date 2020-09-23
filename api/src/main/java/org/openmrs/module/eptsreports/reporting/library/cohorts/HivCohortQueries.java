@@ -80,10 +80,10 @@ public class HivCohortQueries {
   }
 
   /**
-   * Number of adult and pediatric ART patients with a viral load result documented in the patient
-   * medical record and/ or laboratory records in the past 12 months.
+   * <b>Description:</b> Number of adult and pediatric ART patients with a viral load result
+   * documented in the patient medical record and/ or laboratory records in the past 12 months.
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   @DocumentedDefinition(value = "viralLoadWithin12Months")
   public CohortDefinition getPatientsViralLoadWithin12Months() {
@@ -133,10 +133,19 @@ public class HivCohortQueries {
   }
 
   /**
-   * @return Cohort of patients with START DATE (Concept 1190=HISTORICAL DRUG START DATE) filled in
-   *     drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation for adults and
-   *     children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA SEGUIMENTO)
-   *     where START DATE is before or equal end date
+   * <b>Description: 2.</b> Number of Patients with historical drug start Date Obs
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Cohort of patients with START DATE <b>(concept_id = 1190)</b> filled in drug pickup
+   * <b>(encounterType_id 18)</b> or follow up consultation for adults and children
+   * <b>(encounterType_ids = 6 and 5)</b> and obs startDate <= endDate
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
    */
   @DocumentedDefinition(value = "patientWithHistoricalDrugStartDateObs")
   public CohortDefinition getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate() {

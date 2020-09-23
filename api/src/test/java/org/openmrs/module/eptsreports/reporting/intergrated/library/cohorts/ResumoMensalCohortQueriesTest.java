@@ -435,7 +435,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
 
-    assertEquals(3, evaluatedCohort.getMemberIds().size());
+    assertEquals(4, evaluatedCohort.getMemberIds().size());
     assertTrue(evaluatedCohort.getMemberIds().contains(6254));
   }
 
@@ -496,7 +496,160 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
 
-    assertEquals(3, evaluatedCohort.getMemberIds().size());
+    assertEquals(4, evaluatedCohort.getMemberIds().size());
     assertTrue(evaluatedCohort.getMemberIds().contains(6000003));
+  }
+
+  @Ignore("Query using DATE_ADD function not supported in H2 database")
+  public void getNumberOfActivePatientsInArtAtTheEndOfTheCurrentMonthHavingVlTestResults()
+      throws EvaluationException {
+    CohortDefinition cd =
+        resumoMensalCohortQueries
+            .getNumberOfActivePatientsInArtAtTheEndOfTheCurrentMonthHavingVlTestResults();
+
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+
+    assertEquals(3, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(25000));
+  }
+
+  @Test
+  public void getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1()
+      throws EvaluationException {
+    CohortDefinition cd =
+        resumoMensalCohortQueries
+            .getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1();
+
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+
+    assertEquals(11, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(25000));
+  }
+
+  @Test
+  public void
+      getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthAndScreenedForTbF2()
+          throws EvaluationException {
+    CohortDefinition cd =
+        resumoMensalCohortQueries
+            .getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthAndScreenedForTbF2();
+
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+
+    assertEquals(4, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(25000));
+  }
+
+  @Ignore("Query using IF function not supported in H2 database")
+  public void getNumberOfPatientsWithAtLeastOneClinicalAppointmentDuringTheYearF3()
+      throws EvaluationException {
+    CohortDefinition cd =
+        resumoMensalCohortQueries
+            .getNumberOfPatientsWithAtLeastOneClinicalAppointmentDuringTheYearF3();
+
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+
+    assertEquals(4, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(25000));
+  }
+
+  @Ignore("Query using IF function not supported in H2 database")
+  public void getPatientsRegisteredAsTransferredInDuringTheStatisticalYear()
+      throws EvaluationException {
+    CohortDefinition cd =
+        resumoMensalCohortQueries.getPatientsRegisteredAsTransferredInDuringTheStatisticalYear();
+
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+
+    assertEquals(4, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(25000));
+  }
+
+  @Ignore("Query using IF function not supported in H2 database")
+  public void getExclusionForF3() throws EvaluationException {
+    CohortDefinition cd = resumoMensalCohortQueries.getExclusionForF3();
+
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+
+    assertEquals(4, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(25000));
+  }
+
+  @Ignore("Query using IF function not supported in H2 database")
+  public void getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7()
+      throws EvaluationException {
+    CohortDefinition cd =
+        resumoMensalCohortQueries.getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7();
+
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+
+    assertEquals(4, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(25000));
+  }
+
+  @Ignore("Query using IF function not supported in H2 database")
+  public void getActivePatientsInARTByEndOfCurrentMonth() throws EvaluationException {
+    CohortDefinition cd = resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth();
+
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+
+    assertEquals(4, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(25000));
+  }
+
+  @Ignore("Query using IF function not supported in H2 database")
+  public void getActivePatientsOnArtWhoReceivedVldSuppressionResults() throws EvaluationException {
+    CohortDefinition cd =
+        resumoMensalCohortQueries.getActivePatientsOnArtWhoReceivedVldSuppressionResults();
+
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+
+    assertEquals(3, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(25000));
   }
 }

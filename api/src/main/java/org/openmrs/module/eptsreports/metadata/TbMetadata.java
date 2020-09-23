@@ -165,6 +165,15 @@ public class TbMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  /**
+   * <b>concept_id = 1113</b>
+   *
+   * <p><b>Name:</b> TUBERCULOSIS DRUG TREATMENT START DATE
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
   public Concept getTBDrugTreatmentStartDate() {
     String uuid =
         Context.getAdministrationService()
