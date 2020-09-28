@@ -26,6 +26,11 @@ public class TxMlDataset extends BaseDataSet {
 
   @Autowired private TxMlCohortQueries txMlCohortQueries;
 
+  /**
+   * <b>Description:</b> Constructs TXML Dataset
+   *
+   * @return
+   */
   public DataSetDefinition constructtxMlDataset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
@@ -134,6 +139,11 @@ public class TxMlDataset extends BaseDataSet {
     return dsd;
   }
 
+  /**
+   * <b>Description:</b> Creates Desagregation based on Age and Gender
+   *
+   * @return
+   */
   private List<ColumnParameters> getColumnsForAgeAndGender() {
     ColumnParameters under1M =
         new ColumnParameters("under1M", "under 1 year male", "gender=M|age=<1", "01");
