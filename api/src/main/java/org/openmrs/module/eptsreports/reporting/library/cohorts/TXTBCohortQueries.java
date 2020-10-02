@@ -63,8 +63,18 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * INICIO DE TRATAMENTO DE TUBERCULOSE DATA NOTIFICADA NAS FICHAS DE: SEGUIMENTO, RASTREIO E LIVRO
-   * TB. codes: DATAINICIO
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Data Inicio De Tratamento De Tuberculose <b>(concept_id = 1113)</b>
+   *
+   * <p>Data notificada nas fichas de: Seguimento <b>(encounterType_id = 6 or 9)</b>, Rastreio E
+   * Livro Tb.
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition tbTreatmentStartDateWithinReportingDate() {
     CohortDefinition definition =
@@ -80,7 +90,11 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-  /** PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA DE TUBERCULOSE - NUM PERIODO */
+  /**
+   * <b>Description:</b> Number of patients enrolled in TB program <b>(program_id = 5)</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getInTBProgram() {
     CohortDefinition definition =
         genericCohortQueries.generalSql(
@@ -92,10 +106,19 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * Patients with Pulmonary TB Date in Patient Clinical Record of ART date TB (Condicoes medicas
-   * importantes – Ficha Resumo Mastercard during reporting period
+   * <b>Technical Specs</b>
    *
-   * @return cd
+   * <blockquote>
+   *
+   * Patients with Pulmonary TB Date <b>(concept_id = 41)</b> and Positive Screening "YES"
+   * <b>(concept_id = 1065)</b> in Patient Clinical Record of ART date TB
+   *
+   * <p>Registered Ficha Resumo Mastercard <b>(encounterType_id = 53)</b> during the reporting
+   * period
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPulmonaryTB() {
     CohortDefinition cd =
@@ -110,9 +133,10 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * Patients marked as “Tratamento TB = Inicio (I) ” in Ficha Clinica Master Card
+   * <b>Description:</b> Patients marked as “Tratamento TB = Inicio (I) - <b>Start Drugs</b>" in
+   * (Ficha Clinica - Mastercard) Card
    *
-   * @return cd
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getTBTreatmentStart() {
     CohortDefinition cd =
@@ -126,6 +150,25 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Patients with Tuberculosis Symptoms <b>(concept_id = 23758)</b> registered in the Adult
+   * follow-up <b>(encounter_id = 6)</b> with Answers:
+   *
+   * <ul>
+   *   <li>YES <b>(concept_id = 1065)</b>
+   *   <li>NO <b>(concept_id = 1066)</b>
+   * </ul>
+   *
+   * <p>Registered in the Adult follow-up <b>(encounterType_id = 6)</b> during the reporting period
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getTuberculosisSymptoms() {
     CohortDefinition cd =
         genericCohortQueries.generalSql(
@@ -139,6 +182,20 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Patients with Tuberculosis Symptoms <b>(concept_id = 23758)</b> and Positive Screening "YES"
+   * <b>(concept_id = 1065)</b>
+   *
+   * <p>Registered in the Adult follow-up <b>(encounterType_id = 6)</b> during the reporting period
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getTuberculosisSymptomsPositiveScreening() {
     CohortDefinition cd =
         genericCohortQueries.generalSql(
@@ -152,6 +209,20 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Patients with Active Tuberculosis <b>(concept_id = 23761)</b> with Answer "YES" <b>(concept_id
+   * = 1065)</b>
+   *
+   * <p>Registered in the Adult follow-up <b>(encounterType_id = 6)</b> during the reporting period
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getActiveTuberculosis() {
     CohortDefinition cd =
         genericCohortQueries.generalSql(
@@ -164,6 +235,27 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Patients with TB Observations <b>(concept_id = 1766)</b> in Answers =
+   *
+   * <ul>
+   *   <li>Fever Lasting More Than 3 Weeks <b>(id = 1763)</b> OR
+   *   <li>Weight Loss Of More Than 3 Kg In Last Month <b>(id = 1764)</b> OR
+   *   <li>Nightsweats Lasting More Than 3 Weeks <b>(id = 1762)</b> OR
+   *   <li>Cough Lasting More Than 3 Weeks <b>( id = 1760)</b> OR
+   *   <li>Asthenia <b>(id = 23760)</b> OR
+   *   <li>Cohabitant Being Treated For Tb <b>(id = 1765)</b> OR
+   *   <li>Lymphadenopathy <b>(id = 161)</b>
+   * </ul>
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getTBObservation() {
     CohortDefinition cd =
         genericCohortQueries.generalSql(
@@ -182,6 +274,25 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Application for Laboratory Research <b>(concept_id = 23722)</b> with Answers:
+   *
+   * <ul>
+   *   <li>TB Genexpert Test <b>(concept_id = 23723)</b>
+   *   <li>Culture Test <b>(concept_id = 23774)</b>
+   *   <li>Test TB LAM <b>(concept_id = 23951)</b>
+   * </ul>
+   *
+   * <p>Registered in the Adult follow-up <b>(encounterType_id = 6)</b> during the reporting period
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getApplicationForLaboratoryResearch() {
     CohortDefinition cd =
         genericCohortQueries.generalSql(
@@ -196,6 +307,20 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * TB GeneExpertTest <b>(concept_id = 23723)</b> with Answer Positive <b>(concept_id = 703)</b> or
+   * Negative <b>(id = 664)</b>
+   *
+   * <p>Registered in the Adult follow-up <b>(encounterType_id = 6)</b> during the reporting period
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getTBGenexpertTestCohort() {
     CohortDefinition cd =
         genericCohortQueries.generalSql(
@@ -209,6 +334,20 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Culture Test <b>(concept_id = 23774)</b> with Answer Positive <b>(concept_id = 703)</b> or
+   * Negative <b>(id = 664)</b>
+   *
+   * <p>Registered in the Adult follow-up <b>(encounterType_id = 6)</b> during the reporting period
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getCultureTest() {
     CohortDefinition cd =
         genericCohortQueries.generalSql(
@@ -222,6 +361,20 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Test TB LAM <b>(concept_id = 237951)</b> with Answer Positive <b>(concept_id = 703)</b> or
+   * Negative <b>(id = 664)</b>
+   *
+   * <p>Registered in the Adult follow-up <b>(encounterType_id = 6)</b> during the reporting period
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getTestTBLAM() {
     CohortDefinition cd =
         genericCohortQueries.generalSql(
@@ -235,6 +388,20 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Result For Basiloscopia <b>(concept_id = 307)</b> with Answer Positive <b>(concept_id =
+   * 703)</b> or Negative <b>(id = 664)</b>
+   *
+   * <p>Registered in Misau Laboratorio <b>(encounterType_id = 13)</b> during the reporting period
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getResultForBasiloscopia() {
     CohortDefinition cd =
         genericCohortQueries.generalSql(
@@ -248,7 +415,12 @@ public class TXTBCohortQueries {
     return cd;
   }
 
-  /** PACIENTES COM RASTREIO DE TUBERCULOSE NEGATIVO codes: RASTREIOTBNEG */
+  /**
+   * <b>Description:</b> Pacientes Com Rastreio De Tuberculose <b>(concept_id = 6257)</b> Negativo
+   * <b>(concept_id = 1066)</b> in the follow-up (Adult and Children) codes: RASTREIOTBNEG
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition codedNoTbScreening() {
     CohortDefinition cd =
         genericCohortQueries.hasCodedObs(
@@ -263,7 +435,12 @@ public class TXTBCohortQueries {
     return cd;
   }
 
-  /** PACIENTES COM RASTREIO DE TUBERCULOSE POSITIVO codes: RASTREIOTBPOS */
+  /**
+   * <b>Description:</b> Pacientes Com Rastreio De Tuberculose <b>(concept_id = 6257)</b> Positivo
+   * <b>(concept_id = 1065)</b> in the follow-up (Adult and Children) codes: RASTREIOTBNEG
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition codedYesTbScreening() {
     CohortDefinition cd =
         genericCohortQueries.hasCodedObs(
@@ -278,9 +455,14 @@ public class TXTBCohortQueries {
     return cd;
   }
 
-  /*
-   * Patients who started art on period considering the transferred in for that same period
-   * and patients who started art before period also considering the transferred in for that same period
+  /**
+   * <b>Description:</b> Patients who started art <b>on</b> period considering the transferred in
+   * for that same period
+   *
+   * <p>And patients who started art <b>before</b> period also considering the transferred in for
+   * that same period
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition artList() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -303,6 +485,12 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Positive Investigation Research result <b>(concept_id = 6277)</b> Positivo
+   * <b>(concept_id = 1065)</b> in the follow-up (Adult and Children)
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition positiveInvestigationResult() {
     CohortDefinition cd =
         genericCohortQueries.hasCodedObs(
@@ -318,8 +506,18 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * at least one “POS” selected for “Resultado da Investigação para TB de BK e/ou RX?” during the
-   * reporting period consultations; ( response 703: POS for question: 6277)
+   * <b>Description:</b> At least one “POS” selected for “Resultado da Investigação para TB de BK
+   * e/ou RX?” during the reporting period consultations;
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * response 703: "POS" for question: 6277
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition positiveInvestigationResultComposition() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -331,8 +529,18 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * at least one “S” or “N” selected for TB Screening (Rastreio de TB) during the reporting period
-   * consultations; (response 1065: YES or 1066: NO for question 6257: SCREENING FOR TB)
+   * <b>Description:</b> At least one “S” or “N” selected for TB Screening (Rastreio de TB) during
+   * the reporting period consultations
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * (response 1065: "YES" or 1066: "NO" for question 6257: "SCREENING FOR TB")
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition yesOrNoInvestigationResult() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -345,6 +553,16 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> TX_TB Numerator A
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <p>Number of patients on TB Treatment, with Pulmonary TB Date, who initiated TB Treatment in
+   * ART
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition txTbNumeratorA() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition i =
@@ -394,6 +612,13 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> TX_TB Numerator
+   *
+   * <p><b>Technical Specs</b> Exclusion for patients who started TB Treatment on previous period
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition txTbNumerator() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition A = txTbNumeratorA();
@@ -410,6 +635,13 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description: BR-6</b> Positive Screening
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition positiveScreening() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addSearch("A", mapStraightThrough(getPatientsWithAtLeastOneYesForTBScreening()));
@@ -426,10 +658,12 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * all patients with at least one “POS” selected for “Resultado da Investigação para TB de BK e/ou
-   * RX?” (Ficha de Seguimento) during reporting period
+   * <b>Description:</b> All patients with at least one “POS” selected for “Resultado da
+   * Investigação para TB de BK e/ou RX?” (Ficha de Seguimento) during reporting period
    *
-   * @return
+   * <p><b>Technical Specs</b>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsWithAtLeastPosInvestigationResultTB() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -477,11 +711,13 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * all patients with at least one “NEG” selected for “Resultado da Investigação para TB de BK e/ou
-   * RX?” (Ficha de Seguimento) AND “N” selected for TB Screening “Rastreio TB” in same encounter
-   * occurred during reporting period during reporting period
+   * <b>Description:</b> All patients with at least one “NEG” selected for “Resultado da
+   * Investigação para TB de BK e/ou RX?” (Ficha de Seguimento) AND “N” selected for TB Screening
+   * “Rastreio TB” in same encounter occurred during reporting period during reporting period
    *
-   * @return
+   * <p><b>Technical Specs</b>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsWithAtLeastNegInvestigationResultTB() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -546,8 +782,17 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * all patients with at least one “S” (Yes) selected for TB Screening “Rastreio TB” (Ficha de
-   * Seguimento Adult or Pediatric) during the reporting period;
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * All patients with at least one “S” (Yes) <b>(concept_id =1065)</b> selected for TB Screening
+   * “Rastreio TB <b>(concept_id = 6257)</b>” (Ficha de Seguimento Adult or Pediatric) during the
+   * reporting period
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsWithAtLeastOneYesForTBScreening() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -593,6 +838,13 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> New On ART Positive Screening
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition newOnARTPositiveScreening() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("newOnARTPositiveScreening()");
@@ -606,6 +858,13 @@ public class TXTBCohortQueries {
     return definition;
   }
 
+  /**
+   * <b>Description:</b> New On ART Negative Screening
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition newOnARTNegativeScreening() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("newOnARTPositiveScreening()");
@@ -619,6 +878,13 @@ public class TXTBCohortQueries {
     return definition;
   }
 
+  /**
+   * <b>Description:</b> Previously On ART Positive Screening
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition previouslyOnARTPositiveScreening() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("newOnARTPositiveScreening()");
@@ -632,6 +898,13 @@ public class TXTBCohortQueries {
     return definition;
   }
 
+  /**
+   * <b>Description:</b> Previously On ART Negative Screening
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition previouslyOnARTNegativeScreening() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("previouslyOnARTNegativeScreening()");
@@ -645,6 +918,13 @@ public class TXTBCohortQueries {
     return definition;
   }
 
+  /**
+   * <b>Description:</b> Patients New On ART Numerator
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition patientsNewOnARTNumerator() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition NUM = txTbNumerator();
@@ -659,6 +939,13 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Patients Previously On ART Numerator
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition patientsPreviouslyOnARTNumerator() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     CohortDefinition NUM = txTbNumerator();
@@ -673,6 +960,13 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Denominator
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getDenominator() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     addGeneralParameters(definition);
@@ -749,10 +1043,19 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * Get patients who where Transferred Out (and had no registred drug pickup) after the transferred
-   * out date within reporting period
+   * <b>Technical Specs</b>
    *
-   * @return CohortDefinition
+   * <blockquote>
+   *
+   * All Transferred-out <b>(Patient_State.state = 7)</b> in ART Service Program
+   * <b>(Patient_program.program_id = 2)</b>
+   *
+   * <p>(and had no registred drug pickup Mastercard Date<b>(concept_id = 23866)</b> From
+   * <b>(EncounterType_id = 52)</b>) after the transferred Out date within reporting period
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsTransferredOut() {
 
@@ -910,10 +1213,13 @@ public class TXTBCohortQueries {
 
     return sqlCohortDefinition;
   }
+
   /**
-   * in tb in the previeus period
+   * <b>Description:</b> Patients in TB Program<b>(p.program_id = 5)</b> in Previous Period
    *
-   * @return
+   * <p><b>Technical Specs</b>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsInTBProgramInThePreviousPeriod() {
 
@@ -947,6 +1253,13 @@ public class TXTBCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> New On ART
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getNewOnArt() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("TxTB New on ART");
@@ -961,6 +1274,13 @@ public class TXTBCohortQueries {
     return definition;
   }
 
+  /**
+   * <b>Description:</b> Patients With At Least One Response For Positive ScreeningH
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * @return {@link CohortDefinition}
+   */
   private CompositionCohortDefinition getPatientsWithAtLeastOneResponseForPositiveScreeningH() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addSearch(
@@ -981,9 +1301,11 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * Get patients with specimen sent
+   * <b>Description:</b> Get patients who have specimen sent
    *
-   * @return CohortDefinition
+   * <p><b>Technical Specs</b>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getSpecimenSent() {
     CohortDefinition cd =
@@ -1001,11 +1323,18 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * Get patients who have a GeneXpert Positivo or Negativo registered in the investigations - Ficha
-   * Clinica - Mastercard OR have a GeneXpert request registered in the investigations - Ficha
-   * Clinica - Mastercard
+   * <b>Technical Specs</b>
    *
-   * @return CohortDefinition
+   * <blockquote>
+   *
+   * Get patients who have a GeneXpert Positivo or Negativo registered in the investigations - Ficha
+   * Clinica - Mastercard OR
+   *
+   * <p>Have a GeneXpert request registered in the investigations - Ficha Clinica - Mastercard
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getGenExpert() {
     CohortDefinition cd =
@@ -1019,9 +1348,11 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * Get patients who have a Basiloscopia And Not GeneXpert registered
+   * <b>Description:</b> Get patients who have a Basiloscopia And Not GeneXpert registered
    *
-   * @return CohortDefinition
+   * <p><b>Technical Specs</b>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getSmearMicroscopyOnly() {
     CohortDefinition cd =
@@ -1034,9 +1365,12 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * Get patients who have a Additional Test AND Not GeneXpert AND Not Smear Microscopy Only
+   * <b>Description:</b> Get patients who have a Additional Test AND Not GeneXpert AND Not Smear
+   * Microscopy Only
    *
-   * @return CohortDefinition
+   * <p><b>Technical Specs</b>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getAdditionalTest() {
     CohortDefinition cd =
@@ -1051,14 +1385,25 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * Get patients from denominator who have positive results returned registered during the period
-   * Have a ‘GeneXpert Positivo’ registered in the investigacoes – resultados laboratoriais - ficha
-   * clinica – mastercard OR Have a ‘resultado baciloscopia positive’ registered in the laboratory
-   * form OR Have a TB LAM positivo registered in the investigacoes – resultados laboratoriais ficha
-   * clinica – mastercard OR Have a cultura positiva registered in the investigacoes – resultados
-   * laboratoriais ficha clinica – mastercard
+   * <b>Technical Specs</b>
    *
-   * @return CohortDefinition
+   * <blockquote>
+   *
+   * Get patients from denominator who have positive results returned registered during the period
+   * Have a ‘GeneXpert Positivo’ registered in the
+   *
+   * <ul>
+   *   <li>investigacoes – resultados laboratoriais - ficha clinica – mastercard OR
+   *   <li>Have a ‘resultado baciloscopia positive’ registered in the laboratory form OR
+   *   <li>Have a TB LAM positivo registered in the investigacoes – resultados laboratoriais ficha
+   *       clinica – mastercard OR
+   *   <li>Have a cultura positiva registered in the investigacoes – resultados laboratoriais ficha
+   *       clinica – mastercard
+   * </ul>
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPositiveResultsReturned() {
     CohortDefinition cd =
@@ -1075,9 +1420,10 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * BR-8 Specimen Sent - Get patients from denominator AND tb_screened AND specimen_sent
+   * <b>Description:</b> BR-8 Specimen Sent - Get patients from denominator AND tb_screened AND
+   * specimen_sent
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition specimenSent() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
@@ -1094,9 +1440,10 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * BR-9 GenExpert MTB/RIF - Get patients from denominator AND tb_screened AND genexpert
+   * <b>Description:</b> BR-9 GenExpert MTB/RIF - Get patients from denominator AND
+   * positive_screened AND genexpert
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition genExpert() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
@@ -1112,10 +1459,10 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * BR-10 Get patients who have a Basiloscopia Positivo or Negativo registered in the laboratory
-   * form encounter type 13 Except patients identified in GeneXpert
+   * <b>Description: BR-10 </b> Get patients who have a Basiloscopia Positivo or Negativo registered
+   * in the laboratory form encounter type 13 Except patients identified in GeneXpert
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition smearMicroscopyOnly() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
@@ -1133,10 +1480,10 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * BR-11 Additional Test - Denominator AND Screened AND Additional AND NOT Genexpert AND NOT
-   * Microscopy
+   * <b>Description: BR-11</b> Additional Test - Denominator AND Screened AND Additional AND NOT
+   * Genexpert AND NOT Microscopy
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition otherAdditionalTest() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
@@ -1153,10 +1500,10 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * BR-12 Positive Results Returned All patients from denominator who have the following
-   * requests/results registered during the period:
+   * <b>Description: BR-12</b> Positive Results Returned All patients from denominator who have the
+   * following requests/results registered during the period:
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition positiveResultsReturned() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
@@ -1172,9 +1519,9 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * Get patients who sent specimen within date boundaries
+   * <b>Description:</b> Get patients who sent specimen within date boundaries
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsWhoHaveSentSpecimen(
       EncounterType laboratory,
@@ -1247,11 +1594,11 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * Get patients who have a GeneXpert Positivo or Negativo registered in the investigations - lab
-   * results - ficha clinica - mastercard OR Get patients who have a GeneXpert request registered in
-   * the investigations - lab results - ficha clinica - mastercard
+   * <b>Description:</b> Get patients who have a GeneXpert Positivo or Negativo registered in the
+   * investigations - lab results - ficha clinica - mastercard OR Get patients who have a GeneXpert
+   * request registered in the investigations - lab results - ficha clinica - mastercard
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsWhoHaveGeneXpert(
       Concept applicationForLaboratoryResearch,
@@ -1290,10 +1637,11 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * Smear Microscopy - Get patients who have a Basiloscopia Positivo or Negativo registered in the
-   * laboratory form encounter type 13 Except patients identified in GeneXpert
+   * <b>Description:</b> Smear Microscopy - Get patients who have a Basiloscopia Positivo or
+   * Negativo registered in the laboratory form encounter type 13 Except patients identified in
+   * GeneXpert
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getSmearMicroscopyOnly(
       EncounterType laboratory, Concept basiloscopiaExam, Concept positive, Concept negative) {
@@ -1319,9 +1667,10 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * Get patients who have a Additional Test AND Not GeneXpert AND Not Smear Microscopy Only
+   * <b>Description:</b> Get patients who have a Additional Test AND Not GeneXpert AND Not Smear
+   * Microscopy Only
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getAdditionalTest(
       EncounterType fichaClinica,
@@ -1377,9 +1726,9 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * Get patients who have positive results returned
+   * <b>Description:</b> Get patients who have positive results returned
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPositiveResultsReturned(
       EncounterType laboratory,
