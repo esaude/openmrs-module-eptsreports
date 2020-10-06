@@ -90,7 +90,11 @@ public class CommonCohortQueries {
     return cd;
   }
 
-  /** 15 MOH Transferred-in patients */
+  /**
+   * <b>Description:</b> 15 MOH Transferred-in patients TARV
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getMohTransferredInPatients() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     addParameters(cd);
@@ -119,7 +123,34 @@ public class CommonCohortQueries {
     return cd;
   }
 
-  /** 16 MOH Transferred-out patients by end of the reporting period (Last State) */
+  /**
+   * <b>Description: 16 -</b> MOH Transferred-out patients by end of the reporting period (Last
+   * State)
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * 1 - Patients registered in “Ficha Clinica-MasterCard” <b>(encounter_id = 6)</b> with LAST
+   * “Patient State” <b>(concept_id = 6273)</b> equal to “Transferred-Out” <b>(concept_id =
+   * 1706)</b> AND <b>encounter <= endDate</b> OR
+   *
+   * <p>2 - Registered in encounter “Ficha Resumo-MasterCard” (encounter id 53) with LAST “Patient
+   * State” <b>(Concept ID 6272)</b> equal to Transferred-Out” AND <b>obs_datetime <=endDate</b> OR
+   *
+   * <p>3 - Registered as transferred-out in LAST Patient Program State during the reporting period
+   * <b>Patient_program.program_id =2 = ART SERVICE</b> AND <b>Patient_State.state = 7
+   * (Transferred-out)</b> OR <b>Patient_State.end_date = max(endDate)</b>
+   *
+   * <p>Except all patients who after the most recent date from <b>1 to 3</b> have a drugs pick up
+   * or consultation <b>EncounterType ID= 6, 9, 18</b> and  encounter_datetime> the most recent
+   * date and <=endDate or Encounter Type ID = 52 and “Data de Levantamento” <b>(Concept Id 23866
+   * value_datetime)</b> > the most recent date and <= endDate
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
   public ResumoMensalTransferredOutCohortDefinition getMohTransferredOutPatientsByEndOfPeriod() {
     ResumoMensalTransferredOutCohortDefinition transferredOutPreviousMonth =
         new ResumoMensalTransferredOutCohortDefinition();

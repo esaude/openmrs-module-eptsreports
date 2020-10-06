@@ -8,6 +8,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class ResumoTrimestralQueries {
 
+  /**
+   * <b>Description:</b> Number of patients who received Viral Load Result
+   *
+   * @return {@link String}
+   */
   public static String getPatientsWhoReceivedOneViralLoadResult(
       int adultoSeguimentoEncounterType, int viralLoadConcept, int viralLoadQualitativeConcept) {
     String query =
@@ -28,6 +33,11 @@ public class ResumoTrimestralQueries {
     return sub.replace(query);
   }
 
+  /**
+   * <b>Description:</b> Number of patients transferred-Out (-) other HF's on ART during the month
+   *
+   * @return {@link String}
+   */
   public static String getTransferedOutPatients(
       int artProgramConcept,
       int transferredOutToAnotherHealthFacilityWorkflowStateConcept,
@@ -138,9 +148,10 @@ public class ResumoTrimestralQueries {
   }
 
   /**
-   * Number of patients with ART suspension during the current month with LAST patient state
+   * <b>Description:</b> Number of patients with ART suspension during the current month with LAST
+   * patient state
    *
-   * @return String
+   * @return {@link String}
    */
   public static String getPatientsWhoSuspendedTreatment(
       int art,
@@ -252,10 +263,10 @@ public class ResumoTrimestralQueries {
   }
 
   /**
-   * Fetches Patients with Last registered Line Treatment equals to (1st Line) of without
-   * information regarding the therapeutic line
+   * <b>Description:</b> Fetches Patients with Last registered Line Treatment equals to (1st Line)
+   * of without information regarding the therapeutic line
    *
-   * @return SqlCohortDefinition
+   * @return {@link String}
    */
   public static String getPatientsWithLastTherapeuticLineEqualsToFirstLineOrWithoutInformation(
       int adultoSeguimentoEncounterType, int therapeuticLineConcept, int firstLineConcept) {
@@ -318,6 +329,11 @@ public class ResumoTrimestralQueries {
     return sub.replace(query);
   }
 
+  /**
+   * <b>Description:</b> Number of Deceased patients in the actual cohort
+   *
+   * @return {@link String}
+   */
   public static String getDeceasedPatients(
       Integer artProgram,
       Integer patientHasDiedWorkflowState,
@@ -454,11 +470,10 @@ public class ResumoTrimestralQueries {
   }
 
   /**
-   * all patients with last registered Line Treatment (PT: “Linha Terapeutica”) (Concept id 21151)
-   * equal to “Second Line” (PT: “Segunda Linha”) (Concept id 21148 ) and encounter date < =
-   * MonthEndDate in encounter “Master Card – Ficha Clinica” (encounter id 6)
+   * <b>Description:</b> All patients with last registered Line Treatment equal to “Second Line” and
+   * encounter date < = MonthEndDate in “Master Card – Ficha Clinica”
    *
-   * @return String
+   * @return {@link String}
    */
   public static String
       getPatientsWithLastObsInSecondTherapeuticLineInMasterCardFichaClinicaBeforeMonthEndDate(
