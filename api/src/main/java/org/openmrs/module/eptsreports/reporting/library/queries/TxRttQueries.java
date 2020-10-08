@@ -20,18 +20,13 @@ import org.apache.commons.text.StringSubstitutor;
 public class TxRttQueries {
 
   /**
-   * Check each encounter against the previous scheduled date of drug pickup AND consultations to be
-   * greater than 28 days. Pick any of the encounters which occurred 28 dyas after the previously
+   * <b>Technical Specs</b>
+   *
+   * <p>Check each encounter against the previous scheduled date of drug pickup AND consultations to
+   * be greater than 28 days. Pick any of the encounters which occurred 28 days after the previously
    * scheduled consultation or drug pickup.
    *
-   * @param adultoSegEncounter
-   * @param pediatriaSegEncounter
-   * @param pharmacyEncounter
-   * @param masterCardEncounter
-   * @param consultationConcept
-   * @param nextDrugPickupConcept
-   * @param dateOfArtPickupConceptMasterCard
-   * @return String
+   * @return {@link String}
    */
   public static String getAllPatientsWhoMissedPreviousAppointmentBy28Days(
       int adultoSegEncounter,

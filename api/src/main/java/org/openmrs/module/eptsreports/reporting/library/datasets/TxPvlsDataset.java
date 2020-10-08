@@ -37,6 +37,7 @@ public class TxPvlsDataset extends BaseDataSet {
   @Qualifier("commonAgeDimensionCohort")
   private AgeDimensionCohortInterface ageDimensionCohort;
 
+  /** @return @{@link DataSetDefinition} */
   public DataSetDefinition constructTxPvlsDatset() {
 
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();

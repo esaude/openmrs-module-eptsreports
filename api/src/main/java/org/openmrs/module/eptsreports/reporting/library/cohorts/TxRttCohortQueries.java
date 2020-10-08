@@ -33,12 +33,18 @@ public class TxRttCohortQueries {
   }
 
   /**
-   * All patients (adults and children) who at ANY clinical contact (clinical consultation or drugs
-   * pick up [Encounter Type Ids = 6,9,18,52]) registered during the reporting period had a delay
-   * greater than 28/30 days from the last scheduled/expected, which may have happened during or
-   * prior to the reporting period period
+   * <b>Technical Specs</b>
    *
-   * @return CohortDefinition
+   * <blockquote>
+   *
+   * All patients (adults and children) who at ANY clinical contact (clinical consultation or drugs
+   * pick up <b>[Encounter Type Ids = 6,9,18,52]</b>) registered during the reporting period had a
+   * delay greater than 28/30 days from the last scheduled/expected, which may have happened during
+   * or prior to the reporting period period
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getAllPatientsWhoMissedAppointmentBy28Or30DaysButLaterHadVisit() {
     return genericCohortQueries.generalSql(

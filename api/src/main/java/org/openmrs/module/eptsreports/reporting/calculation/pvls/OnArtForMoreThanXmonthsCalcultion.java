@@ -32,6 +32,16 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * <b>Description</b> On ART for that X months
+ *
+ * <blockquote>
+ *
+ * Based on Viral load results taken in the last 12 months from end of reporting period and the ART
+ * start date
+ *
+ * </blockquote>
+ */
 @Component
 public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculation {
 

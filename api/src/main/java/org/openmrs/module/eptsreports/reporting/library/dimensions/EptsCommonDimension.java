@@ -287,6 +287,11 @@ public class EptsCommonDimension {
     return dim;
   }
 
+  /**
+   * <b>Description</b> Disaggregation for Key population
+   *
+   * @return CohortDefinitionDimension
+   */
   public CohortDefinitionDimension getKeyPopsDimension() {
     CohortDefinitionDimension dim = new CohortDefinitionDimension();
     dim.setName("Key Population Dimension");

@@ -6,6 +6,11 @@ import org.apache.commons.text.StringSubstitutor;
 
 public class TxMlQueries {
 
+  /**
+   * <b>Description:</b> Number of patients who missed Appointment
+   *
+   * @return {@link String}
+   */
   public static String getPatientsWhoMissedAppointment(
       int returnVisitDateForDrugsConcept,
       int returnVisitDateConcept,
@@ -107,57 +112,18 @@ public class TxMlQueries {
     return sub.replace(query);
   }
 
-  public static String getNonConsentedPatients(
-      int prevencaoPositivaInicial,
-      int prevencaoPositivaSeguimento,
-      int acceptContactConcept,
-      int noConcept) {
-    String query =
-        "SELECT distinct(pp.patient_id) FROM patient pp "
-            + "INNER JOIN encounter e ON e.patient_id=pp.patient_id "
-            + "INNER JOIN obs o ON o.person_id = pp.patient_id "
-            + "INNER JOIN person p ON o.person_id = p.person_id "
-            + "WHERE pp.voided=0 AND e.voided=0 AND e.encounter_type IN(%d, %d) AND e.location_id=:location AND o.obs_datetime<=:endDate AND o.voided=0 AND o.concept_id=%d AND o.value_coded=%d AND o.location_id=:location "
-            + "AND o.obs_id = (SELECT obs_id FROM obs WHERE concept_id = %d AND pp.patient_id = person_id GROUP BY obs_datetime DESC LIMIT 1)";
-
-    return String.format(
-        query,
-        prevencaoPositivaInicial,
-        prevencaoPositivaSeguimento,
-        acceptContactConcept,
-        noConcept,
-        acceptContactConcept);
-  }
-
-  // All Patients marked as Dead in the patient home visit card
-  public static String getPatientsMarkedDeadInHomeVisitCard(
-      int homeVisitCardEncounterTypeId,
-      int apoioReintegracaoParteAEncounterTypeId,
-      int apoioReintegracaoParteBEncounterTypeId,
-      int busca,
-      int dead) {
-    String query =
-        " SELECT     pa.patient_id "
-            + "FROM       patient pa "
-            + "INNER JOIN encounter e "
-            + "ON         pa.patient_id=e.patient_id "
-            + "INNER JOIN obs o "
-            + "ON         pa.patient_id=o.person_id "
-            + "WHERE      e.encounter_type IN (%d, %d, %d) "
-            + "AND        o.concept_id= %d "
-            + "AND        o.value_coded = %d "
-            + "AND        e.location_id=:location "
-            + "AND        o.obs_datetime <=:endDate";
-
-    return String.format(
-        query,
-        homeVisitCardEncounterTypeId,
-        apoioReintegracaoParteAEncounterTypeId,
-        apoioReintegracaoParteBEncounterTypeId,
-        busca,
-        dead);
-  }
-
+  /**
+   * <b>Description:</b> Patients who have REASON PATIENT MISSED VISIT (MOTIVOS DA FALTA) as
+   * “Transferido para outra US” or “Auto-transferencia” marked last Home Visit Card occurred during
+   * the reporting period. Use the “data da visita” when the patient reason was marked on the home
+   * visit card as the reference date
+   *
+   * @param homeVisitCardEncounterTypeId
+   * @param reasonPatientMissedVisitConceptId
+   * @param transferredOutToAnotherFacilityConceptId
+   * @param autoTransferConceptId
+   * @return
+   */
   public static String getPatientsWithMissedVisit(
       int homeVisitCardEncounterTypeId,
       int reasonPatientMissedVisitConceptId,
@@ -187,6 +153,11 @@ public class TxMlQueries {
         autoTransferConceptId);
   }
 
+  /**
+   * <b>Description:</b> Patients who Refused or stopped treatment
+   *
+   * @return {@link String}
+   */
   public static String getRefusedOrStoppedTreatment(
       int homeVisitCardEncounterTypeId,
       int reasonPatientMissedVisitConceptId,
@@ -313,9 +284,37 @@ public class TxMlQueries {
   }
 
   /*
-   Untraced Patients Criteria 2
-   Patients without Patient Visit Card of type busca and with a set of observations
+
   */
+
+  /**
+   * <b>Description:</b> Untraced Patients Criteria 2 Patients without Patient Visit Card of type
+   * busca and with a set of observations
+   *
+   * @param pharmacyEncounterTypeId
+   * @param adultoSequimentoEncounterTypeId
+   * @param arvPediatriaSeguimentoEncounterTypeId
+   * @param returnVisitDateForDrugsConcept
+   * @param returnVisitDateConcept
+   * @param homeVisitCardEncounterTypeId
+   * @param apoioReintegracaoParteAEncounterTypeId
+   * @param apoioReintegracaoParteBEncounterTypeId
+   * @param typeOfVisitConcept
+   * @param buscaConcept
+   * @param secondAttemptConcept
+   * @param thirdAttemptConcept
+   * @param patientFoundConcept
+   * @param defaultingMotiveConcept
+   * @param reportVisitConcept1
+   * @param reportVisitConcept2
+   * @param patientFoundForwardedConcept
+   * @param reasonForNotFindingConcept
+   * @param whoGaveInformationConcept
+   * @param cardDeliveryDate
+   * @param masterCardDrugPickupEncounterTypeId
+   * @param artDatePickupConceptId
+   * @return
+   */
   public static String getPatientsWithVisitCardAndWithObs(
       int pharmacyEncounterTypeId,
       int adultoSequimentoEncounterTypeId,
@@ -470,11 +469,13 @@ public class TxMlQueries {
     return sub.replace(query);
   }
 
-  /*
-       All Patients without “Patient Visit Card” (Encounter type 21 or 36 or 37) registered between
-       ◦ the last scheduled appointment or drugs pick up (the most recent one) by reporting end date and
-       ◦ the reporting end date
-  */
+  /**
+   * All Patients without “Patient Visit Card” (Encounter type 21 or 36 or 37) registered between ◦
+   * the last scheduled appointment or drugs pick up (the most recent one) by reporting end date and
+   * ◦ the reporting end date
+   *
+   * @return {@link String}
+   */
   public static String
       getPatientsWithoutVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(
           int pharmacyEncounterTypeId,
@@ -590,7 +591,11 @@ public class TxMlQueries {
     return sub.replace(query);
   }
 
-  // Traced Patients (Unable to locate)
+  /**
+   * <b>Description:</b> Get patients traced (Unable to locate) and Not Found
+   *
+   * @return {@link String}
+   */
   public static String getPatientsTracedWithReasonNotFound(
       int pharmacyEncounterTypeId,
       int adultoSequimentoEncounterTypeId,
@@ -739,7 +744,11 @@ public class TxMlQueries {
     return sub.replace(query);
   }
 
-  // Traced Patients (Unable to locate)
+  /**
+   * <b>Description:</b> Get patients traced (Unable to locate) and Found
+   *
+   * @return {@link String}
+   */
   public static String getPatientsTracedWithVisitCard(
       int pharmacyEncounterTypeId,
       int adultoSequimentoEncounterTypeId,
@@ -851,6 +860,11 @@ public class TxMlQueries {
     return sub.replace(query);
   }
 
+  /**
+   * <b>Description:</b> Number of patients without scheduled Drug pickup date and ART Pickup
+   *
+   * @return {@link String}
+   */
   public static String getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup(
       int adultoSeguimentoEncounterType,
       int ARVPediatriaSeguimentoEncounterType,
@@ -942,12 +956,10 @@ public class TxMlQueries {
   }
 
   /**
-   * Get the patient list based on the program and state in the program. by reporting end date
-   * ps.start_date<=:onOrBefore
+   * <b>Description:</b> Number of patients based on the program and state in the program. by
+   * reporting end date <b>ps.start_date <=: onOrBefore</b>
    *
-   * @param program
-   * @param stateOfProgram
-   * @return
+   * @return {@link String}
    */
   public static String getPatientsListBasedOnProgramAndStateByReportingEndDate(
       int program, int stateOfProgram) {
