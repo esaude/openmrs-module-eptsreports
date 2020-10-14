@@ -23,11 +23,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Display men who are breastfeeding based on patient states
- *
- * @return DataSet
- */
+/** Display men who are breastfeeding based on patient states */
 @Component
 public class Ec2PatientListDataset extends BaseDataSet {
 

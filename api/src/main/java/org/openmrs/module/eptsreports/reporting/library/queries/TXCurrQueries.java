@@ -113,14 +113,11 @@ public class TXCurrQueries {
    */
   public static String getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate() {
 
-    String query =
-        "SELECT p.person_id patient_id "
-            + "   FROM person p "
-            + "    WHERE p.dead=1 "
-            + "     AND p.death_date <= :onOrBefore "
-            + "     AND p.voided=0";
-
-    return query;
+    return "SELECT p.person_id patient_id "
+        + "   FROM person p "
+        + "    WHERE p.dead=1 "
+        + "     AND p.death_date <= :onOrBefore "
+        + "     AND p.voided=0";
   }
 
   /**

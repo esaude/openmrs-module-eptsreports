@@ -90,7 +90,7 @@ public class EPTSCalculationService {
    * @param timeQualifier
    * @param startDate
    * @param context
-   * @return
+   * @return CalculationResultMap
    */
   public CalculationResultMap getObs(
       Concept concept,
@@ -131,7 +131,7 @@ public class EPTSCalculationService {
    * @param location
    * @param programWorkflowState
    * @param context
-   * @return
+   * @return CalculationResultMap
    */
   public CalculationResultMap allPatientStates(
       Collection<Integer> cohort,
@@ -155,7 +155,7 @@ public class EPTSCalculationService {
    * @param endDate
    * @param states
    * @param context
-   * @return
+   * @return CalculationResultMap
    */
   public CalculationResultMap patientStatesBeforeDate(
       Collection<Integer> cohort,
@@ -178,7 +178,7 @@ public class EPTSCalculationService {
    * @param program
    * @param cohort
    * @param context
-   * @return
+   * @return CalculationResultMap
    */
   public CalculationResultMap allProgramEnrollment(
       Program program, Collection<Integer> cohort, PatientCalculationContext context) {
@@ -199,7 +199,7 @@ public class EPTSCalculationService {
    * @param qualifier
    * @param location
    * @param context
-   * @return
+   * @return CalculationResultMap
    */
   public CalculationResultMap getEncounter(
       List<EncounterType> encounterTypes,
@@ -292,7 +292,7 @@ public class EPTSCalculationService {
    * @param sortByDatetime
    * @param cohort
    * @param context
-   * @return
+   * @return CalculationResultMap
    */
   public CalculationResultMap firstObs(
       Concept question,
@@ -325,7 +325,7 @@ public class EPTSCalculationService {
    * @param sortByDatetime
    * @param cohort
    * @param context
-   * @return
+   * @return CalculationResultMap
    */
   public CalculationResultMap lastObs(
       Concept question,
@@ -355,7 +355,7 @@ public class EPTSCalculationService {
    * @param location
    * @param cohort
    * @param context
-   * @return
+   * @return CalculationResultMap
    */
   public CalculationResultMap firstPatientProgram(
       Program program,
@@ -379,7 +379,7 @@ public class EPTSCalculationService {
    * @param endDate
    * @param cohort
    * @param context
-   * @return
+   * @return CalculationResultMap
    */
   public CalculationResultMap lastObs(
       List<EncounterType> encounterTypes,

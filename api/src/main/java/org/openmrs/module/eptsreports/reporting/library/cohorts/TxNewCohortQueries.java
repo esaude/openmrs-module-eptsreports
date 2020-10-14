@@ -46,8 +46,6 @@ public class TxNewCohortQueries {
 
   @Autowired private ResumoMensalCohortQueries resumoMensalCohortQueries;
 
-  @Autowired private CommonCohortQueries commonCohortQueries;
-
   /**
    * <b>Description:</b> Patients with updated date of departure in the ART Service
    *
@@ -67,7 +65,7 @@ public class TxNewCohortQueries {
     cd.setQuestion(commonMetadata.getPriorDeliveryDateConcept());
     cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
 
-    List<EncounterType> encounterTypes = new ArrayList<EncounterType>();
+    List<EncounterType> encounterTypes = new ArrayList<>();
     encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
     encounterTypes.add(hivMetadata.getARVAdultInitialEncounterType());
     cd.setEncounterTypeList(encounterTypes);

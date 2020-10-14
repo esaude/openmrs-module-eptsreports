@@ -261,12 +261,11 @@ public class EptsCalculationUtilsTest extends PowerMockBaseContextTest {
     Assert.assertEquals(
         new HashSet<Integer>(Arrays.asList(4)), EptsCalculationUtils.patientsThatPass(map, false));
     Assert.assertEquals(
-        new HashSet<Integer>(Arrays.asList(10, 15)),
-        EptsCalculationUtils.patientsThatPass(map, enc));
+        new HashSet<>(Arrays.asList(10, 15)), EptsCalculationUtils.patientsThatPass(map, enc));
     Assert.assertEquals(
-        new HashSet<Integer>(Arrays.asList(1)), EptsCalculationUtils.patientsThatPass(map, 1));
+        new HashSet<>(Arrays.asList(1)), EptsCalculationUtils.patientsThatPass(map, 1));
     Assert.assertEquals(
-        new HashSet<Integer>(Arrays.asList(3, 16)),
+        new HashSet<>(Arrays.asList(3, 16)),
         EptsCalculationUtils.patientsThatPass(map, Arrays.asList(r10, r11)));
   }
 
@@ -280,7 +279,7 @@ public class EptsCalculationUtilsTest extends PowerMockBaseContextTest {
     map.put(5, new SimpleResult(null, null, calculationContext));
 
     Assert.assertEquals(
-        new HashSet<Integer>(Arrays.asList(1, 3, 5)), EptsCalculationUtils.patientsThatPass(map));
+        new HashSet<>(Arrays.asList(1, 3, 5)), EptsCalculationUtils.patientsThatPass(map));
   }
 
   @Test
@@ -293,7 +292,7 @@ public class EptsCalculationUtilsTest extends PowerMockBaseContextTest {
     map.put(5, new SimpleResult(null, null, calculationContext));
 
     Assert.assertEquals(
-        new HashSet<Integer>(Arrays.asList(5)),
+        new HashSet<>(Arrays.asList(5)),
         EptsCalculationUtils.patientsThatPass(map, null, CalculationWithResultFinder.NULL, null));
   }
 
@@ -465,7 +464,7 @@ public class EptsCalculationUtilsTest extends PowerMockBaseContextTest {
     context.addParameterValue("endDate", testsHelper.getDate("2019-02-06 00:00:00.0"));
 
     Assert.assertEquals(
-        new HashSet<Integer>(Arrays.asList(1, 5)),
+        new HashSet<>(Arrays.asList(1, 5)),
         EptsCalculationUtils.patientsThatPass(
             map, null, CalculationWithResultFinder.DATE_OUTSIDE, context));
 

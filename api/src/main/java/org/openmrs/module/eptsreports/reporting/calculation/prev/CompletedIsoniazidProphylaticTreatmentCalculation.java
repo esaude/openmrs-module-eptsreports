@@ -35,11 +35,7 @@ import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Patients that completed isoniazid prophylactic treatment
- *
- * @return a CulculationResultMap
- */
+/** Patients that completed isoniazid prophylactic treatment */
 @Component
 public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractPatientCalculation {
 
@@ -155,7 +151,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
             EptsCalculationUtils.obsResultForPatient(endProfilaxiaObservations, patientId);
         Obs endDrugsObs =
             EptsCalculationUtils.obsResultForPatient(completedDrugsObservations, patientId);
-        /**
+        /*
          * If We can't find a startDate from Ficha de Seguimento (adults and children) / Ficha
          * Resumo or Ficha Clinica-MasterCard, we can't do the calculations. -Just move to the next
          * patient.

@@ -41,7 +41,7 @@ public class TxCurrCohortQueriesTest extends DefinitionsTest {
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
 
     assertEquals(1, evaluatedCohort.getMemberIds().size());
-    assertTrue(evaluatedCohort.getMemberIds().contains(new Integer(1001)));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1001));
   }
 
   @Test
@@ -57,7 +57,7 @@ public class TxCurrCohortQueriesTest extends DefinitionsTest {
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
 
     assertEquals(2, evaluatedCohort.getMemberIds().size());
-    assertTrue(evaluatedCohort.getMemberIds().contains(new Integer(1001)));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1001));
   }
 
   @Test
@@ -74,7 +74,7 @@ public class TxCurrCohortQueriesTest extends DefinitionsTest {
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
 
     assertEquals(1, evaluatedCohort.getMemberIds().size());
-    assertTrue(evaluatedCohort.getMemberIds().contains(new Integer(1002)));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1002));
   }
 
   @Test
@@ -90,7 +90,7 @@ public class TxCurrCohortQueriesTest extends DefinitionsTest {
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
 
     assertEquals(1, evaluatedCohort.getMemberIds().size());
-    assertTrue(evaluatedCohort.getMemberIds().contains(new Integer(1002)));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1002));
   }
 
   @Test
@@ -109,7 +109,7 @@ public class TxCurrCohortQueriesTest extends DefinitionsTest {
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
 
     assertEquals(1, evaluatedCohort.getMemberIds().size());
-    assertTrue(evaluatedCohort.getMemberIds().contains(new Integer(1003)));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1003));
   }
 
   @Test
@@ -125,7 +125,7 @@ public class TxCurrCohortQueriesTest extends DefinitionsTest {
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
 
     assertEquals(1, evaluatedCohort.getMemberIds().size());
-    assertTrue(evaluatedCohort.getMemberIds().contains(new Integer(1004)));
+    assertTrue(evaluatedCohort.getMemberIds().contains(1004));
   }
 
   @Test
@@ -142,7 +142,7 @@ public class TxCurrCohortQueriesTest extends DefinitionsTest {
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
 
     assertEquals(1, evaluatedCohort.getMemberIds().size());
-    assertTrue(evaluatedCohort.getMemberIds().contains(new Integer(12594)));
+    assertTrue(evaluatedCohort.getMemberIds().contains(12594));
   }
 
   @Override

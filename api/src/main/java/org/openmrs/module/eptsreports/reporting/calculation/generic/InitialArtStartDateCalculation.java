@@ -40,11 +40,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * Calculates the date on which a patient first started ART
- *
- * @return a CulculationResultMap
- */
+/** Calculates the date on which a patient first started ART */
 @Component
 public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 
@@ -57,8 +53,9 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
   private static final String ON_OR_BEFORE = "onOrBefore";
 
   /**
-   * @should return null for patients who have not started ART
-   * @should return start date for patients who have started ART
+   * should return null for patients who have not started ART should return start date for patients
+   * who have started ART
+   *
    * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,
    *     java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
    */
@@ -130,7 +127,7 @@ public class InitialArtStartDateCalculation extends AbstractPatientCalculation {
 
     for (Integer pId : cohort) {
       Date requiredDate = null;
-      List<Date> enrollmentDates = new ArrayList<Date>();
+      List<Date> enrollmentDates = new ArrayList<>();
       SimpleResult result = (SimpleResult) inProgramMap.get(pId);
       if (result != null) {
         PatientProgram patientProgram = (PatientProgram) result.getValue();

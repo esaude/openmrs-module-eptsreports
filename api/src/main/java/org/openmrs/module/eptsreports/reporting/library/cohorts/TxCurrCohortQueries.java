@@ -27,13 +27,9 @@ import org.openmrs.module.eptsreports.reporting.calculation.txcurr.ThreeToFiveMo
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.TXCurrQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
-import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
-import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -43,12 +39,6 @@ import org.springframework.stereotype.Component;
 /** Defines all of the TxCurrCohortQueries we want to expose for EPTS */
 @Component
 public class TxCurrCohortQueries {
-
-  private static final String HAS_NEXT_APPOINTMENT_QUERY =
-      "select distinct obs.person_id from obs "
-          + " where obs.obs_datetime <= :onOrBefore and obs.location_id = :location and obs.concept_id = %s and obs.voided = false and obs.value_datetime is not null "
-          + " and obs.obs_datetime = (select max(encounter.encounter_datetime) from encounter "
-          + " where encounter.encounter_type in (%s) and encounter.patient_id = obs.person_id and encounter.location_id = obs.location_id and encounter.voided = false and encounter.encounter_datetime <= :onOrBefore) ";
 
   private static final int OLD_SPEC_ABANDONMENT_DAYS = 60;
 
@@ -63,11 +53,9 @@ public class TxCurrCohortQueries {
   @Autowired private GenericCohortQueries genericCohortQueries;
 
   /**
-   * <b>Description:</b> TxCurr Composition Cohort
-   *
    * @param cohortName Cohort name
-   * @param currentSpec
-   * @return {@link CohortDefinition}
+   * @param currentSpec - true for is current and false the opposit
+   * @return TxCurr composition cohort definition
    */
   @DocumentedDefinition(value = "getTxCurrCompositionCohort")
   public CohortDefinition getTxCurrCompositionCohort(String cohortName, boolean currentSpec) {
@@ -2071,90 +2059,6 @@ public class TxCurrCohortQueries {
   }
 
   /**
-   * <b>Description:</b> Patients marked in last <b>Quartely Dispensation</b> as <b>Start Drugs</b>
-   * or <b>Continue Regimen</b>
-   *
-   * @return {@link CohortDefinition}
-   */
-  @DocumentedDefinition(
-      "Patients with last “Dispensa Trimestral (DT)” as Iniciar (I) or Manter (C)")
-  private CohortDefinition getPatientsWithStartOrContinueOnQuarterlyDispensation() {
-    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
-    cd.setQuestion(hivMetadata.getQuarterlyDispensation());
-    cd.setOperator(SetComparator.IN);
-    cd.addValue(hivMetadata.getStartDrugsConcept());
-    cd.addValue(hivMetadata.getContinueRegimenConcept());
-    return cd;
-  }
-
-  /**
-   * <b>Description:</b> Patients marked in last <b>Semi-annual Dispensation</b> as <b>Start
-   * Drugs</b> or <b>Continue Regimen</b>
-   *
-   * @return {@link CohortDefinition}
-   */
-  @DocumentedDefinition("Patients with last “Dispensa Semestral (DS)” as Iniciar (I) or Manter (C)")
-  private CohortDefinition getPatientsWithStartOrContinueOnSemiannualDispensation() {
-    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
-    cd.setQuestion(hivMetadata.getSemiannualDispensation());
-    cd.setOperator(SetComparator.IN);
-    cd.addValue(hivMetadata.getStartDrugsConcept());
-    cd.addValue(hivMetadata.getContinueRegimenConcept());
-    return cd;
-  }
-
-  /**
-   * <b>Description:</b> Patients who are marked <b>Completed</b> for their last <b>Quartely
-   * Dispensation</b>
-   *
-   * @return {@link CohortDefinition}
-   */
-  @DocumentedDefinition(
-      "Patients who are marked Completed for their last “Dispensa Trimestral (DT)")
-  private CohortDefinition getPatientsWithCompletedOnQuarterlyDispensation() {
-    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
-    cd.setQuestion(hivMetadata.getQuarterlyDispensation());
-    cd.setOperator(SetComparator.IN);
-    cd.addValue(hivMetadata.getCompletedConcept());
-    return cd;
-  }
-
-  /**
-   * <b>Description:</b> Patients who are marked <b>Completed</b> for their last <b>Semi-annual
-   * Dispensation</b>
-   *
-   * @return {@link CohortDefinition}
-   */
-  @DocumentedDefinition("Patients who are marked Completed for their last “Dispensa Semestral (DS)")
-  private CohortDefinition getPatientsWithCompletedOnSemiannualDispensation() {
-    CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.addEncounterType(hivMetadata.getAdultoSeguimentoEncounterType());
-    cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
-    cd.setQuestion(hivMetadata.getSemiannualDispensation());
-    cd.setOperator(SetComparator.IN);
-    cd.addValue(hivMetadata.getCompletedConcept());
-    return cd;
-  }
-
-  /**
    * <b>Technical Specs</b>
    *
    * <blockquote>
@@ -2223,16 +2127,6 @@ public class TxCurrCohortQueries {
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
 
-    return cd;
-  }
-
-  @DocumentedDefinition("Patients with S.TARV FARMACIA encounter type")
-  private CohortDefinition getPatientsWithArvFarmaciaEncounterType() {
-    EncounterCohortDefinition cd = new EncounterCohortDefinition();
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    cd.addEncounterType(hivMetadata.getARVPharmaciaEncounterType());
     return cd;
   }
 

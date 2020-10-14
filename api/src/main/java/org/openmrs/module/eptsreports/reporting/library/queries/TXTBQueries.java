@@ -72,7 +72,7 @@ public class TXTBQueries {
   /**
    * <b>Description:</b> exited by either transfer out, treatment suspension, treatment abandoned or
    * death of patient
-   * 
+   *
    * @return {@link CohortDefinition}
    */
   public static String patientsAtProgramStates(Integer artProgramId, List<Integer> stateIds) {
@@ -86,64 +86,6 @@ public class TXTBQueries {
         artProgramId, StringUtils.join(stateIds, ","));
   }
 
-  /**
-   * <b>Description:</b> ABANDONO NÃO NOTIFICADO - TARV
-   * SqlCohortDefinition#a1145104-132f-460b-b85e-ea265916625b
-   *
-   * @return {@link String}
-   */
-  public static String abandonedWithNoNotification(AbandonedWithoutNotificationParams params) {
-    String stateIds =
-        StringUtils.join(
-            Arrays.asList(
-                params.transferOutStateId,
-                params.treatmentSuspensionStateId,
-                params.treatmentAbandonedStateId,
-                params.deathStateId),
-            ",");
-    return String.format(
-        "SELECT patient_id FROM (SELECT p.patient_id, Max(encounter_datetime) encounter_datetime FROM patient p "
-            + "INNER JOIN encounter e ON e.patient_id = p.patient_id WHERE p.voided = 0 AND e.voided = 0 "
-            + "AND e.encounter_type = %s AND e.location_id = :location AND e.encounter_datetime <= :endDate GROUP BY p.patient_id) max_frida "
-            + "INNER JOIN obs o ON o.person_id = max_frida.patient_id WHERE max_frida.encounter_datetime = o.obs_datetime AND o.voided = 0 "
-            + "AND o.concept_id = %s AND o.location_id = :location AND patient_id "
-            + "NOT IN (SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id = pg.patient_id "
-            + "INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id WHERE pg.voided = 0 AND ps.voided = 0 "
-            + "AND p.voided = 0 AND pg.program_id = %s AND ps.state IN ( %s ) AND ps.end_date IS NULL AND ps.start_date <= :endDate "
-            + "AND location_id = :location) AND patient_id NOT IN(SELECT patient_id FROM "
-            + "(SELECT p.patient_id, Max(encounter_datetime) encounter_datetime FROM patient p "
-            + "INNER JOIN encounter e ON e.patient_id = p.patient_id WHERE p.voided = 0 AND e.voided = 0 "
-            + "AND e.encounter_type IN ( %s, %s ) AND e.location_id = :location AND e.encounter_datetime <= :endDate GROUP BY p.patient_id) max_mov "
-            + "INNER JOIN obs o ON o.person_id = max_mov.patient_id WHERE max_mov.encounter_datetime = o.obs_datetime AND o.voided = 0 "
-            + "AND o.concept_id = %s AND o.location_id = :location AND Datediff(:endDate, o.value_datetime) <= 60) AND patient_id "
-            + "NOT IN(SELECT abandono.patient_id FROM (SELECT pg.patient_id FROM patient p INNER JOIN patient_program pg ON p.patient_id = pg.patient_id "
-            + "INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id WHERE pg.voided = 0 AND ps.voided = 0 AND p.voided = 0 AND pg.program_id = %s "
-            + "AND ps.state = %s AND ps.end_date IS NULL AND ps.start_date <= :endDate AND location_id = :location)abandono "
-            + "INNER JOIN (SELECT max_frida.patient_id, max_frida.encounter_datetime, o.value_datetime FROM "
-            + "(SELECT p.patient_id, Max(encounter_datetime) encounter_datetime FROM patient p "
-            + "INNER JOIN encounter e ON e.patient_id = p.patient_id WHERE p.voided = 0 AND e.voided = 0 AND e.encounter_type = %s"
-            + " AND e.location_id = :location "
-            + "AND e.encounter_datetime <= :endDate GROUP BY p.patient_id) max_frida INNER JOIN obs o ON o.person_id = max_frida.patient_id "
-            + "WHERE max_frida.encounter_datetime = o.obs_datetime AND o.voided = 0 AND o.concept_id = %s AND o.location_id = :location) ultimo_fila "
-            + "ON abandono.patient_id = ultimo_fila.patient_id WHERE Datediff(:endDate, ultimo_fila.value_datetime) < 60) AND Datediff(:endDate, o.value_datetime) >= 60;",
-        params.pharmacyEncounterTypeId,
-        params.returnVisitDateForARVDrugConceptId,
-        params.programId,
-        stateIds,
-        params.artAdultFollowupEncounterTypeId,
-        params.artPedInicioEncounterTypeId,
-        params.returnVisitDateConceptId,
-        params.programId,
-        params.treatmentAbandonedStateId,
-        params.pharmacyEncounterTypeId,
-        params.returnVisitDateForARVDrugConceptId);
-  }
-
-  /**
-   * <b>Description:</b> Patients in TB Program Within Reporting Period At Location
-   *
-   * @return {@link String}
-   */
   public static String inTBProgramWithinReportingPeriodAtLocation(Integer tbProgramId) {
     return String.format(
         "select pg.patient_id from patient p inner join "
@@ -154,9 +96,12 @@ public class TXTBQueries {
   }
 
   /**
-   * <b>Description:</b> Patients with Pulmonary TB Date in Patient Clinical Record of ART date TB
-   * 
-   * @return {@link String}
+   * Patients with Pulmonary TB Date in Patient Clinical Record of ART date TB
+   *
+   * @param encounterTypeId
+   * @param pulmonaryTBConcept
+   * @param yesConcept
+   * @return String
    */
   public static String pulmonaryTB(
       Integer encounterTypeId, Integer pulmonaryTBConcept, Integer yesConcept) {
@@ -171,10 +116,12 @@ public class TXTBQueries {
   }
 
   /**
-   * <b>Description:</b> Patients marked as “Tratamento TB= Inicio (I) ” in Ficha Clinica Master
-   * Card
-   * 
-   * @return {@link String}
+   * Patients marked as “Tratamento TB= Inicio (I) ” in Ficha Clinica Master Card
+   *
+   * @param encounterTypeId
+   * @param tbTreatmentPlan
+   * @param startDrugs
+   * @return String
    */
   public static String tbTreatmentStart(
       Integer encounterTypeId, Integer tbTreatmentPlan, Integer startDrugs) {
@@ -189,9 +136,13 @@ public class TXTBQueries {
   }
 
   /**
-   * <b>Description:</b> TUBERCULOSIS SYMPTOMS
-   * 
-   * @return {@link String}
+   * TUBERCULOSIS SYMPTOMS
+   *
+   * @param encounterTypeId
+   * @param tbSymptomsId
+   * @param yesConcept
+   * @param noConcept
+   * @return String
    */
   public static String tuberculosisSymptoms(
       Integer encounterTypeId, Integer tbSymptomsId, Integer yesConcept, Integer noConcept) {
@@ -221,9 +172,12 @@ public class TXTBQueries {
   }
 
   /**
-   * <b>Description:</b> ACTIVE TUBERCULOSIS
-   * 
-   * @return {@link String}
+   * ACTIVE TUBERCULOSIS
+   *
+   * @param encounterTypeId
+   * @param activeTuberculosis
+   * @param yesConcept
+   * @return String
    */
   public static String activeTuberculosis(
       Integer encounterTypeId, Integer activeTuberculosis, Integer yesConcept) {
@@ -240,9 +194,18 @@ public class TXTBQueries {
   }
 
   /**
-   * <b>Description:</b> TB OBSERVATIONS
-   * 
-   * @return {@link String}
+   * TB OBSERVATIONS
+   *
+   * @param encounterTypeId
+   * @param tbObservation
+   * @param fever
+   * @param weight
+   * @param nightweats
+   * @param cough
+   * @param asthenia
+   * @param cohabitant
+   * @param lymphadenopathy
+   * @return String
    */
   public static String tbObservation(
       Integer encounterTypeId,
@@ -276,9 +239,14 @@ public class TXTBQueries {
   }
 
   /**
-   * <b>Description:</b> APPLICATION FOR LABORATORY RESEARCH
-   * 
-   * @return {@link String}
+   * APPLICATION FOR LABORATORY RESEARCH
+   *
+   * @param encounterTypeId
+   * @param applicationForLaboratory
+   * @param tbGenexpertTest
+   * @param cultureTest
+   * @param testTBLAM
+   * @return String
    */
   public static String applicationForLaboratoryResearch(
       Integer encounterTypeId,
@@ -299,9 +267,13 @@ public class TXTBQueries {
   }
 
   /**
-   * <b>Description:</b> TB GENEXPERT TEST
-   * 
-   * @return {@link String}
+   * TB GENEXPERT TEST
+   *
+   * @param encounterTypeId
+   * @param tbGenexpertTest
+   * @param positive
+   * @param negative
+   * @return String
    */
   public static String tbGenexpertTest(
       Integer encounterTypeId, Integer tbGenexpertTest, Integer positive, Integer negative) {
@@ -335,15 +307,18 @@ public class TXTBQueries {
     query.append("		AND p.voided = 0 AND e.voided = 0 AND o.voided = 0");
 
     StringSubstitutor sb = new StringSubstitutor(map);
-    String replacedQuery = sb.replace(query.toString());
 
-    return replacedQuery;
+    return sb.replace(query.toString());
   }
 
   /**
    * <b>Description:</b> CULTURE TEST
    *
-   * @return {@link String}
+   * @param encounterTypeId
+   * @param cultureTest
+   * @param positive
+   * @param negative
+   * @return String
    */
   public static String cultureTest(
       Integer encounterTypeId, Integer cultureTest, Integer positive, Integer negative) {
@@ -360,9 +335,13 @@ public class TXTBQueries {
   }
 
   /**
-   * <b>Description:</b> Test TB LAM
-   * 
-   * @return {@link String}
+   * Test TB LAM
+   *
+   * @param encounterTypeId
+   * @param testTBLAM
+   * @param positive
+   * @param negative
+   * @return String
    */
   public static String testTBLAM(
       Integer encounterTypeId, Integer testTBLAM, Integer positive, Integer negative) {
@@ -378,11 +357,6 @@ public class TXTBQueries {
         encounterTypeId, testTBLAM, positive, negative);
   }
 
-  /**
-   * <b>Description:</b> Result For Basiloscopia
-   * 
-   * @return {@link String}
-   */
   public static String resultForBasiloscopia(
       Integer encounterTypeId, Integer basiloscopia, Integer positive, Integer negative) {
     return String.format(
@@ -397,11 +371,6 @@ public class TXTBQueries {
         encounterTypeId, basiloscopia, positive, negative);
   }
 
-  /**
-   * <b>Description:</b> Date Obs
-   * 
-   * @return {@link String}
-   */
   public static String dateObs(
       Integer questionId, List<Integer> encounterTypeIds, boolean startDate) {
     String sql =
@@ -421,59 +390,14 @@ public class TXTBQueries {
   }
 
   /**
-   * <b>Description:</b> Date Obs Within Months Before Start Date
-   * 
-   * @return {@link String}
-   */
-  public static String dateObsWithinXMonthsBeforeStartDate(
-      Integer questionId, List<Integer> encounterTypeIds, Integer xMonths) {
-    return String.format(
-        "select person_id from obs "
-            + "where concept_id = %s and encounter_id in"
-            + "( select distinct encounter_id from encounter "
-            + "where encounter_type in(%s)) and location_id = :location "
-            + "and value_datetime >= DATE_SUB(:startDate, INTERVAL "
-            + "%s MONTH) "
-            + "and value_datetime < :startDate and voided=0",
-        questionId, StringUtils.join(encounterTypeIds, ","), xMonths);
-  }
-
-  /**
-   * <b>Description:</b> Encounter Obs
-   *
-   * @return {@link String}
-   */
-  public static String encounterObs(Integer encounterTypeId) {
-    return String.format(
-        "select distinct patient_id from encounter where encounter_type =%s and location_id = :location and encounter_datetime <= :endDate and voided=0;",
-        encounterTypeId);
-  }
-
-  /**
-   * <b>Description:</b> Patients With First Drug Pickup Encounter In Reporting Period
-   * 
-   * @return {@link String}
-   */
-  public static String patientWithFirstDrugPickupEncounterInReportingPeriod(
-      Integer encounterTypeId) {
-    return String.format(
-        "SELECT p.patient_id "
-            + "FROM patient p "
-            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
-            + "WHERE p.voided=0 AND e.encounter_type=%s AND e.voided=0 AND e.encounter_datetime>=:startDate AND e.encounter_datetime<=:endDate AND e.location_id=:location GROUP BY p.patient_id",
-        encounterTypeId);
-  }
-
-  /**
-   * <b>Description:</b> Patients who have a {questionConcept} Obs with {valueCodedConcept} value
-   * between ${onOrAfter} and ${onOrBefore}
+   * Patients who have a {questionConcept} Obs with {valueCodedConcept} value between ${onOrAfter}
+   * and ${onOrBefore}
    *
    * @param cohortDefinitionName Name for the cohort definition to return
    * @param questionConcept The question concept
    * @param valueCodedConcept The valueCoded concept
    * @param encounterTypesList The encounter types to consider
-   * 
-   * @return {@link CohortDefinition}
+   * @return The cohort definition
    */
   public static CohortDefinition getPatientsWithObsBetweenDates(
       String cohortDefinitionName,
@@ -551,21 +475,9 @@ public class TXTBQueries {
       return this;
     }
 
-    public AbandonedWithoutNotificationParams returnVisitDateForARVDrugConceptId(
-        Integer returnVisitDateForARVDrugConceptId) {
-      this.returnVisitDateForARVDrugConceptId = returnVisitDateForARVDrugConceptId;
-      return this;
-    }
-
     public AbandonedWithoutNotificationParams pharmacyEncounterTypeId(
         Integer pharmacyEncounterTypeId) {
       this.pharmacyEncounterTypeId = pharmacyEncounterTypeId;
-      return this;
-    }
-
-    public AbandonedWithoutNotificationParams artAdultFollowupEncounterTypeId(
-        Integer artAdultFollowupEncounterTypeId) {
-      this.artAdultFollowupEncounterTypeId = artAdultFollowupEncounterTypeId;
       return this;
     }
 

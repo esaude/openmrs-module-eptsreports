@@ -30,18 +30,19 @@ public class QualityImprovementDataSet extends BaseDataSet {
   @Qualifier("commonAgeDimensionCohort")
   private AgeDimensionCohortInterface ageDimensionCohort;
 
-  private String mappingsAll =
-      "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location},testStart=${testStart}";
-
-  private String mappingsWitshEvaluate =
-      "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
-
   public DataSetDefinition constructInitQltyImpDataSet() {
+
+    final String mappingsAll =
+        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location},testStart=${testStart}";
+
+    final String mappingsWitshEvaluate =
+        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
+
     CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
     dataSetDefinition.setName("Quality Improvement DataSet");
     dataSetDefinition.addParameters(getParameters());
 
-    /** add dimensions */
+    /* add dimensions */
     dataSetDefinition.addDimension(
         "age",
         EptsReportUtils.map(
@@ -427,7 +428,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
         EptsReportUtils.map(modeloDifNum, mappingsWitshEvaluate),
         getDisagregateAdultsAndChildrenSColumn());
 
-    /** MODELODIFDENOM */
+    /* MODELODIFDENOM */
     CohortIndicator modeloDifNom =
         eptsGeneralIndicator.getIndicator(
             "patientsInARTElegibleToBeEnrolledInSomeDiffModel",

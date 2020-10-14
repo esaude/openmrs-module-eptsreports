@@ -283,10 +283,6 @@ public class TxMlQueries {
     return sub.replace(query);
   }
 
-  /*
-
-  */
-
   /**
    * <b>Description:</b> Untraced Patients Criteria 2 Patients without Patient Visit Card of type
    * busca and with a set of observations
@@ -959,7 +955,9 @@ public class TxMlQueries {
    * <b>Description:</b> Number of patients based on the program and state in the program. by
    * reporting end date <b>ps.start_date <=: onOrBefore</b>
    *
-   * @return {@link String}
+   * @param program - program id
+   * @param stateOfProgram - state
+   * @return String
    */
   public static String getPatientsListBasedOnProgramAndStateByReportingEndDate(
       int program, int stateOfProgram) {

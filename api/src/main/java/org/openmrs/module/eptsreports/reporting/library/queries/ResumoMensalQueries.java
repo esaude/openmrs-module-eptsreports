@@ -187,7 +187,7 @@ public class ResumoMensalQueries {
             + "        AND transf.value_coded = ${yes} "
             + "        AND opening.voided = 0 "
             + "        AND opening.concept_id = ${dateOfMasterCardFileOpening} ";
-    if (isExclusion == true) {
+    if (isExclusion) {
       query = query + "AND opening.value_datetime < :onOrAfter ";
     } else {
       query = query + " AND opening.value_datetime BETWEEN :onOrAfter AND :onOrBefore  ";
@@ -207,7 +207,7 @@ public class ResumoMensalQueries {
             + "WHERE  pp.program_id = ${programEnrolled} "
             + "       AND ps.state = ${transferredInState} "
             + "       AND pp.location_id = :location ";
-    if (isExclusion == true) {
+    if (isExclusion) {
       query = query + "    AND ps.start_date < :onOrAfter ";
     } else {
       query = query + "    AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore ";
@@ -462,7 +462,7 @@ public class ResumoMensalQueries {
     map.put("qualitativeConcept", qualitativeConcept);
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
-    return stringSubstitutor.replace(query.toString());
+    return stringSubstitutor.replace(query);
   }
 
   /**
@@ -615,33 +615,6 @@ public class ResumoMensalQueries {
   }
 
   /**
-   * <b>Description:</b> Number of patients registered in <b>encounterType 5 or 7</b>, with date
-   * enrolled less than startDate
-   *
-   * @return {@link String}
-   */
-  public static String
-      getAllPatientsRegisteredInEncounterType5or7WithEncounterDatetimeLessThanStartDate(
-          int encounterType5, int encounterType7) {
-    String query =
-        "SELECT p.patient_id "
-            + "FROM patient p "
-            + "INNER JOIN encounter e "
-            + "ON p.patient_id = e.patient_id "
-            + "WHERE p.voided = 0 "
-            + "AND e.voided = 0 "
-            + "AND e.location_id = :location "
-            + "AND e.encounter_type IN (${encounterType5}, ${encounterType7}) "
-            + "AND e.encounter_datetime < :startDate";
-
-    Map<String, Integer> valuesMap = new HashMap<>();
-    valuesMap.put("encounterType5", encounterType5);
-    valuesMap.put("encounterType7", encounterType7);
-    StringSubstitutor sub = new StringSubstitutor(valuesMap);
-    return sub.replace(query);
-  }
-
-  /**
    * <b>Description:</b> Number of patients registered as transferred in during the statistical year
    *
    * @return {@link String}
@@ -716,7 +689,6 @@ public class ResumoMensalQueries {
             + "        AND ps.voided = 0 ";
 
     StringSubstitutor sb = new StringSubstitutor(map);
-    String mappedQuery = sb.replace(query);
-    return mappedQuery;
+    return sb.replace(query);
   }
 }

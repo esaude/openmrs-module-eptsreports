@@ -88,18 +88,7 @@ public class ThreeToFiveMonthsOnArtDispensationCalculation extends AbstractPatie
             null,
             onOrBefore,
             context);
-    // get all obs with typeOfDispensation and and quartely value coded
-    CalculationResultMap getAllLastTypeOfDispensationWithQuartelyAsValueCoded =
-        ePTSCalculationService.getObs(
-            typeOfDispensation,
-            Arrays.asList(ficha),
-            cohort,
-            Arrays.asList(location),
-            null,
-            TimeQualifier.ANY,
-            null,
-            onOrBefore,
-            context);
+
     // get only specific obs as the last encounter
     // find for question 23739 and specific answer of 23720
     CalculationResultMap getLastTypeOfDispensationWithQuartelyAsValueCodedAdded =
@@ -170,16 +159,7 @@ public class ThreeToFiveMonthsOnArtDispensationCalculation extends AbstractPatie
             null,
             onOrBefore,
             context);
-    CalculationResultMap getLastEncounterWithDepositionAndMonthlyAsCodedValueMap =
-        ePTSCalculationService.getObs(
-            typeOfDispensation,
-            Arrays.asList(ficha),
-            cohort,
-            Arrays.asList(location),
-            null,
-            TimeQualifier.LAST,
-            null,
-            context);
+
     // provide one that has value coded of monthly
     CalculationResultMap getLastEncounterWithDepositionAndMonthlyAsCodedValueAddedMap =
         ePTSCalculationService.getObs(
@@ -210,10 +190,6 @@ public class ThreeToFiveMonthsOnArtDispensationCalculation extends AbstractPatie
       Encounter lastFilaEncounter =
           EptsCalculationUtils.resultForPatient(lastFilaEncounterMap, pId);
 
-      Obs getObsWithDepositionAndMonthlyAsCodedValue =
-          EptsCalculationUtils.obsResultForPatient(
-              getLastEncounterWithDepositionAndMonthlyAsCodedValueMap, pId);
-
       // get t he last obs for concept 23739 and answer 23720
       Obs getLastTypeOfDispensationWithQuartelyAsValueCodedAddedObs =
           EptsCalculationUtils.obsResultForPatient(
@@ -230,21 +206,13 @@ public class ThreeToFiveMonthsOnArtDispensationCalculation extends AbstractPatie
       ListResult listResultForAllFila = (ListResult) getAllFila.get(pId);
       List<Obs> obsListForAllFila = EptsCalculationUtils.extractResultValues(listResultForAllFila);
       // get all the list results for ficha with quaterlyDispensation
-      ListResult listResultAddQuartelyDispensation =
-          (ListResult) getAllLastTypeOfDispensationWithQuartelyAsValueCoded.get(pId);
-      List<Obs> listObsForQuartely =
-          EptsCalculationUtils.extractResultValues(listResultAddQuartelyDispensation);
-      // get all the list with the patients DT and
-      ListResult listResultDtAll =
-          (ListResult) getAllDtQuartelyDispensationWithStartOrContinueRegimen.get(pId);
-      List<Obs> listresultsDtAll = EptsCalculationUtils.extractResultValues(listResultDtAll);
 
       ListResult listResultAllFilaEncounters = (ListResult) allFilaEncountersMap.get(pId);
       List<Encounter> allFilaEncounters =
           EptsCalculationUtils.extractResultValues(listResultAllFilaEncounters);
       Encounter lastFilaPickedEncounter = null;
       Encounter secondLastEncounter = null;
-      List<Obs> filaObsOnTheSameEncounterDate = new ArrayList<Obs>();
+      List<Obs> filaObsOnTheSameEncounterDate = new ArrayList<>();
       if (allFilaEncounters.size() >= 2) {
         sortEncountersByEncounterId(allFilaEncounters);
         lastFilaPickedEncounter = allFilaEncounters.get(allFilaEncounters.size() - 1);

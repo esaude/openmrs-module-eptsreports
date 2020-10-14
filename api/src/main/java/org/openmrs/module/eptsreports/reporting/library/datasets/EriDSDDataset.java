@@ -145,7 +145,7 @@ public class EriDSDDataset extends BaseDataSet {
   /**
    * 2-14 years old children List
    *
-   * @return
+   * @return java.util.List
    */
   private List<ColumnParameters> getChildrenColumn() {
     ColumnParameters twoTo4 = new ColumnParameters("twoTo4", "2-4", "age=2-4", "01");

@@ -25,7 +25,7 @@ public class TxRttCohortQueriesTest extends DefinitionsTest {
     executeDataSet("metadata.xml");
     executeDataSet("txRttCohortQueriesTest.xml");
     setStartDate(DateUtil.getDateTime(2019, 6, 21));
-    setEndDate(DateUtil.getDateTime(2020, 01, 20));
+    setEndDate(DateUtil.getDateTime(2020, 1, 20));
     setLocation(new Location(1));
   }
 

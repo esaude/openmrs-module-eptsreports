@@ -17,9 +17,9 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 public class LocationDataSetDefinitionTest extends DefinitionsTest {
 
-  private LocationDataSetDefinition definition = new LocationDataSetDefinition();
+  private final LocationDataSetDefinition definition = new LocationDataSetDefinition();
 
-  private Map<Parameter, Object> parameters = new HashMap<>();
+  private final Map<Parameter, Object> parameters = new HashMap<>();
 
   @Before
   public void setUp() throws Exception {

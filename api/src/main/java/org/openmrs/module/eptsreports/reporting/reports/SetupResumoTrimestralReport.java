@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.LocationDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.ResumoTrimestralDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.ResumoTrimestralStartDateDataset;
@@ -36,14 +35,10 @@ public class SetupResumoTrimestralReport extends EptsDataExportManager {
 
   private ResumoTrimestralDataSetDefinition resumoTrimestralDataSetDefinition;
 
-  private GenericCohortQueries genericCohortQueries;
-
   @Autowired
   public SetupResumoTrimestralReport(
-      ResumoTrimestralDataSetDefinition resumoTrimestralDataSetDefinition,
-      GenericCohortQueries genericCohortQueries) {
+      ResumoTrimestralDataSetDefinition resumoTrimestralDataSetDefinition) {
     this.resumoTrimestralDataSetDefinition = resumoTrimestralDataSetDefinition;
-    this.genericCohortQueries = genericCohortQueries;
   }
 
   @Override
