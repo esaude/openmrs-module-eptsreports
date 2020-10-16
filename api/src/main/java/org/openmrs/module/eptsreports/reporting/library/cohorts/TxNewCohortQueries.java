@@ -16,7 +16,6 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.openmrs.EncounterType;
@@ -25,15 +24,12 @@ import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
-import org.openmrs.module.reporting.common.SetComparator;
-import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -48,16 +44,20 @@ public class TxNewCohortQueries {
 
   @Autowired private GenericCohortQueries genericCohorts;
 
-  @Autowired private GenderCohortQueries genderCohorts;
-
-  @Autowired private HivCohortQueries hivCohortQueries;
+  @Autowired private ResumoMensalCohortQueries resumoMensalCohortQueries;
 
   /**
-   * PATIENTS WITH UPDATED DATE OF DEPARTURE IN THE ART SERVICE Are patients with date of delivery
-   * updated in the tarv service. Note that the 'Start Date' and 'End Date' parameters refer to the
-   * date of delivery and not the date of registration (update)
+   * <b>Description:</b> Patients with updated date of departure in the ART Service
    *
-   * @return CohortDefinition
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Have date of delivery <b>(obs conceppt_id = 5599)</b> updated in the ART <b>(encounterType_id =
+   * 5 and 6)</b>. Note that the 'Start Date' and 'End Date' parameters refer to the date of
+   * delivery and not the date of registration (update)
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsWithUpdatedDepartureInART() {
     DateObsCohortDefinition cd = new DateObsCohortDefinition();
@@ -65,7 +65,7 @@ public class TxNewCohortQueries {
     cd.setQuestion(commonMetadata.getPriorDeliveryDateConcept());
     cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
 
-    List<EncounterType> encounterTypes = new ArrayList<EncounterType>();
+    List<EncounterType> encounterTypes = new ArrayList<>();
     encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
     encounterTypes.add(hivMetadata.getARVAdultInitialEncounterType());
     cd.setEncounterTypeList(encounterTypes);
@@ -82,13 +82,29 @@ public class TxNewCohortQueries {
   }
 
   /**
-   * PREGNANCY ENROLLED IN THE ART SERVICE These are patients who are pregnant during the initiation
-   * of the process or during ART follow-up and who were notified as a new pregnancy during
-   * follow-up.
+   * <b>Description:</b> Prengancy Patients enrolled in the ART Service
    *
-   * @return CohortDefinition
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Marked pregnant <b>(obs concept_id = 1982)</b> int the initial <b>(encounterType_id = 5)</b> or
+   * follow-up <b>(encounterType_id = 6)</b> in Ficha resumo <b>(encounterType = 53)</b>
+   * consultation.
+   *
+   * <p>Have “Number of weeks Pregnant <b>(obs concept_id = 1279)</b>” and have "Pregnancy Due Date
+   * <b>(obs concept_id = 1600)</b>" in the initial or follow-up between start and end date
+   * <b>(encounter_datetime)</b>.
+   *
+   * <p>Enrolled in PTV(ETV) program <b>(program_id = 8)</b> between start and end date
+   * <b>(patient_program date_enrolled)</b>.
+   *
+   * </blockquote>
+   *
+   * @param dsd If it's true, subtract the 'End Date' by an interval of 9 months
+   * @return {@link CohortDefinition}
    */
-  public CohortDefinition getPatientsPregnantEnrolledOnART() {
+  public CohortDefinition getPatientsPregnantEnrolledOnART(boolean dsd) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("patientsPregnantEnrolledOnART");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -97,7 +113,6 @@ public class TxNewCohortQueries {
     cd.setQuery(
         PregnantQueries.getPregnantWhileOnArt(
             commonMetadata.getPregnantConcept().getConceptId(),
-            hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getNumberOfWeeksPregnant().getConceptId(),
             hivMetadata.getPregnancyDueDate().getConceptId(),
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
@@ -106,15 +121,29 @@ public class TxNewCohortQueries {
             hivMetadata.getDateOfLastMenstruationConcept().getConceptId(),
             hivMetadata.getPtvEtvProgram().getProgramId(),
             hivMetadata.getCriteriaForArtStart().getConceptId(),
-            hivMetadata.getBPlusConcept().getConceptId()));
+            hivMetadata.getBPlusConcept().getConceptId(),
+            hivMetadata.getARVStartDateConcept().getConceptId(),
+            commonMetadata.getPriorDeliveryDateConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getBreastfeeding().getConceptId(),
+            hivMetadata.getPatientGaveBirthWorkflowState().getProgramWorkflowStateId(),
+            dsd));
     return cd;
   }
 
   /**
-   * Women who gave birth 2 years ago These patients are enrolled in the PMTCT program and have been
-   * updated as a childbirth within 2 years of the reference date
+   * <b>Description:</b> Women who gave birth 2 years ago
    *
-   * @return CohortDefinition
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * enrolled in the PTV(ETV) program <b>(program_id = 8)</b> and have been updated as a childbirth
+   * within 2 years of the reference date <b>(program_workflow_state_id = 27)</b>.
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsWhoGaveBirthWithinReportingPeriod() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -130,96 +159,63 @@ public class TxNewCohortQueries {
   }
 
   /**
-   * TxNew Breastfeeding Compisition Cohort
+   * <b>Description:</b> Breastfeeding enrolled on ART Service
    *
-   * @return CohortDefinition
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Have the “Delivery date <b>(obs concept_id = 5599)</b>” registered in the initial
+   * <b>(encounterType_id = 5)</b> or follow-up <b>(encounterType_id = 6)</b> consultation and where
+   * the delivery date is <b>( obs value_datetime )&gt;=startDate and &lt;=endDate</b>.
+   *
+   * <p>Have started ART for being breastfeeding <b>(concept_id = 6332)</b> as specified in
+   * “CRITÉRIO PARA INÍCIO DE TARV <b>(concept_id = 6634)</b>” in the initial or follow-up
+   * consultations between start and end date <b>(encounter_datetime)</b>.
+   *
+   * <p>Enrolled in PTV(ETV) program <b>(program_id = 8)</b> between start and end date <b>( patient
+   * state id= 27 and start_date)</b>.
+   *
+   * <p>Have registered as breastfeeding in Ficha Resumo – Master Card <b>(encounterType_id =
+   * 58)</b> between start and end date <b>(encounter_datetime)</b>.</b>
+   *
+   * </blockquote>
+   *
+   * @param dsd If it's true, subtract the 'End Date' by an interval of 18 months
+   * @return {@link CohortDefinition}
    */
-  @DocumentedDefinition(value = "txNewBreastfeedingComposition")
-  public CohortDefinition getTxNewBreastfeedingComposition() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setDescription("breastfeedingComposition");
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-
-    cd.addSearch("FEMININO", EptsReportUtils.map(genderCohorts.femaleCohort(), ""));
-
-    cd.addSearch(
-        "DATAPARTO",
-        EptsReportUtils.map(
-            getPatientsWithUpdatedDepartureInART(),
-            "value1=${onOrAfter},value2=${onOrBefore},locationList=${location}"));
-    cd.addSearch(
-        "INICIOLACTANTE",
-        EptsReportUtils.map(
-            genericCohorts.hasCodedObs(
-                hivMetadata.getCriteriaForArtStart(),
-                BaseObsCohortDefinition.TimeModifier.FIRST,
-                SetComparator.IN,
-                Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
-                Arrays.asList(commonMetadata.getBreastfeeding())),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
-    cd.addSearch(
-        "LACTANTEPROGRAMA",
-        EptsReportUtils.map(
-            getPatientsWhoGaveBirthWithinReportingPeriod(),
-            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
-    cd.addSearch(
-        "LACTANTE",
-        EptsReportUtils.map(
-            genericCohorts.hasCodedObs(
-                commonMetadata.getBreastfeeding(),
-                BaseObsCohortDefinition.TimeModifier.LAST,
-                SetComparator.IN,
-                Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
-                Arrays.asList(commonMetadata.getYesConcept())),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
-
-    CohortDefinition breastfeedingInMastercard = getBreastfeedingInMastercard();
-    cd.addSearch("MASTERCARD", mapStraightThrough(breastfeedingInMastercard));
-
-    String compositionString =
-        "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE OR MASTERCARD) AND FEMININO";
-
-    cd.setCompositionString(compositionString);
-    return cd;
-  }
-
-  private CohortDefinition getBreastfeedingInMastercard() {
+  public CohortDefinition getTxNewBreastfeedingComposition(boolean dsd) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("breastfeedingInMastercard");
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-    String sql =
-        "SELECT p.patient_id "
-            + "FROM   patient p "
-            + "       JOIN encounter e "
-            + "         ON p.patient_id = e.patient_id "
-            + "       JOIN obs o "
-            + "         ON e.encounter_id = o.encounter_id "
-            + "WHERE  p.voided = 0 "
-            + "       AND e.voided = 0 "
-            + "       AND e.encounter_type = %d "
-            + "       AND e.location_id = :location "
-            + "       AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore "
-            + "       AND o.voided = 0 "
-            + "       AND o.concept_id = %d "
-            + "       AND o.value_coded = %d ";
+    cd.setName("patientsBreastfeedingEnrolledOnART");
+    cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setQuery(
-        String.format(
-            sql,
+        PregnantQueries.getBreastfeedingWhileOnArt(
+            commonMetadata.getBreastfeeding().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getPriorDeliveryDateConcept().getConceptId(),
+            hivMetadata.getPregnancyDueDate().getConceptId(),
+            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getCriteriaForArtStart().getConceptId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getBreastfeeding().getConceptId(),
-            hivMetadata.getYesConcept().getConceptId()));
+            hivMetadata.getPtvEtvProgram().getProgramId(),
+            hivMetadata.getPatientGaveBirthWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
+            commonMetadata.getPregnantConcept().getConceptId(),
+            hivMetadata.getNumberOfWeeksPregnant().getConceptId(),
+            hivMetadata.getBPlusConcept().getConceptId(),
+            hivMetadata.getDateOfLastMenstruationConcept().getConceptId(),
+            dsd));
     return cd;
   }
 
   /**
-   * Build TxNew composition cohort definition
+   * <b>Description:</b> Patients who started ART on Period
    *
-   * @param cohortName Cohort name
-   * @return CompositionQuery
+   * @param
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getTxNewCompositionCohort(String cohortName) {
     CompositionCohortDefinition txNewComposition = new CompositionCohortDefinition();
@@ -230,7 +226,8 @@ public class TxNewCohortQueries {
 
     CohortDefinition startedART = genericCohorts.getStartedArtOnPeriod(false, true);
     CohortDefinition transferredIn =
-        hivCohortQueries.getPatientsTransferredFromOtherHealthFacility();
+        resumoMensalCohortQueries
+            .getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2E();
 
     txNewComposition.getSearches().put("startedART", mapStraightThrough(startedART));
     txNewComposition.getSearches().put("transferredIn", mapStraightThrough(transferredIn));

@@ -32,10 +32,12 @@ public class Eri2MonthsCohortQueries {
 
   @Autowired private EriCohortQueries eriCohortQueries;
 
+  @Autowired private HivCohortQueries hivCohortQueries;
+
   /**
-   * C
+   * get all patients who returned for 2nd consultation or 2nd drugs pickUp within 33 days
    *
-   * @return
+   * @return CohortDefinition
    */
   public CohortDefinition
       getAllPatientsWhoReturnedFor2ndConsultationOR2ndDrugsPickUpWithin33Days() {
@@ -57,7 +59,8 @@ public class Eri2MonthsCohortQueries {
             hivMetadata.getArtPickupConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             hivMetadata.getArtDatePickupMasterCard().getConceptId(),
-            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId()));
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId()));
     return cd;
   }
 
@@ -77,7 +80,7 @@ public class Eri2MonthsCohortQueries {
         "initiatedArt",
         EptsReportUtils.map(
             eriCohortQueries.getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${startDate},cohortEndDate=${endDate},location=${location}"));
+            "cohortStartDate=${startDate},cohortEndDate=${endDate},reportingEndDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "pickedDrugs",
         EptsReportUtils.map(
@@ -103,7 +106,7 @@ public class Eri2MonthsCohortQueries {
         "initiatedArt",
         EptsReportUtils.map(
             eriCohortQueries.getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "pickedDrugs",
         EptsReportUtils.map(
@@ -117,12 +120,8 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "transfers",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
-                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            hivCohortQueries.getPatientsTransferredOut(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
     cd.setCompositionString("initiatedArt AND NOT (pickedDrugs OR dead OR transfers)");
     return cd;
   }
@@ -153,12 +152,8 @@ public class Eri2MonthsCohortQueries {
     cd.addSearch(
         "transfers",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
-                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            hivCohortQueries.getPatientsTransferredOut(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
     cd.setCompositionString("pickedDrugsAndStartedART AND NOT (dead OR transfers)");
     return cd;
   }
@@ -180,7 +175,7 @@ public class Eri2MonthsCohortQueries {
         "initiatedArtAndNotTransferIns",
         EptsReportUtils.map(
             eriCohortQueries.getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
@@ -207,7 +202,7 @@ public class Eri2MonthsCohortQueries {
         "initiatedArtAndNotTransferIns",
         EptsReportUtils.map(
             eriCohortQueries.getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "suspendedTreatment",
         EptsReportUtils.map(
@@ -236,16 +231,12 @@ public class Eri2MonthsCohortQueries {
         "initiatedArtAndNotTransferIns",
         EptsReportUtils.map(
             eriCohortQueries.getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     cd.addSearch(
         "transferredOut",
         EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
-                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
+            hivCohortQueries.getPatientsTransferredOut(),
+            "onOrBefore=${reportingEndDate},location=${location}"));
     cd.setCompositionString("initiatedArtAndNotTransferIns AND transferredOut");
     return cd;
   }

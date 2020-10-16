@@ -16,8 +16,6 @@ package org.openmrs.module.eptsreports.metadata;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
@@ -31,8 +29,6 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 
 public class Metadata {
 
-  protected static final Log log = LogFactory.getLog(Metadata.class);
-
   /** @return the PatientIdentifier that matches the passed uuid, name, or primary key id */
   public static PatientIdentifierType getPatientIdentifierType(String lookup) {
     PatientIdentifierType pit = Context.getPatientService().getPatientIdentifierTypeByUuid(lookup);
@@ -43,6 +39,7 @@ public class Metadata {
       try {
         pit = Context.getPatientService().getPatientIdentifierType(Integer.parseInt(lookup));
       } catch (Exception e) {
+        // DO NOTHING
       }
     }
     if (pit == null) {
@@ -66,12 +63,14 @@ public class Metadata {
           c = Context.getConceptService().getConceptByMapping(split[1], split[0]);
         }
       } catch (Exception e) {
+        // DO NOTHING
       }
     }
     if (c == null) {
       try {
         c = Context.getConceptService().getConcept(Integer.parseInt(lookup));
       } catch (Exception e) {
+        // DO NOTHING
       }
     }
     if (c == null) {
@@ -85,7 +84,7 @@ public class Metadata {
    * @see Metadata#getConcept(String)
    */
   public static List<Concept> getConceptList(String lookup) {
-    List<Concept> l = new ArrayList<Concept>();
+    List<Concept> l = new ArrayList<>();
     if (ObjectUtil.notNull(lookup)) {
       String[] split = lookup.split(",");
       for (String s : split) {
@@ -100,7 +99,7 @@ public class Metadata {
    * @see Metadata#getConcept(String)
    */
   public static List<Concept> getConceptList(String lookup, String separator) {
-    List<Concept> l = new ArrayList<Concept>();
+    List<Concept> l = new ArrayList<>();
     if (ObjectUtil.notNull(lookup)) {
       if (ObjectUtil.notNull(separator)) {
         String[] split = lookup.split(separator);
@@ -124,6 +123,7 @@ public class Metadata {
       try {
         form = Context.getFormService().getForm(Integer.parseInt(lookup));
       } catch (Exception e) {
+        // DO NOTHING
       }
     }
     if (form == null) {
@@ -137,7 +137,7 @@ public class Metadata {
    * @see Metadata#getForm(String)
    */
   public static List<Form> getFormList(String lookup) {
-    List<Form> l = new ArrayList<Form>();
+    List<Form> l = new ArrayList<>();
     if (ObjectUtil.notNull(lookup)) {
       String[] split = lookup.split(",");
       for (String s : split) {
@@ -152,7 +152,7 @@ public class Metadata {
    * @see Metadata#getForm(String)
    */
   public static List<Form> getFormList(String lookup, String separator) {
-    List<Form> l = new ArrayList<Form>();
+    List<Form> l = new ArrayList<>();
     if (ObjectUtil.notNull(lookup)) {
       if (ObjectUtil.notNull(separator)) {
         String[] split = lookup.split(separator);
@@ -176,6 +176,7 @@ public class Metadata {
       try {
         et = Context.getEncounterService().getEncounterType(Integer.parseInt(lookup));
       } catch (Exception e) {
+        // DO NOTHING
       }
     }
     if (et == null) {
@@ -192,7 +193,7 @@ public class Metadata {
    * @see Metadata#getEncounterType(String)
    */
   public static List<EncounterType> getEncounterTypeList(String lookup) {
-    List<EncounterType> l = new ArrayList<EncounterType>();
+    List<EncounterType> l = new ArrayList<>();
     if (ObjectUtil.notNull(lookup)) {
       String[] split = lookup.split(",");
       for (String s : split) {
@@ -208,7 +209,7 @@ public class Metadata {
    * @see Metadata#getEncounterType(String)
    */
   public static List<EncounterType> getEncounterTypeList(String lookup, String separator) {
-    List<EncounterType> l = new ArrayList<EncounterType>();
+    List<EncounterType> l = new ArrayList<>();
     if (ObjectUtil.notNull(lookup)) {
       if (ObjectUtil.notNull(separator)) {
         String[] split = lookup.split(separator);
@@ -232,6 +233,7 @@ public class Metadata {
       try {
         rt = Context.getPersonService().getRelationshipType(Integer.parseInt(lookup));
       } catch (Exception e) {
+        // DO NOTHING
       }
     }
     if (rt == null) {
@@ -250,6 +252,7 @@ public class Metadata {
       try {
         et = Context.getLocationService().getLocation(Integer.parseInt(lookup));
       } catch (Exception e) {
+        // DO NOTHING
       }
     }
     if (et == null) {
@@ -269,6 +272,7 @@ public class Metadata {
       try {
         et = Context.getPersonService().getPersonAttributeType(Integer.parseInt(lookup));
       } catch (Exception e) {
+        // DO NOTHING
       }
     }
     if (et == null) {

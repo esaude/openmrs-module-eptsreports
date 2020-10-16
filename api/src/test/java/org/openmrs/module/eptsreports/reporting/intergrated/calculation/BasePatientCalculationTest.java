@@ -46,7 +46,7 @@ public abstract class BasePatientCalculationTest extends BaseModuleContextSensit
     cacheEntries.put("onOrBefore", testsHelper.getDate("2019-05-30 00:00:00.0"));
     setEvaluationContext(cacheEntries);
 
-    executeDataSet("calculationsTest.xml");
+    executeDataSet("metadata.xml");
   }
 
   /** This test runs for all classes that extend this class, it's the basic calculation unit test */

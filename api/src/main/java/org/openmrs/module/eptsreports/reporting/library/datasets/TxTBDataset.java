@@ -123,8 +123,7 @@ public class TxTBDataset extends BaseDataSet {
     CohortIndicator positiveResultsReturned =
         eptsGeneralIndicator.getIndicator(
             "positiveInvestigationResult",
-            EptsReportUtils.map(
-                txTbCohortQueries.getPatientsPositiveResultsReturnedComposition(), mappings));
+            EptsReportUtils.map(txTbCohortQueries.positiveResultsReturned(), mappings));
 
     dataSetDefinition.addColumn(
         "TXB_DEN",

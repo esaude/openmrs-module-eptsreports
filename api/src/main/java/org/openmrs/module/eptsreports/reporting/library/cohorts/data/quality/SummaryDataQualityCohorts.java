@@ -182,11 +182,11 @@ public class SummaryDataQualityCohorts {
   }
 
   /**
-   * The patients whose date of drug pick up is before 1985 The date of clinical consultation is
-   * before 1985
+   * According with the encounterList The patients whose date of drug pick up is before 1985 The
+   * date of clinical consultation is before 1985
    *
-   * @param encounterList
-   * @return
+   * @param encounterList - list of encounters
+   * @return CohortDefinition
    */
   public CohortDefinition getPatientsWhoseEncounterIsBefore1985(List<Integer> encounterList) {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();

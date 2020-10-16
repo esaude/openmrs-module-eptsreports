@@ -11,15 +11,14 @@
 	<location location_id="4" name="6 Azure" description="NA" address2="NA" state_province="NA" country="NetBeans" creator="1" date_created="2008-10-13 11:32:52" county_district="NA" address6="NA" retired="0" uuid="e3b32fc2-1d5f-11e0-b929-000c29ad1d07" />
 	<location location_id="21" name="24 de Julho" description="NA" address2="NA" state_province="NA" country="MA" date_created="2008-10-13 11:32:52" county_district="NA" address6="NA" retired="0" uuid="e2b32fc2-1d5f-11e0-b929-000c29ad1d07" />
 
-
 <person person_id="1020" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="true"
             creator="1" date_created="2005-01-01 00:00:00.0" voided="false" death_date="2019-09-30"
             uuid="8b6657b8-57dc-11ea-8247-a0a4c5d1c75c"/>
 
-
 			<person person_id="1021" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="true"
             creator="1" date_created="2005-01-01 00:00:00.0" voided="false" death_date="2019-09-25"
             uuid="bb9df255-57dc-11ea-8247-a0a4c5d1c75c"/>
+
 
 
 			<person person_id="1022" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
@@ -210,12 +209,21 @@
 					 <global_property property="eptsreports.transferOutToAnotherFacilityConceptUuid"
                      property_value="e1de1cf6-1d5f-11e0-b929-000c29ad1d07"
                      description="UUID for the TRANSFERIDO PARA concept" uuid="77e584e7-5a09-11ea-8247-a0a4c5d1c75c"/>
+
+       <global_property property="eptsreports.activeTBConceptUuid" property_value="63b15479-5a05-4bdc-a6e5-eab175743122" description="UUID for the TUBERCULOSE ACTIVO concept" uuid="763a4102-1d49-47ae-b19e-aba7e9d86b52" />
+
+	<global_property property="eptsreports.hasTbSymptomsConceptUuid" property_value="2eab4e55-d0d0-4fa8-8d23-b40eaaee44c8" description="UUID for the Has Tb Symptoms concept" uuid="6fdb03ca-d223-11ea-a9e9-1f1143db8a7b" />
+
+
+					 <global_property property="eptsreports.isoniazidUseConceptUuid"
+                     property_value="be4a76ca-662a-4c39-903b-71983f5f67c9"
+                     description="UUID for the Uso de Isoniazida concept" uuid="7a24b039-a3f2-4a53-bdf0-584011db4f42"/>
 					 
-	<concept concept_id="9999" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2012-02-27 11:30:21" uuid="f69b1fe0-a657-4225-a996-20b599132508" />
+	<concept concept_id="23808" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2012-02-27 11:30:21" uuid="f69b1fe0-a657-4225-a996-20b599132508" />
 
 	<concept concept_id="23891" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1" date_created="2019-08-08 14:51:38" changed_by="1" date_changed="2019-08-08 14:51:38" uuid="68d65d0c-8fee-456b-8e95-caed990351e1" />
 
-	<concept concept_id="8888" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2012-02-27 11:30:21" uuid="4f139c0a-9843-4dc4-b3e5-5aa00812e605" />
+	<concept concept_id="6300" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2012-02-27 11:30:21" uuid="4f139c0a-9843-4dc4-b3e5-5aa00812e605" />
 
  <concept concept_id="6272" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
              date_created="2012-02-29 09:46:11" uuid="3bd7a5d1-afc0-478d-9aa6-c7bdd9a050c8"/>
@@ -285,11 +293,19 @@
 
 	<concept concept_id="1602" retired="0" datatype_id="4" class_id="5" is_set="0" creator="1" date_created="2008-10-13 23:14:01" uuid="e1dcaaec-1d5f-11e0-b929-000c29ad1d07" />
 
-
 	<concept concept_id="23865" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2008-10-13 23:14:01" uuid="e07fb227-7a5a-4edf-93e8-7633c9fd1ea0" />
 
 		 <concept concept_id="23866" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1"
              date_created="2019-07-09 13:00:20" uuid="74f6c17f-9819-41da-ba34-5910f67d24d0"/>
+	<concept concept_id="23758" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2008-10-13 23:14:01" uuid="2eab4e55-d0d0-4fa8-8d23-b40eaaee44c8" />
+
+                 <concept concept_id="23761" retired="0" datatype_id="2" class_id="4" is_set="0" creator="1" date_created="2018-10-24 09:22:44" changed_by="1" date_changed="2019-01-07 23:01:13" uuid="63b15479-5a05-4bdc-a6e5-eab175743122" />
+
+               <concept concept_id="6122" retired="0" datatype_id="2" class_id="4" is_set="0" creator="1" date_created="2018-10-24 09:22:44" changed_by="1" date_changed="2019-01-07 23:01:13" uuid="be4a76ca-662a-4c39-903b-71983f5f67c9" />
+
+      <concept concept_id="23758" retired="0" datatype_id="2" class_id="4" is_set="0" creator="1" date_created="2018-10-24 09:22:44" changed_by="1" date_changed="2019-01-07 23:01:13" uuid="2eab4e55-d0d0-4fa8-8d23-b40eaaee44c8" />
+
+	<concept concept_id="23866" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1" date_created="2019-07-09 13:00:20" uuid="74f6c17f-9819-41da-ba34-5910f67d24d0"/>
 
  <concept_name concept_id="1781" name="ARV SERVICE - CARE" locale="en" creator="1" date_created="2008-10-13 05:58:15"
                   concept_name_id="7172" voided="0" uuid="c953fdcc-e049-4c30-b847-a86eb1851f51"
@@ -307,6 +323,7 @@
 
 	<concept_name concept_id="1369" name="TRANSFERIDO DE" locale="pt" creator="1" date_created="2008-10-25 13:54:23" concept_name_id="3145" voided="0" uuid="e24e2ffa-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
 
+	<concept_name concept_id="1369" name="TRANSFER FROM OTHER FACILITY" locale="en" creator="1" date_created="2008-10-25 13:54:23" concept_name_id="2465" voided="0" uuid="e249fb4c-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
 
 <concept_name concept_id="1706" name="TRANSFERIDO PARA" locale="pt" creator="1" date_created="2008-10-25 13:54:23" concept_name_id="3140" voided="0" uuid="e24e2b72-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
 
@@ -326,14 +343,18 @@
 	<concept_name concept_id="1707" name="ABANDONED" locale="en" creator="1" date_created="2008-10-25 13:17:30" concept_name_id="5369" voided="0" uuid="e25e3a80-1d5f-11e0-b929-000c29ad1d07" locale_preferred="0" />
 
 	<concept_name concept_id="1366" name="PATIENT HAS DIED" locale="en" creator="1" date_created="2008-10-13 05:58:15" concept_name_id="2462" voided="0" uuid="e249f6c4-1d5f-11e0-b929-000c29ad1d07" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
- 
- <concept_name concept_id="23866" name="Date of ART Pickup" locale="en" creator="1" date_created="2008-10-13 05:58:15"
-                  concept_name_id="7185" voided="0" uuid="58316739-bdba-4f65-9661-ddd04e089f49"
-                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
-				  <concept_name concept_id="23865" name="ART PICKUP" locale="en" creator="1" date_created="2008-10-13 05:58:15"
-                  concept_name_id="33689" voided="0" uuid="02dd0763-2269-431d-8531-fe438c15d0a1"
-                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+	<concept_name concept_id="16" name="FOLLOWING" locale="en" creator="1" date_created="2008-10-13 05:58:15" concept_name_id="2463" voided="0" uuid="e249f6c4-1d5f-11e0-b929-000c29ad1d08" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+
+	<concept_name concept_id="14" name="NONE" locale="en" creator="1" date_created="2008-10-13 05:58:15" concept_name_id="2467" voided="0" uuid="e249f6c4-1d5f-11e0-b929-000c29ad1d09" concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+
+ 	<concept_name concept_id="23866" name="Date of ART Pickup" locale="en" creator="1" date_created="2008-10-13 05:58:15"  concept_name_id="7185" voided="0" uuid="58316739-bdba-4f65-9661-ddd04e089f49"   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+	<concept_name concept_id="23865" name="ART PICKUP" locale="en" creator="1" date_created="2008-10-13 05:58:15" concept_name_id="33689" voided="0" uuid="02dd0763-2269-431d-8531-fe438c15d0a1" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+	<concept_name concept_id="23758" name="TUBERCULOSIS SYMPTOMS" locale="en" creator="1" date_created="2008-10-13 05:58:15" concept_name_id="33276" voided="0" uuid="cc492459-47f6-444b-ac81-c141311804f4" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+	<concept_name concept_id="6122" name="ISONIAZID USE" locale="en" creator="1" date_created="2008-10-13 05:58:15" concept_name_id="6727" voided="0" uuid="103ccfda-358c-4387-911a-4758d7f5d0f2" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
 	<program program_id="1" concept_id="1781" creator="1" date_created="2012-02-29 09:42:25" retired="0" name="SERVICO TARV - CUIDADO" description="Programa de seguimento e cuidado aos pacientes HIV+" uuid="7b2e4a0a-d4eb-4df7-be30-78ca4b28ca99" />
 
@@ -344,9 +365,9 @@
 	 <program_workflow program_workflow_id="2" program_id="2" concept_id="6274" creator="1"
                       date_created="2012-02-29 10:17:25" retired="0" uuid="a59bd818-d2f0-4a9a-a2f2-0a54af4ce04e"/>
 
-	<program_workflow_state program_workflow_state_id="28" program_workflow_id="1" concept_id="1369" initial="1" terminal="0" creator="1" date_created="2013-07-24 11:45:26" retired="0" uuid="b227d4ff-2dc3-4c18-9a58-d4de8d077746" />
+	<program_workflow_state program_workflow_state_id="28" program_workflow_id="1" concept_id="1369" initial="0" terminal="0" creator="1" date_created="2013-07-24 11:45:26" retired="0" uuid="b227d4ff-2dc3-4c18-9a58-d4de8d077746" />
 
-	<program_workflow_state program_workflow_state_id="29" program_workflow_id="2" concept_id="1369" initial="1" terminal="0" creator="1" date_created="2013-07-24 11:45:49" retired="0" uuid="ef06e6df-6026-4d5a-88f9-b2c3e0495dc8" />
+	<program_workflow_state program_workflow_state_id="29" program_workflow_id="2" concept_id="1369" initial="0" terminal="0" creator="1" date_created="2013-07-24 11:45:49" retired="0" uuid="ef06e6df-6026-4d5a-88f9-b2c3e0495dc8" />
 
 	<program_workflow_state program_workflow_state_id="9" program_workflow_id="2" concept_id="1707" initial="0" terminal="0" creator="1" date_created="2012-02-29 10:20:45" retired="0" uuid="06124f77-4a49-49f8-8655-fa1fe5262936" />
 
@@ -421,6 +442,8 @@
     
     <encounter encounter_id="33683" encounter_type="53" patient_id="1004" encounter_datetime="2019-09-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="d012e5e6-06ff-4a1c-9896-7ad705f0e4e1" location_id="21" />
 
+    <encounter encounter_id="44683" encounter_type="52" patient_id="1004" encounter_datetime="2019-09-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="d012e5e6-06ff-4a1c-9897-8ad705f0e4e1" location_id="21" />
+
 	<encounter encounter_id="32682" encounter_type="53" patient_id="1010" encounter_datetime="2019-09-25 00:00:00" creator="1" date_created="2019-09-25 00:00:00" voided="0" uuid="d012e4e6-05ff-4a1c-8896-7ad705f0e4e1" location_id="21" />
 
 	<encounter encounter_id="32672" encounter_type="6" patient_id="2" encounter_datetime="2013-06-17 00:00:00" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="d012e4e6-05ff-4a1c-8896-7fd705f0e4e1" location_id="1" />
@@ -462,6 +485,8 @@
 
 	<obs obs_id="274088" person_id="6" concept_id="6263" encounter_id="32673" obs_datetime="2013-06-17 00:00:00" value_coded="6260" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="28297084-dd14-4a4c-9e85-4b0bf149795b" location_id="1" />
 
+	<obs obs_id="294088" person_id="1004" concept_id="23866" encounter_id="44683" obs_datetime="2019-09-27 00:00:00" value_datetime="2019-10-19 12:55:48" creator="1" date_created="2019-10-19 12:55:48" voided="0" uuid="28297084-dd14-4a4c-9e96-5b0bf149795b" location_id="1" />
+
 	<obs obs_id="273788" person_id="8" concept_id="6264" encounter_id="32643" obs_datetime="2013-05-03 00:00:00" value_coded="6261" creator="1" date_created="2013-06-19 10:03:01" voided="0" uuid="c0a0d917-ea43-443c-8924-31fbd88f2410" location_id="1" />
 
 	<obs obs_id="276198" person_id="1005" concept_id="6257" encounter_id="32647" obs_datetime="2013-05-03 00:00:00" value_coded="1066" creator="1" date_created="2013-06-19 10:03:01" voided="0" uuid="9f3e7d16-6480-4f11-aa25-1103fc78ff4e" location_id="2" />
@@ -472,10 +497,10 @@
 
 	<obs obs_id="161898" person_id="1010" concept_id="1369" encounter_id="32682" obs_datetime="2019-09-26 00:00:00" value_coded="1065" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="6d6471cc-45b5-4731-b6d1-8e69cb882cd7" location_id="21" />
 
-	<obs obs_id="161899" person_id="1010" concept_id="8888" encounter_id="32682" obs_datetime="2019-09-26 00:00:00" value_coded="6275" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="6d6371cc-45b5-4731-b6d1-8e69cb882cd7" location_id="21" />
+	<obs obs_id="161899" person_id="1010" concept_id="6300" encounter_id="32682" obs_datetime="2019-09-26 00:00:00" value_coded="6275" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="6d6371cc-45b5-4731-b6d1-8e69cb882cd7" location_id="21" />
 
-	<obs obs_id="161999" person_id="1004" concept_id="9999" encounter_id="33683" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-09-27 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="6d6371cc-45b5-5751-b6d1-8e69cb882cd7" location_id="21" />
-
+	<obs obs_id="161999" person_id="1004" concept_id="23808" encounter_id="33683" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-09-27 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="6d6371cc-45b5-5751-b6d1-8e69cb882cd7" location_id="21" /> 
+ 
 
 	<!-- testGetNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1 -->
 	<person person_id="1933" gender="F" birthdate="1992-04-06" birthdate_estimated="0" dead="0" creator="1"
@@ -485,8 +510,363 @@
 	<encounter encounter_id="522431" encounter_type="53" patient_id="1933" location_id="21"
 			   encounter_datetime="2019-09-26 00:00:00" creator="1" date_created="2019-09-26 09:05:34" voided="0"
 			   uuid="bf769c55-87e7-49d7-930c-5c66afb85025" />
-	<obs obs_id="4129302" person_id="1933" concept_id="9999" encounter_id="522431" obs_datetime="2019-09-26 00:00:00"
+	<obs obs_id="4129302" person_id="1933" concept_id="23808" encounter_id="522431" obs_datetime="2019-09-26 00:00:00"
 		 location_id="21" value_datetime="2012-05-07 00:00:00" comments="24 de julho" creator="1"
 		 date_created="2019-09-26 09:05:35" voided="0" uuid="fc4fa73c-f591-4e6e-9861-a8de95b30cc2"/>
 	<!---->
+ 
+	<!-- testGetPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2 -->
+	<person person_id="41584" gender="F" birthdate="2000-10-06" birthdate_estimated="false" dead="false" creator="1"
+			date_created="2000-10-06 09:30:10" voided="false" uuid="75d5cf82-ca66-4eb1-b217-9808fdc97818"
+			deathdate_estimated="false"/>
+
+	<patient patient_id="41584" creator="1" date_created="2019-02-06 09:56:39" voided="false"/>
+
+	<encounter encounter_id="1135178" encounter_type="6" patient_id="41584" location_id="21"
+			   encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+			   uuid="51eebe5e-109a-47e7-9553-1ba2799c799a" />
+
+	<obs obs_id="9316926" person_id="41584" concept_id="1781" encounter_id="1135178" obs_datetime="2019-12-09 00:00:00"
+		 location_id="21" value_datetime="2019-12-16 00:00:00" comments="24 de julho" creator="1"
+		 date_created="2019-12-09 10:00:33" voided="0" uuid="d9dcaadf-3ed1-444e-a8db-61755469e062"/>
+
+	<!-- testgetNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2-->
+
+	<person person_id="12475" gender="M" birthdate="2010-01-01" birthdate_estimated="false" dead="false" creator="1"
+			date_created="2019-12-18 14:45:41" voided="0" uuid="07850bff-9e61-4155-a885-e2c4eaee9fcd"
+			deathdate_estimated="false"/>
+
+	<patient patient_id="12475" creator="1" date_created="2019-12-18 14:45:41" voided="0"/>
+
+	<encounter encounter_id="539804" encounter_type="53" patient_id="12475" location_id="21"
+			   encounter_datetime="2019-12-18 00:00:00" creator="1" date_created="2019-12-18 14:50:26" voided="0"
+			   uuid="e422ecf9-75dd-4367-b21e-54bccabc4763" />
+
+	<obs obs_id="4267228" person_id="12475" concept_id="1369" encounter_id="539804" obs_datetime="2019-11-12 00:00:00"
+		 location_id="21" value_coded="1065" comments="24 de julho" creator="1"
+		 date_created="2019-12-18 14:50:26" voided="0" uuid="661aa566-62cb-4781-b0e3-33714979a854"/>
+
+	<obs obs_id="4267221" person_id="12475" concept_id="6300" encounter_id="539804" obs_datetime="2019-12-18 00:00:00"
+		 location_id="21" value_coded="6276"  comments="24 de julho" creator="1"
+		 date_created="2019-12-18 14:50:26" voided="0" uuid="f201f3df-6c0a-4503-a5b3-694ed51e391b"/>
+
+	<obs obs_id="4267223" person_id="12475" concept_id="23891" encounter_id="539804" obs_datetime="2019-11-12 00:00:00"
+		 location_id="21" comments="24 de julho" creator="1" value_datetime="2019-11-19 14:50:26"
+		 date_created="2019-12-18 14:50:26" voided="0" uuid="b1ec862b-e844-4e33-9771-870eaa6509b0"/>
+
+	<patient_program patient_program_id="5618" patient_id="12475" program_id="2" date_enrolled="2013-11-16 00:00:00"
+		 creator="1" date_created="2013-11-16 17:53:04" voided="0"
+		 uuid="196f40e0-ccf7-11ea-b3bf-63b9e775cea8" location_id="21"/>
+
+	<patient_state patient_state_id="7574" patient_program_id="5618" state="7" start_date="2019-11-01 14:50:26"
+					end_date="2019-11-11 14:50:26" creator="1" date_created="2019-11-01 09:53:04" voided="0"/>
+
+	<!-- testgetPatientsTransferredOutB5-->
+
+	<person person_id="12304" gender="M" birthdate="1982-01-01" birthdate_estimated="false" dead="false" creator="1"
+			date_created="2019-11-11 09:54:27" voided="0" uuid="6e280a3b-8b67-4822-88a2-c10b760cb4d6"
+			deathdate_estimated="false"/>
+
+	<patient patient_id="12304" creator="1" date_created="2019-11-11 09:54:27" voided="0"/>
+
+	<patient_program patient_program_id="6519" patient_id="12304" program_id="2" date_enrolled="2013-08-01 00:00:00"
+			creator="1" date_created="2013-10-16 17:53:04" voided="0" location_id="21"
+			uuid="2807fcac-cda4-11ea-a50c-471a7afb7eff" />
+
+	<patient_state patient_state_id="7575" patient_program_id="6519" state="7" start_date="2019-11-01 14:50:26" creator="1"
+				date_created="2019-11-11 17:53:04" voided="0"/>
+
+	<encounter encounter_id="529881" encounter_type="6" patient_id="12304"  location_id="21"
+		 encounter_datetime="2019-11-01 00:00:00" creator="1" date_created="2019-11-11 09:58:52" voided="0"
+		 uuid="7f71ea09-312f-43f1-954a-b1b339e22a25" />
+
+	<obs obs_id="4138576" person_id="12304" concept_id="6273" encounter_id="529881" obs_datetime="2019-11-01 00:00:00"
+		 location_id="21" value_coded="1706" creator="1" date_created="2019-11-11 09:58:52" voided="0"
+		 uuid="82d367ac-6e9a-433e-bf46-1ce440cedd52"/>
+
+	<!-- testgetPatientsWithStartDrugs-->
+
+	<person person_id="12580" gender="F" birthdate="1999-01-01" birthdate_estimated="false" dead="false" creator="1"
+			date_created="2019-11-18 14:45:41" voided="false" uuid="4fbbdcb4-ccff-11ea-a5ef-1f8e35415342"
+			deathdate_estimated="false"/>
+
+	<patient patient_id="12580" creator="1" date_created="2019-11-18 14:45:41" voided="false"/>
+
+	<encounter encounter_id="12580" encounter_type="6" patient_id="12580" location_id="21"
+				encounter_datetime="2019-12-18 00:00:00" creator="1" date_created="2019-12-18 14:50:26" voided="0"
+				uuid="fa97e4aa-cd01-11ea-9333-2f3f5eafbe00" />
+
+	<obs obs_id="12580" person_id="12580" concept_id="6273" encounter_id="12580" obs_datetime="2019-11-12 00:00:00"
+				location_id="21" value_coded="1256" comments="24 de julho" creator="1"
+				date_created="2019-12-18 14:50:26" voided="0" uuid="02d9b4fa-cd01-11ea-8910-4f5c82d70b6d"/>
+
+
+
+		 <!-- getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTBC3ShouldPass  -->
+ <person person_id="6000001" gender="F" birthdate="2000-10-06" birthdate_estimated="false" dead="false" creator="1"
+	date_created="2000-10-06 09:30:10" voided="0" uuid="adedde80-d19c-11ea-9cc7-274983fed22e"
+	deathdate_estimated="0"/>
+
+	<patient patient_id="6000001" creator="1" date_created="2019-02-06 09:56:39" voided="0"/>
+
+	<encounter encounter_id="7000001" encounter_type="53" patient_id="6000001"
+	 encounter_datetime="2019-10-10 00:00:00" creator="1" date_created="2019-10-10 00:00:00"
+	 voided="0" uuid="a34ba966-d1b1-11ea-ae83-0b6039bf3491" location_id="21" />
+
+	<obs obs_id="8000001" person_id="6000001" concept_id="23808" encounter_id="7000001" obs_datetime="2019-10-10 00:00:00"
+	  creator="1" date_created="2013-06-19 12:55:48" voided="0"
+	uuid="a811c4c6-d1b1-11ea-a1e8-8755f07100b9" location_id="21" value_datetime="2019-10-10"/>
+
+	<encounter encounter_id="7000002" encounter_type="6" patient_id="6000001"
+	 encounter_datetime="2019-09-27 00:00:00" creator="1" date_created="2019-09-27 00:00:00"
+	 voided="0" uuid="f70cd248-d1d7-11ea-8187-071b40ab3f74" location_id="21" />
+
+	<obs obs_id="8000002" person_id="6000001" concept_id="23761" encounter_id="7000002" obs_datetime="2019-09-27 00:00:00"
+	  creator="1" date_created="2019-09-27 00:00:00" voided="0"
+	uuid="f06ffc76-d1d7-11ea-a8db-dbe601aeecd0" location_id="21" value_coded="1065"/>
+
+
+	<!--getPatientsWhoStartedTPIShouldPass-->
+	 <person person_id="6000002" gender="F" birthdate="2000-10-06" birthdate_estimated="false" dead="false" creator="1"
+	date_created="2000-10-06 09:30:10" voided="0" uuid="baa72c10-d220-11ea-9b0a-13850c45a77d"
+	deathdate_estimated="0"/>
+
+	<patient patient_id="6000002" creator="1" date_created="2019-02-06 09:56:39" voided="0"/>
+
+	<encounter encounter_id="7000003" encounter_type="53" patient_id="6000002"
+	 encounter_datetime="2019-10-10 00:00:00" creator="1" date_created="2019-10-10 00:00:00"
+	 voided="0" uuid="c2120d80-d220-11ea-b59a-2fde0838d1e5" location_id="21" />
+
+	<obs obs_id="8000003" person_id="6000002" concept_id="23808" encounter_id="7000003" obs_datetime="2019-10-10 00:00:00"
+	  creator="1" date_created="2013-06-19 12:55:48" voided="0"
+	uuid="ccf0677e-d220-11ea-b987-7faf5a26d881" location_id="21" value_datetime="2019-10-10"/>
+
+	<encounter encounter_id="7000004" encounter_type="6" patient_id="6000002"
+	 encounter_datetime="2019-09-27 00:00:00" creator="1" date_created="2019-09-27 00:00:00"
+	 voided="0" uuid="6dedc860-d221-11ea-8949-fffbf75223a5" location_id="21" />
+
+	<obs obs_id="8000004" person_id="6000002" concept_id="6122" encounter_id="7000004" obs_datetime="2019-09-27 00:00:00"
+	  creator="1" date_created="2019-09-27 00:00:00" voided="0"
+	uuid="7458d762-d221-11ea-a75e-6765711a9e6a" location_id="21" value_coded="1256"/>
+
+
+	<!-- getPatientScreenedForTb -->
+	 <person person_id="6000003" gender="F" birthdate="2000-10-06" birthdate_estimated="false" dead="false" creator="1"
+	date_created="2000-10-06 09:30:10" voided="0" uuid="a37d9284-d222-11ea-bcfd-f3c1e44e85be"
+	deathdate_estimated="0"/>
+
+	<patient patient_id="6000003" creator="1" date_created="2019-02-06 09:56:39" voided="0"/>
+
+	<encounter encounter_id="7000005" encounter_type="53" patient_id="6000003"
+	 encounter_datetime="2019-10-10 00:00:00" creator="1" date_created="2019-10-10 00:00:00"
+	 voided="0" uuid="97bf2ade-d222-11ea-a46b-a350399183c3" location_id="21" />
+
+	<obs obs_id="8000005" person_id="6000003" concept_id="23808" encounter_id="7000005" obs_datetime="2019-10-10 00:00:00"
+	  creator="1" date_created="2013-06-19 12:55:48" voided="0"
+	uuid="b5236ee6-d222-11ea-81ef-0b2a31540577" location_id="21" value_datetime="2019-10-10"/>
+
+	<encounter encounter_id="7000006" encounter_type="6" patient_id="6000003"
+	 encounter_datetime="2019-09-27 00:00:00" creator="1" date_created="2019-09-27 00:00:00"
+	 voided="0" uuid="045ab294-d223-11ea-9612-532fd28d9585" location_id="21" />
+
+	<obs obs_id="8000006" person_id="6000003" concept_id="23758" encounter_id="7000006" obs_datetime="2019-09-27 00:00:00"
+	  creator="1" date_created="2019-09-27 00:00:00" voided="0"
+	uuid="0e6ffe7e-d223-11ea-acaa-8fdc7c2a8a49" location_id="21" value_coded="1065"/>
+
+	
+	<!--testGetPatientsWhoHadAtLeastDrugPickUp-->
+	<person person_id="5642" gender="F" birthdate="2000-10-06" birthdate_estimated="false" dead="false" creator="1"
+			date_created="2000-10-06 09:30:10" voided="false" uuid="d69c2cb2-d0bd-11ea-9518-0242ac120002"
+			deathdate_estimated="false"/>
+
+	<patient patient_id="5642" creator="1" date_created="2019-02-06 09:56:39" voided="false"/>
+
+	<encounter encounter_id="958624" encounter_type="18" patient_id="5642" location_id="21"
+			   encounter_datetime="2019-08-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+			   uuid="edd4fb91-d0bd-11ea-9518-0242ac120002" />
+
+	<obs obs_id="9584632" person_id="5642" concept_id="5096" encounter_id="958624" obs_datetime="2019-12-09 00:00:00"
+		 location_id="21" value_datetime="2019-08-16 00:00:00" comments="24 de julho" creator="1"
+		 date_created="2019-12-09 10:00:33" voided="0" uuid="f661d190-d0bd-11ea-9518-0242ac120002"/>
+
+		 <!--testGetNumberOfPatientsTransferredFromAnotherHealthFacilityByEndOfPreviousMonthB12-->
+	<person person_id="1563" gender="F" birthdate="2000-10-06" birthdate_estimated="false" dead="false" creator="1"
+			date_created="2000-10-06 09:30:10" voided="false" uuid="3dd97a0a-d0c0-11ea-9518-0242ac120002"
+			deathdate_estimated="false"/>
+
+	<patient patient_id="1563" creator="1" date_created="2019-02-06 09:56:39" voided="false"/>
+
+	<encounter encounter_id="76526" encounter_type="53" patient_id="1563" location_id="21"
+			   encounter_datetime="2019-08-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+			   uuid="443a22bb-d0c0-11ea-9518-0242ac120002" />
+
+	<obs obs_id="988562" person_id="1563" concept_id="1369" value_coded="1065" encounter_id="76526" obs_datetime="2019-12-09 00:00:00"
+		 location_id="21" comments="24 de julho" creator="1"
+		 date_created="2019-12-09 10:00:33" voided="0" uuid="4cb9ac19-d0c0-11ea-9518-0242ac120002"/>
+
+	<obs obs_id="988563" person_id="1563" concept_id="6300" value_coded="6276" encounter_id="76526" obs_datetime="2019-12-09 00:00:00"
+		 location_id="21" comments="24 de julho" creator="1"
+		 date_created="2019-12-09 10:00:33" voided="0" uuid="53321af4-d0c0-11ea-9518-0242ac120002"/>
+
+		 <!--testGetPatientsPreTarvScreenedTB-->
+	<person person_id="86526" gender="F" birthdate="2000-10-06" birthdate_estimated="false" dead="false" creator="1"
+			date_created="2000-10-06 09:30:10" voided="false" uuid="e3933b9e-d16f-11ea-9518-0242ac120002"
+			deathdate_estimated="false"/>
+
+	<patient patient_id="86526" creator="1" date_created="2019-02-06 09:56:39" voided="false"/>
+
+	<encounter encounter_id="462266" encounter_type="53" patient_id="86526" location_id="21"
+			   encounter_datetime="2019-08-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+			   uuid="f0ed57bb-d16f-11ea-9518-0242ac120002" />
+
+	<obs obs_id="256415" person_id="86526" concept_id="23808" value_datetime="2019-11-09 00:00:00" encounter_id="462266" 
+		obs_datetime="2019-12-09 00:00:00" location_id="21" comments="24 de julho" creator="1"
+		 date_created="2019-12-09 10:00:33" voided="0" uuid="b89338ac-d181-11ea-9518-0242ac120002"/>
+
+		 <encounter encounter_id="462267" encounter_type="6" patient_id="86526" location_id="21"
+			   encounter_datetime="2019-08-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+			   uuid="936bb231-d170-11ea-9518-0242ac120002" />
+
+	<obs obs_id="256416" person_id="86526" concept_id="23758" value_coded="1065" encounter_id="462267" 
+		obs_datetime="2019-12-09 00:00:00" location_id="21" comments="24 de julho" creator="1"
+		 date_created="2019-12-09 10:00:33" voided="0" uuid="99891203-d170-11ea-9518-0242ac120002"/>
+		 
+		 <!--testGetPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTbC1 & getNumberOfPatientTbScreenedInFirstEncounter-->
+	<person person_id="6254" gender="F" birthdate="2000-10-06" birthdate_estimated="false" dead="false" creator="1"
+			date_created="2000-10-06 09:30:10" voided="false" uuid="e31a113e-d181-11ea-9518-0242ac120002"
+			deathdate_estimated="false"/>
+
+	<patient patient_id="6254" creator="1" date_created="2019-02-06 09:56:39" voided="false"/>
+
+	<encounter encounter_id="462145" encounter_type="53" patient_id="6254" location_id="21"
+			   encounter_datetime="2019-08-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+			   uuid="ea2e7511-d181-11ea-9518-0242ac120002" />
+
+	<obs obs_id="795216" encounter_id="462145"  person_id="6254" concept_id="23808" value_datetime="2019-11-09 00:00:00" 
+		obs_datetime="2019-12-09 00:00:00" location_id="21" comments="24 de julho" creator="1"
+		 date_created="2019-12-09 10:00:33" voided="0" uuid="f165b77f-d181-11ea-9518-0242ac120002"/>
+
+		 <encounter encounter_id="462146" encounter_type="6" patient_id="6254" location_id="21"
+			   encounter_datetime="2019-09-21 00:00:00" creator="1" date_created="2019-09-21 10:00:32" voided="0"
+			   uuid="3f68f883-d185-11ea-9518-0242ac120002" />
+
+	<obs obs_id="795217" encounter_id="462146"  person_id="6254" concept_id="23758" value_coded="1065" 
+		obs_datetime="2019-09-21 00:00:00" location_id="21" comments="24 de julho" creator="1"
+		 date_created="2019-09-21 10:00:33" voided="0" uuid="45146bd3-d185-11ea-9518-0242ac120002"/>
+
+		<!--testGetPatientsPreTarvScreenedTB-->
+	<person person_id="15236" gender="F" birthdate="2000-10-06" birthdate_estimated="false" dead="false" creator="1"
+			date_created="2000-10-06 09:30:10" voided="false" uuid="805a4dec-d18c-11ea-9518-0242ac120002"
+			deathdate_estimated="false"/>
+
+	<patient patient_id="15236" creator="1" date_created="2019-02-06 09:56:39" voided="false"/>
+
+	<encounter encounter_id="354898" encounter_type="53" patient_id="15236" location_id="21"
+			   encounter_datetime="2019-08-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+			   uuid="ed9cb4ae-d18e-11ea-9518-0242ac120002" />
+
+	<obs obs_id="166598" person_id="15236" concept_id="23808" value_datetime="2019-11-09 00:00:00"  encounter_id="354898" 
+		obs_datetime="2019-12-09 00:00:00" location_id="21" comments="24 de julho" creator="1"
+		 date_created="2019-12-09 10:00:33" voided="0" uuid="f6ba84ff-d18e-11ea-9518-0242ac120002"/>
+
+	<encounter encounter_id="354899" encounter_type="6" patient_id="15236" location_id="21"
+			   encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+			   uuid="8a93194d-d18c-11ea-9518-0242ac120002" />
+
+	<obs obs_id="166599" person_id="15236" concept_id="6122" value_coded="1256" encounter_id="354899" 
+		obs_datetime="2019-12-09 00:00:00" location_id="21" comments="24 de julho" creator="1"
+		 date_created="2019-12-09 10:00:33" voided="0" uuid="91bfa633-d18c-11ea-9518-0242ac120002"/>
+
+	<!--PatientsWithTBScreening-->
+	<person person_id="23264" gender="F" birthdate="1988-10-21" birthdate_estimated="0" dead="false"
+            creator="1" date_created="2017-07-10 13:18:02" voided="false"
+            uuid="80396e48-1654-4273-b9eb-c554f771ace1"/>
+
+	<patient patient_id="23264" creator="1" date_created="2017-07-10 13:18:02" changed_by="1" date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+    <concept concept_id="1268" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2005-02-22 20:07:06" changed_by="1" date_changed="2016-10-31 17:09:42" uuid="e1d9fbda-1d5f-11e0-b929-000c29ad1d07" />
+
+    <global_property property="eptsreports.tuberculosisTreatmentPlanConceptUuid" property_value="e1d9fbda-1d5f-11e0-b929-000c29ad1d07" description="UUID for the TRATAMENTO DE TUBERCULOSE concept" uuid="78a16b62-05fd-4b4e-83e0-8a3659c69981" />
+
+	<encounter encounter_id="403205" encounter_type="6" patient_id="23264" location_id="21"
+			   encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+			   uuid="f18bc002-2d57-418b-b6f4-8022c4f64bdf" />
+
+	<obs obs_id="9000006" person_id="23264" concept_id="23758" encounter_id="403205" obs_datetime="2019-12-09 00:00:00"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	uuid="0e6ffe7e-d223-11ea-acaa-8fdc7c2a8a10" location_id="21" value_coded="1065"/>
+
+	<obs obs_id="9000007" person_id="23264" concept_id="23758" encounter_id="403205" obs_datetime="2019-12-09 00:00:00"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	uuid="0e6ffe7e-d223-11ea-acaa-8fdc7c2a8a11" location_id="21" value_coded="1066"/>
+
+	<obs obs_id="9000008" person_id="23264" concept_id="1268" encounter_id="403205" obs_datetime="2019-12-09 00:00:00"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	uuid="0e6ffe7e-d223-11ea-acaa-8fdc7c2a8a12" location_id="21"/>
+
+	<!-- getNumberOfActivePatientsInArtAtTheEndOfTheCurrentMonthHavingVlTestResults-->
+	 <concept concept_id="856" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2005-02-22 20:07:06" changed_by="1" date_changed="2016-10-31 17:09:42" uuid="e1d6247e-1d5f-11e0-b929-000c29ad1d07" />
+	 <concept concept_id="1305" retired="0" datatype_id="2" class_id="1" is_set="0" creator="1" date_created="2005-02-22 20:07:06" changed_by="1" date_changed="2016-10-31 17:09:42" uuid="e1da2704-1d5f-11e0-b929-000c29ad1d07" />
+
+    <global_property property="eptsreports.hivViralLoadConceptUuid" property_value="e1d6247e-1d5f-11e0-b929-000c29ad1d07" description="UUID for HIV VIRAL LOAD concept" uuid="25a16b62-05fd-4b4e-83e0-8a3659c69981" />
+    <global_property property="eptsreports.viralLoadQualitativeConceptUuid" property_value="e1da2704-1d5f-11e0-b929-000c29ad1d07" description="UUID for HIV VIRAL LOAD QUALITATIVE concept" uuid="28a16b62-05fd-4b4e-83e0-8a3659c69981" />
+
+	<person person_id="25000" gender="F" birthdate="2000-10-06" birthdate_estimated="false" dead="false" creator="1"
+			date_created="2000-10-06 09:30:10" voided="false" uuid="75d5cf82-ca66-4eb1-b217-9808fdc97819"
+			deathdate_estimated="false"/>
+
+	<patient patient_id="25000" creator="1" date_created="2019-02-06 09:56:39" voided="false"/>
+
+	<encounter encounter_id="2500012" encounter_type="6" patient_id="25000" location_id="21"
+			   encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+			   uuid="51eebe5e-109a-47e7-9553-1ba2799c799k" />
+	
+	<obs obs_id="9316975" person_id="25000" concept_id="1305" encounter_id="2500012" obs_datetime="2019-12-09 00:00:00"
+		location_id="21" comments="24 de julho" creator="1"
+		date_created="2019-12-09 10:00:33" voided="0" uuid="7f9bf9a4-165b-4b52-8f91-9eeac6fca4f8"/>
+
+	<!-- getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1 -->
+	<encounter encounter_id="2500013" encounter_type="6" patient_id="25000" location_id="21"
+		encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+		uuid="71eebe5e-109a-47e7-9553-1ba2799c799k" />
+
+	<!-- getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthAndScreenedForTbF2 -->
+	<encounter encounter_id="2500014" encounter_type="6" patient_id="25000" location_id="21"
+		encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+		uuid="71eebe5e-109a-47e7-9553-1ba2799c799p" />
+
+	<obs obs_id="1700000" person_id="25000" concept_id="23758" encounter_id="2500014" obs_datetime="2019-12-09 00:00:00"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	uuid="7e6ffe7e-d223-11ea-acaa-8fdc7c2a8a10" location_id="21" value_coded="1065"/>
+
+	<obs obs_id="1700001" person_id="25000" concept_id="23758" encounter_id="2500014" obs_datetime="2019-12-09 00:00:00"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	uuid="7e6ffe7e-d223-11ea-acaa-8fdc7c2a8a11" location_id="21" value_coded="1066"/>
+
+	<obs obs_id="1700002" person_id="25000" concept_id="1268" encounter_id="2500014" obs_datetime="2019-12-09 00:00:00"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	uuid="8e6ffe7e-d223-11ea-acaa-8fdc7c2a8a12" location_id="21"/>
+
+	<!-- getPatientsRegisteredAsTransferredInDuringTheStatisticalYear -->
+	<encounter encounter_id="2500015" encounter_type="53" patient_id="25000" location_id="21"
+		encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+		uuid="72eebe5e-109a-47e7-9553-1ba2799c799p" />
+
+	<obs obs_id="1700003" person_id="25000" concept_id="1369" encounter_id="2500015" obs_datetime="2019-12-09 00:00:00"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	uuid="8e6ffe7e-d223-11ea-acaa-8fdc7c2a8a1p" location_id="21" value_coded="1065" />
+
+	<obs obs_id="1700004" person_id="25000" concept_id="23866" encounter_id="2500015" obs_datetime="2019-12-09 00:00:00"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+		uuid="7e6ffe7e-d223-11ea-acaa-8fdc7c2a8a70" location_id="21" value_coded="6276" />
+
+	<obs obs_id="1700005" person_id="25000" concept_id="23891" encounter_id="2500015" obs_datetime="2019-12-09 00:00:00"
+		creator="1" date_created="2019-12-09 00:00:00" voided="0"
+		uuid="7e6ffe7e-d223-11ea-acaa-8fdc7c2a8c70" location_id="21" value_coded="6276" />
+
+	<!-- getExclusionForF3 -->	
+	<encounter encounter_id="2500015" encounter_type="6" patient_id="25000" location_id="21"
+		encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
+		uuid="71eebe5e-109a-47e7-9553-1ba2799c769p" />	
+
 </dataset>

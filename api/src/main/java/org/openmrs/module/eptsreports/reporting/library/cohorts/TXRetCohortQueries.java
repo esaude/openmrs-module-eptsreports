@@ -26,9 +26,9 @@ public class TXRetCohortQueries {
 
   @Autowired private GenderCohortQueries genderCohorts;
 
-  @Autowired TxNewCohortQueries txNewCohortQueries;
+  @Autowired private TxNewCohortQueries txNewCohortQueries;
 
-  private String mappings =
+  private final String mappings =
       "startDate=${startDate},endDate=${endDate},location=${location},months=${months}";
 
   private void addParameters(CohortDefinition cd) {
@@ -121,17 +121,10 @@ public class TXRetCohortQueries {
             TXRetQueries.oneTo19WhoStartedTargetAtARTInitiation()));
   }
 
-  /** map startDate, endDate, location rightly when using this */
-  public CohortDefinition pregnancyEnrolledInART() {
-    return cohortDefinition(
-        genericCohortQueries.generalSql(
-            "GRAVIDAS INSCRITAS NO SERVIÇO TARV", TXRetQueries.pregnancyEnrolledInART()));
-  }
-
   /**
    * breast feeding
    *
-   * @return
+   * @return CohortDefinition
    */
   public CohortDefinition possibleRegisteredClinicalProcedureAndFollowupForm() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -159,7 +152,7 @@ public class TXRetCohortQueries {
     cd.addSearch(
         "GRAVIDAS",
         EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(false),
             "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
     cd.addSearch(
         "LACTANTEPROGRAMA",

@@ -432,12 +432,11 @@
 		</description>
 	</globalProperty>
 
-
 	<globalProperty>
-		<property>@MODULE_ID@.gestationConceptUuid</property>
-		<defaultValue>e1cdd58a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<property>@MODULE_ID@.pregnantStatusConceptUuid</property>
+		<defaultValue>e1e495d6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
-			UUID for the GESTACAO concept
+			UUID for the Estado de Gravidez concept
 		</description>
 	</globalProperty>
 
@@ -454,6 +453,14 @@
 		<defaultValue>e1dca8ee-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
 			UUID for the DATA GRAVIDEZ concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.pregnancyConceptUuid</property>
+		<defaultValue>e1cdd58a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the GRAVIDEZ concept
 		</description>
 	</globalProperty>
 
@@ -664,7 +671,63 @@
 			UUID for the REASON PATIENT MISSED VISIT concept
 		</description>
 	</globalProperty>
+	
+    <globalProperty>
+		<property>@MODULE_ID@.reasonForStoppedTakingArvDrugsDuringLast7Days</property>
+		<defaultValue>06ae2acc-ffcb-49da-9e3c-69bc1604282e</defaultValue>
+		<description>
+			UUID for the REASON FOR STOPPED TAKING ARV DRUGS DURING LAST 7 Days concept
+		</description>
+	</globalProperty>
 
+    <globalProperty>
+		<property>@MODULE_ID@.reasonForStoppedTakingArvDrugsDuringLastMonth</property>
+		<defaultValue>73e45941-601f-4fdd-9fe2-a730e3255f2f</defaultValue>
+		<description>
+			UUID for the REASON FOR STOPPED TAKING ARV DRUGS DURING LAST MONTH concept
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>@MODULE_ID@.mainReasonForDelayInTakingArv</property>
+		<defaultValue>87a25d19-761c-4a8c-9dbb-c4ee83eb1c04</defaultValue>
+		<description>
+			UUID for the Main Reason For Delay In Taking Arv concept
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>@MODULE_ID@.patientRecordHasWrongAddress</property>
+		<defaultValue>e1e087de-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Patient Record Has WrongAddress concept
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>@MODULE_ID@.patientMovedHouses</property>
+		<defaultValue>e1e08d6a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Patient Moved Houses concept
+		</description>
+	</globalProperty>
+	
+    <globalProperty>
+		<property>@MODULE_ID@.patientTookATrip</property>
+		<defaultValue>e1e07adc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Patient Took a Trip concept
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>@MODULE_ID@.otherReasonsWhyPatientWasNotLocatedByActivist</property>
+		<defaultValue>e1e09526-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Other Reasons Why Patient Was Not Located By Activist concept
+		</description>
+	</globalProperty>
+	
 	<globalProperty>
 		<property>@MODULE_ID@.reportOfVisitSupport</property>
 		<defaultValue>e1e20be0-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -1276,14 +1339,6 @@
 	</globalProperty>
 
 	<globalProperty>
-		<property>eptsreports.isoniazidProphylaxisStartDateConceptUuid</property>
-		<defaultValue>6fa92ac9-0a96-4372-9e10-dd9683c19135</defaultValue>
-		<description>
-			UUID for the DATA DE INICIO DA PROFILAXIA COM ISONIAZIDA concept
-		</description>
-	</globalProperty>
-
-	<globalProperty>
 		<property>eptsreports.artBook1ConceptUuid</property>
 		<defaultValue>cf5969f2-ab91-4c88-9d48-81b1970eb741</defaultValue>
 		<description>
@@ -1512,7 +1567,7 @@
 		</description>
 	</globalProperty>
 	
-	<!-- 51 -->
+	<!-- 51 - ENCOUNTER TYPE NOT YET IMPLEMENTED SO ENCOUNTER TYPE 13 - LABORATORY UUID BEING REUSED-->
 	<globalProperty>
 		<property>eptsreports.fsrEncounterType</property>
 		<defaultValue>e2790f68-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -1829,6 +1884,14 @@
 		<defaultValue>cc8ef88c-6ab6-4404-a036-d415bc42cc1c</defaultValue>
 		<description>
 			UUID for the UNDETECTABLE VIRAL LOAD concept
+		</description>
+	</globalProperty>
+		<!-- 23904 -->
+	<globalProperty>
+		<property>eptsreports.lessThan839CopiesConceptUuid</property>
+		<defaultValue>7c8e0a9b-3606-4a72-b8cc-89566521fac2</defaultValue>
+		<description>
+			UUID for the LESS THAN 839 COPIES/ML concept
 		</description>
 	</globalProperty>
 	<!-- 23905 -->

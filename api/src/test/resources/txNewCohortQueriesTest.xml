@@ -34,6 +34,33 @@
     <obs obs_id="10002" person_id="10000" concept_id="6300" encounter_id="10001" obs_datetime="2019-08-15 00:00:00.0"
          location_id="1" value_coded="6276" creator="1" date_created="2019-02-28 14:29:05.0"
          voided="false" uuid="71fec13a-8887-47f0-8457-c59b8d38d2dd"/>
+    <!---->
 
+    <!--    getTxNewBreastfeedingCompositionShouldReturnBreastfeedingPatients-->
+    <person person_id="1933" gender="F" birthdate="1992-04-06" birthdate_estimated="0" dead="0" creator="1"
+            date_created="2015-09-09 09:30:10" voided="0" uuid="c925115e-2226-4227-95dd-8f7ff317dd75"
+            deathdate_estimated="0"/>
 
+    <patient patient_id="1933" creator="1" date_created="2015-09-09 09:30:10" voided="0"/>
+
+    <encounter encounter_id="543358" encounter_type="6777004" patient_id="1933" location_id="1"
+               encounter_datetime="2019-06-30 00:00:00" creator="1" date_created="2020-01-07 09:14:29" voided="0"
+               uuid="5efd185c-a8e6-4cde-9a11-732c029ff551"/>
+
+    <obs obs_id="4287901" person_id="1933" concept_id="7777025" encounter_id="543358" obs_datetime="2019-06-30 00:00:00"
+         location_id="1" value_coded="7777020" creator="1" date_created="2020-01-07 09:14:29" voided="0"
+         uuid="10793851-a29e-499c-b606-0dfdac58ceca"/>
+    <!--    -->
+
+    <!--    getPatientsPregnantEnrolledOnARTShouldReturnPregnantPatients-->
+    <person person_id="574" gender="F" birthdate="1986-04-10" birthdate_estimated="0" dead="0" creator="1"
+            date_created="2015-09-09 08:19:01" voided="0" uuid="43b3df58-d857-40c4-b08d-06f4d8817de9"
+            deathdate_estimated="0"/>
+
+    <patient patient_id="574" creator="1" date_created="2015-09-09 08:19:01" voided="0"/>
+
+    <patient_program patient_program_id="24035" patient_id="574" program_id="8" date_enrolled="2019-06-30 00:00:00"
+                     creator="1" date_created="2020-01-06 08:55:28" voided="0"
+                     uuid="5fe3bf7c-eb4f-4fd0-8d57-5c66f571ad93" location_id="1"/>
+    <!--    -->
 </dataset>

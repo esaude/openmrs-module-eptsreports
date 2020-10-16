@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public 
+	License, v. 2.0. If a copy of the MPL was not distributed with this file, 
+	You can obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed 
+	under the terms of the Healthcare Disclaimer located at http://openmrs.org/license. 
+	Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS 
+	graphic logo is a trademark of OpenMRS Inc. -->
+
+<dataset>
+    <!-- getPatientsPregnantEnrolledOnARTShouldReturnPregnantPatients -->
+
+    <person person_id="10101" gender="F" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2019-01-01 15:46:47.0" voided="false" uuid="6c76740e-c6ae-11ea-9518-0242ac120002"/>
+
+    <patient patient_id="10101" creator="1" date_created="2019-01-01 00:00:00.0" changed_by="1"
+             date_changed="2019-01-01 12:25:57.0" voided="false" void_reason=""/>
+
+    <encounter encounter_id="100100" encounter_type="6777003" patient_id="10101" location_id="1" form_id="1"
+               encounter_datetime="2019-02-28 00:00:00.0" creator="1" date_created="2019-02-28 00:00:00.0"
+               voided="false" uuid="83b616cd-c6ae-11ea-9518-0242ac120002"/>
+
+               <obs obs_id="200100" person_id="10101" concept_id="5096" encounter_id="100100" obs_datetime="2019-02-28 00:00:00.0"
+         location_id="1" creator="1" date_created="2019-02-28 14:29:05.0"
+         voided="false" uuid="8c638373-c6ae-11ea-9518-0242ac120002"/>
+
+               <encounter encounter_id="100200" encounter_type="6777003" patient_id="10101" location_id="1" form_id="1"
+               encounter_datetime="2019-12-15 00:00:00.0" creator="1" date_created="2019-12-15 00:00:00.0"
+               voided="false" uuid="9524a27d-c6ae-11ea-9518-0242ac120002"/>
+
+               <obs obs_id="200200" person_id="10101" concept_id="5096" encounter_id="100200" obs_datetime="2019-08-15 00:00:00.0"
+         location_id="1" value_datetime="2019-12-15 00:00:00.0" creator="1" date_created="2019-12-15 00:00:00.0"
+         voided="false" uuid="9de847bb-c6ae-11ea-9518-0242ac120002"/>
+
+</dataset>

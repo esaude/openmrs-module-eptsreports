@@ -23,6 +23,7 @@ public class ProgramsMetadata extends CommonMetadata {
       try {
         program = Context.getProgramWorkflowService().getProgram(Integer.parseInt(lookup));
       } catch (Exception e) {
+        // DO NOTHING
       }
     }
     if (program == null) {

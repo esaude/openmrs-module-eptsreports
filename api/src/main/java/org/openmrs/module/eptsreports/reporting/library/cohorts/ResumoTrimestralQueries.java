@@ -8,6 +8,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class ResumoTrimestralQueries {
 
+  /**
+   * <b>Description:</b> Number of patients who received Viral Load Result
+   *
+   * @return {@link String}
+   */
   public static String getPatientsWhoReceivedOneViralLoadResult(
       int adultoSeguimentoEncounterType, int viralLoadConcept, int viralLoadQualitativeConcept) {
     String query =
@@ -28,6 +33,11 @@ public class ResumoTrimestralQueries {
     return sub.replace(query);
   }
 
+  /**
+   * <b>Description:</b> Number of patients transferred-Out (-) other HF's on ART during the month
+   *
+   * @return {@link String}
+   */
   public static String getTransferedOutPatients(
       int artProgramConcept,
       int transferredOutToAnotherHealthFacilityWorkflowStateConcept,
@@ -43,9 +53,9 @@ public class ResumoTrimestralQueries {
     String query =
         "SELECT patient_id "
             + "FROM (SELECT patient_id, "
-            + "             Max(transferout_date) transferout_date "
+            + "             transferout_date "
             + "      FROM (SELECT p.patient_id, "
-            + "                   ps.start_date transferout_date "
+            + "                   Max(ps.start_date) transferout_date "
             + "            FROM patient p "
             + "                     JOIN patient_program pp "
             + "                          ON p.patient_id = pp.patient_id "
@@ -58,7 +68,7 @@ public class ResumoTrimestralQueries {
             + "              AND ps.voided = 0 "
             + "              AND ps.state = ${transferredOutToAnotherHealthFacilityWorkflowStateConcept} "
             + "              AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore "
-            + "              AND ps.end_date IS NULL "
+            + "            GROUP BY patient_id"
             + "            UNION "
             + "            SELECT p.patient_id, "
             + "                   e.encounter_datetime transferout_date "
@@ -70,12 +80,27 @@ public class ResumoTrimestralQueries {
             + "            WHERE p.voided = 0 "
             + "              AND e.voided = 0 "
             + "              AND e.location_id = :location "
-            + "              AND e.encounter_type IN (${adultoSeguimentoEncounterType}, ${masterCardEncounterType}) "
+            + "              AND e.encounter_type = ${adultoSeguimentoEncounterType} "
             + "              AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore "
             + "              AND o.voided = 0 "
-            + "              AND o.concept_id IN (${stateOfStayOfPreArtPatient}, ${stateOfStayOfArtPatient}) "
+            + "              AND o.concept_id = ${stateOfStayOfArtPatient} "
+            + "              AND o.value_coded = ${transferredOutConcept}"
+            + "            UNION "
+            + "            SELECT p.patient_id, "
+            + "                   o.obs_datetime transferout_date "
+            + "            FROM patient p "
+            + "                     JOIN encounter e "
+            + "                          ON p.patient_id = e.patient_id "
+            + "                     JOIN obs o "
+            + "                          ON e.encounter_id = o.encounter_id "
+            + "            WHERE p.voided = 0 "
+            + "              AND e.voided = 0 "
+            + "              AND e.location_id = :location "
+            + "              AND e.encounter_type = ${masterCardEncounterType} "
+            + "              AND o.obs_datetime BETWEEN :onOrAfter AND :onOrBefore "
+            + "              AND o.voided = 0 "
+            + "              AND o.concept_id = ${stateOfStayOfPreArtPatient} "
             + "              AND o.value_coded = ${transferredOutConcept}) transferout "
-            + "      GROUP BY patient_id) max_transferout "
             + "WHERE patient_id NOT IN (SELECT p.patient_id "
             + "                         FROM patient p "
             + "                                  JOIN encounter e "
@@ -85,6 +110,7 @@ public class ResumoTrimestralQueries {
             + "                           AND e.encounter_type IN (${adultoSeguimentoEncounterType}, ${pediatriaSeguimentoEncounterType}, ${ARVPharmaciaEncounterType}) "
             + "                           AND e.location_id = :location "
             + "                           AND e.encounter_datetime > transferout_date "
+            + "                           AND e.encounter_datetime <= :onOrBefore "
             + "                         UNION "
             + "                         SELECT p.patient_id "
             + "                         FROM patient p "
@@ -94,11 +120,14 @@ public class ResumoTrimestralQueries {
             + "                                       ON e.encounter_id = o.encounter_id "
             + "                         WHERE p.voided = 0 "
             + "                           AND e.voided = 0 "
+            + "                           AND o.voided = 0 "
             + "                           AND e.encounter_type = ${masterCardDrugPickupEncounterType} "
             + "                           AND e.location_id = :location "
             + "                           AND o.concept_id = ${ArtDatePickupMasterCard} "
             + "                           AND o.value_datetime "
-            + "                             > transferout_date);";
+            + "                             > transferout_date "
+            + "                           AND o.value_datetime "
+            + "                             <= :onOrBefore)) as list;";
 
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put("artProgramConcept", artProgramConcept);
@@ -119,9 +148,10 @@ public class ResumoTrimestralQueries {
   }
 
   /**
-   * Number of patients with ART suspension during the current month with LAST patient state
+   * <b>Description:</b> Number of patients with ART suspension during the current month with LAST
+   * patient state
    *
-   * @return String
+   * @return {@link String}
    */
   public static String getPatientsWhoSuspendedTreatment(
       int art,
@@ -233,10 +263,10 @@ public class ResumoTrimestralQueries {
   }
 
   /**
-   * Fetches Patients with Last registered Line Treatment equals to (1st Line) of without
-   * information regarding the therapeutic line
+   * <b>Description:</b> Fetches Patients with Last registered Line Treatment equals to (1st Line)
+   * of without information regarding the therapeutic line
    *
-   * @return SqlCohortDefinition
+   * @return {@link String}
    */
   public static String getPatientsWithLastTherapeuticLineEqualsToFirstLineOrWithoutInformation(
       int adultoSeguimentoEncounterType, int therapeuticLineConcept, int firstLineConcept) {
@@ -299,6 +329,11 @@ public class ResumoTrimestralQueries {
     return sub.replace(query);
   }
 
+  /**
+   * <b>Description:</b> Number of Deceased patients in the actual cohort
+   *
+   * @return {@link String}
+   */
   public static String getDeceasedPatients(
       Integer artProgram,
       Integer patientHasDiedWorkflowState,
@@ -435,11 +470,10 @@ public class ResumoTrimestralQueries {
   }
 
   /**
-   * all patients with last registered Line Treatment (PT: “Linha Terapeutica”) (Concept id 21151)
-   * equal to “Second Line” (PT: “Segunda Linha”) (Concept id 21148 ) and encounter date < =
-   * MonthEndDate in encounter “Master Card – Ficha Clinica” (encounter id 6)
+   * <b>Description:</b> All patients with last registered Line Treatment equal to “Second Line” and
+   * encounter date < = MonthEndDate in “Master Card – Ficha Clinica”
    *
-   * @return String
+   * @return {@link String}
    */
   public static String
       getPatientsWithLastObsInSecondTherapeuticLineInMasterCardFichaClinicaBeforeMonthEndDate(

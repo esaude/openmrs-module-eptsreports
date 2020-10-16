@@ -33,8 +33,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
 
   @Override
   public CalculationResultMap getResult() {
-    CalculationResultMap map = new CalculationResultMap();
-    return map;
+    return new CalculationResultMap();
   }
 
   @Before
@@ -43,8 +42,8 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
   }
 
   @Test
-  public void shouldBeTrueIfTreatmentWasWithinPeriodWithEnoughDuration() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldBeTrueIfTreatmentWasWithinPeriodWithEnoughDuration() {
+    Map<String, Object> parameterValues = new HashMap<>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
 
@@ -62,8 +61,8 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
   }
 
   @Test
-  public void shouldBeNullIfStartDateIsOutsideThePeriod() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldBeNullIfStartDateIsOutsideThePeriod() {
+    Map<String, Object> parameterValues = new HashMap<>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
 
@@ -80,8 +79,8 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
   }
 
   @Test
-  public void shouldBeNullIfEndDateIsOutsidePeriod() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldBeNullIfEndDateIsOutsidePeriod() {
+    Map<String, Object> parameterValues = new HashMap<>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
 
@@ -97,8 +96,8 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
   }
 
   @Test
-  public void shouldBeTrueIfDoesNotHaveEndDateButAnsweredYesEnoughTimes() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldBeTrueIfDoesNotHaveEndDateButAnsweredYesEnoughTimes() {
+    Map<String, Object> parameterValues = new HashMap<>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
 

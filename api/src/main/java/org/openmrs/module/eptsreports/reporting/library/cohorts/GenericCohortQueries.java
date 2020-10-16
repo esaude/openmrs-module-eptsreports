@@ -17,11 +17,11 @@ import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
@@ -40,13 +40,11 @@ import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.Ti
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +56,6 @@ public class GenericCohortQueries {
   @Autowired private HivMetadata hivMetadata;
 
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
-
-  @Autowired private HivCohortQueries hivCohortQueries;
 
   /**
    * Generic Coded Observation cohort
@@ -127,7 +123,7 @@ public class GenericCohortQueries {
     InProgramCohortDefinition inProgram = new InProgramCohortDefinition();
     inProgram.setName(name);
 
-    List<Program> programs = new ArrayList<Program>();
+    List<Program> programs = new ArrayList<>();
     programs.add(program);
 
     inProgram.setPrograms(programs);
@@ -154,11 +150,11 @@ public class GenericCohortQueries {
   }
 
   /**
-   * Get patients states based on program, state and end of reporting period
+   * <b>Description:</b> Get patients states based on program, state and end of reporting period
    *
-   * @param program
-   * @param state
-   * @return
+   * @param program - program ID
+   * @param state - patient state
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsBasedOnPatientStates(int program, int state) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -181,9 +177,9 @@ public class GenericCohortQueries {
   /**
    * Get patients states based on program, state and end of reporting period
    *
-   * @param program
-   * @param state
-   * @return
+   * @param program - program ID
+   * @param state - patient state
+   * @return CohortDefinition
    */
   public CohortDefinition getPatientsBasedOnPatientStatesBeforeDate(int program, int state) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -364,16 +360,14 @@ public class GenericCohortQueries {
         new CalculationCohortDefinition(
             Context.getRegisteredComponents(AgeOnArtStartDateCalculation.class).get(0));
     cd.setName("Age on ART start date");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addCalculationParameter("minAge", minAge);
     cd.addCalculationParameter("maxAge", maxAge);
     cd.addCalculationParameter(
         "considerPatientThatStartedBeforeWasBorn", considerPatientThatStartedBeforeWasBorn);
     return cd;
-  }
-
-  public CohortDefinition getAgeOnArtStartDate(Integer minAge, Integer maxAge) {
-    return getAgeOnArtStartDate(minAge, maxAge, false);
   }
 
   public CohortDefinition getStartedArtOnPeriod(
@@ -462,47 +456,9 @@ public class GenericCohortQueries {
   }
 
   /**
-   * Get patients who have encounter of a specific type within date boundaries
+   * <b>Description:</b> Get patients with any coded obs before end date
    *
-   * @param encounterType
-   * @retrun CohortDefinition
-   */
-  public CohortDefinition getPatientsHavingEncounterWithinDateBoundaries(int encounterType) {
-    // TODO: #hasEncounter should be used here
-    // (https://github.com/esaude/openmrs-module-eptsreports/pull/185#discussion_r370630968)
-    String query =
-        "SELECT p.patient_id FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id WHERE e.voided=0 AND p.voided=0 AND e.encounter_type = %d AND e.encounter_datetime BETWEEN :startDate AND :endDate";
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Patients having encounter type " + encounterType);
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.setQuery(String.format(query, encounterType));
-    return cd;
-  }
-
-  /**
-   * Patients who have an encounter between ${onOrAfter} and ${onOrBefore}
-   *
-   * @param types the encounter types
-   * @return the cohort definition
-   */
-  public CohortDefinition hasEncounter(EncounterType... types) {
-    EncounterCohortDefinition cd = new EncounterCohortDefinition();
-    cd.setName("has encounter between dates");
-    cd.setTimeQualifier(TimeQualifier.ANY);
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
-    if (types.length > 0) {
-      cd.setEncounterTypeList(Arrays.asList(types));
-    }
-    return cd;
-  }
-
-  /**
-   * Get patients with any coded obs concept value_datetime not null before end date
-   *
-   * @return String
+   * @return {@link String}
    */
   public static String getPatientsWithCodedObsValueDatetimeBeforeEndDate(
       int encounterType, int conceptId) {
@@ -517,6 +473,121 @@ public class GenericCohortQueries {
     map.put("conceptId", conceptId);
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
-    return stringSubstitutor.replace(query.toString());
+    return stringSubstitutor.replace(query);
+  }
+
+  public String getPatientsWithObsBetweenDates(
+      EncounterType encounterType, Concept question, List<Concept> answers) {
+    List<Integer> answerIds = new ArrayList<>();
+    for (Concept concept : answers) {
+      answerIds.add(concept.getConceptId());
+    }
+    StringBuilder s = new StringBuilder();
+    s.append("SELECT p.patient_id FROM patient p INNER JOIN encounter e ");
+    s.append("ON p.patient_id = e.patient_id ");
+    s.append("INNER JOIN obs o ");
+    s.append("ON e.encounter_id = o.encounter_id ");
+    s.append("WHERE e.location_id = :location AND e.encounter_type = ${encounterType} ");
+    s.append("AND o.concept_id = ${question}  ");
+    s.append("AND o.value_coded in (${answers}) ");
+    s.append("AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate ");
+    s.append("AND p.voided = 0 AND e.voided = 0 AND o.voided = 0");
+    Map<String, String> values = new HashMap<>();
+    values.put("encounterType", String.valueOf(encounterType.getEncounterTypeId()));
+    // Just convert the conceptId to String so it can be added to the map
+    values.put("question", String.valueOf(question.getConceptId()));
+    values.put("answers", StringUtils.join(answerIds, ","));
+    StringSubstitutor sb = new StringSubstitutor(values);
+    return sb.replace(s.toString());
+  }
+
+  /**
+   * <b>Description:</b> Gets last obs with value coded before enDate
+   *
+   * @param encounterTypes The Obs encounter Type
+   * @param question The Obs quetion concept
+   * @param answers The third value coded
+   * @return String
+   */
+  public static String getLastCodedObsBeforeDate(
+      List<Integer> encounterTypes, Integer question, List<Integer> answers) {
+
+    Map<String, String> map = new HashMap<>();
+
+    map.put("encounterTypes", StringUtils.join(encounterTypes, ","));
+    map.put("question", String.valueOf(question));
+    map.put("answers", StringUtils.join(answers, ","));
+
+    String query =
+        "SELECT patient_id FROM ( "
+            + "  SELECT p.patient_id, max(e.encounter_datetime) datetime "
+            + "  FROM patient p "
+            + "  INNER JOIN encounter e "
+            + "  ON p.patient_id = e.patient_id "
+            + "  INNER JOIN obs o "
+            + "  ON e.encounter_id = o.encounter_id "
+            + "  WHERE e.location_id = :location AND e.encounter_type IN (${encounterTypes}) "
+            + "  AND o.concept_id = ${question} AND o.value_coded IN (${answers}) "
+            + "  AND e.encounter_datetime <= :onOrBefore  "
+            + "  AND p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + "  GROUP BY p.patient_id ) AS last_encounter";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    return sb.replace(query);
+  }
+
+  /**
+   * <b>Description: </b>Gets last obs with value coded before enDate
+   *
+   * @param encounterTypes The Obs encounter Type
+   * @param question The Obs quetion concept
+   * @param answers The third value coded
+   * @return String
+   */
+  public static String getLastCodedObservationBeforeDate(
+      List<Integer> encounterTypes, Integer question, List<Integer> answers) {
+
+    Map<String, String> map = new HashMap<>();
+
+    map.put("encounterTypes", StringUtils.join(encounterTypes, ","));
+    map.put("question", String.valueOf(question));
+    map.put("answers", StringUtils.join(answers, ","));
+
+    String query =
+        "SELECT p.patient_id "
+            + "FROM   patient p "
+            + "       INNER JOIN encounter e "
+            + "               ON e.patient_id = p.patient_id "
+            + "       INNER JOIN obs o "
+            + "               ON e.encounter_id = o.encounter_id "
+            + "               WHERE"
+            + "                   e.location_id = :location "
+            + "                  AND e.encounter_type IN ( ${encounterTypes} ) "
+            + "                  AND o.concept_id = ${question} "
+            + "                  AND e.voided = 0 "
+            + "                  AND o.voided = 0 "
+            + "                  AND o.value_coded IN ( ${answers} ) "
+            + "                  AND e.encounter_datetime = (SELECT ee.encounter_datetime "
+            + "                                              FROM   encounter ee "
+            + "                      INNER JOIN obs oo "
+            + "                              ON ee.encounter_id = "
+            + "                                 oo.encounter_id "
+            + "                                 AND ee.location_id = :location "
+            + "                                 AND ee.encounter_type IN "
+            + "                                     ( ${encounterTypes} ) "
+            + "                                 AND oo.concept_id = "
+            + "                                     ${question} "
+            + "                                 AND ee.encounter_datetime <= "
+            + "                                     :onOrBefore "
+            + "                                 AND ee.voided = 0 "
+            + "                                 AND oo.voided = 0 "
+            + "                                              WHERE  ee.patient_id = p.patient_id "
+            + "                                              ORDER  BY ee.encounter_datetime "
+            + "                                                        DESC "
+            + "                                              LIMIT  1)"
+            + "ORDER BY  p.patient_id";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    return sb.replace(query);
   }
 }

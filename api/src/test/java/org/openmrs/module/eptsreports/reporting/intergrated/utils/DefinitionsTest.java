@@ -24,6 +24,16 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 public abstract class DefinitionsTest extends BaseModuleContextSensitiveTest {
 
+  private Date startDate;
+  private Date endDate;
+  private Location location;
+
+  public DefinitionsTest() {
+    this.startDate = DateUtil.getDateTime(1930, 1, 1);
+    this.endDate = DateUtil.getDateTime(2019, 4, 26);
+    this.location = new Location(1);
+  }
+
   protected void addParameters(CohortDefinition cd) {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -44,15 +54,27 @@ public abstract class DefinitionsTest extends BaseModuleContextSensitiveTest {
   }
 
   protected Date getStartDate() {
-    return DateUtil.getDateTime(1930, 1, 1);
+    return startDate;
   }
 
   protected Date getEndDate() {
-    return DateUtil.getDateTime(2019, 4, 26);
+    return endDate;
   }
 
   protected Location getLocation() {
-    return Context.getLocationService().getLocation(1);
+    return location;
+  }
+
+  public void setStartDate(Date startDate) {
+    this.startDate = startDate;
+  }
+
+  public void setEndDate(Date endDate) {
+    this.endDate = endDate;
+  }
+
+  public void setLocation(Location location) {
+    this.location = location;
   }
 
   protected DataSet evaluateDatasetDefinition(DataSetDefinition cd, Cohort baseCohort)
@@ -123,6 +145,17 @@ public abstract class DefinitionsTest extends BaseModuleContextSensitiveTest {
   protected EvaluatedCohort evaluateCohortDefinition(
       CohortDefinition cd, Map<Parameter, Object> parameters) throws EvaluationException {
     EvaluationContext context = getEvaluationContext(cd, parameters);
+    return Context.getService(CohortDefinitionService.class).evaluate(cd, context);
+  }
+
+  protected EvaluatedCohort evaluateCohortDefinition(CohortDefinition cd, Cohort baseCohort)
+      throws EvaluationException {
+    EvaluationContext context = new EvaluationContext();
+    context.addParameterValue("startDate", getStartDate());
+    context.addParameterValue("endDate", getEndDate());
+    context.addParameterValue("location", getLocation());
+    context.setBaseCohort(baseCohort);
+    addParameters(cd);
     return Context.getService(CohortDefinitionService.class).evaluate(cd, context);
   }
 

@@ -16,8 +16,15 @@ package org.openmrs.module.eptsreports.reporting.library.queries;
 public class ViralLoadQueries {
 
   /**
-   * Patients with viral load suppression within 12 months
+   * <b>Description</b>Patients with viral load suppression within 12 months
    *
+   * @param labEncounter
+   * @param adultSeguimentoEncounter
+   * @param pediatriaSeguimentoEncounter
+   * @param mastercardEncounter
+   * @param fsrEncounter
+   * @param vlConceptQuestion
+   * @param vlQualitativeConceptQuestion
    * @return String
    */
   public static String getPatientsWithViralLoadSuppression(
@@ -76,9 +83,16 @@ public class ViralLoadQueries {
   }
 
   /**
-   * Patients having viral load within the 12 months period
+   * <b>Description:</b> Patients having viral load within the 12 months period
    *
-   * @return String
+   * @param labEncounter
+   * @param adultSeguimentoEncounter
+   * @param pediatriaSeguimentoEncounter
+   * @param mastercardEncounter
+   * @param fsrEncounter
+   * @param vlConceptQuestion
+   * @param vlQualitativeConceptQuestion
+   * @return {@link String}
    */
   public static String getPatientsHavingViralLoadInLast12Months(
       int labEncounter,
@@ -116,6 +130,15 @@ public class ViralLoadQueries {
         vlConceptQuestion);
   }
 
+  /**
+   * <b>Description</b> Patients or routine using FSR with VL results
+   *
+   * @param labEncounter
+   * @param viralLoadRequestReasonConceptId
+   * @param routineViralLoadConceptId
+   * @param unknownConceptId
+   * @return String
+   */
   public static String getPatientsHavingRoutineViralLoadTestsUsingFsr(
       int labEncounter,
       int viralLoadRequestReasonConceptId,

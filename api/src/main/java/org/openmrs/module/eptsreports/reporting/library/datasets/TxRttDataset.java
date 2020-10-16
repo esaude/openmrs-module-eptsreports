@@ -60,7 +60,7 @@ public class TxRttDataset extends BaseDataSet {
         "KP",
         EptsReportUtils.map(
             eptsCommonDimension.getKeyPopsDimension(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     dsd.setName("R");
     dsd.addParameters(getParameters());
     addRow(

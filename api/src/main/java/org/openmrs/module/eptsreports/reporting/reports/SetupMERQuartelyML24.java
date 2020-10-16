@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupMERQuartelyML extends EptsDataExportManager {
+public class SetupMERQuartelyML24 extends EptsDataExportManager {
   @Autowired private TxMlDataset txMlDataset;
   @Autowired private GenericCohortQueries genericCohortQueries;
 
@@ -32,12 +32,12 @@ public class SetupMERQuartelyML extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "PEPFAR MER 2.3 Quarterly ML";
+    return "PEPFAR MER 2.4 Quarterly ML";
   }
 
   @Override
   public String getDescription() {
-    return "MER Quarterly ML Report";
+    return "MER Quarterly 2.4 ML Report";
   }
 
   @Override

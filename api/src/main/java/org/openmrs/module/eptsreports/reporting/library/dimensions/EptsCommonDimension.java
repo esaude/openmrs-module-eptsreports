@@ -15,10 +15,10 @@ import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraig
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri2MonthsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri4MonthsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.EriCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.EriDSDCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
@@ -28,6 +28,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueri
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.InverseCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,6 @@ public class EptsCommonDimension {
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private HivMetadata hivMetadata;
-
   @Autowired private Eri4MonthsCohortQueries eri4MonthsCohortQueries;
 
   @Autowired private Eri2MonthsCohortQueries eri2MonthsCohortQueries;
@@ -57,6 +56,8 @@ public class EptsCommonDimension {
   @Autowired private TxPvlsCohortQueries txPvlsQueries;
 
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
+
+  @Autowired private EriDSDCohortQueries eriDSDCohortQueries;
 
   /**
    * Gender dimension
@@ -153,12 +154,12 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "breastfeeding",
         EptsReportUtils.map(
-            txNewCohortQueries.getTxNewBreastfeedingComposition(),
+            txNewCohortQueries.getTxNewBreastfeedingComposition(false),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     dim.addCohortDefinition(
         "pregnant",
         EptsReportUtils.map(
-            txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
+            txNewCohortQueries.getPatientsPregnantEnrolledOnART(false),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     return dim;
   }
@@ -181,7 +182,7 @@ public class EptsCommonDimension {
         "IART",
         EptsReportUtils.map(
             eriCohortQueries.getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
 
     dim.addCohortDefinition(
         "AIT",
@@ -238,7 +239,7 @@ public class EptsCommonDimension {
         "IART",
         EptsReportUtils.map(
             eriCohortQueries.getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
+            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     dim.addCohortDefinition(
         "DNPUD",
         EptsReportUtils.map(
@@ -286,12 +287,17 @@ public class EptsCommonDimension {
     return dim;
   }
 
+  /**
+   * <b>Description</b> Disaggregation for Key population
+   *
+   * @return CohortDefinitionDimension
+   */
   public CohortDefinitionDimension getKeyPopsDimension() {
     CohortDefinitionDimension dim = new CohortDefinitionDimension();
     dim.setName("Key Population Dimension");
     dim.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     dim.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
-    dim.addParameter(new Parameter("locationList", "Location", Location.class));
+    dim.addParameter(new Parameter("location", "Location", Location.class));
     CohortDefinition drugUserKeyPopCohort = hivCohortQueries.getDrugUserKeyPopCohort();
     CohortDefinition homosexualKeyPopCohort = hivCohortQueries.getHomosexualKeyPopCohort();
     CohortDefinition imprisonmentKeyPopCohort = hivCohortQueries.getImprisonmentKeyPopCohort();
@@ -321,16 +327,44 @@ public class EptsCommonDimension {
     dim.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     dim.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
     dim.addParameter(new Parameter("locationList", "Location", Location.class));
-    CohortDefinition less3m =
-        txCurrCohortQueries.getPatientsWithLessThan3MonthsDispensationQuantity();
-    CohortDefinition threeTo5m =
-        txCurrCohortQueries.getPatientsWith3to5MonthsOfDispensationQuantity();
-    CohortDefinition more6m =
-        txCurrCohortQueries.getPatientsWithMoreThan6MonthsOfDispensationQuantity();
-    String mappings = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${locationList}";
-    dim.addCohortDefinition("<3m", EptsReportUtils.map(less3m, mappings));
-    dim.addCohortDefinition("3-5m", EptsReportUtils.map(threeTo5m, mappings));
-    dim.addCohortDefinition(">6m", EptsReportUtils.map(more6m, mappings));
+    CohortDefinition less3m = txCurrCohortQueries.monthlyDispensationComposition();
+    CohortDefinition threeTo5m = txCurrCohortQueries.quarterlyDispensationComposition();
+    CohortDefinition more6m = txCurrCohortQueries.semiAnnualDispensationComposition();
+    dim.addCohortDefinition(
+        "<3m", EptsReportUtils.map(less3m, "onOrBefore=${onOrBefore},location=${locationList}"));
+    dim.addCohortDefinition(
+        "3-5m",
+        EptsReportUtils.map(threeTo5m, "onOrBefore=${onOrBefore},location=${locationList}"));
+    dim.addCohortDefinition(
+        ">6m", EptsReportUtils.map(more6m, "onOrBefore=${onOrBefore},location=${locationList}"));
+    return dim;
+  }
+
+  /** Dimension for DSD eligible and not eligible patients */
+  public CohortDefinitionDimension getDSDEligibleDimension() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setName("DSD Eligible dimension");
+    dim.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    dim.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dim.addParameter(new Parameter("location", "Location", Location.class));
+    CohortDefinition eligible = eriDSDCohortQueries.getD1();
+    CohortDefinition notEligible = eriDSDCohortQueries.getD2();
+
+    dim.addCohortDefinition("E", mapStraightThrough(eligible));
+    dim.addCohortDefinition("NE", mapStraightThrough(notEligible));
+    return dim;
+  }
+
+  /** Dimension for DSD Non-Pregnant, Non-Breastfeeding and Not on TB treatment */
+  public CohortDefinitionDimension getDSDNonPregnantNonBreastfeedingAndNotOnTbDimension() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setName("DSD Non-Pregnant, Non-Breastfeeding and Non-Tb dimension");
+    dim.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dim.addParameter(new Parameter("location", "Location", Location.class));
+    CohortDefinition pregnantBreastfeedingTb =
+        eriDSDCohortQueries.getPregnantAndBreastfeedingAndOnTBTreatment();
+    CohortDefinition inverse = new InverseCohortDefinition(pregnantBreastfeedingTb);
+    dim.addCohortDefinition("NPNBNTB", mapStraightThrough(inverse));
     return dim;
   }
 }

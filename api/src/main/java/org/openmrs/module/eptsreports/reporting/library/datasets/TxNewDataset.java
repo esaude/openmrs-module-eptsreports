@@ -64,7 +64,7 @@ public class TxNewDataset extends BaseDataSet {
     dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dataSetDefinition.addDimension(
         "age", EptsReportUtils.map(eptsCommonDimension.age(ageDimensionCohort), mappings));
-    String keyPopMappings = "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
+    String keyPopMappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
     dataSetDefinition.addDimension(
         "keypop", EptsReportUtils.map(eptsCommonDimension.getKeyPopsDimension(), keyPopMappings));
 

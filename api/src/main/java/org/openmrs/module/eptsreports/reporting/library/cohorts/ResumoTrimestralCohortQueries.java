@@ -9,8 +9,6 @@ import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsQuarterlyCohortDefinition;
-import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -24,22 +22,31 @@ public class ResumoTrimestralCohortQueries {
   private GenericCohortQueries genericCohortQueries;
   private HivMetadata hivMetadata;
   private ResumoMensalCohortQueries resumoMensalCohortQueries;
+  private CommonCohortQueries commonCohortQueries;
 
   @Autowired
   public ResumoTrimestralCohortQueries(
       GenericCohortQueries genericCohortQueries,
       ResumoMensalCohortQueries resumoMensalCohortQueries,
-      HivMetadata hivMetadata) {
+      HivMetadata hivMetadata,
+      CommonCohortQueries commonCohortQueries) {
     this.genericCohortQueries = genericCohortQueries;
     this.resumoMensalCohortQueries = resumoMensalCohortQueries;
     this.hivMetadata = hivMetadata;
+    this.commonCohortQueries = commonCohortQueries;
   }
 
-  /** Indicator A - Nº de pacientes que iniciou TARV nesta unidade sanitária durante o mês */
+  /**
+   * <b>Name: A -</b> Indicator
+   *
+   * <p><b>Description:</b> Number of patients who started ART at this Health Facility during the
+   * month
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getA() {
     CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
-    CohortDefinition transferredIn =
-        getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonth();
+    CohortDefinition transferredIn = commonCohortQueries.getMohTransferredInPatients();
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameters(getParameters());
 
@@ -53,11 +60,16 @@ public class ResumoTrimestralCohortQueries {
     return cd;
   }
 
-  /** Indicator B - Nº de pacientes Transferidos de (+) outras US em TARV durante o mês */
+  /**
+   * <b>Name: B -</b> Indicator
+   *
+   * <p><b>Description:</b> Number of patients transferred-In (+) other HF's on ART during the month
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getB() {
     CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
-    CohortDefinition transferredIn =
-        getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonth();
+    CohortDefinition transferredIn = commonCohortQueries.getMohTransferredInPatients();
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameters(getParameters());
 
@@ -71,7 +83,14 @@ public class ResumoTrimestralCohortQueries {
     return cd;
   }
 
-  /** Indicator C - Nº de pacientes Transferidos para (-) outras US em TARV durante o mês */
+  /**
+   * <b>Name: C -</b> Indicator
+   *
+   * <p><b>Description:</b> Number of patients transferred-Out (-) other HF's on ART during the
+   * month
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getC() {
     CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
     CohortDefinition transferredOut = getPatientsTransferredOut();
@@ -89,58 +108,75 @@ public class ResumoTrimestralCohortQueries {
     return cd;
   }
 
-  /** Indicator D - ((A+B) - C) */
+  /**
+   * <b>Name: Indicator - D </b> - ((A+B) - C)
+   *
+   * <p><b>Description:</b> Number of patients who initiated ART And were Not Transferred-Out (-)
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getD() {
-    CompositionCohortDefinition cdAbc = new CompositionCohortDefinition();
-    cdAbc.setName("Indicators A, B and C parameters");
-    cdAbc.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cdAbc.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cdAbc.addParameter(new Parameter("location", "location", Location.class));
-    cdAbc.addSearch(
-        "A",
-        EptsReportUtils.map(
-            getA(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
-    cdAbc.addSearch(
-        "B",
-        EptsReportUtils.map(
-            getB(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
-    cdAbc.addSearch(
-        "C",
-        EptsReportUtils.map(
-            getC(), "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
-    cdAbc.setCompositionString("((A OR B) AND NOT C)");
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    CohortDefinition transferredOut = getPatientsTransferredOut();
 
-    return cdAbc;
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameters(getParameters());
+
+    String yearBefore =
+        "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore-12m},location=${location}";
+    cd.addSearch("startedArt", map(startedArt, yearBefore));
+
+    String less12m = "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore},location=${location}";
+    cd.addSearch("transferredOut", map(transferredOut, less12m));
+    cd.setCompositionString("startedArt NOT transferredOut");
+
+    return cd;
   }
 
-  /** Indicator E - Number of patients who is in the 1st line treatment during the cohort month */
+  /**
+   * <b>Name: E -</b> Indicator
+   *
+   * <p><b>Description:</b> Number of patients who is in the 1st line treatment during the cohort
+   * month
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getE() {
-    CohortDefinition preTarv = getA();
-    CohortDefinition transferredIn = getB();
-    CohortDefinition transferredOut = getC();
-    CohortDefinition suspended = getI();
-    CohortDefinition abandoned = getJ();
-    CohortDefinition dead = getL();
+
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    CohortDefinition transferredOut = getPatientsTransferredOut();
+    CohortDefinition indicatorI = getI();
+    CohortDefinition indicatorJ = getJ();
+    CohortDefinition indicatorL = getL();
     CohortDefinition lastFirstTherapeuticLine =
         getPatientsWithLastTherapeuticLineEqualsToFirstLineOrWithoutInformation();
     CompositionCohortDefinition wrapper = new CompositionCohortDefinition();
     wrapper.setParameters(getParameters());
-    wrapper.addSearch("preTarv", mapStraightThrough(preTarv));
-    wrapper.addSearch("transferredIn", mapStraightThrough(transferredIn));
-    wrapper.addSearch("transferredOut", mapStraightThrough(transferredOut));
-    wrapper.addSearch("suspended", mapStraightThrough(suspended));
-    wrapper.addSearch("abandoned", mapStraightThrough(abandoned));
-    wrapper.addSearch("dead", mapStraightThrough(dead));
+
+    String yearBefore =
+        "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore-12m},location=${location}";
+    wrapper.addSearch("startedArt", map(startedArt, yearBefore));
+
+    String less12m = "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore},location=${location}";
+    wrapper.addSearch("transferredOut", map(transferredOut, less12m));
+
+    wrapper.addSearch("I", mapStraightThrough(indicatorI));
+    wrapper.addSearch("J", mapStraightThrough(indicatorJ));
+    wrapper.addSearch("L", mapStraightThrough(indicatorL));
     wrapper.addSearch("lastFirstTherapeuticLine", mapStraightThrough(lastFirstTherapeuticLine));
 
     wrapper.setCompositionString(
-        "((preTarv OR transferredIn) NOT (transferredOut OR suspended OR abandoned OR dead)) AND lastFirstTherapeuticLine ");
+        "((startedArt NOT transferredOut) NOT (I OR J OR L)) AND lastFirstTherapeuticLine ");
     return wrapper;
   }
 
   /**
-   * Indicator F - Number of patients in Cohort who completed 12 months ARV treatment in the 1st
-   * line treatment who received one Viral load result
+   * <b>Name: F -</b> Indicator
+   *
+   * <p><b>Description:</b> Number of patients in Cohort who completed 12 months ARV treatment in
+   * the 1st line treatment who received one Viral load result
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getF() {
     CohortDefinition cohortE = getE();
@@ -154,11 +190,17 @@ public class ResumoTrimestralCohortQueries {
     return cd;
   }
 
-  /** Indicator G - Number of patients who is in the 2nd line treatment during the cohort month */
+  /**
+   * <b>Name: G -</b> Indicator
+   *
+   * <p><b>Description:</b> Number of patients who is in the 2nd line treatment during the cohort
+   * month
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getG() {
-    CohortDefinition indicatorA = getA();
-    CohortDefinition indicatorB = getB();
-    CohortDefinition indicatorC = getC();
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    CohortDefinition transferredOut = getPatientsTransferredOut();
     CohortDefinition indicatorI = getI();
     CohortDefinition indicatorJ = getJ();
     CohortDefinition indicatorL = getL();
@@ -167,9 +209,14 @@ public class ResumoTrimestralCohortQueries {
 
     CompositionCohortDefinition comp = new CompositionCohortDefinition();
     comp.setParameters(getParameters());
-    comp.addSearch("A", mapStraightThrough(indicatorA));
-    comp.addSearch("B", mapStraightThrough(indicatorB));
-    comp.addSearch("C", mapStraightThrough(indicatorC));
+
+    String yearBefore =
+        "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore-12m},location=${location}";
+    comp.addSearch("startedArt", map(startedArt, yearBefore));
+
+    String less12m = "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore},location=${location}";
+    comp.addSearch("transferredOut", map(transferredOut, less12m));
+
     comp.addSearch("I", mapStraightThrough(indicatorI));
     comp.addSearch("J", mapStraightThrough(indicatorJ));
     comp.addSearch("L", mapStraightThrough(indicatorL));
@@ -177,13 +224,17 @@ public class ResumoTrimestralCohortQueries {
         "lastSecondTherapeuticLine",
         map(lastSecondTherapeuticLine, "endDate=${onOrBefore},location=${location}"));
     comp.setCompositionString(
-        "((A OR B) AND NOT (C OR I OR J OR L)) AND lastSecondTherapeuticLine");
+        "((startedArt NOT transferredOut) AND NOT (I OR J OR L)) AND lastSecondTherapeuticLine");
     return comp;
   }
 
   /**
-   * Indicator H - Number of patients in Cohort who completed 12 months ARV treatment in the 2nd
-   * line treatment who received one Viral load result
+   * <b>Name: H -</b> Indicator
+   *
+   * <p><b>Description:</b> Number of patients in Cohort who completed 12 months ARV treatment in
+   * the 2nd line treatment who received one Viral load result
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getH() {
     CohortDefinition cohortG = getG();
@@ -197,11 +248,39 @@ public class ResumoTrimestralCohortQueries {
     return cd;
   }
 
-  /** Indicator I - Number of Suspended patients in the actual cohort */
+  /**
+   * <b>Name: I -</b>Indicator
+   *
+   * <p><b>Description:</b> Number of Suspended patients in the actual cohort
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * 1.1 - Registered in Patient Program State by reporting end date <b>Patient_program.program_id =
+   * 2 = SERVICO TARV-TRATAMENTO</b> AND <b>Patient_State.state = 8 (Suspended treatment)</b> OR
+   * Patient_State.start_date <= endDate AND Patient_state.end_date is null
+   *
+   * <p>1.2 - Registered in Ficha Resumo and Ficha Clinica of MasterCard by reporting end date
+   * <b>(EncounterType_id = 6)</b> Estado de Permanencia <b>(concept_id 6273)</b> = Suspended
+   * <b>(concept_id = 1709)</b> Encounter_datetime <= endDate
+   *
+   * <p>Registered in Ficha Resumo and Ficha Clinica of MasterCard <b>(encounterType_id = 53)</b>
+   * Estado de Permanencia <b>(concept_id = 6272)</b> = Suspended <b>(concept_id = 1709)</b>
+   * obs_datetime <= endDate
+   *
+   * <p>1.3 - Except all patients who after the most recent date from <b>1.1 to 1.2</b> have a drugs
+   * pick up or consultation <b>EncounterType ID= 6, 9, 18</b> and  encounter_datetime> the most
+   * recent date and <=endDate or Encounter Type ID = 52 and “Data de Levantamento” <b>(Concept Id
+   * 23866 value_datetime)</b> > the most recent date and <= endDate
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getI() {
-    CohortDefinition indicatorA = getA();
-    CohortDefinition indicatorB = getB();
-    CohortDefinition indicatorC = getC();
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    CohortDefinition transferredOut = getPatientsTransferredOut();
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("Number of patients with ART suspension during the current month");
@@ -222,36 +301,60 @@ public class ResumoTrimestralCohortQueries {
     CompositionCohortDefinition comp = new CompositionCohortDefinition();
     comp.setName("I indicator - Suspended Patients");
     comp.setParameters(getParameters());
-    comp.addSearch("A", mapStraightThrough(indicatorA));
-    comp.addSearch("B", mapStraightThrough(indicatorB));
-    comp.addSearch("C", mapStraightThrough(indicatorC));
+    String yearBefore =
+        "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore-12m},location=${location}";
+    comp.addSearch("startedArt", map(startedArt, yearBefore));
 
     String less12m = "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore},location=${location}";
+    comp.addSearch("transferredOut", map(transferredOut, less12m));
+
     comp.addSearch("Suspended", map(sqlCohortDefinition, less12m));
 
-    comp.setCompositionString("((A OR B) AND NOT C) AND Suspended");
+    comp.setCompositionString("(startedArt NOT transferredOut) AND Suspended");
     return comp;
   }
 
-  /** Indicator J - Number of Abandoned Patients in the actual cohort */
+  /**
+   * <b>Name: J -</b> Indicator
+   *
+   * <p><b>Description: </b>Number of Abandoned Patients in the actual cohort
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getJ() {
     CohortDefinition abandoned =
         resumoMensalCohortQueries.getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7();
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    CohortDefinition transferredOut = getPatientsTransferredOut();
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setParameters(getParameters());
-    cd.addSearch("A", mapStraightThrough(getA()));
-    cd.addSearch("B", mapStraightThrough(getB()));
+
+    String yearBefore =
+        "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore-12m},location=${location}";
+    cd.addSearch("startedArt", map(startedArt, yearBefore));
+
+    String less12m = "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore},location=${location}";
+    cd.addSearch("transferredOut", map(transferredOut, less12m));
+
     cd.addSearch("abandoned", map(abandoned, "date=${onOrBefore},location=${location}"));
-    cd.addSearch("C", mapStraightThrough(getC()));
     cd.addSearch("I", mapStraightThrough(getI()));
     cd.addSearch("L", mapStraightThrough(getL()));
-    cd.setCompositionString("(A OR B) AND abandoned NOT (C OR I OR L)");
+    cd.setCompositionString("(startedArt NOT transferredOut) AND abandoned NOT (I OR L)");
+
     return cd;
   }
 
   /**
-   * Fetches Patients with Last registered Line Treatment equals to (1st Line) or without
-   * information regarding Therapeutic Line
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Fetches Patients with Last registered Line Treatment equals to (1st Line (<b>concept_id =
+   * 21150</b>)) or without information regarding Therapeutic Line <b>(concept_id = 21151)</b>
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
    */
   private CohortDefinition
       getPatientsWithLastTherapeuticLineEqualsToFirstLineOrWithoutInformation() {
@@ -268,20 +371,27 @@ public class ResumoTrimestralCohortQueries {
     return cd;
   }
 
-  /** Indicator L - Number of Deceased patients in the actual cohort */
+  /**
+   * <b>Name: L -</b> Indicator
+   *
+   * <p><b>Description:</b> Number of Deceased patients in the actual cohort
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getL() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    CohortDefinition cohortA = getA();
-    CohortDefinition cohortB = getB();
-    CohortDefinition cohortC = getC();
+    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    CohortDefinition transferredOut = getPatientsTransferredOut();
     CohortDefinition dead = getDeceasedPatients();
     cd.setParameters(getParameters());
-    cd.addSearch("A", mapStraightThrough(cohortA));
-    cd.addSearch("B", mapStraightThrough(cohortB));
-    cd.addSearch("C", mapStraightThrough(cohortC));
+    String yearBefore =
+        "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore-12m},location=${location}";
+    cd.addSearch("startedArt", map(startedArt, yearBefore));
+
     String less12m = "onOrAfter=${onOrAfter-12m},onOrBefore=${onOrBefore},location=${location}";
+    cd.addSearch("transferredOut", map(transferredOut, less12m));
     cd.addSearch("dead", map(dead, less12m));
-    cd.setCompositionString("((A OR B) AND NOT C) AND dead");
+    cd.setCompositionString("(startedArt NOT transferredOut) AND dead");
     return cd;
   }
 
@@ -294,7 +404,18 @@ public class ResumoTrimestralCohortQueries {
     return cd;
   }
 
-  /** Number Of Patients In Ficha Clinica With Viral Load Result */
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Number Of Patients In Ficha Clinica <b>(encounterType_id = 6)</b> With Viral Load Result
+   * <b>(concept_id = 1035)</b>
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getNumberOfPatientsInFichaClinicaWithViralLoadResult() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName(
@@ -312,10 +433,19 @@ public class ResumoTrimestralCohortQueries {
   }
 
   /**
-   * All patients with last observation registered in Second Therapeutic Line in Master Card – Ficha
-   * Clinica before MonthEndDate encounter type id 6
+   * <b>Technical Specs</b>
    *
-   * @return CohortDefinition
+   * <blockquote>
+   *
+   * All patients with last registered Line Treatment (PT: “Linha Terapeutica” <b>(concept_id =
+   * 21151)</b>) equal to “Second Line” (PT: “Segunda Linha” <b>(concept_id = 21148)</b>)
+   *
+   * <p>And encounter date < = MonthEndDate in encounter “Master Card – Ficha Clinica”
+   * <b>(encounterType_id = 6)</b>
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
    */
   private CohortDefinition
       getPatientsWithLastObsInSecondTherapeuticLineInMasterCardFichaClinicaBeforeMonthEndDate() {
@@ -333,20 +463,6 @@ public class ResumoTrimestralCohortQueries {
     return sql;
   }
 
-  /** Number of patients transferred-in from another HFs during the current month */
-  private CohortDefinition
-      getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonth() {
-
-    EptsTransferredInCohortDefinition cd = new EptsTransferredInCohortDefinition();
-    cd.setProgramEnrolled(hivMetadata.getHIVCareProgram());
-    cd.setProgramEnrolled2(hivMetadata.getARTProgram());
-    cd.setPatientState(hivMetadata.getArtCareTransferredFromOtherHealthFacilityWorkflowState());
-    cd.setPatientState2(hivMetadata.getArtTransferredFromOtherHealthFacilityWorkflowState());
-    cd.addParameters(getParameters());
-    cd.setB10Flag(false);
-    return cd;
-  }
-
   private List<Parameter> getParameters() {
     return Arrays.asList(
         new Parameter("onOrAfter", "Start date", Date.class),
@@ -355,12 +471,15 @@ public class ResumoTrimestralCohortQueries {
   }
 
   /**
-   * Number of transferred-out patients in TARV at this HF during the cohort month.
+   * <b>Description:</b> Number of transferred-out patients in TARV at this HF during the cohort
+   * month.
    *
    * <p>This is the same as {@link HivCohortQueries#getPatientsTransferredOut()} except that it
    * filters for both {@code onOrAfter} and {@code onOrBefore}.
    *
    * <p>It was duplicated here because the spec pointed to an incompatible query
+   *
+   * @return {@link CohortDefinition}
    */
   private CohortDefinition getPatientsTransferredOut() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -385,12 +504,14 @@ public class ResumoTrimestralCohortQueries {
   }
 
   /**
-   * Deceased patients
+   * <b>Description:</b> Deceased patients
    *
    * <p>Copied from {@link GenericCohortQueries#getDeceasedPatients()} because it was not compatible
    * with current specs.
    *
    * <p>Should be removed after refactoring common queries.
+   *
+   * @return {@link CohortDefinition}
    */
   private CohortDefinition getDeceasedPatients() {
     SqlCohortDefinition cd = new SqlCohortDefinition();

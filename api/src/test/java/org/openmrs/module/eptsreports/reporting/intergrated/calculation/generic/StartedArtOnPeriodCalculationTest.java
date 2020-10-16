@@ -31,13 +31,12 @@ public class StartedArtOnPeriodCalculationTest extends BasePatientCalculationTes
 
   @Override
   public CalculationResultMap getResult() {
-    CalculationResultMap map = new CalculationResultMap();
-    return map;
+    return new CalculationResultMap();
   }
 
   @Test
-  public void shouldBeTrueIfPatientStartedOnFirstDayOfCohortPeriod() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldBeTrueIfPatientStartedOnFirstDayOfCohortPeriod() {
+    Map<String, Object> parameterValues = new HashMap<>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
     calendar.set(2008, Calendar.AUGUST, 1);
@@ -53,8 +52,8 @@ public class StartedArtOnPeriodCalculationTest extends BasePatientCalculationTes
   }
 
   @Test
-  public void shouldBeFalseIfPatientStartedOnBeforeFirstDayOfCohortPeriod() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldBeFalseIfPatientStartedOnBeforeFirstDayOfCohortPeriod() {
+    Map<String, Object> parameterValues = new HashMap<>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
     calendar.set(2008, Calendar.AUGUST, 2);
@@ -70,8 +69,8 @@ public class StartedArtOnPeriodCalculationTest extends BasePatientCalculationTes
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void shouldRaiseExceptionIfPeriodStartDateIsNotProvided() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldRaiseExceptionIfPeriodStartDateIsNotProvided() {
+    Map<String, Object> parameterValues = new HashMap<>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
     calendar.set(2008, Calendar.AUGUST, 31);
@@ -81,8 +80,8 @@ public class StartedArtOnPeriodCalculationTest extends BasePatientCalculationTes
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void shouldRaiseExceptionIfPeriodEndDateIsNotProvided() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldRaiseExceptionIfPeriodEndDateIsNotProvided() {
+    Map<String, Object> parameterValues = new HashMap<>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
     calendar.set(2008, Calendar.AUGUST, 1);
@@ -98,8 +97,8 @@ public class StartedArtOnPeriodCalculationTest extends BasePatientCalculationTes
   }
 
   @Test
-  public void shouldBeNullIfPatientDidNotStartArt() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldBeNullIfPatientDidNotStartArt() {
+    Map<String, Object> parameterValues = new HashMap<>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
     calendar.set(2008, Calendar.AUGUST, 1);

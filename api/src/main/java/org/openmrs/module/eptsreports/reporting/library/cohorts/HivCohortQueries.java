@@ -18,7 +18,6 @@ import static org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPo
 import static org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulationCalculation.KeyPop.PRISONER;
 import static org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulationCalculation.KeyPop.SEX_WORKER;
 import static org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulationCalculation.TYPE;
-import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.util.Collections;
 import java.util.Date;
@@ -29,15 +28,12 @@ import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulationCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
-import org.openmrs.module.eptsreports.reporting.library.queries.TbQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -51,8 +47,6 @@ public class HivCohortQueries {
   @Autowired private HivMetadata hivMetadata;
 
   @Autowired private GenericCohortQueries genericCohortQueires;
-
-  @Autowired private CommonMetadata commonMetadata;
 
   /**
    * Adult and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml)
@@ -81,10 +75,10 @@ public class HivCohortQueries {
   }
 
   /**
-   * Number of adult and pediatric ART patients with a viral load result documented in the patient
-   * medical record and/ or laboratory records in the past 12 months.
+   * <b>Description:</b> Number of adult and pediatric ART patients with a viral load result
+   * documented in the patient medical record and/ or laboratory records in the past 12 months.
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   @DocumentedDefinition(value = "viralLoadWithin12Months")
   public CohortDefinition getPatientsViralLoadWithin12Months() {
@@ -117,14 +111,6 @@ public class HivCohortQueries {
         Collections.singletonList(hivMetadata.getRestartConcept()));
   }
 
-  public CohortDefinition getPatientsInArtCareTransferredFromOtherHealthFacility() {
-    Program hivCareProgram = hivMetadata.getHIVCareProgram();
-    ProgramWorkflowState transferredFrom =
-        hivMetadata.getArtCareTransferredFromOtherHealthFacilityWorkflowState();
-    return genericCohortQueires.getPatientsBasedOnPatientStates(
-        hivCareProgram.getProgramId(), transferredFrom.getProgramWorkflowStateId());
-  }
-
   public CohortDefinition getPatientsInArtCareTransferredOutToAnotherHealthFacility() {
     Program hivCareProgram = hivMetadata.getHIVCareProgram();
     ProgramWorkflowState state =
@@ -134,10 +120,19 @@ public class HivCohortQueries {
   }
 
   /**
-   * @return Cohort of patients with START DATE (Concept 1190=HISTORICAL DRUG START DATE) filled in
-   *     drug pickup (encounter type 18=S.TARV: FARMACIA) or follow up consultation for adults and
-   *     children (encounter types 6=S.TARV: ADULTO SEGUIMENTO and 9=S.TARV: PEDIATRIA SEGUIMENTO)
-   *     where START DATE is before or equal end date
+   * <b>Description: 2.</b> Number of Patients with historical drug start Date Obs
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Cohort of patients with START DATE <b>(concept_id = 1190)</b> filled in drug pickup
+   * <b>(encounterType_id 18)</b> or follow up consultation for adults and children
+   * <b>(encounterType_ids = 6 and 5)</b> and obs startDate <= endDate
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
    */
   @DocumentedDefinition(value = "patientWithHistoricalDrugStartDateObs")
   public CohortDefinition getPatientWithHistoricalDrugStartDateObsBeforeOrOnEndDate() {
@@ -286,40 +281,14 @@ public class HivCohortQueries {
         hivMetadata
             .getTransferredOutToAnotherHealthFacilityWorkflowState()
             .getProgramWorkflowStateId();
-    return getPatientsTransferredOutOrSuspended(transferOut, transferOutState);
+    return getPatientsTransferredOut(transferOut, transferOutState);
   }
 
   public CohortDefinition getPatientsWhoStoppedTreatment() {
     Integer suspended = hivMetadata.getSuspendedTreatmentConcept().getConceptId();
     Integer suspendedState =
         hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId();
-    return getPatientsTransferredOutOrSuspended(suspended, suspendedState);
-  }
-
-  /**
-   * Looks for patients enrolled on ART program (program 2=SERVICO TARV - TRATAMENTO), transferred
-   * from other health facility (program workflow state is 29=TRANSFER FROM OTHER FACILITY) or
-   * marked as transferred in via mastercard between start date and end date
-   *
-   * @return CohortDefinition
-   */
-  @DocumentedDefinition(value = "transferredFromOtherHealthFacility")
-  public CohortDefinition getPatientsTransferredFromOtherHealthFacility() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("transferredFromOtherHealthFacility");
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-
-    CohortDefinition transferredInViaProgram = getTransferredInViaProgram(true);
-    CohortDefinition mastercard = getTransferredInViaMastercard();
-
-    cd.addSearch("program", mapStraightThrough(transferredInViaProgram));
-    cd.addSearch("mastercard", mapStraightThrough(mastercard));
-
-    cd.setCompositionString("program or mastercard");
-
-    return cd;
+    return getPatientsSuspendedOrStopTreatment(suspended, suspendedState);
   }
 
   public CohortDefinition getTransferredInViaProgram(boolean hasStartDate) {
@@ -336,7 +305,7 @@ public class HivCohortQueries {
             + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=${artProgram}"
             + " and ps.state=${transferStateId}"
             + " and ps.start_date=pg.date_enrolled ";
-    if (hasStartDate == true) {
+    if (hasStartDate) {
       query = query + "and ps.start_date between :onOrAfter and :onOrBefore ";
     } else {
       query = query + "and ps.start_date <= :onOrBefore ";
@@ -375,11 +344,10 @@ public class HivCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getPatientsTransferredOutOrSuspended(
-      int transferedOutOrSuspendedConcept, int patientStateId) {
+  private CohortDefinition getPatientsTransferredOut(int transferedOutConcept, int patientStateId) {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
 
-    sqlCohortDefinition.setName("get Patients With Most Recent Date Have Fila or Consultation ");
+    sqlCohortDefinition.setName("get Patients Transferred Out by end of the period ");
     sqlCohortDefinition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
@@ -400,11 +368,14 @@ public class HivCohortQueries {
         "masterCardEncounterType", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     map.put(
         "stateOfStayOfPreArtPatient", hivMetadata.getStateOfStayOfPreArtPatient().getConceptId());
-    map.put("transferedOutOrSuspendedConcept", transferedOutOrSuspendedConcept);
+    map.put("transferedOutConcept", transferedOutConcept);
     map.put("autoTransferConcept", hivMetadata.getAutoTransferConcept().getConceptId());
     map.put("stateOfStayOfArtPatient", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
     map.put("artProgram", hivMetadata.getARTProgram().getProgramId());
     map.put("transferredOutToAnotherHealthFacilityWorkflowState", patientStateId);
+    map.put("defaultingMotiveConcept", hivMetadata.getDefaultingMotiveConcept().getConceptId());
+    map.put(
+        "buscaActivaEncounterType", hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId());
 
     String query =
         "  SELECT mostrecent.patient_id "
@@ -425,10 +396,11 @@ public class HivCohortQueries {
             + "        AND ps.end_date is null   "
             + "        AND ps.start_date <= :onOrBefore   "
             + "        AND pg.location_id= :location   "
+            + "         GROUP BY p.patient_id  "
             + "  "
             + "    UNION  "
             + "  "
-            + "    SELECT  p.patient_id,  o.obs_datetime AS last_date  "
+            + "    SELECT  p.patient_id,  Max(o.obs_datetime) AS last_date  "
             + "    FROM patient p    "
             + "        INNER JOIN encounter e   "
             + "            ON e.patient_id=p.patient_id   "
@@ -437,13 +409,16 @@ public class HivCohortQueries {
             + "    WHERE  p.voided = 0   "
             + "        AND e.voided = 0   "
             + "        AND o.voided = 0   "
-            + "        AND e.encounter_type = ${masterCardEncounterType}   "
-            + "        AND o.concept_id = ${stateOfStayOfPreArtPatient}  "
-            + "        AND o.value_coded =  ${transferedOutOrSuspendedConcept}   "
+            + "        AND e.encounter_type = ${adultoSeguimentoEncounterType}   "
+            + "        AND o.concept_id = ${stateOfStayOfArtPatient}  "
+            + "        AND o.value_coded =  ${transferedOutConcept}   "
             + "        AND o.obs_datetime <= :onOrBefore   "
             + "        AND e.location_id =  :location   "
+            + "         GROUP BY p.patient_id  "
+            + "  "
             + "    UNION   "
-            + "    SELECT  p.patient_id , e.encounter_datetime AS last_date  "
+            + "  "
+            + "    SELECT  p.patient_id , Max(e.encounter_datetime) AS last_date  "
             + "    FROM patient p    "
             + "        INNER JOIN encounter e   "
             + "            ON e.patient_id=p.patient_id   "
@@ -452,12 +427,33 @@ public class HivCohortQueries {
             + "    WHERE  p.voided = 0   "
             + "        AND e.voided = 0   "
             + "        AND o.voided = 0   "
-            + "        AND e.encounter_type = ${adultoSeguimentoEncounterType}  "
-            + "        AND o.concept_id = ${stateOfStayOfArtPatient}  "
-            + "        AND o.value_coded = ${transferedOutOrSuspendedConcept}   "
+            + "        AND e.encounter_type = ${masterCardEncounterType}  "
+            + "        AND o.concept_id = ${stateOfStayOfPreArtPatient}  "
+            + "        AND o.value_coded = ${transferedOutConcept}   "
             + "        AND e.encounter_datetime <= :onOrBefore   "
             + "        AND e.location_id =  :location  "
+            + "         GROUP BY p.patient_id  "
+            + "  "
+            + "    UNION   "
+            + "  "
+            + "    SELECT  p.patient_id , Max(e.encounter_datetime) AS last_date  "
+            + "    FROM patient p    "
+            + "        INNER JOIN encounter e   "
+            + "            ON e.patient_id=p.patient_id   "
+            + "        INNER JOIN obs o   "
+            + "            ON o.encounter_id=e.encounter_id   "
+            + "    WHERE  p.voided = 0   "
+            + "        AND e.voided = 0   "
+            + "        AND o.voided = 0   "
+            + "        AND e.encounter_type= ${buscaActivaEncounterType}  "
+            + "        AND o.concept_id = ${defaultingMotiveConcept}  "
+            + "        AND o.value_coded IN (${transferedOutConcept} ,${autoTransferConcept})  "
+            + "        AND e.encounter_datetime <= :onOrBefore   "
+            + "        AND e.location_id =  :location  "
+            + "         GROUP BY p.patient_id  "
+            + "  "
             + ") lastest   "
+            + "  "
             + "WHERE lastest.patient_id NOT  IN("
             + " "
             + "  			     SELECT  p.patient_id    "
@@ -469,11 +465,13 @@ public class HivCohortQueries {
             + "	                     AND e.encounter_type IN (${adultoSeguimentoEncounterType},"
             + "${pediatriaSeguimentoEncounterType},"
             + "${pharmaciaEncounterType})    "
-            + "	                     AND e.encounter_datetime > lastest.last_date "
-            + " AND e.encounter_datetime <=  :onOrBefore    "
+            + "	                     AND DATEDIFF (e.encounter_datetime, lastest.last_date)>0 "
+            + "                      AND DATEDIFF (e.encounter_datetime, :onOrBefore )<=0    "
             + "	                     AND e.location_id =  :location    "
             + "	                 GROUP BY p.patient_id "
+            + "  "
             + " UNION "
+            + "  "
             + "        			 SELECT  p.patient_id    "
             + "	                 FROM patient p       "
             + "	                      INNER JOIN encounter e      "
@@ -485,8 +483,8 @@ public class HivCohortQueries {
             + "	                      AND o.voided = 0      "
             + "	                      AND e.encounter_type = ${masterCardDrugPickupEncounterType}     "
             + "	                      AND o.concept_id = ${artDatePickup}     "
-            + "	                      AND o.value_datetime > lastest.last_date  "
-            + " AND o.value_datetime <= :onOrBefore      "
+            + "	                      AND DATEDIFF (o.value_datetime, lastest.last_date)>0  "
+            + "                       AND DATEDIFF (o.value_datetime, :onOrBefore )<=0      "
             + "	                      AND e.location_id =  :location     "
             + "	                  GROUP BY p.patient_id   "
             + ")  "
@@ -502,32 +500,138 @@ public class HivCohortQueries {
     return sqlCohortDefinition;
   }
 
-  /**
-   * Get All Patients On TB Treatment
-   *
-   * @return
-   */
-  public CohortDefinition getPatientsOnTbTreatment() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("patientsOnTbTreatment");
-    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
-    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
+  private CohortDefinition getPatientsSuspendedOrStopTreatment(
+      int suspendedConcept, int patientStateId) {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
 
-    cd.setQuery(
-        TbQueries.getPatientsOnTbTreatmentQuery(
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getTBDrugStartDateConcept().getConceptId(),
-            hivMetadata.getTBDrugEndDateConcept().getConceptId(),
-            hivMetadata.getTBProgram().getProgramId(),
-            hivMetadata.getPatientActiveOnTBProgramWorkflowState().getProgramWorkflowStateId(),
-            hivMetadata.getActiveTBConcept().getConceptId(),
-            hivMetadata.getYesConcept().getConceptId(),
-            hivMetadata.getTBTreatmentPlanConcept().getConceptId(),
-            hivMetadata.getStartDrugs().getConceptId(),
-            hivMetadata.getContinueRegimenConcept().getConceptId()));
+    sqlCohortDefinition.setName(" Patients Who have Suspended or Stopped Treatment");
+    sqlCohortDefinition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
-    return cd;
+    Map<String, Integer> map = new HashMap<>();
+    map.put(
+        "adultoSeguimentoEncounterType",
+        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put(
+        "pediatriaSeguimentoEncounterType",
+        hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    map.put(
+        "pharmaciaEncounterType", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    map.put(
+        "masterCardDrugPickupEncounterType",
+        hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    map.put("artDatePickup", hivMetadata.getArtDatePickupMasterCard().getConceptId());
+    map.put(
+        "masterCardEncounterType", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put(
+        "stateOfStayOfPreArtPatient", hivMetadata.getStateOfStayOfPreArtPatient().getConceptId());
+    map.put("suspendedConcept", suspendedConcept);
+    map.put("stateOfStayOfArtPatient", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
+    map.put("artProgram", hivMetadata.getARTProgram().getProgramId());
+    map.put("suspendedTreatmentWorkflowState", patientStateId);
+
+    String query =
+        "  SELECT mostrecent.patient_id "
+            + "FROM ("
+            + " SELECT lastest.patient_id ,Max(lastest.last_date) as  last_date "
+            + " FROM (  "
+            + "    SELECT p.patient_id ,ps.start_date AS last_date  "
+            + "    FROM patient p   "
+            + "        INNER JOIN patient_program pg   "
+            + "            ON p.patient_id=pg.patient_id   "
+            + "        INNER JOIN patient_state ps   "
+            + "            ON pg.patient_program_id=ps.patient_program_id   "
+            + "    WHERE pg.voided=0   "
+            + "        AND ps.voided=0   "
+            + "        AND p.voided=0   "
+            + "        AND pg.program_id= ${artProgram}  "
+            + "        AND ps.state = ${suspendedTreatmentWorkflowState}   "
+            + "        AND ps.end_date is null   "
+            + "        AND ps.start_date <= :onOrBefore   "
+            + "        AND pg.location_id= :location   "
+            + "         GROUP BY p.patient_id  "
+            + "  "
+            + "    UNION  "
+            + "  "
+            + "    SELECT  p.patient_id,  Max(o.obs_datetime) AS last_date  "
+            + "    FROM patient p    "
+            + "        INNER JOIN encounter e   "
+            + "            ON e.patient_id=p.patient_id   "
+            + "        INNER JOIN obs o   "
+            + "            ON o.encounter_id=e.encounter_id   "
+            + "    WHERE  p.voided = 0   "
+            + "        AND e.voided = 0   "
+            + "        AND o.voided = 0   "
+            + "        AND e.encounter_type = ${adultoSeguimentoEncounterType}   "
+            + "        AND o.concept_id = ${stateOfStayOfArtPatient}  "
+            + "        AND o.value_coded =  ${suspendedConcept}   "
+            + "        AND o.obs_datetime <= :onOrBefore   "
+            + "        AND e.location_id =  :location   "
+            + "         GROUP BY p.patient_id  "
+            + "  "
+            + "    UNION   "
+            + "  "
+            + "    SELECT  p.patient_id , Max(e.encounter_datetime) AS last_date  "
+            + "    FROM patient p    "
+            + "        INNER JOIN encounter e   "
+            + "            ON e.patient_id=p.patient_id   "
+            + "        INNER JOIN obs o   "
+            + "            ON o.encounter_id=e.encounter_id   "
+            + "    WHERE  p.voided = 0   "
+            + "        AND e.voided = 0   "
+            + "        AND o.voided = 0   "
+            + "        AND e.encounter_type = ${masterCardEncounterType}  "
+            + "        AND o.concept_id = ${stateOfStayOfPreArtPatient}  "
+            + "        AND o.value_coded = ${suspendedConcept}   "
+            + "        AND e.encounter_datetime <= :onOrBefore   "
+            + "        AND e.location_id =  :location  "
+            + "         GROUP BY p.patient_id  "
+            + "  "
+            + ") lastest   "
+            + "  "
+            + "WHERE lastest.patient_id NOT  IN("
+            + " "
+            + "  			     SELECT  p.patient_id    "
+            + "	                 FROM patient p      "
+            + "	                     INNER JOIN encounter e     "
+            + "	                         ON e.patient_id=p.patient_id     "
+            + "	                 WHERE  p.voided = 0     "
+            + "	                     AND e.voided = 0     "
+            + "	                     AND e.encounter_type IN (${adultoSeguimentoEncounterType},"
+            + "${pediatriaSeguimentoEncounterType},"
+            + "${pharmaciaEncounterType})    "
+            + "	                     AND DATEDIFF (e.encounter_datetime, lastest.last_date)>0 "
+            + "                      AND DATEDIFF (e.encounter_datetime, :onOrBefore )<=0    "
+            + "	                     AND e.location_id =  :location    "
+            + "	                 GROUP BY p.patient_id "
+            + "  "
+            + " UNION "
+            + "  "
+            + "        			 SELECT  p.patient_id    "
+            + "	                 FROM patient p       "
+            + "	                      INNER JOIN encounter e      "
+            + "	                          ON e.patient_id=p.patient_id      "
+            + "	                      INNER JOIN obs o      "
+            + "	                          ON o.encounter_id=e.encounter_id      "
+            + "	                  WHERE  p.voided = 0      "
+            + "	                      AND e.voided = 0      "
+            + "	                      AND o.voided = 0      "
+            + "	                      AND e.encounter_type = ${masterCardDrugPickupEncounterType}     "
+            + "	                      AND o.concept_id = ${artDatePickup}     "
+            + "	                      AND DATEDIFF (o.value_datetime, lastest.last_date)>0  "
+            + "                       AND DATEDIFF (o.value_datetime, :onOrBefore )<=0      "
+            + "	                      AND e.location_id =  :location     "
+            + "	                  GROUP BY p.patient_id   "
+            + ")  "
+            + " GROUP BY lastest.patient_id"
+            + " )mostrecent "
+            + " GROUP BY mostrecent.patient_id";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    String mappedQuery = stringSubstitutor.replace(query);
+
+    sqlCohortDefinition.setQuery(mappedQuery);
+
+    return sqlCohortDefinition;
   }
 }

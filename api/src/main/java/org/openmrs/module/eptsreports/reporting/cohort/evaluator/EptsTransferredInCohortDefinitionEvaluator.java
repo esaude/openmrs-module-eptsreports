@@ -16,6 +16,8 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+/** @deprecated Use {@link EptsTransferredInCohortDefinitionEvaluator2} instead. */
+@Deprecated
 @Handler(supports = EptsTransferredInCohortDefinition.class)
 public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
@@ -61,7 +63,7 @@ public class EptsTransferredInCohortDefinitionEvaluator implements CohortDefinit
 
     q.append("       AND type.voided = 0 ");
     q.append("       AND type.concept_id = :typeOfPatient ");
-    if (cd.getB10Flag() == true) {
+    if (cd.getB10Flag()) {
       q.append("       AND type.value_coded = :tarv ");
     } else {
       q.append("       AND type.value_coded in (:tarv,:preTarv) ");

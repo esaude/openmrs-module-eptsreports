@@ -56,7 +56,7 @@ public class OnArtForMoreThanXmonthsCalcultionTest extends BasePatientCalculatio
   }
 
   @Test
-  public void calculateLastVlShouldBeUsedWhenThereAreMoreThanOne() {
+  public void evaluateShouldCalculateLastVlBeingUsedWhenThereAreMoreThanOne() {
     // add next vl after 3 months on ART in addition to previous one before 3 months
     openmrsTestHelper.createBasicObs(
         Context.getPatientService().getPatient(999),

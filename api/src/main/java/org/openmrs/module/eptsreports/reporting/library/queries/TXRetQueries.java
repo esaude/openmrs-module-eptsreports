@@ -1,7 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
 public class TXRetQueries {
-  private static String obito =
+  private static final String obito =
       "SELECT inicio.patient_id\n"
           + "FROM\n"
           + "  (SELECT patient_id,\n"
@@ -126,7 +126,7 @@ public class TXRetQueries {
           + "                                                                 WHERE pg.patient_id=inicio.patient_id), interval :months MONTH)\n"
           + "       AND location_id=:location )";
 
-  private static String suspenso =
+  private static final String suspenso =
       "SELECT inicio.patient_id\n"
           + "FROM\n"
           + "  (SELECT patient_id,\n"
@@ -251,7 +251,7 @@ public class TXRetQueries {
           + "                                                                 WHERE pg.patient_id=inicio.patient_id), interval :months MONTH)\n"
           + "       AND location_id=:location )";
 
-  private static String initiotArv =
+  private static final String initiotArv =
       "SELECT inicio.patient_id\n"
           + "FROM\n"
           + "  (SELECT patient_id,\n"
@@ -357,7 +357,7 @@ public class TXRetQueries {
           + "                                                                FROM dual\n"
           + "                                                                WHERE p.patient_id=inicio.patient_id), interval :months MONTH) )";
 
-  private static String notificado =
+  private static final String notificado =
       "SELECT dominio.paciente\n"
           + "FROM\n"
           + "  (SELECT inicio.patient_id paciente,\n"
@@ -510,7 +510,7 @@ public class TXRetQueries {
           + "  AND NOT (datediff(dominio.data_12_meses, COALESCE(dominio.proximo_fila, dominio.data)) < 60\n"
           + "           OR datediff(dominio.data_12_meses, COALESCE(dominio.proximo_seguimento, dominio.data)) < 60)";
 
-  private static String naonotificado =
+  private static final String naonotificado =
       "SELECT dominio.paciente\n"
           + "FROM\n"
           + "  (SELECT inicio.patient_id paciente,\n"
@@ -663,7 +663,7 @@ public class TXRetQueries {
           + "  AND not((COALESCE(dominio.state, 6) IN (8, 9, 10))\n"
           + "          OR (datediff(dominio.data_12_meses, COALESCE(dominio.proximo_seguimento, dominio.data)) < 60))";
 
-  private static String courtNotTransferred =
+  private static final String courtNotTransferred =
       "SELECT inicio.patient_id\n"
           + "FROM\n"
           + "  (SELECT patient_id,\n"
@@ -769,7 +769,7 @@ public class TXRetQueries {
           + "                                                                FROM dual\n"
           + "                                                                WHERE p.patient_id=inicio.patient_id), interval :months MONTH) )";
 
-  private static String under1YearIncreasedHARTAtARTStartDate =
+  private static final String under1YearIncreasedHARTAtARTStartDate =
       "SELECT patient_id\n"
           + "FROM\n"
           + "  (SELECT patient_id,\n"
@@ -830,7 +830,7 @@ public class TXRetQueries {
           + "INNER JOIN person pe ON inicio_real.patient_id=pe.person_id\n"
           + "WHERE timestampdiff(YEAR, birthdate, data_inicio)<1";
 
-  private static String oneTo19WhoStartedTargetAtARTInitiation =
+  private static final String oneTo19WhoStartedTargetAtARTInitiation =
       "SELECT patient_id\n"
           + "FROM\n"
           + "  (SELECT patient_id,\n"
@@ -892,67 +892,7 @@ public class TXRetQueries {
           + "WHERE timestampdiff(YEAR, birthdate, data_inicio)>=1\n"
           + "  AND timestampdiff(YEAR, birthdate, data_inicio)<10";
 
-  private static String pregnancyEnrolledInART =
-      "SELECT p.patient_id\n"
-          + "FROM patient p\n"
-          + "INNER JOIN encounter e ON p.patient_id=e.patient_id\n"
-          + "INNER JOIN obs o ON o.encounter_id=e.encounter_id\n"
-          + "WHERE e.voided=0\n"
-          + "  AND p.voided=0\n"
-          + "  AND o.value_datetime BETWEEN date_add(:startDate, interval -1 YEAR) AND :endDate\n"
-          + "  AND o.voided=0\n"
-          + "  AND o.concept_id=6120\n"
-          + "  AND e.encounter_type IN (6,\n"
-          + "                           9)\n"
-          + "  AND e.location_id=:location\n"
-          + "UNION\n"
-          + "SELECT pp.patient_id\n"
-          + "FROM patient p\n"
-          + "INNER JOIN patient_program pp ON p.patient_id=pp.patient_id\n"
-          + "WHERE pp.program_id=5\n"
-          + "  AND pp.voided=0\n"
-          + "  AND p.voided=0\n"
-          + "  AND pp.location_id=:location\n"
-          + "  AND pp.date_completed BETWEEN date_add(:startDate, interval -1 YEAR) AND :endDate\n"
-          + "UNION\n"
-          + "SELECT p.patient_id\n"
-          + "FROM patient p\n"
-          + "INNER JOIN encounter e ON p.patient_id=e.patient_id\n"
-          + "INNER JOIN obs o ON o.encounter_id=e.encounter_id\n"
-          + "WHERE e.voided=0\n"
-          + "  AND p.voided=0\n"
-          + "  AND o.value_datetime BETWEEN date_add(:startDate, interval -2 YEAR) AND :endDate\n"
-          + "  AND o.voided=0\n"
-          + "  AND o.concept_id=1113\n"
-          + "  AND e.encounter_type IN (6,\n"
-          + "                           9)\n"
-          + "  AND e.location_id=:location\n"
-          + "  AND date_add(o.value_datetime, interval 9 MONTH)>=date_add(:startDate, interval -1 YEAR)\n"
-          + "UNION\n"
-          + "SELECT pp.patient_id\n"
-          + "FROM patient p\n"
-          + "INNER JOIN patient_program pp ON p.patient_id=pp.patient_id\n"
-          + "WHERE pp.program_id=5\n"
-          + "  AND pp.voided=0\n"
-          + "  AND pp.location_id=:location\n"
-          + "  AND pp.date_enrolled BETWEEN date_add(:startDate, interval -2 YEAR) AND :endDate\n"
-          + "  AND date_add(date_enrolled, interval 9 MONTH)>=date_add(:startDate, interval -1 YEAR)\n"
-          + "UNION\n"
-          + "SELECT p.patient_id\n"
-          + "FROM patient p\n"
-          + "INNER JOIN encounter e ON p.patient_id=e.patient_id\n"
-          + "INNER JOIN obs o ON o.encounter_id=e.encounter_id\n"
-          + "WHERE e.voided=0\n"
-          + "  AND p.voided=0\n"
-          + "  AND o.value_coded=1065\n"
-          + "  AND e.encounter_datetime BETWEEN date_add(:startDate, interval -1 YEAR) AND :endDate\n"
-          + "  AND o.voided=0\n"
-          + "  AND o.concept_id=1268\n"
-          + "  AND e.encounter_type IN (6,\n"
-          + "                           9)\n"
-          + "  AND e.location_id=:location";
-
-  private static String genderOnArtXToY =
+  private static final String genderOnArtXToY =
       "SELECT patient_id\n"
           + "FROM\n"
           + "  (SELECT patient_id,\n"
@@ -1015,7 +955,7 @@ public class TXRetQueries {
           + "  AND timestampdiff(YEAR, birthdate, data_inicio)<%d\n"
           + "  AND gender='%s'";
 
-  private static String genderOnArtAbove50 =
+  private static final String genderOnArtAbove50 =
       "SELECT patient_id\n"
           + "FROM\n"
           + "  (SELECT patient_id,\n"
@@ -1077,7 +1017,7 @@ public class TXRetQueries {
           + "WHERE timestampdiff(YEAR, birthdate, data_inicio)>=50\n"
           + "  AND gender='%s'";
 
-  private static String infantsWhoGaveAwardsTwoYearsBehindReferenceDate =
+  private static final String infantsWhoGaveAwardsTwoYearsBehindReferenceDate =
       "SELECT pg.patient_id\n"
           + "FROM patient p\n"
           + "INNER JOIN patient_program pg ON p.patient_id=pg.patient_id\n"
@@ -1123,10 +1063,6 @@ public class TXRetQueries {
 
   public static String oneTo19WhoStartedTargetAtARTInitiation() {
     return oneTo19WhoStartedTargetAtARTInitiation;
-  }
-
-  public static String pregnancyEnrolledInART() {
-    return pregnancyEnrolledInART;
   }
 
   public static String genderOnArtXToY(String gender, Integer minAge, Integer maxAge) {

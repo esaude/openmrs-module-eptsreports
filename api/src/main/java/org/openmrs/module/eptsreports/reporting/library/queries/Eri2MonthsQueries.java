@@ -11,23 +11,27 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
+
 public class Eri2MonthsQueries {
 
   /**
    * C TODO: merge with allPatientsWhoInitiatedTreatmentDuringReportingPeriod and harmonizez with
    * txNew union query
    *
-   * @param arvPharmaciaEncounter
-   * @param arvAdultoSeguimentoEncounter
-   * @param arvPediatriaSeguimentoEncounter
-   * @param arvPlanConcept
-   * @param startDrugsConcept
-   * @param historicalDrugsConcept
-   * @param artProgram
-   * @param yesConcept
-   * @param artPickupDateConcept
-   * @param mastercardDrugPickupEncounterType
-   * @return
+   * @param arvPharmaciaEncounter - {{@link HivMetadata#getARVPharmaciaEncounterType()}}
+   * @param arvAdultoSeguimentoEncounter - {{@link HivMetadata#getAdultoSeguimentoEncounterType()}
+   *     ()}}
+   * @param arvPediatriaSeguimentoEncounter - {{@link
+   *     HivMetadata#getPediatriaSeguimentoEncounterType()}}
+   * @param arvPlanConcept - ARV Plan Concept
+   * @param startDrugsConcept - Start Drugs Concept
+   * @param historicalDrugsConcept - historical Drugs Concept
+   * @param artProgram - ART Program
+   * @param yesConcept - yes Concept
+   * @param artPickupDateConcept - ART Pickup Date Concept
+   * @param mastercardDrugPickupEncounterType - Mastercard DrugPickup EncounterType
+   * @return String
    */
   public static String getAllPatientsWhoReturnedFor2ndConsultationOR2ndDrugsPickUpWithin33Days(
       int arvPharmaciaEncounter,
@@ -40,8 +44,9 @@ public class Eri2MonthsQueries {
       int artPickupConcept,
       int yesConcept,
       int artPickupDateConcept,
-      int mastercardDrugPickupEncounterType) {
-    return "SELECT inicio_real.patient_id "
+      int mastercardDrugPickupEncounterType,
+      int masterCardEncounterType) {
+    return "SELECT inicio_real.patient_id  "
         + "FROM   (SELECT patient_id, "
         + "               data_inicio "
         + "        FROM   (SELECT patient_id, "
@@ -89,14 +94,10 @@ public class Eri2MonthsQueries {
         + arvAdultoSeguimentoEncounter
         + ", "
         + arvPediatriaSeguimentoEncounter
+        + ", "
+        + masterCardEncounterType
         + " ) "
-        + "                               AND o.concept_id = "
-        + arvPlanConcept
-        + " "
-        + "                               AND o.value_coded = "
-        + startDrugsConcept
-        + " "
-        + "                               AND o.concept_id = "
+        + "                              AND o.concept_id = "
         + historicalDrugsConcept
         + " "
         + "                               AND o.value_datetime IS NOT NULL "
@@ -131,8 +132,8 @@ public class Eri2MonthsQueries {
         + "                               AND e.location_id = :location "
         + "                        GROUP  BY p.patient_id"
         + "                        UNION "
-        + "                        SELECT e.patient_id, "
-        + "                               Min(e.encounter_datetime) AS data_inicio"
+        + "                        SELECT p.patient_id, "
+        + "                               Min(pickupdate.value_datetime) AS data_inicio"
         + "                        FROM   patient p "
         + "                               JOIN encounter e "
         + "                                 ON p.patient_id = e.patient_id "
@@ -157,26 +158,55 @@ public class Eri2MonthsQueries {
         + mastercardDrugPickupEncounterType
         + " "
         + "                               AND e.voided = 0 "
-        + "                               AND e.location_id = :location) inicio "
+        + "                               AND e.location_id = :location "
+        + "                          GROUP BY p.patient_id) inicio "
         + "                GROUP  BY patient_id)inicio1 "
         + "        WHERE  data_inicio BETWEEN :startDate AND :endDate) inicio_real "
-        + "       INNER JOIN encounter e "
-        + "               ON e.patient_id = inicio_real.patient_id "
-        + "WHERE  e.voided = 0 "
-        + "       AND e.encounter_type IN ( "
+        + "   INNER JOIN   "
+        + "   (SELECT      "
+        + "   e.patient_id, e.encounter_datetime AS first_visit, e.encounter_type"
+        + "   FROM    "
+        + "   patient p   "
+        + "   INNER JOIN encounter e ON e.patient_id = p.patient_id   "
+        + "   INNER JOIN obs o ON o.encounter_id = e.encounter_id   "
+        + " WHERE   "
+        + "   e.voided = 0 AND o.voided = 0   "
+        + "   AND e.location_id = :location   "
+        + "   AND e.encounter_type IN (   "
         + arvPharmaciaEncounter
-        + ", "
+        + ",  "
         + arvAdultoSeguimentoEncounter
-        + ", "
+        + ",  "
         + arvPediatriaSeguimentoEncounter
-        + ", "
+        + ")  "
+        + "   AND e.encounter_datetime BETWEEN :startDate AND DATE_ADD(:endDate,INTERVAL 33 DAY)    "
+        + "    UNION SELECT   "
+        + "    e.patient_id, pickupdate.value_datetime AS first_visit, CASE "
+        + "   WHEN e.encounter_type=52 THEN 18  "
+        + "   ELSE e.encounter_type END AS encounter_type"
+        + "   FROM    "
+        + " patient p   "
+        + "   INNER JOIN encounter e ON e.patient_id = p.patient_id   "
+        + "   INNER JOIN obs o ON o.encounter_id = e.encounter_id   "
+        + "   INNER JOIN obs pickupdate ON e.encounter_id = pickupdate.encounter_id   "
+        + "   WHERE   "
+        + "   e.voided = 0 AND o.voided = 0   "
+        + "   AND pickupdate.voided = 0   "
+        + "   AND e.location_id = :location   "
+        + "   AND e.encounter_type =    "
         + mastercardDrugPickupEncounterType
-        + " ) "
-        + "       AND e.location_id = :location "
-        + "       AND e.encounter_datetime BETWEEN inicio_real.data_inicio AND if (Date_add( "
-        + "                                        inicio_real.data_inicio, INTERVAL "
-        + "                                        33 day) > :reportingEndDate, :reportingEndDate, Date_add(inicio_real.data_inicio, INTERVAL 33 day))  "
-        + "GROUP  BY inicio_real.patient_id "
-        + "HAVING Min(e.encounter_datetime) < Max(e.encounter_datetime)";
+        + "   AND o.concept_id =    "
+        + artPickupConcept
+        + "   AND o.value_coded =   "
+        + yesConcept
+        + "   AND pickupdate.concept_id =   "
+        + artPickupDateConcept
+        + "   AND pickupdate.value_datetime IS NOT NULL   "
+        + "   AND pickupdate.value_datetime BETWEEN :startDate AND DATE_ADD(:endDate,INTERVAL 33 DAY)   "
+        + "   ) AS first_real ON inicio_real.patient_id = first_real.patient_id  "
+        + "   WHERE   "
+        + "   first_visit >= DATE_ADD(inicio_real.data_inicio,INTERVAL 5 DAY)   "
+        + "   AND first_visit <= DATE_ADD(inicio_real.data_inicio,INTERVAL 33 DAY)  "
+        + "   GROUP  BY inicio_real.patient_id ";
   }
 }

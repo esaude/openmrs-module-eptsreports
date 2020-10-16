@@ -37,7 +37,7 @@ public class QualityImprovementCohortQueries {
 
   @Autowired private TbMetadata tbMetadata;
 
-  @Autowired GenderCohortQueries genderCohortQueries;
+  @Autowired private GenderCohortQueries genderCohortQueries;
 
   /**
    * MQ_INICIO TARV NO PERIODO DE INCLUSAO (AMOSTRA TARV) - NOVO
@@ -45,7 +45,7 @@ public class QualityImprovementCohortQueries {
    * <p>São pacientes que iniciaram TARV dentro do periodo de inclusao, com mínimo de uma consulta
    * após início TARV
    *
-   * @return
+   * @return CohortDefinition
    */
   @DocumentedDefinition(value = "initialARVInInclusionPeriodWithAtLeastOneEncounter")
   public CohortDefinition getPatientStartedARVInInclusionPeriodWithAtLeastOneEncounter() {
@@ -254,7 +254,7 @@ public class QualityImprovementCohortQueries {
    * * PROFILAXIA COM ISONIAZIDA NO SERVIÇO TARV Pacientes que receberam profilaxia com ISONIAZIDA
    * no serviço TARV
    *
-   * @return
+   * @return CohortDefinition
    */
   private CohortDefinition usesIsoniazida(
       Concept question,
@@ -280,7 +280,7 @@ public class QualityImprovementCohortQueries {
    * * PACIENTES COM RASTREIO DE TUBERCULOSE POSITIVO São pacientes que tiveram rastreio de
    * tuberculose positivo
    *
-   * @return
+   * @return CohortDefinition
    */
   private CohortDefinition tbTracking(
       Concept question,
@@ -306,7 +306,7 @@ public class QualityImprovementCohortQueries {
    * PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA DE TUBERCULOSE - NUM PERIODO São pacientes inscritos
    * no programa de tuberculose num determinado periodo
    *
-   * @return
+   * @return CohortDefinition
    */
   @DocumentedDefinition(value = "pacientsEnrolledInTBProgram")
   public CohortDefinition getPacientsEnrolledInTBProgram() {
@@ -333,7 +333,7 @@ public class QualityImprovementCohortQueries {
     cd.setQuestion(tbMetadata.getTBDrugTreatmentStartDate());
     cd.setTimeModifier(TimeModifier.ANY);
 
-    List<EncounterType> encounterTypes = new ArrayList<EncounterType>();
+    List<EncounterType> encounterTypes = new ArrayList<>();
     encounterTypes.add(tbMetadata.getTBLivroEncounterType());
     encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
     encounterTypes.add(hivMetadata.getPediatriaSeguimentoEncounterType());
@@ -356,7 +356,7 @@ public class QualityImprovementCohortQueries {
    * Pacientes que iniciaram o tratamento da tuberculose, e que este inicio foi documentado na ficha
    * de seguimento do paciente no serviço TARV.
    *
-   * @return
+   * @return CohortDefinition
    */
   private CohortDefinition tbTreatment(
       Concept question,
@@ -552,7 +552,7 @@ public class QualityImprovementCohortQueries {
    * <p>São pacientes que iniciaram a profilaxia com isoniazida no período de inclusão e que já
    * terminaram
    *
-   * @return
+   * @return CohortDefinition
    */
   @DocumentedDefinition(value = "patientWhoStartedIsoniazidProphylaxisInInclusioPeriodAndCompleted")
   public CohortDefinition getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriodAndCompleted() {
@@ -610,7 +610,7 @@ public class QualityImprovementCohortQueries {
    * MQ_PACIENTES QUE INICIARAM PROFILAXIA COM ISONIAZIDA (TPI) NO PERIODO DE INCLUSAO São pacientes
    * que iniciaram a profilaxia com INH no período de inclusão
    *
-   * @return
+   * @return CohortDefinition
    */
   @DocumentedDefinition(value = "patientWhoStartedIsoniazidProphylaxisInInclusioPeriod")
   private CohortDefinition getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriod() {
@@ -978,7 +978,7 @@ public class QualityImprovementCohortQueries {
    * <p>São pacientes na amostra de tarv de melhoria de qualidade que retornaram para a 2ª consulta
    * clínica ou 2º levantamento de ARVs dentro de 33 dias depois de terem iniciado o TARV
    *
-   * @return
+   * @return CohortDefinition
    */
   public CohortDefinition getPacientsARVInAPeriodWhoReturnedToEncounter33DaysAfterBegining() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -1042,7 +1042,7 @@ public class QualityImprovementCohortQueries {
    * <p>São pacientes na amostra de tarv de melhoria de qualidade que tiveram pelo menos 3 consultas
    * ou levantamentos nos primeiros 3 meses de TARV.
    *
-   * @return
+   * @return CohortDefinition
    */
   public CohortDefinition getPacientsARVSampleWhoHadAtLeast3Encounters3MonthsAfterTARVStartNew() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -1110,7 +1110,7 @@ public class QualityImprovementCohortQueries {
    * tiveram pelo menos 3 avaliações de adesão nos primeiros 3 meses de inicio de TARV. A avalição
    * de adesão que coincide com a data de inicio de TARV não é contada
    *
-   * @return
+   * @return CohortDefinition
    */
   public CohortDefinition
       getPatientInTARVSampleWhoHaddAtLeast3AdherenceEvaluationWithin3MothsARIEL() {
@@ -1174,7 +1174,7 @@ public class QualityImprovementCohortQueries {
    * NOVO Sao pacientes na amostra de inicio de TARV e que tiveram consultas mensais dentro do
    * periodo em anáslise
    *
-   * @return
+   * @return CohortDefinition
    */
   public CohortDefinition getPatientInTARVSampleWhomHadMonthEncountersAfterTARVInitialization() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -1239,7 +1239,7 @@ public class QualityImprovementCohortQueries {
    * do periodo em análise. Pacientes com menos de 2 anos, 3 consultas nos primeiros 3 meses após
    * início de TARV
    *
-   * @return
+   * @return CohortDefinition
    */
   public CohortDefinition
       getPatientInTARVSampleWhomHadAPSSMonthEncountersAfterTARVInitialization() {
@@ -1273,7 +1273,7 @@ public class QualityImprovementCohortQueries {
    * que retornaram para a 2ª consulta clínica ou 2º levantamento de ARVs dentro de 33 dias depois
    * de terem iniciado o TARV
    *
-   * @return
+   * @return CohortDefinition
    */
   public CohortDefinition getPregantPatientInTARVSampleReturnedToSecondEncounterIn33ARVStart() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -1409,7 +1409,7 @@ public class QualityImprovementCohortQueries {
     cd.setQuestion(hivMetadata.getARVStartDateConcept());
     cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.ANY);
 
-    List<EncounterType> encounterTypes = new ArrayList<EncounterType>();
+    List<EncounterType> encounterTypes = new ArrayList<>();
     encounterTypes.add(hivMetadata.getARVPharmaciaEncounterType());
     encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
     encounterTypes.add(hivMetadata.getPediatriaSeguimentoEncounterType());
@@ -1702,7 +1702,7 @@ public class QualityImprovementCohortQueries {
     cd.setQuestion(commonMetadata.getPriorDeliveryDateConcept());
     cd.setTimeModifier(TimeModifier.ANY);
 
-    List<EncounterType> encounterTypes = new ArrayList<EncounterType>();
+    List<EncounterType> encounterTypes = new ArrayList<>();
     encounterTypes.add(hivMetadata.getARVAdultInitialEncounterType());
     encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
 
@@ -1741,7 +1741,7 @@ public class QualityImprovementCohortQueries {
    * INICIO DE TARV POR SER LACTANTE São pacientes que iniciaram TARV por serem lactantes. Conceito
    * 6334
    *
-   * @return
+   * @return CohortDefinition
    */
   private CohortDefinition getPatientsStartTARVBecouseOfBreatFeeding() {
 
@@ -1892,7 +1892,7 @@ public class QualityImprovementCohortQueries {
    * PACIENTES COM PELO MENOS UMA CONSULTA CLINICA NUM DETERMINADO PERIODO São pacientes que têm
    * pelo menos uma consulta clínica (seguimento) num determinado periodo
    *
-   * @return
+   * @return CohortDefinition
    */
   @DocumentedDefinition(value = "patientWithAtLeastOneEncounterInPeriod")
   public CohortDefinition getPatientWithAtLeastOneEncounterInPeriod() {
@@ -2118,68 +2118,6 @@ public class QualityImprovementCohortQueries {
   }
 
   /**
-   * PACIENTES ACTUALMENTE EM TARV ELEGIVEIS PARA SEREM INSCRITOS EM ALGUM MODELO DIFERENCIADO São
-   * pacientes actualmente em tarv (exclui grávidas e lactantes) elegíveis para serem inscritos em
-   * algum modelo diferenciado: (1) activos em TARV com o mínino de 6 meses em TARV; (2) que tenham
-   * no mínimo de uma consulta clínica no período de inclusão; (3) com resultado de carga viral<
-   * 1000 cópias ou CD4 >200 cels/mm3 nos últimos 12 meses (contando da data do início do período de
-   * revisão para trás); (4) sem condição clínica activa do estadio III ou IV (Tuberculose ou
-   * Sarcoma de Kaposi)
-   */
-  public CohortDefinition getPatientsInARTElegibleToBeEnrolledInSomeDiffModel() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-
-    // PACIENTES COM CD4>200 OU CV<1000 NOS ULTIMOS 12 MESES
-    cd.addSearch(
-        "CVCD4",
-        EptsReportUtils.map(
-            getPatientsWithCD4GreterThan200ORCVLessThan1000InLast12Months(),
-            "startDate=${startDate},location=${location}"));
-
-    // PACIENTES QUE ESTAO HA MAIS DE 6 MESES EM TARV
-    cd.addSearch(
-        "HA6MESESEMTARV",
-        EptsReportUtils.map(
-            getPatientsInTARVMoreThan6Months(), "endDate=${startDate},location=${location}"));
-
-    // ACTUALMENTE EM TARV ATÉ UM DETERMINADO PERIODO FINAL - SEM INCLUIR ABANDONOS NAO NOTIFICADOS:
-    // SEM INCLUIR GRÁVIDAS OU LACTANTES
-    cd.addSearch(
-        "ACTUALTARV",
-        EptsReportUtils.map(
-            getPatientsEnrolledInARTServiceNotIncludingNotNotifiedAbandonment(),
-            "endDate=${startDate},location=${location}"));
-
-    // PACIENTES COM PELO MENOS UMA CONSULTA CLINICA NUM DETERMINADO PERIODO
-    cd.addSearch(
-        "CONSULTA", EptsReportUtils.map(getPatientWithAtLeastOneEncounterInPeriod(), mappings));
-
-    // MQ_PACIENTES QUE INICIARAM TRATAMENTO DE TUBERCULOSE E NAO TERMINARAM ATE PERIODO FINAL
-    cd.addSearch(
-        "TUBERCULOSE",
-        EptsReportUtils.map(
-            getPatientsStartTuberculoseTreatmentNotComplete(),
-            "endDate=${startDate},location=${location}"));
-
-    // NOTIFICACÃO DE SARCOMA DE KAPOSI
-    cd.addSearch(
-        "KAPOSI",
-        EptsReportUtils.map(
-            getPatientsNotifiedSarcomaKaposi(),
-            "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
-
-    cd.setCompositionString(
-        "(ACTUALTARV AND HA6MESESEMTARV AND CVCD4 AND CONSULTA) NOT (KAPOSI OR TUBERCULOSE)");
-
-    return cd;
-  }
-  /**
    * MQ_PACIENTES QUE RECEBERAM RESULTADO DA CARGA VIRAL ENTRE O SEXTO E NONO MES DEPOIS DE INICIO
    * DE TARV São pacientes que iniciaram TARV nos primeiros 3 meses voltando 12 meses da data de
    * avaliação e que tiveram resultado de carga viral entre o sexto e nono mês depois da data de
@@ -2280,7 +2218,6 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getStartDrugsConcept().getConceptId(),
             hivMetadata.getARVStartDateConcept().getConceptId(),
             hivMetadata.getCD4AbsoluteConcept().getConceptId(),
-            hivMetadata.getCD4AbsoluteOBSConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId()));
 
     return sqlCohortDefinition;
@@ -2302,8 +2239,6 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getARVPlanConcept().getConceptId(),
             hivMetadata.getStartDrugsConcept().getConceptId(),
             hivMetadata.getARVStartDateConcept().getConceptId(),
-            hivMetadata.getCD4AbsoluteConcept().getConceptId(),
-            hivMetadata.getCD4AbsoluteOBSConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata
                 .getTransferredFromOtherHealthFacilityWorkflowState()

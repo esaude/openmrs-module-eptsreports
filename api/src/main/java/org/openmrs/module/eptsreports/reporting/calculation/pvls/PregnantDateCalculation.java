@@ -26,7 +26,14 @@ import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.stereotype.Component;
 
 /**
- * Calculates for patient eligibility to be pregnant
+ * <b>Description</b>Calculates for patient eligibility to be pregnant
+ *
+ * <blockquote>
+ *
+ * Based on ART start date, pregnancy date is calculated based on 9 months from the last viral load
+ * date
+ *
+ * </blockquote>
  *
  * @return CalculationResultMap
  */
@@ -64,7 +71,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     Concept hivViraloadQualitative = hivMetadata.getHivViralLoadQualitative();
     Concept criteriaForArtStart = hivMetadata.getCriteriaForArtStart();
     Concept bPostive = hivMetadata.getBpostiveConcept();
-    Concept pregnantRegistered = hivMetadata.getDateOfMasterCardFileOpeningConcept();
+    Concept historicalArtStartDate = hivMetadata.getARVStartDateConcept();
 
     CalculationResultMap pregnantMap =
         ePTSCalculationService.getObs(
@@ -79,7 +86,7 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
 
     CalculationResultMap pregnantRegistrationOnEncounter53Map =
         ePTSCalculationService.getObs(
-            pregnantRegistered,
+            historicalArtStartDate,
             Arrays.asList(fichaResumoEncounterType),
             cohort,
             Arrays.asList(location),

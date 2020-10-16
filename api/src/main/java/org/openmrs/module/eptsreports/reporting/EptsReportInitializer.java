@@ -29,6 +29,7 @@ public class EptsReportInitializer {
 
   /** Initializes all EPTS reports and remove deprocated reports from database. */
   public void initializeReports() {
+
     for (ReportManager reportManager : Context.getRegisteredComponents(EptsReportManager.class)) {
       if (reportManager.getClass().getAnnotation(Deprecated.class) != null) {
         // remove depricated reports

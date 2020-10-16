@@ -28,13 +28,12 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
 
   @Override
   public CalculationResultMap getResult() {
-    CalculationResultMap map = new CalculationResultMap();
-    return map;
+    return new CalculationResultMap();
   }
 
   @Test
-  public void shouldBeTrueIfPatientIsWithinAgeBracket() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldBeTrueIfPatientIsWithinAgeBracket() {
+    Map<String, Object> parameterValues = new HashMap<>();
     parameterValues.put("minAge", 10);
     parameterValues.put("maxAge", 14);
     final int patientId = 1777001;
@@ -47,8 +46,8 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
   }
 
   @Test
-  public void shouldBeFalseIfPatientIsOutsideAgeBracket() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldBeFalseIfPatientIsOutsideAgeBracket() {
+    Map<String, Object> parameterValues = new HashMap<>();
     parameterValues.put("minAge", 11);
     parameterValues.put("maxAge", 14);
     final int patientId = 1777001;
@@ -61,8 +60,8 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
   }
 
   @Test
-  public void shouldBeTrueIfPatientWithinMaxAgeWithNoMinAge() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldBeTrueIfPatientWithinMaxAgeWithNoMinAge() {
+    Map<String, Object> parameterValues = new HashMap<>();
     parameterValues.put("maxAge", 14);
     CalculationResultMap results =
         service.evaluate(
@@ -71,8 +70,8 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
   }
 
   @Test
-  public void shouldBeFalseIfPatientOutsideMaxAgeWithNoMinAge() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldBeFalseIfPatientOutsideMaxAgeWithNoMinAge() {
+    Map<String, Object> parameterValues = new HashMap<>();
     parameterValues.put("maxAge", 8);
     CalculationResultMap results =
         service.evaluate(
@@ -81,8 +80,8 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
   }
 
   @Test
-  public void shouldBeFalseIfPatientWithinMinAgeWithNoMaxAge() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldBeFalseIfPatientWithinMinAgeWithNoMaxAge() {
+    Map<String, Object> parameterValues = new HashMap<>();
     parameterValues.put("minAge", 14);
     CalculationResultMap results =
         service.evaluate(
@@ -91,8 +90,8 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
   }
 
   @Test
-  public void shouldBeTrueIfPatientOutsideMinAgeWithNoMaxAge() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldBeTrueIfPatientOutsideMinAgeWithNoMaxAge() {
+    Map<String, Object> parameterValues = new HashMap<>();
     parameterValues.put("minAge", 8);
     CalculationResultMap results =
         service.evaluate(
@@ -101,8 +100,8 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
   }
 
   @Test
-  public void shouldBeTrueWithNoMinAndMaxAge() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldBeTrueWithNoMinAndMaxAge() {
+    Map<String, Object> parameterValues = new HashMap<>();
     CalculationResultMap results =
         service.evaluate(
             Arrays.asList(1777001), getCalculation(), parameterValues, getEvaluationContext());
@@ -110,8 +109,8 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
   }
 
   @Test
-  public void shouldConsiderPatientWithZeroYearIfHeStartedArtBeforeWasBorn() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldConsiderPatientWithZeroYearIfHeStartedArtBeforeWasBorn() {
+    Map<String, Object> parameterValues = new HashMap<>();
     parameterValues.put("minAge", 0);
     parameterValues.put("maxAge", 0);
     parameterValues.put("considerPatientThatStartedBeforeWasBorn", true);
@@ -125,8 +124,8 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
   }
 
   @Test
-  public void shouldBeNullIfPatientStartedArtBeforeWasBornIfParameterNotSet() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldBeNullIfPatientStartedArtBeforeWasBornIfParameterNotSet() {
+    Map<String, Object> parameterValues = new HashMap<>();
     parameterValues.put("minAge", 0);
     parameterValues.put("maxAge", 0);
     final int patientId = 1777002;
@@ -138,8 +137,8 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
   }
 
   @Test
-  public void shouldBeNullIfPatientStartedArtBeforeWasBornIfParameterSetToFalse() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldBeNullIfPatientStartedArtBeforeWasBornIfParameterSetToFalse() {
+    Map<String, Object> parameterValues = new HashMap<>();
     parameterValues.put("minAge", 0);
     parameterValues.put("maxAge", 0);
     parameterValues.put("considerPatientThatStartedBeforeWasBorn", false);
@@ -152,8 +151,8 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
   }
 
   @Test
-  public void shouldBeNullIfBirthdateIsMissing() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldBeNullIfBirthdateIsMissing() {
+    Map<String, Object> parameterValues = new HashMap<>();
     parameterValues.put("minAge", 10);
     parameterValues.put("maxAge", 14);
     final int patientId = 1777003;
@@ -165,8 +164,8 @@ public class AgeOnArtStartDateCalculationTest extends BasePatientCalculationTest
   }
 
   @Test
-  public void shouldBeNullIfPatientHasNotStartedArt() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+  public void evaluateShouldBeNullIfPatientHasNotStartedArt() {
+    Map<String, Object> parameterValues = new HashMap<>();
     parameterValues.put("minAge", 10);
     parameterValues.put("maxAge", 14);
     final int patientId = 1777004;

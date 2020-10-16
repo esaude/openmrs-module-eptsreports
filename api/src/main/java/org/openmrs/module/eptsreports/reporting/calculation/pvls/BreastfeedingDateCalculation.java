@@ -25,7 +25,8 @@ import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.stereotype.Component;
 
 /**
- * Calculates for patient eligibility to be breastfeeding
+ * <b>Description</b>Calculates for patient eligibility to be breastfeeding Based on ART start date,
+ * the date is obtained by 18 months from last viral date
  *
  * @return CalculationResultMap
  */
@@ -59,7 +60,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     Concept criteriaForArtStart = hivMetadata.getCriteriaForArtStart();
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
     Date oneYearBefore = EptsCalculationUtils.addMonths(onOrBefore, -12);
-    Concept pregnantRegistered = hivMetadata.getDateOfMasterCardFileOpeningConcept();
+    Concept historicalArtStartDate = hivMetadata.getARVStartDateConcept();
 
     CalculationResultMap lactatingMap =
         ePTSCalculationService.getObs(
@@ -73,7 +74,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
             context);
     CalculationResultMap breastfeedingRegistrationBasedOnValueDateAndEncounter53Map =
         ePTSCalculationService.getObs(
-            pregnantRegistered,
+            historicalArtStartDate,
             Arrays.asList(fichaResumoEncounterType),
             cohort,
             Arrays.asList(location),

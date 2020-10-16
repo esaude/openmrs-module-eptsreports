@@ -1,7 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.unit.cohort.definition;
 
-import static org.junit.Assert.*;
-
 import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;

@@ -32,6 +32,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.CodedObsOnFirstOrSec
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.ResumoMensalTransferredOutCohortDefinition;
+import org.openmrs.module.eptsreports.reporting.cohort.evaluator.ResumoMensalTransferredOutCohortDefinitionEvaluator;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
@@ -63,7 +64,47 @@ public class ResumoMensalCohortQueries {
     this.genericCohortQueries = genericCohortQueries;
   }
 
-  /** A1 Number of patients who initiated Pre-TARV at this HF by end of previous month */
+  /**
+   * <b>Name: A1</b>
+   *
+   * <p><b>Description:</b> Number of patients who initiated Pre-TARV at this HF by end of previous
+   * month
+   *
+   * <h4>PT: Nº cumulativo de pacientes que iniciou Pré-TARV (Cuidados de HIV) nesta US até ao fim
+   * do mês anterior</h4>
+   *
+   * <ul>
+   *   <li>Select all patients:
+   *       <ol>
+   *         <li>registered in encounter “Master Card – Ficha Resumo” <b>(encounter id 53)</b> who
+   *             have Pre-ART Start Date (PT”: “Data do Inicio Pre-TARV”) <b>Concept ID 23808</b>
+   *             <code> < startDate </code>
+   *         <li>enrolled in PRE-ART Program <b>program_id=1</b>, from patient program table) with
+   *             enrollement date <code>date_enrolled < startDate</code> )
+   *         <li>registered in “Abertura de Processo Clínico” <b>(encounter type id 5 or 7)</b> with
+   *             “Data de Registo” <code>date_enrolled < startDate</code>
+   *       </ol>
+   *   <li>Exclude all patients registered in encounter “Master Card – Ficha Resumo” <b>(encounter
+   *       id 53)</b> who have the following conditions:
+   *       <ol>
+   *         <li>Transfer from other HF” (PT:“Transferido de outra US”) <b>(Concept ID 1369)</b> is
+   *             equal to <i>“YES”</i> <b>(Concept ID 1065)</b>
+   *         <li>Type of Patient Transferred From (PT”: “Tipo de Paciente Transferido”) <b>(Concept
+   *             ID 6300)</b> = “Pre-TARV” (Concept ID ????)
+   *         <li>Date of Transferred In From (PT”: “Data de Transferência”) <b>(Concept ID 1369
+   *             obs_datetime)</b> <code> < startDate</code>
+   *       </ol>
+   *   <li>Exclude all patients registered as “Transferred-in” in Program Enrollment:
+   *       <ol>
+   *         Technical Specs:
+   *         <li>
+   *             <p>Table: patient_program <b>Criterias:</b> <code>
+   *             program_id=1, patient_state_id=29 and start_date < startDate </code>
+   *       </ol>
+   * </ul>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1() {
 
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -98,6 +139,13 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Name: A1I</b>
+   *
+   * <p><b>Description:</b> Number of patients in Master Card with ART less than Start Date
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getNumberOfPatientsInMasterCardWithArtLessThanStartDateA1() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("A1I");
@@ -112,9 +160,45 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * A2 Number of patients who initiated Pre-TARV at this HF during the current month
+   * <b>Name: A2</b>
    *
-   * @return CohortDefinition
+   * <p><b>Description:</b>Number of patients who initiated Pre-TARV at this HF during the current
+   * month month
+   *
+   * <h4>PT: Nº de pacientes que iniciou Pré-TARV (Cuidados de HIV) nesta US durante o mês</h4>
+   *
+   * <ul>
+   *   <li>Select all patients registered in encounter <i>Master Card – Ficha Resumo</i>
+   *       <b>encounter id 53</b> who have the following conditions:
+   *       <ol>
+   *         <li>Pre-ART Start Date (PT: Data do Inicio Pre-TARV”) <b>Concept ID 23808</b>
+   *         <li>enrolled in PRE-ART Program <b>program_id=1</b>, from patient program table) with
+   *             enrollement date
+   *         <li>registered in “Abertura de Processo Clínico” <b>(encounter type id 5 or 7)</b> with
+   *             “Data de Registo” encounter_datetime
+   *         <li>with the most earliest date from above criterias in the reporting period <code>
+   *              >=startDate and <=endDate</code>
+   *       </ol>
+   *   <li>Exclude all patients registered in encounter “Master Card – Ficha Resumo” <b>(encounter
+   *       id 53)</b> who have the following conditions:
+   *       <ol>
+   *         <li>Transfer from other HF” (PT:“Transferido de outra US”) <b>(Concept ID 1369)</b> is
+   *             equal to <i>“YES”</i> <b>(Concept ID 1065)</b>
+   *         <li>Type of Patient Transferred From (PT”: “Tipo de Paciente Transferido”) <b>(Concept
+   *             ID 6300)</b> = “Pre-TARV” (Concept ID ????)
+   *         <li>Date of Transferred In From (PT”: “Data de Transferência”) <b>(Concept ID 1369
+   *             obs_datetime)</b> <code> >=startDate and <=endDate </code>
+   *       </ol>
+   *   <li>Exclude all patients registered as “Transferred-in” in Program Enrollment:
+   *       <ol>
+   *         Technical Specs:
+   *         <li>
+   *             <p>Table: patient_program <b>Criterias:</b> <code>
+   *             program_id=1, patient_state_id=29 and start_date >= startDate and <= endDate</code>
+   *       </ol>
+   * </ul>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -135,9 +219,17 @@ public class ResumoMensalCohortQueries {
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     cd.setCompositionString("A2I AND NOT A2II");
+
     return cd;
   }
 
+  /**
+   * <b>Name: A2I</b>
+   *
+   * <p><b>Description:</b> Number of patients who initiated Pre-ART during current month
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getNumberOfPatientInitiedPreArtDuringCurrentMothA2() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("A2i");
@@ -154,6 +246,16 @@ public class ResumoMensalCohortQueries {
     return sqlCohortDefinition;
   }
 
+  /**
+   * <b>Name: C1</b>
+   *
+   * <p><b>Description:</b> Number of patients who initiated Pre-TARV during the current month
+   *
+   * <p><b>NOTE:</b> The composition returns patients with pre-TARV, excluding patients transferred
+   * form other HFs
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthC1() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("C1");
@@ -172,7 +274,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "exclusion",
         map(
-            getAdditionalExclusionCriteriaForC1andC2(
+            getAdditionalExclusionCriteriaForC1(
                 transferBasedOnDateMappings, inProgramStatesMappings),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
     cd.setCompositionString("population AND NOT exclusion");
@@ -180,10 +282,12 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * A.2: Number of patients transferred-in from another HFs during the current month
+   * <b>Name: A2II</b>
    *
-   * @return Cohort
-   * @return CohortDefinition
+   * <p><b>Description:</b> Number of patients transferred-in from another HFs during the current
+   * month
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition
       getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2() {
@@ -202,9 +306,17 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * A3 = A.1 + A.2
+   * <b>Name: A3 </b>
    *
-   * @return CohortDefinition
+   * <p><b>Descrption:</b> Number of patients who initiated Pre-TARV at this HF until the end of
+   * reporting period
+   *
+   * <p>PT: Nº cumulativo de pacientes que iniciou Pré-TARV (Cuidados de HIV) nesta unidade
+   * sanitária até ao fim do mês;
+   *
+   * <p><b>Formula: </b><code>A3 = A1 + A2<</code>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getSumOfA1AndA2() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -228,9 +340,69 @@ public class ResumoMensalCohortQueries {
 
   // Start of the B queries
   /**
-   * B1 Number of patientes who initiated TARV at this HF during the current month
+   * <b>Name: B1</b>
    *
-   * @return CohortDefinition
+   * <p><b>Description:</b> Number of patients who initiated TARV at this HF during the current
+   * month
+   *
+   * <p>Excludes All transfered In
+   *
+   * <ul>
+   *   <li>Select all patients with the earliest ART Start Date from the following criterias:
+   *       <ol>
+   *         <li>All patients who have their first drugs pick-up date (first encounter_datetime) by
+   *             reporting end date in Pharmacy form FILA (Encounter Type ID 18): <code>
+   * first occurrence of encounter datetime
+   *                 Encounter Type Ids = 18
+   * *</code> *
+   *         <li>All patients who have initiated the ARV drugs [ ARV PLAN (Concept ID 1255) = START
+   *             DRUGS (Concept ID 1256) at the pharmacy or clinical visits (Encounter Type IDs
+   *             6,9,18) <code>
+   * first occurrence of encounter datetime
+   *                     Encounter Type Ids = 6,9,18
+   *                     ARV PLAN (Concept Id 1255) = START DRUGS (Concept ID 1256)
+   * </code>
+   *         <li>All patients who have the first historical start drugs date (earliest concept ID
+   *             1190) set in pharmacy or in clinical forms (Encounter Type IDs 6, 9, 18, 53)
+   *             earliest “historical start date” <code>Encounter Type Ids = 6,9,18,53
+   *             The earliest “Historical Start Date” (Concept Id 1190)
+   * </code>
+   *         <li>
+   *             <p>All patients enrolled in ART Program (date_enrolled in program_id 2, from
+   *             patient program table)
+   *             <p><code>
+   * program_enrollment date
+   * program_id=2, patient_state_id=29 and date_enrolled
+   * </code>
+   *         <li>
+   *             <p>All patients with first drugs pick up date (earliest concept ID 23866
+   *             value_datetime) set in mastercard pharmacy form “Recepção/Levantou ARV” (Encounter
+   *             Type ID 52) with Levantou ARV (concept id 23865) = Yes (concept id 1065)
+   *             <p><code>
+   * earliest “Date of Pick up”
+   *                        Encounter Type Ids = 52
+   *                        The earliest “Data de Levantamento” (Concept Id 23866 value_datetime) <= endDate
+   *                        Levantou ARV (concept id 23865) = SIm (1065)
+   *
+   * </code>
+   *       </ol>
+   *   <li>and check if the selected ART Start Date falls in the reporting period (>= startDate and
+   *       <= endDate)
+   *   <li>Exclude all patients transferred-in
+   *       <ol>
+   *         <li>Registered in encounter “Master Card – Ficha Resumo” (encounter id 53) with
+   *             “Transfer from other HF” (PT:“Transferido de outra US”) (Concept ID 1369) equal to
+   *             “YES” (Concept ID 1065) AND Type of Patient Transferred From (PT”: “Tipo de
+   *             Paciente Transferido”) (Concept ID 6300) = “TARV” (Concept ID 6276)
+   *         <li>AND Date of MasterCard File Opening (PT”: “Data de Abertura da Ficha na US”)
+   *             (Concept ID 23891 value_datetime) <= endDate
+   *         <li>Registered as Transferred-in in Program Enrollment (1st State) Technical Specs:
+   *             Table: patient_program Criterias: program_id=2, patient_state_id=29 and
+   *             min(start_date)<=endDate
+   *       </ol>
+   * </ul>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -255,10 +427,12 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * B.2: Number of patients transferred-in from another HFs during the current month
+   * <b>Name: B2</b>
    *
-   * @return Cohort
-   * @return CohortDefinition
+   * <p><b>Description:</b> Number of patients transferred-in from another HFs during the current
+   * month
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition
       getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2E() {
@@ -274,16 +448,40 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.setB10Flag(new Boolean("false"));
+    cd.setB10Flag(new Boolean("true"));
     return cd;
   }
 
   /**
-   * B.2 Composition to exclude B5 (Patients Transferred Out): Number of patients transferred-in
-   * from another HFs during the current month
+   * <b>Name: B2</b>
    *
-   * @return Cohort
-   * @return CohortDefinition
+   * <p><b>Description:</b> Number of patients transferred-in from another HFs during the current
+   * month. Composition to exclude <b>B5 ({@link #getPatientsTransferredOutB5})</b>
+   *
+   * <ul>
+   *   <li>B2i - Select all patients registered in encounter “Master Card – Ficha Resumo” (encounter
+   *       id 53) who have the following conditions:
+   *       <ol>
+   *         <li>Transfer from other HF” (PT:“Transferido de outra US”) (Concept ID 1369) is equal
+   *             to “YES” (Concept ID 1065); AND
+   *         <li>Type of Patient Transferred From (PT”: “Tipo de Paciente Transferido”) (Concept ID
+   *             6300) = “TARV” (Concept ID 6276) AND
+   *         <li>Date of MasterCard File Opening (PT”: “Data de Abertura da Ficha na US”) (Concept
+   *             ID 23891 value_datetime) >=startDate and <= endDate
+   *       </ol>
+   *       OR
+   *   <li>B2ii - Select all patients registered as transferred-in in Program Enrollment
+   *       <p>Technical Specs: <i>Table: patient_program</i> <b>Criterias:</b> <code>
+   *       program_id=2, patient_state_id=29 and start_date >=startDate and <=endDate
+   * </code>
+   *   <li>Exclude all Transferred-in registered by end of previous month (B2i [< startDate] OR B2ii
+   *       [>startDate]) except transferred-out patients by end of previous month (B5 inclusion
+   *       criterias for < startDate) according to 13 MOH Transferred-out patients by end of the
+   *       period (Any State) defined in the common queries <a
+   *       href="https://docs.google.com/document/d/1EtpeIn-6seD5skZJteCdANhxkKXQye9RckGV2eoYj6c/edit?pli=1#">link</a>
+   * </ul>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition
       getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2() {
@@ -314,9 +512,16 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * B.3 Number of patients who restarted the treatment during the current month
+   * <b>Name: B3</b>
    *
-   * @return CohortDefinition
+   * <p><b>Description:</b> Number of patients who restarted the treatment during the current month
+   * <br>
+   *
+   * <p>PT: Nº de reinícios TARV durante o mês <br>
+   *
+   * <p><code>B3 = B13 + B9 - B12 - B1 - B2</code>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsWithStartDrugs() {
     EncounterWithCodedObsCohortDefinition cd = getStateOfStayCohort();
@@ -326,9 +531,38 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * See {@link HivCohortQueries#getPatientsTransferredOut}
+   * <b>Name: B5: Number of patientes transferred out during the current month. (PT: Nº de
+   * transferidos para outras US em TARV durante o mês)</b>
    *
-   * @return B.5 Number of patients transferred out during the current month
+   * <p><b>Description:</b> Number of patients transferred out during the current month.
+   *
+   * <ol>
+   *   <li>Select all patients registered in encounter “Ficha Clinica-MasterCard” (encounter id 6)
+   *       with LAST “Patient State” (PT:“Estado de Permanência”) (Concept ID 6273) equal to
+   *       “Transferred Out” (PT: “Transferido Para”) (Concept ID 1706); AND encounter Date
+   *       >=startDate and <=endDate
+   *   <li>Select all patients registered in encounter “Ficha Resumo-MasterCard” (encounter id 53)
+   *       with LAST “Patient State” (PT:“Estado de Permanência”) (Concept ID 6272) equal to
+   *       “Transferred Out” (PT: “Transferido Para”) (Concept ID 1706) AND obs_datetime >=startDate
+   *       and <=endDate
+   *   <li>Select all patients registered as transferred-out in LAST Patient Program State during
+   *       the reporting period <code>Patient_program.program_id =2 = SERVICO TARV-TRATAMENTO and
+   *          Patient_State.state = 7 (Transferred-out) or
+   *          Patient_State.start_date >= startDate and <= endDate
+   *          Patient_State.end_date = null -> deve se selecionar a max (start_date)</code>
+   *   <li>Except all patients who after the most recent date from 1 to 3 have a drugs pick up or
+   *       consultation by reporting endDate: <code>Encounter Type ID= 6, 9, 18 and
+   *          encounter_datetime> the most recent date and <=endDate
+   *          or
+   *          Encounter Type ID = 52 and “Data de Levantamento” (Concept Id 23866 value_datetime) > the most recent date and <=endDate
+   *       </code>
+   * </ol>
+   *
+   * <p>The <b>parameter</b> below checks patients in last date as transfered out See <b>{@link
+   * ResumoMensalTransferredOutCohortDefinitionEvaluator}</b>
+   *
+   * @param
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsTransferredOutB5(boolean maxDates) {
 
@@ -342,7 +576,37 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  /** @return B6: Number of patients with ART suspension during the current month */
+  /**
+   * <b>Name: B6: Number of patientes with ART suspension during the current month. (PT: Nº de
+   * suspensos TARV durante o mês)</b>
+   *
+   * <p><b>Description:</b> Number of patients with ART suspension during the current month.
+   *
+   * <ol>
+   *   <li>Select all patients registered in encounter “Ficha Clinica - MasterCard” (encounter id 6)
+   *       with “Patient State” (PT:“Estado de Permanência”) (Concept ID 6273) to “Suspended
+   *       Treatment” (PT: “Suspenso”) (Concept ID 1709); AND Encounter Date >=startDate and
+   *       <=endDate
+   *   <li>Select all patients registered as suspended in Patient Program State during the reporting
+   *       period <code>Patient_program.program_id =2 = SERVICO TARV-TRATAMENTO and
+   *      Patient_State.state = 8 (Suspended treatment) or
+   *      Patient_State.start_date >= startDate and <= endDate</code>
+   *   <li>3.Select all patients registered in encounter “Ficha Resumo - MasterCard” (encounter id
+   *       53) with “Patient State” (PT:“Estado de Permanência”) (Concept ID 6272) to “Suspended
+   *       Treatment” (PT: “Suspenso”) (Concept ID 1709) AND OBS Datetime >=startDate and <=endDate
+   *   <li>Except all patients who after the most recent date from 1.1 to 1.2, have a drugs pick up
+   *       by reporting end date: <code>Encounter Type ID= 18 and
+   *        encounter_datetime> the most recent date and <=endDate
+   *        or
+   *        Encounter Type ID = 52 and “Data de Levantamento” (Concept Id 23866 value_datetime) > the most recent date and <=endDate
+   *       </code>
+   * </ol>
+   *
+   * <p>The <b>parameter</b> below checks the patient's state between the start and end date
+   *
+   * @param
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getPatientsWhoSuspendedTreatmentB6(boolean useBothDates) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients with ART suspension during the current month");
@@ -460,7 +724,36 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  /** @return B8: Number of dead patients during the current month */
+  /**
+   * <b>Name: B8: Number of died patients during the current month. (PT: Nº de óbitos TARV durante o
+   * mês)</b>
+   *
+   * <ul>
+   *   <li>Select all patients registered in encounter “Ficha Clinica- Master Card” (encounter id 6)
+   *       with LAST “Patient State” (PT:“Estado de Permanência”) (Concept ID 6273) is equal to
+   *       “Patient Has Died” (PT: “Obitou”) (Concept ID 1366) and Encounter Date >=startDate and
+   *       <=endDate
+   *   <li>Select all patients registered in encounter “Ficha Resumo – Master Card” (encounter id
+   *       53) with LAST “Patient State” (PT:“Estado de Permanência”) (Concept ID 6272) is equal to
+   *       “Patient Has Died” (PT: “Obitou”) (Concept ID 1366) and Obs_date >=startDate and
+   *       <=endDate
+   *   <li>All patients registered as died in LAST Patient Program State during the reporing period
+   *       Patient_program.program_id =2 = SERVICO TARV-TRATAMENTO and Patient_State.state = 10
+   *       (Died) Patient_State.start_date <= endDate >=startDate Patient_State.end_date = null ->
+   *       deve ser selecionar a max (start_date)
+   *   <li>All deaths registered in Patient Demographics during reporting period Person.Dead=1 and
+   *       death_date <= :endDate and >=startDate
+   *   <li>Except all patients who after the most recent date from 1 to 4, have a drugs pick up or
+   *       consultation: Encounter Type ID= 6, 9, 18 and encounter_datetime> the most recent date
+   *       and <=endDate or Encounter Type ID = 52 and “Data de Levantamento” (Concept Id 23866
+   *       value_datetime) > the most recent date and <= endDate
+   * </ul>
+   *
+   * <p>The <b>parameter</b> below checks the patient's state between the start and end date
+   *
+   * @param
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getPatientsWhoDied(Boolean hasStartDate) {
 
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -590,7 +883,58 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  /** @return Number of cumulative patients who started ART by end of previous month */
+  /**
+   * <b>Name: B10: Number of cumulative patients who started ART by end of previous month</b>
+   *
+   * <ol>
+   *   <li>Select all patients with the earliest ART Start Date from the following criterias:
+   *       <ul>
+   *         <li>All patients who have their first drugs pick-up date (first encounter_datetime) by
+   *             reporting end date in Pharmacy form FILA (Encounter Type ID 18): <code>
+   *             first occurrence of encounter datetime
+   *            Encounter Type Ids = 18</code>
+   *         <li>b.All patients who have initiated the ARV drugs [ ARV PLAN (Concept ID 1255) =
+   *             START DRUGS (Concept ID 1256) at the pharmacy or clinical visits (Encounter Type
+   *             IDs 6,9,18) <code>first occurrence of encounter datetime
+   *                Encounter Type Ids = 6,9,18
+   *                ARV PLAN (Concept Id 1255) = START DRUGS (Concept ID 1256)</code>
+   *         <li>All patients who have the first historical start drugs date (earliest concept ID
+   *             1190) set in pharmacy or in clinical forms (Encounter Type IDs 6, 9, 18, 53)
+   *             earliest “historical start date <code>Encounter Type Ids = 6,9,18,53
+   *                    The earliest “Historical Start Date” (Concept Id 1190)</code>
+   *         <li>All patients who have the first historical start drugs date (earliest concept ID
+   *             1190) set in pharmacy or in clinical forms (Encounter Type IDs 6, 9, 18, 53)
+   *             earliest “historical start date” <code>Encounter Type Ids = 6,9,18,53
+   *                The earliest “Historical Start Date” (Concept Id 1190)</code>
+   *         <li>All patients enrolled in ART Program (date_enrolled in program_id 2, from patient
+   *             program table) <code> program_enrollment date
+   *              program_id=2, patient_state_id=29 and date_enrolled</code>
+   *         <li>All patients with first drugs pick up date (earliest concept ID 23866
+   *             value_datetime) set in mastercard pharmacy form “Recepção/Levantou ARV” (Encounter
+   *             Type ID 52) with Levantou ARV (concept id 23865) = Yes (concept id 1065) <code>
+   *                  earliest “Date of Pick up”
+   *                  Encounter Type Ids = 52
+   *                  The earliest “Data de Levantamento” (Concept Id 23866 value_datetime) <= endDate
+   *                  Levantou ARV (concept id 23865) = SIm (1065)
+   *              </code>
+   *       </ul>
+   *   <li>And check if the selected ART Start Date is < startDate
+   *   <li>Exclude all patients transferred-in
+   *       <ul>
+   *         <li>Registered in encounter “Master Card – Ficha Resumo” (encounter id 53) with
+   *             “Transfer from other HF” (PT:“Transferido de outra US”) (Concept ID 1369) equal to
+   *             “YES” (Concept ID 1065) AND Type of Patient Transferred From (PT”: “Tipo de
+   *             Paciente Transferido”) (Concept ID 6300) = “TARV” (Concept ID 6276) AND Date of
+   *             Transferred In From (PT”: “Data de Transferência”) (Concept ID 1369 obs_datetime)
+   *             <startDate
+   *         <li>Registered as Transferred-in in Program Enrollment Technical Specs: <code>
+   *             Table: patient_program
+   *              Criterias: program_id=2, patient_state_id=29 and start_date <startDate</code>
+   *       </ul>
+   * </ol>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getPatientsWhoStartedArtByEndOfPreviousMonthB10() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Number of cumulative patients who started ART by end of previous month");
@@ -612,6 +956,14 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Name:</b> Transferred-in for <b>B10</b>
+   *
+   * <p><b>Description:</b> Number of patients transferred-in from another HF during a period less
+   * than startDate
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getTransferredInForB10() {
     EptsTransferredInCohortDefinition cd = new EptsTransferredInCohortDefinition();
     cd.setName(
@@ -625,7 +977,63 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  /** B12 @return Number of active patients in ART by end of previous month */
+  /**
+   * <b>Name: B.12 Number of active patients in ART by end of previous month (PT: Nº de pacientes
+   * activos em TARV até ao fim do mês anterior (B13 do mês anterior )</b>
+   *
+   * <ul>
+   *   <li>Select all patients from B10
+   *   <li>OR
+   *   <li>B2A- Select all patients registered in encounter “Master Card – Ficha Resumo” (encounter
+   *       id 53) who have the following conditions:
+   *       <ul>
+   *         <li>“Transfer from other HF” (PT:“Transferido de outra US”) (Concept ID 1369) is equal
+   *             to “YES” (Concept ID 1065);
+   *         <li>Type of Patient Transferred From (PT”: “Tipo de Paciente Transferido”) (Concept ID
+   *             6300) = “TARV” (Concept ID 6276)
+   *         <li>Date of Transferred In From (PT”: “Data de Transferência”) (Concept ID 1369
+   *             obs.datetime) <startDate
+   *       </ul>
+   *   <li>OR
+   *   <li>Select all patients registered as transferred-in in Program Enrollment
+   *       <p>Technical Specs: <code>
+   *                Table: patient_program
+   *                Criterias: program_id=2, patient_state_id=29 and start_date <startDate and
+   *              </code>
+   *   <li>Filter patients who had a drug pick up as
+   *       <ul>
+   *         <li>At least one encounter “Levantamento de ARV Master Card” (encounter id 52) with the
+   *             following information: PickUp Date (PT: “Data de Levantamento”) (Concept ID 23866)
+   *             <=(startDate-1D)
+   *         <li>Patient had a drug pick in FILA (encounter id 18) by reporting start date minus 1
+   *             Day (encounter_datetime <=(startDate-1)) and have next scheduled pick up SET
+   *             (Concept ID 5096 value_datetime – not empty/null)
+   *       </ul>
+   *   <li>Except B5
+   *   <li>Except B6
+   *   <li>Except all patients who after the most recent date from 1.1 to 1.2, have a drugs pick up
+   *       by reporting start date:
+   *       <p><code>
+   *              Encounter Type ID= 18 and
+   *              encounter_datetime> the most recent date and <startDate
+   *                or
+   *                Encounter Type ID = 52 and “Data de Levantamento” (Concept Id 23866 value_datetime) > the most recent date and <startDate
+   *          </code>
+   *   <li>
+   *       <p>oB7E- All patients having the most recent date between last scheduled drug pickup date
+   *       (Fila) or 30 days after last ART pickup date (Recepção – Levantou ARV) and adding 60 days
+   *       and this date being less than reporting start Date. Select the most recent date from:
+   *       <ul>
+   *         <li>a.Last record of Next Drugs Pick Up Appointment (Concept ID 5096 value_datetime –
+   *             not empty/null) from encounters of type 18 occurred by reporting start date
+   *         <li>b.The most recent “Data de Levantamento” (Concept Id 23866 value_datetime-not
+   *             empty/null) <startDate from encounters of type 52 plus(+) 30 days
+   *       </ul>
+   *       <p>And add 60 days and this date should be < startDate
+   * </ul>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getPatientsWhoWereActiveByEndOfPreviousMonthB12() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Number of active patients in ART by end of previous month");
@@ -665,14 +1073,14 @@ public class ResumoMensalCohortQueries {
             getPatientsWhoHadAtLeastDrugPickUp(),
             "startDate=${startDate-1d},location=${location}"));
     cd.setCompositionString("((B10 OR B2A) AND drugPick) AND NOT (B5A OR B6A OR B7A OR B8A)");
-    // cd.setCompositionString("drugPick");
 
     return cd;
   }
+
   /**
-   * Patients who had a drug pick up as Levantamento de ARV Master Card and FILA
+   * <b>Description:</b> Patients who had a drug pick up as Levantamento de ARV Master Card and FILA
    *
-   * @return
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsWhoHadAtLeastDrugPickUp() {
 
@@ -742,7 +1150,20 @@ public class ResumoMensalCohortQueries {
     return transferredIn;
   }
 
-  /** @return Patients who initiated Pre-TARV during the current month and was screened for TB. */
+  /**
+   * <b>Name: C1</b>
+   *
+   * <p><b>Description:</b> Number of patients who initiated Pre-TARV during the current month and
+   * was screened for TB
+   *
+   * <p><b>NOTE:</b> The composition returns patients with pre-TARV, filtering patients who were
+   * screened for TB
+   *
+   * @return {@link CohortDefinition}
+   */
+
+  // TODO: Method is only being used for tests
+  // TODO: Method is duplicated in ResumoMensalCohortQueriesTest
   public CohortDefinition getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTB() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients who initiated Pre-TARV during the current month and was screened for TB.");
@@ -763,10 +1184,29 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * C1: Number of patients who initiated Pre-TARV during the current month and was screened for TB
-   * C1
+   * <b>Name: C1</b>
    *
-   * @return
+   * <p><b>Description:</b> Number of patients who initiated Pre-TARV during the current month and
+   * was screened for TB
+   *
+   * <p><b>NOTE:</b> The composition returns patients with pre-TARV, filtering patients who were
+   * screened for TB
+   *
+   * <ul>
+   *   <li>A2: {@link
+   *       ResumoMensalCohortQueries#getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2()}
+   *       <b>AND</b>
+   *   <li>
+   *       <p>Filter all patients with following information in their FIRST visit “S.TARV – Adulto
+   *       Seguimento or Ficha Clinica Master Card” (encounter id 6)
+   *       <ol>
+   *         <li>“Has TB Symptoms” (PT”: “Tem Sintomas TB?”) (Concept ID 23758) = (Concept ID 1065)
+   *             OR (Concept ID 1066) <b>AND</b>
+   *         <li>Encounter Date >=startDate and <=endDate (ONLY CONSIDER THE FIRST OCCURRENCE EVER)
+   *       </ol>
+   * </ul>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTbC1() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -786,6 +1226,11 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Number of patients screened for TB in first encounter
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getNumberOfPatientTbScreenedInFirstEncounter() {
     SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.addParameter(new Parameter("startDate", "startDate", Date.class));
@@ -841,7 +1286,43 @@ public class ResumoMensalCohortQueries {
     return definition;
   }
 
-  /** @return Patients who initiated Pre-TARV during the current month and started TPI. */
+  /**
+   * <b>Name: C2</b>
+   *
+   * <p><b>Description:</b> Number of patients who initiated Pre-TARV during the current month and
+   * started TPI
+   *
+   * <ul>
+   *   <li>A2:{@link
+   *       ResumoMensalCohortQueries#getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2()}
+   *       <b>AND</b>
+   *   <li><b>Profilaxia com Isoniazida (TPI)</b> {@link
+   *       ResumoMensalCohortQueries#getPatientsWhoStartedTPI()}
+   *       <h4>Exclusions</h4>
+   *       <ul>
+   *         <li>
+   *             <p>Exclude all patients registered in encounter “Master Card – Ficha Resumo”
+   *             (encounter id 53) who have the following conditions:
+   *             <ul>
+   *               <li>“Transfer from other HF” (PT:“Transferido de outra US”) (Concept ID 1369) is
+   *                   equal to “YES” (Concept ID 1065);
+   *               <li>Type of Patient Transferred From (PT”: “Tipo de Paciente Transferido”)
+   *                   (Concept ID 6300) = “Pre-TARV” (Concept ID 6275)
+   *               <li>Date of Transferred In From (PT”: “Data de Transferência”) (Concept ID 1369
+   *                   obs_datetime) >=startDate – 1month and <=endDate
+   *             </ul>
+   *         <li>
+   *             <p>Exclude all patients registered as “Transferred-in” in Program Enrollment:
+   *             <i>Technical Specs:</i> <br>
+   *             <code>
+   *                     Table: patient_program<br />
+   *                     Criterias: program_id=1, patient_state_id=29 and start_date >= startDate-1month and <= endDate
+   *                 </code>
+   *       </ul>
+   * </ul>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndStartedTpiC2() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients who initiated Pre-TARV during the current month and started TPI");
@@ -863,7 +1344,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "exclusions",
         map(
-            getAdditionalExclusionCriteriaForC1andC2(
+            getAdditionalExclusionCriteriaForC1(
                 transferBasedOnDateMappings, inProgramStatesMappings),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
     cd.setCompositionString("(A2 AND TPI) AND NOT exclusions");
@@ -872,11 +1353,21 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * C3: Number of patients who initiated Pre-TARV during the current month and was diagnosed for
-   * active TB. (PT: Dos inícios Pré-TARV durante o mês (A.2), subgrupo que foi diagnosticado como
-   * TB activa)
+   * <b>Name: C3</b>
    *
-   * @return CohortDefinition
+   * <p><b>Description:</b> Number of patients who initiated Pre-TARV during the current month and
+   * was diagnosed for active TB
+   *
+   * <ul>
+   *   <li>
+   *   <li>A2:{@link
+   *       ResumoMensalCohortQueries#getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2()}
+   *       <b>AND</b>
+   *   <li>TB: {@link
+   *       ResumoMensalCohortQueries#getNumberOfPatientActiveTBInFirstAndSecondEncounter()}
+   * </ul>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition
       getPatientsWhoInitiatedPreTarvDuringCurrentMonthAndDiagnosedForActiveTBC3() {
@@ -900,6 +1391,22 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Number of patients diagnosed for active TB in first or second encounter
+   *
+   * <ul>
+   *   <li>Filter all patients with following information in their FIRST OR SECOND visits “S.TARV –
+   *       Adulto Seguimento” (encounter id 6)
+   *       <ul>
+   *         <li>“Active TB Diagnosis” (PT”: “Diagnóstico TB Activa”) (Concept ID 23761) = (Concept
+   *             ID 1065)
+   *         <li>Encounter Date >=startDate and <= endDate (ONLY CONSIDER THE FIRST AND SECOND
+   *             OCCURRENCE EVER)
+   *       </ul>
+   * </ul>
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getNumberOfPatientActiveTBInFirstAndSecondEncounter() {
     SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.addParameter(new Parameter("startDate", "startDate", Date.class));
@@ -987,8 +1494,10 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * @return Patients that have ACTIVE TB = YES in their FIRST or SECOND S.TARV – Adulto *
-   *     Seguimento encounter
+   * <b>Description:<b> Number of patients that have ACTIVE TB = YES in their FIRST or SECOND S.TARV
+   * – Adulto Seguimento encounter
+   *
+   * @return {@link CohortDefinition}
    */
   private CohortDefinition getPatientsDiagnosedForActiveTB() {
     CodedObsOnFirstOrSecondEncounterCalculation calculation =
@@ -1003,8 +1512,17 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * @return Patients that have ISONIAZID USE = START DRUGS in their FIRST or SECOND S.TARV – Adulto
-   *     Seguimento encounter
+   * <b>Description:</b> Patients that have ISONIAZID USE = START DRUGS in their FIRST or SECOND
+   * S.TARV – Adulto Seguimento (encounter id 6)
+   *
+   * <ul>
+   *   <li>“ISONIAZID PROPYLAXIS” (PT”: “Profilaxia com Isoniazida”) (Concept ID 6122) = (Concept ID
+   *       1256) <b>AND</b>
+   *   <li>Encounter Date >=startDate and <= endDate (ONLY CONSIDER THE FIRST OR SECOND OCCURRENCE
+   *       EVER)
+   * </ul>
+   *
+   * @return {@link CohortDefinition}
    */
   private CohortDefinition getPatientsWhoStartedTPI() {
     CodedObsOnFirstOrSecondEncounterCalculation calculation =
@@ -1020,8 +1538,10 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * @return Patients that have TB Symptoms = Yes in their FIRST S.TARV – Adulto Seguimento
-   *     encounter
+   * <b>Description:</b> Patients that have TB Symptoms = Yes in their FIRST S.TARV – Adulto
+   * Seguimento
+   *
+   * @return {@link CohortDefinition}
    */
   private CohortDefinition getPatientScreenedForTb() {
     CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
@@ -1036,9 +1556,9 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * Get number of patients transferred from other health facility marked in master card
+   * <b>Description:</b> Number of patients transferred from other HF marked in master-card
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   private CohortDefinition getTypeOfPatientTransferredFrom() {
     EncounterWithCodedObsCohortDefinition cd = new EncounterWithCodedObsCohortDefinition();
@@ -1050,7 +1570,11 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  /** @return CohortDefinition Patients with transfer from other HF = YES */
+  /**
+   * <b>Description:</b> Number of Patients transferred from other HF = YES
+   *
+   * @return {@link CohortDefinition} TODO : method is never called
+   */
   private CohortDefinition getPatientsWithTransferFromOtherHF() {
     EncounterWithCodedObsCohortDefinition cd = new EncounterWithCodedObsCohortDefinition();
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
@@ -1062,7 +1586,16 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getAdditionalExclusionCriteriaForC1andC2(
+  /**
+   * <b>Description:</b> Additional exclusion criteria for <b>C1</b>
+   *
+   * <p>The <b>parameters</b> return mappings for <b>transferBasedOnObsDate</b> and
+   * <b>programState</b>
+   *
+   * @param
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getAdditionalExclusionCriteriaForC1(
       String transferBasedOnDateMappings, String inProgramStatesMappings) {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("All patients to be excluded for the C1 definition");
@@ -1091,6 +1624,12 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Additional exclusion criteria for <b>C2</b>
+   *
+   * @return {@link CohortDefinition}
+   *     <p>TODO : method is never called
+   */
   public CohortDefinition getAdditionalExclusionCriteriaForC2() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("All patients to be excluded for the C2 definition");
@@ -1121,6 +1660,11 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Number of patients transfer based on obs date
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getPatientsTransferBasedOnObsDate() {
     CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
     cd.setName("Get patients with obs date based on a concept");
@@ -1134,7 +1678,12 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  /** @return CohortDefinition Patients with Type of Patient Transferred From = 'Pre-TARV' */
+  /**
+   * <b>Description:</b> Number of patients with Type of Patient Transferred From = 'Pre-TARV'
+   *
+   * @return {@link CohortDefinition}
+   */
+  // TODO: method is never used
   private CohortDefinition getPatientsWithTransferFrom() {
     EncounterWithCodedObsCohortDefinition cd = new EncounterWithCodedObsCohortDefinition();
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
@@ -1146,6 +1695,12 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:<b> Number of patients who initiated TARV at a facility
+   *
+   * @return {@link CohortDefinition}
+   */
+  // TODO: method is never used
   private CohortDefinition getPatientsWhoInitiatedTarvAtAfacility() {
     DateObsCohortDefinition cd = new DateObsCohortDefinition();
     cd.addParameter(new Parameter("value1", "Value 1", Date.class));
@@ -1159,7 +1714,11 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  /** @return Patients with Adulto Seguimento encounter with State of Stay question */
+  /**
+   * <b>Description:</b> Patients with Adulto Seguimento encounter with State of Stay question
+   *
+   * @return {@link CohortDefinition}
+   */
   private EncounterWithCodedObsCohortDefinition getStateOfStayCohort() {
     EncounterWithCodedObsCohortDefinition cd = new EncounterWithCodedObsCohortDefinition();
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
@@ -1171,9 +1730,9 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * Patients with master card drug pickup date
+   * <b>Description:<> Number of patients with master card drug pickup date
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   private DateObsCohortDefinition getPatientsWithMasterCardDrugPickUpDate() {
     DateObsCohortDefinition cd = new DateObsCohortDefinition();
@@ -1189,11 +1748,10 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * All patients who have picked up drugs (Recepção Levantou ARV) – Master Card by end of reporting
-   * period Encounter Type Ids = 52 The earliest “Data de Levantamento” (Concept Id 23866
-   * value_datetime) <= endDate
+   * <b>Description:</b> All patients who have picked up drugs (Recepção Levantou ARV) – Master Card
+   * by end of reporting period The earliest “Data de Levantamento”
    *
-   * @return
+   * @return {@link CohortDefinition}
    */
   @DocumentedDefinition(value = "patientsWhoHavePickedUpDrugsMasterCardByEndReporingPeriod")
   public CohortDefinition getPatientsWhoHavePickedUpDrugsMasterCardByEndReporingPeriod() {
@@ -1221,7 +1779,11 @@ public class ResumoMensalCohortQueries {
     return definition;
   }
 
-  /** @return Patients with last Drug Pickup Date between boundaries */
+  /**
+   * <b>Description:</b> Patients with last Drug Pickup Date between boundaries
+   *
+   * @return {@link CohortDefinition}
+   */
   private DateObsCohortDefinition getLastArvPickupDateCohort() {
     DateObsCohortDefinition cd = getPatientsWithMasterCardDrugPickUpDate();
     cd.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
@@ -1229,10 +1791,9 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * Patients with Drug pickup - Encounter Type 18 (FILA) and Next Scheduled Pickup Date - Concept
-   * ID 5096 - value_datetime not null
+   * <b>Description:</b> Patients with Drug pickup and Next Scheduled Pickup Date
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsWithFILAEncounterAndNextPickupDate() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1247,10 +1808,32 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * E1: Number of active patients in ART at the end of current month who performed Viral Load Test
-   * (Annual Notification) B12 AND NOT (B5 OR B6 OR B7 OR B8)
+   * <b>Name: E1</b>
    *
-   * @return CohortDefinition
+   * <p><b>Description:</b> Number of active patients in ART at the end of current month who
+   * performed Viral Load Test (Annual Notification) B12 AND NOT (B5 OR B6 OR B7 OR B8)
+   *
+   * <ul>
+   *   <li>B13: {@link ResumoMensalCohortQueries#getActivePatientsInARTByEndOfCurrentMonth()}
+   *       <b>AND</b>
+   *   <li>Filter all patients registered in encounter “S.TARV – Adulto Seguimento” (encounter id 6)
+   *       with the following information:
+   *       <ul>
+   *         <li>Lab Requests (PT”: “Pedido Exames Laboratoriais”) (Concept ID 23722) = Viral Load
+   *             (PT:”Carga Viral”) (Concept ID 856)
+   *         <li>Encounter Date >=startDate and <= endDate as “LAB REQUEST DATE”
+   *       </ul>
+   *       <b>AND NOT</b>
+   *   <li>oExclude all patients registered encounter “S.TARV – Adulto Seguimento” (encounter id 6)
+   *       with the following information:
+   *       <ul>
+   *         <li>Lab Requests (PT”: “Pedido Exames Laboratoriais”) (Concept ID 23722) = (Concept ID
+   *             856)
+   *         <li>Encounter Date >=newStartDate and <= (startDate-1d)
+   *       </ul>
+   * </ul>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getNumberOfActivePatientsInArtAtEndOfCurrentMonthWithVlPerformed() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -1289,10 +1872,12 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * B12 = B13 AND NOT (B4 OR B9), this common for the 3 E columns B4 = B1+B2+B3 B9 = B5+B6+B7+B8
-   * This just implementation of B12
+   * <b>Description:</b> Standard columns for <b>E1, E2 and E3</b> implementation
    *
-   * @return
+   * <p><b>NOTE:</b> B12 = B13 AND NOT (B4 OR B9), this common for the 3 E columns B4 = B1+B2+B3 B9
+   * = B5+B6+B7+B8 This just implementation of <b>B12</b>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getStandardDefinitionForEcolumns() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -1345,7 +1930,11 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  /** Filter only those patients */
+  /**
+   * <b>Description:</b> Number of patients with lab requests
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getPatientsWithCodedObsAndAnswers(Concept question, Concept answer) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName(
@@ -1361,6 +1950,11 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Number of patients with TB Screening
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getPatientsWithTBScreening() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Patients with TB Screening");
@@ -1378,9 +1972,9 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * get patients who have viral load test done
+   * <b>Description:</b> Number of patients who have viral load test done
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   private CohortDefinition getViralLoadTestDone() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1396,10 +1990,10 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * Get patients with coded observation
+   * <b>Description:</b> Number of patients with coded observation
    *
-   * @param question
-   * @return
+   * @param
+   * @return {@link CohortDefinition}
    */
   private CohortDefinition gePatientsWithCodedObs(Concept question) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1415,9 +2009,9 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * Combine the viral load and viral load qualitative
+   * <b>Description:</b> Combined viral load and viral load qualitative
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   private CohortDefinition getViralLoadOrQualitative() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -1440,16 +2034,44 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * E2 Get the combinations together E2: Number of active patients in ART at the end of current
-   * month who received a Viral Load Test Result (Annual Notification
    *
-   * @return CohortDefinition
+   *
+   * <h4>Name: E2</h4>
+   *
+   * <p>Number of active patients in ART at the end of current month who received a Viral Load Test
+   * Result (Annual Notification) (PT: Dos activos em TARV no fim do mês (B.13), subgrupo que
+   * recebeu um resultado de Carga Viral (CV) durante o mês (Notificação anual) B13=B12+B4-B9)
+   *
+   * <ul>
+   *   <li>B13: {@link ResumoMensalCohortQueries#getActivePatientsInARTByEndOfCurrentMonth()}
+   *       <b>AND</b>
+   *   <li>Filter all patients registered in encounter “S.TARV – Adulto Seguimento” (encounter id 6)
+   *       with the following information:
+   *       <ul>
+   *         <li>Viral Load (PT”: “Carga Viral”) (Concept ID 856) = any value Or Viral load Qual
+   *             (PT: “Carga Viral – Qualitativa) (Concept ID 1305) = any value <b>AND</b>
+   *         <li>Encounter Date >=startDate and <= endDate as “LAB RESULT DATE”
+   *       </ul>
+   *       <b>AND NOT</b>
+   *   <li>Exclude all patients registered encounter “S.TARV – Adulto Seguimento” (encounter id 6)
+   *       with the following information:
+   *       <ul>
+   *         <li>Viral Load (PT”: “Carga Viral”) (Concept ID 856) = any value Or Viral load Qual
+   *             (PT: “Carga Viral – Qualitativa) (Concept ID 1305) = any value
+   *         <li>Encounter Date >=newStartDate and <= (startDate-1d)
+   *       </ul>
+   * </ul>
+   *
+   * <p><b><Note:/b>If startDate=”21-Dez-yyyy” where “yyyy” is any year, then newStartDate =
+   * startDate Else newStartDate = “21-Dez-(yyyy-1) where “yyyy” is the year from startDate
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition
       getNumberOfActivePatientsInArtAtTheEndOfTheCurrentMonthHavingVlTestResults() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
-        "E2: Number of active patients in ART at the end of current month who received a Viral Load Test Result (Annual Notification");
+        "E2: Number of active patients in ART at the end of current month who received a Viral Load Test Result (Annual Notification)");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -1479,10 +2101,40 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * E3: Number of active patients in ART at the end of current month who received supressed Viral
-   * Load Result (Annual Notification)
+   * <b>Name: E3</b>
    *
-   * @return CohortDefinition
+   * <p><b>Description:</b> Number of active patients in ART at the end of current month who
+   * received supressed Viral Load Result (Annual Notification)
+   *
+   * <p> Number of active patients in ART at the end of current month who received supressed Viral
+   * Load Result (Annual Notification) (PT: Dos activos em TARV no fim do mês (B.13), subgrupo que
+   * recebeu resultado de CV com supressão virológica durante o mês (<1000 cópias/mL) (Notificação
+   * anual!) B13=B12+B4-B9)
+   *
+   * <ul>
+   *   <li>B13: {@link ResumoMensalCohortQueries#getActivePatientsInARTByEndOfCurrentMonth()}
+   *       <b>AND</b>
+   *   <li>Filter all patients registered in encounter “S.TARV – Adulto Seguimento” (encounter id 6)
+   *       with the following information:
+   *       <ul>
+   *         <li>Viral Load (PT”: “Carga Viral”) (Concept ID 856) < 1000 Or Viral load Qual (PT:
+   *             “Carga Viral – Qualitativa) (Concept ID 1305) = any value
+   *         <li>Encounter Date >=startDate and <= endDate as “LAB RESULT DATE”
+   *       </ul>
+   *       <b>AND NOT</b>
+   *   <li>Exclude all patients registered encounter “S.TARV – Adulto Seguimento” (encounter id 6)
+   *       with the following information:
+   *       <ul>
+   *         <li>Viral Load (PT”: “Carga Viral”) (Concept ID 856) < 1000 Or Viral load Qual (PT:
+   *             “Carga Viral – Qualitativa) (Concept ID 1305) = any value
+   *         <li>Encounter Date >=newStartDate and <= (startDate-1d)
+   *       </ul>
+   * </ul>
+   *
+   * <p>If startDate=”21-Dez-yyyy” where “yyyy” is any year, then newStartDate = startDate Else
+   * newStartDate = “21-Dez-(yyyy-1) where “yyyy” is the year from startDate
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getActivePatientsOnArtWhoReceivedVldSuppressionResults() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -1522,6 +2174,11 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Viral load suprresion
+   *
+   * @return {@link CohortDefinition}
+   */
   private CohortDefinition getViralLoadSuppression() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Viral load suppression");
@@ -1536,9 +2193,17 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * F1: Number of patients who had clinical appointment during the reporting month
+   * <b>Name: F1</b>
    *
-   * @return CohortDefinition
+   * <p><b>Description:</b> Number of patients who had clinical appointment during the reporting
+   * month <code>
+   *     <ul>
+   *        <li>Select all patients from encounter “Master Card  – Ficha Clinica” (encounter type id 6) that occurred between startDate and endDate: <br />
+   *        Encounter_Datetime >=startDate and <= endDate</li>
+   *      </ul>
+   * </code>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1553,10 +2218,34 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * F2: Number of patients who had clinical appointment during the reporting month and were
-   * screened for TB
+   * <b>Name: F2</b>
    *
-   * @return CohortDefinition
+   * <p><b>Description:</b> F2: Number of patients who had clinical appointment during the
+   * reporting month and were screened for TB (PT: Dos pacientes que vieram à consulta durante o
+   * mês, subgrupo que foi rastreado para TB)
+   *
+   * <ul>
+   *   <ul>
+   *     <li>Select all patients from encounter “Master Card – Ficha Clinica ” (encounter type id 6)
+   *         that occurred between startDate and endDate: <code>
+   *         Encounter Date >=startDate and <= endDate</code>
+   *     <li>Filter all patients registered in encounter “Master Card – Ficha Clinica ” (encounter
+   *         id 6) with the following information:
+   *         <ul>
+   *           <li>TB Screening (PT”: “Tuberculose – Tem Sintomas?”) (Concept ID 23758) = Yes (PT:
+   *               “SIM”) (Concept ID 1065) or (Concept ID 23758) = No (PT: “NAO”) (Concept ID 1066)
+   *           <li>Encounter Date >=startDate and <= endDate as “SCREENING DATE”
+   *         </ul>
+   *     <li>oExclude all patients registered encounter “Master Card – Ficha Clinica ” (encounter id
+   *         6) with the following information:
+   *         <ul>
+   *           <li>TB Treatment (PT”: “Tratamento TB”) (Concept ID 1268) = any value
+   *           <li>Encounter Date = ”SCREENING DATE”
+   *         </ul>
+   *   </ul>
+   * </ul>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition
       getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthAndScreenedForTbF2() {
@@ -1576,9 +2265,48 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * F3: Number of patients who had at least one clinical appointment during the year
+   * <b>Name: F3</b>
    *
-   * @return CohortDefinition
+   * <p>F3: Number of patients who had at least one clinical appointment during the year (PT: Nº de
+   * pacientes que vieram, pelo menos, a uma consulta durante o ANO (Notificação anual!)
+   * (Notificação anual!))
+   *
+   * <ul>
+   *   <li>Select all patients from encounter “Master Card – Ficha Clinica ” (encounter id 6) that
+   *       occurred between startDate and endDate: <br>
+   *       <code>Encounter Date >=startDate and <= endDate AS “VISIT DATE”</code>
+   *   <li>Exclude all patients registered encounter “Master Card – Ficha Clinica ” (encounter id 6)
+   *       with the following information: <br>
+   *       <code>
+   *             Encounter Date >=newStartDate and < startDate
+   *         </code> <br>
+   *       <p><b> If startDate=”21-Dez-yyyy” where “yyyy” is any year, then newStartDate = startDate
+   *       Else newStartDate = “21-Dez-(yyyy-1) where “yyyy” is the year from startDate</b>
+   * </ul>
+   *
+   * <ul>
+   *   <li>Exclude all patients registered as Transferred In during the statistical year:
+   *       <ul>
+   *         <li>B2i - Select all patients registered in encounter “Master Card – Ficha Resumo”
+   *             (encounter id 53) who have the following conditions:
+   *             <ul>
+   *               <li>“Transfer from other HF” (PT:“Transferido de outra US”) (Concept ID 1369) is
+   *                   equal to “YES” (Concept ID 1065) AND
+   *               <li>Type of Patient Transferred From (PT”: “Tipo de Paciente Transferido”)
+   *                   (Concept ID 6300) = “TARV” (Concept ID 6276) AND
+   *               <li>Date of MasterCard File Opening (PT”: “Data de Abertura da Ficha na US”)
+   *                   (Concept ID 23891 value_datetime) >=newStartDate and <= endDate
+   *             </ul>
+   *         <li>B2ii - Select all patients registered as transferred-in in Program Enrollment
+   *             <h4>Technical Specs:</h4>
+   *             <p><b>Table: patient_program</b><br>
+   *             <code>
+   *             Criterias: program_id=2, patient_state_id=29 and start_date >=newStartDate and <=endDate
+   *             </code>
+   *       </ul>
+   * </ul>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getNumberOfPatientsWithAtLeastOneClinicalAppointmentDuringTheYearF3() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -1604,6 +2332,11 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description:</b> Number of patients registered as transferred in during the statistical year
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getPatientsRegisteredAsTransferredInDuringTheStatisticalYear() {
 
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1628,6 +2361,11 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Description: F3</b> exclusion criteria
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getExclusionForF3() {
     SqlCohortDefinition sql = new SqlCohortDefinition();
     sql.setName("Exclusions");
@@ -1641,9 +2379,10 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * Get number of patients who have a consultation on the same date as that of pre art
+   * <b>Description:<b> Number of patients who have a consultation on the same date as that of
+   * pre-ART
    *
-   * @return CohortDefinition
+   * @return {@link CohortDefinition}
    */
   private CohortDefinition
       getPatientsWithFirstClinicalConsultationOnTheSameDateAsPreArtStartDate() {
@@ -1661,9 +2400,48 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * B7A: Number of active patients in ART by end of previous/current month
+   * <b>Name:B7: Number of patientes who Abandoned the ART during the current month. (PT: Nº de
+   * abandonos TARV durante o mês)</b>
    *
-   * @retrun CohortDefinition
+   * <ul>
+   *   <li>All patients having the most recent date between last scheduled drug pickup date (Fila)
+   *       or 30 days after last ART pickup date (Recepção – Levantou ARV) and adding 60 days and
+   *       this date being less than reporting end Date.
+   *       <ol>
+   *         <li>Select the most recent date from:
+   *             <ul>
+   *               <li>a.Last record of Next Drugs Pick Up Appointment (Concept ID 5096
+   *                   value_datetime – not empty/null) from encounters of type 18 registered by
+   *                   endDate
+   *               <li>The most recent “Data de Levantamento” (Concept Id 23866 value_datetime-not
+   *                   empty/null) occurred by endDate from encounters of type 52 , plus(+) 30 days
+   *             </ul>
+   *         <li>And add 60 days and this date should be < endDate
+   *       </ol>
+   *   <li>Except all patients who abandoned the ART by previous month:
+   *       <ol>
+   *         <li>Select the most recent date from:
+   *             <ul>
+   *               <li>Last record of Next Drugs Pick Up Appointment (Concept ID 5096 value_datetime
+   *                   – not empty/null) from encounters of type 18 registered by startDate
+   *               <li>d.The most recent “Data de Levantamento” (Concept Id 23866 value_datetime-not
+   *                   empty/null) occurred by startDate from encounters of type 52 , plus(+) 30
+   *                   days
+   *             </ul>
+   *         <li>And add 60 days and this date should be < startDate
+   *       </ol>
+   *   <li>Except all patients who were transferred-out by reporting endDate: Same criterias as
+   *       defined in B5, but instead of during the period (>=startDate and <=endDate), it should be
+   *       by reporting endDate (<=endDate)
+   *   <li>Except all patients who were suspended by reporting endDate: Same criterias as defined in
+   *       B6, but instead of during the period (>=startDate and <=endDate), it should be by
+   *       reporting endDate (<=endDate)
+   *   <li>Except all patients who died by reporting endDate: Same criterias as defined in B8, but
+   *       instead of during the period (>=startDate and <=endDate), it should be by reporting
+   *       endDate (<=endDate)
+   * </ul>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7() {
 
@@ -1699,6 +2477,13 @@ public class ResumoMensalCohortQueries {
     return ccd;
   }
 
+  /**
+   * <b>Name: B7</b>
+   *
+   * <p><b>Description:</b> Number of patients who abandoned ART during previous month
+   *
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Number of patients who Abandoned the ART during the current month");
@@ -1715,9 +2500,12 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * Get all patients enrolled in PRE-ART program id 1, with date enrolled less than startDate
+   * <b>Name: A1III</b>
    *
-   * @return CohortDefinition
+   * <p><b>Descrption:</b> Number of patients enrolled in PRE-ART program id 1, with date enrolled
+   * less than startDate
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition
       getAllPatientsEnrolledInPreArtProgramWithDateEnrolledLessThanStartDateA1() {
@@ -1734,9 +2522,12 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * Get all patients registered in encounterType 5 or 7, with date enrolled less than startDate
+   * <b>Name: A1IV</b>
    *
-   * @return CohortDefinition
+   * <p><b>Descrption:</b> Number of patients registered in <b>encounterType 5 or 7</b>, with date
+   * enrolled less than startDate
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition
       getAllPatientsRegisteredInEncounterType5or7WithEncounterDatetimeLessThanStartDateA1() {
@@ -1749,9 +2540,12 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * Number of patients transferred-in from another HF during a period less than startDate
+   * <b>Name: A1II</b>
    *
-   * @return CohortDefinition
+   * <p><b>Descrption:</b> Number of patients transferred-in from another HFs during a period less
+   * than startDate
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition
       getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA1() {
@@ -1770,10 +2564,72 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * B13 B.13: Number of active patients in ART by end of current month (PT: Nº activo em TARV no
-   * fim do mês automaticamente calculado através da seguinte formula)
+   * <b>Name: B13</b>
    *
-   * @retrun CompositionCohortDefinition
+   * <p><b>Description:</b> Number of active patients in ART by end of current month (PT: Nº activo
+   * em TARV no fim do mês automaticamente calculado através da seguinte formula)
+   *
+   * <ol>
+   *   <li>Select all patients with the earliest ART Start Date from the following criterias
+   *       <ul>
+   *         <li>
+   *             <p>All patients who have their first drugs pick-up date (first encounter_datetime)
+   *             by reporting end date in Pharmacy form FILA (Encounter Type ID 18): <code>
+   *                      first occurrence of encounter datetime
+   *                      Encounter Type Ids = 18
+   *                   </code>
+   *         <li>
+   *             <p>All patients who have initiated the ARV drugs [ ARV PLAN (Concept ID 1255) =
+   *             START DRUGS (Concept ID 1256) at the pharmacy or clinical visits (Encounter Type
+   *             IDs 6,9,18) <code>first occurrence of encounter datetime
+   *                     Encounter Type Ids = 6,9,18
+   *                      ARV PLAN (Concept Id 1255) = START DRUGS (Concept ID 1256)
+   *                      </code>
+   *         <li>
+   *             <p>All patients who have the first historical start drugs date (earliest concept ID
+   *             1190) set in pharmacy or in clinical forms (Encounter Type IDs 6, 9, 18, 53)
+   *             earliest “historical start date” <code>
+   *                          Encounter Type Ids = 6,9,18,53
+   *                          The earliest “Historical Start Date” (Concept Id 1190)
+   *                    </code>
+   *         <li>
+   *             <p>All patients enrolled in ART Program (date_enrolled in program_id 2, from
+   *             patient program table) <code>
+   *                    program_enrollment date
+   *                      program_id=2, patient_state_id=29 and date_enrolled
+   *                </code>
+   *         <li>
+   *             <p>f.All patients with first drugs pick up date (earliest concept ID 23866
+   *             value_datetime) set in mastercard pharmacy form “Recepção/Levantou ARV” (Encounter
+   *             Type ID 52) with Levantou ARV (concept id 23865) = Yes (concept id 1065) <code>
+   *                      earliest “Date of Pick up”
+   *                      Encounter Type Ids = 52
+   *                      The earliest “Data de Levantamento” (Concept Id 23866 value_datetime) <= endDate
+   *                      Levantou ARV (concept id 23865) = SIm (1065)
+   *                </code>
+   *       </ul>
+   *   <li>And check if the selected ART Start Date is <= endDate
+   *   <li>
+   *       <p>Filter patients who had a drug pick up as <code>
+   *             At least one encounter “Levantamento de ARV Master Card” (encounter id 52) with the following information:
+   *              PickUp Date (PT: “Data de Levantamento”) (Concept ID 23866) <=endDate
+   *         </code> <code>
+   *             Patient had a drug pick in FILA (encounter id 18) by reporting end date (encounter_datetime <=endDate) and have next
+   *             scheduled pick up SET (Concept ID 5096 value_datetime – not empty/null)
+   *         </code>
+   * </ol>
+   *
+   * <p>EXCEPT (NOT)
+   *
+   * <ol>
+   *   <li>B5: {@link ResumoMensalCohortQueries#getPatientsTransferredOutB5(boolean)}
+   *   <li>B6: {@link ResumoMensalCohortQueries#getPatientsWhoSuspendedTreatmentB6(boolean)}
+   *   <li>B7: {@link
+   *       ResumoMensalCohortQueries#getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7()}
+   *   <li>B8: {@link ResumoMensalCohortQueries#getPatientsWhoDied(Boolean)}
+   * </ol>
+   *
+   * @return {@link CohortDefinition}
    */
   public CohortDefinition getActivePatientsInARTByEndOfCurrentMonth() {
 
@@ -1816,7 +2672,12 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
-  /** Get transferred-in patients */
+  /**
+   * <b>Description:</b> Number of patients transferred-In
+   *
+   * @param
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getTransferredInPatients(boolean isExclusion) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Transferred-in patients");

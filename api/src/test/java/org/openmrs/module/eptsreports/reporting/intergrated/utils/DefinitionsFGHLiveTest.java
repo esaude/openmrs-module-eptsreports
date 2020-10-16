@@ -1,6 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.utils;
 
-import java.util.Date;
 import org.junit.Before;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
@@ -28,20 +27,8 @@ public abstract class DefinitionsFGHLiveTest extends DefinitionsTest {
   @Before
   public void initialize() throws ContextAuthenticationException {
     Context.authenticate(username(), password());
-  }
-
-  @Override
-  protected Date getStartDate() {
-    return DateUtil.getDateTime(2013, 2, 6);
-  }
-
-  @Override
-  protected Date getEndDate() {
-    return DateUtil.getDateTime(2019, 3, 6);
-  }
-
-  @Override
-  protected Location getLocation() {
-    return Context.getLocationService().getLocation(103);
+    setStartDate(DateUtil.getDateTime(2013, 2, 6));
+    setEndDate(DateUtil.getDateTime(2019, 3, 6));
+    setLocation(new Location(103));
   }
 }

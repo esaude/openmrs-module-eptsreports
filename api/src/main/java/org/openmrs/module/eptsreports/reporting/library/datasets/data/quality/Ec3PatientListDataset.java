@@ -32,7 +32,6 @@ public class Ec3PatientListDataset extends BaseDataSet {
   @Autowired
   public Ec3PatientListDataset(HivMetadata hivMetadata) {
     this.hivMetadata = hivMetadata;
-    ;
   }
 
   public DataSetDefinition ec3PatientListDataset(List<Parameter> parameterList) {
